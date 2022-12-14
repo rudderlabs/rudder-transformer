@@ -9,8 +9,7 @@ const {
   getDestinationExternalID,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
-  getFieldValueFromMessage,
-  getIntegrationsObj
+  getFieldValueFromMessage
 } = require("../../util");
 const {
   InstrumentationError,
@@ -321,10 +320,6 @@ const responseBuilder = (message, { Config }) => {
   }
 
   removeReservedParameterPrefixNames(payload.params);
-  const integrationsObj = getIntegrationsObj(message, "ga4");
-  if (integrationsObj && integrationsObj.sessionId) {
-    payload.params.session_id = integrationsObj.sessionId;
-  }
 
   if (payload.params) {
     payload.params = removeUndefinedAndNullValues(payload.params);

@@ -3,7 +3,6 @@ const { get } = require("lodash");
 const { defaultPostRequestConfig } = require("../../util");
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
   defaultRequestConfig,
   getSuccessRespEvents,
   getErrorRespEvents,
@@ -21,6 +20,10 @@ const {
 } = require("./utils");
 
 const { ENDPOINT, MAX_BATCH_SIZE, USER_CONFIGS } = require("./config");
+const {
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const responseBuilderSimple = finalPayload => {
   const response = defaultRequestConfig();
@@ -64,9 +67,8 @@ const commonFieldResponseBuilder = (
   const userPayload = constructPayload(message, USER_CONFIGS, "pinterest");
   const isValidUserPayload = checkUserPayloadValidity(userPayload);
   if (isValidUserPayload === false) {
-    throw new CustomError(
-      "It is required at least one of em, hashed_maids or pair of client_ip_address and client_user_agent.",
-      400
+    throw new InstrumentationError(
+      "It is required at least one of em, hashed_maids or pair of client_ip_address and client_user_agent"
     );
   }
 
@@ -104,14 +106,11 @@ const process = event => {
   const messageType = message.type?.toLowerCase();
 
   if (!destination.Config?.advertiserId) {
-    throw new CustomError("Advertiser Id not found. Aborting", 400);
+    throw new ConfigurationError("Advertiser Id not found. Aborting");
   }
 
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   switch (messageType) {
@@ -134,9 +133,8 @@ const process = event => {
 
       break;
     default:
-      throw new CustomError(
-        `message type ${messageType} is not supported`,
-        400
+      throw new InstrumentationError(
+        `message type ${messageType} is not supported`
       );
   }
 

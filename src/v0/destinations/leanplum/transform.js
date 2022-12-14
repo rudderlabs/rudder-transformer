@@ -11,9 +11,9 @@ const {
   defaultRequestConfig,
   constructPayload,
   getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError
+  getErrorRespEvents
 } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 function preparePayload(message, name, destination) {
   const mappingJson = mappingConfig[name];
@@ -68,10 +68,7 @@ function startSession(message, destination) {
 
 function processSingleMessage(message, destination) {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   const messageType = message.type.toLowerCase();
   let category;
@@ -90,7 +87,9 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.SCREEN;
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
 
   // build the response
@@ -105,16 +104,7 @@ function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  let response;
-  try {
-    response = processSingleMessage(event.message, event.destination);
-  } catch (error) {
-    throw new CustomError(
-      error.message || "Unknown error",
-      error.status || 400
-    );
-  }
-  return response;
+  return processSingleMessage(event.message, event.destination);
 }
 
 const processRouterDest = async inputs => {
@@ -143,11 +133,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response?.status || error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

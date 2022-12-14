@@ -1,7 +1,6 @@
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   getDestinationExternalIDInfoForRetl
@@ -27,12 +26,12 @@ const {
   getProperties,
   validateDestinationConfig
 } = require("./util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const processSingleMessage = async (message, destination, propertyMap) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message type is not present. Aborting message."
     );
   }
 
@@ -61,9 +60,8 @@ const processSingleMessage = async (message, destination, propertyMap) => {
       }
       break;
     default:
-      throw new CustomError(
-        `Message type ${message.type} is not supported`,
-        400
+      throw new InstrumentationError(
+        `Message type ${message.type} is not supported`
       );
   }
 

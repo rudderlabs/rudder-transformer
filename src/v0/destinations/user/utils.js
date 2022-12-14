@@ -1,6 +1,5 @@
 const get = require("get-value");
 const {
-  CustomError,
   getHashFromArray,
   constructPayload,
   getIntegrationsObj,
@@ -22,6 +21,10 @@ const {
   groupSourceKeys,
   identifySourceKeys
 } = require("./config");
+const {
+  InstrumentationError,
+  NetworkInstrumentationError
+} = require("../../util/errorTypes");
 
 /**
  * Returns updated User.com url
@@ -205,16 +208,13 @@ const validatePagePayload = message => {
   const timestamp = getFieldValueFromMessage(message, "timestamp");
 
   if (!pageUrl) {
-    throw new CustomError("[ User.com ]:: Parameter url is required", 400);
+    throw new InstrumentationError("Parameter url is required");
   }
   if (!pagePath) {
-    throw new CustomError("[ User.com ]:: Parameter path is required", 400);
+    throw new InstrumentationError("Parameter path is required");
   }
   if (!timestamp) {
-    throw new CustomError(
-      "[ User.com ]:: Parameter timestamp is required",
-      400
-    );
+    throw new InstrumentationError("Parameter timestamp is required");
   }
 };
 
@@ -228,7 +228,7 @@ const validateGroupPayload = message => {
   const traits = getFieldValueFromMessage(message, "traits");
   const { name } = traits;
   if (!name) {
-    throw new CustomError("[ User.com ]:: Parameter name is required", 400);
+    throw new InstrumentationError("Parameter name is required");
   }
 };
 
@@ -346,10 +346,7 @@ const getUserByUserKey = async (apiKey, userKey, appSubdomain) => {
  */
 const getUserByEmail = async (apiKey, email, appSubdomain) => {
   if (!email) {
-    throw new CustomError(
-      "[ User.com ]:: lookup field : email value is not present",
-      400
-    );
+    throw new InstrumentationError("Lookup field : email value is not present");
   }
 
   const endpoint = prepareUrl(
@@ -384,10 +381,7 @@ const getUserByEmail = async (apiKey, email, appSubdomain) => {
  */
 const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
   if (!phoneNumber) {
-    throw new CustomError(
-      "[ User.com ] :: lookup field : phone value is not present",
-      400
-    );
+    throw new InstrumentationError("Lookup field : phone value is not present");
   }
 
   const endpoint = prepareUrl(
@@ -409,14 +403,12 @@ const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
     const { response } = processedUserResponse;
     const { results } = response;
     if (results.length === 0) {
-      throw new CustomError(
-        "[ User.com ] :: no user found for a given lookup field",
-        400
+      throw new NetworkInstrumentationError(
+        "No user found for a given lookup field"
       );
     } else if (results.length > 1) {
-      throw new CustomError(
-        "[ User.com ] :: multiple users obtained for a given lookup field",
-        400
+      throw new NetworkInstrumentationError(
+        "Multiple users obtained for a given lookup field"
       );
     } else {
       const [first] = results;
@@ -523,9 +515,9 @@ const retrieveUserFromLookup = async (message, destination) => {
     if (lookupField === "phone") {
       return getUserByPhoneNumber(apiKey, lookupFieldValue, appSubdomain);
     }
-    throw new CustomError(
-      `[ User.com ] :: lookup field : ${lookupField} is not supported for this destination`,
-      400
+
+    throw new InstrumentationError(
+      `Lookup field : ${lookupField} is not supported for this destination`
     );
   } else {
     const userId = getValueFromMessage(message, "userId");
@@ -536,9 +528,9 @@ const retrieveUserFromLookup = async (message, destination) => {
     if (isDefinedAndNotNullAndNotEmpty(email)) {
       return getUserByEmail(apiKey, email, appSubdomain);
     }
-    throw new CustomError(
-      "[ User.com ] :: default lookup field : email value is empty",
-      400
+
+    throw new InstrumentationError(
+      "Default lookup field : email value is empty"
     );
   }
 };

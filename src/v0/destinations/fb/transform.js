@@ -10,8 +10,8 @@ const {
   getValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
-  isAppleFamily
+  isAppleFamily,
+  generateErrorObject
 } = require("../../util");
 
 const {
@@ -22,6 +22,7 @@ const {
   eventPropToTypeMapping
 } = require("./config");
 const logger = require("../../../logger");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 // const funcMap = {
 //   integer: parseInt,
@@ -134,9 +135,8 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
   }
 
   if (!isUDSet && !updatedEvent.advertiser_id && !updatedEvent.anon_id) {
-    throw new CustomError(
-      "Either context.device.advertisingId or traits or anonymousId must be present for all events",
-      400
+    throw new InstrumentationError(
+      "Either context.device.advertisingId or traits or anonymousId must be present for all events"
     );
   }
 
@@ -159,13 +159,12 @@ function getCorrectedTypedValue(pathToKey, value, originalPath) {
     return value;
   }
 
-  throw new CustomError(
+  throw new InstrumentationError(
     `${
       typeof originalPath === "object"
         ? JSON.stringify(originalPath)
         : originalPath
-    } is not of valid type`,
-    400
+    } is not of valid type`
   );
 }
 
@@ -178,7 +177,7 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
   const { properties } = message;
   if (properties) {
     if (properties.revenue && !properties.currency) {
-      throw new CustomError(
+      throw new InstrumentationError(
         "If properties.revenue is present, properties.currency is required."
       );
     }
@@ -193,9 +192,8 @@ function processEventTypeGeneric(message, baseEvent, fbEventName) {
           processedKey = k.substring(0, 40);
         }
         if (processedKey.length === 0) {
-          throw new CustomError(
-            `The property key ${k} has only non-alphanumeric characters.A property key must be an alphanumeric string and have atmost 40 characters.`,
-            400
+          throw new InstrumentationError(
+            `The property key ${k} has only non-alphanumeric characters.A property key must be an alphanumeric string and have atmost 40 characters.`
           );
         }
       }
@@ -274,9 +272,8 @@ function buildBaseEvent(message) {
     sourceSDK = "i2";
   } else {
     // if the sourceSDK is not android or ios
-    throw new CustomError(
-      'Extended device information i.e, "context.device.type" is required',
-      400
+    throw new InstrumentationError(
+      'Extended device information i.e, "context.device.type" is required'
     );
   }
 
@@ -322,9 +319,8 @@ function processSingleMessage(message, destination) {
     case EventType.TRACK:
       fbEventName = eventNameMapping[eventName] || eventName;
       if (!eventAndPropRegex.test(fbEventName)) {
-        throw new CustomError(
-          `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventAndPropRegexPattern}.`,
-          400
+        throw new InstrumentationError(
+          `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventAndPropRegexPattern}.`
         );
       }
       updatedEvent = processEventTypeGeneric(message, baseEvent, fbEventName);
@@ -337,9 +333,8 @@ function processSingleMessage(message, destination) {
       } else {
         fbEventName = `Viewed ${name} Screen`;
         if (!eventAndPropRegex.test(fbEventName)) {
-          throw new CustomError(
-            `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventAndPropRegexPattern}.`,
-            400
+          throw new InstrumentationError(
+            `Event name ${fbEventName} is not a valid FB APP event name.It must match the regex ${eventAndPropRegexPattern}.`
           );
         }
       }
@@ -352,7 +347,9 @@ function processSingleMessage(message, destination) {
       break;
     default:
       logger.error("could not determine type");
-      throw new CustomError("message type not supported", 400);
+      throw new InstrumentationError(
+        `Message type ${message.type} not supported`
+      );
   }
 
   sanityCheckPayloadForTypesAndModifications(updatedEvent);
@@ -391,6 +388,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -398,7 +396,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

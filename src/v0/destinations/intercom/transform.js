@@ -15,9 +15,13 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
-  addExternalIdToTraits
+  addExternalIdToTraits,
+  generateErrorObject
 } = require("../../util");
+const {
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 function getCompanyAttribute(company) {
   const companiesList = [];
@@ -72,7 +76,7 @@ function validateIdentify(message, payload) {
 
     return finalPayload;
   }
-  throw new CustomError("Email or userId is mandatory", 400);
+  throw new InstrumentationError("Email or userId is mandatory");
 }
 
 function validateTrack(message, payload) {
@@ -89,7 +93,7 @@ function validateTrack(message, payload) {
     }
     return { ...payload, metadata };
   }
-  throw new CustomError("Email or userId is mandatory", 400);
+  throw new InstrumentationError("Email or userId is mandatory");
 }
 
 function validateAndBuildResponse(message, payload, category, destination) {
@@ -107,7 +111,9 @@ function validateAndBuildResponse(message, payload, category, destination) {
       );
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Message type ${messageType} not supported`
+      );
   }
 
   response.method = defaultPostRequestConfig.requestMethod;
@@ -124,9 +130,8 @@ function validateAndBuildResponse(message, payload, category, destination) {
 
 function processSingleMessage(message, destination) {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   const { sendAnonymousId } = destination.Config;
@@ -144,7 +149,9 @@ function processSingleMessage(message, destination) {
     //   category = ConfigCategory.GROUP;
     //   break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Message type ${messageType} not supported`
+      );
   }
 
   // build the response and return
@@ -163,14 +170,8 @@ function processSingleMessage(message, destination) {
 
 function process(event) {
   let response;
-  try {
-    response = processSingleMessage(event.message, event.destination);
-  } catch (error) {
-    throw new CustomError(
-      error.message || "Unknown error",
-      error.status || 400
-    );
-  }
+
+  response = processSingleMessage(event.message, event.destination);
   return response;
 }
 
@@ -198,6 +199,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const erroObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -205,7 +207,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          erroObj.statTags
         );
       }
     })

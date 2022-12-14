@@ -501,7 +501,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[snapchat_custom_audience]::Message Type audience not supported."
+      "error": "Event type audience is not supported"
     }
   },
   {
@@ -551,7 +551,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[snapchat_custom_audience]::Message Type is not present. Aborting message."
+      "error": "Event type is required"
     }
   },
   {
@@ -587,7 +587,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[snapchat_custom_audience]::Message properties is not present. Aborting message."
+      "error": "Message properties is not present. Aborting message"
     }
   },
   {
@@ -626,7 +626,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[snapchat_custom_audience]::listData is not present inside properties. Aborting message."
+      "error": "listData is not present inside properties. Aborting message"
     }
   },
   {
@@ -668,7 +668,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[snapchat_custom_audience]::Neither 'add' nor 'remove' property is present inside 'listData'. Aborting message."
+      "error": "Neither 'add' nor 'remove' property is present inside 'listData'. Aborting message"
     }
   },
   {
@@ -726,7 +726,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[snapchat_custom_audience]::email is required for the chosen schema."
+      "error": "Required schema parameter email is not found from payload"
     }
   },
   {

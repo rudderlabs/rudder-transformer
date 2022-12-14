@@ -1,6 +1,7 @@
 const _ = require("lodash");
 const { EventType } = require("../../../constants");
 const {
+  ErrorMessage,
   isEmptyObject,
   constructPayload,
   getErrorRespEvents,
@@ -32,9 +33,11 @@ const {
   generatePayloadFromConfig,
   createOrUpdateContactPayloadBuilder
 } = require("./util");
-const ErrorBuilder = require("../../util/error");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { DESTINATION } = require("./config");
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = (payload, method, endpoint, apiKey) => {
   if (payload) {
@@ -50,16 +53,7 @@ const responseBuilder = (payload, method, endpoint, apiKey) => {
   }
 
   // fail-safety for developer error
-  throw new ErrorBuilder()
-    .setMessage("[SendGrid] :: Payload could not be constructed")
-    .setStatus(400)
-    .setStatTags({
-      destType: DESTINATION,
-      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-    })
-    .build();
+  throw new TransformationError(ErrorMessage.FailedToConstructPayload);
 };
 
 const identifyResponseBuilder = async (message, destination) => {
@@ -90,19 +84,9 @@ const trackResponseBuilder = async (message, { Config }) => {
       if (email) {
         payload.personalizations = [{ to: [{ email }] }];
       } else {
-        throw new ErrorBuilder()
-          .setMessage(
-            "[SendGrid] :: Either email not found in traits or personalizations field is missing/empty"
-          )
-          .setStatus(400)
-          .setStatTags({
-            destType: DESTINATION,
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-          })
-          .build();
+        throw new InstrumentationError(
+          "Either email not found in traits or personalizations field is missing/empty"
+        );
       }
     }
   }
@@ -153,30 +137,11 @@ const trackResponseBuilder = async (message, { Config }) => {
 const processEvent = async (message, destination) => {
   // Validating if message type is even given or not
   if (!message.type) {
-    throw new ErrorBuilder()
-      .setMessage("[SendGrid] :: Message Type is not present. Aborting message")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      })
-      .build();
+    throw new InstrumentationError("Event type is required");
   }
 
   if (!destination.Config.apiKey) {
-    throw new ErrorBuilder()
-      .setMessage("[SendGrid] :: Invalid Api Key")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      })
-      .build();
+    throw new ConfigurationError("Invalid Api Key");
   }
 
   const messageType = message.type.toLowerCase();
@@ -189,17 +154,9 @@ const processEvent = async (message, destination) => {
       response = await trackResponseBuilder(message, destination);
       break;
     default:
-      throw new ErrorBuilder()
-        .setMessage(`[SendGrid] :: Message type ${messageType} not supported`)
-        .setStatus(400)
-        .setStatTags({
-          destType: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        })
-        .build();
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
   return response;
 };

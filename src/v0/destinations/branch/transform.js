@@ -9,10 +9,11 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
   isDefinedAndNotNull,
-  isAppleFamily
+  isAppleFamily,
+  generateErrorObject
 } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 function responseBuilder(payload, message, destination, category) {
   const response = defaultRequestConfig();
@@ -228,7 +229,7 @@ function processMessage(message, destination) {
   switch (message.type) {
     case EventType.TRACK:
       if (!message.event) {
-        throw new CustomError("Event name is required", 400);
+        throw new InstrumentationError("Event name is required");
       }
       var { evName, category } = getCategoryAndName(message.event);
       break;
@@ -236,7 +237,7 @@ function processMessage(message, destination) {
       var { evName, category } = getCategoryAndName(message.userId);
       break;
     default:
-      throw new CustomError("Message type is not supported", 400);
+      throw new InstrumentationError("Message type is not supported");
   }
   const rawPayload = getCommonPayload(message, category, evName);
   return responseBuilder(rawPayload, message, destination, category);
@@ -271,6 +272,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -278,7 +280,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

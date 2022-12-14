@@ -10,7 +10,11 @@ const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const Cache = require("../../util/cache");
-const { AbortedError, OAuthSecretError } = require("../../util/errorTypes");
+const {
+  AbortedError,
+  OAuthSecretError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -20,9 +24,7 @@ const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
  */
 const validateDestinationConfig = ({ Config }) => {
   if (!Config.customerId) {
-    throw new AbortedError(
-      "[Google Ads Offline Conversions]:: Customer ID not found. Aborting"
-    );
+    throw new ConfigurationError("Customer ID not found. Aborting");
   }
 };
 
@@ -34,9 +36,7 @@ const validateDestinationConfig = ({ Config }) => {
  */
 const getAccessToken = ({ secret }) => {
   if (!secret) {
-    throw new OAuthSecretError(
-      "[Google Ads Offline Conversions]:: OAuth - access token not found"
-    );
+    throw new OAuthSecretError("OAuth - access token not found");
   }
   return secret.access_token;
 };
@@ -93,7 +93,7 @@ const getConversionActionId = async (headers, params) => {
     );
     if (!conversionAction) {
       throw new AbortedError(
-        `[Google Ads Offline Conversions]:: Unable to find conversionActionId for conversion:${params.event}`
+        `Unable to find conversionActionId for conversion:${params.event}`
       );
     }
     return conversionAction;

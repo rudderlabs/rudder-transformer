@@ -10,7 +10,6 @@ const {
   defaultPatchRequestConfig,
   getFieldValueFromMessage,
   getSuccessRespEvents,
-  CustomError,
   addExternalIdToTraits,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
@@ -20,6 +19,11 @@ const {
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl
 } = require("../../util");
+const {
+  TransformationError,
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 const {
   IDENTIFY_CRM_UPDATE_CONTACT,
   IDENTIFY_CRM_CREATE_NEW_CONTACT,
@@ -109,7 +113,7 @@ const processIdentify = async (message, destination, propertyMap) => {
   ) {
     addExternalIdToTraits(message);
     if (!objectType) {
-      throw new CustomError("objectType not found", 400);
+      throw new InstrumentationError("objectType not found");
     }
     if (operation === "createObject") {
       endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
@@ -130,9 +134,8 @@ const processIdentify = async (message, destination, propertyMap) => {
     response.operation = operation;
   } else {
     if (!Config.lookupField) {
-      throw new CustomError(
-        "lookupField is a required field in webapp config",
-        400
+      throw new ConfigurationError(
+        "lookupField is a required field in webapp config"
       );
     }
 
@@ -215,9 +218,8 @@ const processTrack = async (message, destination) => {
 
   // either of email or utk or objectId (Could be a 'contact id' or a 'visitor id') should be present
   if (!payload.email && !payload.utk && !payload.objectId) {
-    throw new CustomError(
-      "[HS]:: either of email, utk or objectId is required for custom behavioral events",
-      400
+    throw new InstrumentationError(
+      "Either of email, utk or objectId is required for custom behavioral events"
     );
   }
 
@@ -342,7 +344,7 @@ const batchIdentify = (
         metadata.push(ev.metadata);
       });
     } else {
-      throw new CustomError("[HS]:: Unknow hubspot operation", 400);
+      throw new TransformationError("Unknown hubspot operation", 400);
     }
 
     batchEventResponse.batchedRequest.body.JSON = {
@@ -428,7 +430,7 @@ const batchEvents = destEvents => {
           associationObjectsEventChunk.push(event);
         }
       } else {
-        throw new CustomError("[HS]:: rETL -  Error in getting operation", 400);
+        throw new TransformationError("rETL -  Error in getting operation");
       }
     } else if (operation === "createContacts") {
       // Identify: making chunks for CRM create contact endpoint
@@ -437,7 +439,7 @@ const batchEvents = destEvents => {
       // Identify: making chunks for CRM update contact endpoint
       updateContactEventsChunk.push(event);
     } else {
-      throw new CustomError("[HS]:: rETL - Not a valid operation", 400);
+      throw new TransformationError("rETL - Not a valid operation");
     }
   });
 

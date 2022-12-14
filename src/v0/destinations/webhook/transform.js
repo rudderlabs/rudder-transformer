@@ -160,7 +160,7 @@ function process(event) {
     throw new ConfigurationError("Invalid URL in destination config");
   } catch (err) {
     throw new NetworkInstrumentationError(
-      err.message || "[webhook] Failed to process request"
+      err.message || "Failed to process request"
     );
   }
 }

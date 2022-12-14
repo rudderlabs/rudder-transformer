@@ -88,7 +88,7 @@ const processEvent = (message, destination) => {
       break;
     default:
       throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
+        `Event type "${messageType}" is not supported`
       );
   }
   return response;

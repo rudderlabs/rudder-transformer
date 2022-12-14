@@ -85,7 +85,7 @@
       }
     },
     "output": {
-      "error": "Event type alias is not supported"
+      "error": "Event type \"alias\" is not supported"
     }
   },
   {

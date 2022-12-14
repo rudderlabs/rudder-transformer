@@ -38,6 +38,9 @@ const {
   mappingConfig,
   batchEventsWithUserIdLengthLowerThanFive
 } = require("./config");
+const {
+  client: errNotificationClient
+} = require("../../../util/errorNotifier");
 
 const AMUtils = require("./utils");
 
@@ -949,7 +952,20 @@ function batch(destEvents) {
   return respList;
 }
 
-const processRouterDest = async inputs => {
+const processRouterDest = async (inputs, reqMetadata) => {
+  const getEventReqMetadata = event => {
+    try {
+      return {
+        destinationId: event?.destination?.ID,
+        destName: event?.destination?.Name,
+        metadata: event?.metadata
+      };
+    } catch (error) {
+      // Do nothing
+    }
+    return {};
+  };
+
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
@@ -973,12 +989,22 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        const errRes = generateErrorObject(error);
-        return getErrorRespEvents(
+        const errObj = generateErrorObject(error);
+        const resp = getErrorRespEvents(
           [input.metadata],
-          error.status || 400,
-          error.message || "Error occurred while processing payload.",
-          errRes.statTags
+          errObj.status,
+          errObj.message,
+          errObj.statTags
+        );
+
+        errNotificationClient.notify(
+          error,
+          "Router Transformation (event level)",
+          {
+            ...resp,
+            ...reqMetadata,
+            ...getEventReqMetadata(input)
+          }
         );
       }
     })

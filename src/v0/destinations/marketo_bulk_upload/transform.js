@@ -3,10 +3,10 @@ const {
   getFieldValueFromMessage,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError,
   defaultRequestConfig
 } = require("../../util");
 const { EventType } = require("../../../constants");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 function responseBuilderSimple(message, destination) {
   const payload = {};
@@ -47,10 +47,7 @@ function responseBuilderSimple(message, destination) {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   const messageType = message.type.toLowerCase();
@@ -61,7 +58,9 @@ const processEvent = (message, destination) => {
       response = responseBuilderSimple(message, destination);
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
 
   return response;
@@ -96,11 +95,7 @@ const processRouterDest = async inputs => {
       } catch (error) {
         return getErrorRespEvents(
           [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
+          error.response?.status || error.code || 400,
           error.message || "Error occurred while processing payload."
         );
       }

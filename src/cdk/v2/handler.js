@@ -65,7 +65,7 @@ async function processCdkV2Workflow(
   try {
     const workflowEngine = await getCachedWorkflowEngine(
       destType,
-      flowType,
+      feature,
       bindings
     );
     return process(workflowEngine, parsedEvent);

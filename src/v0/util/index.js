@@ -1683,19 +1683,7 @@ const simpleProcessRouterDest = async (
 
         return getSuccessRespEvents(resp, [input.metadata], input.destination);
       } catch (error) {
-        const errResp = handleRtTfSingleEventError(input, error, destType);
-
-        errNotificationClient.notify(
-          error,
-          "Router Transformation (event level)",
-          {
-            ...errResp,
-            ...(reqMetadata || {}),
-            ...getEventReqMetadata(input)
-          }
-        );
-
-        return errResp;
+        return handleRtTfSingleEventError(input, error, destType);
       }
     })
   );

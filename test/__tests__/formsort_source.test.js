@@ -1,9 +1,11 @@
 const integration = "formsort";
+const name = "formsort";
 
+const version = "v0";
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../v0/sources/${integration}/transform`);
+const transformer = require(`../../src/${version}/sources/${integration}/transform`);
 
 const testDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_source.json`)
@@ -12,7 +14,7 @@ const testDataFile = fs.readFileSync(
 const testData = JSON.parse(testDataFile);
 
 testData.forEach((data, index) => {
-  it(`${index}. ${integration} - ${data.description}`, () => {
+  it(`${name} Tests: payload: ${index} - ${data.description}`, () => {
     try {
       const output = transformer.process(data.input);
       delete output.anonymousId;

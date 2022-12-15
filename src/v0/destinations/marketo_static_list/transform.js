@@ -145,8 +145,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
     const errObj = generateErrorObject(error);
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
-      error.status || 500, // default to retryable
-      error.message || "Error occurred while processing payload.",
+      errObj.status,
+      errObj.message,
       errObj.statTags
     );
     return [respEvents];
@@ -160,7 +160,6 @@ const processRouterDest = async (inputs, reqMetadata) => {
   });
   const respList = await simpleProcessRouterDest(
     tokenisedInputs,
-    DESTINATION,
     processEvent,
     reqMetadata
   );

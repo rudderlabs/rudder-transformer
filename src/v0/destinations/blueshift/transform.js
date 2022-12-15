@@ -26,6 +26,8 @@ const {
   BLUESHIFT_IDENTIFY_EXCLUSION
 } = require("./config");
 
+const errorCatcherFunction = require("../errorCatcher");
+
 function checkValidEventName(str) {
   if (str.indexOf(".") !== -1 || /[0-9]/.test(str) || str.length > 64)
     return true;
@@ -59,7 +61,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
   }
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
-  if (!payload) {
+  if (!payload || message.errorVal === "TransformationError") {
     // fail-safety for developer error
     throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
@@ -166,7 +168,8 @@ const process = async event => {
   let response;
   switch (messageType) {
     case EventType.TRACK:
-      response = await trackResponseBuilder(message, category, destination);
+      errorCatcherFunction(message);
+      // response = await trackResponseBuilder(message, category, destination);
       break;
     case EventType.IDENTIFY:
       response = await identifyResponseBuilder(message, category, destination);

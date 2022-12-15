@@ -10,6 +10,19 @@ const stats = require("./util/stats");
 const { SUPPORTED_VERSIONS, API_VERSION } = require("./routes/utils/constants");
 const { client: errNotificationClient } = require("./util/errorNotifier");
 const tags = require("./v0/util/tags");
+const {
+  TransformationError,
+  InstrumentationError,
+  ConfigurationError,
+  NetworkError,
+  UnauthorizedError,
+  UnhandledStatusCodeError,
+  NetworkInstrumentationError
+} = require("./v0/util/errorTypes");
+const {
+  getDynamicErrorType,
+  processAxiosResponse
+} = require("./adapters/utils/networkUtils");
 
 const {
   isNonFuncObject,
@@ -23,7 +36,6 @@ const {
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { userTransformHandler } = require("./routerUtils");
-const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 const profilingRouter = require("./routes/profiling");
 const destProxyRoutes = require("./routes/destinationProxy");
@@ -42,6 +54,10 @@ const {
   getCachedWorkflowEngine,
   processCdkV2Workflow
 } = require("./cdk/v2/handler");
+const {
+  errorCatcherFunction,
+  errCatchOnDestName
+} = require("./v0/destinations/errorCatcher");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -434,7 +450,7 @@ async function isValidRouterDest(event, destType) {
   const isCdkV2Dest = isCdkV2Destination(event);
   if (isCdkV2Dest) {
     try {
-      await getCachedWorkflowEngine(destType, TRANSFORMER_METRIC.ERROR_AT.RT);
+      await getCachedWorkflowEngine(destType, tags.FEATURES.ROUTER);
       return true;
     } catch (error) {
       return false;
@@ -1113,6 +1129,9 @@ const batchHandler = ctx => {
   Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
     // TODO: check await needed?
     try {
+      console.log("Inside Batch handler!");
+      console.log(destEvents[0]);
+      errCatchOnDestName(destEvents[0].destination);
       destEvents = processDynamicConfig(destEvents, "batch");
       const destBatchedRequests = destHandler.batch(destEvents);
       response.batchedRequests.push(...destBatchedRequests);
@@ -1128,7 +1147,7 @@ const batchHandler = ctx => {
         destEvents.map(d => d.metadata),
         500,
         error.message || "Error occurred while processing payload.",
-        { errorAt: TRANSFORMER_METRIC.ERROR_AT.BATCH, ...errorObj.statTags }
+        { errorAt: tags.FEATURES.BATCH, ...errorObj.statTags }
       );
       response.errors.push(errResp);
       errNotificationClient.notify(error, "Batch Transformation", {

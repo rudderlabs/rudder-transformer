@@ -44,13 +44,16 @@ const responseBuilder = (message, { Config }) => {
 };
 
 const processEvent = (message, destination) => {
-  if (!destination.Config.advertiserId) {
+  if (
+    !destination.Config.advertiserId ||
+    message.errorVal === "ConfigurationError"
+  ) {
     throw new ConfigurationError(
       "Advertiser Id is not present. Aborting message.",
       400
     );
   }
-  if (!message.type) {
+  if (!message.type || message.errorVal === "InstrumentationError") {
     throw new InstrumentationError(
       "Message Type is not present. Aborting message.",
       400

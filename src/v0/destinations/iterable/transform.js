@@ -29,6 +29,8 @@ const {
   ConfigurationError
 } = require("../../util/errorTypes");
 
+const errorCatcherFunction = require("../errorCatcher");
+
 function validateMandatoryField(payload) {
   if (payload.email === undefined && payload.userId === undefined) {
     throw new InstrumentationError(
@@ -385,6 +387,10 @@ function batchEvents(arrayChunks) {
     let batchEventResponse = defaultBatchRequestConfig();
 
     // Batch event into dest batch structure
+    console.log("Inside batching iterable");
+    console.log("//////////////////////////  /////////////////////");
+    // console.log(chunk[0].message);
+    // errorCatcherFunction(chunk[0].message);
     chunk.forEach(ev => {
       if (chunk[0].message.operation === "catalogs") {
         // body will be in the format:

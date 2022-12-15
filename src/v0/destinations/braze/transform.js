@@ -28,6 +28,16 @@ const {
   IDENTIFY_BRAZE_MAX_REQ_COUNT
 } = require("./config");
 
+const {
+  TransformationError,
+  ConfigurationError,
+  NetworkError,
+  UnauthorizedError,
+  UnhandledStatusCodeError
+} = require("../../util/errorTypes");
+
+const errorCatcherFunction = require("../errorCatcher");
+
 function formatGender(gender) {
   // few possible cases of woman
   if (["woman", "female", "w", "f"].indexOf(gender.toLowerCase()) > -1) {
@@ -488,6 +498,7 @@ function formatBatchResponse(batchPayload, metadataList, destination) {
 }
 
 function batch(destEvents) {
+  errorCatcherFunction(destEvents[0].message);
   const respList = [];
   let trackEndpoint;
   let identifyEndpoint;

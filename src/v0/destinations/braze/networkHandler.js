@@ -12,6 +12,7 @@ const {
 const { DESTINATION } = require("./config");
 const { NetworkError } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
+const errorCatcherFunction = require("../errorCatcher");
 
 const responseHandler = (destinationResponse, _dest) => {
   const message = `[Braze Response Handler] Request for ${DESTINATION} Processed Successfully`;

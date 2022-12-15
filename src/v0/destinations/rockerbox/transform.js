@@ -71,6 +71,7 @@ const process = event => {
 };
 
 const processRouterDest = async inputs => {
+  
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];

@@ -15,7 +15,7 @@ const errorHandler = (err, message) => {
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(err.status)
       },
-      err.response.data
+      err
     );
   } else {
     const httpError = nodeSysErrorToStatus(err.code);

@@ -1,6 +1,6 @@
 const path = require("path");
 const fs = require("fs");
-const { InstrumentationError } = require("../../util/errorTypes");
+const { TransformationError } = require("../../util/errorTypes");
 
 // import mapping json using JSON.parse to preserve object key order
 const voterMapping = JSON.parse(
@@ -16,7 +16,7 @@ const authorMapping = JSON.parse(
  */
 function checkForRequiredFields(message) {
   if (!message.event || !(message.userId || message.anonymousId)) {
-    throw new InstrumentationError("Missing essential fields from Canny");
+    throw new TransformationError("Missing essential fields from Canny");
   }
 }
 

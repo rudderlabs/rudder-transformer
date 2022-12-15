@@ -37,7 +37,7 @@ const validatePayload = message => {
 const validateFields = (schema, data) => {
   // if required field is not present in all the cases
   if (data[0].length === 0) {
-    throw new ConfigurationError(
+    throw new InstrumentationError(
       `Required schema parameter ${schema} is not found from payload`
     );
   }

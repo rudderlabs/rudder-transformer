@@ -447,6 +447,7 @@ const processRouterDest = (inputs, reqMetadata) => {
           ...getEventReqMetadata(input)
         }
       );
+      return resp;
     }
   });
   return flattenMap(respList);

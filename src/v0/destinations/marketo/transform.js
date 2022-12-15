@@ -10,8 +10,7 @@ const {
   formatConfig,
   LEAD_LOOKUP_METRIC,
   ACTIVITY_METRIC,
-  FETCH_TOKEN_METRIC,
-  DESTINATION
+  FETCH_TOKEN_METRIC
 } = require("./config");
 const {
   addExternalIdToTraits,
@@ -28,7 +27,7 @@ const {
   isDefinedAndNotNull,
   generateErrorObject,
   checkInvalidRtTfEvents,
-  handleRtTfSingleEventError
+  getEventReqMetadata
 } = require("../../util");
 const Cache = require("../../util/cache");
 const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL } = require("../../util/constant");
@@ -44,6 +43,9 @@ const {
   ConfigurationError,
   UnauthorizedError
 } = require("../../util/errorTypes");
+const {
+  client: errNotificationClient
+} = require("../../../util/errorNotifier");
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
@@ -543,7 +545,23 @@ const processRouterDest = async (inputs, reqMetadata) => {
           input.destination
         );
       } catch (error) {
-        return handleRtTfSingleEventError(input, error, reqMetadata);
+        const errObj = generateErrorObject(error);
+        const resp = getErrorRespEvents(
+          [input.metadata],
+          error.status || 500,
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
+        );
+        errNotificationClient.notify(
+          error,
+          "Router Transformation (event level)",
+          {
+            ...resp,
+            ...reqMetadata,
+            ...getEventReqMetadata(input)
+          }
+        );
+        return resp;
       }
     })
   );

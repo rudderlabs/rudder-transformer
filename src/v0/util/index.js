@@ -1580,28 +1580,6 @@ function getValidDynamicFormConfig(
 }
 
 /**
- * error handler during transformation of a single rudder event for rt transform destinaiton
- *
- * This function is to be used only when we have a simple error handling scenario
- * If some customisation wrt error handling is required, we recommend to not use this function
- *
- * @param {object} input - single rudder event
- * @param {*} error - error occurred during transformation of a single rudder event
- * @param {string} destType - destination name
- * @returns
- */
-const handleRtTfSingleEventError = (input, error) => {
-  const errObj = generateErrorObject(error);
-
-  return getErrorRespEvents(
-    [input.metadata],
-    errObj.status,
-    errObj.message,
-    errObj.statTags
-  );
-};
-
-/**
  * This method is used to check if the input events sent to router transformation are valid
  * It is to be used only for router transform destinations
  *
@@ -1639,6 +1617,36 @@ const getEventReqMetadata = event => {
     // Do nothing
   }
   return {};
+};
+
+/**
+ * error handler during transformation of a single rudder event for rt transform destinaiton
+ *
+ * This function is to be used only when we have a simple error handling scenario
+ * If some customisation wrt error handling is required, we recommend to not use this function
+ *
+ * @param {object} input - single rudder event
+ * @param {*} error - error occurred during transformation of a single rudder event
+ * @param {string} destType - destination name
+ * @returns
+ */
+const handleRtTfSingleEventError = (input, error, reqMetadata) => {
+  const errObj = generateErrorObject(error);
+
+  const resp = getErrorRespEvents(
+    [input.metadata],
+    errObj.status,
+    errObj.message,
+    errObj.statTags
+  );
+
+  errNotificationClient.notify(error, "Router Transformation (event level)", {
+    ...resp,
+    ...reqMetadata,
+    ...getEventReqMetadata(input)
+  });
+
+  return resp;
 };
 
 /**

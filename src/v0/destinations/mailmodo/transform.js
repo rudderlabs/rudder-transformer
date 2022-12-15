@@ -6,8 +6,7 @@ const {
   ConfigCategory,
   IDENTIFY_MAX_BATCH_SIZE,
   mappingConfig,
-  BASE_URL,
-  DESTINATION
+  BASE_URL
 } = require("./config");
 const {
   defaultRequestConfig,
@@ -209,7 +208,7 @@ function getEventChunks(event, identifyEventChunks, eventResponseList) {
   }
 }
 
-const processRouterDest = inputs => {
+const processRouterDest = (inputs, reqMetadata) => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
@@ -240,7 +239,7 @@ const processRouterDest = inputs => {
         const errRespEvent = handleRtTfSingleEventError(
           event,
           error,
-          DESTINATION
+          reqMetadata
         );
         errorRespList.push(errRespEvent);
       }

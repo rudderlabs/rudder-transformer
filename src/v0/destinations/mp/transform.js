@@ -6,9 +6,8 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   getBrowserInfo,
-  getErrorRespEvents,
   getEventTime,
-  getSuccessRespEvents,
+  simpleProcessRouterDest,
   getTimeDifference,
   getValuesAsArrayFromConfig,
   isHttpStatusSuccess,
@@ -404,37 +403,12 @@ const process = async event => {
 // Documentation about how Mixpanel handles the utm parameters
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004561786-Track-UTM-Tags
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response?.status || error.code || 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "MP",
+    process,
+    reqMetadata
   );
   return respList;
 };

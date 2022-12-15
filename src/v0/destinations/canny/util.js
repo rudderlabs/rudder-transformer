@@ -55,9 +55,7 @@ const retrieveUserId = async (apiKey, message) => {
       response.data?.error
     );
   }
-  return (
-    response?.response?.data?.data?.id || response?.response?.data?.id || null
-  );
+  return response?.response?.data?.data?.id || response?.response?.data?.id;
 };
 
 /**

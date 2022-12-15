@@ -92,7 +92,7 @@ const createAccount = async (payload, Config) => {
       return { success: true, err: null };
     }
 
-    const status = response ? response.status : undefined;
+    const status = response?.status || 400;
     throw new NetworkError(
       "invalid response while creating account",
       status,

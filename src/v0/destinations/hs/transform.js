@@ -85,7 +85,7 @@ const process = async event => {
 };
 
 // we are batching by default at routerTransform
-const processRouterDest = async inputs => {
+const processRouterDest = async (inputs, reqMetadata) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
@@ -164,7 +164,7 @@ const processRouterDest = async inputs => {
         const errRespEvent = handleRtTfSingleEventError(
           input,
           error,
-          DESTINATION
+          reqMetadata
         );
         errorRespList.push(errRespEvent);
       }

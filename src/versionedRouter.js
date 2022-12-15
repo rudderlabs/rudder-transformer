@@ -1166,7 +1166,7 @@ const batchHandler = ctx => {
       });
       const errResp = getErrorRespEvents(
         destEvents.map(d => d.metadata),
-        500,
+        400,
         error.message || "Error occurred while processing payload.",
         { errorAt: tags.FEATURES.BATCH, ...errorObj.statTags }
       );
@@ -1179,7 +1179,7 @@ const batchHandler = ctx => {
     }
   });
   if (response.errors.length > 0) {
-    ctx.status = 500;
+    ctx.status = 200;
     ctx.body = response.errors;
     return null;
   }

@@ -26,7 +26,7 @@ const {
   BLUESHIFT_IDENTIFY_EXCLUSION
 } = require("./config");
 
-const errorCatcherFunction = require("../errorCatcher");
+const { errorCatcherFunction } = require("../errorCatcher");
 
 function checkValidEventName(str) {
   if (str.indexOf(".") !== -1 || /[0-9]/.test(str) || str.length > 64)
@@ -157,6 +157,7 @@ const groupResponseBuilder = async (message, category, { Config }) => {
 
 const process = async event => {
   const { message, destination } = event;
+  console.log("in process transformer");
   if (!message.type) {
     throw new InstrumentationError(
       "Message Type is not present. Aborting message."
@@ -168,11 +169,13 @@ const process = async event => {
   let response;
   switch (messageType) {
     case EventType.TRACK:
+      console.log("in track transformer");
       errorCatcherFunction(message);
       // response = await trackResponseBuilder(message, category, destination);
       break;
     case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, category, destination);
+      errorCatcherFunction("NetworkErrorRetryableOauth");
+      // response = await identifyResponseBuilder(message, category, destination);
       break;
     case EventType.GROUP:
       response = await groupResponseBuilder(message, category, destination);

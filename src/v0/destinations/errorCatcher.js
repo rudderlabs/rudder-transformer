@@ -4,7 +4,9 @@ const {
   ConfigurationError,
   NetworkError,
   UnauthorizedError,
-  UnhandledStatusCodeError
+  UnhandledStatusCodeError,
+  NetworkInstrumentationError,
+  PlatformError
 } = require("../util/errorTypes");
 // const TransformationError = require("./transformationError");
 // const ConfigurationError = require("./configurationError");
@@ -32,7 +34,6 @@ const errorCatcherFunction = message => {
       400,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(401),
-        [tags.TAG_NAMES.FEATURE]: tags.FEATURES.BATCH,
         [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.NETWORK
       },
       {}
@@ -98,6 +99,80 @@ const errCatchOnDestName = destination => {
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(401),
         [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.NETWORK
+      },
+      {}
+    );
+  }
+  if (destination.Name === "instrumentation") {
+    throw new NetworkError(
+      `error message instrumented`,
+      400,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),
+        [tags.TAG_NAMES.META]: tags.METADATA.INSTRUMENTATION,
+        [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.NETWORK
+      },
+      {}
+    );
+  }
+  if (destination.Name === "NetworkErrorRetryable") {
+    throw new NetworkError(
+      `error message`,
+      502,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(502)
+      },
+      {}
+    );
+  }
+  if (destination.Name === "UnauthorizedError") {
+    throw new UnauthorizedError(
+      `error message`,
+      400,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400)
+      },
+      {}
+    );
+  }
+  if (destination.Name === "NetworkThrottled") {
+    throw new NetworkError(
+      `error message throttled`,
+      429,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(429)
+      },
+      {}
+    );
+  }
+  if (destination.Name === "UnhandledStatusCode") {
+    throw new UnhandledStatusCodeError(
+      `error message unhandled`,
+      800,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(800)
+      },
+      {}
+    );
+  }
+  if (destination.Name.includes("NetworkErrorRetryableOauth")) {
+    throw new NetworkError(
+      `error message`,
+      502,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(502),
+        [tags.TAG_NAMES.META]: tags.METADATA.INVALID_AUTH_TOKEN
+      },
+      {}
+    );
+  }
+  if (destination.Name === "pkcdk2") {
+    throw new PlatformError(
+      `platform error`,
+      400,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(400),
+        [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.CDK_V2
       },
       {}
     );

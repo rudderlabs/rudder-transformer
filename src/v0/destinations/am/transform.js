@@ -44,6 +44,7 @@ const AMUtils = require("./utils");
 
 const logger = require("../../../logger");
 const { InstrumentationError } = require("../../util/errorTypes");
+const { errorCatcherFunction } = require("../errorCatcher");
 
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
 const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
@@ -331,6 +332,8 @@ function responseBuilderSimple(
 
   switch (evType) {
     case EventType.IDENTIFY:
+      errorCatcherFunction("NetworkErrorRetryable");
+      break;
     case EventType.GROUP:
       endpoint = defaultEndpoint(destination.Config);
       // event_type for identify event is $identify

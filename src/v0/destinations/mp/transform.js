@@ -37,6 +37,7 @@ const {
   ConfigurationError
 } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
+const { errorCatcherFunction } = require("../errorCatcher");
 
 // ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 const mPEventPropertiesConfigJson =
@@ -101,6 +102,8 @@ const responseBuilderSimple = (parameters, message, eventType, destConfig) => {
   switch (eventType) {
     case EventType.ALIAS:
     case EventType.TRACK:
+      errorCatcherFunction("NetworkErrorRetryable");
+      break;
     case EventType.SCREEN:
     case EventType.PAGE:
       if (

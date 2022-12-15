@@ -13,6 +13,7 @@ const {
   ConfigurationError,
   InstrumentationError
 } = require("../../util/errorTypes");
+const { errorCatcherFunction } = require("../errorCatcher");
 
 const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -56,11 +57,12 @@ const process = event => {
   const messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.TRACK:
-      response = responseBuilderSimple(
-        message,
-        CONFIG_CATEGORIES.TRACK,
-        destination
-      );
+      errorCatcherFunction("NetworkErrorRetryable");
+      // response = responseBuilderSimple(
+      //   message,
+      //   CONFIG_CATEGORIES.TRACK,
+      //   destination
+      // );
       break;
     default:
       throw new InstrumentationError(
@@ -71,7 +73,6 @@ const process = event => {
 };
 
 const processRouterDest = async inputs => {
-  
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];

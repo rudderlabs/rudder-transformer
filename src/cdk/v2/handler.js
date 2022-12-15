@@ -8,6 +8,7 @@ const tags = require("../../v0/util/tags");
 const defTags = {
   [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.CDK_V2
 };
+const { errCatchOnDestName } = require("../../v0/destinations/errorCatcher");
 
 const {
   getErrorInfo,
@@ -63,6 +64,8 @@ async function processCdkV2Workflow(
   bindings = {}
 ) {
   try {
+    // San-CDKV2
+    errCatchOnDestName(parsedEvent.destination);
     const workflowEngine = await getCachedWorkflowEngine(
       destType,
       feature,

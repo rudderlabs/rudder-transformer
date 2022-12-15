@@ -29,6 +29,8 @@ const {
   ConfigurationError
 } = require("../../util/errorTypes");
 
+const { errorCatcherFunction } = require("../errorCatcher");
+
 const identifyResponseBuilder = (message, { Config }) => {
   const tagPayload = constructPayload(message, identifyMapping);
   const { apiKey, dataCenter } = Config;
@@ -302,7 +304,8 @@ const process = async event => {
       response = await identifyResponseBuilder(message, destination);
       break;
     case EventType.TRACK:
-      response = await trackResponseBuilder(message, destination);
+      errorCatcherFunction(message);
+      // response = await trackResponseBuilder(message, destination);
       break;
     case EventType.GROUP:
       response = await groupResponseBuilder(message, destination);

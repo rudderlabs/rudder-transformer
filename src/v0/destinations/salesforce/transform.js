@@ -20,13 +20,14 @@ const {
   addExternalIdToTraits,
   getDestinationExternalIDObjectForRetl,
   checkInvalidRtTfEvents,
-  handleRtTfSingleEventError
+  handleRtTfSingleEventError,
+  generateErrorObject
 } = require("../../util");
 const { getAccessToken, salesforceResponseHandler } = require("./utils");
 const { handleHttpRequest } = require("../../../adapters/network");
 const {
-  ConfigurationError,
-  InstrumentationError
+  InstrumentationError,
+  NetworkInstrumentationError
 } = require("../../util/errorTypes");
 
 // Basic response builder
@@ -178,7 +179,7 @@ async function getSalesforceIdFromPayload(
       !identifierType ||
       !type.toLowerCase().includes("salesforce")
     ) {
-      throw new ConfigurationError(
+      throw new InstrumentationError(
         "Invalid externalId. id, type, identifierType must be provided"
       );
     }
@@ -239,9 +240,11 @@ async function getSalesforceIdFromPayload(
       const record = processedLeadQueryResponse.response.searchRecords[0];
       if (record.IsDeleted === true) {
         if (record.IsConverted) {
-          throw new ConfigurationError("The contact has been deleted.");
+          throw new NetworkInstrumentationError(
+            "The contact has been deleted."
+          );
         } else {
-          throw new ConfigurationError("The lead has been deleted.");
+          throw new NetworkInstrumentationError("The lead has been deleted.");
         }
       }
       if (record.IsConverted && destination.Config.useContactId) {
@@ -274,7 +277,7 @@ async function processIdentify(message, authorizationData, destination) {
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
-    throw new ConfigurationError(
+    throw new InstrumentationError(
       "PROCESS IDENTIFY: Invalid traits for Salesforce request"
     );
   }
@@ -355,11 +358,12 @@ const processRouterDest = async (inputs, reqMetadata) => {
   try {
     authorizationData = await getAccessToken(inputs[0].destination);
   } catch (error) {
+    const errObj = generateErrorObject(error);
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
-      400,
+      errObj.status,
       `Authorisation failed: ${error.message}`,
-      {}
+      errObj.statTags
     );
     return [respEvents];
   }

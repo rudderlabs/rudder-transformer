@@ -2,7 +2,8 @@ const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
   InstrumentationError,
-  ConfigurationError
+  ConfigurationError,
+  PlatformError
 } = require("../../util/errorTypes");
 const {
   getValueFromMessage,
@@ -73,7 +74,7 @@ const trackResponseBuilder = (message, { Config }) => {
   }
   if (payload.filters && payload.objectIDs) {
     throw new InstrumentationError(
-      "event can’t have both objectIds and filters at the same time."
+      "event can't have both objectIds and filters at the same time."
     );
   }
   if (payload.eventType === "click") {
@@ -121,7 +122,7 @@ const process = event => {
 
 const processRouterDest = async (inputs, reqMetadata) => {
   if (!Array.isArray(inputs) || inputs.length === 0) {
-    throw new InstrumentationError("Invalid event array");
+    throw new PlatformError("Invalid event array");
   }
 
   const inputChunks = returnArrayOfSubarrays(inputs, MAX_BATCH_SIZE);

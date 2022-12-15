@@ -4,7 +4,6 @@ const { httpPOST } = require("../../../adapters/network");
 const { generateUUID } = require("../../util");
 const {
   ConfigurationError,
-  TransformationError,
   InstrumentationError,
   RetryableError
 } = require("../../util/errorTypes");
@@ -90,7 +89,7 @@ const userDeletionHandler = async (userAttributes, config) => {
           userAttributes[i].ios_advertising_id
         );
         if (!response || !response.response) {
-          throw new TransformationError("Could not get response");
+          throw new RetryableError("Could not get response");
         }
       }
       if (userAttributeKeys.includes("android_advertising_id")) {
@@ -107,7 +106,7 @@ const userDeletionHandler = async (userAttributes, config) => {
           userAttributes[i].android_advertising_id
         );
         if (!response || !response.response) {
-          throw new TransformationError("Could not get response");
+          throw new RetryableError("Could not get response");
         }
       }
     }

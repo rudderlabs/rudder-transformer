@@ -1,12 +1,15 @@
 const axios = require("axios");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const { getValueFromMessage } = require("../../util");
 const {
   NetworkInstrumentationError,
   AbortedError,
   RetryableError,
-  InstrumentationError
+  InstrumentationError,
+  NetworkError
 } = require("../../util/errorTypes");
 const { ENDPOINT } = require("./config");
+const tags = require("../../util/tags");
 
 const isValidEmail = email => {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -87,12 +90,13 @@ const userValidity = async (channel, Config, userId) => {
           errStatus = 400;
       }
     }
-    if (errStatus === 500) {
-      throw new RetryableError(
-        `Error occurred while checking user : ${errMsg}`
-      );
-    }
-    throw new AbortedError(`Error occurred while checking user : ${errMsg}`);
+    throw new NetworkError(
+      `Error occurred while checking user : ${errMsg}`,
+      errStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus)
+      }
+    );
   }
 };
 const eventValidity = (Config, message) => {

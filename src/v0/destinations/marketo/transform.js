@@ -10,8 +10,7 @@ const {
   formatConfig,
   LEAD_LOOKUP_METRIC,
   ACTIVITY_METRIC,
-  FETCH_TOKEN_METRIC,
-  DESTINATION
+  FETCH_TOKEN_METRIC
 } = require("./config");
 const {
   addExternalIdToTraits,
@@ -28,6 +27,7 @@ const {
   isDefinedAndNotNull,
   generateErrorObject,
   checkInvalidRtTfEvents,
+  getEventReqMetadata,
   handleRtTfSingleEventError
 } = require("../../util");
 const Cache = require("../../util/cache");
@@ -44,6 +44,9 @@ const {
   ConfigurationError,
   UnauthorizedError
 } = require("../../util/errorTypes");
+const {
+  client: errNotificationClient
+} = require("../../../util/errorNotifier");
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
@@ -501,32 +504,20 @@ const processRouterDest = async (inputs, reqMetadata) => {
   let token;
   try {
     token = await getAuthToken(formatConfig(inputs[0].destination));
+
+    // If token is null track/identify calls cannot be executed.
+    if (!token) {
+      throw new UnauthorizedError("Authorization failed");
+    }
   } catch (error) {
     logger.error("Router Transformation problem:");
     const errObj = generateErrorObject(error);
     logger.error(errObj);
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
-      error.status || 500, // default to retryable
-      error.message || "Error occurred while processing payload.",
+      errObj.status,
+      errObj.message,
       errObj.statTags
-    );
-    return [respEvents];
-  }
-
-  // If token is null track/identify calls cannot be executed.
-  if (!token) {
-    const errResp = {
-      status: 400,
-      message: "Authorisation failed",
-      responseTransformFailure: true,
-      statTags: {}
-    };
-    const respEvents = getErrorRespEvents(
-      inputs.map(input => input.metadata),
-      errResp.status,
-      errResp.message,
-      errResp.statTags
     );
     return [respEvents];
   }

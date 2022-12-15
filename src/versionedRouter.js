@@ -151,21 +151,21 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
     const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
     if (Object.keys(objectDiff).length > 0) {
       stats.counter("cdk_live_compare_test_failed", 1, { destType, feature });
-      logger.error(
-        `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff=${JSON.stringify(
-          objectDiff
-        )}`
-      );
-      logger.error(
-        `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, input=${JSON.stringify(
-          inputArr[0]
-        )}`
-      );
-      logger.error(
-        `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, results=${JSON.stringify(
-          { v0: v0Result, cdk: cdkResult }
-        )}`
-      );
+      // logger.error(
+      //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff=${JSON.stringify(
+      //     objectDiff
+      //   )}`
+      // );
+      // logger.error(
+      //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, input=${JSON.stringify(
+      //     inputArr[0]
+      //   )}`
+      // );
+      // logger.error(
+      //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, results=${JSON.stringify(
+      //     { v0: v0Result, cdk: cdkResult }
+      //   )}`
+      // );
       return;
     }
     stats.counter("cdk_live_compare_test_success", 1, { destType, feature });

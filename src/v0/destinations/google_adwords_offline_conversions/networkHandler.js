@@ -17,12 +17,15 @@ const {
   SEARCH_STREAM
 } = require("./config");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const {
   AbortedError,
-  NetworkInstrumentationError
+  NetworkInstrumentationError,
+  NetworkError
 } = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 const conversionCustomVariableCache = new Cache(
   CONVERSION_CUSTOM_VARIABLE_CACHE_TTL
@@ -68,9 +71,14 @@ const getConversionCustomVariable = async (headers, params) => {
       let searchStreamResponse = await httpPOST(endpoint, data, requestOptions);
       searchStreamResponse = processAxiosResponse(searchStreamResponse);
       if (!isHttpStatusSuccess(searchStreamResponse.status)) {
-        throw new AbortedError(
+        throw new NetworkError(
           `[Google Ads Offline Conversions]:: ${searchStreamResponse.response[0].error.message} during google_ads_offline_conversions response transformation`,
           searchStreamResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+              searchStreamResponse.status
+            )
+          },
           searchStreamResponse.response,
           getAuthErrCategory(searchStreamResponse.status)
         );
@@ -178,10 +186,13 @@ const responseHandler = destinationResponse => {
     // non-zero code signifies partialFailure
     // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
     if (partialFailureError && partialFailureError.code !== 0) {
-      throw new AbortedError(
+      throw new NetworkError(
         `[Google Ads Offline Conversions]:: partialFailureError - ${partialFailureError.message}`,
-        400,
-        partialFailureError.details
+        status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        },
+        partialFailureError
       );
     }
 

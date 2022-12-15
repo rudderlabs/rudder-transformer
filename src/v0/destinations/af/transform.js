@@ -39,10 +39,8 @@ function responseBuilderSimple(payload, message, destination) {
     endpoint = `${ENDPOINT}${androidAppId}`;
   } else if (os && isAppleFamily(os) && appleAppId) {
     endpoint = `${ENDPOINT}id${appleAppId}`;
-  } else if (!(androidAppId && appleAppId)) {
-    throw new ConfigurationError("Invalid app endpoint");
   } else {
-    throw new InstrumentationError("Invalid app endpoint");
+    throw new ConfigurationError("Invalid app endpoint");
   }
   // if (androidAppId) {
   //   endpoint = `${ENDPOINT}${androidAppId}`;

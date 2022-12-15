@@ -21,7 +21,7 @@
   },
   {
     "output": {
-      "status": 400,
+      "status": 201,
       "message": "Request failed for braze with status: 201",
       "destinationResponse": {
         "response": {

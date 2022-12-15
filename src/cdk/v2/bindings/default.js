@@ -27,13 +27,13 @@ function isValidEventType(event) {
   return true;
 }
 
-function assert(val, message, status, statTags, destination) {
+function assert(val, message) {
   if (!val) {
     throw new InstrumentationError(message);
   }
 }
 
-function assertConfig(val, message, status, statTags, destination) {
+function assertConfig(val, message) {
   if (!val) {
     throw new ConfigurationError(message);
   }

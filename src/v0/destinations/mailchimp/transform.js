@@ -127,7 +127,7 @@ const batchEvents = successRespList => {
   return batchedResponseList;
 };
 
-const processRouterDest = async inputs => {
+const processRouterDest = async (inputs, reqMetadata) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs, "MAILCHIMP");
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
@@ -159,7 +159,7 @@ const processRouterDest = async inputs => {
         const errRespEvent = handleRtTfSingleEventError(
           event,
           error,
-          "MAILCHIMP"
+          reqMetadata
         );
         batchErrorRespList.push(errRespEvent);
       }

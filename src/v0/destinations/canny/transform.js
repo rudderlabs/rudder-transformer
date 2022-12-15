@@ -6,9 +6,7 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   getHashFromArrayWithDuplicate,
-  getSuccessRespEvents,
-  handleRtTfSingleEventError,
-  checkInvalidRtTfEvents
+  simpleProcessRouterDest
 } = require("../../util");
 const {
   retrieveUserId,
@@ -173,29 +171,13 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "CANNY");
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        const message = input.message.statusCode
-          ? input.message
-          : process(input);
-        return getSuccessRespEvents(
-          message,
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return handleRtTfSingleEventError(input, error, "CANNY");
-      }
-    })
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "CANNY",
+    process,
+    reqMetadata
   );
   return respList;
 };
-
 module.exports = { process, processRouterDest };

@@ -1,4 +1,4 @@
-const { cleanResponse } = require("../../../src/cdk/lytics/transform");
+const { cleanResponse } = require("../../../src/cdk/v1/lytics/transform");
 
 describe("Test for Lytics common post mapper", () => {
   it("should remove both first name and last name from mappedPayload", () => {

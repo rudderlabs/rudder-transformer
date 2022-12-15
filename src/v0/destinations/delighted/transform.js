@@ -108,7 +108,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   const check = await userValidity(channel, Config, userId);
 
   if (!check) {
-    throw new NetworkInstrumentationError(`user ${userId} doesnot exist`);
+    throw new NetworkInstrumentationError(`user ${userId} doesn't exist`);
   }
   let payload = {};
   payload[userIdType] = userIdValue;

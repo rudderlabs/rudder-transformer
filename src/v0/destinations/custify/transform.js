@@ -71,13 +71,7 @@ const processSingleMessage = async (message, destination) => {
 };
 
 const process = event => {
-  let response;
-  try {
-    response = processSingleMessage(event.message, event.destination);
-  } catch (error) {
-    throw new TransformationError(error.message || "Unknown error");
-  }
-  return response;
+  return processSingleMessage(event.message, event.destination);
 };
 
 const processRouterDest = async inputs => {

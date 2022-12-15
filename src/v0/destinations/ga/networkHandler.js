@@ -6,7 +6,10 @@ const {
   getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 
-const { RetryableError, NetworkError } = require("../../util/errorTypes");
+const {
+  NetworkError,
+  InvalidAuthTokenError
+} = require("../../util/errorTypes");
 const tags = require("../../util/tags");
 
 /**
@@ -29,7 +32,7 @@ const gaResponseHandler = gaResponse => {
       return errObj.reason && errObj.reason === "invalidCredentials";
     });
     if (isInvalidCredsError || response?.error?.status === "UNAUTHENTICATED") {
-      throw new RetryableError(
+      throw new InvalidAuthTokenError(
         "invalid credentials",
         500,
         response,

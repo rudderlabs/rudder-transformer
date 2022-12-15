@@ -206,7 +206,7 @@ const process = event => {
       response = groupResponseBuilder(message, Config);
       break;
     default:
-      throw new TransformationError(
+      throw new InstrumentationError(
         `Message type ${(messageType, Config)} not supported.`
       );
   }

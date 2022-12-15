@@ -16,55 +16,48 @@ const tags = require("../../util/tags");
  * @returns canny userId
  */
 const retrieveUserId = async (apiKey, message) => {
-  try {
-    const cannyId = getDestinationExternalID(message, "cannyUserId");
-    if (cannyId) {
-      return cannyId;
-    }
-
-    const url = "https://canny.io/api/v1/users/retrieve";
-    let response;
-
-    const email =
-      message.traits?.email ||
-      message.context?.traits?.email ||
-      message.properties?.email;
-    const { userId } = message;
-
-    const header = {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Accept: "application/json"
-    };
-
-    const requestBody = {
-      apiKey: `${apiKey}`
-    };
-    if (email) {
-      requestBody.email = `${email}`;
-    } else {
-      requestBody.userID = `${userId}`;
-    }
-    response = await httpPOST(url, qs.stringify(requestBody), header);
-    console.log(response);
-    // If the request fails, throwing error.
-    if (response.success === false) {
-      throw new NetworkError(
-        `[Canny]:: CannyUserID can't be gnerated due to ${response.data.error}`,
-        response.data?.status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-            response.data?.status
-          )
-        },
-        response.data?.error
-      );
-    }
-    return (
-      response?.response?.data?.data?.id || response?.response?.data?.id || null
-    );
-  } catch (error) {
-    throw new TransformationError("Unable to retrieve userid from Canny");
+  const cannyId = getDestinationExternalID(message, "cannyUserId");
+  if (cannyId) {
+    return cannyId;
   }
+
+  const url = "https://canny.io/api/v1/users/retrieve";
+
+  const email =
+    message.traits?.email ||
+    message.context?.traits?.email ||
+    message.properties?.email;
+  const { userId } = message;
+
+  const header = {
+    "Content-Type": "application/x-www-form-urlencoded",
+    Accept: "application/json"
+  };
+
+  const requestBody = {
+    apiKey: `${apiKey}`
+  };
+  if (email) {
+    requestBody.email = `${email}`;
+  } else {
+    requestBody.userID = `${userId}`;
+  }
+  const response = await httpPOST(url, qs.stringify(requestBody), header);
+  console.log(response);
+  // If the request fails, throwing error.
+  if (response.success === false) {
+    throw new NetworkError(
+      `[Canny]:: CannyUserID can't be gnerated due to ${response.data.error}`,
+      response.data?.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(response.data?.status)
+      },
+      response.data?.error
+    );
+  }
+  return (
+    response?.response?.data?.data?.id || response?.response?.data?.id || null
+  );
 };
 
 /**

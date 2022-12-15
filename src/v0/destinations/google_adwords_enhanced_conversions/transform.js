@@ -104,12 +104,7 @@ const processTrackEvent = async (metadata, message, destination) => {
     updatedMapping = updateMappingJson(updatedMapping);
   }
 
-  let payload;
-  try {
-    payload = constructPayload(message, updatedMapping);
-  } catch (e) {
-    throw new TransformationError(`${e.message} for ${event} event.`);
-  }
+  const payload = constructPayload(message, updatedMapping);
 
   payload.partialFailure = true;
   if (!payload.conversionAdjustments[0].userIdentifiers) {

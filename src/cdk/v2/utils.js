@@ -104,15 +104,15 @@ function getErrorInfo(err, isProd, defTags) {
       err
     );
 
-    return generateErrorObject(
-      new TransformationError(
-        message,
-        err.originalError?.status,
-        err.originalError?.destinationResponse,
-        err.originalError?.authErrorCategory
-      ),
-      { ...defTags, ...(err.originalError?.statTags || {}) }
-    );
+    // Determine the error instance
+    let errInstance = err;
+    if (err.originalError) {
+      errInstance = err.originalError;
+      errInstance.message = message;
+      errInstance.status = err.originalError.status || err.status;
+    }
+
+    return generateErrorObject(errInstance, defTags);
   }
 
   // Treat all other errors as platform related errors

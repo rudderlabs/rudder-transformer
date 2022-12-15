@@ -1613,14 +1613,9 @@ const handleRtTfSingleEventError = (input, error) => {
  * }
  * ```
  * @param {Array<object>} inputs - list of rudder events to be transformed
- * @param {String} destType - destination name
  * @returns {Array<object> | []}
  */
-const checkInvalidRtTfEvents = (inputs, destType) => {
-  let destTyp = destType;
-  if (!destTyp) {
-    destTyp = "";
-  }
+const checkInvalidRtTfEvents = inputs => {
   if (!Array.isArray(inputs) || inputs.length === 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
@@ -1659,7 +1654,7 @@ const simpleProcessRouterDest = async (
   singleTfFunc,
   reqMetadata
 ) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, destType);
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -1675,7 +1670,7 @@ const simpleProcessRouterDest = async (
 
         return getSuccessRespEvents(resp, [input.metadata], input.destination);
       } catch (error) {
-        const errResp = handleRtTfSingleEventError(input, error, destType);
+        const errResp = handleRtTfSingleEventError(input, error);
 
         errNotificationClient.notify(
           error,

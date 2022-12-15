@@ -41,7 +41,7 @@ const logger = require("../../../logger");
 const {
   InstrumentationError,
   ConfigurationError,
-  InvalidAuthTokenError
+  UnauthorizedError
 } = require("../../util/errorTypes");
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
@@ -484,7 +484,7 @@ const processEvent = async (message, destination, token) => {
 const process = async event => {
   const token = await getAuthToken(formatConfig(event.destination));
   if (!token) {
-    throw new InvalidAuthTokenError("Authorization failed");
+    throw new UnauthorizedError("Authorization failed");
   }
   const response = await processEvent(event.message, event.destination, token);
   return response;

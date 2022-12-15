@@ -13,7 +13,8 @@ const {
   isDefinedAndNotNull,
   flattenMap,
   generateErrorObject,
-  getEventReqMetadata
+  getEventReqMetadata,
+  handleRtTfSingleEventError
 } = require("../../util");
 
 const {
@@ -431,22 +432,7 @@ const processRouterDest = (inputs, reqMetadata) => {
       });
       return responseList;
     } catch (error) {
-      const errObj = generateErrorObject(error);
-      const resp = getErrorRespEvents(
-        [input.metadata],
-        errObj.status,
-        errObj.message,
-        errObj.statTags
-      );
-      errNotificationClient.notify(
-        error,
-        "Router Transformation (event level)",
-        {
-          ...resp,
-          ...reqMetadata,
-          ...getEventReqMetadata(input)
-        }
-      );
+      return handleRtTfSingleEventError(input, error, reqMetadata);
     }
   });
   return flattenMap(respList);

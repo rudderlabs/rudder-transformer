@@ -35,7 +35,7 @@ const responseHandler = (destinationResponse, _dest) => {
   ) {
     throw new NetworkError(
       `Request failed for ${DESTINATION} with status: ${status}`,
-      400,
+      status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
       },

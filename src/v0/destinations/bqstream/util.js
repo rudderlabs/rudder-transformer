@@ -12,7 +12,8 @@ const { isHttpStatusSuccess } = require("../../util");
 const { proxyRequest } = require("../../../adapters/network");
 const {
   UnhandledStatusCodeError,
-  NetworkError
+  NetworkError,
+  AbortedError
 } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
 
@@ -119,13 +120,14 @@ const processResponse = ({ dresponse, status } = {}) => {
       );
     } else if (dresponse.insertErrors && dresponse.insertErrors.length > 0) {
       const temp = trimBqStreamResponse(dresponse);
-      throw new NetworkError(
+      throw new AbortedError(
         "Problem during insert operation",
         400,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(temp.status || 400)
         },
-        temp.data
+        temp,
+        getDestAuthCategory(temp.code)
       );
     }
     throw new UnhandledStatusCodeError(

@@ -281,12 +281,7 @@ const process = async event => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(
-    inputs,
-    "PROFITWELL",
-    process,
-    reqMetadata
-  );
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

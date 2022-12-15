@@ -116,12 +116,7 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(
-    inputs,
-    "ADJ",
-    process,
-    reqMetadata
-  );
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

@@ -387,7 +387,7 @@ function getEventChunks(event, eventsChunk) {
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "SNAPCHAT_CONVERSION");
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }

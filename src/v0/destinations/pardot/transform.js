@@ -182,7 +182,7 @@ const process = event => {
 };
 
 const processRouterDest = async (events, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(events, DESTINATION);
+  const errorRespEvents = checkInvalidRtTfEvents(events);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }

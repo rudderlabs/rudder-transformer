@@ -255,12 +255,7 @@ const process = async event => {
   return processEvent(event.metadata, event.message, event.destination);
 };
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(
-    inputs,
-    "GOOGLE_ADWORDS_REMARKETING_LISTS",
-    process,
-    reqMetadata
-  );
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

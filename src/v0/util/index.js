@@ -1656,12 +1656,7 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
  * @param {Function} singleTfFunc - single event transformation function, we'd recommend this to be an async function(always)
  * @returns
  */
-const simpleProcessRouterDest = async (
-  inputs,
-  destType,
-  singleTfFunc,
-  reqMetadata
-) => {
+const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;

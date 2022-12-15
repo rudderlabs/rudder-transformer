@@ -7,8 +7,7 @@ const {
   GA_ENDPOINT,
   ConfigCategory,
   mappingConfig,
-  nameToEventMap,
-  DESTINATION
+  nameToEventMap
 } = require("./config");
 
 const {
@@ -948,12 +947,7 @@ function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(
-    inputs,
-    "GA",
-    process,
-    reqMetadata
-  );
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 module.exports = { process, processRouterDest };

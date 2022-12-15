@@ -1,4 +1,7 @@
-const { InstrumentationError } = require("../../../v0/util/errorTypes");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../../v0/util/errorTypes");
 
 const SUPPORTED_EVENT_TYPES = [
   "track",
@@ -26,11 +29,18 @@ function isValidEventType(event) {
 
 function assert(val, message, status, statTags, destination) {
   if (!val) {
-    throw new InstrumentationError(message, status, statTags, destination);
+    throw new InstrumentationError(message);
+  }
+}
+
+function assertConfig(val, message, status, statTags, destination) {
+  if (!val) {
+    throw new ConfigurationError(message);
   }
 }
 
 module.exports = {
   isValidEventType,
-  assert
+  assert,
+  assertConfig
 };

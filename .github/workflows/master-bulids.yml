@@ -37,8 +37,7 @@ jobs:
 
       - name: Run Tests
         run: |
-          docker run ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }} npm run testDestinations
-          docker run ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }} npm run testVersionedRouter
+          docker run ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }} npm run test
 
       - name: Build and push
         uses: docker/build-push-action@v3

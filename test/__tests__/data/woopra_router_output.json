@@ -84,6 +84,10 @@
         "jobId": 3
       }
     ],
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    },
     "batched": false,
     "statusCode": 400,
     "error": "Message type group is not supported"

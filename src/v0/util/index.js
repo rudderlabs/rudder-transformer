@@ -1683,7 +1683,7 @@ const simpleProcessRouterDest = async (
 
         return getSuccessRespEvents(resp, [input.metadata], input.destination);
       } catch (error) {
-        return handleRtTfSingleEventError(input, error, destType);
+        return handleRtTfSingleEventError(input, error, reqMetadata);
       }
     })
   );

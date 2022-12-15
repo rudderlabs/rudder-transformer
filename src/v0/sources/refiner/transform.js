@@ -1,7 +1,7 @@
 const path = require("path");
 const fs = require("fs");
 const Message = require("../message");
-const { removeUndefinedAndNullValues } = require("../../util");
+const { removeUndefinedAndNullValues, CustomError } = require("../../util");
 
 // import mapping json using JSON.parse to preserve object key order
 const identifyMapping = JSON.parse(
@@ -31,6 +31,9 @@ const prepareTrackPayload = event => {
   message.properties.response = removeUndefinedAndNullValues(
     message.properties.response
   );
+  if (message.type === "track") {
+    throw new CustomError("track is not supported", 400);
+  }
   return message;
 };
 

@@ -68,7 +68,7 @@ const commonFieldResponseBuilder = (
   const isValidUserPayload = checkUserPayloadValidity(userPayload);
   if (isValidUserPayload === false) {
     throw new InstrumentationError(
-      "It is required at least one of em, hashed_maids or pair of client_ip_address and client_user_agent."
+      "It is required at least one of em, hashed_maids or pair of client_ip_address and client_user_agent"
     );
   }
 

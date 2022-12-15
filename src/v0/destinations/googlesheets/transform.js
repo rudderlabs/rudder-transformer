@@ -120,7 +120,7 @@ const process = event => {
 const processRouterDest = async (inputs, reqMetadata) => {
   const successRespList = [];
   const errorRespList = [];
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "GOOGLESHEETS");
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }

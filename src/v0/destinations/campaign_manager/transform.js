@@ -231,12 +231,7 @@ function process(event) {
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  return simpleProcessRouterDest(
-    inputs,
-    "CAMPAIGN_MANAGER",
-    process,
-    reqMetadata
-  );
+  return simpleProcessRouterDest(inputs, process, reqMetadata);
 };
 
 module.exports = { process, processRouterDest };

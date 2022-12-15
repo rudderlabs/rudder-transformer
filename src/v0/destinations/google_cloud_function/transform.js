@@ -54,10 +54,7 @@ function batchEvents(successRespList, maxBatchSize = 10) {
 
 // Router transform with batching by default
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(
-    inputs,
-    "GOOGLE_CLOUD_FUNCTION"
-  );
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }

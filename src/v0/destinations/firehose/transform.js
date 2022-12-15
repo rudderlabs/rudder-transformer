@@ -24,12 +24,7 @@ function process(event) {
   throw new ConfigurationError("No delivery stream set for this event");
 }
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(
-    inputs,
-    "FIREHOSE",
-    process,
-    reqMetadata
-  );
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

@@ -14,12 +14,12 @@ const { NetworkError } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
 
 const responseHandler = (destinationResponse, _dest) => {
-  const message = `[Braze Response Handler] Request for ${DESTINATION} Processed Successfully`;
+  const message = `Request for ${DESTINATION} Processed Successfully`;
   const { response, status } = destinationResponse;
   // if the response from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new NetworkError(
-      `[Braze Response Handler] Request failed for ${DESTINATION} with status: ${status}`,
+      `Request failed for ${DESTINATION} with status: ${status}`,
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
@@ -35,7 +35,7 @@ const responseHandler = (destinationResponse, _dest) => {
     response.errors.length > 0
   ) {
     throw new NetworkError(
-      `[Braze Response Handler] Request failed for ${DESTINATION} with status: ${status}`,
+      `Request failed for ${DESTINATION} with status: ${status}`,
       400,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)

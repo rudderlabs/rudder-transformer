@@ -7,7 +7,6 @@ const {
   isNonFuncObject,
   isDefinedAndNotNull
 } = require("../../v0/util");
-const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 const { AbortedError } = require("../../v0/util/errorTypes");
 const tags = require("../../v0/util/tags");
 
@@ -87,11 +86,6 @@ const getDynamicErrorType = statusCode => {
 };
 
 const parseDestResponse = (destResponse, destination = "") => {
-  const statTags = {
-    destType: destination.toUpperCase(),
-    stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-    scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
-  };
   // validity of destResponse
   if (
     !isDefinedAndNotNullAndNotEmpty(destResponse) ||

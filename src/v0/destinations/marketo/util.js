@@ -74,7 +74,7 @@ const marketoResponseHandler = (
   // if the responsee from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
     throw new NetworkError(
-      `[${destination} Response Handler] - Request failed  with status: ${status}`,
+      `Request failed  with status: ${status}`,
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)

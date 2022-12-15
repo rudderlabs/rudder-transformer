@@ -31,7 +31,7 @@ const {
   createUpdateUser,
   createList
 } = require("./util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+
 const {
   InstrumentationError,
   ConfigurationError,
@@ -253,8 +253,13 @@ const process = async event => {
   return response;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "DRIP", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "DRIP",
+    process,
+    reqMetadata
+  );
   return respList;
 };
 

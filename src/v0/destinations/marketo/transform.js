@@ -27,7 +27,8 @@ const {
   getErrorRespEvents,
   isDefinedAndNotNull,
   generateErrorObject,
-  checkInvalidRtTfEvents
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
 } = require("../../util");
 const Cache = require("../../util/cache");
 const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL } = require("../../util/constant");
@@ -490,7 +491,7 @@ const process = async event => {
   return response;
 };
 
-const processRouterDest = async inputs => {
+const processRouterDest = async (inputs, reqMetadata) => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
   const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
@@ -542,15 +543,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        logger.error("Router transformation Error for Marketo:");
-        const errObj = generateErrorObject(error);
-        logger.error(errObj);
-        return getErrorRespEvents(
-          [input.metadata],
-          error.status || 500,
-          error.message || "Error occurred while processing payload.",
-          errObj.statTags
-        );
+        return handleRtTfSingleEventError(input, error, reqMetadata);
       }
     })
   );

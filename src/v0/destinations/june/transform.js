@@ -99,8 +99,13 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "JUNE", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "JUNE",
+    process,
+    reqMetadata
+  );
   return respList;
 };
 

@@ -170,11 +170,13 @@ const processEvent = (metadata, message, destination) => {
 const process = event => {
   return processEvent(event.metadata, event.message, event.destination);
 };
-const processRouterDest = async inputs => {
+
+const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(
     inputs,
-    "snapchat_custom_audience",
-    process
+    "SNAPCHAT_CUSTOM_AUDIENCE",
+    process,
+    reqMetadata
   );
   return respList;
 };

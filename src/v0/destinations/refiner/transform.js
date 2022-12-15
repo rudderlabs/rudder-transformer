@@ -98,8 +98,14 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = async inputs => {
-  return simpleProcessRouterDest(inputs, "REFINER", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "REFINER",
+    process,
+    reqMetadata
+  );
+  return respList;
 };
 
 module.exports = { process, processRouterDest };

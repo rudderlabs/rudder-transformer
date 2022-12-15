@@ -223,8 +223,13 @@ const process = async event => {
   return response;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "DELIGHTED", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "DELIGHTED",
+    process,
+    reqMetadata
+  );
   return respList;
 };
 

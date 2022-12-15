@@ -181,7 +181,7 @@ const process = event => {
   return processEvent(event.metadata, event.message, event.destination);
 };
 
-const processRouterDest = async events => {
+const processRouterDest = async (events, reqMetadata) => {
   const errorRespEvents = checkInvalidRtTfEvents(events, DESTINATION);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
@@ -196,7 +196,7 @@ const processRouterDest = async events => {
           event.destination
         );
       } catch (error) {
-        return handleRtTfSingleEventError(event, error, DESTINATION);
+        return handleRtTfSingleEventError(event, error, reqMetadata);
       }
     })
   );

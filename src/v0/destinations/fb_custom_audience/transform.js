@@ -12,7 +12,8 @@ const {
   returnArrayOfSubarrays,
   isDefinedAndNotNull,
   flattenMap,
-  generateErrorObject
+  generateErrorObject,
+  getEventReqMetadata
 } = require("../../util");
 
 const {
@@ -30,6 +31,10 @@ const {
   TransformationError,
   ConfigurationError
 } = require("../../util/errorTypes");
+
+const {
+  client: errNotificationClient
+} = require("../../../util/errorNotifier");
 
 const getSchemaForEventMappedToDest = message => {
   const mappedSchema = get(message, "context.destinationFields");
@@ -401,7 +406,7 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = inputs => {
+const processRouterDest = (inputs, reqMetadata) => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
@@ -427,11 +432,20 @@ const processRouterDest = inputs => {
       return responseList;
     } catch (error) {
       const errObj = generateErrorObject(error);
-      return getErrorRespEvents(
+      const resp = getErrorRespEvents(
         [input.metadata],
-        400,
-        error.message || "Error occurred while processing the payload.",
+        errObj.status,
+        errObj.message,
         errObj.statTags
+      );
+      errNotificationClient.notify(
+        error,
+        "Router Transformation (event level)",
+        {
+          ...resp,
+          ...reqMetadata,
+          ...getEventReqMetadata(input)
+        }
       );
     }
   });

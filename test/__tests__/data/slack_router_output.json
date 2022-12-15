@@ -10,6 +10,10 @@
         "sourceId": "1YhwKyDcKstudlGxkeN5p2wgsrp"
       }
     ],
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    },
     "batched": false,
     "statusCode": 400,
     "error": "Event type page is not supported"

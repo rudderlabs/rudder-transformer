@@ -24,6 +24,7 @@ const whScreenColumnMappingRules = require("./config/WHScreenConfig.js");
 const whGroupColumnMappingRules = require("./config/WHGroupConfig.js");
 const whAliasColumnMappingRules = require("./config/WHAliasConfig.js");
 const { isDataLakeProvider } = require("./config/helpers");
+const { InstrumentationError } = require("../v0/util/errorTypes");
 
 const maxColumnsInEvent = parseInt(
   process.env.WH_MAX_COLUMNS_IN_EVENT || "200",
@@ -314,8 +315,8 @@ function getColumns(options, event, columnTypes) {
     !isRudderSourcesEvent(event) &&
     !isDataLakeProvider(options.provider)
   ) {
-    throw new Error(
-      `${options.provider} transfomer: Too many columns outputted from the event`
+    throw new InstrumentationError(
+      `${options.provider} transformer: Too many columns outputted from the event`
     );
   }
   return columns;
@@ -1064,7 +1065,7 @@ function processWarehouseMessage(message, options) {
       break;
     }
     default:
-      throw new Error("Unknown event type", eventType);
+      throw new InstrumentationError(`Unknown event type: "${eventType}"`);
   }
   return responses;
 }

@@ -974,6 +974,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
             ...getEventReqMetadata(input)
           }
         );
+        return resp;
       }
     })
   );

@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 
-const logger = require("../logger");
+const logger = require("../src/logger");
 
 logger.setLogLevel(Number.POSITIVE_INFINITY);
 

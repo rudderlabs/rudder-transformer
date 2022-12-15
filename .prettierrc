@@ -1,5 +1,5 @@
 {
   "arrowParens": "avoid",
   "tabWidth": 2,
-  "files":["*.js", "*.json"]
+  "files": ["*.js", "*.json"]
 }

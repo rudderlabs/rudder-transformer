@@ -46,7 +46,6 @@
     "SNAPCHAT_CUSTOM_AUDIENCE": true,
     "MARKETO_STATIC_LIST": true,
     "CAMPAIGN_MANAGER": true,
-    "SENDGRID": true,
-    "BRAZE": true
+    "SENDGRID": true
   }
 }

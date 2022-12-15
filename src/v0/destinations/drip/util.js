@@ -2,10 +2,7 @@ const axios = require("axios");
 const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const logger = require("../../../logger");
 const { constructPayload, isDefinedAndNotNull } = require("../../util");
-const {
-  NetworkInstrumentationError,
-  NetworkError
-} = require("../../util/errorTypes");
+const { NetworkError, AbortedError } = require("../../util/errorTypes");
 const { ENDPOINT, productMapping } = require("./config");
 const tags = require("../../util/tags");
 
@@ -77,26 +74,14 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
     if (response) {
       return response.status === 200 || response.status === 201;
     }
-    throw new NetworkError(
-      "Invalid response.",
-      response.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(response.status)
-      },
-      response
-    );
+    throw new AbortedError("Invalid response.");
   } catch (error) {
     let errMsg = "";
-    const errStatus = 400;
     if (error.response && error.response.data) {
       errMsg = JSON.stringify(error.response.data);
     }
-    throw new NetworkError(
-      `Error occurred while creating or updating user : ${errMsg}`,
-      errStatus,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus)
-      }
+    throw new AbortedError(
+      `Error occurred while creating or updating user : ${errMsg}`
     );
   }
 };

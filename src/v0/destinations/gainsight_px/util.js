@@ -61,7 +61,8 @@ const objectExists = async (id, Config, objectType) => {
     if (response && response.status === 200) {
       return { success: true, err: null };
     }
-    const status = response ? response.status : undefined;
+    const defStatus = 400;
+    const status = response ? response.status || defStatus : defStatus;
     throw new NetworkError(
       err,
       status,
@@ -92,7 +93,8 @@ const createAccount = async (payload, Config) => {
       return { success: true, err: null };
     }
 
-    const status = response?.status || 400;
+    const defStatus = 400;
+    const status = response ? response.status || defStatus : defStatus;
     throw new NetworkError(
       "invalid response while creating account",
       status,
@@ -122,7 +124,8 @@ const updateAccount = async (accountId, payload, Config) => {
     if (response && response.status === 204) {
       return { success: true, err: null };
     }
-    const status = response ? response.status : undefined;
+    const defStatus = 400;
+    const status = response ? response.status || defStatus : defStatus;
     throw new NetworkError(
       "invalid response while updating account",
       status,

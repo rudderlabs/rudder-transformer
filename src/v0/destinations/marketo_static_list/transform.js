@@ -2,7 +2,8 @@ const _ = require("lodash");
 const cloneDeep = require("lodash/cloneDeep");
 const {
   defaultPostRequestConfig,
-  defaultDeleteRequestConfig
+  defaultDeleteRequestConfig,
+  generateErrorObject
 } = require("../../util");
 const { AUTH_CACHE_TTL } = require("../../util/constant");
 const { getIds, validateMessageType } = require("./util");
@@ -10,8 +11,7 @@ const {
   getDestinationExternalID,
   defaultRequestConfig,
   getErrorRespEvents,
-  simpleProcessRouterDest,
-  handleRtTfSingleEventError
+  simpleProcessRouterDest
 } = require("../../util");
 const { DESTINATION, formatConfig, MAX_LEAD_IDS_SIZE } = require("./config");
 const Cache = require("../../util/cache");
@@ -119,6 +119,7 @@ const process = async event => {
   const response = processEvent({ ...event, token });
   return response;
 };
+
 const processRouterDest = async (inputs, reqMetadata) => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
@@ -142,10 +143,12 @@ const processRouterDest = async (inputs, reqMetadata) => {
     }
   } catch (error) {
     // Not using handleRtTfSingleEventError here as this is for multiple events
-    const respEvents = handleRtTfSingleEventError(
+    const errObj = generateErrorObject(error);
+    const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
-      error,
-      reqMetadata
+      errObj.status,
+      errObj.message,
+      errObj.statTags
     );
     return [respEvents];
   }
@@ -158,7 +161,6 @@ const processRouterDest = async (inputs, reqMetadata) => {
   });
   const respList = await simpleProcessRouterDest(
     tokenisedInputs,
-    DESTINATION,
     processEvent,
     reqMetadata
   );

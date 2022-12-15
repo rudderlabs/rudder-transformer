@@ -14,11 +14,10 @@ const {
 const {
   AbortedError,
   RetryableError,
-  NetworkError,
-  InvalidAuthTokenError
+  NetworkError
 } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
-const get = require("get-value");
+
 /**
  * This function helps to detarmine type of error occured. According to the response
  * we set authErrorCategory to take decision if we need to refresh the access_token
@@ -79,14 +78,6 @@ const responseHandler = destinationResponse => {
       message,
       destinationResponse
     };
-  }
-  if (getAuthErrCategory(status) === "REFRESH_TOKEN") {
-    throw new InvalidAuthTokenError(
-      `Campaign Manager: Retrying as the access token needs to be refreshed`,
-      500,
-      destinationResponse,
-      getAuthErrCategory(status)
-    );
   }
 
   throw new NetworkError(

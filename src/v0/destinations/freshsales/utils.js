@@ -54,7 +54,7 @@ const createUpdateAccount = async (payload, Config) => {
   }
   const accountId = accountResponse.response.sales_account?.id;
   if (!accountId) {
-    throw new NetworkInstrumentationError("ails in fetching accountId.");
+    throw new NetworkInstrumentationError("Fails in fetching accountId.");
   }
   return accountId;
 };
@@ -182,7 +182,8 @@ const responseBuilderWithContactDetails = async (
   const userId = userDetails.response?.contact?.id;
   if (!userId) {
     throw new NetworkInstrumentationError(
-      "Failed in fetching userId. Aborting!"
+      "Failed in fetching userId. Aborting!",
+      userDetails
     );
   }
   const responseBody = {

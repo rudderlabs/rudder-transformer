@@ -108,7 +108,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   const check = await userValidity(channel, Config, userId);
 
   if (!check) {
-    throw new NetworkInstrumentationError(`user ${userId} doesnot exist`);
+    throw new NetworkInstrumentationError(`user ${userId} doesn't exist`);
   }
   let payload = {};
   payload[userIdType] = userIdValue;
@@ -223,8 +223,8 @@ const process = async event => {
   return response;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "DELIGHTED", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

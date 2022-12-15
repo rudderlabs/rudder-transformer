@@ -493,6 +493,10 @@
           "jobId": 5
         }
       ],
+      "statTags": {
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation"
+      },
       "batched": false,
       "statusCode": 400,
       "error": "message type identify is not supported"

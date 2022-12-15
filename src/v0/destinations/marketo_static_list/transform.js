@@ -10,12 +10,11 @@ const {
   getDestinationExternalID,
   defaultRequestConfig,
   getErrorRespEvents,
-  generateErrorObject,
-  simpleProcessRouterDest
+  simpleProcessRouterDest,
+  handleRtTfSingleEventError
 } = require("../../util");
 const { DESTINATION, formatConfig, MAX_LEAD_IDS_SIZE } = require("./config");
 const Cache = require("../../util/cache");
-const logger = require("../../../logger");
 const { getAuthToken } = require("../marketo/transform");
 const {
   InstrumentationError,
@@ -120,7 +119,7 @@ const process = async event => {
   const response = processEvent({ ...event, token });
   return response;
 };
-const processRouterDest = async inputs => {
+const processRouterDest = async (inputs, reqMetadata) => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
   let token;
@@ -143,14 +142,10 @@ const processRouterDest = async inputs => {
     }
   } catch (error) {
     // Not using handleRtTfSingleEventError here as this is for multiple events
-    logger.error("Router Transformation problem:");
-    const errObj = generateErrorObject(error);
-    logger.error(errObj);
-    const respEvents = getErrorRespEvents(
+    const respEvents = handleRtTfSingleEventError(
       inputs.map(input => input.metadata),
-      error.status || 500, // default to retryable
-      error.message || "Error occurred while processing payload.",
-      errObj.statTags
+      error,
+      reqMetadata
     );
     return [respEvents];
   }
@@ -164,7 +159,8 @@ const processRouterDest = async inputs => {
   const respList = await simpleProcessRouterDest(
     tokenisedInputs,
     DESTINATION,
-    processEvent
+    processEvent,
+    reqMetadata
   );
   return respList;
 };

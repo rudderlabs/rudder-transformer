@@ -336,8 +336,8 @@ function getEventChunks(event, trackResponseList, eventsChunk) {
   });
 }
 
-const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "TIKTOK_ADS");
+const processRouterDest = async (inputs, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -367,7 +367,7 @@ const processRouterDest = async inputs => {
         const errRespEvent = handleRtTfSingleEventError(
           event,
           error,
-          "TIKTOK_ADS"
+          reqMetadata
         );
         errorRespList.push(errRespEvent);
       }

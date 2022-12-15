@@ -104,15 +104,10 @@ const processTrackEvent = async (metadata, message, destination) => {
     updatedMapping = updateMappingJson(updatedMapping);
   }
 
-  let payload;
-  try {
-    payload = constructPayload(message, updatedMapping);
-  } catch (e) {
-    throw new TransformationError(`${e.message} for ${event} event.`);
-  }
+  const payload = constructPayload(message, updatedMapping);
 
   payload.partialFailure = true;
-  if (!payload.conversionAdjustments[0].userIdentifiers) {
+  if (!payload.conversionAdjustments[0]?.userIdentifiers) {
     throw new InstrumentationError(
       `Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`
     );
@@ -146,12 +141,8 @@ const processEvent = async (metadata, message, destination) => {
 const process = async event => {
   return processEvent(event.metadata, event.message, event.destination);
 };
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(
-    inputs,
-    "Google_adwords_enhanced_conversions",
-    process
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

@@ -117,10 +117,10 @@ const process = event => {
 };
 
 // Router transform with batching by default
-const processRouterDest = async inputs => {
+const processRouterDest = async (inputs, reqMetadata) => {
   const successRespList = [];
   const errorRespList = [];
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "GOOGLESHEETS");
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -137,7 +137,7 @@ const processRouterDest = async inputs => {
         const errRespEvent = handleRtTfSingleEventError(
           input,
           error,
-          "GOOGLESHEETS"
+          reqMetadata
         );
         errorRespList.push(errRespEvent);
       }

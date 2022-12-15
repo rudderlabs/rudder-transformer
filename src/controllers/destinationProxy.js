@@ -2,7 +2,6 @@ const match = require("match-json");
 const jsonDiff = require("json-diff");
 const networkHandlerFactory = require("../adapters/networkHandlerFactory");
 const { getPayloadData } = require("../adapters/network");
-const { TRANSFORMER_METRIC } = require("../v0/util/constant");
 const { generateErrorObject } = require("../v0/util");
 const stats = require("../util/stats");
 const logger = require("../logger");

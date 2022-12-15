@@ -496,8 +496,8 @@ function getEventChunks(
   }
 }
 
-const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "ITERABLE");
+const processRouterDest = async (inputs, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -534,7 +534,7 @@ const processRouterDest = async inputs => {
         const errRespEvent = handleRtTfSingleEventError(
           event,
           error,
-          "ITERABLE"
+          reqMetadata
         );
         errorRespList.push(errRespEvent);
       }

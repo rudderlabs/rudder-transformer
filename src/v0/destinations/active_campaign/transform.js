@@ -625,12 +625,8 @@ const process = async event => {
   return result;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(
-    inputs,
-    "active_campaign",
-    process
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

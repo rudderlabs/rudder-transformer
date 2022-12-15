@@ -11,7 +11,6 @@ const {
   isDefined,
   isHttpStatusSuccess
 } = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 const { NetworkError } = require("../../util/errorTypes");
 const tags = require("../../util/tags");

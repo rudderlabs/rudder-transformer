@@ -345,8 +345,8 @@ async function process(event) {
   return response;
 }
 
-const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "SALESFORCE");
+const processRouterDest = async (inputs, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -387,7 +387,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        return handleRtTfSingleEventError(input, error, "SALESFORCE");
+        return handleRtTfSingleEventError(input, error, reqMetadata);
       }
     })
   );

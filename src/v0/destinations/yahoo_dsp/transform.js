@@ -12,10 +12,7 @@ const {
 } = require("../../util");
 
 const { getAccessToken, createPayload } = require("./util");
-const {
-  InstrumentationError,
-  NetworkInstrumentationError
-} = require("../../util/errorTypes");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 /**
  * This function is used for building the final response to be returned.
@@ -118,8 +115,8 @@ const process = async event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "YAHOO_DSP", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

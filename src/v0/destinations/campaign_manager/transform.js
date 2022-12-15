@@ -230,8 +230,8 @@ function process(event) {
   return response;
 }
 
-const processRouterDest = async inputs => {
-  return simpleProcessRouterDest(inputs, "CAMPAIGN_MANAGER", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  return simpleProcessRouterDest(inputs, process, reqMetadata);
 };
 
 module.exports = { process, processRouterDest };

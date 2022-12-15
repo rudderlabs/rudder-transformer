@@ -1,12 +1,16 @@
 const _ = require("lodash");
 const { get } = require("lodash");
-const { defaultPostRequestConfig } = require("../../util");
+const {
+  defaultPostRequestConfig,
+  handleRtTfSingleEventError
+} = require("../../util");
 const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
   getSuccessRespEvents,
   getErrorRespEvents,
   constructPayload,
+  getEventReqMetadata,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues
 } = require("../../util");
@@ -18,6 +22,9 @@ const {
   checkUserPayloadValidity,
   processHashedUserPayload
 } = require("./utils");
+const {
+  client: errNotificationClient
+} = require("../../../util/errorNotifier");
 
 const { ENDPOINT, MAX_BATCH_SIZE, USER_CONFIGS } = require("./config");
 const {
@@ -194,7 +201,7 @@ const batchEvents = successRespList => {
   return batchedResponseList;
 };
 
-const processRouterDest = inputs => {
+const processRouterDest = (inputs, reqMetadata) => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
@@ -228,12 +235,10 @@ const processRouterDest = inputs => {
         output: transformedEvents
       };
     } catch (error) {
+      const resp = handleRtTfSingleEventError(event, error, reqMetadata);
+
       return {
-        error: getErrorRespEvents(
-          [event.metadata],
-          error.response ? error.response.status : 400,
-          error.message || "Error occurred while processing payload."
-        )
+        error: resp
       };
     }
   });

@@ -321,7 +321,7 @@
       }
     },
     "statusCode": 400,
-    "error": "Missing required value from [\"properties.orderId\",\"properties.order_id\"] for Page View event.",
+    "error": "Missing required value from [\"properties.orderId\",\"properties.order_id\"]",
     "statTags": {
       "destination": "google_adwords_enhanced_conversions",
       "stage": "transform",

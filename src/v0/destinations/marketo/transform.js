@@ -27,7 +27,8 @@ const {
   getErrorRespEvents,
   isDefinedAndNotNull,
   generateErrorObject,
-  checkInvalidRtTfEvents
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
 } = require("../../util");
 const Cache = require("../../util/cache");
 const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL } = require("../../util/constant");
@@ -41,7 +42,7 @@ const logger = require("../../../logger");
 const {
   InstrumentationError,
   ConfigurationError,
-  InvalidAuthTokenError
+  UnauthorizedError
 } = require("../../util/errorTypes");
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
@@ -484,16 +485,16 @@ const processEvent = async (message, destination, token) => {
 const process = async event => {
   const token = await getAuthToken(formatConfig(event.destination));
   if (!token) {
-    throw new InvalidAuthTokenError("Authorization failed");
+    throw new UnauthorizedError("Authorization failed");
   }
   const response = await processEvent(event.message, event.destination, token);
   return response;
 };
 
-const processRouterDest = async inputs => {
+const processRouterDest = async (inputs, reqMetadata) => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -542,15 +543,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        logger.error("Router transformation Error for Marketo:");
-        const errObj = generateErrorObject(error);
-        logger.error(errObj);
-        return getErrorRespEvents(
-          [input.metadata],
-          error.status || 500,
-          error.message || "Error occurred while processing payload.",
-          errObj.statTags
-        );
+        return handleRtTfSingleEventError(input, error, reqMetadata);
       }
     })
   );

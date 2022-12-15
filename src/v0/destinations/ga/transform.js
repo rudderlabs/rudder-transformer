@@ -7,8 +7,7 @@ const {
   GA_ENDPOINT,
   ConfigCategory,
   mappingConfig,
-  nameToEventMap,
-  DESTINATION
+  nameToEventMap
 } = require("./config");
 
 const {
@@ -21,9 +20,7 @@ const {
   formatValue,
   getFieldValueFromMessage,
   getDestinationExternalID,
-  getSuccessRespEvents,
-  checkInvalidRtTfEvents,
-  handleRtTfSingleEventError
+  simpleProcessRouterDest
 } = require("../../util");
 
 const { isDefinedAndNotNull } = require("../../util");
@@ -949,32 +946,8 @@ function processSingleMessage(message, destination) {
 function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
-const processRouterDest = inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
-  const respList = inputs.map(input => {
-    try {
-      if (input.message.statusCode) {
-        // already transformed event
-        return getSuccessRespEvents(
-          input.message,
-          [input.metadata],
-          input.destination
-        );
-      }
-      // if not transformed
-      return getSuccessRespEvents(
-        process(input),
-        [input.metadata],
-        input.destination
-      );
-    } catch (error) {
-      return handleRtTfSingleEventError(input, error, DESTINATION);
-    }
-  });
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 module.exports = { process, processRouterDest };

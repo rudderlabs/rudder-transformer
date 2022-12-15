@@ -120,8 +120,9 @@ const process = event => {
   }
   return response;
 };
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "PERSISTIQ", process);
+
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

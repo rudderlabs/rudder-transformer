@@ -76,7 +76,7 @@
     "endpoint": "https://api.delighted.com/v1/people.json"
   },
   {
-    "error": "user unidentified_user@email.com doesnot exist"
+    "error": "user unidentified_user@email.com doesn't exist"
   },
   {
     "error": "Event is not configured on your Rudderstack Dashboard"

@@ -61,7 +61,15 @@ const objectExists = async (id, Config, objectType) => {
     if (response && response.status === 200) {
       return { success: true, err: null };
     }
-    throw new TransformationError(err);
+    const status = response ? response.status : undefined;
+    throw new NetworkError(
+      err,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      response
+    );
   } catch (error) {
     return handleErrorResponse(
       error,
@@ -83,7 +91,16 @@ const createAccount = async (payload, Config) => {
     if (response && response.status === 201) {
       return { success: true, err: null };
     }
-    throw new TransformationError("invalid response while creating account");
+
+    const status = response?.status || 400;
+    throw new NetworkError(
+      "invalid response while creating account",
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      response
+    );
   } catch (error) {
     return handleErrorResponse(error, "error while creating account", 400);
   }
@@ -105,7 +122,15 @@ const updateAccount = async (accountId, payload, Config) => {
     if (response && response.status === 204) {
       return { success: true, err: null };
     }
-    throw new TransformationError("invalid response while updating account");
+    const status = response ? response.status : undefined;
+    throw new NetworkError(
+      "invalid response while updating account",
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      response
+    );
   } catch (error) {
     // it will only occur if the user does not exist
     if (

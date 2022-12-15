@@ -1580,28 +1580,6 @@ function getValidDynamicFormConfig(
 }
 
 /**
- * error handler during transformation of a single rudder event for rt transform destinaiton
- *
- * This function is to be used only when we have a simple error handling scenario
- * If some customisation wrt error handling is required, we recommend to not use this function
- *
- * @param {object} input - single rudder event
- * @param {*} error - error occurred during transformation of a single rudder event
- * @param {string} destType - destination name
- * @returns
- */
-const handleRtTfSingleEventError = (input, error) => {
-  const errObj = generateErrorObject(error);
-
-  return getErrorRespEvents(
-    [input.metadata],
-    errObj.status,
-    errObj.message,
-    errObj.statTags
-  );
-};
-
-/**
  * This method is used to check if the input events sent to router transformation are valid
  * It is to be used only for router transform destinations
  *
@@ -1613,14 +1591,9 @@ const handleRtTfSingleEventError = (input, error) => {
  * }
  * ```
  * @param {Array<object>} inputs - list of rudder events to be transformed
- * @param {String} destType - destination name
  * @returns {Array<object> | []}
  */
-const checkInvalidRtTfEvents = (inputs, destType) => {
-  let destTyp = destType;
-  if (!destTyp) {
-    destTyp = "";
-  }
+const checkInvalidRtTfEvents = inputs => {
   if (!Array.isArray(inputs) || inputs.length === 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
@@ -1642,6 +1615,36 @@ const getEventReqMetadata = event => {
 };
 
 /**
+ * error handler during transformation of a single rudder event for rt transform destinaiton
+ *
+ * This function is to be used only when we have a simple error handling scenario
+ * If some customisation wrt error handling is required, we recommend to not use this function
+ *
+ * @param {object} input - single rudder event
+ * @param {*} error - error occurred during transformation of a single rudder event
+ * @param {string} destType - destination name
+ * @returns
+ */
+const handleRtTfSingleEventError = (input, error, reqMetadata) => {
+  const errObj = generateErrorObject(error);
+
+  const resp = getErrorRespEvents(
+    [input.metadata],
+    errObj.status,
+    errObj.message,
+    errObj.statTags
+  );
+
+  errNotificationClient.notify(error, "Router Transformation (event level)", {
+    ...resp,
+    ...reqMetadata,
+    ...getEventReqMetadata(input)
+  });
+
+  return resp;
+};
+
+/**
  * This function serves as a simple implementation of router transformation destinations
  *
  * <strong>Note</strong>:
@@ -1653,13 +1656,8 @@ const getEventReqMetadata = event => {
  * @param {Function} singleTfFunc - single event transformation function, we'd recommend this to be an async function(always)
  * @returns
  */
-const simpleProcessRouterDest = async (
-  inputs,
-  destType,
-  singleTfFunc,
-  reqMetadata
-) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, destType);
+const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -1675,19 +1673,7 @@ const simpleProcessRouterDest = async (
 
         return getSuccessRespEvents(resp, [input.metadata], input.destination);
       } catch (error) {
-        const errResp = handleRtTfSingleEventError(input, error, destType);
-
-        errNotificationClient.notify(
-          error,
-          "Router Transformation (event level)",
-          {
-            ...errResp,
-            ...(reqMetadata || {}),
-            ...getEventReqMetadata(input)
-          }
-        );
-
-        return errResp;
+        return handleRtTfSingleEventError(input, error, reqMetadata);
       }
     })
   );

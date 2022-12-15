@@ -233,9 +233,8 @@ const ticketBuilderTrengo = async (message, destination, identifer, extIds) => {
         };
         subjectLine = hTemplate(templateInput).trim();
       } catch (err) {
-        throw new TransformationError(
-          `Error occurred in parsing event template for ${message.event}`,
-          400
+        throw new InstrumentationError(
+          `Error occurred in parsing event template for ${message.event}`
         );
       }
     }
@@ -395,8 +394,8 @@ const process = async event => {
   return response;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "TRENGO", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

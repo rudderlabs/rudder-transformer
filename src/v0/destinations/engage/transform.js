@@ -206,14 +206,14 @@ const process = event => {
       response = groupResponseBuilder(message, Config);
       break;
     default:
-      throw new TransformationError(
+      throw new InstrumentationError(
         `Message type ${(messageType, Config)} not supported.`
       );
   }
   return response;
 };
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "ENGAGE", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

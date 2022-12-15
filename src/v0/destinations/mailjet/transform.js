@@ -3,9 +3,10 @@ const {
   getErrorRespEvents,
   getSuccessRespEvents,
   defaultRequestConfig,
+  defaultPostRequestConfig,
   defaultBatchRequestConfig,
-  removeUndefinedAndNullValues,
-  defaultPostRequestConfig
+  handleRtTfSingleEventError,
+  removeUndefinedAndNullValues
 } = require("../../util");
 
 const { MAX_BATCH_SIZE } = require("./config");
@@ -131,7 +132,7 @@ const batchEvents = successRespList => {
   return batchedResponseList;
 };
 
-const processRouterDest = inputs => {
+const processRouterDest = (inputs, reqMetadata) => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
@@ -159,13 +160,12 @@ const processRouterDest = inputs => {
         successRespList.push(transformedPayload);
       }
     } catch (error) {
-      batchErrorRespList.push(
-        getErrorRespEvents(
-          [event.metadata],
-          error.response ? error.response.status : 400,
-          error.message || "Error occurred while processing payload."
-        )
+      const errRespEvent = handleRtTfSingleEventError(
+        event,
+        error,
+        reqMetadata
       );
+      batchErrorRespList.push(errRespEvent);
     }
   });
 

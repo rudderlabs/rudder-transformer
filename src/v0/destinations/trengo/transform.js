@@ -234,8 +234,7 @@ const ticketBuilderTrengo = async (message, destination, identifer, extIds) => {
         subjectLine = hTemplate(templateInput).trim();
       } catch (err) {
         throw new InstrumentationError(
-          `Error occurred in parsing event template for ${message.event}`,
-          400
+          `Error occurred in parsing event template for ${message.event}`
         );
       }
     }

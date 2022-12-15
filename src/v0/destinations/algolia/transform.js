@@ -119,7 +119,7 @@ const process = event => {
   return response;
 };
 
-const processRouterDest = async inputs => {
+const processRouterDest = async (inputs, reqMetadata) => {
   if (!Array.isArray(inputs) || inputs.length === 0) {
     throw new InstrumentationError("Invalid event array");
   }
@@ -145,7 +145,7 @@ const processRouterDest = async inputs => {
         const errRespEvent = handleRtTfSingleEventError(
           input,
           error,
-          "ALGOLIA"
+          reqMetadata
         );
         errorList.push(errRespEvent);
       }

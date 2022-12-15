@@ -2,6 +2,7 @@ const path = require("path");
 const fs = require("fs");
 const md5 = require("md5");
 const Message = require("../message");
+const { CustomError } = require("../../util");
 
 // ref : https://dev.mailjet.com/email/guides/webhooks/
 // import mapping json using JSON.parse to preserve object key order
@@ -46,6 +47,9 @@ function process(event) {
     // Treating userId as unique identifier
     // If userId is not present, then generating it from email using md5 hash function
     message.userId = md5(event.email);
+  }
+  if (message.type === "track") {
+    throw new CustomError("track is not supported", 400);
   }
   return message;
 }

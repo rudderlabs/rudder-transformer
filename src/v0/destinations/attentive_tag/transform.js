@@ -8,10 +8,9 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   getIntegrationsObj,
-  getErrorRespEvents,
-  getSuccessRespEvents,
+
   isDefinedAndNotNullAndNotEmpty,
-  generateErrorObject
+  simpleProcessRouterDest
 } = require("../../util");
 const {
   getDestinationItemProperties,
@@ -219,43 +218,12 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        const errRes = generateErrorObject(error);
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload.",
-          errRes.statTags
-        );
-      }
-    })
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "ATTENTIVE_TAG",
+    process,
+    reqMetadata
   );
   return respList;
 };

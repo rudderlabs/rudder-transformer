@@ -1,15 +1,12 @@
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
-
 const {
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
   getFieldValueFromMessage,
   removeUndefinedAndNullValues,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  generateErrorObject
+  simpleProcessRouterDest
 } = require("../../util");
 
 const {
@@ -106,43 +103,12 @@ const processEvent = (message, destination) => {
 const process = event => {
   return processEvent(event.message, event.destination);
 };
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        const errRes = generateErrorObject(error);
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload.",
-          errRes.statTags
-        );
-      }
-    })
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "AUTOPILOT",
+    process,
+    reqMetadata
   );
   return respList;
 };

@@ -12,8 +12,7 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
-  getErrorRespEvents,
-  getSuccessRespEvents,
+  simpleProcessRouterDest,
   getDestinationExternalID,
   isDefinedAndNotNullAndNotEmpty,
   defaultPutRequestConfig
@@ -237,31 +236,12 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = inputs => {
-  if (!Array.isArray(inputs) || inputs.length === 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = Promise.all(
-    inputs.map(async input => {
-      try {
-        const message = input.message.statusCode
-          ? input.message
-          : process(input);
-        return getSuccessRespEvents(
-          message,
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response ? error.response.status : error.code || 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "ONE_SIGNAL",
+    process,
+    reqMetadata
   );
   return respList;
 };

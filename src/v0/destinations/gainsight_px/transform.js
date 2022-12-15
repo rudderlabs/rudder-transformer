@@ -372,11 +372,12 @@ const process = async event => {
   return response;
 };
 
-const processRouterDest = async inputs => {
+const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(
     inputs,
     "GAINSIGHT_PX",
-    process
+    process,
+    reqMetadata
   );
   return respList;
 };

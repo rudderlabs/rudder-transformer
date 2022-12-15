@@ -20,14 +20,12 @@ const {
   getFieldValueFromMessage,
   getValueFromMessage,
   deleteObjectProperty,
-  getSuccessRespEvents,
   getErrorRespEvents,
-  generateErrorObject,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
   isAppleFamily,
   isDefinedAndNotNullAndNotEmpty,
-  getEventReqMetadata
+  simpleProcessRouterDest
 } = require("../../util");
 const {
   BASE_URL,
@@ -921,49 +919,11 @@ function batch(destEvents) {
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        const errObj = generateErrorObject(error);
-        const resp = getErrorRespEvents(
-          [input.metadata],
-          errObj.status,
-          errObj.message,
-          errObj.statTags
-        );
-
-        errNotificationClient.notify(
-          error,
-          "Router Transformation (event level)",
-          {
-            ...resp,
-            ...reqMetadata,
-            ...getEventReqMetadata(input)
-          }
-        );
-        return resp;
-      }
-    })
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "AM",
+    process,
+    reqMetadata
   );
   return respList;
 };

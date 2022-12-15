@@ -212,8 +212,13 @@ const process = event => {
   }
   return response;
 };
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "ENGAGE", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(
+    inputs,
+    "ENGAGE",
+    process,
+    reqMetadata
+  );
   return respList;
 };
 

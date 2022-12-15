@@ -23,7 +23,8 @@ export class MiscService {
     };
   }
 
-  public static transformerPostProcessor(ctx: Context) {
+  public static transformerPostProcessor(ctx: Context, status: number = 200) {
     ctx.set("apiVersion", API_VERSION);
+    ctx.status = status;
   }
 }

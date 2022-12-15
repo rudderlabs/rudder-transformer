@@ -1,4 +1,4 @@
-type PrimitiveDataObject = string | number | boolean | undefined;
+type PrimitiveDataObject = string | number | boolean | undefined | null;
 
 type DataObject = {
   [key: string]:
@@ -85,12 +85,16 @@ type Destination = {
   RevisionID: string;
 };
 
+type Library = {
+  VersionID: string;
+};
+
 type ProcessorRequest = {
   request?: ObjectType;
   message: ObjectType;
   metadata: Metadata;
   destination: Destination;
-  libraries: ObjectType;
+  libraries: Library[];
 };
 
 type RouterData = {
@@ -106,7 +110,7 @@ type RouterRequest = {
 };
 
 type ProcessorResponse = {
-  output: TransformationDefaultResponse | ObjectType;
+  output: TransformationDefaultResponse | RudderMessage | ObjectType;
   metadata: Metadata;
   statusCode: number;
   error: string;
@@ -156,6 +160,7 @@ type RudderMessage = {
   messageId?: string;
   properties?: ObjectType;
   traits?: ObjectType;
+  [key: string]: any;
 };
 
 type ErrorDetailer = {
@@ -167,9 +172,22 @@ type ErrorDetailer = {
   inputPayload: ObjectType[] | ObjectType;
   errorContext: string;
 };
+
+type UserTransformResponse = {
+  transformedEvent: RudderMessage;
+  metadata: Metadata;
+  error: ObjectType;
+};
+
+type UserTransfromServiceResponse = {
+  transformedEvents: ProcessorResponse[];
+  retryStatus: number
+};
+
 export {
   ObjectType,
   Metadata,
+  Library,
   ProcessorRequest,
   ProcessorResponse,
   RouterRequest,
@@ -179,5 +197,7 @@ export {
   TransformationDefaultResponse,
   SourceTransformResponse,
   DeliveryResponse,
-  ErrorDetailer
+  ErrorDetailer,
+  UserTransformResponse,
+  UserTransfromServiceResponse
 };

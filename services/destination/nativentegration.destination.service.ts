@@ -161,7 +161,7 @@ export default class NativeIntegrationServiceDestination
   ): Promise<DeliveryResponse> {
     try {
       const rawProxyResponse = await networkHandler.proxy(destinationRequest);
-      const processedProxyResponse = networkHandler.processAxiosResponse(
+      const processedProxyResponse = networkHandler.iosResponse(
         rawProxyResponse
       );
       return networkHandler.responseHandler(

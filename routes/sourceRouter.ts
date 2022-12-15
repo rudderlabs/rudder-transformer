@@ -3,6 +3,6 @@ import SourceController from "../controllers/source.controller";
 
 const router = new Router();
 
-router.post("/:version/sources/:source`", SourceController.sourceTransform);
+router.post("/:version/sources/:source", SourceController.sourceTransform);
 
-export const proxyRoutes = router.routes();
+export const sourceRoutes = router.routes();

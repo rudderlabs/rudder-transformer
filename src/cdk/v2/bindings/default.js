@@ -24,9 +24,9 @@ function isValidEventType(event) {
   return true;
 }
 
-function assert(val, message) {
+function assert(val, message, status, statTags, destination) {
   if (!val) {
-    throw new InstrumentationError(message);
+    throw new InstrumentationError(message, status, statTags, destination);
   }
 }
 

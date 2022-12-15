@@ -1,0 +1,277 @@
+[
+  {
+    "description": "No type or userId  is given",
+    "input": {
+      "anonymousId": "63767499ca6fb1b7c988d5bb",
+      "artist": "Gautam",
+      "genre": "Jazz",
+      "song": "Take Five"
+    },
+    "output": {
+      "event": "pipedream_source_event",
+      "anonymousId": "63767499ca6fb1b7c988d5bb",
+      "context": {
+        "integration": {
+          "name": "PIPEDREAM"
+        },
+        "library": {
+          "name": "unknown",
+          "version": "unknown"
+        }
+      },
+      "integrations": {
+        "PIPEDREAM": false
+      },
+      "type": "track",
+      "properties": {
+        "anonymousId": "63767499ca6fb1b7c988d5bb",
+        "artist": "Gautam",
+        "genre": "Jazz",
+        "song": "Take Five"
+      }
+    }
+  },
+  {
+    "description": "No type or anonymousId is given",
+    "input": {
+      "userId": "12",
+      "artist": "Gautam",
+      "genre": "Jazz",
+      "song": "Take Five"
+    },
+    "output": {
+      "event": "pipedream_source_event",
+      "anonymousId": "12",
+      "context": {
+        "integration": {
+          "name": "PIPEDREAM"
+        },
+        "library": {
+          "name": "unknown",
+          "version": "unknown"
+        }
+      },
+      "integrations": {
+        "PIPEDREAM": false
+      },
+      "type": "track",
+      "properties": {
+        "userId": "12",
+        "artist": "Gautam",
+        "genre": "Jazz",
+        "song": "Take Five"
+      }
+    }
+  },
+  {
+    "description": "Track Call -> type and userId is given",
+    "input": {
+      "event": "Song Played",
+      "userId": "R1234",
+      "context": {
+        "library": {
+          "name": "unknown",
+          "version": "unknown"
+        },
+        "traits": {
+          "createdAt": "2022-10-15T05:41:06.016Z",
+          "custom": {
+            "key1": "v1",
+            "key2": "V2"
+          },
+          "email": "john@doe.com",
+          "name": "Anant Doe",
+          "userDeleted": false
+        },
+        "locale": "en",
+        "location": {
+          "country": "IN",
+          "countryName": "India",
+          "short": "India",
+          "long": "India"
+        },
+        "device": {
+          "os": "macOS",
+          "type": "desktop"
+        },
+        "page": {
+          "referrer": "http://127.0.0.1:5500/testSm.html"
+        }
+      },
+      "type": "track",
+      "properties": {
+        "artist": "John",
+        "Album": "ABCD"
+      }
+    },
+    "output": {
+      "event": "Song Played",
+      "userId": "R1234",
+      "context": {
+        "library": {
+          "name": "unknown",
+          "version": "unknown"
+        },
+        "traits": {
+          "createdAt": "2022-10-15T05:41:06.016Z",
+          "custom": {
+            "key1": "v1",
+            "key2": "V2"
+          },
+          "email": "john@doe.com",
+          "name": "Anant Doe",
+          "userDeleted": false
+        },
+        "locale": "en",
+        "location": {
+          "country": "IN",
+          "countryName": "India",
+          "short": "India",
+          "long": "India"
+        },
+        "device": {
+          "os": "macOS",
+          "type": "desktop"
+        },
+        "page": {
+          "referrer": "http://127.0.0.1:5500/testSm.html"
+        }
+      },
+      "type": "track",
+      "properties": {
+        "artist": "John",
+        "Album": "ABCD"
+      }
+    }
+  },
+  {
+    "description": "Identify type  -> type and userId is given",
+    "input": {
+      "userId": "1",
+      "originalTimestamp": "2020-09-28T19:53:31.900Z",
+      "traits": {
+        "firstName": "Anant",
+        "lastName": "jain",
+        "email": "anant@r.com",
+        "hasPurchased": "yes",
+        "address": {
+          "Home": {
+            "city": "iudcb"
+          },
+          "Office": {
+            "abc": "jbc"
+          }
+        },
+        "state": "Delhi",
+        "title": "Mr"
+      },
+      "timestamp": "2020-09-29T14:50:29.907+05:30",
+      "type": "identify"
+    },
+    "output": {
+        "userId": "1",
+        "originalTimestamp": "2020-09-28T19:53:31.900Z",
+        "traits": {
+          "firstName": "Anant",
+          "lastName": "jain",
+          "email": "anant@r.com",
+          "hasPurchased": "yes",
+          "address": {
+            "Home": {
+              "city": "iudcb"
+            },
+            "Office": {
+              "abc": "jbc"
+            }
+          },
+          "state": "Delhi",
+          "title": "Mr"
+        },
+        "timestamp": "2020-09-29T14:50:29.907+05:30",
+        "type": "identify"
+      }
+  },
+  {
+    "description": "Group type  -> type and userId is given",
+    "input":{
+      "userId": "user123",
+      "groupId": "17",
+      "context": {
+      },
+      "traits": {
+        "operation": "add"
+      },
+      "type": "group"
+    },
+    "output": {
+      "userId": "user123",
+      "groupId": "17",
+      "context": {
+      },
+      "traits": {
+        "operation": "add"
+      },
+      "type": "group"
+    }
+  },
+  {
+    "description": "Page type  -> type and userId is given",
+    "input":{
+      "anonymousId": "21e13f4bc7ceddad",
+      "channel": "mobile",
+      "context": {
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "customProp": "customValue"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+      },
+      "name": "Home",
+      "properties": {
+        "title": "Home | RudderStack",
+        "url": "http://www.rudderstack.com"
+      },
+      "receivedAt": "2020-09-29T14:50:43.005+05:30",
+      "type": "page"
+    },
+    "output": {
+      "anonymousId": "21e13f4bc7ceddad",
+      "channel": "mobile",
+      "context": {
+        "os": {
+          "name": "Android",
+          "version": "9"
+        },
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "customProp": "customValue"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+      },
+      "name": "Home",
+      "properties": {
+        "title": "Home | RudderStack",
+        "url": "http://www.rudderstack.com"
+      },
+      "receivedAt": "2020-09-29T14:50:43.005+05:30",
+      "type": "page"
+    }
+  },
+  {
+    "description": "Alias type  -> type and userId is given",
+    "input": {
+      "type": "alias",
+      "previousId": "name@surname.com",
+      "userId": "12345"
+    },
+    "output": {
+      "type": "alias",
+      "previousId": "name@surname.com",
+      "userId": "12345"
+    }
+  }
+]

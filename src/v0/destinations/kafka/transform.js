@@ -76,21 +76,6 @@ const process = event => {
     filterConfigTopics(message, destination) ||
     destination.Config?.topic;
 
-  // TODO: uncomment this when v.1.3.0 of server is avialble in all envs
-  // if (!topic) {
-  //   throw new ErrorBuilder()
-  //     .setStatus(400)
-  //     .setMessage("Topic is required for Kafka destination")
-  //     .isTransformResponseFailure(true)
-  //     .setStatTags({
-  //       destType: "KAFKA",
-  //       stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-  //       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-  //       meta: getDynamicErrorType(400)
-  //     })
-  //     .build();
-  // }
-
   const userId = message.userId || message.anonymousId;
   let outputEvent;
   if (schemaId) {

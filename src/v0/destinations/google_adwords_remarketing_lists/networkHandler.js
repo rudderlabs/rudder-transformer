@@ -1,6 +1,5 @@
 const { httpSend, prepareProxyRequest } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util/index");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 
 const {
   REFRESH_TOKEN
@@ -154,7 +153,7 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
   // const { stat, err_code: errorCode } = respAttributes;
 
   throw new NetworkError(
-    `Google_adwords_remarketing_list: ${response.error.message} ${stageMsg}`,
+    `${response.error.message} ${stageMsg}`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
@@ -165,7 +164,7 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
 };
 
 const responseHandler = destinationResponse => {
-  const message = `[Google_adwords_remarketing_list Response Handler] - Request Processed Successfully`;
+  const message = `Request Processed Successfully`;
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
     // Mostly any error will not have a status of 2xx
@@ -178,8 +177,7 @@ const responseHandler = destinationResponse => {
   // else successfully return status, message and original destination response
   gaAudienceRespHandler(
     destinationResponse,
-    "during ga_audience response transformation",
-    TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
+    "during ga_audience response transformation"
   );
 };
 

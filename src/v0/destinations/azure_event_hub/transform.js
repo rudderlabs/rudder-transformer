@@ -5,20 +5,6 @@ function process(event) {
   const { message, destination } = event;
   const integrationsObj = getIntegrationsObj(message, "azure_event_hub");
   const topic = integrationsObj?.topic || destination.Config?.topic;
-  // TODO: Remove commented lines after server release
-  // if (!topic) {
-  //   throw new ErrorBuilder()
-  //     .setStatus(400)
-  //     .setMessage("Topic is required for Kafka destination")
-  //     .isTransformResponseFailure(true)
-  //     .setStatTags({
-  //       destType: "AZURE_EVENT_HUB",
-  //       stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-  //       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-  //       meta: getDynamicErrorType(400)
-  //     })
-  //     .build();
-  // }
   const result = {
     message: event.message,
     userId: event.message.userId || event.message.anonymousId,

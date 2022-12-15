@@ -29,7 +29,7 @@
   {
     "output": {
       "status": 200,
-      "message": "[Marketo Static List Response Handler] - Request Processed Successfully",
+      "message": "Request Processed Successfully",
       "destinationResponse": {
         "response": {
           "requestId": "12d3c#1846057dce2",

@@ -9,11 +9,9 @@ const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util/index");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
-const { DESTINATION } = require("./config");
 const tags = require("../../util/tags");
 const { NetworkError } = require("../../util/errorTypes");
 
@@ -65,7 +63,7 @@ const pardotRespHandler = (destResponse, stageMsg) => {
   const destinationStatus = getStatus(errorCode);
   const destinationStatusCode = destinationStatus?.status || 400;
   throw new NetworkError(
-    `Pardot: ${response.err} ${stageMsg}`,
+    `${response.err} ${stageMsg}`,
     destinationStatusCode,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(destinationStatusCode)
@@ -76,7 +74,7 @@ const pardotRespHandler = (destResponse, stageMsg) => {
 };
 
 const responseHandler = destinationResponse => {
-  const message = `[Pardot Response Handler] - Request Processed Successfully`;
+  const message = "Request Processed Successfully";
   const { status } = destinationResponse;
   // else successfully return status, message and original destination response
   pardotRespHandler(

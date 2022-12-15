@@ -7,17 +7,9 @@ const {
   prepareProxyRequest,
   proxyRequest
 } = require("../../../adapters/network");
-const { DESTINATION } = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { NetworkError } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
 
-const defaultStatTags = {
-  destType: DESTINATION,
-  stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-  scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-  meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-};
 /**
  * The actual API reference doc to which events from Rudderstack are being sent
  * https://developers.facebook.com/docs/marketing-api/reference/ads-pixel/events/v13.0
@@ -55,32 +47,20 @@ const errorDetailsMap = {
   100: {
     // This error talks about event being sent after seven days or so
     2804003: {
-      status: 400,
-      statTags: {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-      }
+      status: 400
     },
     // This error-subcode indicates that the business access token expired or is invalid or sufficient permissions are not provided
     // since there is involvement of changes required on dashboard to make event successful
     // for now, we are aborting this error-subCode combination
     33: {
-      status: 400,
-      statTags: {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-      }
+      status: 400
     }
   },
   1: {
     // An unknown error occurred.
     // This error may occur if you set level to adset but the correct value should be campaign
     99: {
-      status: 400,
-      statTags: {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-      }
+      status: 400
     }
   }
 };
@@ -94,37 +74,21 @@ const getErrorDetailsFromErrorMap = error => {
   return errDetails;
 };
 
-const getStatusAndStats = error => {
+const getStatus = error => {
   const errorDetail = getErrorDetailsFromErrorMap(error);
   let errorStatus = 400;
-  let statTags = { ...defaultStatTags };
   if (!isEmpty(errorDetail)) {
     errorStatus = errorDetail.status;
-    statTags = {
-      ...statTags,
-      ...errorDetail.statTags
-    };
   }
   if (RETRYABLE_ERROR_CODES.includes(error.code)) {
     errorStatus = 500;
-    statTags = {
-      ...statTags,
-      meta: getDynamicErrorType(errorStatus)
-    };
   }
 
   if (THROTTLED_ERROR_CODES.includes(error.code)) {
     errorStatus = 429;
-    statTags = {
-      ...statTags,
-      meta: getDynamicErrorType(errorStatus)
-    };
   }
 
-  return {
-    status: errorStatus,
-    statTags
-  };
+  return errorStatus;
 };
 
 const errorResponseHandler = destResponse => {
@@ -134,12 +98,12 @@ const errorResponseHandler = destResponse => {
     return;
   }
   const { error } = response;
-  const statusAndStats = getStatusAndStats(error);
+  const status = getStatus(error);
   throw new NetworkError(
     `Failed with ${error.message} during response transformation`,
-    statusAndStats.status,
+    status,
     {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(statusAndStats.status)
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
     },
     destResponse
   );
@@ -149,7 +113,7 @@ const destResponseHandler = destinationResponse => {
   errorResponseHandler(destinationResponse);
   return {
     destinationResponse: destinationResponse.response,
-    message: `[Facebook_pixel Response Handler] - Request Processed Successfully`,
+    message: "Request Processed Successfully",
     status: destinationResponse.status
   };
 };

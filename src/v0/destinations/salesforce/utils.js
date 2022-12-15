@@ -1,8 +1,11 @@
 const { handleHttpRequest } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util");
 const Cache = require("../../util/cache");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { NetworkError, RetryableError, ThrottledError, AbortedError } = require("../../util/errorTypes");
+const {
+  RetryableError,
+  ThrottledError,
+  AbortedError
+} = require("../../util/errorTypes");
 const {
   ACCESS_TOKEN_CACHE_TTL,
   SF_TOKEN_REQUEST_URL_SANDBOX,
@@ -20,12 +23,7 @@ const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
  * @param {*} stage
  * @param {String} authKey
  */
-const salesforceResponseHandler = (
-  destResponse,
-  sourceMessage,
-  stage,
-  authKey
-) => {
+const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
   const { status, response } = destResponse;
 
   // if the response from destination is not a success case build an explicit error

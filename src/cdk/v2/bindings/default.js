@@ -1,4 +1,4 @@
-const { TransformationError } = require("../../../v0/util");
+const { TransformationError } = require("../../../v0/util/errorTypes");
 
 const SUPPORTED_EVENT_TYPES = [
   "track",

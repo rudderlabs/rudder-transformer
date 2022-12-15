@@ -367,7 +367,6 @@ const responseBuilderSimple = (
           throw new InstrumentationError(
             `${category.standard} type of standard event does not exist`
           );
-        // throw new CustomError("This standard event does not exist", 400);
       }
       customData.currency = STANDARD_ECOMM_EVENTS_TYPE.includes(category.type)
         ? message.properties.currency || "USD"

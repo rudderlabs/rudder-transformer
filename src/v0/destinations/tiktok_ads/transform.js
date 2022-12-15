@@ -37,9 +37,72 @@ function checkIfValidPhoneNumber(str) {
   return regexExp.test(str);
 }
 
+const getContents = message => {
+  const contents = [];
+  const { properties } = message;
+  const { products } = properties;
+  if (products && Array.isArray(products) && products.length > 0) {
+    products.forEach(product => {
+      const singleProduct = {};
+      singleProduct.content_type =
+        product.contentType ||
+        properties.contentType ||
+        product.content_type ||
+        properties.content_type ||
+        "product_group";
+      singleProduct.content_id = product.product_id;
+      singleProduct.content_category = product.category;
+      singleProduct.content_name = product.name;
+      singleProduct.price = product.price;
+      singleProduct.quantity = product.quantity;
+      singleProduct.description = product.description;
+      contents.push(removeUndefinedAndNullValues(singleProduct));
+    });
+  }
+  return contents;
+};
+
+const checkContentType = (contents, contentType) => {
+  if (Array.isArray(contents)) {
+    contents.forEach(content => {
+      if (!content.content_type) {
+        content.content_type = contentType || "product_group";
+      }
+    });
+  }
+  return contents;
+};
+
 const getTrackResponse = (message, Config, event) => {
   const pixel_code = Config.pixelCode;
   let payload = constructPayload(message, trackMapping);
+
+  // if contents is not an array
+  if (
+    payload.properties?.contents &&
+    !Array.isArray(payload.properties.contents)
+  ) {
+    payload.properties.contents = [payload.properties.contents];
+  }
+
+  if (
+    payload.properties &&
+    !payload.properties?.contents &&
+    message.properties?.products
+  ) {
+    // retreiving data from products only when contents is not present
+    payload.properties = {
+      ...payload.properties,
+      contents: getContents(message)
+    };
+  }
+
+  if (payload.properties?.contents) {
+    payload.properties.contents = checkContentType(
+      payload.properties?.contents,
+      message.properties?.contentType
+    );
+  }
 
   const externalId = getDestinationExternalID(message, "tiktokExternalId");
   if (isDefinedAndNotNullAndNotEmpty(externalId)) {

@@ -58,6 +58,10 @@
         "jobId": 2
       }
     ],
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    },
     "batched": false,
     "statusCode": 400,
     "error": "Event type identify is not supported"

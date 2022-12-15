@@ -1,14 +1,8 @@
 [
   {
     "destKey": "distinct_id",
-    "sourceKeys": [
-      "userId",
-      "traits.userId",
-      "traits.id",
-      "context.traits.userId",
-      "context.traits.id",
-      "anonymousId"
-    ],
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
     "required": true
   },
   {
@@ -28,10 +22,7 @@
   },
   {
     "destKey": "timestamp",
-    "sourceKeys": [
-      "timestamp",
-      "originalTimestamp"
-    ],
+    "sourceKeys": ["timestamp", "originalTimestamp"],
     "required": false
   }
 ]

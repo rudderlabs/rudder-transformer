@@ -1,14 +1,8 @@
 [
   {
     "destKey": "properties.alias",
-    "sourceKeys": [
-      "userId",
-      "traits.userId",
-      "traits.id",
-      "context.traits.userId",
-      "context.traits.id",
-      "anonymousId"
-    ],
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
     "required": true
   },
   {
@@ -18,10 +12,7 @@
   },
   {
     "destKey": "timestamp",
-    "sourceKeys": [
-      "originalTimestamp",
-      "timestamp"
-    ],
+    "sourceKeys": ["originalTimestamp", "timestamp"],
     "required": false
   }
 ]

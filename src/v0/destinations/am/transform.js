@@ -29,9 +29,7 @@ const {
   isAppleFamily,
   isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
-const ErrorBuilder = require("../../util/error");
 const {
-  DESTINATION,
   BASE_URL,
   BASE_URL_EU,
   ConfigCategory,
@@ -45,6 +43,7 @@ const {
 const AMUtils = require("./utils");
 
 const logger = require("../../../logger");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
 const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
@@ -613,18 +612,7 @@ function processSingleMessage(message, destination) {
           groupInfo.group_properties = groupTraits;
         } else {
           logger.debug("Group call parameters are not valid");
-          throw new ErrorBuilder()
-            .setStatus(400)
-            .setMessage("Group call parameters are not valid")
-            .setStatTags({
-              destType: DESTINATION,
-              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-              meta:
-                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-                  .INSTRUMENTATION
-            })
-            .build();
+          throw new InstrumentationError("Group call parameters are not valid");
         }
       }
       break;
@@ -638,17 +626,7 @@ function processSingleMessage(message, destination) {
     case EventType.TRACK:
       evType = message.event;
       if (!isDefinedAndNotNullAndNotEmpty(evType)) {
-        throw new ErrorBuilder()
-          .setStatus(400)
-          .setMessage("message type not defined")
-          .setStatTags({
-            destType: DESTINATION,
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-          })
-          .build();
+        throw new InstrumentationError("message type not defined");
       }
       if (
         message.properties &&
@@ -664,17 +642,7 @@ function processSingleMessage(message, destination) {
       break;
     default:
       logger.debug("could not determine type");
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage("message type not supported")
-        .setStatTags({
-          destType: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        })
-        .build();
+      throw new InstrumentationError("message type not supported");
   }
   return responseBuilderSimple(
     groupInfo,

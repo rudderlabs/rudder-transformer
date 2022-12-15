@@ -2,8 +2,9 @@ const {
   getHashFromArray,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
+  generateErrorObject
 } = require("../../util");
+const { ConfigurationError } = require("../../util/errorTypes");
 
 function getDeliveryStreamMapTo(event) {
   const { message } = event;
@@ -25,7 +26,7 @@ function process(event) {
       deliveryStreamMapTo
     };
   }
-  throw new CustomError("No delivery stream set for this event", 400);
+  throw new ConfigurationError("No delivery stream set for this event");
 }
 const processRouterDest = async inputs => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
@@ -51,6 +52,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error.response
@@ -58,7 +60,8 @@ const processRouterDest = async inputs => {
             : error.code
             ? error.code
             : 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

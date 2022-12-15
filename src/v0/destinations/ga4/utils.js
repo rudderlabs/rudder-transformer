@@ -1,12 +1,12 @@
 const get = require("get-value");
 const {
   constructPayload,
-  CustomError,
   flattenJson,
   isEmptyObject,
   extractCustomFields,
   isDefinedAndNotNull
 } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 const { mappingConfig, ConfigCategory } = require("./config");
 
 /**
@@ -213,14 +213,13 @@ const getItemList = (message, isItemsRequired = false) => {
     (isItemsRequired && !products) ||
     (isItemsRequired && products && products.length === 0)
   ) {
-    throw new CustomError(
-      `Products is an required field for '${message.event}' event`,
-      400
+    throw new InstrumentationError(
+      `Products is an required field for '${message.event}' event`
     );
   }
 
   if (isItemsRequired && !Array.isArray(products)) {
-    throw new CustomError("Invalid type. Expected Array of products", 400);
+    throw new InstrumentationError("Invalid type. Expected Array of products");
   }
 
   if (products) {
@@ -234,7 +233,7 @@ const getItemList = (message, isItemsRequired = false) => {
         !isDefinedAndNotNull(element.item_id) &&
         !isDefinedAndNotNull(element.item_name)
       ) {
-        throw new CustomError("One of product_id or name is required", 400);
+        throw new InstrumentationError("One of product_id or name is required");
       }
 
       // take additional parameters apart from mapped one
@@ -265,9 +264,8 @@ const getItem = (message, isItemsRequired) => {
   let items;
   const properties = get(message, "properties");
   if (!properties && isItemsRequired) {
-    throw new CustomError(
-      `Item/product parameters not found for '${message.event}' event`,
-      400
+    throw new InstrumentationError(
+      `Item/product parameters not found for '${message.event}' event`
     );
   }
 
@@ -281,7 +279,7 @@ const getItem = (message, isItemsRequired) => {
       !isDefinedAndNotNull(product.item_id) &&
       !isDefinedAndNotNull(product.item_name)
     ) {
-      throw new CustomError("One of product_id or name is required", 400);
+      throw new InstrumentationError("One of product_id or name is required");
     }
 
     items.push(product);

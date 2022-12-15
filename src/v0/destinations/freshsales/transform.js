@@ -2,15 +2,19 @@ const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
-  CustomError,
   constructPayload,
   ErrorMessage,
   getErrorRespEvents,
   getSuccessRespEvents,
   getFieldValueFromMessage,
   defaultPostRequestConfig,
-  getValidDynamicFormConfig
+  getValidDynamicFormConfig,
+  generateErrorObject
 } = require("../../util");
+const {
+  InstrumentationError,
+  TransformationError
+} = require("../../util/errorTypes");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
   getUserAccountDetails,
@@ -50,7 +54,7 @@ const identifyResponseBuilder = (message, { Config }) => {
 
   if (!payload) {
     // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+    throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
 
   if (payload.address) payload.address = flattenAddress(payload.address);
@@ -77,7 +81,7 @@ const identifyResponseBuilder = (message, { Config }) => {
 const trackResponseBuilder = async (message, { Config }) => {
   const { event } = message;
   if (!event) {
-    throw new CustomError("Event name is required for track call.", 400);
+    throw new InstrumentationError("Event name is required for track call.");
   }
   let payload;
 
@@ -110,9 +114,8 @@ const trackResponseBuilder = async (message, { Config }) => {
       break;
     }
     default:
-      throw new CustomError(
-        `event name ${event} is not supported. Aborting!`,
-        400
+      throw new InstrumentationError(
+        `event name ${event} is not supported. Aborting!`
       );
   }
   response.headers = {
@@ -136,7 +139,7 @@ const groupResponseBuilder = async (message, { Config }) => {
   );
   if (!payload) {
     // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+    throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
 
   if (payload.address) payload.address = flattenAddress(payload.address);
@@ -161,7 +164,7 @@ const groupResponseBuilder = async (message, { Config }) => {
 function eventMappingHandler(message, destination) {
   const event = get(message, "event");
   if (!event) {
-    throw new CustomError("[Freshsales] :: Event name is required", 400);
+    throw new InstrumentationError("Event name is required");
   }
 
   let { rudderEventsToFreshsalesEvents } = destination.Config;
@@ -187,9 +190,8 @@ function eventMappingHandler(message, destination) {
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   let response;
@@ -223,7 +225,9 @@ const processEvent = async (message, destination) => {
       response = await groupResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `message type ${messageType} not supported`
+      );
   }
   return response;
 };
@@ -256,10 +260,12 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
+        const errObj = generateErrorObject(error);
         return getErrorRespEvents(
           [input.metadata],
           error?.response?.status || error?.code || 400,
-          error.message || "Error occurred while processing payload."
+          error.message || "Error occurred while processing payload.",
+          errObj.statTags
         );
       }
     })

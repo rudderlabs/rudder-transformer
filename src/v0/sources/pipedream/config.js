@@ -1,5 +1,5 @@
 /**
  * supported Call types
  */
-const callTypes = ["identify", "track", "group", "alias", "page"];
+const callTypes = ["identify", "track", "group", "alias", "page", "screen"];
 module.exports = { callTypes };

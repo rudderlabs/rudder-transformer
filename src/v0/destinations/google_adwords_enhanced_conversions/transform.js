@@ -107,7 +107,7 @@ const processTrackEvent = async (metadata, message, destination) => {
   const payload = constructPayload(message, updatedMapping);
 
   payload.partialFailure = true;
-  if (!payload.conversionAdjustments[0].userIdentifiers) {
+  if (!payload.conversionAdjustments[0]?.userIdentifiers) {
     throw new InstrumentationError(
       `Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`
     );

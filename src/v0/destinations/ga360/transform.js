@@ -871,14 +871,7 @@ function processSingleMessage(message, destination) {
 
 // Iterate over input batch and generate response for each message
 function process(event) {
-  let response;
-  try {
-    response = processSingleMessage(event.message, event.destination);
-  } catch (error) {
-    throw new TransformationError(error.message || "Unknown error");
-  }
-
-  return response;
+  return processSingleMessage(event.message, event.destination);
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {

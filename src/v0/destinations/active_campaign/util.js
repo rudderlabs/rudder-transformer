@@ -2,11 +2,7 @@ const {
   nodeSysErrorToStatus,
   getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
-const {
-  RetryableError,
-  NetworkInstrumentationError,
-  NetworkError
-} = require("../../util/errorTypes");
+const { NetworkError } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
 
 const errorHandler = (err, message) => {
@@ -23,10 +19,14 @@ const errorHandler = (err, message) => {
     );
   } else {
     const httpError = nodeSysErrorToStatus(err.code);
-    if (httpError.status === 500) {
-      throw new RetryableError(`${message} ${httpError.message}`);
-    }
-    throw new NetworkInstrumentationError(`${message} ${httpError.message}`);
+    throw new NetworkError(
+      `${message} ${httpError.message}`,
+      httpError.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(httpError.status)
+      },
+      err
+    );
   }
 };
 

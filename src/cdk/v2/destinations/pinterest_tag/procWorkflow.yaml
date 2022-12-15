@@ -20,7 +20,7 @@ steps:
   - name: validateInput
     template: |
       let messageType = $.outputs.messageType;
-      $.assert(.destination.Config.advertiserId, "Advertiser Id not found. Aborting");
+      $.assertConfig(.destination.Config.advertiserId, "Advertiser Id not found. Aborting");
       $.assert(messageType, "Message type is not present. Aborting message.");
       $.assert(messageType in {{$.EventType.([.TRACK, .PAGE, .SCREEN])}}, 
         "message type " + messageType + " is not supported")

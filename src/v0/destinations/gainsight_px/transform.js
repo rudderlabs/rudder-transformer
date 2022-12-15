@@ -160,14 +160,14 @@ const newGroupResponseBuilder = async (message, { Config }) => {
       Config
     );
     if (!createSuccess) {
-      throw new TransformationError(
+      throw new ConfigurationError(
         `failed to create account for group: ${error}`
       );
     }
   }
   // throwing error only when it is not due to unavailable contacts
   if (err) {
-    throw new TransformationError(`failed to update account for group: ${err}`);
+    throw new ConfigurationError(`failed to update account for group: ${err}`);
   }
 
   // add accountId to user object
@@ -201,7 +201,7 @@ const groupResponseBuilder = async (message, { Config }) => {
     "user"
   );
   if (!isPresent) {
-    throw new TransformationError(`aborting group call: ${e}`);
+    throw new InstrumentationError(`aborting group call: ${e}`);
   }
 
   const groupId = getFieldValueFromMessage(message, "groupId");
@@ -248,7 +248,7 @@ const groupResponseBuilder = async (message, { Config }) => {
       Config
     );
     if (!updateSuccess) {
-      throw new TransformationError(
+      throw new ConfigurationError(
         `failed to update account for group: ${err}`
       );
     }
@@ -260,7 +260,7 @@ const groupResponseBuilder = async (message, { Config }) => {
       Config
     );
     if (!createSuccess) {
-      throw new TransformationError(
+      throw new ConfigurationError(
         `failed to create account for group: ${err}`
       );
     }

@@ -31,7 +31,6 @@ const {
   createUpdateUser,
   createList
 } = require("./util");
-
 const {
   InstrumentationError,
   ConfigurationError,

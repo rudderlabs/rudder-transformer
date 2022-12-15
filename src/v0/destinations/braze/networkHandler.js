@@ -1,6 +1,5 @@
 /* eslint-disable no-unused-vars */
 const { isHttpStatusSuccess } = require("../../util/index");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
   proxyRequest,
   prepareProxyRequest

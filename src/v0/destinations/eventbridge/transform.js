@@ -24,30 +24,22 @@ function getResouceList(config) {
 
 function process(event) {
   // TODO: Use JSON mapping
-  let response;
-  try {
-    if (event.destination && event.destination.Config) {
-      response = {
-        DetailType: event.destination.Config.detailType,
-        Detail: JSON.stringify(event.message),
-        EventBusName: event.destination.Config.eventBusName,
-        Resources: getResouceList(event.destination.Config.resourceID),
-        Source: "rudderstack",
-        userId: event.message.userId || event.message.anonymousId
-      };
-    } else {
-      // drop event if config is empty
-      throw new ConfigurationError(
-        "EventBridge: received empty config, dropping event",
-        400
-      );
-    }
-  } catch (error) {
-    throw new TransformationError(
-      error.message || "EventBridge: Unknown error"
-    );
+  if (event.destination?.Config) {
+    return removeUndefinedAndNullValues({
+      DetailType: event.destination.Config.detailType,
+      Detail: JSON.stringify(event.message),
+      EventBusName: event.destination.Config.eventBusName,
+      Resources: getResouceList(event.destination.Config.resourceID),
+      Source: "rudderstack",
+      userId: event.message.userId || event.message.anonymousId
+    });
   }
-  return removeUndefinedAndNullValues(response);
+
+  // drop event if config is empty
+  throw new ConfigurationError(
+    "EventBridge: received empty config, dropping event",
+    400
+  );
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {

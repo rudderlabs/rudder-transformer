@@ -2,29 +2,38 @@
   {
     "output": {
       "status": 401,
-      "message": "Google_adwords_enhanced_conversion: \"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.\" during Google_adwords_enhanced_conversions response transformation",
-      "destinationResponse": [
-        {
-          "error": {
-            "code": 401,
-            "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
-            "status": "UNAUTHENTICATED"
+      "message": "\"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.\" during Google_adwords_enhanced_conversions response transformation",
+      "destinationResponse": {
+        "response": {
+          "response": {
+            "data": [
+              {
+                "error": {
+                  "code": 401,
+                  "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+                  "status": "UNAUTHENTICATED"
+                }
+              }
+            ],
+            "status": 401
           }
-        }
-      ],
+        },
+        "success": false
+      },
       "statTags": {
         "destType": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
-        "stage": "responseTransform",
-        "scope": "exception",
-        "errorAt": "proxy"
-      },
-      "authErrorCategory": "REFRESH_TOKEN"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
     }
   },
   {
     "output": {
       "status": 200,
-      "message": "[Google_adwords_enhanced_conversions Response Handler] - Request Processed Successfully",
+      "message": "Request Processed Successfully",
       "destinationResponse": {
         "response": [
           {

@@ -125,7 +125,7 @@ const ProxyRequest = async request => {
 };
 
 const responseHandler = destinationResponse => {
-  const message = `[Google_adwords_enhanced_conversions Response Handler] - Request Processed Successfully`;
+  const message = "Request Processed Successfully";
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
     // Mostly any error will not have a status of 2xx

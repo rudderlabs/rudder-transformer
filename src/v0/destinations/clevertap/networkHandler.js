@@ -11,8 +11,7 @@ const { NetworkError, AbortedError } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
 
 const responseHandler = destinationResponse => {
-  const message =
-    "[CleverTap Response Handler] - Request Processed Successfully";
+  const message = "Request Processed Successfully";
   const { response, status } = destinationResponse;
 
   // if the response from destination is not a success case build an explicit error

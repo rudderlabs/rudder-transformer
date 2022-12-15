@@ -2,7 +2,7 @@
   {
     "output": {
       "status": 200,
-      "message": "[snapchat_custom_audience Response Handler] - Request Processed Successfully",
+      "message": "Request Processed Successfully",
       "destinationResponse": {
         "response": {
           "request_status": "SUCCESS",
@@ -24,8 +24,7 @@
     "output": {
       "status": 500,
       "destinationResponse": "",
-      "authErrorCategory": "",
-      "message": "snapchat_custom_audience: undefined during snapchat_custom_audience response transformation",
+      "message": "undefined during snapchat_custom_audience response transformation",
       "statTags": {
         "destType": "SNAPCHAT_CUSTOM_AUDIENCE",
         "errorCategory": "network",
@@ -40,8 +39,7 @@
     "output": {
       "status": 500,
       "destinationResponse": "",
-      "authErrorCategory": "",
-      "message": "snapchat_custom_audience: undefined during snapchat_custom_audience response transformation",
+      "message": "undefined during snapchat_custom_audience response transformation",
       "statTags": {
         "destType": "SNAPCHAT_CUSTOM_AUDIENCE",
         "errorCategory": "network",

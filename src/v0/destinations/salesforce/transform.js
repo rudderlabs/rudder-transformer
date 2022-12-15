@@ -22,7 +22,6 @@ const {
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError
 } = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { getAccessToken, salesforceResponseHandler } = require("./utils");
 const { handleHttpRequest } = require("../../../adapters/network");
 const {
@@ -122,7 +121,6 @@ async function getSaleforceIdForRecord(
       `SALESFORCE SEARCH BY ID: ${JSON.stringify(
         processedsfSearchResponse.response
       )}`,
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
       destination.ID
     );
   }
@@ -231,7 +229,6 @@ async function getSalesforceIdFromPayload(
         `During Lead Query: ${JSON.stringify(
           processedLeadQueryResponse.response
         )}`,
-        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         destination.ID
       );
     }
@@ -362,11 +359,7 @@ const processRouterDest = async inputs => {
       inputs.map(input => input.metadata),
       400,
       `Authorisation failed: ${error.message}`,
-      {
-        destType: "SALESFORCE",
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
-      }
+      {}
     );
     return [respEvents];
   }

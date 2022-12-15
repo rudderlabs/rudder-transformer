@@ -262,11 +262,12 @@ const process = async event => {
   return response;
 };
 
-const processRouterDest = async inputs => {
+const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(
     inputs,
-    "Google_adwords_offline_conversions",
-    process
+    "GOOGLE_ADWORDS_OFFLINE_CONVERSIONS",
+    process,
+    reqMetadata
   );
   return respList;
 };

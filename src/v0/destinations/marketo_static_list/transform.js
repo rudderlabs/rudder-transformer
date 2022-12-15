@@ -119,6 +119,7 @@ const process = async event => {
   const response = processEvent({ ...event, token });
   return response;
 };
+
 const processRouterDest = async (inputs, reqMetadata) => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown

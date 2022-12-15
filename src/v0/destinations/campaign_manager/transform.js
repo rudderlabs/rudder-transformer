@@ -231,7 +231,8 @@ function process(event) {
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  return simpleProcessRouterDest(inputs, process, reqMetadata);
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  return respList;
 };
 
 module.exports = { process, processRouterDest };

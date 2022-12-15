@@ -1585,7 +1585,7 @@ function getValidDynamicFormConfig(
  *
  * Example:
  * ```
- * const errorRespEvents = checkInvalidRtTfEvents(inputs, destType);
+ * const errorRespEvents = checkInvalidRtTfEvents(inputs);
  * if (errorRespEvents.length > 0) {
  *  return errorRespEvents;
  * }

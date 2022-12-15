@@ -504,32 +504,20 @@ const processRouterDest = async (inputs, reqMetadata) => {
   let token;
   try {
     token = await getAuthToken(formatConfig(inputs[0].destination));
+
+    // If token is null track/identify calls cannot be executed.
+    if (!token) {
+      throw new UnauthorizedError("Authorization failed");
+    }
   } catch (error) {
     logger.error("Router Transformation problem:");
     const errObj = generateErrorObject(error);
     logger.error(errObj);
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
-      error.status || 500, // default to retryable
-      error.message || "Error occurred while processing payload.",
+      errObj.status,
+      errObj.message,
       errObj.statTags
-    );
-    return [respEvents];
-  }
-
-  // If token is null track/identify calls cannot be executed.
-  if (!token) {
-    const errResp = {
-      status: 400,
-      message: "Authorisation failed",
-      responseTransformFailure: true,
-      statTags: {}
-    };
-    const respEvents = getErrorRespEvents(
-      inputs.map(input => input.metadata),
-      errResp.status,
-      errResp.message,
-      errResp.statTags
     );
     return [respEvents];
   }

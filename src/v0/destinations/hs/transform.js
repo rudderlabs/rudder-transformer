@@ -124,7 +124,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   } catch (error) {
     // Any error thrown from the above try block applies to all the events
     return inputs.map(input =>
-      handleRtTfSingleEventError(input, error, DESTINATION)
+      handleRtTfSingleEventError(input, error, reqMetadata)
     );
   }
 

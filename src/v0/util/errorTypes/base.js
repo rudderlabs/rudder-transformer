@@ -1,6 +1,6 @@
 class BaseError extends Error {
   constructor(
-    message = "",
+    message = "Unknown error occurred",
     statusCode = 400,
     sTags = {},
     destResponse = "",

@@ -9,7 +9,6 @@ const {
   TraitsMapping,
   MappedToDestinationKey
 } = require("../../../constants");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
   addExternalIdToTraits,
   adduserIdFromExternalId,
@@ -27,7 +26,8 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
   isAppleFamily,
-  isDefinedAndNotNullAndNotEmpty
+  isDefinedAndNotNullAndNotEmpty,
+  getEventReqMetadata
 } = require("../../util");
 const {
   BASE_URL,
@@ -921,19 +921,6 @@ function batch(destEvents) {
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const getEventReqMetadata = event => {
-    try {
-      return {
-        destinationId: event?.destination?.ID,
-        destName: event?.destination?.Name,
-        metadata: event?.metadata
-      };
-    } catch (error) {
-      // Do nothing
-    }
-    return {};
-  };
-
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];

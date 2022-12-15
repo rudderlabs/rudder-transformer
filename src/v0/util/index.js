@@ -1628,6 +1628,19 @@ const checkInvalidRtTfEvents = (inputs, destType) => {
   return [];
 };
 
+const getEventReqMetadata = event => {
+  try {
+    return {
+      destinationId: event?.destination?.ID,
+      destName: event?.destination?.Name,
+      metadata: event?.metadata
+    };
+  } catch (error) {
+    // Do nothing
+  }
+  return {};
+};
+
 /**
  * This function serves as a simple implementation of router transformation destinations
  *
@@ -1646,19 +1659,6 @@ const simpleProcessRouterDest = async (
   singleTfFunc,
   reqMetadata
 ) => {
-  const getEventReqMetadata = event => {
-    try {
-      return {
-        destinationId: event?.destination?.ID,
-        destName: event?.destination?.Name,
-        metadata: event?.metadata
-      };
-    } catch (error) {
-      // Do nothing
-    }
-    return {};
-  };
-
   const errorRespEvents = checkInvalidRtTfEvents(inputs, destType);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
@@ -1874,5 +1874,6 @@ module.exports = {
   handleRtTfSingleEventError,
   getErrorStatusCode,
   getDestAuthCacheInstance,
-  refinePayload
+  refinePayload,
+  getEventReqMetadata
 };

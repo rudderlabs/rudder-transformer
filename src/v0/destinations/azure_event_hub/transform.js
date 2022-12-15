@@ -1,10 +1,17 @@
 const cloneDeep = require("lodash/cloneDeep");
 const { getIntegrationsObj } = require("../../util");
+// const { InstrumentationError } = require("../../util/errorTypes");
 
 function process(event) {
   const { message, destination } = event;
   const integrationsObj = getIntegrationsObj(message, "azure_event_hub");
   const topic = integrationsObj?.topic || destination.Config?.topic;
+
+  // TODO: Remove commented lines after server release
+  // if (!topic) {
+  //   throw new InstrumentationError("Topic is required for Kafka destination");
+  // }
+
   const result = {
     message: event.message,
     userId: event.message.userId || event.message.anonymousId,

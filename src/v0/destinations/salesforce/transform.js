@@ -359,9 +359,7 @@ const processRouterDest = async inputs => {
       inputs.map(input => input.metadata),
       400,
       `Authorisation failed: ${error.message}`,
-      {
-        destType: "SALESFORCE"
-      }
+      {}
     );
     return [respEvents];
   }

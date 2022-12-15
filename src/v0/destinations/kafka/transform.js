@@ -1,14 +1,12 @@
 /* eslint-disable no-restricted-syntax */
 const groupBy = require("lodash/groupBy");
 const cloneDeep = require("lodash/cloneDeep");
-// const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const {
   getIntegrationsObj,
   getHashFromArray,
   removeUndefinedAndNullValues
 } = require("../../util");
-// const { TRANSFORMER_METRIC } = require("../../util/constant");
-// const ErrorBuilder = require("../../util/error");
+// const { InstrumentationError } = require("../../util/errorTypes");
 
 const filterConfigTopics = (message, destination) => {
   const { Config } = destination;
@@ -75,6 +73,11 @@ const process = event => {
     integrationsObj?.topic ||
     filterConfigTopics(message, destination) ||
     destination.Config?.topic;
+
+  // TODO: uncomment this when v.1.3.0 of server is avialble in all envs
+  // if (!topic) {
+  //   throw new InstrumentationError("Topic is required for Kafka destination");
+  // }
 
   const userId = message.userId || message.anonymousId;
   let outputEvent;

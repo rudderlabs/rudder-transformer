@@ -1,6 +1,9 @@
 const _ = require("lodash");
 const { get } = require("lodash");
-const { defaultPostRequestConfig } = require("../../util");
+const {
+  defaultPostRequestConfig,
+  handleRtTfSingleEventError
+} = require("../../util");
 const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
@@ -232,21 +235,7 @@ const processRouterDest = (inputs, reqMetadata) => {
         output: transformedEvents
       };
     } catch (error) {
-      const resp = getErrorRespEvents(
-        [event.metadata],
-        error.response ? error.response.status : 400,
-        error.message || "Error occurred while processing payload."
-      );
-
-      errNotificationClient.notify(
-        error,
-        "Router Transformation (event level)",
-        {
-          ...resp,
-          ...reqMetadata,
-          ...getEventReqMetadata(event)
-        }
-      );
+      const resp = handleRtTfSingleEventError(event, error, reqMetadata);
 
       return {
         error: resp

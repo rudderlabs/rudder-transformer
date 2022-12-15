@@ -1,4 +1,4 @@
-const { TransformationError } = require("../../../v0/util");
+const { InstrumentationError } = require("../../../v0/util/errorTypes");
 
 const SUPPORTED_EVENT_TYPES = [
   "track",
@@ -26,7 +26,7 @@ function isValidEventType(event) {
 
 function assert(val, message, status, statTags, destination) {
   if (!val) {
-    throw new TransformationError(message, status, statTags, destination);
+    throw new InstrumentationError(message, status, statTags, destination);
   }
 }
 

@@ -26,7 +26,7 @@ function getResouceList(config) {
 
 function process(event) {
   // TODO: Use JSON mapping
-  if (event.destination && event.destination.Config) {
+  if (event.destination?.Config) {
     return removeUndefinedAndNullValues({
       DetailType: event.destination.Config.detailType,
       Detail: JSON.stringify(event.message),

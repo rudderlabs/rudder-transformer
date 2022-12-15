@@ -23,7 +23,6 @@ const {
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { userTransformHandler } = require("./routerUtils");
-const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 const profilingRouter = require("./routes/profiling");
 const destProxyRoutes = require("./routes/destinationProxy");
@@ -434,7 +433,7 @@ async function isValidRouterDest(event, destType) {
   const isCdkV2Dest = isCdkV2Destination(event);
   if (isCdkV2Dest) {
     try {
-      await getCachedWorkflowEngine(destType, TRANSFORMER_METRIC.ERROR_AT.RT);
+      await getCachedWorkflowEngine(destType, tags.FEATURES.ROUTER);
       return true;
     } catch (error) {
       return false;
@@ -1149,7 +1148,7 @@ const batchHandler = ctx => {
         destEvents.map(d => d.metadata),
         500,
         error.message || "Error occurred while processing payload.",
-        { errorAt: TRANSFORMER_METRIC.ERROR_AT.BATCH, ...errorObj.statTags }
+        { errorAt: tags.FEATURES.BATCH, ...errorObj.statTags }
       );
       response.errors.push(errResp);
       errNotificationClient.notify(error, "Batch Transformation", {

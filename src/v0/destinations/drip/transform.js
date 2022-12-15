@@ -31,7 +31,6 @@ const {
   createUpdateUser,
   createList
 } = require("./util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
   InstrumentationError,
   ConfigurationError,

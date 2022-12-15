@@ -1,6 +1,5 @@
 const { EventType } = require("../../../constants");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG, DESTINATION } = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 
 const {
   constructPayload,

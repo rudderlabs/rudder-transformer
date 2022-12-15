@@ -96,7 +96,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[DCM Floodlight] track:: userAgent is required",
+    "error": "track:: userAgent is required",
     "statTags": {
       "destination": "dcm_floodlight",
       "stage": "cdk",
@@ -139,7 +139,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[DCM Floodlight] track:: Conversion event not found",
+    "error": "track:: Conversion event not found",
     "statTags": {
       "destination": "dcm_floodlight",
       "stage": "cdk",
@@ -267,7 +267,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[DCM Floodlight]:: COPPA: valid parameters are [1|true] or [0|false]",
+    "error": "COPPA: valid parameters are [1|true] or [0|false]",
     "statTags": {
       "destination": "dcm_floodlight",
       "stage": "cdk",
@@ -276,7 +276,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[DCM Floodlight]:: GDPR: valid parameters are [1|true] or [0|false]",
+    "error": "GDPR: valid parameters are [1|true] or [0|false]",
     "statTags": {
       "destination": "dcm_floodlight",
       "stage": "cdk",
@@ -285,7 +285,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[DCM Floodlight]:: npa: valid parameters are [1|true] or [0|false]",
+    "error": "npa: valid parameters are [1|true] or [0|false]",
     "statTags": {
       "destination": "dcm_floodlight",
       "stage": "cdk",
@@ -294,7 +294,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[DCM Floodlight]:: dc_lat: valid parameters are [1|true] or [0|false]",
+    "error": "dc_lat: valid parameters are [1|true] or [0|false]",
     "statTags": {
       "destination": "dcm_floodlight",
       "stage": "cdk",
@@ -303,7 +303,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[DCM Floodlight] page:: Conversion event not found",
+    "error": "page:: Conversion event not found",
     "statTags": {
       "destination": "dcm_floodlight",
       "stage": "cdk",

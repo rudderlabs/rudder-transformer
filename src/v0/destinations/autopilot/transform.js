@@ -67,7 +67,6 @@ function responseBuilderSimple(message, category, destination) {
           response.endpoint = `${category.endPoint}/${destination.Config.triggerId}/contact/${contactIdOrEmail}`;
         } else {
           throw new InstrumentationError("Email is required for track calls");
-          // throw new CustomError("Email is required for track calls", 400);
         }
         break;
       default:

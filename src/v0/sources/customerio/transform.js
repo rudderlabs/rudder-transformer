@@ -6,6 +6,7 @@ const mapping = JSON.parse(
 );
 const Message = require("../message");
 const { mappingConfig } = require("./config");
+// const { TransformationError } = require("../../util/errorTypes");
 
 function process(event) {
   const message = new Message(`Customer.io`);
@@ -17,7 +18,7 @@ function process(event) {
 
   let eventName = mappingConfig[event.object_type.toLowerCase()][event.metric];
   if (!eventName) {
-    // throw new CustomError("Metric not supported");
+    // throw new TransformationError("Metric not supported");
     eventName = "Unknown Event";
   }
   message.setEventName(eventName);

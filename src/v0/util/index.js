@@ -24,9 +24,10 @@ const {
 const {
   InstrumentationError,
   BaseError,
-  PlatformError
+  PlatformError,
+  TransformationError
 } = require("./errorTypes");
-const tags = require("./tags");
+const { client: errNotificationClient } = require("../../util/errorNotifier");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -1441,9 +1442,10 @@ const getErrorStatusCode = (error, defaultStatusCode = 400) => {
 function generateErrorObject(error, defTags = {}) {
   let errObject = error;
   if (!(error instanceof BaseError)) {
-    errObject = new BaseError(error.message, getErrorStatusCode(error), {
-      [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.TRANSFORMATION
-    });
+    errObject = new TransformationError(
+      error.message,
+      getErrorStatusCode(error)
+    );
   }
 
   // Add higher level default tags
@@ -1626,6 +1628,19 @@ const checkInvalidRtTfEvents = (inputs, destType) => {
   return [];
 };
 
+const getEventReqMetadata = event => {
+  try {
+    return {
+      destinationId: event?.destination?.ID,
+      destName: event?.destination?.Name,
+      metadata: event?.metadata
+    };
+  } catch (error) {
+    // Do nothing
+  }
+  return {};
+};
+
 /**
  * This function serves as a simple implementation of router transformation destinations
  *
@@ -1638,7 +1653,12 @@ const checkInvalidRtTfEvents = (inputs, destType) => {
  * @param {Function} singleTfFunc - single event transformation function, we'd recommend this to be an async function(always)
  * @returns
  */
-const simpleProcessRouterDest = async (inputs, destType, singleTfFunc) => {
+const simpleProcessRouterDest = async (
+  inputs,
+  destType,
+  singleTfFunc,
+  reqMetadata
+) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs, destType);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
@@ -1655,7 +1675,19 @@ const simpleProcessRouterDest = async (inputs, destType, singleTfFunc) => {
 
         return getSuccessRespEvents(resp, [input.metadata], input.destination);
       } catch (error) {
-        return handleRtTfSingleEventError(input, error, destType);
+        const errResp = handleRtTfSingleEventError(input, error, destType);
+
+        errNotificationClient.notify(
+          error,
+          "Router Transformation (event level)",
+          {
+            ...errResp,
+            ...(reqMetadata || {}),
+            ...getEventReqMetadata(input)
+          }
+        );
+
+        return errResp;
       }
     })
   );
@@ -1842,5 +1874,6 @@ module.exports = {
   handleRtTfSingleEventError,
   getErrorStatusCode,
   getDestAuthCacheInstance,
-  refinePayload
+  refinePayload,
+  getEventReqMetadata
 };

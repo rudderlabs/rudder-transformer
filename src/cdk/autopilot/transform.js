@@ -42,17 +42,7 @@ function trackPostMapper(event, mappedPayload, rudderContext) {
   if (contactIdOrEmail) {
     rudderContext.endpoint = `https://api2.autopilothq.com/v1/trigger/${destination.Config.triggerId}/contact/${contactIdOrEmail}`;
   } else {
-    /**
-     * TODO: instead of using Transformer ErrorBuilder, maybe expose ErrorBuilder from CDK and use it here?
-     * Should stats be set from here?
-     * Current implementation follows the below mentioned approach:
-     *  - if error is being thrown with proper stats here, CDK will use it build an error object internally
-     *  - if no stat is being set from here, CDK will treat it as an unexpected error occuring in PostMapper
-     *    and it shall be treated with priority P0
-     */
     throw new InstrumentationError("Email is required for track calls");
-
-    // throw new Error("Email is required for track calls");
   }
   // The plan is to delete the rudderResponse property from the mappedPayload finally
   // While removing the rudderResponse property, we'd need to do a deep-clone of rudderProperty first

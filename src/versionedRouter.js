@@ -140,12 +140,12 @@ async function getCdkV2Result(destName, event, feature) {
   return cdkResult;
 }
 
-async function compareWithCdkV2(destType, input, feature, v0Result, v0Time) {
+async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
   try {
     const envThreshold = parseFloat(process.env.CDK_LIVE_TEST || "0", 10);
-    let destThreshold = getCdkV2TestThreshold(input);
+    let destThreshold = getCdkV2TestThreshold(inputArr[0]);
     if (feature === tags.FEATURES.ROUTER) {
-      destThreshold = getCdkV2TestThreshold(input[0]);
+      destThreshold = getCdkV2TestThreshold(inputArr[0][0]);
     }
     const liveTestThreshold = envThreshold * destThreshold;
     if (
@@ -156,7 +156,7 @@ async function compareWithCdkV2(destType, input, feature, v0Result, v0Time) {
       return;
     }
     const startTime = process.hrtime();
-    const cdkResult = await getCdkV2Result(destType, input, feature);
+    const cdkResult = await getCdkV2Result(destType, inputArr[0], feature);
     const diff = process.hrtime(startTime);
     const cdkTime = diff[0] * NS_PER_SEC + diff[1];
     stats.gauge("v0_transformation_time", v0Time, {
@@ -176,12 +176,12 @@ async function compareWithCdkV2(destType, input, feature, v0Result, v0Time) {
         )}`
       );
       logger.error(
-        `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${flowType}, input=${JSON.stringify(
-          input
+        `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, input=${JSON.stringify(
+          inputArr[0]
         )}`
       );
       logger.error(
-        `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${flowType}, results=${JSON.stringify(
+        `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, results=${JSON.stringify(
           { v0: v0Result, cdk: cdkResult }
         )}`
       );
@@ -197,12 +197,12 @@ async function compareWithCdkV2(destType, input, feature, v0Result, v0Time) {
   }
 }
 
-async function handleV0Destination(destHandler, destType, input, feature) {
+async function handleV0Destination(destHandler, destType, inputArr, feature) {
   const v0Result = {};
   let v0Time = 0;
   try {
     const startTime = process.hrtime();
-    v0Result.output = await destHandler(input);
+    v0Result.output = await destHandler(...inputArr);
     const diff = process.hrtime(startTime);
     v0Time = diff[0] * NS_PER_SEC + diff[1];
     // Comparison is happening in async and after return from here
@@ -217,9 +217,9 @@ async function handleV0Destination(destHandler, destType, input, feature) {
     throw error;
   } finally {
     if (process.env.NODE_ENV === "test") {
-      await compareWithCdkV2(destType, input, feature, v0Result, v0Time);
+      await compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time);
     } else {
-      compareWithCdkV2(destType, input, feature, v0Result, v0Time);
+      compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time);
     }
   }
 }
@@ -280,7 +280,7 @@ async function handleDest(ctx, version, destination) {
           respEvents = await handleV0Destination(
             destHandler.process,
             destination,
-            parsedEvent,
+            [parsedEvent],
             tags.FEATURES.PROCESSOR
           );
         }
@@ -463,7 +463,19 @@ async function isValidRouterDest(event, destType) {
     return false;
   }
 }
+
 async function routerHandleDest(ctx) {
+  const getReqMetadata = () => {
+    try {
+      return {
+        destType: ctx.request?.body?.destType
+      };
+    } catch (error) {
+      // Do nothing
+    }
+    return {};
+  };
+
   const respEvents = [];
   let destType;
   let defTags;
@@ -501,7 +513,10 @@ async function routerHandleDest(ctx) {
           listOutput = await handleV0Destination(
             routerDestHandler.processRouterDest,
             destType,
-            newDestInputArray,
+            [
+              newDestInputArray,
+              { ...getCommonMetadata(ctx), ...getReqMetadata() }
+            ],
             tags.FEATURES.ROUTER
           );
         }
@@ -541,6 +556,12 @@ async function routerHandleDest(ctx) {
       error: errObj.message,
       statTags: errObj.statTags
     };
+
+    errNotificationClient.notify(error, "Router Transformation", {
+      ...resp,
+      ...getCommonMetadata(ctx),
+      ...getReqMetadata()
+    });
 
     respEvents.push(resp);
   }

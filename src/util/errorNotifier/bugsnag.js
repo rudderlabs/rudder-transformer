@@ -68,11 +68,6 @@ function notify(err, context, metadata) {
 
   if (isDeniedErrType) return;
 
-  // For errors thrown in the code using ErrorBuilder
-  // TODO: This need to be cleaned up once the entire code base
-  // moves into a consistent error reporting format
-  if (err.isExpected === true) return;
-
   Bugsnag.notify(err, event => {
     event.context = context;
     event.addMetadata("metadata", metadata);

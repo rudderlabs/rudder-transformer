@@ -74,7 +74,7 @@ const scaAudienceRespHandler = (destResponse, stageMsg) => {
   // const respAttributes = response["@attributes"] || null;
   // const { stat, err_code: errorCode } = respAttributes;
   throw new NetworkError(
-    `snapchat_custom_audience: ${response.error?.message} ${stageMsg}`,
+    `${response.error?.message} ${stageMsg}`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
@@ -85,7 +85,7 @@ const scaAudienceRespHandler = (destResponse, stageMsg) => {
 };
 
 const responseHandler = destinationResponse => {
-  const message = `[snapchat_custom_audience Response Handler] - Request Processed Successfully`;
+  const message = `Request Processed Successfully`;
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
     // Mostly any error will not have a status of 2xx

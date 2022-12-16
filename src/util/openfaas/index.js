@@ -9,7 +9,7 @@ const logger = require("../../logger");
 const { RetryRequestError } = require("../utils");
 
 const FAAS_BASE_IMG =
-  process.env.FAAS_BASE_IMG || "rudderlabs/develop-openfaas-flask:latest";
+  process.env.FAAS_BASE_IMG || "rudderlabs/openfaas-flask:main";
 const FAAS_SCALE_MAX_PODS = process.env.FAAS_SCALE_MAX_PODS || 100;
 const CONFIG_BACKEND_URL =
   process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";

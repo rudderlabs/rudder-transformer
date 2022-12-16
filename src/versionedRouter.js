@@ -4,7 +4,6 @@ const Router = require("koa-router");
 const _ = require("lodash");
 const fs = require("fs");
 const path = require("path");
-const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { SUPPORTED_VERSIONS, API_VERSION } = require("./routes/utils/constants");
@@ -41,10 +40,9 @@ const {
   getCachedWorkflowEngine,
   processCdkV2Workflow
 } = require("./cdk/v2/handler");
+const { processCdkV1 } = require("./cdk/v1/handler");
 
-const CDK_DEST_PATH = "cdk";
-const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
-ConfigFactory.init({ basePath, loggingMode: "production" });
+const CDK_V1_DEST_PATH = "cdk/v1";
 
 const transformerMode = process.env.TRANSFORMER_MODE;
 
@@ -254,8 +252,7 @@ async function handleDest(ctx, version, destination) {
             tags.FEATURES.PROCESSOR
           );
         } else if (isCdkDestination(parsedEvent)) {
-          const tfConfig = await ConfigFactory.getConfig(destination);
-          respEvents = await Executor.execute(parsedEvent, tfConfig);
+          respEvents = await processCdkV1(destination, parsedEvent);
         } else {
           if (destHandler === null) {
             destHandler = getDestHandler(version, destination);
@@ -560,7 +557,7 @@ if (startDestTransformer) {
       path.resolve(__dirname, `./${version}/destinations`)
     );
     destinations.push(
-      ...getIntegrations(path.resolve(__dirname, `./${CDK_DEST_PATH}`))
+      ...getIntegrations(path.resolve(__dirname, `./${CDK_V1_DEST_PATH}`))
     );
     destinations.forEach(destination => {
       // eg. v0/destinations/ga

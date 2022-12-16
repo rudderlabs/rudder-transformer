@@ -158,7 +158,7 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
     },
-    destResponse,
+    response,
     getAuthErrCategory(status, response)
   );
 };

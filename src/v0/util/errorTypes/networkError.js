@@ -10,7 +10,7 @@ class NetworkError extends BaseError {
     statusCode = 400,
     statTags = {},
     destResponse,
-    authErrCategory
+    authErrorCategory
   ) {
     const finalStatTags = {
       [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.NETWORK,
@@ -29,7 +29,7 @@ class NetworkError extends BaseError {
       }
     }
 
-    super(message, statusCode, finalStatTags, destResponse, authErrCategory);
+    super(message, statusCode, finalStatTags, destResponse, authErrorCategory);
   }
 }
 

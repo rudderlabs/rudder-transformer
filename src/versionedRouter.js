@@ -1027,8 +1027,8 @@ async function handleProxyRequest(destination, ctx) {
 
     response = {
       status: errObj.status,
-      ...(errObj.authErrCategory && {
-        authErrCategory: errObj.authErrorCategory
+      ...(errObj.authErrorCategory && {
+        authErrorCategory: errObj.authErrorCategory
       }),
       destinationResponse: errObj.destinationResponse,
       message: errObj.message,

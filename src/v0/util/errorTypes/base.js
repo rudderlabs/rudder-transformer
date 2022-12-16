@@ -4,13 +4,13 @@ class BaseError extends Error {
     statusCode = 400,
     sTags = {},
     destResponse = "",
-    authErrCategory = ""
+    authErrorCategory = ""
   ) {
     super(message);
     this.status = statusCode;
     this.statTags = sTags;
     this.destinationResponse = destResponse;
-    this.authErrorCategory = authErrCategory;
+    this.authErrorCategory = authErrorCategory;
   }
 }
 

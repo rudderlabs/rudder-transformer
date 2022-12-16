@@ -1,25 +1,17 @@
 [
   {
     "output": {
-      "status": 401,
       "message": "\"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.\" during Google_adwords_enhanced_conversions response transformation",
-      "destinationResponse": {
-        "response": {
-          "response": {
-            "data": [
-              {
-                "error": {
-                  "code": 401,
-                  "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
-                  "status": "UNAUTHENTICATED"
-                }
-              }
-            ],
-            "status": 401
+      "authErrorCategory": "REFRESH_TOKEN",
+      "destinationResponse": [
+        {
+          "error": {
+            "code": 401,
+            "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+            "status": "UNAUTHENTICATED"
           }
-        },
-        "success": false
-      },
+        }
+      ],
       "statTags": {
         "destType": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
         "errorCategory": "network",
@@ -27,7 +19,8 @@
         "feature": "dataDelivery",
         "implementation": "native",
         "module": "destination"
-      }
+      },
+      "status": 401
     }
   },
   {

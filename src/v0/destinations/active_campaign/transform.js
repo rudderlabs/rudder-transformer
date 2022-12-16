@@ -558,14 +558,14 @@ const trackRequestHandler = async (message, category, destination) => {
       }
     };
     res = await httpPOST(endpoint, requestData, requestOpt);
-    if (res?.response?.status !== 201) {
+    if (res.response?.status !== 201) {
       throw new NetworkError(
         "Unable to create event. Aborting",
         res.response.status,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status)
         },
-        res?.response
+        res.response
       );
     }
   }

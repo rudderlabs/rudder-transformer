@@ -9,11 +9,7 @@ const {
   formatTimeStamp
 } = require("../../util");
 const { getCustomFieldsEndPoint } = require("./config");
-const {
-  NetworkError,
-  InstrumentationError,
-  ConfigurationError
-} = require("../../util/errorTypes");
+const { NetworkError, InstrumentationError } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
 
 /**
@@ -344,7 +340,7 @@ const checkEventIfUIMapped = (message, destination) => {
         whiteListedEvent.eventName.toLowerCase() === event.toLowerCase()
     );
     if (!allowEvent) {
-      throw new ConfigurationError(
+      throw new InstrumentationError(
         "The event was discarded as it was not allow listed in the destination configuration"
       );
     }

@@ -1348,21 +1348,28 @@ const handleDeletionOfUsers = async ctx => {
           respList.push(response);
         }
       } catch (error) {
+        const errObj = generateErrorObject(error, {
+          [tags.TAG_NAMES.DEST_TYPE]: destType.toUpperCase(),
+          [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+          [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
+          [tags.TAG_NAMES.FEATURE]: tags.FEATURES.USER_DELETION
+        });
+
         // adding the status to the request
-        const errorStatus = getErrorStatusCode(error);
-        ctx.status = errorStatus;
+        ctx.status = errObj.status;
         const resp = {
-          statusCode: errorStatus,
-          error: error.message || "Error occurred while processing"
+          statusCode: errObj.status,
+          error: errObj.message,
+          ...(errObj.authErrorCategory && {
+            authErrorCategory: errObj.authErrorCategory
+          })
         };
-        // Support for OAuth refresh
-        if (error.authErrorCategory) {
-          resp.authErrorCategory = error.authErrorCategory;
-        }
+
         respList.push(resp);
         logger.error(
           `Error Response List: ${JSON.stringify(respList, null, 2)}`
         );
+
         errNotificationClient.notify(error, "User Deletion", {
           ...resp,
           ...getCommonMetadata(ctx),

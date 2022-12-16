@@ -5,6 +5,33 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.8.0...v1.9.0) (2022-12-16)
+
+
+### Features
+
+* **destination:** onboard pipedream as event stream source ([#1634](https://github.com/rudderlabs/rudder-transformer/issues/1634)) ([477e2f7](https://github.com/rudderlabs/rudder-transformer/commit/477e2f79704576c5611a9a7e97faf066db10dd87))
+* map the usertraits for all event in Posthog ([#1636](https://github.com/rudderlabs/rudder-transformer/issues/1636)) ([3a12f79](https://github.com/rudderlabs/rudder-transformer/commit/3a12f793073ab360ef5f235aac77b3c587c16006))
+* onboard ga4 hybrid mode ([#1617](https://github.com/rudderlabs/rudder-transformer/issues/1617)) ([0986b76](https://github.com/rudderlabs/rudder-transformer/commit/0986b769d2e2d84314724a16c322cd05d9fa8bd4))
+* onboard pinterest and algolia to json template engine ([#1640](https://github.com/rudderlabs/rudder-transformer/issues/1640)) ([f0f4717](https://github.com/rudderlabs/rudder-transformer/commit/f0f471762dae0ccc8f3449c50f1602bf03a54ec5))
+
+
+### Bug Fixes
+
+* **destination:** follow ecommerce spec in tiktok_ads ([#1629](https://github.com/rudderlabs/rudder-transformer/issues/1629)) ([a258bfb](https://github.com/rudderlabs/rudder-transformer/commit/a258bfb4b746aa48c12435792adb477a2957334e))
+* upgrade base node image in dockerfiles ([#1702](https://github.com/rudderlabs/rudder-transformer/issues/1702)) ([a26b20e](https://github.com/rudderlabs/rudder-transformer/commit/a26b20e43915cb8020e46e16c1997b38663f1899))
+
+
+### Miscellaneous
+
+* **ci:** add master build action ([#1643](https://github.com/rudderlabs/rudder-transformer/issues/1643)) ([62ef556](https://github.com/rudderlabs/rudder-transformer/commit/62ef556c03f085ba26529fa77bbeecc6c3ac1010))
+* **ci:** fix the buildspec file for helm chart changes ([#1701](https://github.com/rudderlabs/rudder-transformer/issues/1701)) ([d2714a5](https://github.com/rudderlabs/rudder-transformer/commit/d2714a52d3f5c994a7315bf0a80ca07fcd025617))
+* optimize performance using new json template features ([#1635](https://github.com/rudderlabs/rudder-transformer/issues/1635)) ([23ce982](https://github.com/rudderlabs/rudder-transformer/commit/23ce982f2756c62d009250aba3cafc87f4b63b67))
+* reorganize files to follow popular convention ([#1620](https://github.com/rudderlabs/rudder-transformer/issues/1620)) ([63d75bb](https://github.com/rudderlabs/rudder-transformer/commit/63d75bbe2aea1ae151661b479c331b0a9b771650))
+* revamp npm scripts ([#1663](https://github.com/rudderlabs/rudder-transformer/issues/1663)) ([46a7dbf](https://github.com/rudderlabs/rudder-transformer/commit/46a7dbf96d8809517e52e8eab8abd89cc3acee0e))
+* suppress cdk v2 comparision logs ([#1694](https://github.com/rudderlabs/rudder-transformer/issues/1694)) ([38b09ca](https://github.com/rudderlabs/rudder-transformer/commit/38b09ca9518296d7e759e1894e3688d687de9ac0))
+* **trackingplan:** added tests with no track or global config ([#1646](https://github.com/rudderlabs/rudder-transformer/issues/1646)) ([60d5be5](https://github.com/rudderlabs/rudder-transformer/commit/60d5be5d0252fa30727a3158f6c8bc22d56dce42))
+
 ## [1.8.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.7.0...v1.8.0) (2022-12-06)
 
 

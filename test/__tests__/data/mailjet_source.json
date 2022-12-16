@@ -16,8 +16,9 @@
       "CustomID": "",
       "Payload": ""
     },
-    "output": "track is not supported"
-    
+    "output":{
+      "Message": "track is not supported"
+    }
   },
   {
     "description": "MailJet email bounce event",
@@ -35,8 +36,9 @@
       "error_related_to": "system",
       "error": "connection issue"
     },
-    "output":  "track is not supported"
-    
+    "output": {
+      "Message": "track is not supported"
+    }
   },
   {
     "description": "MailJet email sent event",
@@ -51,8 +53,9 @@
       "customcampaign": "mj.nl=58486",
       "smtp_reply": "250 2.0.0 OK DMARC:Quarantine 1664444171 u17-20020adfdd51000000b0022cc3f2bf13si3225188wrm.271 - gsmtp"
     },
-    "output": "track is not supported"
-    
+    "output":{
+      "Message": "track is not supported"
+    }
   },
   {
     "description": "MailJet email bounce event",
@@ -70,7 +73,8 @@
       "error_related_to": "system",
       "error": "connection issue"
     },
-    "output":  "track is not supported"
-   
+    "output": {
+      "Message": "track is not supported"
+    }
   }
 ]

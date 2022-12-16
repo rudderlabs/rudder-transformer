@@ -18,9 +18,10 @@ testData.forEach((data, index) => {
   it(`${name} Tests: payload: ${index}`, () => {
     try {
       const output = transformer.process(data.input);
+      console.log(JSON.stringify(output));
       expect(output).toEqual(data.output.Message);
     } catch (error) {
-      expect(error.message).toEqual(data.output);
+      expect(error.message).toEqual(data.output.Message);
     }
   });
 });

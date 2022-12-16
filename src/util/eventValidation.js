@@ -42,9 +42,10 @@ const supportedEventTypes = {
 
 // When no ajv options are provided, ajv constructed from defaultOptions will be used
 const ajv4 = new Ajv(defaultOptions);
+addFormats(ajv4);
 
 const ajv19 = new Ajv2019(defaultOptions);
-addFormats(ajv19, { mode: "fast", formats: ["date", "time"], keywords: true });
+addFormats(ajv19);
 ajv19.addMetaSchema(draft6MetaSchema);
 ajv19.addMetaSchema(draft7MetaSchema);
 
@@ -57,11 +58,14 @@ ajv19.addMetaSchema(draft7MetaSchema);
  */
 function getAjv(ajvOptions, isDraft4 = false) {
   if (isDraft4) {
-    return new Ajv(ajvOptions);
+    const ajv = new Ajv(ajvOptions);
+    addFormats(ajv);
+    return ajv;
   }
   const ajv = new Ajv2019(ajvOptions);
   ajv.addMetaSchema(draft6MetaSchema);
   ajv.addMetaSchema(draft7MetaSchema);
+  addFormats(ajv);
   return ajv;
 }
 

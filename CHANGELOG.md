@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.9.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.9.0...v1.9.1) (2022-12-16)
+
+
+### Bug Fixes
+
+* **trackingplan:** error message population ([#1706](https://github.com/rudderlabs/rudder-transformer/issues/1706)) ([72079a7](https://github.com/rudderlabs/rudder-transformer/commit/72079a7a71f52d44b057df6a910f0b0b54108f72))
+
 ## [1.9.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.8.0...v1.9.0) (2022-12-16)
 
 

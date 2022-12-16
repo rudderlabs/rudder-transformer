@@ -316,7 +316,8 @@ async function handleDest(ctx, version, destination) {
           [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
           [tags.TAG_NAMES.IMPLEMENTATION]: implementation,
           [tags.TAG_NAMES.FEATURE]: tags.FEATURES.PROCESSOR,
-          [tags.TAG_NAMES.DESTINATION_ID]: event.metadata?.destinationId
+          [tags.TAG_NAMES.DESTINATION_ID]: event.metadata?.destinationId,
+          [tags.TAG_NAMES.WORKSPACE_ID]: event.metadata?.workspaceId
         });
 
         const resp = {
@@ -526,7 +527,8 @@ async function routerHandleDest(ctx) {
         resp.statTags = {
           ...resp.statTags,
           ...defTags,
-          [tags.TAG_NAMES.DESTINATION_ID]: resp.metadata[0]?.destinationId
+          [tags.TAG_NAMES.DESTINATION_ID]: resp.metadata[0]?.destinationId,
+          [tags.TAG_NAMES.WORKSPACE_ID]: resp.metadata[0]?.workspaceId
         };
       });
   } catch (error) {
@@ -1021,8 +1023,9 @@ async function handleProxyRequest(destination, ctx) {
       [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),
       [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
       [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
-      [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY
-      // [tags.TAG_NAMES.DESTINATION_ID]: TBD
+      [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY,
+      [tags.TAG_NAMES.DESTINATION_ID]: metadata?.destinationId,
+      [tags.TAG_NAMES.WORKSPACE_ID]: metadata?.workspaceId
     });
 
     response = {
@@ -1142,7 +1145,8 @@ const batchHandler = ctx => {
         [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
         [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
         [tags.TAG_NAMES.FEATURE]: tags.FEATURES.BATCH,
-        [tags.TAG_NAMES.DESTINATION_ID]: destEvents[0].metadata?.destinationId
+        [tags.TAG_NAMES.DESTINATION_ID]: destEvents[0].metadata?.destinationId,
+        [tags.TAG_NAMES.WORKSPACE_ID]: destEvents[0].metadata?.workspaceId
       });
       const errResp = getErrorRespEvents(
         destEvents.map(d => d.metadata),

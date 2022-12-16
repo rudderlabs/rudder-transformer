@@ -11,6 +11,7 @@ const TAG_NAMES = {
   NAMESPACE: "namespace",
   CUSTOMER: "customer",
   DESTINATION_ID: "destinationId",
+  WORKSPACE_ID: "workspaceId",
   SOURCE_ID: "sourceId"
 };
 

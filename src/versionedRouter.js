@@ -1143,9 +1143,9 @@ const batchHandler = ctx => {
       });
       const errResp = getErrorRespEvents(
         destEvents.map(d => d.metadata),
-        500,
-        error.message || "Error occurred while processing payload.",
-        { errorAt: tags.FEATURES.BATCH, ...errorObj.statTags }
+        500, // not using errorObj.status
+        errorObj.message,
+        errorObj.statTags
       );
       response.errors.push(errResp);
       errNotificationClient.notify(error, "Batch Transformation", {

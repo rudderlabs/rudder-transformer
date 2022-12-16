@@ -8,7 +8,9 @@ const {
 const logger = require("../../logger");
 const { RetryRequestError } = require("../utils");
 
-const FAAS_BASE_IMG = "rudderlabs/develop-openfaas-flask:latest";
+const FAAS_BASE_IMG =
+  process.env.FAAS_BASE_IMG || "rudderlabs/develop-openfaas-flask:latest";
+const FAAS_SCALE_MAX_PODS = process.env.FAAS_SCALE_MAX_PODS || 100;
 const CONFIG_BACKEND_URL =
   process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
 
@@ -35,6 +37,12 @@ const isFunctionDeployed = functionName => {
   return funcList.includes(functionName);
 };
 
+const setFunctionInCache = functionName => {
+  const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
+  funcList.push(functionName);
+  functionListCache.set(FUNC_LIST_KEY, funcList);
+};
+
 const deployFaasFunction = async (functionName, code, versionId, testMode) => {
   try {
     logger.debug("[Faas] Deploying a faas function");
@@ -53,7 +61,8 @@ const deployFaasFunction = async (functionName, code, versionId, testMode) => {
       envProcess,
       labels: {
         faas_function: functionName,
-        "com.openfaas.scale.max": "100"
+        "com.openfaas.scale.max": FAAS_SCALE_MAX_PODS,
+        "parent-component": "openfaas"
       },
       annotations: {
         "prometheus.io.scrape": "true"
@@ -69,6 +78,7 @@ const deployFaasFunction = async (functionName, code, versionId, testMode) => {
     // To handle concurrent create requests,
     // throw retry error if already exists so that request can be retried
     if (error.message.includes("already exists")) {
+      setFunctionInCache(functionName);
       throw new RetryRequestError(`${functionName} already exists`);
     }
     throw error;
@@ -89,9 +99,7 @@ async function setupFaasFunction(functionName, code, versionId, testMode) {
     // check if function is spinned
     await callWithRetry(getFunction, 0, functionName);
 
-    const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
-    funcList.push(functionName);
-    functionListCache.set(FUNC_LIST_KEY, funcList);
+    setFunctionInCache(functionName);
     logger.debug(`[Faas] Finished deploying faas function ${functionName}`);
   } catch (error) {
     logger.error(

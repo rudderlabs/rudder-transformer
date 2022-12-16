@@ -21,17 +21,20 @@ const unsupportedFuncNames = [
   "reverse",
   "split"
 ];
-const { userTransformHandler, setupUserTransformHandler } = require("../util/customTransformer");
 const integration = "user_transformation";
 const name = "User Transformations";
-
-const OPENFAAS_GATEWAY_URL = "http://localhost:8080";
 
 const util = require("util");
 const fs = require("fs");
 const path = require("path");
-const { parserForImport } = require("../util/parser");
-const { RetryRequestError } = require("../util/utils");
+const {
+  userTransformHandler,
+  setupUserTransformHandler
+} = require("../../src/util/customTransformer");
+const { parserForImport } = require("../../src/util/parser");
+const { RetryRequestError } = require("../../src/util/utils");
+
+const OPENFAAS_GATEWAY_URL = "http://localhost:8080";
 
 const randomID = () =>
   Math.random()
@@ -57,14 +60,11 @@ const getfetchResponse = (resp, url) =>
   );
 
 describe("User transformation", () => {
-  const OLD_ENV = process.env;
   beforeEach(() => {
     jest.resetAllMocks();
-    process.env = { ...OLD_ENV };
   });
-  afterAll(() => {
-    process.env = OLD_ENV; // restore old env
-  });
+  afterAll(() => {});
+
   it(`Simple ${name} Test`, async () => {
     const versionId = randomID();
 
@@ -73,7 +73,7 @@ describe("User transformation", () => {
 
     const respBody = {
       codeVersion: "0",
-      name: name,
+      name,
       code: `
       function transform(events) {
           const filteredEvents = events.map(event => {
@@ -103,7 +103,7 @@ describe("User transformation", () => {
 
     const respBody = {
       codeVersion: "0",
-      name: name,
+      name,
       code: `
       async function foo() {
         return 'resolved';
@@ -170,7 +170,6 @@ describe("User transformation", () => {
       .mockResolvedValueOnce(getfetchResponse(textResponse, dummyUrl))
       .mockRejectedValue(new Error("Timed Out"));
 
-
     const output = await userTransformHandler(inputData, versionId, []);
     expect(fetch).toHaveBeenCalledWith(transformerUrl);
     expect(fetch).toHaveBeenCalledWith(dummyUrl);
@@ -198,7 +197,7 @@ describe("User transformation", () => {
       name: "url",
       codeVersion: "1"
     };
-    respBody["versionId"] = versionId;
+    respBody.versionId = versionId;
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
     when(fetch)
       .calledWith(transformerUrl)
@@ -252,7 +251,7 @@ describe("User transformation", () => {
       name: "url",
       codeVersion: "1"
     };
-    respBody["versionId"] = versionId;
+    respBody.versionId = versionId;
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
     when(fetch)
       .calledWith(transformerUrl)
@@ -262,7 +261,7 @@ describe("User transformation", () => {
       });
 
     const urlCode = `${fs.readFileSync(
-      "./util/url-search-params.min.js",
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
       "utf8"
     )};
     export default self;
@@ -315,7 +314,7 @@ describe("User transformation", () => {
       name: "url",
       codeVersion: "1"
     };
-    respBody["versionId"] = versionId;
+    respBody.versionId = versionId;
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
     when(fetch)
       .calledWith(transformerUrl)
@@ -325,7 +324,7 @@ describe("User transformation", () => {
       });
 
     const urlCode = `${fs.readFileSync(
-      "./util/url-search-params.min.js",
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
       "utf8"
     )};
     export default self;
@@ -347,7 +346,7 @@ describe("User transformation", () => {
       `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
     );
 
-    const x = _.cloneDeep(expectedData)
+    const x = _.cloneDeep(expectedData);
     x[0] = {
       error:
         "returned event in events array from transformBatch(events) is not an object",
@@ -381,7 +380,7 @@ describe("User transformation", () => {
       name: "url",
       codeVersion: "1"
     };
-    respBody["versionId"] = versionId;
+    respBody.versionId = versionId;
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
     when(fetch)
       .calledWith(transformerUrl)
@@ -391,7 +390,7 @@ describe("User transformation", () => {
       });
 
     const urlCode = `${fs.readFileSync(
-      "./util/url-search-params.min.js",
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
       "utf8"
     )};
     export default self;
@@ -440,7 +439,7 @@ describe("User transformation", () => {
       name: "url",
       codeVersion: "1"
     };
-    respBody["versionId"] = versionId;
+    respBody.versionId = versionId;
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
     when(fetch)
       .calledWith(transformerUrl)
@@ -450,7 +449,7 @@ describe("User transformation", () => {
       });
 
     const urlCode = `${fs.readFileSync(
-      "./util/url-search-params.min.js",
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
       "utf8"
     )};
     export default self;
@@ -507,7 +506,7 @@ describe("User transformation", () => {
       name: "url",
       codeVersion: "1"
     };
-    respBody["versionId"] = versionId;
+    respBody.versionId = versionId;
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
     when(fetch)
       .calledWith(transformerUrl)
@@ -517,7 +516,7 @@ describe("User transformation", () => {
       });
 
     const urlCode = `${fs.readFileSync(
-      "./util/url-search-params.min.js",
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
       "utf8"
     )};
     export default self;
@@ -575,7 +574,7 @@ describe("User transformation", () => {
       name: "url",
       codeVersion: "1"
     };
-    respBody["versionId"] = versionId;
+    respBody.versionId = versionId;
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
     when(fetch)
       .calledWith(transformerUrl)
@@ -585,7 +584,7 @@ describe("User transformation", () => {
       });
 
     const urlCode = `${fs.readFileSync(
-      "./util/url-search-params.min.js",
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
       "utf8"
     )};
     export default self;
@@ -637,7 +636,7 @@ describe("User transformation", () => {
       name: "url",
       codeVersion: "1"
     };
-    respBody["versionId"] = versionId;
+    respBody.versionId = versionId;
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
     when(fetch)
       .calledWith(transformerUrl)
@@ -647,7 +646,7 @@ describe("User transformation", () => {
       });
 
     const urlCode = `${fs.readFileSync(
-      "./util/url-search-params.min.js",
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
       "utf8"
     )};
     export default self;
@@ -679,7 +678,7 @@ describe("User transformation", () => {
 
     const respBody = {
       codeVersion: "0",
-      name: name,
+      name,
       code: `function transform(events) {
                         let filteredEvents = events.filter(event => {
                           const eventType = event.type;
@@ -729,7 +728,7 @@ describe("User transformation", () => {
           `
     };
 
-    respBody["versionId"] = versionId;
+    respBody.versionId = versionId;
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
     when(fetch)
       .calledWith(transformerUrl)
@@ -739,7 +738,10 @@ describe("User transformation", () => {
       });
 
     const lodashCode = `
-      ${fs.readFileSync("./util/lodash-es-core.js", "utf8")};
+      ${fs.readFileSync(
+        path.resolve(__dirname, "../../src/util/lodash-es-core.js"),
+        "utf8"
+      )};
       ;
       // Not exporting the unsupported functions
       export {${Object.keys(lodashCore).filter(
@@ -753,9 +755,7 @@ describe("User transformation", () => {
       .calledWith(libraryUrl)
       .mockResolvedValue({
         status: 200,
-        json: jest
-          .fn()
-          .mockResolvedValue({ code: lodashCode, name: "lodash" })
+        json: jest.fn().mockResolvedValue({ code: lodashCode, name: "lodash" })
       });
     const output = await userTransformHandler(inputData, versionId, [
       libraryVersionId
@@ -789,7 +789,7 @@ describe("User transformation", () => {
       name: "url",
       codeVersion: "1"
     };
-    respBody["versionId"] = versionId;
+    respBody.versionId = versionId;
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
     when(fetch)
       .calledWith(transformerUrl)
@@ -797,9 +797,8 @@ describe("User transformation", () => {
         status: 200,
         json: jest.fn().mockResolvedValue(respBody)
       });
-
     const urlCode = `${fs.readFileSync(
-      "./util/url-search-params.min.js",
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
       "utf8"
     )};
     export default self;
@@ -877,7 +876,7 @@ describe("User transformation", () => {
     };
 
     const urlCode = `${fs.readFileSync(
-      "./util/url-search-params.min.js",
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
       "utf8"
     )};
     export default self;
@@ -891,7 +890,13 @@ describe("User transformation", () => {
         json: jest.fn().mockResolvedValue({ code: urlCode, name: "url" })
       });
 
-    const output = await userTransformHandler(inputData, trRevCode.versionId, [libraryVersionId], trRevCode, true);
+    const output = await userTransformHandler(
+      inputData,
+      trRevCode.versionId,
+      [libraryVersionId],
+      trRevCode,
+      true
+    );
 
     expect(fetch).toHaveBeenCalledWith(libraryUrl);
 
@@ -921,11 +926,17 @@ describe("User transformation", () => {
       versionId: "testVersionId"
     };
 
-    const output = await userTransformHandler(inputData, trRevCode.versionId, [], trRevCode, true);
+    const output = await userTransformHandler(
+      inputData,
+      trRevCode.versionId,
+      [],
+      trRevCode,
+      true
+    );
     expect(output).toEqual(expectedData);
   });
 
-  // Running timeout tests
+  // Running timeout tests 
   describe("Timeout tests", () => {
     beforeEach(() => {});
     it(`Test for timeout for v0 transformation`, async () => {
@@ -933,7 +944,7 @@ describe("User transformation", () => {
       const inputData = require(`./data/${integration}_input.json`);
       const respBody = {
         codeVersion: "0",
-        name: name,
+        name,
         code: `
         function transform(events) {
             while(true){
@@ -967,7 +978,7 @@ describe("User transformation", () => {
       const inputData = require(`./data/${integration}_input.json`);
       const respBody = {
         codeVersion: "1",
-        name: name,
+        name,
         code: `
         export function transformEvent(event) {
             while(true){
@@ -977,7 +988,7 @@ describe("User transformation", () => {
             }
             `
       };
-      respBody["versionId"] = versionId;
+      respBody.versionId = versionId;
       fetch.mockResolvedValue({
         status: 200,
         json: jest.fn().mockResolvedValue(respBody)
@@ -996,7 +1007,7 @@ describe("User transformation", () => {
       const inputData = require(`./data/${integration}_input.json`);
       const respBody = {
         codeVersion: "1",
-        name: name,
+        name,
         code: `
 
         export function transformBatch(events) {
@@ -1007,7 +1018,7 @@ describe("User transformation", () => {
             }
             `
       };
-      respBody["versionId"] = versionId;
+      respBody.versionId = versionId;
       fetch.mockResolvedValue({
         status: 200,
         json: jest.fn().mockResolvedValue(respBody)
@@ -1060,10 +1071,12 @@ describe("Python transformations", () => {
       workspaceId: "workspaceId",
       versionId: "versionId"
     };
-    
-    const funcName = `fn-${trRevCode.workspaceId}-${trRevCode.versionId}`.toLowerCase().substring(0, 63);
+
+    const funcName = `fn-${trRevCode.workspaceId}-${trRevCode.versionId}`
+      .toLowerCase()
+      .substring(0, 63);
     const expectedData = { success: true, publishedVersion: funcName };
-    
+
     axios.post.mockResolvedValue({});
     axios.get.mockResolvedValue({});
 
@@ -1075,7 +1088,9 @@ describe("Python transformations", () => {
       expect.objectContaining({ name: funcName, service: funcName })
     );
     expect(axios.get).toHaveBeenCalledTimes(1);
-    expect(axios.get).toHaveBeenCalledWith(`${OPENFAAS_GATEWAY_URL}/system/function/${funcName}`);
+    expect(axios.get).toHaveBeenCalledWith(
+      `${OPENFAAS_GATEWAY_URL}/system/function/${funcName}`
+    );
   });
 
   it("Setting up function with testWithPublish as true - returns cached function if exists", async () => {
@@ -1090,8 +1105,10 @@ describe("Python transformations", () => {
       workspaceId: "workspaceId",
       versionId: "versionId"
     };
-    
-    const funcName = `fn-${trRevCode.workspaceId}-${trRevCode.versionId}`.toLowerCase().substring(0, 63);
+
+    const funcName = `fn-${trRevCode.workspaceId}-${trRevCode.versionId}`
+      .toLowerCase()
+      .substring(0, 63);
     const expectedData = { success: true, publishedVersion: funcName };
 
     const output = await setupUserTransformHandler(trRevCode, [], true);
@@ -1113,9 +1130,8 @@ describe("Python transformations", () => {
       workspaceId: "workspaceId",
       versionId
     };
-    
+
     axios.post.mockRejectedValue(new Error("already exists"));
-    const funcName = `fn-${trRevCode.workspaceId}-${versionId}`.toLowerCase().substring(0, 63);
 
     await expect(async () => {
       await setupUserTransformHandler(trRevCode, [], true);
@@ -1134,7 +1150,7 @@ describe("Python transformations", () => {
           return event
       `,
       workspaceId: "workspaceId",
-      versionId: versionId,
+      versionId,
       handleId: "testHandle"
     };
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
@@ -1144,12 +1160,13 @@ describe("Python transformations", () => {
         status: 200,
         json: jest.fn().mockResolvedValue(respBody)
       });
-    
-    const funcName = `fn-${respBody.workspaceId}-${versionId}`.toLowerCase().substring(0, 63);
-    axios
-      .post
+
+    const funcName = `fn-${respBody.workspaceId}-${versionId}`
+      .toLowerCase()
+      .substring(0, 63);
+    axios.post
       .mockResolvedValueOnce({})
-      .mockResolvedValue({ data: { transformedEvents: outputData }});
+      .mockResolvedValue({ data: { transformedEvents: outputData } });
     axios.get.mockResolvedValue({});
 
     const output = await userTransformHandler(inputData, versionId, []);
@@ -1166,6 +1183,8 @@ describe("Python transformations", () => {
     );
 
     expect(axios.get).toHaveBeenCalledTimes(1);
-    expect(axios.get).toHaveBeenCalledWith(`${OPENFAAS_GATEWAY_URL}/system/function/${funcName}`);
+    expect(axios.get).toHaveBeenCalledWith(
+      `${OPENFAAS_GATEWAY_URL}/system/function/${funcName}`
+    );
   });
 });

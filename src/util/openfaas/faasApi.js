@@ -5,6 +5,7 @@ const OPENFAAS_GATEWAY_URL =
   process.env.OPENFAAS_GATEWAY_URL || "http://localhost:8080";
 
 const parseAxiosError = error => {
+  console.log(error)
   if (error.response) {
     const status = error.response.status || 400;
     const errorData = error.response?.data;

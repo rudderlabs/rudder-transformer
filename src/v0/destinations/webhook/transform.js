@@ -11,10 +11,12 @@ const {
   getFieldValueFromMessage,
   flattenJson,
   isDefinedAndNotNull,
-  CustomError,
   defaultDeleteRequestConfig,
   getIntegrationsObj
 } = require("../../util");
+const { TRANSFORMER_METRIC } = require("../../util/constant");
+const ErrorBuilder = require("../../util/error");
+
 const { simpleProcessRouterDest } = require("../../util");
 const { EventType } = require("../../../constants");
 
@@ -26,8 +28,8 @@ const getPropertyParams = message => {
 };
 
 const processEvent = event => {
+  const { DESTINATION, message, destination } = event;
   try {
-    const { DESTINATION, message, destination } = event;
     const integrationsObj = getIntegrationsObj(message, DESTINATION);
     // set context.ip from request_ip if it is missing
     if (
@@ -155,12 +157,27 @@ const processEvent = event => {
 
       return response;
     }
-    throw new CustomError("Invalid URL in destination config", 400);
+    throw new ErrorBuilder()
+      .setMessage("Invalid URL in destination config")
+      .setStatus(400)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
+      })
+      .build();
   } catch (err) {
-    throw new CustomError(
-      err.message || "[webhook] Failed to process request",
-      err.status || 400
-    );
+    throw new ErrorBuilder()
+      .setMessage("err.message")
+      .setStatus(err.status)
+      .setStatTags({
+        destType: DESTINATION,
+        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      })
+      .build();
   }
 };
 const DESTINATION = "webhook";

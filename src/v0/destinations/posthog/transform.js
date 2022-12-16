@@ -65,6 +65,16 @@ const generatePropertyDefination = message => {
     data.$host = url.host;
   }
 
+  // It pass the user traits in $set -> its an user Properties
+  // For identify, we are mapping it from PHIdentifyConfig file.
+  const userTraits = message.context?.traits;
+  if (message.type.toLowerCase() !== EventType.IDENTIFY && userTraits) {
+    data = {
+      $set: userTraits,
+      ...data
+    };
+  }
+
   return removeUndefinedAndNullValues(data);
 };
 

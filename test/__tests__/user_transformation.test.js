@@ -1045,7 +1045,7 @@ describe("Python transformations", () => {
   it("Setting up function with testWithPublish as false", async () => {
     const trRevCode = {
       codeVersion: "1",
-      language: "python",
+      language: "pythonfaas",
       testName: "pytest",
       code: `
         def transformEvent(event, metadata):
@@ -1053,7 +1053,7 @@ describe("Python transformations", () => {
       `
     };
 
-    const expectedData = { success: true, publishedVersion: null };
+    const expectedData = { success: true };
 
     const output = await setupUserTransformHandler(trRevCode, [], false);
     expect(output).toEqual(expectedData);
@@ -1062,7 +1062,7 @@ describe("Python transformations", () => {
   it("Setting up function with testWithPublish as true - creates faas function", async () => {
     const trRevCode = {
       codeVersion: "1",
-      language: "python",
+      language: "pythonfaas",
       testName: "pytest",
       code: `
         def transformEvent(event, metadata):
@@ -1096,7 +1096,7 @@ describe("Python transformations", () => {
   it("Setting up function with testWithPublish as true - returns cached function if exists", async () => {
     const trRevCode = {
       codeVersion: "1",
-      language: "python",
+      language: "pythonfaas",
       testName: "pytest",
       code: `
         def transformEvent(event, metadata):
@@ -1121,7 +1121,7 @@ describe("Python transformations", () => {
     const versionId = randomID();
     const trRevCode = {
       codeVersion: "1",
-      language: "python",
+      language: "pythonfaas",
       testName: "pytest",
       code: `
         def transformEvent(event, metadata):
@@ -1144,7 +1144,7 @@ describe("Python transformations", () => {
     const outputData = require(`./data/${integration}_output.json`);
     const respBody = {
       codeVersion: "1",
-      language: "python",
+      language: "pythonfaas",
       code: `
         def transformEvent(event, metadata):
           return event

@@ -77,7 +77,7 @@ const getConversionActionId = async (method, headers, params) => {
             response.response?.response?.status
           )
         },
-        response,
+        response.response?.response?.data,
         getAuthErrCategory(
           get(response, "response.response.status"),
           get(response, "response.response.data[0]")

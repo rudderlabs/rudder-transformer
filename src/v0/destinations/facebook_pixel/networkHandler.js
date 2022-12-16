@@ -105,7 +105,7 @@ const errorResponseHandler = destResponse => {
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
     },
-    destResponse
+    { ...response, status: destResponse.status }
   );
 };
 

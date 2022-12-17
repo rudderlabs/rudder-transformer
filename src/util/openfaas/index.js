@@ -10,7 +10,7 @@ const { RetryRequestError } = require("../utils");
 
 const FAAS_BASE_IMG =
   process.env.FAAS_BASE_IMG || "rudderlabs/openfaas-flask:main";
-const FAAS_SCALE_MAX_PODS = process.env.FAAS_SCALE_MAX_PODS || 100;
+const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || "100";
 const CONFIG_BACKEND_URL =
   process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
 
@@ -61,7 +61,7 @@ const deployFaasFunction = async (functionName, code, versionId, testMode) => {
       envProcess,
       labels: {
         faas_function: functionName,
-        "com.openfaas.scale.max": FAAS_SCALE_MAX_PODS,
+        "com.openfaas.scale.max": FAAS_MAX_PODS_IN_TEXT,
         "parent-component": "openfaas"
       },
       annotations: {
@@ -109,7 +109,12 @@ async function setupFaasFunction(functionName, code, versionId, testMode) {
   }
 }
 
-const executeFaasFunction = async (functionName, events, testMode) => {
+const executeFaasFunction = async (
+  functionName,
+  events,
+  versionId,
+  testMode
+) => {
   try {
     logger.debug("[Faas] Invoking faas function");
     const res = await invokeFunction(functionName, events);
@@ -119,6 +124,13 @@ const executeFaasFunction = async (functionName, events, testMode) => {
     logger.error(
       `[Faas] Error while invoking ${functionName}: ${error.message}`
     );
+    if (
+      error.statusCode === 404 &&
+      error.message.includes(`error finding function ${functionName}`)
+    ) {
+      await setupFaasFunction(functionName, null, versionId, testMode);
+      throw new RetryRequestError(`${functionName} not found`);
+    }
     throw error;
   } finally {
     if (testMode) {

@@ -47,7 +47,12 @@ async function setOpenFaasUserTransform(
   stats.timing("faas_publish_time", setupTime, tags);
   return { success: true, publishedVersion: functionName };
 }
-
+/**
+ * Runs the user transformation code
+ * In testMode, the function is deployed, executed and then deleted
+ * In production mode, the function is executed directly
+ * if function is not found, it is deployed and returns retryable error
+ */
 async function runOpenFaasUserTransform(
   events,
   userTransformation,
@@ -63,23 +68,31 @@ async function runOpenFaasUserTransform(
     identifier: "openfaas",
     ...metaTags
   };
-  if (!testMode && !userTransformation.handleId) {
-    stats.counter("missing_handle", 1, tags);
-    throw new Error("Handle id is not connected to transformation");
-  }
+  // TODO: To be removed faas python won't use handleId anymore
+  // if (!testMode && !userTransformation.handleId) {
+  //   stats.counter("missing_handle", 1, tags);
+  //   throw new Error("Handle id is not connected to transformation");
+  // }
 
   // check and deploy faas function if not exists
   const functionName = generateFunctionName(userTransformation, testMode);
-  await setOpenFaasUserTransform(
-    userTransformation,
-    true,
-    functionName,
-    testMode
-  );
+  if (testMode) {
+    await setOpenFaasUserTransform(
+      userTransformation,
+      true,
+      functionName,
+      testMode
+    );
+  }
 
   const invokeTime = new Date();
 
-  const result = await executeFaasFunction(functionName, events, testMode);
+  const result = await executeFaasFunction(
+    functionName,
+    events,
+    userTransformation.versionId,
+    testMode
+  );
   stats.timing("faas_invoke_time", invokeTime, tags);
   return result;
 }

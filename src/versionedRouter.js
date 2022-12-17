@@ -809,7 +809,7 @@ if (transformerTestModeEnabled) {
       );
       ctx.body = res;
     } catch (error) {
-      ctx.status = 400;
+      ctx.status = error.statusCode || 400;
       ctx.body = { error: error.message };
     }
   });

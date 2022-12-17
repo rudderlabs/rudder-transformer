@@ -11,7 +11,7 @@ export default class ErrorReportingService {
 
   private static getRequestMetadata(dto: ErrorDetailer) {
     return {
-      destType: dto.destinationType,
+      destType: dto.integrationType,
       destinationInfos: dto.destinationInfo,
       metadatas: dto.eventMetadatas,
       originalRequest: dto.inputPayload

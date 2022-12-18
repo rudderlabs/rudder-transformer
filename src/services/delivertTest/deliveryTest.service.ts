@@ -1,25 +1,19 @@
-const match = require("match-json");
-const jsonDiff = require("json-diff");
-const networkHandlerFactory = require("../adapters/networkHandlerFactory");
-const { getPayloadData } = require("../adapters/network");
-const { TRANSFORMER_METRIC } = require("../v0/util/constant");
-const { generateErrorObject } = require("../v0/util");
-const stats = require("../util/stats");
-const logger = require("../logger");
+import networkHandlerFactory from "../../adapters/networkHandlerFactory";
+import { getPayloadData } from "../../adapters/network";
+import { TRANSFORMER_METRIC } from "../../v0/util/constant";
+import { generateErrorObject } from "../../v0/util";
+import stats from "../../util/stats";
+import match from "match-json";
+import jsonDiff from "json-diff";
+import logger from "../../logger";
 
-class DestProxyController {
-  /**
-   * Handler for testing the destination proxy
-   * @param {*} destination Destination name
-   * @param {*} ctx
-   * @returns
-   */
-  static async handleProxyTestRequest(destination, ctx) {
-    const {
-      deliveryPayload: routerDeliveryPayload,
-      destinationRequestPayload: routerDestReqPayload
-    } = ctx.request.body;
-    let response;
+export default class DeliveryTestService {
+  public static async deliverTestRoutine(
+    destination: string,
+    routerDestReqPayload: any,
+    routerDeliveryPayload: any
+  ) {
+    let response: any;
     try {
       const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
         destination
@@ -116,12 +110,6 @@ class DestProxyController {
         )}`
       );
     }
-
-    // Always return success as router doesn't care
-    ctx.status = 200;
-    ctx.body = { output: response };
-    return ctx.body;
+    return response;
   }
 }
-
-module.exports = { DestProxyController };

@@ -1,12 +1,12 @@
-const KoaRouter = require("koa-router");
-const fs = require("fs");
-const { Upload } = require("@aws-sdk/lib-storage");
-const { S3Client } = require("@aws-sdk/client-s3");
-const moment = require("moment");
-const v8 = require("v8");
+import KoaRouter from "koa-router";
+import fs from "fs";
+import { Upload } from "@aws-sdk/lib-storage";
+import { S3Client } from "@aws-sdk/client-s3";
+import moment from "moment";
+import v8 from "v8";
 
-const pprof = require("pprof");
-const { promisify } = require("util");
+import pprof from "pprof";
+import { promisify } from "util";
 
 const writeFileProm = promisify(fs.writeFile);
 
@@ -50,7 +50,7 @@ const uploadToAWS = async (credBucketDetails, fileName, readStream) => {
   return uploadResult;
 };
 
-function promisifiedRead(readable) {
+const promisifiedRead = readable => {
   return new Promise((resolve, reject) => {
     // Instructions for reading data
     const chunks = [];
@@ -73,7 +73,7 @@ function promisifiedRead(readable) {
       reject(err);
     });
   });
-}
+};
 
 /**
  * Example usage of API
@@ -100,17 +100,17 @@ function promisifiedRead(readable) {
         "region": "<AWS_REGION>"
     }'
  */
-router.post("/heapdump", async ctx => {
+const profile = async (credBucketDetails: any, format: string) => {
+  let response;
   let snapshotReadableStream;
   try {
     const supportedCloudProvidersForDumpStorage = ["aws"];
-    const credBucketDetails = ctx.request.body;
     const shouldGenerateLocally = !credBucketDetails.sendTo;
     console.log("Before Heapsnapshot converted into a readable stream");
     let fileName = "";
     let format = "pb.gz";
     let profile;
-    if (ctx.request.query.format && ctx.request.query.format === "v8") {
+    if (format === "v8") {
       const readable = v8.getHeapSnapshot();
       snapshotReadableStream = await promisifiedRead(readable);
       format = "heapsnapshot";
@@ -152,18 +152,21 @@ router.post("/heapdump", async ctx => {
     }
     // snapshotReadableStream.destroy();
     console.log("Success", data);
-    ctx.body = `Generated ${
+    response.body = `Generated ${
       credBucketDetails.sendTo ? credBucketDetails.sendTo : "locally"
     } with filename: ${fileName}`;
+    response.status = 200;
   } catch (error) {
     console.error(error);
-    ctx.status = 400;
-    ctx.body = error.message;
+    response.body = error.message;
+    response.status = 400;
   } finally {
     // if (snapshotReadableStream) {
     //   snapshotReadableStream.destroy();
     // }
   }
-});
+  return response;
+};
 
-module.exports = router.routes();
+export default profile;
+

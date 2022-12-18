@@ -1,6 +1,6 @@
 import { SourceTransformResponse } from "../types/index";
 
-export default interface IntegrationServiceSource {
+export default interface IntegrationSourceService {
   sourceTransformRoutine(
     sourceEvents: Object[],
     sourceType: string,

@@ -8,7 +8,7 @@ import {
     TransformedEvent
   } from "../types/index";
   
-  export default interface IntegrationServiceDestination {
+  export default interface IntegrationDestinationService {
     processorRoutine(
       events: ProcessorRequest[],
       destinationType: string,

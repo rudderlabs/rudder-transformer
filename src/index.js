@@ -10,7 +10,7 @@ const { addPrometheusMiddleware } = require("./middleware");
 
 const clusterEnabled = process.env.CLUSTER_ENABLED !== "false";
 
-const port = parseInt(process.env.PORT || "9090", 10);
+const PORT = 9090;
 const app = new Koa();
 addPrometheusMiddleware(app);
 
@@ -24,8 +24,8 @@ app.use(router.routes()).use(router.allowedMethods());
 app.use(testRouter.routes()).use(testRouter.allowedMethods());
 
 if (clusterEnabled) {
-  cluster.start(port, app);
+  cluster.start(PORT, app);
 } else {
-  app.listen(port);
-  logger.info(`Listening on port: ${port}`);
+  app.listen(PORT);
+  logger.info(`Listening on Port: ${PORT}`);
 }

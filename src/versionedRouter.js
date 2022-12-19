@@ -369,7 +369,7 @@ async function handleValidation(ctx) {
           metadata: event.metadata,
           statusCode: 400,
           validationErrors: hv.validationErrors,
-          errors: errMessage
+          error: errMessage
         });
         stats.counter("hv_violation_type", 1, {
           violationType: hv.violationType,

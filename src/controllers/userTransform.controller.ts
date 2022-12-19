@@ -15,7 +15,7 @@ export default class UserTransformController {
       events
     );
     ctx.body = processedRespone.transformedEvents;
-    ControllerUtility.transformerPostProcessor(ctx, processedRespone.retryStatus);
+    ControllerUtility.postProcess(ctx, processedRespone.retryStatus);
     return ctx;
   }
 
@@ -28,7 +28,7 @@ export default class UserTransformController {
       libraryVersionIDs
     );
     ctx.body = response.Body;
-    ControllerUtility.transformerPostProcessor(ctx, response.status);
+    ControllerUtility.postProcess(ctx, response.status);
     return ctx;
   }
 

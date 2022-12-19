@@ -13,7 +13,7 @@ export default class TrackingPlanController {
       reqParams
     );
     ctx.body = response.body;
-    ControllerUtility.transformerPostProcessor(ctx, response.status);
+    ControllerUtility.postProcess(ctx, response.status);
     return ctx;
   }
 }

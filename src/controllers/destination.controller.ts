@@ -35,7 +35,7 @@ export default class DestinationController {
       requestMetadata
     );
     ctx.body = resplist;
-    ControllerUtility.transformerPostProcessor(ctx);
+    ControllerUtility.postProcess(ctx);
     return ctx;
   }
 
@@ -60,7 +60,7 @@ export default class DestinationController {
       requestMetadata
     );
     ctx.body = { output: resplist };
-    ControllerUtility.transformerPostProcessor(ctx);
+    ControllerUtility.postProcess(ctx);
     return ctx;
   }
 
@@ -85,7 +85,7 @@ export default class DestinationController {
       requestMetadata
     );
     ctx.body = resplist;
-    ControllerUtility.transformerPostProcessor(ctx);
+    ControllerUtility.postProcess(ctx);
     return ctx;
   }
 }

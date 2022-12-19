@@ -9,7 +9,7 @@ export default class ProfileController {
     const { credBucketDetails } = ctx.request.body as any;
     const response = await profile(credBucketDetails, format);
     ctx.body = response.body;
-    ControllerUtility.transformerPostProcessor(ctx, response.status);
+    ControllerUtility.postProcess(ctx, response.status);
     return ctx;
   }
 }

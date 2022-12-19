@@ -17,7 +17,7 @@ export default class SourceController {
       requestMetadata
     );
     ctx.body = resplist;
-    ControllerUtility.transformerPostProcessor(ctx);
+    ControllerUtility.postProcess(ctx);
     return ctx;
   }
 }

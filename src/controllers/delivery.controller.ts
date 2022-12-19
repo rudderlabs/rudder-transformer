@@ -31,7 +31,7 @@ export default class DeliveryController {
     ctx.status = isHttpStatusSuccess(deliveryResponse.status)
       ? 200
       : deliveryResponse.status;
-    ControllerUtility.transformerPostProcessor(ctx);
+    ControllerUtility.postProcess(ctx);
     return ctx;
   }
 
@@ -48,7 +48,7 @@ export default class DeliveryController {
       deliveryPayload
     );
     ctx.body = { output: response };
-    ControllerUtility.transformerPostProcessor(ctx);
+    ControllerUtility.postProcess(ctx);
     return ctx;
   }
 }

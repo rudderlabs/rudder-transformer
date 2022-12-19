@@ -41,24 +41,26 @@ const userDeletionHandler = async (userAttributes, config) => {
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.clevertap.com/docs/disassociate-api
   const batchEvents = _.chunk(identity, MAX_BATCH_SIZE);
-  batchEvents.forEach(async batchEvent => {
-    const deletionRespone = await httpPOST(
-      endpoint,
-      {
-        identity: batchEvent
-      },
-      {
-        headers
+  await Promise.all(
+    batchEvents.map(async batchEvent => {
+      const deletionResponse = await httpPOST(
+        endpoint,
+        {
+          identity: batchEvent
+        },
+        {
+          headers
+        }
+      );
+      const processedDeletionResponse = processAxiosResponse(deletionResponse);
+      if (!isHttpStatusSuccess(processedDeletionResponse.status)) {
+        throw new ErrorBuilder()
+          .setMessage("[Clevertap]::Deletion Request is not successful")
+          .setStatus(processedDeletionResponse.status)
+          .build();
       }
-    );
-    const processedDeletionRespone = processAxiosResponse(deletionRespone);
-    if (!isHttpStatusSuccess(processedDeletionRespone.status)) {
-      throw new ErrorBuilder()
-        .setMessage("[Clevertap]::Deletion Request is not successful")
-        .setStatus(processedDeletionRespone.status)
-        .build();
-    }
-  });
+    })
+  );
 
   return {
     statusCode: 200,

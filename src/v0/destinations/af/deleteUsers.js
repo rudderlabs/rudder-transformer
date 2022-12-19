@@ -60,87 +60,90 @@ const userDeletionHandler = async (userAttributes, config) => {
     body.status_callback_urls = filteredStatusCallbackUrlsArray;
   }
   const endpoint = `https://hq1.appsflyer.com/gdpr/opengdpr_requests?api_token=${config.apiToken}`;
-  for (let i = 0; i < userAttributes.length; i += 1) {
-    const userAttributeKeys = Object.keys(userAttributes[i]);
+  await Promise.all(
+    userAttributes.map(async ua => {
+      const userAttributeKeys = Object.keys(ua);
 
-    if (userAttributeKeys.includes("appsflyer_id")) {
-      body.property_id = config.androidAppId
-        ? config.androidAppId
-        : config.appleAppId;
-      const response = await deleteUser(
-        endpoint,
-        body,
-        "appsflyer_id",
-        userAttributes[i].appsflyer_id
-      );
-      if (!response || !response.response) {
+      if (userAttributeKeys.includes("appsflyer_id")) {
+        body.property_id = config.androidAppId
+          ? config.androidAppId
+          : config.appleAppId;
+        const response = await deleteUser(
+          endpoint,
+          body,
+          "appsflyer_id",
+          ua.appsflyer_id
+        );
+        if (!response || !response.response) {
+          throw new ErrorBuilder()
+            .setMessage("Could not get response")
+            .setStatus(500)
+            .build();
+        }
+      } else {
+        if (userAttributeKeys.includes("ios_advertising_id")) {
+          body.property_id = config.appleAppId;
+          if (!body.property_id) {
+            throw new ErrorBuilder()
+              .setMessage(
+                "appleAppId is required for ios_advertising_id type identifier"
+              )
+              .setStatus(500)
+              .build();
+          }
+          const response = await deleteUser(
+            endpoint,
+            body,
+            "ios_advertising_id",
+            ua.ios_advertising_id
+          );
+          if (!response || !response.response) {
+            throw new ErrorBuilder()
+              .setMessage("Could not get response")
+              .setStatus(500)
+              .build();
+          }
+        }
+        if (userAttributeKeys.includes("android_advertising_id")) {
+          body.property_id = config.androidAppId;
+          if (!body.property_id) {
+            throw new ErrorBuilder()
+              .setMessage(
+                "androidAppId is required for android_advertising_id type identifier"
+              )
+              .setStatus(500)
+              .build();
+          }
+          const response = await deleteUser(
+            endpoint,
+            body,
+            "android_advertising_id",
+            ua.android_advertising_id
+          );
+          if (!response || !response.response) {
+            throw new ErrorBuilder()
+              .setMessage("Could not get response")
+              .setStatus(500)
+              .build();
+          }
+        }
+      }
+
+      if (
+        !ua.android_advertising_id &&
+        !ua.ios_advertising_id &&
+        !ua.appsflyer_id
+      ) {
         throw new ErrorBuilder()
-          .setMessage("Could not get response")
-          .setStatus(500)
+          .setMessage(
+            "none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion"
+          )
+          .setStatus(400)
           .build();
       }
-    } else {
-      if (userAttributeKeys.includes("ios_advertising_id")) {
-        body.property_id = config.appleAppId;
-        if (!body.property_id) {
-          throw new ErrorBuilder()
-            .setMessage(
-              "appleAppId is required for ios_advertising_id type identifier"
-            )
-            .setStatus(500)
-            .build();
-        }
-        const response = await deleteUser(
-          endpoint,
-          body,
-          "ios_advertising_id",
-          userAttributes[i].ios_advertising_id
-        );
-        if (!response || !response.response) {
-          throw new ErrorBuilder()
-            .setMessage("Could not get response")
-            .setStatus(500)
-            .build();
-        }
-      }
-      if (userAttributeKeys.includes("android_advertising_id")) {
-        body.property_id = config.androidAppId;
-        if (!body.property_id) {
-          throw new ErrorBuilder()
-            .setMessage(
-              "androidAppId is required for android_advertising_id type identifier"
-            )
-            .setStatus(500)
-            .build();
-        }
-        const response = await deleteUser(
-          endpoint,
-          body,
-          "android_advertising_id",
-          userAttributes[i].android_advertising_id
-        );
-        if (!response || !response.response) {
-          throw new ErrorBuilder()
-            .setMessage("Could not get response")
-            .setStatus(500)
-            .build();
-        }
-      }
-    }
+    })
+  );
 
-    if (
-      !userAttributes[i].android_advertising_id &&
-      !userAttributes[i].ios_advertising_id &&
-      !userAttributes[i].appsflyer_id
-    ) {
-      throw new ErrorBuilder()
-        .setMessage(
-          "none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion"
-        )
-        .setStatus(400)
-        .build();
-    }
-  }
   return { statusCode: 200, status: "successful" };
 };
 

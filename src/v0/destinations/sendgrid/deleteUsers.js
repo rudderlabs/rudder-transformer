@@ -63,24 +63,27 @@ const userDeletionHandler = async (userAttributes, config) => {
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.clevertap.com/docs/disassociate-api
   const batchEvents = _.chunk(identity, MAX_BATCH_SIZE);
-  batchEvents.forEach(async batchEvent => {
-    endpoint = `${endpoint}?ids=${batchEvent}`;
-    const deletionRespone = await httpDELETE(endpoint, requestOptions);
-    const processedDeletionRespone = processAxiosResponse(deletionRespone);
-    if (!isHttpStatusSuccess(processedDeletionRespone.status)) {
-      throw new ErrorBuilder()
-        .setMessage("[SendGrid]::Deletion Request is not successful")
-        .setStatus(400)
-        .setStatTags({
-          destType: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        })
-        .build();
-    }
-  });
+  await Promise.all(
+    batchEvents.map(async batchEvent => {
+      endpoint = `${endpoint}?ids=${batchEvent}`;
+      const deletionResponse = await httpDELETE(endpoint, requestOptions);
+      const processedDeletionResponse = processAxiosResponse(deletionResponse);
+
+      if (!isHttpStatusSuccess(processedDeletionResponse.status)) {
+        throw new ErrorBuilder()
+          .setMessage("[SendGrid]::Deletion Request is not successful")
+          .setStatus(400)
+          .setStatTags({
+            destType: DESTINATION,
+            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+            meta:
+              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+          })
+          .build();
+      }
+    })
+  );
 
   return {
     statusCode: 200,

@@ -31,24 +31,27 @@ const userDeletionHandler = async (userAttributes, config) => {
     "Content-Type": "application/json",
     Authorization: `Basic ${basicAuth}`
   };
-  // eslint-disable-next-line no-restricted-syntax
-  for (const element of userAttributes) {
-    if (!element.userId) {
-      throw new ErrorBuilder()
-        .setMessage("User id for deletion not present")
-        .setStatus(400)
-        .build();
-    }
-    const endpoint = `${BASE_URL.replace("uid", element.userId)}`;
-    // eslint-disable-next-line no-await-in-loop
-    const response = await httpDELETE(endpoint, { headers });
-    if (!response || !response.response) {
-      throw new ErrorBuilder()
-        .setMessage("Could not get response")
-        .setStatus(500)
-        .build();
-    }
-  }
+
+  await Promise.all(
+    userAttributes.map(async ua => {
+      if (!ua.userId) {
+        throw new ErrorBuilder()
+          .setMessage("User id for deletion not present")
+          .setStatus(400)
+          .build();
+      }
+      const endpoint = `${BASE_URL.replace("uid", ua.userId)}`;
+      // eslint-disable-next-line no-await-in-loop
+      const response = await httpDELETE(endpoint, { headers });
+      if (!response || !response.response) {
+        throw new ErrorBuilder()
+          .setMessage("Could not get response")
+          .setStatus(500)
+          .build();
+      }
+    })
+  );
+
   return { statusCode: 200, status: "successful" };
 };
 

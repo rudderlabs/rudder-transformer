@@ -25,8 +25,6 @@ const { userTransformHandler } = require("./routerUtils");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 const profilingRouter = require("./routes/profiling");
 const destProxyRoutes = require("./routes/destinationProxy");
-
-require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
 const { prometheusRegistry } = require("./middleware");
 const { compileUserLibrary } = require("./util/ivmFactory");
@@ -369,7 +367,7 @@ async function handleValidation(ctx) {
           metadata: event.metadata,
           statusCode: 400,
           validationErrors: hv.validationErrors,
-          errors: errMessage
+          error: errMessage
         });
         stats.counter("hv_violation_type", 1, {
           violationType: hv.violationType,

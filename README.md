@@ -23,7 +23,7 @@ On Mac, if you don't have `make` and `g++`, you would have to install `Xcode Com
 On Linux, install the required dependencies `python`, `make` and `g++` and follow these steps:
 
 1. Clone this repository
-2. Run `npm install`
+2. Run `npm run setup`
 3. Start the server with `npm start`
 
 ## Transformer without User Functions
@@ -44,7 +44,7 @@ On Mac, if you don't have `make` and `g++`, you would have to install `Xcode Com
 On Linux, install the required dependencies `python`, `make` and `g++` and follow these steps:
 
 1. Clone this repository
-2. Run `npm install`
+2. Run `npm run setup`
 3. Start the server with `ENABLE_FUNCTIONS=false npm start`
 
 ## Contact Us

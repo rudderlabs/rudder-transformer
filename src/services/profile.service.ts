@@ -100,7 +100,7 @@ const promisifiedRead = readable => {
         "region": "<AWS_REGION>"
     }'
  */
-const profile = async (credBucketDetails: any, format: string) => {
+const profile = async (credBucketDetails: any, profileformat: string) => {
   let response;
   let snapshotReadableStream;
   try {
@@ -110,7 +110,7 @@ const profile = async (credBucketDetails: any, format: string) => {
     let fileName = "";
     let format = "pb.gz";
     let profile;
-    if (format === "v8") {
+    if (profileformat === "v8") {
       const readable = v8.getHeapSnapshot();
       snapshotReadableStream = await promisifiedRead(readable);
       format = "heapsnapshot";

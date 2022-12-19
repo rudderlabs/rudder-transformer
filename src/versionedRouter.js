@@ -1235,6 +1235,17 @@ const handleDeletionOfUsers = async ctx => {
   const getReqMetadata = () => {
     try {
       const reqBody = ctx.request.body;
+      if (Array.isArray(reqBody)) {
+        return {
+          jobInfos: reqBody.map(req => {
+            return {
+              jobId: req.jobId,
+              destType: req.destType,
+              destConfig: req.config
+            };
+          })
+        };
+      }
       return { destType: reqBody?.destType };
     } catch (error) {
       // Do nothing

@@ -1,31 +1,25 @@
 [
   {
     "destKey": "email",
-    "sourceKeys": ["context.traits.email", "properties.email"]
-  },
-  {
-    "destKey": "phone",
-    "sourceKeys": ["context.traits.phone", "properties.phone"]
+    "sourceKeys": "emailOnly",
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "ma_title",
-    "sourceKeys": ["properties.title", "context.page.title"],
-    "sourceFromGenericMap": true
+    "sourceKeys": ["properties.title", "context.page.title"]
   },
   {
     "destKey": "page",
     "sourceKeys": ["properties.url", "context.page.url"],
-    "sourceFromGenericMap": true
+    "required": true
   },
   {
     "destKey": "ma_path",
-    "sourceKeys": ["properties.path", "context.page.path"],
-    "sourceFromGenericMap": true
+    "sourceKeys": ["properties.path", "context.page.path"]
   },
   {
     "destKey": "ma_referrer",
-    "sourceKeys": ["properties.referrer", "context.page.referrer"],
-    "sourceFromGenericMap": true
+    "sourceKeys": ["properties.referrer", "context.page.referrer"]
   },
   {
     "destKey": "sib_name",

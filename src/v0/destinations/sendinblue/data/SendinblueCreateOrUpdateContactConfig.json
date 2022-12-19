@@ -5,32 +5,29 @@
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "event",
-    "sourceKeys": "event",
-    "required": true
-  },
-  {
-    "destKey": "properties",
-    "sourceKeys": "context.traits"
-  },
-  {
-    "destKey": "properties.FIRSTNAME",
-    "sourceKeys": "firstName",
+    "destKey": "attributes",
+    "sourceKeys": "traits",
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "properties.LASTNAME",
-    "sourceKeys": "lastName",
-    "sourceFromGenericMap": true
-  },
-  {
-    "destKey": "properties.SMS",
+    "destKey": "attributes.SMS",
     "sourceKeys": "phone",
     "sourceFromGenericMap": true
   },
   {
+    "destKey": "attributes.FIRSTNAME",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "attributes.LASTNAME",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true
+  },
+  {
     "destKey": "",
-    "sourceKeys": "context.traits",
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
     "metadata": {
       "excludes": [
         "firstName",
@@ -43,13 +40,5 @@
         "email"
       ]
     }
-  },
-  {
-    "destKey": "messageId",
-    "sourceKeys": "messageId"
-  },
-  {
-    "destKey": "data",
-    "sourceKeys": "properties"
   }
 ]

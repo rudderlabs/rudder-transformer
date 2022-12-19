@@ -1086,7 +1086,7 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
 //   "context": {
 //     "externalId": [
 //       {
-//         "type": "kustomerId",
+//         "type": "customerId",
 //         "id": "12345678"
 //       }
 //     ]
@@ -1108,6 +1108,28 @@ function getDestinationExternalID(message, type) {
   }
   return destinationExternalId;
 }
+
+/**
+ * Function to get the the externalId array with the given type
+ * @param {*} message {"context":{"externalId":[{"type":"customerListId","id":1},{"type":"customerListId","id":2}]}}
+ * @param {*} type customerListId
+ * @returns [1, 2]
+ */
+const getDestinationExternalIDs = (message, type) => {
+  let externalIdArray = null;
+  const destinationExternalId = [];
+  if (message.context && message.context.externalId) {
+    externalIdArray = message.context.externalId;
+  }
+  if (externalIdArray) {
+    externalIdArray.forEach(extIdObj => {
+      if (extIdObj.type === type) {
+        destinationExternalId.push(extIdObj.id);
+      }
+    });
+  }
+  return destinationExternalId;
+};
 
 // Get id, identifierType and object type from externalId for rETL
 // type will be of the form: <DESTINATION-NAME>-<object>
@@ -1855,6 +1877,7 @@ module.exports = {
   getBrowserInfo,
   getDateInFormat,
   getDestinationExternalID,
+  getDestinationExternalIDs,
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
   getDeviceModel,
@@ -1886,6 +1909,7 @@ module.exports = {
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
+  isNotEmpty,
   isEmptyObject,
   isHttpStatusRetryable,
   isHttpStatusSuccess,

@@ -37,6 +37,7 @@ const {
   freshsalesPostRequestHandler
 } = require("./freshsales.mock");
 const { sendgridGetRequestHandler } = require("./sendgrid.mock");
+const { sendinblueGetRequestHandler } = require("./sendinblue.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -47,7 +48,8 @@ const urlDirectoryMap = {
   "api.aptrinsic.com": "gainsight_px",
   "api.profitwell.com": "profitwell",
   "ruddertest2.mautic.net": "mautic",
-  "api.sendgrid.com": "sendgrid"
+  "api.sendgrid.com": "sendgrid",
+  "api.sendinblue.com": "sendinblue"
 };
 
 const fs = require("fs");
@@ -145,6 +147,9 @@ function get(url, options) {
   }
   if (url.includes("https://api.sendgrid.com/v3/marketing/field_definitions")) {
     return Promise.resolve(sendgridGetRequestHandler(url));
+  }
+  if (url.includes("https://api.sendinblue.com/v3/contacts/")) {
+    return Promise.resolve(sendinblueGetRequestHandler(url, mockData));
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

@@ -7,9 +7,10 @@ const { router } = require("./versionedRouter");
 const { testRouter } = require("./testRouter");
 const cluster = require("./util/cluster");
 const { addPrometheusMiddleware } = require("./middleware");
+const { applicationRoutes } = require("./routes/index.router");
 
 const clusterEnabled = process.env.CLUSTER_ENABLED !== "false";
-
+const useUpdatedRoutes = process.env.ENABLE_NEW_ROUTES !== "false";
 const PORT = 9090;
 const app = new Koa();
 addPrometheusMiddleware(app);
@@ -20,8 +21,13 @@ app.use(
   })
 );
 
-app.use(router.routes()).use(router.allowedMethods());
-app.use(testRouter.routes()).use(testRouter.allowedMethods());
+if (useUpdatedRoutes) {
+  applicationRoutes(app);
+} else {
+  // To be depricated
+  app.use(router.routes()).use(router.allowedMethods());
+  app.use(testRouter.routes()).use(testRouter.allowedMethods());
+}
 
 if (clusterEnabled) {
   cluster.start(PORT, app);

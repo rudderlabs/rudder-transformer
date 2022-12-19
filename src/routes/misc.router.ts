@@ -13,4 +13,4 @@ router.get("/buildVersion", MiscController.buildVersion);
 router.get("/version", MiscController.version);
 router.get("/features", MiscController.features);
 
-export const utilityRoutes = router.routes();
+export const miscRoutes = router.routes();

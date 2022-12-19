@@ -320,6 +320,35 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   payload = addMandatoryEventProperties(payload, message);
   payload.properties = properties;
 
+  // add,update,remove
+  if (destination.Config.enableNestedArrayOperations) {
+    Object.keys(properties)
+      .filter(k => Array.isArray(properties[`${k}`]))
+      .forEach(key => {
+        // if not specified, send as create attribute
+        if (!properties.nestedOperationType) {
+          attributePayload[`${key}`] = properties[`${key}`];
+        } else if (
+          properties.nestedOperationType === "remove" ||
+          properties.nestedOperationType === "add" ||
+          properties.nestedOperationType === "update"
+        ) {
+          attributePayload[`${key}`] = {};
+          attributePayload[`${key}`][`$${properties.nestedOperationType}`] =
+            properties[`${key}`];
+          if (properties.nestedOperationType === "update") {
+            // eslint-disable-next-line no-underscore-dangle
+            attributePayload._merge_objects = isDefinedAndNotNull(
+              properties.mergeObjectsUpdateOperation
+            )
+              ? properties.mergeObjectsUpdateOperation
+              : true;
+          }
+        }
+        delete properties.nestedOperationType;
+      });
+  }
+
   payload = setExternalIdOrAliasObject(payload, message);
   if (payload) {
     requestJson.events = [payload];

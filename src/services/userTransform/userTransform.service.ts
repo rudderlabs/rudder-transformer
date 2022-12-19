@@ -50,71 +50,8 @@ export default class UserTransformService {
           eventsToProcess.length && eventsToProcess[0].metadata
             ? getMetadata(eventsToProcess[0].metadata)
             : {};
-
-        if (transformationVersionId) {
-          try {
-            const destTransformedEvents: UserTransformResponse[] = await userTransformHandler()(
-              eventsToProcess,
-              transformationVersionId,
-              librariesVersionIDs
-            );
-            transformedEvents.push(
-              ...destTransformedEvents.map(ev => {
-                if (ev.error) {
-                  return {
-                    statusCode: 400,
-                    error: ev.error,
-                    metadata: isEmpty(ev.metadata)
-                      ? commonMetadata
-                      : ev.metadata
-                  } as ProcessorResponse;
-                }
-                if (!isNonFuncObject(ev.transformedEvent)) {
-                  return {
-                    statusCode: 400,
-                    error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
-                      ev.transformedEvent
-                    )}`,
-                    metadata: isEmpty(ev.metadata)
-                      ? commonMetadata
-                      : ev.metadata
-                  } as ProcessorResponse;
-                }
-                return {
-                  output: ev.transformedEvent,
-                  metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
-                  statusCode: 200
-                } as ProcessorResponse;
-              })
-            );
-            return transformedEvents;
-          } catch (error) {
-            logger.error(error);
-            let status = 400;
-            const errorString = error.toString();
-            if (error instanceof RetryRequestError) {
-              // entire request needs to be retried
-              // i.e the request to transformer needs
-              // be retried
-              retryStatus = error.statusCode;
-            }
-            if (error instanceof RespStatusError) {
-              status = error.statusCode;
-            }
-            transformedEvents.push(
-              ...eventsToProcess.map(e => {
-                return {
-                  statusCode: status,
-                  metadata: e.metadata,
-                  error: errorString
-                } as ProcessorResponse;
-              })
-            );
-            return transformedEvents;
-          } finally {
-            //stats
-          }
-        } else {
+            
+        if (!transformationVersionId) {
           const errorMessage = "Transformation VersionID not found";
           logger.error(`[CT] ${errorMessage}`);
           transformedEvents.push({
@@ -123,6 +60,65 @@ export default class UserTransformService {
             metadata: commonMetadata
           } as ProcessorResponse);
           return transformedEvents;
+        }
+
+        try {
+          const destTransformedEvents: UserTransformResponse[] = await userTransformHandler()(
+            eventsToProcess,
+            transformationVersionId,
+            librariesVersionIDs
+          );
+          transformedEvents.push(
+            ...destTransformedEvents.map(ev => {
+              if (ev.error) {
+                return {
+                  statusCode: 400,
+                  error: ev.error,
+                  metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata
+                } as ProcessorResponse;
+              }
+              if (!isNonFuncObject(ev.transformedEvent)) {
+                return {
+                  statusCode: 400,
+                  error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
+                    ev.transformedEvent
+                  )}`,
+                  metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata
+                } as ProcessorResponse;
+              }
+              return {
+                output: ev.transformedEvent,
+                metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
+                statusCode: 200
+              } as ProcessorResponse;
+            })
+          );
+          return transformedEvents;
+        } catch (error) {
+          logger.error(error);
+          let status = 400;
+          const errorString = error.toString();
+          if (error instanceof RetryRequestError) {
+            // entire request needs to be retried
+            // i.e the request to transformer needs
+            // be retried
+            retryStatus = error.statusCode;
+          }
+          if (error instanceof RespStatusError) {
+            status = error.statusCode;
+          }
+          transformedEvents.push(
+            ...eventsToProcess.map(e => {
+              return {
+                statusCode: status,
+                metadata: e.metadata,
+                error: errorString
+              } as ProcessorResponse;
+            })
+          );
+          return transformedEvents;
+        } finally {
+          //stats
         }
       })
     );
@@ -167,6 +163,4 @@ export default class UserTransformService {
     }
     return response;
   }
-
-  
 }

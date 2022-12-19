@@ -44,17 +44,18 @@ export class DynamicConfigInjectionService {
     event: ProcessorRequest | RouterRequestData
   ) {
     if (value) {
-      if (Array.isArray(value)) {
-        value.forEach((key, index) => {
-          value[index] = this.configureVal(key, event);
-        });
-      } else if (typeof value === "object") {
-        Object.keys(value).forEach(obj => {
-          value[obj] = this.configureVal(value[obj], event);
-        });
-      } else if (typeof value === "string") {
-        value = this.getDynamicConfigValue(event, value);
-      }
+      return value;
+    }
+    if (Array.isArray(value)) {
+      value.forEach((key, index) => {
+        value[index] = this.configureVal(key, event);
+      });
+    } else if (typeof value === "object") {
+      Object.keys(value).forEach(obj => {
+        value[obj] = this.configureVal(value[obj], event);
+      });
+    } else if (typeof value === "string") {
+      value = this.getDynamicConfigValue(event, value);
     }
     return value;
   }
@@ -69,9 +70,11 @@ export class DynamicConfigInjectionService {
   public static processDynamicConfig(
     events: ProcessorRequest[] | RouterRequestData[]
   ) {
-    const eventRespArr = events.map((e: ProcessorRequest | RouterRequestData) => {
-      return this.getDynamicConfig(e);
-    });
+    const eventRespArr = events.map(
+      (e: ProcessorRequest | RouterRequestData) => {
+        return this.getDynamicConfig(e);
+      }
+    );
     return eventRespArr;
   }
 }

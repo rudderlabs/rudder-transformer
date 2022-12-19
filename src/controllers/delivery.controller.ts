@@ -1,10 +1,11 @@
 import { Context } from "koa";
-import { MiscService } from "../services/misc.service";
+import MiscService from "../services/misc.service";
 import { TransformedEvent } from "../types/index";
 import { ServiceSelector } from "../util/serviceSelector";
 import networkHandlerFactory from "../adapters/networkHandlerFactory";
 import { isHttpStatusSuccess } from "../v0/util";
 import DeliveryTestService from "../services/delivertTest/deliveryTest.service";
+import ControllerUtility from "./util";
 
 export default class DeliveryController {
   public static async deliverToDestination(ctx: Context) {
@@ -30,7 +31,7 @@ export default class DeliveryController {
     ctx.status = isHttpStatusSuccess(deliveryResponse.status)
       ? 200
       : deliveryResponse.status;
-    MiscService.transformerPostProcessor(ctx);
+    ControllerUtility.transformerPostProcessor(ctx);
     return ctx;
   }
 
@@ -47,7 +48,7 @@ export default class DeliveryController {
       deliveryPayload
     );
     ctx.body = { output: response };
-    MiscService.transformerPostProcessor(ctx);
+    ControllerUtility.transformerPostProcessor(ctx);
     return ctx;
   }
 }

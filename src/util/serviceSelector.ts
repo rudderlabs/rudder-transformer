@@ -1,12 +1,12 @@
 import {  ProcessorRequest, RouterRequestData } from "../types/index";
-import { MiscService } from "../services/misc.service";
+import  MiscService  from "../services/misc.service";
 import { INTEGRATION_SERVICE } from "../routes/utils/constants";
-import CDKV1ServiceDestination from "../services/destination/cdkV1Integration.destination.service";
-import CDKV2ServiceDestination from "../services/destination/cdkV2Integration.destination.service";
-import IntegrationServiceDestination from "../interfaces/IntegrationDestinationService";
-import NativeIntegrationServiceDestination from "../services/destination/nativentegration.destination.service";
-import IntegrationServiceSource from "../interfaces/IntegrationSourceService";
-import NativeIntegrationServiceSource from "../services/source/nativeIntegration.source.service";
+import CDKV1DestinationService from "../services/destination/cdkV1Integration.destination.service";
+import CDKV2DestinationService from "../services/destination/cdkV2Integration.destination.service";
+import IntegrationDestinationService from "../interfaces/IntegrationDestinationService";
+import NativeIntegrationDestinationService from "../services/destination/nativentegration.destination.service";
+import IntegrationSourceService from "../interfaces/IntegrationSourceService";
+import NativeIntegrationSourceService from "../services/source/nativeIntegration.source.service";
 
 export class ServiceSelector {
   private static sourceHandlerMap: Map<string, any> = new Map();
@@ -30,25 +30,25 @@ export class ServiceSelector {
         case INTEGRATION_SERVICE.CDK_V1_DEST:
           this.serviceMap.set(
             INTEGRATION_SERVICE.CDK_V1_DEST,
-            new CDKV1ServiceDestination()
+            new CDKV1DestinationService()
           );
           break;
         case INTEGRATION_SERVICE.CDK_V2_DEST:
           this.serviceMap.set(
             INTEGRATION_SERVICE.CDK_V2_DEST,
-            new CDKV2ServiceDestination()
+            new CDKV2DestinationService()
           );
           break;
         case INTEGRATION_SERVICE.NATIVE_DEST:
           this.serviceMap.set(
             INTEGRATION_SERVICE.NATIVE_DEST,
-            new NativeIntegrationServiceDestination()
+            new NativeIntegrationDestinationService()
           );
           break;
         case INTEGRATION_SERVICE.NATIVE_SOURCE:
           this.serviceMap.set(
             INTEGRATION_SERVICE.NATIVE_SOURCE,
-            new NativeIntegrationServiceSource()
+            new NativeIntegrationSourceService()
           );
       }
       service = this.serviceMap.get(serviceType);
@@ -78,17 +78,17 @@ export class ServiceSelector {
     return sourceHandler;
   }
 
-  public static getNativeIntegrationServiceDest(): IntegrationServiceDestination {
+  public static getNativeIntegrationServiceDest(): IntegrationDestinationService {
     return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
   }
 
-  public static getNativeIntegrationServiceSource(): IntegrationServiceSource {
+  public static getNativeIntegrationServiceSource(): IntegrationSourceService {
     return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_SOURCE);
   }
 
   public static getDestinationService(
     events: ProcessorRequest[] | RouterRequestData[]
-  ): IntegrationServiceDestination {
+  ): IntegrationDestinationService {
     const destinationDefinitionConfig: Object =
       events[0].destination.DestinationDefinition.Config;
     if (this.isCdkDestination(destinationDefinitionConfig)) {

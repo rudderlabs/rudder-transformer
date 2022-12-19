@@ -6,7 +6,7 @@ import {
 import { generateErrorObject } from "../../v0/util";
 import ErrorReportingService from "../errorReporting.service";
 
-export default class PostTransformationServiceSource {
+export default class PostTransformationSourceService {
   public static handleFailureEventsSource(
     error: Object,
     errorDTO: ErrorDetailer
@@ -31,7 +31,6 @@ export default class PostTransformationServiceSource {
   public static handleSuccessEventsSource(
     events: RudderMessage | RudderMessage[] | SourceTransformResponse
   ): SourceTransformResponse {
-   
     if (Array.isArray(events)) {
       return { output: { batch: events } } as SourceTransformResponse;
     } else {

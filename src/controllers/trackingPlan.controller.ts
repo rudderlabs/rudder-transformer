@@ -1,6 +1,6 @@
 import { Context } from "koa";
-import { MiscService } from "../services/misc.service";
 import TrackingPlanservice from "../services/trackingPlan/trackingPlan.service";
+import ControllerUtility from "./util";
 
 export default class TrackingPlanController {
   public static async validateTrackingPlan(ctx: Context) {
@@ -13,7 +13,7 @@ export default class TrackingPlanController {
       reqParams
     );
     ctx.body = response.body;
-    MiscService.transformerPostProcessor(ctx, response.status);
+    ControllerUtility.transformerPostProcessor(ctx, response.status);
     return ctx;
   }
 }

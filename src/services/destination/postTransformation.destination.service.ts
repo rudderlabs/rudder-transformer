@@ -11,12 +11,10 @@ import { generateErrorObject } from "../../v0/util";
 import { TRANSFORMER_METRIC } from "../../v0/util/constant";
 import ErrorReportingService from "../errorReporting.service";
 
-export default class PostTransformationServiceDestination {
+export default class PostTransformationDestinationService {
   public static handleSuccessEventsAtProcessorDest(
     event: ProcessorRequest,
-    transformedPayloads:
-      | TransformedEvent
-      | TransformedEvent[],
+    transformedPayloads: TransformedEvent | TransformedEvent[],
     destHandler: any
   ): ProcessorResponse[] {
     if (!Array.isArray(transformedPayloads)) {

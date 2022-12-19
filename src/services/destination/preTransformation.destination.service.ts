@@ -2,7 +2,7 @@ import { Context } from "koa";
 import { ProcessorRequest, RouterRequestData } from "../../types/index";
 import { DynamicConfigInjectionService } from "../../util/dynamicConfigInjector";
 
-export default class PreTransformationServiceDestination {
+export default class PreTransformationDestinationService {
   public static preProcess(
     events: ProcessorRequest[] | RouterRequestData[],
     ctx: Context

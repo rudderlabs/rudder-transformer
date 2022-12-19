@@ -1,10 +1,17 @@
 import { Context } from "koa";
-import PreTransformationServiceDestination from "../services/destination/preTransformation.destination.service";
-import { MiscService } from "../services/misc.service";
-import { ProcessorRequest, RouterRequestData, RouterRequest } from "../types/index";
+import PreTransformationDestinationService from "../services/destination/preTransformation.destination.service";
+import MiscService from "../services/misc.service";
+import {
+  ProcessorRequest,
+  RouterRequestData,
+  RouterRequest
+} from "../types/index";
 import { ServiceSelector } from "../util/serviceSelector";
+import ControllerUtility from "./util";
 
 export default class DestinationController {
+  private static DEFAULT_VERSION = "v0";
+
   public static async destinationTransformAtProcessor(ctx: Context) {
     let requestMetadata = MiscService.getRequestMetadata(ctx);
     let events = ctx.request.body as ProcessorRequest[];
@@ -17,7 +24,7 @@ export default class DestinationController {
       destination,
       version
     );
-    events = PreTransformationServiceDestination.preProcess(
+    events = PreTransformationDestinationService.preProcess(
       events,
       ctx
     ) as ProcessorRequest[];
@@ -28,7 +35,7 @@ export default class DestinationController {
       requestMetadata
     );
     ctx.body = resplist;
-    MiscService.transformerPostProcessor(ctx);
+    ControllerUtility.transformerPostProcessor(ctx);
     return ctx;
   }
 
@@ -40,9 +47,9 @@ export default class DestinationController {
     const integrationService = ServiceSelector.getDestinationService(events);
     const destinationHandler = ServiceSelector.getDestHandler(
       destination,
-      "v0"
+      this.DEFAULT_VERSION
     );
-    events = PreTransformationServiceDestination.preProcess(
+    events = PreTransformationDestinationService.preProcess(
       events,
       ctx
     ) as RouterRequestData[];
@@ -53,7 +60,7 @@ export default class DestinationController {
       requestMetadata
     );
     ctx.body = { output: resplist };
-    MiscService.transformerPostProcessor(ctx);
+    ControllerUtility.transformerPostProcessor(ctx);
     return ctx;
   }
 
@@ -67,7 +74,7 @@ export default class DestinationController {
       destination,
       "V0"
     );
-    events = PreTransformationServiceDestination.preProcess(
+    events = PreTransformationDestinationService.preProcess(
       events,
       ctx
     ) as RouterRequestData[];
@@ -78,7 +85,7 @@ export default class DestinationController {
       requestMetadata
     );
     ctx.body = resplist;
-    MiscService.transformerPostProcessor(ctx);
+    ControllerUtility.transformerPostProcessor(ctx);
     return ctx;
   }
 }

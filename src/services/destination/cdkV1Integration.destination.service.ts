@@ -13,7 +13,7 @@ import {
 import { TRANSFORMER_METRIC } from "../../v0/util/constant";
 import PostTransformationServiceDestination from "./postTransformation.destination.service";
 
-export default class CDKV1ServiceDestination
+export default class CDKV1DestinationService
   implements IntegrationDestinationService {
   public async processorRoutine(
     events: ProcessorRequest[],

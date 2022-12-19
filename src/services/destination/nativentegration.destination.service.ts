@@ -13,7 +13,7 @@ import {
 import { TRANSFORMER_METRIC } from "../../v0/util/constant";
 import PostTransformationServiceDestination from "./postTransformation.destination.service";
 
-export default class NativeIntegrationServiceDestination
+export default class NativeIntegrationDestinationService
   implements IntegrationDestinationService {
   public async processorRoutine(
     events: ProcessorRequest[],
@@ -27,9 +27,7 @@ export default class NativeIntegrationServiceDestination
         try {
           let transformedPayloads:
             | TransformedEvent
-            | TransformedEvent[] = await destHandler.process(
-            event
-          );
+            | TransformedEvent[] = await destHandler.process(event);
           return PostTransformationServiceDestination.handleSuccessEventsAtProcessorDest(
             event,
             transformedPayloads,
@@ -68,38 +66,40 @@ export default class NativeIntegrationServiceDestination
     );
     // TODO: Change the promise type
     const response: RouterResponse[] = await Promise.all<any>(
-      Object.values(allDestEvents).map(async (destInputArray: RouterRequestData[]) => {
-        try {
-          const routerRoutineResponse: RouterResponse[] = await destHandler.processRouterDest(
-            destInputArray
-          );
-          return PostTransformationServiceDestination.handleSuccessEventsAtRouterDest(
-            routerRoutineResponse,
-            destHandler
-          );
-        } catch (error) {
-          const errorDTO = {
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            integrationType: destinationType,
-            eventMetadatas: destInputArray.map(ev => {
-              return ev.metadata;
-            }),
-            serverRequestMetadata: requestMetadata,
-            destinationInfo: destInputArray.map(ev => {
-              return ev.destination;
-            }),
-            inputPayload: destInputArray.map(ev => {
-              return ev.message;
-            }),
-            errorContext:
-              "[Native Integration Service] Failure During Router Transform"
-          } as ErrorDetailer;
-          return PostTransformationServiceDestination.handleFailureEventsAtRouterDest(
-            error,
-            errorDTO
-          );
+      Object.values(allDestEvents).map(
+        async (destInputArray: RouterRequestData[]) => {
+          try {
+            const routerRoutineResponse: RouterResponse[] = await destHandler.processRouterDest(
+              destInputArray
+            );
+            return PostTransformationServiceDestination.handleSuccessEventsAtRouterDest(
+              routerRoutineResponse,
+              destHandler
+            );
+          } catch (error) {
+            const errorDTO = {
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              integrationType: destinationType,
+              eventMetadatas: destInputArray.map(ev => {
+                return ev.metadata;
+              }),
+              serverRequestMetadata: requestMetadata,
+              destinationInfo: destInputArray.map(ev => {
+                return ev.destination;
+              }),
+              inputPayload: destInputArray.map(ev => {
+                return ev.message;
+              }),
+              errorContext:
+                "[Native Integration Service] Failure During Router Transform"
+            } as ErrorDetailer;
+            return PostTransformationServiceDestination.handleFailureEventsAtRouterDest(
+              error,
+              errorDTO
+            );
+          }
         }
-      })
+      )
     );
     return response;
   }

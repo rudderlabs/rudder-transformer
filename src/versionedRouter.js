@@ -26,8 +26,8 @@ const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { userTransformHandler } = require("./routerUtils");
 const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
-const profilingRouter = require("./routes/profiling");
-const destProxyRoutes = require("./routes/destinationProxy");
+// const profilingRouter = require("./routes/profiling");
+// const destProxyRoutes = require("./routes/destinationProxy");
 
 require("dotenv").config();
 const eventValidator = require("./util/eventValidation");
@@ -63,7 +63,7 @@ const NS_PER_SEC = 1e9;
 const router = new Router();
 
 // Router for assistance in profiling
-router.use(profilingRouter);
+// router.use(profilingRouter);
 
 const getDestHandler = (version, dest) => {
   if (DestHandlerMap.hasOwnProperty(dest)) {
@@ -1015,9 +1015,9 @@ if (transformerProxy) {
   });
 }
 
-if (proxyTestModeEnabled) {
-  router.use(destProxyRoutes);
-}
+// if (proxyTestModeEnabled) {
+//   router.use(destProxyRoutes);
+// }
 
 router.get("/version", ctx => {
   ctx.body = process.env.npm_package_version || "Version Info not found";

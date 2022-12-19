@@ -7,7 +7,7 @@ import {
 import { TRANSFORMER_METRIC } from "../../v0/util/constant";
 import PostTransformationServiceSource from "./postTransformation.source";
 
-export default class NativeIntegrationServiceSource
+export default class NativeIntegrationSourceService
   implements IntegrationSourceService {
   public async sourceTransformRoutine(
     sourceEvents: Object[],

@@ -12,4 +12,4 @@ router.post("/fileUpload", fileUpload);
 router.post("/pollStatus", pollStatus);
 router.post("/getFailedJobs", getFailedJobStatus);
 router.post("/getWarningJobs", getWarnJobStatus);
-export const sourceRoutes = router.routes();
+export const bulkUploadRoutes = router.routes();

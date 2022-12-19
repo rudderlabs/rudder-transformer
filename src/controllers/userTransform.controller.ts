@@ -1,10 +1,11 @@
 import { Context } from "koa";
-import { MiscService } from "../services/misc.service";
+import MiscService from "../services/misc.service";
 import { ProcessorRequest, UserTransfromServiceResponse } from "../types/index";
 import { compileUserLibrary } from "../util/ivmFactory";
 import UserTransformService from "../services/userTransform/userTransform.service";
 import logger from "../logger";
 import { setupUserTransformHandler } from "../util/customTransformer";
+import ControllerUtility from "./util";
 
 export default class UserTransformController {
   public static async userTransform(ctx: Context) {
@@ -14,19 +15,20 @@ export default class UserTransformController {
       events
     );
     ctx.body = processedRespone.transformedEvents;
-    MiscService.transformerPostProcessor(ctx, processedRespone.retryStatus);
+    ControllerUtility.transformerPostProcessor(ctx, processedRespone.retryStatus);
     return ctx;
   }
 
   public static async testUserTransform(ctx: Context) {
-    const { events, trRevCode, libraryVersionIDs = [] } = ctx.request.body as any;
+    const { events, trRevCode, libraryVersionIDs = [] } = ctx.request
+      .body as any;
     const response = await UserTransformService.testUserTransform(
       events,
       trRevCode,
       libraryVersionIDs
     );
     ctx.body = response.Body;
-    MiscService.transformerPostProcessor(ctx, response.status);
+    ControllerUtility.transformerPostProcessor(ctx, response.status);
     return ctx;
   }
 

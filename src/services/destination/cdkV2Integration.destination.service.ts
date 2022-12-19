@@ -14,7 +14,7 @@ import {
 import { TRANSFORMER_METRIC } from "../../v0/util/constant";
 import PostTransformationServiceDestination from "./postTransformation.destination.service";
 
-export default class CDKV2ServiceDestination
+export default class CDKV2DestinationService
   implements IntegrationDestinationService {
   public async processorRoutine(
     events: ProcessorRequest[],
@@ -41,7 +41,7 @@ export default class CDKV2ServiceDestination
         } catch (error) {
           const errorDTO = {
             stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            integrationType:destinationType,
+            integrationType: destinationType,
             eventMetadatas: [event.metadata],
             serverRequestMetadata: requestMetadata,
             destinationInfo: [event.destination],
@@ -71,40 +71,42 @@ export default class CDKV2ServiceDestination
     );
     // TODO: Change the promise type
     const response: RouterResponse[] = await Promise.all<any>(
-      Object.values(allDestEvents).map(async (destInputArray: RouterRequestData[]) => {
-        try {
-          const routerRoutineResponse: RouterResponse[] = await processCdkV2Workflow(
-            destinationType,
-            destInputArray,
-            TRANSFORMER_METRIC.ERROR_AT.RT
-          );
-          return PostTransformationServiceDestination.handleSuccessEventsAtRouterDest(
-            routerRoutineResponse,
-            destHandler
-          );
-        } catch (error) {
-          const errorDTO = {
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            integrationType: destinationType,
-            eventMetadatas: destInputArray.map(ev => {
-              return ev.metadata;
-            }),
-            serverRequestMetadata: requestMetadata,
-            destinationInfo: destInputArray.map(ev => {
-              return ev.destination;
-            }),
-            inputPayload: destInputArray.map(ev => {
-              return ev.message;
-            }),
-            errorContext:
-              "[Native Integration Service] Failure During Router Transform"
-          } as ErrorDetailer;
-          return PostTransformationServiceDestination.handleFailureEventsAtRouterDest(
-            error,
-            errorDTO
-          );
+      Object.values(allDestEvents).map(
+        async (destInputArray: RouterRequestData[]) => {
+          try {
+            const routerRoutineResponse: RouterResponse[] = await processCdkV2Workflow(
+              destinationType,
+              destInputArray,
+              TRANSFORMER_METRIC.ERROR_AT.RT
+            );
+            return PostTransformationServiceDestination.handleSuccessEventsAtRouterDest(
+              routerRoutineResponse,
+              destHandler
+            );
+          } catch (error) {
+            const errorDTO = {
+              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
+              integrationType: destinationType,
+              eventMetadatas: destInputArray.map(ev => {
+                return ev.metadata;
+              }),
+              serverRequestMetadata: requestMetadata,
+              destinationInfo: destInputArray.map(ev => {
+                return ev.destination;
+              }),
+              inputPayload: destInputArray.map(ev => {
+                return ev.message;
+              }),
+              errorContext:
+                "[Native Integration Service] Failure During Router Transform"
+            } as ErrorDetailer;
+            return PostTransformationServiceDestination.handleFailureEventsAtRouterDest(
+              error,
+              errorDTO
+            );
+          }
         }
-      })
+      )
     );
     return response;
   }

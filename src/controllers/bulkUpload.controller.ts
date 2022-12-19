@@ -80,7 +80,7 @@ export const pollStatus = async ctx => {
   );
   let response;
   if (!destFileUploadHandler || !destFileUploadHandler.processPolling) {
-    ctx.status = 404;
+    ctx.status = 400;
     ctx.body = `${destType} doesn't support bulk upload`;
     return null;
   }
@@ -88,7 +88,7 @@ export const pollStatus = async ctx => {
     response = await destFileUploadHandler.processPolling(ctx.request.body);
   } catch (error) {
     response = {
-      statusCode: error.response ? error.response.status : 400,
+      statusCode:  error.response?.status || 400,
       error: error.message || "Error occurred while processing payload."
     };
     errNotificationClient.notify(error, "Poll Status", {

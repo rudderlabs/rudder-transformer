@@ -57,8 +57,12 @@ async function processCdkV2Workflow(
   bindings = {}
 ) {
   try {
-    const workflowEngine = await getWorkflowEngine(destType, flowType);
-    return process(workflowEngine, parsedEvent, bindings);
+    const workflowEngine = await getCachedWorkflowEngine(
+      destType,
+      flowType,
+      bindings
+    );
+    return process(workflowEngine, parsedEvent);
   } catch (error) {
     throw getErrorInfo(error, isCdkV2Destination(parsedEvent));
   }

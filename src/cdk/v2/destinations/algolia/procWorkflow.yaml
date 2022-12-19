@@ -3,7 +3,7 @@ bindings:
   path: ../../../../constants
 - path: ../../../../v0/destinations/algolia/util
 - path: ../../../../v0/destinations/algolia/config
-- name: removeUndefinedValues
+- name: removeUndefinedAndNullValues
   path: ../../../../v0/util
 - path: ../../bindings/jsontemplate
 
@@ -19,6 +19,7 @@ steps:
   
   - name: preparePayload
     template: |
+      $.assert(.message.properties.index, 'Missing required value from "properties.index"');
       let eventTypeMap = $.eventTypeMapping(.destination.Config);
       let event = .message.event.trim().toLowerCase();
       let eventType = .message.properties.eventType ?? eventTypeMap[event];
@@ -26,17 +27,15 @@ steps:
       let payload = .message.().({
         index: .properties.index,
         timestamp: .properties.timestamp,
-        queryID: .properties.queryId,
+        queryID: .properties.queryId || undefined,
         filters: .properties.filters,
         objectIDs: .properties.objectIds,
         positions: .properties.positions,
-        userToken: {{{{$.getGenericPaths("userId")}}}},
+        userToken: {{{{$.getGenericPaths("userId", "||")}}}},
         eventName: event,
         eventType: eventType
       });
-      payload = $.removeUndefinedValues(payload);
-      $.assert(payload.index, 'Missing required value from "properties.index"');
-      $.context.payload = $.genericpayloadValidator(payload);      
+      $.context.payload = $.genericpayloadValidator(payload);  
   
   - name: populateProductsData
     condition: |
@@ -47,10 +46,8 @@ steps:
         condition: $.context.payload.eventType === "click"
         template: |
             const products = .message.properties.products;
-            let validProducts = products{.objectId && .position}.()[:20];
-            $.context.payload.objectIDs = ~r validProducts.objectId;
-            $.context.payload.positions = ~r validProducts.position;
-            $.context.payload = $.clickPayloadValidator($.context.payload)
+            $.context.payload.objectIDs = ~r products.objectId;
+            $.context.payload.positions = ~r products.position;
         else:
           name: populateForOtherEvents
           template: |
@@ -64,11 +61,14 @@ steps:
       $.assert(!(filters && objectIDs), "event can't have both objectIds and filters at the same time.");
       $.assert(filters || objectIDs, "Either filters or  objectIds is required.");
 
-  - name: prepareResponsePayloadForBatch
-    condition: $.batchMode
+  - name: validatePayloadForClickEvent
+    condition: $.context.payload.eventType === "click"
+    template: |          
+      $.context.payload = $.clickPayloadValidator($.context.payload)
+
+  - name: cleanPayload      
     template: |
-      $.context.payload
-    onComplete: return
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
 
   - name: buildResponse
     description: In batchMode we return payload directly

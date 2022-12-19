@@ -38,7 +38,10 @@ const { setupUserTransformHandler } = require("./util/customTransformer");
 const { CommonUtils } = require("./util/common");
 const { RespStatusError, RetryRequestError } = require("./util/utils");
 const { isCdkV2Destination, getCdkV2TestThreshold } = require("./cdk/v2/utils");
-const { getWorkflowEngine, processCdkV2Workflow } = require("./cdk/v2/handler");
+const {
+  getCachedWorkflowEngine,
+  processCdkV2Workflow
+} = require("./cdk/v2/handler");
 
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
@@ -151,16 +154,21 @@ async function compareWithCdkV2(destType, input, flowType, v0Result, v0Time) {
     const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
     if (Object.keys(objectDiff).length > 0) {
       stats.counter("cdk_live_compare_test_failed", 1, { destType, flowType });
-      logger.error(
-        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, diff=${JSON.stringify(
-          objectDiff
-        )}`
-      );
-      logger.error(
-        `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, v0Result=${JSON.stringify(
-          v0Result
-        )}, cdkResult=${JSON.stringify(cdkResult)}`
-      );
+      // logger.error(
+      //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, diff=${JSON.stringify(
+      //     objectDiff
+      //   )}`
+      // );
+      // logger.error(
+      //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, input=${JSON.stringify(
+      //     input
+      //   )}`
+      // );
+      // logger.error(
+      //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, results=${JSON.stringify(
+      //     { v0: v0Result, cdk: cdkResult }
+      //   )}`
+      // );
       return;
     }
     stats.counter("cdk_live_compare_test_success", 1, { destType, flowType });
@@ -361,7 +369,7 @@ async function handleValidation(ctx) {
           metadata: event.metadata,
           statusCode: 400,
           validationErrors: hv.validationErrors,
-          errors: errMessage
+          error: errMessage
         });
         stats.counter("hv_violation_type", 1, {
           violationType: hv.violationType,
@@ -423,7 +431,7 @@ async function isValidRouterDest(event, destType) {
   const isCdkV2Dest = isCdkV2Destination(event);
   if (isCdkV2Dest) {
     try {
-      await getWorkflowEngine(destType, TRANSFORMER_METRIC.ERROR_AT.RT);
+      await getCachedWorkflowEngine(destType, TRANSFORMER_METRIC.ERROR_AT.RT);
       return true;
     } catch (error) {
       return false;

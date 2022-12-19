@@ -20,6 +20,31 @@
     "required": false
   },
   {
+    "destKey": "properties.content_category",
+    "sourceKeys": "properties.category",
+    "required": false
+  },
+  {
+    "destKey": "properties.status",
+    "sourceKeys": "properties.status",
+    "required": false
+  },
+  {
+    "destKey": "properties.content_name",
+    "sourceKeys": "properties.name",
+    "required": false
+  },
+  {
+    "destKey": "properties.content_id",
+    "sourceKeys": ["properties.product_id", "properties.productId"],
+    "required": false
+  },
+  {
+    "destKey": "properties.content_type",
+    "sourceKeys": ["properties.contentType", "properties.content_type"],
+    "required": false
+  },
+  {
     "destKey": "properties.currency",
     "sourceKeys": "properties.currency",
     "required": false

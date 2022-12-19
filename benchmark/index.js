@@ -39,7 +39,7 @@ const getTestFileName = (intg, testSufix) => {
   return `${intg}${featureSufix}${testSufix}.json`;
 };
 
-const testDataDir = path.join(__dirname, "./../__tests__/data");
+const testDataDir = path.join(__dirname, "../test/__tests__/data");
 const getTestData = (intgList, fileNameSuffixes) => {
   const intgTestData = {};
   intgList.forEach(intg => {

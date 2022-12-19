@@ -80,7 +80,7 @@ export const pollStatus = async ctx => {
   );
   let response;
   if (!destFileUploadHandler || !destFileUploadHandler.processPolling) {
-    ctx.status = 400;
+    ctx.status = 404;
     ctx.body = `${destType} doesn't support bulk upload`;
     return null;
   }

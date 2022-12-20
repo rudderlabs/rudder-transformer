@@ -52,6 +52,45 @@
         "coupon": "APPARELSALE",
         "currency": "GBP",
         "order_id": "transactionId",
+        "category": "some category",
+        "originalArray": [
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          }
+        ],
         "products": [
           {
             "brand": "",
@@ -913,6 +952,45 @@
       "messageId": "a0adfab9-baf7-4e09-a2ce-bbe2844c324a",
       "originalTimestamp": "2020-10-16T08:10:12.782Z",
       "properties": {
+        "category": "some category",
+        "originalArray": [
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3", "tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3", "tag_1", "tag_2", "tag_3"]
+          }
+        ],
         "checkout_id": "what is checkout id here??",
         "coupon": "APPARELSALE",
         "currency": "GBP",
@@ -1373,6 +1451,20 @@
             "url": "https://www.example.com/product/offer-t-shirt",
             "value": 12.99,
             "variant": "Black"
+          }
+        ],
+        "category": "some category",
+        "originalArray": [
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1"]
+          },
+          {
+            "nested_field": "nested value"
           }
         ],
         "revenue": 31.98,

@@ -1,4 +1,8 @@
 const { httpDELETE } = require("../../../adapters/network");
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
+const { isHttpStatusSuccess } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const { executeCommonValidations } = require("../../util/regulation-api");
 
@@ -13,13 +17,13 @@ const userDeletionHandler = async (userAttributes, config) => {
   const { publicKey, privateKey } = config;
   if (!publicKey) {
     throw new ErrorBuilder()
-      .setMessage("Public key is a required field for user deletion")
+      .setMessage("[Engage]::Public key is a required field for user deletion")
       .setStatus(400)
       .build();
   }
   if (!privateKey) {
     throw new ErrorBuilder()
-      .setMessage("Private key is a required field for user deletion")
+      .setMessage("[Engage]::Private key is a required field for user deletion")
       .setStatus(400)
       .build();
   }
@@ -36,17 +40,22 @@ const userDeletionHandler = async (userAttributes, config) => {
     userAttributes.map(async ua => {
       if (!ua.userId) {
         throw new ErrorBuilder()
-          .setMessage("User id for deletion not present")
+          .setMessage("[Engage]::User id for deletion not present")
           .setStatus(400)
           .build();
       }
       const endpoint = `${BASE_URL.replace("uid", ua.userId)}`;
       // eslint-disable-next-line no-await-in-loop
       const response = await httpDELETE(endpoint, { headers });
-      if (!response || !response.response) {
+      const handledResponse = processAxiosResponse(response);
+      if (!isHttpStatusSuccess(handledResponse.status)) {
         throw new ErrorBuilder()
-          .setMessage("Could not get response")
-          .setStatus(500)
+          .setMessage(
+            `[Engage]::user deletion request failed - error: ${JSON.stringify(
+              handledResponse.response
+            )}`
+          )
+          .setStatus(handledResponse.status)
           .build();
       }
     })

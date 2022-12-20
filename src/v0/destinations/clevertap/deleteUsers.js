@@ -19,7 +19,9 @@ const userDeletionHandler = async (userAttributes, config) => {
 
   if (!accountId || !passcode) {
     throw new ErrorBuilder()
-      .setMessage("Project ID and Passcode is required for delete user")
+      .setMessage(
+        "[Clevertap]::Project ID and Passcode is required for delete user"
+      )
       .setStatus(400)
       .build();
   }
@@ -52,11 +54,15 @@ const userDeletionHandler = async (userAttributes, config) => {
           headers
         }
       );
-      const processedDeletionResponse = processAxiosResponse(deletionResponse);
-      if (!isHttpStatusSuccess(processedDeletionResponse.status)) {
+      const handledResponse = processAxiosResponse(deletionResponse);
+      if (!isHttpStatusSuccess(handledResponse.status)) {
         throw new ErrorBuilder()
-          .setMessage("[Clevertap]::Deletion Request is not successful")
-          .setStatus(processedDeletionResponse.status)
+          .setMessage(
+            `[Clevertap]::user deletion request failed - error: ${JSON.stringify(
+              handledResponse.response
+            )}`
+          )
+          .setStatus(handledResponse.status)
           .build();
       }
     })

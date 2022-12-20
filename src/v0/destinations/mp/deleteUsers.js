@@ -17,7 +17,7 @@ const { executeCommonValidations } = require("../../util/regulation-api");
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config?.token) {
     throw new ErrorBuilder()
-      .setMessage("API Token is a required field for user deletion")
+      .setMessage("[Mixpanel]::API Token is a required field for user deletion")
       .setStatus(400)
       .build();
   }
@@ -54,7 +54,9 @@ const userDeletionHandler = async (userAttributes, config) => {
       const processedDeletionResponse = processAxiosResponse(deletionResponse);
       if (!isHttpStatusSuccess(processedDeletionResponse.status)) {
         throw new ErrorBuilder()
-          .setMessage("[Mixpanel]::Deletion Request is not successful")
+          .setMessage(
+            `[Mixpanel]::Deletion Request is not successful - error: ${processedDeletionResponse.response}`
+          )
           .setStatus(processedDeletionResponse.status)
           .build();
       }

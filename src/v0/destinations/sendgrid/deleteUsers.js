@@ -71,7 +71,9 @@ const userDeletionHandler = async (userAttributes, config) => {
 
       if (!isHttpStatusSuccess(processedDeletionResponse.status)) {
         throw new ErrorBuilder()
-          .setMessage("[SendGrid]::Deletion Request is not successful")
+          .setMessage(
+            `[SendGrid]::Deletion Request is not successful - error: ${deletionResponse.response}`
+          )
           .setStatus(400)
           .setStatTags({
             destType: DESTINATION,

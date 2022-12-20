@@ -1,26 +1,20 @@
 [
   [
     {
-      "statusCode": 200,
-      "status": "successful"
+      "statusCode": 400,
+      "error": "[Intercom]::Config for deletion not present"
     }
   ],
   [
     {
       "statusCode": 400,
-      "error": "Config for deletion not present"
+      "error": "[Intercom]::api key for deletion not present"
     }
   ],
   [
     {
       "statusCode": 400,
-      "error": "api key for deletion not present"
-    }
-  ],
-  [
-    {
-      "statusCode": 400,
-      "error": "User id for deletion not present"
+      "error": "[Intercom]::User id for deletion not present"
     }
   ]
 ]

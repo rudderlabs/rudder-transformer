@@ -26,7 +26,8 @@
     "test:versionedRouter": "jest versionedRouter --destName=heap --type=all --notify",
     "verify": "eslint . || exit 1; npm run test || exit 1",
     "test:testRouter": "jest testRouter",
-    "test": "jest --runInBand --detectOpenHandles --coverage --notify",
+    "test": "jest --runInBand --detectOpenHandles --coverage --notify --testPathIgnorePatterns=\".+.(kind.test).[tj]s(x)?\"",
+    "kind-test": "jest --testMatch=\"**/?(*.)+(kind.test).[tj]s?(x)\"",
     "test:silent": "npm run test -- --silent",
     "test:benchmark": "node benchmark/index.js"
   },

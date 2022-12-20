@@ -50,3 +50,5 @@ jobs:
         run: kubectl port-forward service/gateway-external 8080:8080 -n openfaas &
       - name: Jest
         run: npm run test
+      - name: Jest Kind-Based Tests
+        run: npm run kind-test

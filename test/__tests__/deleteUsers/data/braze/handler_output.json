@@ -2,12 +2,6 @@
   [
     {
       "statusCode": 400,
-      "error": "[Braze]::Could not delete user"
-    }
-  ],
-  [
-    {
-      "statusCode": 400,
       "error": "[Braze]::Config for deletion not present"
     }
   ],

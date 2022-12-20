@@ -1,12 +1,6 @@
 [
   [
     {
-      "status": "successful",
-      "statusCode": 200
-    }
-  ],
-  [
-    {
       "statusCode": 400,
       "error": "[Amplitude]::Config for deletion not present"
     }

@@ -1,12 +1,6 @@
 [
   [
     {
-      "statusCode": 200,
-      "status": "successful"
-    }
-  ],
-  [
-    {
       "statusCode": 400,
       "error": "[Intercom]::Config for deletion not present"
     }

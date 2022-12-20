@@ -13,14 +13,14 @@
   ],
   [
     {
-      "statusCode": 500,
+      "statusCode": 400,
       "error": "[Appsflyer]::androidAppId is required for android_advertising_id type identifier"
     }
   ],
   [
     {
-      "statusCode": 500,
-      "error": "appleAppId is required for ios_advertising_id type identifier"
+      "statusCode": 400,
+      "error": "[Appsflyer]::appleAppId is required for ios_advertising_id type identifier"
     }
   ],
   [

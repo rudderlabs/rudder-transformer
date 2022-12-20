@@ -20,7 +20,9 @@ const prepareTrackPayload = event => {
   }
 
   // setting anonymousId
-  message.anonymousId = generateUUID();
+  if (!message.userId) {
+    message.anonymousId = generateUUID();
+  }
 
   return message;
 };

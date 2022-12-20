@@ -1,5 +1,9 @@
 [
   {
+    "sourceKeys": "agent.id",
+    "destKeys": "userId"
+  },
+  {
     "sourceKeys": "id",
     "destKeys": "messageId"
   },
@@ -9,7 +13,7 @@
   },
   {
     "sourceKeys": "resource_type",
-    "destKeys": "properties.resource_type"
+    "destKeys": "properties.resourceType"
   },
   {
     "sourceKeys": "data",
@@ -17,10 +21,10 @@
   },
   {
     "sourceKeys": "client",
-    "destKeys": "traits.client"
+    "destKeys": "properties.client"
   },
   {
     "sourceKeys": "agent",
-    "destKeys": "traits.agent"
+    "destKeys": "context.traits"
   }
 ]

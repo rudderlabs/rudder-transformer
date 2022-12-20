@@ -12,8 +12,12 @@ const {
   getDestinationExternalIDs,
   defaultPutRequestConfig
 } = require("../../util");
-const { isNotEmpty, getIntegrationsObj } = require("../../util");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
+const { getIntegrationsObj } = require("../../util");
+const {
+  CONFIG_CATEGORIES,
+  MAPPING_CONFIG,
+  getUnlinkContactEndpoint
+} = require("./config");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { DESTINATION } = require("./config");
 const {
@@ -55,6 +59,48 @@ const responseBuilder = (
   );
 };
 
+// ref:- https://developers.sendinblue.com/reference/removecontactfromlist
+const unlinkContact = (message, destination, unlinkListIds) => {
+  const returnValue = [];
+  unlinkListIds.forEach(listId => {
+    let payload;
+    const endpoint = getUnlinkContactEndpoint(listId);
+    const email = getFieldValueFromMessage(message, "emailOnly");
+    let phone = getFieldValueFromMessage(message, "phone");
+    const contactId = getDestinationExternalID(message, "sendinblueContactId");
+
+    if (phone) {
+      phone = prepareEmailFromPhone(phone);
+    }
+    if (email || phone) {
+      payload = { emails: [email || phone] };
+    } else if (contactId) {
+      payload = { ids: [contactId] };
+    } else {
+      throw new TransformationError(
+        `At least one of email or phone or contactId is required to unlink the contact from a given list`,
+        400,
+        {
+          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+          meta:
+            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+        },
+        DESTINATION
+      );
+    }
+
+    const response = responseBuilder(
+      payload,
+      endpoint,
+      destination,
+      false,
+      defaultPutRequestConfig.requestMethod
+    );
+    returnValue.push(response);
+  });
+  return returnValue;
+};
+
 // ref:- https://developers.sendinblue.com/reference/createcontact
 const createOrUpdateContactResponseBuilder = (message, destination) => {
   const { endpoint } = CONFIG_CATEGORIES.CREATE_OR_UPDATE_CONTACT;
@@ -65,12 +111,13 @@ const createOrUpdateContactResponseBuilder = (message, destination) => {
 
   checkIfEmailOrPhoneExists(payload.email, payload.attributes?.SMS);
   validateEmailAndPhone(payload.email, payload.attributes?.SMS);
+  validateEmailAndPhone(payload.newEmail);
 
   // Can update a contact in the same request
   payload.updateEnabled = true;
 
   const listIds = getDestinationExternalIDs(message, "sendinblueIncludeListId");
-  if (isNotEmpty(listIds)) {
+  if (listIds.length > 0) {
     payload.listIds = listIds;
   }
 
@@ -113,7 +160,7 @@ const createDOIContactResponseBuilder = (message, destination) => {
   }
 
   const listIds = getDestinationExternalIDs(message, "sendinblueIncludeListId");
-  if (!isNotEmpty(listIds)) {
+  if (listIds.length === 0) {
     throw new TransformationError(
       `sendinblueIncludeListId is required to create a contact using DOI`,
       400,
@@ -148,16 +195,21 @@ const updateDOIContactResponseBuilder = (message, destination, identifier) => {
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_DOI_CONTACT.name]
   );
+
+  const email = getFieldValueFromMessage(message, "newEmail");
+  const phone = getFieldValueFromMessage(message, "newPhone");
+  validateEmailAndPhone(email, phone);
+
   const listIds = getDestinationExternalIDs(message, "sendinblueIncludeListId");
   const unlinkListIds = getDestinationExternalIDs(
     message,
     "sendinblueUnlinkListId"
   );
 
-  if (isNotEmpty(listIds)) {
+  if (listIds.length > 0) {
     payload.listIds = listIds;
   }
-  if (isNotEmpty(unlinkListIds)) {
+  if (unlinkListIds.length > 0) {
     payload.unlinkListIds = unlinkListIds;
   }
 
@@ -218,6 +270,13 @@ const createOrUpdateDOIContactResponseBuilder = async (
 const identifyResponseBuilder = async (message, destination) => {
   const { doi } = destination.Config;
   if (!doi) {
+    const unlinkListIds = getDestinationExternalIDs(
+      message,
+      "sendinblueUnlinkListId"
+    );
+    if (unlinkListIds.length > 0) {
+      return unlinkContact(message, destination, unlinkListIds);
+    }
     return createOrUpdateContactResponseBuilder(message, destination);
   }
 

@@ -10,6 +10,10 @@ const getContactDetailsEndpoint = identifier => {
   return `${BASE_ENDPOINT_MAIN}/${VERSION_MAIN}/contacts/${identifier}`;
 };
 
+const getUnlinkContactEndpoint = listId => {
+  return `${BASE_ENDPOINT_MAIN}/${VERSION_MAIN}/contacts/lists/${listId}/contacts/remove`;
+};
+
 const CONFIG_CATEGORIES = {
   CREATE_OR_UPDATE_CONTACT: {
     name: "SendinblueCreateOrUpdateContactConfig",
@@ -55,5 +59,6 @@ module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   getContactDetailsEndpoint,
+  getUnlinkContactEndpoint,
   DESTINATION: "SENDINBLUE"
 };

@@ -730,6 +730,7 @@
           "email": "john_doe@example.com",
           "phone": "+919348230999",
           "location": "Mumbai",
+          "newEmail": "alex_root@example.com",
           "role": "SDE"
         },
         "context": {
@@ -778,6 +779,7 @@
             "LASTNAME": "Doe",
             "LOCATION": "Mumbai",
             "SMS": "+919348230999",
+            "EMAIL": "alex_root@example.com",
             "age": 19,
             "role": "SDE"
           },
@@ -1090,7 +1092,9 @@
           "age": 36,
           "location": "Mumbai",
           "role": "SDE 2",
-          "email": "gordon_pittman@example.com"
+          "newPhone": "+918888888888",
+          "email": "gordon_pittman@example.com",
+          "newEmail": "gordon_pittman007@example.com"
         },
         "context": {
           "externalId": [
@@ -1133,7 +1137,9 @@
           "attributes": {
             "age": 36,
             "location": "Mumbai",
-            "role": "SDE 2"
+            "role": "SDE 2",
+            "SMS": "+918888888888",
+            "EMAIL": "gordon_pittman007@example.com"
           },
           "emailBlacklisted": true,
           "smsBlacklisted": false,
@@ -1154,5 +1160,79 @@
       "type": "REST",
       "version": "1"
     }
+  },
+  {
+    "description": "Identify call to unlink a contact from given lists",
+    "input": {
+      "message": {
+        "type": "identify",
+        "sentAt": "2021-01-03T17:02:53.195Z",
+        "channel": "web",
+        "traits": {
+          "email": "eric_kim@example.com"
+        },
+        "context": {
+          "externalId": [
+            {
+              "type": "sendinblueUnlinkListId",
+              "id": 2
+            },
+            {
+              "type": "sendinblueUnlinkListId",
+              "id": 5
+            }
+          ]
+        }
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "apiKey123",
+          "clientKey": "clientKey123",
+          "doi": false
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "emails": ["eric_kim@example.com"]
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "endpoint": "https://api.sendinblue.com/v3/contacts/lists/2/contacts/remove",
+        "files": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "api-key": "apiKey123"
+        },
+        "method": "PUT",
+        "params": {},
+        "type": "REST",
+        "version": "1"
+      },
+      {
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "emails": ["eric_kim@example.com"]
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "endpoint": "https://api.sendinblue.com/v3/contacts/lists/5/contacts/remove",
+        "files": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "api-key": "apiKey123"
+        },
+        "method": "PUT",
+        "params": {},
+        "type": "REST",
+        "version": "1"
+      }
+    ]
   }
 ]

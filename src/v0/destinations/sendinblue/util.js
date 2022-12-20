@@ -54,7 +54,7 @@ const checkIfEmailOrPhoneExists = (email, phone) => {
   }
 };
 
-const validateEmailAndPhone = (email, phone) => {
+const validateEmailAndPhone = (email, phone = null) => {
   if (email && !validateEmail(email)) {
     throw new TransformationError(
       "The provided email is invalid",

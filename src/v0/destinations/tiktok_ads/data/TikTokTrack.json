@@ -1,0 +1,92 @@
+[
+  {
+    "destKey": "event_id",
+    "sourceKeys": "properties.eventId",
+    "required": false
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": "timestamp",
+    "required": false
+  },
+  {
+    "destKey": "test_event_code",
+    "sourceKeys": "properties.testEventCode",
+    "required": false
+  },
+  {
+    "destKey": "properties.contents",
+    "sourceKeys": "properties.contents",
+    "required": false
+  },
+  {
+    "destKey": "properties.content_category",
+    "sourceKeys": "properties.category",
+    "required": false
+  },
+  {
+    "destKey": "properties.status",
+    "sourceKeys": "properties.status",
+    "required": false
+  },
+  {
+    "destKey": "properties.content_name",
+    "sourceKeys": "properties.name",
+    "required": false
+  },
+  {
+    "destKey": "properties.content_id",
+    "sourceKeys": ["properties.product_id", "properties.productId"],
+    "required": false
+  },
+  {
+    "destKey": "properties.content_type",
+    "sourceKeys": ["properties.contentType", "properties.content_type"],
+    "required": false
+  },
+  {
+    "destKey": "properties.currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "properties.value",
+    "sourceKeys": "properties.value",
+    "required": false
+  },
+  {
+    "destKey": "properties.description",
+    "sourceKeys": "properties.description",
+    "required": false
+  },
+  {
+    "destKey": "properties.query",
+    "sourceKeys": "properties.query",
+    "required": false
+  },
+  {
+    "destKey": "context.ad",
+    "sourceKeys": ["properties.context.ad", "context.ad"],
+    "required": false
+  },
+  {
+    "destKey": "context.page",
+    "sourceKeys": ["properties.context.page", "context.page"],
+    "required": false
+  },
+  {
+    "destKey": "context.user",
+    "sourceKeys": "properties.context.user",
+    "required": false
+  },
+  {
+    "destKey": "context.ip",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": false
+  },
+  {
+    "destKey": "context.user_agent",
+    "sourceKeys": "context.userAgent",
+    "required": false
+  }
+]

@@ -1,0 +1,49 @@
+[
+  {
+       "output":  {
+       "destinationResponse": {
+         "error": {
+           "code": 403,
+           "message": "The caller does not have permission",
+           "errors": [{
+             "message": "Invalid Credentials",
+             "domain": "global",
+             "reason": "authError",
+             "location": "Authorization",
+             "locationType": "header"
+           }],
+           "status": "PERMISSION_DENIED"
+         }
+       },
+       "message": "Campaign Manager: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during CAMPAIGN_MANAGER response transformation",
+       "statTags":  {
+         "destType": "CAMPAIGN_MANAGER",
+         "errorAt": "proxy",
+         "scope": "exception",
+         "stage": "responseTransform"
+       },
+       "status": 403
+     }
+   },
+  {
+    "output": {
+      "status": 200,
+      "message": "[CAMPAIGN_MANAGER Response Handler] - Request Processed Successfully",
+      "destinationResponse": {
+        "response": [
+          {
+            "adjustmentType": "ENHANCEMENT",
+            "conversionAction": "customers/7693729833/conversionActions/874224905",
+            "adjustmentDateTime": "2021-01-01 12:32:45-08:00",
+            "gclidDateTimePair": {
+              "gclid": "1234",
+              "conversionDateTime": "2021-01-01 12:32:45-08:00"
+            },
+            "orderId": "12345"
+          }
+        ],
+        "status": 200
+      }
+    }
+  }
+]

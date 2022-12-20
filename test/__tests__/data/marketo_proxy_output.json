@@ -1,0 +1,171 @@
+[
+  {
+    "output": {
+      "status": 200,
+      "message": "[Marketo Response Handler] - Request Processed Successfully",
+      "destinationResponse": {
+        "response": {
+          "requestId": "664#17dae8c3d48",
+          "result": [
+            {
+              "id": 1328328,
+              "status": "updated"
+            }
+          ],
+          "success": true
+        },
+        "status": 200
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 500,
+      "message": "Request Failed for marketo, Access token invalid (Retryable).during Marketo Response Handling",
+      "destinationResponse": {
+        "response": {
+          "requestId": "a61c#17daea5968a",
+          "success": false,
+          "errors": [
+            {
+              "code": "601",
+              "message": "Access token invalid"
+            }
+          ]
+        },
+        "status": 200
+      },
+      "statTags": {
+        "destType": "MARKETO",
+        "stage": "responseTransform",
+        "scope": "api",
+        "meta": "retryable",
+        "errorAt": "proxy"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "Request Failed for marketo, Requested resource not found (Aborted).during Marketo Response Handling",
+      "destinationResponse": {
+        "response": {
+          "requestId": "a61c#17daea5968a",
+          "success": false,
+          "errors": [
+            {
+              "code": "610",
+              "message": "Requested resource not found"
+            }
+          ]
+        },
+        "status": 200
+      },
+      "statTags": {
+        "destType": "MARKETO",
+        "stage": "responseTransform",
+        "scope": "api",
+        "meta": "abortable",
+        "errorAt": "proxy"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 413,
+      "message": "[marketo Response Handler] - Request failed  with status: 413",
+      "destinationResponse": {
+        "response": {
+          "code": 413,
+          "payload_size_bytes": 86321233,
+          "message": "Payload exceeded 1MB limit."
+        },
+        "status": 413
+      },
+      "statTags": {
+        "destType": "MARKETO",
+        "stage": "responseTransform",
+        "scope": "api",
+        "meta": "abortable",
+        "errorAt": "proxy"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 500,
+      "message": "[marketo Response Handler] - Request failed  with status: 500",
+      "destinationResponse": {
+        "response": "",
+        "status": 500
+      },
+      "statTags": {
+        "destType": "MARKETO",
+        "stage": "responseTransform",
+        "scope": "api",
+        "meta": "retryable",
+        "errorAt": "proxy"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 500,
+      "message": "[marketo Response Handler] - Request failed  with status: 500",
+      "destinationResponse": {
+        "response": "",
+        "status": 500
+      },
+      "statTags": {
+        "destType": "MARKETO",
+        "stage": "responseTransform",
+        "scope": "api",
+        "meta": "retryable",
+        "errorAt": "proxy"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "[marketo Response Handler] - Request failed  with status: 400",
+      "destinationResponse": {
+        "response": "[[ENOTFOUND] :: DNS lookup failed]",
+        "status": 400
+      },
+      "statTags": {
+        "destType": "MARKETO",
+        "stage": "responseTransform",
+        "scope": "api",
+        "meta": "abortable",
+        "errorAt": "proxy"
+      }
+    }
+  },
+  {
+   "output": {
+     "status": 400,
+     "message": "Error occurred during Marketo Response Handling -> problem",
+     "destinationResponse": {
+       "response": {
+         "requestId": "142e4#1835b117b76",
+         "success": false,
+         "errors": [
+           {
+             "code": "random_marketo_code",
+             "message": "problem"
+           }
+         ]
+       },
+       "status": 200
+     },
+     "statTags": {
+       "destType": "MARKETO",
+       "stage": "responseTransform",
+       "scope": "api",
+       "meta": "unhandled",
+       "errorAt": "proxy"
+     }
+   }
+  }
+]

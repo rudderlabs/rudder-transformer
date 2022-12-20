@@ -229,7 +229,6 @@ const getValueFromPropertiesOrTraits = ({ message, key }) => {
 // function to flatten a json
 function flattenJson(data, separator = ".", mode = "normal") {
   const result = {};
-  let l;
 
   // a recursive function to loop through the array of the data
   function recurse(cur, prop) {
@@ -244,7 +243,7 @@ function flattenJson(data, separator = ".", mode = "normal") {
           recurse(cur[i], `${prop}[${i}]`);
         }
       }
-      if (l === 0) {
+      if (i === 0) {
         result[prop] = [];
       }
     } else {

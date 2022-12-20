@@ -39,7 +39,10 @@ const userDeletionHandler = async (userAttributes, config) => {
       };
       const resp = await httpSend(requestOptions);
       const handledResponse = processAxiosResponse(resp);
-      if (!isHttpStatusSuccess(handledResponse.status)) {
+      if (
+        !isHttpStatusSuccess(handledResponse.status) &&
+        handledResponse.status !== 404
+      ) {
         throw new ErrorBuilder()
           .setMessage(
             `[Intercom]::user deletion request failed - error: ${JSON.stringify(

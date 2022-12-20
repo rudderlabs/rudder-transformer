@@ -1,17 +1,24 @@
 const { httpSend } = require("../../../adapters/network");
-const { CustomError } = require("../../util");
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
+const { isHttpStatusSuccess } = require("../../util");
+const ErrorBuilder = require("../../util/error");
 const { executeCommonValidations } = require("../../util/regulation-api");
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
-    throw new CustomError("Config for deletion not present", 400);
+    throw new ErrorBuilder()
+      .setMessage("[Braze]::Config for deletion not present")
+      .setStatus(400)
+      .build();
   }
   const { dataCenter, restApiKey } = config;
   if (!dataCenter || !restApiKey) {
-    throw new CustomError(
-      "data center / api key for deletion not present",
-      400
-    );
+    throw new ErrorBuilder()
+      .setMessage("[Braze]::data center / api key for deletion not present")
+      .setStatus(400)
+      .build();
   }
   let endPoint;
 
@@ -19,7 +26,10 @@ const userDeletionHandler = async (userAttributes, config) => {
     userAttributes.map(async ua => {
       const uId = ua.userId;
       if (!uId) {
-        throw new CustomError("User id for deletion not present", 400);
+        throw new ErrorBuilder()
+          .setMessage("[Braze]::User id for deletion not present")
+          .setStatus(400)
+          .build();
       }
 
       // Endpoints different for different data centers.
@@ -43,27 +53,16 @@ const userDeletionHandler = async (userAttributes, config) => {
       };
 
       const resp = await httpSend(requestOptions);
-
-      if (resp && !resp.success && !resp.response.response) {
-        throw new CustomError(
-          resp.response.code || "Could not delete user",
-          400
-        );
-      }
-      if (!resp || !resp.response) {
-        throw new CustomError("Could not get response", 500);
-      }
-      if (
-        resp &&
-        resp.response &&
-        resp.response.response &&
-        resp.response.response.status !== 200 &&
-        resp.response.response.status !== 404
-      ) {
-        throw new CustomError(
-          resp.response.response.statusText || "Error while deleting user",
-          resp.response.response.status
-        );
+      const handledResponse = processAxiosResponse(resp);
+      if (!isHttpStatusSuccess(handledResponse.status)) {
+        throw new ErrorBuilder()
+          .setMessage(
+            `[Braze]::user deletion request failed - error: ${JSON.stringify(
+              handledResponse.response
+            )}`
+          )
+          .setStatus(handledResponse.status)
+          .build();
       }
     })
   );

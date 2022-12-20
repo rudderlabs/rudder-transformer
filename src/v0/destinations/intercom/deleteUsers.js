@@ -1,21 +1,34 @@
 const { httpSend } = require("../../../adapters/network");
-const { CustomError } = require("../../util");
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
+const { isHttpStatusSuccess } = require("../../util");
+const ErrorBuilder = require("../../util/error");
 const { executeCommonValidations } = require("../../util/regulation-api");
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
-    throw new CustomError("Config for deletion not present", 400);
+    throw new ErrorBuilder()
+      .setMessage("[Intercom]::Config for deletion not present")
+      .setStatus(400)
+      .build();
   }
   const { apiKey } = config;
   if (!apiKey) {
-    throw new CustomError("api key for deletion not present", 400);
+    throw new ErrorBuilder()
+      .setMessage("[Intercom]::api key for deletion not present")
+      .setStatus(400)
+      .build();
   }
 
   await Promise.all(
     userAttributes.map(async ua => {
       const uId = ua.userId;
       if (!uId) {
-        throw new CustomError("User id for deletion not present", 400);
+        throw new ErrorBuilder()
+          .setMessage("[Intercom]::User id for deletion not present")
+          .setStatus(400)
+          .build();
       }
       const requestOptions = {
         method: "delete",
@@ -25,20 +38,16 @@ const userDeletionHandler = async (userAttributes, config) => {
         }
       };
       const resp = await httpSend(requestOptions);
-      if (!resp || !resp.response) {
-        throw new CustomError("Could not get response", 500);
-      }
-      if (
-        resp &&
-        resp.response &&
-        resp.response.response &&
-        resp.response.response.status !== 200 &&
-        resp.response.response.status !== 404 // this will be returned if user is not found. Will send successful to server
-      ) {
-        throw new CustomError(
-          resp.response.response.statusText || "Error while deleting user",
-          resp.response.response.status
-        );
+      const handledResponse = processAxiosResponse(resp);
+      if (!isHttpStatusSuccess(handledResponse.status)) {
+        throw new ErrorBuilder()
+          .setMessage(
+            `[Intercom]::user deletion request failed - error: ${JSON.stringify(
+              handledResponse.response
+            )}`
+          )
+          .setStatus(handledResponse.status)
+          .build();
       }
     })
   );

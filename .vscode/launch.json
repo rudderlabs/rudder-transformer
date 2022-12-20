@@ -19,7 +19,7 @@
       "name": "Launch TS",
       "program": "${workspaceFolder}/index.ts",
       "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": ["${workspaceFolder}/dist/**/*.js"]
+      "outFiles": ["${workspaceFolder}/dist/src/**/*.js"]
     },
     {
       "name": "benchmark",

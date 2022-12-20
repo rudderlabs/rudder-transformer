@@ -3753,5 +3753,8 @@
     },
     "files": {},
     "userId": "5d205961641ee6c5"
+  },
+  {
+    "error": "Both userId and deviceId cannot be undefined"
   }
 ]

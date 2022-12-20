@@ -5,14 +5,15 @@ const {
   httpSend
 } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util/index");
-const ErrorBuilder = require("../../util/error");
 const {
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
-
+const tags = require("../../util/tags");
 const {
+  getDynamicErrorType,
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
+const { NetworkError } = require("../../util/errorTypes");
 
 const prepareProxyReq = request => {
   const { body } = request;
@@ -36,20 +37,6 @@ const prepareProxyReq = request => {
   });
 };
 
-const scAudienceProxyRequest = async request => {
-  const { endpoint, data, method, params, headers } = prepareProxyReq(request);
-
-  const requestOptions = {
-    url: endpoint,
-    data,
-    params,
-    headers,
-    method
-  };
-  const response = await httpSend(requestOptions);
-  return response;
-};
-
 /**
  * This function helps to determine type of error occured. According to the response
  * we set authErrorCategory to take decision if we need to refresh the access_token
@@ -68,23 +55,37 @@ const getAuthErrCategory = (code, response) => {
   }
 };
 
+const scAudienceProxyRequest = async request => {
+  const { endpoint, data, method, params, headers } = prepareProxyReq(request);
+
+  const requestOptions = {
+    url: endpoint,
+    data,
+    params,
+    headers,
+    method
+  };
+  const response = await httpSend(requestOptions);
+  return response;
+};
+
 const scaAudienceRespHandler = (destResponse, stageMsg) => {
   const { status, response } = destResponse;
   // const respAttributes = response["@attributes"] || null;
   // const { stat, err_code: errorCode } = respAttributes;
-
-  throw new ErrorBuilder()
-    .setStatus(status)
-    .setDestinationResponse(response)
-    .setMessage(
-      `snapchat_custom_audience: ${response.error?.message} ${stageMsg}`
-    )
-    .setAuthErrorCategory(getAuthErrCategory(status, response))
-    .build();
+  throw new NetworkError(
+    `${response.error?.message} ${stageMsg}`,
+    status,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+    },
+    response,
+    getAuthErrCategory(status, response)
+  );
 };
 
 const responseHandler = destinationResponse => {
-  const message = `[snapchat_custom_audience Response Handler] - Request Processed Successfully`;
+  const message = `Request Processed Successfully`;
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
     // Mostly any error will not have a status of 2xx

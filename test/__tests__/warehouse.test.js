@@ -933,7 +933,7 @@ describe("Handle no of columns in an event", () => {
       .forEach((transformer, index) => {
         i.message.properties = largeNoOfColumnsevent;
         expect(() => transformer.process(i)).toThrow(
-          "transfomer: Too many columns outputted from the event"
+          "transformer: Too many columns outputted from the event"
         );
       });
   });

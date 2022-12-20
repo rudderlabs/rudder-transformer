@@ -1,5 +1,6 @@
 const { httpGET } = require("../../../adapters/network");
-const { CustomError, toUnixTimestamp } = require("../../util");
+const { toUnixTimestamp } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const CURRENCY_CODES = [
   "aed",
@@ -182,9 +183,8 @@ const unixTimestampOrError = (timestamp, originalTimestamp) => {
   if (convertedTS > 0) {
     return convertedTS;
   }
-  throw new CustomError(
-    "invalid timestamp format for effectiveDate. Aborting",
-    400
+  throw new InstrumentationError(
+    "Invalid timestamp format for effectiveDate. Aborting"
   );
 };
 

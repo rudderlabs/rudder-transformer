@@ -145,9 +145,8 @@
     "statusCode": 400,
     "error": "email/phone number are missing. At least one parameter must be provided",
     "statTags": {
-      "destType": "WOOTRIC",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
@@ -160,9 +159,8 @@
     "statusCode": 400,
     "error": "email/phone number are missing. At least one parameter must be provided",
     "statTags": {
-      "destType": "WOOTRIC",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
@@ -339,9 +337,8 @@
     "statusCode": 400,
     "error": "No user found with userId : dummyId2",
     "statTags": {
-      "destType": "WOOTRIC",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
@@ -354,9 +351,8 @@
     "statusCode": 400,
     "error": "Invalid Score",
     "statTags": {
-      "destType": "WOOTRIC",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
@@ -406,9 +402,8 @@
     "statusCode": 400,
     "error": "No user found with userId : dummyId2",
     "statTags": {
-      "destType": "WOOTRIC",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
@@ -421,9 +416,8 @@
     "statusCode": 400,
     "error": "Event Type not supported",
     "statTags": {
-      "destType": "WOOTRIC",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
@@ -436,9 +430,8 @@
     "statusCode": 400,
     "error": "Event Type is missing from Integration object",
     "statTags": {
-      "destType": "WOOTRIC",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   }
 ]

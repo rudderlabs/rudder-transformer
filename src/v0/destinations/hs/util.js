@@ -1,17 +1,23 @@
 const get = require("get-value");
 const { httpGET, httpPOST } = require("../../../adapters/network");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const {
   getFieldValueFromMessage,
   constructPayload,
-  CustomError,
   isEmpty,
   getHashFromArray,
   getDestinationExternalIDInfoForRetl,
   getValueFromMessage
 } = require("../../util");
+const {
+  NetworkInstrumentationError,
+  InstrumentationError,
+  ConfigurationError,
+  NetworkError
+} = require("../../util/errorTypes");
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
   IDENTIFY_CRM_SEARCH_CONTACT,
@@ -21,6 +27,8 @@ const {
   DESTINATION
 } = require("./config");
 
+const tags = require("../../util/tags");
+
 /**
  * validate destination config and check for existence of data
  * @param {*} param0
@@ -29,15 +37,15 @@ const validateDestinationConfig = ({ Config }) => {
   if (Config.authorizationType === "newPrivateAppApi") {
     // NEW API
     if (!Config.accessToken) {
-      throw new CustomError("[HS]:: Access Token not found. Aborting", 400);
+      throw new ConfigurationError("Access Token not found. Aborting");
     }
   } else {
     // Legacy API
     if (!Config.hubID) {
-      throw new CustomError("[HS]:: Hub ID not found. Aborting", 400);
+      throw new ConfigurationError("Hub ID not found. Aborting");
     }
     if (!Config.apiKey) {
-      throw new CustomError("[HS]:: API Key not found. Aborting", 400);
+      throw new ConfigurationError("API Key not found. Aborting");
     }
   }
 };
@@ -105,11 +113,17 @@ const getProperties = async destination => {
   }
 
   if (hubspotPropertyMapResponse.status !== 200) {
-    throw new CustomError(
+    throw new NetworkError(
       `Failed to get hubspot properties: ${JSON.stringify(
         hubspotPropertyMapResponse.response
       )}`,
-      hubspotPropertyMapResponse.status
+      hubspotPropertyMapResponse.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+          hubspotPropertyMapResponse.status
+        )
+      },
+      hubspotPropertyMapResponse
     );
   }
 
@@ -253,18 +267,16 @@ const searchContacts = async (message, destination) => {
   let searchContactsResponse;
   let contactId;
   if (!getFieldValueFromMessage(message, "traits") && !message.properties) {
-    throw new CustomError(
-      "[HS]:: Identify - Invalid traits value for lookup field",
-      400
+    throw new InstrumentationError(
+      "Identify - Invalid traits value for lookup field"
     );
   }
   const lookupFieldInfo =
     getLookupFieldValue(message, Config.lookupField) ||
     getLookupFieldValue(message, "email");
   if (!lookupFieldInfo?.value) {
-    throw new CustomError(
-      "[HS] Identify:: email i.e a default lookup field for contact lookup not found in traits",
-      400
+    throw new InstrumentationError(
+      "Identify:: email i.e a default lookup field for contact lookup not found in traits"
     );
   }
 
@@ -308,19 +320,24 @@ const searchContacts = async (message, destination) => {
   }
 
   if (searchContactsResponse.status !== 200) {
-    throw new CustomError(
+    throw new NetworkError(
       `Failed to get hubspot contacts: ${JSON.stringify(
         searchContactsResponse.response
       )}`,
-      searchContactsResponse.status
+      searchContactsResponse.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+          searchContactsResponse.status
+        )
+      },
+      searchContactsResponse
     );
   }
 
   // throw error if more than one contact is found as it's ambiguous
   if (searchContactsResponse.response?.results?.length > 1) {
-    throw new CustomError(
-      "Unable to get single Hubspot contact. More than one contacts found. Retry with unique lookupPropertyName and lookupValue",
-      400
+    throw new NetworkInstrumentationError(
+      "Unable to get single Hubspot contact. More than one contacts found. Retry with unique lookupPropertyName and lookupValue"
     );
   } else if (searchContactsResponse.response?.results?.length === 1) {
     // a single and unique contact found
@@ -346,7 +363,7 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
 
   let event = get(message, "event");
   if (!event) {
-    throw new CustomError("event name is required for track call", 400);
+    throw new InstrumentationError("event name is required for track call");
   }
   event = event.trim().toLowerCase();
   let eventName;
@@ -371,7 +388,7 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   });
 
   if (!hubspotEventFound) {
-    throw new CustomError(`[HS]:: '${event}' event name not found`, 400);
+    throw new ConfigurationError(`'${event}' event name not found`);
   }
 
   // 2. fetch event properties from webapp config
@@ -411,12 +428,11 @@ const getExistingData = async (inputs, destination) => {
       DESTINATION
     ).identifierType;
     if (!objectType || !identifierType) {
-      throw new CustomError("[HS]:: rETL - external Id not found.", 400);
+      throw new InstrumentationError("rETL - external Id not found.");
     }
   } else {
-    throw new CustomError(
-      "[HS]:: rETL - objectType or identifier type not found. ",
-      400
+    throw new InstrumentationError(
+      "rETL - objectType or identifier type not found. "
     );
   }
   inputs.map(async input => {
@@ -476,9 +492,15 @@ const getExistingData = async (inputs, destination) => {
     searchResponse = processAxiosResponse(searchResponse);
 
     if (searchResponse.status !== 200) {
-      throw new CustomError(
-        `[HS]:: rETL - Error during searching object record. ${searchResponse.response?.message}`,
-        searchResponse.status || 400
+      throw new NetworkError(
+        `rETL - Error during searching object record. ${searchResponse.response?.message}`,
+        searchResponse.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+            searchResponse.status
+          )
+        },
+        searchResponse
       );
     }
 

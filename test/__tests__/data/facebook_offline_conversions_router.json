@@ -321,7 +321,7 @@
     ],
     "output": [
       {
-        "error": "[Facebook Offline Conversions] :: Please Map Your Standard Events With Event Set Ids",
+        "error": "Please Map Your Standard Events With Event Set Ids",
         "metadata": [
           {
             "jobId": 1
@@ -329,28 +329,24 @@
         ],
         "batched": false,
         "statTags": {
-          "destType": "FACEBOOK_OFFLINE_CONVERSIONS",
-          "meta": "configuration",
-          "scope": "transformation",
-          "stage": "transform"
+          "errorCategory": "dataValidation",
+          "errorType": "configuration"
         },
-        "statusCode": 400
+        "statusCode": 500
       },
       {
-        "error": "[Facebook Offline Conversions] :: Please Map Your Standard Events With Event Set Ids",
+        "error": "Please Map Your Standard Events With Event Set Ids",
         "metadata": [
           {
             "jobId": 2
           }
         ],
         "statTags": {
-          "destType": "FACEBOOK_OFFLINE_CONVERSIONS",
-          "meta": "configuration",
-          "scope": "transformation",
-          "stage": "transform"
+          "errorCategory": "dataValidation",
+          "errorType": "configuration"
         },
         "batched": false,
-        "statusCode": 400
+        "statusCode": 500
       },
       {
         "metadata": [

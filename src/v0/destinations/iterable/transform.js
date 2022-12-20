@@ -17,7 +17,6 @@ const {
   defaultRequestConfig,
   constructPayload,
   getSuccessRespEvents,
-  CustomError,
   addExternalIdToTraits,
   isAppleFamily,
   handleRtTfSingleEventError,
@@ -25,10 +24,16 @@ const {
   getDestinationExternalIDInfoForRetl
 } = require("../../util");
 const logger = require("../../../logger");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 function validateMandatoryField(payload) {
   if (payload.email === undefined && payload.userId === undefined) {
-    throw new CustomError("userId or email is mandatory for this request", 400);
+    throw new InstrumentationError(
+      "userId or email is mandatory for this request"
+    );
   }
 }
 
@@ -85,7 +90,7 @@ function constructPayloadItem(message, category, destination) {
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else {
-        throw new CustomError("Invalid page call", 400);
+        throw new ConfigurationError("Invalid page call");
       }
       validateMandatoryField(rawPayload);
       if (destination.Config.mapToSingleEvent) {
@@ -116,7 +121,7 @@ function constructPayloadItem(message, category, destination) {
       ) {
         rawPayload = constructPayload(message, mappingConfig[category.name]);
       } else {
-        throw new CustomError("Invalid screen call", 400);
+        throw new ConfigurationError("Invalid screen call");
       }
       validateMandatoryField(rawPayload);
       if (destination.Config.mapToSingleEvent) {
@@ -334,7 +339,9 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.ALIAS;
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Message type ${messageType} not supported`
+      );
   }
   const response = responseBuilderSimple(message, category, destination);
 
@@ -483,8 +490,8 @@ function getEventChunks(
   }
 }
 
-const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "ITERABLE");
+const processRouterDest = async (inputs, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -521,7 +528,7 @@ const processRouterDest = async inputs => {
         const errRespEvent = handleRtTfSingleEventError(
           event,
           error,
-          "ITERABLE"
+          reqMetadata
         );
         errorRespList.push(errRespEvent);
       }

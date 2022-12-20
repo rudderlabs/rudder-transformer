@@ -47,12 +47,11 @@
       }
     ],
     "batched": false,
-    "statusCode": 400,
-    "error": "[Snapchat] :: Snap App Id is required for app events",
+    "statusCode": 500,
+    "error": "Snap App Id is required for app events",
     "statTags": {
-      "destType": "SNAPCHAT_CONVERSION",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "configuration"
     }
   }
 ]

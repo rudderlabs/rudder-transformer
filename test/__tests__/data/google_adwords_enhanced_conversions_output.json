@@ -64,7 +64,7 @@
       }
     },
     "statusCode": 400,
-    "error": "[Google_adwords_enhanced_conversions]:: Conversion named Checkout Started is not exist in rudderstack dashboard",
+    "error": "Conversion named \"Checkout Started\" was not specified in the RudderStack destination configuration",
     "statTags": {
       "destination": "google_adwords_enhanced_conversions",
       "stage": "transform",
@@ -80,7 +80,7 @@
       }
     },
     "statusCode": 400,
-    "error": "[Google_adwords_enhanced_conversions]:: Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.",
+    "error": "Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.",
     "statTags": {
       "destination": "google_adwords_enhanced_conversions",
       "stage": "transform",
@@ -149,7 +149,7 @@
       }
     },
     "statusCode": 400,
-    "error": "[Google_adwords_enhanced_conversions]:: loginCustomerId is required as subAccount is true.",
+    "error": "LoginCustomerId is required as subAccount is true.",
     "statTags": {
       "destination": "google_adwords_enhanced_conversions",
       "stage": "transform",
@@ -165,7 +165,7 @@
       }
     },
     "statusCode": 400,
-    "error": "[Google_adwords_enhanced_conversions]::Message Type identify is not supported. Aborting message.",
+    "error": "Message Type identify is not supported. Aborting message.",
     "statTags": {
       "destination": "google_adwords_enhanced_conversions",
       "stage": "transform",
@@ -193,7 +193,7 @@
       }
     },
     "statusCode": 400,
-    "error": "[Google_adwords_enhanced_conversions]:: Conversion named Product Viewed is not exist in rudderstack dashboard",
+    "error": "Conversion named \"Product Viewed\" was not specified in the RudderStack destination configuration",
     "statTags": {
       "destination": "google_adwords_enhanced_conversions",
       "stage": "transform",
@@ -321,7 +321,7 @@
       }
     },
     "statusCode": 400,
-    "error": "[Google_adwords_enhanced_conversions]::Missing required value from [\"properties.orderId\",\"properties.order_id\"] for Page View event.",
+    "error": "Missing required value from [\"properties.orderId\",\"properties.order_id\"]",
     "statTags": {
       "destination": "google_adwords_enhanced_conversions",
       "stage": "transform",

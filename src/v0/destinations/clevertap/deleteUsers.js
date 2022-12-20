@@ -1,12 +1,14 @@
 const _ = require("lodash");
 const { httpPOST } = require("../../../adapters/network");
-const ErrorBuilder = require("../../util/error");
 const { getEndpoint, MAX_BATCH_SIZE } = require("./config");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
 const { executeCommonValidations } = require("../../util/regulation-api");
+const { NetworkError, ConfigurationError } = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -18,10 +20,9 @@ const userDeletionHandler = async (userAttributes, config) => {
   const { accountId, passcode } = config;
 
   if (!accountId || !passcode) {
-    throw new ErrorBuilder()
-      .setMessage("Project ID and Passcode is required for delete user")
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError(
+      "Project ID and Passcode is required for delete user"
+    );
   }
 
   const endpoint = getEndpoint(config, "/delete/profiles.json");
@@ -53,10 +54,16 @@ const userDeletionHandler = async (userAttributes, config) => {
     );
     const processedDeletionRespone = processAxiosResponse(deletionRespone);
     if (!isHttpStatusSuccess(processedDeletionRespone.status)) {
-      throw new ErrorBuilder()
-        .setMessage("[Clevertap]::Deletion Request is not successful")
-        .setStatus(processedDeletionRespone.status)
-        .build();
+      throw new NetworkError(
+        "[Clevertap]::Deletion Request is not successful",
+        processedDeletionRespone.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+            processedDeletionRespone.status
+          )
+        },
+        deletionRespone
+      );
     }
   });
 

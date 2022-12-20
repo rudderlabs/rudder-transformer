@@ -11,7 +11,6 @@ const {
   getHashFromArray,
   getFieldValueFromMessage,
   getValueFromMessage,
-  CustomError,
   simpleProcessRouterDest,
   getIntegrationsObj
 } = require("../../util");
@@ -30,6 +29,11 @@ const {
   groupMapping,
   identifyMapping
 } = require("./config");
+const {
+  InstrumentationError,
+  ConfigurationError,
+  TransformationError
+} = require("../../util/errorTypes");
 
 /**
  * Create/Update a User with user attributes
@@ -37,9 +41,8 @@ const {
 const identifyResponseBuilder = async (message, { Config }) => {
   const userId = getFieldValueFromMessage(message, "userId");
   if (!userId) {
-    throw new CustomError(
-      "userId or anonymousId is required for identify",
-      400
+    throw new InstrumentationError(
+      "userId or anonymousId is required for identify"
     );
   }
 
@@ -107,12 +110,14 @@ const identifyResponseBuilder = async (message, { Config }) => {
 const newGroupResponseBuilder = async (message, { Config }) => {
   const userId = getFieldValueFromMessage(message, "userId");
   if (!userId) {
-    throw new CustomError("userId or anonymousId is required for group", 400);
+    throw new InstrumentationError(
+      "userId or anonymousId is required for group"
+    );
   }
 
   const groupId = getFieldValueFromMessage(message, "groupId");
   if (!groupId) {
-    throw new CustomError("groupId is required for group", 400);
+    throw new InstrumentationError("groupId is required for group");
   }
 
   let payload = constructPayload(message, groupMapping);
@@ -155,15 +160,14 @@ const newGroupResponseBuilder = async (message, { Config }) => {
       Config
     );
     if (!createSuccess) {
-      throw new CustomError(
-        `failed to create account for group: ${error}`,
-        400
+      throw new ConfigurationError(
+        `failed to create account for group: ${error}`
       );
     }
   }
   // throwing error only when it is not due to unavailable contacts
   if (err) {
-    throw new CustomError(`failed to update account for group: ${err}`, 400);
+    throw new ConfigurationError(`failed to update account for group: ${err}`);
   }
 
   // add accountId to user object
@@ -186,7 +190,9 @@ const newGroupResponseBuilder = async (message, { Config }) => {
 const groupResponseBuilder = async (message, { Config }) => {
   const userId = getFieldValueFromMessage(message, "userId");
   if (!userId) {
-    throw new CustomError("userId or anonymousId is required for group", 400);
+    throw new InstrumentationError(
+      "userId or anonymousId is required for group"
+    );
   }
 
   const { success: isPresent, err: e } = await objectExists(
@@ -195,12 +201,12 @@ const groupResponseBuilder = async (message, { Config }) => {
     "user"
   );
   if (!isPresent) {
-    throw new CustomError(`aborting group call: ${e}`, 400);
+    throw new InstrumentationError(`aborting group call: ${e}`);
   }
 
   const groupId = getFieldValueFromMessage(message, "groupId");
   if (!groupId) {
-    throw new CustomError("groupId is required for group", 400);
+    throw new InstrumentationError("groupId is required for group");
   }
 
   const { success: accountIsPresent } = await objectExists(
@@ -242,7 +248,9 @@ const groupResponseBuilder = async (message, { Config }) => {
       Config
     );
     if (!updateSuccess) {
-      throw new CustomError(`failed to update account for group: ${err}`, 400);
+      throw new ConfigurationError(
+        `failed to update account for group: ${err}`
+      );
     }
   } else {
     // create account
@@ -252,7 +260,9 @@ const groupResponseBuilder = async (message, { Config }) => {
       Config
     );
     if (!createSuccess) {
-      throw new CustomError(`failed to create account for group: ${err}`, 400);
+      throw new ConfigurationError(
+        `failed to create account for group: ${err}`
+      );
     }
   }
 
@@ -319,19 +329,18 @@ const trackResponseBuilder = (message, { Config }) => {
 const process = async event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
 
   const { apiKey, productTagKey } = destination.Config;
   if (!apiKey) {
-    throw new CustomError("Invalid API Key. Aborting message.", 400);
+    throw new ConfigurationError("Invalid API Key. Aborting message.");
   }
 
   if (!productTagKey) {
-    throw new CustomError("product tag key is required", 400);
+    throw new ConfigurationError("product tag key is required");
   }
 
   const messageType = message.type.toLowerCase();
@@ -356,17 +365,15 @@ const process = async event => {
       }
       break;
     default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `message type ${messageType} not supported`
+      );
   }
   return response;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(
-    inputs,
-    "GAINSIGHT_PX",
-    process
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

@@ -3,10 +3,12 @@ const { httpPOST } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const ErrorBuilder = require("../../util/error");
 const { isHttpStatusSuccess } = require("../../util");
 const { MAX_BATCH_SIZE } = require("./config");
 const { executeCommonValidations } = require("../../util/regulation-api");
+const { ConfigurationError, NetworkError } = require("../../util/errorTypes");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const tags = require("../../util/tags");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -16,10 +18,9 @@ const { executeCommonValidations } = require("../../util/regulation-api");
  */
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config?.token) {
-    throw new ErrorBuilder()
-      .setMessage("API Token is a required field for user deletion")
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError(
+      "API Token is a required field for user deletion"
+    );
   }
   const endpoint =
     config.dataResidency === "eu"
@@ -52,10 +53,16 @@ const userDeletionHandler = async (userAttributes, config) => {
     const deletionRespone = await httpPOST(endpoint, batchEvent, headers);
     const processedDeletionRespone = processAxiosResponse(deletionRespone);
     if (!isHttpStatusSuccess(processedDeletionRespone.status)) {
-      throw new ErrorBuilder()
-        .setMessage("[Mixpanel]::Deletion Request is not successful")
-        .setStatus(processedDeletionRespone.status)
-        .build();
+      throw new NetworkError(
+        "Deletion Request is not successful",
+        processedDeletionRespone.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+            processedDeletionRespone.status
+          )
+        },
+        processedDeletionRespone.response
+      );
     }
   });
   return {

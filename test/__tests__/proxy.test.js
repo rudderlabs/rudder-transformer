@@ -2,6 +2,7 @@ const name = "Proxy";
 const fs = require("fs");
 const path = require("path");
 const { mockedAxiosClient } = require("../__mocks__/network");
+
 const destinations = [
   "marketo",
   "braze",
@@ -30,13 +31,8 @@ const expectedData = JSON.parse(outputDataFile);
 
 inputData.forEach((input, index) => {
   it(`${name} Tests: payload - ${index}`, async () => {
-    try {
-      const output = await service("any", input);
-      expect(output).toEqual(expectedData[index]);
-    } catch (error) {
-      console.log(error);
-      expect(error).toEqual(expectedData[index]);
-    }
+    const output = await service("any", input);
+    expect(output).toEqual(expectedData[index]);
   });
 });
 // end of generic tests
@@ -54,13 +50,8 @@ destinations.forEach(destination => {
 
   inputData.forEach((input, index) => {
     it(`${name} Tests: ${destination} - Payload ${index}`, async () => {
-      try {
-        const output = await service(destination, input);
-        expect(output).toEqual(expectedData[index]);
-      } catch (error) {
-        console.log(error);
-        expect(error).toEqual(expectedData[index]);
-      }
+      const output = await service(destination, input);
+      expect(output).toEqual(expectedData[index]);
     });
   });
 });

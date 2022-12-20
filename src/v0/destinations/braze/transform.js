@@ -9,13 +9,11 @@ const {
   getDestinationExternalID,
   getFieldValueFromMessage,
   removeUndefinedValues,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  generateErrorObject,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  simpleProcessRouterDest
 } = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const ErrorBuilder = require("../../util/error");
+
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const {
   ConfigCategory,
@@ -25,8 +23,7 @@ const {
   getSubscriptionGroupEndPoint,
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
-  IDENTIFY_BRAZE_MAX_REQ_COUNT,
-  DESTINATION
+  IDENTIFY_BRAZE_MAX_REQ_COUNT
 } = require("./config");
 
 function formatGender(gender) {
@@ -302,16 +299,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
         getTrackEndPoint(destination.Config.endPoint)
       );
     }
-    throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage("Invalid Order Completed event")
-      .setStatTags({
-        destType: DESTINATION,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("Invalid Order Completed event");
   }
   properties = handleReservedProperties(properties);
   let payload = {};
@@ -340,32 +328,13 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
 function processGroup(message, destination) {
   const groupId = getFieldValueFromMessage(message, "groupId");
   if (!groupId) {
-    throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage("Invalid groupId")
-      .setStatTags({
-        destType: DESTINATION,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("Invalid groupId");
   }
   if (destination.Config.enableSubscriptionGroupInGroupCall) {
     if (!(message.traits && (message.traits.phone || message.traits.email))) {
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage(
-          "Message should have traits with subscriptionState, email or phone"
-        )
-        .setStatTags({
-          destType: DESTINATION,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-        })
-        .build();
+      throw new InstrumentationError(
+        "Message should have traits with subscriptionState, email or phone"
+      );
     }
     const subscriptionGroup = {};
     subscriptionGroup.subscription_group_id = groupId;
@@ -373,19 +342,9 @@ function processGroup(message, destination) {
       message.traits.subscriptionState !== "subscribed" &&
       message.traits.subscriptionState !== "unsubscribed"
     ) {
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage(
-          "you must provide a subscription state in traits and possible values are subscribed and unsubscribed."
-        )
-        .setStatTags({
-          destType: DESTINATION,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-        })
-        .build();
+      throw new InstrumentationError(
+        "you must provide a subscription state in traits and possible values are subscribed and unsubscribed."
+      );
     }
     subscriptionGroup.subscription_state = message.traits.subscriptionState;
     subscriptionGroup.external_id = [message.userId || message.anonymousId];
@@ -498,17 +457,7 @@ function process(event) {
       respList.push(response);
       break;
     default:
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage("Message type is not supported")
-        .setStatTags({
-          destType: DESTINATION,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        })
-        .build();
+      throw new InstrumentationError("Message type is not supported");
   }
 
   return respList;
@@ -728,44 +677,8 @@ function batch(destEvents) {
   return respList;
 }
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        const errObj = generateErrorObject(
-          error,
-          DESTINATION,
-          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-        );
-        return getErrorRespEvents(
-          [input.metadata],
-          error.status || 400,
-          error.message || "Error occurred while processing payload.",
-          errObj.statTags
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

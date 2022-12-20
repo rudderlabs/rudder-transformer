@@ -10,7 +10,12 @@ const {
   removeHyphens,
   simpleProcessRouterDest
 } = require("../../util");
-const ErrorBuilder = require("../../util/error");
+
+const {
+  InstrumentationError,
+  ConfigurationError,
+  OAuthSecretError
+} = require("../../util/errorTypes");
 const {
   offlineDataJobsMapping,
   addressInfoMapping,
@@ -45,10 +50,7 @@ const getAccessToken = metadata => {
   const { secret } = metadata;
   // we would need to verify if secret is present and also if the access token field is present in secret
   if (!secret || !secret.access_token) {
-    throw new ErrorBuilder()
-      .setStatus(500)
-      .setMessage("Empty/Invalid access token")
-      .build();
+    throw new OAuthSecretError("Empty/Invalid access token");
   }
   return secret.access_token;
 };
@@ -79,12 +81,9 @@ const responseBuilder = (metadata, body, { Config }) => {
       const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
       response.headers["login-customer-id"] = filteredLoginCustomerId;
     } else
-      throw new ErrorBuilder()
-        .setMessage(
-          `[Google_adwords_remarketing_list]:: loginCustomerId is required as subAccount is true.`
-        )
-        .setStatus(400)
-        .build();
+      throw new ConfigurationError(
+        `loginCustomerId is required as subAccount is true.`
+      );
   return response;
 };
 /**
@@ -220,39 +219,27 @@ const createPayload = (message, destination) => {
 const processEvent = async (metadata, message, destination) => {
   const response = [];
   if (!message.type) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[Google_adwords_remarketing_list]::Message Type is not present. Aborting message."
-      )
-      .setStatus(400)
-      .build();
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
+    );
   }
   if (!message.properties) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[Google_adwords_remarketing_list]::Message properties is not present. Aborting message."
-      )
-      .setStatus(400)
-      .build();
+    throw new InstrumentationError(
+      "Message properties is not present. Aborting message."
+    );
   }
   if (!message.properties.listData) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[Google_adwords_remarketing_list]::listData is not present inside properties. Aborting message."
-      )
-      .setStatus(400)
-      .build();
+    throw new InstrumentationError(
+      "listData is not present inside properties. Aborting message."
+    );
   }
   if (message.type.toLowerCase() === "audiencelist") {
     const createdPayload = createPayload(message, destination);
 
     if (!Object.keys(createdPayload).length) {
-      throw new ErrorBuilder()
-        .setMessage(
-          "[Google_adwords_remarketing_list]:: Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message."
-        )
-        .setStatus(400)
-        .build();
+      throw new InstrumentationError(
+        "Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message."
+      );
     }
 
     Object.values(createdPayload).forEach(data => {
@@ -261,23 +248,15 @@ const processEvent = async (metadata, message, destination) => {
     return response;
   }
 
-  throw new ErrorBuilder()
-    .setMessage(
-      `[Google_adwords_remarketing_list]::Message Type ${message.type} not supported.`
-    )
-    .setStatus(400)
-    .build();
+  throw new InstrumentationError(`Message Type ${message.type} not supported.`);
 };
 
 const process = async event => {
   return processEvent(event.metadata, event.message, event.destination);
 };
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(
-    inputs,
-    "Google_adwords_remarketing_lists",
-    process
-  );
+
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

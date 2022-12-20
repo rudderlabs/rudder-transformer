@@ -2,12 +2,9 @@ const set = require("set-value");
 const get = require("get-value");
 const path = require("path");
 const fs = require("fs");
-const {
-  removeUndefinedAndNullValues,
-  formatTimeStamp,
-  CustomError
-} = require("../../util");
+const { formatTimeStamp, removeUndefinedAndNullValues } = require("../../util");
 const Message = require("../message");
+const { TransformationError } = require("../../util/errorTypes");
 
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(
@@ -70,7 +67,7 @@ const processEvent = event => {
     // wrong data
     return null;
   }
-  throw new CustomError("Unknwon event type from Braze");
+  throw new TransformationError("Unknown event type from Braze");
 };
 
 const process = events => {
@@ -96,7 +93,7 @@ const process = events => {
     }
   });
   if (responses.length === 0) {
-    throw new CustomError("All requests in the batch failed");
+    throw new TransformationError("All requests in the batch failed");
   } else {
     return responses;
   }

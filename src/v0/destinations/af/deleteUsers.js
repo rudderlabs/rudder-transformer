@@ -91,7 +91,7 @@ const userDeletionHandler = async (userAttributes, config) => {
               .setMessage(
                 "[Appsflyer]::appleAppId is required for ios_advertising_id type identifier"
               )
-              .setStatus(400)
+              .setStatus(500)
               .build();
           }
           await deleteUser(
@@ -108,7 +108,7 @@ const userDeletionHandler = async (userAttributes, config) => {
               .setMessage(
                 "[Appsflyer]::androidAppId is required for android_advertising_id type identifier"
               )
-              .setStatus(400)
+              .setStatus(500)
               .build();
           }
           await deleteUser(

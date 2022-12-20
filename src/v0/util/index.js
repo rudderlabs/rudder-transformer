@@ -237,7 +237,7 @@ function flattenJson(data, separator = ".", mode = "normal") {
     if (Object(cur) !== cur) {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
-      for (i = 0, l = cur.length; i < l; i += 1) {
+      for (i = 0; i < cur.length; i += 1) {
         if (mode === "strict") {
           recurse(cur[i], `${prop}${separator}${i}`);
         } else {

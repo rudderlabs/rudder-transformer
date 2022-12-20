@@ -2,7 +2,7 @@
   [
     {
       "statusCode": 400,
-      "error": "API Token is a required field for user deletion"
+      "error": "[Mixpanel]::API Token is a required field for user deletion"
     }
   ]
 ]

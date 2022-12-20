@@ -2,13 +2,13 @@
   [
     {
       "statusCode": 400,
-      "error": "Project ID and Passcode is required for delete user"
+      "error": "[Clevertap]::Project ID and Passcode is required for delete user"
     }
   ],
   [
     {
       "statusCode": 400,
-      "error": "Project ID and Passcode is required for delete user"
+      "error": "[Clevertap]::Project ID and Passcode is required for delete user"
     }
   ]
 ]

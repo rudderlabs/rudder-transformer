@@ -2,13 +2,13 @@
     [
       {
         "statusCode": 400,
-        "error": "Public key is a required field for user deletion"
+        "error": "[Engage]::Public key is a required field for user deletion"
       }
     ],
     [
       {
         "statusCode": 400,
-        "error": "User id for deletion not present"
+        "error": "[Engage]::User id for deletion not present"
       }
     ]
   ]

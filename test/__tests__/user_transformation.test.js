@@ -1131,7 +1131,9 @@ describe("Python transformations", () => {
       versionId
     };
 
-    axios.post.mockRejectedValue(new Error("already exists"));
+    axios.post.mockRejectedValue({
+      response: { status: 500, data: "already exists" }
+    });
 
     await expect(async () => {
       await setupUserTransformHandler(trRevCode, [], true);

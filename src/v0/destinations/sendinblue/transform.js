@@ -10,9 +10,9 @@ const {
   getFieldValueFromMessage,
   getDestinationExternalID,
   getDestinationExternalIDs,
-  defaultPutRequestConfig
+  defaultPutRequestConfig,
+  getIntegrationsObj
 } = require("../../util");
-const { getIntegrationsObj } = require("../../util");
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -27,7 +27,7 @@ const {
   checkIfContactExists,
   prepareHeader,
   removeEmptyKey,
-  prepareUserTraits,
+  transformUserTraits,
   prepareTrackEventData
 } = require("./util");
 
@@ -111,7 +111,7 @@ const createOrUpdateContactResponseBuilder = (message, destination) => {
 
   checkIfEmailOrPhoneExists(payload.email, payload.attributes?.SMS);
   validateEmailAndPhone(payload.email, payload.attributes?.SMS);
-  validateEmailAndPhone(payload.newEmail);
+  validateEmailAndPhone(payload.attributes?.EMAIL);
 
   // Can update a contact in the same request
   payload.updateEnabled = true;
@@ -125,7 +125,7 @@ const createOrUpdateContactResponseBuilder = (message, destination) => {
   payload.emailBlacklisted = integrationsObj?.emailBlacklisted;
   payload.smsBlacklisted = integrationsObj?.smsBlacklisted;
 
-  const userTraits = prepareUserTraits(
+  const userTraits = transformUserTraits(
     payload.attributes,
     destination.Config.contactAttributeMapping
   );
@@ -143,12 +143,27 @@ const createDOIContactResponseBuilder = (message, destination) => {
     MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_DOI_CONTACT.name]
   );
   const { templateId, redirectionUrl } = destination.Config;
-  const doiTemplateId =
+  let doiTemplateId =
     getDestinationExternalID(message, "sendinblueDOITemplateId") || templateId;
 
   if (!doiTemplateId) {
     throw new TransformationError(
       `templateId is required to create a contact using DOI`,
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta:
+          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
+      },
+      DESTINATION
+    );
+  }
+
+  doiTemplateId = parseInt(doiTemplateId, 10);
+
+  if (Number.isNaN(doiTemplateId)) {
+    throw new TransformationError(
+      "templateId size must be an integer",
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -176,7 +191,7 @@ const createDOIContactResponseBuilder = (message, destination) => {
   payload.redirectionUrl = redirectionUrl;
   payload.includeListIds = listIds;
 
-  const userTraits = prepareUserTraits(
+  const userTraits = transformUserTraits(
     payload.attributes,
     destination.Config.contactAttributeMapping
   );
@@ -196,9 +211,7 @@ const updateDOIContactResponseBuilder = (message, destination, identifier) => {
     MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_DOI_CONTACT.name]
   );
 
-  const email = getFieldValueFromMessage(message, "newEmail");
-  const phone = getFieldValueFromMessage(message, "newPhone");
-  validateEmailAndPhone(email, phone);
+  validateEmailAndPhone(payload.attributes?.EMAIL);
 
   const listIds = getDestinationExternalIDs(message, "sendinblueIncludeListId");
   const unlinkListIds = getDestinationExternalIDs(
@@ -231,7 +244,7 @@ const createOrUpdateDOIContactResponseBuilder = async (
   destination
 ) => {
   let email = getFieldValueFromMessage(message, "emailOnly");
-  let phone = getFieldValueFromMessage(message, "phone");
+  const phone = getFieldValueFromMessage(message, "phone");
 
   validateEmailAndPhone(email, phone);
 
@@ -239,15 +252,12 @@ const createOrUpdateDOIContactResponseBuilder = async (
     email = encodeURIComponent(email);
   }
 
-  if (phone) {
-    phone = encodeURIComponent(prepareEmailFromPhone(phone));
-  }
   const contactId = getDestinationExternalID(message, "sendinblueContactId");
-  const identifier = email || phone || contactId;
+  const identifier = email || contactId;
 
   if (!identifier) {
     throw new TransformationError(
-      `At least one of email or phone or contactId is required to update the contact using DOI`,
+      "At least one of email or contactId is required to update the contact using DOI",
       400,
       {
         scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
@@ -308,7 +318,7 @@ const trackEventResponseBuilder = (message, destination) => {
     return responseBuilder(payload, endpoint, destination, true);
   }
 
-  const userTraits = prepareUserTraits(
+  const userTraits = transformUserTraits(
     payload.properties,
     destination.Config.contactAttributeMapping
   );
@@ -358,7 +368,7 @@ const trackResponseBuilder = (message, destination) => {
   return trackEventResponseBuilder(message, destination);
 };
 
-// ref :- https://tracker-doc.sendinblue.com/reference/trackpage-3
+// ref:- https://tracker-doc.sendinblue.com/reference/trackpage-3
 const pageResponseBuilder = (message, destination) => {
   const { endpoint } = CONFIG_CATEGORIES.PAGE;
   let payload = constructPayload(

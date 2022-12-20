@@ -6,19 +6,12 @@
   },
   {
     "destKey": "attributes.EMAIL",
-    "sourceKeys": [
-      "traits.newEmail",
-      "context.traits.newEmail",
-      "properties.newEmail"
-    ]
+    "sourceKeys": ["traits.newEmail", "context.traits.newEmail"]
   },
   {
     "destKey": "attributes.SMS",
-    "sourceKeys": [
-      "traits.newPhone",
-      "context.traits.newPhone",
-      "properties.newPhone"
-    ]
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true
   },
   {
     "destKey": "attributes.FIRSTNAME",
@@ -43,7 +36,6 @@
         "lastname",
         "last_name",
         "phone",
-        "newPhone",
         "email",
         "newEmail"
       ]

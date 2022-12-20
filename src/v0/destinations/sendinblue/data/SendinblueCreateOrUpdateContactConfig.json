@@ -11,11 +11,7 @@
   },
   {
     "destKey": "attributes.EMAIL",
-    "sourceKeys": [
-      "traits.newEmail",
-      "context.traits.newEmail",
-      "properties.newEmail"
-    ]
+    "sourceKeys": ["traits.newEmail", "context.traits.newEmail"]
   },
   {
     "destKey": "attributes.SMS",

@@ -7,7 +7,9 @@ const {
   TransformationError,
   getHashFromArray,
   getIntegrationsObj,
-  isNotEmpty
+  isNotEmpty,
+  validateEmail,
+  validatePhoneWithCountryCode
 } = require("../../util");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { httpGET } = require("../../../adapters/network");
@@ -28,16 +30,6 @@ const prepareHeader = (apiKey, clientKey = null, trackerApi = false) => {
     "Content-Type": "application/json",
     "api-key": apiKey
   };
-};
-
-const validateEmail = email => {
-  const regex = /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/;
-  return !!regex.test(email);
-};
-
-const validatePhoneWithCountryCode = phone => {
-  const regex = /^\+(?:[\d{] ?){6,14}\d$/;
-  return !!regex.test(phone);
 };
 
 const checkIfEmailOrPhoneExists = (email, phone) => {
@@ -83,10 +75,10 @@ const validateEmailAndPhone = (email, phone = null) => {
 /**
  * Sendinblue is appending `@mailin-sms.com` to phone number and setting it in a email field if, only phone is passed while creating a contact
  * @param {*} phone +919315446189
- * @returns +919315446189@mailin-sms.com
+ * @returns 919315446189@mailin-sms.com
  */
 const prepareEmailFromPhone = phone => {
-  return `${phone}${EMAIL_SUFFIX}`;
+  return `${phone.replace("+", "")}${EMAIL_SUFFIX}`;
 };
 
 const checkIfContactExists = async (identifier, apiKey) => {
@@ -140,6 +132,12 @@ const removeEmptyKey = payload => {
   return rawPayload;
 };
 
+/**
+ * Function to remove duplicate traits from user traits
+ * @param {*} userTraits {"location":"San Francisco","LOCATION":"San Francisco"}
+ * @param {*} attributeMap {"area_code":"AREA","location":"LOCATION"}
+ * @returns // {"LOCATION":"San Francisco"}
+ */
 const refineUserTraits = (userTraits, attributeMap) => {
   const refinedTraits = userTraits;
   Object.keys(userTraits).forEach(key => {
@@ -150,7 +148,14 @@ const refineUserTraits = (userTraits, attributeMap) => {
   return refinedTraits;
 };
 
-const prepareUserTraits = (traits, contactAttributeMapping) => {
+/**
+ * Function to transform user traits for identify and track call with the help of contact attribute mapping defined in webapp
+ * Contact attribute mapping -> [{"from":"area_code","to":"AREA"},{"from":"location","to":"LOCATION"}]
+ * @param {*} traits
+ * @param {*} contactAttributeMapping traits to Sendinblue contact attribute mapping defined in webapp
+ * @returns
+ */
+const transformUserTraits = (traits, contactAttributeMapping) => {
   // convert destination.Config.contactAttributeMapping to hashMap
   const attributeMap = getHashFromArray(
     contactAttributeMapping,
@@ -170,6 +175,9 @@ const prepareUserTraits = (traits, contactAttributeMapping) => {
   return refineUserTraits(userTraits, attributeMap);
 };
 
+// Prepare track event data. Event data consists `id` and `data`.
+// id -> from integration object or messageId
+// data -> properties
 const prepareTrackEventData = (message, payload) => {
   const { messageId, data } = payload;
   if (isNotEmpty(data)) {
@@ -184,12 +192,10 @@ const prepareTrackEventData = (message, payload) => {
 module.exports = {
   checkIfEmailOrPhoneExists,
   prepareEmailFromPhone,
-  validateEmail,
-  validatePhoneWithCountryCode,
   validateEmailAndPhone,
   checkIfContactExists,
   prepareHeader,
   removeEmptyKey,
-  prepareUserTraits,
+  transformUserTraits,
   prepareTrackEventData
 };

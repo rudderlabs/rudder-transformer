@@ -618,7 +618,7 @@
       "body": {
         "FORM": {},
         "JSON": {
-          "email": "+919507545089@mailin-sms.com",
+          "email": "919507545089@mailin-sms.com",
           "link": "https://www.google.com/gmail/",
           "properties": {
             "emailCount": 19
@@ -804,36 +804,6 @@
     }
   },
   {
-    "description": "Identify call to create DOI contact without email",
-    "input": {
-      "message": {
-        "type": "identify",
-        "sentAt": "2021-01-03T17:02:53.195Z",
-        "channel": "web",
-        "traits": {
-          "phone": "+919348230999"
-        },
-        "context": {},
-        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
-        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
-        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
-        "originalTimestamp": "2021-01-03T17:02:53.193Z"
-      },
-      "destination": {
-        "Config": {
-          "apiKey": "apiKey123",
-          "clientKey": "clientKey123",
-          "templateId": 3,
-          "doi": true,
-          "redirectionUrl": "https://app.sendinblue.com/marketing-dashboard"
-        }
-      }
-    },
-    "output": {
-      "error": "Missing required value from \"emailOnly\""
-    }
-  },
-  {
     "description": "Identify call to create DOI contact with templatedId from externalId",
     "input": {
       "message": {
@@ -988,7 +958,7 @@
     }
   },
   {
-    "description": "Identify call to update a DOI contact without an email, phone number, or contact ID",
+    "description": "Identify call to update a DOI contact without an email or contact ID",
     "input": {
       "message": {
         "type": "identify",
@@ -1018,7 +988,7 @@
       }
     },
     "output": {
-      "error": "At least one of email or phone or contactId is required to update the contact using DOI"
+      "error": "At least one of email or contactId is required to update the contact using DOI"
     }
   },
   {
@@ -1092,7 +1062,7 @@
           "age": 36,
           "location": "Mumbai",
           "role": "SDE 2",
-          "newPhone": "+918888888888",
+          "phone": "+918888888888",
           "email": "gordon_pittman@example.com",
           "newEmail": "gordon_pittman007@example.com"
         },

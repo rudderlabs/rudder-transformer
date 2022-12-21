@@ -1,0 +1,40 @@
+[
+  {
+    "destKey": "type",
+    "sourceKeys": "type",
+    "required": true
+  },
+  {
+    "destKey": "context",
+    "sourceKeys": "context",
+    "required": true,
+    "metadata": {
+      "defaultValue": {}
+    }
+  },
+  {
+    "destKey": "customerProperties",
+    "sourceKeys": ["context.traits"],
+    "required": true
+  },
+  {
+    "destKey": "id",
+    "sourceKeys": ["userId","anonymousId"],
+    "required": true
+  },
+  {
+    "destKey": "userId",
+    "sourceKeys": ["userId","anonymousId"],
+    "required": true
+  },
+  {
+    "destKey": "messageId",
+    "sourceKeys": "messageId",
+    "required": true
+  },
+  {
+    "destKey": "originalTimestamp",
+    "sourceKeys": "timestamp",
+    "required": true
+  }
+]

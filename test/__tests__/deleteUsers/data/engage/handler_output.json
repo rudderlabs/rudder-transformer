@@ -1,4 +1,23 @@
 [
+  
+    [
+      {
+        "statusCode": 400,
+        "error": "[Engage]::user deletion request failed - error: {\"code\":400,\"message\":\"Bad Req\",\"status\":\"Fail first\"}"
+      }
+    ],
+    [
+      {
+        "statusCode": 400,
+        "error":"[Engage]::user deletion request failed - error: {\"code\":400,\"message\":\"Bad Req\",\"status\":\"fail 6 \"}"
+      }
+    ],
+    [
+      {
+        "statusCode": 400,
+        "error": "[Engage]::user deletion request failed - error: {\"code\":400,\"message\":\"Bad Req\",\"status\":\"fail mid case 8\"}"
+      }
+    ],
     [
       {
         "statusCode": 400,

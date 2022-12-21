@@ -5,26 +5,27 @@ const {
   WorkflowCreationError
 } = require("rudder-workflow-engine");
 const logger = require("../../logger");
-const ErrorBuilder = require("../../v0/util/error");
-const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
+const { generateErrorObject } = require("../../v0/util");
+const {
+  PlatformError,
+  TransformationError
+} = require("../../v0/util/errorTypes");
+const tags = require("../../v0/util/tags");
 
 const CDK_V2_ROOT_DIR = __dirname;
 
-async function getWorkflowPath(
-  destDir,
-  flowType = TRANSFORMER_METRIC.ERROR_AT.UNKNOWN
-) {
+async function getWorkflowPath(destDir, feature) {
   // The values are of array type to support aliases
-  const flowTypeMap = {
+  const featureWorkflowMap = {
     // Didn't add any prefix as processor transformation is the default
-    [TRANSFORMER_METRIC.ERROR_AT.PROC]: ["workflow.yaml", "procWorkflow.yaml"],
-    [TRANSFORMER_METRIC.ERROR_AT.RT]: ["rtWorkflow.yaml"],
+    [tags.FEATURES.PROCESSOR]: ["workflow.yaml", "procWorkflow.yaml"],
+    [tags.FEATURES.ROUTER]: ["rtWorkflow.yaml"],
     // Note: intentionally avoided the `proxy` term here
-    [TRANSFORMER_METRIC.ERROR_AT.PROXY]: ["dataDeliveryWorkflow.yaml"],
-    [TRANSFORMER_METRIC.ERROR_AT.BATCH]: ["batchWorkflow.yaml"]
+    [tags.FEATURES.DATA_DELIVERY]: ["dataDeliveryWorkflow.yaml"],
+    [tags.FEATURES.BATCH]: ["batchWorkflow.yaml"]
   };
 
-  const workflowFilenames = flowTypeMap[flowType];
+  const workflowFilenames = featureWorkflowMap[feature];
   // Find the first workflow file that exists
   const files = await fs.readdir(destDir);
   const matchedFilename = workflowFilenames?.find(filename =>
@@ -36,12 +37,9 @@ async function getWorkflowPath(
   }
 
   if (!validWorkflowFilepath) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "Unable to identify the workflow file. Invalid flow type input"
-      )
-      .setStatus(400)
-      .build();
+    throw new PlatformError(
+      "Unable to identify the workflow file. Invalid feature input"
+    );
   }
   return validWorkflowFilepath;
 }
@@ -72,42 +70,60 @@ async function getPlatformBindingsPaths() {
  * @param {*} err
  */
 function getWorkflowEngineErrorMessage(err) {
-  return `${err.message}: Workflow: ${err.workflowName}, Step: ${err.stepName}, ChildStep: ${err.childStepName}`;
-}
+  let errMsg = err instanceof Error ? err.message : "";
 
-function getErrorInfo(err, isProd) {
+  if (
+    err instanceof WorkflowCreationError ||
+    err instanceof WorkflowExecutionError
+  ) {
+    errMsg = `${err.message}: Workflow: ${err.workflowName}, Step: ${err.stepName}, ChildStep: ${err.childStepName}`;
+
+    if (err instanceof WorkflowExecutionError) {
+      errMsg = `${errMsg}, OriginalError: ${err.originalError.message}`;
+    }
+  }
+
+  return errMsg;
+}
+/**
+ * Translated workflow engine errors to the transformer error types
+ * @param {*} err Error thrown by the workflow engine library
+ * @param {*} isProd A flag to determine if this is in execution for production CDK v2
+ * @param {*} defTags default stat tags
+ * @returns Error type object
+ */
+function getErrorInfo(err, isProd, defTags) {
   // Handle various CDK error types
-  let errorInfo = err;
   const message = isProd ? getWorkflowEngineErrorMessage(err) : err.message;
 
   if (err instanceof WorkflowExecutionError) {
     logger.error(
-      `Error occurred during workflow step execution:  Workflow: ${err.workflowName}, Step: ${err.stepName}, ChildStep: ${err.childStepName}`,
+      `Error occurred during workflow step execution: ${getWorkflowEngineErrorMessage(
+        err
+      )}`,
       err
     );
-    errorInfo = {
-      message,
-      status: err.status,
-      destinationResponse: err.error?.destinationResponse,
-      statTags: err.error?.statTags,
-      authErrorCategory: err.error?.authErrorCategory
-    };
-    // TODO: Add a special stat tag to bump the priority of the error
-  } else if (err instanceof WorkflowCreationError) {
-    logger.error(
-      `Error occurred during workflow creation. Workflow: ${err.workflowName}, Step: ${err.stepName}, ChildStep: ${err.childStepName}`,
-      err
-    );
-    errorInfo = {
-      message,
-      status: err.status,
-      statTags: {
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.CDK.SCOPE
-      }
-    };
+
+    // Determine the error instance
+    let errInstance = err;
+    if (err.originalError) {
+      errInstance = err.originalError;
+      errInstance.message = message;
+      errInstance.status = err.originalError.status || err.status;
+    }
+
+    return generateErrorObject(errInstance, defTags);
   }
-  return errorInfo;
+
+  // Treat all other errors as platform related errors
+  logger.error(
+    `Error occurred during workflow creation or unrecognized error during workflow execution: ${getWorkflowEngineErrorMessage(
+      err
+    )}`,
+    err
+  );
+
+  return generateErrorObject(new PlatformError(message), defTags);
 }
 
 function isCdkV2Destination(event) {

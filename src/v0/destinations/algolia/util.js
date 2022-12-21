@@ -1,5 +1,5 @@
 const logger = require("../../../logger");
-const { TransformationError } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 const { EVENT_TYPES } = require("./config");
 
 /**
@@ -28,7 +28,7 @@ const genericpayloadValidator = payload => {
   const updatedPayload = payload;
   updatedPayload.eventType = payload.eventType.trim().toLowerCase();
   if (!EVENT_TYPES.includes(payload.eventType)) {
-    throw new TransformationError(
+    throw new InstrumentationError(
       "eventType can be either click, view or conversion"
     );
   }
@@ -115,7 +115,7 @@ const clickPayloadValidator = payload => {
   }
   if (payload.objectIDs && payload.positions) {
     if (payload.objectIDs.length !== payload.positions.length) {
-      throw new TransformationError(
+      throw new InstrumentationError(
         "length of objectId and position should be equal"
       );
     }
@@ -125,9 +125,8 @@ const clickPayloadValidator = payload => {
       (payload.positions && !payload.queryID) ||
       (!payload.positions && payload.queryID)
     ) {
-      throw new TransformationError(
-        "for click eventType either both positions and queryId should be present or none",
-        400
+      throw new InstrumentationError(
+        "for click eventType either both positions and queryId should be present or none"
       );
     }
   }

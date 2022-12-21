@@ -63,7 +63,7 @@
       }
     },
     "output": {
-      "error": "[SendGrid] :: Parameter mail is required"
+      "error": "Parameter mail is required"
     }
   },
   {
@@ -705,7 +705,7 @@
       }
     },
     "output": {
-      "error": "[SendGrid] :: Event not configured on dashboard"
+      "error": "Event not configured on dashboard"
     }
   },
   {

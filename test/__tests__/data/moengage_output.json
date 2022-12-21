@@ -273,11 +273,11 @@
   },
   {
     "statusCode": 400,
-    "error": "Message Type is not present. Aborting message."
+    "error": "Event type is required"
   },
   {
     "statusCode": 400,
-    "error": "Message type not supported"
+    "error": "Event type gone is not supported"
   },
   {
     "version": "1",

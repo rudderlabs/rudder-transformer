@@ -1,4 +1,4 @@
-const ErrorBuilder = require("./error");
+const { PlatformError } = require("./errorTypes");
 
 class RegulationApiUtils {
   /**
@@ -8,10 +8,7 @@ class RegulationApiUtils {
    */
   static executeCommonValidations(userAttributes) {
     if (!Array.isArray(userAttributes)) {
-      throw new ErrorBuilder()
-        .setMessage("userAttributes is not an array")
-        .setStatus(400)
-        .build();
+      throw new PlatformError("userAttributes is not an array");
     }
   }
 }

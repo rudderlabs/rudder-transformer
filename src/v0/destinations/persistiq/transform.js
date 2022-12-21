@@ -5,11 +5,10 @@ const {
   simpleProcessRouterDest,
   getDestinationExternalID
 } = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const ErrorBuilder = require("../../util/error");
-const { DESTINATION, configCategories } = require("./config");
+const { configCategories } = require("./config");
 const { buildLeadPayload, getIdentifyTraits } = require("./util");
 const { EventType } = require("../../../constants");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const responseBuilder = (payload, endpoint, method, Config) => {
   const { apiKey } = Config;
@@ -32,17 +31,7 @@ const identifyResponseBuilder = (message, Config, leadId) => {
   if (!leadId) {
     // creating new Lead
     if (!leadInfo?.email) {
-      throw new ErrorBuilder()
-        .setMessage("Email is required for new lead.")
-        .setStatus(400)
-        .setStatTags({
-          destType: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-        })
-        .build();
+      throw new InstrumentationError("Email is required for new lead");
     }
     set(payload, "leads", [leadInfo]);
 
@@ -73,46 +62,19 @@ const identifyResponseBuilder = (message, Config, leadId) => {
 const groupResponseBuilder = (message, Config, leadId) => {
   const { groupId, traits } = message;
   if (!groupId) {
-    throw new ErrorBuilder()
-      .setMessage("Group Id can not be empty.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("Group Id can not be empty");
   }
   if (!leadId) {
-    throw new ErrorBuilder()
-      .setMessage("Lead Id from externalId is not found.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("Lead Id from externalId is not found");
   }
   if (
     traits.operation &&
     traits.operation !== "remove" &&
     traits.operation !== "add"
   ) {
-    throw new ErrorBuilder()
-      .setMessage(
-        `${traits.operation} is invalid for Operation field. Available are add or remove.`
-      )
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError(
+      `${traits.operation} is invalid for Operation field. Available are add or remove`
+    );
   }
   if (traits.operation === "remove") {
     const { method } = configCategories.Group.remove;
@@ -139,16 +101,7 @@ const process = event => {
   const { Config } = destination;
 
   if (!message.type) {
-    throw new ErrorBuilder()
-      .setMessage("Message Type is not present. Aborting message.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("Event type is required");
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -161,22 +114,15 @@ const process = event => {
       response = groupResponseBuilder(message, Config, leadId);
       break;
     default:
-      throw new ErrorBuilder()
-        .setMessage(`Message type ${messageType} not supported.`)
-        .setStatus(400)
-        .setStatTags({
-          destType: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-        })
-        .build();
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
   return response;
 };
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "PERSISTIQ", process);
+
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

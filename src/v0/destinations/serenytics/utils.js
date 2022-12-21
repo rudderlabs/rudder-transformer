@@ -2,23 +2,21 @@ const {
   constructPayload,
   extractCustomFields,
   defaultRequestConfig,
-  defaultPostRequestConfig,
-  CustomError
+  defaultPostRequestConfig
 } = require("../../util");
+const { ConfigurationError } = require("../../util/errorTypes");
 const { MAPPING_CONFIG } = require("./config");
 
 const checkStorageUrl = (STORAGE_URL, messageType) => {
   if (!STORAGE_URL) {
-    throw new CustomError(
-      `Storage url for "${messageType.toUpperCase()}" is missing. Aborting!`,
-      400
+    throw new ConfigurationError(
+      `Storage url for "${messageType.toUpperCase()}" is missing. Aborting!`
     );
   }
   const regexExp = /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{1,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
   if (!regexExp.test(STORAGE_URL)) {
-    throw new CustomError(
-      `Invalid storage url for "${messageType.toUpperCase()}". Aborting!`,
-      400
+    throw new ConfigurationError(
+      `Invalid storage url for "${messageType.toUpperCase()}". Aborting!`
     );
   }
 };

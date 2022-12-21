@@ -6,10 +6,8 @@
       "statusCode": 400,
       "error": "Missing required value from \"properties.index\"",
       "statTags": {
-        "destType": "ALGOLIA",
-        "stage": "transform",
-        "scope": "transformation",
-        "meta": "handled"
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation"
       }
     },
     {

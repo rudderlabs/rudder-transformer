@@ -1,6 +1,8 @@
 [
     [
-        { "reqParams": [
+        {
+            "type": "post",
+             "reqParams": [
             "https://api.clevertap.com/1/delete/profiles.json",
             {
                 "identity": ["test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2"]
@@ -22,7 +24,8 @@
           }
         }
       },
-       { "reqParams": [
+       { "type": "post",
+        "reqParams": [
             "https://api.clevertap.com/1/delete/profiles.json",
             {
                 "identity": ["test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2"]

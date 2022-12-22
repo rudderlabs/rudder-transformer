@@ -1,6 +1,6 @@
 
 [
-    {"error":"Message Type is not present. Aborting message."},
+    {"error": "Event type is required"},
     {"error": "Payload contains invalid configuration"},
     {"error": "Missing required value from [\"userId\",\"anonymousId\"]"},
     {

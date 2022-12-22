@@ -13,9 +13,12 @@ const {
   defaultRequestConfig,
   getSuccessRespEvents,
   getErrorRespEvents,
-  CustomError
 } = require("../../util");
-
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 function responseBuilder(message, category, destination) {
   let platform, payload, response;
   const {writeKey, pl, diapi, apiKey, passkey, wk, srcId } = destination.Config;
@@ -52,7 +55,7 @@ function responseBuilder(message, category, destination) {
       response.userId = message.anonymousId || message.userId;
       break;
     default:
-      throw new CustomError("Platform type not supported", 400);
+      throw new ConfigurationError("Platform type not supported", 400);
   }
   if (payload) {
     switch (category.type) {
@@ -66,22 +69,21 @@ function responseBuilder(message, category, destination) {
         payload.type = "track";
         break;
       default:
-        throw new CustomError("Call type is not valid", 400);
+        throw new InstrumentationError(
+          `Event type ${category.type} is not supported`
+        );
     }
     response.body.JSON = removeUndefinedAndNullValues(payload);
   } else {
     // fail-safety for developer error
-    throw new CustomError("Payload could not be constructed", 400);
+    throw new TransformationError("Payload could not be constructed");
   }
   return response;
 }
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   const messageType = message.type.toLowerCase();
@@ -102,7 +104,9 @@ const processEvent = (message, destination) => {
         response = responseBuilder(message, category, destination);
         break;
       default:
-        throw new CustomError("Message type not supported", 400);
+        throw new InstrumentationError(
+          `Event type ${messageType} is not supported`
+        );
     }
   }
   if(platform === 'diapi'){
@@ -112,7 +116,9 @@ const processEvent = (message, destination) => {
         response = responseBuilder(message, category, destination);
         break;
       default:
-        throw new CustomError("Message type not supported", 400);
+        throw new InstrumentationError(
+          `Event type ${messageType} is not supported`
+        );
     }
   }
   return response;
@@ -169,7 +175,7 @@ function fetchPlatform(destination){
   }else if(pl!== '' && writeKey !== '' && diapi === '' && apiKey === '' && passkey === ''){
     platform = 'pl';
   }else{
-    throw new CustomError("Payload contains invalid configuration", 400);
+    throw new TransformationError("Payload contains invalid configuration");
   }
   return platform
 }

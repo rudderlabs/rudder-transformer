@@ -118,7 +118,7 @@ const processTrack = (message, destination) => {
   const templateListArray = Array.from(templateListForThisEvent);
 
   // track event default handlebar expression
-  const defaultTemplate = "{{name}} did {{event}} with {{properties}}";
+  const defaultTemplate = "{{name}} did {{event}} with {{propertiesList}}";
 
   const eventTemplate = Handlebars.compile(
     templateListArray.length > 0 ? templateListArray[0] : defaultTemplate

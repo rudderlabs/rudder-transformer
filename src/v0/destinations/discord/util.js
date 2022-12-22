@@ -1,24 +1,5 @@
+/* eslint-disable no-nested-ternary */
 const { getFieldValueFromMessage } = require("../../util");
-
-/**
- *Getting the name from input traits either by name firstName lastName or Email or userName
- * @param {*} traits
- * @returns uName
- */
-const getNameFromTraits = traits => {
-  let uName;
-  if (!traits?.name) {
-    uName += traits?.firstName ? traits.firstName : "";
-    uName += traits?.lastName ? traits.lastName : "";
-    if (!uName) {
-      uName = traits.username || traits.email;
-    }
-  } else {
-    uName = traits.name;
-  }
-
-  return uName;
-};
 
 /**
  * get the name value from following heirarchy
@@ -36,14 +17,25 @@ const getName = message => {
   const traits = getFieldValueFromMessage(message, "traits");
   let uName;
   if (traits) {
-    uName = getNameFromTraits(traits);
-  }
-  if (!uName) {
     uName =
-      message?.properties?.email || message?.userId
-        ? `User ${message.userId}`
-        : `Anonymous user ${message.anonymousId}`;
+      traits.name ||
+      (traits.firstName
+        ? traits.lastName
+          ? `${traits.firstName}${traits.lastName}`
+          : traits.firstName
+        : undefined) ||
+      traits.username ||
+      (message.properties ? message.properties.email : undefined) ||
+      traits.email ||
+      (message.userId ? `User ${message.userId}` : undefined) ||
+      `Anonymous user ${message.anonymousId}`;
+  } else {
+    uName =
+      (message.properties ? message.properties.email : undefined) ||
+      (message.userId ? `User ${message.userId}` : undefined) ||
+      `Anonymous user ${message.anonymousId}`;
   }
+
   return uName;
 };
 
@@ -97,9 +89,7 @@ const buildDefaultTraitTemplate = (traitsList, traits) => {
   // else with all traits
   if (traitsList.length === 0) {
     Object.keys(traits).forEach(traitKey => {
-      if (traits?.traitKey) {
-        templateString += `${traitKey}: {{${traitKey}}} `;
-      }
+      templateString += `${traitKey}: {{${traitKey}}} `;
     });
   }
   return templateString;

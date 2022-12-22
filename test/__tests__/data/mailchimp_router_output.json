@@ -76,9 +76,8 @@
     "statusCode": 400,
     "error": "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]",
     "statTags": {
-      "destType": "MAILCHIMP",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   }
 ]

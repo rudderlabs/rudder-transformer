@@ -1,11 +1,11 @@
-const ErrorBuilder = require("../../v0/util/error");
 const { isHttpStatusSuccess } = require("../../v0/util/index");
-const { TRANSFORMER_METRIC } = require("../../v0/util/constant");
 const { proxyRequest, prepareProxyRequest } = require("../network");
 const {
-  getDynamicMeta,
+  getDynamicErrorType,
   processAxiosResponse
 } = require("../utils/networkUtils");
+const { NetworkError } = require("../../v0/util/errorTypes");
+const tags = require("../../v0/util/tags");
 
 /**
  * network handler as a fall back for all destination nethandlers, this file provides abstraction
@@ -23,22 +23,16 @@ const {
 const responseHandler = (destinationResponse, dest) => {
   const { status } = destinationResponse;
   const message = `[Generic Response Handler] Request for destination: ${dest} Processed Successfully`;
-  // if the responsee from destination is not a success case build an explicit error
+  // if the response from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status)) {
-    throw new ErrorBuilder()
-      .setStatus(status)
-      .setMessage(
-        `[Generic Response Handler] Request failed for destination ${dest} with status: ${status}`
-      )
-      .isTransformResponseFailure(true)
-      .setDestinationResponse(destinationResponse)
-      .setStatTags({
-        destType: dest,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: getDynamicMeta(status)
-      })
-      .build();
+    throw new NetworkError(
+      `[Generic Response Handler] Request failed for destination ${dest} with status: ${status}`,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      destinationResponse
+    );
   }
   return {
     status,

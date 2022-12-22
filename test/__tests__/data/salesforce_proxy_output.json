@@ -36,10 +36,11 @@
       },
       "statTags": {
         "destType": "SALESFORCE",
-        "errorAt": "proxy",
-        "scope": "api",
-        "stage": "responseTransform",
-        "meta": "retryable"
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
@@ -63,10 +64,11 @@
       },
       "statTags": {
         "destType": "SALESFORCE",
-        "errorAt": "proxy",
-        "scope": "api",
-        "stage": "responseTransform",
-        "meta": "abortable"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
@@ -90,10 +92,11 @@
       },
       "statTags": {
         "destType": "SALESFORCE",
-        "errorAt": "proxy",
-        "scope": "api",
-        "stage": "responseTransform",
-        "meta": "throttled"
+        "errorCategory": "network",
+        "errorType": "throttled",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
@@ -117,10 +120,11 @@
       },
       "statTags": {
         "destType": "SALESFORCE",
-        "errorAt": "proxy",
-        "scope": "api",
-        "stage": "responseTransform",
-        "meta": "retryable"
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   }

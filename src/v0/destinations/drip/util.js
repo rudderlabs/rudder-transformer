@@ -1,11 +1,10 @@
 const axios = require("axios");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const logger = require("../../../logger");
-const {
-  CustomError,
-  constructPayload,
-  isDefinedAndNotNull
-} = require("../../util");
+const { constructPayload, isDefinedAndNotNull } = require("../../util");
+const { NetworkError, AbortedError } = require("../../util/errorTypes");
 const { ENDPOINT, productMapping } = require("./config");
+const tags = require("../../util/tags");
 
 const isValidEmail = email => {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -33,7 +32,14 @@ const userExists = async (Config, id) => {
     if (response && response.status) {
       return response.status === 200;
     }
-    throw new CustomError("Invalid response.");
+    throw new NetworkError(
+      "Invalid response.",
+      response?.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(response?.status)
+      },
+      response
+    );
   } catch (error) {
     let errMsg = "";
     let errStatus = 400;
@@ -43,9 +49,12 @@ const userExists = async (Config, id) => {
         ? JSON.stringify(error.response.data)
         : "error response not found";
     }
-    throw new CustomError(
+    throw new NetworkError(
       `Error occurred while checking user : ${errMsg}`,
-      errStatus
+      errStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus)
+      }
     );
   }
 };
@@ -65,16 +74,14 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
     if (response) {
       return response.status === 200 || response.status === 201;
     }
-    throw new CustomError("Invalid response.");
+    throw new AbortedError("Invalid response.");
   } catch (error) {
     let errMsg = "";
-    const errStatus = 400;
     if (error.response && error.response.data) {
       errMsg = JSON.stringify(error.response.data);
     }
-    throw new CustomError(
-      `Error occurred while creating or updating user : ${errMsg}`,
-      errStatus
+    throw new AbortedError(
+      `Error occurred while creating or updating user : ${errMsg}`
     );
   }
 };

@@ -29,9 +29,7 @@
               "quantity": "455678",
               "floodlightActivityId": "456543345245",
               "value": 7,
-              "encryptedUserIdCandidates": [
-                "dfghjbnm"
-              ],
+              "encryptedUserIdCandidates": ["dfghjbnm"],
               "limitAdTracking": true,
               "childDirectedTreatment": true
             }
@@ -94,9 +92,7 @@
               "quantity": "455678",
               "floodlightActivityId": "456543345245",
               "value": 7,
-              "encryptedUserIdCandidates": [
-                "dfghjbnm"
-              ]
+              "encryptedUserIdCandidates": ["dfghjbnm"]
             }
           ]
         },
@@ -128,22 +124,21 @@
     }
   },
   {
-       "batched": false,
-       "error": "[CAMPAIGN MANAGER (DCM)]: properties.requestType must be one of batchinsert or batchupdate.",
-       "metadata":  [
-          {
-           "secret":  {
-             "access_token": "abcd1234",
-             "developer_token": "ijkl91011",
-             "refresh_token": "efgh5678"
-           }
-         }
-       ],
-     "statusCode": 400,
-       "statTags":  {
-         "destType": "CAMPAIGN_MANAGER",
-         "scope": "exception",
-         "stage": "transform"
+    "batched": false,
+    "error": "[CAMPAIGN MANAGER (DCM)]: properties.requestType must be one of batchinsert or batchupdate.",
+    "metadata": [
+      {
+        "secret": {
+          "access_token": "abcd1234",
+          "developer_token": "ijkl91011",
+          "refresh_token": "efgh5678"
+        }
       }
-}
+    ],
+    "statusCode": 400,
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    }
+  }
 ]

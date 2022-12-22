@@ -29,13 +29,16 @@ const {
   extractCustomFields,
   toUnixTimestamp,
   removeUndefinedAndNullValues,
-  CustomError,
   isEmptyObject,
   addExternalIdToTraits,
   adduserIdFromExternalId,
   defaultPutRequestConfig,
   simpleProcessRouterDest
 } = require("../../util");
+const {
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 /**
  * Main Identify request handler func
@@ -52,14 +55,12 @@ const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
   if (!destination.Config.publicApiKey || !destination.Config.privateApiKey) {
     if (!destination.Config.publicApiKey) {
-      throw new CustomError(
-        "Public API Key is a required field for identify events",
-        400
+      throw new ConfigurationError(
+        "Public API Key is a required field for identify events"
       );
     } else {
-      throw new CustomError(
-        "Private API Key is a required field for identify events",
-        400
+      throw new ConfigurationError(
+        "Private API Key is a required field for identify events"
       );
     }
   }
@@ -124,9 +125,8 @@ const identifyRequestHandler = async (message, category, destination) => {
 const trackRequestHandler = (message, category, destination) => {
   let payload = {};
   if (!destination.Config.publicApiKey) {
-    throw new CustomError(
-      "Public API Key is a required field for track events",
-      400
+    throw new ConfigurationError(
+      "Public API Key is a required field for track events"
     );
   }
   let event = get(message, "event");
@@ -142,9 +142,8 @@ const trackRequestHandler = (message, category, destination) => {
       !payload.customer_properties.$email &&
       !payload.customer_properties.$phone_number
     ) {
-      throw new CustomError(
-        "email or phone is required for customer_properties",
-        400
+      throw new InstrumentationError(
+        "email or phone is required for customer_properties"
       );
     }
     const categ = CONFIG_CATEGORIES[eventMap];
@@ -233,9 +232,8 @@ const trackRequestHandler = (message, category, destination) => {
 // ----------------------
 const groupRequestHandler = (message, category, destination) => {
   if (!destination.Config.privateApiKey) {
-    throw new CustomError(
-      "Private API Key is a required field for group events",
-      400
+    throw new ConfigurationError(
+      "Private API Key is a required field for group events"
     );
   }
   let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -303,10 +301,7 @@ const groupRequestHandler = (message, category, destination) => {
 // Main event processor using specific handler funcs
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   const messageType = message.type.toLowerCase();
 
@@ -327,7 +322,9 @@ const processEvent = async (message, destination) => {
       response = groupRequestHandler(message, category, destination);
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
   return response;
 };
@@ -337,8 +334,8 @@ const process = async event => {
   return result;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "KLAVIYO", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

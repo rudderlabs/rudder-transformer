@@ -2,6 +2,7 @@ const _ = require("lodash");
 
 const reservedANSIKeywordsMap = require("../config/ReservedKeywords.json");
 const { isDataLakeProvider } = require("../config/helpers");
+const { TransformationError } = require("../../v0/util/errorTypes");
 
 function safeTableName(options, name = "") {
   const { provider } = options;
@@ -9,7 +10,7 @@ function safeTableName(options, name = "") {
     options.integrationOptions?.skipReservedKeywordsEscaping || false;
   let tableName = name;
   if (tableName === "") {
-    throw new Error("Table name cannot be empty.");
+    throw new TransformationError("Table name cannot be empty.");
   }
   if (provider === "snowflake") {
     tableName = tableName.toUpperCase();
@@ -39,7 +40,7 @@ function safeColumnName(options, name = "") {
     options.integrationOptions?.skipReservedKeywordsEscaping || false;
   let columnName = name;
   if (columnName === "") {
-    throw new Error("Column name cannot be empty.");
+    throw new TransformationError("Column name cannot be empty.");
   }
   if (provider === "snowflake") {
     columnName = columnName.toUpperCase();

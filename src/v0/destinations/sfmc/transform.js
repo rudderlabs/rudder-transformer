@@ -12,13 +12,20 @@ const {
   flattenJson,
   toTitleCase,
   getHashFromArray,
-  CustomError,
   isEmpty,
   simpleProcessRouterDest
 } = require("../../util");
 const {
+  getDynamicErrorType,
   nodeSysErrorToStatus
 } = require("../../../adapters/utils/networkUtils");
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError,
+  TransformationError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm
 
@@ -38,18 +45,34 @@ const getToken = async (clientId, clientSecret, subdomain) => {
     if (resp && resp.data) {
       return resp.data.access_token;
     }
-    throw new CustomError("Could not retrieve authorisation token", 400);
+    const status = resp.status || 400;
+    throw new NetworkError(
+      "Could not retrieve access token",
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      resp
+    );
   } catch (error) {
     if (!isEmpty(error.response)) {
-      throw new CustomError(
+      const status = error.status || 400;
+      throw new NetworkError(
         `Authorization Failed ${error.response.statusText}`,
-        error.response.status
+        status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        }
       );
     } else {
       const httpError = nodeSysErrorToStatus(error.code);
-      throw new CustomError(
+      const status = httpError.status || 400;
+      throw new NetworkError(
         `Authorization Failed ${httpError.message}`,
-        httpError.status
+        status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        }
       );
     }
   }
@@ -66,7 +89,7 @@ const responseBuilderForIdentifyContacts = (message, subdomain, authToken) => {
     getFieldValueFromMessage(message, "userIdOnly") ||
     getFieldValueFromMessage(message, "email");
   if (!contactKey) {
-    throw new CustomError("Either userId or email is required", 400);
+    throw new InstrumentationError("Either userId or email is required");
   }
   response.body.JSON = { attributeSets: [], contactKey };
   response.headers = {
@@ -93,7 +116,7 @@ const responseBuilderForInsertData = (
     getFieldValueFromMessage(message, "userIdOnly") ||
     getFieldValueFromMessage(message, "email");
   if (!contactKey) {
-    throw new CustomError("Either userId or email is required", 400);
+    throw new InstrumentationError("Either userId or email is required");
   }
 
   const response = defaultRequestConfig();
@@ -207,7 +230,7 @@ const responseBuilderSimple = async (message, category, destination) => {
   }
 
   if (category.type === "identify" && createOrUpdateContacts) {
-    throw new CustomError("Creating or updating contacts is disabled", 400);
+    throw new ConfigurationError("Creating or updating contacts is disabled");
   }
 
   if (
@@ -226,15 +249,12 @@ const responseBuilderSimple = async (message, category, destination) => {
     );
   }
 
-  throw new CustomError("Event not mapped for this track call", 400);
+  throw new ConfigurationError("Event not mapped for this track call");
 };
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   const messageType = message.type.toLowerCase();
@@ -248,7 +268,9 @@ const processEvent = async (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
 
   // build the response
@@ -261,8 +283,8 @@ const process = async event => {
   return response;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "SFMC", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

@@ -1,18 +1,18 @@
 const { EventType } = require("../../../constants");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG, DESTINATION } = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-
+const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
   getFieldValueFromMessage,
   removeUndefinedAndNullValues,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError
+  simpleProcessRouterDest
 } = require("../../util");
-const ErrorBuilder = require("../../util/error");
+
+const {
+  InstrumentationError,
+  TransformationError
+} = require("../../util/errorTypes");
 
 const identifyFields = [
   "email",
@@ -62,19 +62,7 @@ function responseBuilderSimple(message, category, destination) {
         if (contactIdOrEmail) {
           response.endpoint = `${category.endPoint}/${destination.Config.triggerId}/contact/${contactIdOrEmail}`;
         } else {
-          throw new ErrorBuilder()
-            .setStatus(400)
-            .setMessage("Email is required for track calls")
-            .setStatTags({
-              destType: DESTINATION,
-              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-              meta:
-                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-                  .BAD_PARAM
-            })
-            .build();
-          // throw new CustomError("Email is required for track calls", 400);
+          throw new InstrumentationError("Email is required for track calls");
         }
         break;
       default:
@@ -86,12 +74,12 @@ function responseBuilderSimple(message, category, destination) {
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("Payload could not be constructed", 400);
+  throw new TransformationError("Payload could not be constructed");
 }
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError("invalid message type for autopilot", 400);
+    throw new InstrumentationError("invalid message type for autopilot");
   }
   const messageType = message.type;
   let category;
@@ -103,9 +91,8 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new CustomError(
-        `message type ${messageType} not supported for autopilot`,
-        400
+      throw new InstrumentationError(
+        `message type ${messageType} not supported for autopilot`
       );
   }
 
@@ -116,42 +103,9 @@ const processEvent = (message, destination) => {
 const process = event => {
   return processEvent(event.message, event.destination);
 };
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
 
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

@@ -15,12 +15,15 @@ const {
   defaultRequestConfig,
   defaultGetRequestConfig,
   removeUndefinedAndNullValues,
-  CustomError,
   extractCustomFields,
   getValueFromMessage,
   isDefinedAndNotNull,
   isAppleFamily
 } = require("../../util");
+const {
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 /*
   All the fields listed inside properties which are not directly mapped, will be sent to 'e' as custom event attributes
@@ -106,7 +109,9 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
   let platform = getValueFromMessage(message, "context.os.name");
   const typeOfEvent = isSessionEvent ? "SESSION" : "EVENT";
   if (!platform) {
-    throw new CustomError("[Singular] :: Platform name is missing", 400);
+    throw new InstrumentationError(
+      "Platform name is missing from context.os.name"
+    );
   }
   // checking if the os is one of ios, ipados, watchos, tvos
   if (typeof platform === "string" && isAppleFamily(platform.toLowerCase())) {
@@ -115,7 +120,7 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
   }
   platform = platform.toLowerCase();
   if (!SUPPORTED_PLATFORM[platform]) {
-    throw new CustomError("[Singular] :: Platform is not supported");
+    throw new InstrumentationError(`Platform ${platform} is not supported`);
   }
 
   const payload = constructPayload(
@@ -126,9 +131,8 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
   );
 
   if (!payload) {
-    throw new CustomError(
-      `Failed to Create ${platform} ${typeOfEvent} Payload`,
-      400
+    throw new TransformationError(
+      `Failed to Create ${platform} ${typeOfEvent} Payload`
     );
   }
   if (isSessionEvent) {

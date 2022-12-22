@@ -21,8 +21,13 @@ const {
   DestCanonicalNames,
   DestHandlerMap
 } = require("../../constants/destinationCanonicalNames");
-const { TRANSFORMER_METRIC } = require("./constant");
-const { TransformationError } = require("./errors");
+const {
+  InstrumentationError,
+  BaseError,
+  PlatformError,
+  TransformationError
+} = require("./errorTypes");
+const { client: errNotificationClient } = require("../../util/errorNotifier");
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -43,15 +48,6 @@ const flattenMap = collection => _.flatMap(collection, x => x);
 // ========================================================================
 // GENERIC UTLITY
 // ========================================================================
-
-class CustomError extends Error {
-  constructor(message, statusCode, metadata) {
-    super(message);
-    // *Note*: This schema is being used by other endpoints like /poll, /fileUpload etc,.
-    // Apart from destination transformation
-    this.response = { status: statusCode || 400, metadata };
-  }
-}
 
 const getEventTime = message => {
   return new Date(message.timestamp).toISOString();
@@ -216,35 +212,6 @@ const getHashFromArrayWithValueAsObject = (
     });
   }
   return hashMap;
-};
-
-// NEED to decouple value finding and `required` checking
-// NEED TO DEPRECATE
-const setValues = (payload, message, mappingJson) => {
-  if (Array.isArray(mappingJson)) {
-    let val;
-    let sourceKeys;
-    mappingJson.forEach(mapping => {
-      val = undefined;
-      sourceKeys = mapping.sourceKeys;
-      if (Array.isArray(sourceKeys) && sourceKeys.length > 0) {
-        for (let index = 0; index < sourceKeys.length; index += 1) {
-          val = get(message, sourceKeys[index]);
-          if (val) {
-            break;
-          }
-        }
-        if (val) {
-          set(payload, mapping.destKey, val);
-        } else if (mapping.required) {
-          throw new CustomError(
-            `One of ${JSON.stringify(mapping.sourceKeys)} is required`
-          );
-        }
-      }
-    });
-  }
-  return payload;
 };
 
 // get the value from the message given a key
@@ -633,7 +600,7 @@ const getValueFromMessage = (message, sourceKeys) => {
     // wrong sourceKey type. abort
     // DEVELOPER ERROR
     // TODO - think of a way to crash the pod
-    throw new CustomError("Wrong sourceKey type or blank sourceKey array");
+    throw new PlatformError("Wrong sourceKey type or blank sourceKey array");
   }
   return null;
 };
@@ -726,7 +693,7 @@ const handleMetadataForValue = (
     }
 
     if (pastTimeDifference > allowedPastTimeDifference) {
-      throw new CustomError(
+      throw new InstrumentationError(
         `Allowed timestamp is [${allowedPastTimeDifference} ${allowedPastTimeUnit}] into the past`
       );
     }
@@ -753,7 +720,7 @@ const handleMetadataForValue = (
       }
 
       if (futureTimeDifference > allowedFutureTimeDifference) {
-        throw new CustomError(
+        throw new InstrumentationError(
           `Allowed timestamp is [${allowedFutureTimeDifference} ${allowedFutureTimeUnit}] into the future`
         );
       }
@@ -812,7 +779,9 @@ const handleMetadataForValue = (
         }
         formattedVal = Number.parseFloat(Number(formattedVal || 0).toFixed(2));
         if (Number.isNaN(formattedVal)) {
-          throw new TransformationError("Revenue is not in the correct format");
+          throw new InstrumentationError(
+            "Revenue is not in the correct format"
+          );
         }
         break;
       case "toString":
@@ -939,7 +908,7 @@ const handleMetadataForValue = (
     }
     if (!foundVal) {
       if (strictMultiMap) {
-        throw new TransformationError(`Invalid entry for key ${destKey}`, 400);
+        throw new InstrumentationError(`Invalid entry for key ${destKey}`);
       } else {
         formattedVal = undefined;
       }
@@ -1067,9 +1036,8 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
         }
       } else if (required) {
         // throw error if reqired value is missing
-        throw new TransformationError(
-          `Missing required value from ${JSON.stringify(sourceKeys)}`,
-          400
+        throw new InstrumentationError(
+          `Missing required value from ${JSON.stringify(sourceKeys)}`
         );
       }
     });
@@ -1470,49 +1438,23 @@ const getErrorStatusCode = (error, defaultStatusCode = 400) => {
 
 /**
  * Used for generating error response with stats from native and built errors
- * @param {*} arg
- * @param {*} destination
- * @param {*} transformStage
  */
-function generateErrorObject(error, destination = "", transformStage) {
-  const { message, destinationResponse } = error;
-  let { statTags } = error;
-  if (!statTags) {
-    statTags = {
-      destType: destination,
-      stage: transformStage,
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
-    };
+function generateErrorObject(error, defTags = {}) {
+  let errObject = error;
+  if (!(error instanceof BaseError)) {
+    errObject = new TransformationError(
+      error.message,
+      getErrorStatusCode(error)
+    );
   }
-  // In previous versions of cdk, we had destination tag
-  // This block is mainly to support it and also for backward for non-cdk destinations
-  if (statTags.destination) {
-    statTags.destType = statTags.destination;
-    delete statTags.destination;
-  }
-  // When thrown using TransformationError or ApiError, we wouldn't set stage while throwing error
-  if (!statTags.destType) {
-    statTags.destType = destination.toUpperCase();
-  }
-  // When thrown using TransformationError or ApiError, we wouldn't set stage while throwing error
-  if (!statTags.stage) {
-    statTags.stage = transformStage;
-  }
-  if (statTags.destType) {
-    // Upper-casing the destination to maintain parity with destType(which is upper-cased dest. Def Name)
-    statTags.destType = statTags.destType.toUpperCase();
-  }
-  const response = {
-    status: getErrorStatusCode(error),
-    message: message || "Error occurred while processing the payload.",
-    destinationResponse,
-    statTags
+
+  // Add higher level default tags
+  errObject.statTags = {
+    ...errObject.statTags,
+    ...defTags
   };
-  // Extra Params needed for OAuth destinations' Response handling
-  if (error.authErrorCategory) {
-    response.authErrorCategory = error.authErrorCategory || "";
-  }
-  return response;
+
+  return errObject;
 }
 /**
  * Returns true for http status code in range of 200 to 300
@@ -1638,6 +1580,41 @@ function getValidDynamicFormConfig(
 }
 
 /**
+ * This method is used to check if the input events sent to router transformation are valid
+ * It is to be used only for router transform destinations
+ *
+ * Example:
+ * ```
+ * const errorRespEvents = checkInvalidRtTfEvents(inputs);
+ * if (errorRespEvents.length > 0) {
+ *  return errorRespEvents;
+ * }
+ * ```
+ * @param {Array<object>} inputs - list of rudder events to be transformed
+ * @returns {Array<object> | []}
+ */
+const checkInvalidRtTfEvents = inputs => {
+  if (!Array.isArray(inputs) || inputs.length === 0) {
+    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    return [respEvents];
+  }
+  return [];
+};
+
+const getEventReqMetadata = event => {
+  try {
+    return {
+      destinationId: event?.destination?.ID,
+      destName: event?.destination?.Name,
+      metadata: event?.metadata
+    };
+  } catch (error) {
+    // Do nothing
+  }
+  return {};
+};
+
+/**
  * error handler during transformation of a single rudder event for rt transform destinaiton
  *
  * This function is to be used only when we have a simple error handling scenario
@@ -1648,49 +1625,23 @@ function getValidDynamicFormConfig(
  * @param {string} destType - destination name
  * @returns
  */
-const handleRtTfSingleEventError = (input, error, destType) => {
-  const errObj = generateErrorObject(
-    error,
-    destType, // Preference is destination definition name
-    TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-  );
-  return getErrorRespEvents(
+const handleRtTfSingleEventError = (input, error, reqMetadata) => {
+  const errObj = generateErrorObject(error);
+
+  const resp = getErrorRespEvents(
     [input.metadata],
     errObj.status,
     errObj.message,
     errObj.statTags
   );
-};
 
-/**
- * This method is used to check if the input events sent to router transformation are valid
- * It is to be used only for router transform destinations
- *
- * Example:
- * ```
- * const errorRespEvents = checkInvalidRtTfEvents(inputs, destType);
- * if (errorRespEvents.length > 0) {
- *  return errorRespEvents;
- * }
- * ```
- * @param {Array<object>} inputs - list of rudder events to be transformed
- * @param {String} destType - destination name
- * @returns {Array<object> | []}
- */
-const checkInvalidRtTfEvents = (inputs, destType) => {
-  let destTyp = destType;
-  if (!destTyp) {
-    destTyp = "";
-  }
-  if (!Array.isArray(inputs) || inputs.length === 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array", {
-      destType: destTyp.toUpperCase(),
-      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE
-    });
-    return [respEvents];
-  }
-  return [];
+  errNotificationClient.notify(error, "Router Transformation (event level)", {
+    ...resp,
+    ...reqMetadata,
+    ...getEventReqMetadata(input)
+  });
+
+  return resp;
 };
 
 /**
@@ -1705,8 +1656,8 @@ const checkInvalidRtTfEvents = (inputs, destType) => {
  * @param {Function} singleTfFunc - single event transformation function, we'd recommend this to be an async function(always)
  * @returns
  */
-const simpleProcessRouterDest = async (inputs, destType, singleTfFunc) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, destType);
+const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -1722,7 +1673,7 @@ const simpleProcessRouterDest = async (inputs, destType, singleTfFunc) => {
 
         return getSuccessRespEvents(resp, [input.metadata], input.destination);
       } catch (error) {
-        return handleRtTfSingleEventError(input, error, destType);
+        return handleRtTfSingleEventError(input, error, reqMetadata);
       }
     })
   );
@@ -1827,8 +1778,6 @@ const refinePayload = obj => {
 // ========================================================================
 // keep it sorted to find easily
 module.exports = {
-  CustomError,
-  TransformationError,
   ErrorMessage,
   addExternalIdToTraits,
   adduserIdFromExternalId,
@@ -1902,7 +1851,6 @@ module.exports = {
   removeUndefinedNullEmptyExclBoolInt,
   removeUndefinedValues,
   returnArrayOfSubarrays,
-  setValues,
   stripTrailingSlash,
   toTitleCase,
   toUnixTimestamp,
@@ -1912,5 +1860,6 @@ module.exports = {
   handleRtTfSingleEventError,
   getErrorStatusCode,
   getDestAuthCacheInstance,
-  refinePayload
+  refinePayload,
+  getEventReqMetadata
 };

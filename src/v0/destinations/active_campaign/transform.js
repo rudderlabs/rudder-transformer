@@ -8,11 +8,17 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
-  CustomError,
   simpleProcessRouterDest
 } = require("../../util");
 const { errorHandler } = require("./util");
 const { httpGET, httpPOST } = require("../../../adapters/network");
+const {
+  InstrumentationError,
+  TransformationError,
+  NetworkError
+} = require("../../util/errorTypes");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const tags = require("../../util/tags");
 
 // The Final data is both application/url-encoded FORM and POST JSON depending on type of event
 // Creating a switch case for final request building
@@ -41,12 +47,12 @@ const responseBuilderSimple = (payload, category, destination) => {
         response.body.FORM = payload;
         break;
       default:
-        throw new CustomError("Message format type not supported", 400);
+        throw new InstrumentationError("Message format type not supported");
     }
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("Payload could not be constructed", 400);
+  throw new TransformationError("Payload could not be constructed");
 };
 
 const syncContact = async (contactPayload, category, destination) => {
@@ -66,7 +72,14 @@ const syncContact = async (contactPayload, category, destination) => {
   }
   const createdContact = get(res, "response.data.contact"); // null safe
   if (!createdContact) {
-    throw new CustomError("Unable to Create Contact", 400);
+    throw new NetworkError(
+      "Unable to Create Contact",
+      res.response?.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response?.status)
+      },
+      res.response
+    );
   }
   return createdContact.id;
 };
@@ -434,8 +447,16 @@ const screenRequestHandler = async (message, category, destination) => {
     errorHandler(res.response, "Failed to retrieve events");
   }
 
-  if (res.response.status !== 200)
-    throw new CustomError("Unable to create event", res.response.status || 400);
+  if (res?.response?.status !== 200) {
+    throw new NetworkError(
+      "Unable to create event",
+      res.response?.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response?.status)
+      },
+      res.response
+    );
+  }
 
   const storedEventsArr = res.response.data.eventTrackingEvents;
   const storedEvents = [];
@@ -464,9 +485,13 @@ const screenRequestHandler = async (message, category, destination) => {
     }
 
     if (res.response.status !== 201) {
-      throw new CustomError(
+      throw new NetworkError(
         "Unable to create event",
-        res.response.status || 400
+        res.response.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status)
+        },
+        res?.response
       );
     }
   }
@@ -500,11 +525,16 @@ const trackRequestHandler = async (message, category, destination) => {
     errorHandler(res.response, "Failed to retrieve events");
   }
 
-  if (res.response.status !== 200)
-    throw new CustomError(
+  if (res.response.status !== 200) {
+    throw new NetworkError(
       "Unable to fetch events. Aborting",
-      res.response.status || 400
+      res.response.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status)
+      },
+      res?.response
     );
+  }
 
   const storedEventsArr = res.response.data.eventTrackingEvents;
   const storedEvents = [];
@@ -528,10 +558,14 @@ const trackRequestHandler = async (message, category, destination) => {
       }
     };
     res = await httpPOST(endpoint, requestData, requestOpt);
-    if (res.response.status !== 201) {
-      throw new CustomError(
+    if (res.response?.status !== 201) {
+      throw new NetworkError(
         "Unable to create event. Aborting",
-        res.response.status || 400
+        res.response.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(res.response.status)
+        },
+        res.response
       );
     }
   }
@@ -556,9 +590,8 @@ const trackRequestHandler = async (message, category, destination) => {
 // subsquent processing and transformations and the response is sent to rudder-server
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   const messageType = message.type.toLowerCase();
@@ -582,7 +615,7 @@ const processEvent = async (message, destination) => {
       response = await trackRequestHandler(message, category, destination);
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError("Message type not supported");
   }
   return response;
 };
@@ -592,12 +625,8 @@ const process = async event => {
   return result;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(
-    inputs,
-    "active_campaign",
-    process
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

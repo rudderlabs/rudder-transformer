@@ -12,12 +12,8 @@ const {
   getHashFromArrayWithDuplicate
 } = require("../../util");
 
-const ErrorBuilder = require("../../util/error");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-
 const {
   ENDPOINT,
-  DESTINATION,
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
   HASHING_REQUIRED_KEYS,
@@ -26,6 +22,7 @@ const {
   eventToStandardMapping,
   MATCH_KEY_FIELD_TYPE_DICTIONARY
 } = require("./config");
+const { ConfigurationError } = require("../../util/errorTypes");
 
 /**
  * @param {*} message
@@ -205,19 +202,9 @@ const getStandardEventsAndEventSetIds = (destination, event) => {
     }
   });
   if (!payload.length) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[Facebook Offline Conversions] :: Please Map Your Standard Events With Event Set Ids"
-      )
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      })
-      .build();
+    throw new ConfigurationError(
+      "Please Map Your Standard Events With Event Set Ids"
+    );
   }
   return payload;
 };

@@ -4,7 +4,6 @@ const md5 = require("md5");
 const { MappedToDestinationKey } = require("../../../constants");
 const logger = require("../../../logger");
 const {
-  CustomError,
   isDefinedAndNotNull,
   isDefined,
   checkSubsetOfArray,
@@ -16,12 +15,15 @@ const {
   defaultBatchRequestConfig,
   constructPayload
 } = require("../../util");
+const { InstrumentationError, NetworkError } = require("../../util/errorTypes");
 const {
   MERGE_CONFIG,
   MERGE_ADDRESS,
   SUBSCRIPTION_STATUS,
   VALID_STATUSES
 } = require("./config");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const tags = require("../../util/tags");
 
 const ADDRESS_MANDATORY_FIELDS = ["addr1", "city", "state", "zip"];
 
@@ -186,9 +188,13 @@ const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
       }
     });
   } catch (error) {
-    throw new CustomError(
-      "[Mailchimp]:: User does not have access to the requested operation",
-      error.status || 400
+    const status = error.status || 400;
+    throw new NetworkError(
+      "User does not have access to the requested operation",
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      }
     );
   }
   return !!response.data.double_optin;
@@ -229,9 +235,8 @@ const validateAddressObject = mergedAddressPayload => {
           !isDefinedAndNotNullAndNotEmpty(mergedAddressPayload[addressField]) ||
           typeof mergedAddressPayload[addressField] !== "string"
         ) {
-          throw new CustomError(
-            `To send as address information, ${addressField} field should be valid string`,
-            400
+          throw new InstrumentationError(
+            `To send as address information, ${addressField} field should be valid string`
           );
         } else {
           mergedAddressPayload[
@@ -240,9 +245,8 @@ const validateAddressObject = mergedAddressPayload => {
         }
       });
     } else {
-      throw new CustomError(
-        'For sending address information ["addr1", "city", "state", "zip"] fields are mandatory',
-        400
+      throw new InstrumentationError(
+        'For sending address information ["addr1", "city", "state", "zip"] fields are mandatory'
       );
     }
   }
@@ -277,9 +281,8 @@ const overrideSubscriptionStatus = (message, primaryPayload, userStatus) => {
     };
   }
   if (!VALID_STATUSES.includes(integrationsObj.subscriptionStatus)) {
-    throw new CustomError(
-      "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]",
-      400
+    throw new InstrumentationError(
+      "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]"
     );
   }
 

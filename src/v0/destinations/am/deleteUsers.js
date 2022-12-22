@@ -1,21 +1,29 @@
 const btoa = require("btoa");
 const { httpSend } = require("../../../adapters/network");
-const { CustomError } = require("../../util");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+
+const {
+  NetworkError,
+  RetryableError,
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
+const tags = require("../../util/tags");
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
-    throw new CustomError("Config for deletion not present", 400);
+    throw new ConfigurationError("Config for deletion not present");
   }
   const { apiKey, apiSecret } = config;
   if (!apiKey || !apiSecret) {
-    throw new CustomError("api key/secret for deletion not present", 400);
+    throw new ConfigurationError("api key/secret for deletion not present");
   }
 
   for (let i = 0; i < userAttributes.length; i += 1) {
     const uId = userAttributes[i].userId;
     if (!uId) {
-      throw new CustomError("User id for deletion not present", 400);
+      throw new InstrumentationError("User id for deletion not present");
     }
     const data = { user_ids: [uId], requester: "RudderStack" };
     const requestOptions = {
@@ -29,17 +37,23 @@ const userDeletionHandler = async (userAttributes, config) => {
     };
     const resp = await httpSend(requestOptions);
     if (!resp || !resp.response) {
-      throw new CustomError("Could not get response", 500);
+      throw new RetryableError("Could not get response");
     }
     if (
       resp &&
       resp.response &&
-      resp.response.response &&
-      resp.response.response.status !== 200 // am sends 400 for any bad request or even if user id is not found. The text is also "Bad Request" so not handling user not found case
+      resp.response?.response &&
+      resp.response?.response?.status !== 200 // am sends 400 for any bad request or even if user id is not found. The text is also "Bad Request" so not handling user not found case
     ) {
-      throw new CustomError(
-        resp.response.response.statusText || "Error while deleting user",
-        resp.response.response.status
+      throw new NetworkError(
+        resp.response?.response?.statusText || "Error while deleting user",
+        resp.response?.response?.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+            resp.response?.response?.status
+          )
+        },
+        resp
       );
     }
   }

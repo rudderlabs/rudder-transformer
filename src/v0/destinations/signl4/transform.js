@@ -4,11 +4,14 @@ const { populatePayload } = require("./utils");
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
-  CustomError,
-  getErrorRespEvents,
-  getSuccessRespEvents,
+  simpleProcessRouterDest,
   removeUndefinedAndNullAndEmptyValues
 } = require("../../util");
+const {
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = (payload, endpoint) => {
   if (payload) {
@@ -21,9 +24,8 @@ const responseBuilder = (payload, endpoint) => {
     response.body.JSON = removeUndefinedAndNullAndEmptyValues(payload);
     return response;
   }
-  throw new CustomError(
-    "Payload could not be populated due to wrong input",
-    400
+  throw new TransformationError(
+    "Payload could not be populated due to wrong input"
   );
 };
 
@@ -38,10 +40,7 @@ const trackResponseBuilder = (message, { Config }) => {
   const { event } = message;
 
   if (!event) {
-    throw new CustomError(
-      "[SIGNL4]: event is not present in the input payload",
-      400
-    );
+    throw new InstrumentationError("Event is not present in the input payload");
   }
 
   const endpoint = `${BASE_URL}/${apiKey}`;
@@ -53,13 +52,10 @@ const trackResponseBuilder = (message, { Config }) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   if (!destination.Config.apiKey) {
-    throw new CustomError("apiKey is a required field", 400);
+    throw new ConfigurationError("ApiKey is a required field");
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -68,7 +64,9 @@ const processEvent = (message, destination) => {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
   return response;
 };
@@ -77,38 +75,9 @@ const process = async event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  return Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response ? error.response.status : error.code || 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  return respList;
 };
 
 module.exports = { process, processRouterDest };

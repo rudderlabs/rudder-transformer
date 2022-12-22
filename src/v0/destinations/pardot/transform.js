@@ -46,10 +46,12 @@ const {
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError
 } = require("../../util");
-const ErrorBuilder = require("../../util/error");
-
 const { CONFIG_CATEGORIES } = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+const {
+  OAuthSecretError,
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 /**
  * Get access token to be bound to the event req headers
@@ -66,10 +68,7 @@ const getAccessToken = metadata => {
   // OAuth for this destination
   const { secret } = metadata;
   if (!secret) {
-    throw new ErrorBuilder()
-      .setMessage("Empty/Invalid access token")
-      .setStatus(500)
-      .build();
+    throw new OAuthSecretError("Empty/Invalid access token");
   }
   return secret.access_token;
 };
@@ -137,17 +136,7 @@ const processIdentify = ({ message, metadata }, destination, category) => {
   const prospectObject = constructPayload(message, identifyConfig);
   const nonProperExtId = isExtIdNotProperlyDefined(extId);
   if (nonProperExtId && !email) {
-    throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage("Without externalId, email is required")
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-      })
-      .build();
+    throw new InstrumentationError("Without externalId, email is required");
   }
   const url = getUrl({
     nonProperExtId,
@@ -166,43 +155,14 @@ const processIdentify = ({ message, metadata }, destination, category) => {
 const processEvent = (metadata, message, destination) => {
   let response;
   if (!message.type) {
-    throw new ErrorBuilder()
-      .setMessage("Message Type is not present. Aborting message.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      })
-      .build();
+    throw new InstrumentationError("Event type is required");
   }
   if (!destination.Config.campaignId) {
-    throw new ErrorBuilder()
-      .setMessage("Campaign Id is mandatory")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      })
-      .build();
+    throw new ConfigurationError("Campaign Id is mandatory");
   }
 
   if (!destination.Config.businessUnitId) {
-    throw new ErrorBuilder()
-      .setMessage("Business Unit Id is mandatory")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      })
-      .build();
+    throw new ConfigurationError("Business Unit Id is mandatory");
   }
 
   if (message.type === "identify") {
@@ -210,16 +170,9 @@ const processEvent = (metadata, message, destination) => {
 
     response = processIdentify({ message, metadata }, destination, category);
   } else {
-    throw new ErrorBuilder()
-      .setMessage(`${message.type} is not supported in Pardot`)
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      })
-      .build();
+    throw new InstrumentationError(
+      `Event type ${message.type} is not supported`
+    );
   }
   return response;
 };
@@ -228,8 +181,8 @@ const process = event => {
   return processEvent(event.metadata, event.message, event.destination);
 };
 
-const processRouterDest = async events => {
-  const errorRespEvents = checkInvalidRtTfEvents(events, DESTINATION);
+const processRouterDest = async (events, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(events);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -243,7 +196,7 @@ const processRouterDest = async events => {
           event.destination
         );
       } catch (error) {
-        return handleRtTfSingleEventError(event, error, DESTINATION);
+        return handleRtTfSingleEventError(event, error, reqMetadata);
       }
     })
   );

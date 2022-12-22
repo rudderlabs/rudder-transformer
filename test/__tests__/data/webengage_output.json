@@ -408,7 +408,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[WEBENGAGE]: Either one of userId or anonymousId is mandatory.",
+    "error": "Either one of userId or anonymousId is mandatory",
     "statTags": {
       "destination": "webengage",
       "stage": "transform",
@@ -417,7 +417,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[WEBENGAGE]: Message type not supported",
+    "error": "Event type master is not supported",
     "statTags": {
       "destination": "webengage",
       "stage": "transform",
@@ -426,7 +426,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[WEBENGAGE]: Message Type is not present. Aborting message.",
+    "error": "Event type is required",
     "statTags": {
       "destination": "webengage",
       "stage": "transform",
@@ -435,7 +435,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[WEBENGAGE]: Message Type is not present. Aborting message.",
+    "error": "Event type is required",
     "statTags": {
       "destination": "webengage",
       "stage": "transform",
@@ -637,7 +637,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[WEBENGAGE]: timestamp must be ISO format (YYYY-MM-DD).",
+    "error": "Timestamp must be ISO format (YYYY-MM-DD)",
     "statTags": {
       "destination": "webengage",
       "stage": "transform",
@@ -655,7 +655,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[WEBENGAGE]: birthday must be in this (YYYY-MM-DD) format.",
+    "error": "birthday must be in this (YYYY-MM-DD) format",
     "statTags": {
       "destination": "webengage",
       "stage": "transform",

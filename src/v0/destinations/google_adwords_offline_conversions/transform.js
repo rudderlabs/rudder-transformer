@@ -12,7 +12,7 @@ const {
   getHashFromArray,
   getFieldValueFromMessage
 } = require("../../util");
-const ErrorBuilder = require("../../util/error");
+
 const {
   CLICK_CONVERSION,
   CALL_CONVERSION,
@@ -24,6 +24,10 @@ const {
   getAccessToken,
   removeHashToSha256TypeFromMappingJson
 } = require("./utils");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 /**
  * get conversions depending on the type set from dashboard
@@ -118,12 +122,9 @@ const getConversions = (
 
       // one of email or phone must be provided
       if (!email && !phone) {
-        throw new ErrorBuilder()
-          .setMessage(
-            `[Google Ads Offline Conversions]:: either of email or phone is required for user identifier`
-          )
-          .setStatus(400)
-          .build();
+        throw new InstrumentationError(
+          `Either of email or phone is required for user identifier`
+        );
       }
     }
 
@@ -180,12 +181,9 @@ const getConversions = (
       const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
       response.headers["login-customer-id"] = filteredLoginCustomerId;
     } else {
-      throw new ErrorBuilder()
-        .setMessage(
-          `[Google Ads Offline Conversions]:: loginCustomerId is required as subAccount is enabled`
-        )
-        .setStatus(400)
-        .build();
+      throw new ConfigurationError(
+        `loginCustomerId is required as subAccount is enabled`
+      );
     }
   }
 
@@ -206,12 +204,7 @@ const trackResponseBuilder = (message, metadata, destination) => {
   } = destination.Config;
   let { event } = message;
   if (!event) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[Google Ads Offline Conversions]:: Event name is not present"
-      )
-      .setStatus(400)
-      .build();
+    throw new InstrumentationError("Event name is not present");
   }
 
   event = event.toLowerCase().trim();
@@ -229,10 +222,7 @@ const trackResponseBuilder = (message, metadata, destination) => {
     !eventsToConversionsNamesMapping[event] ||
     !eventsToOfflineConversionsTypeMapping[event]
   ) {
-    throw new ErrorBuilder()
-      .setMessage(`Event name '${event}' is not valid`)
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError(`Event name '${event}' is not valid`);
   }
 
   eventsToOfflineConversionsTypeMapping[event].forEach(conversionType => {
@@ -254,12 +244,9 @@ const process = async event => {
   const { message, metadata, destination } = event;
 
   if (!message.type) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[Google Ads Offline Conversions]:: message type is not present. Aborting message."
-      )
-      .setStatus(400)
-      .build();
+    throw new InstrumentationError(
+      "Message type is not present. Aborting message."
+    );
   }
 
   validateDestinationConfig(destination);
@@ -269,23 +256,14 @@ const process = async event => {
   if (messageType === EventType.TRACK) {
     response = trackResponseBuilder(message, metadata, destination);
   } else {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Google Ads Offline Conversions]:: Message type ${messageType} not supported`
-      )
-      .setStatus(400)
-      .build();
+    throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
 
   return response;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(
-    inputs,
-    "Google_adwords_offline_conversions",
-    process
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

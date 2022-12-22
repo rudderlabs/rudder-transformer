@@ -6,13 +6,13 @@ const {
 } = require("./config");
 const {
   defaultRequestConfig,
-  CustomError,
   defaultPutRequestConfig,
   removeUndefinedAndNullValues,
   simpleProcessRouterDest
 } = require("../../util");
 
 const { getAccessToken, createPayload } = require("./util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 /**
  * This function is used for building the final response to be returned.
@@ -28,9 +28,8 @@ const responseBuilder = async (message, destination) => {
 
   const traitsList = listData[DSP_SUPPORTED_OPERATION];
   if (!traitsList) {
-    throw new CustomError(
-      `[Yahoo_DSP]:: The only supported operation for audience updation '${DSP_SUPPORTED_OPERATION}' is not present`,
-      400
+    throw new InstrumentationError(
+      `The only supported operation for audience updation '${DSP_SUPPORTED_OPERATION}' is not present`
     );
   }
 
@@ -50,9 +49,8 @@ const responseBuilder = async (message, destination) => {
         !seedListType ||
         (seedListType !== "IDFA" && seedListType !== "GPADVID")
       ) {
-        throw new CustomError(
-          `[Yahoo_DSP]:: seedListType is required for deviceId type audience and it should be any one of 'IDFA' and 'GPADVID'`,
-          400
+        throw new InstrumentationError(
+          `seedListType is required for deviceId type audience and it should be any one of 'IDFA' and 'GPADVID'`
         );
       }
       dspListPayload = createPayload(traitsList, Config);
@@ -69,9 +67,8 @@ const responseBuilder = async (message, destination) => {
       };
       break;
     default:
-      throw new CustomError(
-        `[Yahoo_DSP]:: Audience Type "${audienceType}" is not supported`,
-        400
+      throw new InstrumentationError(
+        `Audience Type ${audienceType} is not supported`
       );
   }
 
@@ -80,9 +77,6 @@ const responseBuilder = async (message, destination) => {
   response.body.JSON = removeUndefinedAndNullValues(dspListPayload);
   response.method = defaultPutRequestConfig.requestMethod;
   const accessToken = await getAccessToken(destination);
-  if (!accessToken) {
-    throw new CustomError(`[Yahoo_DSP]:: access token is not available`, 400);
-  }
   response.headers = {
     "X-Auth-Token": accessToken,
     "X-Auth-Method": "OAuth2",
@@ -94,28 +88,23 @@ const responseBuilder = async (message, destination) => {
 const processEvent = async (message, destination) => {
   let response;
   if (!message.type) {
-    throw new CustomError(
-      "[Yahoo_DSP]:: Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   if (!message.properties) {
-    throw new CustomError(
-      "[Yahoo_DSP]:: Message properties is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message properties is not present. Aborting message"
     );
   }
   if (!message.properties.listData) {
-    throw new CustomError(
-      "[Yahoo_DSP]:: listData is not present inside properties. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "listData is not present inside properties. Aborting message"
     );
   }
   if (message.type.toLowerCase() === "audiencelist") {
     response = await responseBuilder(message, destination);
   } else {
-    throw new CustomError(
-      `[Yahoo_DSP]:: Message type ${message.type} not supoorted`,
+    throw new InstrumentationError(
+      `Event type ${message.type} is not supported`,
       400
     );
   }
@@ -126,8 +115,8 @@ const process = async event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "YAHOO_DSP", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

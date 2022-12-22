@@ -3,7 +3,6 @@ const { EventType } = require("../../../constants");
 const {
   constructPayload,
   defaultRequestConfig,
-  CustomError,
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
@@ -18,14 +17,16 @@ const {
   EncryptionSource
 } = require("./config");
 
-const ErrorBuilder = require("../../util/error");
+const {
+  InstrumentationError,
+  OAuthSecretError
+} = require("../../util/errorTypes");
 
 const getAccessToken = ({ secret }) => {
   if (!secret) {
-    throw new ErrorBuilder()
-      .setMessage("[CAMPAIGN MANAGER (DCM)]:: OAuth - access token not found")
-      .setStatus(500)
-      .build();
+    throw new OAuthSecretError(
+      "[CAMPAIGN MANAGER (DCM)]:: OAuth - access token not found"
+    );
   }
   return secret.access_token;
 };
@@ -124,10 +125,9 @@ function processTrack(message, metadata, destination) {
     ) {
       encryptionInfo.kind = "dfareporting#encryptionInfo";
     } else {
-      throw new CustomError(
+      throw new InstrumentationError(
         "[CAMPAIGN MANAGER (DCM)]: If encryptedUserId or encryptedUserIdCandidates is used, provide proper values for " +
-          "properties.encryptionEntityType , properties.encryptionSource and properties.encryptionEntityId",
-        400
+          "properties.encryptionEntityType , properties.encryptionSource and properties.encryptionEntityId"
       );
     }
   }
@@ -144,9 +144,8 @@ function processTrack(message, metadata, destination) {
 
 function validateRequest(message) {
   if (!message.properties) {
-    throw new CustomError(
-      "[CAMPAIGN MANAGER (DCM)]: properties must be present in event. Aborting message",
-      400
+    throw new InstrumentationError(
+      "[CAMPAIGN MANAGER (DCM)]: properties must be present in event. Aborting message"
     );
   }
 
@@ -154,9 +153,8 @@ function validateRequest(message) {
     message.properties.requestType !== "batchinsert" &&
     message.properties.requestType !== "batchupdate"
   ) {
-    throw new CustomError(
-      "[CAMPAIGN MANAGER (DCM)]: properties.requestType must be one of batchinsert or batchupdate.",
-      400
+    throw new InstrumentationError(
+      "[CAMPAIGN MANAGER (DCM)]: properties.requestType must be one of batchinsert or batchupdate."
     );
   }
 }
@@ -167,9 +165,8 @@ function postValidateRequest(response) {
       response.body.JSON.conversions[0].encryptedUserIdCandidates) &&
     !response.body.JSON.encryptionInfo
   ) {
-    throw new CustomError(
-      "[CAMPAIGN MANAGER (DCM)]: encryptionInfo is a required field if encryptedUserId or encryptedUserIdCandidates is used.",
-      400
+    throw new InstrumentationError(
+      "[CAMPAIGN MANAGER (DCM)]: encryptionInfo is a required field if encryptedUserId or encryptedUserIdCandidates is used."
     );
   }
 
@@ -200,9 +197,8 @@ function postValidateRequest(response) {
   }
 
   if (count !== 1) {
-    throw new CustomError(
-      "[CAMPAIGN MANAGER (DCM)]: For CM360 we need one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId.",
-      400
+    throw new InstrumentationError(
+      "[CAMPAIGN MANAGER (DCM)]: For CM360 we need one of encryptedUserId,encryptedUserIdCandidates, matchId, mobileDeviceId, gclid, dclid, impressionId."
     );
   }
 }
@@ -211,9 +207,8 @@ function process(event) {
   const { message, metadata, destination } = event;
 
   if (!message.type) {
-    throw new CustomError(
-      "[CAMPAIGN MANAGER (DCM)]: Message Type missing. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "[CAMPAIGN MANAGER (DCM)]: Message Type missing. Aborting message."
     );
   }
 
@@ -227,14 +222,17 @@ function process(event) {
       response = processTrack(message, metadata, destination);
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `Message type ${messageType} not supported`
+      );
   }
   postValidateRequest(response);
   return response;
 }
 
-const processRouterDest = async inputs => {
-  return simpleProcessRouterDest(inputs, "CAMPAIGN_MANAGER", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  return respList;
 };
 
 module.exports = { process, processRouterDest };

@@ -2,7 +2,6 @@ const sha256 = require("sha256");
 const get = require("get-value");
 const { httpPOST } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util");
-const ErrorBuilder = require("../../util/error");
 const {
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
@@ -11,6 +10,11 @@ const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const Cache = require("../../util/cache");
+const {
+  AbortedError,
+  OAuthSecretError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -20,12 +24,7 @@ const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
  */
 const validateDestinationConfig = ({ Config }) => {
   if (!Config.customerId) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[Google Ads Offline Conversions]:: Customer ID not found. Aborting"
-      )
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError("Customer ID not found. Aborting");
   }
 };
 
@@ -37,12 +36,7 @@ const validateDestinationConfig = ({ Config }) => {
  */
 const getAccessToken = ({ secret }) => {
   if (!secret) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[Google Ads Offline Conversions]:: OAuth - access token not found"
-      )
-      .setStatus(500)
-      .build();
+    throw new OAuthSecretError("OAuth - access token not found");
   }
   return secret.access_token;
 };
@@ -86,28 +80,21 @@ const getConversionActionId = async (headers, params) => {
     let searchStreamResponse = await httpPOST(endpoint, data, requestOptions);
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
     if (!isHttpStatusSuccess(searchStreamResponse.status)) {
-      throw new ErrorBuilder()
-        .setStatus(searchStreamResponse.status)
-        .setDestinationResponse(searchStreamResponse.response)
-        .setMessage(
-          `[Google Ads Offline Conversions]:: ${searchStreamResponse.response[0].error.message} during google_ads_offline_conversions response transformation`
-        )
-        .setAuthErrorCategory(
-          getAuthErrCategory(get(searchStreamResponse, "status"))
-        )
-        .build();
+      throw new AbortedError(
+        `[Google Ads Offline Conversions]:: ${searchStreamResponse.response[0].error.message} during google_ads_offline_conversions response transformation`,
+        searchStreamResponse.status,
+        searchStreamResponse.response,
+        getAuthErrCategory(get(searchStreamResponse, "status"))
+      );
     }
     const conversionAction = get(
       searchStreamResponse,
       "response.0.results.0.conversionAction.resourceName"
     );
     if (!conversionAction) {
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage(
-          `[Google Ads Offline Conversions]:: Unable to find conversionActionId for conversion:${params.event}`
-        )
-        .build();
+      throw new AbortedError(
+        `Unable to find conversionActionId for conversion:${params.event}`
+      );
     }
     return conversionAction;
   });

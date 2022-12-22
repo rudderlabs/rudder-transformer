@@ -8,27 +8,20 @@ const {
   defaultPutRequestConfig,
   defaultDeleteRequestConfig
 } = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const ErrorBuilder = require("../../util/error");
-const { DESTINATION } = require("./config");
+
 const { getDestinationExternalID } = require("../../util");
 
 const { EventType } = require("../../../constants");
 const { mappingConfig, ConfigCategories } = require("./config");
 const { refinePayload, generatePageName, getLists } = require("./utils");
+const {
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = (payload, endpoint, method, Config) => {
   if (!payload) {
-    throw new ErrorBuilder()
-      .setMessage("Parameters could not be found.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new TransformationError("Parameters could not be found.");
   }
   const { publicKey, privateKey } = Config;
   const response = defaultRequestConfig();
@@ -58,16 +51,9 @@ const identifyResponseBuilder = (message, Config) => {
     getDestinationExternalID(message, "engageId") ||
     getFieldValueFromMessage(message, "userIdOnly");
   if (!uid) {
-    throw new ErrorBuilder()
-      .setMessage("Neither externalId or userId is available.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError(
+      "Neither externalId or userId is available."
+    );
   }
   const endpoint = `${ConfigCategories.IDENTIFY.endpoint.replace("uid", uid)}`;
   const refinedPayload = refinePayload(
@@ -89,16 +75,7 @@ const identifyResponseBuilder = (message, Config) => {
 
 const trackResponseBuilder = (message, Config) => {
   if (!message.event) {
-    throw new ErrorBuilder()
-      .setMessage("Event Name can not be empty.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("Event Name can not be empty.");
   }
   const { properties } = message;
   const payload = {};
@@ -107,16 +84,9 @@ const trackResponseBuilder = (message, Config) => {
     getDestinationExternalID(message, "engageId") ||
     getFieldValueFromMessage(message, "userIdOnly");
   if (!uid) {
-    throw new ErrorBuilder()
-      .setMessage("Neither externalId or userId is available.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError(
+      "Neither externalId or userId is available."
+    );
   }
   const endpoint = `${ConfigCategories.TRACK.endpoint.replace("uid", uid)}`;
   payload.properties = meta;
@@ -134,16 +104,9 @@ const pageResponseBuilder = (message, Config) => {
     getDestinationExternalID(message, "engageId") ||
     getFieldValueFromMessage(message, "userIdOnly");
   if (!uid) {
-    throw new ErrorBuilder()
-      .setMessage("Neither externalId or userId is available.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError(
+      "Neither externalId or userId is available."
+    );
   }
   const endpoint = `${ConfigCategories.PAGE.endpoint.replace("uid", uid)}`;
 
@@ -171,16 +134,7 @@ const pageResponseBuilder = (message, Config) => {
 const groupResponseBuilder = (message, Config) => {
   const { groupId } = message;
   if (!groupId) {
-    throw new ErrorBuilder()
-      .setMessage("Group Id can not be empty.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("Group Id can not be empty.");
   }
   const uid =
     getDestinationExternalID(message, "engageId") ||
@@ -191,31 +145,15 @@ const groupResponseBuilder = (message, Config) => {
     traits.operation !== "remove" &&
     traits.operation !== "add"
   ) {
-    throw new ErrorBuilder()
-      .setMessage(
-        `${traits.operation} is invalid for Operation field. Available are add or remove.`
-      )
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError(
+      `${traits.operation} is invalid for Operation field. Available are add or remove.`
+    );
   }
   const operation = traits.operation ? traits.operation : "add";
   if (!uid && operation === "remove") {
-    throw new ErrorBuilder()
-      .setMessage("engageID is required for remove operation.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError(
+      "engageID is required for remove operation."
+    );
   }
   let { method } = ConfigCategories.GROUP;
   let endpoint = `${ConfigCategories.GROUP.endpoint.replace("id", groupId)}`;
@@ -248,16 +186,9 @@ const process = event => {
   const { Config } = destination;
 
   if (!message.type) {
-    throw new ErrorBuilder()
-      .setMessage("Message Type is not present. Aborting message.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
+    );
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -275,22 +206,14 @@ const process = event => {
       response = groupResponseBuilder(message, Config);
       break;
     default:
-      throw new ErrorBuilder()
-        .setMessage(`Message type ${(messageType, Config)} not supported.`)
-        .setStatus(400)
-        .setStatTags({
-          destType: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-        })
-        .build();
+      throw new InstrumentationError(
+        `Message type ${(messageType, Config)} not supported.`
+      );
   }
   return response;
 };
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "ENGAGE", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

@@ -6,12 +6,11 @@
       }
     ],
     "batched": false,
-    "statusCode": 400,
+    "statusCode": 500,
     "error": "Creating or updating contacts is disabled",
     "statTags": {
-      "destType": "SFMC",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "configuration"
     }
   },
   {

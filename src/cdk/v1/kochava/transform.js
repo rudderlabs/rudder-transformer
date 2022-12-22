@@ -28,6 +28,8 @@ function processExtraPayloadParams(event, mappedPayload) {
         }
       }
       break;
+    default:
+      break;
   }
 
   const extraParams = {

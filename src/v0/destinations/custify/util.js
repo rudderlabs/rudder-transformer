@@ -7,15 +7,17 @@ const {
 } = require("./config");
 const { httpPOST } = require("../../../adapters/network");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const {
-  CustomError,
   getFieldValueFromMessage,
   removeUndefinedAndNullValues,
   constructPayload,
   isHttpStatusSuccess
 } = require("../../util");
+const { InstrumentationError, NetworkError } = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 /**
  *
@@ -39,9 +41,13 @@ const createUpdateCompany = async (companyPayload, Config) => {
   if (!isHttpStatusSuccess(processedCompanyResponse.status)) {
     const errMessage = JSON.stringify(processedCompanyResponse.response) || "";
     const errorStatus = processedCompanyResponse.status || 500;
-    throw new CustomError(
+    throw new NetworkError(
       `[Group]: failed create/update company details ${errMessage}`,
-      errorStatus
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus)
+      },
+      companyResponse
     );
   }
 };
@@ -70,7 +76,7 @@ const postPorcessUserPayload = (userPayload, message) => {
   const finalPayload = userPayload;
 
   if (!userPayload.user_id && !userPayload.email) {
-    throw new CustomError("Email or userId is mandatory", 400);
+    throw new InstrumentationError("Email or userId is mandatory");
   }
   if (userPayload.name === undefined || userPayload.name === "") {
     const firstName = getFieldValueFromMessage(message, "firstName");
@@ -141,7 +147,7 @@ const processTrack = (message, { Config }) => {
     eventPayload.user_id = message.anonymousId;
   }
   if (!eventPayload.user_id && !eventPayload.email) {
-    throw new CustomError("Email or userId is mandatory", 400);
+    throw new InstrumentationError("Email or userId is mandatory");
   }
   const metadata = {};
   const { properties } = message;
@@ -187,7 +193,7 @@ const processGroup = async (message, { Config }) => {
     MappingConfig[ConfigCategory.GROUP_COMPANY.name]
   );
   if (!companyPayload.company_id) {
-    throw new CustomError("groupId Id is mandatory", 400);
+    throw new InstrumentationError("groupId Id is mandatory");
   }
   if (companyPayload.custom_attributes) {
     ReservedCompanyProperties.forEach(trait => {

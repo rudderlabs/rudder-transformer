@@ -1,6 +1,5 @@
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
   constructPayload,
   ErrorMessage,
   defaultRequestConfig,
@@ -8,9 +7,13 @@ const {
   getValueFromMessage,
   isDefinedAndNotNull,
   extractCustomFields,
-  getErrorRespEvents,
-  getSuccessRespEvents
+  simpleProcessRouterDest
 } = require("../../util");
+const {
+  TransformationError,
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const {
   MAPPING_CONFIG,
@@ -42,23 +45,21 @@ const getBaseURL = config => {
 const trackResponseBuilder = async (message, category, { Config }) => {
   let event = getValueFromMessage(message, "event");
   if (!event) {
-    throw new CustomError(
-      "[Blueshift] property:: event is required for track call",
-      400
+    throw new InstrumentationError(
+      "[Blueshift] property:: event is required for track call"
     );
   }
 
   if (!Config.eventApiKey) {
-    throw new CustomError(
-      "[BLUESHIFT] event Api Keys required for Authentication.",
-      400
+    throw new ConfigurationError(
+      "[BLUESHIFT] event Api Keys required for Authentication."
     );
   }
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
     // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+    throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
 
   event = event.trim();
@@ -67,9 +68,8 @@ const trackResponseBuilder = async (message, category, { Config }) => {
   }
   payload.event = payload.event.replace(/\s+/g, "_");
   if (checkValidEventName(payload.event)) {
-    throw new CustomError(
-      "[Blueshift] Event shouldn't contain period(.), numeric value and contains not more than 64 characters",
-      400
+    throw new InstrumentationError(
+      "[Blueshift] Event shouldn't contain period(.), numeric value and contains not more than 64 characters"
     );
   }
   payload = extractCustomFields(message, payload, ["properties"], []);
@@ -90,16 +90,15 @@ const trackResponseBuilder = async (message, category, { Config }) => {
 
 const identifyResponseBuilder = async (message, category, { Config }) => {
   if (!Config.usersApiKey) {
-    throw new CustomError(
-      "[BLUESHIFT] User API Key required for Authentication.",
-      400
+    throw new ConfigurationError(
+      "[BLUESHIFT] User API Key required for Authentication."
     );
   }
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
     // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+    throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
 
   payload = extractCustomFields(
@@ -124,9 +123,8 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
 
 const groupResponseBuilder = async (message, category, { Config }) => {
   if (!Config.eventApiKey) {
-    throw new CustomError(
-      "[BLUESHIFT] event API Key required for Authentication.",
-      400
+    throw new ConfigurationError(
+      "[BLUESHIFT] event API Key required for Authentication."
     );
   }
 
@@ -134,7 +132,7 @@ const groupResponseBuilder = async (message, category, { Config }) => {
 
   if (!payload) {
     // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+    throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
   payload.event = "identify";
   payload = extractCustomFields(message, payload, ["traits"], []);
@@ -156,9 +154,8 @@ const groupResponseBuilder = async (message, category, { Config }) => {
 const process = async event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
 
@@ -176,47 +173,15 @@ const process = async event => {
       response = await groupResponseBuilder(message, category, destination);
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `Message type ${messageType} not supported`
+      );
   }
   return response;
 };
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

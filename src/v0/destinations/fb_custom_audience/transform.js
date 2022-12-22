@@ -10,10 +10,11 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   returnArrayOfSubarrays,
-  CustomError,
   isDefinedAndNotNull,
   flattenMap,
-  generateErrorObject
+  generateErrorObject,
+  getEventReqMetadata,
+  handleRtTfSingleEventError
 } = require("../../util");
 
 const {
@@ -26,14 +27,21 @@ const {
 } = require("./config");
 
 const { MappedToDestinationKey } = require("../../../constants");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+const {
+  InstrumentationError,
+  TransformationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
+
+const {
+  client: errNotificationClient
+} = require("../../../util/errorNotifier");
 
 const getSchemaForEventMappedToDest = message => {
   const mappedSchema = get(message, "context.destinationFields");
   if (!mappedSchema) {
-    throw new CustomError(
-      "context.destinationFields is required property for events mapped to destination ",
-      400
+    throw new InstrumentationError(
+      "context.destinationFields is required property for events mapped to destination "
     );
   }
   // context.destinationFields has 2 possible values. An Array of fields or Comma seperated string with field names
@@ -61,7 +69,7 @@ const responseBuilderSimple = (payload, audienceId) => {
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError(`Payload could not be constructed`, 400);
+  throw new TransformationError(`Payload could not be constructed`);
 };
 
 // function responsible to ensure the user inputs are passed according to the allowed format
@@ -140,9 +148,8 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
       updatedProperty = userInformation;
       break;
     default:
-      throw new CustomError(
-        `The property ${userProperty} is not supported`,
-        400
+      throw new ConfigurationError(
+        `The property ${userProperty} is not supported`
       );
   }
   return updatedProperty;
@@ -197,9 +204,8 @@ const prepareDataField = (
           dataElement.push(updatedProperty);
         }
       } else {
-        throw new CustomError(
-          `Configured Schema field ${eachProperty} is missing in one or more user records`,
-          400
+        throw new ConfigurationError(
+          `Configured Schema field ${eachProperty} is missing in one or more user records`
         );
       }
     });
@@ -305,23 +311,22 @@ const processEvent = (message, destination) => {
   let { userSchema } = destination.Config;
   const { isHashRequired, audienceId, maxUserCount } = destination.Config;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   const maxUserCountNumber = parseInt(maxUserCount, 10);
 
   if (Number.isNaN(maxUserCountNumber)) {
-    throw new CustomError("Batch size must be an Integer.", 400);
+    throw new ConfigurationError("Batch size must be an Integer.");
   }
   if (message.type.toLowerCase() !== "audiencelist") {
-    throw new CustomError(` ${message.type} call is not supported `, 400);
+    throw new InstrumentationError(` ${message.type} call is not supported `);
   }
   const operationAudienceId = audienceId;
 
   if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
-    throw new CustomError("Audience ID is a mandatory field", 400);
+    throw new ConfigurationError("Audience ID is a mandatory field");
   }
 
   const mappedToDestination = get(message, MappedToDestinationKey);
@@ -337,9 +342,8 @@ const processEvent = (message, destination) => {
 
   // when configured schema field is different from the allowed fields
   if (!checkSubsetOfArray(schemaFields, userSchema)) {
-    throw new CustomError(
-      "One or more of the schema fields are not supported",
-      400
+    throw new ConfigurationError(
+      "One or more of the schema fields are not supported"
     );
   }
   const { listData } = message.properties;
@@ -392,9 +396,8 @@ const processEvent = (message, destination) => {
   });
   // When userListAdd or userListDelete is absent or both passed as empty arrays
   if (respList.length === 0) {
-    throw new CustomError(
-      "missing valid parameters, unable to generate transformed payload",
-      400
+    throw new InstrumentationError(
+      "Missing valid parameters, unable to generate transformed payload"
     );
   }
   return respList;
@@ -404,7 +407,7 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = inputs => {
+const processRouterDest = (inputs, reqMetadata) => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
@@ -429,17 +432,7 @@ const processRouterDest = inputs => {
       });
       return responseList;
     } catch (error) {
-      const errObj = generateErrorObject(
-        error,
-        "FB_CUSTOM_AUDIENCE", // Preference is destination definition name
-        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-      );
-      return getErrorRespEvents(
-        [input.metadata],
-        400,
-        error.message || "Error occurred while processing the payload.",
-        errObj.statTags
-      );
+      return handleRtTfSingleEventError(input, error, reqMetadata);
     }
   });
   return flattenMap(respList);

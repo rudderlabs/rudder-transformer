@@ -11,7 +11,7 @@ const { applicationRoutes } = require("./routes/index.router");
 
 const clusterEnabled = process.env.CLUSTER_ENABLED !== "false";
 const useUpdatedRoutes = process.env.ENABLE_NEW_ROUTES !== "false";
-const PORT = 9090;
+const port = parseInt(process.env.PORT || "9090", 10);
 const app = new Koa();
 addPrometheusMiddleware(app);
 
@@ -30,8 +30,8 @@ if (useUpdatedRoutes) {
 }
 
 if (clusterEnabled) {
-  cluster.start(PORT, app);
+  cluster.start(port, app);
 } else {
-  app.listen(PORT);
-  logger.info(`Listening on Port: ${PORT}`);
+  app.listen(port);
+  logger.info(`Listening on port: ${port}`);
 }

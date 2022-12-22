@@ -119,7 +119,7 @@
       }
     },
     "output": {
-      "error": "Message type identify not supported"
+      "error": "Event type identify is not supported"
     }
   },
   {
@@ -172,7 +172,7 @@
       }
     },
     "output": {
-      "error": "Message Type is not present. Aborting message."
+      "error": "Event type is required"
     }
   },
   {
@@ -225,7 +225,7 @@
       }
     },
     "output": {
-      "error": "[Monday]: apiToken is a required field"
+      "error": "ApiToken is a required field"
     }
   },
   {
@@ -278,7 +278,7 @@
       }
     },
     "output": {
-      "error": "Monday]: boardId is a required field"
+      "error": "boardId is a required field"
     }
   },
   {
@@ -331,7 +331,7 @@
       }
     },
     "output": {
-      "error": "[Monday]: event is not present in the input payloads"
+      "error": "event is not present in the input payloads"
     }
   },
   {
@@ -809,7 +809,7 @@
       }
     },
     "output": {
-      "error": "[Monday]:: Event Discarded. To allow this event, add this in Allowlist"
+      "error": "Event Discarded. To allow this event, add this in Allowlist"
     }
   }
 ]

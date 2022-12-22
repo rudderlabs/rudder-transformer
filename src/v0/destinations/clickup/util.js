@@ -1,17 +1,16 @@
 const { httpGET } = require("../../../adapters/network");
 const {
   processAxiosResponse,
-  getDynamicMeta
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const {
   getHashFromArray,
   getHashFromArrayWithValueAsObject,
-  formatTimeStamp,
-  TransformationError
+  formatTimeStamp
 } = require("../../util");
-const { getCustomFieldsEndPoint, DESTINATION } = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { ApiError } = require("../../util/errors");
+const { getCustomFieldsEndPoint } = require("./config");
+const { NetworkError, InstrumentationError } = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 /**
  * Validates priority
@@ -23,14 +22,8 @@ const validatePriority = priority => {
       !(Number.isInteger(priority) && priority >= 1 && priority <= 4)) ||
     priority === 0
   ) {
-    throw new TransformationError(
-      `Invalid value specified for priority. Value must be Integer and in range "[1,4]"`,
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      `Invalid value specified for priority. Value must be Integer and in range "[1,4]"`
     );
   }
 };
@@ -42,15 +35,7 @@ const validatePriority = priority => {
 const validatePhoneWithCountryCode = phone => {
   const regex = /^\+(?:[{0-9] ?){6,14}[0-9]$/;
   if (!regex.test(phone)) {
-    throw new TransformationError(
-      "The provided phone number is invalid",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("The provided phone number is invalid");
   }
 };
 
@@ -61,15 +46,7 @@ const validatePhoneWithCountryCode = phone => {
 const validateEmail = email => {
   const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   if (!regex.test(email)) {
-    throw new TransformationError(
-      "The provided email is invalid",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("The provided email is invalid");
   }
 };
 
@@ -80,15 +57,7 @@ const validateEmail = email => {
 const validateUrl = url => {
   const regex = /^(http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
   if (!regex.test(url)) {
-    throw new TransformationError(
-      "The provided url is invalid",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("The provided url is invalid");
   }
 };
 
@@ -100,25 +69,13 @@ const validateLocation = location => {
   const lat = location?.lat;
   const lng = location?.lng;
   if (lat && !(lat >= -90 && lat <= 90)) {
-    throw new TransformationError(
-      `Invalid value specified for latitude. Latitude must be in range "[-90, 90]"`,
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      `Invalid value specified for latitude. Latitude must be in range "[-90, 90]"`
     );
   }
   if (lng && !(lng >= -180 && lng <= 180)) {
-    throw new TransformationError(
-      `Invalid value specified for longitude. Longitude must be in range "[-180, 180]"`,
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      `Invalid value specified for longitude. Longitude must be in range "[-180, 180]"`
     );
   }
 };
@@ -131,14 +88,8 @@ const validateLocation = location => {
 const validateRating = (customField, rating) => {
   const count = customField?.type_config?.count;
   if (rating && !(rating >= 0 && rating <= count)) {
-    throw new TransformationError(
-      `Invalid value specified for rating. Value must be in range "[0,${count}]"`,
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      `Invalid value specified for rating. Value must be in range "[0,${count}]"`
     );
   }
 };
@@ -268,18 +219,17 @@ const retrieveCustomFields = async (listId, apiToken) => {
   );
 
   if (processedCustomFieldsResponse.status !== 200) {
-    throw new ApiError(
+    throw new NetworkError(
       `Failed to fetch available custom fields due to "${JSON.stringify(
         processedCustomFieldsResponse.response
       )}"`,
       processedCustomFieldsResponse.status,
       {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: getDynamicMeta(processedCustomFieldsResponse.status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+          processedCustomFieldsResponse.status
+        )
       },
-      processedCustomFieldsResponse.response,
-      undefined,
-      DESTINATION
+      processedCustomFieldsResponse.response
     );
   }
 
@@ -390,16 +340,8 @@ const checkEventIfUIMapped = (message, destination) => {
         whiteListedEvent.eventName.toLowerCase() === event.toLowerCase()
     );
     if (!allowEvent) {
-      throw new TransformationError(
-        "The event was discarded as it was not allow listed in the destination configuration",
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .CONFIGURATION
-        },
-        DESTINATION
+      throw new InstrumentationError(
+        "The event was discarded as it was not allow listed in the destination configuration"
       );
     }
   }

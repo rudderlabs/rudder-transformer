@@ -1,7 +1,6 @@
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
   defaultPostRequestConfig,
   constructPayload,
   defaultRequestConfig,
@@ -12,6 +11,10 @@ const {
   isDefinedAndNotNull,
   getFieldValueFromMessage
 } = require("../../util");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 const {
   ENDPOINT,
   DEBUG_ENDPOINT,
@@ -65,22 +68,19 @@ const getGA4ClientId = (message, { clientIdFieldIdentifier }) => {
 const responseBuilder = (message, { Config }) => {
   let event = get(message, "event");
   if (!event) {
-    throw new CustomError("Event name is required", 400);
+    throw new InstrumentationError("Event name is required");
   }
 
   // trim and replace spaces with "_"
   if (typeof event !== "string") {
-    throw new CustomError(
-      "[Google Analytics 4] track:: event name should be string"
-    );
+    throw new InstrumentationError("track:: event name should be string");
   }
   event = event.trim().replace(/\s+/g, "_");
 
   // reserved event names are not allowed
   if (isReservedEventName(event)) {
-    throw new CustomError(
-      "[Google Analytics 4] track:: Reserved event names are not allowed",
-      400
+    throw new InstrumentationError(
+      "track:: Reserved event names are not allowed"
     );
   }
 
@@ -93,9 +93,8 @@ const responseBuilder = (message, { Config }) => {
       // GA4 uses it as an identifier to distinguish site visitors.
       rawPayload.client_id = getGA4ClientId(message, Config);
       if (!isDefinedAndNotNull(rawPayload.client_id)) {
-        throw new CustomError(
-          `[Google Analytics 4]: ${Config.clientIdFieldIdentifier}, ga4ClientId, anonymousId or messageId must be provided`,
-          400
+        throw new ConfigurationError(
+          `${Config.clientIdFieldIdentifier}, ga4ClientId, anonymousId or messageId must be provided`
         );
       }
       break;
@@ -106,14 +105,13 @@ const responseBuilder = (message, { Config }) => {
         "ga4AppInstanceId"
       );
       if (!isDefinedAndNotNull(rawPayload.app_instance_id)) {
-        throw new CustomError(
-          "ga4AppInstanceId must be provided under externalId",
-          400
+        throw new InstrumentationError(
+          "ga4AppInstanceId must be provided under externalId"
         );
       }
       break;
     default:
-      throw CustomError("GA4: Invalid type of client", 400);
+      throw ConfigurationError("Invalid type of client");
   }
 
   let payload = {};
@@ -207,9 +205,8 @@ const responseBuilder = (message, { Config }) => {
         parameter = removeUndefinedAndNullValues(parameter);
 
         if (!isDefinedAndNotNull(parameter.value)) {
-          throw new CustomError(
-            `[GA4] Identify:: '${Config.generateLeadValueTrait}' is a required field in traits for 'generate_lead' event`,
-            400
+          throw new InstrumentationError(
+            `[GA4] Identify:: '${Config.generateLeadValueTrait}' is a required field in traits for 'generate_lead' event`
           );
         }
 
@@ -291,16 +288,14 @@ const responseBuilder = (message, { Config }) => {
     // custom events category
     // Event names are case sensitive
     if (isReservedWebCustomEventName(event)) {
-      throw new CustomError(
-        "[Google Analytics 4] track:: Reserved custom event names are not allowed",
-        400
+      throw new InstrumentationError(
+        "track:: Reserved custom event names are not allowed"
       );
     }
 
     if (isReservedWebCustomPrefixName(event)) {
-      throw new CustomError(
-        "[Google Analytics 4] track:: Reserved custom prefix names are not allowed",
-        400
+      throw new InstrumentationError(
+        "[Google Analytics 4] track:: Reserved custom prefix names are not allowed"
       );
     }
 
@@ -390,22 +385,21 @@ const process = event => {
   const { Config } = destination;
 
   if (!Config.typesOfClient) {
-    throw new CustomError("Client type not found. Aborting ", 400);
+    throw new ConfigurationError("Client type not found. Aborting ");
   }
   if (!Config.apiSecret) {
-    throw new CustomError("API Secret not found. Aborting ", 400);
+    throw new ConfigurationError("API Secret not found. Aborting ");
   }
   if (Config.typesOfClient === "gtag" && !Config.measurementId) {
-    throw new CustomError("measurementId must be provided. Aborting", 400);
+    throw new ConfigurationError("measurementId must be provided. Aborting");
   }
   if (Config.typesOfClient === "firebase" && !Config.firebaseAppId) {
-    throw new CustomError("firebaseAppId must be provided. Aborting", 400);
+    throw new ConfigurationError("firebaseAppId must be provided. Aborting");
   }
 
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
 
@@ -421,9 +415,8 @@ const process = event => {
         // newOrExistingUserTrait can be 'firstLogin' keyword - true/false
         const firstLogin = traits[`${Config.newOrExistingUserTrait}`];
         if (!isDefinedAndNotNull(firstLogin)) {
-          throw new CustomError(
-            `[GA4] Identify:: traits should contain '${Config.newOrExistingUserTrait}' parameter with a boolean value to differentiate between the new or existing user`,
-            400
+          throw new InstrumentationError(
+            `Identify:: traits should contain '${Config.newOrExistingUserTrait}' parameter with a boolean value to differentiate between the new or existing user`
           );
         }
 
@@ -443,9 +436,8 @@ const process = event => {
           response.push(responseBuilder(message, destination));
         }
       } else {
-        throw new CustomError(
-          "[GA4] Identify:: Server side identify is not enabled",
-          400
+        throw new ConfigurationError(
+          "Identify:: Server side identify is not enabled"
         );
       }
       break;
@@ -463,7 +455,9 @@ const process = event => {
       response = responseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `Message type ${messageType} not supported`
+      );
   }
   return response;
 };

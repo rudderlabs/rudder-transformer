@@ -1,0 +1,170 @@
+/* eslint-disable no-nested-ternary */
+/* eslint-disable no-prototype-builtins */
+const Handlebars = require("handlebars");
+const { EventType } = require("../../../constants");
+
+const {
+  defaultPostRequestConfig,
+  defaultRequestConfig,
+  getFieldValueFromMessage,
+  simpleProcessRouterDest
+} = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
+const {
+  stringifyJSON,
+  getName,
+  getWhiteListedTraits,
+  buildDefaultTraitTemplate
+} = require("./util");
+
+const buildResponse = (text, type, destination) => {
+  const endpoint = destination.Config.webhookUrl;
+  const response = defaultRequestConfig();
+  response.endpoint = endpoint;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.headers = { "Content-Type": "application/json" };
+  response.body.JSON = {
+    content: text,
+    embeds: [
+      {
+        title: "Message from Rudderstack ",
+        description: `${type} call made`
+      }
+    ]
+  };
+  return response;
+};
+const processIdentify = (message, destination) => {
+  let identifyTemplateConfig;
+  if (
+    destination.Config?.identifyTemplate &&
+    destination.Config.identifyTemplate.trim().length > 0
+  ) {
+    identifyTemplateConfig = destination.Config.identifyTemplate.trim();
+  }
+  const whiteTraitsList = [];
+
+  getWhiteListedTraits(destination, whiteTraitsList);
+
+  const uName = getName(message);
+
+  // provide a fat input with flattened traits as well as traits object
+  // helps the user to build additional handlebar expressions
+  const identityTraits = getFieldValueFromMessage(message, "traits") || {};
+
+  const template = Handlebars.compile(
+    identifyTemplateConfig ||
+      buildDefaultTraitTemplate(whiteTraitsList, identityTraits)
+  );
+
+  const templateInput = {
+    name: uName,
+    ...identityTraits,
+    traits: stringifyJSON(identityTraits, whiteTraitsList),
+    traitsList: identityTraits
+  };
+
+  const resultText = template(templateInput);
+  return buildResponse(resultText, "Identify", destination);
+};
+
+const processTrack = (message, destination) => {
+  const traitsList = [];
+  const eventTemplateConfig = destination.Config.eventTemplateSettings;
+
+  if (!message.event) {
+    throw new InstrumentationError("Event name is required");
+  }
+  const eventName = message.event;
+  const templateListForThisEvent = new Set();
+
+  getWhiteListedTraits(destination, traitsList);
+
+  /** Add global context to regex always
+  build the templatelist for the event, pick the first in case of multiple
+  using set to filter out
+  document this behaviour
+  */
+  eventTemplateConfig.forEach(templateConfig => {
+    // building templatelist
+    let configEventName;
+    let configEventTemplate;
+    if (
+      templateConfig.eventName &&
+      templateConfig.eventName.trim().length > 0
+    ) {
+      configEventName = templateConfig.eventName.trim();
+    }
+    if (
+      templateConfig.eventTemplate &&
+      templateConfig.eventTemplate.trim().length > 0
+    ) {
+      configEventTemplate = templateConfig.eventTemplate.trim();
+    }
+    if (configEventName && configEventTemplate) {
+      if (templateConfig.eventRegex) {
+        if (
+          eventName.match(new RegExp(configEventName, "g")) &&
+          eventName.match(new RegExp(configEventName, "g")).length > 0
+        ) {
+          templateListForThisEvent.add(configEventTemplate);
+        }
+      } else if (configEventName === eventName) {
+        templateListForThisEvent.add(configEventTemplate);
+      }
+    }
+  });
+
+  const templateListArray = Array.from(templateListForThisEvent);
+
+  // track event default handlebar expression
+  const defaultTemplate = "{{name}} did {{event}} with {{properties}}";
+
+  const eventTemplate = Handlebars.compile(
+    templateListArray.length > 0 ? templateListArray[0] : defaultTemplate
+  );
+
+  // provide flattened properties as well as properties object
+  const identityTraits = getFieldValueFromMessage(message, "traits") || {};
+  const templateInput = {
+    name: getName(message),
+    event: eventName,
+    ...message.properties,
+    properties: message.properties,
+    propertiesList: stringifyJSON(message.properties || {}),
+    traits: stringifyJSON(identityTraits, traitsList),
+    traitsList: identityTraits
+  };
+
+  const resultText = eventTemplate(templateInput);
+  return buildResponse(resultText, "Track", destination);
+};
+
+const process = event => {
+  let response;
+  const { message, destination } = event;
+  if (!message.type) {
+    throw new InstrumentationError("Event type is required");
+  }
+  const messageType = message.type.toLowerCase();
+
+  switch (messageType) {
+    case EventType.IDENTIFY:
+      response = processIdentify(message, destination);
+      return response;
+    case EventType.TRACK:
+      response = processTrack(message, destination);
+      return response;
+    default:
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
+  }
+};
+
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  return respList;
+};
+
+module.exports = { process, processRouterDest };

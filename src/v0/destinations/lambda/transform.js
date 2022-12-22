@@ -8,6 +8,14 @@ const {
 const DEFAULT_INVOCATION_TYPE = "Event"; // asynchronous invocation
 const MAX_PAYLOAD_SIZE_IN_KB = 256; // only for asynchronous invocation
 
+function getFieldsForDelivery(destConfig) {
+  return {
+    invocationType: DEFAULT_INVOCATION_TYPE,
+    lambda: destConfig.lambda,
+    clientContext: destConfig.clientContext
+  };
+}
+
 // Returns a transformed payload, after necessary property/field mappings.
 function process(event) {
   if (!event.destination.Config) {
@@ -15,7 +23,7 @@ function process(event) {
   }
   return {
     payload: JSON.stringify(event.message),
-    destConfig: event.destination.Config
+    destConfig: getFieldsForDelivery(event.destination.Config)
   };
 }
 
@@ -60,7 +68,7 @@ function batchEvents(inputs, destConfig, sizesInKB) {
   batchedPayloads.forEach(data => {
     const message = {
       payload: JSON.stringify(data.payloadChunk),
-      destConfig
+      destConfig: getFieldsForDelivery(destConfig)
     };
     batchedResponseList.push(getSuccessRespEvents(message, data.chunkMetadata));
   });
@@ -73,7 +81,7 @@ function responseBuilderSimple(inputs, destConfig) {
   inputs.forEach(input => {
     const message = {
       payload: JSON.stringify(input.message),
-      destConfig
+      destConfig: getFieldsForDelivery(destConfig)
     };
     processedEventList.push(getSuccessRespEvents(message, [input.metadata]));
   });
@@ -95,8 +103,7 @@ const processRouterDest = inputs => {
     );
     return [respEvents];
   }
-  const destConfig = _.cloneDeep(destination.Config);
-  destConfig.invocationType = DEFAULT_INVOCATION_TYPE;
+  const destConfig = destination.Config;
 
   const successEventsList = [];
   const errorMetadata = [];

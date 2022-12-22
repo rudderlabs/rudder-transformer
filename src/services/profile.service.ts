@@ -5,7 +5,7 @@ import { S3Client } from "@aws-sdk/client-s3";
 import moment from "moment";
 import v8 from "v8";
 
-import pprof from "pprof";
+import pprof, {heap} from "pprof";
 import { promisify } from "util";
 
 const writeFileProm = promisify(fs.writeFile);
@@ -20,7 +20,7 @@ const stackDepth = parseInt(process.env.PROF_STACK_DEPTH || "64", 10);
 console.log(`Stack Depth set: ${stackDepth}`);
 console.log(`Interval Bytes set: ${intervalBytes}`);
 
-pprof.heap.start(intervalBytes, stackDepth);
+heap.start(intervalBytes, stackDepth);
 
 const router = new KoaRouter();
 
@@ -115,7 +115,7 @@ const profile = async (credBucketDetails: any, profileformat: string) => {
       snapshotReadableStream = await promisifiedRead(readable);
       format = "heapsnapshot";
     } else {
-      profile = await pprof.heap.profile();
+      profile = await heap.profile();
       snapshotReadableStream = await pprof.encode(profile);
     }
 

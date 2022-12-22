@@ -4,6 +4,7 @@ const {
   CustomError: CDKCustomError,
   DataValidationError
 } = require("rudder-transformer-cdk/build/error/index");
+const { logger } = require("../../logger");
 const pkg = require("../../../package.json");
 const {
   BaseError,
@@ -46,32 +47,40 @@ const errorTypesDenyList = [
   DataValidationError
 ];
 
+let bugsnagClient;
+
 function init() {
-  Bugsnag.start({
-    apiKey,
-    appVersion: pkg.version,
-    metadata: {
-      image: {
-        version: imageVersion
+  if (apiKey) {
+    bugsnagClient = Bugsnag.start({
+      apiKey,
+      appVersion: pkg.version,
+      metadata: {
+        image: {
+          version: imageVersion
+        }
+      },
+      onError(event) {
+        event.severity = "error";
       }
-    },
-    onError(event) {
-      event.severity = "error";
-    }
-  });
+    });
+  } else {
+    logger.error(`Invalid Bugsnag API key: ${apiKey}`);
+  }
 }
 
 function notify(err, context, metadata) {
-  const isDeniedErrType = errorTypesDenyList.some(errType => {
-    return err instanceof errType;
-  });
+  if (bugsnagClient) {
+    const isDeniedErrType = errorTypesDenyList.some(errType => {
+      return err instanceof errType;
+    });
 
-  if (isDeniedErrType) return;
+    if (isDeniedErrType) return;
 
-  Bugsnag.notify(err, event => {
-    event.context = context;
-    event.addMetadata("metadata", metadata);
-  });
+    bugsnagClient.notify(err, event => {
+      event.context = context;
+      event.addMetadata("metadata", metadata);
+    });
+  }
 }
 
 module.exports = {

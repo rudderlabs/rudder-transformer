@@ -19,13 +19,19 @@
     "files": {}
   },
   {
+    "error": "Message type group not supported",
+    "statusCode": 400,
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    }
+  },
+  {
     "error": "For identify events, \"Advanced Mapping\" configuration must be enabled on the RudderStack dashboard",
     "statusCode": 400,
     "statTags": {
-      "destType": "FACEBOOK_PIXEL",
-      "stage": "transform",
-      "scope": "transformation",
-      "meta": "configuration"
+      "errorCategory": "dataValidation",
+      "errorType": "configuration"
     }
   },
   {
@@ -470,10 +476,8 @@
     "statusCode": 400,
     "error": "'event' is required",
     "statTags": {
-      "destType": "FACEBOOK_PIXEL",
-      "stage": "transform",
-      "scope": "transformation",
-      "meta": "badEvent"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
@@ -518,10 +522,8 @@
     "statusCode": 400,
     "error": "Revenue could not be converted to number",
     "statTags": {
-      "destType": "FACEBOOK_PIXEL",
-      "stage": "transform",
-      "scope": "transformation",
-      "meta": "badParam"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
@@ -564,12 +566,10 @@
   },
   {
     "statusCode": 400,
-    "error": "'properties.category' must be either be a string or an Array",
+    "error": "'properties.category' must be either be a string or an array",
     "statTags": {
-      "destType": "FACEBOOK_PIXEL",
-      "stage": "transform",
-      "scope": "transformation",
-      "meta": "badParam"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
@@ -595,30 +595,24 @@
     "statusCode": 400,
     "error": "Events must be sent within seven days of their occurrence or up to one minute in the future.",
     "statTags": {
-      "destType": "FACEBOOK_PIXEL",
-      "stage": "transform",
-      "scope": "transformation",
-      "meta": "badEvent"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
     "statusCode": 400,
     "error": "Events must be sent within seven days of their occurrence or up to one minute in the future.",
     "statTags": {
-      "destType": "FACEBOOK_PIXEL",
-      "stage": "transform",
-      "scope": "transformation",
-      "meta": "badEvent"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
     "statusCode": 400,
     "error": "'query' should be in string format only",
     "statTags": {
-      "destType": "FACEBOOK_PIXEL",
-      "stage": "transform",
-      "scope": "transformation",
-      "meta": "badEvent"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
@@ -663,10 +657,8 @@
     "statusCode": 400,
     "error": "event name should be string",
     "statTags": {
-      "destType": "FACEBOOK_PIXEL",
-      "stage": "transform",
-      "scope": "transformation",
-      "meta": "badEvent"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {

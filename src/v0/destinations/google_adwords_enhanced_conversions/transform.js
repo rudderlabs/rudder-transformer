@@ -9,7 +9,13 @@ const {
   removeHyphens,
   simpleProcessRouterDest
 } = require("../../util");
-const ErrorBuilder = require("../../util/error");
+
+const {
+  InstrumentationError,
+  TransformationError,
+  ConfigurationError,
+  OAuthSecretError
+} = require("../../util/errorTypes");
 
 const { trackMapping, BASE_ENDPOINT } = require("./config");
 
@@ -48,10 +54,7 @@ const getAccessToken = metadata => {
   const { secret } = metadata;
   // we would need to verify if secret is present and also if the access token field is present in secret
   if (!secret || !secret.access_token) {
-    throw new ErrorBuilder()
-      .setMessage("Empty/Invalid access token")
-      .setStatus(500)
-      .build();
+    throw new OAuthSecretError("Empty/Invalid access token");
   }
   return secret.access_token;
 };
@@ -74,12 +77,10 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
       const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
       response.headers["login-customer-id"] = filteredLoginCustomerId;
     } else
-      throw new ErrorBuilder()
-        .setMessage(
-          `[Google_adwords_enhanced_conversions]:: loginCustomerId is required as subAccount is true.`
-        )
-        .setStatus(400)
-        .build();
+      throw new ConfigurationError(
+        `LoginCustomerId is required as subAccount is true.`
+      );
+
   return response;
 };
 
@@ -92,12 +93,9 @@ const processTrackEvent = async (metadata, message, destination) => {
     flag = 1;
   }
   if (event === undefined || event === "" || flag === 0) {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Google_adwords_enhanced_conversions]:: Conversion named ${event} is not exist in rudderstack dashboard`
-      )
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError(
+      `Conversion named "${event}" was not specified in the RudderStack destination configuration`
+    );
   }
   const { requireHash } = destination.Config;
   let updatedMapping = cloneDeep(trackMapping);
@@ -106,26 +104,13 @@ const processTrackEvent = async (metadata, message, destination) => {
     updatedMapping = updateMappingJson(updatedMapping);
   }
 
-  let payload;
-  try {
-    payload = constructPayload(message, updatedMapping);
-  } catch (e) {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Google_adwords_enhanced_conversions]::${e.message} for ${event} event.`
-      )
-      .setStatus(400)
-      .build();
-  }
+  const payload = constructPayload(message, updatedMapping);
 
   payload.partialFailure = true;
-  if (!payload.conversionAdjustments[0].userIdentifiers) {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Google_adwords_enhanced_conversions]:: Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`
-      )
-      .setStatus(400)
-      .build();
+  if (!payload.conversionAdjustments[0]?.userIdentifiers) {
+    throw new InstrumentationError(
+      `Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`
+    );
   }
   payload.conversionAdjustments[0].adjustmentType = "ENHANCEMENT";
   // Removing the null values from userIdentifier
@@ -140,20 +125,14 @@ const processTrackEvent = async (metadata, message, destination) => {
 const processEvent = async (metadata, message, destination) => {
   const { type } = message;
   if (!type) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[Google_adwords_enhanced_conversions]::Invalid payload. Message Type is not present"
-      )
-      .setStatus(400)
-      .build();
+    throw new InstrumentationError(
+      "Invalid payload. Message Type is not present"
+    );
   }
   if (type.toLowerCase() !== "track") {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Google_adwords_enhanced_conversions]::Message Type ${type} is not supported. Aborting message.`
-      )
-      .setStatus(400)
-      .build();
+    throw new InstrumentationError(
+      `Message Type ${type} is not supported. Aborting message.`
+    );
   } else {
     return processTrackEvent(metadata, message, destination);
   }
@@ -162,12 +141,9 @@ const processEvent = async (metadata, message, destination) => {
 const process = async event => {
   return processEvent(event.metadata, event.message, event.destination);
 };
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(
-    inputs,
-    "Google_adwords_enhanced_conversions",
-    process
-  );
+
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

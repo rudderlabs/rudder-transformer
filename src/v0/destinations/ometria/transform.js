@@ -2,12 +2,15 @@
 /* eslint-disable camelcase */
 const { EventType } = require("../../../constants");
 const {
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
+const {
   constructPayload,
   extractCustomFields,
   removeUndefinedAndNullValues,
   returnArrayOfSubarrays,
   defaultPostRequestConfig,
-  CustomError,
   defaultRequestConfig,
   getValueFromMessage,
   isEmptyObject,
@@ -89,7 +92,9 @@ const identifyResponseBuilder = (message, { Config }) => {
   }
 
   if (!payload.id) {
-    throw new CustomError("listingId is required for identify", 400);
+    throw new InstrumentationError(
+      "Parameter listingId is required for identify"
+    );
   }
   payload.marketing_optin = marketingOptin;
   payload.channels = {
@@ -124,7 +129,7 @@ const identifyResponseBuilder = (message, { Config }) => {
 const trackResponseBuilder = message => {
   let event = getValueFromMessage(message, "event");
   if (!event) {
-    throw new CustomError("Event name is required for track call.", 400);
+    throw new InstrumentationError("Event name is required for track call");
   }
 
   event = event.trim().toLowerCase();
@@ -132,13 +137,12 @@ const trackResponseBuilder = message => {
   if (ecomEvents.includes(event)) {
     payload = constructPayload(message, orderMapping);
     if (!isValidTimestamp(payload.timestamp)) {
-      throw new CustomError("Timestamp format must be ISO-8601", 400);
+      throw new InstrumentationError("Timestamp format must be ISO-8601");
     }
     payload.currency = payload.currency.trim().toUpperCase();
     if (!currencyList.includes(payload.currency)) {
-      throw new CustomError(
-        "currency should be only 3 characters and must follow format ISO 4217.",
-        400
+      throw new InstrumentationError(
+        "Parameter currency should be only 3 characters and must follow format ISO 4217"
       );
     }
 
@@ -153,9 +157,8 @@ const trackResponseBuilder = message => {
       lastname: getFieldValueFromMessage(message, "lastName")
     });
     if (!customer.id || !customer.email) {
-      throw new CustomError(
-        "customer_id and email is required for order related event.",
-        400
+      throw new InstrumentationError(
+        "customer_id and email is required for order related event"
       );
     }
 
@@ -194,7 +197,7 @@ const trackResponseBuilder = message => {
   // custom events
   payload = constructPayload(message, customEventMapping);
   if (!isValidTimestamp(payload.timestamp)) {
-    throw new CustomError("Timestamp format must be ISO-8601", 400);
+    throw new InstrumentationError("Timestamp format must be ISO-8601");
   }
   if (!payload.id) {
     payload.id = message.messageId;
@@ -216,7 +219,7 @@ const trackResponseBuilder = message => {
 
 const handleMessage = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(`Message type is not defined`, 400);
+    throw new InstrumentationError("Event type is required");
   }
   const messageType = message.type.toLowerCase();
   let payload;
@@ -228,7 +231,9 @@ const handleMessage = (message, destination) => {
       payload = trackResponseBuilder(message);
       break;
     default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `message type ${messageType} is not supported`
+      );
   }
   return payload;
 };
@@ -239,14 +244,11 @@ const handleMessage = (message, destination) => {
 const process = event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   if (!destination.Config.apiKey) {
-    throw new CustomError("Invalid Api Key", 400);
+    throw new ConfigurationError("Invalid Api Key");
   }
 
   const payload = handleMessage(message, destination);
@@ -260,8 +262,8 @@ const process = event => {
   return response;
 };
 
-const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "OMETRIA");
+const processRouterDest = async (inputs, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -284,7 +286,7 @@ const processRouterDest = async inputs => {
         const errRespEvent = handleRtTfSingleEventError(
           input,
           error,
-          "OMETRIA"
+          reqMetadata
         );
         errorList.push(errRespEvent);
       }

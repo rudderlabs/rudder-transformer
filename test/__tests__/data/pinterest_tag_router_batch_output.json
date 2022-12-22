@@ -629,7 +629,11 @@
       ],
       "batched": false,
       "statusCode": 400,
-      "error": "message type identify is not supported"
+      "error": "message type identify is not supported",
+      "statTags": {
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation"
+      }
     }
   ]
 ]

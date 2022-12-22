@@ -2,12 +2,12 @@
 const get = require("get-value");
 const moment = require("moment");
 const {
-  CustomError,
   constructPayload,
   isDefinedAndNotNull,
   getDestinationExternalID,
   isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 const { mappingConfig, ConfigCategory } = require("./config");
 
 /**
@@ -110,9 +110,8 @@ const getDestinationItemProperties = (message, isItemsRequired) => {
     return items;
   }
   if ((!products && isItemsRequired) || (products && products.length === 0)) {
-    throw new CustomError(
-      `Products is an required field for '${message.event}' event`,
-      400
+    throw new InstrumentationError(
+      `Products is an required field for '${message.event}' event`
     );
   }
   if (products && Array.isArray(products)) {
@@ -132,16 +131,15 @@ const getDestinationItemProperties = (message, isItemsRequired) => {
         !isDefinedAndNotNull(element.productVariantId) ||
         !isDefinedAndNotNull(pricing.value)
       ) {
-        throw new CustomError(
-          "product_id and product_variant_id and price are required",
-          400
+        throw new InstrumentationError(
+          "product_id and product_variant_id and price are required"
         );
       }
       element.price = price;
       items.push(element);
     });
   } else if (products && !Array.isArray(products)) {
-    throw new CustomError("Invalid type. Expected Array of products", 400);
+    throw new InstrumentationError("Invalid type. Expected Array of products");
   }
   return items;
 };

@@ -3,10 +3,10 @@ const get = require("get-value");
 const {
   getValueFromMessage,
   getSuccessRespEvents,
-  CustomError,
   handleRtTfSingleEventError,
   checkInvalidRtTfEvents
 } = require("../../util");
+const { ConfigurationError } = require("../../util/errorTypes");
 
 const SOURCE_KEYS = ["properties", "traits", "context.traits"];
 
@@ -102,7 +102,7 @@ const processSingleMessage = event => {
     };
     return payload;
   }
-  throw new CustomError("No Spread Sheet set for this event", 400);
+  throw new ConfigurationError("No Spread Sheet set for this event");
 };
 
 // Main process Function to handle transformation
@@ -117,10 +117,10 @@ const process = event => {
 };
 
 // Router transform with batching by default
-const processRouterDest = async inputs => {
+const processRouterDest = async (inputs, reqMetadata) => {
   const successRespList = [];
   const errorRespList = [];
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "GOOGLESHEETS");
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -137,7 +137,7 @@ const processRouterDest = async inputs => {
         const errRespEvent = handleRtTfSingleEventError(
           input,
           error,
-          "GOOGLESHEETS"
+          reqMetadata
         );
         errorRespList.push(errRespEvent);
       }

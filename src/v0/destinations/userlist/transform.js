@@ -4,12 +4,12 @@ const {
   defaultPostRequestConfig,
   getFieldValueFromMessage,
   isBlank,
-  getErrorRespEvents,
-  getSuccessRespEvents,
-  CustomError
+  simpleProcessRouterDest
 } = require("../../util");
 
 const { endpoint } = require("./config");
+
+const { InstrumentationError } = require("../../util/errorTypes");
 
 // ------------------------------------------------
 // Userlist built a custom endpoint for Rudderstack that processes the messages according to our spec.
@@ -45,7 +45,7 @@ function buildResponse(message, destination) {
 
 function processSingleMessage(message, destination) {
   if (isBlank(message.userId)) {
-    throw new CustomError('Missing required value from "userIdOnly"', 400);
+    throw new InstrumentationError('Missing required value from "userIdOnly"');
   }
 
   switch (message.type) {
@@ -54,9 +54,8 @@ function processSingleMessage(message, destination) {
     case EventType.GROUP:
       return buildResponse(message, destination);
     default:
-      throw new CustomError(
-        `message type ${message.type} not supported for userlist`,
-        400
+      throw new InstrumentationError(
+        `Event type ${message.type} is not supported`
       );
   }
 }
@@ -68,42 +67,8 @@ function process(event) {
   );
 }
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

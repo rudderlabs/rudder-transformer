@@ -6,7 +6,6 @@ const {
   isValidPlanCurrency
 } = require("./utils");
 const {
-  CustomError,
   getDestinationExternalID,
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -17,17 +16,27 @@ const {
   simpleProcessRouterDest
 } = require("../../util");
 const {
+  BASE_ENDPOINT,
   createPayloadMapping,
-  updatePayloadMapping,
-  BASE_ENDPOINT
+  updatePayloadMapping
 } = require("./config");
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError,
+  NetworkInstrumentationError
+} = require("../../util/errorTypes");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const tags = require("../../util/tags");
 
 const identifyResponseBuilder = async (message, { Config }) => {
   const userId = getDestinationExternalID(message, "profitwellUserId");
   const userAlias = getFieldValueFromMessage(message, "userId");
 
   if (!userId && !userAlias) {
-    throw new CustomError("userId or userAlias is required for identify", 400);
+    throw new InstrumentationError(
+      "userId or userAlias is required for identify"
+    );
   }
 
   let subscriptionId = getDestinationExternalID(
@@ -39,9 +48,8 @@ const identifyResponseBuilder = async (message, { Config }) => {
     get(message, "context.traits.subscriptionAlias");
 
   if (!subscriptionId && !subscriptionAlias) {
-    throw new CustomError(
-      "subscriptionId or subscriptionAlias is required for identify",
-      400
+    throw new InstrumentationError(
+      "subscriptionId or subscriptionAlias is required for identify"
     );
   }
 
@@ -99,7 +107,9 @@ const identifyResponseBuilder = async (message, { Config }) => {
       // dropping event if profitwellSubscriptionId (externalId) did not
       // match with any subscription_id at destination
       if (subscriptionId) {
-        throw new CustomError("profitwell subscription_id not found", 400);
+        throw new NetworkInstrumentationError(
+          "Profitwell subscription_id not found"
+        );
       }
       payload = constructPayload(message, createPayloadMapping);
       payload = {
@@ -114,7 +124,9 @@ const identifyResponseBuilder = async (message, { Config }) => {
           payload.plan_interval.toLowerCase() === "year"
         )
       ) {
-        throw new CustomError("invalid format for planInterval. Aborting", 400);
+        throw new InstrumentationError(
+          "invalid format for planInterval. Aborting"
+        );
       }
       if (
         payload.plan_currency &&
@@ -155,7 +167,9 @@ const identifyResponseBuilder = async (message, { Config }) => {
           payload.plan_interval.toLowerCase() === "year"
         )
       ) {
-        throw new CustomError("invalid format for planInterval. Aborting", 400);
+        throw new InstrumentationError(
+          "invalid format for planInterval. Aborting"
+        );
       }
       if (
         payload.status &&
@@ -185,15 +199,19 @@ const identifyResponseBuilder = async (message, { Config }) => {
   // handler for other destination side errors
   const error = res.response;
   if (error.response.status !== 404) {
-    throw new CustomError(
+    throw new NetworkError(
       `Failed to get subscription history for a user (${error.response.statusText})`,
-      res.response.response.status
+      error.response.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(error.response.status)
+      },
+      error.response
     );
   }
 
   // drop event if profitwellUserId (externalId) did not match with any user_id
   if (userId) {
-    throw new CustomError("no user found for profitwell user_id", 400);
+    throw new InstrumentationError("No user found for profitwell user_id");
   }
 
   // create new subscription for new user with given userAlias
@@ -209,7 +227,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
       payload.plan_interval.toLowerCase() === "year"
     )
   ) {
-    throw new CustomError("invalid format for planInterval. Aborting", 400);
+    throw new InstrumentationError("Invalid format for planInterval. Aborting");
   }
   if (payload.plan_currency && !isValidPlanCurrency(payload.plan_currency)) {
     payload.plan_currency = null;
@@ -240,11 +258,11 @@ const identifyResponseBuilder = async (message, { Config }) => {
 const process = async event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError("invalid message type. Aborting.", 400);
+    throw new InstrumentationError("Event type is required");
   }
 
   if (!destination.Config.privateApiKey) {
-    throw new CustomError("Private API Key not found. Aborting.", 400);
+    throw new ConfigurationError("Private API Key not found. Aborting.");
   }
 
   const messageType = message.type.toLowerCase();
@@ -255,13 +273,15 @@ const process = async event => {
       response = await identifyResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `message type ${messageType} not supported`
+      );
   }
   return response;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "PROFITWELL", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

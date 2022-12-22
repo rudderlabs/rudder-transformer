@@ -1,4 +1,4 @@
-const { commonPostMapper } = require("../../../src/cdk/heap/transform");
+const { commonPostMapper } = require("../../../src/cdk/v1/heap/transform");
 
 describe("Unit test cases for heap common post mapper", () => {
   let payload, event, rudderContext;

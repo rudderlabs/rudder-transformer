@@ -13,7 +13,8 @@ const deleteUserDestinations = [
   "af",
   "clevertap",
   "engage",
-  "ga"
+  "ga",
+  "sendgrid"
 ];
 // Note: Useful for troubleshooting not to be used in production
 const exclusionDestList = [];

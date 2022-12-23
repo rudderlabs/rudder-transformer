@@ -21,7 +21,6 @@ export default class DeliveryController {
     );
     const deliveryResponse = await integrationService.deliveryRoutine(
       event,
-      event.metadata,
       destination,
       destNetworkHandler,
       requestMetadata

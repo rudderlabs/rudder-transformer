@@ -5,10 +5,9 @@ import {
   RouterResponse,
   TransformedEvent,
   DeliveryResponse,
-  ErrorDetailer
+  MetaTransferObject
 } from "../../types/index";
 import { generateErrorObject } from "../../v0/util";
-import { TRANSFORMER_METRIC } from "../../v0/util/constant";
 import ErrorReportingService from "../errorReporting.service";
 
 export default class PostTransformationDestinationService {
@@ -39,31 +38,24 @@ export default class PostTransformationDestinationService {
         statusCode: 200
       } as ProcessorResponse;
     });
-    return result.flat();
+    return result;
   }
 
   public static handleFailedEventsAtProcessorDest(
     error: Object,
-    errorDTO: ErrorDetailer
+    metaTO: MetaTransferObject
   ): ProcessorResponse {
-    const errObj = generateErrorObject(
-      error,
-      errorDTO.integrationType,
-      errorDTO.stage
-    );
-    ErrorReportingService.reportError(error, errObj, errorDTO);
-    return {
-      metadata: errorDTO.eventMetadatas[0],
+    const errObj = generateErrorObject(error, metaTO.errorDetails);
+    const resp = {
+      metadata: metaTO.metadata,
       statusCode: errObj.status,
       error:
         errObj.message ||
         "[Processor Transform] Error occurred while processing the payload.",
-      statTags: {
-        errorAt: TRANSFORMER_METRIC.ERROR_AT.PROC,
-        ...errObj.statTags
-      },
-      output: undefined
+      statTags: errObj.statTags
     } as ProcessorResponse;
+    ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
+    return resp;
   }
 
   public static handleSuccessEventsAtRouterDest(
@@ -84,73 +76,57 @@ export default class PostTransformationDestinationService {
 
   public static handleFailureEventsAtRouterDest(
     error: Object,
-    errorDTO: ErrorDetailer
+    metaTO: MetaTransferObject
   ): RouterResponse {
-    const errObj = generateErrorObject(
-      error,
-      errorDTO.integrationType,
-      errorDTO.stage
-    );
-    ErrorReportingService.reportError(error, errObj, errorDTO);
-    return {
+    const errObj = generateErrorObject(error, metaTO.errorDetails);
+    const resp = {
       batchedRequest: undefined,
-      metadata: errorDTO.eventMetadatas,
+      metadata: metaTO.metadatas,
       batched: false,
       statusCode: errObj.status,
       error:
         errObj.message ||
         "[Router Transform] Error occurred while processing the payload.",
-      statTags: {
-        ...errObj.statTags,
-        errorAt: TRANSFORMER_METRIC.ERROR_AT.RT
-      }
+      statTags: errObj.statTags
     } as RouterResponse;
+    ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
+    return resp;
   }
 
   public static handleFailureEventsAtBatchDest(
     error: Object,
-    errorDTO: ErrorDetailer
+    metaTO: MetaTransferObject
   ): RouterResponse {
-    const errObj = generateErrorObject(
-      error,
-      errorDTO.integrationType,
-      errorDTO.stage
-    );
-    ErrorReportingService.reportError(error, errObj, errorDTO);
-    return {
-      metadata: errorDTO.eventMetadatas,
+    const errObj = generateErrorObject(error, metaTO.errorDetails);
+    const resp = {
+      metadata: metaTO.metadatas,
       batched: false,
       statusCode: 500, // for batch we should consider code error hence keeping retryable
       error:
         errObj.message ||
         "[Batch Transform] Error occurred while processing payload.",
-      statTags: {
-        ...errObj.statTags,
-        errorAt: TRANSFORMER_METRIC.ERROR_AT.BATCH
-      }
+      statTags: errObj.statTags
     } as RouterResponse;
+    ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
+    return resp;
   }
 
   public static handleFailureEventsAtDeliveryDest(
     error: Object,
-    errorDTO: ErrorDetailer
+    metaTO: MetaTransferObject
   ): DeliveryResponse {
-    const errObj = generateErrorObject(
-      error,
-      errorDTO.integrationType,
-      errorDTO.stage
-    );
-    ErrorReportingService.reportError(error, errObj, errorDTO);
-    return {
+    const errObj = generateErrorObject(error, metaTO.errorDetails);
+    const resp = {
       status: errObj.status,
       message:
         errObj.message || "[Delivery] Error occured while processing payload",
       destinationResponse: errObj.destinationResponse,
-      statTags: {
-        errorAt: TRANSFORMER_METRIC.ERROR_AT.PROXY,
-        ...errObj.statTags
-      },
-      authErrorCategory: errObj.authErrorCategory
+      statTags: errObj.statTags,
+      ...(errObj.authErrorCategory && {
+        authErrorCategory: errObj.authErrorCategory
+      })
     } as DeliveryResponse;
+    ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
+    return resp;
   }
 }

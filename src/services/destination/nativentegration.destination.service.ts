@@ -3,14 +3,14 @@ import IntegrationDestinationService from "../../interfaces/IntegrationDestinati
 import {
   DeliveryResponse,
   ErrorDetailer,
-  Metadata,
+  MetaTransferObject,
   ProcessorRequest,
   ProcessorResponse,
   RouterRequestData,
   RouterResponse,
   TransformedEvent
 } from "../../types/index";
-import { TRANSFORMER_METRIC } from "../../v0/util/constant";
+import tags from "../../v0/util/tags";
 import PostTransformationServiceDestination from "./postTransformation.destination.service";
 
 export default class NativeIntegrationDestinationService
@@ -22,7 +22,10 @@ export default class NativeIntegrationDestinationService
     requestMetadata: Object
   ): Promise<ProcessorResponse[]> {
     // TODO: Change the promise type
-    const respList: ProcessorResponse[] = await Promise.all<any>(
+    const respList: (
+      | ProcessorResponse
+      | ProcessorResponse[]
+    )[] = await Promise.all(
       events.map(async event => {
         try {
           let transformedPayloads:
@@ -34,24 +37,27 @@ export default class NativeIntegrationDestinationService
             destHandler
           );
         } catch (error) {
-          const errorDTO = {
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            integrationType: destinationType,
-            eventMetadatas: [event.metadata],
-            serverRequestMetadata: requestMetadata,
-            destinationInfo: [event.destination],
-            inputPayload: event.message,
-            errorContext:
-              "[Native Integration Service] Failure During Processor Transform"
-          } as ErrorDetailer;
+          const metaTO = {
+            errorDetails: {
+              destType: destinationType.toUpperCase(),
+              module: tags.MODULES.DESTINATION,
+              implementation: tags.IMPLEMENTATIONS.NATIVE,
+              feature: tags.FEATURES.PROCESSOR,
+              destinationId: event.metadata.destinationId,
+              workspaceId: event.metadata.workspaceId,
+              context:
+                "[Native Integration Service] Failure During Processor Transform"
+            } as ErrorDetailer,
+            metadata: event.metadata
+          } as MetaTransferObject;
           return PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(
             error,
-            errorDTO
+            metaTO
           );
         }
       })
     );
-    return respList;
+    return respList.flat();
   }
 
   public async routerRoutine(
@@ -77,25 +83,23 @@ export default class NativeIntegrationDestinationService
               destHandler
             );
           } catch (error) {
-            const errorDTO = {
-              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-              integrationType: destinationType,
-              eventMetadatas: destInputArray.map(ev => {
-                return ev.metadata;
-              }),
-              serverRequestMetadata: requestMetadata,
-              destinationInfo: destInputArray.map(ev => {
-                return ev.destination;
-              }),
-              inputPayload: destInputArray.map(ev => {
-                return ev.message;
-              }),
-              errorContext:
+            let metaTO: MetaTransferObject;
+            metaTO.errorDetails = {
+              destType: destinationType.toUpperCase(),
+              module: tags.MODULES.DESTINATION,
+              implementation: tags.IMPLEMENTATIONS.NATIVE,
+              feature: tags.FEATURES.ROUTER,
+              destinationId: destInputArray[0].metadata.destinationId,
+              workspaceId: destInputArray[0].metadata.workspaceId,
+              context:
                 "[Native Integration Service] Failure During Router Transform"
-            } as ErrorDetailer;
+            };
+            metaTO.metadatas = destInputArray.map(input => {
+              return input.metadata;
+            });
             return PostTransformationServiceDestination.handleFailureEventsAtRouterDest(
               error,
-              errorDTO
+              metaTO
             );
           }
         }
@@ -125,25 +129,23 @@ export default class NativeIntegrationDestinationService
             | RouterResponse[] = destHandler.batch(destEvents);
           return destBatchedRequests;
         } catch (error) {
-          const errorDTO = {
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            integrationType: destinationType,
-            eventMetadatas: destEvents.map(ev => {
-              return ev.metadata;
-            }),
-            serverRequestMetadata: requestMetadata,
-            destinationInfo: destEvents.map(ev => {
-              return ev.destination;
-            }),
-            inputPayload: destEvents.map(ev => {
-              return ev.message;
-            }),
-            errorContext:
+          let metaTO: MetaTransferObject;
+          metaTO.errorDetails = {
+            destType: destinationType.toUpperCase(),
+            module: tags.MODULES.DESTINATION,
+            implementation: tags.IMPLEMENTATIONS.NATIVE,
+            feature: tags.FEATURES.BATCH,
+            destinationId: destEvents[0].metadata.destinationId,
+            workspaceId: destEvents[0].metadata.workspaceId,
+            context:
               "[Native Integration Service] Failure During Batch Transform"
-          } as ErrorDetailer;
+          };
+          metaTO.metadatas = destEvents.map(input => {
+            return input.metadata;
+          });
           return PostTransformationServiceDestination.handleFailureEventsAtBatchDest(
             error,
-            errorDTO
+            metaTO
           );
         }
       }
@@ -153,14 +155,13 @@ export default class NativeIntegrationDestinationService
 
   public async deliveryRoutine(
     destinationRequest: TransformedEvent,
-    metadata: Metadata,
     destinationType: string,
     networkHandler: any,
     requestMetadata: Object
   ): Promise<DeliveryResponse> {
     try {
       const rawProxyResponse = await networkHandler.proxy(destinationRequest);
-      const processedProxyResponse = networkHandler.iosResponse(
+      const processedProxyResponse = networkHandler.processAxiosResponse(
         rawProxyResponse
       );
       return networkHandler.responseHandler(
@@ -171,18 +172,20 @@ export default class NativeIntegrationDestinationService
         destinationType
       ) as DeliveryResponse;
     } catch (err) {
-      const errorDTO = {
-        eventMetadatas: [metadata],
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        integrationType: destinationType,
-        serverRequestMetadata: requestMetadata,
-        destinationInfo: undefined,
-        inputPayload: destinationRequest,
-        errorContext: "[Native Integration Service] Failure During Delivery"
-      } as ErrorDetailer;
+      let metaTO: MetaTransferObject;
+      metaTO.errorDetails = {
+        destType: destinationType.toUpperCase(),
+        module: tags.MODULES.DESTINATION,
+        implementation: tags.IMPLEMENTATIONS.NATIVE,
+        feature: tags.FEATURES.DATA_DELIVERY,
+        destinationId: destinationRequest.metadata.destinationId,
+        workspaceId: destinationRequest.metadata.workspaceId,
+        context: "[Native Integration Service] Failure During Delivery"
+      };
+      metaTO.metadata = destinationRequest.metadata;
       return PostTransformationServiceDestination.handleFailureEventsAtDeliveryDest(
         err,
-        errorDTO
+        metaTO
       );
     }
   }

@@ -1,6 +1,5 @@
 import {
     DeliveryResponse,
-    Metadata,
     ProcessorRequest,
     ProcessorResponse,
     RouterRequestData,
@@ -32,7 +31,6 @@ import {
   
     deliveryRoutine(
       event: TransformedEvent,
-      metadata: Metadata,
       destinationType: string,
       networkHandler: any,
       requestMetadata: Object

@@ -1,7 +1,7 @@
 import fs from "fs";
 import { Context } from "koa";
 import { DestHandlerMap } from "../constants/destinationCanonicalNames";
-import { API_VERSION } from "../routes/utils/constants";
+import { Metadata } from "../types";
 
 export default class MiscService {
   public static getDestHandler(dest: string, version: string) {
@@ -22,6 +22,14 @@ export default class MiscService {
     return {
       namespace: "Unknown",
       cluster: "Unknown"
+    };
+  }
+
+  public static getMetaTags(metadata: Metadata) {
+    return {
+      sourceType: metadata.sourceType,
+      destinationType: metadata.destinationType,
+      k8_namespace: metadata.namespace
     };
   }
 
@@ -46,7 +54,7 @@ export default class MiscService {
   }
 
   public static getFetaures() {
-    const obj = JSON.parse(fs.readFileSync("../../features.json", "utf8"));
+    const obj = JSON.parse(fs.readFileSync("features.json", "utf8"));
     return JSON.stringify(obj);
   }
 }

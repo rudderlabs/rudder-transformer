@@ -4,14 +4,15 @@ import IntegrationDestinationService from "../../interfaces/IntegrationDestinati
 import {
   DeliveryResponse,
   ErrorDetailer,
-  Metadata,
+  MetaTransferObject,
   ProcessorRequest,
   ProcessorResponse,
   RouterRequestData,
   RouterResponse,
   TransformedEvent
 } from "../../types/index";
-import { TRANSFORMER_METRIC } from "../../v0/util/constant";
+import { TransformationError } from "../../v0/util/errorTypes";
+import tags from "../../v0/util/tags";
 import PostTransformationServiceDestination from "./postTransformation.destination.service";
 
 export default class CDKV2DestinationService
@@ -31,7 +32,7 @@ export default class CDKV2DestinationService
             | TransformedEvent[] = await processCdkV2Workflow(
             destinationType,
             event,
-            TRANSFORMER_METRIC.ERROR_AT.PROC
+            tags.FEATURES.PROCESSOR
           );
           return PostTransformationServiceDestination.handleSuccessEventsAtProcessorDest(
             event,
@@ -39,19 +40,21 @@ export default class CDKV2DestinationService
             destHandler
           );
         } catch (error) {
-          const errorDTO = {
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            integrationType: destinationType,
-            eventMetadatas: [event.metadata],
-            serverRequestMetadata: requestMetadata,
-            destinationInfo: [event.destination],
-            inputPayload: event.message,
-            errorContext:
-              "[Native Integration Service] Failure During Processor Transform"
-          } as ErrorDetailer;
+          let metaTO: MetaTransferObject;
+          metaTO.errorDetails = {
+            destType: destinationType.toUpperCase(),
+            module: tags.MODULES.DESTINATION,
+            implementation: tags.IMPLEMENTATIONS.CDK_V2,
+            feature: tags.FEATURES.PROCESSOR,
+            destinationId: event.metadata.destinationId,
+            workspaceId: event.metadata.workspaceId,
+            context:
+              "[CDKV2 Integration Service] Failure During Processor Transform"
+          };
+          metaTO.metadata = event.metadata;
           return PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(
             error,
-            errorDTO
+            metaTO
           );
         }
       })
@@ -77,32 +80,30 @@ export default class CDKV2DestinationService
             const routerRoutineResponse: RouterResponse[] = await processCdkV2Workflow(
               destinationType,
               destInputArray,
-              TRANSFORMER_METRIC.ERROR_AT.RT
+              tags.FEATURES.ROUTER
             );
             return PostTransformationServiceDestination.handleSuccessEventsAtRouterDest(
               routerRoutineResponse,
               destHandler
             );
           } catch (error) {
-            const errorDTO = {
-              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-              integrationType: destinationType,
-              eventMetadatas: destInputArray.map(ev => {
-                return ev.metadata;
-              }),
-              serverRequestMetadata: requestMetadata,
-              destinationInfo: destInputArray.map(ev => {
-                return ev.destination;
-              }),
-              inputPayload: destInputArray.map(ev => {
-                return ev.message;
-              }),
-              errorContext:
-                "[Native Integration Service] Failure During Router Transform"
-            } as ErrorDetailer;
+            let metaTO: MetaTransferObject;
+            metaTO.errorDetails = {
+              destType: destinationType.toUpperCase(),
+              module: tags.MODULES.DESTINATION,
+              implementation: tags.IMPLEMENTATIONS.CDK_V2,
+              feature: tags.FEATURES.ROUTER,
+              destinationId: destInputArray[0].metadata.destinationId,
+              workspaceId: destInputArray[0].metadata.workspaceId,
+              context:
+                "[CDKV2 Integration Service] Failure During Router Transform"
+            };
+            metaTO.metadatas = destInputArray.map(input => {
+              return input.metadata;
+            });
             return PostTransformationServiceDestination.handleFailureEventsAtRouterDest(
               error,
-              errorDTO
+              metaTO
             );
           }
         }
@@ -117,16 +118,17 @@ export default class CDKV2DestinationService
     _destHandler: any,
     _requestMetadata: Object
   ) {
-    throw new Error("CDKV2 Does not Implement Batch Transform Routine");
+    throw new TransformationError(
+      "CDKV2 Does not Implement Batch Transform Routine"
+    );
   }
 
   public deliveryRoutine(
     _event: TransformedEvent,
-    _metadata: Metadata,
     _destinationType: string,
     _networkHandler: any,
     _requestMetadata: Object
   ): Promise<DeliveryResponse> {
-    throw new Error("CDV2 Does not Implement Delivery Routine");
+    throw new TransformationError("CDV2 Does not Implement Delivery Routine");
   }
 }

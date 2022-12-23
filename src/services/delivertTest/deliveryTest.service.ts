@@ -1,11 +1,11 @@
 import match from "match-json";
 import jsonDiff from "json-diff";
-import networkHandlerFactory from "../adapters/networkHandlerFactory";
-import { getPayloadData } from "../adapters/network";
-import { generateErrorObject } from "../v0/util";
-import stats from "../util/stats";
-import logger from "../logger";
-import tags from "../v0/util/tags";
+import networkHandlerFactory from "../../adapters/networkHandlerFactory";
+import { getPayloadData } from "../../adapters/network";
+import { generateErrorObject } from "../../v0/util";
+import stats from "../../util/stats";
+import logger from "../../logger";
+import tags from "../../v0/util/tags";
 
 export default class DeliveryTestService {
   public static async deliverTestRoutine(
@@ -91,14 +91,11 @@ export default class DeliveryTestService {
         destination
       });
 
-      response = generateErrorObject(
-        err,
-        {
-          [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),
-          [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
-          [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY
-        }
-      );
+      response = generateErrorObject(err, {
+        [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),
+        [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+        [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY
+      });
       response.message = `[TransformerProxyTest] Error occurred while testing proxy for destination ("${destination}"): "${err.message}"`;
       logger.error(response.message);
       logger.error(err);

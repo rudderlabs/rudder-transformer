@@ -99,17 +99,17 @@ type RouterRequest = {
 };
 
 type ProcessorResponse = {
-  output: TransformedEvent | RudderMessage | Object;
+  output?: TransformedEvent | RudderMessage | Object;
   metadata: Metadata;
   statusCode: number;
-  error: string;
+  error?: string;
   statTags: Object;
 };
 
 type RouterResponse = {
-  batchedRequest: TransformedEvent | Object;
+  batchedRequest?: TransformedEvent | Object;
   metadata: Metadata[];
-  destination: Destination;
+  destination?: Destination;
   batched: boolean;
   statusCode: number;
   error: string;
@@ -153,13 +153,26 @@ type RudderMessage = {
 };
 
 type ErrorDetailer = {
-  integrationType: string;
-  stage: string;
-  serverRequestMetadata: Object;
-  eventMetadatas: Metadata[];
-  destinationInfo: Destination[];
-  inputPayload: Object[] | Object;
-  errorContext: string;
+  module?: string;
+  implementation?: string;
+  feature?: string;
+  errorCategory?: string;
+  errorType?: string;
+  meta?: string;
+  destType?: string;
+  srcType?: string;
+  cluster?: string;
+  customer?: string;
+  destinationId?: string;
+  workspaceId?: string;
+  sourceId?: string;
+  context?: string;
+};
+
+type MetaTransferObject = {
+  metadatas?: Metadata[];
+  metadata?: Metadata;
+  errorDetails: ErrorDetailer;
 };
 
 type UserTransformResponse = {
@@ -187,5 +200,6 @@ export {
   DeliveryResponse,
   ErrorDetailer,
   UserTransformResponse,
-  UserTransfromServiceResponse
+  UserTransfromServiceResponse,
+  MetaTransferObject
 };

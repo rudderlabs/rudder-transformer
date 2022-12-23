@@ -29,8 +29,19 @@ const populateProductProperties = properties => {
     productProperties[getPropertyName("ItemQuantity", index)] = item.quantity;
     productProperties[getPropertyName("ItemSku", index)] = item.sku;
   });
+  return productProperties;
 };
+
+const populateAdditionalParameters = parameters => {
+  const additionalParameters = {};
+  parameters.forEach(mapping => {
+    additionalParameters[mapping.from] = mapping.to;
+  });
+  return additionalParameters;
+};
+
 module.exports = {
   checkConfigurationError,
-  populateProductProperties
+  populateProductProperties,
+  populateAdditionalParameters
 };

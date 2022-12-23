@@ -1,9 +1,11 @@
 const get = require("get-value");
+const sha1 = require("js-sha1");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
   checkConfigurationError,
-  populateProductProperties
+  populateProductProperties,
+  populateAdditionalParameters
 } = require("./util");
 const {
   defaultRequestConfig,
@@ -11,7 +13,8 @@ const {
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
   isAppleFamily,
-  constructPayload
+  constructPayload,
+  isDefinedAndNotNull
 } = require("../../util");
 const {
   ConfigurationError,
@@ -46,6 +49,9 @@ const identifyResponseBuilder = (message, category, Config) => {
   const { campaignId } = Config;
 
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  payload.CustomerEmail = isDefinedAndNotNull(payload.CustomerEmail)
+    ? sha1(payload.CustomerEmail)
+    : payload.CustomerEmail;
   payload.CampaignId = campaignId;
 
   const os = get(message, "context.os.name");
@@ -60,13 +66,33 @@ const identifyResponseBuilder = (message, category, Config) => {
 };
 
 const trackResponseBuilder = (message, category, Config) => {
-  const { campaignId, eventTypeId, impactAppId } = Config;
+  const {
+    campaignId,
+    eventTypeId,
+    impactAppId,
+    rudderToImpactProperty
+  } = Config;
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   payload.CampaignId = campaignId;
   payload.EventTypeId = eventTypeId;
   payload.ImpactAppId = impactAppId;
+  payload.EventCode = "INSTALL";
+  payload.CustomerEmail = isDefinedAndNotNull(payload.CustomerEmail)
+    ? sha1(payload.CustomerEmail)
+    : payload.CustomerEmail;
+  const os = get(message, "context.os.name");
+  if (os && isAppleFamily(os.toLowerCase())) {
+    payload.AppleIfv = get(message, "context.device.id");
+    payload.AppleIfa = get(message, "context.device.advertisingId");
+  } else if (os.toLowerCase() === "android") {
+    payload.AndroidId = get(message, "context.device.id");
+    payload.GoogAId = get(message, "context.device.advertisingId");
+  }
   const productProperties = populateProductProperties(message.properties);
-  payload = { ...payload, ...productProperties };
+  const additionalParameters = populateAdditionalParameters(
+    rudderToImpactProperty
+  );
+  payload = { ...payload, ...productProperties, ...additionalParameters };
   const endpoint = `${category.baseUrl}/${Config.accountSID}/Conversions`;
   return responseBuilder(payload, endpoint, Config);
 };

@@ -18,6 +18,113 @@
     "required": false
   },
   {
+    "destKey": "CurrencyCode",
+    "sourceKeys": "properties.currency",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "CustomerStatus",
+    "sourceKeys": ["context.traits.status", "properties.status"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "Latitude",
+    "sourceKeys": ["context.location.latitude", "properties.latitude"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "Longitude",
+    "sourceKeys": ["context.location.longitude", "properties.longitude"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "OrderDiscount",
+    "sourceKeys": "properties.discount",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "OrderId",
+    "sourceKeys": [
+      "properties.orderId",
+      "properties.order_id",
+      "properties.transactionID",
+      "properties.checkout_id"
+    ],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "OrderShipping",
+    "sourceKeys": "properties.shipping",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "OrderTax",
+    "sourceKeys": "properties.tax",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "OrderMargin",
+    "sourceKeys": "properties.margin",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "OrderTax",
+    "sourceKeys": "properties.tax",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "MediaId",
+    "sourceKeys": "mediaid",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "CallerId",
+    "sourceKeys": "callerid",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "CustomerCity",
+    "sourceKeys": "city",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "CustomerPostCode",
+    "sourceKeys": "zipcode",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "CustomerCountry",
+    "sourceKeys": "country",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "CustomerRegion",
+    "sourceKeys": "region",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "PhoneNumber",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
     "destKey": "CustomerEmail",
     "sourceKeys": "email",
     "sourceFromGenericMap": true,

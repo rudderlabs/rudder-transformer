@@ -13,8 +13,9 @@ const FAAS_BASE_IMG =
 const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || "100";
 const FAAS_REQUESTS_CPU = process.env.FAAS_REQUESTS_CPU || "0.01";
 const FAAS_REQUESTS_MEMORY = process.env.FAAS_REQUESTS_MEMORY || "50M";
-const FAAS_LIMITS_CPU = process.env.FAAS_LIMITS_CPU || "0.01";
-const FAAS_LIMITS_MEMORY = process.env.FAAS_LIMITS_MEMORY || "128M";
+const FAAS_LIMITS_CPU = process.env.FAAS_LIMITS_CPU || FAAS_REQUESTS_CPU;
+const FAAS_LIMITS_MEMORY =
+  process.env.FAAS_LIMITS_MEMORY || FAAS_REQUESTS_MEMORY;
 const CONFIG_BACKEND_URL =
   process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
 

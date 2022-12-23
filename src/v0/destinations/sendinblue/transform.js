@@ -62,33 +62,32 @@ const responseBuilder = (
 // ref:- https://developers.sendinblue.com/reference/removecontactfromlist
 const unlinkContact = (message, destination, unlinkListIds) => {
   const returnValue = [];
+  let payload;
+  const email = getFieldValueFromMessage(message, "emailOnly");
+  let phone = getFieldValueFromMessage(message, "phone");
+  const contactId = getDestinationExternalID(message, "sendinblueContactId");
+
+  if (phone) {
+    phone = prepareEmailFromPhone(phone);
+  }
+  if (email || phone) {
+    payload = { emails: [email || phone] };
+  } else if (contactId) {
+    payload = { ids: [contactId] };
+  } else {
+    throw new TransformationError(
+      `At least one of email or phone or contactId is required to unlink the contact from a given list`,
+      400,
+      {
+        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
+        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
+      },
+      DESTINATION
+    );
+  }
+
   unlinkListIds.forEach(listId => {
-    let payload;
     const endpoint = getUnlinkContactEndpoint(listId);
-    const email = getFieldValueFromMessage(message, "emailOnly");
-    let phone = getFieldValueFromMessage(message, "phone");
-    const contactId = getDestinationExternalID(message, "sendinblueContactId");
-
-    if (phone) {
-      phone = prepareEmailFromPhone(phone);
-    }
-    if (email || phone) {
-      payload = { emails: [email || phone] };
-    } else if (contactId) {
-      payload = { ids: [contactId] };
-    } else {
-      throw new TransformationError(
-        `At least one of email or phone or contactId is required to unlink the contact from a given list`,
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        },
-        DESTINATION
-      );
-    }
-
     const response = responseBuilder(
       payload,
       endpoint,

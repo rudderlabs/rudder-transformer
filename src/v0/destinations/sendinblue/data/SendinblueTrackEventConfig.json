@@ -30,7 +30,8 @@
   },
   {
     "destKey": "",
-    "sourceKeys": "context.traits",
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
     "metadata": {
       "excludes": [
         "firstName",

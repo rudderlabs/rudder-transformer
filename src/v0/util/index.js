@@ -1086,7 +1086,7 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
 //   "context": {
 //     "externalId": [
 //       {
-//         "type": "customerId",
+//         "type": "kustomerId",
 //         "id": "12345678"
 //       }
 //     ]

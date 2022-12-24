@@ -153,7 +153,7 @@ export default class DestinationController {
     const integrationService = ServiceSelector.getDestinationService(events);
     const destinationHandler = ServiceSelector.getDestHandler(
       destination,
-      "V0"
+      this.DEFAULT_VERSION
     );
     events = PreTransformationDestinationService.preProcess(
       events,

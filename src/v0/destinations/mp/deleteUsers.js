@@ -46,7 +46,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   };
 
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  // ref : https://help.mixpanel.com/hc/en-us/articles/115004565806-Delete-User-Profiles#:~:text=Bulk%20Delete%20Profiles,Please%20delete%20with%20caution!
+  // ref : https://developer.mixpanel.com/reference/delete-profile
   const batchEvents = _.chunk(data, MAX_BATCH_SIZE);
   await Promise.all(
     batchEvents.map(async batchEvent => {
@@ -55,7 +55,9 @@ const userDeletionHandler = async (userAttributes, config) => {
       if (!isHttpStatusSuccess(processedDeletionResponse.status)) {
         throw new ErrorBuilder()
           .setMessage(
-            `[Mixpanel]::Deletion Request is not successful - error: ${processedDeletionResponse.response}`
+            `[Mixpanel]::Deletion Request is not successful - error: ${JSON.stringify(
+              processedDeletionResponse.response
+            )}`
           )
           .setStatus(processedDeletionResponse.status)
           .build();

@@ -2,6 +2,18 @@
   [
     {
       "statusCode": 400,
+      "error": "[Mixpanel]::Deletion Request is not successful - error: {\"code\":400,\"message\":\"Bad Req\",\"status\":\"Fail Case\"}"
+    }
+  ],
+  [
+    {
+      "statusCode": 200,
+      "status": "successful"
+    }
+  ],
+  [
+    {
+      "statusCode": 400,
       "error": "[Mixpanel]::API Token is a required field for user deletion"
     }
   ]

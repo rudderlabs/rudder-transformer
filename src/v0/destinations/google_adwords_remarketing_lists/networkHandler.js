@@ -118,8 +118,10 @@ const gaAudienceProxyRequest = async request => {
   );
   // console.log(JSON.stringify(secondResponse.response.response));
   if (
-    !secondResponse.success &&
-    !isHttpStatusSuccess(secondResponse.response.response.status)
+    !secondResponse.success
+    // Don't think we need this extra check
+    // &&
+    // !isHttpStatusSuccess(secondResponse.response.response.status)
   ) {
     return secondResponse;
   }

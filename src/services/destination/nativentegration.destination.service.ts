@@ -113,7 +113,7 @@ export default class NativeIntegrationDestinationService
     destinationType: string,
     destHandler: any,
     requestMetadata: Object
-  ) {
+  ): RouterResponse[] {
     if (!destHandler.batch) {
       throw new Error(`${destinationType} does not implement batch`);
     }
@@ -121,16 +121,16 @@ export default class NativeIntegrationDestinationService
       events,
       (ev: RouterRequestData) => ev.destination?.ID
     );
-    const response = Object.entries(allDestEvents).map(
-      (destEvents: RouterRequestData[]) => {
-        try {
-          const destBatchedRequests:
-            | RouterResponse
-            | RouterResponse[] = destHandler.batch(destEvents);
-          return destBatchedRequests;
-        } catch (error) {
-          let metaTO: MetaTransferObject;
-          metaTO.errorDetails = {
+    const groupedEvents: RouterRequestData[][] = Object.values(allDestEvents);
+    const response = groupedEvents.map(destEvents => {
+      try {
+        const destBatchedRequests: RouterResponse[] = destHandler.batch(
+          destEvents
+        );
+        return destBatchedRequests;
+      } catch (error) {
+        const metaTO = {
+          errorDetails: {
             destType: destinationType.toUpperCase(),
             module: tags.MODULES.DESTINATION,
             implementation: tags.IMPLEMENTATIONS.NATIVE,
@@ -139,18 +139,19 @@ export default class NativeIntegrationDestinationService
             workspaceId: destEvents[0].metadata.workspaceId,
             context:
               "[Native Integration Service] Failure During Batch Transform"
-          };
-          metaTO.metadatas = destEvents.map(input => {
-            return input.metadata;
-          });
-          return PostTransformationServiceDestination.handleFailureEventsAtBatchDest(
-            error,
-            metaTO
-          );
-        }
+          } as ErrorDetailer
+        } as MetaTransferObject;
+        metaTO.metadatas = destEvents.map(input => {
+          return input.metadata;
+        });
+        const errResp = PostTransformationServiceDestination.handleFailureEventsAtBatchDest(
+          error,
+          metaTO
+        );
+        return [errResp];
       }
-    );
-    return response;
+    });
+    return response.flat();
   }
 
   public async deliveryRoutine(

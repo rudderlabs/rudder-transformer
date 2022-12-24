@@ -142,6 +142,10 @@ export default class DestinationController {
   }
 
   public static batchProcess(ctx: Context) {
+    logger.debug(
+      "Native(Process-Transform-Batch):: Requst to transformer::",
+      JSON.stringify(ctx.request.body)
+    );
     let requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterRequest;
     const destination = routerRequest.destType;
@@ -185,8 +189,11 @@ export default class DestinationController {
       };
       ctx.body = resp;
     }
-
     ControllerUtility.postProcess(ctx);
+    logger.debug(
+      "Native(Process-Transform-Batch):: Response from transformer::",
+      JSON.stringify(ctx.body)
+    );
     return ctx;
   }
 }

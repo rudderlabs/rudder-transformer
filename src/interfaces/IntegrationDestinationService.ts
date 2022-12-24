@@ -27,7 +27,7 @@ import {
       destinationType: string,
       destHandler: any,
       requestMetadata: Object
-    ): any;
+    ): RouterResponse[];
   
     deliveryRoutine(
       event: TransformedEvent,

@@ -2,10 +2,10 @@ const match = require("match-json");
 const jsonDiff = require("json-diff");
 const networkHandlerFactory = require("../adapters/networkHandlerFactory");
 const { getPayloadData } = require("../adapters/network");
-const { TRANSFORMER_METRIC } = require("../v0/util/constant");
 const { generateErrorObject } = require("../v0/util");
 const stats = require("../util/stats");
 const logger = require("../logger");
+const tags = require("../v0/util/tags");
 
 class DestProxyController {
   /**
@@ -99,8 +99,11 @@ class DestProxyController {
 
       response = generateErrorObject(
         err,
-        destination,
-        TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
+        {
+          [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),
+          [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+          [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY
+        }
       );
       response.message = `[TransformerProxyTest] Error occurred while testing proxy for destination ("${destination}"): "${err.message}"`;
       logger.error(response.message);

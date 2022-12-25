@@ -3,7 +3,6 @@ const get = require("get-value");
 const {
   isDefined,
   constructPayload,
-  CustomError,
   getFullName,
   extractCustomFields,
   isAppleFamily,
@@ -16,6 +15,7 @@ const {
   GEO_SOURCE_ALLOWED_VALUES,
   mappingConfig
 } = require("./config");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
 const mPProfileAndroidConfigJson =
@@ -35,9 +35,8 @@ const getTransformedJSON = (message, mappingJson, useNewMapping) => {
     isDefined(rawPayload.$geo_source) &&
     !GEO_SOURCE_ALLOWED_VALUES.includes(rawPayload.$geo_source)
   ) {
-    throw new CustomError(
-      "$geo_source value must be either null or 'reverse_geocoding' ",
-      400
+    throw new InstrumentationError(
+      "$geo_source value must be either null or 'reverse_geocoding' "
     );
   }
   const userName = get(rawPayload, "$name");

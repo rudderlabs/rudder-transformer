@@ -1,4 +1,4 @@
-const { commonPostMapper } = require("../../../src/cdk/zapier/transform");
+const { commonPostMapper } = require("../../../src/cdk/v1/zapier/transform");
 
 describe("Unit test cases for zapier common post mapper", () => {
   it("should update the rudderContext with default endpoint", () => {

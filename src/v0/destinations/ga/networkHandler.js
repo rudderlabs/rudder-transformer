@@ -2,9 +2,15 @@ const {
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
-const ErrorBuilder = require("../../util/error");
+
+const {
+  NetworkError,
+  InvalidAuthTokenError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 /**
  * The response handler to handle responses from Google Analytics(Universal Analytics)
@@ -26,20 +32,21 @@ const gaResponseHandler = gaResponse => {
       return errObj.reason && errObj.reason === "invalidCredentials";
     });
     if (isInvalidCredsError || response?.error?.status === "UNAUTHENTICATED") {
-      throw new ErrorBuilder()
-        .setMessage("[GA] invalid credentials")
-        .setStatus(500)
-        .setDestinationResponse(response)
-        .setAuthErrorCategory(REFRESH_TOKEN)
-        .build();
+      throw new InvalidAuthTokenError(
+        "invalid credentials",
+        500,
+        response,
+        REFRESH_TOKEN
+      );
     }
-    throw new ErrorBuilder()
-      .setMessage(
-        `[GA] Error occurred while completing deletion request: ${response.error?.message}`
-      )
-      .setStatus(status)
-      .setDestinationResponse(response)
-      .build();
+    throw new NetworkError(
+      `Error occurred while completing deletion request: ${response.error?.message}`,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      response
+    );
   }
   return { response, status };
 };

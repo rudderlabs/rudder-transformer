@@ -2,17 +2,19 @@ const set = require("set-value");
 const get = require("get-value");
 const {
   defaultRequestConfig,
-  CustomError,
   constructPayload,
   isDefinedAndNotNull,
   getIntegrationsObj,
   removeUndefinedAndNullValues,
   isDefinedAndNotNullAndNotEmpty,
-  getErrorRespEvents,
-  getSuccessRespEvents
+  simpleProcessRouterDest
 } = require("../../util");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 // This function handles the common response payload for the supported calls
 const responseBuilderSimple = (message, category, destination) => {
@@ -109,15 +111,12 @@ const trackResponseBuilder = (message, category, destination) => {
 const process = async event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   const authToken = get(destination, "Config.authToken");
   if (!authToken) {
-    throw new CustomError("Auth Token required for Authentication.", 400);
+    throw new ConfigurationError("Auth Token required for Authentication");
   }
 
   let response;
@@ -162,47 +161,15 @@ const process = async event => {
       break;
     }
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
   return response;
 };
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

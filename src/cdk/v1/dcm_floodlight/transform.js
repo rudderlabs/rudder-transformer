@@ -6,18 +6,21 @@ const {
   isDefinedAndNotNull
 } = require("rudder-transformer-cdk/build/utils");
 const {
-  CustomError,
   getIntegrationsObj,
   isEmpty,
   isEmptyObject,
   getValueFromPropertiesOrTraits,
   getHashFromArray
-} = require("../../v0/util");
+} = require("../../../v0/util");
 const {
   GENERIC_TRUE_VALUES,
   GENERIC_FALSE_VALUES
-} = require("../../constants");
+} = require("../../../constants");
 const { BASE_URL, BLACKLISTED_CHARACTERS } = require("./config");
+const {
+  ConfigurationError,
+  InstrumentationError
+} = require("../../../v0/util/errorTypes");
 
 // append properties to endpoint
 // eg: ${BASE_URL}key1=value1;key2=value2;....
@@ -81,9 +84,8 @@ const mapFlagValue = (key, value) => {
     return 0;
   }
 
-  throw new CustomError(
-    `[DCM Floodlight]:: ${key}: valid parameters are [1|true] or [0|false]`,
-    400
+  throw new InstrumentationError(
+    `${key}: valid parameters are [1|true] or [0|false]`
   );
 };
 
@@ -124,18 +126,12 @@ const postMapper = (input, mappedPayload, rudderContext) => {
   event = message.event;
 
   if (!event) {
-    throw new CustomError(
-      `[DCM Floodlight] ${message.type}:: event is required`,
-      400
-    );
+    throw new InstrumentationError(`${message.type}:: event is required`);
   }
 
   const userAgent = get(message, "context.userAgent");
   if (!userAgent) {
-    throw new CustomError(
-      `[DCM Floodlight] ${message.type}:: userAgent is required`,
-      400
-    );
+    throw new InstrumentationError(`${message.type}:: userAgent is required`);
   }
   rudderContext.userAgent = userAgent;
 
@@ -163,9 +159,8 @@ const postMapper = (input, mappedPayload, rudderContext) => {
   });
 
   if (!conversionEventFound) {
-    throw new CustomError(
-      `[DCM Floodlight] ${message.type}:: Conversion event not found`,
-      400
+    throw new ConfigurationError(
+      `${message.type}:: Conversion event not found`
     );
   }
 

@@ -5,12 +5,13 @@ const {
   constructPayload,
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
-  getDestinationExternalID,
-  TransformationError
+  getDestinationExternalID
 } = require("../../util");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { DESTINATION } = require("./config");
+const {
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = (payload, endpoint, destination) => {
   if (payload) {
@@ -27,13 +28,7 @@ const responseBuilder = (payload, endpoint, destination) => {
   }
   // fail-safety for developer error
   throw new TransformationError(
-    "Something went wrong while constructing the payload",
-    400,
-    {
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-    },
-    DESTINATION
+    "Something went wrong while constructing the payload"
   );
 };
 
@@ -77,15 +72,7 @@ const groupResponseBuilder = (message, destination) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new TransformationError(
-      "Event type is required",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   const messageType = message.type.toLowerCase();
@@ -101,16 +88,8 @@ const processEvent = (message, destination) => {
       response = groupResponseBuilder(message, destination);
       break;
     default:
-      throw new TransformationError(
-        `Event type "${messageType}" is not supported`,
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .INSTRUMENTATION
-        },
-        DESTINATION
+      throw new InstrumentationError(
+        `Event type "${messageType}" is not supported`
       );
   }
   return response;
@@ -120,8 +99,8 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "JUNE", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

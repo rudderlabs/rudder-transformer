@@ -7,15 +7,18 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   getDestinationExternalID,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError,
+
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
   getFieldValueFromMessage,
   isAppleFamily,
-  isDefinedAndNotNullAndNotEmpty
+  isDefinedAndNotNullAndNotEmpty,
+  simpleProcessRouterDest
 } = require("../../util");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const {
   Event,
@@ -29,12 +32,15 @@ function responseBuilderSimple(payload, message, destination) {
   const { androidAppId, appleAppId } = destination.Config;
   let endpoint;
   const os = get(message, "context.os.name");
+  // if ((os && os.toLowerCase() === "android") || (os && isAppleFamily(os))){
+  //   if()
+  // }
   if (os && os.toLowerCase() === "android" && androidAppId) {
     endpoint = `${ENDPOINT}${androidAppId}`;
   } else if (os && isAppleFamily(os) && appleAppId) {
     endpoint = `${ENDPOINT}id${appleAppId}`;
   } else {
-    throw new CustomError("Invalid app endpoint", 400);
+    throw new ConfigurationError("Invalid app endpoint");
   }
   // if (androidAppId) {
   //   endpoint = `${ENDPOINT}${androidAppId}`;
@@ -44,7 +50,7 @@ function responseBuilderSimple(payload, message, destination) {
   // else if (message.context.app.namespace) {
   //   endpoint = `${ENDPOINT}${message.context.app.namespace}`;
   // } else {
-  //   throw new CustomError("Invalid app endpoint");
+  //   throw new InstrumentationError("Invalid app endpoint");
   // }
   // const afId = message.integrations
   //   ? message.integrations.AF
@@ -53,7 +59,9 @@ function responseBuilderSimple(payload, message, destination) {
   //   : undefined;
   const appsflyerId = getDestinationExternalID(message, "appsflyerExternalId");
   if (!appsflyerId) {
-    throw new CustomError("Appsflyer id is not set. Rejecting the event", 400);
+    throw new InstrumentationError(
+      "Appsflyer id is not set. Rejecting the event"
+    );
   }
 
   const updatedPayload = {
@@ -228,7 +236,7 @@ function processSingleMessage(message, destination) {
       break;
     }
     default:
-      throw new CustomError("message type not supported", 400);
+      throw new InstrumentationError("message type not supported");
   }
   return responseBuilderSimple(payload, message, destination);
 }
@@ -238,42 +246,8 @@ function process(event) {
   return response;
 }
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

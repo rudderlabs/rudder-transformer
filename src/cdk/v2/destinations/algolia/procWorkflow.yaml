@@ -11,8 +11,8 @@ steps:
   - name: validateInput
     template: |
       $.assert(.message.type, "message Type is not present. Aborting message.");
-      $.assert(.destination.Config.apiKey, "Invalid Api Key");
-      $.assert(.destination.Config.applicationId, "Invalid Application Id");
+      $.assertConfig(.destination.Config.apiKey, "Invalid Api Key");
+      $.assertConfig(.destination.Config.applicationId, "Invalid Application Id");
       $.assert(.message.type === {{$.EventType.TRACK}}, 
         "message type " + .message.type + " not supported")
       $.assert(.message.event, "event is required for track call")

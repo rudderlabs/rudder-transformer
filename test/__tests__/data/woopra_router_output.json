@@ -84,8 +84,12 @@
         "jobId": 3
       }
     ],
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    },
     "batched": false,
     "statusCode": 400,
-    "error": "[ WOOPRA ]:: Message type group not supported."
+    "error": "Message type group is not supported"
   }
 ]

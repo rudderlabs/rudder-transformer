@@ -1,3 +1,4 @@
+const { array } = require("is");
 const { isDefinedAndNotNull } = require("../../util");
 
 const checkConfigurationError = Config => {
@@ -20,15 +21,32 @@ const getPropertyName = (itemName, index) => {
 const populateProductProperties = properties => {
   const { products } = properties;
   const productProperties = {};
-  products.forEach((item, index) => {
-    productProperties[getPropertyName("ItemBrand", index)] = item.brand;
-    productProperties[getPropertyName("ItemCategory", index)] = item.category;
-    productProperties[getPropertyName("ItemName", index)] = item.name;
-    productProperties[getPropertyName("ItemPrice", index)] = item.price;
-    productProperties[getPropertyName("ItemPromoCode", index)] = item.coupon;
-    productProperties[getPropertyName("ItemQuantity", index)] = item.quantity;
-    productProperties[getPropertyName("ItemSku", index)] = item.sku;
-  });
+  if (products && Array.isArray(products)) {
+    products.forEach((item, index) => {
+      productProperties[getPropertyName("ItemBrand", index + 1)] = item.brand;
+      productProperties[getPropertyName("ItemCategory", index + 1)] =
+        item.category;
+      productProperties[getPropertyName("ItemName", index + 1)] = item.name;
+      productProperties[getPropertyName("ItemPrice", index + 1)] = item.price;
+      productProperties[getPropertyName("ItemPromoCode", index + 1)] =
+        item.coupon;
+      productProperties[getPropertyName("ItemQuantity", index + 1)] =
+        item.quantity;
+      productProperties[getPropertyName("ItemSku", index + 1)] = item.sku;
+    });
+  } else {
+    const index = 1;
+    productProperties[getPropertyName("ItemBrand", index)] = properties.brand;
+    productProperties[getPropertyName("ItemCategory", index)] =
+      properties.category;
+    productProperties[getPropertyName("ItemName", index)] = properties.name;
+    productProperties[getPropertyName("ItemPrice", index)] = properties.price;
+    productProperties[getPropertyName("ItemPromoCode", index)] =
+      properties.coupon;
+    productProperties[getPropertyName("ItemQuantity", index)] =
+      properties.quantity;
+    productProperties[getPropertyName("ItemSku", index)] = properties.sku;
+  }
   return productProperties;
 };
 

@@ -40,9 +40,10 @@ const responseBuilder = (payload, endpoint, Config) => {
 };
 
 /**
- * This function is used to build the response for track call.
+ * This function is used to build the response for identify/page call.
  * @param {*} message
- * @param {*} param1
+ * @param {*} category
+ * @param {*} Config
  * @returns
  */
 const identifyResponseBuilder = (message, category, Config) => {
@@ -65,6 +66,13 @@ const identifyResponseBuilder = (message, category, Config) => {
   return responseBuilder(payload, category.endpoint, Config);
 };
 
+/**
+ * This function is used to build the response for track call.
+ * @param {*} message
+ * @param {*} category
+ * @param {*} Config
+ * @returns
+ */
 const trackResponseBuilder = (message, category, Config) => {
   const {
     campaignId,

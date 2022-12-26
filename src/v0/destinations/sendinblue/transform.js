@@ -6,20 +6,18 @@ const {
   constructPayload,
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
-  TransformationError,
   getFieldValueFromMessage,
   getDestinationExternalID,
   getDestinationExternalIDs,
   defaultPutRequestConfig,
-  getIntegrationsObj
+  getIntegrationsObj,
+  ErrorMessage
 } = require("../../util");
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   getUnlinkContactEndpoint
 } = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { DESTINATION } = require("./config");
 const {
   prepareEmailFromPhone,
   checkIfEmailOrPhoneExists,
@@ -30,6 +28,10 @@ const {
   transformUserTraits,
   prepareTrackEventData
 } = require("./util");
+const {
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = (
   payload,
@@ -48,15 +50,7 @@ const responseBuilder = (
     return response;
   }
   // fail-safety for developer error
-  throw new TransformationError(
-    "Something went wrong while constructing the payload",
-    400,
-    {
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-    },
-    DESTINATION
-  );
+  throw new TransformationError(ErrorMessage.FailedToConstructPayload);
 };
 
 // ref:- https://developers.sendinblue.com/reference/removecontactfromlist
@@ -75,14 +69,8 @@ const unlinkContact = (message, destination, unlinkListIds) => {
   } else if (contactId) {
     payload = { ids: [contactId] };
   } else {
-    throw new TransformationError(
-      `At least one of email or phone or contactId is required to unlink the contact from a given list`,
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      "At least one of `email` or `phone` or `contactId` is required to unlink the contact from a given list"
     );
   }
 
@@ -146,43 +134,21 @@ const createDOIContactResponseBuilder = (message, destination) => {
     getDestinationExternalID(message, "sendinblueDOITemplateId") || templateId;
 
   if (!doiTemplateId) {
-    throw new TransformationError(
-      `templateId is required to create a contact using DOI`,
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      "templateId is required to create a contact using DOI"
     );
   }
 
   doiTemplateId = parseInt(doiTemplateId, 10);
 
   if (Number.isNaN(doiTemplateId)) {
-    throw new TransformationError(
-      "templateId size must be an integer",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("templateId must be an integer");
   }
 
   const listIds = getDestinationExternalIDs(message, "sendinblueIncludeListId");
   if (listIds.length === 0) {
-    throw new TransformationError(
-      `sendinblueIncludeListId is required to create a contact using DOI`,
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      "sendinblueIncludeListId is required to create a contact using DOI"
     );
   }
 
@@ -255,14 +221,8 @@ const createOrUpdateDOIContactResponseBuilder = async (
   const identifier = email || contactId;
 
   if (!identifier) {
-    throw new TransformationError(
-      "At least one of email or contactId is required to update the contact using DOI",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      "At least one of `email` or `contactId` is required to update the contact using DOI"
     );
   }
 
@@ -348,15 +308,7 @@ const trackLinkResponseBuilder = (message, destination) => {
 const trackResponseBuilder = (message, destination) => {
   const { event } = message;
   if (!event) {
-    throw new TransformationError(
-      `Event name is required`,
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("Event name is required");
   }
   if (
     event.toLowerCase() === CONFIG_CATEGORIES.TRACK_LINK.eventName.toLowerCase()
@@ -407,15 +359,7 @@ const pageResponseBuilder = (message, destination) => {
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new TransformationError(
-      "Event type is required",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   const messageType = message.type.toLowerCase();
@@ -431,16 +375,8 @@ const processEvent = async (message, destination) => {
       response = pageResponseBuilder(message, destination);
       break;
     default:
-      throw new TransformationError(
-        `Event type "${messageType}" is not supported`,
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .INSTRUMENTATION
-        },
-        DESTINATION
+      throw new InstrumentationError(
+        `Event type "${messageType}" is not supported`
       );
   }
   return response;
@@ -451,7 +387,7 @@ const process = event => {
 };
 
 const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, DESTINATION, process);
+  const respList = await simpleProcessRouterDest(inputs, process, process);
   return respList;
 };
 

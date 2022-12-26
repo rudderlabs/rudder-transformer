@@ -179,10 +179,8 @@
       }
     ],
     "statTags": {
-      "destType": "SENDINBLUE",
-      "meta": "badEvent",
-      "scope": "transformation",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     },
     "statusCode": 400
   }

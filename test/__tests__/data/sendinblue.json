@@ -39,7 +39,7 @@
       }
     },
     "output": {
-      "error": "At least one of email or phone is required"
+      "error": "At least one of `email` or `phone` is required"
     }
   },
   {
@@ -142,7 +142,7 @@
       }
     },
     "output": {
-      "error": "At least one of email or phone is required"
+      "error": "At least one of `email` or `phone` is required"
     }
   },
   {
@@ -550,7 +550,7 @@
       }
     },
     "output": {
-      "error": "At least one of email or phone is required"
+      "error": "At least one of `email` or `phone` is required"
     }
   },
   {
@@ -713,7 +713,7 @@
       }
     },
     "output": {
-      "error": "At least one of email or phone is required"
+      "error": "At least one of `email` or `phone` is required"
     }
   },
   {
@@ -988,7 +988,7 @@
       }
     },
     "output": {
-      "error": "At least one of email or contactId is required to update the contact using DOI"
+      "error": "At least one of `email` or `contactId` is required to update the contact using DOI"
     }
   },
   {

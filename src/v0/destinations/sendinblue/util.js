@@ -1,23 +1,18 @@
+const { EMAIL_SUFFIX, getContactDetailsEndpoint } = require("./config");
 const {
-  DESTINATION,
-  EMAIL_SUFFIX,
-  getContactDetailsEndpoint
-} = require("./config");
-const {
-  TransformationError,
   getHashFromArray,
   getIntegrationsObj,
   isNotEmpty,
   validateEmail,
   validatePhoneWithCountryCode
 } = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { httpGET } = require("../../../adapters/network");
 const {
   processAxiosResponse,
-  getDynamicMeta
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
-const { ApiError } = require("../../util/errors");
+const { NetworkError, InstrumentationError } = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 const prepareHeader = (apiKey, clientKey = null, trackerApi = false) => {
   if (trackerApi) {
@@ -34,41 +29,19 @@ const prepareHeader = (apiKey, clientKey = null, trackerApi = false) => {
 
 const checkIfEmailOrPhoneExists = (email, phone) => {
   if (!email && !phone) {
-    throw new TransformationError(
-      "At least one of email or phone is required",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      "At least one of `email` or `phone` is required"
     );
   }
 };
 
 const validateEmailAndPhone = (email, phone = null) => {
   if (email && !validateEmail(email)) {
-    throw new TransformationError(
-      "The provided email is invalid",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("The provided email is invalid");
   }
 
   if (phone && !validatePhoneWithCountryCode(phone)) {
-    throw new TransformationError(
-      "The provided phone number is invalid",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("The provided phone number is invalid");
   }
 };
 
@@ -99,18 +72,17 @@ const checkIfContactExists = async (identifier, apiKey) => {
   }
 
   if (processedContactDetailsResponse.status !== 404) {
-    throw new ApiError(
+    throw new NetworkError(
       `Failed to fetch contact details due to "${JSON.stringify(
         processedContactDetailsResponse.response
       )}"`,
       processedContactDetailsResponse.status,
       {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: getDynamicMeta(processedContactDetailsResponse.status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+          processedContactDetailsResponse.status
+        )
       },
-      processedContactDetailsResponse.response,
-      undefined,
-      DESTINATION
+      processedContactDetailsResponse.response
     );
   }
 

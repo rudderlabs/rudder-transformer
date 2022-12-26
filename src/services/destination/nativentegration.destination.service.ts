@@ -155,8 +155,8 @@ export default class NativeIntegrationDestinationService
     } catch (err) {
       const metaTO = TaggingService.getNativeDeliveryTags(
         destinationType,
-        destinationRequest.metadata.destinationId,
-        destinationRequest.metadata.workspaceId
+        destinationRequest.metadata?.destinationId || "Non-determininable",
+        destinationRequest.metadata?.workspaceId || "Non-determininable"
       );
       metaTO.metadata = destinationRequest.metadata;
       return PostTransformationServiceDestination.handleFailureEventsAtDeliveryDest(

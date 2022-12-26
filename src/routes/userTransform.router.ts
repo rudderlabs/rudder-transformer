@@ -3,15 +3,15 @@ import UserTransformController from "../controllers/userTransform.controller";
 
 const router = new Router();
 
-router.post("/customTransform", UserTransformController.userTransform);
-router.post("/transformation/test", UserTransformController.testUserTransform);
+router.post("/customTransform", UserTransformController.transform);
+router.post("/transformation/test", UserTransformController.testTransform);
 router.post(
   "/transformationLibrary/test",
-  UserTransformController.testUserTransformLibrary
+  UserTransformController.testTransformLibrary
 );
 router.post(
   "/transformation/sethandle",
-  UserTransformController.testUsertransformSethandle
+  UserTransformController.testTransformSethandle
 );
 
 export const userTransformRoutes = router.routes();

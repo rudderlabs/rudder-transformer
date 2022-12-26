@@ -94,7 +94,6 @@ export default class PostTransformationDestinationService {
   ): RouterResponse {
     const errObj = generateErrorObject(error, metaTO.errorDetails);
     const resp = {
-      batchedRequest: undefined,
       metadata: metaTO.metadatas,
       batched: false,
       statusCode: errObj.status,

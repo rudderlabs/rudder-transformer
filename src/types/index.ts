@@ -166,7 +166,7 @@ type ErrorDetailer = {
   destinationId?: string;
   workspaceId?: string;
   sourceId?: string;
-  context?: string;
+  context: string;
 };
 
 type MetaTransferObject = {

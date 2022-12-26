@@ -8,10 +8,10 @@ import { setupUserTransformHandler } from "../util/customTransformer";
 import ControllerUtility from "./util";
 
 export default class UserTransformController {
-  public static async userTransform(ctx: Context) {
+  public static async transform(ctx: Context) {
     let requestMetadata = MiscService.getRequestMetadata(ctx);
     const events = ctx.request.body as ProcessorRequest[];
-    const processedRespone: UserTransfromServiceResponse = await UserTransformService.userTransformRoutine(
+    const processedRespone: UserTransfromServiceResponse = await UserTransformService.transformRoutine(
       events
     );
     ctx.body = processedRespone.transformedEvents;
@@ -19,10 +19,10 @@ export default class UserTransformController {
     return ctx;
   }
 
-  public static async testUserTransform(ctx: Context) {
+  public static async testTransform(ctx: Context) {
     const { events, trRevCode, libraryVersionIDs = [] } = ctx.request
       .body as any;
-    const response = await UserTransformService.testUserTransform(
+    const response = await UserTransformService.testTransformRoutine(
       events,
       trRevCode,
       libraryVersionIDs
@@ -32,7 +32,7 @@ export default class UserTransformController {
     return ctx;
   }
 
-  public static async testUserTransformLibrary(ctx: Context) {
+  public static async testTransformLibrary(ctx: Context) {
     try {
       const { code } = ctx.request.body as any;
       if (!code) {
@@ -47,7 +47,7 @@ export default class UserTransformController {
     return ctx;
   }
 
-  public static async testUsertransformSethandle(ctx: Context) {
+  public static async testTransformSethandle(ctx: Context) {
     try {
       const { trRevCode, libraryVersionIDs = [] } = ctx.request.body as any;
       const { code, language, testName, testWithPublish = false } =

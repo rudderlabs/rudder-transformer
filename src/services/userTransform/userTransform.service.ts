@@ -13,7 +13,7 @@ import { getMetadata, isNonFuncObject } from "../../v0/util";
 import logger from "../../logger";
 
 export default class UserTransformService {
-  public static async userTransformRoutine(
+  public static async transformRoutine(
     events: ProcessorRequest[]
   ): Promise<UserTransfromServiceResponse> {
     let retryStatus = 200;
@@ -130,7 +130,7 @@ export default class UserTransformService {
     } as UserTransfromServiceResponse;
   }
 
-  public static async testUserTransform(events, trRevCode, libraryVersionIDs) {
+  public static async testTransformRoutine(events, trRevCode, libraryVersionIDs) {
     let response;
     try {
       if (!trRevCode || !trRevCode.code || !trRevCode.codeVersion) {

@@ -1,20 +1,18 @@
 import { Context } from "koa";
-import PreTransformationDestinationService from "../services/destination/preTransformation.destination.service";
-import ErrorReportingService from "../services/errorReporting.service";
 import MiscService from "../services/misc.service";
+import PreTransformationDestinationService from "../services/destination/preTransformation.destination.service";
+import PostTransformationDestinationService from "../services/destination/postTransformation.destination.service";
 import {
   ProcessorRequest,
   RouterRequestData,
   RouterRequest,
-  ProcessorResponse,
-  RouterResponse
+  ProcessorResponse
 } from "../types/index";
 import { ServiceSelector } from "../util/serviceSelector";
-import { generateErrorObject } from "../v0/util";
-import tags from "../v0/util/tags";
 import ControllerUtility from "./util";
 import stats from "../util/stats";
 import logger from "../logger";
+import TaggingService from "../services/tagging.service";
 
 export default class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
@@ -49,27 +47,17 @@ export default class DestinationController {
       );
     } catch (error) {
       resplist = events.map(ev => {
-        const errorObj = generateErrorObject(error, {
-          destType: destination.toUpperCase(),
-          module: tags.MODULES.DESTINATION,
-          implementation: tags.IMPLEMENTATIONS.NATIVE,
-          feature: tags.FEATURES.PROCESSOR,
-          destinationId: ev.metadata.destinationId,
-          workspaceId: ev.metadata.workspaceId,
-          context: "[Destination Controller] Failure During Processor Transform"
-        });
-        const resp = {
-          metadata: ev.metadata,
-          statusCode: 500,
-          error: error.toString(),
-          statTags: errorObj.statTags
-        } as ProcessorResponse;
-        ErrorReportingService.reportError(
-          error,
-          resp.statTags["context"],
-          resp
+        const metaTO = TaggingService.getNativeProcTransformTags(
+          destination,
+          ev.metadata.destinationId,
+          ev.metadata.workspaceId
         );
-        return resp;
+        metaTO.metadata = ev.metadata;
+        const errResp = PostTransformationDestinationService.handleFailedEventsAtProcessorDest(
+          error,
+          metaTO
+        );
+        return errResp;
       });
     }
     ctx.body = resplist;
@@ -118,26 +106,19 @@ export default class DestinationController {
       );
       ctx.body = { output: resplist };
     } catch (error) {
-      const errorObj = generateErrorObject(error, {
-        destType: destination.toUpperCase(),
-        module: tags.MODULES.DESTINATION,
-        implementation: tags.IMPLEMENTATIONS.NATIVE,
-        feature: tags.FEATURES.ROUTER,
-        destinationId: events[0].metadata.destinationId,
-        workspaceId: events[0].metadata.workspaceId,
-        context: "[Destination Controller] Failure During Router Transform"
-      });
-      const metadatas = events.map(ev => {
+      const metaTO = TaggingService.getNativeProcTransformTags(
+        destination,
+        events[0].metadata.destinationId,
+        events[0].metadata.workspaceId
+      );
+      metaTO.metadatas = events.map(ev => {
         return ev.metadata;
       });
-      const resp: RouterResponse = {
-        metadata: metadatas,
-        statusCode: 500,
-        error: error.toString(),
-        statTags: errorObj.statTags,
-        batched: false
-      };
-      ctx.body = { output: [resp] };
+      const errResp = PostTransformationDestinationService.handleFailureEventsAtRouterDest(
+        error,
+        metaTO
+      );
+      ctx.body = { output: [errResp] };
     }
     ControllerUtility.postProcess(ctx);
     logger.debug(
@@ -174,26 +155,19 @@ export default class DestinationController {
       );
       ctx.body = resplist;
     } catch (error) {
-      const errorObj = generateErrorObject(error, {
-        destType: destination.toUpperCase(),
-        module: tags.MODULES.DESTINATION,
-        implementation: tags.IMPLEMENTATIONS.NATIVE,
-        feature: tags.FEATURES.ROUTER,
-        destinationId: events[0].metadata.destinationId,
-        workspaceId: events[0].metadata.workspaceId,
-        context: "[Destination Controller] Failure During Batch Transform"
-      });
-      const metadatas = events.map(ev => {
+      const metaTO = TaggingService.getNativeBatchTransformTags(
+        destination,
+        events[0].metadata.destinationId,
+        events[0].metadata.workspaceId
+      );
+      metaTO.metadatas = events.map(ev => {
         return ev.metadata;
       });
-      const resp: RouterResponse = {
-        metadata: metadatas,
-        statusCode: 500,
-        error: error.toString(),
-        statTags: errorObj.statTags,
-        batched: false
-      };
-      ctx.body = resp;
+      const errResp = PostTransformationDestinationService.handleFailureEventsAtBatchDest(
+        error,
+        metaTO
+      );
+      ctx.body = [errResp];
     }
     ControllerUtility.postProcess(ctx);
     logger.debug(

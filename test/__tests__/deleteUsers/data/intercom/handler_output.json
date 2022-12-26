@@ -2,6 +2,18 @@
   [
     {
       "statusCode": 400,
+      "error": "[Intercom]::user deletion request failed - error: {\"type\":\"error.list\",\"request_id\":\"0022e6v5qc7m04jeu5pg\",\"errors\":[{\"code\":\"unauthorized\",\"message\":\"Access Token Invalid\"}]}"
+    }
+  ],
+  [
+    {
+      "statusCode": 200,
+      "status": "successful"
+    }
+  ],
+  [
+    {
+      "statusCode": 400,
       "error": "[Intercom]::Config for deletion not present"
     }
   ],

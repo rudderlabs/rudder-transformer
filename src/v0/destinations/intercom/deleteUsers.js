@@ -1,4 +1,4 @@
-const { httpSend } = require("../../../adapters/network");
+const { httpPOST } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
@@ -30,14 +30,17 @@ const userDeletionHandler = async (userAttributes, config) => {
           .setStatus(400)
           .build();
       }
+      const url = `https://api.intercom.io/user_delete_requests`;
+      const data = {
+        intercom_user_id: uId
+      };
       const requestOptions = {
-        method: "delete",
-        url: `https://api.intercom.io/contacts/${uId}`,
         headers: {
-          Authorization: `Bearer ${apiKey}`
+          Authorization: `Bearer ${apiKey}`,
+          Accept: "application/json"
         }
       };
-      const resp = await httpSend(requestOptions);
+      const resp = await httpPOST(url, data, requestOptions);
       const handledResponse = processAxiosResponse(resp);
       if (
         !isHttpStatusSuccess(handledResponse.status) &&

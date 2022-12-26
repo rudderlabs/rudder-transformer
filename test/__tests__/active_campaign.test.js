@@ -7,43 +7,43 @@ const path = require("path");
 const version = "v0";
 
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
-const inputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_input.json`)
+
+// Processor Test files
+const testDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/destinations/processor/${integration}.json`)
 );
-const outputDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_output.json`)
-);
-const inputData = JSON.parse(inputDataFile);
-const expectedData = JSON.parse(outputDataFile);
+const testData = JSON.parse(testDataFile);
 
 // Router Test Data
-const inputRouterDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_input.json`)
+// Router Test files
+const routerTestDataFile = fs.readFileSync(
+  path.resolve(
+    __dirname,
+    `./data/destinations/router/${integration}_router.json`
+  )
 );
-const outputRouterDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_router_output.json`)
-);
-const inputRouterData = JSON.parse(inputRouterDataFile);
-const expectedRouterData = JSON.parse(outputRouterDataFile);
+const routerTestData = JSON.parse(routerTestDataFile);
 
 describe(`${name} Tests`, () => {
-  describe("Processor Tests", () => {
-    inputData.forEach((input, index) => {
-      it(`${name} - payload: ${index}`, async () => {
+  describe("Processor", () => {
+    testData.forEach(async (dataPoint, index) => {
+      it(`${index}. ${integration} - ${dataPoint.description}`, async () => {
         try {
-          const output = await transformer.process(input);
-          expect(output).toEqual(expectedData[index]);
+          const output = await transformer.process(dataPoint.input);
+          expect(output).toEqual(dataPoint.output);
         } catch (error) {
-          expect(error.message).toEqual(expectedData[index].error);
+          expect(error.message).toEqual(dataPoint.output.error);
         }
       });
     });
   });
 
   describe("Router Tests", () => {
-    it("Payload", async () => {
-      const routerOutput = await transformer.processRouterDest(inputRouterData);
-      expect(routerOutput).toEqual(expectedRouterData);
+    routerTestData.forEach(dataPoint => {
+      it("Payload", async () => {
+        const output = await transformer.processRouterDest(dataPoint.input);
+        expect(output).toEqual(dataPoint.output);
+      });
     });
   });
 });

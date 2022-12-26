@@ -2,6 +2,18 @@
   [
     {
       "statusCode": 500,
+      "error": "user deletion request failed - error: {\"type\":\"error.list\",\"request_id\":\"0022e6v5qc7m04jeu5pg\",\"errors\":[{\"code\":\"unauthorized\",\"message\":\"Access Token Invalid\"}]}"
+    }
+  ],
+  [
+    {
+      "statusCode": 200,
+      "status": "successful"
+    }
+  ],
+  [
+    {
+      "statusCode": 500,
       "error": "Config for deletion not present"
     }
   ],
@@ -14,7 +26,7 @@
   [
     {
       "statusCode": 400,
-      "error": "User id for deletion not present"
+      "error": "No User id for deletion is present"
     }
   ]
 ]

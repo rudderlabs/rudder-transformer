@@ -1,9 +1,9 @@
-const { httpSend } = require("../../../adapters/network");
-const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const { httpPOST } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const {
   NetworkError,
   InstrumentationError,
@@ -25,30 +25,35 @@ const userDeletionHandler = async (userAttributes, config) => {
     userAttributes.map(async ua => {
       const uId = ua.userId;
       if (!uId) {
-        throw new InstrumentationError("User id for deletion not present");
+        throw new InstrumentationError(`No User id for deletion is present`);
       }
+      const url = `https://api.intercom.io/user_delete_requests`;
+      const data = {
+        intercom_user_id: uId
+      };
       const requestOptions = {
-        method: "delete",
-        url: `https://api.intercom.io/contacts/${uId}`,
         headers: {
-          Authorization: `Bearer ${apiKey}`
+          Authorization: `Bearer ${apiKey}`,
+          Accept: "application/json"
         }
       };
-      const resp = await httpSend(requestOptions);
-      const handledDelResponse = processAxiosResponse(resp);
+      const resp = await httpPOST(url, data, requestOptions);
+      const handledResponse = processAxiosResponse(resp);
       if (
-        !isHttpStatusSuccess(handledDelResponse.status) &&
-        handledDelResponse.status !== 404
+        !isHttpStatusSuccess(handledResponse.status) &&
+        handledResponse.status !== 404
       ) {
         throw new NetworkError(
-          "User deletion request failed",
-          handledDelResponse.status,
+          `user deletion request failed - error: ${JSON.stringify(
+            handledResponse.response
+          )}`,
+          handledResponse.status,
           {
             [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-              handledDelResponse.status
+              handledResponse.status
             )
           },
-          handledDelResponse
+          handledResponse
         );
       }
     })

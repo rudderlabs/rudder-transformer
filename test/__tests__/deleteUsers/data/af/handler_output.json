@@ -2,6 +2,18 @@
   [
     {
       "statusCode": 400,
+      "error": "[Appsflyer]::user deletion request failed - error: {\"error\":{\"code\":400,\"af_gdpr_code\":\"e411\",\"message\":\"AppID given in 'property_id' is incorrect or does not belong to your account\"}}"
+    }
+  ],
+  [
+    {
+      "statusCode": 200,
+      "status": "successful"
+    }
+  ],
+  [
+    {
+      "statusCode": 400,
       "error": "[Appsflyer]::API Token and one of Apple ID or Android App Id are required fields for user deletion"
     }
   ],

@@ -12,6 +12,7 @@ import {
 } from "../../types/index";
 import tags from "../../v0/util/tags";
 import PostTransformationServiceDestination from "./postTransformation.destination.service";
+import TaggingService from "../tagging.service";
 
 export default class NativeIntegrationDestinationService
   implements IntegrationDestinationService {
@@ -21,7 +22,6 @@ export default class NativeIntegrationDestinationService
     destHandler: any,
     requestMetadata: Object
   ): Promise<ProcessorResponse[]> {
-    // TODO: Change the promise type
     const respList: (
       | ProcessorResponse
       | ProcessorResponse[]
@@ -37,19 +37,12 @@ export default class NativeIntegrationDestinationService
             destHandler
           );
         } catch (error) {
-          const metaTO = {
-            errorDetails: {
-              destType: destinationType.toUpperCase(),
-              module: tags.MODULES.DESTINATION,
-              implementation: tags.IMPLEMENTATIONS.NATIVE,
-              feature: tags.FEATURES.PROCESSOR,
-              destinationId: event.metadata.destinationId,
-              workspaceId: event.metadata.workspaceId,
-              context:
-                "[Native Integration Service] Failure During Processor Transform"
-            } as ErrorDetailer,
-            metadata: event.metadata
-          } as MetaTransferObject;
+          const metaTO = TaggingService.getNativeProcTransformTags(
+            destinationType,
+            event.metadata.destinationId,
+            event.metadata.workspaceId
+          );
+          metaTO.metadata = event.metadata;
           return PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(
             error,
             metaTO
@@ -70,42 +63,36 @@ export default class NativeIntegrationDestinationService
       events,
       (ev: RouterRequestData) => ev.destination?.ID
     );
-    // TODO: Change the promise type
-    const response: RouterResponse[] = await Promise.all<any>(
-      Object.values(allDestEvents).map(
-        async (destInputArray: RouterRequestData[]) => {
-          try {
-            const routerRoutineResponse: RouterResponse[] = await destHandler.processRouterDest(
-              destInputArray
-            );
-            return PostTransformationServiceDestination.handleSuccessEventsAtRouterDest(
-              routerRoutineResponse,
-              destHandler
-            );
-          } catch (error) {
-            let metaTO: MetaTransferObject;
-            metaTO.errorDetails = {
-              destType: destinationType.toUpperCase(),
-              module: tags.MODULES.DESTINATION,
-              implementation: tags.IMPLEMENTATIONS.NATIVE,
-              feature: tags.FEATURES.ROUTER,
-              destinationId: destInputArray[0].metadata.destinationId,
-              workspaceId: destInputArray[0].metadata.workspaceId,
-              context:
-                "[Native Integration Service] Failure During Router Transform"
-            };
-            metaTO.metadatas = destInputArray.map(input => {
-              return input.metadata;
-            });
-            return PostTransformationServiceDestination.handleFailureEventsAtRouterDest(
-              error,
-              metaTO
-            );
-          }
+    const groupedEvents: RouterRequestData[][] = Object.values(allDestEvents);
+    const response: RouterResponse[][] = await Promise.all(
+      groupedEvents.map(async (destInputArray: RouterRequestData[]) => {
+        const metaTO = TaggingService.getNativeRouterTransformTags(
+          destinationType,
+          destInputArray[0].metadata.destinationId,
+          destInputArray[0].metadata.workspaceId
+        );
+        try {
+          const routerRoutineResponse: RouterResponse[] = await destHandler.processRouterDest(
+            destInputArray
+          );
+          return PostTransformationServiceDestination.handleSuccessEventsAtRouterDest(
+            routerRoutineResponse,
+            destHandler,
+            metaTO
+          );
+        } catch (error) {
+          metaTO.metadatas = destInputArray.map(input => {
+            return input.metadata;
+          });
+          const errorResp = PostTransformationServiceDestination.handleFailureEventsAtRouterDest(
+            error,
+            metaTO
+          );
+          return [errorResp];
         }
-      )
+      })
     );
-    return response;
+    return response.flat();
   }
 
   public batchRoutine(
@@ -129,20 +116,13 @@ export default class NativeIntegrationDestinationService
         );
         return destBatchedRequests;
       } catch (error) {
-        const metaTO = {
-          errorDetails: {
-            destType: destinationType.toUpperCase(),
-            module: tags.MODULES.DESTINATION,
-            implementation: tags.IMPLEMENTATIONS.NATIVE,
-            feature: tags.FEATURES.BATCH,
-            destinationId: destEvents[0].metadata.destinationId,
-            workspaceId: destEvents[0].metadata.workspaceId,
-            context:
-              "[Native Integration Service] Failure During Batch Transform"
-          } as ErrorDetailer
-        } as MetaTransferObject;
-        metaTO.metadatas = destEvents.map(input => {
-          return input.metadata;
+        const metaTO = TaggingService.getNativeBatchTransformTags(
+          destinationType,
+          destEvents[0].metadata.destinationId,
+          destEvents[0].metadata.workspaceId
+        );
+        metaTO.metadatas = events.map(event => {
+          return event.metadata;
         });
         const errResp = PostTransformationServiceDestination.handleFailureEventsAtBatchDest(
           error,
@@ -173,16 +153,11 @@ export default class NativeIntegrationDestinationService
         destinationType
       ) as DeliveryResponse;
     } catch (err) {
-      let metaTO: MetaTransferObject;
-      metaTO.errorDetails = {
-        destType: destinationType.toUpperCase(),
-        module: tags.MODULES.DESTINATION,
-        implementation: tags.IMPLEMENTATIONS.NATIVE,
-        feature: tags.FEATURES.DATA_DELIVERY,
-        destinationId: destinationRequest.metadata.destinationId,
-        workspaceId: destinationRequest.metadata.workspaceId,
-        context: "[Native Integration Service] Failure During Delivery"
-      };
+      const metaTO = TaggingService.getNativeDeliveryTags(
+        destinationType,
+        destinationRequest.metadata.destinationId,
+        destinationRequest.metadata.workspaceId
+      );
       metaTO.metadata = destinationRequest.metadata;
       return PostTransformationServiceDestination.handleFailureEventsAtDeliveryDest(
         err,

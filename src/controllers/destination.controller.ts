@@ -17,8 +17,6 @@ import stats from "../util/stats";
 import logger from "../logger";
 
 export default class DestinationController {
-  private static DEFAULT_VERSION = "v0";
-
   public static async destinationTransformAtProcessor(ctx: Context) {
     const startTime = new Date();
     logger.debug(
@@ -94,6 +92,10 @@ export default class DestinationController {
   }
 
   public static async destinationTransformAtRouter(ctx: Context) {
+    logger.debug(
+      "Native(Router-Transform):: Requst to transformer::",
+      JSON.stringify(ctx.request.body)
+    );
     let requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterRequest;
     const destination = routerRequest.destType;
@@ -102,7 +104,7 @@ export default class DestinationController {
       const integrationService = ServiceSelector.getDestinationService(events);
       const destinationHandler = ServiceSelector.getDestHandler(
         destination,
-        this.DEFAULT_VERSION
+        ControllerUtility.getIntegrationVersion()
       );
       events = PreTransformationDestinationService.preProcess(
         events,
@@ -135,9 +137,13 @@ export default class DestinationController {
         statTags: errorObj.statTags,
         batched: false
       };
-      ctx.body = { output: resp };
+      ctx.body = { output: [resp] };
     }
     ControllerUtility.postProcess(ctx);
+    logger.debug(
+      "Native(Router-Transform):: Response from transformer::",
+      JSON.stringify(ctx.body)
+    );
     return ctx;
   }
 
@@ -153,7 +159,7 @@ export default class DestinationController {
     const integrationService = ServiceSelector.getDestinationService(events);
     const destinationHandler = ServiceSelector.getDestHandler(
       destination,
-      this.DEFAULT_VERSION
+      ControllerUtility.getIntegrationVersion()
     );
     events = PreTransformationDestinationService.preProcess(
       events,

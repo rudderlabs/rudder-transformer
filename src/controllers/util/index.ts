@@ -6,4 +6,7 @@ export default class ControllerUtility {
     ctx.set("apiVersion", API_VERSION);
     ctx.status = status;
   }
+  public static getIntegrationVersion() {
+    return "v0";
+  }
 }

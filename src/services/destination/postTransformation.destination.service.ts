@@ -1,4 +1,6 @@
 import cloneDeep from "lodash/cloneDeep";
+import isObject from "lodash/isObject";
+import isEmpty from "lodash/isEmpty";
 import {
   ProcessorRequest,
   ProcessorResponse,
@@ -60,7 +62,8 @@ export default class PostTransformationDestinationService {
 
   public static handleSuccessEventsAtRouterDest(
     transformedPayloads: RouterResponse[],
-    destHandler: any
+    destHandler: any,
+    metaTO: MetaTransferObject
   ): RouterResponse[] {
     let resultantPayloads: RouterResponse[] = cloneDeep(transformedPayloads);
     if (destHandler.processMetadataForRouter) {
@@ -71,6 +74,17 @@ export default class PostTransformationDestinationService {
         return resultantPayload;
       });
     }
+    resultantPayloads
+      .filter(
+        resp =>
+          "error" in resp && isObject(resp.statTags) && !isEmpty(resp.statTags)
+      )
+      .forEach(resp => {
+        resp.statTags = {
+          ...resp.statTags,
+          ...metaTO.errorDetails
+        };
+      });
     return resultantPayloads;
   }
 

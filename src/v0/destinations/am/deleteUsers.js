@@ -1,11 +1,13 @@
+const _ = require("lodash");
 const btoa = require("btoa");
-const { httpSend } = require("../../../adapters/network");
+const { httpPOST } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
 const ErrorBuilder = require("../../util/error");
 const { executeCommonValidations } = require("../../util/regulation-api");
+const { DELETE_MAX_BATCH_SIZE } = require("./config");
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
@@ -21,27 +23,37 @@ const userDeletionHandler = async (userAttributes, config) => {
       .setStatus(400)
       .build();
   }
+  const identity = [];
+  userAttributes.forEach(userAttribute => {
+    // Dropping the user if userId is not present
+    if (userAttribute.userId) {
+      identity.push(userAttribute.userId);
+    }
+  });
+  if (identity.length === 0) {
+    throw new ErrorBuilder()
+      .setMessage(`[Amplitude]:: No User id for deletion not present`)
+      .setStatus(400)
+      .build();
+  }
 
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Basic ${btoa(`${apiKey}:${apiSecret}`)}`
+  };
+  const batchEvents = _.chunk(identity, DELETE_MAX_BATCH_SIZE);
   await Promise.all(
-    userAttributes.map(async ua => {
-      const uId = ua.userId;
-      if (!uId) {
-        throw new ErrorBuilder()
-          .setMessage("[Amplitude]::User id for deletion not present")
-          .setStatus(400)
-          .build();
-      }
-      const data = { user_ids: [uId], requester: "RudderStack" };
-      const requestOptions = {
-        method: "post",
-        url: "https://amplitude.com/api/2/deletions/users",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Basic ${btoa(`${apiKey}:${apiSecret}`)}`
-        },
-        data
+    batchEvents.map(async batch => {
+      const data = {
+        user_ids: batch,
+        requester: "RudderStack",
+        ignore_invalid_id: "true"
       };
-      const resp = await httpSend(requestOptions);
+      const url = "https://amplitude.com/api/2/deletions/users";
+      const requestOptions = {
+        headers
+      };
+      const resp = await httpPOST(url, data, requestOptions);
       const handledResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledResponse.status)) {
         throw new ErrorBuilder()

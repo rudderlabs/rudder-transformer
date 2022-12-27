@@ -2,6 +2,18 @@
   [
     {
       "statusCode": 400,
+      "error": "[Amplitude]::user deletion request failed - error: {\"code\":403,\"message\":\"HTTP 403: Forbidden (Invalid API Key)\",\"status\":\"Forbidden\"}"
+    }
+  ],
+  [
+    {
+      "statusCode": 200,
+      "status": "successful"
+    }
+  ],
+  [
+    {
+      "statusCode": 400,
       "error": "[Amplitude]::Config for deletion not present"
     }
   ],
@@ -14,7 +26,7 @@
   [
     {
       "statusCode": 400,
-      "error": "[Amplitude]::User id for deletion not present"
+      "error": "[Amplitude]:: No User id for deletion not present"
     }
   ]
 ]

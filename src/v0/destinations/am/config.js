@@ -118,6 +118,7 @@ const events = Object.keys(Event);
 events.forEach(event => {
   nameToEventMap[Event[event].name] = Event[event];
 });
+const DELETE_MAX_BATCH_SIZE = 100;
 const DESTINATION = "amplitude";
 
 module.exports = {
@@ -128,5 +129,6 @@ module.exports = {
   ConfigCategory,
   mappingConfig,
   nameToEventMap,
+  DELETE_MAX_BATCH_SIZE,
   batchEventsWithUserIdLengthLowerThanFive
 };

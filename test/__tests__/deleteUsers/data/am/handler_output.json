@@ -1,6 +1,18 @@
 [
   [
     {
+      "statusCode": 400,
+      "error": "user deletion request failed - error: {\"code\":403,\"message\":\"HTTP 403: Forbidden (Invalid API Key)\",\"status\":\"Forbidden\"}"
+    }
+  ],
+  [
+    {
+      "statusCode": 200,
+      "status": "successful"
+    }
+  ],
+  [
+    {
       "statusCode": 500,
       "error": "Config for deletion not present"
     }
@@ -14,7 +26,7 @@
   [
     {
       "statusCode": 400,
-      "error": "User id for deletion not present"
+      "error": "No User id for deletion is present"
     }
   ]
 ]

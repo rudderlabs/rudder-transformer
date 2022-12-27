@@ -11,8 +11,8 @@ const { RetryRequestError } = require("../utils");
 const FAAS_BASE_IMG =
   process.env.FAAS_BASE_IMG || "rudderlabs/openfaas-flask:main";
 const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || "100";
-const FAAS_REQUESTS_CPU = process.env.FAAS_REQUESTS_CPU || "0.01";
-const FAAS_REQUESTS_MEMORY = process.env.FAAS_REQUESTS_MEMORY || "50M";
+const FAAS_REQUESTS_CPU = process.env.FAAS_REQUESTS_CPU || "0.1";
+const FAAS_REQUESTS_MEMORY = process.env.FAAS_REQUESTS_MEMORY || "128Mi";
 const FAAS_LIMITS_CPU = process.env.FAAS_LIMITS_CPU || FAAS_REQUESTS_CPU;
 const FAAS_LIMITS_MEMORY =
   process.env.FAAS_LIMITS_MEMORY || FAAS_REQUESTS_MEMORY;

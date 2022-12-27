@@ -1,4 +1,5 @@
 import { client as errNotificationClient } from "../util/errorNotifier";
+import logger from "../logger";
 // TODO: To be refactored and redisgned
 
 const getDestFileUploadHandler = (version, dest) => {
@@ -22,6 +23,10 @@ const getCommonMetadata = ctx => {
 };
 
 export const fileUpload = async ctx => {
+  logger.debug(
+    "Native(Bulk-Upload): Request to transformer:: /fileUpload route",
+    ctx.request.body
+  );
   const getReqMetadata = () => {
     try {
       const reqBody = ctx.request.body;
@@ -59,10 +64,18 @@ export const fileUpload = async ctx => {
     });
   }
   ctx.body = response;
+  logger.debug(
+    "Native(Bulk-Upload): Response from transformer:: /fileUpload route",
+    ctx.body
+  );
   return ctx.body;
 };
 
 export const pollStatus = async ctx => {
+  logger.debug(
+    "Native(Bulk-Upload): Request to transformer:: /pollStatus route",
+    ctx.request.body
+  );
   const getReqMetadata = () => {
     try {
       const reqBody = ctx.request.body;
@@ -88,7 +101,7 @@ export const pollStatus = async ctx => {
     response = await destFileUploadHandler.processPolling(ctx.request.body);
   } catch (error) {
     response = {
-      statusCode:  error.response?.status || 400,
+      statusCode: error.response?.status || 400,
       error: error.message || "Error occurred while processing payload."
     };
     errNotificationClient.notify(error, "Poll Status", {
@@ -98,10 +111,18 @@ export const pollStatus = async ctx => {
     });
   }
   ctx.body = response;
+  logger.debug(
+    "Native(Bulk-Upload): Request from transformer:: /pollStatus route",
+    ctx.body
+  );
   return ctx.body;
 };
 
 export const getWarnJobStatus = async ctx => {
+  logger.debug(
+    "Native(Bulk-Upload): Request to transformer:: /getWarningJobs route",
+    ctx.request.body
+  );
   const getReqMetadata = () => {
     try {
       const reqBody = ctx.request.body;
@@ -141,10 +162,18 @@ export const getWarnJobStatus = async ctx => {
     });
   }
   ctx.body = response;
+  logger.debug(
+    "Native(Bulk-Upload): Request from transformer:: /getWarningJobs route",
+    ctx.body
+  );
   return ctx.body;
 };
 
 export const getFailedJobStatus = async ctx => {
+  logger.debug(
+    "Native(Bulk-Upload): Request to transformer:: /getFailedJobs route",
+    ctx.request.body
+  );
   const getReqMetadata = () => {
     try {
       const reqBody = ctx.request.body;
@@ -184,5 +213,9 @@ export const getFailedJobStatus = async ctx => {
     });
   }
   ctx.body = response;
+  logger.debug(
+    "Native(Bulk-Upload): Request from transformer:: /getFailedJobs route",
+    ctx.body
+  );
   return ctx.body;
 };

@@ -25,7 +25,7 @@ const getCommonMetadata = ctx => {
 export const fileUpload = async ctx => {
   logger.debug(
     "Native(Bulk-Upload): Request to transformer:: /fileUpload route",
-    ctx.request.body
+    JSON.stringify(ctx.request.body)
   );
   const getReqMetadata = () => {
     try {
@@ -66,7 +66,7 @@ export const fileUpload = async ctx => {
   ctx.body = response;
   logger.debug(
     "Native(Bulk-Upload): Response from transformer:: /fileUpload route",
-    ctx.body
+    JSON.stringify(ctx.body)
   );
   return ctx.body;
 };
@@ -74,7 +74,7 @@ export const fileUpload = async ctx => {
 export const pollStatus = async ctx => {
   logger.debug(
     "Native(Bulk-Upload): Request to transformer:: /pollStatus route",
-    ctx.request.body
+    JSON.stringify(ctx.request.body)
   );
   const getReqMetadata = () => {
     try {
@@ -113,7 +113,7 @@ export const pollStatus = async ctx => {
   ctx.body = response;
   logger.debug(
     "Native(Bulk-Upload): Request from transformer:: /pollStatus route",
-    ctx.body
+    JSON.stringify(ctx.body)
   );
   return ctx.body;
 };
@@ -121,7 +121,7 @@ export const pollStatus = async ctx => {
 export const getWarnJobStatus = async ctx => {
   logger.debug(
     "Native(Bulk-Upload): Request to transformer:: /getWarningJobs route",
-    ctx.request.body
+    JSON.stringify(ctx.request.body)
   );
   const getReqMetadata = () => {
     try {
@@ -164,7 +164,7 @@ export const getWarnJobStatus = async ctx => {
   ctx.body = response;
   logger.debug(
     "Native(Bulk-Upload): Request from transformer:: /getWarningJobs route",
-    ctx.body
+    JSON.stringify(ctx.body)
   );
   return ctx.body;
 };
@@ -172,7 +172,7 @@ export const getWarnJobStatus = async ctx => {
 export const getFailedJobStatus = async ctx => {
   logger.debug(
     "Native(Bulk-Upload): Request to transformer:: /getFailedJobs route",
-    ctx.request.body
+    JSON.stringify(ctx.request.body)
   );
   const getReqMetadata = () => {
     try {
@@ -215,7 +215,7 @@ export const getFailedJobStatus = async ctx => {
   ctx.body = response;
   logger.debug(
     "Native(Bulk-Upload): Request from transformer:: /getFailedJobs route",
-    ctx.body
+    JSON.stringify(ctx.body)
   );
   return ctx.body;
 };

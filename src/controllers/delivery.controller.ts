@@ -23,7 +23,6 @@ export default class DeliveryController {
       destination
     }: { version: string; destination: string } = ctx.params;
     try {
-      throw new Error("Random error");
       const integrationService = ServiceSelector.getNativeIntegrationServiceDest();
       const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
         destination

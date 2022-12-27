@@ -736,12 +736,8 @@
         "context": {
           "externalId": [
             {
-              "type": "sendinblueIncludeListId",
-              "id": 1
-            },
-            {
-              "type": "sendinblueIncludeListId",
-              "id": 2
+              "type": "sendinblueIncludeListIds",
+              "id": [1, 2]
             }
           ]
         },
@@ -822,16 +818,12 @@
         "context": {
           "externalId": [
             {
-              "type": "sendinblueIncludeListId",
-              "id": 1
+              "type": "sendinblueIncludeListIds",
+              "id": [1, 2]
             },
             {
-              "type": "sendinblueIncludeListId",
-              "id": 2
-            },
-            {
-              "type": "sendinblueUnlinkListId",
-              "id": 5
+              "type": "sendinblueUnlinkListIds",
+              "id": [5]
             },
             {
               "type": "sendinblueTemplateId",
@@ -919,7 +911,7 @@
       }
     },
     "output": {
-      "error": "sendinblueIncludeListId is required to create a contact using DOI"
+      "error": "sendinblueIncludeListIds is required to create a contact using DOI"
     }
   },
   {
@@ -1069,12 +1061,12 @@
         "context": {
           "externalId": [
             {
-              "type": "sendinblueIncludeListId",
-              "id": 1
+              "type": "sendinblueIncludeListIds",
+              "id": [1]
             },
             {
-              "type": "sendinblueUnlinkListId",
-              "id": 2
+              "type": "sendinblueUnlinkListIds",
+              "id": [2]
             }
           ]
         },
@@ -1144,12 +1136,8 @@
         "context": {
           "externalId": [
             {
-              "type": "sendinblueUnlinkListId",
-              "id": 2
-            },
-            {
-              "type": "sendinblueUnlinkListId",
-              "id": 5
+              "type": "sendinblueUnlinkListIds",
+              "id": [2, 5]
             }
           ]
         }

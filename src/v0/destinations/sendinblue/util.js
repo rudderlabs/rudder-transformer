@@ -4,7 +4,8 @@ const {
   getIntegrationsObj,
   isNotEmpty,
   validateEmail,
-  validatePhoneWithCountryCode
+  validatePhoneWithCountryCode,
+  getDestinationExternalID
 } = require("../../util");
 const { httpGET } = require("../../../adapters/network");
 const {
@@ -161,6 +162,15 @@ const prepareTrackEventData = (message, payload) => {
   return {};
 };
 
+const getListIds = (message, key) => {
+  const listIds = [];
+  const externalId = getDestinationExternalID(message, key);
+  if (externalId && Array.isArray(externalId)) {
+    listIds.push(...externalId);
+  }
+  return listIds;
+};
+
 module.exports = {
   checkIfEmailOrPhoneExists,
   prepareEmailFromPhone,
@@ -169,5 +179,6 @@ module.exports = {
   prepareHeader,
   removeEmptyKey,
   transformUserTraits,
-  prepareTrackEventData
+  prepareTrackEventData,
+  getListIds
 };

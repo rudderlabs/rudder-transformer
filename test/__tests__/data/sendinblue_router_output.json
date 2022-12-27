@@ -172,7 +172,7 @@
   },
   {
     "batched": false,
-    "error": "sendinblueIncludeListId is required to create a contact using DOI",
+    "error": "sendinblueIncludeListIds is required to create a contact using DOI",
     "metadata": [
       {
         "jobId": 4

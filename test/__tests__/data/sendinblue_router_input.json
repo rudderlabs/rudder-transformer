@@ -118,12 +118,8 @@
       "context": {
         "externalId": [
           {
-            "type": "sendinblueIncludeListId",
-            "id": 1
-          },
-          {
-            "type": "sendinblueIncludeListId",
-            "id": 2
+            "type": "sendinblueIncludeListIds",
+            "id": [1, 2]
           }
         ]
       },

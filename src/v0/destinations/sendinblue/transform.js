@@ -8,7 +8,6 @@ const {
   defaultPostRequestConfig,
   getFieldValueFromMessage,
   getDestinationExternalID,
-  getDestinationExternalIDs,
   defaultPutRequestConfig,
   getIntegrationsObj,
   ErrorMessage
@@ -26,7 +25,8 @@ const {
   prepareHeader,
   removeEmptyKey,
   transformUserTraits,
-  prepareTrackEventData
+  prepareTrackEventData,
+  getListIds
 } = require("./util");
 const {
   TransformationError,
@@ -103,7 +103,8 @@ const createOrUpdateContactResponseBuilder = (message, destination) => {
   // Can update a contact in the same request
   payload.updateEnabled = true;
 
-  const listIds = getDestinationExternalIDs(message, "sendinblueIncludeListId");
+  const listIds = getListIds(message, "sendinblueIncludeListIds");
+
   if (listIds.length > 0) {
     payload.listIds = listIds;
   }
@@ -145,10 +146,10 @@ const createDOIContactResponseBuilder = (message, destination) => {
     throw new InstrumentationError("templateId must be an integer");
   }
 
-  const listIds = getDestinationExternalIDs(message, "sendinblueIncludeListId");
+  const listIds = getListIds(message, "sendinblueIncludeListIds");
   if (listIds.length === 0) {
     throw new InstrumentationError(
-      "sendinblueIncludeListId is required to create a contact using DOI"
+      "sendinblueIncludeListIds is required to create a contact using DOI"
     );
   }
 
@@ -178,11 +179,8 @@ const updateDOIContactResponseBuilder = (message, destination, identifier) => {
 
   validateEmailAndPhone(payload.attributes?.EMAIL);
 
-  const listIds = getDestinationExternalIDs(message, "sendinblueIncludeListId");
-  const unlinkListIds = getDestinationExternalIDs(
-    message,
-    "sendinblueUnlinkListId"
-  );
+  const listIds = getListIds(message, "sendinblueIncludeListIds");
+  const unlinkListIds = getListIds(message, "sendinblueUnlinkListIds");
 
   if (listIds.length > 0) {
     payload.listIds = listIds;
@@ -239,10 +237,7 @@ const createOrUpdateDOIContactResponseBuilder = async (
 const identifyResponseBuilder = async (message, destination) => {
   const { doi } = destination.Config;
   if (!doi) {
-    const unlinkListIds = getDestinationExternalIDs(
-      message,
-      "sendinblueUnlinkListId"
-    );
+    const unlinkListIds = getListIds(message, "sendinblueUnlinkListIds");
     if (unlinkListIds.length > 0) {
       return unlinkContact(message, destination, unlinkListIds);
     }

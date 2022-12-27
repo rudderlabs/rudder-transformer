@@ -15,7 +15,7 @@ const {
   getName,
   getWhiteListedTraits,
   buildDefaultTraitTemplate
-} = require("./util");
+} = require("../slack/util");
 
 const buildResponse = (text, type, destination) => {
   const endpoint = destination.Config.webhookUrl;
@@ -42,9 +42,8 @@ const processIdentify = (message, destination) => {
   ) {
     identifyTemplateConfig = destination.Config.identifyTemplate.trim();
   }
-  const whiteTraitsList = [];
 
-  getWhiteListedTraits(destination, whiteTraitsList);
+  const whiteTraitsList = getWhiteListedTraits(destination);
 
   const uName = getName(message);
 
@@ -69,7 +68,6 @@ const processIdentify = (message, destination) => {
 };
 
 const processTrack = (message, destination) => {
-  const traitsList = [];
   const eventTemplateConfig = destination.Config.eventTemplateSettings;
 
   if (!message.event) {
@@ -78,7 +76,7 @@ const processTrack = (message, destination) => {
   const eventName = message.event;
   const templateListForThisEvent = new Set();
 
-  getWhiteListedTraits(destination, traitsList);
+  const traitsList = getWhiteListedTraits(destination);
 
   /** Add global context to regex always
   build the templatelist for the event, pick the first in case of multiple

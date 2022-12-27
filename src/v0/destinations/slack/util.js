@@ -44,7 +44,8 @@ const getName = message => {
  * @param {*} destination
  * @param {*} traitsList map the whitelisted traits to this list
  */
-const getWhiteListedTraits = (destination, traitsList) => {
+const getWhiteListedTraits = destination => {
+  const traitsList = [];
   if (destination?.Config?.whitelistedTraitsSettings) {
     destination.Config.whitelistedTraitsSettings.forEach(whiteListTrait => {
       if (whiteListTrait.trait) {
@@ -55,6 +56,7 @@ const getWhiteListedTraits = (destination, traitsList) => {
       }
     });
   }
+  return traitsList;
 };
 
 /**

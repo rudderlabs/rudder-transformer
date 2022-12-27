@@ -20,7 +20,7 @@ const tags = require("../../util/tags");
  * 2. https://developers.facebook.com/docs/marketing-api/error-reference/
  *   - The doc seems to be more related to Marketing API
  */
-const RETRYABLE_ERROR_CODES = [1, 2, 3, 341, 368, 5000, 190];
+const RETRYABLE_ERROR_CODES = [1, 2, 3, 341, 368, 5000];
 
 /**
  * These error codes were chosen from the below reference:

@@ -6,7 +6,11 @@
   },
   {
     "destKey": "ma_title",
-    "sourceKeys": ["properties.title", "context.page.title"]
+    "sourceKeys": [
+      "properties.ma_title",
+      "properties.title",
+      "context.page.title"
+    ]
   },
   {
     "destKey": "page",
@@ -15,11 +19,15 @@
   },
   {
     "destKey": "ma_path",
-    "sourceKeys": ["properties.path", "context.page.path"]
+    "sourceKeys": ["properties.ma_path", "properties.path", "context.page.path"]
   },
   {
     "destKey": "ma_referrer",
-    "sourceKeys": ["properties.referrer", "context.page.referrer"]
+    "sourceKeys": [
+      "properties.ma_referrer",
+      "properties.referrer",
+      "context.page.referrer"
+    ]
   },
   {
     "destKey": "sib_name",

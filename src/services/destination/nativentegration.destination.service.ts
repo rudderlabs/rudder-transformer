@@ -2,15 +2,12 @@ import groupBy from "lodash/groupBy";
 import IntegrationDestinationService from "../../interfaces/IntegrationDestinationService";
 import {
   DeliveryResponse,
-  ErrorDetailer,
-  MetaTransferObject,
   ProcessorRequest,
   ProcessorResponse,
   RouterRequestData,
   RouterResponse,
   TransformedEvent
 } from "../../types/index";
-import tags from "../../v0/util/tags";
 import PostTransformationServiceDestination from "./postTransformation.destination.service";
 import TaggingService from "../tagging.service";
 

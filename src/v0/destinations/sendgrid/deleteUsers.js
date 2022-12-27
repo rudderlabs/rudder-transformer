@@ -1,16 +1,40 @@
-const _ = require("lodash");
 const { httpDELETE } = require("../../../adapters/network");
 const ErrorBuilder = require("../../util/error");
-const {
-  MAX_BATCH_SIZE,
-  DESTINATION,
-  DELETE_CONTACTS_ENDPOINT
-} = require("./config");
+const { DESTINATION, DELETE_CONTACTS_ENDPOINT, urlLimit } = require("./config");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
 const { TRANSFORMER_METRIC } = require("../../util/constant");
+
+/**
+ * This drops the user if userId is not available and converts the ids's into list of strings
+ * where each string is a combination of comma separated userIds and length of each string is not more than maxSize
+ * @param {*} userAttributes array of userIds
+ * @param {*} maxSize maxSize of url
+ * @returns list of Strings
+ */
+const chunksFromUrlLength = (userAttributes, maxSize) => {
+  const identity = [];
+  let left = maxSize;
+  let temp = "";
+  userAttributes.forEach(ua => {
+    // Dropping the user if userId is not present
+    if (ua.userId) {
+      left -= String(ua.userId).length;
+      if (left < 0) {
+        identity.push(temp.slice(0, -1));
+        left = maxSize;
+        temp = "";
+      }
+      temp += `${String(ua.userId)},`;
+    }
+  });
+  if (temp.length > 0) {
+    identity.push(temp.slice(0, -1));
+  }
+  return identity;
+};
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -52,27 +76,21 @@ const userDeletionHandler = async (userAttributes, config) => {
       Authorization: `Bearer ${apiKey}`
     }
   };
-  const identity = [];
-  userAttributes.forEach(userAttribute => {
-    // Dropping the user if userId is not present
-    if (userAttribute.userId) {
-      identity.push(userAttribute.userId);
-    }
-  });
-
-  // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  // ref : https://developer.clevertap.com/docs/disassociate-api
-  const batchEvents = _.chunk(identity, MAX_BATCH_SIZE);
+  // batchEvents = [["e1,e2,e3,..urlLimit"],["e1,e2,e3,..urlLimit"]..]
+  // ref : https://docs.sendgrid.com/api-reference/contacts/delete-contacts
+  const batchEvents = chunksFromUrlLength(userAttributes, urlLimit);
   await Promise.all(
     batchEvents.map(async batchEvent => {
-      endpoint = `${endpoint}?ids=${batchEvent}`;
+      endpoint = `${endpoint.replace("IDS", batchEvent)}`;
       const deletionResponse = await httpDELETE(endpoint, requestOptions);
       const processedDeletionResponse = processAxiosResponse(deletionResponse);
 
       if (!isHttpStatusSuccess(processedDeletionResponse.status)) {
         throw new ErrorBuilder()
           .setMessage(
-            `[SendGrid]::Deletion Request is not successful - error: ${deletionResponse.response}`
+            `[SendGrid]::Deletion Request is not successful - error: ${JSON.stringify(
+              processedDeletionResponse.response
+            )}`
           )
           .setStatus(400)
           .setStatTags({

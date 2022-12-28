@@ -1,20 +1,18 @@
 import IntegrationSourceService from "../../interfaces/IntegrationSourceService";
-import {
-  ErrorDetailer,
-  RudderMessage,
-  SourceTransformResponse
-} from "../../types/index";
-import { TRANSFORMER_METRIC } from "../../v0/util/constant";
+import { RudderMessage, SourceTransformResponse } from "../../types/index";
+import TaggingService from "../tagging.service";
 import PostTransformationServiceSource from "./postTransformation.source";
+import { ServiceSelector } from "../../util/serviceSelector";
 
 export default class NativeIntegrationSourceService
   implements IntegrationSourceService {
   public async sourceTransformRoutine(
     sourceEvents: Object[],
     sourceType: string,
-    sourceHandler: any,
-    requestMetadata: Object
+    version: string,
+    _requestMetadata: Object
   ): Promise<SourceTransformResponse[]> {
+    const sourceHandler = ServiceSelector.getSourceHandler(sourceType, version);
     const respList: SourceTransformResponse[] = await Promise.all<any>(
       sourceEvents.map(async sourceEvent => {
         try {
@@ -24,22 +22,14 @@ export default class NativeIntegrationSourceService
             | SourceTransformResponse = await sourceHandler.process(
             sourceEvent
           );
-
           return PostTransformationServiceSource.handleSuccessEventsSource(
             respEvents
           );
         } catch (error) {
-          const errorDTO = {
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            integrationType: sourceType,
-            serverRequestMetadata: requestMetadata,
-            inputPayload: sourceEvent,
-            errorContext:
-              "[Native Integration Service] Failure During Source Transform"
-          } as ErrorDetailer;
+          const metaTO = TaggingService.getNativeSourceTransformTags();
           return PostTransformationServiceSource.handleFailureEventsSource(
             error,
-            errorDTO
+            metaTO
           );
         }
       })

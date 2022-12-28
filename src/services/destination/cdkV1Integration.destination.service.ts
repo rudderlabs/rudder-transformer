@@ -2,7 +2,6 @@ import { ConfigFactory, Executor } from "rudder-transformer-cdk";
 import IntegrationDestinationService from "../../interfaces/IntegrationDestinationService";
 import {
   DeliveryResponse,
-  MetaTransferObject,
   ProcessorRequest,
   ProcessorResponse,
   RouterRequestData,
@@ -10,7 +9,7 @@ import {
   TransformedEvent
 } from "../../types/index";
 import { TransformationError } from "../../v0/util/errorTypes";
-import tags from "../../v0/util/tags";
+import TaggingService from "../tagging.service";
 import PostTransformationServiceDestination from "./postTransformation.destination.service";
 
 export default class CDKV1DestinationService
@@ -18,49 +17,45 @@ export default class CDKV1DestinationService
   public async processorRoutine(
     events: ProcessorRequest[],
     destinationType: string,
-    destHandler: any,
-    requestMetadata: Object
+    _version: string,
+    _requestMetadata: Object
   ): Promise<ProcessorResponse[]> {
     const tfConfig = await ConfigFactory.getConfig(destinationType);
-    const respList: ProcessorResponse[] = await Promise.all<any>(
+    const respList: ProcessorResponse[][] = await Promise.all(
       events.map(async event => {
         try {
           let transformedPayloads: any = await Executor.execute(
             event as any,
             tfConfig
           );
+          // We are not passing destinationHandler to post processor as we don't have post processing in CDK flows
           return PostTransformationServiceDestination.handleSuccessEventsAtProcessorDest(
             event,
             transformedPayloads,
-            destHandler
+            undefined
           );
         } catch (error) {
-          let metaTO: MetaTransferObject;
-          metaTO.errorDetails = {
-            destType: destinationType.toUpperCase(),
-            module: tags.MODULES.DESTINATION,
-            implementation: tags.IMPLEMENTATIONS.CDK_V1,
-            feature: tags.FEATURES.PROCESSOR,
-            destinationId: event.metadata.destinationId,
-            workspaceId: event.metadata.workspaceId,
-            context:
-              "[CDKV1 Integration Service] Failure During Processor Transform"
-          };
+          const metaTO = TaggingService.getCDKV1ProcTransformTags(
+            destinationType,
+            event.metadata.destinationId,
+            event.metadata.workspaceId
+          );
           metaTO.metadata = event.metadata;
-          return PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(
+          const erroredResp = PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(
             error,
             metaTO
           );
+          return [erroredResp];
         }
       })
     );
-    return respList;
+    return respList.flat();
   }
 
   public routerRoutine(
     _events: RouterRequestData[],
     _destinationType: string,
-    _destHandler: string,
+    _version: string,
     _requestMetadata: Object
   ): Promise<RouterResponse[]> {
     throw new TransformationError(
@@ -71,9 +66,9 @@ export default class CDKV1DestinationService
   public batchRoutine(
     _events: RouterRequestData[],
     _destinationType: string,
-    _destHandler: any,
+    _version: any,
     _requestMetadata: Object
-  ) {
+  ): RouterResponse[] {
     throw new TransformationError(
       "CDKV1 Does not Implement Batch Transform Routine"
     );
@@ -82,7 +77,6 @@ export default class CDKV1DestinationService
   public deliveryRoutine(
     _event: TransformedEvent,
     _destinationType: string,
-    _networkHandler: any,
     _requestMetadata: Object
   ): Promise<DeliveryResponse> {
     throw new TransformationError("CDV1 Does not Implement Delivery Routine");

@@ -66,7 +66,7 @@ export default class PostTransformationDestinationService {
     metaTO: MetaTransferObject
   ): RouterResponse[] {
     let resultantPayloads: RouterResponse[] = cloneDeep(transformedPayloads);
-    if (destHandler.processMetadataForRouter) {
+    if (destHandler?.processMetadataForRouter) {
       return resultantPayloads.map(resultantPayload => {
         resultantPayload.metadata = destHandler.processMetadataForRouter(
           resultantPayload

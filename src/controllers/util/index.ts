@@ -12,7 +12,4 @@ export default class ControllerUtility {
     ctx.set("apiVersion", API_VERSION);
     ctx.status = isHttpStatusSuccess(status) ? 200 : status;
   }
-  public static getIntegrationVersion() {
-    return "v0";
-  }
 }

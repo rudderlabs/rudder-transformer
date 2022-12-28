@@ -1,5 +1,6 @@
 import {
   ErrorDetailer,
+  MetaTransferObject,
   RudderMessage,
   SourceTransformResponse
 } from "../../types/index";
@@ -9,37 +10,35 @@ import ErrorReportingService from "../errorReporting.service";
 export default class PostTransformationSourceService {
   public static handleFailureEventsSource(
     error: Object,
-    errorDTO: ErrorDetailer
-  ) {
-    const errObj = generateErrorObject(
-      error,
-      errorDTO.integrationType,
-      errorDTO.stage
-    );
-    ErrorReportingService.reportError(error, errObj, errorDTO);
-    return {
+    metaTO: MetaTransferObject
+  ): SourceTransformResponse {
+    const errObj = generateErrorObject(error, metaTO.errorDetails);
+    const response = {
       statusCode: errObj.status,
       error:
         errObj.message ||
         "[Source Transform] Error occurred while processing payload.",
-      statTags: {
-        ...errObj.statTags
-      }
+      statTags: errObj.statTags
     } as SourceTransformResponse;
+    ErrorReportingService.reportError(
+      error,
+      metaTO.errorDetails.context,
+      response
+    );
+    return response;
   }
 
   public static handleSuccessEventsSource(
     events: RudderMessage | RudderMessage[] | SourceTransformResponse
   ): SourceTransformResponse {
-    if (Array.isArray(events)) {
+    // We send response back to the source
+    // through outputToSource. This is not sent to gateway
+    // We will not return array for events not meant for gateway
+    if (Object.prototype.hasOwnProperty.call(events, "outputToSource")) {
+      return events as SourceTransformResponse;
+    } else if (Array.isArray(events)) {
       return { output: { batch: events } } as SourceTransformResponse;
     } else {
-      // We send response back to the source
-      // through outputToSource. This is not sent to gateway
-      // We will not return array for events not meant for gateway
-      if (Object.prototype.hasOwnProperty.call(events, "outputToSource")) {
-        return events as SourceTransformResponse;
-      }
       return { output: { batch: [events] } } as SourceTransformResponse;
     }
   }

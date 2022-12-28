@@ -2,7 +2,6 @@ import { Context } from "koa";
 import MiscService from "../services/misc.service";
 import { DeliveryResponse, TransformedEvent } from "../types/index";
 import { ServiceSelector } from "../util/serviceSelector";
-import networkHandlerFactory from "../adapters/networkHandlerFactory";
 import DeliveryTestService from "../services/delivertTest/deliveryTest.service";
 import ControllerUtility from "./util";
 import logger from "../logger";
@@ -24,13 +23,9 @@ export default class DeliveryController {
     }: { version: string; destination: string } = ctx.params;
     try {
       const integrationService = ServiceSelector.getNativeIntegrationServiceDest();
-      const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
-        destination
-      );
       deliveryResponse = await integrationService.deliveryRoutine(
         event,
         destination,
-        destNetworkHandler,
         requestMetadata
       );
     } catch (error) {

@@ -11,28 +11,27 @@ import {
     processorRoutine(
       events: ProcessorRequest[],
       destinationType: string,
-      destHandler: any,
+      version: string,
       requestMetadata: Object
     ): Promise<ProcessorResponse[]>;
   
     routerRoutine(
       events: RouterRequestData[],
       destinationType: string,
-      destHandler: any,
+      version: string,
       requestMetadata: Object
     ): Promise<RouterResponse[]>;
   
     batchRoutine(
       events: RouterRequestData[],
       destinationType: string,
-      destHandler: any,
+      version: string,
       requestMetadata: Object
     ): RouterResponse[];
   
     deliveryRoutine(
       event: TransformedEvent,
       destinationType: string,
-      networkHandler: any,
       requestMetadata: Object
     ): Promise<DeliveryResponse>;
   }

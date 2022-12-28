@@ -13,6 +13,7 @@ import ControllerUtility from "./util";
 import stats from "../util/stats";
 import logger from "../logger";
 import TaggingService from "../services/tagging.service";
+import { getIntegrationVersion } from "../util/utils";
 
 export default class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
@@ -31,10 +32,6 @@ export default class DestinationController {
     }: { version: string; destination: string } = ctx.params;
     try {
       const integrationService = ServiceSelector.getDestinationService(events);
-      const destinationHandler = ServiceSelector.getDestHandler(
-        destination,
-        version
-      );
       events = PreTransformationDestinationService.preProcess(
         events,
         ctx
@@ -42,7 +39,7 @@ export default class DestinationController {
       resplist = await integrationService.processorRoutine(
         events,
         destination,
-        destinationHandler,
+        version,
         requestMetadata
       );
     } catch (error) {
@@ -90,10 +87,6 @@ export default class DestinationController {
     let events = routerRequest.input;
     try {
       const integrationService = ServiceSelector.getDestinationService(events);
-      const destinationHandler = ServiceSelector.getDestHandler(
-        destination,
-        ControllerUtility.getIntegrationVersion()
-      );
       events = PreTransformationDestinationService.preProcess(
         events,
         ctx
@@ -101,7 +94,7 @@ export default class DestinationController {
       const resplist = await integrationService.routerRoutine(
         events,
         destination,
-        destinationHandler,
+        getIntegrationVersion(),
         requestMetadata
       );
       ctx.body = { output: resplist };
@@ -138,10 +131,6 @@ export default class DestinationController {
     const destination = routerRequest.destType;
     let events = routerRequest.input;
     const integrationService = ServiceSelector.getDestinationService(events);
-    const destinationHandler = ServiceSelector.getDestHandler(
-      destination,
-      ControllerUtility.getIntegrationVersion()
-    );
     events = PreTransformationDestinationService.preProcess(
       events,
       ctx
@@ -150,7 +139,7 @@ export default class DestinationController {
       const resplist = integrationService.batchRoutine(
         events,
         destination,
-        destinationHandler,
+        getIntegrationVersion(),
         requestMetadata
       );
       ctx.body = resplist;

@@ -60,6 +60,17 @@ export default class TaggingService {
     return metaTO;
   }
 
+  public static getNativeSourceTransformTags(): MetaTransferObject {
+    const metaTO = {
+      errorDetails: {
+        module: tags.MODULES.SOURCE,
+        implementation: tags.IMPLEMENTATIONS.NATIVE,
+        context: "[Native Integration Service] Failure During Source Transform"
+      } as ErrorDetailer
+    } as MetaTransferObject;
+    return metaTO;
+  }
+
   public static getNativeDeliveryTags(
     destType: string,
     destinationId: string,
@@ -74,6 +85,64 @@ export default class TaggingService {
         destinationId,
         workspaceId,
         context: "[Native Integration Service] Failure During Delivery"
+      } as ErrorDetailer
+    } as MetaTransferObject;
+    return metaTO;
+  }
+
+  public static getCDKV1ProcTransformTags(
+    destType: string,
+    destinationId: string,
+    workspaceId: string
+  ): MetaTransferObject {
+    const metaTO = {
+      errorDetails: {
+        destType: destType.toUpperCase(),
+        module: tags.MODULES.DESTINATION,
+        implementation: tags.IMPLEMENTATIONS.CDK_V1,
+        feature: tags.FEATURES.PROCESSOR,
+        destinationId,
+        workspaceId,
+        context: "[CDKV1 Integration Service] Failure During Proc Transform"
+      } as ErrorDetailer
+    } as MetaTransferObject;
+    return metaTO;
+  }
+
+  public static getCDKV2ProcTransformTags(
+    destType: string,
+    destinationId: string,
+    workspaceId: string
+  ): MetaTransferObject {
+    const metaTO = {
+      errorDetails: {
+        destType: destType.toUpperCase(),
+        module: tags.MODULES.DESTINATION,
+        implementation: tags.IMPLEMENTATIONS.CDK_V2,
+        feature: tags.FEATURES.PROCESSOR,
+        destinationId,
+        workspaceId,
+        context: "[CDKV2 Integration Service] Failure During Proc Transform"
+      } as ErrorDetailer
+    } as MetaTransferObject;
+    return metaTO;
+  }
+  
+
+  public static getCDKV2RouterTransformTags(
+    destType: string,
+    destinationId: string,
+    workspaceId: string
+  ): MetaTransferObject {
+    const metaTO = {
+      errorDetails: {
+        destType: destType.toUpperCase(),
+        module: tags.MODULES.DESTINATION,
+        implementation: tags.IMPLEMENTATIONS.CDK_V2,
+        feature: tags.FEATURES.ROUTER,
+        destinationId,
+        workspaceId,
+        context: "[CDKV2 Integration Service] Failure During Router Transform"
       } as ErrorDetailer
     } as MetaTransferObject;
     return metaTO;

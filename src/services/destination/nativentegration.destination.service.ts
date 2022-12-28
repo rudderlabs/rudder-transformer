@@ -10,19 +10,22 @@ import {
 } from "../../types/index";
 import PostTransformationServiceDestination from "./postTransformation.destination.service";
 import TaggingService from "../tagging.service";
+import { ServiceSelector } from "../../util/serviceSelector";
+import networkHandlerFactory from "../../adapters/networkHandlerFactory";
 
 export default class NativeIntegrationDestinationService
   implements IntegrationDestinationService {
   public async processorRoutine(
     events: ProcessorRequest[],
     destinationType: string,
-    destHandler: any,
-    requestMetadata: Object
+    version: string,
+    _requestMetadata: Object
   ): Promise<ProcessorResponse[]> {
-    const respList: (
-      | ProcessorResponse
-      | ProcessorResponse[]
-    )[] = await Promise.all(
+    const destHandler = ServiceSelector.getDestHandler(
+      destinationType,
+      version
+    );
+    const respList: ProcessorResponse[][] = await Promise.all(
       events.map(async event => {
         try {
           let transformedPayloads:
@@ -40,10 +43,11 @@ export default class NativeIntegrationDestinationService
             event.metadata.workspaceId
           );
           metaTO.metadata = event.metadata;
-          return PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(
+          const erroredResp = PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(
             error,
             metaTO
           );
+          return [erroredResp];
         }
       })
     );
@@ -53,9 +57,13 @@ export default class NativeIntegrationDestinationService
   public async routerRoutine(
     events: RouterRequestData[],
     destinationType: string,
-    destHandler: any,
-    requestMetadata: Object
+    version: string,
+    _requestMetadata: Object
   ): Promise<RouterResponse[]> {
+    const destHandler = ServiceSelector.getDestHandler(
+      destinationType,
+      version
+    );
     const allDestEvents: Object = groupBy(
       events,
       (ev: RouterRequestData) => ev.destination?.ID
@@ -95,9 +103,13 @@ export default class NativeIntegrationDestinationService
   public batchRoutine(
     events: RouterRequestData[],
     destinationType: string,
-    destHandler: any,
-    requestMetadata: Object
+    version: any,
+    _requestMetadata: Object
   ): RouterResponse[] {
+    const destHandler = ServiceSelector.getDestHandler(
+      destinationType,
+      version
+    );
     if (!destHandler.batch) {
       throw new Error(`${destinationType} does not implement batch`);
     }
@@ -134,10 +146,12 @@ export default class NativeIntegrationDestinationService
   public async deliveryRoutine(
     destinationRequest: TransformedEvent,
     destinationType: string,
-    networkHandler: any,
-    requestMetadata: Object
+    _requestMetadata: Object
   ): Promise<DeliveryResponse> {
     try {
+      const networkHandler = networkHandlerFactory.getNetworkHandler(
+        destinationType
+      );
       const rawProxyResponse = await networkHandler.proxy(destinationRequest);
       const processedProxyResponse = networkHandler.processAxiosResponse(
         rawProxyResponse

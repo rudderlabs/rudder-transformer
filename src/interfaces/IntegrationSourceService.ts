@@ -4,7 +4,7 @@ export default interface IntegrationSourceService {
   sourceTransformRoutine(
     sourceEvents: Object[],
     sourceType: string,
-    sourceHandler: any,
+    version: string,
     requestMetadata: Object
   ): Promise<SourceTransformResponse[]>;
 }

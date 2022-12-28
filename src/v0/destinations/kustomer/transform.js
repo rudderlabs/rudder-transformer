@@ -16,11 +16,11 @@ const {
   defaultPutRequestConfig,
   simpleProcessRouterDest
 } = require("../../util");
+const { fetchKustomer, handleAdvancedtransformations } = require("./util");
 const {
-  fetchKustomer,
-  handleAdvancedtransformations,
-  CustomError
-} = require("./util");
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 // Function responsible for constructing the Kustomer (User) Payload for identify
 // type of events.
@@ -210,15 +210,12 @@ const responseBuilderSimple = async (message, category, destination) => {
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("[Kustomer] :: Payload could not be constructed", 400);
+  throw new TransformationError("Payload could not be constructed");
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw CustomError(
-      "[Kustomer] :: Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
   let category;
   switch (message.type.toLowerCase()) {
@@ -235,7 +232,9 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new CustomError("[Kustomer] :: Message type not supported", 400);
+      throw new InstrumentationError(
+        `Event type ${message.type} is not supported`
+      );
   }
   return responseBuilderSimple(message, category, destination);
 };
@@ -244,8 +243,8 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "KUSTOMER", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

@@ -9,7 +9,7 @@ const surveyMapping = require("./data/surveyMapping.json");
 const featureMatchMapping = require("./data/featureMatchMapping.json");
 const segmentIoMapping = require("./data/segmentIOMapping.json");
 const { refinePayload, refineTraitPayload } = require("./utils");
-const { CustomError } = require("../../util");
+const { TransformationError } = require("../../util/errorTypes");
 
 const buildIdentifyPayload = event => {
   let message = new Message(`GAINSIGHTPX`);
@@ -51,9 +51,8 @@ const buildTrackPayload = event => {
       message.event = "SegmentIO Cloud Server";
       break;
     default:
-      throw new CustomError(
-        `Event type ${event.event.eventType} not supported`,
-        400
+      throw new TransformationError(
+        `Event type ${event.event.eventType} not supported`
       );
   }
   const ts = new Date(event.event.date).toISOString();

@@ -1,7 +1,6 @@
 const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
   getDestinationExternalIDInfoForRetl
@@ -27,12 +26,12 @@ const {
   getProperties,
   validateDestinationConfig
 } = require("./util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const processSingleMessage = async (message, destination, propertyMap) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message type is not present. Aborting message."
     );
   }
 
@@ -61,9 +60,8 @@ const processSingleMessage = async (message, destination, propertyMap) => {
       }
       break;
     default:
-      throw new CustomError(
-        `Message type ${message.type} is not supported`,
-        400
+      throw new InstrumentationError(
+        `Message type ${message.type} is not supported`
       );
   }
 
@@ -87,8 +85,8 @@ const process = async event => {
 };
 
 // we are batching by default at routerTransform
-const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -126,7 +124,7 @@ const processRouterDest = async inputs => {
   } catch (error) {
     // Any error thrown from the above try block applies to all the events
     return inputs.map(input =>
-      handleRtTfSingleEventError(input, error, DESTINATION)
+      handleRtTfSingleEventError(input, error, reqMetadata)
     );
   }
 
@@ -166,7 +164,7 @@ const processRouterDest = async inputs => {
         const errRespEvent = handleRtTfSingleEventError(
           input,
           error,
-          DESTINATION
+          reqMetadata
         );
         errorRespList.push(errRespEvent);
       }

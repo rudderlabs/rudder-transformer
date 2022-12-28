@@ -10,8 +10,7 @@ const {
   formatConfig,
   LEAD_LOOKUP_METRIC,
   ACTIVITY_METRIC,
-  FETCH_TOKEN_METRIC,
-  DESTINATION
+  FETCH_TOKEN_METRIC
 } = require("./config");
 const {
   addExternalIdToTraits,
@@ -28,14 +27,11 @@ const {
   isDefinedAndNotNull,
   generateErrorObject,
   checkInvalidRtTfEvents,
-  TransformationError
+  getEventReqMetadata,
+  handleRtTfSingleEventError
 } = require("../../util");
 const Cache = require("../../util/cache");
-const {
-  USER_LEAD_CACHE_TTL,
-  AUTH_CACHE_TTL,
-  TRANSFORMER_METRIC
-} = require("../../util/constant");
+const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL } = require("../../util/constant");
 const {
   marketoResponseHandler,
   sendGetRequest,
@@ -43,6 +39,14 @@ const {
   getResponseHandlerData
 } = require("./util");
 const logger = require("../../../logger");
+const {
+  InstrumentationError,
+  ConfigurationError,
+  UnauthorizedError
+} = require("../../util/errorTypes");
+const {
+  client: errNotificationClient
+} = require("../../../util/errorNotifier");
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
@@ -71,8 +75,7 @@ const getAuthToken = async formattedDestination => {
     );
     const data = marketoResponseHandler(
       clientResponse,
-      "During fetching auth token",
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
+      "During fetching auth token"
     );
     if (data) {
       stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
@@ -265,16 +268,8 @@ const getLeadId = async (message, formattedDestination, token) => {
         message.anonymousId
       );
     } else {
-      throw new TransformationError(
-        "Lead creation is turned off on the dashboard",
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .CONFIGURATION
-        },
-        DESTINATION
+      throw new ConfigurationError(
+        "Lead creation is turned off on the dashboard"
       );
     }
   }
@@ -286,16 +281,8 @@ const getLeadId = async (message, formattedDestination, token) => {
     //
     // In the scenario of either of these, we should abort the event and the top level
     // try-catch should handle this
-    throw new TransformationError(
-      "lookup failure - either anonymousId or userId or both fields are not created in marketo",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-            .INSTRUMENTATION
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      "lookup failure - either anonymousId or userId or both fields are not created in marketo"
     );
   }
 
@@ -319,15 +306,7 @@ const processIdentify = async (message, formattedDestination, token) => {
 
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
-    throw new TransformationError(
-      "Invalid traits value for Marketo",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("Invalid traits value for Marketo");
   }
 
   const leadId = await getLeadId(message, formattedDestination, token);
@@ -414,30 +393,14 @@ const processTrack = async (message, formattedDestination, token) => {
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   if (!(trackAnonymousEvents || userId)) {
-    throw new TransformationError(
-      "Anonymous event tracking is turned off and invalid userId",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      },
-      DESTINATION
+    throw new ConfigurationError(
+      "Anonymous event tracking is turned off and invalid userId"
     );
   }
 
   const activityTypeId = customActivityEventMap[message.event];
   if (!activityTypeId) {
-    throw new TransformationError(
-      "Event is not mapped to Custom Activity",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      },
-      DESTINATION
-    );
+    throw new ConfigurationError("Event is not mapped to Custom Activity");
   }
 
   const primaryKeyPropName = customActivityPrimaryKeyMap[message.event];
@@ -446,16 +409,7 @@ const processTrack = async (message, formattedDestination, token) => {
     `properties.${primaryKeyPropName}`
   );
   if (!primaryAttributeValue) {
-    throw new TransformationError(
-      "Primary Key value is invalid for the event",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      },
-      DESTINATION
-    );
+    throw new ConfigurationError("Primary Key value is invalid for the event");
   }
 
   // get leadId
@@ -508,14 +462,8 @@ const responseWrapper = response => {
 
 const processEvent = async (message, destination, token) => {
   if (!message.type) {
-    throw new TransformationError(
-      "Message Type is not present. Aborting message.",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   const messageType = message.type.toLowerCase();
@@ -530,16 +478,7 @@ const processEvent = async (message, destination, token) => {
       response = await processTrack(message, formattedDestination, token);
       break;
     default:
-      throw new TransformationError(
-        "Message type not supported",
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        },
-        DESTINATION
-      );
+      throw new InstrumentationError("Message type not supported");
   }
 
   // wrap response for router processing
@@ -549,63 +488,36 @@ const processEvent = async (message, destination, token) => {
 const process = async event => {
   const token = await getAuthToken(formatConfig(event.destination));
   if (!token) {
-    throw new TransformationError(
-      "Authorisation failed",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
-      },
-      DESTINATION
-    );
+    throw new UnauthorizedError("Authorization failed");
   }
   const response = await processEvent(event.message, event.destination, token);
   return response;
 };
 
-const processRouterDest = async inputs => {
+const processRouterDest = async (inputs, reqMetadata) => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
   let token;
   try {
     token = await getAuthToken(formatConfig(inputs[0].destination));
+
+    // If token is null track/identify calls cannot be executed.
+    if (!token) {
+      throw new UnauthorizedError("Authorization failed");
+    }
   } catch (error) {
     logger.error("Router Transformation problem:");
-    const errObj = generateErrorObject(
-      error,
-      DESTINATION,
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-    );
+    const errObj = generateErrorObject(error);
     logger.error(errObj);
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
-      error.status || 500, // default to retryable
-      error.message || "Error occurred while processing payload.",
+      errObj.status,
+      errObj.message,
       errObj.statTags
-    );
-    return [respEvents];
-  }
-
-  // If token is null track/identify calls cannot be executed.
-  if (!token) {
-    const errResp = {
-      status: 400,
-      message: "Authorisation failed",
-      responseTransformFailure: true,
-      statTags: {
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
-      }
-    };
-    const respEvents = getErrorRespEvents(
-      inputs.map(input => input.metadata),
-      errResp.status,
-      errResp.message,
-      errResp.statTags
     );
     return [respEvents];
   }
@@ -622,19 +534,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        logger.error("Router transformation Error for Marketo:");
-        const errObj = generateErrorObject(
-          error,
-          DESTINATION,
-          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-        );
-        logger.error(errObj);
-        return getErrorRespEvents(
-          [input.metadata],
-          error.status || 500,
-          error.message || "Error occurred while processing payload.",
-          errObj.statTags
-        );
+        return handleRtTfSingleEventError(input, error, reqMetadata);
       }
     })
   );

@@ -911,7 +911,7 @@
         "secret": null
       },
       "statusCode": 500,
-      "error": "[Google Ads Offline Conversions]:: OAuth - access token not found",
+      "error": "OAuth - access token not found",
       "statTags": {
         "destination": "google_adwords_offline_conversions",
         "stage": "transform",
@@ -1063,7 +1063,7 @@
         }
       },
       "statusCode": 400,
-      "error": "[Google Ads Offline Conversions]:: message type is not present. Aborting message.",
+      "error": "Message type is not present. Aborting message.",
       "statTags": {
         "destination": "google_adwords_offline_conversions",
         "stage": "transform",
@@ -1215,7 +1215,7 @@
         }
       },
       "statusCode": 400,
-      "error": "[Google Ads Offline Conversions]:: Event name is not present",
+      "error": "Event name is not present",
       "statTags": {
         "destination": "google_adwords_offline_conversions",
         "stage": "transform",
@@ -1367,7 +1367,7 @@
           "developer_token": "ijkl91011"
         }
       },
-      "statusCode": 400,
+      "statusCode": 500,
       "error": "Event name 'purchase' is not valid",
       "statTags": {
         "destination": "google_adwords_offline_conversions",
@@ -2568,7 +2568,7 @@
         "secret": null
       },
       "statusCode": 400,
-      "error": "[Google Ads Offline Conversions]:: Message type page not supported",
+      "error": "Message type page not supported",
       "statTags": {
         "destination": "google_adwords_offline_conversions",
         "stage": "transform",
@@ -2695,8 +2695,8 @@
       "metadata": {
         "secret": null
       },
-      "statusCode": 400,
-      "error": "[Google Ads Offline Conversions]:: loginCustomerId is required as subAccount is enabled",
+      "statusCode": 500,
+      "error": "loginCustomerId is required as subAccount is enabled",
       "statTags": {
         "destination": "google_adwords_offline_conversions",
         "stage": "transform",
@@ -3004,7 +3004,7 @@
         "secret": null
       },
       "statusCode": 400,
-      "error": "[Google Ads Offline Conversions]:: either of email or phone is required for user identifier",
+      "error": "Either of email or phone is required for user identifier",
       "statTags": {
         "destination": "google_adwords_offline_conversions",
         "stage": "transform",

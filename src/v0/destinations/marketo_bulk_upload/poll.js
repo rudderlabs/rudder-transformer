@@ -6,8 +6,12 @@ const {
   POLL_ACTIVITY
 } = require("./util");
 const { httpGET } = require("../../../adapters/network");
-const { CustomError } = require("../../util");
 const stats = require("../../../util/stats");
+const {
+  AbortedError,
+  ThrottledError,
+  RetryableError
+} = require("../../util/errorTypes");
 
 const getPollStatus = async event => {
   const accessToken = await getAccessToken(event.config);
@@ -64,9 +68,10 @@ const getPollStatus = async event => {
           status: 400,
           state: "Abortable"
         });
-        throw new CustomError(
+        throw new AbortedError(
           pollStatus.response.data.errors[0].message || "Could not poll status",
-          400
+          400,
+          pollStatus
         );
       } else if (
         THROTTLED_CODES.indexOf(pollStatus.response.data.errors[0].code) > -1
@@ -77,9 +82,9 @@ const getPollStatus = async event => {
           status: 500,
           state: "Retryable"
         });
-        throw new CustomError(
+        throw new ThrottledError(
           pollStatus.response.data.errors[0].message || "Could not poll status",
-          500
+          pollStatus
         );
       }
       stats.increment(POLL_ACTIVITY, 1, {
@@ -88,10 +93,11 @@ const getPollStatus = async event => {
         status: 500,
         state: "Retryable"
       });
-      throw new CustomError(
+      throw new RetryableError(
         pollStatus.response.response.statusText ||
           "Error during polling status",
-        500
+        500,
+        pollStatus
       );
     }
   }
@@ -101,7 +107,7 @@ const getPollStatus = async event => {
     status: 400,
     state: "Abortable"
   });
-  throw new CustomError("Could not poll status", 400);
+  throw new AbortedError("Could not poll status", 400, pollStatus);
 };
 
 const responseHandler = async event => {

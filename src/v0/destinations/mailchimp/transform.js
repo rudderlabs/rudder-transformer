@@ -6,7 +6,6 @@ const {
 } = require("../../util");
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
   defaultRequestConfig,
   getFieldValueFromMessage,
   getSuccessRespEvents
@@ -17,8 +16,11 @@ const {
   getAudienceId,
   generateBatchedPaylaodForArray
 } = require("./utils");
-
 const { MAX_BATCH_SIZE, VALID_STATUSES } = require("./config");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const responseBuilderSimple = (finalPayload, email, Config, audienceId) => {
   const { datacenterId, apiKey } = Config;
@@ -32,9 +34,8 @@ const responseBuilderSimple = (finalPayload, email, Config, audienceId) => {
   response.body.JSON = finalPayload;
   const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString("base64");
   if (finalPayload.status && !VALID_STATUSES.includes(finalPayload.status)) {
-    throw new CustomError(
-      "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]",
-      400
+    throw new InstrumentationError(
+      "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]"
     );
   }
   return {
@@ -50,7 +51,7 @@ const responseBuilderSimple = (finalPayload, email, Config, audienceId) => {
 const identifyResponseBuilder = async (message, { Config }) => {
   const email = getFieldValueFromMessage(message, "email");
   if (!email) {
-    throw new CustomError("[Mailchimp] :: Email is required for identify", 400);
+    throw new InstrumentationError("Email is required for identify");
   }
   const audienceId = getAudienceId(message, Config);
   const processedPayload = await processPayload(message, Config, audienceId);
@@ -64,22 +65,19 @@ const process = async event => {
   const destConfig = destination.Config;
 
   if (!destConfig.apiKey) {
-    throw new CustomError("API Key not found. Aborting", 400);
+    throw new ConfigurationError("API Key not found. Aborting");
   }
 
   if (!destConfig.audienceId) {
-    throw new CustomError("Audience Id not found. Aborting", 400);
+    throw new ConfigurationError("Audience Id not found. Aborting");
   }
 
   if (!destConfig.datacenterId) {
-    throw new CustomError("DataCenter Id not found. Aborting", 400);
+    throw new ConfigurationError("DataCenter Id not found. Aborting");
   }
 
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   switch (messageType) {
@@ -87,9 +85,8 @@ const process = async event => {
       response = await identifyResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(
-        `message type ${messageType} is not supported`,
-        400
+      throw new InstrumentationError(
+        `message type ${messageType} is not supported`
       );
   }
   return response;
@@ -130,8 +127,8 @@ const batchEvents = successRespList => {
   return batchedResponseList;
 };
 
-const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "MAILCHIMP");
+const processRouterDest = async (inputs, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -162,7 +159,7 @@ const processRouterDest = async inputs => {
         const errRespEvent = handleRtTfSingleEventError(
           event,
           error,
-          "MAILCHIMP"
+          reqMetadata
         );
         batchErrorRespList.push(errRespEvent);
       }

@@ -30,7 +30,7 @@
       }
     },
     "output": {
-      "error": "[Facebook Offline Conversions] :: Message Type is not present. Aborting message."
+      "error": "Message Type is not present. Aborting message."
     }
   },
   {
@@ -60,7 +60,7 @@
       }
     },
     "output": {
-      "error": "[Facebook Offline Conversions] :: Message type identify not supported."
+      "error": "Message type identify not supported."
     }
   },
   {
@@ -156,7 +156,7 @@
       }
     },
     "output": {
-      "error": "[Facebook Offline Conversions] :: Please Map Your Standard Events With Event Set Ids"
+      "error": "Please Map Your Standard Events With Event Set Ids"
     }
   },
   {
@@ -251,7 +251,7 @@
       }
     },
     "output": {
-      "error": "[Facebook Offline Conversions] :: Please Map Your Standard Events With Event Set Ids"
+      "error": "Please Map Your Standard Events With Event Set Ids"
     }
   },
   {

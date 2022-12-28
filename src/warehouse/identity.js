@@ -1,4 +1,5 @@
 const _ = require("lodash");
+const { InstrumentationError } = require("../v0/util/errorTypes");
 const { getVersionedUtils } = require("./util");
 
 const identityEnabledWarehouses = ["snowflake", "bq"];
@@ -69,7 +70,9 @@ function getMergeRuleEvent(message = {}, eventType, options) {
       !_.has(message, "mergeProperties[0]") ||
       !_.has(message, "mergeProperties[1]")
     ) {
-      throw new Error("either or both identifiers missing in mergeProperties");
+      throw new InstrumentationError(
+        "either or both identifiers missing in mergeProperties"
+      );
     }
 
     if (
@@ -78,7 +81,7 @@ function getMergeRuleEvent(message = {}, eventType, options) {
       _.isEmpty(_.toString(message.mergeProperties[1].type)) ||
       _.isEmpty(_.toString(message.mergeProperties[1].value))
     ) {
-      throw new Error(
+      throw new InstrumentationError(
         "mergeProperties contains null values for expected inputs"
       );
     }

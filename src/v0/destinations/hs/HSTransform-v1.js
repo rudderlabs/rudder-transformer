@@ -11,13 +11,17 @@ const {
   defaultPatchRequestConfig,
   getFieldValueFromMessage,
   getSuccessRespEvents,
-  CustomError,
   addExternalIdToTraits,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
   getDestinationExternalID,
   getDestinationExternalIDInfoForRetl
 } = require("../../util");
+const {
+  InstrumentationError,
+  ConfigurationError,
+  TransformationError
+} = require("../../util/errorTypes");
 const {
   BATCH_CONTACT_ENDPOINT,
   MAX_BATCH_SIZE,
@@ -66,7 +70,7 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
     addExternalIdToTraits(message);
     const { objectType } = getDestinationExternalIDInfoForRetl(message, "HS");
     if (!objectType) {
-      throw new CustomError("objectType not found", 400);
+      throw new InstrumentationError("objectType not found");
     }
     if (operation === "createObject") {
       endpoint = CRM_CREATE_UPDATE_ALL_OBJECTS.replace(
@@ -86,9 +90,8 @@ const processLegacyIdentify = async (message, destination, propertyMap) => {
     response.operation = operation;
   } else {
     if (!traits || !traits.email) {
-      throw new CustomError(
-        "[HS]:: Identify without email is not supported.",
-        400
+      throw new InstrumentationError(
+        "Identify without email is not supported."
       );
     }
     const { email } = traits;
@@ -146,9 +149,8 @@ const processLegacyTrack = async (message, destination, propertyMap) => {
   const { Config } = destination;
 
   if (!Config.hubID) {
-    throw new CustomError(
-      "Invalid hub id value provided in the destination configuration",
-      400
+    throw new ConfigurationError(
+      "Invalid hub id value provided in the destination configuration"
     );
   }
 
@@ -232,7 +234,7 @@ const batchIdentifyForrETL = (
         metadata.push(ev.metadata);
       });
     } else {
-      throw new CustomError("[HS]:: rETL -  Unknow hubspot operation", 400);
+      throw new TransformationError("rETL -  Unknow hubspot operation");
     }
 
     batchEventResponse.batchedRequest.body.JSON = {
@@ -302,10 +304,7 @@ const legacyBatchEvents = destEvents => {
           updateAllObjectsEventChunk.push(event);
         }
       } else {
-        throw new CustomError(
-          "[HS]::  rETL -  Error in getting operation",
-          400
-        );
+        throw new TransformationError("rETL -  Error in getting operation");
       }
     } else {
       // making chunks for identify

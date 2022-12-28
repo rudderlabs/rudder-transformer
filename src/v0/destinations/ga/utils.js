@@ -1,4 +1,4 @@
-const { CustomError } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 const { GA_ENDPOINT } = require("./config");
 
 /**
@@ -34,9 +34,8 @@ const validatePayloadSize = finalPayload => {
     JSON.stringify(payloadSize).match(/[!*'()]/g).length * 2;
 
   if (payloadSize > 8192) {
-    throw new CustomError(
-      `The size of the payload is ${payloadSize} bytes. The payload data must be no longer than 8192 bytes.`,
-      400
+    throw new InstrumentationError(
+      `The size of the payload is ${payloadSize} bytes. The payload data must be no longer than 8192 bytes.`
     );
   }
 };

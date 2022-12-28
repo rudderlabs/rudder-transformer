@@ -153,7 +153,7 @@ const getConversions = (
     const timestamp = message.originalTimestamp;
     const conversionDateTime = moment(timestamp)
       .utcOffset(moment(timestamp).utcOffset())
-      .format("YYYY-MM-DD HH:MM:SSZ");
+      .format("YYYY-MM-DD HH:mm:ssZ");
     set(payload, "conversions[0].conversionDateTime", conversionDateTime);
   }
 

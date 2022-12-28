@@ -76,13 +76,7 @@ const unlinkContact = (message, destination, unlinkListIds) => {
 
   unlinkListIds.forEach(listId => {
     const endpoint = getUnlinkContactEndpoint(listId);
-    const response = responseBuilder(
-      payload,
-      endpoint,
-      destination,
-      false,
-      defaultPutRequestConfig.requestMethod
-    );
+    const response = responseBuilder(payload, endpoint, destination);
     returnValue.push(response);
   });
   return returnValue;

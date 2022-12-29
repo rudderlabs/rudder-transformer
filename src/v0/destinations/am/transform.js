@@ -501,19 +501,10 @@ function responseBuilderSimple(
       }
 
       if (!payload.user_id && !payload.device_id) {
-        logger.debug("Both userId and deviceId cannot be undefined");
-        throw new ErrorBuilder()
-          .setStatus(400)
-          .setMessage("Both userId and deviceId cannot be undefined")
-          .setStatTags({
-            destType: DESTINATION,
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-                .INSTRUMENTATION
-          })
-          .build();
+        logger.debug("Either of user ID or device ID fields must be specified");
+        throw new InstrumentationError(
+          "Either of user ID or device ID fields must be specified"
+        );
       }
 
       payload.ip = getParsedIP(message);

@@ -1,10 +1,11 @@
-jest.mock("axios");
+// jest.mock("axios");
 const integration = "salesforce";
 const name = "Salesforce";
 const version = "v0";
 
 const fs = require("fs");
 const path = require("path");
+const { formAxiosMock } = require("../__mocks__/gen-axios.mock");
 
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
 
@@ -38,33 +39,41 @@ const outputRouterMetadataFile = fs.readFileSync(
 const inputRouterMetadata = JSON.parse(inputRouterMetadataFile);
 const expectedRouterMetadata = JSON.parse(outputRouterMetadataFile);
 
-describe(`${name} Tests`, () => {
-  describe("Processor", () => {
-    inputData.forEach(async (input, index) => {
-      it(`Payload - ${index}`, async () => {
-        try {
-          const output = await transformer.process(input);
-          expect(output).toEqual(expectedData[index]);
-        } catch (error) {
-          expect(error.message).toEqual(expectedData[index].error);
-        }
-      });
-    });
+describe(`${name} Processor`, () => {
+  beforeAll(() => {
+    const axiosResponses = inputData.filter(inp => Array.isArray(inp.mockNetworkResponses)).map(inp => inp.mockNetworkResponses);
+    formAxiosMock(axiosResponses);
   });
 
-  describe("Router Tests", () => {
-    it("Payload", async () => {
-      const routerOutput = await transformer.processRouterDest(inputRouterData);
-      expect(routerOutput).toEqual(expectedRouterData);
+  inputData.forEach(async (input, index) => {
+    it(`Payload - ${index}`, async () => {
+      try {
+        const output = await transformer.process(input);
+        expect(output).toEqual(expectedData[index]);
+      } catch (error) {
+        console.log(error);
+        expect(error.message).toEqual(expectedData[index].error);
+      }
     });
   });
+});
 
-  describe("Router Metadata Tests", () => {
-    it("Payload", async () => {
-      const routerMetadataOutput = await transformer.processMetadataForRouter(
-        inputRouterMetadata
-      );
-      expect(routerMetadataOutput).toEqual(expectedRouterMetadata);
-    });
+describe(`${name} Router Tests`, () => {
+  beforeAll(() => {
+    const axiosResponses = inputRouterData.filter(inp => Array.isArray(inp.mockNetworkResponses)).map(inp => inp.mockNetworkResponses);
+    formAxiosMock(axiosResponses);
+  });
+  it("Payload", async () => {
+    const routerOutput = await transformer.processRouterDest(inputRouterData);
+    expect(routerOutput).toEqual(expectedRouterData);
+  });
+});
+
+describe(`${name} Router Metadata Tests`, () => {
+  it("Payload", async () => {
+    const routerMetadataOutput = await transformer.processMetadataForRouter(
+      inputRouterMetadata
+    );
+    expect(routerMetadataOutput).toEqual(expectedRouterMetadata);
   });
 });

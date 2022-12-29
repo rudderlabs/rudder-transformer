@@ -24,7 +24,7 @@ const getName = message => {
       : undefined) ||
     traits?.username ||
     (message?.properties ? message?.properties.email : undefined) ||
-    traits.email ||
+    traits?.email ||
     (message.userId ? `User ${message.userId}` : undefined) ||
     `Anonymous user ${message.anonymousId}`;
 

@@ -7,14 +7,14 @@ const process = event => {
   const response = processEvent({ ...event, DESTINATION });
   return response;
 };
-const processRouterDest = async inputs => {
+const processRouterDest = async (inputs, reqMetadata) => {
   const destNameRichInputs = inputs.map(input => {
     return { ...input, DESTINATION };
   });
   const respList = await simpleProcessRouterDest(
     destNameRichInputs,
-    DESTINATION,
-    processEvent
+    processEvent,
+    reqMetadata
   );
   return respList;
 };

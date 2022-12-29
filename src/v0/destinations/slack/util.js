@@ -15,26 +15,18 @@ const { getFieldValueFromMessage } = require("../../util");
  */
 const getName = message => {
   const traits = getFieldValueFromMessage(message, "traits");
-  let uName;
-  if (traits) {
-    uName =
-      traits.name ||
-      (traits.firstName
-        ? traits.lastName
-          ? `${traits.firstName}${traits.lastName}`
-          : traits.firstName
-        : undefined) ||
-      traits.username ||
-      (message.properties ? message.properties.email : undefined) ||
-      traits.email ||
-      (message.userId ? `User ${message.userId}` : undefined) ||
-      `Anonymous user ${message.anonymousId}`;
-  } else {
-    uName =
-      (message.properties ? message.properties.email : undefined) ||
-      (message.userId ? `User ${message.userId}` : undefined) ||
-      `Anonymous user ${message.anonymousId}`;
-  }
+  const uName =
+    traits?.name ||
+    (traits?.firstName
+      ? traits?.lastName
+        ? `${traits?.firstName}${traits?.lastName}`
+        : traits?.firstName
+      : undefined) ||
+    traits?.username ||
+    (message?.properties ? message?.properties.email : undefined) ||
+    traits.email ||
+    (message.userId ? `User ${message.userId}` : undefined) ||
+    `Anonymous user ${message.anonymousId}`;
 
   return uName;
 };

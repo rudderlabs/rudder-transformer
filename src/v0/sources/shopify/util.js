@@ -1,7 +1,6 @@
 /* eslint-disable camelcase */
 const sha256 = require("sha256");
 const {
-  CustomError,
   constructPayload,
   extractCustomFields,
   flattenJson,
@@ -16,6 +15,7 @@ const {
   RUDDER_ECOM_MAP,
   SHOPIFY_TRACK_MAP
 } = require("./config");
+const { TransformationError } = require("../../util/errorTypes");
 
 /**
  * query_parameters : { topic: ['<shopify_topic>'], ...}
@@ -29,18 +29,15 @@ const getShopifyTopic = event => {
     `[Shopify] Input event: query_params: ${JSON.stringify(qParams)}`
   );
   if (!qParams) {
-    throw new CustomError("[Shopify Source] query_parameters is missing", 400);
+    throw new TransformationError("Query_parameters is missing");
   }
   const { topic } = qParams;
   if (!topic || !Array.isArray(topic)) {
-    throw new CustomError(
-      "[Shopify Source] invalid topic in query_parameters",
-      400
-    );
+    throw new TransformationError("Invalid topic in query_parameters");
   }
 
   if (topic.length === 0) {
-    throw new CustomError("[Shopify Source] topic not found", 400);
+    throw new TransformationError("Topic not found");
   }
   return topic[0];
 };

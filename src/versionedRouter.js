@@ -4,18 +4,16 @@ const Router = require("koa-router");
 const _ = require("lodash");
 const fs = require("fs");
 const path = require("path");
-const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
-const set = require("set-value");
 const logger = require("./logger");
 const stats = require("./util/stats");
 const { SUPPORTED_VERSIONS, API_VERSION } = require("./routes/utils/constants");
 const { client: errNotificationClient } = require("./util/errorNotifier");
+const tags = require("./v0/util/tags");
 
 const {
   isNonFuncObject,
   getMetadata,
   generateErrorObject,
-  CustomError,
   isHttpStatusSuccess,
   getErrorRespEvents,
   isCdkDestination,
@@ -24,7 +22,6 @@ const {
 const { processDynamicConfig } = require("./util/dynamicConfig");
 const { DestHandlerMap } = require("./constants/destinationCanonicalNames");
 const { userTransformHandler } = require("./routerUtils");
-const { TRANSFORMER_METRIC } = require("./v0/util/constant");
 const networkHandlerFactory = require("./adapters/networkHandlerFactory");
 const profilingRouter = require("./routes/profiling");
 const destProxyRoutes = require("./routes/destinationProxy");
@@ -36,14 +33,14 @@ const { setupUserTransformHandler } = require("./util/customTransformer");
 const { CommonUtils } = require("./util/common");
 const { RespStatusError, RetryRequestError } = require("./util/utils");
 const { isCdkV2Destination, getCdkV2TestThreshold } = require("./cdk/v2/utils");
+const { PlatformError } = require("./v0/util/errorTypes");
 const {
   getCachedWorkflowEngine,
   processCdkV2Workflow
 } = require("./cdk/v2/handler");
+const { processCdkV1 } = require("./cdk/v1/handler");
 
-const CDK_DEST_PATH = "cdk";
-const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
-ConfigFactory.init({ basePath, loggingMode: "production" });
+const CDK_V1_DEST_PATH = "cdk/v1";
 
 const transformerMode = process.env.TRANSFORMER_MODE;
 
@@ -109,10 +106,10 @@ function getCommonMetadata(ctx) {
   };
 }
 
-async function getCdkV2Result(destName, event, flowType) {
+async function getCdkV2Result(destName, event, feature) {
   const cdkResult = {};
   try {
-    cdkResult.output = await processCdkV2Workflow(destName, event, flowType);
+    cdkResult.output = await processCdkV2Workflow(destName, event, feature);
   } catch (error) {
     cdkResult.error = {
       message: error.message,
@@ -122,12 +119,12 @@ async function getCdkV2Result(destName, event, flowType) {
   return cdkResult;
 }
 
-async function compareWithCdkV2(destType, input, flowType, v0Result, v0Time) {
+async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
   try {
     const envThreshold = parseFloat(process.env.CDK_LIVE_TEST || "0", 10);
-    let destThreshold = getCdkV2TestThreshold(input);
-    if (flowType === TRANSFORMER_METRIC.ERROR_AT.RT) {
-      destThreshold = getCdkV2TestThreshold(input[0]);
+    let destThreshold = getCdkV2TestThreshold(inputArr[0]);
+    if (feature === tags.FEATURES.ROUTER) {
+      destThreshold = getCdkV2TestThreshold(inputArr[0][0]);
     }
     const liveTestThreshold = envThreshold * destThreshold;
     if (
@@ -138,53 +135,53 @@ async function compareWithCdkV2(destType, input, flowType, v0Result, v0Time) {
       return;
     }
     const startTime = process.hrtime();
-    const cdkResult = await getCdkV2Result(destType, input, flowType);
+    const cdkResult = await getCdkV2Result(destType, inputArr[0], feature);
     const diff = process.hrtime(startTime);
     const cdkTime = diff[0] * NS_PER_SEC + diff[1];
     stats.gauge("v0_transformation_time", v0Time, {
       destType,
-      flowType
+      feature
     });
     stats.gauge("cdk_transformation_time", cdkTime, {
       destType,
-      flowType
+      feature
     });
     const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
     if (Object.keys(objectDiff).length > 0) {
-      stats.counter("cdk_live_compare_test_failed", 1, { destType, flowType });
+      stats.counter("cdk_live_compare_test_failed", 1, { destType, feature });
       // logger.error(
-      //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, diff=${JSON.stringify(
+      //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff=${JSON.stringify(
       //     objectDiff
       //   )}`
       // );
       // logger.error(
-      //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, input=${JSON.stringify(
-      //     input
+      //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, input=${JSON.stringify(
+      //     inputArr[0]
       //   )}`
       // );
       // logger.error(
-      //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, flowType=${flowType}, results=${JSON.stringify(
+      //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, results=${JSON.stringify(
       //     { v0: v0Result, cdk: cdkResult }
       //   )}`
       // );
       return;
     }
-    stats.counter("cdk_live_compare_test_success", 1, { destType, flowType });
+    stats.counter("cdk_live_compare_test_success", 1, { destType, feature });
   } catch (error) {
-    stats.counter("cdk_live_compare_test_errored", 1, { destType, flowType });
+    stats.counter("cdk_live_compare_test_errored", 1, { destType, feature });
     logger.error(
-      `[LIVE_COMPARE_TEST] errored for destType=${destType}, flowType=${flowType}`,
+      `[LIVE_COMPARE_TEST] errored for destType=${destType}, feature=${feature}`,
       error
     );
   }
 }
 
-async function handleV0Destination(destHandler, destType, input, flowType) {
+async function handleV0Destination(destHandler, destType, inputArr, feature) {
   const v0Result = {};
   let v0Time = 0;
   try {
     const startTime = process.hrtime();
-    v0Result.output = await destHandler(input);
+    v0Result.output = await destHandler(...inputArr);
     const diff = process.hrtime(startTime);
     v0Time = diff[0] * NS_PER_SEC + diff[1];
     // Comparison is happening in async and after return from here
@@ -199,9 +196,9 @@ async function handleV0Destination(destHandler, destType, input, flowType) {
     throw error;
   } finally {
     if (process.env.NODE_ENV === "test") {
-      await compareWithCdkV2(destType, input, flowType, v0Result, v0Time);
+      await compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time);
     } else {
-      compareWithCdkV2(destType, input, flowType, v0Result, v0Time);
+      compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time);
     }
   }
 }
@@ -223,7 +220,7 @@ async function handleDest(ctx, version, destination) {
 
   const events = ctx.request.body;
   if (!Array.isArray(events) || events.length === 0) {
-    throw new CustomError("Event is missing or in inappropriate format", 400);
+    throw new PlatformError("Event is missing or in inappropriate format");
   }
   const reqParams = ctx.request.query;
   logger.debug(`[DT] Input events: ${JSON.stringify(events)}`);
@@ -250,11 +247,10 @@ async function handleDest(ctx, version, destination) {
           respEvents = await processCdkV2Workflow(
             destination,
             parsedEvent,
-            TRANSFORMER_METRIC.ERROR_AT.PROC
+            tags.FEATURES.PROCESSOR
           );
         } else if (isCdkDestination(parsedEvent)) {
-          const tfConfig = await ConfigFactory.getConfig(destination);
-          respEvents = await Executor.execute(parsedEvent, tfConfig);
+          respEvents = await processCdkV1(destination, parsedEvent);
         } else {
           if (destHandler === null) {
             destHandler = getDestHandler(version, destination);
@@ -262,8 +258,8 @@ async function handleDest(ctx, version, destination) {
           respEvents = await handleV0Destination(
             destHandler.process,
             destination,
-            parsedEvent,
-            TRANSFORMER_METRIC.ERROR_AT.PROC
+            [parsedEvent],
+            tags.FEATURES.PROCESSOR
           );
         }
         if (respEvents) {
@@ -299,28 +295,32 @@ async function handleDest(ctx, version, destination) {
         }
       } catch (error) {
         logger.error(error);
-        const errObj = generateErrorObject(
-          error,
-          destination,
-          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-        );
-        const resp = {
-          metadata: event.metadata,
-          statusCode: errObj.status,
-          error:
-            errObj.message || "Error occurred while processing the payload.",
-          statTags: {
-            errorAt: TRANSFORMER_METRIC.ERROR_AT.PROC,
-            ...errObj.statTags
-          }
-        };
 
+        let implementation = tags.IMPLEMENTATIONS.NATIVE;
         let errCtx = "Destination Transformation";
         if (isCdkV2Destination(event)) {
           errCtx = `CDK V2 - ${errCtx}`;
+          implementation = tags.IMPLEMENTATIONS.CDK_V2;
         } else if (isCdkDestination(event)) {
           errCtx = `CDK - ${errCtx}`;
+          implementation = tags.IMPLEMENTATIONS.CDK_V1;
         }
+
+        const errObj = generateErrorObject(error, {
+          [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),
+          [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+          [tags.TAG_NAMES.IMPLEMENTATION]: implementation,
+          [tags.TAG_NAMES.FEATURE]: tags.FEATURES.PROCESSOR,
+          [tags.TAG_NAMES.DESTINATION_ID]: event.metadata?.destinationId,
+          [tags.TAG_NAMES.WORKSPACE_ID]: event.metadata?.workspaceId
+        });
+
+        const resp = {
+          metadata: event.metadata,
+          statusCode: errObj.status,
+          error: errObj.message,
+          statTags: errObj.statTags
+        };
 
         errNotificationClient.notify(error, errCtx, {
           ...resp,
@@ -429,7 +429,7 @@ async function isValidRouterDest(event, destType) {
   const isCdkV2Dest = isCdkV2Destination(event);
   if (isCdkV2Dest) {
     try {
-      await getCachedWorkflowEngine(destType, TRANSFORMER_METRIC.ERROR_AT.RT);
+      await getCachedWorkflowEngine(destType, tags.FEATURES.ROUTER);
       return true;
     } catch (error) {
       return false;
@@ -442,12 +442,31 @@ async function isValidRouterDest(event, destType) {
     return false;
   }
 }
+
 async function routerHandleDest(ctx) {
+  const getReqMetadata = () => {
+    try {
+      return {
+        destType: ctx.request?.body?.destType
+      };
+    } catch (error) {
+      // Do nothing
+    }
+    return {};
+  };
+
   const respEvents = [];
   let destType;
+  let defTags;
   try {
     const { input } = ctx.request.body;
     destType = ctx.request.body.destType;
+    defTags = {
+      [tags.TAG_NAMES.DEST_TYPE]: destType.toUpperCase(),
+      [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+      [tags.TAG_NAMES.FEATURE]: tags.FEATURES.ROUTER
+    };
+
     const routerDestHandler = getDestHandler("v0", destType);
     const isValidRTDest = await isValidRouterDest(input[0], destType);
     if (!isValidRTDest) {
@@ -467,14 +486,17 @@ async function routerHandleDest(ctx) {
           listOutput = await processCdkV2Workflow(
             destType,
             newDestInputArray,
-            TRANSFORMER_METRIC.ERROR_AT.RT
+            tags.FEATURES.ROUTER
           );
         } else {
           listOutput = await handleV0Destination(
             routerDestHandler.processRouterDest,
             destType,
-            newDestInputArray,
-            TRANSFORMER_METRIC.ERROR_AT.RT
+            [
+              newDestInputArray,
+              { ...getCommonMetadata(ctx), ...getReqMetadata() }
+            ],
+            tags.FEATURES.ROUTER
           );
         }
         if (routerDestHandler.processMetadataForRouter) {
@@ -487,6 +509,8 @@ async function routerHandleDest(ctx) {
         respEvents.push(...listOutput);
       })
     );
+
+    // Add default stat tags
     respEvents
       .filter(
         resp =>
@@ -495,24 +519,29 @@ async function routerHandleDest(ctx) {
           !_.isEmpty(resp.statTags)
       )
       .forEach(resp => {
-        set(resp, "statTags.errorAt", TRANSFORMER_METRIC.ERROR_AT.RT);
+        resp.statTags = {
+          ...resp.statTags,
+          ...defTags,
+          [tags.TAG_NAMES.DESTINATION_ID]: resp.metadata[0]?.destinationId,
+          [tags.TAG_NAMES.WORKSPACE_ID]: resp.metadata[0]?.workspaceId
+        };
       });
   } catch (error) {
     logger.error(error);
-    const errObj = generateErrorObject(
-      error,
-      destType,
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-    );
+
+    const errObj = generateErrorObject(error, defTags);
 
     const resp = {
       statusCode: errObj.status,
-      error: errObj.message || "Error occurred while processing the payload.",
-      statTags: {
-        ...errObj.statTags,
-        errorAt: TRANSFORMER_METRIC.ERROR_AT.RT
-      }
+      error: errObj.message,
+      statTags: errObj.statTags
     };
+
+    errNotificationClient.notify(error, "Router Transformation", {
+      ...resp,
+      ...getCommonMetadata(ctx),
+      ...getReqMetadata()
+    });
 
     respEvents.push(resp);
   }
@@ -526,7 +555,7 @@ if (startDestTransformer) {
       path.resolve(__dirname, `./${version}/destinations`)
     );
     destinations.push(
-      ...getIntegrations(path.resolve(__dirname, `./${CDK_DEST_PATH}`))
+      ...getIntegrations(path.resolve(__dirname, `./${CDK_V1_DEST_PATH}`))
     );
     destinations.forEach(destination => {
       // eg. v0/destinations/ga
@@ -875,10 +904,28 @@ async function handleSource(ctx, version, source) {
         }
       } catch (error) {
         logger.error(error);
+
+        // TODO: Update the data contact for source transformation
+        // and then send the following additional information
+        // const errObj = generateErrorObject(error, {
+        //   [tags.TAG_NAMES.SRC_TYPE]: source.toUpperCase(),
+        //   [tags.TAG_NAMES.MODULE]: tags.MODULES.SOURCE,
+        //   [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
+        //   [tags.TAG_NAMES.FEATURE]: tags.FEATURES.PROCESSOR
+        //   [tags.TAG_NAMES.SOURCE_ID]: TBD
+        // });
+
+        // const resp = {
+        //   statusCode: errObj.status,
+        //   error: errObj.message,
+        //   statTags: errObj.statTags
+        // };
+
         const resp = {
           statusCode: 400,
           error: error.message || "Error occurred while processing payload."
         };
+
         respList.push(resp);
         stats.counter("source_transform_errors", events.length, {
           source,
@@ -966,18 +1013,30 @@ async function handleProxyRequest(destination, ctx) {
   } catch (err) {
     logger.error("Error occurred while completing proxy request:");
     logger.error(err);
-    response = generateErrorObject(
-      err,
-      destination,
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
-    );
-    response.statTags = {
-      errorAt: TRANSFORMER_METRIC.ERROR_AT.PROXY,
-      ...response.statTags
+
+    const errObj = generateErrorObject(err, {
+      [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),
+      [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+      [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
+      [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY,
+      [tags.TAG_NAMES.DESTINATION_ID]: metadata?.destinationId,
+      [tags.TAG_NAMES.WORKSPACE_ID]: metadata?.workspaceId
+    });
+
+    response = {
+      status: errObj.status,
+      ...(errObj.authErrorCategory && {
+        authErrorCategory: errObj.authErrorCategory
+      }),
+      destinationResponse: errObj.destinationResponse,
+      message: errObj.message,
+      statTags: errObj.statTags
     };
+
     stats.counter("tf_proxy_err_count", 1, {
       destination
     });
+
     errNotificationClient.notify(err, "Data Delivery", {
       ...response,
       ...getCommonMetadata(ctx),
@@ -1076,16 +1135,19 @@ const batchHandler = ctx => {
       const destBatchedRequests = destHandler.batch(destEvents);
       response.batchedRequests.push(...destBatchedRequests);
     } catch (error) {
-      const errorObj = generateErrorObject(
-        error,
-        destType,
-        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-      );
+      const errorObj = generateErrorObject(error, {
+        [tags.TAG_NAMES.DEST_TYPE]: destType.toUpperCase(),
+        [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+        [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
+        [tags.TAG_NAMES.FEATURE]: tags.FEATURES.BATCH,
+        [tags.TAG_NAMES.DESTINATION_ID]: destEvents[0].metadata?.destinationId,
+        [tags.TAG_NAMES.WORKSPACE_ID]: destEvents[0].metadata?.workspaceId
+      });
       const errResp = getErrorRespEvents(
         destEvents.map(d => d.metadata),
-        500,
-        error.message || "Error occurred while processing payload.",
-        { errorAt: TRANSFORMER_METRIC.ERROR_AT.BATCH, ...errorObj.statTags }
+        500, // not using errorObj.status
+        errorObj.message,
+        errorObj.statTags
       );
       response.errors.push(errResp);
       errNotificationClient.notify(error, "Batch Transformation", {
@@ -1284,21 +1346,28 @@ const handleDeletionOfUsers = async ctx => {
           respList.push(response);
         }
       } catch (error) {
+        const errObj = generateErrorObject(error, {
+          [tags.TAG_NAMES.DEST_TYPE]: destType.toUpperCase(),
+          [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+          [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
+          [tags.TAG_NAMES.FEATURE]: tags.FEATURES.USER_DELETION
+        });
+
         // adding the status to the request
-        const errorStatus = getErrorStatusCode(error);
-        ctx.status = errorStatus;
+        ctx.status = errObj.status;
         const resp = {
-          statusCode: errorStatus,
-          error: error.message || "Error occurred while processing"
+          statusCode: errObj.status,
+          error: errObj.message,
+          ...(errObj.authErrorCategory && {
+            authErrorCategory: errObj.authErrorCategory
+          })
         };
-        // Support for OAuth refresh
-        if (error.authErrorCategory) {
-          resp.authErrorCategory = error.authErrorCategory;
-        }
+
         respList.push(resp);
         logger.error(
           `Error Response List: ${JSON.stringify(respList, null, 2)}`
         );
+
         errNotificationClient.notify(error, "User Deletion", {
           ...resp,
           ...getCommonMetadata(ctx),

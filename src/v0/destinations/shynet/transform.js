@@ -5,11 +5,10 @@ const {
   constructPayload,
   defaultRequestConfig,
   removeUndefinedAndNullValues,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError,
+  simpleProcessRouterDest,
   generateUUID
 } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const { ConfigCategory, mappingConfig } = require("./config");
 
@@ -41,10 +40,7 @@ function process(event) {
   const { shynetServiceUrl } = destination.Config;
 
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   const messageType = message.type.toLowerCase();
@@ -53,46 +49,14 @@ function process(event) {
     case EventType.PAGE:
       return processPage(message, shynetServiceUrl);
     default:
-      throw new CustomError("Message type is not supported", 400);
+      throw new InstrumentationError(
+        `Event type "${messageType}" is not supported`
+      );
   }
 }
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

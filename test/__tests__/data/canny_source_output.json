@@ -762,6 +762,6 @@
     "message": "Missing essential fields from Canny. Error: (TypeError [ERR_INVALID_ARG_TYPE]: The first argument must be of type string or an instance of Buffer, ArrayBuffer, or Array or an Array-like Object. Received null)"
   },
   {
-    "message": "Missing essential fields from Canny."
+    "message": "Missing essential fields from Canny"
   }
 ]

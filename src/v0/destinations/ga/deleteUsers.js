@@ -1,6 +1,10 @@
 const { isEmpty } = require("lodash");
 const { httpPOST } = require("../../../adapters/network");
-const ErrorBuilder = require("../../util/error");
+
+const {
+  InstrumentationError,
+  OAuthSecretError
+} = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
 const { GA_USER_DELETION_ENDPOINT } = require("./config");
 const { gaResponseHandler } = require("./networkHandler");
@@ -17,23 +21,17 @@ const prepareDeleteRequest = (userAttributes, config, rudderDestInfo) => {
   const { secret } = rudderDestInfo;
   // TODO: Should we do more validations ?
   if (secret && isEmpty(secret)) {
-    throw new ErrorBuilder()
-      .setMessage(
-        // This would happen when server doesn't send "x-rudder-dest-info" header
-        // Todo's in-case this exception happen:
-        // 1. The server version might be an older one
-        // 2. There would have been some problem with how we are sending this header
-        `The "secret" field is not sent in "x-rudder-dest-info" header`
-      )
-      .setStatus(500)
-      .build();
+    throw new OAuthSecretError(
+      // This would happen when server doesn't send "x-rudder-dest-info" header
+      // Todo's in-case this exception happen:
+      // 1. The server version might be an older one
+      // 2. There would have been some problem with how we are sending this header
+      `The "secret" field is not sent in "x-rudder-dest-info" header`
+    );
   }
   const requests = userAttributes.map(userAttribute => {
     if (!userAttribute.userId) {
-      throw new ErrorBuilder()
-        .setMessage("User id for deletion not present")
-        .setStatus(400)
-        .build();
+      throw new InstrumentationError("User id for deletion not present");
     }
     // Reference for building userDeletionRequest
     // Ref: https://developers.google.com/analytics/devguides/config/userdeletion/v3/reference/userDeletion/userDeletionRequest#resource

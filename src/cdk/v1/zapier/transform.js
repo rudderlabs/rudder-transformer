@@ -1,4 +1,4 @@
-const { getHashFromArray } = require("../../v0/util");
+const { getHashFromArray } = require("../../../v0/util");
 
 function commonPostMapper(event, mappedPayload, rudderContext) {
   const { message, destination } = event;

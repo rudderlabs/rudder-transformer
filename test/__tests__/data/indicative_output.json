@@ -401,7 +401,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Message type not supported"
+    "error": "Message type group not supported"
   },
   [
     {

@@ -75,7 +75,7 @@ function executeTransformationTest(dest, transformAt) {
   const routerCommonTestParams = routerCommonformTestParams();
   const { iscdkDest, expected, input } = testParams;
   const { commonInput, commonExpected } = routerCommonTestParams;
-  const basePath = path.resolve(__dirname, "../../../src/cdk");
+  const basePath = path.resolve(__dirname, "../../../src/cdk/v1");
   ConfigFactory.init({ basePath, loggingMode: "production" });
 
   describe(`${dest} ${transformAt} tests`, () => {

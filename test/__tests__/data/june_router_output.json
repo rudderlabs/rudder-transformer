@@ -49,10 +49,8 @@
       }
     ],
     "statTags": {
-      "destType": "JUNE",
-      "scope": "transformation",
-      "meta": "handled",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     },
     "statusCode": 400
   }

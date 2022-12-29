@@ -1,8 +1,11 @@
 const { handleHttpRequest } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util");
 const Cache = require("../../util/cache");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { ApiError } = require("../../util/errors");
+const {
+  RetryableError,
+  ThrottledError,
+  AbortedError
+} = require("../../util/errorTypes");
 const {
   ACCESS_TOKEN_CACHE_TTL,
   SF_TOKEN_REQUEST_URL_SANDBOX,
@@ -20,12 +23,7 @@ const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
  * @param {*} stage
  * @param {String} authKey
  */
-const salesforceResponseHandler = (
-  destResponse,
-  sourceMessage,
-  stage,
-  authKey
-) => {
+const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
   const { status, response } = destResponse;
 
   // if the response from destination is not a success case build an explicit error
@@ -40,46 +38,24 @@ const salesforceResponseHandler = (
       // checking for invalid/expired token errors and evicting cache in that case
       // rudderJobMetadata contains some destination info which is being used to evict the cache
       ACCESS_TOKEN_CACHE.del(authKey);
-      throw new ApiError(
+      throw new RetryableError(
         `${DESTINATION} Request Failed - due to ${response[0].message}, (Retryable).${sourceMessage}`,
         500,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE,
-          stage
-        },
-        destResponse,
-        undefined,
-        DESTINATION
+        destResponse
       );
     } else if (status === 403 && matchErrorCode("REQUEST_LIMIT_EXCEEDED")) {
       // If the error code is REQUEST_LIMIT_EXCEEDED, you’ve exceeded API request limits in your org.
-      throw new ApiError(
+      throw new ThrottledError(
         `${DESTINATION} Request Failed - due to ${response[0].message}, (Throttled).${sourceMessage}`,
-        429,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.THROTTLED,
-          stage
-        },
-        destResponse,
-        undefined,
-        DESTINATION
+        destResponse
       );
     } else if (status === 503) {
       // The salesforce server is unavailable to handle the request. Typically this occurs if the server is down
       // for maintenance or is currently overloaded.
-      throw new ApiError(
+      throw new RetryableError(
         `${DESTINATION} Request Failed - due to ${response[0].message}, (Retryable).${sourceMessage}`,
         500,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-          meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE,
-          stage
-        },
-        destResponse,
-        undefined,
-        DESTINATION
+        destResponse
       );
     }
     // check the error message
@@ -88,17 +64,10 @@ const salesforceResponseHandler = (
       errorMessage = response[0].message;
     }
 
-    throw new ApiError(
+    throw new AbortedError(
       `${DESTINATION} Request Failed: ${status} due to ${errorMessage}, (Aborted). ${sourceMessage}`,
       400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE,
-        stage
-      },
-      destResponse,
-      undefined,
-      DESTINATION
+      destResponse
     );
   }
 };

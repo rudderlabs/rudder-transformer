@@ -1,6 +1,11 @@
 const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
+  InstrumentationError,
+  ConfigurationError,
+  PlatformError
+} = require("../../util/errorTypes");
+const {
   getValueFromMessage,
   constructPayload,
   defaultRequestConfig,
@@ -24,7 +29,7 @@ const {
 const trackResponseBuilder = (message, { Config }) => {
   let event = getValueFromMessage(message, "event");
   if (!event) {
-    throw new TransformationError("event is required for track call");
+    throw new InstrumentationError("event is required for track call");
   }
   event = event.trim().toLowerCase();
   let payload = constructPayload(message, trackMapping);
@@ -34,7 +39,7 @@ const trackResponseBuilder = (message, { Config }) => {
     getValueFromMessage(message, "properties.eventType") || eventMapping[event];
 
   if (!payload.eventType) {
-    throw new TransformationError("eventType is mandatory for track call");
+    throw new InstrumentationError("eventType is mandatory for track call");
   }
   payload = genericpayloadValidator(payload);
 
@@ -57,7 +62,7 @@ const trackResponseBuilder = (message, { Config }) => {
       }
       // making size of object list and position list equal
       if (posLen > 0 && objLen > 0 && posLen !== objLen) {
-        throw new TransformationError(
+        throw new InstrumentationError(
           "length of objectId and position should be equal"
         );
       }
@@ -65,10 +70,10 @@ const trackResponseBuilder = (message, { Config }) => {
   }
   // for all events either filter or objectID should be there
   if (!payload.filters && !payload.objectIDs) {
-    throw new TransformationError("Either filters or  objectIds is required.");
+    throw new InstrumentationError("Either filters or  objectIds is required.");
   }
   if (payload.filters && payload.objectIDs) {
-    throw new TransformationError(
+    throw new InstrumentationError(
       "event can't have both objectIds and filters at the same time."
     );
   }
@@ -89,16 +94,16 @@ const trackResponseBuilder = (message, { Config }) => {
 const process = event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new TransformationError(
+    throw new InstrumentationError(
       "message Type is not present. Aborting message."
     );
   }
 
   if (!destination.Config.apiKey) {
-    throw new TransformationError("Invalid Api Key");
+    throw new ConfigurationError("Invalid Api Key");
   }
   if (!destination.Config.applicationId) {
-    throw new TransformationError("Invalid Application Id");
+    throw new ConfigurationError("Invalid Application Id");
   }
   const messageType = message.type.toLowerCase();
 
@@ -108,16 +113,16 @@ const process = event => {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new TransformationError(
+      throw new InstrumentationError(
         `message type ${messageType} not supported`
       );
   }
   return response;
 };
 
-const processRouterDest = async inputs => {
+const processRouterDest = async (inputs, reqMetadata) => {
   if (!Array.isArray(inputs) || inputs.length === 0) {
-    throw new TransformationError("Invalid event array");
+    throw new PlatformError("Invalid event array");
   }
 
   const inputChunks = returnArrayOfSubarrays(inputs, MAX_BATCH_SIZE);
@@ -141,7 +146,7 @@ const processRouterDest = async inputs => {
         const errRespEvent = handleRtTfSingleEventError(
           input,
           error,
-          "ALGOLIA"
+          reqMetadata
         );
         errorList.push(errRespEvent);
       }

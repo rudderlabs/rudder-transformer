@@ -2,7 +2,11 @@
 /* eslint-disable no-param-reassign */
 const { httpPOST } = require("../../../adapters/network");
 const { generateUUID } = require("../../util");
-const ErrorBuilder = require("../../util/error");
+const {
+  ConfigurationError,
+  InstrumentationError,
+  RetryableError
+} = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
 
 /**
@@ -30,12 +34,9 @@ const deleteUser = async (endpoint, body, identityType, identityValue) => {
  */
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config?.apiToken || !(config?.appleAppId || config?.androidAppId)) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "API Token and one of Apple ID or Android App Id are required fields for user deletion"
-      )
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError(
+      "API Token and one of Apple ID or Android App Id are required fields for user deletion"
+    );
   }
   const body = {
     subject_request_type: "erasure",
@@ -52,10 +53,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       }
     );
     if (filteredStatusCallbackUrlsArray.length > 3) {
-      throw new ErrorBuilder()
-        .setMessage("you can send atmost 3 callBackUrls")
-        .setStatus(400)
-        .build();
+      throw new ConfigurationError("you can send atmost 3 callBackUrls");
     }
     body.status_callback_urls = filteredStatusCallbackUrlsArray;
   }
@@ -74,21 +72,15 @@ const userDeletionHandler = async (userAttributes, config) => {
         userAttributes[i].appsflyer_id
       );
       if (!response || !response.response) {
-        throw new ErrorBuilder()
-          .setMessage("Could not get response")
-          .setStatus(500)
-          .build();
+        throw new RetryableError("Could not get response");
       }
     } else {
       if (userAttributeKeys.includes("ios_advertising_id")) {
         body.property_id = config.appleAppId;
         if (!body.property_id) {
-          throw new ErrorBuilder()
-            .setMessage(
-              "appleAppId is required for ios_advertising_id type identifier"
-            )
-            .setStatus(500)
-            .build();
+          throw new ConfigurationError(
+            "appleAppId is required for ios_advertising_id type identifier"
+          );
         }
         const response = await deleteUser(
           endpoint,
@@ -97,21 +89,15 @@ const userDeletionHandler = async (userAttributes, config) => {
           userAttributes[i].ios_advertising_id
         );
         if (!response || !response.response) {
-          throw new ErrorBuilder()
-            .setMessage("Could not get response")
-            .setStatus(500)
-            .build();
+          throw new RetryableError("Could not get response");
         }
       }
       if (userAttributeKeys.includes("android_advertising_id")) {
         body.property_id = config.androidAppId;
         if (!body.property_id) {
-          throw new ErrorBuilder()
-            .setMessage(
-              "androidAppId is required for android_advertising_id type identifier"
-            )
-            .setStatus(500)
-            .build();
+          throw new ConfigurationError(
+            "androidAppId is required for android_advertising_id type identifier"
+          );
         }
         const response = await deleteUser(
           endpoint,
@@ -120,10 +106,7 @@ const userDeletionHandler = async (userAttributes, config) => {
           userAttributes[i].android_advertising_id
         );
         if (!response || !response.response) {
-          throw new ErrorBuilder()
-            .setMessage("Could not get response")
-            .setStatus(500)
-            .build();
+          throw new RetryableError("Could not get response");
         }
       }
     }
@@ -133,12 +116,9 @@ const userDeletionHandler = async (userAttributes, config) => {
       !userAttributes[i].ios_advertising_id &&
       !userAttributes[i].appsflyer_id
     ) {
-      throw new ErrorBuilder()
-        .setMessage(
-          "none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion"
-        )
-        .setStatus(400)
-        .build();
+      throw new InstrumentationError(
+        "none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion"
+      );
     }
   }
   return { statusCode: 200, status: "successful" };

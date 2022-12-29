@@ -1,4 +1,4 @@
-const { postMapper } = require("../../../src/cdk/dcm_floodlight/transform");
+const { postMapper } = require("../../../src/cdk/v1/dcm_floodlight/transform");
 
 describe("Unit Test for postMapper", () => {
   it("should update the rudderContext with userAgent and valid endpoint", () => {

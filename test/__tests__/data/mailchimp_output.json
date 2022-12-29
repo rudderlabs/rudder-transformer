@@ -59,7 +59,7 @@
     "audienceId": "df42a82d07"
   },
   {
-    "error": "[Mailchimp]:: User does not have access to the requested operation"
+    "error": "User does not have access to the requested operation"
   },
   {
     "error": "message type page is not supported"
@@ -94,7 +94,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[Mailchimp] :: Email is required for identify",
+    "error": "Email is required for identify",
     "statTags": {
       "destination": "mailchimp",
       "stage": "transform",

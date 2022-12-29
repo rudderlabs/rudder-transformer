@@ -1,16 +1,17 @@
 const _ = require("lodash");
 const { httpDELETE } = require("../../../adapters/network");
-const ErrorBuilder = require("../../util/error");
+const { MAX_BATCH_SIZE, DELETE_CONTACTS_ENDPOINT } = require("./config");
 const {
-  MAX_BATCH_SIZE,
-  DESTINATION,
-  DELETE_CONTACTS_ENDPOINT
-} = require("./config");
-const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -21,29 +22,11 @@ const { TRANSFORMER_METRIC } = require("../../util/constant");
 const userDeletionHandler = async (userAttributes, config) => {
   const { apiKey } = config;
   if (!Array.isArray(userAttributes)) {
-    throw new ErrorBuilder()
-      .setMessage("[SendGrid] :: userAttributes is not an array")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("userAttributes is not an array");
   }
 
   if (!apiKey) {
-    throw new ErrorBuilder()
-      .setMessage("[SendGrid] :: apiKey is required for deleting user")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new ConfigurationError("ApiKey is required for deleting user");
   }
 
   let endpoint = DELETE_CONTACTS_ENDPOINT;
@@ -68,17 +51,16 @@ const userDeletionHandler = async (userAttributes, config) => {
     const deletionRespone = await httpDELETE(endpoint, requestOptions);
     const processedDeletionRespone = processAxiosResponse(deletionRespone);
     if (!isHttpStatusSuccess(processedDeletionRespone.status)) {
-      throw new ErrorBuilder()
-        .setMessage("[SendGrid]::Deletion Request is not successful")
-        .setStatus(400)
-        .setStatTags({
-          destType: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        })
-        .build();
+      throw new NetworkError(
+        "Deletion Request is not successful",
+        processedDeletionRespone.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+            processedDeletionRespone.status
+          )
+        },
+        processedDeletionRespone
+      );
     }
   });
 

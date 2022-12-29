@@ -18,14 +18,16 @@ const {
   defaultDeleteRequestConfig,
   getFieldValueFromMessage,
   constructPayload,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError,
+  simpleProcessRouterDest,
   defaultPutRequestConfig,
   isEmptyObject
 } = require("../../util");
 const logger = require("../../../logger");
 const { httpGET } = require("../../../adapters/network");
+const {
+  NetworkInstrumentationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 let endPoint;
 
@@ -319,10 +321,7 @@ async function createUser(message, headers, destinationConfig, type) {
 
     if (!resp.data || !resp.data.user || !resp.data.user.id) {
       logger.debug(`Couldn't create User: ${name}`);
-      throw new CustomError(
-        "user not found",
-        resp.status || resp.data.status || 400
-      );
+      throw new NetworkInstrumentationError("user not found");
     }
 
     const userID = resp.data.user.id;
@@ -331,7 +330,7 @@ async function createUser(message, headers, destinationConfig, type) {
   } catch (error) {
     logger.debug(error);
     logger.debug(`Couldn't find user: ${name}`);
-    throw new CustomError(`Couldn't find user: ${name}`, error.status || 400);
+    throw new NetworkInstrumentationError(`Couldn't find user: ${name}`);
   }
 }
 
@@ -354,7 +353,7 @@ async function getUserMembershipPayload(
       );
       zendeskUserID = zendeskUserId;
     } else {
-      throw new CustomError("User not found", 400);
+      throw new InstrumentationError("User not found");
     }
   }
   const payload = {
@@ -430,8 +429,8 @@ async function createOrganization(
 
 function validateUserId(message) {
   if (!message.userId) {
-    throw new CustomError(
-      `Zendesk : UserId is a mandatory field for ${message.type}`,
+    throw new InstrumentationError(
+      `UserId is a mandatory field for ${message.type}`,
       400
     );
   }
@@ -527,7 +526,7 @@ async function processTrack(message, destinationConfig, headers) {
     userEmail = traits.email ? traits.email : null;
   }
   if (!userEmail) {
-    throw new CustomError("email not found in traits.", 400);
+    throw new InstrumentationError("email not found in traits.", 400);
   }
   let zendeskUserID;
 
@@ -541,10 +540,10 @@ async function processTrack(message, destinationConfig, headers) {
       destinationConfig
     );
     if (!zendeskUserId) {
-      throw new CustomError("user not found", 400);
+      throw new NetworkInstrumentationError("User not found");
     }
     if (!email) {
-      throw new CustomError("user email not found", 400);
+      throw new NetworkInstrumentationError("User email not found", 400);
     }
     zendeskUserID = zendeskUserId;
     userEmail = email;
@@ -591,9 +590,8 @@ async function processGroup(message, destinationConfig, headers) {
       destinationConfig
     );
     if (!orgId) {
-      throw new CustomError(
-        `Couldn't create user membership for user having external id ${message.userId} as Organization ${message.traits.name} wasn't created`,
-        400
+      throw new NetworkInstrumentationError(
+        `Couldn't create user membership for user having external id ${message.userId} as Organization ${message.traits.name} wasn't created`
       );
     }
     // adds an organization against a user and can add multiple organisation. the last one does not override but adds to the previously added organizations.
@@ -608,9 +606,8 @@ async function processGroup(message, destinationConfig, headers) {
 
     const userId = payload.organization_membership.user_id;
     if (await isUserAlreadyAssociated(userId, orgId, headers)) {
-      throw new CustomError(
-        "user is already associated with organization",
-        400
+      throw new InstrumentationError(
+        "User is already associated with organization"
       );
     }
   }
@@ -647,7 +644,9 @@ async function processSingleMessage(event) {
     case EventType.TRACK:
       return processTrack(message, destinationConfig, headers);
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
 }
 
@@ -657,43 +656,8 @@ async function process(event) {
   return resp;
 }
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          // eslint-disable-next-line no-nested-ternary
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

@@ -58,8 +58,12 @@
         "jobId": 2
       }
     ],
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    },
     "batched": false,
     "statusCode": 400,
-    "error": "Message type identify not supported"
+    "error": "Event type identify is not supported"
   }
 ]

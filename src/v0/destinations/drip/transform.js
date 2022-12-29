@@ -5,7 +5,6 @@ const {
   constructPayload,
   extractCustomFields,
   isEmptyObject,
-  CustomError,
   removeUndefinedAndNullValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -32,7 +31,11 @@ const {
   createUpdateUser,
   createList
 } = require("./util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+const {
+  InstrumentationError,
+  ConfigurationError,
+  NetworkInstrumentationError
+} = require("../../util/errorTypes");
 
 const identifyResponseBuilder = async (message, { Config }) => {
   const id = getDestinationExternalID(message, "dripId");
@@ -45,7 +48,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
 
   const userId = getFieldValueFromMessage(message, "userId");
   if (!(id || email)) {
-    throw new CustomError("dripId or email is required for the call", 400);
+    throw new InstrumentationError("dripId or email is required for the call");
   }
 
   let payload = constructPayload(message, identifyMapping);
@@ -98,7 +101,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   if (campaignId && email) {
     const check = await createUpdateUser(finalpayload, Config, basicAuth);
     if (!check) {
-      throw new CustomError("Unable to create/update user.", 400);
+      throw new NetworkInstrumentationError("Unable to create/update user.");
     }
 
     let campaignPayload = constructPayload(message, campaignMapping);
@@ -131,21 +134,20 @@ const trackResponseBuilder = async (message, { Config }) => {
     logger.error("Enter correct email format.");
   }
   if (!id && !email) {
-    throw new CustomError("Drip Id or email is required.", 400);
+    throw new InstrumentationError("Drip Id or email is required.");
   }
 
   let event = getValueFromMessage(message, "event");
   if (!event) {
-    throw new CustomError("Event name is required", 400);
+    throw new InstrumentationError("Event name is required");
   }
   event = event.trim().toLowerCase();
 
   if (!Config.enableUserCreation && !id) {
     const check = await userExists(Config, email);
     if (!check) {
-      throw new CustomError(
-        "User creation mode is disabled and user does not exist. Track call aborted.",
-        400
+      throw new NetworkInstrumentationError(
+        "User creation mode is disabled and user does not exist. Track call aborted."
       );
     }
   }
@@ -221,16 +223,15 @@ const trackResponseBuilder = async (message, { Config }) => {
 const process = async event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   if (!destination.Config.accountId) {
-    throw new CustomError("Invalid Account Id. Aborting message.", 400);
+    throw new ConfigurationError("Invalid Account Id. Aborting message.");
   }
   if (!destination.Config.apiKey) {
-    throw new CustomError("Inavalid API Key. Aborting message.", 400);
+    throw new ConfigurationError("Inavalid API Key. Aborting message.");
   }
 
   const messageType = message.type.toLowerCase();
@@ -244,13 +245,15 @@ const process = async event => {
       response = await trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `Message type ${messageType} not supported`
+      );
   }
   return response;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "DRIP", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

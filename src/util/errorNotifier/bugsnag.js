@@ -6,8 +6,22 @@ const {
 } = require("rudder-transformer-cdk/build/error/index");
 const { logger } = require("../../logger");
 const pkg = require("../../../package.json");
-const { CustomError } = require("../../v0/util");
-const { ApiError, TransformationError } = require("../../v0/util/errors");
+const {
+  BaseError,
+  TransformationError,
+  ConfigurationError,
+  InstrumentationError,
+  PlatformError,
+  OAuthSecretError,
+  NetworkError,
+  ThrottledError,
+  RetryableError,
+  InvalidAuthTokenError,
+  AbortedError,
+  UnhandledStatusCodeError,
+  UnauthorizedError,
+  NetworkInstrumentationError
+} = require("../../v0/util/errorTypes");
 
 const {
   BUGSNAG_API_KEY: apiKey,
@@ -15,9 +29,20 @@ const {
 } = process.env;
 
 const errorTypesDenyList = [
-  CustomError,
-  ApiError,
+  BaseError,
   TransformationError,
+  ConfigurationError,
+  InstrumentationError,
+  PlatformError,
+  OAuthSecretError,
+  NetworkError,
+  ThrottledError,
+  RetryableError,
+  InvalidAuthTokenError,
+  AbortedError,
+  UnhandledStatusCodeError,
+  UnauthorizedError,
+  NetworkInstrumentationError,
   CDKCustomError,
   DataValidationError
 ];
@@ -50,11 +75,6 @@ function notify(err, context, metadata) {
     });
 
     if (isDeniedErrType) return;
-
-    // For errors thrown in the code using ErrorBuilder
-    // TODO: This need to be cleaned up once the entire code base
-    // moves into a consistent error reporting format
-    if (err.isExpected === true) return;
 
     bugsnagClient.notify(err, event => {
       event.context = context;

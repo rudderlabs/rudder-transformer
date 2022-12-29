@@ -3,9 +3,12 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   removeUndefinedAndNullValues,
-  getFieldValueFromMessage,
-  CustomError
+  getFieldValueFromMessage
 } = require("../../util");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 function responseBuilderSimple(payload, attributionConfig) {
   const basicAuth = Buffer.from(`${attributionConfig.writeKey}:`).toString(
@@ -28,7 +31,7 @@ function responseBuilderSimple(payload, attributionConfig) {
 
 function getTransformedJSON(message) {
   if (!message.type) {
-    throw new CustomError("Event type is required");
+    throw new InstrumentationError("Event type is required");
   }
 
   const traits = getFieldValueFromMessage(message, "traits");
@@ -47,7 +50,7 @@ function getTransformedJSON(message) {
 function getAttributionConfig(destination) {
   const { writeKey } = destination.Config;
   if (!writeKey) {
-    throw new CustomError("No writeKey in config");
+    throw new ConfigurationError("No writeKey in config");
   }
 
   return { writeKey };

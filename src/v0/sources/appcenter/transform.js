@@ -6,7 +6,9 @@ const mappingJson = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
 );
 
-const { removeUndefinedAndNullValues, CustomError } = require("../../util");
+const { removeUndefinedAndNullValues } = require("../../util");
+
+const { TransformationError } = require("../../util/errorTypes");
 
 function guidGenerator() {
   const S4 = () =>
@@ -38,7 +40,7 @@ function processEvent(event) {
   ) {
     message.setEventName("App Crashed");
   } else {
-    throw new CustomError("Unknown event type from Appcenter");
+    throw new TransformationError(`Unknown event type from Appcenter`);
   }
   const properties = { ...event };
   message.setProperty("properties", properties);

@@ -1,9 +1,9 @@
 const {
   getIntegrationsObj,
   getFieldValueFromMessage,
-  CustomError,
   getBrowserInfo
 } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 // For mapping device_type value
 const deviceTypeMapping = {
@@ -60,9 +60,8 @@ const populateDeviceType = (message, payload) => {
     devicePayload.device_type = parseInt(integrationsObj.deviceType);
     devicePayload.identifier = integrationsObj.identifier;
     if (!validateDeviceType(devicePayload.device_type)) {
-      throw new CustomError(
-        `device_type ${devicePayload.device_type} is not a valid device_type`,
-        400
+      throw new InstrumentationError(
+        `device_type ${devicePayload.device_type} is not a valid device_type`
       );
     }
   }

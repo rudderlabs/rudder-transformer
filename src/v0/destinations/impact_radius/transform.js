@@ -39,17 +39,11 @@ const responseBuilder = (payload, endpoint, Config) => {
   );
 };
 
-/**
- * This function is used to build the response for identify/page call.
- * @param {*} message
- * @param {*} category
- * @param {*} Config
- * @returns
- */
-const identifyResponseBuilder = (message, category, Config) => {
-  const { campaignId } = Config;
-
-  const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+const buildPageLoadResponse = (message, campaignId, rudderToImpactProperty) => {
+  let payload = constructPayload(
+    message,
+    MAPPING_CONFIG[CONFIG_CATEGORIES.PAGELOAD]
+  );
   payload.CustomerEmail = isDefinedAndNotNull(payload.CustomerEmail)
     ? sha1(payload.CustomerEmail)
     : payload.CustomerEmail;
@@ -63,46 +57,145 @@ const identifyResponseBuilder = (message, category, Config) => {
     payload.AndroidId = get(message, "context.device.id");
     payload.GoogAId = get(message, "context.device.advertisingId");
   }
-  return responseBuilder(payload, category.endpoint, Config);
+  const additionalParameters = populateAdditionalParameters(
+    message,
+    rudderToImpactProperty
+  );
+  payload = { ...payload, ...additionalParameters };
+  return payload;
+};
+
+/**
+ * This function is used to build the response for identify call.
+ * @param {*} message
+ * @param {*} category
+ * @param {*} Config
+ * @returns
+ */
+const identifyResponseBuilder = (message, Config) => {
+  const { campaignId, enableIdentifyEvents, rudderToImpactProperty } = Config;
+
+  if (!enableIdentifyEvents) {
+    throw new ConfigurationError(
+      `${message.type} events are disabled from Config`
+    );
+  }
+
+  return responseBuilder(
+    buildPageLoadResponse(message, campaignId, rudderToImpactProperty),
+    CONFIG_CATEGORIES.PAGELOAD.endPoint,
+    Config
+  );
 };
 
 /**
  * This function is used to build the response for track call.
  * @param {*} message
- * @param {*} category
  * @param {*} Config
  * @returns
  */
-const trackResponseBuilder = (message, category, Config) => {
+const trackResponseBuilder = (message, Config) => {
   const {
     campaignId,
     eventTypeId,
     impactAppId,
+    actionEventNames,
+    installEventNames,
     rudderToImpactProperty
   } = Config;
-  let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-  payload.CampaignId = campaignId;
-  payload.EventTypeId = eventTypeId;
-  payload.ImpactAppId = impactAppId;
-  payload.EventCode = "INSTALL";
-  payload.CustomerEmail = isDefinedAndNotNull(payload.CustomerEmail)
-    ? sha1(payload.CustomerEmail)
-    : payload.CustomerEmail;
-  const os = get(message, "context.os.name");
-  if (os && isAppleFamily(os.toLowerCase())) {
-    payload.AppleIfv = get(message, "context.device.id");
-    payload.AppleIfa = get(message, "context.device.advertisingId");
-  } else if (os.toLowerCase() === "android") {
-    payload.AndroidId = get(message, "context.device.id");
-    payload.GoogAId = get(message, "context.device.advertisingId");
+
+  let eventType;
+  actionEventNames.forEach(eventName => {
+    if (eventName === message.event) {
+      eventType = "action";
+    }
+  });
+  installEventNames.forEach(eventName => {
+    if (eventName === message.event) {
+      eventType = "install";
+    }
+  });
+  if (!eventType) {
+    let payload = constructPayload(
+      message,
+      MAPPING_CONFIG[CONFIG_CATEGORIES.CONVERSION.name]
+    );
+    payload.CampaignId = campaignId;
+    payload.EventTypeId = eventTypeId;
+    payload.ImpactAppId = impactAppId;
+    payload.CustomerEmail = isDefinedAndNotNull(payload.CustomerEmail)
+      ? sha1(payload.CustomerEmail)
+      : payload.CustomerEmail;
+    const os = get(message, "context.os.name");
+    if (os && isAppleFamily(os.toLowerCase())) {
+      payload.AppleIfv = get(message, "context.device.id");
+      payload.AppleIfa = get(message, "context.device.advertisingId");
+    } else if (os.toLowerCase() === "android") {
+      payload.AndroidId = get(message, "context.device.id");
+      payload.GoogAId = get(message, "context.device.advertisingId");
+    }
+    const productProperties = populateProductProperties(message.properties);
+    const additionalParameters = populateAdditionalParameters(
+      message,
+      rudderToImpactProperty
+    );
+    if (eventType === "install" && payload.ClickId) {
+      delete payload.ClickId;
+    }
+    payload = { ...payload, ...productProperties, ...additionalParameters };
+
+    const endpoint = `${CONFIG_CATEGORIES.CONVERSION.base_url}/${Config.accountSID}/Conversions`;
+    return responseBuilder(payload, endpoint, Config);
   }
-  const productProperties = populateProductProperties(message.properties);
-  const additionalParameters = populateAdditionalParameters(
-    rudderToImpactProperty
+  return responseBuilder(
+    buildPageLoadResponse(message, campaignId),
+    CONFIG_CATEGORIES.PAGELOAD.endPoint,
+    Config
   );
-  payload = { ...payload, ...productProperties, ...additionalParameters };
-  const endpoint = `${category.baseUrl}/${Config.accountSID}/Conversions`;
-  return responseBuilder(payload, endpoint, Config);
+};
+
+/**
+ * This function is used to build the response for page call.
+ * @param {*} message
+ * @param {*} Config
+ * @returns
+ */
+const pageResponseBuilder = (message, Config) => {
+  const { campaignId, enablePageEvents, rudderToImpactProperty } = Config;
+
+  if (!enablePageEvents) {
+    throw new ConfigurationError(
+      `${message.type} events are disabled from Config`
+    );
+  }
+
+  return responseBuilder(
+    buildPageLoadResponse(message, campaignId, rudderToImpactProperty),
+    CONFIG_CATEGORIES.PAGELOAD.endPoint,
+    Config
+  );
+};
+
+/**
+ * This function is used to build the response for screen call.
+ * @param {*} message
+ * @param {*} Config
+ * @returns
+ */
+const screenResponseBuilder = (message, Config) => {
+  const { campaignId, enableScreenEvents, rudderToImpactProperty } = Config;
+
+  if (!enableScreenEvents) {
+    throw new ConfigurationError(
+      `${message.type} events are disabled from Config`
+    );
+  }
+
+  return responseBuilder(
+    buildPageLoadResponse(message, campaignId, rudderToImpactProperty),
+    CONFIG_CATEGORIES.PAGELOAD.endPoint,
+    Config
+  );
 };
 
 const processEvent = async (message, destination) => {
@@ -116,16 +209,18 @@ const processEvent = async (message, destination) => {
 
   const messageType = message.type.toLowerCase();
   let response;
-  let category;
   switch (messageType) {
     case EventType.IDENTIFY:
-    case EventType.PAGE:
-      category = CONFIG_CATEGORIES.IDENTIFY;
-      response = identifyResponseBuilder(message, category, destination.Config);
+      response = identifyResponseBuilder(message, destination.Config);
       break;
     case EventType.TRACK:
-      category = CONFIG_CATEGORIES.TRACK;
-      response = trackResponseBuilder(message, category, destination.Config);
+      response = trackResponseBuilder(message, destination.Config);
+      break;
+    case EventType.PAGE:
+      response = pageResponseBuilder(message, destination.Config);
+      break;
+    case EventType.SCREEN:
+      response = screenResponseBuilder(message, destination.Config);
       break;
     default:
       throw new InstrumentationError(

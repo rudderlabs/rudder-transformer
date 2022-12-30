@@ -161,7 +161,7 @@
   },
   {
     "destKey": "UserAgent",
-    "sourceKeys": ["context.userAgent"],
+    "sourceKeys": "context.userAgent",
     "sourceFromGenericMap": false,
     "required": false
   },
@@ -173,43 +173,49 @@
   },
   {
     "destKey": "AppName",
-    "sourceKeys": ["context.app.name"],
+    "sourceKeys": "context.app.name",
     "sourceFromGenericMap": false,
     "required": false
   },
   {
     "destKey": "AppPackage",
-    "sourceKeys": ["context.app.build"],
+    "sourceKeys": "context.app.build",
     "sourceFromGenericMap": false,
     "required": false
   },
   {
     "destKey": "AppVer",
-    "sourceKeys": ["context.app.version"],
+    "sourceKeys": "context.app.version",
     "sourceFromGenericMap": false,
     "required": false
   },
   {
     "destKey": "DeviceCarrier",
-    "sourceKeys": ["context.network.carrier"],
+    "sourceKeys": "context.network.carrier",
     "sourceFromGenericMap": false,
     "required": false
   },
   {
     "destKey": "DeviceLocale",
-    "sourceKeys": ["context.locale"],
+    "sourceKeys": "context.locale",
     "sourceFromGenericMap": false,
     "required": false
   },
   {
     "destKey": "DeviceMfr",
-    "sourceKeys": ["context.device.manufacturer"],
+    "sourceKeys": "context.device.manufacturer",
     "sourceFromGenericMap": false,
     "required": false
   },
   {
     "destKey": "DeviceModel",
-    "sourceKeys": ["context.device.model"],
+    "sourceKeys": "context.device.model",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "TrackingConsent",
+    "sourceKeys": "context.device.adTrackingEnabled",
     "sourceFromGenericMap": false,
     "required": false
   },
@@ -221,13 +227,13 @@
   },
   {
     "destKey": "DeviceOsVer",
-    "sourceKeys": ["context.os.version"],
+    "sourceKeys": "context.os.version",
     "sourceFromGenericMap": false,
     "required": false
   },
   {
     "destKey": "DeviceOsVer",
-    "sourceKeys": ["context.device.advertisingId"],
+    "sourceKeys": "context.device.advertisingId",
     "sourceFromGenericMap": false,
     "required": false
   }

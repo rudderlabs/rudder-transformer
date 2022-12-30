@@ -1,5 +1,15 @@
-const { array } = require("is");
+const get = require("get-value");
 const { isDefinedAndNotNull } = require("../../util");
+
+const itemMapping = {
+  ItemBrand: "brand",
+  ItemCategory: "category",
+  ItemName: "name",
+  ItemPrice: "price",
+  ItemPromoCode: "coupon",
+  ItemQuantity: "quantity",
+  ItemSku: "sku"
+};
 
 const checkConfigurationError = Config => {
   let emptyField;
@@ -18,21 +28,31 @@ const getPropertyName = (itemName, index) => {
   return propertyName;
 };
 
+const getProductsMapping = (productsMapping, itemName) => {
+  productsMapping.forEach(mapping => {
+    return mapping.to === itemName ? mapping.from : itemMapping[itemName];
+  });
+};
+
 const populateProductProperties = properties => {
   const { products } = properties;
   const productProperties = {};
   if (products && Array.isArray(products)) {
     products.forEach((item, index) => {
-      productProperties[getPropertyName("ItemBrand", index + 1)] = item.brand;
+      productProperties[getPropertyName("ItemBrand", index + 1)] =
+        item[getProductsMapping("ItemBrand")];
       productProperties[getPropertyName("ItemCategory", index + 1)] =
-        item.category;
-      productProperties[getPropertyName("ItemName", index + 1)] = item.name;
-      productProperties[getPropertyName("ItemPrice", index + 1)] = item.price;
+        item[getProductsMapping("ItemBrand")];
+      productProperties[getPropertyName("ItemName", index + 1)] =
+        item[getProductsMapping("ItemBrand")];
+      productProperties[getPropertyName("ItemPrice", index + 1)] =
+        item[getProductsMapping("ItemBrand")];
       productProperties[getPropertyName("ItemPromoCode", index + 1)] =
-        item.coupon;
+        item[getProductsMapping("ItemBrand")];
       productProperties[getPropertyName("ItemQuantity", index + 1)] =
-        item.quantity;
-      productProperties[getPropertyName("ItemSku", index + 1)] = item.sku;
+        item[getProductsMapping("ItemBrand")];
+      productProperties[getPropertyName("ItemSku", index + 1)] =
+        item[getProductsMapping("ItemBrand")];
     });
   } else {
     const index = 1;
@@ -50,10 +70,10 @@ const populateProductProperties = properties => {
   return productProperties;
 };
 
-const populateAdditionalParameters = parameters => {
+const populateAdditionalParameters = (message, parameters) => {
   const additionalParameters = {};
   parameters.forEach(mapping => {
-    additionalParameters[mapping.from] = mapping.to;
+    additionalParameters[mapping.to] = get(message, mapping.from);
   });
   return additionalParameters;
 };

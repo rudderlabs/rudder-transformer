@@ -1,13 +1,13 @@
 const { getMappingConfig } = require("../../util");
 
 const CONFIG_CATEGORIES = {
-  IDENTIFY: {
-    name: "ImpactIdentifyConfig",
+  PAGELOAD: {
+    name: "ImpactPageLoadConfig",
     endPoint: "https://trkapi.impact.com/PageLoad"
   },
 
-  TRACK: {
-    name: "ACTrack",
+  CONVERSION: {
+    name: "ImpactConversionConfig",
     base_url: "https://api.impact.com/Advertisers/"
   }
 };

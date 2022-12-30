@@ -74,19 +74,19 @@ const stringifyJSON = (json, whiteListedTraits) => {
 
 // build default identify template
 // if whitelisted traits are present build on it else build the entire traits object
-const buildDefaultTraitTemplate = (traitsList, traits) => {
-  let templateString = "Identified {{name}} with ";
+const buildDefaultTraitTemplate = (traitsList, traits, template) => {
+  let generatedStringFromTemplate = template;
   // build template with whitelisted traits
   traitsList.forEach(trait => {
-    templateString += `${trait}: {{${trait}}} `;
+    generatedStringFromTemplate += `${trait}: {{${trait}}} `;
   });
   // else with all traits
   if (traitsList.length === 0) {
     Object.keys(traits).forEach(traitKey => {
-      templateString += `${traitKey}: {{${traitKey}}} `;
+      generatedStringFromTemplate += `${traitKey}: {{${traitKey}}} `;
     });
   }
-  return templateString;
+  return generatedStringFromTemplate;
 };
 
 module.exports = {

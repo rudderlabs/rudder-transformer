@@ -36,6 +36,7 @@ const buildResponse = (text, type, destination) => {
 };
 const processIdentify = (message, destination) => {
   let identifyTemplateConfig;
+  const defaultIdentifyTemplate = "Identified {{name}} with ";
   if (
     destination.Config?.identifyTemplate &&
     destination.Config.identifyTemplate.trim().length > 0
@@ -53,7 +54,11 @@ const processIdentify = (message, destination) => {
 
   const template = Handlebars.compile(
     identifyTemplateConfig ||
-      buildDefaultTraitTemplate(whiteTraitsList, identityTraits)
+      buildDefaultTraitTemplate(
+        whiteTraitsList,
+        identityTraits,
+        defaultIdentifyTemplate
+      )
   );
 
   const templateInput = {

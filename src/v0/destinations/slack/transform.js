@@ -45,7 +45,7 @@ const processIdentify = (message, destination) => {
   // debug(JSON.stringify(destination));
   const identifyTemplateConfig = destination.Config.identifyTemplate;
   const traitsList = getWhiteListedTraits(destination);
-
+  const defaultIdentifyTemplate = "Identified {{name}}";
   logger.debug("defaulTraitsList:: ", traitsList);
   const uName = getName(message);
 
@@ -62,7 +62,8 @@ const processIdentify = (message, destination) => {
       : undefined) ||
       buildDefaultTraitTemplate(
         traitsList,
-        getFieldValueFromMessage(message, "traits") || {}
+        getFieldValueFromMessage(message, "traits"),
+        defaultIdentifyTemplate || {}
       )
   );
   logger.debug(
@@ -74,7 +75,8 @@ const processIdentify = (message, destination) => {
       : undefined) ||
       buildDefaultTraitTemplate(
         traitsList,
-        getFieldValueFromMessage(message, "traits") || {}
+        getFieldValueFromMessage(message, "traits"),
+        defaultIdentifyTemplate || {}
       )
   );
 

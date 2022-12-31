@@ -22,5 +22,11 @@
       "statusCode": 400,
       "error": "No User id for deletion is present"
     }
+  ],
+  [
+    {
+      "statusCode": 400,
+      "error": "[Mixpanel]::No userId found to delete"
+    }
   ]
 ]

@@ -41,6 +41,12 @@ const userDeletionHandler = async (userAttributes, config) => {
       });
     }
   });
+  if (data.length === 0) {
+    throw new ErrorBuilder()
+      .setMessage(`[Mixpanel]::No userId found to delete`)
+      .setStatus(400)
+      .build();
+  }
   const headers = {
     accept: "text/plain",
     "content-type": "application/json"

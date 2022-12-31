@@ -79,6 +79,12 @@ const userDeletionHandler = async (userAttributes, config) => {
   // batchEvents = [["e1,e2,e3,..urlLimit"],["e1,e2,e3,..urlLimit"]..]
   // ref : https://docs.sendgrid.com/api-reference/contacts/delete-contacts
   const batchEvents = chunksFromUrlLength(userAttributes, urlLimit);
+  if (batchEvents.length === 0) {
+    throw new ErrorBuilder()
+      .setMessage(`[SendGrid]::No data found to delete`)
+      .setStatus(400)
+      .build();
+  }
   await Promise.all(
     batchEvents.map(async batchEvent => {
       endpoint = `${endpoint.replace("IDS", batchEvent)}`;

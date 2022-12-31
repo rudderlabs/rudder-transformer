@@ -39,7 +39,12 @@ const userDeletionHandler = async (userAttributes, config) => {
       identity.push(userAttribute.userId);
     }
   });
-
+  if (identity.length === 0) {
+    throw new ErrorBuilder()
+      .setMessage(`[Clevertap]::No userId found to delete`)
+      .setStatus(400)
+      .build();
+  }
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.clevertap.com/docs/disassociate-api
   const batchEvents = _.chunk(identity, MAX_BATCH_SIZE);

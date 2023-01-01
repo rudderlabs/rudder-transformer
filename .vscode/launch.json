@@ -17,9 +17,10 @@
       "type": "node",
       "request": "launch",
       "name": "Launch TS",
-      "program": "${workspaceFolder}/index.ts",
-      "preLaunchTask": "tsc: build - tsconfig.json",
-      "outFiles": ["${workspaceFolder}/dist/src/**/*.js"]
+      "program": "${workspaceFolder}/dist/src/index.js",
+      "outFiles": ["${workspaceFolder}/dist/src/**/*.js"],
+      "preLaunchTask": "npm run build",
+      "runtimeExecutable": "/usr/local/bin/node"
     },
     {
       "name": "benchmark",

@@ -1,16 +1,14 @@
-import {  ProcessorRequest, RouterRequestData } from "../types/index";
-import  MiscService  from "../services/misc.service";
+import { ProcessorRequest, RouterRequestData } from "../types/index";
 import { INTEGRATION_SERVICE } from "../routes/utils/constants";
 import CDKV1DestinationService from "../services/destination/cdkV1Integration.destination.service";
 import CDKV2DestinationService from "../services/destination/cdkV2Integration.destination.service";
-import IntegrationDestinationService from "../interfaces/IntegrationDestinationService";
+import DestinationService from "../interfaces/DestinationService";
 import NativeIntegrationDestinationService from "../services/destination/nativentegration.destination.service";
-import IntegrationSourceService from "../interfaces/IntegrationSourceService";
+import SourceService from "../interfaces/SourceService";
 import NativeIntegrationSourceService from "../services/source/nativeIntegration.source.service";
 
-export class ServiceSelector {
-  private static sourceHandlerMap: Map<string, any> = new Map();
-  private static destHandlerMap: Map<string, any> = new Map();
+export default class ServiceSelector {
+
   private static serviceMap: Map<string, any> = new Map();
 
   private static isCdkDestination(destinationDefinitionConfig: Object) {
@@ -56,39 +54,18 @@ export class ServiceSelector {
     return service;
   }
 
-  public static getDestHandler(dest: string, version: string) {
-    let destinationHandler: any;
-    if (this.destHandlerMap.get(dest)) {
-      destinationHandler = this.destHandlerMap.get(dest);
-    } else {
-      destinationHandler = MiscService.getDestHandler(dest, version);
-      this.destHandlerMap.set(dest, destinationHandler);
-    }
-    return destinationHandler;
-  }
 
-  public static getSourceHandler(source: string, version: string) {
-    let sourceHandler: any;
-    if (this.sourceHandlerMap.get(source)) {
-      sourceHandler = this.destHandlerMap.get(source);
-    } else {
-      sourceHandler = MiscService.getSourceHandler(source, version);
-      this.sourceHandlerMap.set(source, sourceHandler);
-    }
-    return sourceHandler;
-  }
-
-  public static getNativeIntegrationServiceDest(): IntegrationDestinationService {
+  public static getNativeDestinationService(): DestinationService {
     return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
   }
 
-  public static getNativeIntegrationServiceSource(): IntegrationSourceService {
+  public static getNativeSourceService(): SourceService {
     return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_SOURCE);
   }
 
   public static getDestinationService(
     events: ProcessorRequest[] | RouterRequestData[]
-  ): IntegrationDestinationService {
+  ): DestinationService {
     const destinationDefinitionConfig: Object =
       events[0].destination.DestinationDefinition.Config;
     if (this.isCdkDestination(destinationDefinitionConfig)) {

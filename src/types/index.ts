@@ -14,7 +14,6 @@ type TransformedEvent = {
   };
   files?: Record<string, unknown>;
   metadata?: Metadata;
-  [key: string]: any;
 };
 
 type Metadata = {
@@ -149,7 +148,6 @@ type RudderMessage = {
   messageId?: string;
   properties?: Object;
   traits?: Object;
-  [key: string]: any;
 };
 
 type ErrorDetailer = {

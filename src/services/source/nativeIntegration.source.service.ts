@@ -1,18 +1,35 @@
-import IntegrationSourceService from "../../interfaces/IntegrationSourceService";
-import { RudderMessage, SourceTransformResponse } from "../../types/index";
-import TaggingService from "../tagging.service";
+import IntegrationSourceService from "../../interfaces/SourceService";
+import {
+  ErrorDetailer,
+  MetaTransferObject,
+  RudderMessage,
+  SourceTransformResponse
+} from "../../types/index";
 import PostTransformationServiceSource from "./postTransformation.source";
-import { ServiceSelector } from "../../util/serviceSelector";
+import FetchHandler from "../../helpers/fetchHandlers";
+import tags from "../../v0/util/tags";
 
 export default class NativeIntegrationSourceService
   implements IntegrationSourceService {
+  public getTags(): MetaTransferObject {
+    const metaTO = {
+      errorDetails: {
+        module: tags.MODULES.SOURCE,
+        implementation: tags.IMPLEMENTATIONS.NATIVE,
+        destinationId: "Non determinable",
+        workspaceId: "Non determinable",
+        context: "[Native Integration Service] Failure During Source Transform"
+      } as ErrorDetailer
+    } as MetaTransferObject;
+    return metaTO;
+  }
   public async sourceTransformRoutine(
     sourceEvents: Object[],
     sourceType: string,
     version: string,
     _requestMetadata: Object
   ): Promise<SourceTransformResponse[]> {
-    const sourceHandler = ServiceSelector.getSourceHandler(sourceType, version);
+    const sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
     const respList: SourceTransformResponse[] = await Promise.all<any>(
       sourceEvents.map(async sourceEvent => {
         try {
@@ -26,7 +43,7 @@ export default class NativeIntegrationSourceService
             respEvents
           );
         } catch (error) {
-          const metaTO = TaggingService.getNativeSourceTransformTags();
+          const metaTO = this.getTags();
           return PostTransformationServiceSource.handleFailureEventsSource(
             error,
             metaTO

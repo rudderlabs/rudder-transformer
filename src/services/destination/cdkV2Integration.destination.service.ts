@@ -1,8 +1,10 @@
 import groupBy from "lodash/groupBy";
 import { processCdkV2Workflow } from "../../cdk/v2/handler";
-import IntegrationDestinationService from "../../interfaces/IntegrationDestinationService";
+import IntegrationDestinationService from "../../interfaces/DestinationService";
 import {
   DeliveryResponse,
+  ErrorDetailer,
+  MetaTransferObject,
   ProcessorRequest,
   ProcessorResponse,
   RouterRequestData,
@@ -11,11 +13,31 @@ import {
 } from "../../types/index";
 import { TransformationError } from "../../v0/util/errorTypes";
 import tags from "../../v0/util/tags";
-import TaggingService from "../tagging.service";
 import PostTransformationServiceDestination from "./postTransformation.destination.service";
 
 export default class CDKV2DestinationService
   implements IntegrationDestinationService {
+ 
+  public getTags(
+    destType: string,
+    destinationId: string,
+    workspaceId: string,
+    feature: string
+  ): MetaTransferObject {
+    const metaTO = {
+      errorDetails: {
+        destType: destType.toUpperCase(),
+        module: tags.MODULES.DESTINATION,
+        implementation: tags.IMPLEMENTATIONS.CDK_V2,
+        feature,
+        destinationId,
+        workspaceId,
+        context: "[CDKV2 Integration Service] Failure During Router Transform"
+      } as ErrorDetailer
+    } as MetaTransferObject;
+    return metaTO;
+  }
+
   public async processorRoutine(
     events: ProcessorRequest[],
     destinationType: string,
@@ -40,10 +62,11 @@ export default class CDKV2DestinationService
             undefined
           );
         } catch (error) {
-          const metaTO = TaggingService.getCDKV2ProcTransformTags(
+          const metaTO = this.getTags(
             destinationType,
             event.metadata.destinationId,
-            event.metadata.workspaceId
+            event.metadata.workspaceId,
+            tags.FEATURES.PROCESSOR
           );
           metaTO.metadata = event.metadata;
           const erroredResp = PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(
@@ -67,14 +90,14 @@ export default class CDKV2DestinationService
       events,
       (ev: RouterRequestData) => ev.destination?.ID
     );
-    // TODO: Change the promise type
     const response: RouterResponse[][] = await Promise.all(
       Object.values(allDestEvents).map(
         async (destInputArray: RouterRequestData[]) => {
-          const metaTO = TaggingService.getCDKV2RouterTransformTags(
+          const metaTO = this.getTags(
             destinationType,
             destInputArray[0].metadata.destinationId,
-            destInputArray[0].metadata.workspaceId
+            destInputArray[0].metadata.workspaceId,
+            tags.FEATURES.ROUTER
           );
           try {
             const routerRoutineResponse: RouterResponse[] = await processCdkV2Workflow(

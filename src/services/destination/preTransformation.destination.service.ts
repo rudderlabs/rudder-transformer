@@ -1,6 +1,6 @@
 import { Context } from "koa";
 import { ProcessorRequest, RouterRequestData } from "../../types/index";
-import { DynamicConfigInjectionService } from "../../util/dynamicConfigInjector";
+import { DynamicConfigParser } from "../../util/dynamicConfigParser";
 
 export default class PreTransformationDestinationService {
   public static preProcess(
@@ -12,7 +12,7 @@ export default class PreTransformationDestinationService {
       event.request = { query: reqParams };
       return event;
     });
-    events = DynamicConfigInjectionService.processDynamicConfig(events);
+    events = DynamicConfigParser.processDynamicConfig(events);
     return events;
   }
 }

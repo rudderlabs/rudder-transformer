@@ -1,6 +1,8 @@
-import { SourceTransformResponse } from "../types/index";
+import { MetaTransferObject, SourceTransformResponse } from "../types/index";
 
-export default interface IntegrationSourceService {
+export default interface SourceService {
+  getTags(): MetaTransferObject;
+
   sourceTransformRoutine(
     sourceEvents: Object[],
     sourceType: string,

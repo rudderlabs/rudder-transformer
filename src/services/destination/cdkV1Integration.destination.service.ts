@@ -1,7 +1,9 @@
 import { ConfigFactory, Executor } from "rudder-transformer-cdk";
-import IntegrationDestinationService from "../../interfaces/IntegrationDestinationService";
+import IntegrationDestinationService from "../../interfaces/DestinationService";
 import {
   DeliveryResponse,
+  ErrorDetailer,
+  MetaTransferObject,
   ProcessorRequest,
   ProcessorResponse,
   RouterRequestData,
@@ -9,11 +11,31 @@ import {
   TransformedEvent
 } from "../../types/index";
 import { TransformationError } from "../../v0/util/errorTypes";
-import TaggingService from "../tagging.service";
 import PostTransformationServiceDestination from "./postTransformation.destination.service";
+import tags from "../../v0/util/tags";
 
 export default class CDKV1DestinationService
   implements IntegrationDestinationService {
+  public getTags(
+    destType: string,
+    destinationId: string,
+    workspaceId: string,
+    feature: string
+  ): MetaTransferObject {
+    const metaTO = {
+      errorDetails: {
+        destType: destType.toUpperCase(),
+        module: tags.MODULES.DESTINATION,
+        implementation: tags.IMPLEMENTATIONS.CDK_V1,
+        feature,
+        destinationId,
+        workspaceId,
+        context: "[CDKV1 Integration Service] Failure During Proc Transform"
+      } as ErrorDetailer
+    } as MetaTransferObject;
+    return metaTO;
+  }
+
   public async processorRoutine(
     events: ProcessorRequest[],
     destinationType: string,
@@ -35,10 +57,11 @@ export default class CDKV1DestinationService
             undefined
           );
         } catch (error) {
-          const metaTO = TaggingService.getCDKV1ProcTransformTags(
+          const metaTO = this.getTags(
             destinationType,
             event.metadata.destinationId,
-            event.metadata.workspaceId
+            event.metadata.workspaceId,
+            tags.FEATURES.PROCESSOR
           );
           metaTO.metadata = event.metadata;
           const erroredResp = PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(

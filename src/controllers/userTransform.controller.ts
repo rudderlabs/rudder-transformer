@@ -9,6 +9,10 @@ import ControllerUtility from "./util";
 
 export default class UserTransformController {
   public static async transform(ctx: Context) {
+    logger.debug(
+      "(User transform - router:/customTransform ):: Request to transformer",
+      JSON.stringify(ctx.request.body)
+    );
     let requestMetadata = MiscService.getRequestMetadata(ctx);
     const events = ctx.request.body as ProcessorRequest[];
     const processedRespone: UserTransfromServiceResponse = await UserTransformService.transformRoutine(
@@ -16,10 +20,18 @@ export default class UserTransformController {
     );
     ctx.body = processedRespone.transformedEvents;
     ControllerUtility.postProcess(ctx, processedRespone.retryStatus);
+    logger.debug(
+      "(User transform - router:/customTransform ):: Response from transformer",
+      JSON.stringify(ctx.response.body)
+    );
     return ctx;
   }
 
   public static async testTransform(ctx: Context) {
+    logger.debug(
+      "(User transform - router:/transformation/test ):: Request to transformer",
+      JSON.stringify(ctx.request.body)
+    );
     const { events, trRevCode, libraryVersionIDs = [] } = ctx.request
       .body as any;
     const response = await UserTransformService.testTransformRoutine(
@@ -29,10 +41,18 @@ export default class UserTransformController {
     );
     ctx.body = response.Body;
     ControllerUtility.postProcess(ctx, response.status);
+    logger.debug(
+      "(User transform - router:/transformation/test ):: Response from transformer",
+      JSON.stringify(ctx.response.body)
+    );
     return ctx;
   }
 
   public static async testTransformLibrary(ctx: Context) {
+    logger.debug(
+      "(User transform - router:/transformationLibrary/test ):: Request to transformer",
+      JSON.stringify(ctx.request.body)
+    );
     try {
       const { code } = ctx.request.body as any;
       if (!code) {
@@ -44,10 +64,18 @@ export default class UserTransformController {
       ctx.body = { error: error.message };
       ctx.status = 400;
     }
+    logger.debug(
+      "(User transform - router:/transformationLibrary/test ):: Response from transformer",
+      JSON.stringify(ctx.response.body)
+    );
     return ctx;
   }
 
   public static async testTransformSethandle(ctx: Context) {
+    logger.debug(
+      "(User transform - router:/transformation/sethandle ):: Request to transformer",
+      JSON.stringify(ctx.request.body)
+    );
     try {
       const { trRevCode, libraryVersionIDs = [] } = ctx.request.body as any;
       const { code, language, testName, testWithPublish = false } =
@@ -75,6 +103,10 @@ export default class UserTransformController {
       ctx.status = 400;
       ctx.body = { error: error.message };
     }
+    logger.debug(
+      "(User transform - router:/transformation/sethandle ):: Response from transformer",
+      JSON.stringify(ctx.request.body)
+    );
     return ctx;
   }
 }

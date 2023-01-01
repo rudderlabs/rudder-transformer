@@ -14,7 +14,7 @@
   "author": "",
   "main": "GATransform.js",
   "scripts": {
-    "build": "rm -rf ./dist && tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json",
     "copy": "find ./src -name '*.yaml' -o -name '*csv' | cpio -pdm ./dist  ",
     "clean": "rm -rf ./dist",
     "setup": "npm i",
@@ -24,7 +24,8 @@
     "lint:check": "eslint --ext .js,.json . --fix; exit 0",
     "lint:fix:json": "eslint --ext .json --fix .",
     "check:merge": "npm run verify || exit 1; codecov",
-    "start": "npm run build || npm run copy && node ./dist/index.js",
+    "start": "node ./dist/src/index.js",
+    "build-start": "npm run build || npm run copy && npm run start",
     "test:versionedRouter:all": "jest versionedRouter --type=all --detectOpenHandles --notify",
     "test:versionedRouter": "jest versionedRouter --destName=heap --type=all --notify",
     "verify": "eslint . || exit 1; npm run test || exit 1",

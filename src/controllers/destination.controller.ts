@@ -8,12 +8,12 @@ import {
   RouterRequest,
   ProcessorResponse
 } from "../types/index";
-import { ServiceSelector } from "../util/serviceSelector";
+import ServiceSelector from "../helpers/serviceSelector";
 import ControllerUtility from "./util";
 import stats from "../util/stats";
 import logger from "../logger";
-import TaggingService from "../services/tagging.service";
 import { getIntegrationVersion } from "../util/utils";
+import tags from "../v0/util/tags";
 
 export default class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
@@ -30,8 +30,8 @@ export default class DestinationController {
       version,
       destination
     }: { version: string; destination: string } = ctx.params;
+    const integrationService = ServiceSelector.getDestinationService(events);
     try {
-      const integrationService = ServiceSelector.getDestinationService(events);
       events = PreTransformationDestinationService.preProcess(
         events,
         ctx
@@ -44,10 +44,11 @@ export default class DestinationController {
       );
     } catch (error) {
       resplist = events.map(ev => {
-        const metaTO = TaggingService.getNativeProcTransformTags(
+        const metaTO = integrationService.getTags(
           destination,
           ev.metadata.destinationId,
-          ev.metadata.workspaceId
+          ev.metadata.workspaceId,
+          tags.FEATURES.PROCESSOR
         );
         metaTO.metadata = ev.metadata;
         const errResp = PostTransformationDestinationService.handleFailedEventsAtProcessorDest(
@@ -85,8 +86,8 @@ export default class DestinationController {
     const routerRequest = ctx.request.body as RouterRequest;
     const destination = routerRequest.destType;
     let events = routerRequest.input;
+    const integrationService = ServiceSelector.getDestinationService(events);
     try {
-      const integrationService = ServiceSelector.getDestinationService(events);
       events = PreTransformationDestinationService.preProcess(
         events,
         ctx
@@ -99,10 +100,11 @@ export default class DestinationController {
       );
       ctx.body = { output: resplist };
     } catch (error) {
-      const metaTO = TaggingService.getNativeProcTransformTags(
+      const metaTO = integrationService.getTags(
         destination,
         events[0].metadata.destinationId,
-        events[0].metadata.workspaceId
+        events[0].metadata.workspaceId,
+        tags.FEATURES.ROUTER
       );
       metaTO.metadatas = events.map(ev => {
         return ev.metadata;
@@ -131,11 +133,11 @@ export default class DestinationController {
     const destination = routerRequest.destType;
     let events = routerRequest.input;
     const integrationService = ServiceSelector.getDestinationService(events);
-    events = PreTransformationDestinationService.preProcess(
-      events,
-      ctx
-    ) as RouterRequestData[];
     try {
+      events = PreTransformationDestinationService.preProcess(
+        events,
+        ctx
+      ) as RouterRequestData[];
       const resplist = integrationService.batchRoutine(
         events,
         destination,
@@ -144,10 +146,11 @@ export default class DestinationController {
       );
       ctx.body = resplist;
     } catch (error) {
-      const metaTO = TaggingService.getNativeBatchTransformTags(
+      const metaTO = integrationService.getTags(
         destination,
         events[0].metadata.destinationId,
-        events[0].metadata.workspaceId
+        events[0].metadata.workspaceId,
+        tags.FEATURES.BATCH
       );
       metaTO.metadatas = events.map(ev => {
         return ev.metadata;

@@ -5,7 +5,7 @@ import { ProcessorRequest, RouterRequestData } from "../types/index";
 const get = require("get-value");
 const unset = require("unset-value");
 
-export class DynamicConfigInjectionService {
+export class DynamicConfigParser {
   private static getDynamicConfigValue(
     event: ProcessorRequest | RouterRequestData,
     value: any

@@ -1,12 +1,12 @@
 import { Context } from "koa";
 import MiscService from "../services/misc.service";
 import { DeliveryResponse, TransformedEvent } from "../types/index";
-import { ServiceSelector } from "../util/serviceSelector";
+import ServiceSelector from "../helpers/serviceSelector";
 import DeliveryTestService from "../services/delivertTest/deliveryTest.service";
 import ControllerUtility from "./util";
 import logger from "../logger";
-import TaggingService from "../services/tagging.service";
 import PostTransformationServiceDestination from "../services/destination/postTransformation.destination.service";
+import tags from "../v0/util/tags";
 
 export default class DeliveryController {
   public static async deliverToDestination(ctx: Context) {
@@ -21,18 +21,19 @@ export default class DeliveryController {
       version,
       destination
     }: { version: string; destination: string } = ctx.params;
+    const integrationService = ServiceSelector.getNativeDestinationService();
     try {
-      const integrationService = ServiceSelector.getNativeIntegrationServiceDest();
       deliveryResponse = await integrationService.deliveryRoutine(
         event,
         destination,
         requestMetadata
       );
     } catch (error) {
-      const metaTO = TaggingService.getNativeDeliveryTags(
+      const metaTO = integrationService.getTags(
         destination,
         event.metadata?.destinationId || "Non-determininable",
-        event.metadata?.workspaceId || "Non-determininable"
+        event.metadata?.workspaceId || "Non-determininable",
+        tags.FEATURES.DATA_DELIVERY
       );
       metaTO.metadata = event.metadata;
       deliveryResponse = PostTransformationServiceDestination.handleFailureEventsAtDeliveryDest(

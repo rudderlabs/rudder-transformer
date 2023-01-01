@@ -1,5 +1,5 @@
 import Router from "koa-router";
-import UserTransformController from "../controllers/userTransform.controller";
+import UserTransformController from "../controllers/userTransform";
 
 const router = new Router();
 

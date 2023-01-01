@@ -1,11 +1,11 @@
 import { ProcessorTransformRequest, RouterTransformRequestData } from "../types/index";
 import { INTEGRATION_SERVICE } from "../routes/utils/constants";
-import CDKV1DestinationService from "../services/destination/cdkV1Integration.destination.service";
-import CDKV2DestinationService from "../services/destination/cdkV2Integration.destination.service";
+import CDKV1DestinationService from "../services/destination/cdkV1Integration";
+import CDKV2DestinationService from "../services/destination/cdkV2Integration";
 import DestinationService from "../interfaces/DestinationService";
-import NativeIntegrationDestinationService from "../services/destination/nativentegration.destination.service";
+import NativeIntegrationDestinationService from "../services/destination/nativentegration";
 import SourceService from "../interfaces/SourceService";
-import NativeIntegrationSourceService from "../services/source/nativeIntegration.source.service";
+import NativeIntegrationSourceService from "../services/source/nativeIntegration";
 
 export default class ServiceSelector {
 

@@ -1,5 +1,5 @@
 import { Context } from "koa";
-import EventTesterService from "../services/eventTest/eventTester.service";
+import EventTesterService from "../services/eventTest/eventTester";
 
 export default class EventTestController {
   private static API_VERSION = "1";

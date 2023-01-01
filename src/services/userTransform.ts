@@ -1,16 +1,16 @@
 import groupBy from "lodash/groupBy";
 import isEmpty from "lodash/isEmpty";
-import { userTransformHandler } from "../../routerUtils";
+import { userTransformHandler } from "../routerUtils";
 import {
   UserTransformationLibrary,
   ProcessorTransformRequest,
   ProcessorTransformResponse,
   UserTransformResponse,
   UserTransfromServiceResponse
-} from "../../types/index";
-import { RespStatusError, RetryRequestError } from "../../util/utils";
-import { getMetadata, isNonFuncObject } from "../../v0/util";
-import logger from "../../logger";
+} from "../types/index";
+import { RespStatusError, RetryRequestError } from "../util/utils";
+import { getMetadata, isNonFuncObject } from "../v0/util";
+import logger from "../logger";
 
 export default class UserTransformService {
   public static async transformRoutine(

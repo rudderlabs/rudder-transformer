@@ -1,7 +1,7 @@
 import Router from "koa-router";
-import MetricsController from "../controllers/metrics.controller";
-import ProfileController from "../controllers/profile.controller";
-import MiscController from "../controllers/misc.controller";
+import MetricsController from "../controllers/metrics";
+import ProfileController from "../controllers/profile";
+import MiscController from "../controllers/misc";
 
 const router = new Router();
 

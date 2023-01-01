@@ -1,5 +1,5 @@
 import Router from "koa-router";
-import TrackingPlanController from "../controllers/trackingPlan.controller";
+import TrackingPlanController from "../controllers/trackingPlan";
 
 const router = new Router();
 

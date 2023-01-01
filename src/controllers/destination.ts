@@ -1,7 +1,7 @@
 import { Context } from "koa";
-import MiscService from "../services/misc.service";
-import PreTransformationDestinationService from "../services/destination/preTransformation.destination.service";
-import PostTransformationDestinationService from "../services/destination/postTransformation.destination.service";
+import MiscService from "../services/misc";
+import PreTransformationDestinationService from "../services/destination/preTransformation";
+import PostTransformationDestinationService from "../services/destination/postTransformation";
 import {
   ProcessorTransformRequest,
   RouterTransformRequestData,

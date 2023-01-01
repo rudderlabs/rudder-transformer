@@ -1,5 +1,5 @@
 import Router from "koa-router";
-import DeliveryController from "../controllers/delivery.controller";
+import DeliveryController from "../controllers/delivery";
 
 const router = new Router();
 

@@ -4,7 +4,7 @@ import {
   SourceTransformResponse
 } from "../../types/index";
 import { generateErrorObject } from "../../v0/util";
-import ErrorReportingService from "../errorReporting.service";
+import ErrorReportingService from "../errorReporting";
 
 export default class PostTransformationSourceService {
   public static handleFailureEventsSource(

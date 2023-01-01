@@ -5,7 +5,7 @@ import {
   RudderMessage,
   SourceTransformResponse
 } from "../../types/index";
-import PostTransformationServiceSource from "./postTransformation.source";
+import PostTransformationServiceSource from "./postTransformation";
 import FetchHandler from "../../helpers/fetchHandlers";
 import tags from "../../v0/util/tags";
 

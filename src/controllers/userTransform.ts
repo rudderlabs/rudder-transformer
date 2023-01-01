@@ -1,8 +1,8 @@
 import { Context } from "koa";
-import MiscService from "../services/misc.service";
+import MiscService from "../services/misc";
 import { ProcessorTransformRequest, UserTransfromServiceResponse } from "../types/index";
 import { compileUserLibrary } from "../util/ivmFactory";
-import UserTransformService from "../services/userTransform/userTransform.service";
+import UserTransformService from "../services/userTransform";
 import logger from "../logger";
 import { setupUserTransformHandler } from "../util/customTransformer";
 import ControllerUtility from "./util";

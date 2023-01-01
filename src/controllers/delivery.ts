@@ -1,11 +1,11 @@
 import { Context } from "koa";
-import MiscService from "../services/misc.service";
+import MiscService from "../services/misc";
 import { DeliveryResponse, TransformedEvent } from "../types/index";
 import ServiceSelector from "../helpers/serviceSelector";
-import DeliveryTestService from "../services/delivertTest/deliveryTest.service";
+import DeliveryTestService from "../services/delivertTest/deliveryTest";
 import ControllerUtility from "./util";
 import logger from "../logger";
-import PostTransformationServiceDestination from "../services/destination/postTransformation.destination.service";
+import PostTransformationServiceDestination from "../services/destination/postTransformation";
 import tags from "../v0/util/tags";
 
 export default class DeliveryController {

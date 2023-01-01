@@ -1,6 +1,6 @@
 import Router from "koa-router";
-import DestinationController from "../controllers/destination.controller";
-import RegulationController from "../controllers/regulation.controller";
+import DestinationController from "../controllers/destination";
+import RegulationController from "../controllers/regulation";
 
 const router = new Router();
 

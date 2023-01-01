@@ -1,8 +1,8 @@
-import logger from "../../logger";
-import { RetryRequestError, RespStatusError } from "../../util/utils";
-import { getMetadata } from "../../v0/util";
-import eventValidator from "../../util/eventValidation";
-import stats from "../../util/stats";
+import logger from "../logger";
+import { RetryRequestError, RespStatusError } from "../util/utils";
+import { getMetadata } from "../v0/util";
+import eventValidator from "../util/eventValidation";
+import stats from "../util/stats";
 
 export default class TrackingPlanservice {
   public static async validateTrackingPlan(events, requestSize, reqParams) {

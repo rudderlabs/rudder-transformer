@@ -4,7 +4,7 @@ import {
   pollStatus,
   getFailedJobStatus,
   getWarnJobStatus
-} from "../controllers/bulkUpload.controller";
+} from "../controllers/bulkUpload";
 
 const router = new Router();
 

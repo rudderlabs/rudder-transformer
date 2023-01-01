@@ -1,6 +1,6 @@
 import { Context } from "koa";
-import  MiscService  from "../services/misc.service";
-import profile from "../services/profile.service";
+import  MiscService  from "../services/misc";
+import profile from "../services/profile";
 import ControllerUtility from "./util";
 export default class ProfileController {
   public static async profile(ctx: Context) {

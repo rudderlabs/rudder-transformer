@@ -1,9 +1,9 @@
 import { Context } from "koa";
-import MiscService from "../services/misc.service";
+import MiscService from "../services/misc";
 import ServiceSelector from "../helpers/serviceSelector";
 import ControllerUtility from "./util";
 import logger from "../logger";
-import PostTransformationServiceSource from "../services/source/postTransformation.source";
+import PostTransformationServiceSource from "../services/source/postTransformation";
 
 export default class SourceController {
   public static async sourceTransform(ctx: Context) {

@@ -10,7 +10,7 @@ import {
   RouterTransformResponse,
   TransformedEvent
 } from "../../types/index";
-import PostTransformationServiceDestination from "./postTransformation.destination.service";
+import PostTransformationServiceDestination from "./postTransformation";
 import networkHandlerFactory from "../../adapters/networkHandlerFactory";
 import FetchHandler from "../../helpers/fetchHandlers";
 import tags from "../../v0/util/tags";

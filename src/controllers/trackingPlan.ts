@@ -1,5 +1,5 @@
 import { Context } from "koa";
-import TrackingPlanservice from "../services/trackingPlan/trackingPlan.service";
+import TrackingPlanservice from "../services/trackingPlan";
 import ControllerUtility from "./util";
 
 export default class TrackingPlanController {

@@ -180,24 +180,6 @@
     },
     "mockNetworkResponses": [
       {
-        "type": "post",
-        "reqParams": [
-          "https://login.salesforce.com/services/oauth2/token?username=sampathvinayak1453@gmail.com&password=hJCR557%23uzFfD9f58ryaM64FZp0rg3jyDV4PB5&client_id=undefined&client_secret=undefined&grant_type=password"
-        ],
-        "response": {
-          "data": {
-            "access_token": "00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY",
-            "instance_url": "https://ap15.salesforce.com",
-            "id": "https://login.salesforce.com/id/00D2v000002lXbXEAU/0052v00000ga9WqAAI",
-            "token_type": "Bearer",
-            "issued_at": "1582343657644",
-            "signature": "XRgUHXVBSWhLHZVoVFZby/idWXdAPA5lMW/ZdLMzB8o="
-          },
-          "status": 200,
-          "statusText": "OK"
-        }
-      },
-      {
         "type":"get",
         "reqParams": [
           "https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=peter.gibbons@initech.com&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted",
@@ -290,24 +272,6 @@
     },
     "mockNetworkResponses": [
       {
-        "type": "post",
-        "reqParams": [
-          "https://login.salesforce.com/services/oauth2/token?username=sampathvinayak1453@gmail.com&password=hJCR557%23uzFfD9f58ryaM64FZp0rg3jyDV4PB5&client_id=undefined&client_secret=undefined&grant_type=password"
-        ],
-        "response": {
-          "data": {
-            "access_token": "00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY",
-            "instance_url": "https://ap15.salesforce.com",
-            "id": "https://login.salesforce.com/id/00D2v000002lXbXEAU/0052v00000ga9WqAAI",
-            "token_type": "Bearer",
-            "issued_at": "1582343657644",
-            "signature": "XRgUHXVBSWhLHZVoVFZby/idWXdAPA5lMW/ZdLMzB8o="
-          },
-          "status": 200,
-          "statusText": "OK"
-        }
-      },
-      {
         "type":"get",
         "reqParams": [
           "https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=peter.gibbons@initech.com&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted",
@@ -399,24 +363,6 @@
       "userId": "1e7673da-9473-49c6-97f7-da848ecafa76"
     },
     "mockNetworkResponses": [
-      {
-        "type": "post",
-        "reqParams": [
-          "https://login.salesforce.com/services/oauth2/token?username=sampathvinayak1453@gmail.com&password=hJCR557%23uzFfD9f58ryaM64FZp0rg3jyDV4PB5&client_id=undefined&client_secret=undefined&grant_type=password"
-        ],
-        "response": {
-          "data": {
-            "access_token": "00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY",
-            "instance_url": "https://ap15.salesforce.com",
-            "id": "https://login.salesforce.com/id/00D2v000002lXbXEAU/0052v00000ga9WqAAI",
-            "token_type": "Bearer",
-            "issued_at": "1582343657644",
-            "signature": "XRgUHXVBSWhLHZVoVFZby/idWXdAPA5lMW/ZdLMzB8o="
-          },
-          "status": 200,
-          "statusText": "OK"
-        }
-      },
       {
         "type":"get",
         "reqParams": [
@@ -511,24 +457,6 @@
       "userId": "1e7673da-9473-49c6-97f7-da848ecafa76"
     },
     "mockNetworkResponses": [
-      {
-        "type": "post",
-        "reqParams": [
-          "https://login.salesforce.com/services/oauth2/token?username=sampathvinayak1453@gmail.com&password=hJCR557%23uzFfD9f58ryaM64FZp0rg3jyDV4PB5&client_id=undefined&client_secret=undefined&grant_type=password"
-        ],
-        "response": {
-          "data": {
-            "access_token": "00D2v000002lXbX!ARcAQJBSGNA1Rq.MbUdtmlREscrN_nO3ckBz6kc4jRQGxqAzNkhT1XZIF0yPqyCQSnezWO3osMw1ewpjToO7q41E9.LvedWY",
-            "instance_url": "https://ap15.salesforce.com",
-            "id": "https://login.salesforce.com/id/00D2v000002lXbXEAU/0052v00000ga9WqAAI",
-            "token_type": "Bearer",
-            "issued_at": "1582343657644",
-            "signature": "XRgUHXVBSWhLHZVoVFZby/idWXdAPA5lMW/ZdLMzB8o="
-          },
-          "status": 200,
-          "statusText": "OK"
-        }
-      },
       {
         "type":"get",
         "reqParams": [
@@ -899,7 +827,7 @@
         "Name": "SALESFORCE"
       },
       "Enabled": true,
-      "ID": "1ut7LcVW1QC56y2EoTNo7ZwBWSY",
+      "ID": "1ut7LcVW1QC56y2EoTNo7ZwBWSB",
       "Name": "Test SF",
       "Transformations": []
     },
@@ -1005,11 +933,11 @@
       },
       "DestinationDefinition": {
         "DisplayName": "Salesforce",
-        "ID": "1T96GHZ0YZ1qQSLULHCoJkow9KC",
+        "ID": "1T96GHZ0YZ1qQSLULHCoJkow9KD",
         "Name": "SALESFORCE"
       },
       "Enabled": true,
-      "ID": "1ut7LcVW1QC56y2EoTNo7ZwBWSY",
+      "ID": "1ut7LcVW1QC56y2EoTNo7ZwBWSB",
       "Name": "Test SF",
       "Transformations": []
     },
@@ -1115,7 +1043,7 @@
         "Name": "SALESFORCE"
       },
       "Enabled": true,
-      "ID": "1ut7LcVW1QC56y2EoTNo7ZwBWSY",
+      "ID": "1ut7LcVW1QC56y2EoTNo7ZwBWSB",
       "Name": "Test SF",
       "Transformations": []
     },

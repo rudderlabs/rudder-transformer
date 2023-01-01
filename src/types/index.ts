@@ -48,7 +48,7 @@ type Metadata = {
   destinationDefinitionId: string;
 };
 
-type UserTransformation = {
+type UserTransformationInput = {
   VersionID: string;
   ID: string;
   Config: Object;
@@ -69,35 +69,35 @@ type Destination = {
   Config: Object;
   Enabled: boolean;
   WorkspaceID: string;
-  Transformations: UserTransformation[];
+  Transformations: UserTransformationInput[];
   RevisionID: string;
 };
 
-type Library = {
+type UserTransformationLibrary = {
   VersionID: string;
 };
 
-type ProcessorRequest = {
+type ProcessorTransformRequest = {
   request?: Object;
   message: Object;
   metadata: Metadata;
   destination: Destination;
-  libraries: Library[];
+  libraries: UserTransformationLibrary[];
 };
 
-type RouterRequestData = {
+type RouterTransformRequestData = {
   request?: Object;
   message: Object;
   metadata: Metadata;
   destination: Destination;
 };
 
-type RouterRequest = {
-  input: RouterRequestData[];
+type RouterTransformRequest = {
+  input: RouterTransformRequestData[];
   destType: string;
 };
 
-type ProcessorResponse = {
+type ProcessorTransformResponse = {
   output?: TransformedEvent | RudderMessage | Object;
   metadata: Metadata;
   statusCode: number;
@@ -105,7 +105,7 @@ type ProcessorResponse = {
   statTags: Object;
 };
 
-type RouterResponse = {
+type RouterTransformResponse = {
   batchedRequest?: TransformedEvent | Object;
   metadata: Metadata[];
   destination?: Destination;
@@ -135,10 +135,20 @@ type DeliveryResponse = {
   authErrorCategory?: string;
 };
 
+enum MessageType {
+  IDENTIFY = "identify",
+  TRACK = "track",
+  PAGE = "page",
+  SCREEN = "screen",
+  GROUP = "group",
+  ALIAS = "alias",
+  AUDIENCE_LIST = "audiencelist"
+}
+
 type RudderMessage = {
   userId?: string;
   anonymousId: string;
-  type: string;
+  type: MessageType;
   channel: string;
   context: Object;
   originalTimestamp: Date;
@@ -180,18 +190,18 @@ type UserTransformResponse = {
 };
 
 type UserTransfromServiceResponse = {
-  transformedEvents: ProcessorResponse[];
+  transformedEvents: ProcessorTransformResponse[];
   retryStatus: number;
 };
 
 export {
   Metadata,
-  Library,
-  ProcessorRequest,
-  ProcessorResponse,
-  RouterRequest,
-  RouterRequestData,
-  RouterResponse,
+  UserTransformationLibrary,
+  ProcessorTransformRequest,
+  ProcessorTransformResponse,
+  RouterTransformRequest,
+  RouterTransformRequestData,
+  RouterTransformResponse,
   RudderMessage,
   TransformedEvent,
   SourceTransformResponse,

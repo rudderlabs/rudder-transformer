@@ -4,10 +4,10 @@ import {
   DeliveryResponse,
   ErrorDetailer,
   MetaTransferObject,
-  ProcessorRequest,
-  ProcessorResponse,
-  RouterRequestData,
-  RouterResponse,
+  ProcessorTransformRequest,
+  ProcessorTransformResponse,
+  RouterTransformRequestData,
+  RouterTransformResponse,
   TransformedEvent
 } from "../../types/index";
 import PostTransformationServiceDestination from "./postTransformation.destination.service";
@@ -39,13 +39,13 @@ export default class NativeIntegrationDestinationService
   }
 
   public async processorRoutine(
-    events: ProcessorRequest[],
+    events: ProcessorTransformRequest[],
     destinationType: string,
     version: string,
     _requestMetadata: Object
-  ): Promise<ProcessorResponse[]> {
+  ): Promise<ProcessorTransformResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
-    const respList: ProcessorResponse[][] = await Promise.all(
+    const respList: ProcessorTransformResponse[][] = await Promise.all(
       events.map(async event => {
         try {
           let transformedPayloads:
@@ -76,19 +76,19 @@ export default class NativeIntegrationDestinationService
   }
 
   public async routerRoutine(
-    events: RouterRequestData[],
+    events: RouterTransformRequestData[],
     destinationType: string,
     version: string,
     _requestMetadata: Object
-  ): Promise<RouterResponse[]> {
+  ): Promise<RouterTransformResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const allDestEvents: Object = groupBy(
       events,
-      (ev: RouterRequestData) => ev.destination?.ID
+      (ev: RouterTransformRequestData) => ev.destination?.ID
     );
-    const groupedEvents: RouterRequestData[][] = Object.values(allDestEvents);
-    const response: RouterResponse[][] = await Promise.all(
-      groupedEvents.map(async (destInputArray: RouterRequestData[]) => {
+    const groupedEvents: RouterTransformRequestData[][] = Object.values(allDestEvents);
+    const response: RouterTransformResponse[][] = await Promise.all(
+      groupedEvents.map(async (destInputArray: RouterTransformRequestData[]) => {
         const metaTO = this.getTags(
           destinationType,
           destInputArray[0].metadata.destinationId,
@@ -96,7 +96,7 @@ export default class NativeIntegrationDestinationService
           tags.FEATURES.ROUTER
         );
         try {
-          const routerRoutineResponse: RouterResponse[] = await destHandler.processRouterDest(
+          const routerRoutineResponse: RouterTransformResponse[] = await destHandler.processRouterDest(
             destInputArray
           );
           return PostTransformationServiceDestination.handleSuccessEventsAtRouterDest(
@@ -120,23 +120,23 @@ export default class NativeIntegrationDestinationService
   }
 
   public batchRoutine(
-    events: RouterRequestData[],
+    events: RouterTransformRequestData[],
     destinationType: string,
     version: any,
     _requestMetadata: Object
-  ): RouterResponse[] {
+  ): RouterTransformResponse[] {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     if (!destHandler.batch) {
       throw new Error(`${destinationType} does not implement batch`);
     }
     const allDestEvents: Object = groupBy(
       events,
-      (ev: RouterRequestData) => ev.destination?.ID
+      (ev: RouterTransformRequestData) => ev.destination?.ID
     );
-    const groupedEvents: RouterRequestData[][] = Object.values(allDestEvents);
+    const groupedEvents: RouterTransformRequestData[][] = Object.values(allDestEvents);
     const response = groupedEvents.map(destEvents => {
       try {
-        const destBatchedRequests: RouterResponse[] = destHandler.batch(
+        const destBatchedRequests: RouterTransformResponse[] = destHandler.batch(
           destEvents
         );
         return destBatchedRequests;

@@ -2,9 +2,9 @@ import groupBy from "lodash/groupBy";
 import isEmpty from "lodash/isEmpty";
 import { userTransformHandler } from "../../routerUtils";
 import {
-  Library,
-  ProcessorRequest,
-  ProcessorResponse,
+  UserTransformationLibrary,
+  ProcessorTransformRequest,
+  ProcessorTransformResponse,
   UserTransformResponse,
   UserTransfromServiceResponse
 } from "../../types/index";
@@ -14,25 +14,25 @@ import logger from "../../logger";
 
 export default class UserTransformService {
   public static async transformRoutine(
-    events: ProcessorRequest[]
+    events: ProcessorTransformRequest[]
   ): Promise<UserTransfromServiceResponse> {
     let retryStatus = 200;
     const groupedEvents: Object = groupBy(
       events,
-      (event: ProcessorRequest) =>
+      (event: ProcessorTransformRequest) =>
         `${event.metadata.destinationId}_${event.metadata.sourceId}`
     );
     const transformedEvents = [];
     let librariesVersionIDs = [];
     if (events[0].libraries) {
       librariesVersionIDs = events[0].libraries.map(
-        (library: Library) => library.VersionID
+        (library: UserTransformationLibrary) => library.VersionID
       );
     }
     const responses = await Promise.all<any>(
       Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
         logger.debug(`dest: ${dest}`);
-        const eventsToProcess = destEvents as ProcessorRequest[];
+        const eventsToProcess = destEvents as ProcessorTransformRequest[];
         const transformationVersionId =
           eventsToProcess[0]?.destination?.Transformations[0]?.VersionID;
         const messageIds = eventsToProcess.map(ev => {
@@ -58,7 +58,7 @@ export default class UserTransformService {
             statusCode: 400,
             error: errorMessage,
             metadata: commonMetadata
-          } as ProcessorResponse);
+          } as ProcessorTransformResponse);
           return transformedEvents;
         }
 
@@ -75,7 +75,7 @@ export default class UserTransformService {
                   statusCode: 400,
                   error: ev.error,
                   metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata
-                } as ProcessorResponse;
+                } as ProcessorTransformResponse;
               }
               if (!isNonFuncObject(ev.transformedEvent)) {
                 return {
@@ -84,13 +84,13 @@ export default class UserTransformService {
                     ev.transformedEvent
                   )}`,
                   metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata
-                } as ProcessorResponse;
+                } as ProcessorTransformResponse;
               }
               return {
                 output: ev.transformedEvent,
                 metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
                 statusCode: 200
-              } as ProcessorResponse;
+              } as ProcessorTransformResponse;
             })
           );
           return transformedEvents;
@@ -113,7 +113,7 @@ export default class UserTransformService {
                 statusCode: status,
                 metadata: e.metadata,
                 error: errorString
-              } as ProcessorResponse;
+              } as ProcessorTransformResponse;
             })
           );
           return transformedEvents;
@@ -123,7 +123,7 @@ export default class UserTransformService {
       })
     );
 
-    const flattenedResponses: ProcessorResponse[] = responses.flat();
+    const flattenedResponses: ProcessorTransformResponse[] = responses.flat();
     return {
       transformedEvents: flattenedResponses,
       retryStatus

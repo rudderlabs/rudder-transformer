@@ -2,9 +2,9 @@ import cloneDeep from "lodash/cloneDeep";
 import isObject from "lodash/isObject";
 import isEmpty from "lodash/isEmpty";
 import {
-  ProcessorRequest,
-  ProcessorResponse,
-  RouterResponse,
+  ProcessorTransformRequest,
+  ProcessorTransformResponse,
+  RouterTransformResponse,
   TransformedEvent,
   DeliveryResponse,
   MetaTransferObject
@@ -14,10 +14,10 @@ import ErrorReportingService from "../errorReporting.service";
 
 export default class PostTransformationDestinationService {
   public static handleSuccessEventsAtProcessorDest(
-    event: ProcessorRequest,
+    event: ProcessorTransformRequest,
     transformedPayloads: TransformedEvent | TransformedEvent[],
     destHandler: any
-  ): ProcessorResponse[] {
+  ): ProcessorTransformResponse[] {
     if (!Array.isArray(transformedPayloads)) {
       transformedPayloads = [transformedPayloads];
     }
@@ -38,7 +38,7 @@ export default class PostTransformationDestinationService {
             })
           : event.metadata,
         statusCode: 200
-      } as ProcessorResponse;
+      } as ProcessorTransformResponse;
     });
     return result;
   }
@@ -46,7 +46,7 @@ export default class PostTransformationDestinationService {
   public static handleFailedEventsAtProcessorDest(
     error: Object,
     metaTO: MetaTransferObject
-  ): ProcessorResponse {
+  ): ProcessorTransformResponse {
     const errObj = generateErrorObject(error, metaTO.errorDetails);
     const resp = {
       metadata: metaTO.metadata,
@@ -55,17 +55,17 @@ export default class PostTransformationDestinationService {
         errObj.message ||
         "[Processor Transform] Error occurred while processing the payload.",
       statTags: errObj.statTags
-    } as ProcessorResponse;
+    } as ProcessorTransformResponse;
     ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
     return resp;
   }
 
   public static handleSuccessEventsAtRouterDest(
-    transformedPayloads: RouterResponse[],
+    transformedPayloads: RouterTransformResponse[],
     destHandler: any,
     metaTO: MetaTransferObject
-  ): RouterResponse[] {
-    let resultantPayloads: RouterResponse[] = cloneDeep(transformedPayloads);
+  ): RouterTransformResponse[] {
+    let resultantPayloads: RouterTransformResponse[] = cloneDeep(transformedPayloads);
     if (destHandler?.processMetadataForRouter) {
       return resultantPayloads.map(resultantPayload => {
         resultantPayload.metadata = destHandler.processMetadataForRouter(
@@ -91,7 +91,7 @@ export default class PostTransformationDestinationService {
   public static handleFailureEventsAtRouterDest(
     error: Object,
     metaTO: MetaTransferObject
-  ): RouterResponse {
+  ): RouterTransformResponse {
     const errObj = generateErrorObject(error, metaTO.errorDetails);
     const resp = {
       metadata: metaTO.metadatas,
@@ -101,7 +101,7 @@ export default class PostTransformationDestinationService {
         errObj.message ||
         "[Router Transform] Error occurred while processing the payload.",
       statTags: errObj.statTags
-    } as RouterResponse;
+    } as RouterTransformResponse;
     ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
     return resp;
   }
@@ -109,7 +109,7 @@ export default class PostTransformationDestinationService {
   public static handleFailureEventsAtBatchDest(
     error: Object,
     metaTO: MetaTransferObject
-  ): RouterResponse {
+  ): RouterTransformResponse {
     const errObj = generateErrorObject(error, metaTO.errorDetails);
     const resp = {
       metadata: metaTO.metadatas,
@@ -119,7 +119,7 @@ export default class PostTransformationDestinationService {
         errObj.message ||
         "[Batch Transform] Error occurred while processing payload.",
       statTags: errObj.statTags
-    } as RouterResponse;
+    } as RouterTransformResponse;
     ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
     return resp;
   }

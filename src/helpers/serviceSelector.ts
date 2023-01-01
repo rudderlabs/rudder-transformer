@@ -1,4 +1,4 @@
-import { ProcessorRequest, RouterRequestData } from "../types/index";
+import { ProcessorTransformRequest, RouterTransformRequestData } from "../types/index";
 import { INTEGRATION_SERVICE } from "../routes/utils/constants";
 import CDKV1DestinationService from "../services/destination/cdkV1Integration.destination.service";
 import CDKV2DestinationService from "../services/destination/cdkV2Integration.destination.service";
@@ -64,7 +64,7 @@ export default class ServiceSelector {
   }
 
   public static getDestinationService(
-    events: ProcessorRequest[] | RouterRequestData[]
+    events: ProcessorTransformRequest[] | RouterTransformRequestData[]
   ): DestinationService {
     const destinationDefinitionConfig: Object =
       events[0].destination.DestinationDefinition.Config;

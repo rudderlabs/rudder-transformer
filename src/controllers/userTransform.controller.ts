@@ -1,6 +1,6 @@
 import { Context } from "koa";
 import MiscService from "../services/misc.service";
-import { ProcessorRequest, UserTransfromServiceResponse } from "../types/index";
+import { ProcessorTransformRequest, UserTransfromServiceResponse } from "../types/index";
 import { compileUserLibrary } from "../util/ivmFactory";
 import UserTransformService from "../services/userTransform/userTransform.service";
 import logger from "../logger";
@@ -14,7 +14,7 @@ export default class UserTransformController {
       JSON.stringify(ctx.request.body)
     );
     let requestMetadata = MiscService.getRequestMetadata(ctx);
-    const events = ctx.request.body as ProcessorRequest[];
+    const events = ctx.request.body as ProcessorTransformRequest[];
     const processedRespone: UserTransfromServiceResponse = await UserTransformService.transformRoutine(
       events
     );

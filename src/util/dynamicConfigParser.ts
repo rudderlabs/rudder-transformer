@@ -1,5 +1,5 @@
 import cloneDeep from "lodash/cloneDeep";
-import { ProcessorRequest, RouterRequestData } from "../types/index";
+import { ProcessorTransformRequest, RouterTransformRequestData } from "../types/index";
 
 /* eslint-disable no-param-reassign */
 const get = require("get-value");
@@ -7,7 +7,7 @@ const unset = require("unset-value");
 
 export class DynamicConfigParser {
   private static getDynamicConfigValue(
-    event: ProcessorRequest | RouterRequestData,
+    event: ProcessorTransformRequest | RouterTransformRequestData,
     value: any
   ) {
     // this regex checks for pattern  "only spaces {{ path || defaultvalue }}  only spaces" .
@@ -41,7 +41,7 @@ export class DynamicConfigParser {
 
   private static configureVal(
     value: any,
-    event: ProcessorRequest | RouterRequestData
+    event: ProcessorTransformRequest | RouterTransformRequestData
   ) {
     if (value) {
       return value;
@@ -60,7 +60,7 @@ export class DynamicConfigParser {
     return value;
   }
 
-  private static getDynamicConfig(event: ProcessorRequest | RouterRequestData) {
+  private static getDynamicConfig(event: ProcessorTransformRequest | RouterTransformRequestData) {
     const resultantEvent = cloneDeep(event);
     const { Config } = event.destination;
     resultantEvent.destination.Config = this.configureVal(Config, event);
@@ -68,10 +68,10 @@ export class DynamicConfigParser {
   }
 
   public static processDynamicConfig(
-    events: ProcessorRequest[] | RouterRequestData[]
+    events: ProcessorTransformRequest[] | RouterTransformRequestData[]
   ) {
     const eventRespArr = events.map(
-      (e: ProcessorRequest | RouterRequestData) => {
+      (e: ProcessorTransformRequest | RouterTransformRequestData) => {
         return this.getDynamicConfig(e);
       }
     );

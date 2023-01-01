@@ -4,10 +4,10 @@ import {
   DeliveryResponse,
   ErrorDetailer,
   MetaTransferObject,
-  ProcessorRequest,
-  ProcessorResponse,
-  RouterRequestData,
-  RouterResponse,
+  ProcessorTransformRequest,
+  ProcessorTransformResponse,
+  RouterTransformRequestData,
+  RouterTransformResponse,
   TransformedEvent
 } from "../../types/index";
 import { TransformationError } from "../../v0/util/errorTypes";
@@ -37,13 +37,13 @@ export default class CDKV1DestinationService
   }
 
   public async processorRoutine(
-    events: ProcessorRequest[],
+    events: ProcessorTransformRequest[],
     destinationType: string,
     _version: string,
     _requestMetadata: Object
-  ): Promise<ProcessorResponse[]> {
+  ): Promise<ProcessorTransformResponse[]> {
     const tfConfig = await ConfigFactory.getConfig(destinationType);
-    const respList: ProcessorResponse[][] = await Promise.all(
+    const respList: ProcessorTransformResponse[][] = await Promise.all(
       events.map(async event => {
         try {
           let transformedPayloads: any = await Executor.execute(
@@ -76,22 +76,22 @@ export default class CDKV1DestinationService
   }
 
   public routerRoutine(
-    _events: RouterRequestData[],
+    _events: RouterTransformRequestData[],
     _destinationType: string,
     _version: string,
     _requestMetadata: Object
-  ): Promise<RouterResponse[]> {
+  ): Promise<RouterTransformResponse[]> {
     throw new TransformationError(
       "CDKV1 Does not Implement Router Transform Routine"
     );
   }
 
   public batchRoutine(
-    _events: RouterRequestData[],
+    _events: RouterTransformRequestData[],
     _destinationType: string,
     _version: any,
     _requestMetadata: Object
-  ): RouterResponse[] {
+  ): RouterTransformResponse[] {
     throw new TransformationError(
       "CDKV1 Does not Implement Batch Transform Routine"
     );

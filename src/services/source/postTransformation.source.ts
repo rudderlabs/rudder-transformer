@@ -1,5 +1,4 @@
 import {
-  ErrorDetailer,
   MetaTransferObject,
   RudderMessage,
   SourceTransformResponse

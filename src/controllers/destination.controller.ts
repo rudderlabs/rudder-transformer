@@ -3,10 +3,10 @@ import MiscService from "../services/misc.service";
 import PreTransformationDestinationService from "../services/destination/preTransformation.destination.service";
 import PostTransformationDestinationService from "../services/destination/postTransformation.destination.service";
 import {
-  ProcessorRequest,
-  RouterRequestData,
-  RouterRequest,
-  ProcessorResponse
+  ProcessorTransformRequest,
+  RouterTransformRequestData,
+  RouterTransformRequest,
+  ProcessorTransformResponse
 } from "../types/index";
 import ServiceSelector from "../helpers/serviceSelector";
 import ControllerUtility from "./util";
@@ -22,9 +22,9 @@ export default class DestinationController {
       "Native(Process-Transform):: Requst to transformer::",
       JSON.stringify(ctx.request.body)
     );
-    let resplist: ProcessorResponse[];
+    let resplist: ProcessorTransformResponse[];
     let requestMetadata = MiscService.getRequestMetadata(ctx);
-    let events = ctx.request.body as ProcessorRequest[];
+    let events = ctx.request.body as ProcessorTransformRequest[];
     const metaTags = MiscService.getMetaTags(events[0].metadata);
     const {
       version,
@@ -35,7 +35,7 @@ export default class DestinationController {
       events = PreTransformationDestinationService.preProcess(
         events,
         ctx
-      ) as ProcessorRequest[];
+      ) as ProcessorTransformRequest[];
       resplist = await integrationService.processorRoutine(
         events,
         destination,
@@ -83,7 +83,7 @@ export default class DestinationController {
       JSON.stringify(ctx.request.body)
     );
     let requestMetadata = MiscService.getRequestMetadata(ctx);
-    const routerRequest = ctx.request.body as RouterRequest;
+    const routerRequest = ctx.request.body as RouterTransformRequest;
     const destination = routerRequest.destType;
     let events = routerRequest.input;
     const integrationService = ServiceSelector.getDestinationService(events);
@@ -91,7 +91,7 @@ export default class DestinationController {
       events = PreTransformationDestinationService.preProcess(
         events,
         ctx
-      ) as RouterRequestData[];
+      ) as RouterTransformRequestData[];
       const resplist = await integrationService.routerRoutine(
         events,
         destination,
@@ -129,7 +129,7 @@ export default class DestinationController {
       JSON.stringify(ctx.request.body)
     );
     let requestMetadata = MiscService.getRequestMetadata(ctx);
-    const routerRequest = ctx.request.body as RouterRequest;
+    const routerRequest = ctx.request.body as RouterTransformRequest;
     const destination = routerRequest.destType;
     let events = routerRequest.input;
     const integrationService = ServiceSelector.getDestinationService(events);
@@ -137,7 +137,7 @@ export default class DestinationController {
       events = PreTransformationDestinationService.preProcess(
         events,
         ctx
-      ) as RouterRequestData[];
+      ) as RouterTransformRequestData[];
       const resplist = integrationService.batchRoutine(
         events,
         destination,

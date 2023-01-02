@@ -29,30 +29,32 @@ const getPropertyName = (itemName, index) => {
 };
 
 const getProductsMapping = (productsMapping, itemName) => {
+  let prop;
   productsMapping.forEach(mapping => {
-    return mapping.to === itemName ? mapping.from : itemMapping[itemName];
+    prop = mapping.to === itemName ? mapping.from : itemMapping[itemName];
   });
+  return prop;
 };
 
-const populateProductProperties = properties => {
+const populateProductProperties = (productsMapping, properties) => {
   const { products } = properties;
   const productProperties = {};
   if (products && Array.isArray(products)) {
     products.forEach((item, index) => {
       productProperties[getPropertyName("ItemBrand", index + 1)] =
-        item[getProductsMapping("ItemBrand")];
+        item[getProductsMapping(productsMapping, "ItemBrand")];
       productProperties[getPropertyName("ItemCategory", index + 1)] =
-        item[getProductsMapping("ItemBrand")];
+        item[getProductsMapping(productsMapping, "ItemCategory")];
       productProperties[getPropertyName("ItemName", index + 1)] =
-        item[getProductsMapping("ItemBrand")];
+        item[getProductsMapping(productsMapping, "ItemName")];
       productProperties[getPropertyName("ItemPrice", index + 1)] =
-        item[getProductsMapping("ItemBrand")];
+        item[getProductsMapping(productsMapping, "ItemPrice")];
       productProperties[getPropertyName("ItemPromoCode", index + 1)] =
-        item[getProductsMapping("ItemBrand")];
+        item[getProductsMapping(productsMapping, "ItemPromoCode")];
       productProperties[getPropertyName("ItemQuantity", index + 1)] =
-        item[getProductsMapping("ItemBrand")];
+        item[getProductsMapping(productsMapping, "ItemQuantity")];
       productProperties[getPropertyName("ItemSku", index + 1)] =
-        item[getProductsMapping("ItemBrand")];
+        item[getProductsMapping(productsMapping, "ItemSku")];
     });
   } else {
     const index = 1;

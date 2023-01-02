@@ -102,7 +102,8 @@ const trackResponseBuilder = (message, Config) => {
     impactAppId,
     actionEventNames,
     installEventNames,
-    rudderToImpactProperty
+    rudderToImpactProperty,
+    productsMapping
   } = Config;
 
   let eventType;
@@ -135,7 +136,10 @@ const trackResponseBuilder = (message, Config) => {
       payload.AndroidId = get(message, "context.device.id");
       payload.GoogAId = get(message, "context.device.advertisingId");
     }
-    const productProperties = populateProductProperties(message.properties);
+    const productProperties = populateProductProperties(
+      productsMapping,
+      message.properties
+    );
     const additionalParameters = populateAdditionalParameters(
       message,
       rudderToImpactProperty

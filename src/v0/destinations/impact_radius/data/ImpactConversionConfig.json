@@ -56,7 +56,7 @@
       "properties.checkout_id"
     ],
     "sourceFromGenericMap": false,
-    "required": false
+    "required": true
   },
   {
     "destKey": "OrderShipping",

@@ -53,14 +53,11 @@ const processNormalEvent = event => {
   return message;
 };
 
-// function processNormalEvent(event) {
-//   const response = processEvent(event);
-//   const returnValue = removeUndefinedAndNullValues(response);
-//   // to bypass the unit testcases ( we may change this)
-//   // returnValue.anonymousId = "7e32188a4dab669f";
-//   return returnValue;
-// }
-
+/**
+ * Test if event is Test event or not
+ * @param {*} event
+ * @returns
+ */
 const isTestEvent = event => {
   return !!event?.text;
 };

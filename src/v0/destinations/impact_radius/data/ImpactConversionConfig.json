@@ -221,7 +221,7 @@
   },
   {
     "destKey": "DeviceOs",
-    "sourceKeys": ["context.device.type || context.os.name"],
+    "sourceKeys": ["context.device.type", "context.os.name"],
     "sourceFromGenericMap": false,
     "required": false
   },

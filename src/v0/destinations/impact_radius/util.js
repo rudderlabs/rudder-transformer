@@ -24,7 +24,7 @@ const checkConfigurationError = Config => {
 };
 
 const getPropertyName = (itemName, index) => {
-  const propertyName = `${itemName}[${index}]`;
+  const propertyName = `${itemName}${index}`;
   return propertyName;
 };
 

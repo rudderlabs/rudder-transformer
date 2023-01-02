@@ -1,5 +1,6 @@
 const get = require("get-value");
 const sha1 = require("js-sha1");
+const btoa = require("btoa");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
@@ -28,7 +29,7 @@ const responseBuilder = (payload, endpoint, Config) => {
     response.endpoint = endpoint;
     response.headers = {
       "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Basic ${Config.accountSID}:${Config.apiKey}`
+      Authorization: `Basic ${btoa(`${Config.accountSID}:${Config.apiKey}`)}`
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.body.FORM = removeUndefinedAndNullValues(payload);
@@ -106,12 +107,12 @@ const trackResponseBuilder = (message, Config) => {
 
   let eventType;
   actionEventNames.forEach(eventName => {
-    if (eventName === message.event) {
+    if (eventName === "Order Completed" || eventName === message.event) {
       eventType = "action";
     }
   });
   installEventNames.forEach(eventName => {
-    if (eventName === message.event) {
+    if (eventName === "Applciation Installed" || eventName === message.event) {
       eventType = "install";
     }
   });
@@ -202,7 +203,7 @@ const processEvent = async (message, destination) => {
   if (!message.type) {
     throw new InstrumentationError("Event type is required");
   }
-  if (!checkConfigurationError(destination.Config)) {
+  if (checkConfigurationError(destination.Config)) {
     const configField = checkConfigurationError(destination.Config);
     throw new ConfigurationError(`${configField} is a required field`);
   }

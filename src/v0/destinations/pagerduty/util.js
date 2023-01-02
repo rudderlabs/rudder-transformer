@@ -1,12 +1,12 @@
 const get = require("get-value");
 const moment = require("moment");
 const {
-  severities,
-  eventActions,
+  SEVERITIES,
+  EVENT_ACTIONS,
   MAPPING_CONFIG,
-  defaultSeverity,
+  DEFAULT_SEVERITY,
   CONFIG_CATEGORIES,
-  defaultEventAction
+  DEFAULT_EVENT_ACTION
 } = require("./config");
 const { constructPayload, getIntegrationsObj } = require("../../util");
 const { InstrumentationError } = require("../../util/errorTypes");
@@ -64,12 +64,12 @@ const getValidImages = images => {
 const getValidSeverity = payload => {
   if (
     payload.payload?.severity &&
-    severities.includes(payload.payload.severity)
+    SEVERITIES.includes(payload.payload.severity)
   ) {
     return payload.payload.severity;
   }
   // If severity is not found in payload then fallback to default value which is "critical"
-  return defaultSeverity;
+  return DEFAULT_SEVERITY;
 };
 
 /**
@@ -79,15 +79,16 @@ const getValidSeverity = payload => {
  */
 const getValidEventAction = message => {
   const eventAction = get(message.properties, "action");
-  if (eventAction && eventActions.includes(eventAction)) {
+  if (eventAction && EVENT_ACTIONS.includes(eventAction)) {
     return eventAction;
   }
   // If action is not found in payload then fallback to default value which is "trigger"
-  return defaultEventAction;
+  return DEFAULT_EVENT_ACTION;
 };
 
 /**
  * Returns the alert event payload
+ * Ref: https://developer.pagerduty.com/docs/ZG9jOjExMDI5NTgx-send-an-alert-event
  * @param {*} message
  * @param {*} Config
  * @returns
@@ -118,6 +119,7 @@ const prepareAlertEventPayload = (message, Config) => {
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.ALERT_EVENT.name]
   );
+
   // If dedup_key is not found when incident is triggered then fallback to messageId
   payload.dedup_key = dedupKey || message.messageId;
   payload.event_action = eventAction;
@@ -141,7 +143,7 @@ const trackEventPayloadBuilder = (message, Config) => {
   if (
     integrationsObj &&
     integrationsObj.type &&
-    integrationsObj.type === "change"
+    integrationsObj.type === "changeEvent"
   ) {
     payload = constructPayload(
       message,

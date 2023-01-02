@@ -507,7 +507,7 @@
         },
         "integrations": {
           "pagerduty": {
-            "type": "change"
+            "type": "changeEvent"
           }
         }
       },

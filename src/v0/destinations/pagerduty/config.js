@@ -15,20 +15,20 @@ const CONFIG_CATEGORIES = {
   }
 };
 
-const eventActions = ["trigger", "acknowledge", "resolve"];
-const defaultEventAction = "trigger";
+const EVENT_ACTIONS = ["trigger", "acknowledge", "resolve"];
+const DEFAULT_EVENT_ACTION = "trigger";
 
-const severities = ["critical", "warning", "error", "info"];
-const defaultSeverity = "critical";
+const SEVERITIES = ["critical", "warning", "error", "info"];
+const DEFAULT_SEVERITY = "critical";
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
-  severities,
-  eventActions,
+  SEVERITIES,
   BASE_ENDPOINT,
+  EVENT_ACTIONS,
   MAPPING_CONFIG,
-  defaultSeverity,
+  DEFAULT_SEVERITY,
   CONFIG_CATEGORIES,
-  defaultEventAction
+  DEFAULT_EVENT_ACTION
 };

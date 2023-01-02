@@ -10,7 +10,8 @@ const {
   getFieldValueFromMessage,
   removeUndefinedValues,
   isDefinedAndNotNull,
-  simpleProcessRouterDest
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError
 } = require("../../util");
 
 const { InstrumentationError } = require("../../util/errorTypes");
@@ -678,8 +679,47 @@ function batch(destEvents) {
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+  let batchResponseList = [];
+  const batchErrorRespList = [];
+  const successRespList = [];
+  const { destination } = inputs[0];
+  await Promise.all(
+    inputs.map(async event => {
+      try {
+        if (event.message.statusCode) {
+          // already transformed event
+          successRespList.push({
+            message: event.message,
+            metadata: event.metadata,
+            destination
+          });
+        } else {
+          // if not transformed
+          const transformedPayload = {
+            message: process(event),
+            metadata: event.metadata,
+            destination
+          };
+          successRespList.push(transformedPayload);
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(
+          event,
+          error,
+          reqMetadata
+        );
+        batchErrorRespList.push(errRespEvent);
+      }
+    })
+  );
+  if (successRespList.length > 0) {
+    batchResponseList = batch(successRespList);
+  }
+  return [...batchResponseList, ...batchErrorRespList];
 };
 
-module.exports = { process, processRouterDest, batch };
+module.exports = { process, processRouterDest };

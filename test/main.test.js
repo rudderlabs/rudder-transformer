@@ -53,9 +53,9 @@ const testFile = inputDataFile => {
       const transformer = getExecutionPath(dataPoint, dataPoint.testType);
       switch (dataPoint.testType) {
         case "proc_tf":
-          it(`${index}. ${dataPoint.destinationName} - ${dataPoint.description}`, () => {
+          it(`${index}. ${dataPoint.destinationName} destination (proc_tf) tests - ${dataPoint.description}`, async () => {
             try {
-              const output = transformer.process(dataPoint.input);
+              const output = await transformer.process(dataPoint.input);
               expect(output).toEqual(dataPoint.output);
             } catch (error) {
               expect(error.message).toEqual(dataPoint.output.error);
@@ -63,13 +63,13 @@ const testFile = inputDataFile => {
           });
           break;
         case "router_tf":
-          it("Payload", () => {
-            const output = transformer.processRouterDest(dataPoint.input);
+          it(`${index}. ${dataPoint.destinationName} destination (router_tf) tests -`, async () => {
+            const output = await transformer.processRouterDest(dataPoint.input);
             expect(output).toEqual(dataPoint.output);
           });
           break;
         case "source_tf":
-          it(`${dataPoint.sourceName} Tests: payload: ${index}`, () => {
+          it(`${index}. ${dataPoint.sourceName} Source Tests: payload: ${index}`, () => {
             try {
               const output = transformer.process(dataPoint.input);
               expect(output).toEqual(dataPoint.output);

@@ -271,13 +271,7 @@
             "params": {},
             "body": {
               "JSON": {
-                "content": "Identified my-name-1 with country: USA email: test@domain.com name: my-name-1 ",
-                "embeds": [
-                  {
-                    "description": "Identify call made",
-                    "title": "Message from Rudderstack "
-                  }
-                ]
+                "content": "Identified my-name-1 with country: USA email: test@domain.com name: my-name-1 "
               },
               "XML": {},
               "JSON_ARRAY": {},
@@ -342,13 +336,7 @@
                 "params": {},
                 "body": {
                   "JSON": {
-                    "content": "my-name performed test_eventing_testis with test_val1 test_val2",
-                    "embeds": [
-                      {
-                        "description": "Track call made",
-                        "title": "Message from Rudderstack "
-                      }
-                    ]
+                    "content": "my-name performed test_eventing_testis with test_val1 test_val2"
                   },
                   "XML": {},
                   "JSON_ARRAY": {},

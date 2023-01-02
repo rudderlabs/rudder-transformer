@@ -17,21 +17,46 @@ const {
   buildDefaultTraitTemplate
 } = require("../slack/util");
 
-const buildResponse = (text, type, destination) => {
+const getEmbed = (templateInput, destination, callType) => {
+  // building titleTemplate
+  let embedTitleTemplate = "";
+  let titleTemplate;
+  if (
+    destination.Config?.embedTitleTemplate &&
+    destination.Config.embedTitleTemplate.trim().length > 0
+  ) {
+    embedTitleTemplate = destination.Config.embedTitleTemplate.trim();
+    titleTemplate = Handlebars.compile(embedTitleTemplate);
+  }
+  // building desription template
+  let embedDescriptionTemplate = "";
+  let descriptionTemplate;
+  if (
+    destination.Config?.embedDescriptionTemplate &&
+    destination.Config.embedDescriptionTemplate.trim().length > 0
+  ) {
+    embedDescriptionTemplate = destination.Config.embedDescriptionTemplate.trim();
+    descriptionTemplate = Handlebars.compile(embedDescriptionTemplate);
+  }
+  return {
+    title:
+      embedTitleTemplate.length > 0
+        ? titleTemplate(templateInput)
+        : "Message from Rudderstack ",
+    description:
+      embedDescriptionTemplate.length > 0
+        ? descriptionTemplate(templateInput)
+        : `${callType} call made`
+  };
+};
+
+const buildResponse = (responseBody, destination) => {
   const endpoint = destination.Config.webhookUrl;
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = { "Content-Type": "application/json" };
-  response.body.JSON = {
-    content: text,
-    embeds: [
-      {
-        title: "Message from Rudderstack ",
-        description: `${type} call made`
-      }
-    ]
-  };
+  response.body.JSON = responseBody;
   return response;
 };
 const processIdentify = (message, destination) => {
@@ -69,7 +94,19 @@ const processIdentify = (message, destination) => {
   };
 
   const resultText = template(templateInput);
-  return buildResponse(resultText, "Identify", destination);
+  //  constructing embed message
+  if (destination?.Config?.embedFlag) {
+    const embedMessage = getEmbed(templateInput, destination, "Identify");
+    const response = {
+      content: resultText,
+      embeds: [embedMessage]
+    };
+    return buildResponse(response, destination);
+  }
+  const response = {
+    content: resultText
+  };
+  return buildResponse(response, destination);
 };
 
 const processTrack = (message, destination) => {
@@ -140,7 +177,19 @@ const processTrack = (message, destination) => {
   };
 
   const resultText = eventTemplate(templateInput);
-  return buildResponse(resultText, "Track", destination);
+  //  constructing embed message
+  if (destination?.Config?.embedFlag) {
+    const embedMessage = getEmbed(templateInput, destination, "Track");
+    const response = {
+      content: resultText,
+      embeds: [embedMessage]
+    };
+    return buildResponse(response, destination);
+  }
+  const response = {
+    content: resultText
+  };
+  return buildResponse(response, destination);
 };
 
 const process = event => {

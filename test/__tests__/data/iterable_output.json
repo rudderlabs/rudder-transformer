@@ -315,7 +315,7 @@
   },
   {
     "statusCode": 400,
-    "message": "Message type not supported"
+    "message": "Message type group not supported"
   },
   [
     {

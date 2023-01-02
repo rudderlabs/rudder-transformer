@@ -1,6 +1,8 @@
 const axios = require("axios");
 const { ENDPOINTS } = require("./config");
-const { CustomError } = require("../../util");
+const { TransformationError, NetworkError } = require("../../util/errorTypes");
+const tags = require("../../util/tags");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 
 const handleErrorResponse = (
   error,
@@ -22,7 +24,14 @@ const handleErrorResponse = (
       return { success: false, err: errMessage };
     }
   }
-  throw new CustomError(`${customErrMessage}: ${errMessage}`, errorStatus);
+  throw new NetworkError(
+    `${customErrMessage}: ${errMessage}`,
+    errorStatus,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus)
+    },
+    error
+  );
 };
 
 /**
@@ -52,7 +61,16 @@ const objectExists = async (id, Config, objectType) => {
     if (response && response.status === 200) {
       return { success: true, err: null };
     }
-    throw new CustomError(err);
+    const defStatus = 400;
+    const status = response ? response.status || defStatus : defStatus;
+    throw new NetworkError(
+      err,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      response
+    );
   } catch (error) {
     return handleErrorResponse(
       error,
@@ -74,7 +92,17 @@ const createAccount = async (payload, Config) => {
     if (response && response.status === 201) {
       return { success: true, err: null };
     }
-    throw new CustomError("invalid response while creating account");
+
+    const defStatus = 400;
+    const status = response ? response.status || defStatus : defStatus;
+    throw new NetworkError(
+      "invalid response while creating account",
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      response
+    );
   } catch (error) {
     return handleErrorResponse(error, "error while creating account", 400);
   }
@@ -96,7 +124,16 @@ const updateAccount = async (accountId, payload, Config) => {
     if (response && response.status === 204) {
       return { success: true, err: null };
     }
-    throw new CustomError("invalid response while updating account");
+    const defStatus = 400;
+    const status = response ? response.status || defStatus : defStatus;
+    throw new NetworkError(
+      "invalid response while updating account",
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      response
+    );
   } catch (error) {
     // it will only occur if the user does not exist
     if (
@@ -146,7 +183,6 @@ const formatEventProps = props => {
 };
 
 module.exports = {
-  CustomError,
   renameCustomFields,
   createAccount,
   updateAccount,

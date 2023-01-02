@@ -14,14 +14,20 @@ const {
   removeUndefinedAndNullValues,
   removeUndefinedAndNullAndEmptyValues
 } = require("../../util");
+const tags = require("../../util/tags");
 const Cache = require("../../util/cache");
-const ErrorBuilder = require("../../util/error");
 const {
+  getDynamicErrorType,
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { httpGET } = require("../../../adapters/network");
-const { AUTH_CACHE_TTL, TRANSFORMER_METRIC } = require("../../util/constant");
-const { MAPPING_CONFIG, CONFIG_CATEGORIES, DESTINATION } = require("./config");
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
+const { AUTH_CACHE_TTL } = require("../../util/constant");
+const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require("./config");
 
 const customFieldsCache = new Cache(AUTH_CACHE_TTL);
 
@@ -53,85 +59,32 @@ const isValidEvent = (Config, event) => {
 const validateTrackPayload = (message, Config) => {
   let event = getValueFromMessage(message, "event");
   if (!event) {
-    throw new ErrorBuilder()
-      .setMessage("[SendGrid] :: Event is required for track call")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("Event is required for track call");
   }
   event = event.trim().toLowerCase();
   if (!isValidEvent(Config, event)) {
-    throw new ErrorBuilder()
-      .setMessage("[SendGrid] :: Event not configured on dashboard")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new ConfigurationError("Event not configured on dashboard");
   }
 };
 
 const requiredFieldValidator = payload => {
   if (!payload.template_id) {
     if (!payload.content || (payload.content && isEmpty(payload.content))) {
-      throw new ErrorBuilder()
-        .setMessage("[SendGrid] :: Either template id or content is required")
-        .setStatus(400)
-        .setStatTags({
-          destType: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-        })
-        .build();
+      throw new InstrumentationError(
+        "Either template id or content is required"
+      );
     }
   }
   if (!payload.personalizations || isEmpty(payload.personalizations)) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[SendGrid] :: Personalizations field cannot be missing or empty"
-      )
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError(
+      "Personalizations field cannot be missing or empty"
+    );
   }
   if (!payload.from) {
-    throw new ErrorBuilder()
-      .setMessage("[SendGrid] :: From is required field")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("From is required field");
   }
   if (payload.from && !payload.from.email) {
-    throw new ErrorBuilder()
-      .setMessage("[SendGrid] :: Email inside from object is required")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("Email inside from object is required");
   }
 };
 
@@ -456,16 +409,7 @@ const generatePayloadFromConfig = (payload, Config) => {
 const validateIdentifyPayload = message => {
   const email = getFieldValueFromMessage(message, "email");
   if (!email) {
-    throw new ErrorBuilder()
-      .setMessage("[SendGrid] :: Parameter mail is required")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("Parameter mail is required");
   }
 };
 
@@ -538,16 +482,15 @@ const fetchCustomFields = async destination => {
     }
 
     const { message } = processedResponse.response.errors[0];
-    throw new ErrorBuilder()
-      .setMessage(message)
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      })
-      .build();
+    const status = processedResponse.status || 400;
+    throw new NetworkError(
+      message,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      processedResponse.response
+    );
   });
 };
 

@@ -1,11 +1,16 @@
 const { httpDELETE } = require("../../../adapters/network");
-const ErrorBuilder = require("../../util/error");
-const { DESTINATION, DELETE_CONTACTS_ENDPOINT, urlLimit } = require("./config");
+const { urlLimit, DELETE_CONTACTS_ENDPOINT } = require("./config");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 /**
  * This drops the user if userId is not available and converts the ids's into list of strings
@@ -45,29 +50,11 @@ const chunksFromUrlLength = (userAttributes, maxSize) => {
 const userDeletionHandler = async (userAttributes, config) => {
   const { apiKey } = config;
   if (!Array.isArray(userAttributes)) {
-    throw new ErrorBuilder()
-      .setMessage("[SendGrid] :: userAttributes is not an array")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("userAttributes is not an array");
   }
 
   if (!apiKey) {
-    throw new ErrorBuilder()
-      .setMessage("[SendGrid] :: apiKey is required for deleting user")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new ConfigurationError("apiKey is required for deleting user");
   }
 
   let endpoint = DELETE_CONTACTS_ENDPOINT;
@@ -80,10 +67,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   // ref : https://docs.sendgrid.com/api-reference/contacts/delete-contacts
   const batchEvents = chunksFromUrlLength(userAttributes, urlLimit);
   if (batchEvents.length === 0) {
-    throw new ErrorBuilder()
-      .setMessage(`[SendGrid]::No data found to delete`)
-      .setStatus(400)
-      .build();
+    throw new InstrumentationError(`No User id for deletion is present`);
   }
   await Promise.all(
     batchEvents.map(async batchEvent => {
@@ -92,21 +76,18 @@ const userDeletionHandler = async (userAttributes, config) => {
       const processedDeletionResponse = processAxiosResponse(deletionResponse);
 
       if (!isHttpStatusSuccess(processedDeletionResponse.status)) {
-        throw new ErrorBuilder()
-          .setMessage(
-            `[SendGrid]::Deletion Request is not successful - error: ${JSON.stringify(
-              processedDeletionResponse.response
-            )}`
-          )
-          .setStatus(400)
-          .setStatTags({
-            destType: DESTINATION,
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-          })
-          .build();
+        throw new NetworkError(
+          `Deletion Request is not successful - error: ${JSON.stringify(
+            processedDeletionResponse.response
+          )}`,
+          processedDeletionResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+              processedDeletionResponse.status
+            )
+          },
+          processedDeletionResponse
+        );
       }
     })
   );

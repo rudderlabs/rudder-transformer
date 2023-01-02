@@ -1,27 +1,27 @@
 const _ = require("lodash");
 const btoa = require("btoa");
 const { httpPOST } = require("../../../adapters/network");
+const tags = require("../../util/tags");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
-const ErrorBuilder = require("../../util/error");
+const {
+  ConfigurationError,
+  NetworkError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
 const { DELETE_MAX_BATCH_SIZE } = require("./config");
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
-    throw new ErrorBuilder()
-      .setMessage("[Amplitude]::Config for deletion not present")
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError("Config for deletion not present");
   }
   const { apiKey, apiSecret } = config;
   if (!apiKey || !apiSecret) {
-    throw new ErrorBuilder()
-      .setMessage("[Amplitude]::api key/secret for deletion not present")
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError("api key/secret for deletion not present");
   }
   const identity = [];
   userAttributes.forEach(userAttribute => {
@@ -31,10 +31,7 @@ const userDeletionHandler = async (userAttributes, config) => {
     }
   });
   if (identity.length === 0) {
-    throw new ErrorBuilder()
-      .setMessage(`[Amplitude]:: No User id for deletion not present`)
-      .setStatus(400)
-      .build();
+    throw new InstrumentationError(`No User id for deletion is present`);
   }
 
   const headers = {
@@ -56,14 +53,18 @@ const userDeletionHandler = async (userAttributes, config) => {
       const resp = await httpPOST(url, data, requestOptions);
       const handledResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledResponse.status)) {
-        throw new ErrorBuilder()
-          .setMessage(
-            `[Amplitude]::user deletion request failed - error: ${JSON.stringify(
-              handledResponse.response
-            )}`
-          )
-          .setStatus(handledResponse.status)
-          .build();
+        throw new NetworkError(
+          `user deletion request failed - error: ${JSON.stringify(
+            handledResponse.response
+          )}`,
+          handledResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+              handledResponse.status
+            )
+          },
+          handledResponse
+        );
       }
     })
   );

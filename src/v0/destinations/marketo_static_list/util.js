@@ -1,6 +1,4 @@
-const { DESTINATION } = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const ErrorBuilder = require("../../util/error");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 /**
  * Fetches the ids from the array of objects
@@ -29,28 +27,12 @@ const getIds = array => {
  */
 const validateMessageType = (message, allowedTypes) => {
   if (!message.type) {
-    throw new ErrorBuilder()
-      .setMessage("Message Type is not present. Aborting message.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      })
-      .build();
+    throw new InstrumentationError("Event type is required");
   }
   if (!allowedTypes.includes(message.type.toLowerCase())) {
-    throw new ErrorBuilder()
-      .setMessage(`${message.type} call is not supported.`)
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      })
-      .build();
+    throw new InstrumentationError(
+      `Event type ${message.type} is not supported`
+    );
   }
 };
 

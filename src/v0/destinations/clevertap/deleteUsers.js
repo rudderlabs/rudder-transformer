@@ -1,12 +1,18 @@
 const _ = require("lodash");
 const { httpPOST } = require("../../../adapters/network");
-const ErrorBuilder = require("../../util/error");
 const { getEndpoint, MAX_BATCH_SIZE } = require("./config");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
 const { executeCommonValidations } = require("../../util/regulation-api");
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -18,12 +24,9 @@ const userDeletionHandler = async (userAttributes, config) => {
   const { accountId, passcode } = config;
 
   if (!accountId || !passcode) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[Clevertap]::Project ID and Passcode is required for delete user"
-      )
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError(
+      "Project ID and Passcode is required for delete user"
+    );
   }
 
   const endpoint = getEndpoint(config, "/delete/profiles.json");
@@ -40,10 +43,7 @@ const userDeletionHandler = async (userAttributes, config) => {
     }
   });
   if (identity.length === 0) {
-    throw new ErrorBuilder()
-      .setMessage(`[Clevertap]::No userId found to delete`)
-      .setStatus(400)
-      .build();
+    throw new InstrumentationError(`No User id for deletion is present`);
   }
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.clevertap.com/docs/disassociate-api
@@ -61,14 +61,18 @@ const userDeletionHandler = async (userAttributes, config) => {
       );
       const handledResponse = processAxiosResponse(deletionResponse);
       if (!isHttpStatusSuccess(handledResponse.status)) {
-        throw new ErrorBuilder()
-          .setMessage(
-            `[Clevertap]::user deletion request failed - error: ${JSON.stringify(
-              handledResponse.response
-            )}`
-          )
-          .setStatus(handledResponse.status)
-          .build();
+        throw new NetworkError(
+          `user deletion request failed - error: ${JSON.stringify(
+            handledResponse.response
+          )}`,
+          handledResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+              handledResponse.status
+            )
+          },
+          handledResponse
+        );
       }
     })
   );

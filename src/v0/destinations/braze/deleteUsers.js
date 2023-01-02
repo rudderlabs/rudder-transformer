@@ -1,26 +1,28 @@
 const _ = require("lodash");
 const { httpPOST } = require("../../../adapters/network");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
+const tags = require("../../util/tags");
 const { isHttpStatusSuccess } = require("../../util");
-const ErrorBuilder = require("../../util/error");
 const { executeCommonValidations } = require("../../util/regulation-api");
 const { MAX_BATCH_SIZE } = require("./config");
+const {
+  NetworkError,
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
-    throw new ErrorBuilder()
-      .setMessage("[Braze]::Config for deletion not present")
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError("Config for deletion not present");
   }
   const { dataCenter, restApiKey } = config;
   if (!dataCenter || !restApiKey) {
-    throw new ErrorBuilder()
-      .setMessage("[Braze]::data center / api key for deletion not present")
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError(
+      "data center / api key for deletion not present"
+    );
   }
   // Endpoints different for different data centers.
   // DOC: https://www.braze.com/docs/user_guide/administrative/access_braze/braze_instances/
@@ -39,10 +41,7 @@ const userDeletionHandler = async (userAttributes, config) => {
     }
   });
   if (identity.length === 0) {
-    throw new ErrorBuilder()
-      .setMessage(`[Braze]::No userId found to delete`)
-      .setStatus(400)
-      .build();
+    throw new InstrumentationError(`No User id for deletion is present`);
   }
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // https://www.braze.com/docs/api/endpoints/user_data/post_user_delete#request-body
@@ -63,14 +62,18 @@ const userDeletionHandler = async (userAttributes, config) => {
         !isHttpStatusSuccess(handledResponse.status) &&
         handledResponse.status !== 404
       ) {
-        throw new ErrorBuilder()
-          .setMessage(
-            `[Braze]::user deletion request failed - error: ${JSON.stringify(
-              handledResponse.response
-            )}`
-          )
-          .setStatus(handledResponse.status)
-          .build();
+        throw new NetworkError(
+          `user deletion request failed - error: ${JSON.stringify(
+            handledResponse.response
+          )}`,
+          handledResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+              handledResponse.status
+            )
+          },
+          handledResponse
+        );
       }
     })
   );

@@ -58,8 +58,12 @@
         "jobId": 2
       }
     ],
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "configuration"
+    },
     "batched": false,
-    "statusCode": 400,
+    "statusCode": 500,
     "error": "Invalid user name provided in the destination configuration"
   },
   {

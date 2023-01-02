@@ -7,23 +7,24 @@ const {
   getFieldValueFromMessage,
   isBlank,
   isDefined,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError
+  simpleProcessRouterDest
 } = require("../../util");
+const {
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const putEventsHandler = (message, destination) => {
   const { properties, anonymousId, event } = message;
   const { customMappings, trackingId, disableStringify } = destination.Config;
 
   if (!event || !isDefinedAndNotNull(event) || isBlank(event)) {
-    throw new CustomError(" Cannot process if no event name specified", 400);
+    throw new InstrumentationError("Cannot process if no event name specified");
   }
 
   if (!trackingId) {
-    throw new CustomError(
-      "Tracking Id is a mandatory information to use putEvents",
-      400
+    throw new ConfigurationError(
+      "Tracking Id is a mandatory information to use putEvents"
     );
   }
 
@@ -43,7 +44,9 @@ const putEventsHandler = (message, destination) => {
       !MANDATORY_PROPERTIES.includes(key.toUpperCase())
     ) {
       if (!isDefined(value)) {
-        throw new CustomError(`Mapped property ${keyMap[key]} not found`, 400);
+        throw new InstrumentationError(
+          `Mapped property ${keyMap[key]} not found`
+        );
       }
       if (isDefined(disableStringify) && disableStringify) {
         outputEvent.properties[_.camelCase(key)] = value;
@@ -56,9 +59,8 @@ const putEventsHandler = (message, destination) => {
         (!isDefinedAndNotNull(value) || isBlank(value)) &&
         key.toUpperCase() !== "ITEM_ID"
       ) {
-        throw new CustomError(
-          `Null values cannot be sent for ${keyMap[key]} `,
-          400
+        throw new InstrumentationError(
+          `Null values cannot be sent for ${keyMap[key]} `
         );
       }
       if (
@@ -81,7 +83,8 @@ const putEventsHandler = (message, destination) => {
       } else if (!Number.isNaN(parseFloat(value))) {
         // for eventValue
         outputEvent[_.camelCase(key)] = parseFloat(value);
-      } else throw new CustomError(" EVENT_VALUE should be a float value", 400);
+      } else
+        throw new InstrumentationError("EVENT_VALUE should be a float value");
     }
   });
   // manipulate for itemId
@@ -117,14 +120,13 @@ const putItemsHandler = (message, destination) => {
   const keyMap = getHashFromArray(customMappings, "from", "to", false);
 
   if (!datasetARN) {
-    throw new CustomError(
+    throw new ConfigurationError(
       "Dataset ARN is a mandatory information to use putItems"
     );
   }
   if (!datasetARN.includes("/ITEMS")) {
-    throw new CustomError(
-      "Either Dataset ARN is not correctly entered or invalid",
-      400
+    throw new ConfigurationError(
+      "Either Dataset ARN is not correctly entered or invalid"
     );
   }
   const outputItem = {
@@ -143,7 +145,9 @@ const putItemsHandler = (message, destination) => {
       }
     }
     if (!isDefined(value)) {
-      throw new CustomError(`Mapped property ${keyMap[key]} not found`, 400);
+      throw new InstrumentationError(
+        `Mapped property ${keyMap[key]} not found`
+      );
     }
     if (key.toUpperCase() !== "ITEM_ID") {
       // itemId is not allowed inside properties
@@ -153,9 +157,8 @@ const putItemsHandler = (message, destination) => {
     }
   });
   if (!outputItem.itemId) {
-    throw new CustomError(
-      "itemId is a mandatory property for using PutItems",
-      400
+    throw new InstrumentationError(
+      "itemId is a mandatory property for using PutItems"
     );
   }
   const response = {
@@ -176,9 +179,8 @@ const trackRequestHandler = (message, destination, eventOperation) => {
       response = putItemsHandler(message, destination);
       break;
     default:
-      throw new CustomError(
-        `${eventOperation} is not supported for Track Calls`,
-        400
+      throw new ConfigurationError(
+        `${eventOperation} is not supported for Track Calls`
       );
   }
   return response;
@@ -191,22 +193,20 @@ const identifyRequestHandler = (message, destination, eventOperation) => {
   const keyMap = getHashFromArray(customMappings, "from", "to", false);
 
   if (eventOperation !== "PutUsers") {
-    throw new CustomError(
-      `This Message Type does not support ${eventOperation}. Aborting message.`,
-      400
+    throw new ConfigurationError(
+      `This Message Type does not support ${eventOperation}. Aborting message`
     );
   }
 
   if (!datasetARN) {
-    throw new CustomError(
+    throw new ConfigurationError(
       "Dataset ARN is a mandatory information to use putUsers"
     );
   }
 
   if (!datasetARN.includes("/USERS")) {
-    throw new CustomError(
-      "Either Dataset ARN is not correctly entered or invalid.",
-      400
+    throw new ConfigurationError(
+      "Either Dataset ARN is not correctly entered or invalid"
     );
   }
 
@@ -217,7 +217,9 @@ const identifyRequestHandler = (message, destination, eventOperation) => {
   Object.keys(keyMap).forEach(key => {
     const value = traits && traits[keyMap[key]];
     if (!isDefined(value)) {
-      throw new CustomError(`Mapped property ${keyMap[key]} not found`, 400);
+      throw new InstrumentationError(
+        `Mapped property ${keyMap[key]} not found`
+      );
     }
     if (key.toUpperCase() !== "USER_ID") {
       // userId is not allowed inside properties
@@ -225,9 +227,8 @@ const identifyRequestHandler = (message, destination, eventOperation) => {
     }
   });
   if (!outputUser.userId) {
-    throw new CustomError(
-      "userId is a mandatory property for using PutUsers",
-      400
+    throw new InstrumentationError(
+      "userId is a mandatory property for using PutUsers"
     );
   }
   const response = {
@@ -243,10 +244,7 @@ const processEvent = async (message, destination) => {
   const { eventChoice } = destination.Config;
   const eventOperation = eventChoice || "PutEvents";
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   const messageType = message.type.toLowerCase();
@@ -258,7 +256,9 @@ const processEvent = async (message, destination) => {
       response = trackRequestHandler(message, destination, eventOperation);
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
 
   if (eventChoice && eventChoice !== "PutEvents") {
@@ -278,43 +278,8 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          // eslint-disable-next-line no-nested-ternary
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

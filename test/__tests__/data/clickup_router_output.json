@@ -227,6 +227,10 @@
         "jobId": 4
       }
     ],
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    },
     "statusCode": 400
   }
 ]

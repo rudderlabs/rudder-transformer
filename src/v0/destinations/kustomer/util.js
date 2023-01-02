@@ -5,6 +5,9 @@ const set = require("set-value");
 const get = require("get-value");
 const { BASE_ENDPOINT } = require("./config");
 const { getType, isDefinedAndNotNull, isObject } = require("../../util");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const { NetworkError, AbortedError } = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 /**
  * RegExp to test a string for a ISO 8601 Date spec
@@ -18,13 +21,6 @@ const { getType, isDefinedAndNotNull, isObject } = require("../../util");
  * @type {RegExp}
  */
 const ISO_8601 = /^\d{4}(-\d\d(-\d\d(T\d\d:\d\d(:\d\d)?(\.\d+)?(([+-]\d\d:\d\d)|Z)?)?)?)?$/i;
-
-class CustomError extends Error {
-  constructor(message, statusCode) {
-    super(message);
-    this.response = { status: statusCode };
-  }
-}
 
 // Handles for Number type fields
 const transformNumberField = fieldName => {
@@ -117,18 +113,26 @@ const handleResponse = response => {
           targetUrl: `${BASE_ENDPOINT}/v1/customers/${data.data.id}?replace=false`
         };
       }
-      throw new CustomError(
+      throw new NetworkError(
         `Error while lookingUp Kustomer ${
           data.data ? JSON.stringify(data.data) : ""
         }`,
-        400
+        status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        },
+        response
       );
     case 404:
       return { userExists: false };
     default:
-      throw new CustomError(
+      throw new NetworkError(
         data ? JSON.stringify(data) : "Error while lookingUp Kustomer",
-        status || 400
+        status || 400,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status || 400)
+        },
+        response
       );
   }
 };
@@ -145,13 +149,12 @@ const fetchKustomer = async (url, destination) => {
     if (err.response) {
       return handleResponse(err.response);
     }
-    throw new CustomError(err.message, 400);
+    throw new AbortedError(err.message);
   }
   return handleResponse(response);
 };
 
 module.exports = {
   fetchKustomer,
-  handleAdvancedtransformations,
-  CustomError
+  handleAdvancedtransformations
 };

@@ -3,17 +3,19 @@ const {
   getErrorRespEvents,
   getSuccessRespEvents,
   defaultRequestConfig,
-  defaultBatchRequestConfig,
-  removeUndefinedAndNullValues,
   defaultPostRequestConfig,
-  TransformationError
+  defaultBatchRequestConfig,
+  handleRtTfSingleEventError,
+  removeUndefinedAndNullValues
 } = require("../../util");
 
-const { MAX_BATCH_SIZE, DESTINATION } = require("./config");
-
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+const { MAX_BATCH_SIZE } = require("./config");
 const { EventType } = require("../../../constants");
 const { createOrUpdateContactResponseBuilder } = require("./utils");
+const {
+  TransformationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = payload => {
   if (payload) {
@@ -28,13 +30,7 @@ const responseBuilder = payload => {
   }
   // fail-safety for developer error
   throw new TransformationError(
-    "Something went wrong while constructing the payload",
-    400,
-    {
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-    },
-    DESTINATION
+    "Something went wrong while constructing the payload"
   );
 };
 
@@ -46,15 +42,7 @@ const identifyResponseBuilder = (message, destination) => {
 const processEvent = (message, destination) => {
   // Validating if message type is even given or not
   if (!message.type) {
-    throw new TransformationError(
-      "Event type is required",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError("Event type is required");
   }
   const messageType = message.type.toLowerCase();
 
@@ -62,15 +50,8 @@ const processEvent = (message, destination) => {
     return identifyResponseBuilder(message, destination);
   }
 
-  throw new TransformationError(
-    `Event type "${messageType}" is not supported`,
-    400,
-    {
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-      meta:
-        TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.INSTRUMENTATION
-    },
-    DESTINATION
+  throw new InstrumentationError(
+    `Event type "${messageType}" is not supported`
   );
 };
 
@@ -151,7 +132,7 @@ const batchEvents = successRespList => {
   return batchedResponseList;
 };
 
-const processRouterDest = inputs => {
+const processRouterDest = (inputs, reqMetadata) => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
     return [respEvents];
@@ -179,13 +160,12 @@ const processRouterDest = inputs => {
         successRespList.push(transformedPayload);
       }
     } catch (error) {
-      batchErrorRespList.push(
-        getErrorRespEvents(
-          [event.metadata],
-          error.response ? error.response.status : 400,
-          error.message || "Error occurred while processing payload."
-        )
+      const errRespEvent = handleRtTfSingleEventError(
+        event,
+        error,
+        reqMetadata
       );
+      batchErrorRespList.push(errRespEvent);
     }
   });
 

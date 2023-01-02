@@ -2,7 +2,7 @@
   [
     {
       "statusCode": 400,
-      "error": "[Braze]::user deletion request failed - error: {\"code\":400,\"message\":\"Bad Req\",\"status\":\"Fail Case\"}"
+      "error": "user deletion request failed - error: {\"code\":400,\"message\":\"Bad Req\",\"status\":\"Fail Case\"}"
     }
   ],
   [
@@ -13,20 +13,20 @@
   ],
   [
     {
-      "statusCode": 400,
-      "error": "[Braze]::Config for deletion not present"
+      "statusCode": 500,
+      "error": "Config for deletion not present"
+    }
+  ],
+  [
+    {
+      "statusCode": 500,
+      "error": "data center / api key for deletion not present"
     }
   ],
   [
     {
       "statusCode": 400,
-      "error": "[Braze]::data center / api key for deletion not present"
-    }
-  ],
-  [
-    {
-      "statusCode": 400,
-      "error": "[Braze]::No userId found to delete"
+      "error": "No User id for deletion is present"
     }
   ]
 ]

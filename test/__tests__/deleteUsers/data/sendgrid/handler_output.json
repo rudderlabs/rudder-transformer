@@ -2,7 +2,7 @@
   [
     {
       "statusCode": 400,
-      "error": "[SendGrid]::Deletion Request is not successful - error: {\"code\":400,\"message\":\"Bad Req\",\"status\":\"Fail Case\"}"
+      "error": "Deletion Request is not successful - error: {\"code\":400,\"message\":\"Bad Req\",\"status\":\"Fail Case\"}"
     }
   ],
   [
@@ -13,14 +13,14 @@
   ],
   [
     {
-      "statusCode": 400,
-      "error": "[SendGrid] :: apiKey is required for deleting user"
+      "statusCode": 500,
+      "error": "apiKey is required for deleting user"
     }
   ],
   [
     {
       "statusCode": 400,
-      "error": "[SendGrid] :: userAttributes is not an array"
+      "error": "userAttributes is not an array"
     }
   ]
 ]

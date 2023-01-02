@@ -99,14 +99,17 @@ const gaAudienceProxyRequest = async request => {
   );
   if (
     !firstResponse.success &&
-    !isHttpStatusSuccess(firstResponse.response.response.status)
+    !isHttpStatusSuccess(firstResponse?.response?.response?.status)
   ) {
     return firstResponse;
   }
 
   // step2: putting users into the job
   let jobId;
-  if (firstResponse.response.data && firstResponse.response.data.resourceName)
+  if (
+    firstResponse?.response?.data &&
+    firstResponse?.response?.data.resourceName
+  )
     // eslint-disable-next-line prefer-destructuring
     jobId = firstResponse.response.data.resourceName.split("/")[3];
   const secondResponse = await addUserToJob(
@@ -118,10 +121,8 @@ const gaAudienceProxyRequest = async request => {
   );
   // console.log(JSON.stringify(secondResponse.response.response));
   if (
-    !secondResponse.success
-    // Don't think we need this extra check
-    // &&
-    // !isHttpStatusSuccess(secondResponse.response.response.status)
+    !secondResponse.success &&
+    !isHttpStatusSuccess(secondResponse?.response?.response?.status)
   ) {
     return secondResponse;
   }

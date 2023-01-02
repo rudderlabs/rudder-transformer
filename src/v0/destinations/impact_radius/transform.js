@@ -11,11 +11,11 @@ const {
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
-  removeUndefinedAndNullValues,
   simpleProcessRouterDest,
   isAppleFamily,
   constructPayload,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  removeUndefinedAndNullAndEmptyValues
 } = require("../../util");
 const {
   ConfigurationError,
@@ -32,7 +32,7 @@ const responseBuilder = (payload, endpoint, Config) => {
       Authorization: `Basic ${btoa(`${Config.accountSID}:${Config.apiKey}`)}`
     };
     response.method = defaultPostRequestConfig.requestMethod;
-    response.body.FORM = removeUndefinedAndNullValues(payload);
+    response.body.FORM = removeUndefinedAndNullAndEmptyValues(payload);
     return response;
   }
   throw new TransformationError(
@@ -43,11 +43,11 @@ const responseBuilder = (payload, endpoint, Config) => {
 const buildPageLoadResponse = (message, campaignId, rudderToImpactProperty) => {
   let payload = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.PAGELOAD]
+    MAPPING_CONFIG[CONFIG_CATEGORIES.PAGELOAD.name]
   );
-  payload.CustomerEmail = isDefinedAndNotNull(payload.CustomerEmail)
-    ? sha1(payload.CustomerEmail)
-    : payload.CustomerEmail;
+  payload.CustomerEmail = isDefinedAndNotNull(payload?.CustomerEmail)
+    ? sha1(payload?.CustomerEmail)
+    : payload?.CustomerEmail;
   payload.CampaignId = campaignId;
 
   const os = get(message, "context.os.name");
@@ -124,9 +124,9 @@ const trackResponseBuilder = (message, Config) => {
     payload.CampaignId = campaignId;
     payload.EventTypeId = eventTypeId;
     payload.ImpactAppId = impactAppId;
-    payload.CustomerEmail = isDefinedAndNotNull(payload.CustomerEmail)
-      ? sha1(payload.CustomerEmail)
-      : payload.CustomerEmail;
+    payload.CustomerEmail = isDefinedAndNotNull(payload?.CustomerEmail)
+      ? sha1(payload?.CustomerEmail)
+      : payload?.CustomerEmail;
     const os = get(message, "context.os.name");
     if (os && isAppleFamily(os.toLowerCase())) {
       payload.AppleIfv = get(message, "context.device.id");
@@ -145,7 +145,7 @@ const trackResponseBuilder = (message, Config) => {
     }
     payload = { ...payload, ...productProperties, ...additionalParameters };
 
-    const endpoint = `${CONFIG_CATEGORIES.CONVERSION.base_url}/${Config.accountSID}/Conversions`;
+    const endpoint = `${CONFIG_CATEGORIES.CONVERSION.base_url}${Config.accountSID}/Conversions`;
     return responseBuilder(payload, endpoint, Config);
   }
   return responseBuilder(

@@ -55,6 +55,7 @@
                   "value": 27.5,
                   "order_id": "50314b8e9bcf000000000000",
                   "num_items": 3,
+                  "opt_out_type": "LDP",
                   "content_ids": [
                     "507f1f77bcf86cd799439011",
                     "505bd76785ebb509fc183733"
@@ -113,6 +114,7 @@
                   "value": 27.5,
                   "order_id": "50314b8e9bcf000000000000",
                   "num_items": 3,
+                  "opt_out_type": "LDP",
                   "content_ids": [
                     "507f1f77bcf86cd799439011",
                     "505bd76785ebb509fc183733"

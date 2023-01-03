@@ -15,7 +15,8 @@ const {
   isAppleFamily,
   constructPayload,
   isDefinedAndNotNull,
-  removeUndefinedAndNullAndEmptyValues
+  removeUndefinedAndNullValues,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const {
   ConfigurationError,
@@ -32,7 +33,7 @@ const responseBuilder = (payload, endpoint, Config) => {
       Authorization: `Basic ${btoa(`${Config.accountSID}:${Config.apiKey}`)}`
     };
     response.method = defaultPostRequestConfig.requestMethod;
-    response.body.FORM = removeUndefinedAndNullAndEmptyValues(payload);
+    response.body.FORM = removeUndefinedAndNullValues(payload);
     return response;
   }
   throw new TransformationError(
@@ -40,8 +41,8 @@ const responseBuilder = (payload, endpoint, Config) => {
   );
 };
 
-const buildPageLoadResponse = (message, campaignId, rudderToImpactProperty) => {
-  let payload = constructPayload(
+const buildPageLoadResponse = (message, campaignId, impactAppId) => {
+  const payload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.PAGELOAD.name]
   );
@@ -49,20 +50,19 @@ const buildPageLoadResponse = (message, campaignId, rudderToImpactProperty) => {
     ? sha1(payload?.CustomerEmail)
     : payload?.CustomerEmail;
   payload.CampaignId = campaignId;
+  if (isDefinedAndNotNullAndNotEmpty(impactAppId)) {
+    payload.PropertyId = impactAppId;
+    payload.ImpactAppId = impactAppId;
+  }
 
   const os = get(message, "context.os.name");
   if (os && isAppleFamily(os.toLowerCase())) {
     payload.AppleIfv = get(message, "context.device.id");
     payload.AppleIfa = get(message, "context.device.advertisingId");
-  } else if (os.toLowerCase() === "android") {
+  } else if (os && os.toLowerCase() === "android") {
     payload.AndroidId = get(message, "context.device.id");
     payload.GoogAId = get(message, "context.device.advertisingId");
   }
-  const additionalParameters = populateAdditionalParameters(
-    message,
-    rudderToImpactProperty
-  );
-  payload = { ...payload, ...additionalParameters };
   return payload;
 };
 
@@ -74,7 +74,7 @@ const buildPageLoadResponse = (message, campaignId, rudderToImpactProperty) => {
  * @returns
  */
 const identifyResponseBuilder = (message, Config) => {
-  const { campaignId, enableIdentifyEvents, rudderToImpactProperty } = Config;
+  const { campaignId, enableIdentifyEvents, impactAppId } = Config;
 
   if (!enableIdentifyEvents) {
     throw new ConfigurationError(
@@ -83,7 +83,7 @@ const identifyResponseBuilder = (message, Config) => {
   }
 
   return responseBuilder(
-    buildPageLoadResponse(message, campaignId, rudderToImpactProperty),
+    buildPageLoadResponse(message, campaignId, impactAppId),
     CONFIG_CATEGORIES.PAGELOAD.endPoint,
     Config
   );
@@ -107,17 +107,24 @@ const trackResponseBuilder = (message, Config) => {
   } = Config;
 
   let eventType;
-  actionEventNames.forEach(eventName => {
-    if (eventName === "Order Completed" || eventName === message.event) {
-      eventType = "action";
-    }
-  });
-  installEventNames.forEach(eventName => {
-    if (eventName === "Applciation Installed" || eventName === message.event) {
+
+  installEventNames.forEach(event => {
+    if (
+      message.event === "Applcation Installed" ||
+      event.eventName === message.event
+    ) {
       eventType = "install";
     }
   });
-  if (!eventType) {
+  actionEventNames.forEach(event => {
+    if (
+      message.event === "Order Completed" ||
+      event.eventName === message.event
+    ) {
+      eventType = "action";
+    }
+  });
+  if (eventType === "action") {
     let payload = constructPayload(
       message,
       MAPPING_CONFIG[CONFIG_CATEGORIES.CONVERSION.name]
@@ -132,7 +139,7 @@ const trackResponseBuilder = (message, Config) => {
     if (os && isAppleFamily(os.toLowerCase())) {
       payload.AppleIfv = get(message, "context.device.id");
       payload.AppleIfa = get(message, "context.device.advertisingId");
-    } else if (os.toLowerCase() === "android") {
+    } else if (os && os.toLowerCase() === "android") {
       payload.AndroidId = get(message, "context.device.id");
       payload.GoogAId = get(message, "context.device.advertisingId");
     }
@@ -153,7 +160,7 @@ const trackResponseBuilder = (message, Config) => {
     return responseBuilder(payload, endpoint, Config);
   }
   return responseBuilder(
-    buildPageLoadResponse(message, campaignId),
+    buildPageLoadResponse(message, campaignId, impactAppId),
     CONFIG_CATEGORIES.PAGELOAD.endPoint,
     Config
   );
@@ -166,7 +173,7 @@ const trackResponseBuilder = (message, Config) => {
  * @returns
  */
 const pageResponseBuilder = (message, Config) => {
-  const { campaignId, enablePageEvents, rudderToImpactProperty } = Config;
+  const { campaignId, enablePageEvents, impactAppId } = Config;
 
   if (!enablePageEvents) {
     throw new ConfigurationError(
@@ -175,7 +182,7 @@ const pageResponseBuilder = (message, Config) => {
   }
 
   return responseBuilder(
-    buildPageLoadResponse(message, campaignId, rudderToImpactProperty),
+    buildPageLoadResponse(message, campaignId, impactAppId),
     CONFIG_CATEGORIES.PAGELOAD.endPoint,
     Config
   );
@@ -188,7 +195,7 @@ const pageResponseBuilder = (message, Config) => {
  * @returns
  */
 const screenResponseBuilder = (message, Config) => {
-  const { campaignId, enableScreenEvents, rudderToImpactProperty } = Config;
+  const { campaignId, enableScreenEvents, impactAppId } = Config;
 
   if (!enableScreenEvents) {
     throw new ConfigurationError(
@@ -197,7 +204,7 @@ const screenResponseBuilder = (message, Config) => {
   }
 
   return responseBuilder(
-    buildPageLoadResponse(message, campaignId, rudderToImpactProperty),
+    buildPageLoadResponse(message, campaignId, impactAppId),
     CONFIG_CATEGORIES.PAGELOAD.endPoint,
     Config
   );
@@ -212,7 +219,7 @@ const processEvent = async (message, destination) => {
     throw new ConfigurationError(`${configField} is a required field`);
   }
 
-  const messageType = message.type.toLowerCase();
+  const messageType = message.type?.toLowerCase();
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:

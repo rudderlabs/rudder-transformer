@@ -30,9 +30,11 @@ const getPropertyName = (itemName, index) => {
 
 const getProductsMapping = (productsMapping, itemName) => {
   let prop;
-  productsMapping.forEach(mapping => {
-    prop = mapping.to === itemName ? mapping.from : itemMapping[itemName];
-  });
+  if (productsMapping && Array.isArray(productsMapping)) {
+    productsMapping.forEach(mapping => {
+      prop = mapping.to === itemName ? mapping.from : itemMapping[itemName];
+    });
+  }
   return prop;
 };
 
@@ -74,9 +76,11 @@ const populateProductProperties = (productsMapping, properties) => {
 
 const populateAdditionalParameters = (message, parameters) => {
   const additionalParameters = {};
-  parameters.forEach(mapping => {
-    additionalParameters[mapping.to] = get(message, mapping.from);
-  });
+  if (parameters && Array.isArray(parameters)) {
+    parameters.forEach(mapping => {
+      additionalParameters[mapping.to] = get(message, mapping.from);
+    });
+  }
   return additionalParameters;
 };
 

@@ -71,9 +71,8 @@ const getConversionCustomVariable = async (headers, params) => {
       let searchStreamResponse = await httpPOST(endpoint, data, requestOptions);
       searchStreamResponse = processAxiosResponse(searchStreamResponse);
       if (!isHttpStatusSuccess(searchStreamResponse.status)) {
-        const errMsg = get(searchStreamResponse, "response.0.error.message");
         throw new NetworkError(
-          `[Google Ads Offline Conversions]:: ${errMsg} during google_ads_offline_conversions response transformation`,
+          `[Google Ads Offline Conversions]:: ${searchStreamResponse?.response?.[0]?.error?.message} during google_ads_offline_conversions response transformation`,
           searchStreamResponse.status,
           {
             [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
@@ -84,10 +83,8 @@ const getConversionCustomVariable = async (headers, params) => {
           getAuthErrCategory(searchStreamResponse.status)
         );
       }
-      const conversionCustomVariable = get(
-        searchStreamResponse,
-        "response.0.results"
-      );
+      const conversionCustomVariable =
+        searchStreamResponse?.response?.[0]?.results;
       if (!conversionCustomVariable) {
         throw new NetworkInstrumentationError(
           `[Google Ads Offline Conversions]:: Conversion Custom Variable has not been created yet in Google Ads`
@@ -208,7 +205,7 @@ const responseHandler = destinationResponse => {
   // return status, original destination response, message
   const { response } = destinationResponse;
   throw new AbortedError(
-    `[Google Ads Offline Conversions]:: ${response.error.message} during google_ads_offline_conversions response transformation`,
+    `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_conversions response transformation`,
     status,
     response,
     getAuthErrCategory(status)

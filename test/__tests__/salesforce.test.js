@@ -52,7 +52,6 @@ describe(`${name} Processor`, () => {
         const output = await transformer.process(input);
         expect(output).toEqual(expectedData[index]);
       } catch (error) {
-        console.log(error);
         expect(error.message).toEqual(expectedData[index].error);
       }
     });

@@ -7,7 +7,11 @@ const {
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
 const { executeCommonValidations } = require("../../util/regulation-api");
-const { NetworkError, ConfigurationError } = require("../../util/errorTypes");
+const {
+  NetworkError,
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 const tags = require("../../util/tags");
 
 /**
@@ -39,10 +43,7 @@ const userDeletionHandler = async (userAttributes, config) => {
     }
   });
   if (identity.length === 0) {
-    throw new ErrorBuilder()
-      .setMessage(`[Clevertap]::No userId found to delete`)
-      .setStatus(400)
-      .build();
+    throw new InstrumentationError(`No User id for deletion is present`);
   }
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.clevertap.com/docs/disassociate-api

@@ -6,13 +6,17 @@ const {
 const { isHttpStatusSuccess } = require("../../util");
 const { MAX_BATCH_SIZE } = require("./config");
 const { executeCommonValidations } = require("../../util/regulation-api");
-const { ConfigurationError, NetworkError } = require("../../util/errorTypes");
+const {
+  ConfigurationError,
+  NetworkError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const tags = require("../../util/tags");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
- * @param {*} userAttributes Array of objects with userId, email and phone
+ * @param {*} userAttributes Array of objects with userId, emaail and phone
  * @param {*} config Destination.Config provided in dashboard
  * @returns
  */
@@ -42,10 +46,7 @@ const userDeletionHandler = async (userAttributes, config) => {
     }
   });
   if (data.length === 0) {
-    throw new ErrorBuilder()
-      .setMessage(`[Mixpanel]::No userId found to delete`)
-      .setStatus(400)
-      .build();
+    throw new InstrumentationError(`No User id for deletion is present`);
   }
   const headers = {
     accept: "text/plain",
@@ -58,19 +59,19 @@ const userDeletionHandler = async (userAttributes, config) => {
   await Promise.all(
     batchEvents.map(async batchEvent => {
       const deletionResponse = await httpPOST(endpoint, batchEvent, headers);
-      const handledDelResponse = processAxiosResponse(deletionResponse);
-      if (!isHttpStatusSuccess(handledDelResponse.status)) {
+      const processedDeletionResponse = processAxiosResponse(deletionResponse);
+      if (!isHttpStatusSuccess(processedDeletionResponse.status)) {
         throw new NetworkError(
           `Deletion Request is not successful - error: ${JSON.stringify(
-            handledDelResponse.response
+            processedDeletionResponse.response
           )}`,
-          handledDelResponse.status,
+          processedDeletionResponse.status,
           {
             [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-              handledDelResponse.status
+              processedDeletionResponse.status
             )
           },
-          handledDelResponse
+          processedDeletionResponse.response
         );
       }
     })

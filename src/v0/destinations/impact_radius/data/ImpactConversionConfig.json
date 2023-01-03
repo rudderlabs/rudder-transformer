@@ -48,6 +48,12 @@
     "required": false
   },
   {
+    "destKey": "OrderPromoCode",
+    "sourceKeys": ["properties.coupon", "properties.coupon_id"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
     "destKey": "OrderId",
     "sourceKeys": [
       "properties.orderId",

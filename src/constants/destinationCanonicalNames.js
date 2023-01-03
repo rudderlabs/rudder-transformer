@@ -102,6 +102,8 @@ const DestCanonicalNames = {
     "gainsight px",
     "Gainsight Px"
   ],
+  awin: ["awin", "Awin", "AWIN"],
+  pipedream: ["Pipedream", "PipeDream", "pipedream", "PIPEDREAM"],
   ga4: ["GA4", "ga4", "Ga4", "Google Analytics 4", "googleAnalytics4"],
   awin: ["awin", "Awin", "AWIN"]
 };

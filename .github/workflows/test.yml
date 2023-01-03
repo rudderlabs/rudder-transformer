@@ -8,22 +8,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
       - name: Node Setup
         uses: actions/setup-node@v2
         with:
           node-version: 14
       - run: npm install
       - name: Setup Go
-        uses: actions/setup-go@v1
+        uses: actions/setup-go@v3
         with:
           go-version: 1.17
       - name: Install latest version of Kind
         run: go install sigs.k8s.io/kind@v0.17.0
-      - name: Update PATH
-        run: PATH=$(go env GOPATH)/bin:$PATH
       - name: Create Kind cluster
-        run: kind create cluster --name kind-cluster --config=worker-nodes-kind.yml
+        run: kind create cluster --name kind-cluster --config=test/__test__/data/worker-nodes-kind.yml
       - name: Create OpenFaaS namespaces
         run: kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
       - name: Set up Helm

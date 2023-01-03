@@ -31,7 +31,8 @@ async function setOpenFaasUserTransform(
     transformerVersionId: userTransformation.versionId,
     language: userTransformation.language,
     identifier: "openfaas",
-    publish: testWithPublish
+    publish: testWithPublish,
+    testMode
   };
   const functionName =
     pregeneratedFnName || generateFunctionName(userTransformation, testMode);
@@ -44,7 +45,7 @@ async function setOpenFaasUserTransform(
     testMode
   );
 
-  stats.timing("faas_publish_time", setupTime, tags);
+  stats.timing("creation_time", setupTime, tags);
   return { success: true, publishedVersion: functionName };
 }
 /**
@@ -66,6 +67,7 @@ async function runOpenFaasUserTransform(
     transformerVersionId: userTransformation.versionId,
     language: userTransformation.language,
     identifier: "openfaas",
+    testMode,
     ...metaTags
   };
   // TODO: To be removed faas python won't use handleId anymore
@@ -93,7 +95,7 @@ async function runOpenFaasUserTransform(
     userTransformation.versionId,
     testMode
   );
-  stats.timing("faas_invoke_time", invokeTime, tags);
+  stats.timing("run_time", invokeTime, tags);
   return result;
 }
 

@@ -3,7 +3,7 @@ import { INTEGRATION_SERVICE } from "../routes/utils/constants";
 import CDKV1DestinationService from "../services/destination/cdkV1Integration";
 import CDKV2DestinationService from "../services/destination/cdkV2Integration";
 import DestinationService from "../interfaces/DestinationService";
-import NativeIntegrationDestinationService from "../services/destination/nativentegration";
+import NativeIntegrationDestinationService from "../services/destination/nativeIntegration";
 import SourceService from "../interfaces/SourceService";
 import NativeIntegrationSourceService from "../services/source/nativeIntegration";
 

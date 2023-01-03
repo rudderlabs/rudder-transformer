@@ -7,7 +7,7 @@
   },
   {
     "destKey": "ClickId",
-    "sourceKeys": ["context.referrer.id", "properties.id"],
+    "sourceKeys": ["context.referrer.id", "properties.clickId"],
     "sourceFromGenericMap": false,
     "required": false
   },

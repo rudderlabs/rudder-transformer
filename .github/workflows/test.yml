@@ -21,7 +21,7 @@ jobs:
       - name: Install latest version of Kind
         run: go install sigs.k8s.io/kind@v0.17.0
       - name: Create Kind cluster
-        run: kind create cluster --name kind-cluster --config=test/__test__/data/worker-nodes-kind.yml
+        run: kind create cluster --name kind-cluster --config=test/__tests__/data/worker-nodes-kind.yml
       - name: Create OpenFaaS namespaces
         run: kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml
       - name: Set up Helm

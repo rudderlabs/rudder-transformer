@@ -1,20 +1,20 @@
 const { httpDELETE } = require("../../../adapters/network");
 const {
-  InstrumentationError,
-  ConfigurationError,
-  NetworkError
-} = require("../../util/errorTypes");
-const tags = require("../../util/tags");
-const {
   processAxiosResponse,
   getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
+const tags = require("../../util/tags");
+const {
+  InstrumentationError,
+  ConfigurationError,
+  NetworkError
+} = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
- * @param {*} userAttributes Array of objects with userId, email and phone
+ * @param {*} userAttributes Array of objects with userId, emaail and phone
  * @param {*} config Destination.Config provided in dashboard
  * @returns
  */
@@ -48,17 +48,19 @@ const userDeletionHandler = async (userAttributes, config) => {
       const endpoint = `${BASE_URL.replace("uid", ua.userId)}`;
       // eslint-disable-next-line no-await-in-loop
       const response = await httpDELETE(endpoint, { headers });
-      const handledDelResponse = processAxiosResponse(response);
-      if (!isHttpStatusSuccess(handledDelResponse.status)) {
+      const handledResponse = processAxiosResponse(response);
+      if (!isHttpStatusSuccess(handledResponse.status)) {
         throw new NetworkError(
-          "User deletion request failed",
-          handledDelResponse.status,
+          `user deletion request failed - error: ${JSON.stringify(
+            handledResponse.response
+          )}`,
+          handledResponse.status,
           {
             [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-              handledDelResponse.status
+              handledResponse.status
             )
           },
-          handledDelResponse
+          handledResponse
         );
       }
     })

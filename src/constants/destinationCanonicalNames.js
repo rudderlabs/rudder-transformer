@@ -105,6 +105,7 @@ const DestCanonicalNames = {
   awin: ["awin", "Awin", "AWIN"],
   sendinblue: ["sendinblue", "SENDINBLUE", "Sendinblue", "SendinBlue"],
   ga4: ["GA4", "ga4", "Ga4", "Google Analytics 4", "googleAnalytics4"]
+  pipedream: ["Pipedream", "PipeDream", "pipedream", "PIPEDREAM"]
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

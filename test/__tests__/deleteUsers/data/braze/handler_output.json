@@ -1,12 +1,6 @@
 [
   [
     {
-      "statusCode": 400,
-      "error": "Could not delete user"
-    }
-  ],
-  [
-    {
       "statusCode": 500,
       "error": "Config for deletion not present"
     }

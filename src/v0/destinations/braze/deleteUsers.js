@@ -1,8 +1,10 @@
 const { httpSend } = require("../../../adapters/network");
 const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const {
-  RetryableError,
-  NetworkInstrumentationError,
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
+const { isHttpStatusSuccess } = require("../../util");
+const {
   NetworkError,
   InstrumentationError,
   ConfigurationError
@@ -20,62 +22,55 @@ const userDeletionHandler = async (userAttributes, config) => {
       "data center / api key for deletion not present"
     );
   }
+
   let endPoint;
-  for (let i = 0; i < userAttributes.length; i += 1) {
-    const uId = userAttributes[i].userId;
-    if (!uId) {
-      throw new InstrumentationError("User id for deletion not present");
-    }
+  await Promise.all(
+    userAttributes.map(async ua => {
+      const uId = ua.userId;
+      if (!uId) {
+        throw new InstrumentationError("User id for deletion not present");
+      }
 
-    // Endpoints different for different data centers.
-    // DOC: https://www.braze.com/docs/user_guide/administrative/access_braze/braze_instances/
+      // Endpoints different for different data centers.
+      // DOC: https://www.braze.com/docs/user_guide/administrative/access_braze/braze_instances/
 
-    const dataCenterArr = dataCenter.trim().split("-");
-    if (dataCenterArr[0].toLowerCase() === "eu") {
-      endPoint = "https://rest.fra-01.braze.eu";
-    } else {
-      endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com`;
-    }
-    const data = { external_ids: [uId] };
-    const requestOptions = {
-      method: "post",
-      url: `${endPoint}/users/delete`,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${restApiKey}`
-      },
-      data
-    };
-
-    const resp = await httpSend(requestOptions);
-
-    if (resp && !resp.success && !resp.response.response) {
-      throw new NetworkInstrumentationError(
-        resp.response.code || "Could not delete user"
-      );
-    }
-    if (!resp || !resp.response) {
-      throw new RetryableError("Could not get response");
-    }
-    if (
-      resp &&
-      resp.response &&
-      resp.response.response &&
-      resp.response.response.status !== 200 &&
-      resp.response.response.status !== 404
-    ) {
-      throw new NetworkError(
-        resp.response.response.statusText || "Error while deleting user",
-        resp.response.response.status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-            resp.response.response.status
-          )
+      const dataCenterArr = dataCenter.trim().split("-");
+      if (dataCenterArr[0].toLowerCase() === "eu") {
+        endPoint = "https://rest.fra-01.braze.eu";
+      } else {
+        endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com`;
+      }
+      const data = { external_ids: [uId] };
+      const requestOptions = {
+        method: "post",
+        url: `${endPoint}/users/delete`,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${restApiKey}`
         },
-        resp
-      );
-    }
-  }
+        data
+      };
+
+      const resp = await httpSend(requestOptions);
+      const handledDelResponse = processAxiosResponse(resp);
+      if (
+        !isHttpStatusSuccess(handledDelResponse.status) &&
+        handledDelResponse.status !== 404
+      ) {
+        throw new NetworkError(
+          "User deletion request failed",
+          handledDelResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+              handledDelResponse.status
+            )
+          },
+          handledDelResponse
+        );
+      }
+    })
+  );
+
   return { statusCode: 200, status: "successful" };
 };
 const processDeleteUsers = async event => {

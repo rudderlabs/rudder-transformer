@@ -8,7 +8,7 @@
   [
     {
       "statusCode": 500,
-      "error": "you can send atmost 3 callBackUrls"
+      "error": "You can send utmost 3 callBackUrls"
     }
   ],
   [
@@ -32,7 +32,7 @@
   [
     {
       "statusCode": 500,
-      "error": "you can send atmost 3 callBackUrls"
+      "error": "You can send utmost 3 callBackUrls"
     }
   ]
 ]

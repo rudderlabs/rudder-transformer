@@ -1,12 +1,6 @@
 [
   [
     {
-      "statusCode": 200,
-      "status": "successful"
-    }
-  ],
-  [
-    {
       "statusCode": 500,
       "error": "Config for deletion not present"
     }

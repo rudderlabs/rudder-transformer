@@ -1,7 +1,10 @@
 const { httpSend } = require("../../../adapters/network");
 const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const {
-  RetryableError,
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
+const { isHttpStatusSuccess } = require("../../util");
+const {
   NetworkError,
   InstrumentationError,
   ConfigurationError
@@ -18,41 +21,39 @@ const userDeletionHandler = async (userAttributes, config) => {
     throw new ConfigurationError("api key for deletion not present");
   }
 
-  for (let i = 0; i < userAttributes.length; i += 1) {
-    const uId = userAttributes[i].userId;
-    if (!uId) {
-      throw new InstrumentationError("User id for deletion not present");
-    }
-    const requestOptions = {
-      method: "delete",
-      url: `https://api.intercom.io/contacts/${uId}`,
-      headers: {
-        Authorization: `Bearer ${apiKey}`
+  await Promise.all(
+    userAttributes.map(async ua => {
+      const uId = ua.userId;
+      if (!uId) {
+        throw new InstrumentationError("User id for deletion not present");
       }
-    };
-    const resp = await httpSend(requestOptions);
-    if (!resp || !resp.response) {
-      throw new RetryableError("Could not get response");
-    }
-    if (
-      resp &&
-      resp.response &&
-      resp.response?.response &&
-      resp.response?.response?.status !== 200 &&
-      resp.response?.response?.status !== 404 // this will be returned if user is not found. Will send successfull to server
-    ) {
-      throw new NetworkError(
-        resp.response?.response?.statusText || "Error while deleting user",
-        resp.response?.response?.status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-            resp.response?.response?.status
-          )
-        },
-        resp.response
-      );
-    }
-  }
+      const requestOptions = {
+        method: "delete",
+        url: `https://api.intercom.io/contacts/${uId}`,
+        headers: {
+          Authorization: `Bearer ${apiKey}`
+        }
+      };
+      const resp = await httpSend(requestOptions);
+      const handledDelResponse = processAxiosResponse(resp);
+      if (
+        !isHttpStatusSuccess(handledDelResponse.status) &&
+        handledDelResponse.status !== 404
+      ) {
+        throw new NetworkError(
+          "User deletion request failed",
+          handledDelResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+              handledDelResponse.status
+            )
+          },
+          handledDelResponse
+        );
+      }
+    })
+  );
+
   return { statusCode: 200, status: "successful" };
 };
 const processDeleteUsers = async event => {

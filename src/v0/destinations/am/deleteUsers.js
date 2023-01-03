@@ -1,10 +1,12 @@
 const btoa = require("btoa");
 const { httpSend } = require("../../../adapters/network");
 const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
-
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
+const { isHttpStatusSuccess } = require("../../util");
 const {
   NetworkError,
-  RetryableError,
   InstrumentationError,
   ConfigurationError
 } = require("../../util/errorTypes");
@@ -20,43 +22,38 @@ const userDeletionHandler = async (userAttributes, config) => {
     throw new ConfigurationError("api key/secret for deletion not present");
   }
 
-  for (let i = 0; i < userAttributes.length; i += 1) {
-    const uId = userAttributes[i].userId;
-    if (!uId) {
-      throw new InstrumentationError("User id for deletion not present");
-    }
-    const data = { user_ids: [uId], requester: "RudderStack" };
-    const requestOptions = {
-      method: "post",
-      url: "https://amplitude.com/api/2/deletions/users",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Basic ${btoa(`${apiKey}:${apiSecret}`)}`
-      },
-      data
-    };
-    const resp = await httpSend(requestOptions);
-    if (!resp || !resp.response) {
-      throw new RetryableError("Could not get response");
-    }
-    if (
-      resp &&
-      resp.response &&
-      resp.response?.response &&
-      resp.response?.response?.status !== 200 // am sends 400 for any bad request or even if user id is not found. The text is also "Bad Request" so not handling user not found case
-    ) {
-      throw new NetworkError(
-        resp.response?.response?.statusText || "Error while deleting user",
-        resp.response?.response?.status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-            resp.response?.response?.status
-          )
+  await Promise.all(
+    userAttributes.map(async ua => {
+      const uId = ua.userId;
+      if (!uId) {
+        throw new InstrumentationError("User id for deletion not present");
+      }
+      const data = { user_ids: [uId], requester: "RudderStack" };
+      const requestOptions = {
+        method: "post",
+        url: "https://amplitude.com/api/2/deletions/users",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Basic ${btoa(`${apiKey}:${apiSecret}`)}`
         },
-        resp
-      );
-    }
-  }
+        data
+      };
+      const resp = await httpSend(requestOptions);
+      const handledDelResponse = processAxiosResponse(resp);
+      if (!isHttpStatusSuccess(handledDelResponse.status)) {
+        throw new NetworkError(
+          "User deletion request failed",
+          handledDelResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+              handledDelResponse.status
+            )
+          },
+          handledDelResponse
+        );
+      }
+    })
+  );
   return { statusCode: 200, status: "successful" };
 };
 const processDeleteUsers = async event => {

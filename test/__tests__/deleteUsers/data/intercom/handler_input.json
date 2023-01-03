@@ -11,26 +11,6 @@
             {
               "userId": "user_sdk2"
             }
-          ],
-          "config": {
-            "apiKey": "a="
-          }
-        }
-      ]
-    }
-  },
-  {
-    "request": {
-      "body": [
-        {
-          "destType": "INTERCOM",
-          "userAttributes": [
-            {
-              "userId": "6188c2c5f47e464b4abf3235"
-            },
-            {
-              "userId": "user_sdk2"
-            }
           ]
         }
       ]

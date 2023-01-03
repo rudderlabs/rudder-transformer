@@ -42,7 +42,7 @@ const CLEVERTAP_DEFAULT_EXCLUSION = [
   "ts"
 ];
 
-const MAX_BATCH_SIZE = 1000;
+const MAX_BATCH_SIZE = 100;
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 

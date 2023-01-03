@@ -62,7 +62,8 @@ const responseBuilderToUpdatePrimaryAccount = (
   userIdentityId,
   userId,
   headers,
-  email
+  email,
+  zendeskApiUrl
 ) => {
   const response = defaultRequestConfig();
   const updatedHeaders = {
@@ -71,7 +72,7 @@ const responseBuilderToUpdatePrimaryAccount = (
     "X-Zendesk-Marketplace-Organization-Id": ZENDESK_MARKET_PLACE_ORG_ID,
     "X-Zendesk-Marketplace-App-Id": ZENDESK_MARKET_PLACE_APP_ID
   };
-  response.endpoint = `${endPoint}users/${userId}/identities/${userIdentityId}`;
+  response.endpoint = `${zendeskApiUrl}users/${userId}/identities/${userIdentityId}`;
   response.method = defaultPutRequestConfig.requestMethod;
   response.headers = updatedHeaders;
   response.body.JSON = {
@@ -91,9 +92,14 @@ const responseBuilderToUpdatePrimaryAccount = (
  * @param {*} headers -> Authorizations for API's call
  * @returns it return payloadbuilder for updating email
  */
-const payloadBuilderforUpdatingEmail = async (userId, headers, userEmail) => {
+const payloadBuilderforUpdatingEmail = async (
+  userId,
+  headers,
+  userEmail,
+  zendeskApiUrl
+) => {
   // url for list all identities of user
-  const url = `${endPoint}users/${userId}/identities`;
+  const url = `${zendeskApiUrl}users/${userId}/identities`;
   const config = { headers };
   try {
     const res = await httpGET(url, config);
@@ -110,7 +116,8 @@ const payloadBuilderforUpdatingEmail = async (userId, headers, userEmail) => {
             identitiesDetails.id,
             userId,
             headers,
-            userEmail
+            userEmail,
+            zendeskApiUrl
           );
         }
       }
@@ -154,11 +161,12 @@ async function checkAndCreateUserFields(
   traits,
   categoryEndpoint,
   fieldJson,
-  headers
+  headers,
+  zendeskApiUrl
 ) {
   let newFields = [];
 
-  const url = endPoint + categoryEndpoint;
+  const url = zendeskApiUrl + categoryEndpoint;
   const config = { headers };
 
   try {
@@ -227,13 +235,14 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
  * @param {*} headers headers for authorizations
  * @returns
  */
-const getUserIdByExternalId = async (message, headers) => {
+// eslint-disable-next-line consistent-return
+const getUserIdByExternalId = async (message, headers, zendeskApiUrl) => {
   const externalId = getFieldValueFromMessage(message, "userIdOnly");
   if (!externalId) {
     logger.debug("externalId is required for getting zenuserId");
     return undefined;
   }
-  const url = `${endPoint}users/search.json?query=${externalId}`;
+  const url = `${zendeskApiUrl}users/search.json?query=${externalId}`;
   const config = { headers };
 
   try {
@@ -253,7 +262,7 @@ const getUserIdByExternalId = async (message, headers) => {
   }
 };
 
-async function getUserId(message, headers, type) {
+async function getUserId(message, headers, type, zendeskApiUrl) {
   const traits =
     type === "group"
       ? get(message, "context.traits")
@@ -263,8 +272,8 @@ async function getUserId(message, headers, type) {
     logger.debug("Email ID is required for getting zenuserId");
     return undefined;
   }
-  const url = `${endPoint}users/search.json?query=${userEmail}`;
-  // let url  = endPoint + `users/search.json?external_id=${externalId}`;
+  const url = `${zendeskApiUrl}users/search.json?query=${userEmail}`;
+  // let url  = zendeskApiUrl + `users/search.json?external_id=${externalId}`;
   const config = { headers };
 
   try {
@@ -285,9 +294,16 @@ async function getUserId(message, headers, type) {
   }
 }
 
-async function isUserAlreadyAssociated(userId, orgId, headers) {
-  const url = `${endPoint}/users/${userId}/organization_memberships.json`;
-  const config = { headers };
+async function isUserAlreadyAssociated(userId, orgId, headers, zendeskApiUrl) {
+  const url = `${zendeskApiUrl}users/${userId}/organization_memberships.json`;
+  const config = {
+    headers: {
+      ...headers
+      // Authorization:
+      //   "Basic BullshitTokenJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=",
+      // "Content-Type": "application/json"
+    }
+  };
   const response = await axios.get(url, config);
   if (
     response.data &&
@@ -299,7 +315,13 @@ async function isUserAlreadyAssociated(userId, orgId, headers) {
   return false;
 }
 
-async function createUser(message, headers, destinationConfig, type) {
+async function createUser(
+  message,
+  headers,
+  destinationConfig,
+  type,
+  zendeskApiUrl
+) {
   const traits =
     type === "group"
       ? get(message, "context.traits")
@@ -312,7 +334,7 @@ async function createUser(message, headers, destinationConfig, type) {
     userObject.verified = true;
   }
   const category = ConfigCategory.IDENTIFY;
-  const url = endPoint + category.createOrUpdateUserEndpoint;
+  const url = zendeskApiUrl + category.createOrUpdateUserEndpoint;
   const config = { headers };
   const payload = { user: userObject };
 
@@ -338,10 +360,11 @@ async function getUserMembershipPayload(
   message,
   headers,
   orgId,
-  destinationConfig
+  destinationConfig,
+  zendeskApiUrl
 ) {
   // let zendeskUserID = await getUserId(message.userId, headers);
-  let zendeskUserID = await getUserId(message, headers, "group");
+  let zendeskUserID = await getUserId(message, headers, "group", zendeskApiUrl);
   const traits = get(message, "context.traits");
   if (!zendeskUserID) {
     if (traits && traits.name && traits.email) {
@@ -349,7 +372,8 @@ async function getUserMembershipPayload(
         message,
         headers,
         destinationConfig,
-        "group"
+        "group",
+        zendeskApiUrl
       );
       zendeskUserID = zendeskUserId;
     } else {
@@ -370,13 +394,15 @@ async function createOrganization(
   message,
   category,
   headers,
-  destinationConfig
+  destinationConfig,
+  zendeskApiUrl
 ) {
   await checkAndCreateUserFields(
     message.traits,
     category.organizationFieldsEndpoint,
     category.organizationFieldsJson,
-    headers
+    headers,
+    zendeskApiUrl
   );
   const mappingJson = mappingConfig[category.name];
   const payload = constructPayload(message, mappingJson);
@@ -408,7 +434,7 @@ async function createOrganization(
     return payload;
   }
 
-  const url = endPoint + category.createEndpoint;
+  const url = zendeskApiUrl + category.createEndpoint;
   const config = { headers };
 
   try {
@@ -436,7 +462,12 @@ function validateUserId(message) {
   }
 }
 
-async function processIdentify(message, destinationConfig, headers) {
+async function processIdentify(
+  message,
+  destinationConfig,
+  headers,
+  zendeskApiUrl
+) {
   validateUserId(message);
   const category = ConfigCategory.IDENTIFY;
   const traits = getFieldValueFromMessage(message, "traits");
@@ -446,7 +477,8 @@ async function processIdentify(message, destinationConfig, headers) {
     getFieldValueFromMessage(message, "traits"),
     category.userFieldsEndpoint,
     category.userFieldsJson,
-    headers
+    headers,
+    zendeskApiUrl
   );
 
   const payload = getIdentifyPayload(
@@ -455,17 +487,22 @@ async function processIdentify(message, destinationConfig, headers) {
     destinationConfig,
     "identify"
   );
-  const url = endPoint + category.createOrUpdateUserEndpoint;
+  const url = zendeskApiUrl + category.createOrUpdateUserEndpoint;
   const returnList = [];
 
   if (destinationConfig.searchByExternalId) {
-    const userIdByExternalId = await getUserIdByExternalId(message, headers);
+    const userIdByExternalId = await getUserIdByExternalId(
+      message,
+      headers,
+      zendeskApiUrl
+    );
     const userEmail = traits?.email;
     if (userIdByExternalId && userEmail) {
       const payloadForUpdatingEmail = await payloadBuilderforUpdatingEmail(
         userIdByExternalId,
         headers,
-        userEmail
+        userEmail,
+        zendeskApiUrl
       );
       if (!isEmptyObject(payloadForUpdatingEmail))
         returnList.push(payloadForUpdatingEmail);
@@ -479,9 +516,9 @@ async function processIdentify(message, destinationConfig, headers) {
     traits.company.id
   ) {
     const orgId = traits.company.id;
-    const userId = await getUserId(message, headers);
+    const userId = await getUserId(message, headers, zendeskApiUrl);
     if (userId) {
-      const membershipUrl = `${endPoint}users/${userId}/organization_memberships.json`;
+      const membershipUrl = `${zendeskApiUrl}users/${userId}/organization_memberships.json`;
       try {
         const config = { headers };
         const response = await axios.get(membershipUrl, config);
@@ -496,7 +533,7 @@ async function processIdentify(message, destinationConfig, headers) {
             const membershipId = response.data.organization_memberships[0].id;
             const deleteResponse = defaultRequestConfig();
 
-            deleteResponse.endpoint = `${endPoint}users/${userId}/organization_memberships/${membershipId}.json`;
+            deleteResponse.endpoint = `${zendeskApiUrl}users/${userId}/organization_memberships/${membershipId}.json`;
             deleteResponse.method = defaultDeleteRequestConfig.requestMethod;
             deleteResponse.headers = {
               ...headers,
@@ -518,7 +555,12 @@ async function processIdentify(message, destinationConfig, headers) {
   return returnList;
 }
 
-async function processTrack(message, destinationConfig, headers) {
+async function processTrack(
+  message,
+  destinationConfig,
+  headers,
+  zendeskApiUrl
+) {
   validateUserId(message);
   const traits = getFieldValueFromMessage(message, "traits");
   let userEmail;
@@ -530,14 +572,16 @@ async function processTrack(message, destinationConfig, headers) {
   }
   let zendeskUserID;
 
-  let url = `${endPoint}users/search.json?query=${userEmail}`;
+  let url = `${zendeskApiUrl}users/search.json?query=${userEmail}`;
   const config = { headers };
   const userResponse = await axios.get(url, config);
   if (!get(userResponse, "data.users.0.id") || userResponse.data.count === 0) {
     const { zendeskUserId, email } = await createUser(
       message,
       headers,
-      destinationConfig
+      destinationConfig,
+      null,
+      zendeskApiUrl
     );
     if (!zendeskUserId) {
       throw new NetworkInstrumentationError("User not found");
@@ -562,13 +606,18 @@ async function processTrack(message, destinationConfig, headers) {
   profileObject.identifiers = [{ type: "email", value: userEmail }];
 
   const eventPayload = { event: eventObject, profile: profileObject };
-  url = `${endPoint}users/${zendeskUserID}/events`;
+  url = `${zendeskApiUrl}users/${zendeskUserID}/events`;
 
   const response = responseBuilder(message, headers, eventPayload, url);
   return response;
 }
 
-async function processGroup(message, destinationConfig, headers) {
+async function processGroup(
+  message,
+  destinationConfig,
+  headers,
+  zendeskApiUrl
+) {
   const category = ConfigCategory.GROUP;
   let payload;
   let url;
@@ -578,16 +627,18 @@ async function processGroup(message, destinationConfig, headers) {
       message,
       category,
       headers,
-      destinationConfig
+      destinationConfig,
+      zendeskApiUrl
     );
-    url = endPoint + category.createEndpoint;
+    url = zendeskApiUrl + category.createEndpoint;
   } else {
     validateUserId(message);
     const orgId = await createOrganization(
       message,
       category,
       headers,
-      destinationConfig
+      destinationConfig,
+      zendeskApiUrl
     );
     if (!orgId) {
       throw new NetworkInstrumentationError(
@@ -600,12 +651,13 @@ async function processGroup(message, destinationConfig, headers) {
       message,
       headers,
       orgId,
-      destinationConfig
+      destinationConfig,
+      zendeskApiUrl
     );
-    url = endPoint + category.userMembershipEndpoint;
+    url = zendeskApiUrl + category.userMembershipEndpoint;
 
     const userId = payload.organization_membership.user_id;
-    if (await isUserAlreadyAssociated(userId, orgId, headers)) {
+    if (await isUserAlreadyAssociated(userId, orgId, headers, zendeskApiUrl)) {
       throw new InstrumentationError(
         "User is already associated with organization"
       );
@@ -618,7 +670,7 @@ async function processGroup(message, destinationConfig, headers) {
   // category = ConfigCategory.IDENTIFY;
   // payload = getIdentifyPayload(message, category, destinationConfig, "group");
   // payload.user.organization_id = orgId;
-  // url = endPoint + category.createOrUpdateUserEndpoint;
+  // url = zendeskApiUrl + category.createOrUpdateUserEndpoint;
   // return responseBuilder(message, headers, payload, url);
 
   return responseBuilder(message, headers, payload, url);
@@ -635,14 +687,20 @@ async function processSingleMessage(event) {
     )}`,
     "Content-Type": "application/json"
   };
+  const zendeskApiUrl = `https://${event.destination.Config.domain}.zendesk.com/api/v2/`;
 
   switch (messageType) {
     case EventType.IDENTIFY:
-      return processIdentify(message, destinationConfig, headers);
+      return processIdentify(
+        message,
+        destinationConfig,
+        headers,
+        zendeskApiUrl
+      );
     case EventType.GROUP:
-      return processGroup(message, destinationConfig, headers);
+      return processGroup(message, destinationConfig, headers, zendeskApiUrl);
     case EventType.TRACK:
-      return processTrack(message, destinationConfig, headers);
+      return processTrack(message, destinationConfig, headers, zendeskApiUrl);
     default:
       throw new InstrumentationError(
         `Event type ${messageType} is not supported`
@@ -651,7 +709,6 @@ async function processSingleMessage(event) {
 }
 
 async function process(event) {
-  endPoint = `https://${event.destination.Config.domain}.zendesk.com/api/v2/`;
   const resp = await processSingleMessage(event);
   return resp;
 }

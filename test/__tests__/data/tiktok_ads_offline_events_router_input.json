@@ -1,0 +1,39 @@
+[
+  {
+    "metadata": {
+      "jobId": 1
+    },
+    "destination": {
+      "Config": {
+        "accessToken": "fuwheirujkvjnkrtgkf",
+        "hashUserProperties": false
+      }
+    },
+    "message": {
+      "event": "subscribe",
+      "context": {
+        "traits": {
+          "phone": "c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646"
+        },
+        "channel": "web"
+      },
+      "properties": {
+        "eventSetId": "7181537436256731137",
+        "eventId": "1616318632825_352",
+        "order_id": "abc_xyz",
+        "shop_id": "123abc",
+        "currency": "USD",
+        "value": 46.00,
+        "price": 8,
+        "quantity": 2,
+        "content_type": "product1234",
+        "product_id": "1077218",
+        "name": "socks",
+        "category": "Men's cloth"
+      },
+      "type": "track",
+      "userId": "eventIdn01",
+      "timestamp": "2023-01-03"
+    }
+  }
+]

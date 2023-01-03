@@ -29,7 +29,6 @@ const {
   InstrumentationError
 } = require("../../util/errorTypes");
 
-let endPoint;
 
 function responseBuilder(message, headers, payload, endpoint) {
   const response = defaultRequestConfig();

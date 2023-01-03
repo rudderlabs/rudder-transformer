@@ -90,7 +90,7 @@ describe("Function Creation / Invocation Tests; testMode = true", () => {
       testName: "test",
       language: "pythonfaas"
     };
-    const events = require("../data/SimpleEventBatch1.json");
+    const events = require("./data/SimpleEventBatch1.json");
 
     const response = await userTransformHandler()(
       events,

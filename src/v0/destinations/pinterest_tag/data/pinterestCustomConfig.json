@@ -30,6 +30,10 @@
     "destKey": "search_string",
     "sourceKeys": "properties.query",
     "required": false
+  },
+  {
+    "destKey": "opt_out_type",
+    "sourceKeys": "properties.optOutType",
+    "required": false
   }
 ]
-

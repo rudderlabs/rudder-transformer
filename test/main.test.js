@@ -6,6 +6,9 @@ const rootDir = "test_dirs";
 
 const tests = path.join(__dirname, rootDir);
 
+const { getDestHandler } = require("../src/versionedRouter");
+const version = "v0";
+
 // fs.readdir(tests, (err, files) => {
 //   if (err) {
 //     console.error(err);
@@ -34,7 +37,7 @@ const getExecutionPath = (inputData, testType) => {
   switch (testType) {
     case "proc_tf":
     case "router_tf":
-      module = require(`../src/v0/destinations/${inputData.destinationName}/transform`);
+      module = getDestHandler.process;
       break;
     case "source_tf":
       module = require(`../src/v0/sources/${inputData.sourceName}/transform`);
@@ -55,7 +58,10 @@ const testFile = inputDataFile => {
         case "proc_tf":
           it(`${index}. ${dataPoint.destinationName} destination (proc_tf) tests - ${dataPoint.description}`, async () => {
             try {
-              const output = await transformer.process(dataPoint.input);
+              const output = await getDestHandler(
+                version,
+                dataPoint.destinationName
+              ).process(dataPoint.input);
               expect(output).toEqual(dataPoint.output);
             } catch (error) {
               expect(error.message).toEqual(dataPoint.output.error);
@@ -64,7 +70,10 @@ const testFile = inputDataFile => {
           break;
         case "router_tf":
           it(`${index}. ${dataPoint.destinationName} destination (router_tf) tests -`, async () => {
-            const output = await transformer.processRouterDest(dataPoint.input);
+            const output = await getDestHandler(
+              version,
+              dataPoint.destinationName
+            ).processRouterDest(dataPoint.input);
             expect(output).toEqual(dataPoint.output);
           });
           break;

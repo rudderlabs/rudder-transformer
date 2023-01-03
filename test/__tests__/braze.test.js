@@ -60,7 +60,7 @@ const batchExpectedData = JSON.parse(batchOutputDataFile);
 
 batchInputData.forEach((input, index) => {
   test(`${name} Batching ${index}`, () => {
-    const output = transformer.batch(input);
+    const output = transformer.processRouterDest(input);
     expect(Array.isArray(output)).toEqual(true);
     expect(output.length).toEqual(batchExpectedData[index].length);
     output.forEach((input, indexInner) => {

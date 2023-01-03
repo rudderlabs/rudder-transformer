@@ -27,6 +27,8 @@ const {
   IDENTIFY_BRAZE_MAX_REQ_COUNT
 } = require("./config");
 
+const logger = require("../../../logger");
+
 function formatGender(gender) {
   // few possible cases of woman
   if (["woman", "female", "w", "f"].indexOf(gender.toLowerCase()) > -1) {
@@ -486,7 +488,7 @@ function formatBatchResponse(batchPayload, metadataList, destination) {
   return response;
 }
 
-function batch(destEvents) {
+function batchEvents(destEvents) {
   const respList = [];
   let trackEndpoint;
   let identifyEndpoint;
@@ -505,122 +507,135 @@ function batch(destEvents) {
     // take out a single event
     const ev = destEvents[index];
     const { message, metadata, destination } = ev;
-
-    // get the JSON body
-    jsonBody = get(message, "body.JSON");
-
-    // get the type
-    endPoint = get(message, "endpoint");
-    type = endPoint && endPoint.includes("track") ? "track" : "identify";
-
     index += 1;
 
-    // if it is a track keep on adding to the existing track list
-    // keep a count of event, attribute, purchases - 75 is the cap
-    if (type === "track") {
-      // keep the trackEndpoint for reuse later
-      if (!trackEndpoint) {
-        trackEndpoint = endPoint;
-      }
+    // for handling identify call, we have 2 requests in 1 message
+    for (let msg = 0; msg < message.length; msg += 1) {
+      try {
+        // get the JSON body
+        jsonBody = get(message[msg], "body.JSON");
 
-      // look for events, attributes, purchases
-      const { events, attributes, purchases } = jsonBody;
+        // get the type
+        endPoint = get(message[msg], "endpoint");
+        type = endPoint && endPoint.includes("track") ? "track" : "identify";
 
-      // if total count = 75 form a new batch
-      const maxCount = Math.max(
-        attributesBatch.length + (attributes ? attributes.length : 0),
-        eventsBatch.length + (events ? events.length : 0),
-        purchasesBatch.length + (purchases ? purchases.length : 0)
-      );
+        // if it is a track keep on adding to the existing track list
+        // keep a count of event, attribute, purchases - 75 is the cap
+        if (type === "track") {
+          // keep the trackEndpoint for reuse later
+          if (!trackEndpoint) {
+            trackEndpoint = endPoint;
+          }
 
-      if (maxCount > TRACK_BRAZE_MAX_REQ_COUNT) {
-        if (
-          attributesBatch.length > 0 ||
-          eventsBatch.length > 0 ||
-          purchasesBatch.length > 0
-        ) {
-          const batchResponse = defaultRequestConfig();
-          batchResponse.headers = message.headers;
-          batchResponse.endpoint = trackEndpoint;
-          const responseBodyJson = {
-            partner: BRAZE_PARTNER_NAME
-          };
-          if (attributesBatch.length > 0) {
-            responseBodyJson.attributes = attributesBatch;
-          }
-          if (eventsBatch.length > 0) {
-            responseBodyJson.events = eventsBatch;
-          }
-          if (purchasesBatch.length > 0) {
-            responseBodyJson.purchases = purchasesBatch;
-          }
-          batchResponse.body.JSON = responseBodyJson;
-          // modify the endpoint to track endpoint
-          batchResponse.endpoint = trackEndpoint;
-          respList.push(
-            formatBatchResponse(batchResponse, trackMetadataBatch, destination)
+          // look for events, attributes, purchases
+          const { events, attributes, purchases } = jsonBody;
+
+          // if total count = 75 form a new batch
+          const maxCount = Math.max(
+            attributesBatch.length + (attributes ? attributes.length : 0),
+            eventsBatch.length + (events ? events.length : 0),
+            purchasesBatch.length + (purchases ? purchases.length : 0)
           );
 
-          // clear the arrays and reuse
-          attributesBatch = [];
-          eventsBatch = [];
-          purchasesBatch = [];
-          trackMetadataBatch = [];
+          if (maxCount > TRACK_BRAZE_MAX_REQ_COUNT) {
+            if (
+              attributesBatch.length > 0 ||
+              eventsBatch.length > 0 ||
+              purchasesBatch.length > 0
+            ) {
+              const batchResponse = defaultRequestConfig();
+              batchResponse.headers = message[msg].headers;
+              batchResponse.endpoint = trackEndpoint;
+              const responseBodyJson = {
+                partner: BRAZE_PARTNER_NAME
+              };
+              if (attributesBatch.length > 0) {
+                responseBodyJson.attributes = attributesBatch;
+              }
+              if (eventsBatch.length > 0) {
+                responseBodyJson.events = eventsBatch;
+              }
+              if (purchasesBatch.length > 0) {
+                responseBodyJson.purchases = purchasesBatch;
+              }
+              batchResponse.body.JSON = responseBodyJson;
+              // modify the endpoint to track endpoint
+              batchResponse.endpoint = trackEndpoint;
+              respList.push(
+                formatBatchResponse(
+                  batchResponse,
+                  trackMetadataBatch,
+                  destination
+                )
+              );
+
+              // clear the arrays for reuse
+              attributesBatch = [];
+              eventsBatch = [];
+              purchasesBatch = [];
+              trackMetadataBatch = [];
+            }
+          }
+
+          // add only if present
+          if (attributes) {
+            attributesBatch.push(...attributes);
+          }
+
+          if (events) {
+            eventsBatch.push(...events);
+          }
+
+          if (purchases) {
+            purchasesBatch.push(...purchases);
+          }
+
+          // keep the original metadata object. needed later to form the batch
+          trackMetadataBatch.push(metadata);
+        } else {
+          // identify
+          if (!identifyEndpoint) {
+            identifyEndpoint = endPoint;
+          }
+          const aliasObjectArr = get(jsonBody, "aliases_to_identify");
+          const aliasMaxCount =
+            aliasBatch.length + (aliasObjectArr ? aliasObjectArr.length : 0);
+
+          if (aliasMaxCount > IDENTIFY_BRAZE_MAX_REQ_COUNT) {
+            // form an identify batch and start over
+            const batchResponse = defaultRequestConfig();
+            batchResponse.headers = message[msg].headers;
+            batchResponse.endpoint = identifyEndpoint;
+            const responseBodyJson = {
+              partner: BRAZE_PARTNER_NAME
+            };
+            if (aliasBatch.length > 0) {
+              responseBodyJson.aliases_to_identify = [...aliasBatch];
+            }
+            batchResponse.body.JSON = responseBodyJson;
+            respList.push(
+              formatBatchResponse(
+                batchResponse,
+                identifyMetadataBatch,
+                destination
+              )
+            );
+
+            // clear the arrays for reuse
+            aliasBatch = [];
+            identifyMetadataBatch = [];
+          }
+
+          // separate out the identify request
+          if (aliasObjectArr && aliasObjectArr.length > 0) {
+            aliasBatch.push(aliasObjectArr[0]);
+          }
+
+          identifyMetadataBatch.push(metadata);
         }
+      } catch (e) {
+        logger.info(e);
       }
-
-      // add only if present
-      if (attributes) {
-        attributesBatch.push(...attributes);
-      }
-
-      if (events) {
-        eventsBatch.push(...events);
-      }
-
-      if (purchases) {
-        purchasesBatch.push(...purchases);
-      }
-
-      // keep the original metadata object. needed later to form the batch
-      trackMetadataBatch.push(metadata);
-    } else {
-      // identify
-      if (!identifyEndpoint) {
-        identifyEndpoint = endPoint;
-      }
-      const aliasObjectArr = get(jsonBody, "aliases_to_identify");
-      const aliasMaxCount =
-        aliasBatch.length + (aliasObjectArr ? aliasObjectArr.length : 0);
-
-      if (aliasMaxCount > IDENTIFY_BRAZE_MAX_REQ_COUNT) {
-        // form an identify batch and start over
-        const batchResponse = defaultRequestConfig();
-        batchResponse.headers = message.headers;
-        batchResponse.endpoint = identifyEndpoint;
-        const responseBodyJson = {
-          partner: BRAZE_PARTNER_NAME
-        };
-        if (aliasBatch.length > 0) {
-          responseBodyJson.aliases_to_identify = [...aliasBatch];
-        }
-        batchResponse.body.JSON = responseBodyJson;
-        respList.push(
-          formatBatchResponse(batchResponse, identifyMetadataBatch, destination)
-        );
-
-        // clear the arrays and reuse
-        aliasBatch = [];
-        identifyMetadataBatch = [];
-      }
-
-      // separate out the identify request
-      // respList.push(formatBatchResponse(message, [metadata], destination));
-      if (aliasObjectArr.length > 0) {
-        aliasBatch.push(aliasObjectArr[0]);
-      }
-
-      identifyMetadataBatch.push(metadata);
     }
   }
 
@@ -629,7 +644,7 @@ function batch(destEvents) {
   const { message, destination } = ev;
   if (aliasBatch.length > 0) {
     const identifyBatchResponse = defaultRequestConfig();
-    identifyBatchResponse.headers = message.headers;
+    identifyBatchResponse.headers = message[0].headers;
     const identifyResponseBodyJson = {
       partner: BRAZE_PARTNER_NAME
     };
@@ -653,7 +668,7 @@ function batch(destEvents) {
     purchasesBatch.length > 0
   ) {
     const trackBatchResponse = defaultRequestConfig();
-    trackBatchResponse.headers = message.headers;
+    trackBatchResponse.headers = message[0].headers;
     trackBatchResponse.endpoint = trackEndpoint;
     const trackResponseBodyJson = {
       partner: BRAZE_PARTNER_NAME
@@ -717,7 +732,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     })
   );
   if (successRespList.length > 0) {
-    batchResponseList = batch(successRespList);
+    batchResponseList = batchEvents(successRespList);
   }
   return [...batchResponseList, ...batchErrorRespList];
 };

@@ -2,7 +2,7 @@
   {
     "destKey": "event_set_id",
     "sourceKeys": "properties.eventSetId",
-    "required": false
+    "required": true
   },
   {
     "destKey": "event_id",

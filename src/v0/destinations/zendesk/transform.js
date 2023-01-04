@@ -27,8 +27,11 @@ const logger = require("../../../logger");
 const { httpGET } = require("../../../adapters/network");
 const {
   NetworkInstrumentationError,
-  InstrumentationError
+  InstrumentationError,
+  NetworkError
 } = require("../../util/errorTypes");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const tags = require("../../util/tags");
 
 function responseBuilder(message, headers, payload, endpoint) {
   const response = defaultRequestConfig();
@@ -295,13 +298,17 @@ async function getUserId(message, headers, baseEndpoint, type) {
 async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint) {
   const url = `${baseEndpoint}/users/${userId}/organization_memberships.json`;
   const config = { headers };
-  const response = await axios.get(url, config);
-  if (
-    response.data &&
-    response.data.organization_memberships.length > 0 &&
-    response.data.organization_memberships[0].organization_id === orgId
-  ) {
-    return true;
+  try {
+    const response = await axios.get(url, config);
+    if (
+      response.data &&
+      response.data.organization_memberships.length > 0 &&
+      response.data.organization_memberships[0].organization_id === orgId
+    ) {
+      return true;
+    }
+  } catch (error) {
+    logger.debug("Error :", error.response ? error.response.data : error);
   }
   return false;
 }
@@ -560,24 +567,38 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
 
   const url = `${baseEndpoint}users/search.json?query=${userEmail}`;
   const config = { headers };
-  const userResponse = await axios.get(url, config);
-  if (!get(userResponse, "data.users.0.id") || userResponse.data.count === 0) {
-    const { zendeskUserId, email } = await createUser(
-      message,
-      headers,
-      destinationConfig,
-      baseEndpoint
+  try {
+    const userResponse = await axios.get(url, config);
+    if (
+      !get(userResponse, "data.users.0.id") ||
+      userResponse.data.count === 0
+    ) {
+      const { zendeskUserId, email } = await createUser(
+        message,
+        headers,
+        destinationConfig,
+        baseEndpoint
+      );
+      if (!zendeskUserId) {
+        throw new NetworkInstrumentationError("User not found");
+      }
+      if (!email) {
+        throw new NetworkInstrumentationError("User email not found", 400);
+      }
+      zendeskUserID = zendeskUserId;
+      userEmail = email;
+    }
+    zendeskUserID = zendeskUserID || userResponse.data.users[0].id;
+  } catch (error) {
+    throw new NetworkError(
+      `Failed to fetch user with email: ${userEmail}`,
+      error.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(error.status)
+      },
+      error.response
     );
-    if (!zendeskUserId) {
-      throw new NetworkInstrumentationError("User not found");
-    }
-    if (!email) {
-      throw new NetworkInstrumentationError("User email not found", 400);
-    }
-    zendeskUserID = zendeskUserId;
-    userEmail = email;
   }
-  zendeskUserID = zendeskUserID || userResponse.data.users[0].id;
 
   const eventObject = {};
   eventObject.description = message.event;

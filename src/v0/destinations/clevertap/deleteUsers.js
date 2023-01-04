@@ -1,4 +1,3 @@
-const _ = require("lodash");
 const { httpPOST } = require("../../../adapters/network");
 const { getEndpoint, MAX_BATCH_SIZE } = require("./config");
 const {
@@ -7,12 +6,9 @@ const {
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
 const { executeCommonValidations } = require("../../util/regulation-api");
-const {
-  NetworkError,
-  ConfigurationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+const { NetworkError, ConfigurationError } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
+const { getBatchedIds } = require("../../util/deleteUserUtils");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -35,19 +31,8 @@ const userDeletionHandler = async (userAttributes, config) => {
     "X-CleverTap-Passcode": passcode,
     "Content-Type": "application/json"
   };
-  const identity = [];
-  userAttributes.forEach(userAttribute => {
-    // Dropping the user if userId is not present
-    if (userAttribute.userId) {
-      identity.push(userAttribute.userId);
-    }
-  });
-  if (identity.length === 0) {
-    throw new InstrumentationError(`No User id for deletion is present`);
-  }
-  // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.clevertap.com/docs/disassociate-api
-  const batchEvents = _.chunk(identity, MAX_BATCH_SIZE);
+  const batchEvents = getBatchedIds(userAttributes, MAX_BATCH_SIZE);
   await Promise.all(
     batchEvents.map(async batchEvent => {
       const deletionResponse = await httpPOST(

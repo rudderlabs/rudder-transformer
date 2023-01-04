@@ -8,7 +8,7 @@ const { isHttpStatusSuccess } = require("../../util");
 const { executeCommonValidations } = require("../../util/regulation-api");
 const { NetworkError, ConfigurationError } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
-const { getBatchedIds } = require("../../util/deleteUserUtils");
+const { getUserIdBatches } = require("../../util/deleteUserUtils");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -32,7 +32,7 @@ const userDeletionHandler = async (userAttributes, config) => {
     "Content-Type": "application/json"
   };
   // ref : https://developer.clevertap.com/docs/disassociate-api
-  const batchEvents = getBatchedIds(userAttributes, MAX_BATCH_SIZE);
+  const batchEvents = getUserIdBatches(userAttributes, MAX_BATCH_SIZE);
   await Promise.all(
     batchEvents.map(async batchEvent => {
       const deletionResponse = await httpPOST(

@@ -6,16 +6,16 @@ const _ = require("lodash");
  * @param {*} MAX_BATCH_SIZE integer
  * @returns [e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
  */
-const getBatchedIds = (userAttributes, MAX_BATCH_SIZE) => {
-  const identity = [];
+const getUserIdBatches = (userAttributes, MAX_BATCH_SIZE) => {
+  const userIds = [];
   userAttributes.forEach(userAttribute => {
     // Dropping the user if userId is not present
     if (userAttribute.userId) {
-      identity.push(userAttribute.userId);
+      userIds.push(userAttribute.userId);
     }
   });
-  const batchEvents = _.chunk(identity, MAX_BATCH_SIZE);
-  return batchEvents;
+  const userIdBatches = _.chunk(userIds, MAX_BATCH_SIZE);
+  return userIdBatches;
 };
 
-module.exports = { getBatchedIds };
+module.exports = { getUserIdBatches };

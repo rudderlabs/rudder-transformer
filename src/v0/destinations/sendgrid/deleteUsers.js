@@ -16,20 +16,20 @@ const tags = require("../../util/tags");
  * This drops the user if userId is not available and converts the ids's into list of strings
  * where each string is a combination of comma separated userIds and length of each string is not more than maxSize
  * @param {*} userAttributes array of userIds
- * @param {*} maxSize maxSize of url
+ * @param {*} maxUrlLength maxSize of url
  * @returns list of Strings
  */
-const chunksFromUrlLength = (userAttributes, maxSize) => {
+const getUserIdChunks = (userAttributes, maxUrlLength) => {
   const identity = [];
-  let left = maxSize;
+  let left = maxUrlLength;
   let temp = "";
   userAttributes.forEach(ua => {
     // Dropping the user if userId is not present
     if (ua.userId) {
-      left -= String(ua.userId).length;
+      left -= String(ua.userId).length + 1; // Addditional 1 for comma (,)
       if (left < 0) {
         identity.push(temp.slice(0, -1));
-        left = maxSize;
+        left = maxUrlLength;
         temp = "";
       }
       temp += `${String(ua.userId)},`;
@@ -43,7 +43,7 @@ const chunksFromUrlLength = (userAttributes, maxSize) => {
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
- * @param {*} userAttributes Array of objects with userId, emaail and phone
+ * @param {*} userAttributes Array of objects with userId, email and phone
  * @param {*} config Destination.Config provided in dashboard
  * @returns
  */
@@ -83,7 +83,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   So we are implementing batching through urlLimit
    */
   // batchEvents = [["e1,e2,e3,..urlLimit"],["e1,e2,e3,..urlLimit"]..]
-  const batchEvents = chunksFromUrlLength(userAttributes, urlLimit);
+  const batchEvents = getUserIdChunks(userAttributes, urlLimit);
   if (batchEvents.length === 0) {
     throw new InstrumentationError(`No User id for deletion is present`);
   }

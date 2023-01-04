@@ -19,8 +19,8 @@
   ],
   [
     {
-      "statusCode": 400,
-      "error": "No User id for deletion is present"
+      "statusCode": 200,
+      "status": "successful"
     }
   ],
   [

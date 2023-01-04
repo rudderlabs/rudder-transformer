@@ -6,17 +6,13 @@ const {
 const { isHttpStatusSuccess } = require("../../util");
 const { MAX_BATCH_SIZE } = require("./config");
 const { executeCommonValidations } = require("../../util/regulation-api");
-const {
-  ConfigurationError,
-  NetworkError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+const { ConfigurationError, NetworkError } = require("../../util/errorTypes");
 const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const tags = require("../../util/tags");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
- * @param {*} userAttributes Array of objects with userId, emaail and phone
+ * @param {*} userAttributes Array of objects with userId, email and phone
  * @param {*} config Destination.Config provided in dashboard
  * @returns
  */
@@ -45,9 +41,6 @@ const userDeletionHandler = async (userAttributes, config) => {
       });
     }
   });
-  if (data.length === 0) {
-    throw new InstrumentationError(`No User id for deletion is present`);
-  }
   const headers = {
     accept: "text/plain",
     "content-type": "application/json"

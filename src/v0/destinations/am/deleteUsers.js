@@ -9,7 +9,7 @@ const { isHttpStatusSuccess } = require("../../util");
 const { ConfigurationError, NetworkError } = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
 const { DELETE_MAX_BATCH_SIZE } = require("./config");
-const { getBatchedIds } = require("../../util/deleteUserUtils");
+const { getUserIdBatches } = require("../../util/deleteUserUtils");
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
@@ -25,7 +25,7 @@ const userDeletionHandler = async (userAttributes, config) => {
     Authorization: `Basic ${btoa(`${apiKey}:${apiSecret}`)}`
   };
   // Ref : https://www.docs.developers.amplitude.com/analytics/apis/user-privacy-api/#response
-  const batchEvents = getBatchedIds(userAttributes, DELETE_MAX_BATCH_SIZE);
+  const batchEvents = getUserIdBatches(userAttributes, DELETE_MAX_BATCH_SIZE);
   const url = "https://amplitude.com/api/2/deletions/users";
   await Promise.all(
     batchEvents.map(async batch => {

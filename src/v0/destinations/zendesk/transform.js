@@ -591,12 +591,13 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
     zendeskUserID = zendeskUserID || userResponse.data.users[0].id;
   } catch (error) {
     throw new NetworkError(
-      `Failed to fetch user with email: ${userEmail}`,
+      `Failed to fetch user with email: ${userEmail} due to ${JSON.stringify(
+        error.response ? error.response.data : error
+      )}`,
       error.status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(error.status)
-      },
-      error.response
+      }
     );
   }
 

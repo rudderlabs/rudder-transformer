@@ -787,25 +787,5 @@
         }
       ]
     }
-  },
-  {
-    "request": {
-      "body": [
-        {
-          "jobId": "423451324652346",
-          "destType": "AM",
-          "config": {
-            "apiKey": "a",
-            "apiSecret": "b"
-          },
-          "userAttributes": [
-            {
-              "phone": "1234567890",
-              "email": "abc@xyc.com"
-            }
-          ]
-        }
-      ]
-    }
   }
 ]

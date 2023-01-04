@@ -2,7 +2,7 @@
   [
     {
       "statusCode": 400,
-      "error": "Deletion Request is not successful - error: {\"code\":400,\"message\":\"Bad Req\",\"status\":\"Fail Case\"}"
+      "error": "User deletion request failed"
     }
   ],
   [

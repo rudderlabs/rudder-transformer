@@ -54,7 +54,13 @@
           "destType": "ENGAGE",
           "userAttributes": [
             {
-              "userId": "1"
+              "userId": "7"
+            },
+            {
+              "userId": "8"
+            },
+            {
+              "userId": "9"
             }
           ],
           "config": {
@@ -72,13 +78,7 @@
           "destType": "ENGAGE",
           "userAttributes": [
             {
-              "userId": "7"
-            },
-            {
-              "userId": "8"
-            },
-            {
-              "userId": "9"
+              "userId": "1"
             }
           ],
           "config": {

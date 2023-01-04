@@ -1,4 +1,3 @@
-const _ = require("lodash");
 const btoa = require("btoa");
 const { httpPOST } = require("../../../adapters/network");
 const tags = require("../../util/tags");
@@ -7,13 +6,10 @@ const {
   getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
-const {
-  ConfigurationError,
-  NetworkError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+const { ConfigurationError, NetworkError } = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
 const { DELETE_MAX_BATCH_SIZE } = require("./config");
+const { getBatchedIds } = require("../../util/deleteUserUtils");
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
@@ -23,22 +19,14 @@ const userDeletionHandler = async (userAttributes, config) => {
   if (!apiKey || !apiSecret) {
     throw new ConfigurationError("api key/secret for deletion not present");
   }
-  const identity = [];
-  userAttributes.forEach(userAttribute => {
-    // Dropping the user if userId is not present
-    if (userAttribute.userId) {
-      identity.push(userAttribute.userId);
-    }
-  });
-  if (identity.length === 0) {
-    throw new InstrumentationError(`No User id for deletion is present`);
-  }
 
   const headers = {
     "Content-Type": "application/json",
     Authorization: `Basic ${btoa(`${apiKey}:${apiSecret}`)}`
   };
-  const batchEvents = _.chunk(identity, DELETE_MAX_BATCH_SIZE);
+  // Ref : https://www.docs.developers.amplitude.com/analytics/apis/user-privacy-api/#response
+  const batchEvents = getBatchedIds(userAttributes, DELETE_MAX_BATCH_SIZE);
+  const url = "https://amplitude.com/api/2/deletions/users";
   await Promise.all(
     batchEvents.map(async batch => {
       const data = {
@@ -46,24 +34,21 @@ const userDeletionHandler = async (userAttributes, config) => {
         requester: "RudderStack",
         ignore_invalid_id: "true"
       };
-      const url = "https://amplitude.com/api/2/deletions/users";
       const requestOptions = {
         headers
       };
       const resp = await httpPOST(url, data, requestOptions);
-      const handledResponse = processAxiosResponse(resp);
-      if (!isHttpStatusSuccess(handledResponse.status)) {
+      const handledDelResponse = processAxiosResponse(resp);
+      if (!isHttpStatusSuccess(handledDelResponse.status)) {
         throw new NetworkError(
-          `user deletion request failed - error: ${JSON.stringify(
-            handledResponse.response
-          )}`,
-          handledResponse.status,
+          "User deletion request failed",
+          handledDelResponse.status,
           {
             [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-              handledResponse.status
+              handledDelResponse.status
             )
           },
-          handledResponse
+          handledDelResponse
         );
       }
     })

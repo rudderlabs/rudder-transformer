@@ -1,38 +1,39 @@
 [
-  [
-      {
-          "statusCode": 400,
-          "error": "user deletion request failed - error: {\"code\":400,\"message\":\"Bad Req\",\"status\":\"Fail first\"}"
-      }
-  ],
-  [
-      {
-          "statusCode": 400,
-          "error": "user deletion request failed - error: {\"code\":400,\"message\":\"Bad Req\",\"status\":\"fail 6 \"}"
-      }
-  ],
-  [
-      {
-          "statusCode": 200,
-          "status": "successful"
-      }
-  ],
-  [
-      {
-          "statusCode": 400,
-          "error": "user deletion request failed - error: {\"code\":400,\"message\":\"Bad Req\",\"status\":\"fail mid case 8\"}"
-      }
-  ],
-  [
-      {
-          "statusCode": 500,
-          "error": "Public key is a required field for user deletion"
-      }
-  ],
-  [
-      {
-          "statusCode": 400,
-          "error": "User id for deletion not present"
-      }
-  ]
+    [
+        {
+            "statusCode": 400,
+            "error": "User deletion request failed"
+        }
+    ],
+    [
+        {
+            "statusCode": 400,
+            "error": "User deletion request failed"
+        }
+    ],
+    [
+        {
+            "statusCode": 400,
+            "error": "User deletion request failed"
+        }
+    ],
+    [
+        {
+            "statusCode": 200,
+            "status": "successful"
+        }
+    ],
+    
+    [
+        {
+            "statusCode": 500,
+            "error": "Public key is a required field for user deletion"
+        }
+    ],
+    [
+        {
+            "statusCode": 200,
+            "status": "successful"
+        }
+    ]
 ]

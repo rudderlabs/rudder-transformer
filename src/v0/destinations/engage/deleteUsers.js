@@ -5,16 +5,12 @@ const {
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
 const tags = require("../../util/tags");
-const {
-  InstrumentationError,
-  ConfigurationError,
-  NetworkError
-} = require("../../util/errorTypes");
+const { ConfigurationError, NetworkError } = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
- * @param {*} userAttributes Array of objects with userId, emaail and phone
+ * @param {*} userAttributes Array of objects with userId, email and phone
  * @param {*} config Destination.Config provided in dashboard
  * @returns
  */
@@ -42,26 +38,23 @@ const userDeletionHandler = async (userAttributes, config) => {
 
   await Promise.all(
     userAttributes.map(async ua => {
-      if (!ua.userId) {
-        throw new InstrumentationError("User id for deletion not present");
-      }
-      const endpoint = `${BASE_URL.replace("uid", ua.userId)}`;
-      // eslint-disable-next-line no-await-in-loop
-      const response = await httpDELETE(endpoint, { headers });
-      const handledResponse = processAxiosResponse(response);
-      if (!isHttpStatusSuccess(handledResponse.status)) {
-        throw new NetworkError(
-          `user deletion request failed - error: ${JSON.stringify(
-            handledResponse.response
-          )}`,
-          handledResponse.status,
-          {
-            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-              handledResponse.status
-            )
-          },
-          handledResponse
-        );
+      if (ua.userId) {
+        const endpoint = `${BASE_URL.replace("uid", ua.userId)}`;
+        // eslint-disable-next-line no-await-in-loop
+        const response = await httpDELETE(endpoint, { headers });
+        const handledDelResponse = processAxiosResponse(response);
+        if (!isHttpStatusSuccess(handledDelResponse.status)) {
+          throw new NetworkError(
+            "User deletion request failed",
+            handledDelResponse.status,
+            {
+              [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+                handledDelResponse.status
+              )
+            },
+            handledDelResponse
+          );
+        }
       }
     })
   );

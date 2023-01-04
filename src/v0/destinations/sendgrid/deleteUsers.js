@@ -63,8 +63,26 @@ const userDeletionHandler = async (userAttributes, config) => {
       Authorization: `Bearer ${apiKey}`
     }
   };
-  // batchEvents = [["e1,e2,e3,..urlLimit"],["e1,e2,e3,..urlLimit"]..]
   // ref : https://docs.sendgrid.com/api-reference/contacts/delete-contacts
+  /**
+   * There is no Id per batch limit mentioned or found through trial and error method
+   * But we have a limit of the url length that is not specified in the doc but found through trial and error method
+   * which on excceding the limit throws following error 
+   * <html>
+    <head>
+      <title>414 Request-URI Too Large</title>
+    </head>
+    <body>
+      <center>
+        <h1>414 Request-URI Too Large</h1>
+      </center>
+      <hr>
+      <center>nginx</center>
+    </body>
+    </html>
+  So we are implementing batching through urlLimit
+   */
+  // batchEvents = [["e1,e2,e3,..urlLimit"],["e1,e2,e3,..urlLimit"]..]
   const batchEvents = chunksFromUrlLength(userAttributes, urlLimit);
   if (batchEvents.length === 0) {
     throw new InstrumentationError(`No User id for deletion is present`);
@@ -73,20 +91,18 @@ const userDeletionHandler = async (userAttributes, config) => {
     batchEvents.map(async batchEvent => {
       endpoint = `${endpoint.replace("IDS", batchEvent)}`;
       const deletionResponse = await httpDELETE(endpoint, requestOptions);
-      const processedDeletionResponse = processAxiosResponse(deletionResponse);
+      const handledDelResponse = processAxiosResponse(deletionResponse);
 
-      if (!isHttpStatusSuccess(processedDeletionResponse.status)) {
+      if (!isHttpStatusSuccess(handledDelResponse.status)) {
         throw new NetworkError(
-          `Deletion Request is not successful - error: ${JSON.stringify(
-            processedDeletionResponse.response
-          )}`,
-          processedDeletionResponse.status,
+          "User deletion request failed",
+          handledDelResponse.status,
           {
             [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-              processedDeletionResponse.status
+              handledDelResponse.status
             )
           },
-          processedDeletionResponse
+          handledDelResponse
         );
       }
     })

@@ -59,19 +59,17 @@ const userDeletionHandler = async (userAttributes, config) => {
   await Promise.all(
     batchEvents.map(async batchEvent => {
       const deletionResponse = await httpPOST(endpoint, batchEvent, headers);
-      const processedDeletionResponse = processAxiosResponse(deletionResponse);
-      if (!isHttpStatusSuccess(processedDeletionResponse.status)) {
+      const handledDelResponse = processAxiosResponse(deletionResponse);
+      if (!isHttpStatusSuccess(handledDelResponse.status)) {
         throw new NetworkError(
-          `Deletion Request is not successful - error: ${JSON.stringify(
-            processedDeletionResponse.response
-          )}`,
-          processedDeletionResponse.status,
+          "User deletion request failed",
+          handledDelResponse.status,
           {
             [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-              processedDeletionResponse.status
+              handledDelResponse.status
             )
           },
-          processedDeletionResponse.response
+          handledDelResponse
         );
       }
     })

@@ -4,14 +4,11 @@ const {
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
 const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
-const {
-  NetworkError,
-  InstrumentationError,
-  ConfigurationError
-} = require("../../util/errorTypes");
+const { NetworkError, ConfigurationError } = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
 const tags = require("../../util/tags");
 
+// Ref-> https://developers.intercom.com/intercom-api-reference/v1.3/reference/permanently-delete-a-user
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
     throw new ConfigurationError("Config for deletion not present");
@@ -24,37 +21,34 @@ const userDeletionHandler = async (userAttributes, config) => {
   await Promise.all(
     userAttributes.map(async ua => {
       const uId = ua.userId;
-      if (!uId) {
-        throw new InstrumentationError(`No User id for deletion is present`);
-      }
-      const url = `https://api.intercom.io/user_delete_requests`;
-      const data = {
-        intercom_user_id: uId
-      };
-      const requestOptions = {
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          Accept: "application/json"
+      if (uId) {
+        const url = `https://api.intercom.io/user_delete_requests`;
+        const data = {
+          intercom_user_id: uId
+        };
+        const requestOptions = {
+          headers: {
+            Authorization: `Bearer ${apiKey}`,
+            Accept: "application/json"
+          }
+        };
+        const resp = await httpPOST(url, data, requestOptions);
+        const handledDelResponse = processAxiosResponse(resp);
+        if (
+          !isHttpStatusSuccess(handledDelResponse.status) &&
+          handledDelResponse.status !== 404
+        ) {
+          throw new NetworkError(
+            "User deletion request failed",
+            handledDelResponse.status,
+            {
+              [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+                handledDelResponse.status
+              )
+            },
+            handledDelResponse
+          );
         }
-      };
-      const resp = await httpPOST(url, data, requestOptions);
-      const handledResponse = processAxiosResponse(resp);
-      if (
-        !isHttpStatusSuccess(handledResponse.status) &&
-        handledResponse.status !== 404
-      ) {
-        throw new NetworkError(
-          `user deletion request failed - error: ${JSON.stringify(
-            handledResponse.response
-          )}`,
-          handledResponse.status,
-          {
-            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-              handledResponse.status
-            )
-          },
-          handledResponse
-        );
       }
     })
   );

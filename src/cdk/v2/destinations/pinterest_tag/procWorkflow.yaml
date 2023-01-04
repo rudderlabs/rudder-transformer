@@ -114,7 +114,8 @@ steps:
                      .properties.revenue,
             "num_items": .properties.numOfItems && Number(.properties.numOfItems),
             "order_id": .properties.order_id,
-            "search_string": .properties.query
+            "search_string": .properties.query,
+            "opt_out_type": .properties.optOutType
           });
           $.removeUndefinedValues(customFields)
 

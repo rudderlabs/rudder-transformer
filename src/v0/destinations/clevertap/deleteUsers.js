@@ -31,17 +31,9 @@ const userDeletionHandler = async (userAttributes, config) => {
     "X-CleverTap-Passcode": passcode,
     "Content-Type": "application/json"
   };
-  const identity = [];
-  userAttributes.forEach(userAttribute => {
-    // Dropping the user if userId is not present
-    if (userAttribute.userId) {
-      identity.push(userAttribute.userId);
-    }
-  });
   // userIdBatches = [[u1,u2,u3,...batchSize],[u1,u2,u3,...batchSize]...]
   // ref : https://developer.clevertap.com/docs/disassociate-api
-  const userIdBatches = _.chunk(identity, MAX_BATCH_SIZE);
-
+  const userIdBatches = getUserIdBatches(userAttributes, MAX_BATCH_SIZE);
   // Note: The logic here intentionally avoided to use Promise.all
   // where all the batch deletion requests are parallelized as
   // simultaneous requests to CleverTap resulted in hitting API rate limits.

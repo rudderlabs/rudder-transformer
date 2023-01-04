@@ -31,34 +31,47 @@ const userDeletionHandler = async (userAttributes, config) => {
     "X-CleverTap-Passcode": passcode,
     "Content-Type": "application/json"
   };
+  const identity = [];
+  userAttributes.forEach(userAttribute => {
+    // Dropping the user if userId is not present
+    if (userAttribute.userId) {
+      identity.push(userAttribute.userId);
+    }
+  });
+  // userIdBatches = [[u1,u2,u3,...batchSize],[u1,u2,u3,...batchSize]...]
   // ref : https://developer.clevertap.com/docs/disassociate-api
-  const batchEvents = getUserIdBatches(userAttributes, MAX_BATCH_SIZE);
-  await Promise.all(
-    batchEvents.map(async batchEvent => {
-      const deletionResponse = await httpPOST(
-        endpoint,
-        {
-          identity: batchEvent
-        },
-        {
-          headers
-        }
-      );
-      const handledDelResponse = processAxiosResponse(deletionResponse);
-      if (!isHttpStatusSuccess(handledDelResponse.status)) {
-        throw new NetworkError(
-          "User deletion request failed",
-          handledDelResponse.status,
-          {
-            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-              handledDelResponse.status
-            )
-          },
-          handledDelResponse
-        );
+  const userIdBatches = _.chunk(identity, MAX_BATCH_SIZE);
+
+  // Note: The logic here intentionally avoided to use Promise.all
+  // where all the batch deletion requests are parallelized as
+  // simultaneous requests to CleverTap resulted in hitting API rate limits.
+  // Also, the rate limit is not clearly documented.
+  for (let idx = 0; idx < userIdBatches.length; idx += 1) {
+    const curBatch = userIdBatches[idx];
+    // eslint-disable-next-line no-await-in-loop
+    const deletionResponse = await httpPOST(
+      endpoint,
+      {
+        identity: curBatch
+      },
+      {
+        headers
       }
-    })
-  );
+    );
+    const handledDelResponse = processAxiosResponse(deletionResponse);
+    if (!isHttpStatusSuccess(handledDelResponse.status)) {
+      throw new NetworkError(
+        "User deletion request failed",
+        handledDelResponse.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+            handledDelResponse.status
+          )
+        },
+        handledDelResponse
+      );
+    }
+  }
 
   return {
     statusCode: 200,

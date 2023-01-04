@@ -39,6 +39,7 @@ jobs:
             --set basic_auth=false \
             --set generateBasicAuth=false \
             --set ceScaling=true \
+            --set async=false \
             --set openfaasImagePullPolicy=IfNotPresent
       - name: Wait for deployment "gateway" rollout
         run: kubectl rollout status deploy/gateway --timeout 120s -n openfaas

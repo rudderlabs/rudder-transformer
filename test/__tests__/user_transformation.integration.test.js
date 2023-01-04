@@ -1,5 +1,7 @@
-const fs = require("fs");
-const { default: axios } = require("axios");
+const { when } = require("jest-when");
+jest.mock("node-fetch");
+const fetch = require("node-fetch", () => jest.fn());
+
 const { userTransformHandler } = require("../../src/routerUtils");
 const {
   setupUserTransformHandler
@@ -11,48 +13,41 @@ const {
   deleteFunction,
   getFunctionList
 } = require("../../src/util/openfaas/faasApi");
+const { invalidateFnCache } = require("../../src/util/openfaas/index");
+const { RetryRequestError } = require("../../src/util/utils");
 
 jest.setTimeout(15000);
 jest.mock("axios", () => ({
-    ...jest.requireActual("axios")
-  }));
-
-jest.mock("node-fetch");
-const fetch = require("node-fetch", () => jest.fn());
-
+  ...jest.requireActual("axios")
+}));
 
 const workspaceId = "workspaceId";
 const versionId = "versionId";
+const TR_REV_CODE = {
+  codeVersion: "1",
+  language: "pythonfaas",
+  testName: "pytest",
+  code: "def transformEvent(event, metadata):\n    return event\n",
+  workspaceId,
+  versionId
+};
 
 describe("Function Creation Tests", () => {
-  afterAll(() => {
-    (async() => {
-      (await getFunctionList()).forEach(fn => {
-        deleteFunction(fn.name);
-      });
-    })();
+  afterAll(async done => {
+    (await getFunctionList()).forEach(fn => {
+      deleteFunction(fn.name);
+    });
+    done();
   });
-
-  const trRevCode = {
-    codeVersion: "1",
-    language: "pythonfaas",
-    testName: "pytest",
-    code: `
-    def transformEvent(event, metadata):
-        return event
-    `,
-    workspaceId,
-    versionId
-  };
 
   const funcName = generateFunctionName({ workspaceId, versionId }, false);
 
   const expectedData = { success: true, publishedVersion: funcName };
 
   it("Setting up function with testWithPublish as true - creates faas function", async () => {
-    const statusOutput = await setupUserTransformHandler(trRevCode, [], true);
+    const outputData = await setupUserTransformHandler(TR_REV_CODE, [], true);
 
-    expect(statusOutput).toEqual(expectedData);
+    expect(outputData).toEqual(expectedData);
 
     const deployedFns = await getFunctionList();
     const fnNames = deployedFns.map(fn => fn.name);
@@ -60,11 +55,11 @@ describe("Function Creation Tests", () => {
     expect(fnNames).toEqual([funcName]);
   });
 
-  it("Setting up already existing function with testWithPublish as true - nothing happens", async () => {
+  it("Setting up already existing function with testWithPublish as true - return from cache", async () => {
     const fnCreatedAt = (await getFunctionList())[0].createdAt;
-    const statusOutput = await setupUserTransformHandler(trRevCode, [], true);
+    const outputData = await setupUserTransformHandler(TR_REV_CODE, [], true);
 
-    expect(statusOutput).toEqual(expectedData);
+    expect(outputData).toEqual(expectedData);
 
     const deployedFns = await getFunctionList();
     const fnNames = deployedFns.map(fn => fn.name);
@@ -73,35 +68,28 @@ describe("Function Creation Tests", () => {
     expect(fnNames).toEqual([funcName]);
     expect(fnCreatedAt).toEqual(currentCreatedAt);
   });
+
+  it("Setting up already existing function with cache clearing - return retry request error", async () => {
+    invalidateFnCache();
+    await expect(async () => {
+      await setupUserTransformHandler(TR_REV_CODE, [], true);
+    }).rejects.toThrow(RetryRequestError);
+  });
 });
 
-describe("Function Creation / Invocation Tests; testMode = true", () => {
-  it("Function 1 - Unmodified events returned", async () => {
-    const code = "def transformEvent(event, metadata):\n    return event\n";
-    const trRevCode = {
-      id: "id",
-      versionId,
-      name: "F1",
-      description: "",
-      code,
-      codeVersion: "1",
-      handleId: "1",
-      workspaceId,
-      testName: "test",
-      language: "pythonfaas"
-    };
-    const events = require("./data/SimpleEventBatch1.json");
+describe("Function invocation & creation tests", () => {
+  it("Function creation & invocation in test mode - Unmodified events returned", async () => {
+    const inputEvents = require(`./data/user_transformation_input.json`);
+    const outputEvents = require(`./data/user_transformation_pycode_test_output.json`);
 
     const response = await userTransformHandler()(
-      events,
+      inputEvents,
       versionId,
       [],
-      trRevCode,
+      TR_REV_CODE,
       true
     );
 
-    response.transformedEvents.forEach((te, idx) => {
-      expect(te).toEqual(events[idx].message);
-    });
+    expect(response).toEqual(outputEvents);
   });
 });

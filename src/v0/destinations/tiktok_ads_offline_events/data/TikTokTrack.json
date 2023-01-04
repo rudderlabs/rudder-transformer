@@ -17,12 +17,12 @@
   },
   {
     "destKey": "properties.order_id",
-    "sourceKeys": "properties.order_id",
+    "sourceKeys": ["properties.order_id", "properties.orderId"],
     "required": false
   },
   {
     "destKey": "properties.shop_id",
-    "sourceKeys": "properties.shop_id",
+    "sourceKeys": ["properties.shop_id", "properties.shopId"],
     "required": false
   },
   {

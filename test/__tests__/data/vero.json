@@ -336,26 +336,25 @@
         "previousId": "newsamplel01"
       }
     },
-    "output":
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "PUT",
-        "endpoint": "https://api.getvero.com/api/v2/users/reidentify",
-        "headers": {},
-        "params": {},
-        "body": {
-          "JSON": {
-            "new_id": "sample101",
-            "id": "newsamplel01",
-            "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "PUT",
+      "endpoint": "https://api.getvero.com/api/v2/users/reidentify",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {
+          "new_id": "sample101",
+          "id": "newsamplel01",
+          "auth_token": "KDH4JNDHCFJHJ57SJOWJE490W01JFNHGDSSFHDKDSDF"
         },
-        "files": {}
-      }
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
   },
   {
     "description": "Identify Call with valid channels",
@@ -554,7 +553,7 @@
       }
     },
     "output": {
-      "error": "Message type group not supported"
+      "error": "Event type group is not supported"
     }
   }
 ]

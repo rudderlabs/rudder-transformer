@@ -25,7 +25,8 @@ steps:
         "metadata": ^[idx].metadata[],
         "batched": false,
         "statusCode": .status,
-        "error": .message
+        "error": .message,
+        "statTags": .originalError ? .originalError.statTags ? .originalError.statTags : undefined : undefined
       })[]
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents

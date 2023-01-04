@@ -8,11 +8,9 @@ const {
 const {
   identifySourceKeys,
   fileConfigCategories,
-  mappingConfig,
-  DESTINATION
+  mappingConfig
 } = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const ErrorBuilder = require("../../util/error");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 /**
  * Returns the remaining keys from traits
@@ -71,16 +69,7 @@ const getAttributes = (attributesMap, properties, excludeKeys) => {
 
 const buildLeadPayload = (message, traits, Config) => {
   if (!traits) {
-    throw new ErrorBuilder()
-      .setMessage("Traits not Provided")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("Traits not Provided");
   }
   const configPayload = constructPayload(
     message,

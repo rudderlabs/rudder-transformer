@@ -6,9 +6,12 @@ const {
   removeUndefinedAndNullValues,
   defaultRequestConfig,
   flattenJson,
-  CustomError,
   simpleProcessRouterDest
 } = require("../../util");
+const {
+  InstrumentationError,
+  TransformationError
+} = require("../../util/errorTypes");
 
 function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -36,12 +39,12 @@ function responseBuilderSimple(message, category, destination) {
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("Payload could not be constructed", 400);
+  throw new TransformationError("Payload could not be constructed");
 }
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError("invalid message type for heap", 400);
+    throw new InstrumentationError("invalid message type for heap");
   }
 
   const messageType = message.type;
@@ -54,9 +57,8 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new CustomError(
-        `message type ${messageType} not supported for heap`,
-        400
+      throw new InstrumentationError(
+        `message type ${messageType} not supported for heap`
       );
   }
 
@@ -67,8 +69,8 @@ const processEvent = (message, destination) => {
 const process = async event => {
   return processEvent(event.message, event.destination);
 };
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "HEAP", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

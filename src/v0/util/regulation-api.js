@@ -1,17 +1,14 @@
-const ErrorBuilder = require("./error");
+const { PlatformError } = require("./errorTypes");
 
 class RegulationApiUtils {
   /**
    * Common validations that are part of `deleteUsers` api would be defined here
    *
-   * @param {Array<{ userId:string, email:string, phone:string}>} userAttributes Array of objects with userId, emaail and phone
+   * @param {Array<{ userId:string, email:string, phone:string}>} userAttributes Array of objects with userId, email and phone
    */
   static executeCommonValidations(userAttributes) {
     if (!Array.isArray(userAttributes)) {
-      throw new ErrorBuilder()
-        .setMessage("userAttributes is not an array")
-        .setStatus(400)
-        .build();
+      throw new PlatformError("userAttributes is not an array");
     }
   }
 }

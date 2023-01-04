@@ -2,7 +2,7 @@
   [
     {
       "statusCode": 400,
-      "error": "[Appsflyer]::user deletion request failed - error: {\"error\":{\"code\":400,\"af_gdpr_code\":\"e411\",\"message\":\"AppID given in 'property_id' is incorrect or does not belong to your account\"}}"
+      "error": "user deletion request failed"
     }
   ],
   [
@@ -13,38 +13,34 @@
   ],
   [
     {
-      "statusCode": 400,
-      "error": "[Appsflyer]::API Token and one of Apple ID or Android App Id are required fields for user deletion"
-    }
-  ],
-  [
-    {
-      "statusCode": 400,
-      "error": "[Appsflyer]::you can send atmost 3 callBackUrls"
+
+      "statusCode": 500,
+      "error": "API Token and one of Apple ID or Android App Id are required fields for user deletion"
+
     }
   ],
   [
     {
       "statusCode": 500,
-      "error": "[Appsflyer]::androidAppId is required for android_advertising_id type identifier"
+      "error": "androidAppId is required for android_advertising_id type identifier"
     }
   ],
   [
     {
       "statusCode": 500,
-      "error": "[Appsflyer]::appleAppId is required for ios_advertising_id type identifier"
+      "error": "appleAppId is required for ios_advertising_id type identifier"
     }
   ],
   [
     {
       "statusCode": 400,
-      "error": "[Appsflyer]::none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion"
+      "error": "none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion"
     }
   ],
   [
     {
-      "statusCode": 400,
-      "error": "[Appsflyer]::you can send atmost 3 callBackUrls"
+      "statusCode": 500,
+      "error": "You can send utmost 3 callBackUrls"
     }
   ]
 ]

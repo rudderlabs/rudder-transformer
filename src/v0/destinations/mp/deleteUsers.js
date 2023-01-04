@@ -3,23 +3,24 @@ const { httpPOST } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const ErrorBuilder = require("../../util/error");
 const { isHttpStatusSuccess } = require("../../util");
 const { MAX_BATCH_SIZE } = require("./config");
 const { executeCommonValidations } = require("../../util/regulation-api");
+const { ConfigurationError, NetworkError } = require("../../util/errorTypes");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const tags = require("../../util/tags");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
- * @param {*} userAttributes Array of objects with userId, emaail and phone
+ * @param {*} userAttributes Array of objects with userId, email and phone
  * @param {*} config Destination.Config provided in dashboard
  * @returns
  */
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config?.token) {
-    throw new ErrorBuilder()
-      .setMessage("[Mixpanel]::API Token is a required field for user deletion")
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError(
+      "API Token is a required field for user deletion"
+    );
   }
   const endpoint =
     config.dataResidency === "eu"
@@ -51,14 +52,18 @@ const userDeletionHandler = async (userAttributes, config) => {
   await Promise.all(
     batchEvents.map(async batchEvent => {
       const deletionResponse = await httpPOST(endpoint, batchEvent, headers);
-      const processedDeletionResponse = processAxiosResponse(deletionResponse);
-      if (!isHttpStatusSuccess(processedDeletionResponse.status)) {
-        throw new ErrorBuilder()
-          .setMessage(
-            `[Mixpanel]::Deletion Request is not successful - error: ${processedDeletionResponse.response}`
-          )
-          .setStatus(processedDeletionResponse.status)
-          .build();
+      const handledDelResponse = processAxiosResponse(deletionResponse);
+      if (!isHttpStatusSuccess(handledDelResponse.status)) {
+        throw new NetworkError(
+          "User deletion request failed",
+          handledDelResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+              handledDelResponse.status
+            )
+          },
+          handledDelResponse
+        );
       }
     })
   );

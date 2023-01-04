@@ -1,20 +1,20 @@
 [
   [
     {
-      "statusCode": 400,
-      "error": "[Amplitude]::Config for deletion not present"
+      "statusCode": 500,
+      "error": "Config for deletion not present"
+    }
+  ],
+  [
+    {
+      "statusCode": 500,
+      "error": "api key/secret for deletion not present"
     }
   ],
   [
     {
       "statusCode": 400,
-      "error": "[Amplitude]::api key/secret for deletion not present"
-    }
-  ],
-  [
-    {
-      "statusCode": 400,
-      "error": "[Amplitude]::User id for deletion not present"
+      "error": "User id for deletion not present"
     }
   ]
 ]

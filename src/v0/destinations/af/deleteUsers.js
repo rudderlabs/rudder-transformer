@@ -2,10 +2,16 @@
 /* eslint-disable no-param-reassign */
 const { httpPOST } = require("../../../adapters/network");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const { generateUUID, isHttpStatusSuccess } = require("../../util");
-const ErrorBuilder = require("../../util/error");
+const {
+  ConfigurationError,
+  InstrumentationError,
+  NetworkError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 const { executeCommonValidations } = require("../../util/regulation-api");
 
 /**
@@ -22,34 +28,33 @@ const deleteUser = async (endpoint, body, identityType, identityValue) => {
   body.subject_identities[0].identity_type = identityType;
   body.subject_identities[0].identity_value = identityValue;
   const response = await httpPOST(endpoint, body);
-  const handledResponse = processAxiosResponse(response);
-  if (!isHttpStatusSuccess(handledResponse.status)) {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Appsflyer]::user deletion request failed - error: ${JSON.stringify(
-          handledResponse.response
-        )}`
-      )
-      .setStatus(handledResponse.status)
-      .build();
+  const handledDelResponse = processAxiosResponse(response);
+  if (!isHttpStatusSuccess(handledDelResponse.status)) {
+    throw new NetworkError(
+      "User deletion request failed",
+      handledDelResponse.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+          handledDelResponse.status
+        )
+      },
+      handledDelResponse
+    );
   }
-  return handledResponse;
+  return handledDelResponse;
 };
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
- * @param {*} userAttributes Array of objects with userId, emaail and phone
+ * @param {*} userAttributes Array of objects with userId, email and phone
  * @param {*} config Destination.Config provided in dashboard
  * @returns
  */
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config?.apiToken || !(config?.appleAppId || config?.androidAppId)) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[Appsflyer]::API Token and one of Apple ID or Android App Id are required fields for user deletion"
-      )
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError(
+      "API Token and one of Apple ID or Android App Id are required fields for user deletion"
+    );
   }
   const body = {
     subject_request_type: "erasure",
@@ -66,10 +71,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       }
     );
     if (filteredStatusCallbackUrlsArray.length > 3) {
-      throw new ErrorBuilder()
-        .setMessage("[Appsflyer]::you can send atmost 3 callBackUrls")
-        .setStatus(400)
-        .build();
+      throw new ConfigurationError("You can send utmost 3 callBackUrls");
     }
     body.status_callback_urls = filteredStatusCallbackUrlsArray;
   }
@@ -81,12 +83,9 @@ const userDeletionHandler = async (userAttributes, config) => {
         !ua.ios_advertising_id &&
         !ua.appsflyer_id
       ) {
-        throw new ErrorBuilder()
-          .setMessage(
-            "[Appsflyer]::none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion"
-          )
-          .setStatus(400)
-          .build();
+        throw new InstrumentationError(
+          "none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion"
+        );
       }
       /**
        * Building the request Body in the following priority:
@@ -100,12 +99,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       } else if (ua?.ios_advertising_id) {
         body.property_id = config.appleAppId;
         if (!body.property_id) {
-          throw new ErrorBuilder()
-            .setMessage(
-              "[Appsflyer]::appleAppId is required for ios_advertising_id type identifier"
-            )
-            .setStatus(500)
-            .build();
+          throw new ConfigurationError(appleAppId is required for ios_advertising_id type identifier)
         }
         await deleteUser(
           endpoint,
@@ -116,12 +110,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       } else {
         body.property_id = config.androidAppId;
         if (!body.property_id) {
-          throw new ErrorBuilder()
-            .setMessage(
-              "[Appsflyer]::androidAppId is required for android_advertising_id type identifier"
-            )
-            .setStatus(500)
-            .build();
+          throw new ConfigurationError(androidAppId is required for android_advertising_id type identifier)
         }
         await deleteUser(
           endpoint,

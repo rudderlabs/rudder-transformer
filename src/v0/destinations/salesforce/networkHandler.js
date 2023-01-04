@@ -5,7 +5,6 @@ const {
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { salesforceResponseHandler } = require("./utils");
 
 const responseHandler = (destinationResponse, destType) => {
@@ -14,7 +13,6 @@ const responseHandler = (destinationResponse, destType) => {
   salesforceResponseHandler(
     destinationResponse,
     "during Salesforce Response Handling",
-    TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
     destinationResponse?.rudderJobMetadata?.destInfo?.authKey
   );
 

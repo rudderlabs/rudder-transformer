@@ -2,23 +2,24 @@ const _ = require("lodash");
 const cloneDeep = require("lodash/cloneDeep");
 const {
   defaultPostRequestConfig,
-  defaultDeleteRequestConfig
+  defaultDeleteRequestConfig,
+  generateErrorObject
 } = require("../../util");
-const { TRANSFORMER_METRIC, AUTH_CACHE_TTL } = require("../../util/constant");
+const { AUTH_CACHE_TTL } = require("../../util/constant");
 const { getIds, validateMessageType } = require("./util");
-const ErrorBuilder = require("../../util/error");
 const {
   getDestinationExternalID,
   defaultRequestConfig,
   getErrorRespEvents,
-  generateErrorObject,
-  TransformationError,
   simpleProcessRouterDest
 } = require("../../util");
 const { DESTINATION, formatConfig, MAX_LEAD_IDS_SIZE } = require("./config");
 const Cache = require("../../util/cache");
-const logger = require("../../../logger");
 const { getAuthToken } = require("../marketo/transform");
+const {
+  InstrumentationError,
+  UnauthorizedError
+} = require("../../util/errorTypes");
 
 const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 
@@ -51,18 +52,7 @@ const batchResponseBuilder = (message, Config, token, leadIds, operation) => {
     Config.staticListId;
   const endpoint = `https://${accountId}.mktorest.com/rest/v1/lists/${listId}/leads.json?`;
   if (!listId) {
-    throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage("No static listId is provided.")
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-            .INSTRUMENTATION
-      })
-      .build();
+    throw new InstrumentationError("No static listId is provided");
   }
   const response = [];
   const leadIdsChunks = _.chunk(leadIds, MAX_LEAD_IDS_SIZE);
@@ -114,18 +104,9 @@ const processEvent = input => {
       }
     }
   } else {
-    throw new ErrorBuilder()
-      .setMessage(
-        `Invalid leadIds format or no leadIds found neither to add nor to remove.`
-      )
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      })
-      .build();
+    throw new InstrumentationError(
+      "Invalid leadIds format or no leadIds found neither to add nor to remove"
+    );
   }
   return response;
 };
@@ -133,19 +114,13 @@ const process = async event => {
   const token = await getAuthToken(formatConfig(event.destination));
 
   if (!token) {
-    throw new TransformationError(
-      "Authorisation failed",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
-      },
-      DESTINATION
-    );
+    throw new UnauthorizedError("Authorization failed");
   }
   const response = processEvent({ ...event, token });
   return response;
 };
-const processRouterDest = async inputs => {
+
+const processRouterDest = async (inputs, reqMetadata) => {
   // Token needs to be generated for marketo which will be done on input level.
   // If destination information is not present Error should be thrown
   let token;
@@ -156,11 +131,7 @@ const processRouterDest = async inputs => {
         status: 400,
         message: "Authorisation failed",
         responseTransformFailure: true,
-        statTags: {
-          destType: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
-        }
+        statTags: {}
       };
       const respEvents = getErrorRespEvents(
         inputs.map(input => input.metadata),
@@ -172,17 +143,11 @@ const processRouterDest = async inputs => {
     }
   } catch (error) {
     // Not using handleRtTfSingleEventError here as this is for multiple events
-    logger.error("Router Transformation problem:");
-    const errObj = generateErrorObject(
-      error,
-      DESTINATION,
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-    );
-    logger.error(errObj);
+    const errObj = generateErrorObject(error);
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
-      error.status || 500, // default to retryable
-      error.message || "Error occurred while processing payload.",
+      errObj.status,
+      errObj.message,
       errObj.statTags
     );
     return [respEvents];
@@ -196,8 +161,8 @@ const processRouterDest = async inputs => {
   });
   const respList = await simpleProcessRouterDest(
     tokenisedInputs,
-    DESTINATION,
-    processEvent
+    processEvent,
+    reqMetadata
   );
   return respList;
 };

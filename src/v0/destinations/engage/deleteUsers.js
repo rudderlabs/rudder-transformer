@@ -1,14 +1,20 @@
 const { httpDELETE } = require("../../../adapters/network");
 const {
-  processAxiosResponse
+  InstrumentationError,
+  ConfigurationError,
+  NetworkError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
+const {
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
-const ErrorBuilder = require("../../util/error");
 const { executeCommonValidations } = require("../../util/regulation-api");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
- * @param {*} userAttributes Array of objects with userId, emaail and phone
+ * @param {*} userAttributes Array of objects with userId, email and phone
  * @param {*} config Destination.Config provided in dashboard
  * @returns
  */
@@ -16,16 +22,14 @@ const { executeCommonValidations } = require("../../util/regulation-api");
 const userDeletionHandler = async (userAttributes, config) => {
   const { publicKey, privateKey } = config;
   if (!publicKey) {
-    throw new ErrorBuilder()
-      .setMessage("[Engage]::Public key is a required field for user deletion")
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError(
+      "Public key is a required field for user deletion"
+    );
   }
   if (!privateKey) {
-    throw new ErrorBuilder()
-      .setMessage("[Engage]::Private key is a required field for user deletion")
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError(
+      "Private key is a required field for user deletion"
+    );
   }
   const BASE_URL = "https://api.engage.so/v1/users/uid";
   const basicAuth = Buffer.from(`${publicKey}:${privateKey}`).toString(
@@ -39,24 +43,23 @@ const userDeletionHandler = async (userAttributes, config) => {
   await Promise.all(
     userAttributes.map(async ua => {
       if (!ua.userId) {
-        throw new ErrorBuilder()
-          .setMessage("[Engage]::User id for deletion not present")
-          .setStatus(400)
-          .build();
+        throw new InstrumentationError("User id for deletion not present");
       }
       const endpoint = `${BASE_URL.replace("uid", ua.userId)}`;
       // eslint-disable-next-line no-await-in-loop
       const response = await httpDELETE(endpoint, { headers });
-      const handledResponse = processAxiosResponse(response);
-      if (!isHttpStatusSuccess(handledResponse.status)) {
-        throw new ErrorBuilder()
-          .setMessage(
-            `[Engage]::user deletion request failed - error: ${JSON.stringify(
-              handledResponse.response
-            )}`
-          )
-          .setStatus(handledResponse.status)
-          .build();
+      const handledDelResponse = processAxiosResponse(response);
+      if (!isHttpStatusSuccess(handledDelResponse.status)) {
+        throw new NetworkError(
+          "User deletion request failed",
+          handledDelResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+              handledDelResponse.status
+            )
+          },
+          handledDelResponse
+        );
       }
     })
   );

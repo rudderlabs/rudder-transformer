@@ -2,14 +2,14 @@
   {
     "output": {
       "status": 200,
-      "message": "[Google_adwords_remarketing_list Response Handler] - Request Processed Successfully",
+      "message": "Request Processed Successfully",
       "destinationResponse": { "response": "", "status": 200 }
     }
   },
   {
     "output": {
       "status": 400,
-      "message": "Google_adwords_remarketing_list: Request contains an invalid argument. during ga_audience response transformation",
+      "message": "Request contains an invalid argument. during ga_audience response transformation",
       "destinationResponse": {
         "error": {
           "code": 400,
@@ -40,16 +40,18 @@
       },
       "statTags": {
         "destType": "GOOGLE_ADWORDS_REMARKETING_LISTS",
-        "stage": "responseTransform",
-        "scope": "exception",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
   {
     "output": {
       "status": 200,
-      "message": "[Google_adwords_remarketing_list Response Handler] - Request Processed Successfully",
+      "message": "Request Processed Successfully",
       "destinationResponse": { "response": "", "status": 200 }
     }
   }

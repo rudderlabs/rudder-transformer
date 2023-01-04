@@ -1,11 +1,7 @@
 const get = require("get-value");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { DESTINATION, CONFIG_CATEGORIES } = require("./config");
-const {
-  getHashFromArray,
-  getFieldValueFromMessage,
-  TransformationError
-} = require("../../util");
+const { CONFIG_CATEGORIES } = require("./config");
+const { getHashFromArray, getFieldValueFromMessage } = require("../../util");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 /**
  * Validation for userId and an email
@@ -16,14 +12,8 @@ const validatePayload = message => {
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   const email = getFieldValueFromMessage(message, "email");
   if (!userId && !email) {
-    throw new TransformationError(
-      "At least one of `userId` or `email` is required",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      "At least one of `userId` or `email` is required"
     );
   }
 };

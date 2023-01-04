@@ -5,15 +5,15 @@ const {
   httpSend
 } = require("../../../adapters/network");
 const {
+  getDynamicErrorType,
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util/index");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
-const ErrorBuilder = require("../../util/error");
-const { DESTINATION } = require("./config");
+const tags = require("../../util/tags");
+const { NetworkError } = require("../../util/errorTypes");
 
 /**
  * Example Response from pardot
@@ -40,30 +40,18 @@ const getAuthErrCategory = code => {
 };
 const RETRYABLE_CODES = [85, 116, 120, 121, 183, 184, 214];
 
-const getStatusAndStats = (code, stage) => {
+const getStatus = code => {
   if (RETRYABLE_CODES.includes(code)) {
     return {
-      status: 500,
-      stats: {
-        destType: DESTINATION,
-        stage,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
-      }
+      status: 500
     };
   }
   return {
-    status: 400,
-    stats: {
-      destType: DESTINATION,
-      stage,
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-    }
+    status: 400
   };
 };
 
-const pardotRespHandler = (destResponse, stageMsg, stage) => {
+const pardotRespHandler = (destResponse, stageMsg) => {
   const { status, response } = destResponse;
   const respAttributes = response["@attributes"];
   const { stat, err_code: errorCode } = respAttributes;
@@ -72,24 +60,26 @@ const pardotRespHandler = (destResponse, stageMsg, stage) => {
     // Mostly any error will not have a status of 2xx
     return response;
   }
-  const statusAndStats = getStatusAndStats(errorCode, stage);
-  throw new ErrorBuilder()
-    .setStatus(statusAndStats.status)
-    .setDestinationResponse(response)
-    .setMessage(`Pardot: ${response.err} ${stageMsg}`)
-    .setAuthErrorCategory(getAuthErrCategory(errorCode))
-    .setStatTags(statusAndStats.stats)
-    .build();
+  const destinationStatus = getStatus(errorCode);
+  const destinationStatusCode = destinationStatus?.status || 400;
+  throw new NetworkError(
+    `${response.err} ${stageMsg}`,
+    destinationStatusCode,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(destinationStatusCode)
+    },
+    response,
+    getAuthErrCategory(errorCode)
+  );
 };
 
 const responseHandler = destinationResponse => {
-  const message = `[Pardot Response Handler] - Request Processed Successfully`;
+  const message = "Request Processed Successfully";
   const { status } = destinationResponse;
   // else successfully return status, message and original destination response
   pardotRespHandler(
     destinationResponse,
-    "during Pardot response transformation",
-    TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
+    "during Pardot response transformation"
   );
   return {
     status,

@@ -1,34 +1,32 @@
 [
-  
     [
       {
         "statusCode": 400,
-        "error": "[Engage]::user deletion request failed - error: {\"code\":400,\"message\":\"Bad Req\",\"status\":\"Fail first\"}"
+        "error": "User deletion request failed"
       }
     ],
     [
       {
         "statusCode": 400,
-        "error":"[Engage]::user deletion request failed - error: {\"code\":400,\"message\":\"Bad Req\",\"status\":\"fail 6 \"}"
+        "error":"User deletion request failed"
       }
     ],
     [
       {
         "statusCode": 400,
-        "error": "[Engage]::user deletion request failed - error: {\"code\":400,\"message\":\"Bad Req\",\"status\":\"fail mid case 8\"}"
+        "error": "User deletion request failed"
+      }
+    ],
+    [
+      {
+        "statusCode": 500,
+        "error": "Public key is a required field for user deletion"
       }
     ],
     [
       {
         "statusCode": 400,
-        "error": "[Engage]::Public key is a required field for user deletion"
-      }
-    ],
-    [
-      {
-        "statusCode": 400,
-        "error": "[Engage]::User id for deletion not present"
+        "error": "User id for deletion not present"
       }
     ]
-  ]
-  
+]

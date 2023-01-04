@@ -3,10 +3,12 @@ const {
   defaultRequestConfig,
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
-  CustomError,
   isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
-const ErrorBuilder = require("../../util/error");
+const {
+  ConfigurationError,
+  OAuthSecretError
+} = require("../../util/errorTypes");
 const { BASE_URL, schemaType } = require("./config");
 const { validatePayload, validateFields } = require("./utils");
 
@@ -26,10 +28,7 @@ const getAccessToken = metadata => {
   const { secret } = metadata;
   // we would need to verify if secret is present and also if the access token field is present in secret
   if (!secret || !secret.access_token) {
-    throw new ErrorBuilder()
-      .setStatus(500)
-      .setMessage("Empty/Invalid access token")
-      .build();
+    throw new OAuthSecretError("Empty/Invalid access token");
   }
   return secret.access_token;
 };
@@ -80,7 +79,7 @@ const getProperty = (schema, element) => {
         element?.MOBILE_ID;
       return property;
     default:
-      throw new CustomError("Invalid schema", 400);
+      throw new ConfigurationError("Invalid schema");
   }
 };
 
@@ -100,7 +99,7 @@ const getHashedProperty = (schema, hashedProperty) => {
     case "mobileAdId":
       return sha256(hashedProperty.toLowerCase());
     default:
-      throw new CustomError("Invalid schema", 400);
+      throw new ConfigurationError("Invalid schema");
   }
 };
 
@@ -171,12 +170,9 @@ const processEvent = (metadata, message, destination) => {
 const process = event => {
   return processEvent(event.metadata, event.message, event.destination);
 };
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(
-    inputs,
-    "snapchat_custom_audience",
-    process
-  );
+
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

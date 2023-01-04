@@ -3,16 +3,20 @@ const {
   proxyRequest
 } = require("../../../adapters/network");
 const { isHttpStatusSuccess } = require("../../util/index");
-const ErrorBuilder = require("../../util/error");
 const {
   REFRESH_TOKEN
 } = require("../../../adapters/networkhandler/authConstants");
 
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
-const { ApiError } = require("../../util/errors");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+const {
+  AbortedError,
+  RetryableError,
+  NetworkError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 
 /**
  * This function helps to detarmine type of error occured. According to the response
@@ -54,29 +58,17 @@ const responseHandler = destinationResponse => {
     // check for Failures
     if (response.hasFailures === true) {
       if (checkIfFailuresAreRetryable(response)) {
-        throw new ApiError(
+        throw new RetryableError(
           `Campaign Manager: Retrying during CAMPAIGN_MANAGER response transformation`,
           500,
-          {
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-            meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
-          },
-          destinationResponse,
-          undefined,
-          "CAMPAIGN_MANAGER"
+          destinationResponse
         );
       } else {
         // abort message
-        throw new ApiError(
+        throw new AbortedError(
           `Campaign Manager: Aborting during CAMPAIGN_MANAGER response transformation`,
           400,
-          {
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-            meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-          },
-          destinationResponse,
-          undefined,
-          "CAMPAIGN_MANAGER"
+          destinationResponse
         );
       }
     }
@@ -88,14 +80,15 @@ const responseHandler = destinationResponse => {
     };
   }
 
-  throw new ErrorBuilder()
-    .setStatus(status)
-    .setDestinationResponse(response)
-    .setMessage(
-      `Campaign Manager: ${response.error.message} during CAMPAIGN_MANAGER response transformation 3`
-    )
-    .setAuthErrorCategory(getAuthErrCategory(status))
-    .build();
+  throw new NetworkError(
+    `Campaign Manager: ${response.error.message} during CAMPAIGN_MANAGER response transformation 3`,
+    status,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+    },
+    destinationResponse,
+    getAuthErrCategory(status)
+  );
 };
 
 const networkHandler = function() {

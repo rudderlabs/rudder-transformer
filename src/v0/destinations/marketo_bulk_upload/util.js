@@ -1,5 +1,12 @@
-const { CustomError } = require("../../util");
 const { httpGET } = require("../../../adapters/network");
+const {
+  ThrottledError,
+  AbortedError,
+  RetryableError,
+  NetworkError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 
 const ABORTABLE_CODES = ["ENOTFOUND", "ECONNREFUSED", 603, 605, 609, 610];
 const RETRYABLE_CODES = [
@@ -38,7 +45,15 @@ const getAccessToken = async config => {
     ) {
       return resp.response.data.access_token;
     }
-    throw new CustomError("Could not retrieve authorisation token", 400);
+    const status = resp?.response?.status || 400;
+    throw new NetworkError(
+      "Could not retrieve authorisation token",
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      resp
+    );
   }
   if (resp.response) {
     // handle for abortable codes
@@ -46,36 +61,38 @@ const getAccessToken = async config => {
       ABORTABLE_CODES.indexOf(resp.response.code) > -1 ||
       (resp.response.code >= 400 && resp.response.code <= 499)
     ) {
-      throw new CustomError(resp.response.code, 400);
+      throw new AbortedError(resp.response.code, 400, resp);
     } // handle for retryable codes
     else if (RETRYABLE_CODES.indexOf(resp.response.code) > -1) {
-      throw new CustomError(resp.response.code, 500);
+      throw new RetryableError(resp.response.code, 500, resp);
     } // handle for abortable codes
     else if (resp.response.response) {
       if (ABORTABLE_CODES.indexOf(resp.response.response.status) > -1) {
-        throw new CustomError(
+        throw new AbortedError(
           resp.response.response.statusText ||
             "Error during fetching access token",
-          400
+          400,
+          resp
         );
       } // handle for throttled codes
       else if (THROTTLED_CODES.indexOf(resp.response.response.status) > -1) {
-        throw new CustomError(
+        throw new ThrottledError(
           resp.response.response.statusText ||
             "Error during fetching access token",
-          500
+          resp
         );
       }
       // Assuming none we should retry the remaining errors
-      throw new CustomError(
+      throw new RetryableError(
         resp.response.response.statusText ||
           "Error during fetching access token",
-        500
+        500,
+        resp
       );
     }
-    throw new CustomError("Could not retrieve authorisation token", 400);
+    throw new NetworkError("Could not retrieve authorization token");
   }
-  throw new CustomError("Could not retrieve authorisation token", 400);
+  throw new NetworkError("Could not retrieve authorization token");
 };
 
 module.exports = {

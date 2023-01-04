@@ -499,6 +499,14 @@ function responseBuilderSimple(
           delete payload.user_properties.address.country;
         }
       }
+
+      if (!payload.user_id && !payload.device_id) {
+        logger.debug("Either of user ID or device ID fields must be specified");
+        throw new InstrumentationError(
+          "Either of user ID or device ID fields must be specified"
+        );
+      }
+
       payload.ip = getParsedIP(message);
       payload.library = "rudderstack";
       payload = removeUndefinedAndNullValues(payload);

@@ -99,7 +99,9 @@ const userDeletionHandler = async (userAttributes, config) => {
       } else if (ua?.ios_advertising_id) {
         body.property_id = config.appleAppId;
         if (!body.property_id) {
-          throw new ConfigurationError(appleAppId is required for ios_advertising_id type identifier)
+          throw new ConfigurationError(
+            "appleAppId is required for ios_advertising_id type identifier"
+          );
         }
         await deleteUser(
           endpoint,
@@ -110,7 +112,9 @@ const userDeletionHandler = async (userAttributes, config) => {
       } else {
         body.property_id = config.androidAppId;
         if (!body.property_id) {
-          throw new ConfigurationError(androidAppId is required for android_advertising_id type identifier)
+          throw new ConfigurationError(
+            "androidAppId is required for android_advertising_id type identifier"
+          );
         }
         await deleteUser(
           endpoint,

@@ -1,23 +1,43 @@
-const integration = "pagerduty";
-
 const fs = require("fs");
 const path = require("path");
 
-const transformer = require(`../../src/v0/sources/${integration}/transform`);
+const integration = "pagerduty";
+const name = "PagerDuty";
+const version = "v0";
+
+const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
 
 const testDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/${integration}_source.json`)
+  path.resolve(__dirname, `./data/${integration}.json`)
 );
-
 const testData = JSON.parse(testDataFile);
 
-testData.forEach((data, index) => {
-  it(`${index}. ${integration} - ${data.description}`, () => {
-    try {
-      const output = transformer.process(data.input);
-      expect(output).toEqual(data.output);
-    } catch (error) {
-      expect(error.message).toEqual(data.output.message);
-    }
+// Router Test files
+const routerTestDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router.json`)
+);
+const routerTestData = JSON.parse(routerTestDataFile);
+
+describe(`${name} Tests`, () => {
+  describe("Processor", () => {
+    testData.forEach((dataPoint, index) => {
+      it(`${index}. ${integration} - ${dataPoint.description}`, () => {
+        try {
+          const output = transformer.process(dataPoint.input);
+          expect(output).toEqual(dataPoint.output);
+        } catch (error) {
+          expect(error.message).toEqual(dataPoint.output.error);
+        }
+      });
+    });
+  });
+
+  describe("Router Tests", () => {
+    routerTestData.forEach(dataPoint => {
+      it("Payload", async () => {
+        const output = await transformer.processRouterDest(dataPoint.input);
+        expect(output).toEqual(dataPoint.output);
+      });
+    });
   });
 });

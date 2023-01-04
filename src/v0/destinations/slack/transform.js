@@ -2,7 +2,12 @@
 /* eslint-disable no-prototype-builtins */
 const Handlebars = require("handlebars");
 const { EventType } = require("../../../constants");
-
+const {
+  stringifyJSON,
+  getName,
+  getWhiteListedTraits,
+  buildDefaultTraitTemplate
+} = require("./util");
 const logger = require("../../../logger");
 
 const { SLACK_RUDDER_IMAGE_URL, SLACK_USER_NAME } = require("./config");
@@ -14,58 +19,10 @@ const {
 } = require("../../util");
 const { InstrumentationError } = require("../../util/errorTypes");
 
-// to string json traits, not using JSON.stringify()
-// always first check for whitelisted traits
-function stringifyJSON(json, whiteListedTraits) {
-  let output = "";
-  Object.keys(json).forEach(key => {
-    if (json.hasOwnProperty(key)) {
-      if (whiteListedTraits && whiteListedTraits.length > 0) {
-        if (whiteListedTraits.includes(key)) {
-          output += `${key}: ${json[key]} `;
-        }
-      } else {
-        output += `${key}: ${json[key]} `;
-      }
-    }
-  });
-  logger.debug("traitsString:: ", output);
-  return output;
-}
-
-// get the name value from either traits.name/traits.firstName+traits.lastName/traits.username/
-// properties.email/traits.email/userId/anonymousId
-function getName(message) {
-  const traits = getFieldValueFromMessage(message, "traits");
-  let uName;
-  if (traits) {
-    uName =
-      traits.name ||
-      (traits.firstName
-        ? traits.lastName
-          ? `${traits.firstName}${traits.lastName}`
-          : traits.firstName
-        : undefined) ||
-      traits.username ||
-      (message.properties ? message.properties.email : undefined) ||
-      traits.email ||
-      (message.userId ? `User ${message.userId}` : undefined) ||
-      `Anonymous user ${message.anonymousId}`;
-  } else {
-    uName =
-      (message.properties ? message.properties.email : undefined) ||
-      (message.userId ? `User ${message.userId}` : undefined) ||
-      `Anonymous user ${message.anonymousId}`;
-  }
-
-  logger.debug("final name::: ", uName);
-  return uName;
-}
-
 // build the response to be sent to backend, url encoded header is required as slack accepts payload in this format
 // add the username and image for Rudder
 // image currently served from prod CDN
-function buildResponse(payloadJSON, message, destination) {
+const buildResponse = (payloadJSON, message, destination) => {
   const endpoint = destination.Config.webhookUrl;
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
@@ -82,48 +39,13 @@ function buildResponse(payloadJSON, message, destination) {
   response.statusCode = 200;
   logger.debug(response);
   return response;
-}
+};
 
-// build default identify template
-// if whitelisted traits are present build on it else build the entire traits object
-function buildDefaultTraitTemplate(traitsList, traits) {
-  let templateString = "Identified {{name}} ";
-  // build template with whitelisted traits
-  traitsList.forEach(trait => {
-    templateString += `${trait}: {{${trait}}} `;
-  });
-  // else with all traits
-  if (traitsList.length === 0) {
-    Object.keys(traits).forEach(traitKey => {
-      if (traits.hasOwnProperty(traitKey)) {
-        templateString += `${traitKey}: {{${traitKey}}} `;
-      }
-    });
-  }
-  return templateString;
-}
-
-function getWhiteListedTraits(destination, traitsList) {
-  destination.Config.whitelistedTraitsSettings.forEach(whiteListTrait => {
-    if (
-      whiteListTrait.trait
-        ? whiteListTrait.trait.trim().length !== 0
-          ? whiteListTrait.trait
-          : undefined
-        : undefined
-    ) {
-      traitsList.push(whiteListTrait.trait);
-    }
-  });
-}
-
-function processIdentify(message, destination) {
+const processIdentify = (message, destination) => {
   // debug(JSON.stringify(destination));
   const identifyTemplateConfig = destination.Config.identifyTemplate;
-  const traitsList = [];
-
-  getWhiteListedTraits(destination, traitsList);
-
+  const traitsList = getWhiteListedTraits(destination);
+  const defaultIdentifyTemplate = "Identified {{name}}";
   logger.debug("defaulTraitsList:: ", traitsList);
   const uName = getName(message);
 
@@ -140,7 +62,8 @@ function processIdentify(message, destination) {
       : undefined) ||
       buildDefaultTraitTemplate(
         traitsList,
-        getFieldValueFromMessage(message, "traits") || {}
+        getFieldValueFromMessage(message, "traits"),
+        defaultIdentifyTemplate || {}
       )
   );
   logger.debug(
@@ -152,7 +75,8 @@ function processIdentify(message, destination) {
       : undefined) ||
       buildDefaultTraitTemplate(
         traitsList,
-        getFieldValueFromMessage(message, "traits") || {}
+        getFieldValueFromMessage(message, "traits"),
+        defaultIdentifyTemplate || {}
       )
   );
 
@@ -169,11 +93,10 @@ function processIdentify(message, destination) {
 
   const resultText = template(templateInput);
   return buildResponse({ text: resultText }, message, destination);
-}
+};
 
-function processTrack(message, destination) {
+const processTrack = (message, destination) => {
   // logger.debug(JSON.stringify(destination));
-  const traitsList = [];
   const eventChannelConfig = destination.Config.eventChannelSettings;
   const eventTemplateConfig = destination.Config.eventTemplateSettings;
 
@@ -183,8 +106,7 @@ function processTrack(message, destination) {
   const eventName = message.event;
   const channelListToSendThisEvent = new Set();
   const templateListForThisEvent = new Set();
-
-  getWhiteListedTraits(destination, traitsList);
+  const traitsList = getWhiteListedTraits(destination);
 
   // Add global context to regex always
   // build the channel list and templatelist for the event, pick the first in case of multiple
@@ -298,9 +220,9 @@ function processTrack(message, destination) {
     );
   }
   return buildResponse({ text: resultText }, message, destination);
-}
+};
 
-function process(event) {
+const process = event => {
   logger.debug("=====start=====");
   logger.debug(JSON.stringify(event));
   const respList = [];
@@ -332,7 +254,7 @@ function process(event) {
   logger.debug(JSON.stringify(respList));
   logger.debug("=====end======");
   return respList;
-}
+};
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

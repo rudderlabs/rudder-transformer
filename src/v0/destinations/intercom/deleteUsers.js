@@ -1,17 +1,14 @@
-const { httpSend } = require("../../../adapters/network");
-const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const { httpPOST } = require("../../../adapters/network");
 const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
-const {
-  NetworkError,
-  InstrumentationError,
-  ConfigurationError
-} = require("../../util/errorTypes");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const { NetworkError, ConfigurationError } = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
 const tags = require("../../util/tags");
 
+// Ref-> https://developers.intercom.com/intercom-api-reference/v1.3/reference/permanently-delete-a-user
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
     throw new ConfigurationError("Config for deletion not present");
@@ -20,21 +17,26 @@ const userDeletionHandler = async (userAttributes, config) => {
   if (!apiKey) {
     throw new ConfigurationError("api key for deletion not present");
   }
-
+  const validUserIds = [];
+  userAttributes.forEach(userAttribute => {
+    // Dropping the user if userId is not present
+    if (userAttribute.userId) {
+      validUserIds.push(userAttribute.userId);
+    }
+  });
+  const url = `https://api.intercom.io/user_delete_requests`;
   await Promise.all(
-    userAttributes.map(async ua => {
-      const uId = ua.userId;
-      if (!uId) {
-        throw new InstrumentationError("User id for deletion not present");
-      }
+    validUserIds.map(async uId => {
+      const data = {
+        intercom_user_id: uId
+      };
       const requestOptions = {
-        method: "delete",
-        url: `https://api.intercom.io/contacts/${uId}`,
         headers: {
-          Authorization: `Bearer ${apiKey}`
+          Authorization: `Bearer ${apiKey}`,
+          Accept: "application/json"
         }
       };
-      const resp = await httpSend(requestOptions);
+      const resp = await httpPOST(url, data, requestOptions);
       const handledDelResponse = processAxiosResponse(resp);
       if (
         !isHttpStatusSuccess(handledDelResponse.status) &&

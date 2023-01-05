@@ -28,7 +28,8 @@
     "test:testRouter": "jest testRouter",
     "test": "jest --runInBand --detectOpenHandles --coverage --notify",
     "test:silent": "npm run test -- --silent",
-    "test:benchmark": "node benchmark/index.js"
+    "test:benchmark": "node benchmark/index.js",
+    "test:integration": "jest -c jest.config.integration.js"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "^0.7.24",

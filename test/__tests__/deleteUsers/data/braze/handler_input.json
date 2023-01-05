@@ -10,6 +10,342 @@
             },
             {
               "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            }
+          ],
+          "config": {
+            "dataCenter": "US-03",
+            "restApiKey": "1234"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "BRAZE",
+          "userAttributes": [
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            }
+          ],
+          "config": {
+            "dataCenter": "US-03",
+            "restApiKey": "1234"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "BRAZE",
+          "userAttributes": [
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
             }
           ]
         }

@@ -164,7 +164,7 @@
         {
             "type": "delete",
             "reqParams": [
-                "https://api.engage.so/v1/users/userid1",
+                "https://api.engage.so/v1/users/1",
                 {},
                 {
                     "Content-Type": "application/json",
@@ -172,58 +172,12 @@
                 }
             ],
             "response": {
-                "code": 400,
-                "statusText": "fail",
-                "response": {
-                    "data": {
-                        "code": 400,
-                        "message": "Bad Req",
-                        "status": "Fail Case"
-                    },
-                    "status": 400
-                }
-            }
-        },
-        {
-            "type": "delete",
-            "reqParams": [
-                "https://api.engage.so/v1/users/user_sdk2",
-                {},
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic YWJjZDplZmdo"
-                }
-            ],
-            "response": {
-                "code": 200,
+                "status": 200,
                 "statusText": "success"
             }
         }
     ],
     [
-        {
-            "type": "delete",
-            "reqParams": [
-                "https://api.engage.so/v1/users/",
-                {},
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic YWJjZDplZmdo"
-                }
-            ],
-            "response": {
-                "code": 400,
-                "statusText": "fail",
-                "response": {
-                    "data": {
-                        "code": 400,
-                        "message": "Bad Req",
-                        "status": "Fail Case"
-                    },
-                    "status": 400
-                }
-            }
-        },
         {
             "type": "delete",
             "reqParams": [

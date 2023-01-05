@@ -10,14 +10,14 @@ const { removeUndefinedAndNullValues } = require("../../util");
 
 const { TransformationError } = require("../../util/errorTypes");
 
-function guidGenerator() {
+const guidGenerator = () => {
   const S4 = () =>
     // eslint-disable-next-line no-bitwise
     (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
   return `${S4() + S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
-}
+};
 
-function processEvent(event) {
+const processNormalEvent = event => {
   const message = new Message(`APPCENTER`);
   message.setEventType("track");
 
@@ -51,14 +51,34 @@ function processEvent(event) {
   // app center does not has the concept of user but we need to set some random anonymousId in order to make the server accept the message
   message.anonymousId = guidGenerator();
   return message;
-}
+};
 
-function process(event) {
-  const response = processEvent(event);
-  const returnValue = removeUndefinedAndNullValues(response);
+/**
+ * Test if event is Test event or not
+ * @param {*} event
+ * @returns
+ */
+const isTestEvent = event => {
+  return !!event?.text;
+};
+
+const processTestEvent = event => {
+  return {
+    outputToSource: {
+      body: Buffer.from(JSON.stringify(event)).toString("base64"),
+      contentType: "application/json"
+    },
+    statusCode: 200
+  };
+};
+
+const process = event => {
+  const response = isTestEvent(event)
+    ? processTestEvent(event)
+    : processNormalEvent(event);
   // to bypass the unit testcases ( we may change this)
-  // returnValue.anonymousId = "7e32188a4dab669f";
-  return returnValue;
-}
+  // response.anonymousId = "7e32188a4dab669f";
+  return removeUndefinedAndNullValues(response);
+};
 
 exports.process = process;

@@ -1,17 +1,15 @@
 const btoa = require("btoa");
-const { httpSend } = require("../../../adapters/network");
-const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const { httpPOST } = require("../../../adapters/network");
+const tags = require("../../util/tags");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
-const {
-  NetworkError,
-  InstrumentationError,
-  ConfigurationError
-} = require("../../util/errorTypes");
+const { ConfigurationError, NetworkError } = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
-const tags = require("../../util/tags");
+const { DELETE_MAX_BATCH_SIZE } = require("./config");
+const { getUserIdBatches } = require("../../util/deleteUserUtils");
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
@@ -22,23 +20,24 @@ const userDeletionHandler = async (userAttributes, config) => {
     throw new ConfigurationError("api key/secret for deletion not present");
   }
 
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Basic ${btoa(`${apiKey}:${apiSecret}`)}`
+  };
+  // Ref : https://www.docs.developers.amplitude.com/analytics/apis/user-privacy-api/#response
+  const batchEvents = getUserIdBatches(userAttributes, DELETE_MAX_BATCH_SIZE);
+  const url = "https://amplitude.com/api/2/deletions/users";
   await Promise.all(
-    userAttributes.map(async ua => {
-      const uId = ua.userId;
-      if (!uId) {
-        throw new InstrumentationError("User id for deletion not present");
-      }
-      const data = { user_ids: [uId], requester: "RudderStack" };
-      const requestOptions = {
-        method: "post",
-        url: "https://amplitude.com/api/2/deletions/users",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Basic ${btoa(`${apiKey}:${apiSecret}`)}`
-        },
-        data
+    batchEvents.map(async batch => {
+      const data = {
+        user_ids: batch,
+        requester: "RudderStack",
+        ignore_invalid_id: "true"
       };
-      const resp = await httpSend(requestOptions);
+      const requestOptions = {
+        headers
+      };
+      const resp = await httpPOST(url, data, requestOptions);
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status)) {
         throw new NetworkError(

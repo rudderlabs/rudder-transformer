@@ -78,6 +78,24 @@
           "destType": "ENGAGE",
           "userAttributes": [
             {
+              "userId": "1"
+            }
+          ],
+          "config": {
+            "publicKey": "abcd",
+            "privateKey": "efgh"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "ENGAGE",
+          "userAttributes": [
+            {
               "userId": "userid1"
             },
             {

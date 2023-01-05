@@ -6,6 +6,46 @@
           "destType": "INTERCOM",
           "userAttributes": [
             {
+              "userId": "1"
+            },
+            {
+              "userId": "12"
+            }
+          ],
+          "config": {
+            "apiKey": "API_KEY"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "INTERCOM",
+          "userAttributes": [
+            {
+              "userId": "7"
+            },
+            {
+              "userId": "9"
+            }
+          ],
+          "config": {
+            "apiKey": "API_KEY"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "INTERCOM",
+          "userAttributes": [
+            {
               "userId": "6188c2c5f47e464b4abf3235"
             },
             {

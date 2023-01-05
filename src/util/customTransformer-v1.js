@@ -2,7 +2,7 @@ const ivm = require("isolated-vm");
 const stats = require("./stats");
 
 const { getFactory } = require("./ivmFactory");
-const { getMetadata } = require("./../v0/util");
+const { getMetadata } = require("../v0/util");
 const logger = require("../logger");
 
 const userTransformTimeout = parseInt(
@@ -132,4 +132,11 @@ async function userTransformHandlerV1(
   return { transformedEvents: events };
 }
 
-exports.userTransformHandlerV1 = userTransformHandlerV1;
+async function setUserTransformHandlerV1() {
+  return { success: true };
+}
+
+module.exports = {
+  userTransformHandlerV1,
+  setUserTransformHandlerV1
+};

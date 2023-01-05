@@ -31,10 +31,10 @@ const getUserIdChunks = (userAttributes, maxUrlLength) => {
         idBatchString = idBatch.toString();
       } else {
         userIdBatchEndpoints.push(
-          `${DELETE_CONTACTS_ENDPOINT.replace("IDS", idBatchString)}`
+          `${DELETE_CONTACTS_ENDPOINT.replace("[IDS]", idBatchString)}`
         );
-        idBatchString = "";
         idBatch = [ua.userId];
+        idBatchString = idBatch.toString();
       }
     }
   });

@@ -316,7 +316,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
     // add,update,remove
     if (destination.Config.enableNestedArrayOperations) {
       Object.keys(properties)
-        .filter(k => Array.isArray(properties[`${k}`]))
+        .filter(key => Array.isArray(properties[`${key}`]))
         .forEach(key => {
           // if not specified, send as create attribute
           if (properties.nestedOperationType === nestedOperationTypes.CREATE) {

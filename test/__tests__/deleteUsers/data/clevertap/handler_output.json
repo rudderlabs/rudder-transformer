@@ -10,5 +10,11 @@
       "statusCode": 500,
       "error": "Project ID and Passcode is required for delete user"
     }
+  ],
+  [
+    {
+      "statusCode": 400,
+      "error": "User deletion request failed"
+    }
   ]
 ]

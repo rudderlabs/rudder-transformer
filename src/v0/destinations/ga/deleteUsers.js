@@ -12,7 +12,7 @@ const { gaResponseHandler } = require("./networkHandler");
 /**
  * Prepare the delete users request
  *
- * @param {*} userAttributes Array of objects with userId, emaail and phone
+ * @param {*} userAttributes Array of objects with userId, email and phone
  * @param {*} config Destination.Config provided in dashboard
  * @param {Record<string, any> | undefined} rudderDestInfo contains information about the authorisation details to successfully send deletion request
  * @returns
@@ -64,7 +64,7 @@ const prepareDeleteRequest = (userAttributes, config, rudderDestInfo) => {
 /**
  * This function will help to delete the users one by one from the userAttributes array.
  *
- * @param {*} userAttributes Array of objects with userId, emaail and phone
+ * @param {*} userAttributes Array of objects with userId, email and phone
  * @param {*} config Destination.Config provided in dashboard
  * @param {Record<string, any> | undefined} rudderDestInfo contains information about the authorisation details to successfully send deletion request
  * @returns {Array<{ body: any, headers: any }>}

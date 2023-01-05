@@ -1,7 +1,7 @@
 [
   {
     "output": {
-      "status": 500,
+      "status": 400,
       "message": "Failed with The access token could not be decrypted during response transformation",
       "destinationResponse": {
         "error": {
@@ -15,7 +15,7 @@
       "statTags": {
         "destType": "FACEBOOK_PIXEL",
         "errorCategory": "network",
-        "errorType": "retryable",
+        "errorType": "aborted",
         "feature": "dataDelivery",
         "implementation": "native",
         "module": "destination"

@@ -1,5 +1,5 @@
 const { httpDELETE } = require("../../../adapters/network");
-const { delUrlLimit, DELETE_CONTACTS_ENDPOINT } = require("./config");
+const { delIdUrlLimit, DELETE_CONTACTS_ENDPOINT } = require("./config");
 const {
   processAxiosResponse,
   getDynamicErrorType
@@ -88,7 +88,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   So we are implementing batching through urlLimit
    */
   // batchEvents = [["e1,e2,e3,..urlLimit"],["e1,e2,e3,..urlLimit"]..]
-  const batchEndpoints = getUserIdChunks(userAttributes, delUrlLimit);
+  const batchEndpoints = getUserIdChunks(userAttributes, delIdUrlLimit);
   await Promise.all(
     batchEndpoints.map(async batchEndpoint => {
       endpoint = batchEndpoint;

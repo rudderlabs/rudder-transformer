@@ -40,7 +40,7 @@ const TRACK_EXCLUSION_FIELDS = [
 
 const DELETE_CONTACTS_ENDPOINT = `${BASE_ENDPOINT}/marketing/contacts?ids=[IDS]`;
 const MAX_BATCH_SIZE = 30000;
-const delUrlLimit = 8150;
+const delIdUrlLimit = 8150;
 
 module.exports = {
   MAPPING_CONFIG,
@@ -51,5 +51,5 @@ module.exports = {
   TRACK_EXCLUSION_FIELDS,
   DESTINATION: "SENDGRID",
   DELETE_CONTACTS_ENDPOINT,
-  delUrlLimit
+  delIdUrlLimit
 };

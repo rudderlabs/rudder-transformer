@@ -58,6 +58,6 @@ module.exports = {
   IDENTIFY_BRAZE_MAX_REQ_COUNT,
   DESTINATION,
   nestedOperationTypes,
-  supportedOperationTypes
+  supportedOperationTypes,
   DEL_MAX_BATCH_SIZE
 };

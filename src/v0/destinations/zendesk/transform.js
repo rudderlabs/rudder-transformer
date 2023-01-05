@@ -308,7 +308,8 @@ async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint) {
       return true;
     }
   } catch (error) {
-    logger.debug("Error :", error.response ? error.response.data : error);
+    logger.debug("Error :");
+    logger.debug(error?.response?.data || error);
   }
   return false;
 }
@@ -588,16 +589,15 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
       zendeskUserID = zendeskUserId;
       userEmail = email;
     }
-    zendeskUserID = zendeskUserID || userResponse.data.users[0].id;
+    zendeskUserID = zendeskUserID || userResponse?.data?.users[0]?.id;
   } catch (error) {
     throw new NetworkError(
-      `Failed to fetch user with email: ${userEmail} due to ${JSON.stringify(
-        error.response ? error.response.data : error
-      )}`,
+      `Failed to fetch user with email: ${userEmail} due to ${error.message}`,
       error.status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(error.status)
-      }
+      },
+      error?.response?.data || error?.response || error
     );
   }
 

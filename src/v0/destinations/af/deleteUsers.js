@@ -78,44 +78,6 @@ const userDeletionHandler = async (userAttributes, config) => {
   const endpoint = `https://hq1.appsflyer.com/gdpr/opengdpr_requests?api_token=${config.apiToken}`;
   await Promise.all(
     userAttributes.map(async ua => {
-      const userAttributeKeys = Object.keys(ua);
-
-      if (userAttributeKeys.includes("appsflyer_id")) {
-        body.property_id = config.androidAppId
-          ? config.androidAppId
-          : config.appleAppId;
-        await deleteUser(endpoint, body, "appsflyer_id", ua.appsflyer_id);
-      } else {
-        if (userAttributeKeys.includes("ios_advertising_id")) {
-          body.property_id = config.appleAppId;
-          if (!body.property_id) {
-            throw new ConfigurationError(
-              "appleAppId is required for ios_advertising_id type identifier"
-            );
-          }
-          await deleteUser(
-            endpoint,
-            body,
-            "ios_advertising_id",
-            ua.ios_advertising_id
-          );
-        }
-        if (userAttributeKeys.includes("android_advertising_id")) {
-          body.property_id = config.androidAppId;
-          if (!body.property_id) {
-            throw new ConfigurationError(
-              "androidAppId is required for android_advertising_id type identifier"
-            );
-          }
-          await deleteUser(
-            endpoint,
-            body,
-            "android_advertising_id",
-            ua.android_advertising_id
-          );
-        }
-      }
-
       if (
         !ua.android_advertising_id &&
         !ua.ios_advertising_id &&
@@ -123,6 +85,42 @@ const userDeletionHandler = async (userAttributes, config) => {
       ) {
         throw new InstrumentationError(
           "none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion"
+        );
+      }
+      /**
+       * Building the request Body in the following priority:
+       * appsflyer_id, ios_advertising_id, android_advertising_id
+       */
+      if (ua?.appsflyer_id) {
+        body.property_id = config.androidAppId
+          ? config.androidAppId
+          : config.appleAppId;
+        await deleteUser(endpoint, body, "appsflyer_id", ua.appsflyer_id);
+      } else if (ua?.ios_advertising_id) {
+        body.property_id = config.appleAppId;
+        if (!body.property_id) {
+          throw new ConfigurationError(
+            "appleAppId is required for ios_advertising_id type identifier"
+          );
+        }
+        await deleteUser(
+          endpoint,
+          body,
+          "ios_advertising_id",
+          ua.ios_advertising_id
+        );
+      } else {
+        body.property_id = config.androidAppId;
+        if (!body.property_id) {
+          throw new ConfigurationError(
+            "androidAppId is required for android_advertising_id type identifier"
+          );
+        }
+        await deleteUser(
+          endpoint,
+          body,
+          "android_advertising_id",
+          ua.android_advertising_id
         );
       }
     })

@@ -108,22 +108,28 @@ const trackResponseBuilder = (message, Config) => {
 
   let eventType;
 
-  installEventNames.forEach(event => {
-    if (
-      message.event === "Applcation Installed" ||
-      event.eventName === message.event
-    ) {
+  if (installEventNames && Array.isArray(installEventNames)) {
+    installEventNames.forEach(event => {
+      if (event.eventName === message.event) {
+        eventType = "install";
+      }
+    });
+  }
+  if (actionEventNames && Array.isArray(actionEventNames)) {
+    actionEventNames.forEach(event => {
+      if (event.eventName === message.event) {
+        eventType = "action";
+      }
+    });
+  }
+  if (!eventType) {
+    if (message.event === "Applcation Installed") {
       eventType = "install";
-    }
-  });
-  actionEventNames.forEach(event => {
-    if (
-      message.event === "Order Completed" ||
-      event.eventName === message.event
-    ) {
+    } else if (message.event === "Order Completed") {
       eventType = "action";
     }
-  });
+  }
+
   if (eventType === "action") {
     let payload = constructPayload(
       message,

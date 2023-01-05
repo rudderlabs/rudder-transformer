@@ -35,7 +35,8 @@ const DESTINATION = "braze";
 const nestedOpertationTypes = {
   REMOVE: "remove",
   UPDATE: "update",
-  ADD: "add"
+  ADD: "add",
+  CREATE: "create"
 };
 
 const supportedOperationTypes = [
@@ -54,5 +55,6 @@ module.exports = {
   TRACK_BRAZE_MAX_REQ_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,
   DESTINATION,
+  nestedOpertationTypes,
   supportedOperationTypes
 };

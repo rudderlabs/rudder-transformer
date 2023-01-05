@@ -25,8 +25,10 @@ const {
   TRACK_BRAZE_MAX_REQ_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,
   supportedOperationTypes,
-  nestedOpertationTypes
+  nestedOperationTypes
 } = require("./config");
+
+const logger = require("../../../logger");
 
 function formatGender(gender) {
   // few possible cases of woman
@@ -317,7 +319,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
         .filter(k => Array.isArray(properties[`${k}`]))
         .forEach(key => {
           // if not specified, send as create attribute
-          if (properties.nestedOperationType === nestedOpertationTypes.CREATE) {
+          if (properties.nestedOperationType === nestedOperationTypes.CREATE) {
             attributePayload[key] = properties[key];
           } else if (
             supportedOperationTypes.includes(properties.nestedOperationType)
@@ -325,7 +327,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
             attributePayload[key] = {};
             const opsResultArray = [];
             if (
-              properties.nestedOperationType === nestedOpertationTypes.UPDATE
+              properties.nestedOperationType === nestedOperationTypes.UPDATE
             ) {
               for (let i = 0; i < properties[key].length; i += 1) {
                 const myObj = {};
@@ -345,7 +347,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
                 `$${properties.nestedOperationType}`
               ] = opsResultArray;
             } else if (
-              properties.nestedOperationType === nestedOpertationTypes.REMOVE
+              properties.nestedOperationType === nestedOperationTypes.REMOVE
             ) {
               for (let i = 0; i < properties[key].length; i += 1) {
                 const myObj = {};

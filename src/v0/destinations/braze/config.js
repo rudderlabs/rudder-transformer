@@ -32,7 +32,7 @@ const IDENTIFY_BRAZE_MAX_REQ_COUNT = 50;
 
 const DESTINATION = "braze";
 
-const nestedOpertationTypes = {
+const nestedOperationTypes = {
   REMOVE: "remove",
   UPDATE: "update",
   ADD: "add",
@@ -40,9 +40,9 @@ const nestedOpertationTypes = {
 };
 
 const supportedOperationTypes = [
-  nestedOpertationTypes.ADD,
-  nestedOpertationTypes.REMOVE,
-  nestedOpertationTypes.UPDATE
+  nestedOperationTypes.ADD,
+  nestedOperationTypes.REMOVE,
+  nestedOperationTypes.UPDATE
 ];
 
 module.exports = {
@@ -55,6 +55,6 @@ module.exports = {
   TRACK_BRAZE_MAX_REQ_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,
   DESTINATION,
-  nestedOpertationTypes,
+  nestedOperationTypes,
   supportedOperationTypes
 };

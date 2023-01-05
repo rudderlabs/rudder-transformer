@@ -1,9 +1,8 @@
 const ivm = require("isolated-vm");
 const fetch = require("node-fetch");
 const { getTransformationCode } = require("./customTransforrmationsStore");
-const { userTransformHandlerV1 } = require("./customTransformer-v1");
 const stats = require("./stats");
-const { pyUserTransformHandler } = require("./customTransformer-py");
+const { UserTransformHandlerFactory } = require("./customTransformerFactory");
 
 async function runUserTransform(
   events,
@@ -234,20 +233,11 @@ async function userTransformHandler(
       let userTransformedEvents = [];
       let result;
       if (res.codeVersion && res.codeVersion === "1") {
-        if (res.language && res.language === "python") {
-          result = await pyUserTransformHandler().runUserTransfrom(
-            events,
-            res,
-            testMode
-          );
-        } else {
-          result = await userTransformHandlerV1(
-            events,
-            res,
-            libraryVersionIDs,
-            testMode
-          );
-        }
+        result = await UserTransformHandlerFactory(res).runUserTransfrom(
+          events,
+          testMode,
+          libraryVersionIDs
+        );
 
         userTransformedEvents = result.transformedEvents;
         if (testMode) {
@@ -288,14 +278,9 @@ async function setupUserTransformHandler(
   libraryVersionIDs,
   testWithPublish = false
 ) {
-  let resp = { success: false };
-  if (trRevCode.language && trRevCode.language === "python") {
-    resp = await pyUserTransformHandler().setUserTransform(
-      trRevCode,
-      testWithPublish
-    );
-    resp.publishedVersion = testWithPublish ? resp.publishedVersion : null;
-  }
+  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(
+    testWithPublish
+  );
   return resp;
 }
 module.exports = {

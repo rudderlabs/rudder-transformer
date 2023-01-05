@@ -13,6 +13,7 @@
     "properties.email",
     "context.externalId.0.id"
   ],
+  "emailOnly": ["traits.email", "context.traits.email", "properties.email"],
   "timestamp": ["originalTimestamp", "timestamp"],
   "historicalTimestamp": ["timestamp", "originalTimestamp"],
   "traits": ["traits", "context.traits"],
@@ -125,8 +126,5 @@
     "context.traits.address.postal_code",
     "context.traits.address.postalCode"
   ],
-  "sessionId": [
-    "session_id",
-    "context.sessionId"
-  ]
+  "sessionId": ["session_id", "context.sessionId"]
 }

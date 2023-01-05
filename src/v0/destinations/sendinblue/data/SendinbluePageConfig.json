@@ -1,0 +1,47 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": "emailOnly",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "ma_title",
+    "sourceKeys": [
+      "properties.ma_title",
+      "properties.title",
+      "context.page.title"
+    ]
+  },
+  {
+    "destKey": "page",
+    "sourceKeys": ["properties.url", "context.page.url"],
+    "required": true
+  },
+  {
+    "destKey": "ma_path",
+    "sourceKeys": ["properties.ma_path", "properties.path", "context.page.path"]
+  },
+  {
+    "destKey": "ma_referrer",
+    "sourceKeys": [
+      "properties.ma_referrer",
+      "properties.referrer",
+      "context.page.referrer"
+    ]
+  },
+  {
+    "destKey": "sib_name",
+    "sourceKeys": ["name", "properties.name"],
+    "required": true,
+    "metadata": {
+      "defaultValue": "Page View"
+    }
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "metadata": {
+      "excludes": ["title", "url", "path", "referrer", "name", "email"]
+    }
+  }
+]

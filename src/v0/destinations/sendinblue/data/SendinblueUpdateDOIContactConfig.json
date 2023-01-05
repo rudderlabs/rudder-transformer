@@ -1,0 +1,44 @@
+[
+  {
+    "destKey": "attributes",
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "attributes.EMAIL",
+    "sourceKeys": ["traits.newEmail", "context.traits.newEmail"]
+  },
+  {
+    "destKey": "attributes.SMS",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "attributes.FIRSTNAME",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "attributes.LASTNAME",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "",
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "excludes": [
+        "firstName",
+        "firstname",
+        "first_name",
+        "lastName",
+        "lastname",
+        "last_name",
+        "phone",
+        "email",
+        "newEmail"
+      ]
+    }
+  }
+]

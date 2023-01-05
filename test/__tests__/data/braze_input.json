@@ -5,8 +5,7 @@
         "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "dataCenter": "us-01",
-        "enableNestedArrayOperations": true
+        "dataCenter": "us-01"
       },
       "DestinationDefinition": {
         "DisplayName": "Braze",
@@ -70,8 +69,7 @@
         "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "dataCenter": "us-01",
-        "enableNestedArrayOperations": true
+        "dataCenter": "us-01"
       },
       "DestinationDefinition": {
         "DisplayName": "Braze",
@@ -186,8 +184,7 @@
       "Config": {
         "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "enableNestedArrayOperations": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Braze",
@@ -378,7 +375,7 @@
         "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "enableNestedArrayOperations": true
+        "enableNestedArrayOperations": false
       },
       "DestinationDefinition": {
         "DisplayName": "Braze",
@@ -612,8 +609,7 @@
       "Config": {
         "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "enableNestedArrayOperations": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Braze",
@@ -697,8 +693,7 @@
         "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "dataCenter": "us-01",
-        "enableNestedArrayOperations": true
+        "dataCenter": "us-01"
       },
       "DestinationDefinition": {
         "DisplayName": "Braze",
@@ -765,8 +760,7 @@
       "Config": {
         "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "enableNestedArrayOperations": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Braze",
@@ -861,8 +855,7 @@
       "Config": {
         "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
-        "useNativeSDK": false,
-        "enableNestedArrayOperations": true
+        "useNativeSDK": false
       },
       "DestinationDefinition": {
         "DisplayName": "Braze",

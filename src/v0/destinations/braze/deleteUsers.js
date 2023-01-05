@@ -1,16 +1,14 @@
-const { httpSend } = require("../../../adapters/network");
-const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const { httpPOST } = require("../../../adapters/network");
 const {
-  processAxiosResponse
+  processAxiosResponse,
+  getDynamicErrorType
 } = require("../../../adapters/utils/networkUtils");
-const { isHttpStatusSuccess } = require("../../util");
-const {
-  NetworkError,
-  InstrumentationError,
-  ConfigurationError
-} = require("../../util/errorTypes");
-const { executeCommonValidations } = require("../../util/regulation-api");
 const tags = require("../../util/tags");
+const { isHttpStatusSuccess } = require("../../util");
+const { executeCommonValidations } = require("../../util/regulation-api");
+const { DEL_MAX_BATCH_SIZE } = require("./config");
+const { getUserIdBatches } = require("../../util/deleteUserUtils");
+const { NetworkError, ConfigurationError } = require("../../util/errorTypes");
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
@@ -22,36 +20,29 @@ const userDeletionHandler = async (userAttributes, config) => {
       "data center / api key for deletion not present"
     );
   }
-
+  // Endpoints different for different data centers.
+  // DOC: https://www.braze.com/docs/user_guide/administrative/access_braze/braze_instances/
   let endPoint;
+  const dataCenterArr = dataCenter.trim().split("-");
+  if (dataCenterArr[0].toLowerCase() === "eu") {
+    endPoint = "https://rest.fra-01.braze.eu//users/delete";
+  } else {
+    endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com/users/delete`;
+  }
+
+  // https://www.braze.com/docs/api/endpoints/user_data/post_user_delete/
+  const batchEvents = getUserIdBatches(userAttributes, DEL_MAX_BATCH_SIZE);
   await Promise.all(
-    userAttributes.map(async ua => {
-      const uId = ua.userId;
-      if (!uId) {
-        throw new InstrumentationError("User id for deletion not present");
-      }
-
-      // Endpoints different for different data centers.
-      // DOC: https://www.braze.com/docs/user_guide/administrative/access_braze/braze_instances/
-
-      const dataCenterArr = dataCenter.trim().split("-");
-      if (dataCenterArr[0].toLowerCase() === "eu") {
-        endPoint = "https://rest.fra-01.braze.eu";
-      } else {
-        endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com`;
-      }
-      const data = { external_ids: [uId] };
+    batchEvents.map(async batchEvent => {
+      const data = { external_ids: batchEvent };
       const requestOptions = {
-        method: "post",
-        url: `${endPoint}/users/delete`,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${restApiKey}`
-        },
-        data
+        }
       };
 
-      const resp = await httpSend(requestOptions);
+      const resp = await httpPOST(endPoint, data, requestOptions);
       const handledDelResponse = processAxiosResponse(resp);
       if (
         !isHttpStatusSuccess(handledDelResponse.status) &&

@@ -103,9 +103,9 @@ const DestCanonicalNames = {
     "Gainsight Px"
   ],
   awin: ["awin", "Awin", "AWIN"],
-  pipedream: ["Pipedream", "PipeDream", "pipedream", "PIPEDREAM"],
+  sendinblue: ["sendinblue", "SENDINBLUE", "Sendinblue", "SendinBlue"],
   ga4: ["GA4", "ga4", "Ga4", "Google Analytics 4", "googleAnalytics4"],
-  awin: ["awin", "Awin", "AWIN"],
+  pipedream: ["Pipedream", "PipeDream", "pipedream", "PIPEDREAM"],
   pagerduty: ["pagerduty", "PAGERDUTY", "PagerDuty", "Pagerduty", "pagerDuty"]
 };
 

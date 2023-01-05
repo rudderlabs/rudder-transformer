@@ -34,7 +34,10 @@ const getContents = message => {
 
   const updateContentsArray = productProps => {
     const contentObject = constructPayload(productProps, mappingJson);
-    contents.push(removeUndefinedAndNullValues(contentObject));
+    const contentObj = removeUndefinedAndNullValues(contentObject);
+    if (Object.keys(contentObj).length > 0) {
+      contents.push(contentObj);
+    }
   };
 
   if (products && Array.isArray(products) && products.length > 0) {
@@ -52,7 +55,10 @@ const getTrackResponse = (message, category, Config, event) => {
   payload.partner_name = PARTNER_NAME;
 
   // Settings Contents object
-  set(payload, "properties.contents", getContents(message));
+  const contents = getContents(message);
+  if (contents.length > 0) {
+    set(payload, "properties.contents", contents);
+  }
 
   const email = message?.traits?.email || message?.context?.traits.email;
   if (isDefinedAndNotNullAndNotEmpty(email)) {

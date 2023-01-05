@@ -3,7 +3,7 @@
     "description": "No Message type",
     "testType": "proc_tf",
     "destinationName": "mailjet",
-    "input": {
+    "input": [{
       "message": {
         "userId": "test@123",
         "context": {
@@ -26,16 +26,25 @@
           "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
         }
       }
-    },
+    }],
     "output": {
-      "error": "Event type is required"
+      "error": "Event type is required",
+      "statTags":  {
+          "destType": "MAILJET",
+            "errorCategory": "dataValidation",
+          "errorType": "instrumentation",
+           "feature": "processor",
+           "implementation": "native",
+           "module": "destination"
+          },
+         "statusCode": 400
     }
   },
   {
     "description": "Unsupported Type",
     "testType": "proc_tf",
     "destinationName": "mailjet",
-    "input": {
+    "input": [{
       "message": {
         "userId": "test@123",
         "type": "trackUser",
@@ -60,16 +69,25 @@
           "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
         }
       }
-    },
+    }],
     "output": {
-      "error": "Event type \"trackuser\" is not supported"
+      "error": "Event type \"trackuser\" is not supported",
+      "statTags":  {
+          "destType": "MAILJET",
+            "errorCategory": "dataValidation",
+          "errorType": "instrumentation",
+           "feature": "processor",
+           "implementation": "native",
+           "module": "destination"
+          },
+         "statusCode": 400
     }
   },
   {
     "description": "MailJet identify call without an email",
     "testType": "proc_tf",
     "destinationName": "mailjet",
-    "input": {
+    "input": [{
       "message": {
         "userId": "test@123",
         "type": "identify",
@@ -93,16 +111,25 @@
           "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
         }
       }
-    },
+    }],
     "output": {
-      "error": "Missing required value from \"email\""
+      "error": "Missing required value from \"email\"",
+      "statTags":  {
+          "destType": "MAILJET",
+            "errorCategory": "dataValidation",
+          "errorType": "instrumentation",
+           "feature": "processor",
+           "implementation": "native",
+           "module": "destination"
+          },
+         "statusCode": 400
     }
   },
   {
     "description": "Mailjet identify call without batching",
     "testType": "proc_tf",
     "destinationName": "mailjet",
-    "input": {
+    "input": [{
       "message": {
         "userId": "user@45",
         "type": "identify",
@@ -130,7 +157,7 @@
           ]
         }
       }
-    },
+    }],
     "output": {
       "version": "1",
       "type": "REST",
@@ -148,6 +175,7 @@
         "FORM": {}
       },
       "files": {},
+      "userId": "",
       "listId": "58578",
       "action": "addnoforce"
     }

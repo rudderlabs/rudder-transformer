@@ -1,8 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
-const integration = "pagerduty";
-const name = "PagerDuty";
+const integration = "pipedream";
+const name = "Pipedream";
 const version = "v0";
 
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);

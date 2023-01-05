@@ -1,9 +1,9 @@
+const integration = "discord";
+const name = "discord";
+const version = "v0";
+
 const fs = require("fs");
 const path = require("path");
-
-const integration = "pagerduty";
-const name = "PagerDuty";
-const version = "v0";
 
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
 

@@ -7,10 +7,10 @@
     "issued_at": "1582343657644",
     "signature": "XRgUHXVBSWhLHZVoVFZby/idWXdAPA5lMW/ZdLMzB8o="
   },
-  "https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=peter.gibbons@initech.com&sobject=Lead&Lead.fields=id": {
+  "https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=peter.gibbons%40initech.com&sobject=Lead&Lead.fields=id": {
     "searchRecords": []
   },
-  "https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=peter.gibbons1@initech.com&sobject=Lead&Lead.fields=id": {
+  "https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=peter.gibbons1%40initech.com&sobject=Lead&Lead.fields=id": {
     "searchRecords": [
       {
         "attributes": {
@@ -30,7 +30,18 @@
     "signature": "XRgUHXVBSWhLHZVoVFZby/idWXdAPA5lMW/ZdLMzB8o=",
     "abc": "123"
   },
-  "https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=peter.gibbons@initech.com&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted": {
+  "https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=peter.gibbons%40initech.com&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted": {
     "searchRecords": []
+  },
+  "https://ap15.salesforce.com/services/data/v50.0/parameterizedSearch/?q=ddv_ua%2B%7B%7B1234*245%7D%7D%40bugFix.com&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted": {
+    "searchRecords": [
+      {
+        "attributes": {
+          "type": "Lead",
+          "url": "/services/data/v50.0/sobjects/Lead/leadId"
+        },
+        "Id": "leadId"
+      }
+    ]
   }
 }

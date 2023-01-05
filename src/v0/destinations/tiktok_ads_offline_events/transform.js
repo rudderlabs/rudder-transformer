@@ -63,8 +63,8 @@ const getTrackResponse = (message, category, Config, event) => {
   const email = message?.traits?.email || message?.context?.traits.email;
   if (isDefinedAndNotNullAndNotEmpty(email)) {
     const emails = hashUserProperties
-      ? [SHA256(email.trim()).toString()]
-      : [email.trim()];
+      ? [SHA256(email.trim().toLowerCase()).toString()]
+      : [email.trim().toLowerCase()];
     set(payload, "context.user.emails", emails);
   }
 

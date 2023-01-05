@@ -41,14 +41,14 @@ const CLEVERTAP_DEFAULT_EXCLUSION = [
   "id",
   "ts"
 ];
-
-const MAX_BATCH_SIZE = 1000;
+// ref : https://developer.clevertap.com/docs/disassociate-api
+const DEL_MAX_BATCH_SIZE = 100;
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
   getEndpoint,
-  MAX_BATCH_SIZE,
+  DEL_MAX_BATCH_SIZE,
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
   CLEVERTAP_DEFAULT_EXCLUSION,

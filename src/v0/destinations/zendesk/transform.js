@@ -284,7 +284,7 @@ async function getUserId(message, headers, baseEndpoint, type) {
       return undefined;
     }
 
-    const zendeskUserId = resp.data.users[0].id;
+    const zendeskUserId = resp?.data?.users?.[0]?.id;
     return zendeskUserId;
   } catch (error) {
     // logger.debug(
@@ -301,9 +301,7 @@ async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint) {
   try {
     const response = await axios.get(url, config);
     if (
-      response.data &&
-      response.data.organization_memberships.length > 0 &&
-      response.data.organization_memberships[0].organization_id === orgId
+      response?.data?.organization_memberships?.[0]?.organization_id === orgId
     ) {
       return true;
     }
@@ -345,8 +343,8 @@ async function createUser(
       throw new NetworkInstrumentationError("user not found");
     }
 
-    const userID = resp.data.user.id;
-    const userEmail = resp.data.user.email;
+    const userID = resp?.data?.user?.id;
+    const userEmail = resp?.data?.user.email;
     return { zendeskUserId: userID, email: userEmail };
   } catch (error) {
     logger.debug(error);
@@ -444,7 +442,7 @@ async function createOrganization(
       return undefined;
     }
 
-    const orgId = resp.data.organization.id;
+    const orgId = resp?.data?.organization?.id;
     return orgId;
   } catch (error) {
     logger.debug(`Couldn't create Organization: ${message.traits.name}`);
@@ -521,15 +519,11 @@ async function processIdentify(
       try {
         const config = { headers };
         const response = await axios.get(membershipUrl, config);
-        if (
-          response.data &&
-          response.data.organization_memberships &&
-          response.data.organization_memberships.length > 0
-        ) {
+        if (response?.data?.organization_memberships?.length > 0) {
           if (
-            orgId === response.data.organization_memberships[0].organization_id
+            orgId === response.data.organization_memberships[0]?.organization_id
           ) {
-            const membershipId = response.data.organization_memberships[0].id;
+            const membershipId = response.data.organization_memberships[0]?.id;
             const deleteResponse = defaultRequestConfig();
 
             deleteResponse.endpoint = `${baseEndpoint}users/${userId}/organization_memberships/${membershipId}.json`;
@@ -589,7 +583,7 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
       zendeskUserID = zendeskUserId;
       userEmail = email;
     }
-    zendeskUserID = zendeskUserID || userResponse?.data?.users[0]?.id;
+    zendeskUserID = zendeskUserID || userResponse?.data?.users?.[0]?.id;
   } catch (error) {
     throw new NetworkError(
       `Failed to fetch user with email: ${userEmail} due to ${error.message}`,

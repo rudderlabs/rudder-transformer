@@ -1,5 +1,5 @@
 const { httpPOST } = require("../../../adapters/network");
-const { getEndpoint, MAX_BATCH_SIZE } = require("./config");
+const { getEndpoint, DEL_MAX_BATCH_SIZE } = require("./config");
 const {
   processAxiosResponse,
   getDynamicErrorType
@@ -33,7 +33,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   };
   // userIdBatches = [[u1,u2,u3,...batchSize],[u1,u2,u3,...batchSize]...]
   // ref : https://developer.clevertap.com/docs/disassociate-api
-  const userIdBatches = getUserIdBatches(userAttributes, MAX_BATCH_SIZE);
+  const userIdBatches = getUserIdBatches(userAttributes, DEL_MAX_BATCH_SIZE);
   // Note: The logic here intentionally avoided to use Promise.all
   // where all the batch deletion requests are parallelized as
   // simultaneous requests to CleverTap resulted in hitting API rate limits.

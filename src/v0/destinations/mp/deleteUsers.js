@@ -4,7 +4,7 @@ const {
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
 const { isHttpStatusSuccess } = require("../../util");
-const { MAX_BATCH_SIZE } = require("./config");
+const { DEL_MAX_BATCH_SIZE } = require("./config");
 const { executeCommonValidations } = require("../../util/regulation-api");
 const { ConfigurationError, NetworkError } = require("../../util/errorTypes");
 const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
@@ -48,7 +48,7 @@ const userDeletionHandler = async (userAttributes, config) => {
 
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.mixpanel.com/reference/delete-profile
-  const batchEvents = _.chunk(data, MAX_BATCH_SIZE);
+  const batchEvents = _.chunk(data, DEL_MAX_BATCH_SIZE);
   await Promise.all(
     batchEvents.map(async batchEvent => {
       const deletionResponse = await httpPOST(endpoint, batchEvent, headers);

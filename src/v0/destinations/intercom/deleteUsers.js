@@ -17,38 +17,41 @@ const userDeletionHandler = async (userAttributes, config) => {
   if (!apiKey) {
     throw new ConfigurationError("api key for deletion not present");
   }
-
+  const validUserIds = [];
+  userAttributes.forEach(userAttribute => {
+    // Dropping the user if userId is not present
+    if (userAttribute.userId) {
+      validUserIds.push(userAttribute.userId);
+    }
+  });
+  const url = `https://api.intercom.io/user_delete_requests`;
   await Promise.all(
-    userAttributes.map(async ua => {
-      const uId = ua.userId;
-      if (uId) {
-        const url = `https://api.intercom.io/user_delete_requests`;
-        const data = {
-          intercom_user_id: uId
-        };
-        const requestOptions = {
-          headers: {
-            Authorization: `Bearer ${apiKey}`,
-            Accept: "application/json"
-          }
-        };
-        const resp = await httpPOST(url, data, requestOptions);
-        const handledDelResponse = processAxiosResponse(resp);
-        if (
-          !isHttpStatusSuccess(handledDelResponse.status) &&
-          handledDelResponse.status !== 404
-        ) {
-          throw new NetworkError(
-            "User deletion request failed",
-            handledDelResponse.status,
-            {
-              [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-                handledDelResponse.status
-              )
-            },
-            handledDelResponse
-          );
+    validUserIds.map(async uId => {
+      const data = {
+        intercom_user_id: uId
+      };
+      const requestOptions = {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          Accept: "application/json"
         }
+      };
+      const resp = await httpPOST(url, data, requestOptions);
+      const handledDelResponse = processAxiosResponse(resp);
+      if (
+        !isHttpStatusSuccess(handledDelResponse.status) &&
+        handledDelResponse.status !== 404
+      ) {
+        throw new NetworkError(
+          "User deletion request failed",
+          handledDelResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+              handledDelResponse.status
+            )
+          },
+          handledDelResponse
+        );
       }
     })
   );

@@ -6,7 +6,7 @@ const {
 const tags = require("../../util/tags");
 const { isHttpStatusSuccess } = require("../../util");
 const { executeCommonValidations } = require("../../util/regulation-api");
-const { MAX_BATCH_SIZE } = require("./config");
+const { DEL_MAX_BATCH_SIZE } = require("./config");
 const { getUserIdBatches } = require("../../util/deleteUserUtils");
 const { NetworkError, ConfigurationError } = require("../../util/errorTypes");
 
@@ -31,7 +31,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   }
 
   // https://www.braze.com/docs/api/endpoints/user_data/post_user_delete/
-  const batchEvents = getUserIdBatches(userAttributes, MAX_BATCH_SIZE);
+  const batchEvents = getUserIdBatches(userAttributes, DEL_MAX_BATCH_SIZE);
   await Promise.all(
     batchEvents.map(async batchEvent => {
       const data = { external_ids: batchEvent };

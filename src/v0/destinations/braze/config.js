@@ -29,7 +29,9 @@ const BRAZE_PARTNER_NAME = "RudderStack";
 // Ref: https://www.braze.com/docs/api/endpoints/user_data/post_user_track/
 const TRACK_BRAZE_MAX_REQ_COUNT = 75;
 const IDENTIFY_BRAZE_MAX_REQ_COUNT = 50;
-const MAX_BATCH_SIZE = 50;
+// https://www.braze.com/docs/api/endpoints/user_data/post_user_delete/
+
+const DEL_MAX_BATCH_SIZE = 50;
 const DESTINATION = "braze";
 
 module.exports = {
@@ -42,5 +44,5 @@ module.exports = {
   TRACK_BRAZE_MAX_REQ_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,
   DESTINATION,
-  MAX_BATCH_SIZE
+  DEL_MAX_BATCH_SIZE
 };

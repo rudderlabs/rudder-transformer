@@ -1,5 +1,5 @@
 const { httpDELETE } = require("../../../adapters/network");
-const { urlLimit, DELETE_CONTACTS_ENDPOINT } = require("./config");
+const { delUrlLimit, DELETE_CONTACTS_ENDPOINT } = require("./config");
 const {
   processAxiosResponse,
   getDynamicErrorType
@@ -20,25 +20,30 @@ const tags = require("../../util/tags");
  * @returns list of Strings
  */
 const getUserIdChunks = (userAttributes, maxUrlLength) => {
-  const identity = [];
-  let left = maxUrlLength;
-  let temp = "";
+  const userIdBatchEndpoints = [];
+  let idBatch = [];
+  let idBatchString = "";
   userAttributes.forEach(ua => {
     // Dropping the user if userId is not present
     if (ua.userId) {
-      left -= String(ua.userId).length + 1; // Addditional 1 for comma (,)
-      if (left < 0) {
-        identity.push(temp.slice(0, -1));
-        left = maxUrlLength;
-        temp = "";
+      idBatch.push(ua.userId);
+      if (idBatch.toString().length < maxUrlLength) {
+        idBatchString = idBatch.toString();
+      } else {
+        userIdBatchEndpoints.push(
+          `${DELETE_CONTACTS_ENDPOINT.replace("IDS", idBatchString)}`
+        );
+        idBatchString = "";
+        idBatch = [ua.userId];
       }
-      temp += `${String(ua.userId)},`;
     }
   });
-  if (temp.length > 0) {
-    identity.push(temp.slice(0, -1));
+  if (idBatchString.length > 0) {
+    userIdBatchEndpoints.push(
+      `${DELETE_CONTACTS_ENDPOINT.replace("IDS", idBatchString)}`
+    );
   }
-  return identity;
+  return userIdBatchEndpoints;
 };
 
 /**
@@ -83,13 +88,10 @@ const userDeletionHandler = async (userAttributes, config) => {
   So we are implementing batching through urlLimit
    */
   // batchEvents = [["e1,e2,e3,..urlLimit"],["e1,e2,e3,..urlLimit"]..]
-  const batchEvents = getUserIdChunks(userAttributes, urlLimit);
-  if (batchEvents.length === 0) {
-    throw new InstrumentationError(`No User id for deletion is present`);
-  }
+  const batchEndpoints = getUserIdChunks(userAttributes, delUrlLimit);
   await Promise.all(
-    batchEvents.map(async batchEvent => {
-      endpoint = `${endpoint.replace("IDS", batchEvent)}`;
+    batchEndpoints.map(async batchEndpoint => {
+      endpoint = batchEndpoint;
       const deletionResponse = await httpDELETE(endpoint, requestOptions);
       const handledDelResponse = processAxiosResponse(deletionResponse);
 

@@ -38,7 +38,11 @@ const nestedOpertationTypes = {
   ADD: "add"
 };
 
-const supportedOperationTypes = [nestedOpertationTypes.ADD, nestedOpertationTypes.REMOVE, nestedOpertationTypes.UPDATE]
+const supportedOperationTypes = [
+  nestedOpertationTypes.ADD,
+  nestedOpertationTypes.REMOVE,
+  nestedOpertationTypes.UPDATE
+];
 
 module.exports = {
   ConfigCategory,

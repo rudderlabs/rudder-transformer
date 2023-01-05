@@ -51,6 +51,7 @@
             "currency": "USD",
             "value": 27.5,
             "order_id": "50314b8e9bcf000000000000",
+            "opt_out_type": "LDP",
             "num_items": 3,
             "content_ids": [
               "507f1f77bcf86cd799439011",

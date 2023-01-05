@@ -23,7 +23,8 @@ const {
   getSubscriptionGroupEndPoint,
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
-  IDENTIFY_BRAZE_MAX_REQ_COUNT
+  IDENTIFY_BRAZE_MAX_REQ_COUNT,
+  supportedOperationTypes
 } = require("./config");
 
 function formatGender(gender) {
@@ -307,6 +308,37 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   // mandatory fields
   payload = addMandatoryEventProperties(payload, message);
   payload.properties = properties;
+
+  try {
+    // add,update,remove
+    if (destination.Config.enableNestedArrayOperations) {
+      Object.keys(properties)
+        .filter(k => Array.isArray(properties[`${k}`]))
+        .forEach(key => {
+          // if not specified, send as create attribute
+          if (!properties.nestedOperationType) {
+            attributePayload[key] = properties[key];
+          } else if (
+            supportedOperationTypes.includes(properties.nestedOperationType)
+          ) {
+            attributePayload[key] = {};
+            attributePayload[key][`$${properties.nestedOperationType}`] =
+              properties[key];
+            if (properties.nestedOperationType === "update") {
+              // eslint-disable-next-line no-underscore-dangle
+              attributePayload._merge_objects = isDefinedAndNotNull(
+                properties.mergeObjectsUpdateOperation
+              )
+                ? properties.mergeObjectsUpdateOperation
+                : true;
+            }
+          }
+        });
+      delete properties.nestedOperationType;
+    }
+  } catch (exp) {
+    logger.info("Failure occured during nested array operations", exp);
+  }
 
   payload = setExternalIdOrAliasObject(payload, message);
   if (payload) {

@@ -632,5 +632,72 @@
       "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
       "version": "1"
     }
-  ]
+  ],
+  [{
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "events": [
+          {
+            "properties": {
+              "age": "23",
+              "name": "test",
+              "pets": [
+                {
+                  "id": 1,
+                  "name": "Gus",
+                  "type": "dog",
+                  "breed": "beagle"
+                },
+                {
+                  "id": 2,
+                  "name": "Gerald",
+                  "type": "cat",
+                  "breed": "calico"
+                }
+              ]
+            },
+            "external_id": "nestedArrray1"
+          }
+        ],
+        "partner": "RudderStack",
+        "attributes": [
+          {
+            "pets": {
+              "$add": [
+                {
+                  "id": 1,
+                  "name": "Gus",
+                  "type": "dog",
+                  "breed": "beagle"
+                },
+                {
+                  "id": 2,
+                  "name": "Gerald",
+                  "type": "cat",
+                  "breed": "calico"
+                }
+              ]
+            },
+            "email": "manashi@gmaiol.com",
+            "external_id": "nestedArrray1"
+          }
+        ]
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "userId": "nestedArrray1",
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "version": "1",
+    "endpoint": "https://rest.fra-01.braze.eu/users/track"
+  }]
 ]

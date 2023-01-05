@@ -32,6 +32,14 @@ const IDENTIFY_BRAZE_MAX_REQ_COUNT = 50;
 
 const DESTINATION = "braze";
 
+const nestedOpertationTypes = {
+  REMOVE: "remove",
+  UPDATE: "update",
+  ADD: "add"
+};
+
+const supportedOperationTypes = [nestedOpertationTypes.ADD, nestedOpertationTypes.REMOVE, nestedOpertationTypes.UPDATE]
+
 module.exports = {
   ConfigCategory,
   mappingConfig,
@@ -41,5 +49,6 @@ module.exports = {
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,
-  DESTINATION
+  DESTINATION,
+  supportedOperationTypes
 };

@@ -7,8 +7,8 @@ const CONFIG_CATEGORIES = {
   TRACK: {
     type: "track",
     name: "TikTokTrack",
-    endpoint: `${BASE_URL}/track`,
-    batchEndpoint: `${BASE_URL}/batch`,
+    endpoint: `${BASE_URL}/track/`,
+    batchEndpoint: `${BASE_URL}/batch/`,
     method: "POST"
   },
   TRACK_PROPERTIES_CONTENTS: {

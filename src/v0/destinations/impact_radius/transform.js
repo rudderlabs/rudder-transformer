@@ -41,14 +41,21 @@ const responseBuilder = (payload, endpoint, Config) => {
   );
 };
 
-const buildPageLoadResponse = (message, campaignId, impactAppId) => {
+const buildPageLoadResponse = (
+  message,
+  campaignId,
+  impactAppId,
+  enableEmailHashing
+) => {
   const payload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.PAGELOAD.name]
   );
-  payload.CustomerEmail = isDefinedAndNotNull(payload?.CustomerEmail)
-    ? sha1(payload?.CustomerEmail)
-    : payload?.CustomerEmail;
+  if (isDefinedAndNotNull(payload.CustomerEmail)) {
+    payload.CustomerEmail = enableEmailHashing
+      ? sha1(payload?.CustomerEmail)
+      : payload?.CustomerEmail;
+  }
   payload.CampaignId = campaignId;
   if (isDefinedAndNotNullAndNotEmpty(impactAppId)) {
     payload.PropertyId = impactAppId;
@@ -74,7 +81,12 @@ const buildPageLoadResponse = (message, campaignId, impactAppId) => {
  * @returns
  */
 const identifyResponseBuilder = (message, Config) => {
-  const { campaignId, enableIdentifyEvents, impactAppId } = Config;
+  const {
+    campaignId,
+    enableIdentifyEvents,
+    impactAppId,
+    enableEmailHashing
+  } = Config;
 
   if (!enableIdentifyEvents) {
     throw new ConfigurationError(
@@ -83,7 +95,7 @@ const identifyResponseBuilder = (message, Config) => {
   }
 
   return responseBuilder(
-    buildPageLoadResponse(message, campaignId, impactAppId),
+    buildPageLoadResponse(message, campaignId, impactAppId, enableEmailHashing),
     CONFIG_CATEGORIES.PAGELOAD.endPoint,
     Config
   );
@@ -100,6 +112,7 @@ const trackResponseBuilder = (message, Config) => {
     campaignId,
     eventTypeId,
     impactAppId,
+    enableEmailHashing,
     actionEventNames,
     installEventNames,
     rudderToImpactProperty,
@@ -138,9 +151,11 @@ const trackResponseBuilder = (message, Config) => {
     payload.CampaignId = campaignId;
     payload.EventTypeId = eventTypeId;
     payload.ImpactAppId = impactAppId;
-    payload.CustomerEmail = isDefinedAndNotNull(payload?.CustomerEmail)
-      ? sha1(payload?.CustomerEmail)
-      : payload?.CustomerEmail;
+    if (isDefinedAndNotNull(payload.CustomerEmail)) {
+      payload.CustomerEmail = enableEmailHashing
+        ? sha1(payload?.CustomerEmail)
+        : payload?.CustomerEmail;
+    }
     const os = get(message, "context.os.name");
     if (os && isAppleFamily(os.toLowerCase())) {
       payload.AppleIfv = get(message, "context.device.id");
@@ -179,7 +194,12 @@ const trackResponseBuilder = (message, Config) => {
  * @returns
  */
 const pageResponseBuilder = (message, Config) => {
-  const { campaignId, enablePageEvents, impactAppId } = Config;
+  const {
+    campaignId,
+    enablePageEvents,
+    impactAppId,
+    enableEmailHashing
+  } = Config;
 
   if (!enablePageEvents) {
     throw new ConfigurationError(
@@ -188,7 +208,7 @@ const pageResponseBuilder = (message, Config) => {
   }
 
   return responseBuilder(
-    buildPageLoadResponse(message, campaignId, impactAppId),
+    buildPageLoadResponse(message, campaignId, impactAppId, enableEmailHashing),
     CONFIG_CATEGORIES.PAGELOAD.endPoint,
     Config
   );
@@ -201,7 +221,12 @@ const pageResponseBuilder = (message, Config) => {
  * @returns
  */
 const screenResponseBuilder = (message, Config) => {
-  const { campaignId, enableScreenEvents, impactAppId } = Config;
+  const {
+    campaignId,
+    enableScreenEvents,
+    impactAppId,
+    enableEmailHashing
+  } = Config;
 
   if (!enableScreenEvents) {
     throw new ConfigurationError(
@@ -210,7 +235,7 @@ const screenResponseBuilder = (message, Config) => {
   }
 
   return responseBuilder(
-    buildPageLoadResponse(message, campaignId, impactAppId),
+    buildPageLoadResponse(message, campaignId, impactAppId, enableEmailHashing),
     CONFIG_CATEGORIES.PAGELOAD.endPoint,
     Config
   );

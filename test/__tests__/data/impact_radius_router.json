@@ -9,6 +9,7 @@
             "campaignId": "23224",
             "impactAppId": "2323",
             "eventTypeId": "56446",
+            "enableEmailHashing": true,
             "rudderToImpactProperty": [
               {
                 "from": "profit",
@@ -129,6 +130,7 @@
             "campaignId": "23224",
             "impactAppId": "2323",
             "eventTypeId": "56446",
+            "enableEmailHashing": true,
             "rudderToImpactProperty": [
               {
                 "from": "properties.profit",
@@ -200,6 +202,7 @@
             "campaignId": "23224",
             "impactAppId": "2323",
             "eventTypeId": "56446",
+            "enableEmailHashing": true,
             "rudderToImpactProperty": [
               {
                 "from": "profit",
@@ -274,6 +277,7 @@
             "campaignId": "23224",
             "impactAppId": "2323",
             "eventTypeId": "56446",
+            "enableEmailHashing": true,
             "rudderToImpactProperty": [
               {
                 "from": "properties.profit",

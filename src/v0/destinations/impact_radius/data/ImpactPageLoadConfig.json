@@ -111,11 +111,5 @@
     "sourceKeys": "context.os.version",
     "sourceFromGenericMap": false,
     "required": false
-  },
-  {
-    "destKey": "DeviceOsVer",
-    "sourceKeys": "context.device.advertisingId",
-    "sourceFromGenericMap": false,
-    "required": false
   }
 ]

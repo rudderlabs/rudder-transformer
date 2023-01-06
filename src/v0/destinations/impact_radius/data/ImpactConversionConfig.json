@@ -83,12 +83,6 @@
     "required": false
   },
   {
-    "destKey": "OrderTax",
-    "sourceKeys": "properties.tax",
-    "sourceFromGenericMap": false,
-    "required": false
-  },
-  {
     "destKey": "MediaId",
     "sourceKeys": "mediaid",
     "sourceFromGenericMap": false,
@@ -234,12 +228,6 @@
   {
     "destKey": "DeviceOsVer",
     "sourceKeys": "context.os.version",
-    "sourceFromGenericMap": false,
-    "required": false
-  },
-  {
-    "destKey": "DeviceOsVer",
-    "sourceKeys": "context.device.advertisingId",
     "sourceFromGenericMap": false,
     "required": false
   }

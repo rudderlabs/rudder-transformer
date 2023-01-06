@@ -47,6 +47,7 @@
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -150,6 +151,7 @@
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -220,6 +222,7 @@
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -292,6 +295,7 @@
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -364,6 +368,7 @@
           "campaignId": "",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -446,6 +451,7 @@
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -564,6 +570,7 @@
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -684,6 +691,7 @@
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -809,6 +817,7 @@
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -850,7 +859,7 @@
           "CustomerId": "Ujjwalab",
           "ItemBrand1": "zara",
           "ItemPrice1": 332,
-          "DeviceOsVer": "435o4GRlm",
+          "DeviceOsVer": "9",
           "EventTypeId": "56446",
           "ImpactAppId": "2323",
           "DeviceLocale": "en-US",
@@ -938,6 +947,7 @@
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -979,7 +989,7 @@
           "CustomerId": "Ujjwalab",
           "ItemBrand1": "zara",
           "ItemPrice1": 332,
-          "DeviceOsVer": "435o4GRlm",
+          "DeviceOsVer": "15.2",
           "EventTypeId": "56446",
           "ImpactAppId": "2323",
           "DeviceLocale": "en-US",
@@ -1052,6 +1062,7 @@
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -1155,6 +1166,7 @@
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -1268,6 +1280,7 @@
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -1350,6 +1363,7 @@
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -1428,6 +1442,7 @@
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -1553,6 +1568,7 @@
           "campaignId": "23224",
           "impactAppId": "2323",
           "eventTypeId": "56446",
+          "enableEmailHashing": true,
           "rudderToImpactProperty": [
             {
               "from": "properties.profit",
@@ -1594,7 +1610,7 @@
           "CustomerId": "Ujjwalab",
           "ItemBrand1": "zara",
           "ItemPrice1": 332,
-          "DeviceOsVer": "435o4GRlm",
+          "DeviceOsVer": "15.2",
           "EventTypeId": "56446",
           "ImpactAppId": "2323",
           "DeviceLocale": "en-US",

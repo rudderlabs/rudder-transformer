@@ -39,16 +39,35 @@ const {
 } = require("./utils");
 
 /**
- * Returns GA4 client_id
+ * checks for hybrid mode
+ * @param {*} Config
+ * @returns
+ */
+const isHybridModeEnabled = Config => {
+  const { useNativeSDK, useNativeSDKToSend } = Config;
+  return useNativeSDK && !useNativeSDKToSend;
+};
+
+/**
+ * returns client_id
  * @param {*} message
  * @param {*} clientIdFieldIdentifier
  * @returns
  */
-const getGA4ClientId = (message, { clientIdFieldIdentifier }) => {
+const getGA4ClientId = (message, Config) => {
   let clientId;
-  // first we will search from webapp
-  if (clientIdFieldIdentifier) {
-    clientId = get(message, clientIdFieldIdentifier);
+
+  // if hybrid mode enabled, take client_id from integrationsObj
+  if (isHybridModeEnabled(Config)) {
+    const integrationsObj = getIntegrationsObj(message, "ga4");
+    if (integrationsObj && integrationsObj.clientId) {
+      return integrationsObj.clientId;
+    }
+  }
+
+  // for cloud mode first we will search from webapp
+  if (Config.clientIdFieldIdentifier) {
+    clientId = get(message, Config.clientIdFieldIdentifier);
   }
   // if we don't find it from the config then we will fall back to the default search
   if (!clientId) {

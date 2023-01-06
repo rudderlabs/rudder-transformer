@@ -1,6 +1,5 @@
-const _ = require("lodash");
 const { httpPOST } = require("../../../adapters/network");
-const { getEndpoint, MAX_BATCH_SIZE } = require("./config");
+const { getEndpoint, DEL_MAX_BATCH_SIZE } = require("./config");
 const {
   processAxiosResponse,
   getDynamicErrorType
@@ -9,10 +8,11 @@ const { isHttpStatusSuccess } = require("../../util");
 const { executeCommonValidations } = require("../../util/regulation-api");
 const { NetworkError, ConfigurationError } = require("../../util/errorTypes");
 const tags = require("../../util/tags");
+const { getUserIdBatches } = require("../../util/deleteUserUtils");
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
- * @param {*} userAttributes Array of objects with userId, emaail and phone
+ * @param {*} userAttributes Array of objects with userId, email and phone
  * @param {*} config Destination.Config provided in dashboard
  * @returns
  */
@@ -31,41 +31,39 @@ const userDeletionHandler = async (userAttributes, config) => {
     "X-CleverTap-Passcode": passcode,
     "Content-Type": "application/json"
   };
-  const identity = [];
-  userAttributes.forEach(userAttribute => {
-    // Dropping the user if userId is not present
-    if (userAttribute.userId) {
-      identity.push(userAttribute.userId);
-    }
-  });
-
-  // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+  // userIdBatches = [[u1,u2,u3,...batchSize],[u1,u2,u3,...batchSize]...]
   // ref : https://developer.clevertap.com/docs/disassociate-api
-  const batchEvents = _.chunk(identity, MAX_BATCH_SIZE);
-  batchEvents.forEach(async batchEvent => {
-    const deletionRespone = await httpPOST(
+  const userIdBatches = getUserIdBatches(userAttributes, DEL_MAX_BATCH_SIZE);
+  // Note: The logic here intentionally avoided to use Promise.all
+  // where all the batch deletion requests are parallelized as
+  // simultaneous requests to CleverTap resulted in hitting API rate limits.
+  // Also, the rate limit is not clearly documented.
+  for (let idx = 0; idx < userIdBatches.length; idx += 1) {
+    const curBatch = userIdBatches[idx];
+    // eslint-disable-next-line no-await-in-loop
+    const deletionResponse = await httpPOST(
       endpoint,
       {
-        identity: batchEvent
+        identity: curBatch
       },
       {
         headers
       }
     );
-    const processedDeletionRespone = processAxiosResponse(deletionRespone);
-    if (!isHttpStatusSuccess(processedDeletionRespone.status)) {
+    const handledDelResponse = processAxiosResponse(deletionResponse);
+    if (!isHttpStatusSuccess(handledDelResponse.status)) {
       throw new NetworkError(
-        "[Clevertap]::Deletion Request is not successful",
-        processedDeletionRespone.status,
+        "User deletion request failed",
+        handledDelResponse.status,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-            processedDeletionRespone.status
+            handledDelResponse.status
           )
         },
-        deletionRespone
+        handledDelResponse
       );
     }
-  });
+  }
 
   return {
     statusCode: 200,

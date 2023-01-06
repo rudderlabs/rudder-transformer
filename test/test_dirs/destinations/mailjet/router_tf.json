@@ -2,40 +2,43 @@
   {
     "testType": "router_tf",
     "destinationName": "mailjet",
-    "input": [
-      {
-        "destination": {
-          "Config": {
-            "apiKey": "607287ffadf52c4888101870b9e71c52",
-            "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2",
-            "listId": "58578",
-            "contactPropertiesMapping": [
-              { "from": "userCountry", "to": "country" }
-            ]
-          }
-        },
-        "metadata": {
-          "jobId": 1
-        },
-        "message": {
-          "userId": "user@45",
-          "type": "identify",
-          "context": {
-            "traits": {
-              "age": "30",
-              "email": "test@user.com",
-              "phone": "7267286346802347827",
-              "userId": "sajal",
-              "city": "gondal",
-              "userCountry": "india",
-              "lastName": "dev",
-              "username": "Samle_putUserName",
-              "firstName": "rudderlabs"
+    "input": {
+      "input": [
+        {
+          "destination": {
+            "Config": {
+              "apiKey": "607287ffadf52c4888101870b9e71c52",
+              "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2",
+              "listId": "58578",
+              "contactPropertiesMapping": [
+                { "from": "userCountry", "to": "country" }
+              ]
+            }
+          },
+          "metadata": {
+            "jobId": 1
+          },
+          "message": {
+            "userId": "user@45",
+            "type": "identify",
+            "context": {
+              "traits": {
+                "age": "30",
+                "email": "test@user.com",
+                "phone": "7267286346802347827",
+                "userId": "sajal",
+                "city": "gondal",
+                "userCountry": "india",
+                "lastName": "dev",
+                "username": "Samle_putUserName",
+                "firstName": "rudderlabs"
+              }
             }
           }
         }
-      }
-    ],
+      ],
+      "destType": "mailjet"
+    },
     "output": [
       {
         "batchedRequest": {

@@ -3,161 +3,169 @@
     "description": "No Message type",
     "testType": "proc_tf",
     "destinationName": "mailjet",
-    "input": [{
-      "message": {
-        "userId": "test@123",
-        "context": {
-          "traits": {
-            "email": "test@rudderstack.com",
-            "username": "Samle_putUserName",
-            "firstName": "uday"
+    "input": [
+      {
+        "message": {
+          "userId": "test@123",
+          "context": {
+            "traits": {
+              "email": "test@rudderstack.com",
+              "username": "Samle_putUserName",
+              "firstName": "uday"
+            }
+          },
+          "integrations": {
+            "All": true,
+            "user.com": {
+              "lookup": "email"
+            }
           }
         },
-        "integrations": {
-          "All": true,
-          "user.com": {
-            "lookup": "email"
+        "destination": {
+          "Config": {
+            "apiKey": "607287ffadf52c4888101870b9e71c52",
+            "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
           }
         }
-      },
-      "destination": {
-        "Config": {
-          "apiKey": "607287ffadf52c4888101870b9e71c52",
-          "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
-        }
       }
-    }],
+    ],
     "output": {
       "error": "Event type is required",
-      "statTags":  {
-          "destType": "MAILJET",
-            "errorCategory": "dataValidation",
-          "errorType": "instrumentation",
-           "feature": "processor",
-           "implementation": "native",
-           "module": "destination"
-          },
-         "statusCode": 400
+      "statTags": {
+        "destType": "MAILJET",
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation",
+        "feature": "processor",
+        "implementation": "native",
+        "module": "destination"
+      },
+      "statusCode": 400
     }
   },
   {
     "description": "Unsupported Type",
     "testType": "proc_tf",
     "destinationName": "mailjet",
-    "input": [{
-      "message": {
-        "userId": "test@123",
-        "type": "trackUser",
-        "context": {
-          "traits": {
-            "email": "test@rudderstack.com",
-            "firstName": "test",
-            "lastName": "rudderstack",
-            "age": 15,
-            "gender": "male",
-            "status": "user",
-            "city": "Kalkata",
-            "country": "india",
-            "tags": ["productuser"],
-            "phone": "9225467887"
+    "input": [
+      {
+        "message": {
+          "userId": "test@123",
+          "type": "trackUser",
+          "context": {
+            "traits": {
+              "email": "test@rudderstack.com",
+              "firstName": "test",
+              "lastName": "rudderstack",
+              "age": 15,
+              "gender": "male",
+              "status": "user",
+              "city": "Kalkata",
+              "country": "india",
+              "tags": ["productuser"],
+              "phone": "9225467887"
+            }
+          }
+        },
+        "destination": {
+          "Config": {
+            "apiKey": "607287ffadf52c4888101870b9e71c52",
+            "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
           }
         }
-      },
-      "destination": {
-        "Config": {
-          "apiKey": "607287ffadf52c4888101870b9e71c52",
-          "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
-        }
       }
-    }],
+    ],
     "output": {
       "error": "Event type \"trackuser\" is not supported",
-      "statTags":  {
-          "destType": "MAILJET",
-            "errorCategory": "dataValidation",
-          "errorType": "instrumentation",
-           "feature": "processor",
-           "implementation": "native",
-           "module": "destination"
-          },
-         "statusCode": 400
+      "statTags": {
+        "destType": "MAILJET",
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation",
+        "feature": "processor",
+        "implementation": "native",
+        "module": "destination"
+      },
+      "statusCode": 400
     }
   },
   {
     "description": "MailJet identify call without an email",
     "testType": "proc_tf",
     "destinationName": "mailjet",
-    "input": [{
-      "message": {
-        "userId": "test@123",
-        "type": "identify",
-        "context": {
-          "traits": {
-            "firstName": "test",
-            "lastName": "rudderstack",
-            "age": 15,
-            "gender": "male",
-            "status": "user",
-            "city": "Kalkata",
-            "country": "india",
-            "tags": ["productuser"],
-            "phone": "9225467887"
+    "input": [
+      {
+        "message": {
+          "userId": "test@123",
+          "type": "identify",
+          "context": {
+            "traits": {
+              "firstName": "test",
+              "lastName": "rudderstack",
+              "age": 15,
+              "gender": "male",
+              "status": "user",
+              "city": "Kalkata",
+              "country": "india",
+              "tags": ["productuser"],
+              "phone": "9225467887"
+            }
+          }
+        },
+        "destination": {
+          "Config": {
+            "apiKey": "607287ffadf52c4888101870b9e71c52",
+            "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
           }
         }
-      },
-      "destination": {
-        "Config": {
-          "apiKey": "607287ffadf52c4888101870b9e71c52",
-          "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
-        }
       }
-    }],
+    ],
     "output": {
       "error": "Missing required value from \"email\"",
-      "statTags":  {
-          "destType": "MAILJET",
-            "errorCategory": "dataValidation",
-          "errorType": "instrumentation",
-           "feature": "processor",
-           "implementation": "native",
-           "module": "destination"
-          },
-         "statusCode": 400
+      "statTags": {
+        "destType": "MAILJET",
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation",
+        "feature": "processor",
+        "implementation": "native",
+        "module": "destination"
+      },
+      "statusCode": 400
     }
   },
   {
     "description": "Mailjet identify call without batching",
     "testType": "proc_tf",
     "destinationName": "mailjet",
-    "input": [{
-      "message": {
-        "userId": "user@45",
-        "type": "identify",
-        "context": {
-          "traits": {
-            "age": "30",
-            "email": "test@user.com",
-            "phone": "7267286346802347827",
-            "userId": "sajal",
-            "city": "gondal",
-            "userCountry": "india",
-            "lastName": "dev",
-            "username": "Samle_putUserName",
-            "firstName": "rudderlabs"
+    "input": [
+      {
+        "message": {
+          "userId": "user@45",
+          "type": "identify",
+          "context": {
+            "traits": {
+              "age": "30",
+              "email": "test@user.com",
+              "phone": "7267286346802347827",
+              "userId": "sajal",
+              "city": "gondal",
+              "userCountry": "india",
+              "lastName": "dev",
+              "username": "Samle_putUserName",
+              "firstName": "rudderlabs"
+            }
+          }
+        },
+        "destination": {
+          "Config": {
+            "apiKey": "607287ffadf52c4888101870b9e71c52",
+            "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2",
+            "listId": "58578",
+            "contactPropertiesMapping": [
+              { "from": "userCountry", "to": "country" }
+            ]
           }
         }
-      },
-      "destination": {
-        "Config": {
-          "apiKey": "607287ffadf52c4888101870b9e71c52",
-          "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2",
-          "listId": "58578",
-          "contactPropertiesMapping": [
-            { "from": "userCountry", "to": "country" }
-          ]
-        }
       }
-    }],
+    ],
     "output": {
       "version": "1",
       "type": "REST",

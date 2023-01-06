@@ -1,6 +1,18 @@
 [
   [
     {
+      "statusCode": 400,
+      "error": "User deletion request failed"
+    }
+  ],
+  [
+    {
+      "statusCode": 200,
+      "status": "successful"
+    }
+  ],
+  [
+    {
       "statusCode": 500,
       "error": "API Token and one of Apple ID or Android App Id are required fields for user deletion"
     }
@@ -8,7 +20,7 @@
   [
     {
       "statusCode": 500,
-      "error": "you can send atmost 3 callBackUrls"
+      "error": "You can send utmost 3 callBackUrls"
     }
   ],
   [
@@ -27,12 +39,6 @@
     {
       "statusCode": 400,
       "error": "none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion"
-    }
-  ],
-  [
-    {
-      "statusCode": 500,
-      "error": "you can send atmost 3 callBackUrls"
     }
   ]
 ]

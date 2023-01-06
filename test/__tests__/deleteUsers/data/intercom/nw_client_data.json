@@ -1,0 +1,96 @@
+[
+    [
+        {
+            "type": "post",
+            "reqParams": [
+                "https://api.intercom.io/users/1",
+                {
+                    "intercom_user_id": 1
+                },
+                {
+                    "Accept": "application/json",
+                    "Authorization": "Bearer API_KEY"
+                }
+            ],
+            "response": {
+                "code": 401,
+                "statusText": "Unauthorized",
+                "response": {
+                    "data": {
+                        "type": "error.list",
+                        "request_id": "0022e6v5qc7m04jeu5pg",
+                        "errors": [
+                            {
+                                "code": "unauthorized",
+                                "message": "Access Token Invalid"
+                            }
+                        ]
+                    },
+                    "status": 400
+                }
+            }
+        },
+        {
+            "type": "post",
+            "reqParams": [
+                "https://api.intercom.io/user_delete_requests",
+                {
+                    "intercom_user_id": 12
+                },
+                {
+                    "Accept": "application/json",
+                    "Authorization": "Bearer API_KEY"
+                }
+            ],
+            "response": {
+                "status": 200,
+                "statusText": "ok",
+                "data": {
+                    "id": 12
+                }
+            }
+        }
+    ],
+    [
+        {
+            "type": "post",
+            "reqParams": [
+                "https://api.intercom.io/user_delete_requests",
+                {
+                    "intercom_user_id": 7
+                },
+                {
+                    "Accept": "application/json",
+                    "Authorization": "Bearer API_KEY"
+                }
+            ],
+            "response": {
+                "status": 200,
+                "statusText": "ok",
+                "data": {
+                    "id": 7
+                }
+            }
+        },
+        {
+            "type": "post",
+            "reqParams": [
+                "https://api.intercom.io/user_delete_requests",
+                {
+                    "intercom_user_id": 9
+                },
+                {
+                    "Accept": "application/json",
+                    "Authorization": "Bearer API_KEY"
+                }
+            ],
+            "response": {
+                "status": 200,
+                "statusText": "ok",
+                "data": {
+                    "id": 9
+                }
+            }
+        }
+    ]
+]

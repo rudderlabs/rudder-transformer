@@ -1783,6 +1783,16 @@ const validatePhoneWithCountryCode = phone => {
   return !!regex.test(phone);
 };
 
+/**
+ * checks for hybrid mode
+ * @param {*} Config
+ * @returns
+ */
+const isHybridModeEnabled = Config => {
+  const { useNativeSDK, useNativeSDKToSend } = Config;
+  return useNativeSDK && !useNativeSDKToSend;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1874,5 +1884,6 @@ module.exports = {
   refinePayload,
   validateEmail,
   validatePhoneWithCountryCode,
-  getEventReqMetadata
+  getEventReqMetadata,
+  isHybridModeEnabled
 };

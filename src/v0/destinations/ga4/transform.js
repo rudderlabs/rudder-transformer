@@ -10,7 +10,8 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
   getFieldValueFromMessage,
-  getIntegrationsObj
+  getIntegrationsObj,
+  isHybridModeEnabled
 } = require("../../util");
 const {
   InstrumentationError,
@@ -37,16 +38,6 @@ const {
   getGA4CustomParameters,
   GA4_PARAMETERS_EXCLUSION
 } = require("./utils");
-
-/**
- * checks for hybrid mode
- * @param {*} Config
- * @returns
- */
-const isHybridModeEnabled = Config => {
-  const { useNativeSDK, useNativeSDKToSend } = Config;
-  return useNativeSDK && !useNativeSDKToSend;
-};
 
 /**
  * returns client_id

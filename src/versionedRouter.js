@@ -923,6 +923,64 @@ if (startSourceTransformer) {
   });
 }
 
+async function handleProxyBatchRequest(destination, ctx) {
+  const { metadatas, messages } = ctx.request.body;
+  const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
+    destination
+  );
+  const responses = await Promise.allSettled(
+    messages.map(async (destinationRequest, mIndex) => {
+      let response;
+      const metadata = metadatas[mIndex][0];
+      try {
+        const startTime = new Date();
+        const rawProxyResponse = await destNetworkHandler.proxy(
+          destinationRequest
+        );
+        stats.timing("proxy_batch_time", startTime, {
+          destType: destination?.toUpperCase()
+        });
+
+        const processedProxyResponse = destNetworkHandler.processAxiosResponse(
+          rawProxyResponse
+        );
+        response = destNetworkHandler.responseHandler(
+          { ...processedProxyResponse, rudderJobMetadata: metadata },
+          destination
+        );
+      } catch (err) {
+        logger.error("Error occurred while completing proxy request:");
+        logger.error(err);
+        response = generateErrorObject(
+          err,
+          destination,
+          TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM
+        );
+        response.statTags = {
+          errorAt: TRANSFORMER_METRIC.ERROR_AT.PROXY,
+          ...response.statTags
+        };
+        stats.counter("tf_proxy_err_count", 1, {
+          destType: destination?.toUpperCase()
+        });
+      }
+      return response;
+    })
+  );
+  ctx.body = {
+    output: responses.map(resp => {
+      if (resp.status === "fulfilled") {
+        return resp.value;
+      }
+      return resp.reason;
+    })
+  };
+  // Sending `204` status(obtained from destination) is not working as expected
+  // Since this is success scenario, we'll be forcefully sending `200` status-code to server
+  ctx.status = 200;
+  return ctx.body;
+}
+
 async function handleProxyRequest(destination, ctx) {
   const getReqMetadata = () => {
     try {
@@ -1007,6 +1065,18 @@ if (transformerProxy) {
           await handleProxyRequest(destination, ctx);
           stats.timing("transformer_total_proxy_latency", startTime, {
             destination,
+            version
+          });
+        }
+      );
+      router.post(
+        `/${version}/destinations/${destination}/proxyBatch`,
+        async ctx => {
+          const startTime = new Date();
+          ctx.set("apiVersion", API_VERSION);
+          await handleProxyBatchRequest(destination, ctx);
+          stats.timing("total_proxy_batch_latency", startTime, {
+            destType: destination?.toUpperCase(),
             version
           });
         }

@@ -1,0 +1,33 @@
+[
+  {
+    "destKey": "payload.summary",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "payload.timestamp",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "payload.source",
+    "sourceKeys": "properties.source",
+    "required": false
+  },
+  {
+    "destKey": "payload.custom_details",
+    "sourceKeys": "properties.customDetails",
+    "required": false
+  },
+  {
+    "destKey": "links",
+    "sourceKeys": "properties.linkURLs",
+    "required": false
+  },
+  {
+    "destKey": "images",
+    "sourceKeys": "properties.imageURLs",
+    "required": false
+  }
+]

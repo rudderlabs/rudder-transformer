@@ -7,14 +7,15 @@ const {
   defaultPatchRequestConfig,
   defaultGetRequestConfig,
   defaultRequestConfig,
-  getHashFromArray,
   getFieldValueFromMessage,
   flattenJson,
   isDefinedAndNotNull,
+  getHashFromArray,
   simpleProcessRouterDest,
   defaultDeleteRequestConfig,
   getIntegrationsObj
 } = require("../../util");
+
 const { EventType } = require("../../../constants");
 const { ConfigurationError } = require("../../util/errorTypes");
 
@@ -24,17 +25,17 @@ const getPropertyParams = message => {
   }
   return flattenJson(message.properties);
 };
+const processEvent = event => {
+  const { DESTINATION, message, destination } = event;
 
-function process(event) {
-  const { message, destination } = event;
-  const integrationsObj = getIntegrationsObj(message, "webhook");
+  const integrationsObj = getIntegrationsObj(message, DESTINATION);
   // set context.ip from request_ip if it is missing
   if (!get(message, "context.ip") && isDefinedAndNotNull(message.request_ip)) {
     set(message, "context.ip", message.request_ip);
   }
   const response = defaultRequestConfig();
-  const url = destination.Config.webhookUrl;
-  const method = destination.Config.webhookMethod;
+  const url = destination.Config[`${DESTINATION}Url`];
+  const method = destination.Config[`${DESTINATION}Method`];
   const { headers } = destination.Config;
 
   if (url) {
@@ -65,8 +66,8 @@ function process(event) {
         response.params = getPropertyParams(message);
         break;
       }
-      default:
-      case defaultPostRequestConfig.requestMethod: {
+      case defaultPostRequestConfig.requestMethod:
+      default: {
         response.method = defaultPostRequestConfig.requestMethod;
         response.body.JSON = message;
         response.headers = {
@@ -150,11 +151,23 @@ function process(event) {
     return response;
   }
   throw new ConfigurationError("Invalid URL in destination config");
-}
+};
+const DESTINATION = "webhook";
+const process = event => {
+  const response = processEvent({ ...event, DESTINATION });
+  return response;
+};
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  const destNameRichInputs = inputs.map(input => {
+    return { ...input, DESTINATION };
+  });
+  const respList = await simpleProcessRouterDest(
+    destNameRichInputs,
+    processEvent,
+    reqMetadata
+  );
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+module.exports = { processEvent, process, processRouterDest };

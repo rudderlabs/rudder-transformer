@@ -38,8 +38,9 @@ const TRACK_EXCLUSION_FIELDS = [
   "trackingSettings"
 ];
 
-const DELETE_CONTACTS_ENDPOINT = `${BASE_ENDPOINT}/marketing/contacts`;
+const DELETE_CONTACTS_ENDPOINT = `${BASE_ENDPOINT}/marketing/contacts?ids=[IDS]`;
 const MAX_BATCH_SIZE = 30000;
+const delIdUrlLimit = 8150;
 
 module.exports = {
   MAPPING_CONFIG,
@@ -49,5 +50,6 @@ module.exports = {
   CONFIG_CATEGORIES,
   TRACK_EXCLUSION_FIELDS,
   DESTINATION: "SENDGRID",
-  DELETE_CONTACTS_ENDPOINT
+  DELETE_CONTACTS_ENDPOINT,
+  delIdUrlLimit
 };

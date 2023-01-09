@@ -1773,6 +1773,16 @@ const refinePayload = obj => {
   return refinedPayload;
 };
 
+/**
+ * checks for hybrid mode
+ * @param {*} Config
+ * @returns
+ */
+const isHybridModeEnabled = Config => {
+  const { useNativeSDK, useNativeSDKToSend } = Config;
+  return useNativeSDK && !useNativeSDKToSend;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1861,5 +1871,6 @@ module.exports = {
   getErrorStatusCode,
   getDestAuthCacheInstance,
   refinePayload,
-  getEventReqMetadata
+  getEventReqMetadata,
+  isHybridModeEnabled
 };

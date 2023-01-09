@@ -274,7 +274,6 @@ async function getUserId(message, headers, baseEndpoint, type) {
     return undefined;
   }
   const url = `${baseEndpoint}users/search.json?query=${userEmail}`;
-  // let url  = endPoint + `users/search.json?external_id=${externalId}`;
   const config = { headers };
 
   try {
@@ -671,7 +670,7 @@ async function processGroup(message, destinationConfig, headers, baseEndpoint) {
   // category = ConfigCategory.IDENTIFY;
   // payload = getIdentifyPayload(message, category, destinationConfig, "group");
   // payload.user.organization_id = orgId;
-  // url = endPoint + category.createOrUpdateUserEndpoint;
+  // url = baseEndpoint + category.createOrUpdateUserEndpoint;
   // return responseBuilder(message, headers, payload, url);
 
   return responseBuilder(message, headers, payload, url);

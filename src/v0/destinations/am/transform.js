@@ -9,7 +9,6 @@ const {
   TraitsMapping,
   MappedToDestinationKey
 } = require("../../../constants");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const {
   addExternalIdToTraits,
   adduserIdFromExternalId,
@@ -21,27 +20,28 @@ const {
   getFieldValueFromMessage,
   getValueFromMessage,
   deleteObjectProperty,
-  getSuccessRespEvents,
   getErrorRespEvents,
-  generateErrorObject,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
   isAppleFamily,
-  isDefinedAndNotNullAndNotEmpty
+  isDefinedAndNotNullAndNotEmpty,
+  simpleProcessRouterDest
 } = require("../../util");
-const ErrorBuilder = require("../../util/error");
 const {
-  DESTINATION,
   BASE_URL,
   BASE_URL_EU,
   ConfigCategory,
   mappingConfig,
   batchEventsWithUserIdLengthLowerThanFive
 } = require("./config");
+const {
+  client: errNotificationClient
+} = require("../../../util/errorNotifier");
 
 const AMUtils = require("./utils");
 
 const logger = require("../../../logger");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
 const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
@@ -499,6 +499,14 @@ function responseBuilderSimple(
           delete payload.user_properties.address.country;
         }
       }
+
+      if (!payload.user_id && !payload.device_id) {
+        logger.debug("Either of user ID or device ID fields must be specified");
+        throw new InstrumentationError(
+          "Either of user ID or device ID fields must be specified"
+        );
+      }
+
       payload.ip = getParsedIP(message);
       payload.library = "rudderstack";
       payload = removeUndefinedAndNullValues(payload);
@@ -610,18 +618,7 @@ function processSingleMessage(message, destination) {
           groupInfo.group_properties = groupTraits;
         } else {
           logger.debug("Group call parameters are not valid");
-          throw new ErrorBuilder()
-            .setStatus(400)
-            .setMessage("Group call parameters are not valid")
-            .setStatTags({
-              destType: DESTINATION,
-              stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-              meta:
-                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-                  .INSTRUMENTATION
-            })
-            .build();
+          throw new InstrumentationError("Group call parameters are not valid");
         }
       }
       break;
@@ -635,17 +632,7 @@ function processSingleMessage(message, destination) {
     case EventType.TRACK:
       evType = message.event;
       if (!isDefinedAndNotNullAndNotEmpty(evType)) {
-        throw new ErrorBuilder()
-          .setStatus(400)
-          .setMessage("message type not defined")
-          .setStatTags({
-            destType: DESTINATION,
-            stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-            meta:
-              TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-          })
-          .build();
+        throw new InstrumentationError("message type not defined");
       }
       if (
         message.properties &&
@@ -661,17 +648,7 @@ function processSingleMessage(message, destination) {
       break;
     default:
       logger.debug("could not determine type");
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage("message type not supported")
-        .setStatTags({
-          destType: DESTINATION,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        })
-        .build();
+      throw new InstrumentationError("message type not supported");
   }
   return responseBuilderSimple(
     groupInfo,
@@ -949,44 +926,8 @@ function batch(destEvents) {
   return respList;
 }
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        const errRes = generateErrorObject(
-          error,
-          DESTINATION,
-          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-        );
-        return getErrorRespEvents(
-          [input.metadata],
-          error.status || 400,
-          error.message || "Error occurred while processing payload.",
-          errRes.statTags
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

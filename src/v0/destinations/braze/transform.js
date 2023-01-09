@@ -9,13 +9,11 @@ const {
   getDestinationExternalID,
   getFieldValueFromMessage,
   removeUndefinedValues,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  generateErrorObject,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
+  simpleProcessRouterDest
 } = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const ErrorBuilder = require("../../util/error");
+
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const {
   ConfigCategory,
@@ -26,8 +24,11 @@ const {
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,
-  DESTINATION
+  supportedOperationTypes,
+  nestedOperationTypes
 } = require("./config");
+
+const logger = require("../../../logger");
 
 function formatGender(gender) {
   // few possible cases of woman
@@ -302,16 +303,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
         getTrackEndPoint(destination.Config.endPoint)
       );
     }
-    throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage("Invalid Order Completed event")
-      .setStatTags({
-        destType: DESTINATION,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("Invalid Order Completed event");
   }
   properties = handleReservedProperties(properties);
   let payload = {};
@@ -320,9 +312,81 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   payload = addMandatoryEventProperties(payload, message);
   payload.properties = properties;
 
+  try {
+    // add,update,remove
+    if (destination.Config.enableNestedArrayOperations) {
+      Object.keys(properties)
+        .filter(key => Array.isArray(properties[`${key}`]))
+        .forEach(key => {
+          // if not specified, send as create attribute
+          if (properties.nestedOperationType === nestedOperationTypes.CREATE) {
+            attributePayload[key] = properties[key];
+          } else if (
+            supportedOperationTypes.includes(properties.nestedOperationType)
+          ) {
+            attributePayload[key] = {};
+            const opsResultArray = [];
+            if (
+              properties.nestedOperationType === nestedOperationTypes.UPDATE
+            ) {
+              for (let i = 0; i < properties[key].length; i += 1) {
+                const myObj = {};
+                Object.keys(properties[key][i]).forEach(subKey => {
+                  myObj[`$${subKey}`] = properties[key][i][subKey];
+                });
+                opsResultArray.push(myObj);
+              }
+
+              // eslint-disable-next-line no-underscore-dangle
+              attributePayload._merge_objects = isDefinedAndNotNull(
+                properties.mergeObjectsUpdateOperation
+              )
+                ? properties.mergeObjectsUpdateOperation
+                : false;
+              attributePayload[key][
+                `$${properties.nestedOperationType}`
+              ] = opsResultArray;
+            } else if (
+              properties.nestedOperationType === nestedOperationTypes.REMOVE
+            ) {
+              for (let i = 0; i < properties[key].length; i += 1) {
+                const myObj = {};
+                Object.keys(properties[key][i]).forEach(subKey => {
+                  myObj[`$${subKey}`] = properties[key][i][subKey];
+                });
+                opsResultArray.push(myObj);
+              }
+              attributePayload[key][
+                `$${properties.nestedOperationType}`
+              ] = opsResultArray;
+            } else {
+              // add case
+              attributePayload[key][`$${properties.nestedOperationType}`] =
+                properties[key];
+            }
+          }
+        });
+    }
+  } catch (exp) {
+    logger.info("Failure occured during nested array operations", exp);
+  }
+
   payload = setExternalIdOrAliasObject(payload, message);
   if (payload) {
     requestJson.events = [payload];
+  }
+
+  // update payload as per https://www.braze.com/docs/user_guide/data_and_analytics/custom_data/custom_attributes/array_of_objects/#api-request-body
+  if (
+    destination.Config.enableNestedArrayOperations &&
+    isDefinedAndNotNull(properties.nestedOperationType)
+  ) {
+    delete requestJson.events;
+    delete properties.nestedOperationType;
+    attributePayload.external_id = payload.external_id;
+    if (!requestJson.attributes) {
+      requestJson.attributes = [attributePayload];
+    }
   }
   return buildResponse(
     message,
@@ -340,32 +404,13 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
 function processGroup(message, destination) {
   const groupId = getFieldValueFromMessage(message, "groupId");
   if (!groupId) {
-    throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage("Invalid groupId")
-      .setStatTags({
-        destType: DESTINATION,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError("Invalid groupId");
   }
   if (destination.Config.enableSubscriptionGroupInGroupCall) {
     if (!(message.traits && (message.traits.phone || message.traits.email))) {
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage(
-          "Message should have traits with subscriptionState, email or phone"
-        )
-        .setStatTags({
-          destType: DESTINATION,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-        })
-        .build();
+      throw new InstrumentationError(
+        "Message should have traits with subscriptionState, email or phone"
+      );
     }
     const subscriptionGroup = {};
     subscriptionGroup.subscription_group_id = groupId;
@@ -373,19 +418,9 @@ function processGroup(message, destination) {
       message.traits.subscriptionState !== "subscribed" &&
       message.traits.subscriptionState !== "unsubscribed"
     ) {
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage(
-          "you must provide a subscription state in traits and possible values are subscribed and unsubscribed."
-        )
-        .setStatTags({
-          destType: DESTINATION,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-        })
-        .build();
+      throw new InstrumentationError(
+        "you must provide a subscription state in traits and possible values are subscribed and unsubscribed."
+      );
     }
     subscriptionGroup.subscription_state = message.traits.subscriptionState;
     subscriptionGroup.external_id = [message.userId || message.anonymousId];
@@ -498,17 +533,7 @@ function process(event) {
       respList.push(response);
       break;
     default:
-      throw new ErrorBuilder()
-        .setStatus(400)
-        .setMessage("Message type is not supported")
-        .setStatTags({
-          destType: DESTINATION,
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        })
-        .build();
+      throw new InstrumentationError("Message type is not supported");
   }
 
   return respList;
@@ -728,44 +753,8 @@ function batch(destEvents) {
   return respList;
 }
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        const errObj = generateErrorObject(
-          error,
-          DESTINATION,
-          TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-        );
-        return getErrorRespEvents(
-          [input.metadata],
-          error.status || 400,
-          error.message || "Error occurred while processing payload.",
-          errObj.statTags
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

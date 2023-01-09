@@ -20,16 +20,16 @@ steps:
   - name: validateInput
     template: |
       let messageType = $.outputs.messageType;
-      $.assert(.destination.Config.advertiserId, "Advertiser Id not found. Aborting");
+      $.assertConfig(.destination.Config.advertiserId, "Advertiser Id not found. Aborting");
       $.assert(messageType, "Message type is not present. Aborting message.");
       $.assert(messageType in {{$.EventType.([.TRACK, .PAGE, .SCREEN])}}, 
         "message type " + messageType + " is not supported")
-      
+
   - name: validateInputForTrack
     description: Additional validation for Track events
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
     template: |
-        $.assert(.message.event || .message.name, "event_name could not be mapped. Aborting.")
+      $.assert(.message.event || .message.name, "event_name could not be mapped. Aborting.")
   - name: commonFields
     description: |
       Builds common fields in destination payload.
@@ -72,36 +72,36 @@ steps:
   - name: userFields
     description: Personally identifiable fields
     template: |
-        let gender = .message.traits.gender ?? .message.context.traits.gender;
-        gender = gender && (
-                  (gender in ["f", "F", "Female", "female", "FEMALE"] ? "f") ??
-                  (gender in ["m", "M", "Male", "male", "MALE"] ? "m": gender)
-                );
-        let userFields = .message.().({
-          "em": {{{{$.getGenericPaths("email")}}}},
-          "ph": {{{{$.getGenericPaths("phone")}}}},
-          "ge": gender,
-          "db": {{{{$.getGenericPaths("birthday")}}}},
-          "ln": {{{{$.getGenericPaths("lastName")}}}},
-          "fn": {{{{$.getGenericPaths("firstName")}}}},
-          "ct": (.traits.address.city ?? .context.traits.address.city).toLowerCase(),
-          "st": (.traits.address.state ?? .context.traits.address.state).toLowerCase(),
-          "zp": .traits.address.zip ?? .context.traits.address.zip,
-          "country": (.traits.address.country ?? .context.traits.address.country).toLowerCase(),
-          "hashed_maids": .context.device.advertisingId,
-          "client_ip_address": .context.ip ?? .request_ip,
-          "client_user_agent": .context.userAgent
-        });
-        userFields = $.removeUndefinedValues(userFields);
-        .destination.Config.sendingUnHashedData ? 
-          $.processUserPayload(userFields) :
-          $.processHashedUserPayload(userFields, .message)
+      let gender = .message.traits.gender ?? .message.context.traits.gender;
+      gender = gender && (
+                (gender in ["f", "F", "Female", "female", "FEMALE"] ? "f") ??
+                (gender in ["m", "M", "Male", "male", "MALE"] ? "m": gender)
+              );
+      let userFields = .message.().({
+        "em": {{{{$.getGenericPaths("email")}}}},
+        "ph": {{{{$.getGenericPaths("phone")}}}},
+        "ge": gender,
+        "db": {{{{$.getGenericPaths("birthday")}}}},
+        "ln": {{{{$.getGenericPaths("lastName")}}}},
+        "fn": {{{{$.getGenericPaths("firstName")}}}},
+        "ct": (.traits.address.city ?? .context.traits.address.city).toLowerCase(),
+        "st": (.traits.address.state ?? .context.traits.address.state).toLowerCase(),
+        "zp": .traits.address.zip ?? .context.traits.address.zip,
+        "country": (.traits.address.country ?? .context.traits.address.country).toLowerCase(),
+        "hashed_maids": .context.device.advertisingId,
+        "client_ip_address": .context.ip ?? .request_ip,
+        "client_user_agent": .context.userAgent
+      });
+      userFields = $.removeUndefinedValues(userFields);
+      .destination.Config.sendingUnHashedData ? 
+        $.processUserPayload(userFields) :
+        $.processHashedUserPayload(userFields, .message)
   - name: validateUserFields
     template: |
       const requiredFieldsCondition = $.outputs.userFields.().(.em || .hashed_maids || (.client_ip_address && .client_user_agent));
       $.assert(requiredFieldsCondition, "It is required at least one of em, hashed_maids or" +
-            " pair of client_ip_address and client_user_agent.")
-      
+            " pair of client_ip_address and client_user_agent")
+
   - name: ecomFields
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
     steps:
@@ -114,7 +114,8 @@ steps:
                      .properties.revenue,
             "num_items": .properties.numOfItems && Number(.properties.numOfItems),
             "order_id": .properties.order_id,
-            "search_string": .properties.query
+            "search_string": .properties.query,
+            "opt_out_type": .properties.optOutType
           });
           $.removeUndefinedValues(customFields)
 
@@ -131,7 +132,7 @@ steps:
               "item_price": String(.price ?? prop.price)
             })[]
           }
-        else: 
+        else:
           name: singleProductFields
           template: |
             const props = .message.properties;
@@ -171,7 +172,7 @@ steps:
   - name: payload
     template: |
       $.outputs.eventNames.().({...$.outputs.basePayload, event_name: .})[]
-  
+
   - name: buildResponse
     description: In batchMode we return payload directly
     condition: $.batchMode

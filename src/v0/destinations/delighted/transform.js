@@ -1,7 +1,6 @@
 const { EventType } = require("../../../constants");
 const {
   getFieldValueFromMessage,
-  CustomError,
   defaultRequestConfig,
   extractCustomFields,
   removeUndefinedAndNullValues,
@@ -25,12 +24,16 @@ const {
   TRACKING_EXCLUSION_FIELDS,
   identifyMapping
 } = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+const {
+  InstrumentationError,
+  ConfigurationError,
+  NetworkInstrumentationError
+} = require("../../util/errorTypes");
 
 const identifyResponseBuilder = (message, { Config }) => {
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   if (!userId) {
-    throw new CustomError("userId is required for identify", 400);
+    throw new InstrumentationError("userId is required for identify");
   }
   let channel =
     getDestinationExternalID(message, "delightedChannelType") || Config.channel;
@@ -86,15 +89,14 @@ const trackResponseBuilder = async (message, { Config }) => {
   // checks if the event is valid if not throws error else nothing
   const isValidEvent = eventValidity(Config, message);
   if (!isValidEvent) {
-    throw new CustomError(
-      "Event is not configured on your Rudderstack Dashboard",
-      400
+    throw new ConfigurationError(
+      "Event is not configured on your Rudderstack Dashboard"
     );
   }
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   if (!userId) {
-    throw new CustomError("userId is required.", 400);
+    throw new InstrumentationError("userId is required.");
   }
   let channel =
     getDestinationExternalID(message, "delightedChannelType") || Config.channel;
@@ -106,7 +108,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   const check = await userValidity(channel, Config, userId);
 
   if (!check) {
-    throw new CustomError(`user ${userId} doesnot exist`, 400);
+    throw new NetworkInstrumentationError(`user ${userId} doesn't exist`);
   }
   let payload = {};
   payload[userIdType] = userIdValue;
@@ -152,12 +154,12 @@ const aliasResponseBuilder = (message, { Config }) => {
 
   const userId = getFieldValueFromMessage(message, "userIdOnly");
   if (!userId) {
-    throw new CustomError("userId is required.", 400);
+    throw new InstrumentationError("userId is required.");
   }
   const payload = {};
   const { previousId } = message;
   if (!previousId) {
-    throw new CustomError("Previous Id is required for alias.", 400);
+    throw new InstrumentationError("Previous Id is required for alias.");
   }
   const emailType =
     channel === "email" && isValidEmail(previousId) && isValidEmail(userId);
@@ -172,9 +174,8 @@ const aliasResponseBuilder = (message, { Config }) => {
     payload.phone_number_update = userId;
   }
   if (!emailType && !phoneType) {
-    throw new CustomError(
-      "User Id and Previous Id should be of same type i.e. phone/sms",
-      400
+    throw new InstrumentationError(
+      "User Id and Previous Id should be of same type i.e. phone/sms"
     );
   }
   const basicAuth = Buffer.from(Config.apiKey).toString("base64");
@@ -192,14 +193,13 @@ const aliasResponseBuilder = (message, { Config }) => {
 const process = async event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
 
   if (!destination.Config.apiKey) {
-    throw new CustomError("Inavalid API Key. Aborting message.", 400);
+    throw new ConfigurationError("Inavalid API Key. Aborting message.");
   }
 
   const messageType = message.type.toLowerCase();
@@ -216,13 +216,15 @@ const process = async event => {
       response = aliasResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `message type ${messageType} not supported`
+      );
   }
   return response;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "DELIGHTED", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

@@ -2,7 +2,31 @@
   [
     {
       "statusCode": 400,
+      "error": "User deletion request failed"
+    }
+  ],
+  [
+    {
+      "statusCode": 200,
+      "status": "successful"
+    }
+  ],
+  [
+    {
+      "statusCode": 500,
       "error": "API Token is a required field for user deletion"
+    }
+  ],
+  [
+    {
+      "statusCode": 200,
+      "status": "successful"
+    }
+  ],
+  [
+    {
+      "statusCode": 200,
+      "status": "successful"
     }
   ]
 ]

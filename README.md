@@ -47,6 +47,15 @@ On Linux, install the required dependencies `python`, `make` and `g++` and follo
 2. Run `npm run setup`
 3. Start the server with `ENABLE_FUNCTIONS=false npm start`
 
+### How to run the E2E tests locally
+
+Run `make setup`( `make setup-arm` in case of arm processor(M1 chip)). This operation is needed only once.
+
+Now you can run `make test`.
+
+If you wish you can destroy the cluster manually with `make destroy`.
+
+
 ## Contact Us
 
 If you come across any issues while setting up or running the RudderStack Transformer, feel free to start a conversation on our [Slack](https://resources.rudderstack.com/join-rudderstack-slack) channel.

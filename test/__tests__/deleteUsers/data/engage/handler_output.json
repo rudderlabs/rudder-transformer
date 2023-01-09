@@ -1,15 +1,39 @@
 [
     [
-      {
-        "statusCode": 400,
-        "error": "Public key is a required field for user deletion"
-      }
+        {
+            "statusCode": 400,
+            "error": "User deletion request failed"
+        }
     ],
     [
-      {
-        "statusCode": 400,
-        "error": "User id for deletion not present"
-      }
+        {
+            "statusCode": 400,
+            "error": "User deletion request failed"
+        }
+    ],
+    [
+        {
+            "statusCode": 400,
+            "error": "User deletion request failed"
+        }
+    ],
+    [
+        {
+            "statusCode": 200,
+            "status": "successful"
+        }
+    ],
+    
+    [
+        {
+            "statusCode": 500,
+            "error": "Public key is a required field for user deletion"
+        }
+    ],
+    [
+        {
+            "statusCode": 200,
+            "status": "successful"
+        }
     ]
-  ]
-  
+]

@@ -36,7 +36,7 @@
       }
     },
     "output": {
-      "error": "[ User.com ]:: Message Type is not present. Aborting message."
+      "error": "Event type is required"
     }
   },
   {
@@ -77,7 +77,7 @@
       }
     },
     "output": {
-      "error": "[ User.com ]:: Message type trackuser not supported."
+      "error": "Event type trackuser is not supported"
     }
   },
   {
@@ -108,7 +108,7 @@
       }
     },
     "output": {
-      "error": "[ User.com ]:: parameter event is required"
+      "error": "Parameter event is required"
     }
   },
   {
@@ -150,7 +150,7 @@
       }
     },
     "output": {
-      "error": "[ User.com ]:: Parameter name is required"
+      "error": "Parameter name is required"
     }
   },
   {

@@ -2,13 +2,13 @@
 const _ = require("lodash");
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
   defaultBatchRequestConfig,
   getSuccessRespEvents,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError
 } = require("../../util");
 const { MAX_ROWS_PER_REQUEST, DESTINATION } = require("./config");
+const { InstrumentationError } = require("../../util/errorTypes");
 
 const getInsertIdColValue = (properties, insertIdCol) => {
   if (
@@ -27,10 +27,10 @@ const process = event => {
   const { properties, type } = message;
   // EventType validation
   if (type !== EventType.TRACK) {
-    throw new CustomError(`Message Type not supported: ${type}`, 400);
+    throw new InstrumentationError(`Message Type not supported: ${type}`);
   }
   if (!properties || typeof properties !== "object") {
-    throw new CustomError("Invalid payload for the destination", 400);
+    throw new InstrumentationError("Invalid payload for the destination");
   }
   const {
     destination: {

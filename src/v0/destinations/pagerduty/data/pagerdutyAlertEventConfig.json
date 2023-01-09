@@ -1,0 +1,74 @@
+[
+  {
+    "destKey": "payload.summary",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "payload.timestamp",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "payload.severity",
+    "sourceKeys": "properties.severity",
+    "metadata": {
+      "defaultValue": "critical"
+    },
+    "required": false
+  },
+  {
+    "destKey": "payload.source",
+    "sourceKeys": "properties.source",
+    "required": true
+  },
+  {
+    "destKey": "event_action",
+    "sourceKeys": "properties.action",
+    "metadata": {
+      "defaultValue": "trigger"
+    },
+    "required": false
+  },
+  {
+    "destKey": "links",
+    "sourceKeys": "properties.linkURLs",
+    "required": false
+  },
+  {
+    "destKey": "images",
+    "sourceKeys": "properties.imageURLs",
+    "required": false
+  },
+  {
+    "destKey": "payload.group",
+    "sourceKeys": "properties.group",
+    "required": false
+  },
+  {
+    "destKey": "payload.class",
+    "sourceKeys": "properties.class",
+    "required": false
+  },
+  {
+    "destKey": "payload.component",
+    "sourceKeys": "properties.component",
+    "required": false
+  },
+  {
+    "destKey": "client",
+    "sourceKeys": "properties.client",
+    "required": false
+  },
+  {
+    "destKey": "client_url",
+    "sourceKeys": "properties.clientUrl",
+    "required": false
+  },
+  {
+    "destKey": "payload.custom_details",
+    "sourceKeys": "properties.customDetails",
+    "required": false
+  }
+]

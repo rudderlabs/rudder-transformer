@@ -1,26 +1,26 @@
 [
   [
     {
-      "status": "successful",
-      "statusCode": 200
+      "statusCode": 400,
+      "error": "User deletion request failed"
     }
   ],
   [
     {
-      "statusCode": 400,
+      "statusCode": 200,
+      "status": "successful"
+    }
+  ],
+  [
+    {
+      "statusCode": 500,
       "error": "Config for deletion not present"
     }
   ],
   [
     {
-      "statusCode": 400,
+      "statusCode": 500,
       "error": "api key/secret for deletion not present"
-    }
-  ],
-  [
-    {
-      "statusCode": 400,
-      "error": "User id for deletion not present"
     }
   ]
 ]

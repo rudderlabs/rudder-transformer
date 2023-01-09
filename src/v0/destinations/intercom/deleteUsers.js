@@ -1,45 +1,61 @@
-const { httpSend } = require("../../../adapters/network");
-const { CustomError } = require("../../util");
+const { httpPOST } = require("../../../adapters/network");
+const {
+  processAxiosResponse
+} = require("../../../adapters/utils/networkUtils");
+const { isHttpStatusSuccess } = require("../../util");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const { NetworkError, ConfigurationError } = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
+const tags = require("../../util/tags");
 
+// Ref-> https://developers.intercom.com/intercom-api-reference/v1.3/reference/permanently-delete-a-user
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
-    throw new CustomError("Config for deletion not present", 400);
+    throw new ConfigurationError("Config for deletion not present");
   }
   const { apiKey } = config;
   if (!apiKey) {
-    throw new CustomError("api key for deletion not present", 400);
+    throw new ConfigurationError("api key for deletion not present");
   }
-
-  for (let i = 0; i < userAttributes.length; i += 1) {
-    const uId = userAttributes[i].userId;
-    if (!uId) {
-      throw new CustomError("User id for deletion not present", 400);
+  const validUserIds = [];
+  userAttributes.forEach(userAttribute => {
+    // Dropping the user if userId is not present
+    if (userAttribute.userId) {
+      validUserIds.push(userAttribute.userId);
     }
-    const requestOptions = {
-      method: "delete",
-      url: `https://api.intercom.io/contacts/${uId}`,
-      headers: {
-        Authorization: `Bearer ${apiKey}`
+  });
+  const url = `https://api.intercom.io/user_delete_requests`;
+  await Promise.all(
+    validUserIds.map(async uId => {
+      const data = {
+        intercom_user_id: uId
+      };
+      const requestOptions = {
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          Accept: "application/json"
+        }
+      };
+      const resp = await httpPOST(url, data, requestOptions);
+      const handledDelResponse = processAxiosResponse(resp);
+      if (
+        !isHttpStatusSuccess(handledDelResponse.status) &&
+        handledDelResponse.status !== 404
+      ) {
+        throw new NetworkError(
+          "User deletion request failed",
+          handledDelResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+              handledDelResponse.status
+            )
+          },
+          handledDelResponse
+        );
       }
-    };
-    const resp = await httpSend(requestOptions);
-    if (!resp || !resp.response) {
-      throw new CustomError("Could not get response", 500);
-    }
-    if (
-      resp &&
-      resp.response &&
-      resp.response.response &&
-      resp.response.response.status !== 200 &&
-      resp.response.response.status !== 404 // this will be returned if user is not found. Will send successfull to server
-    ) {
-      throw new CustomError(
-        resp.response.response.statusText || "Error while deleting user",
-        resp.response.response.status
-      );
-    }
-  }
+    })
+  );
+
   return { statusCode: 200, status: "successful" };
 };
 const processDeleteUsers = async event => {

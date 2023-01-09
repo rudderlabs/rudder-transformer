@@ -7,7 +7,7 @@ const {
   extractEmailFromPayload,
   setAnonymousId
 } = require("./util");
-const { CustomError, removeUndefinedAndNullValues } = require("../../util");
+const { removeUndefinedAndNullValues } = require("../../util");
 const Message = require("../message");
 const { EventType } = require("../../../constants");
 const {
@@ -19,6 +19,7 @@ const {
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP
 } = require("./config");
+const { TransformationError } = require("../../util/errorTypes");
 
 const identifyPayloadBuilder = event => {
   const message = new Message(INTEGERATION);
@@ -131,7 +132,9 @@ const processEvent = inputEvent => {
       break;
     default:
       if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
-        throw new CustomError(`event type ${shopifyTopic} not supported`, 400);
+        throw new TransformationError(
+          `event type ${shopifyTopic} not supported`
+        );
       }
       message = trackPayloadBuilder(event, shopifyTopic);
       break;

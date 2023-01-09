@@ -1,48 +1,58 @@
 const btoa = require("btoa");
-const { httpSend } = require("../../../adapters/network");
-const { CustomError } = require("../../util");
+const { httpPOST } = require("../../../adapters/network");
+const tags = require("../../util/tags");
+const {
+  processAxiosResponse,
+  getDynamicErrorType
+} = require("../../../adapters/utils/networkUtils");
+const { isHttpStatusSuccess } = require("../../util");
+const { ConfigurationError, NetworkError } = require("../../util/errorTypes");
 const { executeCommonValidations } = require("../../util/regulation-api");
+const { DELETE_MAX_BATCH_SIZE } = require("./config");
+const { getUserIdBatches } = require("../../util/deleteUserUtils");
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
-    throw new CustomError("Config for deletion not present", 400);
+    throw new ConfigurationError("Config for deletion not present");
   }
   const { apiKey, apiSecret } = config;
   if (!apiKey || !apiSecret) {
-    throw new CustomError("api key/secret for deletion not present", 400);
+    throw new ConfigurationError("api key/secret for deletion not present");
   }
 
-  for (let i = 0; i < userAttributes.length; i += 1) {
-    const uId = userAttributes[i].userId;
-    if (!uId) {
-      throw new CustomError("User id for deletion not present", 400);
-    }
-    const data = { user_ids: [uId], requester: "RudderStack" };
-    const requestOptions = {
-      method: "post",
-      url: "https://amplitude.com/api/2/deletions/users",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Basic ${btoa(`${apiKey}:${apiSecret}`)}`
-      },
-      data
-    };
-    const resp = await httpSend(requestOptions);
-    if (!resp || !resp.response) {
-      throw new CustomError("Could not get response", 500);
-    }
-    if (
-      resp &&
-      resp.response &&
-      resp.response.response &&
-      resp.response.response.status !== 200 // am sends 400 for any bad request or even if user id is not found. The text is also "Bad Request" so not handling user not found case
-    ) {
-      throw new CustomError(
-        resp.response.response.statusText || "Error while deleting user",
-        resp.response.response.status
-      );
-    }
-  }
+  const headers = {
+    "Content-Type": "application/json",
+    Authorization: `Basic ${btoa(`${apiKey}:${apiSecret}`)}`
+  };
+  // Ref : https://www.docs.developers.amplitude.com/analytics/apis/user-privacy-api/#response
+  const batchEvents = getUserIdBatches(userAttributes, DELETE_MAX_BATCH_SIZE);
+  const url = "https://amplitude.com/api/2/deletions/users";
+  await Promise.all(
+    batchEvents.map(async batch => {
+      const data = {
+        user_ids: batch,
+        requester: "RudderStack",
+        ignore_invalid_id: "true"
+      };
+      const requestOptions = {
+        headers
+      };
+      const resp = await httpPOST(url, data, requestOptions);
+      const handledDelResponse = processAxiosResponse(resp);
+      if (!isHttpStatusSuccess(handledDelResponse.status)) {
+        throw new NetworkError(
+          "User deletion request failed",
+          handledDelResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+              handledDelResponse.status
+            )
+          },
+          handledDelResponse
+        );
+      }
+    })
+  );
   return { statusCode: 200, status: "successful" };
 };
 const processDeleteUsers = async event => {

@@ -26,7 +26,7 @@ steps:
   - name: failedEvents
     template: |
       $.outputs.transform#idx.error.(
-        $.handleRtTfSingleEventError(^[idx], .originalError ?? ., "ALGOLIA")
+        $.handleRtTfSingleEventError(^[idx], .originalError ?? ., {})
       )[]
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents

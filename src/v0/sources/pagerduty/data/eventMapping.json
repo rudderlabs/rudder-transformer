@@ -1,0 +1,18 @@
+{
+  "incident.acknowledged": "Incident Acknowledged",
+  "incident.annotated": "Incident Annotated",
+  "incident.delegated": " Incident Delegated",
+  "incident.escalated": "Incident Escalated",
+  "incident.priority_updated": "Incident Priority Updated",
+  "incident.reassigned": "Incident Reassigned",
+  "incident.reopened": "Incident Reopened",
+  "incident.resolved": "Incident Resolved",
+  "incident.responder.added": "Incident Responder Added",
+  "incident.responder.replied": "Incident Responder Replied",
+  "incident.status_update_published": "Incident Status Update Published",
+  "incident.triggered": "Incident Triggered",
+  "incident.unacknowledged": "Incident Unacknowledged",
+  "service.created": "Service Created",
+  "service.deleted": "Service Deleted",
+  "service.updated": "Service Updated"
+}

@@ -44,7 +44,12 @@ const ZENDESK_MARKET_PLACE_NAME = "RudderStack";
 const ZENDESK_MARKET_PLACE_ORG_ID = "3339";
 const ZENDESK_MARKET_PLACE_APP_ID = "263241";
 
+const getBaseEndpoint = domain => {
+  return `https://${domain}.zendesk.com/api/v2/`;
+};
+
 module.exports = {
+  getBaseEndpoint,
   ConfigCategory,
   mappingConfig,
   defaultFields,

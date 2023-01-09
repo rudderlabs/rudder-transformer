@@ -472,45 +472,47 @@
         }
       }
     },
-    "output": {
-      "body": {
-        "XML": {},
-        "FORM": {
-          "AppVer": "1.1.11",
-          "AppName": "RudderLabs JavaScript SDK",
-          "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
-          "OrderId": "9217374917471",
-          "ItemSku1": "G-32",
-          "EventDate": "NOW",
-          "ItemName1": "Monopoly",
-          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
-          "AppPackage": "1.0.0",
-          "CampaignId": "23224",
-          "CustomerId": "Ujjwalab",
-          "ItemBrand1": "zara",
-          "ItemPrice1": 332,
-          "EventTypeId": "56446",
-          "ImpactAppId": "2323",
-          "DeviceLocale": "en-US",
-          "EventTypeCode": "Order Completed",
-          "ItemQuantity1": 1,
-          "OrderPromoCode": "10OFF-ROCKET",
-          "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "FORM": {
+            "AppVer": "1.1.11",
+            "AppName": "RudderLabs JavaScript SDK",
+            "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
+            "OrderId": "9217374917471",
+            "ItemSku1": "G-32",
+            "EventDate": "NOW",
+            "ItemName1": "Monopoly",
+            "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+            "AppPackage": "1.0.0",
+            "CampaignId": "23224",
+            "CustomerId": "Ujjwalab",
+            "ItemBrand1": "zara",
+            "ItemPrice1": 332,
+            "EventTypeId": "56446",
+            "ImpactAppId": "2323",
+            "DeviceLocale": "en-US",
+            "EventTypeCode": "Order Completed",
+            "ItemQuantity1": 1,
+            "OrderPromoCode": "10OFF-ROCKET",
+            "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+          },
+          "JSON": {},
+          "JSON_ARRAY": {}
         },
-        "JSON": {},
-        "JSON_ARRAY": {}
-      },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {},
-      "headers": {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
-      },
-      "version": "1",
-      "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
-    }
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+        },
+        "version": "1",
+        "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
+      }
+    ]
   },
   {
     "description": "Track Call with products array to test conversion endpoint with a custom products mapping",
@@ -591,46 +593,48 @@
         }
       }
     },
-    "output": {
-      "body": {
-        "XML": {},
-        "FORM": {
-          "AppVer": "1.1.11",
-          "AppName": "RudderLabs JavaScript SDK",
-          "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
-          "OrderId": "9217374917471",
-          "ItemSku1": "G-32",
-          "EventDate": "NOW",
-          "ItemName1": "Monopoly",
-          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
-          "AppPackage": "1.0.0",
-          "CampaignId": "23224",
-          "CustomerId": "Ujjwalab",
-          "ItemBrand1": "zara",
-          "ItemCategory1": "wearables",
-          "ItemPrice1": 332,
-          "EventTypeId": "56446",
-          "ImpactAppId": "2323",
-          "DeviceLocale": "en-US",
-          "EventTypeCode": "Order Completed",
-          "ItemQuantity1": 1,
-          "OrderPromoCode": "10OFF-ROCKET",
-          "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "FORM": {
+            "AppVer": "1.1.11",
+            "AppName": "RudderLabs JavaScript SDK",
+            "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
+            "OrderId": "9217374917471",
+            "ItemSku1": "G-32",
+            "EventDate": "NOW",
+            "ItemName1": "Monopoly",
+            "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+            "AppPackage": "1.0.0",
+            "CampaignId": "23224",
+            "CustomerId": "Ujjwalab",
+            "ItemBrand1": "zara",
+            "ItemCategory1": "wearables",
+            "ItemPrice1": 332,
+            "EventTypeId": "56446",
+            "ImpactAppId": "2323",
+            "DeviceLocale": "en-US",
+            "EventTypeCode": "Order Completed",
+            "ItemQuantity1": 1,
+            "OrderPromoCode": "10OFF-ROCKET",
+            "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+          },
+          "JSON": {},
+          "JSON_ARRAY": {}
         },
-        "JSON": {},
-        "JSON_ARRAY": {}
-      },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {},
-      "headers": {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
-      },
-      "version": "1",
-      "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
-    }
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+        },
+        "version": "1",
+        "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
+      }
+    ]
   },
   {
     "description": "Track Call with products array to test conversion endpoint with a custom products mapping and custom property mapping",
@@ -712,47 +716,49 @@
         }
       }
     },
-    "output": {
-      "body": {
-        "XML": {},
-        "FORM": {
-          "AppVer": "1.1.11",
-          "AppName": "RudderLabs JavaScript SDK",
-          "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
-          "Money1": 434,
-          "OrderId": "9217374917471",
-          "ItemSku1": "G-32",
-          "EventDate": "NOW",
-          "ItemName1": "Monopoly",
-          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
-          "AppPackage": "1.0.0",
-          "CampaignId": "23224",
-          "CustomerId": "Ujjwalab",
-          "ItemBrand1": "zara",
-          "ItemCategory1": "wearables",
-          "ItemPrice1": 332,
-          "EventTypeId": "56446",
-          "ImpactAppId": "2323",
-          "DeviceLocale": "en-US",
-          "EventTypeCode": "Order Completed",
-          "ItemQuantity1": 1,
-          "OrderPromoCode": "10OFF-ROCKET",
-          "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "FORM": {
+            "AppVer": "1.1.11",
+            "AppName": "RudderLabs JavaScript SDK",
+            "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
+            "Money1": 434,
+            "OrderId": "9217374917471",
+            "ItemSku1": "G-32",
+            "EventDate": "NOW",
+            "ItemName1": "Monopoly",
+            "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+            "AppPackage": "1.0.0",
+            "CampaignId": "23224",
+            "CustomerId": "Ujjwalab",
+            "ItemBrand1": "zara",
+            "ItemCategory1": "wearables",
+            "ItemPrice1": 332,
+            "EventTypeId": "56446",
+            "ImpactAppId": "2323",
+            "DeviceLocale": "en-US",
+            "EventTypeCode": "Order Completed",
+            "ItemQuantity1": 1,
+            "OrderPromoCode": "10OFF-ROCKET",
+            "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+          },
+          "JSON": {},
+          "JSON_ARRAY": {}
         },
-        "JSON": {},
-        "JSON_ARRAY": {}
-      },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {},
-      "headers": {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
-      },
-      "version": "1",
-      "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
-    }
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+        },
+        "version": "1",
+        "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
+      }
+    ]
   },
   {
     "description": "Track Call with products array to test conversion endpoint with OS as android",
@@ -838,51 +844,53 @@
         }
       }
     },
-    "output": {
-      "body": {
-        "XML": {},
-        "FORM": {
-          "AppVer": "1.1.11",
-          "Money1": 434,
-          "AppName": "RudderLabs JavaScript SDK",
-          "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
-          "GoogAId": "435o4GRlm",
-          "OrderId": "9217374917471",
-          "DeviceOs": "Android",
-          "ItemSku1": "G-32",
-          "AndroidId": "78c53c15-32a1-4b65-adac-bec2d7bb8fab",
-          "EventDate": "NOW",
-          "ItemName1": "Monopoly",
-          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
-          "AppPackage": "1.0.0",
-          "CampaignId": "23224",
-          "CustomerId": "Ujjwalab",
-          "ItemBrand1": "zara",
-          "ItemPrice1": 332,
-          "DeviceOsVer": "9",
-          "EventTypeId": "56446",
-          "ImpactAppId": "2323",
-          "DeviceLocale": "en-US",
-          "EventTypeCode": "Order Completed",
-          "ItemCategory1": "wearables",
-          "ItemQuantity1": 1,
-          "OrderPromoCode": "10OFF-ROCKET",
-          "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "FORM": {
+            "AppVer": "1.1.11",
+            "Money1": 434,
+            "AppName": "RudderLabs JavaScript SDK",
+            "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
+            "GoogAId": "435o4GRlm",
+            "OrderId": "9217374917471",
+            "DeviceOs": "Android",
+            "ItemSku1": "G-32",
+            "AndroidId": "78c53c15-32a1-4b65-adac-bec2d7bb8fab",
+            "EventDate": "NOW",
+            "ItemName1": "Monopoly",
+            "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+            "AppPackage": "1.0.0",
+            "CampaignId": "23224",
+            "CustomerId": "Ujjwalab",
+            "ItemBrand1": "zara",
+            "ItemPrice1": 332,
+            "DeviceOsVer": "9",
+            "EventTypeId": "56446",
+            "ImpactAppId": "2323",
+            "DeviceLocale": "en-US",
+            "EventTypeCode": "Order Completed",
+            "ItemCategory1": "wearables",
+            "ItemQuantity1": 1,
+            "OrderPromoCode": "10OFF-ROCKET",
+            "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+          },
+          "JSON": {},
+          "JSON_ARRAY": {}
         },
-        "JSON": {},
-        "JSON_ARRAY": {}
-      },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {},
-      "headers": {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
-      },
-      "version": "1",
-      "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
-    }
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+        },
+        "version": "1",
+        "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
+      }
+    ]
   },
   {
     "description": "Track Call with products array to test conversion endpoint with OS as ios",
@@ -968,51 +976,53 @@
         }
       }
     },
-    "output": {
-      "body": {
-        "XML": {},
-        "FORM": {
-          "AppVer": "1.1.11",
-          "AppleIfa": "435o4GRlm",
-          "AppleIfv": "78c53c15-32a1-4b65-adac-bec2d7bb8fab",
-          "Money1": 434,
-          "AppName": "RudderLabs JavaScript SDK",
-          "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
-          "OrderId": "9217374917471",
-          "DeviceOs": "iOS",
-          "ItemSku1": "G-32",
-          "EventDate": "NOW",
-          "ItemName1": "Monopoly",
-          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
-          "AppPackage": "1.0.0",
-          "CampaignId": "23224",
-          "CustomerId": "Ujjwalab",
-          "ItemBrand1": "zara",
-          "ItemPrice1": 332,
-          "DeviceOsVer": "15.2",
-          "EventTypeId": "56446",
-          "ImpactAppId": "2323",
-          "DeviceLocale": "en-US",
-          "EventTypeCode": "Order Completed",
-          "ItemCategory1": "wearables",
-          "ItemQuantity1": 1,
-          "OrderPromoCode": "10OFF-ROCKET",
-          "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "FORM": {
+            "AppVer": "1.1.11",
+            "AppleIfa": "435o4GRlm",
+            "AppleIfv": "78c53c15-32a1-4b65-adac-bec2d7bb8fab",
+            "Money1": 434,
+            "AppName": "RudderLabs JavaScript SDK",
+            "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
+            "OrderId": "9217374917471",
+            "DeviceOs": "iOS",
+            "ItemSku1": "G-32",
+            "EventDate": "NOW",
+            "ItemName1": "Monopoly",
+            "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+            "AppPackage": "1.0.0",
+            "CampaignId": "23224",
+            "CustomerId": "Ujjwalab",
+            "ItemBrand1": "zara",
+            "ItemPrice1": 332,
+            "DeviceOsVer": "15.2",
+            "EventTypeId": "56446",
+            "ImpactAppId": "2323",
+            "DeviceLocale": "en-US",
+            "EventTypeCode": "Order Completed",
+            "ItemCategory1": "wearables",
+            "ItemQuantity1": 1,
+            "OrderPromoCode": "10OFF-ROCKET",
+            "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+          },
+          "JSON": {},
+          "JSON_ARRAY": {}
         },
-        "JSON": {},
-        "JSON_ARRAY": {}
-      },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {},
-      "headers": {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
-      },
-      "version": "1",
-      "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
-    }
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+        },
+        "version": "1",
+        "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
+      }
+    ]
   },
   {
     "description": "Page Call",
@@ -1463,47 +1473,49 @@
         }
       }
     },
-    "output": {
-      "body": {
-        "XML": {},
-        "FORM": {
-          "AppVer": "1.1.11",
-          "AppName": "RudderLabs JavaScript SDK",
-          "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
-          "OrderId": "9217374917471",
-          "ItemSku1": "G-32",
-          "EventDate": "NOW",
-          "ItemName1": "Monopoly",
-          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
-          "AppPackage": "1.0.0",
-          "CampaignId": "23224",
-          "CustomerId": "Ujjwalab",
-          "ItemBrand1": "zara",
-          "ItemPrice1": 332,
-          "EventTypeId": "56446",
-          "ImpactAppId": "2323",
-          "DeviceLocale": "en-US",
-          "EventTypeCode": "Order Completed",
-          "ItemCategory1": "wearables",
-          "ItemQuantity1": 1,
-          "ItemPromoCode1": "10OFF-ROCKET",
-          "OrderPromoCode": "10OFF-ROCKET",
-          "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "FORM": {
+            "AppVer": "1.1.11",
+            "AppName": "RudderLabs JavaScript SDK",
+            "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
+            "OrderId": "9217374917471",
+            "ItemSku1": "G-32",
+            "EventDate": "NOW",
+            "ItemName1": "Monopoly",
+            "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+            "AppPackage": "1.0.0",
+            "CampaignId": "23224",
+            "CustomerId": "Ujjwalab",
+            "ItemBrand1": "zara",
+            "ItemPrice1": 332,
+            "EventTypeId": "56446",
+            "ImpactAppId": "2323",
+            "DeviceLocale": "en-US",
+            "EventTypeCode": "Order Completed",
+            "ItemCategory1": "wearables",
+            "ItemQuantity1": 1,
+            "ItemPromoCode1": "10OFF-ROCKET",
+            "OrderPromoCode": "10OFF-ROCKET",
+            "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+          },
+          "JSON": {},
+          "JSON_ARRAY": {}
         },
-        "JSON": {},
-        "JSON_ARRAY": {}
-      },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {},
-      "headers": {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
-      },
-      "version": "1",
-      "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
-    }
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+        },
+        "version": "1",
+        "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
+      }
+    ]
   },
   {
     "description": "Track Call with products array to test conversion endpoint with event mapping",
@@ -1585,54 +1597,100 @@
           "enablePageEvents": false,
           "enableScreenEvents": false,
           "actionEventNames": [{ "eventName": "Product Ordered" }],
-          "installEventNames": ""
+          "installEventNames": [{ "eventName": "Product Ordered" }]
         }
       }
     },
-    "output": {
-      "body": {
-        "XML": {},
-        "FORM": {
-          "AppVer": "1.1.11",
-          "AppleIfa": "435o4GRlm",
-          "AppleIfv": "78c53c15-32a1-4b65-adac-bec2d7bb8fab",
-          "Money1": 434,
-          "AppName": "RudderLabs JavaScript SDK",
-          "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
-          "OrderId": "9217374917471",
-          "DeviceOs": "iOS",
-          "ItemSku1": "G-32",
-          "EventDate": "NOW",
-          "ItemName1": "Monopoly",
-          "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
-          "AppPackage": "1.0.0",
-          "CampaignId": "23224",
-          "CustomerId": "Ujjwalab",
-          "ItemBrand1": "zara",
-          "ItemPrice1": 332,
-          "DeviceOsVer": "15.2",
-          "EventTypeId": "56446",
-          "ImpactAppId": "2323",
-          "DeviceLocale": "en-US",
-          "EventTypeCode": "Product Ordered",
-          "ItemCategory1": "wearables",
-          "ItemQuantity1": 1,
-          "OrderPromoCode": "10OFF-ROCKET",
-          "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+    "output": [
+      {
+        "body": {
+          "XML": {},
+          "FORM": {
+            "AppVer": "1.1.11",
+            "AppleIfa": "435o4GRlm",
+            "AppleIfv": "78c53c15-32a1-4b65-adac-bec2d7bb8fab",
+            "Money1": 434,
+            "AppName": "RudderLabs JavaScript SDK",
+            "OrderId": "9217374917471",
+            "DeviceOs": "iOS",
+            "ItemSku1": "G-32",
+            "EventDate": "NOW",
+            "ItemName1": "Monopoly",
+            "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+            "AppPackage": "1.0.0",
+            "CampaignId": "23224",
+            "CustomerId": "Ujjwalab",
+            "ItemBrand1": "zara",
+            "ItemPrice1": 332,
+            "DeviceOsVer": "15.2",
+            "EventTypeId": "56446",
+            "ImpactAppId": "2323",
+            "DeviceLocale": "en-US",
+            "EventTypeCode": "Product Ordered",
+            "ItemCategory1": "wearables",
+            "ItemQuantity1": 1,
+            "OrderPromoCode": "10OFF-ROCKET",
+            "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+          },
+          "JSON": {},
+          "JSON_ARRAY": {}
         },
-        "JSON": {},
-        "JSON_ARRAY": {}
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+        },
+        "version": "1",
+        "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
       },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {},
-      "headers": {
-        "Content-Type": "application/x-www-form-urlencoded",
-        "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
-      },
-      "version": "1",
-      "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
-    }
+      {
+        "body": {
+          "XML": {},
+          "FORM": {
+            "AppVer": "1.1.11",
+            "AppleIfa": "435o4GRlm",
+            "AppleIfv": "78c53c15-32a1-4b65-adac-bec2d7bb8fab",
+            "Money1": 434,
+            "AppName": "RudderLabs JavaScript SDK",
+            "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
+            "OrderId": "9217374917471",
+            "DeviceOs": "iOS",
+            "ItemSku1": "G-32",
+            "EventDate": "NOW",
+            "ItemName1": "Monopoly",
+            "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+            "AppPackage": "1.0.0",
+            "CampaignId": "23224",
+            "CustomerId": "Ujjwalab",
+            "ItemBrand1": "zara",
+            "ItemPrice1": 332,
+            "DeviceOsVer": "15.2",
+            "EventTypeId": "56446",
+            "ImpactAppId": "2323",
+            "DeviceLocale": "en-US",
+            "EventTypeCode": "Product Ordered",
+            "ItemCategory1": "wearables",
+            "ItemQuantity1": 1,
+            "OrderPromoCode": "10OFF-ROCKET",
+            "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+          },
+          "JSON": {},
+          "JSON_ARRAY": {}
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/x-www-form-urlencoded",
+          "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+        },
+        "version": "1",
+        "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
+      }
+    ]
   }
 ]

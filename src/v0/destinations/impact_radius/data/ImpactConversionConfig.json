@@ -6,12 +6,6 @@
     "required": false
   },
   {
-    "destKey": "ClickId",
-    "sourceKeys": ["context.referrer.id", "properties.clickId"],
-    "sourceFromGenericMap": false,
-    "required": false
-  },
-  {
     "destKey": "EventDate",
     "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,

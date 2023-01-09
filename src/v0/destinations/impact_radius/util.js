@@ -1,15 +1,7 @@
 const get = require("get-value");
-const { isDefinedAndNotNull } = require("../../util");
-
-const itemMapping = {
-  ItemBrand: "brand",
-  ItemCategory: "category",
-  ItemName: "name",
-  ItemPrice: "price",
-  ItemPromoCode: "coupon",
-  ItemQuantity: "quantity",
-  ItemSku: "sku"
-};
+const { isAppleFamily } = require("../../util");
+const { ConfigurationError } = require("../../util/errorTypes");
+const { itemMapping } = require("./config");
 
 const checkConfigurationError = Config => {
   let emptyField;
@@ -20,7 +12,23 @@ const checkConfigurationError = Config => {
   } else if (!Config.campaignId) {
     emptyField = "campaignId";
   }
-  return isDefinedAndNotNull(emptyField) ? emptyField : false;
+  if (emptyField) {
+    throw new ConfigurationError(`${emptyField} is a required field`);
+  }
+  return true;
+};
+
+const checkOsAndPopulateValues = (message, payload) => {
+  const os = get(message, "context.os.name");
+  const updatedPayload = payload;
+  if (os && isAppleFamily(os.toLowerCase())) {
+    updatedPayload.AppleIfv = get(message, "context.device.id");
+    updatedPayload.AppleIfa = get(message, "context.device.advertisingId");
+  } else if (os && os.toLowerCase() === "android") {
+    updatedPayload.AndroidId = get(message, "context.device.id");
+    updatedPayload.GoogAId = get(message, "context.device.advertisingId");
+  }
+  return updatedPayload;
 };
 
 const getPropertyName = (itemName, index) => {
@@ -87,5 +95,6 @@ const populateAdditionalParameters = (message, parameters) => {
 module.exports = {
   checkConfigurationError,
   populateProductProperties,
-  populateAdditionalParameters
+  populateAdditionalParameters,
+  checkOsAndPopulateValues
 };

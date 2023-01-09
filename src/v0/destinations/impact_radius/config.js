@@ -12,9 +12,20 @@ const CONFIG_CATEGORIES = {
   }
 };
 
+const itemMapping = {
+  ItemBrand: "brand",
+  ItemCategory: "category",
+  ItemName: "name",
+  ItemPrice: "price",
+  ItemPromoCode: "coupon",
+  ItemQuantity: "quantity",
+  ItemSku: "sku"
+};
+
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
   CONFIG_CATEGORIES,
-  MAPPING_CONFIG
+  MAPPING_CONFIG,
+  itemMapping
 };

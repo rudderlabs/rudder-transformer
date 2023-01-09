@@ -224,45 +224,47 @@
         }
       },
       {
-        "batchedRequest": {
-          "body": {
-            "XML": {},
-            "FORM": {
-              "AppVer": "1.1.11",
-              "AppName": "RudderLabs JavaScript SDK",
-              "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
-              "OrderId": "9217374917471",
-              "ItemSku1": "G-32",
-              "EventDate": "NOW",
-              "ItemName1": "Monopoly",
-              "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
-              "AppPackage": "1.0.0",
-              "CampaignId": "23224",
-              "CustomerId": "Ujjwalab",
-              "ItemBrand1": "zara",
-              "ItemPrice1": 332,
-              "EventTypeId": "56446",
-              "ImpactAppId": "2323",
-              "DeviceLocale": "en-US",
-              "EventTypeCode": "Order Completed",
-              "ItemQuantity1": 1,
-              "OrderPromoCode": "10OFF-ROCKET",
-              "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+        "batchedRequest": [
+          {
+            "body": {
+              "XML": {},
+              "FORM": {
+                "AppVer": "1.1.11",
+                "AppName": "RudderLabs JavaScript SDK",
+                "ClickId": "wEWU47yhtzBnU-CTug3:7Wv4UkAzMbzkZ2lTz80",
+                "OrderId": "9217374917471",
+                "ItemSku1": "G-32",
+                "EventDate": "NOW",
+                "ItemName1": "Monopoly",
+                "UserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0",
+                "AppPackage": "1.0.0",
+                "CampaignId": "23224",
+                "CustomerId": "Ujjwalab",
+                "ItemBrand1": "zara",
+                "ItemPrice1": 332,
+                "EventTypeId": "56446",
+                "ImpactAppId": "2323",
+                "DeviceLocale": "en-US",
+                "EventTypeCode": "Order Completed",
+                "ItemQuantity1": 1,
+                "OrderPromoCode": "10OFF-ROCKET",
+                "CustomProfileId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+              },
+              "JSON": {},
+              "JSON_ARRAY": {}
             },
-            "JSON": {},
-            "JSON_ARRAY": {}
-          },
-          "type": "REST",
-          "files": {},
-          "method": "POST",
-          "params": {},
-          "headers": {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
-          },
-          "version": "1",
-          "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
-        },
+            "type": "REST",
+            "files": {},
+            "method": "POST",
+            "params": {},
+            "headers": {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+            },
+            "version": "1",
+            "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
+          }
+        ],
         "metadata": [
           {
             "jobId": 2

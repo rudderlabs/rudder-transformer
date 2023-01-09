@@ -1,4 +1,3 @@
-const get = require("get-value");
 const sha1 = require("js-sha1");
 const btoa = require("btoa");
 const { EventType } = require("../../../constants");
@@ -6,13 +5,13 @@ const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
   checkConfigurationError,
   populateProductProperties,
-  populateAdditionalParameters
+  populateAdditionalParameters,
+  checkOsAndPopulateValues
 } = require("./util");
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   simpleProcessRouterDest,
-  isAppleFamily,
   constructPayload,
   isDefinedAndNotNull,
   removeUndefinedAndNullValues,
@@ -47,7 +46,7 @@ const buildPageLoadResponse = (
   impactAppId,
   enableEmailHashing
 ) => {
-  const payload = constructPayload(
+  let payload = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.PAGELOAD.name]
   );
@@ -61,15 +60,8 @@ const buildPageLoadResponse = (
     payload.PropertyId = impactAppId;
     payload.ImpactAppId = impactAppId;
   }
-
-  const os = get(message, "context.os.name");
-  if (os && isAppleFamily(os.toLowerCase())) {
-    payload.AppleIfv = get(message, "context.device.id");
-    payload.AppleIfa = get(message, "context.device.advertisingId");
-  } else if (os && os.toLowerCase() === "android") {
-    payload.AndroidId = get(message, "context.device.id");
-    payload.GoogAId = get(message, "context.device.advertisingId");
-  }
+  // populate deviceId and advertisingId checking OS value
+  payload = checkOsAndPopulateValues(message, payload);
   return payload;
 };
 
@@ -119,31 +111,36 @@ const trackResponseBuilder = (message, Config) => {
     productsMapping
   } = Config;
 
-  let eventType;
+  const eventType = [];
 
   if (installEventNames && Array.isArray(installEventNames)) {
     installEventNames.forEach(event => {
       if (event.eventName === message.event) {
-        eventType = "install";
+        eventType.push("install");
       }
     });
   }
   if (actionEventNames && Array.isArray(actionEventNames)) {
     actionEventNames.forEach(event => {
       if (event.eventName === message.event) {
-        eventType = "action";
+        eventType.push("action");
       }
     });
   }
-  if (!eventType) {
-    if (message.event === "Applcation Installed") {
-      eventType = "install";
-    } else if (message.event === "Order Completed") {
-      eventType = "action";
-    }
+
+  if (
+    !eventType.includes("install") &&
+    message.event === "Applcation Installed"
+  ) {
+    eventType.push("install");
+  } else if (
+    !eventType.includes("action") &&
+    message.event === "Order Completed"
+  ) {
+    eventType.push("action");
   }
 
-  if (eventType === "action") {
+  if (eventType.length) {
     let payload = constructPayload(
       message,
       MAPPING_CONFIG[CONFIG_CATEGORIES.CONVERSION.name]
@@ -156,14 +153,10 @@ const trackResponseBuilder = (message, Config) => {
         ? sha1(payload?.CustomerEmail)
         : payload?.CustomerEmail;
     }
-    const os = get(message, "context.os.name");
-    if (os && isAppleFamily(os.toLowerCase())) {
-      payload.AppleIfv = get(message, "context.device.id");
-      payload.AppleIfa = get(message, "context.device.advertisingId");
-    } else if (os && os.toLowerCase() === "android") {
-      payload.AndroidId = get(message, "context.device.id");
-      payload.GoogAId = get(message, "context.device.advertisingId");
-    }
+
+    // populate deviceId and advertisingId checking OS value
+    payload = checkOsAndPopulateValues(message, payload);
+
     const productProperties = populateProductProperties(
       productsMapping,
       message.properties
@@ -172,13 +165,19 @@ const trackResponseBuilder = (message, Config) => {
       message,
       rudderToImpactProperty
     );
-    if (eventType === "install" && payload.ClickId) {
-      delete payload.ClickId;
-    }
-    payload = { ...payload, ...productProperties, ...additionalParameters };
 
+    payload = { ...payload, ...productProperties, ...additionalParameters };
     const endpoint = `${CONFIG_CATEGORIES.CONVERSION.base_url}${Config.accountSID}/Conversions`;
-    return responseBuilder(payload, endpoint, Config);
+    const respArray = [];
+    if (eventType.includes("install")) {
+      respArray.push(responseBuilder(payload, endpoint, Config));
+    }
+    if (eventType.includes("action")) {
+      payload.ClickId =
+        message.context?.referrer?.id || message.properties?.clickId;
+      respArray.push(responseBuilder(payload, endpoint, Config));
+    }
+    return respArray;
   }
   return responseBuilder(
     buildPageLoadResponse(message, campaignId, impactAppId),
@@ -246,31 +245,28 @@ const processEvent = async (message, destination) => {
     throw new InstrumentationError("Event type is required");
   }
   if (checkConfigurationError(destination.Config)) {
-    const configField = checkConfigurationError(destination.Config);
-    throw new ConfigurationError(`${configField} is a required field`);
+    const messageType = message.type?.toLowerCase();
+    let response;
+    switch (messageType) {
+      case EventType.IDENTIFY:
+        response = identifyResponseBuilder(message, destination.Config);
+        break;
+      case EventType.TRACK:
+        response = trackResponseBuilder(message, destination.Config);
+        break;
+      case EventType.PAGE:
+        response = pageResponseBuilder(message, destination.Config);
+        break;
+      case EventType.SCREEN:
+        response = screenResponseBuilder(message, destination.Config);
+        break;
+      default:
+        throw new InstrumentationError(
+          `Event type ${messageType} is not supported`
+        );
+    }
+    return response;
   }
-
-  const messageType = message.type?.toLowerCase();
-  let response;
-  switch (messageType) {
-    case EventType.IDENTIFY:
-      response = identifyResponseBuilder(message, destination.Config);
-      break;
-    case EventType.TRACK:
-      response = trackResponseBuilder(message, destination.Config);
-      break;
-    case EventType.PAGE:
-      response = pageResponseBuilder(message, destination.Config);
-      break;
-    case EventType.SCREEN:
-      response = screenResponseBuilder(message, destination.Config);
-      break;
-    default:
-      throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
-      );
-  }
-  return response;
 };
 
 const process = async event => {

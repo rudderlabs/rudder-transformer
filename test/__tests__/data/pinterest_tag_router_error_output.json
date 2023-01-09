@@ -1,0 +1,16 @@
+[
+  {
+    "metadata": [
+      {
+        "jobId": 5
+      }
+    ],
+    "batched": false,
+    "statusCode": 400,
+    "error": "message type identify is not supported",
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    }
+  }
+]

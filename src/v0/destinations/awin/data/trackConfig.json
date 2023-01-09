@@ -1,0 +1,57 @@
+[
+  {
+    "destKey": "params.amount",
+    "sourceKeys": [
+      "properties.amount",
+      "properties.revenue",
+      "properties.total",
+      "properties.totalAmount",
+      "properties.total_amount"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "params.commissionGroup",
+    "sourceKeys": ["properties.commissionGroup", "properties.commission_group"],
+    "required": false
+  },
+  {
+    "destKey": "params.vc",
+    "sourceKeys": ["properties.voucherCode", "properties.voucher_code"],
+    "required": false
+  },
+  {
+    "destKey": "params.cr",
+    "sourceKeys": [
+      "properties.currency",
+      "properties.currencyCode",
+      "properties.currency_code"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "params.ref",
+    "sourceKeys": [
+      "properties.order_id",
+      "properties.orderId",
+      "properties.orderReference",
+      "properties.order_reference"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "params.testmode",
+    "sourceKeys": [
+      "properties.testMode",
+      "properties.test_mode",
+      "properties.isTest",
+      "properties.is_test"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "params.cks",
+    "sourceKeys": ["properties.cks", "properties.awc"],
+    "required": false
+  }
+]

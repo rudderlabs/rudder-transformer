@@ -1,0 +1,114 @@
+[
+  {
+    "batchedRequest": {
+      "body": {
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {},
+        "JSON": {
+          "listName": "abc",
+          "values": [
+            {
+              "email": "test@abc.com"
+            },
+            {
+              "email": "test@abc.com",
+              "data": {
+                "name": "Rohith Kumar Kaza",
+                "first_name": "Rohith",
+                "last_name": "Kaza",
+                "age": 21,
+                "phone": "9876543210",
+                "trait1": "new-val"
+              }
+            }
+          ]
+        }
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "headers": {
+        "mmApiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "Content-Type": "application/json"
+      },
+      "version": "1",
+      "endpoint": "https://api.mailmodo.com/api/v1/addToList/batch"
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      },
+      {
+        "jobId": 4
+      }
+    ],
+    "batched": true,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "listName": "abc"
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "batchedRequest": {
+      "body": {
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {},
+        "JSON": {
+          "email": "test@abc.com",
+          "event_name": "Email Opened",
+          "event_properties": {
+            "email": "test@abc.com",
+            "sendlocation": "akashdeep@gmail.com",
+            "sendtime": "2020-01-01",
+            "subject": "resume validate"
+          }
+        }
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "headers": {
+        "mmApiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "Content-Type": "application/json"
+      },
+      "version": "1",
+      "endpoint": "https://api.mailmodo.com/api/v1/addEvent"
+    },
+    "metadata": [
+      {
+        "jobId": 3
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "listName": "abc"
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "batched": false,
+    "error": "Missing required value from [\"traits.email\",\"context.traits.email\",\"properties.email\"]",
+    "metadata": [
+      {
+        "jobId": 5
+      }
+    ],
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    },
+    "statusCode": 400
+  }
+]

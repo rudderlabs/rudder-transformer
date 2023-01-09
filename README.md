@@ -23,7 +23,7 @@ On Mac, if you don't have `make` and `g++`, you would have to install `Xcode Com
 On Linux, install the required dependencies `python`, `make` and `g++` and follow these steps:
 
 1. Clone this repository
-2. Run `npm install`
+2. Run `npm run setup`
 3. Start the server with `npm start`
 
 ## Transformer without User Functions
@@ -44,8 +44,17 @@ On Mac, if you don't have `make` and `g++`, you would have to install `Xcode Com
 On Linux, install the required dependencies `python`, `make` and `g++` and follow these steps:
 
 1. Clone this repository
-2. Run `npm install`
+2. Run `npm run setup`
 3. Start the server with `ENABLE_FUNCTIONS=false npm start`
+
+### How to run the E2E tests locally
+
+Run `make setup`( `make setup-arm` in case of arm processor(M1 chip)). This operation is needed only once.
+
+Now you can run `make test`.
+
+If you wish you can destroy the cluster manually with `make destroy`.
+
 
 ## Contact Us
 

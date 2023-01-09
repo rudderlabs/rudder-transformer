@@ -52,7 +52,7 @@ const getContents = message => {
         properties.contentType ||
         product.content_type ||
         properties.content_type ||
-        "product_group";
+        "product";
       singleProduct.content_id = product.product_id;
       singleProduct.content_category = product.category;
       singleProduct.content_name = product.name;

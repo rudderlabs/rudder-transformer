@@ -6,14 +6,34 @@
           "destType": "INTERCOM",
           "userAttributes": [
             {
-              "userId": "6188c2c5f47e464b4abf3235"
+              "userId": "1"
             },
             {
-              "userId": "user_sdk2"
+              "userId": "12"
             }
           ],
           "config": {
-            "apiKey": "a="
+            "apiKey": "API_KEY"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "INTERCOM",
+          "userAttributes": [
+            {
+              "userId": "7"
+            },
+            {
+              "userId": "9"
+            }
+          ],
+          "config": {
+            "apiKey": "API_KEY"
           }
         }
       ]

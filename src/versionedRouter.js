@@ -809,7 +809,7 @@ if (transformerTestModeEnabled) {
       );
       ctx.body = res;
     } catch (error) {
-      ctx.status = 400;
+      ctx.status = error.statusCode || 400;
       ctx.body = { error: error.message };
     }
   });
@@ -850,6 +850,9 @@ if (transformerTestModeEnabled) {
       );
       if (!trRevCode.versionId) {
         trRevCode.versionId = "testVersionId";
+      }
+      if (!trRevCode.workspaceId) {
+        trRevCode.workspaceId = "workspaceId";
       }
       const res = await setupUserTransformHandler(
         trRevCode,
@@ -1297,7 +1300,10 @@ const handleDeletionOfUsers = async ctx => {
   const getReqMetadata = () => {
     try {
       const reqBody = ctx.request.body;
-      return { destType: reqBody?.destType };
+      return {
+        destType: reqBody[0]?.destType,
+        jobs: reqBody.map(req => req.jobId)
+      };
     } catch (error) {
       // Do nothing
     }

@@ -23,8 +23,12 @@ const {
   getSubscriptionGroupEndPoint,
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
-  IDENTIFY_BRAZE_MAX_REQ_COUNT
+  IDENTIFY_BRAZE_MAX_REQ_COUNT,
+  supportedOperationTypes,
+  nestedOperationTypes
 } = require("./config");
+
+const logger = require("../../../logger");
 
 function formatGender(gender) {
   // few possible cases of woman
@@ -308,9 +312,81 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   payload = addMandatoryEventProperties(payload, message);
   payload.properties = properties;
 
+  try {
+    // add,update,remove
+    if (destination.Config.enableNestedArrayOperations) {
+      Object.keys(properties)
+        .filter(key => Array.isArray(properties[`${key}`]))
+        .forEach(key => {
+          // if not specified, send as create attribute
+          if (properties.nestedOperationType === nestedOperationTypes.CREATE) {
+            attributePayload[key] = properties[key];
+          } else if (
+            supportedOperationTypes.includes(properties.nestedOperationType)
+          ) {
+            attributePayload[key] = {};
+            const opsResultArray = [];
+            if (
+              properties.nestedOperationType === nestedOperationTypes.UPDATE
+            ) {
+              for (let i = 0; i < properties[key].length; i += 1) {
+                const myObj = {};
+                Object.keys(properties[key][i]).forEach(subKey => {
+                  myObj[`$${subKey}`] = properties[key][i][subKey];
+                });
+                opsResultArray.push(myObj);
+              }
+
+              // eslint-disable-next-line no-underscore-dangle
+              attributePayload._merge_objects = isDefinedAndNotNull(
+                properties.mergeObjectsUpdateOperation
+              )
+                ? properties.mergeObjectsUpdateOperation
+                : false;
+              attributePayload[key][
+                `$${properties.nestedOperationType}`
+              ] = opsResultArray;
+            } else if (
+              properties.nestedOperationType === nestedOperationTypes.REMOVE
+            ) {
+              for (let i = 0; i < properties[key].length; i += 1) {
+                const myObj = {};
+                Object.keys(properties[key][i]).forEach(subKey => {
+                  myObj[`$${subKey}`] = properties[key][i][subKey];
+                });
+                opsResultArray.push(myObj);
+              }
+              attributePayload[key][
+                `$${properties.nestedOperationType}`
+              ] = opsResultArray;
+            } else {
+              // add case
+              attributePayload[key][`$${properties.nestedOperationType}`] =
+                properties[key];
+            }
+          }
+        });
+    }
+  } catch (exp) {
+    logger.info("Failure occured during nested array operations", exp);
+  }
+
   payload = setExternalIdOrAliasObject(payload, message);
   if (payload) {
     requestJson.events = [payload];
+  }
+
+  // update payload as per https://www.braze.com/docs/user_guide/data_and_analytics/custom_data/custom_attributes/array_of_objects/#api-request-body
+  if (
+    destination.Config.enableNestedArrayOperations &&
+    isDefinedAndNotNull(properties.nestedOperationType)
+  ) {
+    delete requestJson.events;
+    delete properties.nestedOperationType;
+    attributePayload.external_id = payload.external_id;
+    if (!requestJson.attributes) {
+      requestJson.attributes = [attributePayload];
+    }
   }
   return buildResponse(
     message,

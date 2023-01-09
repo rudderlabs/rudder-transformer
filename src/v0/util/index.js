@@ -1773,6 +1773,26 @@ const refinePayload = obj => {
   return refinedPayload;
 };
 
+const validateEmail = email => {
+  const regex = /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/;
+  return !!regex.test(email);
+};
+
+const validatePhoneWithCountryCode = phone => {
+  const regex = /^\+(?:[\d{] ?){6,14}\d$/;
+  return !!regex.test(phone);
+};
+
+/**
+ * checks for hybrid mode
+ * @param {*} Config
+ * @returns
+ */
+const isHybridModeEnabled = Config => {
+  const { useNativeSDK, useNativeSDKToSend } = Config;
+  return useNativeSDK && !useNativeSDKToSend;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1835,6 +1855,7 @@ module.exports = {
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
+  isNotEmpty,
   isEmptyObject,
   isHttpStatusRetryable,
   isHttpStatusSuccess,
@@ -1861,5 +1882,8 @@ module.exports = {
   getErrorStatusCode,
   getDestAuthCacheInstance,
   refinePayload,
-  getEventReqMetadata
+  validateEmail,
+  validatePhoneWithCountryCode,
+  getEventReqMetadata,
+  isHybridModeEnabled
 };

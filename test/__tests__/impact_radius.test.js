@@ -21,9 +21,9 @@ const routerTestData = JSON.parse(routerTestDataFile);
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
     testData.forEach((dataPoint, index) => {
-      it(`${index}. ${integration} - ${dataPoint.description}`, async () => {
+      it(`${index}. ${integration} - ${dataPoint.description}`, () => {
         try {
-          const output = await transformer.process(dataPoint.input);
+          const output = transformer.process(dataPoint.input);
           expect(output).toEqual(dataPoint.output);
         } catch (error) {
           expect(error.message).toEqual(dataPoint.output.error);

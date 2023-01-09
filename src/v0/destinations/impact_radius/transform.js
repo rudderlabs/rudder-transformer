@@ -23,6 +23,13 @@ const {
   InstrumentationError
 } = require("../../util/errorTypes");
 
+/**
+ * This function takes the transformed payload, endpoint and destination Config as input and returns the prepared response.
+ * @param {*} payload
+ * @param {*} endpoint
+ * @param {*} Config
+ * @returns
+ */
 const responseBuilder = (payload, endpoint, Config) => {
   if (payload) {
     const response = defaultRequestConfig();
@@ -40,7 +47,17 @@ const responseBuilder = (payload, endpoint, Config) => {
   );
 };
 
-const buildPageLoadResponse = (
+/**
+ * This function is used for building the transformed payload for the PageLoad endpoint of Impact Radius.
+ * This function is called by default for identify, page and screen calls. For track call, it is called when
+ * the customer doesn't configure the event name in config
+ * @param {*} message
+ * @param {*} campaignId
+ * @param {*} impactAppId
+ * @param {*} enableEmailHashing
+ * @returns
+ */
+const buildPageLoadPayload = (
   message,
   campaignId,
   impactAppId,
@@ -66,40 +83,52 @@ const buildPageLoadResponse = (
 };
 
 /**
- * This function is used to build the response for identify call.
+ * This function is used for processing identify, page and screen calls.
  * @param {*} message
  * @param {*} category
  * @param {*} Config
  * @returns
  */
-const identifyResponseBuilder = (message, Config) => {
+const processCommonEvents = (message, Config) => {
   const {
     campaignId,
     enableIdentifyEvents,
+    enablePageEvents,
+    enableScreenEvents,
     impactAppId,
     enableEmailHashing
   } = Config;
 
-  if (!enableIdentifyEvents) {
+  if (message.type === "identify" && !enableIdentifyEvents) {
+    throw new ConfigurationError(
+      `${message.type} events are disabled from Config`
+    );
+  }
+  if (message.type === "screen" && !enableScreenEvents) {
+    throw new ConfigurationError(
+      `${message.type} events are disabled from Config`
+    );
+  }
+  if (message.type === "page" && !enablePageEvents) {
     throw new ConfigurationError(
       `${message.type} events are disabled from Config`
     );
   }
 
   return responseBuilder(
-    buildPageLoadResponse(message, campaignId, impactAppId, enableEmailHashing),
+    buildPageLoadPayload(message, campaignId, impactAppId, enableEmailHashing),
     CONFIG_CATEGORIES.PAGELOAD.endPoint,
     Config
   );
 };
 
 /**
- * This function is used to build the response for track call.
+ * This function is used for processing the track events.
  * @param {*} message
  * @param {*} Config
  * @returns
  */
-const trackResponseBuilder = (message, Config) => {
+const processTrackEvent = (message, Config) => {
   const {
     campaignId,
     eventTypeId,
@@ -180,67 +209,13 @@ const trackResponseBuilder = (message, Config) => {
     return respArray;
   }
   return responseBuilder(
-    buildPageLoadResponse(message, campaignId, impactAppId),
+    buildPageLoadPayload(message, campaignId, impactAppId),
     CONFIG_CATEGORIES.PAGELOAD.endPoint,
     Config
   );
 };
 
-/**
- * This function is used to build the response for page call.
- * @param {*} message
- * @param {*} Config
- * @returns
- */
-const pageResponseBuilder = (message, Config) => {
-  const {
-    campaignId,
-    enablePageEvents,
-    impactAppId,
-    enableEmailHashing
-  } = Config;
-
-  if (!enablePageEvents) {
-    throw new ConfigurationError(
-      `${message.type} events are disabled from Config`
-    );
-  }
-
-  return responseBuilder(
-    buildPageLoadResponse(message, campaignId, impactAppId, enableEmailHashing),
-    CONFIG_CATEGORIES.PAGELOAD.endPoint,
-    Config
-  );
-};
-
-/**
- * This function is used to build the response for screen call.
- * @param {*} message
- * @param {*} Config
- * @returns
- */
-const screenResponseBuilder = (message, Config) => {
-  const {
-    campaignId,
-    enableScreenEvents,
-    impactAppId,
-    enableEmailHashing
-  } = Config;
-
-  if (!enableScreenEvents) {
-    throw new ConfigurationError(
-      `${message.type} events are disabled from Config`
-    );
-  }
-
-  return responseBuilder(
-    buildPageLoadResponse(message, campaignId, impactAppId, enableEmailHashing),
-    CONFIG_CATEGORIES.PAGELOAD.endPoint,
-    Config
-  );
-};
-
-const processEvent = async (message, destination) => {
+const processEvent = (message, destination) => {
   if (!message.type) {
     throw new InstrumentationError("Event type is required");
   }
@@ -249,16 +224,12 @@ const processEvent = async (message, destination) => {
     let response;
     switch (messageType) {
       case EventType.IDENTIFY:
-        response = identifyResponseBuilder(message, destination.Config);
+      case EventType.PAGE:
+      case EventType.SCREEN:
+        response = processCommonEvents(message, destination.Config);
         break;
       case EventType.TRACK:
-        response = trackResponseBuilder(message, destination.Config);
-        break;
-      case EventType.PAGE:
-        response = pageResponseBuilder(message, destination.Config);
-        break;
-      case EventType.SCREEN:
-        response = screenResponseBuilder(message, destination.Config);
+        response = processTrackEvent(message, destination.Config);
         break;
       default:
         throw new InstrumentationError(
@@ -269,7 +240,7 @@ const processEvent = async (message, destination) => {
   }
 };
 
-const process = async event => {
+const process = event => {
   return processEvent(event.message, event.destination);
 };
 

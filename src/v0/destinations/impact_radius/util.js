@@ -3,6 +3,11 @@ const { isAppleFamily } = require("../../util");
 const { ConfigurationError } = require("../../util/errorTypes");
 const { itemMapping } = require("./config");
 
+/**
+ * This function checks and throws Configuration error for missed required fields in destination Configs. Returns true in case of no error.
+ * @param {*} Config
+ * @returns
+ */
 const checkConfigurationError = Config => {
   let emptyField;
   if (!Config.accountSID) {
@@ -18,6 +23,12 @@ const checkConfigurationError = Config => {
   return true;
 };
 
+/**
+ * This function returns the updated payload after doing mapping of device.id and device.advertisingId using OS values
+ * @param {*} message
+ * @param {*} payload
+ * @returns
+ */
 const checkOsAndPopulateValues = (message, payload) => {
   const os = get(message, "context.os.name");
   const updatedPayload = payload;
@@ -31,11 +42,23 @@ const checkOsAndPopulateValues = (message, payload) => {
   return updatedPayload;
 };
 
+/**
+ * This function returns the final property name to which the value should be mapped.
+ * @param {*} itemName
+ * @param {*} index
+ * @returns
+ */
 const getPropertyName = (itemName, index) => {
   const propertyName = `${itemName}${index}`;
   return propertyName;
 };
 
+/**
+ * This function returns the property from which the value should be taken for mapping.
+ * @param {*} productsMapping
+ * @param {*} itemName
+ * @returns
+ */
 const getProductsMapping = (productsMapping, itemName) => {
   let prop;
   if (productsMapping && Array.isArray(productsMapping)) {
@@ -46,6 +69,13 @@ const getProductsMapping = (productsMapping, itemName) => {
   return prop;
 };
 
+/**
+ * This function populates the product related properties using default mapping or products mapping configured
+ * in RudderStack dashboard
+ * @param {*} productsMapping
+ * @param {*} properties
+ * @returns
+ */
 const populateProductProperties = (productsMapping, properties) => {
   const { products } = properties;
   const productProperties = {};
@@ -82,6 +112,12 @@ const populateProductProperties = (productsMapping, properties) => {
   return productProperties;
 };
 
+/**
+ * This function populates additional mapping into the payload which is configured by the user in RudderStack dashboard
+ * @param {*} message
+ * @param {*} parameters
+ * @returns
+ */
 const populateAdditionalParameters = (message, parameters) => {
   const additionalParameters = {};
   if (parameters && Array.isArray(parameters)) {

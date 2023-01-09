@@ -243,7 +243,7 @@ function flattenJson(data, separator = ".", mode = "normal") {
           recurse(cur[i], `${prop}[${i}]`);
         }
       }
-      if (i === 0) {
+      if (cur.length === 0) {
         result[prop] = [];
       }
     } else {

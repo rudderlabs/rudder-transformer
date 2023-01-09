@@ -21,6 +21,7 @@ const rootDir =
 const tests = path.join(__dirname, rootDir);
 
 const { getDestHandler } = require("../src/versionedRouter");
+const { include } = require("is");
 
 // const BASE_URL = "http://localhost:9090";
 // const axiosClient = axios.create({
@@ -189,7 +190,7 @@ const testDirectory = tests;
 const filePaths = getFilePaths(testDirectory);
 
 filePaths.forEach(file => {
-  if (path.extname(file) === ".json") {
+  if (path.basename(file).includes(".test.json")) {
     testFile(fs.readFileSync(file));
   }
 });

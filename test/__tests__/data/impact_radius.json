@@ -244,7 +244,7 @@
       }
     },
     "output": {
-      "error": "accountSID is a required field"
+      "error": "accountSID : are required fields"
     }
   },
   {
@@ -317,7 +317,7 @@
       }
     },
     "output": {
-      "error": "apiKey is a required field"
+      "error": "apiKey : are required fields"
     }
   },
   {
@@ -390,7 +390,7 @@
       }
     },
     "output": {
-      "error": "campaignId is a required field"
+      "error": "campaignId : are required fields"
     }
   },
   {

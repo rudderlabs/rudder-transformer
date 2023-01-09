@@ -3,7 +3,7 @@ const btoa = require("btoa");
 const { EventType } = require("../../../constants");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
-  checkConfigurationError,
+  validateConfigFields,
   populateProductProperties,
   populateAdditionalParameters,
   checkOsAndPopulateValues
@@ -219,25 +219,28 @@ const processEvent = (message, destination) => {
   if (!message.type) {
     throw new InstrumentationError("Event type is required");
   }
-  if (checkConfigurationError(destination.Config)) {
-    const messageType = message.type?.toLowerCase();
-    let response;
-    switch (messageType) {
-      case EventType.IDENTIFY:
-      case EventType.PAGE:
-      case EventType.SCREEN:
-        response = processCommonEvents(message, destination.Config);
-        break;
-      case EventType.TRACK:
-        response = processTrackEvent(message, destination.Config);
-        break;
-      default:
-        throw new InstrumentationError(
-          `Event type ${messageType} is not supported`
-        );
-    }
-    return response;
+  const errorFields = validateConfigFields(destination.Config);
+  if (errorFields) {
+    throw new ConfigurationError(`${errorFields} : are required fields`);
   }
+
+  const messageType = message.type?.toLowerCase();
+  let response;
+  switch (messageType) {
+    case EventType.IDENTIFY:
+    case EventType.PAGE:
+    case EventType.SCREEN:
+      response = processCommonEvents(message, destination.Config);
+      break;
+    case EventType.TRACK:
+      response = processTrackEvent(message, destination.Config);
+      break;
+    default:
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
+  }
+  return response;
 };
 
 const process = event => {

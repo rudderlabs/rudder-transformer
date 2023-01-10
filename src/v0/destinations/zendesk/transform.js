@@ -10,6 +10,7 @@ const {
   ZENDESK_MARKET_PLACE_NAME,
   ZENDESK_MARKET_PLACE_ORG_ID,
   ZENDESK_MARKET_PLACE_APP_ID,
+  NAME,
   getBaseEndpoint
 } = require("./config");
 const {
@@ -124,9 +125,12 @@ const payloadBuilderforUpdatingEmail = async (
         }
       }
     }
-    logger.debug("Failed in fetching Identity details");
+    logger.debug(`${NAME}:: Failed in fetching Identity details`);
   } catch (error) {
-    logger.debug("Error :", error.response ? error.response.data : error);
+    logger.debug(
+      `${NAME}:: Error :`,
+      error.response ? error.response.data : error
+    );
   }
   return {};
 };
@@ -149,11 +153,11 @@ async function createUserFields(url, config, newFields, fieldJson) {
     try {
       const response = await axios.post(url, fieldData, config);
       if (response.status !== 201) {
-        logger.debug("Failed to create User Field : ", field);
+        logger.debug(`${NAME}:: Failed to create User Field : `, field);
       }
     } catch (error) {
       if (error.response && error.response.status !== 422) {
-        logger.debug("Cannot create User field ", field, error);
+        logger.debug(`${NAME}:: Cannot create User field `, field, error);
       }
     }
   });
@@ -190,7 +194,10 @@ async function checkAndCreateUserFields(
       }
     }
   } catch (error) {
-    logger.debug("Error :", error.response ? error.response.data : error);
+    logger.debug(
+      `${NAME}:: Error :`,
+      error.response ? error.response.data : error
+    );
   }
 }
 
@@ -240,7 +247,7 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
 const getUserIdByExternalId = async (message, headers, baseEndpoint) => {
   const externalId = getFieldValueFromMessage(message, "userIdOnly");
   if (!externalId) {
-    logger.debug("externalId is required for getting zenuserId");
+    logger.debug(`${NAME}:: externalId is required for getting zenuserId`);
     return undefined;
   }
   const url = `${baseEndpoint}users/search.json?query=${externalId}`;
@@ -253,10 +260,10 @@ const getUserIdByExternalId = async (message, headers, baseEndpoint) => {
       const zendeskUserId = get(resp, "response.data.users.0.id");
       return zendeskUserId;
     }
-    logger.debug("Failed in fetching User details");
+    logger.debug(`${NAME}:: Failed in fetching User details`);
   } catch (error) {
     logger.debug(
-      `Cannot get userId for externalId : ${externalId}`,
+      `${NAME}:: Cannot get userId for externalId : ${externalId}`,
       error.response
     );
     return undefined;
@@ -270,7 +277,7 @@ async function getUserId(message, headers, baseEndpoint, type) {
       : getFieldValueFromMessage(message, "traits");
   const userEmail = traits?.email || traits?.primaryEmail;
   if (!userEmail) {
-    logger.debug("Email ID is required for getting zenuserId");
+    logger.debug(`${NAME}:: Email ID is required for getting zenuserId`);
     return undefined;
   }
   const url = `${baseEndpoint}users/search.json?query=${userEmail}`;
@@ -279,7 +286,7 @@ async function getUserId(message, headers, baseEndpoint, type) {
   try {
     const resp = await axios.get(url, config);
     if (!resp || !resp.data || resp.data.count === 0) {
-      logger.debug("User not found");
+      logger.debug(`${NAME}:: User not found`);
       return undefined;
     }
 
@@ -305,7 +312,7 @@ async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint) {
       return true;
     }
   } catch (error) {
-    logger.debug("Error :");
+    logger.debug(`${NAME}:: Error :`);
     logger.debug(error?.response?.data || error);
   }
   return false;
@@ -338,7 +345,7 @@ async function createUser(
     const resp = await axios.post(url, payload, config);
 
     if (!resp.data || !resp.data.user || !resp.data.user.id) {
-      logger.debug(`Couldn't create User: ${name}`);
+      logger.debug(`${NAME}:: Couldn't create User: ${name}`);
       throw new NetworkInstrumentationError("user not found");
     }
 
@@ -437,14 +444,18 @@ async function createOrganization(
     const resp = await axios.post(url, payload, config);
 
     if (!resp.data || !resp.data.organization) {
-      logger.debug(`Couldn't create Organization: ${message.traits.name}`);
+      logger.debug(
+        `${NAME}:: Couldn't create Organization: ${message.traits.name}`
+      );
       return undefined;
     }
 
     const orgId = resp?.data?.organization?.id;
     return orgId;
   } catch (error) {
-    logger.debug(`Couldn't create Organization: ${message.traits.name}`);
+    logger.debug(
+      `${NAME}:: Couldn't create Organization: ${message.traits.name}`
+    );
     return undefined;
   }
 }
@@ -538,7 +549,7 @@ async function processIdentify(
           }
         }
       } catch (error) {
-        logger.debug(error);
+        logger.debug(`${NAME}:: ${error}`);
       }
     }
   }

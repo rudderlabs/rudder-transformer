@@ -31,6 +31,9 @@ const trackResponseBuilder = (message, { Config }) => {
   if (!event) {
     throw new InstrumentationError("event is required for track call");
   }
+  if (typeof event === "object") {
+    throw new InstrumentationError("Event shouldn't be an object");
+  }
   event = event.trim().toLowerCase();
   let payload = constructPayload(message, trackMapping);
   const eventMapping = eventTypeMapping(Config);

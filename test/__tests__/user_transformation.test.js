@@ -1243,4 +1243,38 @@ describe("Python transformations", () => {
       `${OPENFAAS_GATEWAY_URL}/system/function/${funcName}`
     );
   });
+
+  it("Simple transformation run - function not found", async () => {
+    const inputData = require(`./data/${integration}_input.json`);
+
+    const versionId = randomID();
+    const respBody = pyTrRevCode(versionId);
+    const funcName = pyfaasFuncName(respBody.workspaceId, respBody.versionId);
+
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    axios.post
+      .mockRejectedValueOnce({
+        response: { status: 429, data: `Request limit exceeded` } // invoke function not found
+      })
+      .mockRejectedValueOnce({
+        response: { status: 500, data: `Internal server error` } // invoke function not found
+      });
+
+    // request limit exceeded will be retried
+    await expect(async () => {
+      await userTransformHandler(inputData, versionId, []);
+    }).rejects.toThrow(RetryRequestError);
+
+    // service not reachable will be retried
+    await expect(async () => {
+      await userTransformHandler(inputData, versionId, []);
+    }).rejects.toThrow(RetryRequestError);
+  });
 });

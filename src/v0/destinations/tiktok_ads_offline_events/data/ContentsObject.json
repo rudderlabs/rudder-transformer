@@ -1,0 +1,32 @@
+[
+  {
+    "destKey": "content_name",
+    "sourceKeys": "name",
+    "required": false
+  },
+  {
+    "destKey": "content_type",
+    "sourceKeys": ["content_type", "contentType"],
+    "required": false
+  },
+  {
+    "destKey": "content_category",
+    "sourceKeys": "category",
+    "required": false
+  },
+  {
+    "destKey": "content_id",
+    "sourceKeys": ["product_id", "productId"],
+    "required": false
+  },
+  {
+    "destKey": "price",
+    "sourceKeys": "price",
+    "required": false
+  },
+  {
+    "destKey": "quantity",
+    "sourceKeys": "quantity",
+    "required": false
+  }
+]

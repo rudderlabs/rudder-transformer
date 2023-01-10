@@ -117,5 +117,19 @@
       "Name": "zendesk",
       "Transformations": []
     }
+  },
+  {
+    "batched": false,
+    "error": "Failed to fetch user with email: testemail2@email due to Couldn't find user: John Wick",
+    "metadata": [
+      {
+        "jobId": 3
+      }
+    ],
+    "statTags": {
+      "errorCategory": "network",
+      "errorType": "aborted"
+    },
+    "statusCode": 400
   }
 ]

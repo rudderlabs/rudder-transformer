@@ -1243,4 +1243,54 @@ describe("Python transformations", () => {
       `${OPENFAAS_GATEWAY_URL}/system/function/${funcName}`
     );
   });
+
+  it("Simple transformation run - error requests", async () => {
+    const inputData = require(`./data/${integration}_input.json`);
+
+    const versionId = randomID();
+    const respBody = pyTrRevCode(versionId);
+    const funcName = pyfaasFuncName(respBody.workspaceId, respBody.versionId);
+
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    axios.post
+      .mockRejectedValueOnce({
+        response: { status: 429, data: `Rate limit exceeded` } // invoke function with rate limit
+      })
+      .mockRejectedValueOnce({
+        response: { status: 500, data: `Internal server error` } // invoke function with internal server error
+      })
+      .mockRejectedValueOnce({
+        response: { status: 503, data: `Service not reachable` } // invoke function with internal server error
+      })
+      .mockRejectedValueOnce({
+        response: { status: 504, data: `Timed out` } // invoke function with exec timeout
+      });
+
+    // request limit exceeded will be retried
+    await expect(async () => {
+      await userTransformHandler(inputData, versionId, []);
+    }).rejects.toThrow(RetryRequestError);
+
+    // server error will be retried
+    await expect(async () => {
+      await userTransformHandler(inputData, versionId, []);
+    }).rejects.toThrow(RetryRequestError);
+
+    // service not reachable will be retried
+    await expect(async () => {
+      await userTransformHandler(inputData, versionId, []);
+    }).rejects.toThrow(RetryRequestError);
+
+    // execution timeout will not be retried
+    await expect(async () => {
+      await userTransformHandler(inputData, versionId, []);
+    }).rejects.toThrow(RespStatusError);
+  });
 });

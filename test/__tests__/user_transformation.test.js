@@ -1267,10 +1267,18 @@ describe("Python transformations", () => {
         response: { status: 500, data: `Internal server error` } // invoke function with internal server error
       })
       .mockRejectedValueOnce({
+        response: { status: 503, data: `Service not reachable` } // invoke function with internal server error
+      })
+      .mockRejectedValueOnce({
         response: { status: 504, data: `Timed out` } // invoke function with exec timeout
       });
 
     // request limit exceeded will be retried
+    await expect(async () => {
+      await userTransformHandler(inputData, versionId, []);
+    }).rejects.toThrow(RetryRequestError);
+
+    // server error will be retried
     await expect(async () => {
       await userTransformHandler(inputData, versionId, []);
     }).rejects.toThrow(RetryRequestError);

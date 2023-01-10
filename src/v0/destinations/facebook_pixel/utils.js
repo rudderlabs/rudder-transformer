@@ -1,13 +1,11 @@
 const sha256 = require("sha256");
 const {
-  CustomError,
   isObject,
   getFieldValueFromMessage,
   formatTimeStamp
 } = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const ErrorBuilder = require("../../util/error");
-const { DESTINATION } = require("./config");
+
+const { InstrumentationError } = require("../../util/errorTypes");
 
 /**  format revenue according to fb standards with max two decimal places.
  * @param revenue
@@ -19,16 +17,7 @@ const formatRevenue = revenue => {
   if (!isNaN(formattedRevenue)) {
     return formattedRevenue;
   }
-  throw new ErrorBuilder()
-    .setMessage("Revenue could not be converted to number")
-    .setStatus(400)
-    .setStatTags({
-      destType: DESTINATION,
-      stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-      scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-      meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-    })
-    .build();
+  throw new InstrumentationError("Revenue could not be converted to number");
 };
 
 /**

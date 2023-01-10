@@ -5,11 +5,8 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
-  CustomError,
   getHashFromArrayWithDuplicate,
-  getSuccessRespEvents,
-  handleRtTfSingleEventError,
-  checkInvalidRtTfEvents
+  simpleProcessRouterDest
 } = require("../../util");
 const {
   retrieveUserId,
@@ -17,6 +14,10 @@ const {
   validateCreatePostFields,
   validateEventMapping
 } = require("./util");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const responseBuilder = responseConfgs => {
   const {
@@ -79,7 +80,9 @@ const getTrackResponse = async (apiKey, message, operationType) => {
       mappingConfig[ConfigCategory.CREATE_VOTE.name]
     );
     if (!payload.postID) {
-      throw new CustomError("PostID is not present. Aborting message.", 400);
+      throw new InstrumentationError(
+        "PostID is not present. Aborting message."
+      );
     }
 
     payload.apiKey = apiKey;
@@ -141,12 +144,11 @@ const trackResponseBuilder = async (message, { Config }) => {
 
 const processEvent = (message, destination) => {
   if (!destination.Config.apiKey) {
-    throw new CustomError("API Key is not present. Aborting message.", 400);
+    throw new ConfigurationError("API Key is not present. Aborting message.");
   }
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   const messageType = message.type.toLowerCase();
@@ -160,7 +162,7 @@ const processEvent = (message, destination) => {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError("Message type not supported");
   }
   return response;
 };
@@ -169,28 +171,8 @@ const process = event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "CANNY");
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        const message = input.message.statusCode
-          ? input.message
-          : process(input);
-        return getSuccessRespEvents(
-          message,
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return handleRtTfSingleEventError(input, error, "CANNY");
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

@@ -193,7 +193,6 @@
           "s4Alerting": "single_ack",
           "s4ExternalID": "INC493933",
           "s4Status": "new"
-
         },
         "context": {
           "os": {
@@ -290,7 +289,6 @@
           "s4Alerting": "single_ack",
           "s4ExternalID": "INC493933",
           "s4Status": "new"
-
         },
         "context": {
           "os": {
@@ -434,7 +432,7 @@
       }
     },
     "output": {
-      "error": "[SIGNL4]: event is not present in the input payload"
+      "error": "Event is not present in the input payload"
     }
   },
   {
@@ -501,7 +499,7 @@
       }
     },
     "output": {
-      "error": "apiKey is a required field"
+      "error": "ApiKey is a required field"
     }
   },
   {
@@ -568,7 +566,7 @@
       }
     },
     "output": {
-      "error": "Message type identify not supported"
+      "error": "Event type identify is not supported"
     }
   },
   {
@@ -635,7 +633,7 @@
       }
     },
     "output": {
-      "error": "Message Type is not present. Aborting message."
+      "error": "Event type is required"
     }
   }
 ]

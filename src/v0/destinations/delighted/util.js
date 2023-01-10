@@ -1,6 +1,15 @@
 const axios = require("axios");
-const { CustomError, getValueFromMessage } = require("../../util");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const { getValueFromMessage } = require("../../util");
+const {
+  NetworkInstrumentationError,
+  AbortedError,
+  RetryableError,
+  InstrumentationError,
+  NetworkError
+} = require("../../util/errorTypes");
 const { ENDPOINT } = require("./config");
+const tags = require("../../util/tags");
 
 const isValidEmail = email => {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -14,20 +23,18 @@ const isValidPhone = phone => {
 const isValidUserIdOrError = (channel, userId) => {
   if (channel === "email") {
     if (!isValidEmail(userId)) {
-      throw new CustomError(
-        "Channel is set to email. Enter correct email.",
-        400
+      throw new InstrumentationError(
+        "Channel is set to email. Enter correct email."
       );
     }
   } else if (channel === "sms") {
     if (!isValidPhone(userId)) {
-      throw new CustomError(
-        "Channel is set to sms. Enter correct phone number i.e. E.164",
-        400
+      throw new InstrumentationError(
+        "Channel is set to sms. Enter correct phone number i.e. E.164"
       );
     }
   } else {
-    throw new CustomError("Invalid Channel type", 400);
+    throw new InstrumentationError("Invalid Channel type");
   }
 
   return {
@@ -62,7 +69,7 @@ const userValidity = async (channel, Config, userId) => {
     ) {
       return response.data.length !== 0;
     }
-    throw new CustomError("Invalid response");
+    throw new NetworkInstrumentationError("Invalid response");
   } catch (error) {
     let errMsg = "";
     let errStatus = 400;
@@ -83,16 +90,19 @@ const userValidity = async (channel, Config, userId) => {
           errStatus = 400;
       }
     }
-    throw new CustomError(
+    throw new NetworkError(
       `Error occurred while checking user : ${errMsg}`,
-      errStatus
+      errStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus)
+      }
     );
   }
 };
 const eventValidity = (Config, message) => {
   const event = getValueFromMessage(message, "event");
   if (!event) {
-    throw new CustomError("No event found.", 400);
+    throw new InstrumentationError("No event found.");
   }
   let flag = false;
   Config.eventNamesSettings.forEach(eventName => {

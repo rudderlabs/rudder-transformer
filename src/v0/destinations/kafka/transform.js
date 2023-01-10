@@ -1,14 +1,12 @@
 /* eslint-disable no-restricted-syntax */
 const groupBy = require("lodash/groupBy");
 const cloneDeep = require("lodash/cloneDeep");
-// const { getDynamicMeta } = require("../../../adapters/utils/networkUtils");
 const {
   getIntegrationsObj,
   getHashFromArray,
   removeUndefinedAndNullValues
 } = require("../../util");
-// const { TRANSFORMER_METRIC } = require("../../util/constant");
-// const ErrorBuilder = require("../../util/error");
+// const { InstrumentationError } = require("../../util/errorTypes");
 
 const filterConfigTopics = (message, destination) => {
   const { Config } = destination;
@@ -78,17 +76,7 @@ const process = event => {
 
   // TODO: uncomment this when v.1.3.0 of server is avialble in all envs
   // if (!topic) {
-  //   throw new ErrorBuilder()
-  //     .setStatus(400)
-  //     .setMessage("Topic is required for Kafka destination")
-  //     .isTransformResponseFailure(true)
-  //     .setStatTags({
-  //       destType: "KAFKA",
-  //       stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-  //       scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-  //       meta: getDynamicMeta(400)
-  //     })
-  //     .build();
+  //   throw new InstrumentationError("Topic is required for Kafka destination");
   // }
 
   const userId = message.userId || message.anonymousId;

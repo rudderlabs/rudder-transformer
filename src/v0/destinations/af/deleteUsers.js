@@ -1,8 +1,17 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
 const { httpPOST } = require("../../../adapters/network");
-const { generateUUID } = require("../../util");
-const ErrorBuilder = require("../../util/error");
+const {
+  processAxiosResponse,
+  getDynamicErrorType
+} = require("../../../adapters/utils/networkUtils");
+const { generateUUID, isHttpStatusSuccess } = require("../../util");
+const {
+  ConfigurationError,
+  InstrumentationError,
+  NetworkError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
 const { executeCommonValidations } = require("../../util/regulation-api");
 
 /**
@@ -19,23 +28,33 @@ const deleteUser = async (endpoint, body, identityType, identityValue) => {
   body.subject_identities[0].identity_type = identityType;
   body.subject_identities[0].identity_value = identityValue;
   const response = await httpPOST(endpoint, body);
-  return response;
+  const handledDelResponse = processAxiosResponse(response);
+  if (!isHttpStatusSuccess(handledDelResponse.status)) {
+    throw new NetworkError(
+      "User deletion request failed",
+      handledDelResponse.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
+          handledDelResponse.status
+        )
+      },
+      handledDelResponse
+    );
+  }
+  return handledDelResponse;
 };
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
- * @param {*} userAttributes Array of objects with userId, emaail and phone
+ * @param {*} userAttributes Array of objects with userId, email and phone
  * @param {*} config Destination.Config provided in dashboard
  * @returns
  */
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config?.apiToken || !(config?.appleAppId || config?.androidAppId)) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "API Token and one of Apple ID or Android App Id are required fields for user deletion"
-      )
-      .setStatus(400)
-      .build();
+    throw new ConfigurationError(
+      "API Token and one of Apple ID or Android App Id are required fields for user deletion"
+    );
   }
   const body = {
     subject_request_type: "erasure",
@@ -52,95 +71,61 @@ const userDeletionHandler = async (userAttributes, config) => {
       }
     );
     if (filteredStatusCallbackUrlsArray.length > 3) {
-      throw new ErrorBuilder()
-        .setMessage("you can send atmost 3 callBackUrls")
-        .setStatus(400)
-        .build();
+      throw new ConfigurationError("You can send utmost 3 callBackUrls");
     }
     body.status_callback_urls = filteredStatusCallbackUrlsArray;
   }
   const endpoint = `https://hq1.appsflyer.com/gdpr/opengdpr_requests?api_token=${config.apiToken}`;
-  for (let i = 0; i < userAttributes.length; i += 1) {
-    const userAttributeKeys = Object.keys(userAttributes[i]);
-
-    if (userAttributeKeys.includes("appsflyer_id")) {
-      body.property_id = config.androidAppId
-        ? config.androidAppId
-        : config.appleAppId;
-      const response = await deleteUser(
-        endpoint,
-        body,
-        "appsflyer_id",
-        userAttributes[i].appsflyer_id
-      );
-      if (!response || !response.response) {
-        throw new ErrorBuilder()
-          .setMessage("Could not get response")
-          .setStatus(500)
-          .build();
+  await Promise.all(
+    userAttributes.map(async ua => {
+      if (
+        !ua.android_advertising_id &&
+        !ua.ios_advertising_id &&
+        !ua.appsflyer_id
+      ) {
+        throw new InstrumentationError(
+          "none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion"
+        );
       }
-    } else {
-      if (userAttributeKeys.includes("ios_advertising_id")) {
+      /**
+       * Building the request Body in the following priority:
+       * appsflyer_id, ios_advertising_id, android_advertising_id
+       */
+      if (ua?.appsflyer_id) {
+        body.property_id = config.androidAppId
+          ? config.androidAppId
+          : config.appleAppId;
+        await deleteUser(endpoint, body, "appsflyer_id", ua.appsflyer_id);
+      } else if (ua?.ios_advertising_id) {
         body.property_id = config.appleAppId;
         if (!body.property_id) {
-          throw new ErrorBuilder()
-            .setMessage(
-              "appleAppId is required for ios_advertising_id type identifier"
-            )
-            .setStatus(500)
-            .build();
+          throw new ConfigurationError(
+            "appleAppId is required for ios_advertising_id type identifier"
+          );
         }
-        const response = await deleteUser(
+        await deleteUser(
           endpoint,
           body,
           "ios_advertising_id",
-          userAttributes[i].ios_advertising_id
+          ua.ios_advertising_id
         );
-        if (!response || !response.response) {
-          throw new ErrorBuilder()
-            .setMessage("Could not get response")
-            .setStatus(500)
-            .build();
-        }
-      }
-      if (userAttributeKeys.includes("android_advertising_id")) {
+      } else {
         body.property_id = config.androidAppId;
         if (!body.property_id) {
-          throw new ErrorBuilder()
-            .setMessage(
-              "androidAppId is required for android_advertising_id type identifier"
-            )
-            .setStatus(500)
-            .build();
+          throw new ConfigurationError(
+            "androidAppId is required for android_advertising_id type identifier"
+          );
         }
-        const response = await deleteUser(
+        await deleteUser(
           endpoint,
           body,
           "android_advertising_id",
-          userAttributes[i].android_advertising_id
+          ua.android_advertising_id
         );
-        if (!response || !response.response) {
-          throw new ErrorBuilder()
-            .setMessage("Could not get response")
-            .setStatus(500)
-            .build();
-        }
       }
-    }
+    })
+  );
 
-    if (
-      !userAttributes[i].android_advertising_id &&
-      !userAttributes[i].ios_advertising_id &&
-      !userAttributes[i].appsflyer_id
-    ) {
-      throw new ErrorBuilder()
-        .setMessage(
-          "none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion"
-        )
-        .setStatus(400)
-        .build();
-    }
-  }
   return { statusCode: 200, status: "successful" };
 };
 

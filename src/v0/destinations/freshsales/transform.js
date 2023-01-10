@@ -2,15 +2,17 @@ const get = require("get-value");
 const { EventType } = require("../../../constants");
 const {
   defaultRequestConfig,
-  CustomError,
   constructPayload,
   ErrorMessage,
-  getErrorRespEvents,
-  getSuccessRespEvents,
   getFieldValueFromMessage,
   defaultPostRequestConfig,
-  getValidDynamicFormConfig
+  getValidDynamicFormConfig,
+  simpleProcessRouterDest
 } = require("../../util");
+const {
+  InstrumentationError,
+  TransformationError
+} = require("../../util/errorTypes");
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
 const {
   getUserAccountDetails,
@@ -50,7 +52,7 @@ const identifyResponseBuilder = (message, { Config }) => {
 
   if (!payload) {
     // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+    throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
 
   if (payload.address) payload.address = flattenAddress(payload.address);
@@ -77,7 +79,7 @@ const identifyResponseBuilder = (message, { Config }) => {
 const trackResponseBuilder = async (message, { Config }) => {
   const { event } = message;
   if (!event) {
-    throw new CustomError("Event name is required for track call.", 400);
+    throw new InstrumentationError("Event name is required for track call.");
   }
   let payload;
 
@@ -110,9 +112,8 @@ const trackResponseBuilder = async (message, { Config }) => {
       break;
     }
     default:
-      throw new CustomError(
-        `event name ${event} is not supported. Aborting!`,
-        400
+      throw new InstrumentationError(
+        `event name ${event} is not supported. Aborting!`
       );
   }
   response.headers = {
@@ -136,7 +137,7 @@ const groupResponseBuilder = async (message, { Config }) => {
   );
   if (!payload) {
     // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+    throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
 
   if (payload.address) payload.address = flattenAddress(payload.address);
@@ -161,7 +162,7 @@ const groupResponseBuilder = async (message, { Config }) => {
 function eventMappingHandler(message, destination) {
   const event = get(message, "event");
   if (!event) {
-    throw new CustomError("[Freshsales] :: Event name is required", 400);
+    throw new InstrumentationError("Event name is required");
   }
 
   let { rudderEventsToFreshsalesEvents } = destination.Config;
@@ -187,9 +188,8 @@ function eventMappingHandler(message, destination) {
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   let response;
@@ -223,7 +223,9 @@ const processEvent = async (message, destination) => {
       response = await groupResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `message type ${messageType} not supported`
+      );
   }
   return response;
 };
@@ -232,38 +234,8 @@ const process = async event => {
   return processEvent(event.message, event.destination);
 };
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error?.response?.status || error?.code || 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

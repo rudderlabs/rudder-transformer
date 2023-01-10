@@ -26,9 +26,12 @@ const {
   createGroup,
   updateGroup,
   renameCustomFieldsFromMap,
-  getConfigOrThrowError,
-  CustomError
+  getConfigOrThrowError
 } = require("./util");
+const {
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 /**
  * Person Object is created or updated. Upsert API makes PUT request for both cases
@@ -41,7 +44,7 @@ const identifyResponseBuilder = (message, { Config }) => {
     "identify"
   );
   if (!getValueFromMessage(message, ["traits.email", "context.traits.email"])) {
-    throw new CustomError("email is required for identify", 400);
+    throw new InstrumentationError("email is required for identify");
   }
 
   let payload = constructPayload(message, identifyMapping);
@@ -88,12 +91,12 @@ const groupResponseBuilder = async (message, { Config }) => {
   const { accessKey } = getConfigOrThrowError(Config, ["accessKey"], "group");
   const groupName = getValueFromMessage(message, "traits.name");
   if (!groupName) {
-    throw new CustomError("company name is required for group", 400);
+    throw new InstrumentationError("company name is required for group");
   }
 
   const email = getValueFromMessage(message, "context.traits.email");
   if (!email) {
-    throw new CustomError("user email is required for group", 400);
+    throw new InstrumentationError("user email is required for group");
   }
 
   const resp = await searchGroup(groupName, Config);
@@ -147,7 +150,7 @@ const trackResponseBuilder = (message, { Config }) => {
 
   const event = getValueFromMessage(message, "event");
   if (!event) {
-    throw new CustomError("event name is required for track", 400);
+    throw new InstrumentationError("event name is required for track");
   }
 
   const config = getConfigOrThrowError(
@@ -163,7 +166,9 @@ const trackResponseBuilder = (message, { Config }) => {
     false
   );
   if (!eventNameMap || !get(eventNameMap, event)) {
-    throw new CustomError(`Event name mapping not provided for ${event}`, 400);
+    throw new ConfigurationError(
+      `Event name mapping not provided for ${event}`
+    );
   }
   const eventVersionMap = getHashFromArray(
     Config.eventVersionMap,
@@ -172,9 +177,8 @@ const trackResponseBuilder = (message, { Config }) => {
     false
   );
   if (!eventVersionMap || !get(eventVersionMap, event)) {
-    throw new CustomError(
-      `event version mapping not provided for ${event}`,
-      400
+    throw new ConfigurationError(
+      `event version mapping not provided for ${event}`
     );
   }
 
@@ -216,9 +220,8 @@ const trackResponseBuilder = (message, { Config }) => {
 const process = async event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
+    throw new InstrumentationError(
+      "Message Type is not present. Aborting message."
     );
   }
   const messageType = message.type.toLowerCase();
@@ -235,13 +238,15 @@ const process = async event => {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `message type ${messageType} not supported`
+      );
   }
   return response;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "GAINSIGHT", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

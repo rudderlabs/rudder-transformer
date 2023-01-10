@@ -6,8 +6,7 @@ const {
   identifyLeadMappingJson,
   identifyContactMappingJson,
   ignoredLeadTraits,
-  ignoredContactTraits,
-  DESTINATION
+  ignoredContactTraits
 } = require("./config");
 const {
   removeUndefinedValues,
@@ -22,14 +21,17 @@ const {
   getDestinationExternalIDObjectForRetl,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
-  TransformationError
+  generateErrorObject
 } = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
 const { getAccessToken, salesforceResponseHandler } = require("./utils");
 const { handleHttpRequest } = require("../../../adapters/network");
+const {
+  InstrumentationError,
+  NetworkInstrumentationError
+} = require("../../util/errorTypes");
 
 // Basic response builder
-// We pass the parameterMap with any processing-specific key-value prepopulated
+// We pass the parameterMap with any processing-specific key-value pre-populated
 // We also pass the incoming payload, the hit type to be generated and
 // the field mapping and credentials JSONs
 function responseBuilderSimple(
@@ -120,7 +122,6 @@ async function getSaleforceIdForRecord(
       `SALESFORCE SEARCH BY ID: ${JSON.stringify(
         processedsfSearchResponse.response
       )}`,
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
       destination.ID
     );
   }
@@ -178,16 +179,8 @@ async function getSalesforceIdFromPayload(
       !identifierType ||
       !type.toLowerCase().includes("salesforce")
     ) {
-      throw new TransformationError(
-        "Invalid externalId. id, type, identifierType must be provided",
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .CONFIGURATION
-        },
-        DESTINATION
+      throw new InstrumentationError(
+        "Invalid externalId. id, type, identifierType must be provided"
       );
     }
 
@@ -222,16 +215,7 @@ async function getSalesforceIdFromPayload(
     );
 
     if (!email) {
-      throw new TransformationError(
-        "Invalid Email address for Lead Objet",
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        },
-        DESTINATION
-      );
+      throw new InstrumentationError("Invalid Email address for Lead Objet");
     }
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
     // request configuration will be conditional
@@ -247,7 +231,6 @@ async function getSalesforceIdFromPayload(
         `During Lead Query: ${JSON.stringify(
           processedLeadQueryResponse.response
         )}`,
-        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
         destination.ID
       );
     }
@@ -258,29 +241,11 @@ async function getSalesforceIdFromPayload(
       const record = processedLeadQueryResponse.response.searchRecords[0];
       if (record.IsDeleted === true) {
         if (record.IsConverted) {
-          throw new TransformationError(
-            "The contact has been deleted.",
-            400,
-            {
-              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-              meta:
-                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-                  .CONFIGURATION
-            },
-            DESTINATION
+          throw new NetworkInstrumentationError(
+            "The contact has been deleted."
           );
         } else {
-          throw new TransformationError(
-            "The lead has been deleted.",
-            400,
-            {
-              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-              meta:
-                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-                  .CONFIGURATION
-            },
-            DESTINATION
-          );
+          throw new NetworkInstrumentationError("The lead has been deleted.");
         }
       }
       if (record.IsConverted && destination.Config.useContactId) {
@@ -313,15 +278,8 @@ async function processIdentify(message, authorizationData, destination) {
   // check the traits before hand
   const traits = getFieldValueFromMessage(message, "traits");
   if (!traits) {
-    throw new TransformationError(
-      "PROCESS IDENTIFY: Invalid traits for Salesforce request",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      "PROCESS IDENTIFY: Invalid traits for Salesforce request"
     );
   }
 
@@ -373,14 +331,8 @@ async function processSingleMessage(message, authorizationData, destination) {
   if (message.type === EventType.IDENTIFY) {
     response = await processIdentify(message, authorizationData, destination);
   } else {
-    throw new TransformationError(
-      `message type ${message.type} is not supported`,
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
+    throw new InstrumentationError(
+      `message type ${message.type} is not supported`
     );
   }
   return response;
@@ -397,8 +349,8 @@ async function process(event) {
   return response;
 }
 
-const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "SALESFORCE");
+const processRouterDest = async (inputs, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -407,15 +359,12 @@ const processRouterDest = async inputs => {
   try {
     authorizationData = await getAccessToken(inputs[0].destination);
   } catch (error) {
+    const errObj = generateErrorObject(error);
     const respEvents = getErrorRespEvents(
       inputs.map(input => input.metadata),
-      400,
+      errObj.status,
       `Authorisation failed: ${error.message}`,
-      {
-        destType: "SALESFORCE",
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
-      }
+      errObj.statTags
     );
     return [respEvents];
   }
@@ -443,7 +392,7 @@ const processRouterDest = async inputs => {
           input.destination
         );
       } catch (error) {
-        return handleRtTfSingleEventError(input, error, "SALESFORCE");
+        return handleRtTfSingleEventError(input, error, reqMetadata);
       }
     })
   );

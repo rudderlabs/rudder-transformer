@@ -139,9 +139,7 @@
           "typeOfMovie": "Art Film",
           "numberOfRatings": "checking with webapp change"
         },
-        "impression": [
-          "abc"
-        ],
+        "impression": ["abc"],
         "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
       }
     ]
@@ -158,9 +156,7 @@
           "typeOfMovie": "Art Film",
           "numberOfRatings": "checking with webapp change"
         },
-        "impression": [
-          "abc"
-        ],
+        "impression": ["abc"],
         "eventValue": 3.4,
         "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
       }
@@ -178,10 +174,7 @@
           "typeOfMovie": "Art Film",
           "numberOfRatings": "checking with webapp change"
         },
-        "impression": [
-          "2",
-          "3"
-        ],
+        "impression": ["2", "3"],
         "eventValue": 3.4,
         "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
       }
@@ -199,10 +192,7 @@
           "typeOfMovie": "Art Film",
           "numberOfRatings": "checking with webapp change"
         },
-        "impression": [
-          "2",
-          "3"
-        ],
+        "impression": ["2", "3"],
         "eventValue": 3.4,
         "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
       }
@@ -239,7 +229,7 @@
     "choice": "PutItems"
   },
   {
-    "error": "Message Type is not present. Aborting message."
+    "error": "Event type is required"
   },
   {
     "error": "Mapped property typeOfMovie not found"
@@ -260,22 +250,22 @@
     "error": "itemId is a mandatory property for using PutItems"
   },
   {
-    "error": " Cannot process if no event name specified"
+    "error": "Cannot process if no event name specified"
   },
   {
-    "error": "This Message Type does not support PutItems. Aborting message."
+    "error": "This Message Type does not support PutItems. Aborting message"
   },
   {
     "error": "Dataset ARN is a mandatory information to use putUsers"
   },
   {
-    "error": "Either Dataset ARN is not correctly entered or invalid."
+    "error": "Either Dataset ARN is not correctly entered or invalid"
   },
   {
     "error": "Mapped property numberOfRatings not found"
   },
   {
-    "error": "Message type not supported"
+    "error": "Event type screen is not supported"
   },
   {
     "sessionId": "anon-id-new",

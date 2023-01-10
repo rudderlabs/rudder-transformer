@@ -1,11 +1,11 @@
 const {
-  getDynamicMeta,
+  getDynamicErrorType,
   trimResponse
 } = require("../../../adapters/utils/networkUtils");
-const { isDefinedAndNotNull, ErrorBuilder } = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { DESTINATION } = require("./config");
+const { isDefinedAndNotNull } = require("../../util");
 const { isEmpty } = require("../../util/index");
+const tags = require("../../util/tags");
+const { NetworkError } = require("../../util/errorTypes");
 
 const responseTransform = destResponse => {
   let respBody;
@@ -21,29 +21,25 @@ const responseTransform = destResponse => {
     isDefinedAndNotNull(data.rejected) &&
     data.rejected > 0
   ) {
-    throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage(`${data.rejected} requests rejected`)
-      .setDestinationResponse({ ...respBody, success: false })
-      .setStatTags({
-        destType: DESTINATION,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        meta: getDynamicMeta(destResponse.Status || 400)
-      })
-      .build();
+    const status = destResponse?.Status || 400;
+    throw new NetworkError(
+      `${data.rejected} requests rejected`,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      { ...respBody, success: false }
+    );
   } else if (respBody && !respBody.success) {
-    throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage("Request failed for Ometria")
-      .setDestinationResponse({ ...respBody, success: false })
-      .setStatTags({
-        destType: DESTINATION,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-        meta: getDynamicMeta(destResponse.Status || 400)
-      })
-      .build();
+    const status = destResponse?.Status || 400;
+    throw new NetworkError(
+      `"Request failed for Ometria"`,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      { ...respBody, success: false }
+    );
   }
   const status = destResponse.Status;
   const message = respBody.message || "Event delivered successfuly";

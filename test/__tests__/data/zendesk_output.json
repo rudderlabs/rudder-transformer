@@ -419,11 +419,11 @@
   },
   {
     "statusCode": 400,
-    "error": "Zendesk : UserId is a mandatory field for group"
+    "error": "UserId is a mandatory field for group"
   },
   {
     "statusCode": 400,
-    "error": "Message type not supported"
+    "error": "Event type page is not supported"
   },
   {
     "version": "1",
@@ -548,5 +548,53 @@
       },
       "files": {}
     }
-  ]
+  ],
+  {
+    "body": {
+      "FORM": {},
+      "JSON": {
+        "event": {
+          "description": "Order completed",
+          "properties": {
+            "category": "category",
+            "label": "label",
+            "userId": "exId-123",
+            "value": "value"
+          },
+          "source": "Rudder",
+          "type": "Order completed"
+        },
+        "profile": {
+          "identifiers": [
+            {
+              "type": "email",
+              "value": "testemail1@email"
+            }
+          ],
+          "source": "Rudder",
+          "type": "Order completed"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {}
+    },
+    "endpoint": "https://rudderlabtest1.zendesk.com/api/v2/users/900113780483/events",
+    "files": {},
+    "headers": {
+      "Authorization": "Basic cnVkZGVybGFidGVzdDFAZW1haWwuY29tL3Rva2VuOnlQSndjTFRGU3N2SWtGaFkyM1N6aXR0SG9ZQURKUTdlS0RveE51NHg=",
+      "Content-Type": "application/json",
+      "X-Zendesk-Marketplace-App-Id": "263241",
+      "X-Zendesk-Marketplace-Name": "RudderStack",
+      "X-Zendesk-Marketplace-Organization-Id": "3339"
+    },
+    "method": "POST",
+    "params": {},
+    "type": "REST",
+    "userId": "223b5f40-9543-4456-a7aa-945c43048185",
+    "version": "1"
+  },
+  {
+    "statusCode": 400,
+    "error": "Failed to fetch user with email: testemail2@email due to Couldn't find user: John Wick"
+  }
 ]

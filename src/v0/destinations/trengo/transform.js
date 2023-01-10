@@ -15,8 +15,17 @@ const {
   getFieldValueFromMessage,
   getDestinationExternalID,
   getStringValueOfJSON,
-  CustomError
+  ErrorMessage
 } = require("../../util");
+const {
+  NetworkError,
+  ConfigurationError,
+  TransformationError,
+  InstrumentationError,
+  NetworkInstrumentationError
+} = require("../../util/errorTypes");
+const tags = require("../../util/tags");
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 
 /**
  *
@@ -33,9 +42,8 @@ const getTemplate = (message, destination) => {
   const { eventTemplateMap } = destination.Config;
   const hashMap = getHashFromArray(eventTemplateMap, "from", "to", false);
   if (!Object.keys(hashMap).includes(event)) {
-    throw new CustomError(
-      `[Trengo] :: ${event} is not present in Event-Map template keys, aborting event`,
-      400
+    throw new ConfigurationError(
+      `${event} is not present in Event-Map template keys, aborting event`
     );
   }
 
@@ -56,9 +64,8 @@ const validate = (email, phone, channelIdentifier) => {
     (channelIdentifier === "phone" && !phone) ||
     (channelIdentifier === "email" && !email)
   ) {
-    throw new CustomError(
-      `[Trengo] :: Mandatory field for Channel-Identifier :${channelIdentifier} not present`,
-      400
+    throw new ConfigurationError(
+      `Mandatory field for Channel-Identifier :${channelIdentifier} not present`
     );
   }
 };
@@ -85,12 +92,15 @@ const lookupContact = async (term, destination) => {
     });
   } catch (err) {
     // check if exists err.response && err.response.status else 500
-    if (err.response && err.response.status) {
-      throw new CustomError(err.response.statusText, err.response.status);
-    }
-    throw new CustomError(
-      "[Trengo] :: Inside lookupContact, failed to make request",
-      500
+    const status = err.response?.status || 400;
+    throw new NetworkError(
+      `Inside lookupContact, failed to make request: ${err.response?.statusText}`,
+      status,
+
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      err.response
     );
   }
   if (
@@ -102,9 +112,8 @@ const lookupContact = async (term, destination) => {
   ) {
     const { data } = res.data;
     if (data.length > 1) {
-      throw new CustomError(
-        `[Trengo] :: Inside lookupContact, duplicates present for identifer : ${term}`,
-        400
+      throw new NetworkInstrumentationError(
+        `Inside lookupContact, duplicates present for identifier : ${term}`
       );
     } else if (data.length === 1) {
       return data[0].id;
@@ -168,9 +177,8 @@ const contactBuilderTrengo = async (
       contactId = await lookupContact(identifier, destination);
       if (!contactId) {
         // In case contactId is returned null we throw error (This indicates and search API issue in trengo end)
-        throw new CustomError(
-          `[Trengo] :: LookupContact failed for term:${identifier} update failed, aborting as dedup option is enabled`,
-          400
+        throw new NetworkInstrumentationError(
+          `LookupContact failed for term:${identifier} update failed, aborting as dedup option is enabled`
         );
       }
       // In case we did not find the contact for this identifier we return -1
@@ -201,16 +209,14 @@ const ticketBuilderTrengo = async (message, destination, identifer, extIds) => {
   if (!contactId) {
     contactId = await lookupContact(identifer, destination);
     if (!contactId) {
-      throw new CustomError(
-        `[Trengo] :: LookupContact failed for term:${identifer} track event failed`,
-        400
+      throw new InstrumentationError(
+        `LookupContact failed for term:${identifer} track event failed`
       );
     }
 
     if (contactId === -1) {
-      throw new CustomError(
-        `[Trengo] :: No contact found for term:${identifer} track event failed`,
-        400
+      throw new InstrumentationError(
+        `No contact found for term:${identifer} track event failed`
       );
     }
   }
@@ -227,9 +233,8 @@ const ticketBuilderTrengo = async (message, destination, identifer, extIds) => {
         };
         subjectLine = hTemplate(templateInput).trim();
       } catch (err) {
-        throw new CustomError(
-          `[Trengo] :: Error occured in parsing event template for ${message.event}`,
-          400
+        throw new InstrumentationError(
+          `Error occurred in parsing event template for ${message.event}`
         );
       }
     }
@@ -266,9 +271,8 @@ const responseBuilderSimple = async (message, messageType, destination) => {
     !destination.Config.channelId ||
     destination.Config.channelId.length === 0
   ) {
-    throw new CustomError(
-      "[Trengo] :: Cound not process event, missing mandatory field channelId",
-      400
+    throw new InstrumentationError(
+      "Could not process event, missing mandatory field channelId"
     );
   }
 
@@ -359,7 +363,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("Payload could not be constructed", 400);
+  throw new TransformationError(ErrorMessage.FailedToConstructPayload);
 };
 
 /**
@@ -373,11 +377,13 @@ const responseBuilderSimple = async (message, messageType, destination) => {
  */
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw CustomError("Message Type is not present. Aborting message.", 400);
+    throw new InstrumentationError("Event type is required");
   }
   const messageType = message.type.toLowerCase();
   if (messageType !== EventType.IDENTIFY && messageType !== EventType.TRACK) {
-    throw new CustomError("Message type not supported", 400);
+    throw new InstrumentationError(
+      `Event type ${messageType} is not supported`
+    );
   }
   const resp = await responseBuilderSimple(message, messageType, destination);
   return resp;
@@ -388,8 +394,8 @@ const process = async event => {
   return response;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "TRENGO", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

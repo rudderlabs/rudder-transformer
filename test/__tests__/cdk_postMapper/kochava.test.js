@@ -1,6 +1,6 @@
 const {
   processExtraPayloadParams
-} = require("../../../src/cdk/kochava/transform");
+} = require("../../../src/cdk/v1/kochava/transform");
 
 describe("Unit Test for kochava postMapper", () => {
   it("should set all the default values", () => {

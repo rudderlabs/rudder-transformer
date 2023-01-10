@@ -5,7 +5,6 @@ const get = require("get-value");
 const set = require("set-value");
 const { EventType } = require("../../../constants");
 const {
-  CustomError,
   constructPayload,
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -27,6 +26,10 @@ const {
   MAX_BATCH_SIZE,
   PARTNER_NAME
 } = require("./config");
+const {
+  ConfigurationError,
+  InstrumentationError
+} = require("../../util/errorTypes");
 
 function checkIfValidPhoneNumber(str) {
   // Ref - https://ads.tiktok.com/marketing_api/docs?id=1727541103358977
@@ -49,7 +52,7 @@ const getContents = message => {
         properties.contentType ||
         product.content_type ||
         properties.content_type ||
-        "product_group";
+        "product";
       singleProduct.content_id = product.product_id;
       singleProduct.content_category = product.category;
       singleProduct.content_name = product.name;
@@ -148,9 +151,8 @@ const getTrackResponse = (message, Config, event) => {
           phone_number.trim()
         ).toString();
       } else {
-        throw new CustomError(
-          "Invalid phone number. Include proper country code except +86 and the phone number length must be no longer than 15 digit. Aborting",
-          400
+        throw new InstrumentationError(
+          "Invalid phone number. Ideal Format : /^(+(?!86)d{1,3})?d{1,12}$/g, Include proper country code except +86 and the phone number length must be no longer than 15 digit"
         );
       }
     }
@@ -176,13 +178,15 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   let event = message.event?.toLowerCase().trim();
   if (!event) {
-    throw new CustomError("Event name is required", 400);
+    throw new InstrumentationError("Event name is required");
   }
 
   const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
 
   if (eventNameMapping[event] === undefined && !standardEventsMap[event]) {
-    throw new CustomError(`Event name (${event}) is not valid`, 400);
+    throw new InstrumentationError(
+      `Event name (${event}) is not valid, must be mapped to one of standard events`
+    );
   }
 
   const responseList = [];
@@ -206,18 +210,15 @@ const process = async event => {
   const { message, destination } = event;
 
   if (!destination.Config.accessToken) {
-    throw new CustomError("Access Token not found. Aborting ", 400);
+    throw new ConfigurationError("Access Token not found. Aborting ");
   }
 
   if (!destination.Config.pixelCode) {
-    throw new CustomError("Pixel Code not found. Aborting", 400);
+    throw new ConfigurationError("Pixel Code not found. Aborting");
   }
 
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError("Event type is required");
   }
 
   const messageType = message.type.toLowerCase();
@@ -228,7 +229,9 @@ const process = async event => {
       response = await trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported`
+      );
   }
   return response;
 };
@@ -333,8 +336,8 @@ function getEventChunks(event, trackResponseList, eventsChunk) {
   });
 }
 
-const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "TIKTOK_ADS");
+const processRouterDest = async (inputs, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -364,7 +367,7 @@ const processRouterDest = async inputs => {
         const errRespEvent = handleRtTfSingleEventError(
           event,
           error,
-          "TIKTOK_ADS"
+          reqMetadata
         );
         errorRespList.push(errRespEvent);
       }

@@ -16,10 +16,13 @@ const {
   formatValue,
   getFieldValueFromMessage,
   getDestinationExternalID,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError
+  simpleProcessRouterDest
 } = require("../../util");
+const {
+  TransformationError,
+  InstrumentationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const gaDisplayName = "Google Analytics";
 
@@ -130,7 +133,7 @@ function processPageViews(message, destination) {
           documentPath += search;
         }
       } catch (error) {
-        throw new CustomError(`Invalid Url: ${documentUrl}`, 400);
+        throw new InstrumentationError(`Invalid Url: ${documentUrl}`);
       }
     }
   }
@@ -513,7 +516,7 @@ function processProductListEvent(message, destination) {
         parameters.pa = "click";
         break;
       default:
-        throw new CustomError("unknown ProductListEvent type", 400);
+        throw new InstrumentationError("unknown ProductListEvent type");
     }
     const { products } = message.properties;
     let { filters, sorts } = message.properties;
@@ -559,9 +562,8 @@ function processProductListEvent(message, destination) {
       }
     } else {
       // throw error, empty Product List in Product List Viewed event payload
-      throw new CustomError(
-        "Empty Product List provided for Product List Viewed Event",
-        400
+      throw new InstrumentationError(
+        "Empty Product List provided for Product List Viewed Event"
       );
     }
   }
@@ -599,7 +601,7 @@ function processProductEvent(message, destination) {
         parameters.pa = "remove";
         break;
       default:
-        throw new CustomError("unknown ProductEvent type", 400);
+        throw new InstrumentationError("unknown ProductEvent type");
     }
 
     // add produt level custom dimensions and metrics to parameters
@@ -645,7 +647,7 @@ function processTransactionEvent(message, destination) {
       parameters.pa = "refund";
       break;
     default:
-      throw new CustomError("unknown TransactionEvent type", 400);
+      throw new InstrumentationError("unknown TransactionEvent type");
   }
 
   // One of total/revenue/value should be there
@@ -678,9 +680,8 @@ function processTransactionEvent(message, destination) {
     Object.assign(parameters, productParams);
   } else {
     // throw error, empty Product List in Product List Viewed event payload
-    throw new CustomError(
-      "No product information supplied for transaction event",
-      400
+    throw new InstrumentationError(
+      "No product information supplied for transaction event"
     );
   }
 
@@ -719,7 +720,7 @@ function processEComGenericEvent(message, destination) {
         parameters.pa = "click";
         break;
       default:
-        throw new CustomError("unknown TransactionEvent type", 400);
+        throw new InstrumentationError("unknown TransactionEvent type");
     }
   }
   const { products } = message.properties;
@@ -742,7 +743,7 @@ function processSingleMessage(message, destination) {
   // Route to appropriate process depending on type of message received
   const messageType = message.type ? message.type.toLowerCase() : undefined;
   if (!messageType) {
-    throw new CustomError("Message type is not present", 400);
+    throw new InstrumentationError("Message type is not present");
   }
   let customParams = {};
   let category;
@@ -755,7 +756,7 @@ function processSingleMessage(message, destination) {
         customParams = processIdentify(message, destination);
         category = ConfigCategory.IDENTIFY;
       } else {
-        throw new CustomError("server side identify is not on", 400);
+        throw new ConfigurationError("server side identify is not on");
       }
       break;
     case EventType.PAGE:
@@ -769,7 +770,9 @@ function processSingleMessage(message, destination) {
     case EventType.TRACK: {
       let eventName = message.event;
       if (!(typeof eventName === "string" || eventName instanceof String)) {
-        throw new CustomError("Event name is not present/is not a string", 400);
+        throw new InstrumentationError(
+          "Event name is not present/is not a string"
+        );
       }
       if (enhancedEcommerce) {
         eventName = eventName.toLowerCase();
@@ -852,7 +855,9 @@ function processSingleMessage(message, destination) {
     }
     default:
       // throw new RangeError('Unexpected value in type field');
-      throw new CustomError("message type not supported", 400);
+      throw new InstrumentationError(
+        `message type ${messageType} not supported`
+      );
   }
 
   return responseBuilderSimple(
@@ -866,55 +871,11 @@ function processSingleMessage(message, destination) {
 
 // Iterate over input batch and generate response for each message
 function process(event) {
-  let response;
-  try {
-    response = processSingleMessage(event.message, event.destination);
-  } catch (error) {
-    throw new CustomError(
-      error.message || "Unknown error",
-      error.status || 400
-    );
-  }
-
-  return response;
+  return processSingleMessage(event.message, event.destination);
 }
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

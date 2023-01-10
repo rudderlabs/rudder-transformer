@@ -7,13 +7,17 @@ const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   getDestinationExternalID,
-  getErrorRespEvents,
   getFieldValueFromMessage,
-  getSuccessRespEvents,
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
-  CustomError
+
+  simpleProcessRouterDest
 } = require("../../util");
+const {
+  InstrumentationError,
+  TransformationError,
+  ConfigurationError
+} = require("../../util/errorTypes");
 
 const responseBuilderSimple = async (message, destination, basicPayload) => {
   const payload = constructPayload(message, commonConfig);
@@ -85,9 +89,8 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
       if (listMapping[key] && listDelimiter[key]) {
         let val = get(message, `properties.${key}`);
         if (typeof val !== "string" && !Array.isArray(val)) {
-          throw new CustomError(
-            "List Mapping properties variable is neither a string nor an array",
-            400
+          throw new ConfigurationError(
+            "List Mapping properties variable is neither a string nor an array"
           );
         }
         if (typeof val === "string") {
@@ -130,9 +133,8 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
       if (customPropsMapping[key]) {
         let val = get(message, `properties.${key}`);
         if (typeof val !== "string" && !Array.isArray(val)) {
-          throw new CustomError(
-            "prop variable is neither a string nor an array",
-            400
+          throw new InstrumentationError(
+            "prop variable is neither a string nor an array"
           );
         }
         const delimeter = propsDelimiter[key] || "|";
@@ -393,7 +395,7 @@ const handleTrack = (message, destination) => {
           get(message, "properties.purchaseId") ||
           get(message, "properties.order_id"),
         transactionID:
-          get(message, "properties.transactionID") ||
+          get(message, "properties.transactionId") ||
           get(message, "properties.order_id")
       });
       break;
@@ -408,7 +410,7 @@ const handleTrack = (message, destination) => {
           get(message, "properties.purchaseId") ||
           get(message, "properties.order_id"),
         transactionID:
-          get(message, "properties.transactionID") ||
+          get(message, "properties.transactionId") ||
           get(message, "properties.order_id")
       });
       break;
@@ -433,7 +435,9 @@ const handleTrack = (message, destination) => {
 const process = async event => {
   const { message, destination } = event;
   if (!message.type) {
-    throw Error("Message Type is not present. Aborting message.");
+    throw InstrumentationError(
+      "Message Type is not present. Aborting message."
+    );
   }
   const messageType = message.type.toLowerCase();
   const formattedDestination = formatDestinationConfig(destination.Config);
@@ -451,7 +455,7 @@ const process = async event => {
       payload = handleTrack(messageClone, formattedDestination);
       break;
     default:
-      throw new CustomError("Message type is not supported");
+      throw new InstrumentationError("Message type is not supported");
   }
   if (payload) {
     const response = await responseBuilderSimple(
@@ -461,42 +465,12 @@ const process = async event => {
     );
     return response;
   }
-  throw new CustomError("AA: Unprocessable Event", 400);
+  throw new TransformationError("AA: Unprocessable Event");
 };
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const response = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          // ideally this will never happen but kept for safety
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response ? error.response.status : 500, // default to retryable
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
-  return response;
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  return respList;
 };
+
 module.exports = { process, processRouterDest };

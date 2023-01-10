@@ -56,10 +56,7 @@
             "hasPurchased": "yes"
           },
           "email": "anant@r.com",
-          "lists": [
-            "100c983ry8934hf3094yfh348gf1",
-            "4r40hfio3rbfln"
-          ],
+          "lists": ["100c983ry8934hf3094yfh348gf1", "4r40hfio3rbfln"],
           "last_name": "jain",
           "created_at": "2020-09-28T19:53:31.900Z",
           "first_name": "Anant"
@@ -105,12 +102,10 @@
         "jobId": 3
       }
     ],
-    "statTags":{
-             "destType": "ENGAGE",
-             "meta": "badParam",
-             "scope": "transformation",
-             "stage": "transform"
-           },
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    },
     "batched": false,
     "statusCode": 400,
     "error": "engageID is required for remove operation."

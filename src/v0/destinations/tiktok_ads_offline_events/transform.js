@@ -60,7 +60,7 @@ const getTrackResponse = (message, category, Config, event) => {
     set(payload, "properties.contents", contents);
   }
 
-  const email = message?.traits?.email || message?.context?.traits.email;
+  const email = message?.traits?.email || message?.context?.traits?.email;
   if (isDefinedAndNotNullAndNotEmpty(email)) {
     const emails = hashUserProperties
       ? [SHA256(email.trim().toLowerCase()).toString()]
@@ -232,7 +232,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
         } else {
           // if not transformed
           const procRespList = await process(event);
-          const transformedPayload = [...procRespList].map(procResponse => ({
+          const transformedPayload = procRespList.map(procResponse => ({
             message: procResponse,
             metadata: event.metadata,
             destination

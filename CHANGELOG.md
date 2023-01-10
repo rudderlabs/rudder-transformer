@@ -5,6 +5,47 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.10.0...v1.11.0) (2023-01-10)
+
+
+### Features
+
+* [impact radius] onboard impact radius cloud mode destination ([#1730](https://github.com/rudderlabs/rudder-transformer/issues/1730)) ([8d55c24](https://github.com/rudderlabs/rudder-transformer/commit/8d55c24930e45ddb0a38d1e2ca935b11d8fac665))
+* appcenter updated to support test events ([#1741](https://github.com/rudderlabs/rudder-transformer/issues/1741)) ([00648da](https://github.com/rudderlabs/rudder-transformer/commit/00648da21286cf4170e395e601dcd4b7d199957f))
+* **braze:** nested array ops ([#1753](https://github.com/rudderlabs/rudder-transformer/issues/1753)) ([0658a5f](https://github.com/rudderlabs/rudder-transformer/commit/0658a5f323a7b076a88fcb987f2ac25ea803552f))
+* clientId support added for ga4 hybrid mode ([#1759](https://github.com/rudderlabs/rudder-transformer/issues/1759)) ([04638cb](https://github.com/rudderlabs/rudder-transformer/commit/04638cb1550c05435a12d8ed481fd55c13e667da))
+* **destination:** onboard discord ([#1725](https://github.com/rudderlabs/rudder-transformer/issues/1725)) ([4f6323b](https://github.com/rudderlabs/rudder-transformer/commit/4f6323bcb5e13fb70fd0fd879c64917d46120a34))
+* **destination:** onboard pipedream ([#1703](https://github.com/rudderlabs/rudder-transformer/issues/1703)) ([f03e86a](https://github.com/rudderlabs/rudder-transformer/commit/f03e86a89c1123310b5d9507c5e4d82ea3d4bbf8))
+* **destination:** onboard TikTok_Ads_Offline_Events ([#1749](https://github.com/rudderlabs/rudder-transformer/issues/1749)) ([67a3a4e](https://github.com/rudderlabs/rudder-transformer/commit/67a3a4ef6f9caa3a87afce09d502a702c584ce33))
+* ga4 hybrid mode support ([#1709](https://github.com/rudderlabs/rudder-transformer/issues/1709)) ([08779d4](https://github.com/rudderlabs/rudder-transformer/commit/08779d4b8ff94bd21d9ef3600736503193da1620))
+* **integration:** adobe_analytics-fix typo, add missing mapping ([#1763](https://github.com/rudderlabs/rudder-transformer/issues/1763)) ([32f65dc](https://github.com/rudderlabs/rudder-transformer/commit/32f65dcdd3d807be1eb9a409a7b5b1d0892b067a))
+* **new integration:** onboarding sendinblue cloud mode destination ([#1662](https://github.com/rudderlabs/rudder-transformer/issues/1662)) ([e265e66](https://github.com/rudderlabs/rudder-transformer/commit/e265e66a900671f537198769b8ee0c61694bdbf2))
+* onboard pagerduty destination ([#1736](https://github.com/rudderlabs/rudder-transformer/issues/1736)) ([a947b10](https://github.com/rudderlabs/rudder-transformer/commit/a947b10c5d642463d1a03061906520ebbfdc9b05))
+* onboard pagerduty source ([#1721](https://github.com/rudderlabs/rudder-transformer/issues/1721)) ([927fa95](https://github.com/rudderlabs/rudder-transformer/commit/927fa951c35cfe098dfdb3e5499fdffcc47cb18d))
+* **pinterest:** add ldp support ([#1731](https://github.com/rudderlabs/rudder-transformer/issues/1731)) ([a54d074](https://github.com/rudderlabs/rudder-transformer/commit/a54d074f547e5e1d291bf6fa830afc013c2c7146))
+* **transformation:** faas integration for python transformations ([#1664](https://github.com/rudderlabs/rudder-transformer/issues/1664)) ([5ac8ac5](https://github.com/rudderlabs/rudder-transformer/commit/5ac8ac54b2e10ff600ab7c08b8a9ce3e6a345bee))
+
+
+### Bug Fixes
+
+* **amplitude:** added an error validation at processor ([#1717](https://github.com/rudderlabs/rudder-transformer/issues/1717)) ([424bce9](https://github.com/rudderlabs/rudder-transformer/commit/424bce9cc72a2196a955efd08e643d04e337317a))
+* **destination:** credentials exposure on live events for aws lambda ([#1726](https://github.com/rudderlabs/rudder-transformer/issues/1726)) ([589fc40](https://github.com/rudderlabs/rudder-transformer/commit/589fc407d2c4449628fa7915289ae9a1c97d20d4))
+* encode email with encodeUriComponent before searching ([#1729](https://github.com/rudderlabs/rudder-transformer/issues/1729)) ([21b624f](https://github.com/rudderlabs/rudder-transformer/commit/21b624f59c098a0459a16347e1845d7a661377fd))
+* **facebook pixel:** error code mapping for transformer proxy ([#1738](https://github.com/rudderlabs/rudder-transformer/issues/1738)) ([4e98299](https://github.com/rudderlabs/rudder-transformer/commit/4e98299298f10dc5ae39d5a3994746515622c729))
+* fixed flattenJson method ([#1718](https://github.com/rudderlabs/rudder-transformer/issues/1718)) ([9edb44e](https://github.com/rudderlabs/rudder-transformer/commit/9edb44e11b9b7ae059e9f4cfa88633e3fa4cd902))
+* hotfix for zendesk global variable ([a5d4424](https://github.com/rudderlabs/rudder-transformer/commit/a5d442405b3b55cc3bafd1389a771904d31da7c6))
+* set content_type product by default ([#1761](https://github.com/rudderlabs/rudder-transformer/issues/1761)) ([6f9cda1](https://github.com/rudderlabs/rudder-transformer/commit/6f9cda143cb8ab6b215f4b3684c5375a76d160fd))
+* user deletion handlers implementation across destinations ([#1748](https://github.com/rudderlabs/rudder-transformer/issues/1748)) ([786cfe0](https://github.com/rudderlabs/rudder-transformer/commit/786cfe0d0849d68a511c920d6c292ef3f73aee7f))
+* **zendesk:** remove endpoint global variable ([#1746](https://github.com/rudderlabs/rudder-transformer/issues/1746)) ([836c37e](https://github.com/rudderlabs/rudder-transformer/commit/836c37eb069ee88d24806e692ec70e0d0b045ae1))
+
+
+### Miscellaneous
+
+* add issue templates ([#1758](https://github.com/rudderlabs/rudder-transformer/issues/1758)) ([6383171](https://github.com/rudderlabs/rudder-transformer/commit/638317167e72a58873606189509524de67f1ae49))
+* **deps:** use latest npm dependencies to fix vulnerabilities ([#1762](https://github.com/rudderlabs/rudder-transformer/issues/1762)) ([e497bc4](https://github.com/rudderlabs/rudder-transformer/commit/e497bc4ed9d502a0dc201e091011de54c86f79f3))
+* empty commit to trigger build ([d06f69e](https://github.com/rudderlabs/rudder-transformer/commit/d06f69ef33b23599dc49669cbf174e8b71bf0415))
+* **transformation:** add watchdog configuration on openfaas functions ([#1766](https://github.com/rudderlabs/rudder-transformer/issues/1766)) ([8d3c34e](https://github.com/rudderlabs/rudder-transformer/commit/8d3c34ed34fd4b8b339285a5e141cd563f8ebd2e))
+
 ## [1.10.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.9.1...v1.10.0) (2022-12-20)
 
 

@@ -928,6 +928,7 @@ async function handleProxyBatchRequest(destination, ctx) {
   const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
     destination
   );
+  const stTime = new Date();
   const responses = await Promise.allSettled(
     messages.map(async (destinationRequest, mIndex) => {
       let response;
@@ -967,6 +968,11 @@ async function handleProxyBatchRequest(destination, ctx) {
       return response;
     })
   );
+  stats.timing("proxy_batch_completed_time", stTime, {
+    destType: destination?.toUpperCase(),
+    messagesLength: messages.length
+  });
+  const dtMapTime = new Date();
   ctx.body = {
     output: responses.map(resp => {
       if (resp.status === "fulfilled") {
@@ -975,6 +981,9 @@ async function handleProxyBatchRequest(destination, ctx) {
       return resp.reason;
     })
   };
+  stats.timing("proxy_batch_response_map_time", dtMapTime, {
+    destType: destination?.toUpperCase()
+  });
   // Sending `204` status(obtained from destination) is not working as expected
   // Since this is success scenario, we'll be forcefully sending `200` status-code to server
   ctx.status = 200;

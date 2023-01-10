@@ -6,16 +6,20 @@ const {
   invokeFunction
 } = require("./faasApi");
 const logger = require("../../logger");
-const { RetryRequestError } = require("../utils");
+const { RetryRequestError, RespStatusError } = require("../utils");
 
 const FAAS_BASE_IMG =
   process.env.FAAS_BASE_IMG || "rudderlabs/openfaas-flask:main";
-const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || "100";
+const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || "40";
 const FAAS_REQUESTS_CPU = process.env.FAAS_REQUESTS_CPU || "0.5";
-const FAAS_REQUESTS_MEMORY = process.env.FAAS_REQUESTS_MEMORY || "128Mi";
+const FAAS_REQUESTS_MEMORY = process.env.FAAS_REQUESTS_MEMORY || "140Mi";
 const FAAS_LIMITS_CPU = process.env.FAAS_LIMITS_CPU || FAAS_REQUESTS_CPU;
 const FAAS_LIMITS_MEMORY =
   process.env.FAAS_LIMITS_MEMORY || FAAS_REQUESTS_MEMORY;
+const FAAS_MAX_INFLIGHT = process.env.FAAS_MAX_INFLIGHT || "4";
+const FAAS_EXEC_TIMEOUT = process.env.FAAS_EXEC_TIMEOUT || "4s";
+const FAAS_ENABLE_WATCHDOG_ENV_VARS =
+  process.env.FAAS_ENABLE_WATCHDOG_ENV_VARS || "true";
 const CONFIG_BACKEND_URL =
   process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
 
@@ -64,12 +68,19 @@ const deployFaasFunction = async (functionName, code, versionId, testMode) => {
     } else {
       envProcess = `${envProcess} --code "${code}"`;
     }
+
+    const envVars = {};
+    if (FAAS_ENABLE_WATCHDOG_ENV_VARS.trim().toLowerCase() === "true") {
+      envVars.max_inflight = FAAS_MAX_INFLIGHT;
+      envVars.exec_timeout = FAAS_EXEC_TIMEOUT;
+    }
     // TODO: investigate and add more required labels and annotations
     const payload = {
       service: functionName,
       name: functionName,
       image: FAAS_BASE_IMG,
       envProcess,
+      envVars,
       labels: {
         "openfaas-fn": "true",
         "parent-component": "openfaas",
@@ -151,6 +162,19 @@ const executeFaasFunction = async (
       await setupFaasFunction(functionName, null, versionId, testMode);
       throw new RetryRequestError(`${functionName} not found`);
     }
+
+    if (error.statusCode === 429) {
+      throw new RetryRequestError(`Rate limit exceeded for ${functionName}`);
+    }
+
+    if (error.statusCode === 500 || error.statusCode === 503) {
+      throw new RetryRequestError(error.message);
+    }
+
+    if (error.statusCode === 504) {
+      throw new RespStatusError("Timed out");
+    }
+
     throw error;
   } finally {
     if (testMode) {

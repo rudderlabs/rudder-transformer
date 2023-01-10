@@ -1244,7 +1244,7 @@ describe("Python transformations", () => {
     );
   });
 
-  it("Simple transformation run - function not found", async () => {
+  it("Simple transformation run - retry requests", async () => {
     const inputData = require(`./data/${integration}_input.json`);
 
     const versionId = randomID();

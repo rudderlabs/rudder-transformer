@@ -47,6 +47,7 @@
     "MARKETO_STATIC_LIST": true,
     "CAMPAIGN_MANAGER": true,
     "SENDGRID": true,
-    "SENDINBLUE": true
+    "SENDINBLUE": true,
+    "TIKTOK_ADS_OFFLINE_EVENTS": true
   }
 }

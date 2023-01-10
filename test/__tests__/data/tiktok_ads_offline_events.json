@@ -1,0 +1,367 @@
+[
+  {
+    "description": "Identify call not supported error message",
+    "input": {
+      "destination": {
+        "Config": {
+          "accessToken": "fuwheirujkvjnkrtgkf",
+          "hashUserProperties": true
+        }
+      },
+      "message": {
+        "type": "Identify",
+        "userId": "yash001",
+        "originalTimestamp": "2019-10-14T09:03:17.562Z"
+      }
+    },
+    "output": {
+      "error": "Event type identify is not supported"
+    }
+  },
+  {
+    "description": "Regular track call",
+    "input": {
+      "destination": {
+        "Config": {
+          "accessToken": "fuwheirujkvjnkrtgkf",
+          "hashUserProperties": false
+        }
+      },
+      "message": {
+        "event": "subscribe",
+        "context": {
+          "traits": {
+            "phone": "c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646"
+          },
+          "channel": "web"
+        },
+        "properties": {
+          "eventSetId": "7181537436256731137",
+          "eventId": "1616318632825_352",
+          "order_id": "abc_xyz",
+          "shop_id": "123abc",
+          "currency": "USD",
+          "value": 46.00,
+          "price": 8,
+          "quantity": 2,
+          "content_type": "product1234",
+          "product_id": "1077218",
+          "name": "socks",
+          "category": "Men's cloth"
+        },
+        "type": "track",
+        "userId": "eventIdn01",
+        "timestamp": "2023-01-03"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://business-api.tiktok.com/open_api/v1.3/offline/track/",
+        "headers": {
+          "Access-Token": "fuwheirujkvjnkrtgkf",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "event_set_id": "7181537436256731137",
+            "event": "Subscribe",
+            "event_id": "1616318632825_352",
+            "timestamp": "2023-01-03",
+            "partner_name": "RudderStack",
+            "context": {
+              "user": {
+                "phone_numbers": [
+                  "c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646"
+                ]
+              }
+            },
+            "properties": {
+              "order_id": "abc_xyz",
+              "shop_id": "123abc",
+              "contents": [
+                {
+                  "price": 8,
+                  "quantity": 2,
+                  "content_type": "product1234",
+                  "content_id": "1077218",
+                  "content_name": "socks",
+                  "content_category": "Men's cloth"
+                }
+              ],
+              "event_channel": "web",
+              "currency": "USD",
+              "value": 46.00
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {},
+        "event_set_id": "7181537436256731137"
+      }
+    ]
+  },
+  {
+    "description": "Track call with hashUserProperties set to true",
+    "input": {
+      "destination": {
+        "Config": {
+          "accessToken": "fuwheirujkvjnkrtgkf",
+          "hashUserProperties": true
+        }
+      },
+      "message": {
+        "event": "subscribe",
+        "context": {
+          "traits": {
+            "phone": "1234567890"
+          },
+          "channel": "web"
+        },
+        "properties": {
+          "eventSetId": "7181537436256731137",
+          "eventId": "1616318632825_352",
+          "prop1": "val1"
+        },
+        "type": "track",
+        "userId": "eventIdn01",
+        "timestamp": "2023-01-03"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://business-api.tiktok.com/open_api/v1.3/offline/track/",
+        "headers": {
+          "Access-Token": "fuwheirujkvjnkrtgkf",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "event_set_id": "7181537436256731137",
+            "event": "Subscribe",
+            "event_id": "1616318632825_352",
+            "timestamp": "2023-01-03",
+            "partner_name": "RudderStack",
+            "context": {
+              "user": {
+                "phone_numbers": [
+                  "c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646"
+                ]
+              }
+            },
+            "properties": {
+              "event_channel": "web"
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {},
+        "event_set_id": "7181537436256731137"
+      }
+    ]
+  },
+  {
+    "description": "Track call with event mapping",
+    "input": {
+      "destination": {
+        "Config": {
+          "accessToken": "fuwheirujkvjnkrtgkf",
+          "hashUserProperties": true,
+          "eventsToStandard": [
+            {
+              "from": "RandomEvent",
+              "to": "SubmitForm"
+            }
+          ]
+        }
+      },
+      "message": {
+        "event": "RandomEvent",
+        "context": {
+          "traits": {
+            "phone": "1234567890"
+          },
+          "channel": "web"
+        },
+        "properties": {
+          "eventSetId": "7185009018564395009",
+          "eventId": "1616318632003_004",
+          "prop1": "val1"
+        },
+        "userId": "eventIdn01",
+        "timestamp": "2023-01-03",
+        "type": "track"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://business-api.tiktok.com/open_api/v1.3/offline/track/",
+        "headers": {
+          "Access-Token": "fuwheirujkvjnkrtgkf",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "event":"SubmitForm",
+            "context":{
+              "user":{
+                "phone_numbers":[
+                  "c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646"
+                ]
+              }
+            },
+            "event_id":"1616318632003_004",
+            "timestamp":"2023-01-03",
+            "properties":{
+              "event_channel":"web"
+            },
+            "event_set_id":"7185009018564395009",
+            "partner_name":"RudderStack"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {},
+        "event_set_id": "7185009018564395009"
+      }
+    ]
+  },
+  {
+    "description": "Track call with no Access-Token",
+    "input": {
+      "destination": {
+        "Config": {
+          "hashUserProperties": true
+        }
+      },
+      "message": {
+        "type": "track",
+        "userId": "yash001",
+        "originalTimestamp": "2019-10-14T09:03:17.562Z"
+      }
+    },
+    "output": {
+      "error": "Access Token not found"
+    }
+  },
+  {
+    "description": "Track call with product details in properties",
+    "input": {
+      "destination": {
+        "Config": {
+          "accessToken": "fuwheirujkvjnkrtgkf",
+          "hashUserProperties": true
+        }
+      },
+      "message": {
+        "event": "subscribe",
+        "context": {
+          "traits": {
+            "phone": "1234567890",
+            "email": "random@mail.com"
+          },
+          "channel": "web"
+        },
+        "properties": {
+          "eventSetId": "7181537436256731137",
+          "eventId": "1616318632825_352",
+          "products": [
+            {
+              "price": 8,
+              "quantity": 2,
+              "content_type": "product1",
+              "product_id": "1077218",
+              "name": "socks",
+              "category": "Men's cloth"
+            },
+            {
+              "price": 18,
+              "quantity": 12,
+              "content_type": "product2",
+              "product_id": "1077219",
+              "name": "socks1",
+              "category": "Men's cloth1"
+            }
+          ]
+        },
+        "type": "track",
+        "userId": "eventIdn01",
+        "timestamp": "2023-01-03"
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://business-api.tiktok.com/open_api/v1.3/offline/track/",
+        "headers": {
+          "Access-Token": "fuwheirujkvjnkrtgkf",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "event_set_id": "7181537436256731137",
+            "event": "Subscribe",
+            "event_id": "1616318632825_352",
+            "timestamp": "2023-01-03",
+            "partner_name": "RudderStack",
+            "context": {
+              "user": {
+                "phone_numbers": [
+                  "c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646"
+                ],
+                "emails": [
+                  "d9fcca64ec1b250da4261a3f89a8e0f7749c4e0f5a1a918e5397194c8b5a9f16"
+                ]
+              }
+            },
+            "properties": {
+              "event_channel": "web",
+              "contents": [
+                {
+                  "price": 8,
+                  "quantity": 2,
+                  "content_type": "product1",
+                  "content_id": "1077218",
+                  "content_name": "socks",
+                  "content_category": "Men's cloth"
+                },
+                {
+                  "price": 18,
+                  "quantity": 12,
+                  "content_type": "product2",
+                  "content_id": "1077219",
+                  "content_name": "socks1",
+                  "content_category": "Men's cloth1"
+                }
+              ]
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {},
+        "event_set_id": "7181537436256731137"
+      }
+    ]
+  }
+]

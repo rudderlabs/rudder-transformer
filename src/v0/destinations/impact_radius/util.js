@@ -1,26 +1,21 @@
 const get = require("get-value");
 const { isAppleFamily } = require("../../util");
-const { ConfigurationError } = require("../../util/errorTypes");
 const { itemMapping } = require("./config");
 
 /**
- * This function checks and throws Configuration error for missed required fields in destination Configs. Returns true in case of no error.
+ * This function checks for missing required fields in destination Configs. Returns comma seperated list of error fields.
  * @param {*} Config
- * @returns
+ * @returns {string} errorFields
  */
-const checkConfigurationError = Config => {
-  let emptyField;
-  if (!Config.accountSID) {
-    emptyField = "accountSID";
-  } else if (!Config.apiKey) {
-    emptyField = "apiKey";
-  } else if (!Config.campaignId) {
-    emptyField = "campaignId";
-  }
-  if (emptyField) {
-    throw new ConfigurationError(`${emptyField} is a required field`);
-  }
-  return true;
+const validateConfigFields = Config => {
+  const errorFields = [];
+  const requiredFields = ["accountSID", "apiKey", "campaignId"];
+  requiredFields.forEach(key => {
+    if (!Config[key]) {
+      errorFields.push(key);
+    }
+  });
+  return errorFields.join();
 };
 
 /**
@@ -129,7 +124,7 @@ const populateAdditionalParameters = (message, parameters) => {
 };
 
 module.exports = {
-  checkConfigurationError,
+  validateConfigFields,
   populateProductProperties,
   populateAdditionalParameters,
   checkOsAndPopulateValues

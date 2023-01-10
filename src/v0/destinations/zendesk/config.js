@@ -1,5 +1,9 @@
 const { getMappingConfig } = require("../../util");
 
+const getBaseEndpoint = domain => {
+  return `https://${domain}.zendesk.com/api/v2/`;
+};
+const NAME = "zendesk";
 const ConfigCategory = {
   IDENTIFY: {
     name: "ZDIdentifyConfig",
@@ -44,10 +48,6 @@ const ZENDESK_MARKET_PLACE_NAME = "RudderStack";
 const ZENDESK_MARKET_PLACE_ORG_ID = "3339";
 const ZENDESK_MARKET_PLACE_APP_ID = "263241";
 
-const getBaseEndpoint = domain => {
-  return `https://${domain}.zendesk.com/api/v2/`;
-};
-
 module.exports = {
   getBaseEndpoint,
   ConfigCategory,
@@ -55,5 +55,6 @@ module.exports = {
   defaultFields,
   ZENDESK_MARKET_PLACE_NAME,
   ZENDESK_MARKET_PLACE_ORG_ID,
-  ZENDESK_MARKET_PLACE_APP_ID
+  ZENDESK_MARKET_PLACE_APP_ID,
+  NAME
 };

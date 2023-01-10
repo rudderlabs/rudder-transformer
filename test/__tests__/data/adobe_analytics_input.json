@@ -6254,5 +6254,185 @@
       "timestamp": "2019-09-01T15:46:51.693Z",
       "type": "track"
     }
+  },
+  {
+    "destination": {
+        "Config": {
+            "trackingServerUrl": "http://sadobemetrics.dr.dk",
+            "trackingServerSecureUrl": "https://sadobemetrics.dr.dk",
+            "reportSuiteIds": "drdev2",
+            "sslHeartbeat": true,
+            "heartbeatTrackingServerUrl": "",
+            "useUtf8Charset": true,
+            "useSecureServerSide": true,
+            "proxyNormalUrl": "",
+            "proxyHeartbeatUrl": "",
+            "marketingCloudOrgId": "00E287634SDFE6200A495E6B@AdobeOrg",
+            "dropVisitorId": true,
+            "timestampOption": "disabled",
+            "timestampOptionalReporting": false,
+            "noFallbackVisitorId": false,
+            "preferVisitorId": false,
+            "trackPageName": true,
+            "contextDataPrefix": "",
+            "useLegacyLinkName": true,
+            "pageNameFallbackTostring": true,
+            "sendFalseValues": true,
+            "productIdentifier": "name",
+            "eventsToTypes": [
+                {
+                    "from": "",
+                    "to": ""
+                }
+            ],
+            "listDelimiter": [
+                {
+                    "from": "",
+                    "to": ""
+                }
+            ],
+            "propsDelimiter": [
+                {
+                    "from": "",
+                    "to": ""
+                }
+            ],
+            "eventMerchProperties": [
+                {
+                    "eventMerchProperties": ""
+                }
+            ],
+            "productMerchProperties": [
+                {
+                    "productMerchProperties": ""
+                }
+            ],
+            "eVarMapping": [
+                {
+                    "from": "v1",
+                    "to": "1"
+                },
+                {
+                    "from": "v2",
+                    "to": "2"
+                },
+                {
+                    "from": "v3",
+                    "to": "3"
+                },
+                {
+                    "from": "v12",
+                    "to": "12"
+                },
+                {
+                    "from": "v13",
+                    "to": "13"
+                },
+                {
+                    "from": "v16",
+                    "to": "16"
+                },
+                {
+                    "from": "v17",
+                    "to": "17"
+                },
+                {
+                    "from": "v40",
+                    "to": "40"
+                },
+                {
+                    "from": "v41",
+                    "to": "41"
+                },
+                {
+                    "from": "v42",
+                    "to": "42"
+                },
+                {
+                    "from": "v69",
+                    "to": "69"
+                },
+                {
+                    "from": "v70",
+                    "to": "70"
+                },
+                {
+                    "from": "v89",
+                    "to": "89"
+                }
+            ],
+            "eventDelivery": false,
+            "eventDeliveryTS": 1628171489456,
+            "rudderEventsToAdobeEvents": [
+                {
+                    "from": "Custom Page View",
+                    "to": "event1"
+                },
+                {
+                    "from": "App Launch",
+                    "to": "event31"
+                },
+                {
+                    "from": "App Start",
+                    "to": "event31"
+                }
+            ],
+            "useNativeSDK": {
+                "web": false
+            },
+            "eventMerchEventToAdobeEvent": [
+                {
+                    "from": "",
+                    "to": ""
+                }
+            ],
+            "customPropsMapping": [
+                {
+                    "from": "c2",
+                    "to": "2"
+                },
+                {
+                    "from": "c3",
+                    "to": "3"
+                }
+            ]
+        }
+    },
+    "message": {
+        "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+        "context": {
+            "device": {
+                "id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
+                "manufacturer": "Xiaomi",
+                "model": "Redmi 6",
+                "name": "xiaomi"
+            },
+            "network": {
+                "carrier": "Banglalink"
+            },
+            "os": {
+                "name": "android",
+                "version": "8.1.0"
+            },
+            "traits": {
+                "address": {
+                    "city": "Dhaka",
+                    "country": "Bangladesh"
+                },
+                "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+            }
+        },
+        "event": "checkout started",
+        "integrations": {
+            "AM": true
+        },
+        "message_id": "a80f82be-9bdc-4a9f-b2a5-15621ee41df8",
+        "properties": {
+            "order_id": "oid100"
+        },
+        "userId": "test_user_id",
+        "timestamp": "2019-09-01T15:46:51.693Z",
+        "type": "track"
+    }
   }
 ]

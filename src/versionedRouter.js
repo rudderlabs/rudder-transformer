@@ -317,6 +317,7 @@ async function handleDest(ctx, version, destination) {
 
         const resp = {
           metadata: event.metadata,
+          destination: event.destination,
           statusCode: errObj.status,
           error: errObj.message,
           statTags: errObj.statTags
@@ -1152,7 +1153,10 @@ const batchHandler = ctx => {
         errorObj.message,
         errorObj.statTags
       );
-      response.errors.push(errResp);
+      response.errors.push({
+        ...errResp,
+        destination: destEvents[0].destination
+      });
       errNotificationClient.notify(error, "Batch Transformation", {
         ...errResp,
         ...getCommonMetadata(ctx),

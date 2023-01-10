@@ -6,7 +6,7 @@ const {
   invokeFunction
 } = require("./faasApi");
 const logger = require("../../logger");
-const { RetryRequestError } = require("../utils");
+const { RetryRequestError, RespStatusError } = require("../utils");
 
 const FAAS_BASE_IMG =
   process.env.FAAS_BASE_IMG || "rudderlabs/openfaas-flask:main";
@@ -164,11 +164,15 @@ const executeFaasFunction = async (
     }
 
     if (error.statusCode === 429) {
-      throw new RetryRequestError(`Request limit exceeded for ${functionName}`);
+      throw new RetryRequestError(`Rate limit exceeded for ${functionName}`);
     }
 
     if (error.statusCode === 500) {
       throw new RetryRequestError(error.message);
+    }
+
+    if (error.statusCode === 504) {
+      throw new RespStatusError("Timed out");
     }
 
     throw error;

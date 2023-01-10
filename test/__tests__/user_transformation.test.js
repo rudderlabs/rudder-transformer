@@ -1244,7 +1244,7 @@ describe("Python transformations", () => {
     );
   });
 
-  it("Simple transformation run - retry requests", async () => {
+  it("Simple transformation run - error requests", async () => {
     const inputData = require(`./data/${integration}_input.json`);
 
     const versionId = randomID();
@@ -1261,10 +1261,13 @@ describe("Python transformations", () => {
 
     axios.post
       .mockRejectedValueOnce({
-        response: { status: 429, data: `Request limit exceeded` } // invoke function not found
+        response: { status: 429, data: `Rate limit exceeded` } // invoke function with rate limit
       })
       .mockRejectedValueOnce({
-        response: { status: 500, data: `Internal server error` } // invoke function not found
+        response: { status: 500, data: `Internal server error` } // invoke function with internal server error
+      })
+      .mockRejectedValueOnce({
+        response: { status: 504, data: `Timed out` } // invoke function with exec timeout
       });
 
     // request limit exceeded will be retried
@@ -1276,5 +1279,10 @@ describe("Python transformations", () => {
     await expect(async () => {
       await userTransformHandler(inputData, versionId, []);
     }).rejects.toThrow(RetryRequestError);
+
+    // execution timeout will not be retried
+    await expect(async () => {
+      await userTransformHandler(inputData, versionId, []);
+    }).rejects.toThrow(RespStatusError);
   });
 });

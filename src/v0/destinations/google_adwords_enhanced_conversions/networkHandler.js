@@ -138,7 +138,7 @@ const responseHandler = destinationResponse => {
   // else successfully return status, message and original destination response
   const { response } = destinationResponse;
   const errMessage = get(response, "error.message", "");
-  throw new NetworkError()(
+  throw new NetworkError(
     `${errMessage}" during Google_adwords_enhanced_conversions response transformation`,
     status,
     {

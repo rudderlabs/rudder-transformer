@@ -20,51 +20,12 @@ const rootDir =
   dirIndex === -1 ? "test_dirs" : process.argv[dirIndex].split("=")[1];
 const tests = path.join(__dirname, rootDir);
 
-const { getDestHandler } = require("../src/versionedRouter");
-const { include } = require("is");
-
-// const BASE_URL = "http://localhost:9090";
-// const axiosClient = axios.create({
-//   baseURL: BASE_URL,
-//   timeout: 5000
-// });
-
 const version = "v0";
 
 const destRoutePath = `/${version}/destinations/`;
 const sourceRoutePath = `/${version}/sources/`;
 
-// app.set(BASE_URL);
-
-// app.get("/", (req, res) => {
-//   res.send("Hello World!");
-// });
-
-// app.listen(3000, () => {
-//   console.log("Server listening on port 3000");
-// });
-
-// app.listen(9090, () => {
-//   console.log("App listening on port 3000!");
-// });
-
-const getExecutionPath = (inputData, testType) => {
-  let module;
-  switch (testType) {
-    case "proc_tf":
-    case "router_tf":
-      module = getDestHandler.process;
-      break;
-    case "source_tf":
-      module = require(`../src/v0/sources/${inputData.sourceName}/transform`);
-      break;
-    default:
-      break;
-  }
-  return module;
-};
-
-//execution
+// execution
 const executeTests = (dataPoint, index) => {
   switch (dataPoint.testType) {
     case "proc_tf":
@@ -118,6 +79,33 @@ const testFile = inputDataFile => {
   });
 };
 
+// Get file Paths for test files
+function getFilePaths(dir, filePaths = []) {
+  const files = fs.readdirSync(dir);
+
+  files.forEach(file => {
+    const filePath = `${dir}/${file}`;
+    const stats = fs.statSync(filePath);
+
+    if (stats.isFile()) {
+      filePaths.push(filePath);
+    } else if (stats.isDirectory()) {
+      getFilePaths(filePath, filePaths);
+    }
+  });
+  return filePaths;
+}
+
+// Iterate over all the files in test_dirs
+const testDirectory = tests;
+const filePaths = getFilePaths(testDirectory);
+
+filePaths.forEach(file => {
+  if (path.basename(file).includes(".test.json")) {
+    testFile(fs.readFileSync(file));
+  }
+});
+
 // const executeTests = (dataPoint, index) => {
 //   const transformer = getExecutionPath(dataPoint, dataPoint.testType);
 //   switch (dataPoint.testType) {
@@ -167,30 +155,3 @@ const testFile = inputDataFile => {
 //     });
 //   });
 // };
-
-// Get file Paths for test files
-function getFilePaths(dir, filePaths = []) {
-  const files = fs.readdirSync(dir);
-
-  files.forEach(file => {
-    const filePath = `${dir}/${file}`;
-    const stats = fs.statSync(filePath);
-
-    if (stats.isFile()) {
-      filePaths.push(filePath);
-    } else if (stats.isDirectory()) {
-      getFilePaths(filePath, filePaths);
-    }
-  });
-  return filePaths;
-}
-
-// Iterate over all the files in test_dirs
-const testDirectory = tests;
-const filePaths = getFilePaths(testDirectory);
-
-filePaths.forEach(file => {
-  if (path.basename(file).includes(".test.json")) {
-    testFile(fs.readFileSync(file));
-  }
-});

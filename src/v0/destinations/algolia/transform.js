@@ -31,7 +31,7 @@ const trackResponseBuilder = (message, { Config }) => {
   if (!event) {
     throw new InstrumentationError("event is required for track call");
   }
-  if (typeof event === "string") {
+  if (typeof event !== "string") {
     throw new InstrumentationError("event name should be a string");
   }
   event = event.trim().toLowerCase();

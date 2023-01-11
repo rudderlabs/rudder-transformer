@@ -33,8 +33,6 @@
     "unicorn/prefer-export-from": "error",
     "arrow-body-style": "error",
     "import/no-dynamic-require": "warn",
-    "no-param-reassign": "warn",
-    "consistent-return": "warn",
-    "no-console": "warn"
+    "no-param-reassign": "warn"
   }
 }

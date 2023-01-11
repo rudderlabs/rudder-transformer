@@ -12,9 +12,7 @@ const {
   getDestinationExternalID,
   simpleProcessRouterDest,
 } = require('../../util');
-const {
-  ConfigurationError, InstrumentationError,
-} = require('../../util/errorTypes');
+const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const gaDisplayName = 'Google Analytics';
 

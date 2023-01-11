@@ -156,12 +156,13 @@ const responseHandler = (destinationResponse) => {
   }
   // else successfully return status, message and original destination response
   gaAudienceRespHandler(destinationResponse, 'during ga_audience response transformation');
+  return undefined;
 };
 
-const networkHandler = function () {
+function networkHandler() {
   this.proxy = gaAudienceProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
   this.prepareProxy = prepareProxyRequest;
   this.responseHandler = responseHandler;
-};
+}
 module.exports = { networkHandler };

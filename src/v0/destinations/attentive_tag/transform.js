@@ -32,6 +32,7 @@ const responseBuilder = (payload, apiKey, endpoint) => {
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
   }
+  return undefined;
 };
 
 const identifyResponseBuilder = (message, { Config }) => {

@@ -247,8 +247,8 @@ const getUserIdByExternalId = async (message, headers, baseEndpoint) => {
     logger.debug(`${NAME}:: Failed in fetching User details`);
   } catch (error) {
     logger.debug(`${NAME}:: Cannot get userId for externalId : ${externalId}`, error.response);
-    return undefined;
   }
+  return undefined;
 };
 
 async function getUserId(message, headers, baseEndpoint, type) {

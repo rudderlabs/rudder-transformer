@@ -277,6 +277,7 @@ async function handleDest(ctx, version, destination) {
             };
           });
         }
+        return undefined;
       } catch (error) {
         logger.error(error);
 
@@ -1275,6 +1276,7 @@ const handleDeletionOfUsers = async (ctx) => {
           ...getReqMetadata(),
         });
       }
+      return undefined;
     }),
   );
   ctx.body = respList;

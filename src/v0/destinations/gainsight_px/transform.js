@@ -29,10 +29,7 @@ const {
   groupMapping,
   identifyMapping,
 } = require('./config');
-const {
-  InstrumentationError,
-  ConfigurationError,
-} = require('../../util/errorTypes');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 /**
  * Create/Update a User with user attributes

@@ -30,7 +30,7 @@ const prepareProxyReq = (request) => {
 };
 
 /**
- * This function helps to determine type of error occured. According to the response
+ * This function helps to determine type of error occurred. According to the response
  * we set authErrorCategory to take decision if we need to refresh the access_token
  * or need to disable the destination.
  * @param {*} code
@@ -92,12 +92,13 @@ const responseHandler = (destinationResponse) => {
     destinationResponse,
     'during snapchat_custom_audience response transformation',
   );
+  return undefined;
 };
 
-const networkHandler = function () {
+function networkHandler() {
   this.proxy = scAudienceProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
   this.prepareProxy = prepareProxyRequest;
   this.responseHandler = responseHandler;
-};
+}
 module.exports = { networkHandler };

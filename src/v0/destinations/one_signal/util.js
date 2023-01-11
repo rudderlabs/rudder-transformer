@@ -20,7 +20,7 @@ const validateDeviceType = (deviceType) => {
 };
 
 /**
- * This funnction is used to populate the tags using the traits
+ * This function is used to populate the tags using the traits
  * @param {} message
  */
 const populateTags = (message) => {
@@ -38,6 +38,7 @@ const populateTags = (message) => {
     }
     return tags;
   }
+  return undefined;
 };
 
 /**

@@ -19,11 +19,7 @@ const {
   getDynamicErrorType,
   nodeSysErrorToStatus,
 } = require('../../../adapters/utils/networkUtils');
-const {
-  NetworkError,
-  ConfigurationError,
-  InstrumentationError,
-} = require('../../util/errorTypes');
+const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm

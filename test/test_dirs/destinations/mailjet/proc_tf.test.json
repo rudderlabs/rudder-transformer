@@ -167,25 +167,28 @@
       }
     ],
     "output": {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "",
-      "headers": {},
-      "params": {},
-      "body": {
-        "JSON": {
-          "email": "test@user.com",
-          "properties": { "country": "india" }
+      "output": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "email": "test@user.com",
+            "properties": { "country": "india" }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
         },
-        "JSON_ARRAY": {},
-        "XML": {},
-        "FORM": {}
+        "files": {},
+        "userId": "",
+        "listId": "58578",
+        "action": "addnoforce"
       },
-      "files": {},
-      "userId": "",
-      "listId": "58578",
-      "action": "addnoforce"
+      "statusCode": 200
     }
   }
 ]

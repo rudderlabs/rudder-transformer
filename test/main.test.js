@@ -9,7 +9,7 @@ const supertest = require("supertest");
 const app = require("./app");
 
 process.argv.forEach((arg, index) => {
-  if (arg.includes("--message")) {
+  if (arg.includes("--root")) {
     dirIndex = index;
   }
 });
@@ -32,12 +32,11 @@ const executeTests = (dataPoint, index) => {
       it(`${index}. ${dataPoint.destinationName} destination (proc_tf) tests - ${dataPoint.description}`, async () => {
         let response = await supertest(app.callback())
           .post(`${destRoutePath}${dataPoint.destinationName}`)
+          .set("Accept", "application/json")
           .send(dataPoint.input);
         expect(response.statusCode).toBe(200);
         response = JSON.parse(response.text);
-        expect(response[0].error ? response[0] : response[0].output).toEqual(
-          dataPoint.output
-        );
+        expect(response[0]).toEqual(dataPoint.output);
       });
       break;
     case "router_tf":

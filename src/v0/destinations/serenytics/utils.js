@@ -29,7 +29,7 @@ const responseBuilder = (STORAGE_URL, payload) => {
   return response;
 };
 
-const storageUrlResponseBuilder = (storageUrlEventList, payload, event) => {
+const storageUrlResponseBuilder = (storageUrlEventList, payload) => {
   const responseList = [];
   if (storageUrlEventList) {
     storageUrlEventList.forEach((eventUrl) => {

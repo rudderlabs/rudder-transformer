@@ -11,7 +11,7 @@
 const get = require('get-value');
 const uaParser = require('@amplitude/ua-parser-js');
 const logger = require('../../../logger');
-const { isDefined, isDefinedAndNotNull } = require('../../util');
+const { isDefinedAndNotNull } = require('../../util');
 
 function getInfoFromUA(path, payload, defaultVal) {
   const ua = get(payload, 'context.userAgent');

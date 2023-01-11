@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 const {
   getHashFromArray,
   getValueFromMessage,

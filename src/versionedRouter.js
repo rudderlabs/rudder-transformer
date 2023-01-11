@@ -1046,7 +1046,7 @@ const batchHandler = (ctx) => {
   const allDestEvents = _.groupBy(input, (event) => event.destination.ID);
 
   const response = { batchedRequests: [], errors: [] };
-  Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
+  Object.entries(allDestEvents).map(async ([, destEvents]) => {
     // TODO: check await needed?
     try {
       destEvents = processDynamicConfig(destEvents, 'batch');

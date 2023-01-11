@@ -12,7 +12,6 @@ const {
 
 const {
   InstrumentationError,
-  TransformationError,
   ConfigurationError,
   OAuthSecretError,
 } = require('../../util/errorTypes');

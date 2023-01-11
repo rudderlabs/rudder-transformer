@@ -23,7 +23,6 @@ const {
   NetworkError,
   ConfigurationError,
   InstrumentationError,
-  TransformationError,
 } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 

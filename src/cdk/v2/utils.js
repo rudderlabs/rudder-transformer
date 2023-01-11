@@ -3,7 +3,7 @@ const fs = require('fs/promises');
 const { WorkflowExecutionError, WorkflowCreationError } = require('rudder-workflow-engine');
 const logger = require('../../logger');
 const { generateErrorObject } = require('../../v0/util');
-const { PlatformError, TransformationError } = require('../../v0/util/errorTypes');
+const { PlatformError } = require('../../v0/util/errorTypes');
 const tags = require('../../v0/util/tags');
 
 const CDK_V2_ROOT_DIR = __dirname;

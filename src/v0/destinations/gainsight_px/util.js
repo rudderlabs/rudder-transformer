@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { ENDPOINTS } = require('./config');
-const { TransformationError, NetworkError } = require('../../util/errorTypes');
+const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 

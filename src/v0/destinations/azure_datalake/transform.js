@@ -6,7 +6,7 @@ function processSingleMessage(message, options) {
   return processWarehouseMessage(message, options);
 }
 
-function getDataTypeOverride(key, val, options) {}
+function getDataTypeOverride() {}
 
 function process(event) {
   const whSchemaVersion = event.request.query.whSchemaVersion || 'v1';

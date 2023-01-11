@@ -69,7 +69,7 @@ const fetchFieldSchema = async (config) => {
   return { fieldSchemaNames, accessToken };
 };
 
-const getHeaderFields = (config, fieldSchemaNames, jobIds) => {
+const getHeaderFields = (config, fieldSchemaNames) => {
   const { columnFieldsMapping } = config;
 
   columnFieldsMapping.forEach((colField) => {

@@ -13,9 +13,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const {
-  TransformationError,
-  InstrumentationError,
-  ConfigurationError,
+  ConfigurationError, InstrumentationError,
 } = require('../../util/errorTypes');
 
 const gaDisplayName = 'Google Analytics';

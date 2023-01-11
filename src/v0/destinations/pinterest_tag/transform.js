@@ -7,7 +7,6 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   constructPayload,
-  getEventReqMetadata,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
 } = require('../../util');
@@ -19,7 +18,6 @@ const {
   checkUserPayloadValidity,
   processHashedUserPayload,
 } = require('./utils');
-const { client: errNotificationClient } = require('../../../util/errorNotifier');
 
 const { ENDPOINT, MAX_BATCH_SIZE, USER_CONFIGS } = require('./config');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');

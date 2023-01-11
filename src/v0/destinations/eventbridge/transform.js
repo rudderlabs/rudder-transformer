@@ -1,5 +1,5 @@
 const { removeUndefinedAndNullValues, simpleProcessRouterDest } = require('../../util');
-const { ConfigurationError, TransformationError } = require('../../util/errorTypes');
+const { ConfigurationError } = require('../../util/errorTypes');
 
 function getResouceList(config) {
   let resource;

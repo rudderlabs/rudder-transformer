@@ -5,7 +5,7 @@ const {
   handleRtTfSingleEventError,
   getDestinationExternalIDInfoForRetl,
 } = require('../../util');
-const { API_VERSION, DESTINATION } = require('./config');
+const { API_VERSION } = require('./config');
 const {
   processLegacyIdentify,
   processLegacyTrack,

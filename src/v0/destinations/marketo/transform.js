@@ -27,7 +27,6 @@ const {
   isDefinedAndNotNull,
   generateErrorObject,
   checkInvalidRtTfEvents,
-  getEventReqMetadata,
   handleRtTfSingleEventError,
 } = require('../../util');
 const Cache = require('../../util/cache');
@@ -44,7 +43,6 @@ const {
   ConfigurationError,
   UnauthorizedError,
 } = require('../../util/errorTypes');
-const { client: errNotificationClient } = require('../../../util/errorNotifier');
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day

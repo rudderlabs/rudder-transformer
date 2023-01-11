@@ -34,7 +34,6 @@ const {
   mappingConfig,
   batchEventsWithUserIdLengthLowerThanFive,
 } = require('./config');
-const { client: errNotificationClient } = require('../../../util/errorNotifier');
 
 const AMUtils = require('./utils');
 
@@ -59,11 +58,6 @@ const baseEndpoint = (destConfig) => {
 
 const defaultEndpoint = (destConfig) => {
   const retVal = `${baseEndpoint(destConfig)}/2/httpapi`;
-  return retVal;
-};
-
-const identifyEndpoint = (destConfig) => {
-  const retVal = `${baseEndpoint(destConfig)}/identify`;
   return retVal;
 };
 

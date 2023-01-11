@@ -32,7 +32,6 @@ const {
 const {
   InstrumentationError,
   ConfigurationError,
-  TransformationError,
 } = require('../../util/errorTypes');
 
 /**

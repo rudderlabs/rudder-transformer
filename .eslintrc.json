@@ -6,19 +6,15 @@
     "commonjs": true
   },
   "extends": ["airbnb-base", "prettier", "plugin:json/recommended"],
-  "plugins": ["prettier", "unicorn"],
-  "globals": {
-    "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
-  },
+  "plugins": ["unicorn"],
+  "globals": {},
   "parserOptions": {
     "ecmaVersion": 12,
     "sourceType": "module"
   },
   "rules": {
-    "arrow-body-style": "warn",
     "unicorn/filename-case": [
-      "warn",
+      "off",
       { "cases": { "camelCase": true, "pascalCase": true, "kebabCase": true } }
     ],
     "unicorn/no-instanceof-array": "error",
@@ -35,10 +31,10 @@
     "unicorn/no-useless-spread": "error",
     "unicorn/no-useless-length-check": "error",
     "unicorn/prefer-export-from": "error",
+    "arrow-body-style": "error",
     "import/no-dynamic-require": "warn",
     "no-param-reassign": "warn",
     "consistent-return": "warn",
-    "no-console": "warn",
-    "no-unused-vars": "warn"
+    "no-console": "warn"
   }
 }

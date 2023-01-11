@@ -13,7 +13,7 @@ const {
   getErrorRespEvents,
   simpleProcessRouterDest,
 } = require('../../util');
-const { DESTINATION, formatConfig, MAX_LEAD_IDS_SIZE } = require('./config');
+const { formatConfig, MAX_LEAD_IDS_SIZE } = require('./config');
 const Cache = require('../../util/cache');
 const { getAuthToken } = require('../marketo/transform');
 const { InstrumentationError, UnauthorizedError } = require('../../util/errorTypes');

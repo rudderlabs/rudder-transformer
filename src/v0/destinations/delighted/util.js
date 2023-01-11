@@ -3,8 +3,6 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { getValueFromMessage } = require('../../util');
 const {
   NetworkInstrumentationError,
-  AbortedError,
-  RetryableError,
   InstrumentationError,
   NetworkError,
 } = require('../../util/errorTypes');

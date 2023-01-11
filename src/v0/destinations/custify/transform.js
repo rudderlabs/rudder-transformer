@@ -9,7 +9,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { processIdentify, processTrack, processGroup } = require('./util');
-const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 /**
  * This function validates the message and builds the response

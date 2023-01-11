@@ -1,4 +1,4 @@
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 /**
  * Verifies whether the input payload is in right format or not

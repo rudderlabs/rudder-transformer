@@ -1,7 +1,6 @@
 /* eslint-disable no-param-reassign */
 // const { flattenJson } = require("../../v0/util");
-const { boolean } = require('is');
-const { isBoolean, isDate } = require('lodash');
+const { isBoolean } = require('lodash');
 const { Utils } = require('rudder-transformer-cdk');
 
 function commonPostMapper(event, mappedPayload, rudderContext) {

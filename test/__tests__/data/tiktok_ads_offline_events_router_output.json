@@ -1,0 +1,189 @@
+[
+  {
+    "batched": true,
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/offline/batch/",
+      "headers": {
+        "Access-Token": "fuwheirujkvjnkrtgkf",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "event_set_id": "7181537436256731137",
+          "partner_name": "RudderStack",
+          "batch": [
+            {
+              "event_set_id": "7181537436256731137",
+              "event": "Subscribe",
+              "event_id": "1616318632825_352",
+              "timestamp": "2023-01-03",
+              "partner_name": "RudderStack",
+              "context": {
+                "user": {
+                  "phone_numbers": [
+                    "c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646"
+                  ]
+                }
+              },
+              "properties": {
+                "order_id": "abc_xyz",
+                "shop_id": "123abc",
+                "contents": [
+                  {
+                    "price": 8,
+                    "quantity": 2,
+                    "content_type": "product1234",
+                    "content_id": "1077218",
+                    "content_name": "socks",
+                    "content_category": "Men's cloth"
+                  }
+                ],
+                "event_channel": "web",
+                "currency": "USD",
+                "value": 46.00
+              }
+            },
+            {
+              "event_set_id": "7181537436256731137",
+              "event": "Subscribe",
+              "event_id": "1616318632825_352",
+              "timestamp": "2023-01-03",
+              "partner_name": "RudderStack",
+              "context": {
+                "user": {
+                  "phone_numbers": [
+                    "c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646"
+                  ],
+                  "emails": [
+                    "d9fcca64ec1b250da4261a3f89a8e0f7749c4e0f5a1a918e5397194c8b5a9f16"
+                  ]
+                }
+              },
+              "properties": {
+                "event_channel": "web",
+                "contents": [
+                  {
+                    "price": 8,
+                    "quantity": 2,
+                    "content_type": "product1",
+                    "content_id": "1077218",
+                    "content_name": "socks",
+                    "content_category": "Men's cloth"
+                  },
+                  {
+                    "price": 18,
+                    "quantity": 12,
+                    "content_type": "product2",
+                    "content_id": "1077219",
+                    "content_name": "socks1",
+                    "content_category": "Men's cloth1"
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "destination": {
+      "Config": {
+        "accessToken": "fuwheirujkvjnkrtgkf",
+        "hashUserProperties": true
+      }
+    },
+    "metadata": [
+      {
+        "jobId": 1
+      },
+      {
+        "jobId": 2
+      }
+    ],
+    "statusCode": 200
+  },
+  {
+    "batched": true,
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/offline/batch/",
+      "headers": {
+        "Access-Token": "fuwheirujkvjnkrtgkf",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "event_set_id": "6071537445256731123",
+          "partner_name": "RudderStack",
+          "batch": [
+            {
+              "event_set_id": "6071537445256731123",
+              "event": "Subscribe",
+              "event_id": "1616318632825_352",
+              "timestamp": "2023-01-03",
+              "partner_name": "RudderStack",
+              "context": {
+                "user": {
+                  "phone_numbers": [
+                    "c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646"
+                  ]
+                }
+              },
+              "properties": {
+                "contents": [
+                  {
+                    "price": 8,
+                    "content_type": "product1234"
+                  }
+                ],
+                "event_channel": "web",
+                "currency": "USD",
+                "value": 46.00
+              }
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "destination": {
+      "Config": {
+        "accessToken": "fuwheirujkvjnkrtgkf",
+        "hashUserProperties": true
+      }
+    },
+    "metadata": [
+      {
+        "jobId": 3
+      }
+    ],
+    "statusCode": 200
+  },
+  {
+    "batched": false,
+    "error": "Event name is required",
+    "metadata": [
+      {
+        "jobId": 4
+      }
+    ],
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    },
+    "statusCode": 400
+  }
+]

@@ -461,5 +461,24 @@
             "FORM": {}
         },
         "files": {}
+    },
+    {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://sadobemetrics.dr.dk/b/ss//6",
+        "headers": {
+            "Content-type": "application/xml"
+        },
+        "params": {},
+        "body": {
+            "JSON": {},
+            "JSON_ARRAY": {},
+            "XML": {
+                "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><purchaseID>oid100</purchaseID><transactionID>oid100</transactionID><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><events>scCheckout</events><products/><reportSuiteID>drdev2</reportSuiteID></request>"
+            },
+            "FORM": {}
+        },
+        "files": {}
     }
 ]

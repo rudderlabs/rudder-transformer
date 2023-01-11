@@ -43,6 +43,11 @@
     "required": false
   },
   {
+    "destKey": "transactionID",
+    "sourceKeys": ["properties.order_id", "properties.orderId"],
+    "required": false
+  },
+  {
     "destKey": "state",
     "sourceKeys": [
       "context.traits.address.state",

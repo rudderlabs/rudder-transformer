@@ -121,7 +121,7 @@ const processTrackEvent = (message, Config) => {
     actionEventNames,
     installEventNames,
     rudderToImpactProperty,
-    productsMapping,
+    productsMapping, accountSID,
   } = Config;
 
   const eventType = [];
@@ -165,7 +165,7 @@ const processTrackEvent = (message, Config) => {
     const additionalParameters = populateAdditionalParameters(message, rudderToImpactProperty);
 
     payload = { ...payload, ...productProperties, ...additionalParameters };
-    const endpoint = `${CONFIG_CATEGORIES.CONVERSION.base_url}${Config.accountSID}/Conversions`;
+    const endpoint = `${CONFIG_CATEGORIES.CONVERSION.base_url}${accountSID}/Conversions`;
     const respArray = [];
     if (eventType.includes('install')) {
       respArray.push(responseBuilder(payload, endpoint, Config));

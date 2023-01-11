@@ -91,7 +91,7 @@ const processTrackEvent = async (metadata, message, destination) => {
       `Conversion named "${event}" was not specified in the RudderStack destination configuration`,
     );
   }
-  const { requireHash } = destination.Config;
+  const { requireHash } = Config;
   let updatedMapping = cloneDeep(trackMapping);
 
   if (requireHash === false) {

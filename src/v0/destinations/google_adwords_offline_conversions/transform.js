@@ -40,8 +40,8 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
   let payload;
   let endpoint;
   const filteredCustomerId = removeHyphens(Config.customerId);
-  const { hashUserIdentifier } = Config;
-  const { properties } = message;
+  const { hashUserIdentifier, defaultUserIdentifier, UserIdentifierSource, conversionEnvironment, customVariables, subAccount, loginCustomerId } = Config;
+  const { properties, originalTimestamp } = message;
 
   if (conversionType === 'click') {
     // click conversions
@@ -59,16 +59,16 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
 
     let email;
     let phone;
-    if (Config.defaultUserIdentifier === 'email') {
+    if (defaultUserIdentifier === 'email') {
       email = getFieldValueFromMessage(message, 'email');
       if (email) {
-        email = Config.hashUserIdentifier ? sha256(email).toString() : email;
+        email = hashUserIdentifier ? sha256(email).toString() : email;
         set(payload, 'conversions[0].userIdentifiers[0].hashedEmail', email);
       }
     } else {
       phone = getFieldValueFromMessage(message, 'phone');
       if (phone) {
-        phone = Config.hashUserIdentifier ? sha256(phone).toString() : phone;
+        phone = hashUserIdentifier ? sha256(phone).toString() : phone;
         set(payload, 'conversions[0].userIdentifiers[0].hashedPhoneNumber', phone);
       }
     }
@@ -95,11 +95,11 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     // userIdentifierSource
     // if userIdentifierSource doesn't exist in properties
     // then it is taken from the webapp config
-    if (!properties.userIdentifierSource && Config.UserIdentifierSource !== 'none') {
+    if (!properties.userIdentifierSource && UserIdentifierSource !== 'none') {
       set(
         payload,
         'conversions[0].userIdentifiers[0].userIdentifierSource',
-        Config.UserIdentifierSource,
+        UserIdentifierSource,
       );
 
       // one of email or phone must be provided
@@ -111,8 +111,8 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     // conversionEnvironment
     // if conversionEnvironment doesn't exist in properties
     // then it is taken from the webapp config
-    if (!properties.conversionEnvironment && Config.conversionEnvironment !== 'none') {
-      set(payload, 'conversions[0].conversionEnvironment', Config.conversionEnvironment);
+    if (!properties.conversionEnvironment && conversionEnvironment !== 'none') {
+      set(payload, 'conversions[0].conversionEnvironment', conversionEnvironment);
     }
   } else {
     // call conversions
@@ -123,8 +123,8 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
 
   // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
   // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
-  if (!properties.conversionDateTime && message.originalTimestamp) {
-    const timestamp = message.originalTimestamp;
+  if (!properties.conversionDateTime && originalTimestamp) {
+    const timestamp = originalTimestamp;
     const conversionDateTime = moment(timestamp)
       .utcOffset(moment(timestamp).utcOffset())
       .format('YYYY-MM-DD HH:MM:SSZ');
@@ -139,8 +139,8 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
   response.params = {
     event,
     customerId: filteredCustomerId,
-    customVariables: Config.customVariables,
-    properties: message.properties,
+    customVariables,
+    properties,
   };
   response.body.JSON = payload;
   response.headers = {
@@ -149,9 +149,9 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     'developer-token': get(metadata, 'secret.developer_token'),
   };
 
-  if (Config.subAccount) {
-    if (Config.loginCustomerId) {
-      const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
+  if (subAccount) {
+    if (loginCustomerId) {
+      const filteredLoginCustomerId = removeHyphens(loginCustomerId);
       response.headers['login-customer-id'] = filteredLoginCustomerId;
     } else {
       throw new ConfigurationError(`loginCustomerId is required as subAccount is enabled`);

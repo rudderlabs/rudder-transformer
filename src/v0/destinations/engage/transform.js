@@ -59,7 +59,7 @@ const trackResponseBuilder = (message, Config) => {
   if (!message.event) {
     throw new InstrumentationError('Event Name can not be empty.');
   }
-  const { properties } = message;
+  const { properties, event } = message;
   const payload = {};
   const meta = refinePayload(properties, ConfigCategories.TRACK.genericFields);
   const uid =
@@ -70,7 +70,7 @@ const trackResponseBuilder = (message, Config) => {
   }
   const endpoint = `${ConfigCategories.TRACK.endpoint.replace('uid', uid)}`;
   payload.properties = meta;
-  payload.event = message.event;
+  payload.event = event;
   payload.timestamp = getFieldValueFromMessage(message, 'timestamp');
   return responseBuilder(payload, endpoint, ConfigCategories.TRACK.method, Config);
 };
@@ -97,7 +97,7 @@ const pageResponseBuilder = (message, Config) => {
 
 // Engage Api Doc for group calls Ref: https://engage.so/docs/api/lists
 const groupResponseBuilder = (message, Config) => {
-  const { groupId } = message;
+  const { groupId, context } = message;
   if (!groupId) {
     throw new InstrumentationError('Group Id can not be empty.');
   }
@@ -115,8 +115,9 @@ const groupResponseBuilder = (message, Config) => {
     throw new InstrumentationError('engageID is required for remove operation.');
   }
   let { method } = ConfigCategories.GROUP;
+  const { genericFields, name } = ConfigCategories.GROUP;
   let endpoint = `${ConfigCategories.GROUP.endpoint.replace('id', groupId)}`;
-  const subscriberStatus = message?.context?.traits?.subscriberStatus || true;
+  const subscriberStatus = context?.traits?.subscriberStatus || true;
   let payload = { subscribed: subscriberStatus };
   if (uid) {
     endpoint = `${endpoint}/${uid}`;
@@ -126,10 +127,10 @@ const groupResponseBuilder = (message, Config) => {
       method = defaultDeleteRequestConfig.requestMethod;
     }
   } else {
-    const userPayload = constructPayload(message, mappingConfig[ConfigCategories.GROUP.name]);
+    const userPayload = constructPayload(message, mappingConfig[name]);
     payload = { ...payload, ...userPayload };
 
-    const refinedPayload = refinePayload(traits, ConfigCategories.GROUP.genericFields);
+    const refinedPayload = refinePayload(traits, genericFields);
     set(payload, 'meta', refinedPayload);
   }
   return responseBuilder(payload, endpoint, method, Config);

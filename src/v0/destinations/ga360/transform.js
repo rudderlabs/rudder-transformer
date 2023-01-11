@@ -256,6 +256,7 @@ function responseBuilderSimple(parameters, message, hitType, mappingJson, destin
     ...pageParams,
   };
   let { sendUserId } = destination.Config;
+  const { disableMd5 } = destination.Config;
   sendUserId = sendUserId || false;
   // check if userId is there and populate
   if (message.userId && message.userId.length > 0 && sendUserId) {
@@ -264,7 +265,7 @@ function responseBuilderSimple(parameters, message, hitType, mappingJson, destin
 
   const integrationsClientId = message.integrations?.[gaDisplayName]?.clientId;
 
-  if (destination.Config.disableMd5) {
+  if (disableMd5) {
     finalPayload.cid =
       integrationsClientId ||
       getDestinationExternalID(message, 'gaExternalId') ||
@@ -403,7 +404,8 @@ function processRefundEvent(message, destination) {
   let { enhancedEcommerce } = destination.Config;
   enhancedEcommerce = enhancedEcommerce || false;
 
-  const { products } = message.properties;
+  // eslint-disable-next-line camelcase
+  const { products, order_id } = message.properties;
   if (products && products.length > 0) {
     const productParams = setProductLevelProperties(
       products,
@@ -414,7 +416,8 @@ function processRefundEvent(message, destination) {
     Object.assign(parameters, productParams);
   } else {
     // full refund, only populate order_id
-    parameters.ti = message.properties.order_id;
+    // eslint-disable-next-line camelcase
+    parameters.ti = order_id;
   }
   // Finally fill up with mandatory and directly mapped fields
   return parameters;
@@ -545,8 +548,10 @@ function processProductEvent(message, destination) {
     const customParamKeys = getCustomParamKeys(destination.Config);
     Object.assign(parameters, getProductLevelCustomParams(message.properties, 1, customParamKeys));
   }
-  const { sku } = message.properties;
-  const productId = message.properties.product_id;
+  // eslint-disable-next-line camelcase
+  const { sku, product_id } = message.properties;
+  // eslint-disable-next-line camelcase
+  const productId = product_id;
 
   if (!productId || productId.length === 0) {
     parameters.pr1id = sku;

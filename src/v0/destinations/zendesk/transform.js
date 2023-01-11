@@ -599,8 +599,8 @@ async function processGroup(message, destinationConfig, headers, baseEndpoint) {
 }
 
 async function processSingleMessage(event) {
-  const { message } = event;
-  const destinationConfig = event.destination.Config;
+  const { message, destination } = event;
+  const destinationConfig = destination.Config;
   const messageType = message.type.toLowerCase();
   const unencodedBase64Str = `${destinationConfig.email}/token:${destinationConfig.apiToken}`;
   const baseEndpoint = getBaseEndpoint(destinationConfig.domain);

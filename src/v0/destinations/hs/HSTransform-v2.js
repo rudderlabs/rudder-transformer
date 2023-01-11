@@ -367,8 +367,8 @@ const batchEvents = (destEvents) => {
   destEvents.forEach((event) => {
     // handler for track call
     // track call does not have batch endpoint
-    const { operation } = event.message;
-    if (event.message.messageType === 'track') {
+    const { operation, messageType, source } = event.message;
+    if (messageType === 'track') {
       const { message, metadata, destination } = event;
       const endpoint = get(message, 'endpoint');
 
@@ -388,7 +388,7 @@ const batchEvents = (destEvents) => {
           batchedResponse.destination,
         ),
       );
-    } else if (event.message.source && event.message.source === 'rETL') {
+    } else if (source && source === 'rETL') {
       const { endpoint } = event.message;
       maxBatchSize = endpoint.includes('contact')
         ? MAX_BATCH_SIZE_CRM_CONTACT

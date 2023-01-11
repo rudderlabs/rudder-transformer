@@ -121,10 +121,10 @@ const responseBuilder = (message, { Config }) => {
     // GA4 standard events
     // get event specific parameters
 
-    payload.name = eventConfig.event;
-    payload.params = constructPayload(message, mappingConfig[eventConfig.name]);
+    const { itemList, item, event: evConfigEvent, name } = eventConfig;
+    payload.name = evConfigEvent;
+    payload.params = constructPayload(message, mappingConfig[name]);
 
-    const { itemList, item } = eventConfig;
     if (item) {
       // item
       payload.params.items = getItem(message, item === 'YES');
@@ -137,7 +137,7 @@ const responseBuilder = (message, { Config }) => {
     // excluding items/product properties
     if (payload.name === 'select_item' || payload.name === 'view_item') {
       // exclude event properties
-      let ITEM_EXCLUSION_LIST = getGA4ExclusionList(mappingConfig[eventConfig.name]);
+      let ITEM_EXCLUSION_LIST = getGA4ExclusionList(mappingConfig[name]);
       // exclude items/product properties
       ITEM_EXCLUSION_LIST = ITEM_EXCLUSION_LIST.concat(
         getGA4ExclusionList(mappingConfig[ConfigCategory.ITEM.name]),
@@ -153,7 +153,7 @@ const responseBuilder = (message, { Config }) => {
       payload.params = getGA4CustomParameters(
         message,
         ['properties'],
-        getGA4ExclusionList(mappingConfig[eventConfig.name]),
+        getGA4ExclusionList(mappingConfig[name]),
         payload,
       );
     }

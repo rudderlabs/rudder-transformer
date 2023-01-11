@@ -195,11 +195,11 @@ const deduceTrackScreenEventName = (message, Config) => {
  * For track : Depends on the event name
  */
 const deduceEventName = (message, Config) => {
-  const { type } = message;
+  const { type, category } = message;
   let eventName = [];
   switch (type) {
     case EventType.PAGE:
-      eventName = isDefinedAndNotNull(message.category) ? ['ViewCategory'] : ['PageVisit'];
+      eventName = isDefinedAndNotNull(category) ? ['ViewCategory'] : ['PageVisit'];
       break;
     case EventType.TRACK:
     case EventType.SCREEN:
@@ -283,7 +283,7 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
 
   // if product array is present will look for the product level information
   if (properties.products && Array.isArray(properties.products) && properties.products.length > 0) {
-    const { products } = properties;
+    const { products, quantity } = properties;
     products.forEach((product) => {
       const prodParams = setIdPriceQuantity(product, message);
       contentIds.push(prodParams.contentId);
@@ -299,14 +299,14 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
       in case any of the products inside product array does not have quantity,
        will map the quantity of root level
       */
-      totalQuantity = properties.quantity;
+      totalQuantity = quantity;
     }
   } else {
     /*
     for the events where product array is not present, root level id, price and
     quantity are taken into consideration
     */
-    const prodParams = setIdPriceQuantity(message.properties, message);
+    const prodParams = setIdPriceQuantity(properties, message);
     contentIds.push(prodParams.contentId);
     contentArray.push(prodParams.content);
     totalQuantity = properties.quantity ? totalQuantity + properties.quantity : totalQuantity;

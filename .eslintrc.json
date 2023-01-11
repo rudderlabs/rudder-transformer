@@ -19,7 +19,7 @@
     ],
     "unicorn/no-instanceof-array": "error",
     "unicorn/no-static-only-class": "error",
-    "unicorn/consistent-destructuring": "warn",
+    "unicorn/consistent-destructuring": "error",
     "unicorn/better-regex": "error",
     "unicorn/no-for-loop": "error",
     "unicorn/prefer-array-some": "error",
@@ -31,7 +31,6 @@
     "unicorn/no-useless-spread": "error",
     "unicorn/no-useless-length-check": "error",
     "unicorn/prefer-export-from": "error",
-    "arrow-body-style": "error",
     "import/no-dynamic-require": "warn",
     "no-param-reassign": "warn"
   }

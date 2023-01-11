@@ -43,8 +43,8 @@ const responseBuilder = (endPoint, leadIds, operation, token) => {
 };
 
 const batchResponseBuilder = (message, Config, token, leadIds, operation) => {
-  const { accountId } = Config;
-  const listId = getDestinationExternalID(message, 'marketoStaticListId') || Config.staticListId;
+  const { accountId, staticListId } = Config;
+  const listId = getDestinationExternalID(message, 'marketoStaticListId') || staticListId;
   const endpoint = `https://${accountId}.mktorest.com/rest/v1/lists/${listId}/leads.json?`;
   if (!listId) {
     throw new InstrumentationError('No static listId is provided');

@@ -203,7 +203,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
   );
   try {
     const formReq = new FormData();
-    const { munchkinId } = config;
+    const { munchkinId, deDuplicationField } = config;
     // create file for multipart form
     if (readStream) {
       formReq.append('format', 'csv');
@@ -216,9 +216,9 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
           ...formReq.getHeaders(),
         },
       };
-      if (isDefinedAndNotNullAndNotEmpty(config.deDuplicationField)) {
+      if (isDefinedAndNotNullAndNotEmpty(deDuplicationField)) {
         requestOptions.params = {
-          lookupField: config.deDuplicationField,
+          lookupField: deDuplicationField,
         };
       }
       const startTime = Date.now();

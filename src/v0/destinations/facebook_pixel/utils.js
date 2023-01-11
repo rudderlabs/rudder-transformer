@@ -28,7 +28,7 @@ const formatRevenue = (revenue) => {
  * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
  */
 const getContentType = (message, defaultValue, categoryToContent) => {
-  const { integrations } = message;
+  const { integrations, properties } = message;
   if (
     integrations &&
     integrations.FacebookPixel &&
@@ -38,9 +38,9 @@ const getContentType = (message, defaultValue, categoryToContent) => {
     return integrations.FacebookPixel.contentType;
   }
 
-  let { category } = message.properties;
+  let { category } = properties;
   if (!category) {
-    const { products } = message.properties;
+    const { products } = properties;
     if (products && products.length > 0 && Array.isArray(products) && isObject(products[0])) {
       category = products[0].category;
     }

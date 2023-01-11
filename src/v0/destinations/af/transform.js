@@ -84,7 +84,7 @@ function responseBuilderSimple(payload, message, destination) {
     updatedPayload.bundleIdentifier = bundleIdentifier;
   }
 
-  const { sharingFilter } = destination.Config;
+  const { sharingFilter, devKey } = destination.Config;
   if (isDefinedAndNotNullAndNotEmpty(sharingFilter)) {
     updatedPayload.sharing_filter = sharingFilter;
   }
@@ -93,7 +93,7 @@ function responseBuilderSimple(payload, message, destination) {
   response.endpoint = endpoint;
   response.headers = {
     'Content-Type': 'application/json',
-    authentication: destination.Config.devKey,
+    authentication: devKey,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(updatedPayload);

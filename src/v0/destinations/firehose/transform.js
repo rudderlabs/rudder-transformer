@@ -2,8 +2,8 @@ const { getHashFromArray, simpleProcessRouterDest } = require('../../util');
 const { ConfigurationError } = require('../../util/errorTypes');
 
 function getDeliveryStreamMapTo(event) {
-  const { message } = event;
-  const { mapEvents } = event.destination.Config;
+  const { message, destination } = event;
+  const { mapEvents } = destination.Config;
   const hashMap = getHashFromArray(mapEvents, 'from', 'to');
   return (
     (message.event ? hashMap[message.event.toLowerCase()] : null) ||

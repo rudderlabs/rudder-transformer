@@ -95,12 +95,12 @@ const responseBuilder = (metadata, body, { Config }) => {
 const populateIdentifiers = (attributeArray, { Config }) => {
   const userIdentifier = [];
   const { typeOfList } = Config;
-  const { isHashRequired } = Config;
+  const { isHashRequired, userSchema } = Config;
   let attribute;
   if (TYPEOFLIST[typeOfList]) {
     attribute = TYPEOFLIST[typeOfList];
   } else {
-    attribute = Config.userSchema;
+    attribute = userSchema;
   }
   if (isDefinedAndNotNullAndNotEmpty(attributeArray)) {
     // traversing through every element in the add array

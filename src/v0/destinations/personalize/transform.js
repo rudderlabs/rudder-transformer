@@ -12,7 +12,7 @@ const {
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const putEventsHandler = (message, destination) => {
-  const { properties, anonymousId, event } = message;
+  const { properties, anonymousId, event, messageId } = message;
   const { customMappings, trackingId, disableStringify } = destination.Config;
 
   if (!event || !isDefinedAndNotNull(event) || isBlank(event)) {
@@ -71,7 +71,7 @@ const putEventsHandler = (message, destination) => {
   outputEvent.itemId =
     outputEvent.itemId && outputEvent.itemId !== 'undefined' && outputEvent.itemId !== ' '
       ? outputEvent.itemId
-      : message.messageId;
+      : messageId;
   // userId is a mandatory field, so even if user doesn't mention, it is needed to be provided
   const userId = getFieldValueFromMessage(message, 'userIdOnly');
   const response = {

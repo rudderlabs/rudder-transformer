@@ -6,13 +6,13 @@ const { processAxiosResponse } = require('../../../adapters/utils/networkUtils')
 // eslint-disable-next-line no-unused-vars
 const responseHandler = (destinationResponse, destType) => {
   const message = 'Request Processed Successfully';
-  const { status } = destinationResponse;
+  const { status, rudderJobMetadata } = destinationResponse;
   const authCache = v0Utils.getDestAuthCacheInstance(destType);
   // check for marketo application level failures
   marketoResponseHandler(
     destinationResponse,
     'during Marketo Response Handling',
-    destinationResponse?.rudderJobMetadata,
+    rudderJobMetadata,
     authCache,
     'marketo',
   );

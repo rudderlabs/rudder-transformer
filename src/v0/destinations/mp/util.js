@@ -95,13 +95,13 @@ const getTransformedJSON = (message, mappingJson, useNewMapping) => {
  */
 const createIdentifyResponse = (message, type, destination, responseBuilderSimple) => {
   // this variable is used for supporting backward compatibility
-  const { useNewMapping } = destination.Config;
+  const { useNewMapping, token } = destination.Config;
   // user payload created
   const properties = getTransformedJSON(message, mPIdentifyConfigJson, useNewMapping);
 
   const parameters = {
     $set: properties,
-    $token: destination.Config.token,
+    $token: token,
     $distinct_id: message.userId || message.anonymousId,
     $ip: get(message, 'context.ip') || message.request_ip,
     $time: toUnixTimestamp(message.timestamp),

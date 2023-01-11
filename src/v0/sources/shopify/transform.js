@@ -87,20 +87,24 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
     .forEach((key) => {
       message.setProperty(`properties.${key}`, event[key]);
     });
-  const { line_items: lineItems } = event;
+  // eslint-disable-next-line camelcase
+  const { line_items: lineItems, billing_address, user_id, shipping_address, customer } = event;
   const productsList = getProductsListFromLineItems(lineItems);
   message.setProperty('properties.products', productsList);
-  if (event.customer) {
-    message.setPropertiesV2(event.customer, MAPPING_CATEGORIES[EventType.IDENTIFY]);
+  if (customer) {
+    message.setPropertiesV2(customer, MAPPING_CATEGORIES[EventType.IDENTIFY]);
   }
-  if (event.shipping_address) {
-    message.setProperty('traits.shippingAddress', event.shipping_address);
+  // eslint-disable-next-line camelcase
+  if (shipping_address) {
+    message.setProperty('traits.shippingAddress', shipping_address);
   }
-  if (event.billing_address) {
-    message.setProperty('traits.billingAddress', event.billing_address);
+  // eslint-disable-next-line camelcase
+  if (billing_address) {
+    message.setProperty('traits.billingAddress', billing_address);
   }
-  if (!message.userId && event.user_id) {
-    message.setProperty('userId', event.user_id);
+  // eslint-disable-next-line camelcase
+  if (!message.userId && user_id) {
+    message.setProperty('userId', user_id);
   }
   return message;
 };

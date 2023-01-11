@@ -4,13 +4,13 @@ function commonPostMapper(event, mappedPayload, rudderContext) {
   const { message, destination } = event;
   const destConfig = destination.Config;
 
-  const { trackEventsToZap, pageScreenEventsToZap } = destConfig;
+  const { trackEventsToZap, pageScreenEventsToZap, zapUrl } = destConfig;
 
   const trackEventsMap = getHashFromArray(trackEventsToZap);
   const pageScreenEventsMap = getHashFromArray(pageScreenEventsToZap);
 
   // default Zap URL
-  rudderContext.zapUrl = destConfig.zapUrl;
+  rudderContext.zapUrl = zapUrl;
 
   // track event
   if (message?.type === 'track') {

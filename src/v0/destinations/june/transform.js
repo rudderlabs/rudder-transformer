@@ -29,16 +29,16 @@ const responseBuilder = (payload, endpoint, destination) => {
 
 // ref :- https://www.june.so/docs/api#:~:text=Copy-,Identifying%20users,-You%20can%20use
 const identifyResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.IDENTIFY;
-  const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]);
+  const { endpoint, name } = CONFIG_CATEGORIES.IDENTIFY;
+  const payload = constructPayload(message, MAPPING_CONFIG[name]);
   return responseBuilder(payload, endpoint, destination);
 };
 
 // ref :- https://www.june.so/docs/api#:~:text=Copy-,Send%20track%20events,-In%20order%20to
 const trackResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.TRACK;
+  const { endpoint, name } = CONFIG_CATEGORIES.TRACK;
   const groupId = getDestinationExternalID(message, 'juneGroupId') || message.properties?.groupId;
-  let payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name]);
+  let payload = constructPayload(message, MAPPING_CONFIG[name]);
 
   if (groupId) {
     payload = { ...payload, context: { groupId } };
@@ -49,8 +49,8 @@ const trackResponseBuilder = (message, destination) => {
 
 // ref :- https://www.june.so/docs/api#:~:text=Copy-,Identifying%20companies,-(optional)
 const groupResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.GROUP;
-  const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.GROUP.name]);
+  const { endpoint, name } = CONFIG_CATEGORIES.GROUP;
+  const payload = constructPayload(message, MAPPING_CONFIG[name]);
   return responseBuilder(payload, endpoint, destination);
 };
 

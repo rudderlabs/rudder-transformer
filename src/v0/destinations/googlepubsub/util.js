@@ -14,8 +14,8 @@ const stringifyValue = (val) => (typeof val === 'string' ? val : JSON.stringify(
  * @returns
  */
 const getTopic = (event) => {
-  const { message } = event;
-  const { eventToTopicMap } = event.destination.Config;
+  const { message, destination } = event;
+  const { eventToTopicMap } = destination.Config;
   const hashMap = getHashFromArray(eventToTopicMap, 'from', 'to');
 
   return (

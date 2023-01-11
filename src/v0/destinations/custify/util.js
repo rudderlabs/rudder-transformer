@@ -132,7 +132,7 @@ const processIdentify = (message, { Config }) => {
  */
 const processTrack = (message, { Config }) => {
   const eventPayload = constructPayload(message, MappingConfig[ConfigCategory.TRACK.name]);
-  const { sendAnonymousId } = Config;
+  const { sendAnonymousId, deduplicationField, enablededuplication } = Config;
   if (sendAnonymousId && !eventPayload.user_id) {
     eventPayload.user_id = message.anonymousId;
   }
@@ -156,9 +156,9 @@ const processTrack = (message, { Config }) => {
     metadata.user_id = eventPayload.user_id;
   }
 
-  if (Config.enablededuplication) {
+  if (enablededuplication) {
     eventPayload.deduplication_id =
-      get(message, `${Config.deduplicationField}`) || get(message, 'messageId');
+      get(message, `${deduplicationField}`) || get(message, 'messageId');
   }
 
   return removeUndefinedAndNullValues({ ...eventPayload, metadata });

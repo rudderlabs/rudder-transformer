@@ -213,8 +213,8 @@ function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity
 }
 
 function getPurchaseObjs(message) {
-  const { products } = message.properties;
-  const currencyCode = message.properties.currency;
+  const { products, currency } = message.properties;
+  const currencyCode = currency;
 
   const purchaseObjs = [];
 
@@ -222,7 +222,7 @@ function getPurchaseObjs(message) {
     // we have to make a separate call to appboy for each product
     products.forEach((product) => {
       const productId = product.product_id || product.sku;
-      const { price, quantity, currency } = product;
+      const { price, quantity, currency: prodCur } = product;
       if (productId && isDefinedAndNotNull(price) && quantity) {
         if (Number.isNaN(price) || Number.isNaN(quantity)) {
           return;
@@ -230,7 +230,7 @@ function getPurchaseObjs(message) {
         let purchaseObj = addMandatoryPurchaseProperties(
           productId,
           price,
-          currencyCode || currency,
+          currencyCode || prodCur,
           quantity,
           message.timestamp,
         );

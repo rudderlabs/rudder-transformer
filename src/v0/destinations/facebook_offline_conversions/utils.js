@@ -226,7 +226,7 @@ const findEventConfigurationPlace = (eventsMapping, event) => {
  * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
  */
 const getContentType = (message, standardEvent, categoryToContent, destination) => {
-  const { integrations } = message;
+  const { integrations, properties } = message;
   if (
     integrations &&
     integrations.FacebookOfflineConversions &&
@@ -238,10 +238,10 @@ const getContentType = (message, standardEvent, categoryToContent, destination) 
 
   let contentType;
 
-  let { category } = message.properties;
+  let { category } = properties;
   // category field is mapped from properties.category, if not found, then, category of the first product item from the products array ( if any )
   if (!category) {
-    const { products } = message.properties;
+    const { products } = properties;
     if (products && products.length > 0 && Array.isArray(products) && isObject(products[0])) {
       category = products[0].category;
     }

@@ -72,7 +72,7 @@ const getProductsMapping = (productsMapping, itemName) => {
  * @returns
  */
 const populateProductProperties = (productsMapping, properties) => {
-  const { products } = properties;
+  const { products, brand, sku, quantity, coupon, price, name, category } = properties;
   const productProperties = {};
   if (products && Array.isArray(products)) {
     products.forEach((item, index) => {
@@ -93,13 +93,13 @@ const populateProductProperties = (productsMapping, properties) => {
     });
   } else {
     const index = 1;
-    productProperties[getPropertyName('ItemBrand', index)] = properties.brand;
-    productProperties[getPropertyName('ItemCategory', index)] = properties.category;
-    productProperties[getPropertyName('ItemName', index)] = properties.name;
-    productProperties[getPropertyName('ItemPrice', index)] = properties.price;
-    productProperties[getPropertyName('ItemPromoCode', index)] = properties.coupon;
-    productProperties[getPropertyName('ItemQuantity', index)] = properties.quantity;
-    productProperties[getPropertyName('ItemSku', index)] = properties.sku;
+    productProperties[getPropertyName('ItemBrand', index)] = brand;
+    productProperties[getPropertyName('ItemCategory', index)] = category;
+    productProperties[getPropertyName('ItemName', index)] = name;
+    productProperties[getPropertyName('ItemPrice', index)] = price;
+    productProperties[getPropertyName('ItemPromoCode', index)] = coupon;
+    productProperties[getPropertyName('ItemQuantity', index)] = quantity;
+    productProperties[getPropertyName('ItemSku', index)] = sku;
   }
   return productProperties;
 };

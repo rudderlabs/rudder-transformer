@@ -345,7 +345,7 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
           ? `Viewed ${type} ${message.name}`
           : `Viewed a ${type}`;
       }
-      if (category.type === 'simple track') {
+      if (type === 'simple track') {
         customData.value = message.properties ? message.properties.revenue : undefined;
         delete customData.revenue;
       }

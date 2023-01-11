@@ -19,7 +19,7 @@ const {
 const getFailedJobStatus = async (event) => {
   const { config, importId } = event;
   const accessToken = await getAccessToken(config);
-  const { munchkinId } = event.config;
+  const { munchkinId } = config;
   // Get status of each lead for failed leads
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#failures
   const requestOptions = {
@@ -123,7 +123,7 @@ const getFailedJobStatus = async (event) => {
 const getWarningJobStatus = async (event) => {
   const { config, importId } = event;
   const accessToken = await getAccessToken(config);
-  const { munchkinId } = event.config;
+  const { munchkinId } = config;
   // Get status of each lead for warning leads
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#warnings
   const requestOptions = {

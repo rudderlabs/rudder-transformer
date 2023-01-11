@@ -70,7 +70,7 @@ const responseBuilderSimple = (parameters, message, eventType, destConfig) => {
     'base64',
   );
   response.params = { data: encodedData };
-  const { apiSecret, serviceAccountUserName, serviceAccountSecret, projectId } = destConfig;
+  const { apiSecret, serviceAccountUserName, serviceAccountSecret, projectId, dataResidency } = destConfig;
   const duration = getTimeDifference(message.timestamp);
   switch (eventType) {
     case EventType.ALIAS:
@@ -83,7 +83,7 @@ const responseBuilderSimple = (parameters, message, eventType, destConfig) => {
         duration.days <= 5
       ) {
         response.endpoint =
-          destConfig.dataResidency === 'eu'
+          dataResidency === 'eu'
             ? `${BASE_ENDPOINT_EU}/track/`
             : `${BASE_ENDPOINT}/track/`;
         response.headers = {};
@@ -106,7 +106,7 @@ const responseBuilderSimple = (parameters, message, eventType, destConfig) => {
       break;
     default:
       response.endpoint =
-        destConfig.dataResidency === 'eu'
+        dataResidency === 'eu'
           ? `${BASE_ENDPOINT_EU}/engage/`
           : `${BASE_ENDPOINT}/engage/`;
       response.headers = {};

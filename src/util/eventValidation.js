@@ -114,13 +114,13 @@ async function validate(event) {
     checkForPropertyMissing(event.metadata.trackingPlanVersion);
     checkForPropertyMissing(event.metadata.workspaceId);
 
-    const { sourceTpConfig } = event.metadata;
+    const { sourceTpConfig, trackingPlanId, trackingPlanVersion, workspaceId } = event.metadata;
     const eventSchema = await trackingPlan.getEventSchema(
-      event.metadata.trackingPlanId,
-      event.metadata.trackingPlanVersion,
+      trackingPlanId,
+      trackingPlanVersion,
       event.message.type,
       event.message.event,
-      event.metadata.workspaceId,
+      workspaceId,
     );
 
     // UnPlanned event case - since no event schema is found. Violation is raised
@@ -131,7 +131,7 @@ async function validate(event) {
       }
       const rudderValidationError = {
         type: violationTypes.UnplannedEvent,
-        message: `no schema for eventName : ${event.message.event}, eventType : ${event.message.type} in trackingPlanID : ${event.metadata.trackingPlanId}::${event.metadata.trackingPlanVersion}`,
+        message: `no schema for eventName : ${event.message.event}, eventType : ${event.message.type} in trackingPlanID : ${trackingPlanId}::${trackingPlanVersion}`,
         meta: {},
       };
       return [rudderValidationError];
@@ -149,8 +149,8 @@ async function validate(event) {
     delete eventSchema.version;
 
     const schemaHash = eventSchemaHash(
-      event.metadata.trackingPlanId,
-      event.metadata.trackingPlanVersion,
+      trackingPlanId,
+      trackingPlanVersion,
       event.message.type,
       event.message.event,
       isDraft4,

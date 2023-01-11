@@ -57,8 +57,8 @@ const processSingleMessage = async (message, destination, propertyMap) => {
 
 // has been deprecated - using routerTransform for both the versions
 const process = async (event) => {
-  const { destination } = event;
-  const mappedToDestination = get(event.message, MappedToDestinationKey);
+  const { destination, message } = event;
+  const mappedToDestination = get(message, MappedToDestinationKey);
   let events = [];
   events = [event];
   if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {

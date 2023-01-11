@@ -40,15 +40,15 @@ function checkIfValidPhoneNumber(str) {
 const getContents = (message) => {
   const contents = [];
   const { properties } = message;
-  const { products } = properties;
+  const { products, content_type, contentType } = properties;
   if (products && Array.isArray(products) && products.length > 0) {
     products.forEach((product) => {
       const singleProduct = {};
       singleProduct.content_type =
         product.contentType ||
-        properties.contentType ||
+        contentType ||
         product.content_type ||
-        properties.content_type ||
+        content_type ||
         'product';
       singleProduct.content_id = product.product_id;
       singleProduct.content_category = product.category;

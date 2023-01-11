@@ -526,9 +526,9 @@ const createEventOccurrencePayloadBuilder = (message, user, destination) => {
   const userEvent = getUserEvent(userEvents, name);
   if (userEvent.length === 1) {
     const [first] = userEvent;
-    const { eventProperties: eventPropertiesMapping } = first;
+    const { eventProperties: eventPropertiesMapping, userEventName } = first;
     const eventPropertiesMap = getHashFromArray(eventPropertiesMapping, 'from', 'to', false);
-    payload.name = first.userEventName;
+    payload.name = userEventName;
     payload.data = getAttributes(eventPropertiesMap, properties, []);
   }
 

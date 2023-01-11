@@ -29,7 +29,7 @@ const process = (event) => {
     return [];
   }
 
-  if (isEmpty(event.message.userId)) {
+  if (isEmpty(message.userId)) {
     throw new InstrumentationError('Blank userId passed in identify event');
   }
 
@@ -37,7 +37,7 @@ const process = (event) => {
   const keyPrefix = isEmpty(prefix) ? '' : `${prefix.trim()}:`;
 
   const hmap = {
-    key: `${keyPrefix}user:${_.toString(event.message.userId)}`,
+    key: `${keyPrefix}user:${_.toString(message.userId)}`,
     fields: {},
   };
 
@@ -66,7 +66,7 @@ const process = (event) => {
 
   const result = {
     message: hmap,
-    userId: event.message.userId,
+    userId: message.userId,
   };
   return result;
 };

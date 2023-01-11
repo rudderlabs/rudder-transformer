@@ -252,6 +252,7 @@ async function handleDest(ctx, version, destination) {
           }
           return respEvents.map((ev) => {
             let { userId } = ev;
+            const { statusCode } = ev;
             // Set the user ID to an empty string for
             // all the falsy values (including 0 and false)
             // Otherwise, server panics while un-marshalling the response
@@ -260,7 +261,7 @@ async function handleDest(ctx, version, destination) {
               userId = '';
             }
 
-            if (ev.statusCode !== 400 && userId) {
+            if (statusCode !== 400 && userId) {
               userId = `${userId}`;
             }
 

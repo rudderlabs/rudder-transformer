@@ -31,6 +31,7 @@ function flatten(target, opts) {
 
   const delimiter = opts.delimiter || '.';
   let { maxDepth } = opts;
+  const { safe } = opts;
   let currentDepth = 1;
   const output = {};
 
@@ -38,14 +39,14 @@ function flatten(target, opts) {
     for (const key in object) {
       if (object.hasOwnProperty(key)) {
         const value = object[key];
-        const isarray = opts.safe && is.array(value);
+        const isarray = safe && is.array(value);
         const type = Object.prototype.toString.call(value);
         const isobject = type === '[object Object]' || type === '[object Array]';
         const arr = [];
 
         const newKey = prev ? prev + delimiter + key : key;
 
-        if (!opts.maxDepth) {
+        if (!maxDepth) {
           maxDepth = currentDepth + 1;
         }
 
@@ -159,11 +160,12 @@ function getCurrency(val) {
 
 function getRevenue(properties, eventName) {
   let { revenue } = properties;
+  const { total } = properties;
   const orderCompletedRegExp = /^[ _]?completed[ _]?order[ _]?|^[ _]?order[ _]?completed[ _]?$/i;
 
   // it's always revenue, unless it's called during an order completion.
   if (!revenue && eventName && eventName.match(orderCompletedRegExp)) {
-    revenue = properties.total;
+    revenue = total;
   }
 
   return getCurrency(revenue);
@@ -215,8 +217,8 @@ function processIdentify(message, destination) {
 }
 
 function processTrack(message, destination) {
-  const { apiKey } = destination.Config;
-  const { event } = message;
+  const { apiKey, prefixProperties } = destination.Config;
+  const { event, originalTimestamp, userId, anonymousId } = message;
   const messageType = message.type.toLowerCase();
   let properties = {};
   if (message.properties) {
@@ -224,7 +226,7 @@ function processTrack(message, destination) {
   }
 
   // TODO: Give priority to timestamp, then originalTimestam ?
-  const timestamp = toUnixTimestamp(message.originalTimestamp);
+  const timestamp = toUnixTimestamp(originalTimestamp);
   let endpoint = ENDPOINT.TRACK;
 
   const revenue = getRevenue(properties);
@@ -239,7 +241,7 @@ function processTrack(message, destination) {
 
   properties = clean(properties);
 
-  if (destination.Config.prefixProperties) {
+  if (prefixProperties) {
     if (messageType === EventType.TRACK) {
       properties = prefix(event, properties);
     }
@@ -248,7 +250,7 @@ function processTrack(message, destination) {
     }
   }
   properties._k = apiKey;
-  properties._p = message.userId ? message.userId : message.anonymousId;
+  properties._p = userId || anonymousId;
   properties._n = event;
   properties._t = timestamp;
   properties._d = 1;
@@ -258,9 +260,9 @@ function processTrack(message, destination) {
   if (products) {
     products.forEach((product) => {
       let item = product;
-      if (destination.Config.prefixProperties) item = prefix(event, item);
+      if (prefixProperties) item = prefix(event, item);
       item._k = apiKey;
-      item._p = message.userId ? message.userId : message.anonymousId;
+      item._p = userId || anonymousId;
 
       endpoint = ENDPOINT.IDENTIFY;
       trackList.push(buildResponse(message, item, endpoint));

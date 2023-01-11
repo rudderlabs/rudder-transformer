@@ -12,7 +12,7 @@ const eventTypeMapping = (Config) => {
   let eventName = '';
   const { eventTypeSettings } = Config;
   if (Array.isArray(eventTypeSettings) && eventTypeSettings.length > 0) {
-    Config.eventTypeSettings.forEach((event) => {
+    eventTypeSettings.forEach((event) => {
       if (event.from && event.to) {
         eventName = event.from.trim().toLowerCase();
         if (!eventMap[eventName]) {

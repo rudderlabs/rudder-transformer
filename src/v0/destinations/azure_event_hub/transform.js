@@ -13,8 +13,8 @@ function process(event) {
   // }
 
   const result = {
-    message: event.message,
-    userId: event.message.userId || event.message.anonymousId,
+    message,
+    userId: message.userId || message.anonymousId,
     topic,
   };
   return result;

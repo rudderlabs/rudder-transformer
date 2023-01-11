@@ -77,26 +77,27 @@ function buildResponse(eventName, message, destination) {
 function processTrack(message, destination) {
   const eventName = message.event;
   let { properties } = message;
+  const { userId, anonymousId, context } = message;
   const user = {};
-  user.userId = message.userId
-    ? message.userId !== ''
-      ? message.userId
-      : message.anonymousId
-    : message.anonymousId;
+  user.userId = userId
+    ? userId !== ''
+      ? userId
+      : anonymousId
+    : anonymousId;
   user.traits = getFieldValueFromMessage(message, 'traits') || {};
   properties = {
     ...properties,
     user,
   };
   // add userid/anonymousid
-  properties.userId = message.userId;
-  properties.anonymousId = message.anonymousId;
+  properties.userId = userId;
+  properties.anonymousId = anonymousId;
 
   // add ip from the message
   properties.request_ip = getParsedIP(message);
 
   // add user-agent
-  properties.user_agent = message.context.userAgent;
+  properties.user_agent = context.userAgent;
 
   addAddons(properties, destination.Config);
 

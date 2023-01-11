@@ -47,7 +47,7 @@ const getTemplate = (message, destination) => {
     );
   }
 
-  return message.event ? hashMap[message.event] : null;
+  return event ? hashMap[event] : null;
 };
 
 /**
@@ -268,7 +268,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
     externalId: getDestinationExternalID(message, 'trengoChannelId'),
     contactId: getDestinationExternalID(message, 'trengoContactId'),
   };
-  const { channelIdentifier, enableDedup } = destination.Config;
+  const { channelIdentifier, enableDedup, apiToken } = destination.Config;
   // In case of Identify type of events we create contacts or update
   if (messageType === EventType.IDENTIFY) {
     // If deduplication is enabled
@@ -341,7 +341,7 @@ const responseBuilderSimple = async (message, messageType, destination) => {
     response.headers = {
       'Content-Type': 'application/json',
       Accept: 'application/json',
-      Authorization: `Bearer ${destination.Config.apiToken}`,
+      Authorization: `Bearer ${apiToken}`,
     };
     response.body.JSON = trengoPayload.payload;
     return response;

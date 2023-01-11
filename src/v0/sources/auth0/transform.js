@@ -40,7 +40,8 @@ function processEvents(eventList) {
   const responses = [];
   eventList.forEach((event) => {
     let response = {};
-    const { data } = event;
+    // eslint-disable-next-line camelcase
+    const { data, log_id } = event;
     // Dropping the event if type is not present
     if (data && data.type) {
       const eventType = data.type;
@@ -57,7 +58,8 @@ function processEvents(eventList) {
         response = prepareTrackPayload(data);
       }
       if (response?.userId) {
-        response.properties.log_id = event.log_id;
+        // eslint-disable-next-line camelcase
+        response.properties.log_id = log_id;
         responses.push(removeUndefinedAndNullValues(response));
       }
     }

@@ -72,7 +72,7 @@ const handleTestEvent = async (ctx, dest) => {
 
         if (stage.user_transform) {
           let librariesVersionIDs = [];
-          if (event.libraries) {
+          if (libraries) {
             librariesVersionIDs = events[0].libraries.map((library) => library.versionId);
           }
           const transformationVersionId =

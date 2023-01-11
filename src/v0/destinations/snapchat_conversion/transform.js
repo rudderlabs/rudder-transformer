@@ -39,7 +39,7 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
   let payload = {};
   const event = mappedEvent.trim().replace(/\s+/g, '_');
 
-  const { apiKey, pixelId, snapAppId, appId } = Config;
+  const { apiKey, pixelId, snapAppId, appId, deduplicationKey, enableDeduplication } = Config;
   const channel = get(message, 'channel');
   let eventConversionType = message?.properties?.eventConversionType;
   if (
@@ -211,8 +211,8 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
   }
 
   // adding for deduplication for more than one source
-  if (Config.enableDeduplication) {
-    const dedupId = Config.deduplicationKey || 'messageId';
+  if (enableDeduplication) {
+    const dedupId = deduplicationKey || 'messageId';
     payload.client_dedup_id = get(message, dedupId);
   }
   payload = removeUndefinedAndNullValues(payload);

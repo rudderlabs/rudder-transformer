@@ -93,7 +93,7 @@ const processEvent = (event) => {
     // }
     //
     // ------------------------------------------------
-    const { header } = message;
+    const { header, anonymousId, fullPath, appendPath } = message;
     if (header) {
       if (typeof header === 'object') {
         Object.keys(header).forEach((key) => {
@@ -109,7 +109,7 @@ const processEvent = (event) => {
       }
     }
 
-    response.userId = message.anonymousId;
+    response.userId = anonymousId;
     response.endpoint = url;
 
     // Similar hack as above for dynamically changing the full url
@@ -121,10 +121,10 @@ const processEvent = (event) => {
     //   return event;
     // }
     if (
-      (message.fullPath && typeof message.fullPath === 'string') ||
+      (fullPath && typeof fullPath === 'string') ||
       (integrationsObj && integrationsObj.fullPath && typeof integrationsObj.fullPath === 'string')
     ) {
-      response.endpoint = message.fullPath || integrationsObj.fullPath;
+      response.endpoint = fullPath || integrationsObj.fullPath;
       delete message.fullPath;
     }
 
@@ -137,12 +137,12 @@ const processEvent = (event) => {
     //   return event;
     // }
     if (
-      (message.appendPath && typeof message.appendPath === 'string') ||
+      (appendPath && typeof appendPath === 'string') ||
       (integrationsObj &&
         integrationsObj.appendPath &&
         typeof integrationsObj.appendPath === 'string')
     ) {
-      response.endpoint += message.appendPath || integrationsObj.appendPath;
+      response.endpoint += appendPath || integrationsObj.appendPath;
       delete message.appendPath;
     }
 

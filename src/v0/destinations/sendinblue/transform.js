@@ -77,10 +77,10 @@ const unlinkContact = (message, destination, unlinkListIds) => {
 
 // ref:- https://developers.sendinblue.com/reference/createcontact
 const createOrUpdateContactResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.CREATE_OR_UPDATE_CONTACT;
+  const { endpoint, name } = CONFIG_CATEGORIES.CREATE_OR_UPDATE_CONTACT;
   const payload = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_OR_UPDATE_CONTACT.name],
+    MAPPING_CONFIG[name],
   );
 
   checkIfEmailOrPhoneExists(payload.email, payload.attributes?.SMS);
@@ -112,12 +112,12 @@ const createOrUpdateContactResponseBuilder = (message, destination) => {
 
 // ref:- https://developers.sendinblue.com/reference/createdoicontact
 const createDOIContactResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.CREATE_DOI_CONTACT;
+  const { endpoint, name } = CONFIG_CATEGORIES.CREATE_DOI_CONTACT;
   const payload = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_DOI_CONTACT.name],
+    MAPPING_CONFIG[name],
   );
-  const { templateId, redirectionUrl } = destination.Config;
+  const { templateId, redirectionUrl, contactAttributeMapping } = destination.Config;
   let doiTemplateId = getDestinationExternalID(message, 'sendinblueDOITemplateId') || templateId;
 
   if (!doiTemplateId) {
@@ -143,7 +143,7 @@ const createDOIContactResponseBuilder = (message, destination) => {
 
   const userTraits = transformUserTraits(
     payload.attributes,
-    destination.Config.contactAttributeMapping,
+    contactAttributeMapping,
   );
 
   payload.attributes = userTraits;
@@ -155,10 +155,11 @@ const createDOIContactResponseBuilder = (message, destination) => {
 // identifier -> email or phone or contact id
 const updateDOIContactResponseBuilder = (message, destination, identifier) => {
   let { endpoint } = CONFIG_CATEGORIES.UPDATE_DOI_CONTACT;
+  const { name } = CONFIG_CATEGORIES.UPDATE_DOI_CONTACT;
   endpoint = endpoint.replace('<identifier>', identifier);
   const payload = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_DOI_CONTACT.name],
+    MAPPING_CONFIG[name],
   );
 
   validateEmailAndPhone(payload.attributes?.EMAIL);
@@ -230,8 +231,8 @@ const identifyResponseBuilder = async (message, destination) => {
 
 // ref:- https://tracker-doc.sendinblue.com/reference/trackevent-3
 const trackEventResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.TRACK_EVENTS;
-  const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_EVENTS.name]);
+  const { endpoint, name } = CONFIG_CATEGORIES.TRACK_EVENTS;
+  const payload = constructPayload(message, MAPPING_CONFIG[name]);
 
   checkIfEmailOrPhoneExists(payload.email, payload.properties?.SMS);
   validateEmailAndPhone(payload.email, payload.properties?.SMS);
@@ -262,8 +263,8 @@ const trackEventResponseBuilder = (message, destination) => {
 
 // ref:- https://tracker-doc.sendinblue.com/reference/tracklink-3
 const trackLinkResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.TRACK_LINK;
-  const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_LINK.name]);
+  const { endpoint, name } = CONFIG_CATEGORIES.TRACK_LINK;
+  const payload = constructPayload(message, MAPPING_CONFIG[name]);
 
   const phone = getFieldValueFromMessage(message, 'phone');
   checkIfEmailOrPhoneExists(payload.email, phone);
@@ -289,8 +290,8 @@ const trackResponseBuilder = (message, destination) => {
 
 // ref:- https://tracker-doc.sendinblue.com/reference/trackpage-3
 const pageResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.PAGE;
-  let payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.PAGE.name]);
+  const { endpoint, name } = CONFIG_CATEGORIES.PAGE;
+  let payload = constructPayload(message, MAPPING_CONFIG[name]);
 
   const phone = getFieldValueFromMessage(message, 'phone');
 

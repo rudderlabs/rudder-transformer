@@ -49,7 +49,7 @@ function populateOutputProperty(inputObject) {
 function prepareResponse(message, destination, category) {
   let bufferProperty = {};
   const { environment, trafficType } = destination.Config;
-  const { type } = message;
+  const { type, properties } = message;
   let traits;
 
   let outputPayload = {};
@@ -70,8 +70,8 @@ function prepareResponse(message, destination, category) {
       case EventType.TRACK:
       case EventType.PAGE:
       case EventType.SCREEN:
-        if (message.properties) {
-          bufferProperty = populateOutputProperty(message.properties);
+        if (properties) {
+          bufferProperty = populateOutputProperty(properties);
         }
         if (message.category) {
           bufferProperty.category = message.category;
@@ -81,7 +81,7 @@ function prepareResponse(message, destination, category) {
         }
         break;
       default:
-        throw new InstrumentationError(`Event type ${message.type} is not supported`);
+        throw new InstrumentationError(`Event type ${type} is not supported`);
     }
   } else {
     throw new InstrumentationError(

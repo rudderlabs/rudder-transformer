@@ -997,9 +997,9 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
   }
   if (externalIdArray) {
     externalIdArray.forEach((extIdObj) => {
-      const { type } = extIdObj;
+      const { type, id } = extIdObj;
       if (type.includes(`${destination}-`)) {
-        destinationExternalId = extIdObj.id;
+        destinationExternalId = id;
         objectType = type.replace(`${destination}-`, '');
         identifierType = extIdObj.identifierType;
       }

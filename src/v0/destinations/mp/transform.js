@@ -331,7 +331,7 @@ const processGroupEvents = (message, type, destination) => {
           $token: destination.Config.token,
           $distinct_id: message.userId || message.anonymousId,
           $set: {
-            [groupKey]: [groupKeyVal]
+            [groupKey]: groupKeyVal
           }
         };
         const response = responseBuilderSimple(

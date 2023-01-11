@@ -148,32 +148,35 @@
       }
     ],
     "output": {
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON": {
-          "contactDetails": {
-            "email": "testmihir@gmail.com",
-            "last_name": "test",
-            "first_name": "mihir",
-            "phone_number": "+91 9557645345",
-            "custom_fields": {}
+      "output": {
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON": {
+            "contactDetails": {
+              "email": "testmihir@gmail.com",
+              "last_name": "test",
+              "first_name": "mihir",
+              "phone_number": "+91 9557645345",
+              "custom_fields": {}
+            },
+            "contactListIds": "737ae8d4-25b4-496e-adff-2fded15fd0c6"
           },
-          "contactListIds": "737ae8d4-25b4-496e-adff-2fded15fd0c6"
+          "JSON_ARRAY": {}
         },
-        "JSON_ARRAY": {}
+        "type": "REST",
+        "files": {},
+        "userId": "",
+        "method": "PUT",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer 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"
+        },
+        "version": "1",
+        "endpoint": "https://api.sendgrid.com/v3/marketing/contacts"
       },
-      "type": "REST",
-      "files": {},
-      "userId": "",
-      "method": "PUT",
-      "params": {},
-      "headers": {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer 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"
-      },
-      "version": "1",
-      "endpoint": "https://api.sendgrid.com/v3/marketing/contacts"
+      "statusCode": 200
     }
   },
   {
@@ -247,35 +250,38 @@
       }
     ],
     "output": {
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON": {
-          "contactDetails": {
-            "email": "testmihir@gmail.com",
-            "last_name": "test",
-            "first_name": "mihir",
-            "unique_name": "mihir test",
-            "phone_number": "+91 9557645345",
-            "custom_fields": {
-              "w1_T": "mihir test"
-            }
+      "output": {
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON": {
+            "contactDetails": {
+              "email": "testmihir@gmail.com",
+              "last_name": "test",
+              "first_name": "mihir",
+              "unique_name": "mihir test",
+              "phone_number": "+91 9557645345",
+              "custom_fields": {
+                "w1_T": "mihir test"
+              }
+            },
+            "contactListIds": ""
           },
-          "contactListIds": ""
+          "JSON_ARRAY": {}
         },
-        "JSON_ARRAY": {}
+        "type": "REST",
+        "files": {},
+        "userId": "",
+        "method": "PUT",
+        "params": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer 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"
+        },
+        "version": "1",
+        "endpoint": "https://api.sendgrid.com/v3/marketing/contacts"
       },
-      "type": "REST",
-      "files": {},
-      "userId": "",
-      "method": "PUT",
-      "params": {},
-      "headers": {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer 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"
-      },
-      "version": "1",
-      "endpoint": "https://api.sendgrid.com/v3/marketing/contacts"
+      "statusCode": 200
     }
   },
   {
@@ -359,45 +365,48 @@
       }
     ],
     "output": {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.sendgrid.com/v3/mail/send",
-      "headers": {
-        "Authorization": "Bearer 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",
-        "Content-Type": "application/json"
+      "output": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.sendgrid.com/v3/mail/send",
+        "headers": {
+          "Authorization": "Bearer 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",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON_ARRAY": {},
+          "JSON": {
+            "personalizations": [
+              {
+                "to": [
+                  {
+                    "email": "ankitcingh93@gmail.com"
+                  }
+                ],
+                "subject": "hey there"
+              }
+            ],
+            "from": {
+              "email": "ankit@rudderstack.com"
+            },
+            "reply_to": { "email": "ankit@rudderstack.com" },
+            "subject": "A sample subject",
+            "content": [
+              {
+                "type": "text/html",
+                "value": "<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p>"
+              }
+            ]
+          }
+        },
+        "files": {},
+        "userId": ""
       },
-      "params": {},
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON_ARRAY": {},
-        "JSON": {
-          "personalizations": [
-            {
-              "to": [
-                {
-                  "email": "ankitcingh93@gmail.com"
-                }
-              ],
-              "subject": "hey there"
-            }
-          ],
-          "from": {
-            "email": "ankit@rudderstack.com"
-          },
-          "reply_to": { "email": "ankit@rudderstack.com" },
-          "subject": "A sample subject",
-          "content": [
-            {
-              "type": "text/html",
-              "value": "<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p>"
-            }
-          ]
-        }
-      },
-      "files": {},
-      "userId": ""
+      "statusCode": 200
     }
   },
   {
@@ -483,45 +492,48 @@
       }
     ],
     "output": {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.sendgrid.com/v3/mail/send",
-      "headers": {
-        "Authorization": "Bearer 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",
-        "Content-Type": "application/json"
+      "output": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.sendgrid.com/v3/mail/send",
+        "headers": {
+          "Authorization": "Bearer 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",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON_ARRAY": {},
+          "JSON": {
+            "personalizations": [
+              {
+                "to": [
+                  {
+                    "email": "ankitcingh93@gmail.com"
+                  }
+                ],
+                "subject": "hey there"
+              }
+            ],
+            "from": {
+              "email": "ankit@rudderstack.com"
+            },
+            "reply_to": { "email": "testing@gmail.com" },
+            "subject": "A sample subject",
+            "content": [
+              {
+                "type": "text/html",
+                "value": "<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p>"
+              }
+            ]
+          }
+        },
+        "files": {},
+        "userId": ""
       },
-      "params": {},
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON_ARRAY": {},
-        "JSON": {
-          "personalizations": [
-            {
-              "to": [
-                {
-                  "email": "ankitcingh93@gmail.com"
-                }
-              ],
-              "subject": "hey there"
-            }
-          ],
-          "from": {
-            "email": "ankit@rudderstack.com"
-          },
-          "reply_to": { "email": "testing@gmail.com" },
-          "subject": "A sample subject",
-          "content": [
-            {
-              "type": "text/html",
-              "value": "<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p>"
-            }
-          ]
-        }
-      },
-      "files": {},
-      "userId": ""
+      "statusCode": 200
     }
   },
   {
@@ -613,49 +625,52 @@
       }
     ],
     "output": {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.sendgrid.com/v3/mail/send",
-      "headers": {
-        "Authorization": "Bearer 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",
-        "Content-Type": "application/json"
+      "output": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.sendgrid.com/v3/mail/send",
+        "headers": {
+          "Authorization": "Bearer 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",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON_ARRAY": {},
+          "JSON": {
+            "personalizations": [
+              {
+                "to": [
+                  {
+                    "email": "ankitcingh93@gmail.com"
+                  }
+                ],
+                "subject": "hey there"
+              }
+            ],
+            "from": {
+              "email": "ankit@rudderstack.com"
+            },
+            "reply_to": { "email": "testing@gmail.com" },
+            "asm": {
+              "group_id": 12345,
+              "groups_to_display": [12345, 12346]
+            },
+            "subject": "A sample subject",
+            "content": [
+              {
+                "type": "text/html",
+                "value": "<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p>"
+              }
+            ]
+          }
+        },
+        "files": {},
+        "userId": ""
       },
-      "params": {},
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON_ARRAY": {},
-        "JSON": {
-          "personalizations": [
-            {
-              "to": [
-                {
-                  "email": "ankitcingh93@gmail.com"
-                }
-              ],
-              "subject": "hey there"
-            }
-          ],
-          "from": {
-            "email": "ankit@rudderstack.com"
-          },
-          "reply_to": { "email": "testing@gmail.com" },
-          "asm": {
-            "group_id": 12345,
-            "groups_to_display": [12345, 12346]
-          },
-          "subject": "A sample subject",
-          "content": [
-            {
-              "type": "text/html",
-              "value": "<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p>"
-            }
-          ]
-        }
-      },
-      "files": {},
-      "userId": ""
+      "statusCode": 200
     }
   },
   {
@@ -757,7 +772,8 @@
         "module": "destination"
       },
       "statusCode": 500
-    }
+    },
+    "statusCode": 200
   },
   {
     "description": "Track Call",
@@ -854,55 +870,58 @@
       }
     ],
     "output": {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.sendgrid.com/v3/mail/send",
-      "headers": {
-        "Authorization": "Bearer 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",
-        "Content-Type": "application/json"
+      "output": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.sendgrid.com/v3/mail/send",
+        "headers": {
+          "Authorization": "Bearer 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",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON_ARRAY": {},
+          "JSON": {
+            "personalizations": [
+              {
+                "to": [
+                  {
+                    "email": "ankitcingh93@gmail.com"
+                  }
+                ],
+                "subject": "hey there"
+              }
+            ],
+            "from": {
+              "email": "ankit@rudderstack.com"
+            },
+            "reply_to": { "email": "testing@gmail.com" },
+            "asm": {
+              "group_id": 12345,
+              "groups_to_display": [12345, 12346]
+            },
+            "subject": "A sample subject",
+            "content": [
+              {
+                "type": "text/html",
+                "value": "<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p>"
+              }
+            ],
+            "attachments": [
+              {
+                "content": "YXNkZ2FmZ3FlcmRxZ2Iua2puYWRrbGpuYWtqc2Rmbg==",
+                "filename": "index.html"
+              }
+            ]
+          }
+        },
+        "files": {},
+        "userId": ""
       },
-      "params": {},
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON_ARRAY": {},
-        "JSON": {
-          "personalizations": [
-            {
-              "to": [
-                {
-                  "email": "ankitcingh93@gmail.com"
-                }
-              ],
-              "subject": "hey there"
-            }
-          ],
-          "from": {
-            "email": "ankit@rudderstack.com"
-          },
-          "reply_to": { "email": "testing@gmail.com" },
-          "asm": {
-            "group_id": 12345,
-            "groups_to_display": [12345, 12346]
-          },
-          "subject": "A sample subject",
-          "content": [
-            {
-              "type": "text/html",
-              "value": "<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p>"
-            }
-          ],
-          "attachments": [
-            {
-              "content": "YXNkZ2FmZ3FlcmRxZ2Iua2puYWRrbGpuYWtqc2Rmbg==",
-              "filename": "index.html"
-            }
-          ]
-        }
-      },
-      "files": {},
-      "userId": ""
+      "statusCode": 200
     }
   },
   {
@@ -1003,55 +1022,58 @@
       }
     ],
     "output": {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.sendgrid.com/v3/mail/send",
-      "headers": {
-        "Authorization": "Bearer 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",
-        "Content-Type": "application/json"
+      "output": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.sendgrid.com/v3/mail/send",
+        "headers": {
+          "Authorization": "Bearer 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",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON_ARRAY": {},
+          "JSON": {
+            "personalizations": [
+              {
+                "to": [
+                  {
+                    "email": "ankitcingh93@gmail.com"
+                  }
+                ],
+                "subject": "hey there"
+              }
+            ],
+            "from": {
+              "email": "ankit@rudderstack.com"
+            },
+            "reply_to": { "email": "testing@gmail.com" },
+            "asm": {
+              "group_id": 12345,
+              "groups_to_display": [12345, 12346]
+            },
+            "subject": "A sample subject",
+            "content": [
+              {
+                "type": "text/html",
+                "value": "<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p>"
+              }
+            ],
+            "attachments": [
+              {
+                "content": "YXNkZ21hcyxkLm1mO29xd2llbGpmbWwuYWRrbXMuLGFtZHM=",
+                "filename": "index.html"
+              }
+            ]
+          }
+        },
+        "files": {},
+        "userId": ""
       },
-      "params": {},
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON_ARRAY": {},
-        "JSON": {
-          "personalizations": [
-            {
-              "to": [
-                {
-                  "email": "ankitcingh93@gmail.com"
-                }
-              ],
-              "subject": "hey there"
-            }
-          ],
-          "from": {
-            "email": "ankit@rudderstack.com"
-          },
-          "reply_to": { "email": "testing@gmail.com" },
-          "asm": {
-            "group_id": 12345,
-            "groups_to_display": [12345, 12346]
-          },
-          "subject": "A sample subject",
-          "content": [
-            {
-              "type": "text/html",
-              "value": "<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p>"
-            }
-          ],
-          "attachments": [
-            {
-              "content": "YXNkZ21hcyxkLm1mO29xd2llbGpmbWwuYWRrbXMuLGFtZHM=",
-              "filename": "index.html"
-            }
-          ]
-        }
-      },
-      "files": {},
-      "userId": ""
+      "statusCode": 200
     }
   },
   {
@@ -1156,61 +1178,64 @@
       }
     ],
     "output": {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://api.sendgrid.com/v3/mail/send",
-      "headers": {
-        "Authorization": "Bearer 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",
-        "Content-Type": "application/json"
-      },
-      "params": {},
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON_ARRAY": {},
-        "JSON": {
-          "personalizations": [
-            {
-              "to": [
-                {
-                  "email": "ankitcingh93@gmail.com"
-                }
-              ],
-              "subject": "hey there"
-            }
-          ],
-          "from": {
-            "email": "ankit@rudderstack.com"
-          },
-          "reply_to": { "email": "testing@gmail.com" },
-          "asm": {
-            "group_id": 12345,
-            "groups_to_display": [12345, 12346]
-          },
-          "subject": "A sample subject",
-          "content": [
-            {
-              "type": "text/html",
-              "value": "<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p>"
-            }
-          ],
-          "attachments": [
-            {
-              "content": "YXNkZ21hcyxkLm1mO29xd2llbGpmbWwuYWRrbXMuLGFtZHM=",
-              "filename": "index.html"
-            }
-          ],
-          "mail_settings": {
-            "bypass_list_management": {
-              "enable": true
+      "output": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.sendgrid.com/v3/mail/send",
+        "headers": {
+          "Authorization": "Bearer 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",
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON_ARRAY": {},
+          "JSON": {
+            "personalizations": [
+              {
+                "to": [
+                  {
+                    "email": "ankitcingh93@gmail.com"
+                  }
+                ],
+                "subject": "hey there"
+              }
+            ],
+            "from": {
+              "email": "ankit@rudderstack.com"
             },
-            "footer": { "enable": true, "text": "some text" }
+            "reply_to": { "email": "testing@gmail.com" },
+            "asm": {
+              "group_id": 12345,
+              "groups_to_display": [12345, 12346]
+            },
+            "subject": "A sample subject",
+            "content": [
+              {
+                "type": "text/html",
+                "value": "<p>Hello from Twilio SendGrid!</p><p>Sending with the email service trusted by developers and marketers for <strong>time-savings</strong>, <strong>scalability</strong>, and <strong>delivery expertise</strong>.</p><p>%open-track%</p>"
+              }
+            ],
+            "attachments": [
+              {
+                "content": "YXNkZ21hcyxkLm1mO29xd2llbGpmbWwuYWRrbXMuLGFtZHM=",
+                "filename": "index.html"
+              }
+            ],
+            "mail_settings": {
+              "bypass_list_management": {
+                "enable": true
+              },
+              "footer": { "enable": true, "text": "some text" }
+            }
           }
-        }
+        },
+        "files": {},
+        "userId": ""
       },
-      "files": {},
-      "userId": ""
+      "statusCode": 200
     }
   }
 ]

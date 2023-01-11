@@ -32,7 +32,8 @@
             }
           },
           "metadata": {
-            "jobId": 2
+            "jobId": 2,
+            "rudderId": ""
           },
           "message": {
             "channel": "web",
@@ -127,7 +128,8 @@
         },
         "metadata": [
           {
-            "jobId": 2
+            "jobId": 2,
+            "rudderId": ""
           }
         ],
         "batched": false,

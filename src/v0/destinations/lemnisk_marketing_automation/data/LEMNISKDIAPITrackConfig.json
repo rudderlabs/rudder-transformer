@@ -1,0 +1,17 @@
+[
+    {
+        "destKey": "properties",
+        "sourceKeys": "properties",
+        "required": true
+    },
+    {
+        "destKey": "userId",
+        "sourceKeys": ["userId","anonymousId"],
+        "required": true
+    },
+    {
+        "destKey": "eventname",
+        "sourceKeys": "event",
+        "required": false
+    }
+]

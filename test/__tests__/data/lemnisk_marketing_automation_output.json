@@ -1,0 +1,99 @@
+
+[
+    {"error": "Event type is required"},
+    {"error": "Payload contains invalid configuration"},
+    {"error": "Missing required value from [\"userId\",\"anonymousId\"]"},
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "http://10.11.36.17:8080/analyze/analyze.php",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {
+    
+      },
+      "body": {
+        "JSON": {
+          "type": "track",
+          "context": {
+            "library": {
+              "name": "RudderLabs JavaScript SDK",
+              "version": "2.9.1"
+            },
+            "userAgent": {
+              "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
+            }
+          },
+          "properties": {
+            "product_id": "ab1234",
+            "rating": 3,
+            "review_body": "Average product, expected much more.",
+            "review_id": "12345"
+          },
+          "event": "Product Reviewed",
+          "id": "user123",
+          "userId": "user123",
+          "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
+          "originalTimestamp": "2020-02-02T00:23:09.544Z",
+          "writeKey": "r8s6plq2cu3coq6xua6i"
+        },
+        "JSON_ARRAY": {
+    
+        },
+        "XML": {
+    
+        },
+        "FORM": {
+    
+        }
+      },
+      "files": {
+    
+      },
+      "userId": "user123"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "http://127.0.0.1:5055/diapi",
+      "headers": {
+        "Content-Type": "application/json",
+        "x-api-passkey": "UleCnOxRCz0XP6jg9uUq",
+        "x-api-key": "RzWW5mwo4h8XufeFn6v3I4oCC7izQL6U3zzILDqs"
+      },
+      "params": {
+    
+      },
+      "body": {
+        "JSON": {
+          "type": "track",
+          "properties": {
+            "product_id": "ab1234",
+            "rating": 3,
+            "review_body": "Average product, expected much more.",
+            "review_id": "12345"
+          },
+          "eventname": "Product Reviewed",
+          "userId": "user123",
+          "WriteKey": "2IotciVg4XIaAhhYqCEuSDozsus"
+        },
+        "JSON_ARRAY": {
+    
+        },
+        "XML": {
+    
+        },
+        "FORM": {
+    
+        }
+      },
+      "files": {
+    
+      },
+      "userId": "user123"
+    }
+]
+  

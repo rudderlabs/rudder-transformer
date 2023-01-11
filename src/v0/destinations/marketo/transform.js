@@ -1,17 +1,17 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-use-before-define */
-const get = require("get-value");
-const cloneDeep = require("lodash/cloneDeep");
-const stats = require("../../../util/stats");
-const { EventType, MappedToDestinationKey } = require("../../../constants");
+const get = require('get-value');
+const cloneDeep = require('lodash/cloneDeep');
+const stats = require('../../../util/stats');
+const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   identifyConfig,
   formatConfig,
   LEAD_LOOKUP_METRIC,
   ACTIVITY_METRIC,
-  FETCH_TOKEN_METRIC
-} = require("./config");
+  FETCH_TOKEN_METRIC,
+} = require('./config');
 const {
   addExternalIdToTraits,
   getDestinationExternalIDInfoForRetl,
@@ -28,25 +28,23 @@ const {
   generateErrorObject,
   checkInvalidRtTfEvents,
   getEventReqMetadata,
-  handleRtTfSingleEventError
-} = require("../../util");
-const Cache = require("../../util/cache");
-const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL } = require("../../util/constant");
+  handleRtTfSingleEventError,
+} = require('../../util');
+const Cache = require('../../util/cache');
+const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL } = require('../../util/constant');
 const {
   marketoResponseHandler,
   sendGetRequest,
   sendPostRequest,
-  getResponseHandlerData
-} = require("./util");
-const logger = require("../../../logger");
+  getResponseHandlerData,
+} = require('./util');
+const logger = require('../../../logger');
 const {
   InstrumentationError,
   ConfigurationError,
-  UnauthorizedError
-} = require("../../util/errorTypes");
-const {
-  client: errNotificationClient
-} = require("../../../util/errorNotifier");
+  UnauthorizedError,
+} = require('../../util/errorTypes');
+const { client: errNotificationClient } = require('../../../util/errorNotifier');
 
 const userIdLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
 const emailLeadCache = new Cache(USER_LEAD_CACHE_TTL); // 1 day
@@ -60,8 +58,8 @@ const authCache = new Cache(AUTH_CACHE_TTL); // 1 hr
 // fails the transformer if auth fails
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/authentication/#creating_an_access_token
-const getAuthToken = async formattedDestination => {
-  return authCache.get(formattedDestination.ID, async () => {
+const getAuthToken = async (formattedDestination) =>
+  authCache.get(formattedDestination.ID, async () => {
     const { accountId, clientId, clientSecret } = formattedDestination;
     const clientResponse = await sendGetRequest(
       `https://${accountId}.mktorest.com/identity/oauth/token`,
@@ -69,22 +67,18 @@ const getAuthToken = async formattedDestination => {
         params: {
           client_id: clientId,
           client_secret: clientSecret,
-          grant_type: "client_credentials"
-        }
-      }
+          grant_type: 'client_credentials',
+        },
+      },
     );
-    const data = marketoResponseHandler(
-      clientResponse,
-      "During fetching auth token"
-    );
+    const data = marketoResponseHandler(clientResponse, 'During fetching auth token');
     if (data) {
-      stats.increment(FETCH_TOKEN_METRIC, 1, { status: "success" });
+      stats.increment(FETCH_TOKEN_METRIC, 1, { status: 'success' });
       return { value: data.access_token, age: data.expires_in };
     }
-    stats.increment(FETCH_TOKEN_METRIC, 1, { status: "failed" });
+    stats.increment(FETCH_TOKEN_METRIC, 1, { status: 'failed' });
     return null;
   });
-};
 
 // lookup Marketo with userId or anonymousId
 // Marketo will create the lead
@@ -101,39 +95,34 @@ const getAuthToken = async formattedDestination => {
 // If lookupField is omitted, the default key is email.
 // ------------------------
 // Thus we'll always be using createOrUpdate
-const createOrUpdateLead = async (
-  formattedDestination,
-  token,
-  userId,
-  anonymousId
-) => {
-  return userIdLeadCache.get(userId || anonymousId, async () => {
+const createOrUpdateLead = async (formattedDestination, token, userId, anonymousId) =>
+  userIdLeadCache.get(userId || anonymousId, async () => {
     const attribute = userId ? { userId } : { anonymousId };
     stats.increment(LEAD_LOOKUP_METRIC, 1, {
-      type: "userid",
-      action: "create"
+      type: 'userid',
+      action: 'create',
     });
     const { accountId } = formattedDestination;
     const clientResponse = await sendPostRequest(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
       // `https://httpstat.us/200`,
       {
-        action: "createOrUpdate",
+        action: 'createOrUpdate',
         input: [attribute],
-        lookupField: userId ? "userId" : "anonymousId"
+        lookupField: userId ? 'userId' : 'anonymousId',
       },
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          "Content-type": "application/json"
-        }
-      }
+          'Content-type': 'application/json',
+        },
+      },
     );
     const data = getResponseHandlerData(
       clientResponse,
-      "[Marketo Transformer]: During lookup lead",
+      '[Marketo Transformer]: During lookup lead',
       formattedDestination,
-      authCache
+      authCache,
     );
     if (data) {
       const { result } = data;
@@ -143,29 +132,28 @@ const createOrUpdateLead = async (
     }
     return null;
   });
-};
 
 // lookup Marketo using email
 // fails transformer if lookup fails - fields are not created in Marketo
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update
 // ------------------------
-const lookupLeadUsingEmail = async (formattedDestination, token, email) => {
-  return emailLeadCache.get(email, async () => {
-    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "email", action: "fetch" });
+const lookupLeadUsingEmail = async (formattedDestination, token, email) =>
+  emailLeadCache.get(email, async () => {
+    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: 'email', action: 'fetch' });
     const clientResponse = await sendGetRequest(
       `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
       // `https://httpstat.us/200`,
       {
-        params: { filterValues: email, filterType: "email" },
-        headers: { Authorization: `Bearer ${token}` }
-      }
+        params: { filterValues: email, filterType: 'email' },
+        headers: { Authorization: `Bearer ${token}` },
+      },
     );
     const data = getResponseHandlerData(
       clientResponse,
-      "[Marketo Transformer]: During lead look up using email",
+      '[Marketo Transformer]: During lead look up using email',
       formattedDestination,
-      authCache
+      authCache,
     );
     if (data) {
       const { result } = data;
@@ -175,7 +163,6 @@ const lookupLeadUsingEmail = async (formattedDestination, token, email) => {
     }
     return null;
   });
-};
 
 // lookup Marketo using userId/anonymousId
 // fails transformer if lookup fails - and create if not exist is disabled
@@ -183,29 +170,24 @@ const lookupLeadUsingEmail = async (formattedDestination, token, email) => {
 // ------------------------
 // Ref: https://developers.marketo.com/rest-api/lead-database/leads/#create_and_update
 // ------------------------
-const lookupLeadUsingId = async (
-  formattedDestination,
-  token,
-  userId,
-  anonymousId
-) => {
-  return userIdLeadCache.get(userId || anonymousId, async () => {
-    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: "userId", action: "fetch" });
+const lookupLeadUsingId = async (formattedDestination, token, userId, anonymousId) =>
+  userIdLeadCache.get(userId || anonymousId, async () => {
+    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: 'userId', action: 'fetch' });
     const clientResponse = await sendGetRequest(
       `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
       {
         params: {
           filterValues: userId || anonymousId,
-          filterType: userId ? "userId" : "anonymousId"
+          filterType: userId ? 'userId' : 'anonymousId',
         },
-        headers: { Authorization: `Bearer ${token}` }
-      }
+        headers: { Authorization: `Bearer ${token}` },
+      },
     );
     const data = getResponseHandlerData(
       clientResponse,
-      "[Marketo Transformer]: During lead look up using userId",
+      '[Marketo Transformer]: During lead look up using userId',
       formattedDestination,
-      authCache
+      authCache,
     );
     if (data) {
       const { result } = data;
@@ -215,7 +197,6 @@ const lookupLeadUsingId = async (
     }
     return null;
   });
-};
 
 const getLeadId = async (message, formattedDestination, token) => {
   // precedence ->>
@@ -226,8 +207,8 @@ const getLeadId = async (message, formattedDestination, token) => {
   //  -> -> if provided ---- create the lead and use that ID
   //  -> -> if not ---- throw with error
 
-  const userId = getFieldValueFromMessage(message, "userIdOnly");
-  const email = getFieldValueFromMessage(message, "email");
+  const userId = getFieldValueFromMessage(message, 'userIdOnly');
+  const email = getFieldValueFromMessage(message, 'email');
   // check if marketo lead id is set in the externalId through rETL
   // "externalId": [
   //   {
@@ -235,10 +216,9 @@ const getLeadId = async (message, formattedDestination, token) => {
   //     "identifierType": "email",
   //     "type": "MARKETO-{object}"
   //   }
-  let leadId = getDestinationExternalIDInfoForRetl(message, "MARKETO")
-    .destinationExternalId;
+  let leadId = getDestinationExternalIDInfoForRetl(message, 'MARKETO').destinationExternalId;
   if (!leadId) {
-    leadId = getDestinationExternalID(message, "marketoLeadId");
+    leadId = getDestinationExternalID(message, 'marketoLeadId');
   }
 
   // leadId is not supplied through the externalId parameter
@@ -248,12 +228,7 @@ const getLeadId = async (message, formattedDestination, token) => {
       leadId = await lookupLeadUsingEmail(formattedDestination, token, email);
     } else {
       // search lead using userId or anonymousId
-      leadId = await lookupLeadUsingId(
-        formattedDestination,
-        token,
-        userId,
-        message.anonymousId
-      );
+      leadId = await lookupLeadUsingId(formattedDestination, token, userId, message.anonymousId);
     }
   }
 
@@ -261,16 +236,9 @@ const getLeadId = async (message, formattedDestination, token) => {
   if (!leadId) {
     // check we have permission to create lead on marketo
     if (formattedDestination.createIfNotExist) {
-      leadId = await createOrUpdateLead(
-        formattedDestination,
-        token,
-        userId,
-        message.anonymousId
-      );
+      leadId = await createOrUpdateLead(formattedDestination, token, userId, message.anonymousId);
     } else {
-      throw new ConfigurationError(
-        "Lead creation is turned off on the dashboard"
-      );
+      throw new ConfigurationError('Lead creation is turned off on the dashboard');
     }
   }
 
@@ -282,7 +250,7 @@ const getLeadId = async (message, formattedDestination, token) => {
     // In the scenario of either of these, we should abort the event and the top level
     // try-catch should handle this
     throw new InstrumentationError(
-      "lookup failure - either anonymousId or userId or both fields are not created in marketo"
+      'lookup failure - either anonymousId or userId or both fields are not created in marketo',
     );
   }
 
@@ -304,9 +272,9 @@ const processIdentify = async (message, formattedDestination, token) => {
   // get the leadId and proceed
   const { accountId, leadTraitMapping } = formattedDestination;
 
-  const traits = getFieldValueFromMessage(message, "traits");
+  const traits = getFieldValueFromMessage(message, 'traits');
   if (!traits) {
-    throw new InstrumentationError("Invalid traits value for Marketo");
+    throw new InstrumentationError('Invalid traits value for Marketo');
   }
 
   const leadId = await getLeadId(message, formattedDestination, token);
@@ -314,7 +282,7 @@ const processIdentify = async (message, formattedDestination, token) => {
   let attribute = constructPayload(traits, identifyConfig);
   // leadTraitMapping will not be used if mapping is done through VDM in rETL
   if (!get(message, MappedToDestinationKey)) {
-    Object.keys(leadTraitMapping).forEach(key => {
+    Object.keys(leadTraitMapping).forEach((key) => {
       const val = traits[key];
       attribute[leadTraitMapping[key]] = val;
     });
@@ -323,28 +291,25 @@ const processIdentify = async (message, formattedDestination, token) => {
     attribute = removeUndefinedValues(traits);
   }
 
-  const userId = getFieldValueFromMessage(message, "userIdOnly");
+  const userId = getFieldValueFromMessage(message, 'userIdOnly');
   const inputObj = {
     ...attribute,
-    id: leadId
+    id: leadId,
   };
   if (isDefinedAndNotNull(userId)) {
     inputObj.userId = userId;
   }
   let endPoint = `https://${accountId}.mktorest.com/rest/v1/leads.json`;
   let payload = {
-    action: "createOrUpdate",
+    action: 'createOrUpdate',
     input: [inputObj],
-    lookupField: "id"
+    lookupField: 'id',
   };
   // handled if vdm enabled
   if (get(message, MappedToDestinationKey)) {
-    const { objectType } = getDestinationExternalIDInfoForRetl(
-      message,
-      "MARKETO"
-    );
+    const { objectType } = getDestinationExternalIDInfoForRetl(message, 'MARKETO');
     // if leads object then will fallback to the already existing endpoint and payload
-    if (objectType !== "leads") {
+    if (objectType !== 'leads') {
       endPoint = `https://${accountId}.mktorest.com/rest/v1/customobjects/${objectType}.json`;
       // we will be using the dedupeBy dedupeFields for this endpoint
       // DOC: https://developers.marketo.com/rest-api/lead-database/custom-objects/#create_and_update
@@ -355,18 +320,18 @@ const processIdentify = async (message, formattedDestination, token) => {
       }
       const input = [removeUndefinedValues(traits)];
       payload = {
-        action: "createOrUpdate",
-        dedupeBy: "dedupeFields",
-        input
+        action: 'createOrUpdate',
+        dedupeBy: 'dedupeFields',
+        input,
       };
     }
   }
   return {
     endPoint,
     headers: {
-      Authorization: `Bearer ${token}`
+      Authorization: `Bearer ${token}`,
     },
-    payload
+    payload,
   };
 };
 
@@ -388,28 +353,23 @@ const processTrack = async (message, formattedDestination, token) => {
     accountId,
     customActivityEventMap,
     customActivityPrimaryKeyMap,
-    customActivityPropertyMap
+    customActivityPropertyMap,
   } = formattedDestination;
 
-  const userId = getFieldValueFromMessage(message, "userIdOnly");
+  const userId = getFieldValueFromMessage(message, 'userIdOnly');
   if (!(trackAnonymousEvents || userId)) {
-    throw new ConfigurationError(
-      "Anonymous event tracking is turned off and invalid userId"
-    );
+    throw new ConfigurationError('Anonymous event tracking is turned off and invalid userId');
   }
 
   const activityTypeId = customActivityEventMap[message.event];
   if (!activityTypeId) {
-    throw new ConfigurationError("Event is not mapped to Custom Activity");
+    throw new ConfigurationError('Event is not mapped to Custom Activity');
   }
 
   const primaryKeyPropName = customActivityPrimaryKeyMap[message.event];
-  const primaryAttributeValue = get(
-    message,
-    `properties.${primaryKeyPropName}`
-  );
+  const primaryAttributeValue = get(message, `properties.${primaryKeyPropName}`);
   if (!primaryAttributeValue) {
-    throw new ConfigurationError("Primary Key value is invalid for the event");
+    throw new ConfigurationError('Primary Key value is invalid for the event');
   }
 
   // get leadId
@@ -419,7 +379,7 @@ const processTrack = async (message, formattedDestination, token) => {
   // Reference: https://developers.marketo.com/rest-api/lead-database/activities/#add_custom_activities
 
   const attributes = [];
-  Object.keys(customActivityPropertyMap).forEach(key => {
+  Object.keys(customActivityPropertyMap).forEach((key) => {
     // exclude the primaryKey
     if (key !== primaryKeyPropName) {
       const value = message.properties[key];
@@ -432,13 +392,13 @@ const processTrack = async (message, formattedDestination, token) => {
   const payload = {
     input: [
       {
-        activityDate: getFieldValueFromMessage(message, "timestamp"),
+        activityDate: getFieldValueFromMessage(message, 'timestamp'),
         activityTypeId: Number.parseInt(activityTypeId, 10),
         attributes,
         leadId,
-        primaryAttributeValue
-      }
-    ]
+        primaryAttributeValue,
+      },
+    ],
   };
 
   // metric collection
@@ -447,24 +407,22 @@ const processTrack = async (message, formattedDestination, token) => {
   return {
     endPoint: `https://${accountId}.mktorest.com/rest/v1/activities/external.json`,
     headers: { Authorization: `Bearer ${token}` },
-    payload
+    payload,
   };
 };
 
-const responseWrapper = response => {
+const responseWrapper = (response) => {
   const resp = defaultRequestConfig();
   resp.endpoint = response.endPoint;
   resp.method = defaultPostRequestConfig.requestMethod;
-  resp.headers = { ...response.headers, "Content-Type": "application/json" };
+  resp.headers = { ...response.headers, 'Content-Type': 'application/json' };
   resp.body.JSON = response.payload;
   return resp;
 };
 
 const processEvent = async (message, destination, token) => {
   if (!message.type) {
-    throw new InstrumentationError(
-      "Message Type is not present. Aborting message."
-    );
+    throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
   const messageType = message.type.toLowerCase();
   const formattedDestination = formatConfig(destination);
@@ -478,17 +436,17 @@ const processEvent = async (message, destination, token) => {
       response = await processTrack(message, formattedDestination, token);
       break;
     default:
-      throw new InstrumentationError("Message type not supported");
+      throw new InstrumentationError('Message type not supported');
   }
 
   // wrap response for router processing
   return responseWrapper(response);
 };
 
-const process = async event => {
+const process = async (event) => {
   const token = await getAuthToken(formatConfig(event.destination));
   if (!token) {
-    throw new UnauthorizedError("Authorization failed");
+    throw new UnauthorizedError('Authorization failed');
   }
   const response = await processEvent(event.message, event.destination, token);
   return response;
@@ -507,17 +465,17 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
     // If token is null track/identify calls cannot be executed.
     if (!token) {
-      throw new UnauthorizedError("Authorization failed");
+      throw new UnauthorizedError('Authorization failed');
     }
   } catch (error) {
-    logger.error("Router Transformation problem:");
+    logger.error('Router Transformation problem:');
     const errObj = generateErrorObject(error);
     logger.error(errObj);
     const respEvents = getErrorRespEvents(
-      inputs.map(input => input.metadata),
+      inputs.map((input) => input.metadata),
       errObj.status,
       errObj.message,
-      errObj.statTags
+      errObj.statTags,
     );
     return [respEvents];
   }
@@ -526,17 +484,17 @@ const processRouterDest = async (inputs, reqMetadata) => {
   // If true then previous status is 500 and every subsequent event output should be
   // sent with status code 500 to the router to be retried.
   const respList = await Promise.all(
-    inputs.map(async input => {
+    inputs.map(async (input) => {
       try {
         return getSuccessRespEvents(
           await processEvent(input.message, input.destination, token),
           [input.metadata],
-          input.destination
+          input.destination,
         );
       } catch (error) {
         return handleRtTfSingleEventError(input, error, reqMetadata);
       }
-    })
+    }),
   );
   return respList;
 };
@@ -549,7 +507,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
 function processMetadataForRouter(output) {
   const { metadata, destination } = output;
   const clonedMetadata = cloneDeep(metadata);
-  clonedMetadata.forEach(metadataElement => {
+  clonedMetadata.forEach((metadataElement) => {
     // eslint-disable-next-line no-param-reassign
     metadataElement.destInfo = { authKey: destination?.ID };
   });
@@ -561,5 +519,5 @@ module.exports = {
   processRouterDest,
   processMetadataForRouter,
   authCache,
-  getAuthToken
+  getAuthToken,
 };

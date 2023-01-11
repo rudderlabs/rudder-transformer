@@ -420,9 +420,7 @@
       },
       "destination": {
         "Config": {
-          "accountAttributesMapping": [
-            { "from": "email", "to": "businessEmail" }
-          ],
+          "accountAttributesMapping": [{ "from": "email", "to": "businessEmail" }],
           "apiKey": "dc70156e-05a3-4fa1-bb1c-da767fd036b4",
           "blacklistedEvents": [{ "eventName": "" }],
           "eventDelivery": true,
@@ -504,9 +502,7 @@
       },
       "destination": {
         "Config": {
-          "accountAttributesMapping": [
-            { "from": "email", "to": "businessEmail" }
-          ],
+          "accountAttributesMapping": [{ "from": "email", "to": "businessEmail" }],
           "apiKey": "dc70156e-05a3-4fa1-bb1c-da767fd036b4",
           "blacklistedEvents": [{ "eventName": "" }],
           "eventDelivery": true,

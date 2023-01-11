@@ -1,19 +1,17 @@
-const path = require("path");
-const fs = require("fs");
-const md5 = require("md5");
-const Message = require("../message");
+const path = require('path');
+const fs = require('fs');
+const md5 = require('md5');
+const Message = require('../message');
 
 // ref : https://dev.mailjet.com/email/guides/webhooks/
 // import mapping json using JSON.parse to preserve object key order
-const mapping = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
-);
+const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
 function process(event) {
   const message = new Message(`MailJet`);
 
   // event type is always track
-  const eventType = "track";
+  const eventType = 'track';
 
   message.setEventType(eventType);
 
@@ -23,21 +21,21 @@ function process(event) {
 
   if (event.time) {
     const ts = new Date(event.time * 1000).toISOString();
-    message.setProperty("originalTimestamp", ts);
+    message.setProperty('originalTimestamp', ts);
   }
 
   const externalId = [];
   // setting up mailjet contact_id and list_id to externalId
   if (event.mj_contact_id) {
     externalId.push({
-      type: "mailjetContactId",
-      id: event.mj_contact_id
+      type: 'mailjetContactId',
+      id: event.mj_contact_id,
     });
   }
   if (event.mj_list_id) {
     externalId.push({
-      type: "mailjetListId",
-      id: event.mj_list_id
+      type: 'mailjetListId',
+      id: event.mj_list_id,
     });
   }
   message.context.externalId = externalId;

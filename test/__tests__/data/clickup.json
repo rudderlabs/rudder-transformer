@@ -451,11 +451,7 @@
         "Config": {
           "apiToken": "pk_123",
           "listId": "correctListId123",
-          "whitelistedEvents": [
-            { "eventName": "" },
-            { "eventName": "" },
-            { "eventName": "" }
-          ]
+          "whitelistedEvents": [{ "eventName": "" }, { "eventName": "" }, { "eventName": "" }]
         },
         "ID": "clickup-1234"
       },

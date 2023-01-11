@@ -1,19 +1,16 @@
-const get = require("get-value");
-const { EventType } = require("../../../constants");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
+const get = require('get-value');
+const { EventType } = require('../../../constants');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {
   defaultRequestConfig,
   getFieldValueFromMessage,
   constructPayload,
   defaultPostRequestConfig,
-  simpleProcessRouterDest
-} = require("../../util");
-const {
-  InstrumentationError,
-  TransformationError
-} = require("../../util/errorTypes");
+  simpleProcessRouterDest,
+} = require('../../util');
+const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 
-const handleProperties = properties => {
+const handleProperties = (properties) => {
   const result = {};
   let l;
 
@@ -28,7 +25,7 @@ const handleProperties = properties => {
         const pArr = [];
         // array for storing the objects of the array
         const cArr = [];
-        cur.forEach(item => {
+        cur.forEach((item) => {
           if (Object(item) !== item) {
             // primitive | push too pArr
             pArr.push(item);
@@ -54,7 +51,7 @@ const handleProperties = properties => {
           // take the keys from the first element and store
           // we're expecting all the objects of the array are same
           // we'll discard if a new item is found later on
-          Object.keys(fel).forEach(key => {
+          Object.keys(fel).forEach((key) => {
             // discarding nested objects and arrays for array of objects
             // only allowing primitive times for array of objects
             if (Object(fel[key]) !== fel[key]) {
@@ -67,8 +64,8 @@ const handleProperties = properties => {
           // now iterate over the cArr
           for (i = 0, l = cArr.length; i < l; i += 1) {
             const el = cArr[i];
-            Object.keys(el).forEach(k => {
-              if (Object.keys(objectMap).indexOf(k) !== -1) {
+            Object.keys(el).forEach((k) => {
+              if (Object.keys(objectMap).includes(k)) {
                 // if the key is in the objectMap -
                 // in other words, the key was present in the first element of the array
                 objectMap[k].push(el[k]);
@@ -77,7 +74,7 @@ const handleProperties = properties => {
           }
 
           // fonally add the stringified arrays to the final result
-          Object.keys(objectMap).forEach(key => {
+          Object.keys(objectMap).forEach((key) => {
             result[prop ? `${prop}.${key}` : key] = objectMap[key].toString();
           });
         }
@@ -87,7 +84,7 @@ const handleProperties = properties => {
       // }
     } else {
       // let isEmpty = true;
-      Object.keys(cur).forEach(key => {
+      Object.keys(cur).forEach((key) => {
         // isEmpty = false;
         recurse(cur[key], prop ? `${prop}.${key}` : key);
       });
@@ -98,7 +95,7 @@ const handleProperties = properties => {
     }
   };
 
-  recurse(properties, "");
+  recurse(properties, '');
   return result;
 };
 
@@ -115,22 +112,20 @@ const responseBuilderSimple = (message, category, destination) => {
     response.endpoint = category.endPoint;
     response.method = defaultPostRequestConfig.requestMethod;
     response.headers = {
-      "Indicative-Client": "RudderStack",
-      "Content-Type": "application/json"
+      'Indicative-Client': 'RudderStack',
+      'Content-Type': 'application/json',
     };
-    response.userId = getFieldValueFromMessage(message, "userId");
+    response.userId = getFieldValueFromMessage(message, 'userId');
     response.body.JSON = responseBody;
     return response;
   }
   // fail-safety for developer error
-  throw new TransformationError("Payload could not be constructed");
+  throw new TransformationError('Payload could not be constructed');
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new InstrumentationError(
-      "Message Type is not present. Aborting message."
-    );
+    throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
   const messageType = message.type.toLowerCase();
   const formattedMessage = message;
@@ -154,9 +149,7 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new InstrumentationError(
-        `Message type ${messageType} not supported`
-      );
+      throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
 
   // append context.page to properties for page, track
@@ -165,9 +158,9 @@ const processEvent = (message, destination) => {
       formattedMessage.properties = {};
     }
     formattedMessage.properties = {
-      ...get(formattedMessage, "context.page"),
-      campaign: get(formattedMessage, "context.campaign"),
-      ...formattedMessage.properties
+      ...get(formattedMessage, 'context.page'),
+      campaign: get(formattedMessage, 'context.campaign'),
+      ...formattedMessage.properties,
     };
   }
 
@@ -175,27 +168,19 @@ const processEvent = (message, destination) => {
   respList.push(responseBuilderSimple(formattedMessage, category, destination));
 
   if (messageType === EventType.IDENTIFY) {
-    const userId = getFieldValueFromMessage(formattedMessage, "userIdOnly");
+    const userId = getFieldValueFromMessage(formattedMessage, 'userIdOnly');
     // append the alias call only if a valid value of "userId" is present
     // otherwise its a request with only anonymousId with traits. alias call isn't ideal
     if (userId) {
       // append an alias call with anonymousId and userId for identity resolution
-      respList.push(
-        responseBuilderSimple(
-          formattedMessage,
-          CONFIG_CATEGORIES.ALIAS,
-          destination
-        )
-      );
+      respList.push(responseBuilderSimple(formattedMessage, CONFIG_CATEGORIES.ALIAS, destination));
     }
   }
 
   return respList;
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

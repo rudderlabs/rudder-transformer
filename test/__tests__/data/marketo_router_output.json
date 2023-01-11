@@ -41,13 +41,9 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
-        "customActivityEventMap": [
-          { "from": "Product Clicked", "to": "100001" }
-        ],
+        "customActivityEventMap": [{ "from": "Product Clicked", "to": "100001" }],
         "customActivityPropertyMap": [{ "from": "name", "to": "productName" }],
-        "customActivityPrimaryKeyMap": [
-          { "from": "Product Clicked", "to": "name" }
-        ],
+        "customActivityPrimaryKeyMap": [{ "from": "Product Clicked", "to": "name" }],
         "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
       },
       "secretConfig": {},
@@ -76,15 +72,7 @@
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": true,
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ]
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
         },
         "responseRules": {
           "responseType": "JSON",
@@ -160,13 +148,9 @@
         "clientId": "marketo_client_id_success",
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
-        "customActivityEventMap": [
-          { "from": "Product Clicked", "to": "100001" }
-        ],
+        "customActivityEventMap": [{ "from": "Product Clicked", "to": "100001" }],
         "customActivityPropertyMap": [{ "from": "name", "to": "productName" }],
-        "customActivityPrimaryKeyMap": [
-          { "from": "Product Clicked", "to": "name" }
-        ],
+        "customActivityPrimaryKeyMap": [{ "from": "Product Clicked", "to": "name" }],
         "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
       },
       "secretConfig": {},
@@ -195,15 +179,7 @@
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": true,
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ]
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
         },
         "responseRules": {
           "responseType": "JSON",
@@ -364,15 +340,7 @@
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": true,
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ]
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
         },
         "responseRules": {
           "responseType": "JSON",

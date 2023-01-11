@@ -1,16 +1,6 @@
-const {
-  InstrumentationError,
-  ConfigurationError
-} = require("../../../v0/util/errorTypes");
+const { InstrumentationError, ConfigurationError } = require('../../../v0/util/errorTypes');
 
-const SUPPORTED_EVENT_TYPES = [
-  "track",
-  "page",
-  "screen",
-  "group",
-  "identify",
-  "alias"
-];
+const SUPPORTED_EVENT_TYPES = ['track', 'page', 'screen', 'group', 'identify', 'alias'];
 
 /**
  * Checks if the event type is valid
@@ -19,7 +9,7 @@ const SUPPORTED_EVENT_TYPES = [
  */
 function isValidEventType(event) {
   const eventType = event.event;
-  if (!eventType || typeof eventType !== "string") return false;
+  if (!eventType || typeof eventType !== 'string') return false;
 
   const sanitizedEventType = eventType.trim().toLowerCase();
   if (!SUPPORTED_EVENT_TYPES.includes(sanitizedEventType)) return false;
@@ -42,5 +32,5 @@ function assertConfig(val, message) {
 module.exports = {
   isValidEventType,
   assert,
-  assertConfig
+  assertConfig,
 };

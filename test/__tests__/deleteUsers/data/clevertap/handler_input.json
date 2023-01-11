@@ -1,47 +1,48 @@
-[{
-  "request": {
-    "body": [
-      {
-        "destType": "CLEVERTAP",
-        "userAttributes": [
-          {
-            "userId": "test_user_id"
-          },
-          {
-            "userId": "user_sdk2"
+[
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "CLEVERTAP",
+          "userAttributes": [
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            }
+          ],
+          "config": {
+            "accountId": "476550467",
+            "trackAnonymous": true,
+            "enableObjectIdMapping": false
           }
-        ],
-        "config": {
-          "accountId": "476550467",
-          "trackAnonymous": true,
-          "enableObjectIdMapping": false
         }
-      }
-    ]
-  }
-},
-{
-  "request": {
-    "body": [
-      {
-        "destType": "CLEVERTAP",
-        "userAttributes": [
-          {
-            "email": "testUser@testMail.com"
-          },
-          {
-            "userId": "user_sdk2"
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "CLEVERTAP",
+          "userAttributes": [
+            {
+              "email": "testUser@testMail.com"
+            },
+            {
+              "userId": "user_sdk2"
+            }
+          ],
+          "config": {
+            "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+            "trackAnonymous": true,
+            "enableObjectIdMapping": false
           }
-        ],
-        "config": {
-          "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-          "trackAnonymous": true,
-          "enableObjectIdMapping": false
         }
-      }
-    ]
-  }
-},
+      ]
+    }
+  },
   {
     "request": {
       "body": [
@@ -89,67 +90,68 @@
             },
             {
               "userId": "user_sdk2"
-            },{
+            },
+            {
               "userId": "test_user_id"
             },
             {
               "userId": "user_sdk2"
-            }
-            ,{
+            },
+            {
               "userId": "test_user_id"
             },
             {
               "userId": "user_sdk2"
-            }
-            ,{
+            },
+            {
               "userId": "test_user_id"
             },
             {
               "userId": "user_sdk2"
-            }
-            ,{
+            },
+            {
               "userId": "test_user_id"
             },
             {
               "userId": "user_sdk2"
-            }
-            ,{
+            },
+            {
               "userId": "test_user_id"
             },
             {
               "userId": "user_sdk2"
-            }
-            ,{
+            },
+            {
               "userId": "test_user_id"
             },
             {
               "userId": "user_sdk2"
-            }
-            ,{
+            },
+            {
               "userId": "test_user_id"
             },
             {
               "userId": "user_sdk2"
-            }
-            ,{
+            },
+            {
               "userId": "test_user_id"
             },
             {
               "userId": "user_sdk2"
-            }
-            ,{
+            },
+            {
               "userId": "test_user_id"
             },
             {
               "userId": "user_sdk2"
-            }
-            ,{
+            },
+            {
               "userId": "test_user_id"
             },
             {
               "userId": "user_sdk2"
-            }
-            ,{
+            },
+            {
               "userId": "test_user_id"
             },
             {

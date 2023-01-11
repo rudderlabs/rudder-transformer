@@ -1,31 +1,23 @@
-const { removeUndefinedValues } = require("../../util");
-const {
-  prepareProxyRequest,
-  getPayloadData,
-  httpSend
-} = require("../../../adapters/network");
-const { isHttpStatusSuccess } = require("../../util/index");
-const {
-  REFRESH_TOKEN
-} = require("../../../adapters/networkhandler/authConstants");
-const tags = require("../../util/tags");
+const { removeUndefinedValues } = require('../../util');
+const { prepareProxyRequest, getPayloadData, httpSend } = require('../../../adapters/network');
+const { isHttpStatusSuccess } = require('../../util/index');
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const tags = require('../../util/tags');
 const {
   getDynamicErrorType,
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
-const { NetworkError } = require("../../util/errorTypes");
+  processAxiosResponse,
+} = require('../../../adapters/utils/networkUtils');
+const { NetworkError } = require('../../util/errorTypes');
 
-const prepareProxyReq = request => {
+const prepareProxyReq = (request) => {
   const { body } = request;
   // Build the destination request data using the generic method
-  const { endpoint, data, method, params, headers } = prepareProxyRequest(
-    request
-  );
+  const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
 
   // Modify the data
   const { payloadFormat } = getPayloadData(body);
-  if (payloadFormat === "FORM") {
-    data.append("format", "json");
+  if (payloadFormat === 'FORM') {
+    data.append('format', 'json');
   }
 
   return removeUndefinedValues({
@@ -33,7 +25,7 @@ const prepareProxyReq = request => {
     data,
     params,
     headers,
-    method
+    method,
   });
 };
 
@@ -49,13 +41,13 @@ const getAuthErrCategory = (code, response) => {
   switch (code) {
     case 401:
       if (!response.error?.details) return REFRESH_TOKEN;
-      return "";
+      return '';
     default:
-      return "";
+      return '';
   }
 };
 
-const scAudienceProxyRequest = async request => {
+const scAudienceProxyRequest = async (request) => {
   const { endpoint, data, method, params, headers } = prepareProxyReq(request);
 
   const requestOptions = {
@@ -63,7 +55,7 @@ const scAudienceProxyRequest = async request => {
     data,
     params,
     headers,
-    method
+    method,
   };
   const response = await httpSend(requestOptions);
   return response;
@@ -77,14 +69,14 @@ const scaAudienceRespHandler = (destResponse, stageMsg) => {
     `${response.error?.message} ${stageMsg}`,
     status,
     {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     response,
-    getAuthErrCategory(status, response)
+    getAuthErrCategory(status, response),
   );
 };
 
-const responseHandler = destinationResponse => {
+const responseHandler = (destinationResponse) => {
   const message = `Request Processed Successfully`;
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
@@ -92,17 +84,17 @@ const responseHandler = destinationResponse => {
     return {
       status,
       message,
-      destinationResponse
+      destinationResponse,
     };
   }
   // else successfully return status, message and original destination response
   scaAudienceRespHandler(
     destinationResponse,
-    "during snapchat_custom_audience response transformation"
+    'during snapchat_custom_audience response transformation',
   );
 };
 
-const networkHandler = function() {
+const networkHandler = function () {
   this.proxy = scAudienceProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
   this.prepareProxy = prepareProxyRequest;

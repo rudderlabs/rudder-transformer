@@ -1,7 +1,7 @@
-const { processWarehouseMessage } = require("../../../warehouse");
+const { processWarehouseMessage } = require('../../../warehouse');
 
 // use postgres providers for s3-datalake
-const s3datalakeProvider = "s3_datalake";
+const s3datalakeProvider = 's3_datalake';
 
 function processSingleMessage(message, options) {
   return processWarehouseMessage(message, options);
@@ -10,7 +10,7 @@ function processSingleMessage(message, options) {
 function getDataTypeOverride(key, val, options) {}
 
 function process(event) {
-  const whSchemaVersion = event.request.query.whSchemaVersion || "v1";
+  const whSchemaVersion = event.request.query.whSchemaVersion || 'v1';
   const whStoreEvent = event.destination.Config.storeFullEvent === true;
   const provider = s3datalakeProvider;
   return processSingleMessage(event.message, {
@@ -19,11 +19,11 @@ function process(event) {
     whStoreEvent,
     getDataTypeOverride,
     provider,
-    sourceCategory: event.metadata ? event.metadata.sourceCategory : null
+    sourceCategory: event.metadata ? event.metadata.sourceCategory : null,
   });
 }
 
 module.exports = {
   process,
-  getDataTypeOverride
+  getDataTypeOverride,
 };

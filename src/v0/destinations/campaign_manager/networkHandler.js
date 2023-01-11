@@ -1,22 +1,13 @@
-const {
-  prepareProxyRequest,
-  proxyRequest
-} = require("../../../adapters/network");
-const { isHttpStatusSuccess } = require("../../util/index");
-const {
-  REFRESH_TOKEN
-} = require("../../../adapters/networkhandler/authConstants");
+const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
+const { isHttpStatusSuccess } = require('../../util/index');
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 
 const {
   processAxiosResponse,
-  getDynamicErrorType
-} = require("../../../adapters/utils/networkUtils");
-const {
-  AbortedError,
-  RetryableError,
-  NetworkError
-} = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
+const { AbortedError, RetryableError, NetworkError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 /**
  * This function helps to detarmine type of error occured. According to the response
@@ -25,24 +16,21 @@ const tags = require("../../util/tags");
  * @param {*} code
  * @returns
  */
-const getAuthErrCategory = code => {
+const getAuthErrCategory = (code) => {
   switch (code) {
     case 401:
       return REFRESH_TOKEN;
     default:
-      return "";
+      return '';
   }
 };
 
 function checkIfFailuresAreRetryable(response) {
   try {
-    if (
-      Array.isArray(response.status) &&
-      Array.isArray(response.status[0].errors)
-    ) {
+    if (Array.isArray(response.status) && Array.isArray(response.status[0].errors)) {
       return (
-        response.status[0].errors[0].code !== "PERMISSION_DENIED" &&
-        response.status[0].errors[0].code !== "INVALID_ARGUMENT"
+        response.status[0].errors[0].code !== 'PERMISSION_DENIED' &&
+        response.status[0].errors[0].code !== 'INVALID_ARGUMENT'
       );
     }
     return true;
@@ -51,7 +39,7 @@ function checkIfFailuresAreRetryable(response) {
   }
 }
 
-const responseHandler = destinationResponse => {
+const responseHandler = (destinationResponse) => {
   const message = `[CAMPAIGN_MANAGER Response Handler] - Request Processed Successfully`;
   const { response, status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
@@ -61,14 +49,14 @@ const responseHandler = destinationResponse => {
         throw new RetryableError(
           `Campaign Manager: Retrying during CAMPAIGN_MANAGER response transformation`,
           500,
-          destinationResponse
+          destinationResponse,
         );
       } else {
         // abort message
         throw new AbortedError(
           `Campaign Manager: Aborting during CAMPAIGN_MANAGER response transformation`,
           400,
-          destinationResponse
+          destinationResponse,
         );
       }
     }
@@ -76,7 +64,7 @@ const responseHandler = destinationResponse => {
     return {
       status,
       message,
-      destinationResponse
+      destinationResponse,
     };
   }
 
@@ -84,14 +72,14 @@ const responseHandler = destinationResponse => {
     `Campaign Manager: ${response.error.message} during CAMPAIGN_MANAGER response transformation 3`,
     status,
     {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     destinationResponse,
-    getAuthErrCategory(status)
+    getAuthErrCategory(status),
   );
 };
 
-const networkHandler = function() {
+const networkHandler = function () {
   this.prepareProxy = prepareProxyRequest;
   this.proxy = proxyRequest;
   this.processAxiosResponse = processAxiosResponse;

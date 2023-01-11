@@ -17,10 +17,7 @@
   },
   {
     "destKey": "subscription_status",
-    "sourceKeys": [
-      "traits.subscriptionStatus",
-      "context.traits.subscriptionStatus"
-    ]
+    "sourceKeys": ["traits.subscriptionStatus", "context.traits.subscriptionStatus"]
   },
   {
     "destKey": "job_title",
@@ -114,10 +111,7 @@
   },
   {
     "destKey": "subscription_types",
-    "sourceKeys": [
-      "traits.subscriptionTypes",
-      "context.traits.subscriptionTypes"
-    ]
+    "sourceKeys": ["traits.subscriptionTypes", "context.traits.subscriptionTypes"]
   },
   {
     "destKey": "medium",
@@ -175,10 +169,7 @@
   },
   {
     "destKey": "lifecycle_stage_id",
-    "sourceKeys": [
-      "traits.lifecycleStageId",
-      "context.traits.lifecycleStageId"
-    ],
+    "sourceKeys": ["traits.lifecycleStageId", "context.traits.lifecycleStageId"],
     "metadata": {
       "type": "toNumber"
     }

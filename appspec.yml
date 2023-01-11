@@ -7,7 +7,7 @@ files:
     destination: /home/ubuntu/rudder-transformer
 permissions:
   - object: /home/ubuntu/rudder-transformer
-    pattern: "**"
+    pattern: '**'
     owner: ubuntu
     group: ubuntu
     mode: 755

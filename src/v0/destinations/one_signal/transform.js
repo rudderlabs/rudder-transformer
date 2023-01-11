@@ -1,11 +1,6 @@
-const get = require("get-value");
-const { EventType } = require("../../../constants");
-const {
-  ConfigCategory,
-  mappingConfig,
-  BASE_URL,
-  ENDPOINTS
-} = require("./config");
+const get = require('get-value');
+const { EventType } = require('../../../constants');
+const { ConfigCategory, mappingConfig, BASE_URL, ENDPOINTS } = require('./config');
 const {
   defaultRequestConfig,
   getFieldValueFromMessage,
@@ -15,24 +10,24 @@ const {
   simpleProcessRouterDest,
   getDestinationExternalID,
   isDefinedAndNotNullAndNotEmpty,
-  defaultPutRequestConfig
-} = require("../../util");
-const { populateDeviceType, populateTags } = require("./util");
+  defaultPutRequestConfig,
+} = require('../../util');
+const { populateDeviceType, populateTags } = require('./util');
 const {
   ConfigurationError,
   TransformationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+  InstrumentationError,
+} = require('../../util/errorTypes');
 
 const responseBuilder = (payload, endpoint, eventType) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = `${BASE_URL}${endpoint}`;
     response.headers = {
-      Accept: "application/json",
-      "Content-Type": "application/json"
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
     };
-    if (eventType.toLowerCase() === "identify" && endpoint === "/players") {
+    if (eventType.toLowerCase() === 'identify' && endpoint === '/players') {
       response.method = defaultPostRequestConfig.requestMethod;
     } else {
       response.method = defaultPutRequestConfig.requestMethod;
@@ -40,9 +35,7 @@ const responseBuilder = (payload, endpoint, eventType) => {
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
   }
-  throw new TransformationError(
-    "Payload could not be populated due to wrong input"
-  );
+  throw new TransformationError('Payload could not be populated due to wrong input');
 };
 
 /**
@@ -61,15 +54,12 @@ const identifyResponseBuilder = (message, { Config }) => {
   let { endpoint } = ENDPOINTS.IDENTIFY;
 
   // checking if playerId is present in the payload
-  const playerId = getDestinationExternalID(message, "playerId");
+  const playerId = getDestinationExternalID(message, 'playerId');
 
   // Populating the tags
   const tags = populateTags(message);
 
-  const payload = constructPayload(
-    message,
-    mappingConfig[ConfigCategory.IDENTIFY.name]
-  );
+  const payload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
   // Mapping app_id
   payload.app_id = appId;
 
@@ -87,31 +77,27 @@ const identifyResponseBuilder = (message, { Config }) => {
   if (emailDeviceType) {
     const emailDevicePayload = { ...payload };
     emailDevicePayload.device_type = 11;
-    emailDevicePayload.identifier = getFieldValueFromMessage(message, "email");
+    emailDevicePayload.identifier = getFieldValueFromMessage(message, 'email');
     if (isDefinedAndNotNullAndNotEmpty(emailDevicePayload.identifier)) {
-      responseArray.push(
-        responseBuilder(emailDevicePayload, endpoint, message.type)
-      );
+      responseArray.push(responseBuilder(emailDevicePayload, endpoint, message.type));
     }
   }
   // Creating a device with phone as asn identifier
   if (smsDeviceType) {
     const smsDevicePayload = { ...payload };
     smsDevicePayload.device_type = 14;
-    smsDevicePayload.identifier = getFieldValueFromMessage(message, "phone");
+    smsDevicePayload.identifier = getFieldValueFromMessage(message, 'phone');
     if (isDefinedAndNotNullAndNotEmpty(smsDevicePayload.identifier)) {
-      responseArray.push(
-        responseBuilder(smsDevicePayload, endpoint, message.type)
-      );
+      responseArray.push(responseBuilder(smsDevicePayload, endpoint, message.type));
     }
   }
   // checking if device_type is defined or not and checking 0 for device_type iOS
   if (payload.device_type || payload.device_type === 0) {
     responseArray.push(responseBuilder(payload, endpoint, message.type));
   }
-  if (!responseArray.length) {
+  if (responseArray.length === 0) {
     throw new ConfigurationError(
-      "Correct identifier is required for creating a device (identify call)"
+      'Correct identifier is required for creating a device (identify call)',
     );
   }
   return responseArray;
@@ -126,18 +112,14 @@ const identifyResponseBuilder = (message, { Config }) => {
  */
 const trackResponseBuilder = (message, { Config }) => {
   const { appId, eventAsTags, allowedProperties } = Config;
-  const event = get(message, "event");
+  const event = get(message, 'event');
   let { endpoint } = ENDPOINTS.TRACK;
-  const externalUserId = getFieldValueFromMessage(message, "userIdOnly");
+  const externalUserId = getFieldValueFromMessage(message, 'userIdOnly');
   if (!event) {
-    throw new InstrumentationError(
-      "Event is not present in the input payloads"
-    );
+    throw new InstrumentationError('Event is not present in the input payloads');
   }
   if (!externalUserId) {
-    throw new InstrumentationError(
-      "userId is required for track events/updating a device"
-    );
+    throw new InstrumentationError('userId is required for track events/updating a device');
   }
   endpoint = `${endpoint}/${appId}/users/${externalUserId}`;
   const payload = {};
@@ -149,13 +131,11 @@ const trackResponseBuilder = (message, { Config }) => {
   */
   tags[event] = true;
   // Populating tags using allowed properties(from dashboard)
-  const properties = get(message, "properties");
+  const properties = get(message, 'properties');
   if (properties && allowedProperties && Array.isArray(allowedProperties)) {
-    allowedProperties.forEach(item => {
-      if (typeof properties[item.propertyName] === "string") {
-        const tagName = eventAsTags
-          ? `${event}_${[item.propertyName]}`
-          : item.propertyName;
+    allowedProperties.forEach((item) => {
+      if (typeof properties[item.propertyName] === 'string') {
+        const tagName = eventAsTags ? `${event}_${[item.propertyName]}` : item.propertyName;
         tags[tagName] = properties[item.propertyName];
       }
     });
@@ -172,15 +152,15 @@ const trackResponseBuilder = (message, { Config }) => {
  */
 const groupResponseBuilder = (message, { Config }) => {
   const { appId, allowedProperties } = Config;
-  const groupId = getFieldValueFromMessage(message, "groupId");
+  const groupId = getFieldValueFromMessage(message, 'groupId');
   if (!groupId) {
-    throw new InstrumentationError("groupId is required for group events");
+    throw new InstrumentationError('groupId is required for group events');
   }
   let { endpoint } = ENDPOINTS.GROUP;
-  const externalUserId = getFieldValueFromMessage(message, "userIdOnly");
+  const externalUserId = getFieldValueFromMessage(message, 'userIdOnly');
 
   if (!externalUserId) {
-    throw new InstrumentationError("userId is required for group events");
+    throw new InstrumentationError('userId is required for group events');
   }
   endpoint = `${endpoint}/${appId}/users/${externalUserId}`;
   const payload = {};
@@ -188,16 +168,14 @@ const groupResponseBuilder = (message, { Config }) => {
   tags.groupId = groupId;
 
   // Populating tags using allowed properties(from dashboard)
-  const properties = getFieldValueFromMessage(message, "traits");
+  const properties = getFieldValueFromMessage(message, 'traits');
   if (properties && allowedProperties && Array.isArray(allowedProperties)) {
-    allowedProperties.forEach(item => {
+    allowedProperties.forEach((item) => {
       if (
-        properties[item.propertyName] ||
-        properties[item.propertyName] === ""
+        (properties[item.propertyName] || properties[item.propertyName] === '') &&
+        typeof properties[item.propertyName] === 'string'
       ) {
-        if (typeof properties[item.propertyName] === "string") {
-          tags[item.propertyName] = properties[item.propertyName];
-        }
+        tags[item.propertyName] = properties[item.propertyName];
       }
     });
   }
@@ -207,10 +185,10 @@ const groupResponseBuilder = (message, { Config }) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
   if (!destination.Config.appId) {
-    throw new ConfigurationError("appId is a required field");
+    throw new ConfigurationError('appId is a required field');
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -225,16 +203,12 @@ const processEvent = (message, destination) => {
       response = groupResponseBuilder(message, destination);
       break;
     default:
-      throw new InstrumentationError(
-        `Message type ${messageType} is not supported`
-      );
+      throw new InstrumentationError(`Message type ${messageType} is not supported`);
   }
   return response;
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

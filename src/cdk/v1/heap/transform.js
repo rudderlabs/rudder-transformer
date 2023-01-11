@@ -6,7 +6,7 @@ async function commonPostMapper(event, mappedPayload, rudderContext) {
   }
   const responseBody = {
     ...payload,
-    app_id: destination.Config.appId
+    app_id: destination.Config.appId,
   };
 
   return responseBody; // this flows onto the next stage in the yaml

@@ -1,4 +1,4 @@
-const { getHashFromArray } = require("../../../v0/util");
+const { getHashFromArray } = require('../../../v0/util');
 
 function commonPostMapper(event, mappedPayload, rudderContext) {
   const { message, destination } = event;
@@ -13,7 +13,7 @@ function commonPostMapper(event, mappedPayload, rudderContext) {
   rudderContext.zapUrl = destConfig.zapUrl;
 
   // track event
-  if (message?.type === "track") {
+  if (message?.type === 'track') {
     const eventName = message?.event;
     // checking if the event is present track events mapping
     if (trackEventsMap[eventName]) {
@@ -23,7 +23,7 @@ function commonPostMapper(event, mappedPayload, rudderContext) {
   }
 
   // page/screen event
-  if (message?.type === "page" || message?.type === "screen") {
+  if (message?.type === 'page' || message?.type === 'screen') {
     const pageScreenName = message?.name;
     // checking if the event is present page/screen events mapping
     if (pageScreenEventsMap[pageScreenName]) {
@@ -33,7 +33,7 @@ function commonPostMapper(event, mappedPayload, rudderContext) {
   }
 
   const responseBody = {
-    ...mappedPayload
+    ...mappedPayload,
   };
 
   return responseBody; // this flows onto the next stage in the yaml

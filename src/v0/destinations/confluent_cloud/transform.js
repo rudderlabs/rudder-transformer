@@ -1,10 +1,10 @@
-const cloneDeep = require("lodash/cloneDeep");
-const { getIntegrationsObj } = require("../../util");
+const cloneDeep = require('lodash/cloneDeep');
+const { getIntegrationsObj } = require('../../util');
 // const { InstrumentationError } = require("../../util/errorTypes");
 
 function process(event) {
   const { message, destination } = event;
-  const integrationsObj = getIntegrationsObj(message, "confluent_cloud");
+  const integrationsObj = getIntegrationsObj(message, 'confluent_cloud');
   const topic = integrationsObj?.topic || destination.Config?.topic;
   // TODO: Remove commented lines after server release
   // if (!topic) {
@@ -13,7 +13,7 @@ function process(event) {
   const result = {
     message: event.message,
     userId: event.message.userId || event.message.anonymousId,
-    topic
+    topic,
   };
   return result;
 }

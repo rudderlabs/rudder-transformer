@@ -1,5 +1,3 @@
-const _ = require("./lodash-es-core");
-
 const addCode = `export default function add(a, b) { return a + b; };"This is awesome!";`;
 
 const subCode = `

@@ -11,11 +11,7 @@
   },
   {
     "destKey": "value",
-    "sourceKeys": [
-      "properties.total",
-      "properties.value",
-      "properties.revenue"
-    ],
+    "sourceKeys": ["properties.total", "properties.value", "properties.revenue"],
     "metadata": {
       "type": "toNumber"
     },

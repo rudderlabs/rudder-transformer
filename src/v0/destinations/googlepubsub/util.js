@@ -3,28 +3,26 @@ const {
   getHashFromArray,
   getValueFromMessage,
   isDefinedAndNotNull,
-  isDefinedAndNotNullAndNotEmpty
-} = require("../../util");
+  isDefinedAndNotNullAndNotEmpty,
+} = require('../../util');
 
-const SOURCE_KEYS = ["properties", "traits", "context.traits"];
-const stringifyValue = val => {
-  return typeof val === "string" ? val : JSON.stringify(val);
-};
+const SOURCE_KEYS = ['properties', 'traits', 'context.traits'];
+const stringifyValue = (val) => (typeof val === 'string' ? val : JSON.stringify(val));
 
 /**
  * Returns Topic ID
  * @param {*} event
  * @returns
  */
-const getTopic = event => {
+const getTopic = (event) => {
   const { message } = event;
   const { eventToTopicMap } = event.destination.Config;
-  const hashMap = getHashFromArray(eventToTopicMap, "from", "to");
+  const hashMap = getHashFromArray(eventToTopicMap, 'from', 'to');
 
   return (
     (message.event ? hashMap[message.event.toLowerCase()] : null) ||
     hashMap[message.type.toLowerCase()] ||
-    hashMap["*"]
+    hashMap['*']
   );
 };
 
@@ -46,7 +44,7 @@ const createAttributesMetadata = (message, { Config }) => {
     }
 
     const attributesMap = {};
-    eventToAttributesMap.forEach(item => {
+    eventToAttributesMap.forEach((item) => {
       const key = item.from.toLowerCase();
       if (isDefinedAndNotNullAndNotEmpty(key)) {
         if (isDefinedAndNotNullAndNotEmpty(attributesMap[key])) {
@@ -69,7 +67,7 @@ const createAttributesMetadata = (message, { Config }) => {
 
     let val;
     let found = false;
-    SOURCE_KEYS.some(sourceKey => {
+    SOURCE_KEYS.some((sourceKey) => {
       const nestedObj = getValueFromMessage(message, sourceKey);
       if (nestedObj) {
         val = nestedObj[key] || getValueFromMessage(nestedObj, key);
@@ -98,16 +96,16 @@ const createAttributesMetadata = (message, { Config }) => {
   const attributeKeys =
     (message.event ? attributesMap[message.event.toLowerCase()] : null) ||
     attributesMap[message.type.toLowerCase()] ||
-    attributesMap["*"];
+    attributesMap['*'];
 
   if (!attributeKeys || attributeKeys.length === 0) {
     return attrMetadata;
   }
 
-  attributeKeys.forEach(key => {
+  attributeKeys.forEach((key) => {
     const val = getAttributeValueOrNull(key);
     if (isDefinedAndNotNull(val)) {
-      const splitKeysArray = key.split(".");
+      const splitKeysArray = key.split('.');
       const refinedKey = splitKeysArray[splitKeysArray.length - 1];
       attrMetadata[refinedKey] = val;
     }
@@ -117,5 +115,5 @@ const createAttributesMetadata = (message, { Config }) => {
 
 module.exports = {
   getTopic,
-  createAttributesMetadata
+  createAttributesMetadata,
 };

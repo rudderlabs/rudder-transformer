@@ -1,39 +1,39 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
-const isIp = require("is-ip");
-const validUrl = require("valid-url");
-const { EventType } = require("../../../constants");
+const isIp = require('is-ip');
+const validUrl = require('valid-url');
+const { EventType } = require('../../../constants');
 const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   getParsedIP,
   getFieldValueFromMessage,
-  simpleProcessRouterDest
-} = require("../../util");
-const { InstrumentationError } = require("../../util/errorTypes");
-const { ENDPOINT } = require("./config");
+  simpleProcessRouterDest,
+} = require('../../util');
+const { InstrumentationError } = require('../../util/errorTypes');
+const { ENDPOINT } = require('./config');
 
 function addAddons(properties, config) {
   const addons = [];
   if (config.ipAddon && properties.request_ip && isIp(properties.request_ip)) {
     addons.push({
-      name: "keen:ip_to_geo",
-      input: { ip: "request_ip" },
-      output: "ip_geo_info"
+      name: 'keen:ip_to_geo',
+      input: { ip: 'request_ip' },
+      output: 'ip_geo_info',
     });
   }
   if (config.uaAddon && properties.user_agent) {
     addons.push({
-      name: "keen:ua_parser",
-      input: { ua_string: "user_agent" },
-      output: "parsed_user_agent"
+      name: 'keen:ua_parser',
+      input: { ua_string: 'user_agent' },
+      output: 'parsed_user_agent',
     });
   }
   if (config.urlAddon && properties.url && validUrl.isUri(properties.url)) {
     addons.push({
-      name: "keen:url_parser",
-      input: { url: "url" },
-      output: "parsed_page_url"
+      name: 'keen:url_parser',
+      input: { url: 'url' },
+      output: 'parsed_page_url',
     });
   }
   // should check referrer ?
@@ -44,17 +44,17 @@ function addAddons(properties, config) {
     validUrl.isUri(properties.url)
   ) {
     addons.push({
-      name: "keen:referrer_parser",
+      name: 'keen:referrer_parser',
       input: {
-        referrer_url: "referrer",
-        page_url: "url"
+        referrer_url: 'referrer',
+        page_url: 'url',
       },
-      output: "referrer_info"
+      output: 'referrer_info',
     });
   }
 
   properties.keen = {
-    addons
+    addons,
   };
 }
 
@@ -64,12 +64,12 @@ function buildResponse(eventName, message, destination) {
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    "Content-Type": "application/json",
-    Authorization: destination.Config.writeKey
+    'Content-Type': 'application/json',
+    Authorization: destination.Config.writeKey,
   };
   response.userId = message.userId ? message.userId : message.anonymousId;
   response.body.JSON = {
-    ...message.properties
+    ...message.properties,
   };
   return response;
 }
@@ -79,14 +79,14 @@ function processTrack(message, destination) {
   let { properties } = message;
   const user = {};
   user.userId = message.userId
-    ? message.userId !== ""
+    ? message.userId !== ''
       ? message.userId
       : message.anonymousId
     : message.anonymousId;
-  user.traits = getFieldValueFromMessage(message, "traits") || {};
+  user.traits = getFieldValueFromMessage(message, 'traits') || {};
   properties = {
     ...properties,
-    user
+    user,
   };
   // add userid/anonymousid
   properties.userId = message.userId;
@@ -106,11 +106,9 @@ function processTrack(message, destination) {
 
 function processPage(message, destination) {
   const pageName = message.name;
-  const pageCategory = message.properties
-    ? message.properties.category
-    : undefined;
+  const pageCategory = message.properties ? message.properties.category : undefined;
 
-  let eventName = "Loaded a Page";
+  let eventName = 'Loaded a Page';
 
   if (pageName) {
     eventName = `Viewed ${pageName} page`;
@@ -138,9 +136,7 @@ function process(event) {
       response = processTrack(message, destination);
       break;
     default:
-      throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
-      );
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
 
   response.statusCode = 200;

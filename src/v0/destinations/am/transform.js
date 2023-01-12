@@ -32,7 +32,8 @@ const {
   BASE_URL_EU,
   ConfigCategory,
   mappingConfig,
-  batchEventsWithUserIdLengthLowerThanFive
+  batchEventsWithUserIdLengthLowerThanFive,
+  IDENTIFY_AM
 } = require("./config");
 const {
   client: errNotificationClient
@@ -333,7 +334,7 @@ function responseBuilderSimple(
     case EventType.GROUP:
       endpoint = defaultEndpoint(destination.Config);
       // event_type for identify event is $identify
-      rawPayload.event_type = EventType.IDENTIFY_AM;
+      rawPayload.event_type = IDENTIFY_AM;
 
       if (evType === EventType.IDENTIFY) {
         // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message

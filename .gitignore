@@ -2,7 +2,7 @@
 .env
 node_modules
 npm-debug.log
-/coverage/*
+reports/*
 
 temp.json
 temp_out.json

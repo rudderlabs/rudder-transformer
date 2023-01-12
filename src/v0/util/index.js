@@ -229,7 +229,6 @@ const getValueFromPropertiesOrTraits = ({ message, key }) => {
 // function to flatten a json
 function flattenJson(data, separator = ".", mode = "normal") {
   const result = {};
-  let l;
 
   // a recursive function to loop through the array of the data
   function recurse(cur, prop) {
@@ -237,14 +236,14 @@ function flattenJson(data, separator = ".", mode = "normal") {
     if (Object(cur) !== cur) {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
-      for (i = 0, l = cur.length; i < l; i += 1) {
+      for (i = 0; i < cur.length; i += 1) {
         if (mode === "strict") {
           recurse(cur[i], `${prop}${separator}${i}`);
         } else {
           recurse(cur[i], `${prop}[${i}]`);
         }
       }
-      if (l === 0) {
+      if (cur.length === 0) {
         result[prop] = [];
       }
     } else {
@@ -1773,6 +1772,26 @@ const refinePayload = obj => {
   return refinedPayload;
 };
 
+const validateEmail = email => {
+  const regex = /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/;
+  return !!regex.test(email);
+};
+
+const validatePhoneWithCountryCode = phone => {
+  const regex = /^\+(?:[\d{] ?){6,14}\d$/;
+  return !!regex.test(phone);
+};
+
+/**
+ * checks for hybrid mode
+ * @param {*} Config
+ * @returns
+ */
+const isHybridModeEnabled = Config => {
+  const { useNativeSDK, useNativeSDKToSend } = Config;
+  return useNativeSDK && !useNativeSDKToSend;
+};
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1835,6 +1854,7 @@ module.exports = {
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
   isEmpty,
+  isNotEmpty,
   isEmptyObject,
   isHttpStatusRetryable,
   isHttpStatusSuccess,
@@ -1861,5 +1881,8 @@ module.exports = {
   getErrorStatusCode,
   getDestAuthCacheInstance,
   refinePayload,
-  getEventReqMetadata
+  validateEmail,
+  validatePhoneWithCountryCode,
+  getEventReqMetadata,
+  isHybridModeEnabled
 };

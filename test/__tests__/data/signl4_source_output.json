@@ -123,8 +123,8 @@
       "alert.statusCode": 1,
       "alert.eventId": "2518236416806594587_0e67b746-6c88-4ddf-8872-99690b0457d9",
       "alert.externalEventId": "INC091210",
-      "alert.acknowledgedUserIds": [],
-      "alert.id": "2518236416804564453_12ea0f6f-948c-43d0-9034-f9565d7b6bd2"
+      "alert.id": "2518236416804564453_12ea0f6f-948c-43d0-9034-f9565d7b6bd2",
+      "alert.acknowledgedUserIds": []
     }
   },
   {

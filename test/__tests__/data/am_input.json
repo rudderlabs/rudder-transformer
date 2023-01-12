@@ -4022,5 +4022,84 @@
         "apiKey": "abcde"
       }
     }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.5"
+        },
+        "traits": {
+          "name": "Shehan Study",
+          "category": "SampleIdentify",
+          "email": "chandra+r@rudderlabs.com",
+          "plan": "Open source",
+          "logins": 5,
+          "createdAt": 1599264000
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.5"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 0.8999999761581421
+        },
+        "campaign": {
+          "source": "google",
+          "medium": "medium",
+          "term": "keyword",
+          "content": "some content",
+          "name": "some campaign",
+          "test": "other value"
+        },
+        "page": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        }
+      },
+      "type": "group",
+      "messageId": "e5034df0-a404-47b4-a463-76df99934fea",
+      "originalTimestamp": "2020-10-20T07:54:58.983Z",
+      "integrations": {
+        "All": true
+      },
+      "groupId": "Sample_groupId23",
+      "traits": {
+        "KEY_3": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
+        "KEY_2": {
+          "CHILD_KEY_92": "value_95",
+          "CHILD_KEY_102": "value_103"
+        },
+        "name_trait": "Company",
+        "value_trait": "Comapny-ABC"
+      },
+      "sentAt": "2020-10-20T07:54:58.983Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcde",
+        "groupTypeTrait": "name_trait",
+        "groupValueTrait": "value_trait"
+      }
+    }
   }
 ]

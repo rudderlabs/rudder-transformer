@@ -77,8 +77,7 @@ function notify(err, context, metadata) {
     if (isDeniedErrType) return;
 
     bugsnagClient.notify(err, event => {
-      event.context = context;
-      event.addMetadata("metadata", metadata);
+      event.addMetadata("metadata", { ...metadata, context });
     });
   }
 }

@@ -37,6 +37,7 @@ const {
 const {
   client: errNotificationClient
 } = require("../../../util/errorNotifier");
+const tags = require("../../util/tags");
 
 const AMUtils = require("./utils");
 
@@ -871,7 +872,12 @@ function batch(destEvents) {
       const errorResponse = getErrorRespEvents(
         metadata,
         400,
-        "Both userId and deviceId cannot be undefined"
+        "Both userId and deviceId cannot be undefined",
+        {
+          [tags.TAG_NAMES.ERROR_CATEGORY]:
+            tags.ERROR_CATEGORIES.DATA_VALIDATION,
+          [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.INSTRUMENTATION
+        }
       );
       respList.push(errorResponse);
       return;

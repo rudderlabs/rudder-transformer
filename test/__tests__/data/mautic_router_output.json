@@ -62,6 +62,14 @@
       "errorCategory": "dataValidation",
       "errorType": "configuration"
     },
+    "destination": {
+      "Config": {
+        "lookUpField": "email",
+        "password": "abcdefghij1234",
+        "subDomainName": "testapi3",
+        "userName": "abcdef"
+      }
+    },
     "batched": false,
     "statusCode": 500,
     "error": "Invalid user name provided in the destination configuration"

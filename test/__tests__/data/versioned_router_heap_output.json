@@ -101,9 +101,23 @@
       }
     },
     {
+      "destination": {
+        "Config": {
+          "appId": "<app id>"
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Heap.io",
+          "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
+          "Name": "HEAP"
+        },
+        "Enabled": true,
+        "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
+        "Name": "heap test",
+        "Transformations": []
+      },
       "metadata": [
         {
-          "jobId": 2
+          "jobId": 4
         }
       ],
       "batched": false,
@@ -111,15 +125,30 @@
       "error": "invalid message type for heap",
       "statTags": {
         "destType": "HEAP",
-        "scope": "exception",
-        "stage": "transform",
-        "errorAt": "rt"
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation",
+        "feature": "router",
+        "module": "destination"
       }
     },
     {
+      "destination": {
+        "Config": {
+          "appId": "<app id>"
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Heap.io",
+          "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
+          "Name": "HEAP"
+        },
+        "Enabled": true,
+        "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
+        "Name": "heap test",
+        "Transformations": []
+      },
       "metadata": [
         {
-          "jobId": 2
+          "jobId": 5
         }
       ],
       "batched": false,
@@ -127,9 +156,10 @@
       "error": "message type page not supported for heap",
       "statTags": {
         "destType": "HEAP",
-        "scope": "exception",
-        "stage": "transform",
-        "errorAt": "rt"
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation",
+        "feature": "router",
+        "module": "destination"
       }
     }
   ]

@@ -1,6 +1,5 @@
 {
-  "rETL":
-  [
+  "rETL": [
     {
       "batchedRequest": {
         "version": "1",
@@ -51,7 +50,7 @@
       }
     }
   ],
-  "others":[
+  "others": [
     {
       "batchedRequest": {
         "body": {
@@ -86,10 +85,6 @@
                 "userId": "lynnanderson@smith.net",
                 "preferUserId": true,
                 "mergeNestedObjects": true
-              },
-              {
-                "currentEmail": "old@email.com",
-                "newEmail": "new@email.com"
               }
             ]
           }
@@ -111,9 +106,6 @@
         },
         {
           "jobId": 5
-        },
-        {
-          "jobId": 8
         }
       ],
       "batched": true,
@@ -277,6 +269,46 @@
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
+          "trackNamedPages": false
+        },
+        "Enabled": true
+      }
+    },
+    {
+      "batchedRequest": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.iterable.com/api/users/updateEmail",
+        "headers": {
+          "Content-Type": "application/json",
+          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "currentEmail": "old@email.com",
+            "newEmail": "new@email.com"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      "metadata": [
+        {
+          "jobId": 8
+        }
+      ],
+      "batched": false,
+      "statusCode": 200,
+      "destination": {
+        "Config": {
+          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+          "mapToSingleEvent": false,
+          "trackAllPages": false,
+          "trackCategorisedPages": true,
           "trackNamedPages": false
         },
         "Enabled": true

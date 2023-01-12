@@ -95,7 +95,7 @@ const gaAudienceProxyRequest = async (request) => {
 
   // step2: putting users into the job
   let jobId;
-  if (firstResponse?.response?.data && firstResponse?.response?.data?.resourceName)
+  if (firstResponse?.response?.data?.resourceName)
     // eslint-disable-next-line prefer-destructuring
     jobId = firstResponse.response.data.resourceName.split('/')[3];
   const secondResponse = await addUserToJob(endpoint, headers, method, jobId, body);

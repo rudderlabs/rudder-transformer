@@ -31,7 +31,8 @@
     "test:benchmark": "node benchmark/index.js",
     "test:integration": "jest -c jest.config.integration.js",
     "pre-commit": "npm run test:silent && npx lint-staged",
-    "commit-msg": "commitlint --edit"
+    "commit-msg": "commitlint --edit",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",

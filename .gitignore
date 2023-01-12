@@ -3,6 +3,3 @@
 node_modules
 npm-debug.log
 reports/*
-
-temp.json
-temp_out.json

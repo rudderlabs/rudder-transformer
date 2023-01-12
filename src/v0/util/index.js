@@ -1640,7 +1640,7 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
     ...getEventReqMetadata(input)
   });
 
-  return { ...resp, destination: input.destination };
+  return { ...resp, destination: input?.destination };
 };
 
 /**

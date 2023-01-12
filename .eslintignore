@@ -14,3 +14,4 @@ src/util/url-search-params.min.js
 src/logger.js
 src/util/eventValidations.js
 **/trackingPlan*
+src/v0/destinations/personalize/scripts/

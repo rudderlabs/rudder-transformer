@@ -62,6 +62,7 @@ if (enableProfiling) {
         let chunk;
         // Using while loop and calling
         // read method with parameter
+        // eslint-disable-next-line no-constant-condition
         while (true) {
           // Displaying the chunk
           chunk = readable.read();

@@ -452,6 +452,7 @@ async function routerHandleDest(ctx) {
       [tags.TAG_NAMES.DEST_TYPE]: destType.toUpperCase(),
       [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
       [tags.TAG_NAMES.FEATURE]: tags.FEATURES.ROUTER,
+      [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE
     };
 
     const routerDestHandler = getDestHandler('v0', destType);

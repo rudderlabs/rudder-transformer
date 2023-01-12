@@ -332,7 +332,32 @@
           "errorCategory": "dataValidation",
           "errorType": "configuration"
         },
-        "statusCode": 500
+        "statusCode": 500,
+        "destination": {
+          "Config": {
+            "accessToken": "ABC...",
+            "valueFieldIdentifier": "properties.price",
+            "eventsToStandard": [
+              { "from": "Product Searched", "to": "Search" },
+              { "to": "ViewContent", "from": "Product Viewed" },
+              { "to": "AddToCart", "from": "Cart Checkout" },
+              { "to": "AddPaymentInfo", "from": "Card Details Added" },
+              { "to": "Lead", "from": "Order Completed" },
+              { "to": "CompleteRegistration", "from": "Signup" },
+              { "to": "AddToWishlist", "from": "Button Clicked" }
+            ],
+            "eventsToIds": [
+              { "from": "Search", "to": "582603376981640" },
+              { "from": "Search", "to": "506289934669334" },
+              { "from": "ViewContent", "to": "1166826033904512" },
+              { "from": "AddToCart", "to": "1148872185708962" },
+              { "from": "CompleteRegistration", "to": "597443908839411" },
+              { "from": "Lead", "to": "1024592094903800" },
+              { "from": "AddToWishlist", "to": "506289934669334" }
+            ],
+            "isHashRequired": true
+          }
+        }
       },
       {
         "error": "Please Map Your Standard Events With Event Set Ids",
@@ -346,7 +371,31 @@
           "errorType": "configuration"
         },
         "batched": false,
-        "statusCode": 500
+        "statusCode": 500,
+        "destination": {
+          "Config": {
+            "accessToken": "ABC...",
+            "valueFieldIdentifier": "properties.price",
+            "eventsToStandard": [
+              { "from": "Product Searched", "to": "Search" },
+              { "to": "ViewContent", "from": "Product Viewed" },
+              { "to": "AddToCart", "from": "Cart Checkout" },
+              { "to": "AddPaymentInfo", "from": "Card Details Added" },
+              { "to": "Lead", "from": "Order Completed" },
+              { "to": "CompleteRegistration", "from": "Signup" },
+              { "to": "AddToWishlist", "from": "Button Clicked" }
+            ],
+            "eventsToIds": [
+              { "from": "Search", "to": "582603376981640" },
+              { "from": "Search", "to": "506289934669334" },
+              { "from": "ViewContent", "to": "1166826033904512" },
+              { "from": "AddToCart", "to": "1148872185708962" },
+              { "from": "CompleteRegistration", "to": "597443908839411" },
+              { "from": "Lead", "to": "1024592094903800" }
+            ],
+            "isHashRequired": true
+          }
+        }
       },
       {
         "metadata": [

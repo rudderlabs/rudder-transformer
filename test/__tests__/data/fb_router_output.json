@@ -9,6 +9,11 @@
       "errorCategory": "dataValidation",
       "errorType": "instrumentation"
     },
+    "destination": {
+      "Config": {
+        "appID": "RudderFbApp"
+      }
+    },
     "batched": false,
     "statusCode": 400,
     "error": "If properties.revenue is present, properties.currency is required."
@@ -19,6 +24,11 @@
         "jobId": 2
       }
     ],
+    "destination": {
+      "Config": {
+        "appID": "RudderFbApp"
+      }
+    },
     "statTags": {
       "errorCategory": "dataValidation",
       "errorType": "instrumentation"

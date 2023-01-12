@@ -234,8 +234,8 @@
           "ResponseRules": {}
         },
         "Config": {
-          "apiKey": "apiKey",
-          "applicationId": "appId",
+          "apiKey": "apiKey-2",
+          "applicationId": "appId-2",
           "eventTypeSettings": [
             {
               "from": "product clicked",

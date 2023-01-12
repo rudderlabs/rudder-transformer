@@ -366,7 +366,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       `Authorisation failed: ${error.message}`,
       errObj.statTags
     );
-    return [respEvents];
+    return [{ ...respEvents, destination: inputs?.[0]?.destination }];
   }
 
   const respList = await Promise.all(

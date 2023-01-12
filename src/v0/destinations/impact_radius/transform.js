@@ -121,7 +121,8 @@ const processTrackEvent = (message, Config) => {
     actionEventNames,
     installEventNames,
     rudderToImpactProperty,
-    productsMapping, accountSID,
+    productsMapping,
+    accountSID,
   } = Config;
 
   const eventType = [];

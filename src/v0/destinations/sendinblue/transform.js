@@ -78,10 +78,7 @@ const unlinkContact = (message, destination, unlinkListIds) => {
 // ref:- https://developers.sendinblue.com/reference/createcontact
 const createOrUpdateContactResponseBuilder = (message, destination) => {
   const { endpoint, name } = CONFIG_CATEGORIES.CREATE_OR_UPDATE_CONTACT;
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[name],
-  );
+  const payload = constructPayload(message, MAPPING_CONFIG[name]);
 
   checkIfEmailOrPhoneExists(payload.email, payload.attributes?.SMS);
   validateEmailAndPhone(payload.email, payload.attributes?.SMS);
@@ -113,10 +110,7 @@ const createOrUpdateContactResponseBuilder = (message, destination) => {
 // ref:- https://developers.sendinblue.com/reference/createdoicontact
 const createDOIContactResponseBuilder = (message, destination) => {
   const { endpoint, name } = CONFIG_CATEGORIES.CREATE_DOI_CONTACT;
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[name],
-  );
+  const payload = constructPayload(message, MAPPING_CONFIG[name]);
   const { templateId, redirectionUrl, contactAttributeMapping } = destination.Config;
   let doiTemplateId = getDestinationExternalID(message, 'sendinblueDOITemplateId') || templateId;
 
@@ -141,10 +135,7 @@ const createDOIContactResponseBuilder = (message, destination) => {
   payload.redirectionUrl = redirectionUrl;
   payload.includeListIds = listIds;
 
-  const userTraits = transformUserTraits(
-    payload.attributes,
-    contactAttributeMapping,
-  );
+  const userTraits = transformUserTraits(payload.attributes, contactAttributeMapping);
 
   payload.attributes = userTraits;
 
@@ -157,10 +148,7 @@ const updateDOIContactResponseBuilder = (message, destination, identifier) => {
   let { endpoint } = CONFIG_CATEGORIES.UPDATE_DOI_CONTACT;
   const { name } = CONFIG_CATEGORIES.UPDATE_DOI_CONTACT;
   endpoint = endpoint.replace('<identifier>', identifier);
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[name],
-  );
+  const payload = constructPayload(message, MAPPING_CONFIG[name]);
 
   validateEmailAndPhone(payload.attributes?.EMAIL);
 

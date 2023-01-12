@@ -45,11 +45,7 @@ const getContents = (message) => {
     products.forEach((product) => {
       const singleProduct = {};
       singleProduct.content_type =
-        product.contentType ||
-        contentType ||
-        product.content_type ||
-        content_type ||
-        'product';
+        product.contentType || contentType || product.content_type || content_type || 'product';
       singleProduct.content_id = product.product_id;
       singleProduct.content_category = product.category;
       singleProduct.content_name = product.name;

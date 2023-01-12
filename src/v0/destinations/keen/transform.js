@@ -79,11 +79,7 @@ function processTrack(message, destination) {
   let { properties } = message;
   const { userId, anonymousId, context } = message;
   const user = {};
-  user.userId = userId
-    ? userId !== ''
-      ? userId
-      : anonymousId
-    : anonymousId;
+  user.userId = userId ? (userId !== '' ? userId : anonymousId) : anonymousId;
   user.traits = getFieldValueFromMessage(message, 'traits') || {};
   properties = {
     ...properties,

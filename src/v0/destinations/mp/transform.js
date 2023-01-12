@@ -70,7 +70,8 @@ const responseBuilderSimple = (parameters, message, eventType, destConfig) => {
     'base64',
   );
   response.params = { data: encodedData };
-  const { apiSecret, serviceAccountUserName, serviceAccountSecret, projectId, dataResidency } = destConfig;
+  const { apiSecret, serviceAccountUserName, serviceAccountSecret, projectId, dataResidency } =
+    destConfig;
   const duration = getTimeDifference(message.timestamp);
   switch (eventType) {
     case EventType.ALIAS:
@@ -83,9 +84,7 @@ const responseBuilderSimple = (parameters, message, eventType, destConfig) => {
         duration.days <= 5
       ) {
         response.endpoint =
-          dataResidency === 'eu'
-            ? `${BASE_ENDPOINT_EU}/track/`
-            : `${BASE_ENDPOINT}/track/`;
+          dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/track/` : `${BASE_ENDPOINT}/track/`;
         response.headers = {};
       } else if (duration.years > 5) {
         throw new InstrumentationError('Event timestamp should be within last 5 years');
@@ -106,9 +105,7 @@ const responseBuilderSimple = (parameters, message, eventType, destConfig) => {
       break;
     default:
       response.endpoint =
-        dataResidency === 'eu'
-          ? `${BASE_ENDPOINT_EU}/engage/`
-          : `${BASE_ENDPOINT}/engage/`;
+        dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/engage/` : `${BASE_ENDPOINT}/engage/`;
       response.headers = {};
   }
   return response;

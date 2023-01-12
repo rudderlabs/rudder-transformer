@@ -40,7 +40,15 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
   let payload;
   let endpoint;
   const filteredCustomerId = removeHyphens(Config.customerId);
-  const { hashUserIdentifier, defaultUserIdentifier, UserIdentifierSource, conversionEnvironment, customVariables, subAccount, loginCustomerId } = Config;
+  const {
+    hashUserIdentifier,
+    defaultUserIdentifier,
+    UserIdentifierSource,
+    conversionEnvironment,
+    customVariables,
+    subAccount,
+    loginCustomerId,
+  } = Config;
   const { properties, originalTimestamp } = message;
 
   if (conversionType === 'click') {
@@ -96,11 +104,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     // if userIdentifierSource doesn't exist in properties
     // then it is taken from the webapp config
     if (!properties.userIdentifierSource && UserIdentifierSource !== 'none') {
-      set(
-        payload,
-        'conversions[0].userIdentifiers[0].userIdentifierSource',
-        UserIdentifierSource,
-      );
+      set(payload, 'conversions[0].userIdentifiers[0].userIdentifierSource', UserIdentifierSource);
 
       // one of email or phone must be provided
       if (!email && !phone) {

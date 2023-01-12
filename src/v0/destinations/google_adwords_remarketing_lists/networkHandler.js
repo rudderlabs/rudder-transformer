@@ -89,18 +89,18 @@ const gaAudienceProxyRequest = async (request) => {
   // step1: offlineUserDataJobs creation
 
   const firstResponse = await createJob(endpoint, customerId, listId, headers, method);
-  if (!firstResponse.success && !isHttpStatusSuccess(firstResponse.response.response.status)) {
+  if (!firstResponse.success && !isHttpStatusSuccess(firstResponse?.response?.response?.status)) {
     return firstResponse;
   }
 
   // step2: putting users into the job
   let jobId;
-  if (firstResponse.response.data && firstResponse.response.data.resourceName)
+  if (firstResponse?.response?.data && firstResponse?.response?.data?.resourceName)
     // eslint-disable-next-line prefer-destructuring
     jobId = firstResponse.response.data.resourceName.split('/')[3];
   const secondResponse = await addUserToJob(endpoint, headers, method, jobId, body);
   // console.log(JSON.stringify(secondResponse.response.response));
-  if (!secondResponse.success && !isHttpStatusSuccess(secondResponse.response.response.status)) {
+  if (!secondResponse.success && !isHttpStatusSuccess(secondResponse?.response?.response?.status)) {
     return secondResponse;
   }
 
@@ -133,7 +133,7 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
   // const { stat, err_code: errorCode } = respAttributes;
 
   throw new NetworkError(
-    `${response.error.message} ${stageMsg}`,
+    `${response?.error?.message} ${stageMsg}`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),

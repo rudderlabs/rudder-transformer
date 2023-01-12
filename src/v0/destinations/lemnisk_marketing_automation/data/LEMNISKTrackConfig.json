@@ -29,7 +29,8 @@
   },
   {
     "destKey": "userId",
-    "sourceKeys": ["userId","anonymousId"],
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
     "required": true
   },
   {
@@ -40,6 +41,7 @@
   {
     "destKey": "originalTimestamp",
     "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
     "required": true
   }
 ]

@@ -6,7 +6,10 @@
     },
     {
         "destKey": "userId",
-        "sourceKeys": ["userId","anonymousId"],
+        "sourceKeys": [
+            "userId",
+            "anonymousId"
+        ],
         "required": true
     },
     {

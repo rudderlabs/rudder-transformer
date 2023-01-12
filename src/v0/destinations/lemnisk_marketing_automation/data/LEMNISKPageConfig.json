@@ -24,12 +24,18 @@
   },
   {
     "destKey": "id",
-    "sourceKeys": ["userId","anonymousId"],
+    "sourceKeys": [
+      "userId",
+      "anonymousId"
+    ],
     "required": true
   },
   {
     "destKey": "userId",
-    "sourceKeys": ["userId","anonymousId"],
+    "sourceKeys": [
+      "userId",
+      "anonymousId"
+    ],
     "required": true
   },
   {

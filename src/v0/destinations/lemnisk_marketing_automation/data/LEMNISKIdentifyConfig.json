@@ -7,14 +7,12 @@
   {
     "destKey": "context",
     "sourceKeys": "context",
-    "required": true,
-    "metadata": {
-      "defaultValue": {}
-    }
+    "required": true
   },
   {
     "destKey": "customerProperties",
-    "sourceKeys": ["context.traits"],
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
     "required": true
   },
   {
@@ -24,7 +22,8 @@
   },
   {
     "destKey": "userId",
-    "sourceKeys": ["userId","anonymousId"],
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
     "required": true
   },
   {
@@ -35,6 +34,7 @@
   {
     "destKey": "originalTimestamp",
     "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
     "required": true
   }
 ]

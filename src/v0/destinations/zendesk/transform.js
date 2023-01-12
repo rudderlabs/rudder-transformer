@@ -7,9 +7,6 @@ const {
   ConfigCategory,
   mappingConfig,
   defaultFields,
-  ZENDESK_MARKET_PLACE_NAME,
-  ZENDESK_MARKET_PLACE_ORG_ID,
-  ZENDESK_MARKET_PLACE_APP_ID,
   NAME,
   getBaseEndpoint
 } = require("./config");
@@ -22,7 +19,8 @@ const {
   constructPayload,
   simpleProcessRouterDest,
   defaultPutRequestConfig,
-  isEmptyObject
+  isEmptyObject,
+  getEventType
 } = require("../../util");
 const logger = require("../../../logger");
 const { httpGET } = require("../../../adapters/network");
@@ -33,15 +31,14 @@ const {
 } = require("../../util/errorTypes");
 const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const tags = require("../../util/tags");
+const { getDefaultHeaders } = require("./utils");
 
 function responseBuilder(message, headers, payload, endpoint) {
   const response = defaultRequestConfig();
 
   const updatedHeaders = {
     ...headers,
-    "X-Zendesk-Marketplace-Name": ZENDESK_MARKET_PLACE_NAME,
-    "X-Zendesk-Marketplace-Organization-Id": ZENDESK_MARKET_PLACE_ORG_ID,
-    "X-Zendesk-Marketplace-App-Id": ZENDESK_MARKET_PLACE_APP_ID
+    ...getDefaultHeaders()
   };
 
   response.endpoint = endpoint;
@@ -71,9 +68,7 @@ const responseBuilderToUpdatePrimaryAccount = (
   const response = defaultRequestConfig();
   const updatedHeaders = {
     ...headers,
-    "X-Zendesk-Marketplace-Name": ZENDESK_MARKET_PLACE_NAME,
-    "X-Zendesk-Marketplace-Organization-Id": ZENDESK_MARKET_PLACE_ORG_ID,
-    "X-Zendesk-Marketplace-App-Id": ZENDESK_MARKET_PLACE_APP_ID
+    ...getDefaultHeaders()
   };
   response.endpoint = `${baseEndpoint}users/${userId}/identities/${userIdentityId}`;
   response.method = defaultPutRequestConfig.requestMethod;
@@ -540,9 +535,7 @@ async function processIdentify(
             deleteResponse.method = defaultDeleteRequestConfig.requestMethod;
             deleteResponse.headers = {
               ...headers,
-              "X-Zendesk-Marketplace-Name": ZENDESK_MARKET_PLACE_NAME,
-              "X-Zendesk-Marketplace-Organization-Id": ZENDESK_MARKET_PLACE_ORG_ID,
-              "X-Zendesk-Marketplace-App-Id": ZENDESK_MARKET_PLACE_APP_ID
+              ...getDefaultHeaders()
             };
             deleteResponse.userId = message.anonymousId;
             returnList.push(deleteResponse);
@@ -688,9 +681,7 @@ async function processGroup(message, destinationConfig, headers, baseEndpoint) {
 }
 
 async function processSingleMessage(event) {
-  const { message } = event;
   const destinationConfig = event.destination.Config;
-  const messageType = message.type.toLowerCase();
   const unencodedBase64Str = `${destinationConfig.email}/token:${destinationConfig.apiToken}`;
   const baseEndpoint = getBaseEndpoint(destinationConfig.domain);
   const headers = {
@@ -700,7 +691,9 @@ async function processSingleMessage(event) {
     "Content-Type": "application/json"
   };
 
-  switch (messageType) {
+  const { message } = event;
+  const evType = getEventType(message);
+  switch (evType) {
     case EventType.IDENTIFY:
       return processIdentify(message, destinationConfig, headers, baseEndpoint);
     case EventType.GROUP:
@@ -709,7 +702,7 @@ async function processSingleMessage(event) {
       return processTrack(message, destinationConfig, headers, baseEndpoint);
     default:
       throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
+        `Event type ${evType} is not supported`
       );
   }
 }

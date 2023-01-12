@@ -8,7 +8,8 @@ const {
   mappingConfig,
   defaultFields,
   NAME,
-  getBaseEndpoint
+  getBaseEndpoint,
+  DEFAULT_HEADERS
 } = require("./config");
 const {
   removeUndefinedValues,
@@ -31,14 +32,13 @@ const {
 } = require("../../util/errorTypes");
 const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const tags = require("../../util/tags");
-const { getDefaultHeaders } = require("./utils");
 
 function responseBuilder(message, headers, payload, endpoint) {
   const response = defaultRequestConfig();
 
   const updatedHeaders = {
     ...headers,
-    ...getDefaultHeaders()
+    ...DEFAULT_HEADERS
   };
 
   response.endpoint = endpoint;
@@ -68,7 +68,7 @@ const responseBuilderToUpdatePrimaryAccount = (
   const response = defaultRequestConfig();
   const updatedHeaders = {
     ...headers,
-    ...getDefaultHeaders()
+    ...DEFAULT_HEADERS
   };
   response.endpoint = `${baseEndpoint}users/${userId}/identities/${userIdentityId}`;
   response.method = defaultPutRequestConfig.requestMethod;
@@ -535,7 +535,7 @@ async function processIdentify(
             deleteResponse.method = defaultDeleteRequestConfig.requestMethod;
             deleteResponse.headers = {
               ...headers,
-              ...getDefaultHeaders()
+              ...DEFAULT_HEADERS
             };
             deleteResponse.userId = message.anonymousId;
             returnList.push(deleteResponse);

@@ -29,7 +29,9 @@
     "test": "jest --runInBand --detectOpenHandles --coverage --notify",
     "test:silent": "npm run test -- --silent",
     "test:benchmark": "node benchmark/index.js",
-    "test:integration": "jest -c jest.config.integration.js"
+    "test:integration": "jest -c jest.config.integration.js",
+    "pre-commit": "npm run test:silent && npx lint-staged",
+    "commit-msg": "commitlint --edit"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",
@@ -89,6 +91,8 @@
     "valid-url": "^1.0.9"
   },
   "devDependencies": {
+    "@commitlint/config-conventional": "^17.4.0",
+    "@digitalroute/cz-conventional-changelog-for-jira": "^8.0.0",
     "acorn": "^8.8.1",
     "benchmark-suite": "^0.1.8",
     "commander": "^9.5.0",
@@ -114,12 +118,17 @@
     "prettier": "^2.8.2",
     "standard-version": "^9.5.0"
   },
-  "precommit": {
-    "run": "lint, test:silent"
+  "lint-staged": {
+    "*.{js,ts}": "eslint --fix",
+    "*.{json,js,ts,md}": "prettier --write"
   },
-  "//": "npm versions matched against node are here: https://nodejs.org/en/download/releases/",
-  "engines": {
-    "node": ">=14.15.0 <15",
-    "npm": ">=6.14.8"
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/@digitalroute/cz-conventional-changelog-for-jira",
+      "jiraMode": false,
+      "jiraOptional": true,
+      "skipScope": true,
+      "defaultType": "feat"
+    }
   }
 }

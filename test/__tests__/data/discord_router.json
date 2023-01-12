@@ -246,6 +246,29 @@
     ],
     "output": [
       {
+        "destination": {
+          "ID": "1ZQVSU9SXNg6KYgZALaqjAO3PIL",
+          "Name": "test-Discord",
+          "DestinationDefinition": {
+            "ID": "1ZQUiJVMlmF7lfsdfXg7KXQnlLV",
+            "Name": "DISCORD",
+            "DisplayName": "Discord",
+            "Config": {
+              "excludeKeys": [],
+              "includeKeys": []
+            }
+          },
+          "Config": {
+            "eventChannelSettings": [],
+            "eventTemplateSettings": [],
+            "IdentifyTemplate": "identified {{name}} with {{traits}}",
+            "webhookUrl": "https://abcd.com/efgh/89078/979868/98678",
+            "whitelistedTraitsSettings": []
+          },
+          "Enabled": true,
+          "Transformations": [],
+          "IsProcessorEnabled": true
+        },
         "metadata": [
           {
             "jobId": 1

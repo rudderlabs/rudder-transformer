@@ -475,7 +475,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       errObj.message,
       errObj.statTags,
     );
-    return [respEvents];
+    return [{ ...respEvents, destination: inputs?.[0]?.destination }];
   }
 
   // Checking previous status Code. Initially setting to false.

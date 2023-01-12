@@ -34,6 +34,7 @@ const {
   mappingConfig,
   batchEventsWithUserIdLengthLowerThanFive,
 } = require('./config');
+const tags = require('../../util/tags');
 
 const AMUtils = require('./utils');
 
@@ -803,6 +804,10 @@ function batch(destEvents) {
         metadata,
         400,
         'Both userId and deviceId cannot be undefined',
+        {
+          [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.DATA_VALIDATION,
+          [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.INSTRUMENTATION,
+        },
       );
       respList.push(errorResponse);
       return;

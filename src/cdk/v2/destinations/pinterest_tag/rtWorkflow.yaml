@@ -23,6 +23,7 @@ steps:
     template: |
       $.outputs.transform#idx.error.({
         "metadata": ^[idx].metadata[],
+        "destination": ^[idx].destination,
         "batched": false,
         "statusCode": .status,
         "error": .message,

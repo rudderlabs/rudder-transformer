@@ -127,25 +127,66 @@
     "statusCode": 200
   },
   {
+    "destination": {
+      "Config": {
+        "appId": "<app id>"
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Heap.io",
+        "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
+        "Name": "HEAP",
+        "Config": {
+          "cdkEnabled": true
+        }
+      },
+      "Enabled": true,
+      "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
+      "Name": "heap test",
+      "Transformations": []
+    },
     "statusCode": 400,
-    "error": "message type \"page\" not supported for \"heap\"",
+    "error": "Bad event. Original error: message type \"page\" not supported for \"heap\"",
     "statTags": {
-      "stage": "transform",
-      "scope": "cdk",
-      "meta": "badEvent",
-      "destType": "HEAP",
-      "errorAt": "proc"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation",
+      "feature": "processor",
+      "implementation": "cdkV1",
+      "module": "destination",
+      "destType": "HEAP"
     }
   },
   {
+    "destination": {
+      "Config": {
+        "appId": "<app id>"
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Heap.io",
+        "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
+        "Name": "HEAP",
+        "Config": {
+          "cdkEnabled": true
+        }
+      },
+      "Enabled": true,
+      "ID": "1WTcDSEOE437e4ePH10BJNELXmE",
+      "Name": "heap test",
+      "Transformations": []
+    },
     "statusCode": 400,
-    "error": "\"type\" is a required field and it must be a string",
+    "error": "Unknown error occurred. Original error: \"type\" is a required field and it must be a string",
     "statTags": {
-      "stage": "transform",
-      "scope": "exception",
-      "meta": "badEvent",
-      "destType": "HEAP",
-      "errorAt": "proc"
+      "errorCategory": "transformation",
+      "feature": "processor",
+      "implementation": "cdkV1",
+      "module": "destination",
+      "destType": "HEAP"
     }
   }
 ]

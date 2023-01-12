@@ -53,6 +53,28 @@
     }
   },
   {
+    "destination": {
+      "Config": {
+        "apiKey": "urissi44sfgs",
+        "s4ServiceValue": "service",
+        "s4ServiceProperty": "",
+        "s4LocationValue": "67.3, 32.3",
+        "s4LocationProperty": "",
+        "s4AlertingScenarioValue": "single_ack",
+        "s4AlertingScenarioProperty": "",
+        "s4ExternalIDValue": "INC493933",
+        "s4ExternalIDProperty": "",
+        "s4StatusValue": "new",
+        "s4StatusProperty": "",
+        "s4Filter": false,
+        "eventToTitleMapping": [
+          {
+            "from": "New Alert",
+            "to": "Alert Created"
+          }
+        ]
+      }
+    },
     "metadata": [
       {
         "jobId": 2

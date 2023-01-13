@@ -317,6 +317,7 @@ async function handleDest(ctx, version, destination) {
 
         const resp = {
           metadata: event.metadata,
+          destination: event.destination,
           statusCode: errObj.status,
           error: errObj.message,
           statTags: errObj.statTags
@@ -464,7 +465,8 @@ async function routerHandleDest(ctx) {
     defTags = {
       [tags.TAG_NAMES.DEST_TYPE]: destType.toUpperCase(),
       [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
-      [tags.TAG_NAMES.FEATURE]: tags.FEATURES.ROUTER
+      [tags.TAG_NAMES.FEATURE]: tags.FEATURES.ROUTER,
+      [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE
     };
 
     const routerDestHandler = getDestHandler("v0", destType);
@@ -1152,7 +1154,10 @@ const batchHandler = ctx => {
         errorObj.message,
         errorObj.statTags
       );
-      response.errors.push(errResp);
+      response.errors.push({
+        ...errResp,
+        destination: destEvents[0].destination
+      });
       errNotificationClient.notify(error, "Batch Transformation", {
         ...errResp,
         ...getCommonMetadata(ctx),

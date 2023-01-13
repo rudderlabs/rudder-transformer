@@ -32,11 +32,13 @@ const {
   BASE_URL_EU,
   ConfigCategory,
   mappingConfig,
-  batchEventsWithUserIdLengthLowerThanFive
+  batchEventsWithUserIdLengthLowerThanFive,
+  IDENTIFY_AM
 } = require("./config");
 const {
   client: errNotificationClient
 } = require("../../../util/errorNotifier");
+const tags = require("../../util/tags");
 
 const AMUtils = require("./utils");
 
@@ -332,7 +334,7 @@ function responseBuilderSimple(
     case EventType.GROUP:
       endpoint = defaultEndpoint(destination.Config);
       // event_type for identify event is $identify
-      rawPayload.event_type = EventType.IDENTIFY_AM;
+      rawPayload.event_type = IDENTIFY_AM;
 
       if (evType === EventType.IDENTIFY) {
         // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
@@ -871,7 +873,12 @@ function batch(destEvents) {
       const errorResponse = getErrorRespEvents(
         metadata,
         400,
-        "Both userId and deviceId cannot be undefined"
+        "Both userId and deviceId cannot be undefined",
+        {
+          [tags.TAG_NAMES.ERROR_CATEGORY]:
+            tags.ERROR_CATEGORIES.DATA_VALIDATION,
+          [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.INSTRUMENTATION
+        }
       );
       respList.push(errorResponse);
       return;

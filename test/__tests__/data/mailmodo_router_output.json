@@ -109,6 +109,13 @@
       "errorCategory": "dataValidation",
       "errorType": "instrumentation"
     },
-    "statusCode": 400
+    "statusCode": 400,
+    "destination": {
+      "Config": {
+        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "listName": ""
+      },
+      "Enabled": true
+    }
   }
 ]

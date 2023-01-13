@@ -27,11 +27,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
   const { status, response } = destResponse;
 
   // if the response from destination is not a success case build an explicit error
-  if (
-    // This condition will pop-up when `invalid_grant` error is thrown from Salesforce
-    !Number.isInteger(status) ||
-    (!isHttpStatusSuccess(status) && status >= 400)
-  ) {
+  if (!isHttpStatusSuccess(status) && status >= 400) {
     const matchErrorCode = errorCode =>
       response &&
       Array.isArray(response) &&

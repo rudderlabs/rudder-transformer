@@ -137,8 +137,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
     // using the first destination Config in chunk for
     // transforming the events in one chunk into a batch
-    const { destination } = chunk[0];
     chunk.forEach(async input => {
+      const { destination } = input;
       try {
         set(input, "destination", destination);
         // input.destination = destination;
@@ -156,6 +156,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     });
 
     if (eventsList.length !== 0) {
+      const { destination } = chunk[0];
       // setting up the batched request json here
       const batchedRequest = defaultRequestConfig();
       batchedRequest.endpoint = ENDPOINT;

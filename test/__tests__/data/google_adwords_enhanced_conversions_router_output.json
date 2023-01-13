@@ -87,6 +87,23 @@
         }
       }
     ],
+    "destination": {
+      "Config": {
+        "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
+        "customerId": "1234567890",
+        "subAccount": true,
+        "loginCustomerId": "",
+        "listOfConversions": [
+          {
+            "conversions": "Page View"
+          },
+          {
+            "conversions": "Product Added"
+          }
+        ],
+        "authStatus": "active"
+      }
+    },
     "batched": false,
     "statusCode": 400,
     "error": "Message Type identify is not supported. Aborting message.",
@@ -101,6 +118,23 @@
         "secret": {}
       }
     ],
+    "destination": {
+      "Config": {
+        "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC",
+        "customerId": "1234567890",
+        "subAccount": true,
+        "loginCustomerId": "11",
+        "listOfConversions": [
+          {
+            "conversions": "Page View"
+          },
+          {
+            "conversions": "Product Added"
+          }
+        ],
+        "authStatus": "active"
+      }
+    },
     "batched": false,
     "statusCode": 500,
     "error": "Empty/Invalid access token",

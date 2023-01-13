@@ -6,7 +6,6 @@ const EventType = {
   ALIAS: 'alias',
   GROUP: 'group',
   RESET: 'reset',
-  IDENTIFY_AM: '$identify',
 };
 
 const Address = {

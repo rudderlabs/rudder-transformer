@@ -1669,6 +1669,13 @@ const isHybridModeEnabled = (Config) => {
   return useNativeSDK && !useNativeSDKToSend;
 };
 
+/**
+ * Get event type from the Rudder message object
+ * @param {RudderMessage} message Rudder message object
+ * @returns lower case `type` field inside the Rudder message object
+ */
+const getEventType = (message) => message?.type?.toLowerCase();
+
 // ========================================================================
 // EXPORTS
 // ========================================================================
@@ -1762,4 +1769,5 @@ module.exports = {
   validatePhoneWithCountryCode,
   getEventReqMetadata,
   isHybridModeEnabled,
+  getEventType,
 };

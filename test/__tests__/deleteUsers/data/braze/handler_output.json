@@ -1,0 +1,32 @@
+[
+  [
+    {
+      "statusCode": 400,
+      "error": "User deletion request failed"
+    }
+  ],
+  [
+    {
+      "statusCode": 200,
+      "status": "successful"
+    }
+  ],
+  [
+    {
+      "statusCode": 500,
+      "error": "Config for deletion not present"
+    }
+  ],
+  [
+    {
+      "statusCode": 500,
+      "error": "data center / api key for deletion not present"
+    }
+  ],
+  [
+    {
+      "statusCode": 200,
+      "status": "successful"
+    }
+  ]
+]

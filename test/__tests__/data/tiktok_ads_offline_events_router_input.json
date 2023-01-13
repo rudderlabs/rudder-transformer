@@ -1,0 +1,142 @@
+[
+  {
+    "metadata": {
+      "jobId": 1
+    },
+    "destination": {
+      "Config": {
+        "accessToken": "fuwheirujkvjnkrtgkf",
+        "hashUserProperties": true
+      }
+    },
+    "message": {
+      "event": "subscribe",
+      "context": {
+        "traits": {
+          "phone": "1234567890"
+        },
+        "channel": "web"
+      },
+      "properties": {
+        "eventSetId": "7181537436256731137",
+        "eventId": "1616318632825_352",
+        "order_id": "abc_xyz",
+        "shop_id": "123abc",
+        "currency": "USD",
+        "value": 46.00,
+        "price": 8,
+        "quantity": 2,
+        "content_type": "product1234",
+        "product_id": "1077218",
+        "name": "socks",
+        "category": "Men's cloth"
+      },
+      "type": "track",
+      "userId": "eventIdn01",
+      "timestamp": "2023-01-03"
+    }
+  },
+  {
+    "metadata": {
+      "jobId": 2
+    },
+    "destination": {
+      "Config": {
+        "accessToken": "fuwheirujkvjnkrtgkf",
+        "hashUserProperties": true
+      }
+    },
+    "message": {
+      "event": "subscribe",
+      "context": {
+        "traits": {
+          "phone": "1234567890",
+          "email": "random@mail.com"
+        },
+        "channel": "web"
+      },
+      "properties": {
+        "eventSetId": "7181537436256731137",
+        "eventId": "1616318632825_352",
+        "products": [
+          {
+            "price": 8,
+            "quantity": 2,
+            "content_type": "product1",
+            "product_id": "1077218",
+            "name": "socks",
+            "category": "Men's cloth"
+          },
+          {
+            "price": 18,
+            "quantity": 12,
+            "content_type": "product2",
+            "product_id": "1077219",
+            "name": "socks1",
+            "category": "Men's cloth1"
+          }
+        ]
+      },
+      "type": "track",
+      "userId": "eventIdn01",
+      "timestamp": "2023-01-03"
+    }
+  },
+  {
+    "metadata": {
+      "jobId": 3
+    },
+    "destination": {
+      "Config": {
+        "accessToken": "fuwheirujkvjnkrtgkf",
+        "hashUserProperties": true
+      }
+    },
+    "message": {
+      "event": "subscribe",
+      "context": {
+        "traits": {
+          "phone": "1234567890"
+        },
+        "channel": "web"
+      },
+      "properties": {
+        "eventSetId": "6071537445256731123",
+        "eventId": "1616318632825_352",
+        "currency": "USD",
+        "value": 46.00,
+        "price": 8,
+        "content_type": "product1234"
+      },
+      "type": "track",
+      "userId": "eventIdn01",
+      "timestamp": "2023-01-03"
+    }
+  },
+  {
+    "metadata": {
+      "jobId": 4
+    },
+    "destination": {
+      "Config": {
+        "accessToken": "fuwheirujkvjnkrtgkf",
+        "hashUserProperties": true
+      }
+    },
+    "message": {
+      "context": {
+        "traits": {
+          "phone": "1234567890"
+        },
+        "channel": "web"
+      },
+      "properties": {
+        "eventSetId": "2345676543",
+        "eventId": "1616318632825_352"
+      },
+      "type": "track",
+      "userId": "eventIdn01",
+      "timestamp": "2023-01-03"
+    }
+  }
+]

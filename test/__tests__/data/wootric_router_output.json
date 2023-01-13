@@ -136,6 +136,14 @@
     }
   },
   {
+    "destination": {
+      "Config": {
+        "username": "wootricfakeuser@example.com",
+        "password": "password@123",
+        "accountToken": "NPS-1234567"
+      },
+      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
+    },
     "metadata": [
       {
         "jobId": 5
@@ -150,6 +158,14 @@
     }
   },
   {
+    "destination": {
+      "Config": {
+        "username": "wootricfakeuser@example.com",
+        "password": "password@123",
+        "accountToken": "NPS-1234567"
+      },
+      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
+    },
     "metadata": [
       {
         "jobId": 6
@@ -333,6 +349,14 @@
         "jobId": 11
       }
     ],
+    "destination": {
+      "Config": {
+        "username": "wootricfakeuser@example.com",
+        "password": "password@123",
+        "accountToken": "NPS-1234567"
+      },
+      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
+    },
     "batched": false,
     "statusCode": 400,
     "error": "No user found with userId : dummyId2",
@@ -342,6 +366,14 @@
     }
   },
   {
+    "destination": {
+      "Config": {
+        "username": "wootricfakeuser@example.com",
+        "password": "password@123",
+        "accountToken": "NPS-1234567"
+      },
+      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
+    },
     "metadata": [
       {
         "jobId": 12
@@ -393,6 +425,14 @@
     }
   },
   {
+    "destination": {
+      "Config": {
+        "username": "wootricfakeuser@example.com",
+        "password": "password@123",
+        "accountToken": "NPS-1234567"
+      },
+      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
+    },
     "metadata": [
       {
         "jobId": 14
@@ -407,6 +447,14 @@
     }
   },
   {
+    "destination": {
+      "Config": {
+        "username": "wootricfakeuser@example.com",
+        "password": "password@123",
+        "accountToken": "NPS-1234567"
+      },
+      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
+    },
     "metadata": [
       {
         "jobId": 15
@@ -426,6 +474,14 @@
         "jobId": 16
       }
     ],
+    "destination": {
+      "Config": {
+        "username": "wootricfakeuser@example.com",
+        "password": "password@123",
+        "accountToken": "NPS-1234567"
+      },
+      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
+    },
     "batched": false,
     "statusCode": 400,
     "error": "Event Type is missing from Integration object",

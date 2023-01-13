@@ -7,9 +7,9 @@ const {
   ConfigCategory,
   mappingConfig,
   defaultFields,
-  ZENDESK_MARKET_PLACE_NAME,
-  ZENDESK_MARKET_PLACE_ORG_ID,
-  ZENDESK_MARKET_PLACE_APP_ID
+  NAME,
+  getBaseEndpoint,
+  DEFAULT_HEADERS
 } = require("./config");
 const {
   removeUndefinedValues,
@@ -20,25 +20,25 @@ const {
   constructPayload,
   simpleProcessRouterDest,
   defaultPutRequestConfig,
-  isEmptyObject
+  isEmptyObject,
+  getEventType
 } = require("../../util");
 const logger = require("../../../logger");
 const { httpGET } = require("../../../adapters/network");
 const {
   NetworkInstrumentationError,
-  InstrumentationError
+  InstrumentationError,
+  NetworkError
 } = require("../../util/errorTypes");
-
-let endPoint;
+const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+const tags = require("../../util/tags");
 
 function responseBuilder(message, headers, payload, endpoint) {
   const response = defaultRequestConfig();
 
   const updatedHeaders = {
     ...headers,
-    "X-Zendesk-Marketplace-Name": ZENDESK_MARKET_PLACE_NAME,
-    "X-Zendesk-Marketplace-Organization-Id": ZENDESK_MARKET_PLACE_ORG_ID,
-    "X-Zendesk-Marketplace-App-Id": ZENDESK_MARKET_PLACE_APP_ID
+    ...DEFAULT_HEADERS
   };
 
   response.endpoint = endpoint;
@@ -62,16 +62,15 @@ const responseBuilderToUpdatePrimaryAccount = (
   userIdentityId,
   userId,
   headers,
-  email
+  email,
+  baseEndpoint
 ) => {
   const response = defaultRequestConfig();
   const updatedHeaders = {
     ...headers,
-    "X-Zendesk-Marketplace-Name": ZENDESK_MARKET_PLACE_NAME,
-    "X-Zendesk-Marketplace-Organization-Id": ZENDESK_MARKET_PLACE_ORG_ID,
-    "X-Zendesk-Marketplace-App-Id": ZENDESK_MARKET_PLACE_APP_ID
+    ...DEFAULT_HEADERS
   };
-  response.endpoint = `${endPoint}users/${userId}/identities/${userIdentityId}`;
+  response.endpoint = `${baseEndpoint}users/${userId}/identities/${userIdentityId}`;
   response.method = defaultPutRequestConfig.requestMethod;
   response.headers = updatedHeaders;
   response.body.JSON = {
@@ -91,9 +90,14 @@ const responseBuilderToUpdatePrimaryAccount = (
  * @param {*} headers -> Authorizations for API's call
  * @returns it return payloadbuilder for updating email
  */
-const payloadBuilderforUpdatingEmail = async (userId, headers, userEmail) => {
+const payloadBuilderforUpdatingEmail = async (
+  userId,
+  headers,
+  userEmail,
+  baseEndpoint
+) => {
   // url for list all identities of user
-  const url = `${endPoint}users/${userId}/identities`;
+  const url = `${baseEndpoint}users/${userId}/identities`;
   const config = { headers };
   try {
     const res = await httpGET(url, config);
@@ -110,14 +114,18 @@ const payloadBuilderforUpdatingEmail = async (userId, headers, userEmail) => {
             identitiesDetails.id,
             userId,
             headers,
-            userEmail
+            userEmail,
+            baseEndpoint
           );
         }
       }
     }
-    logger.debug("Failed in fetching Identity details");
+    logger.debug(`${NAME}:: Failed in fetching Identity details`);
   } catch (error) {
-    logger.debug("Error :", error.response ? error.response.data : error);
+    logger.debug(
+      `${NAME}:: Error :`,
+      error.response ? error.response.data : error
+    );
   }
   return {};
 };
@@ -140,11 +148,11 @@ async function createUserFields(url, config, newFields, fieldJson) {
     try {
       const response = await axios.post(url, fieldData, config);
       if (response.status !== 201) {
-        logger.debug("Failed to create User Field : ", field);
+        logger.debug(`${NAME}:: Failed to create User Field : `, field);
       }
     } catch (error) {
       if (error.response && error.response.status !== 422) {
-        logger.debug("Cannot create User field ", field, error);
+        logger.debug(`${NAME}:: Cannot create User field `, field, error);
       }
     }
   });
@@ -154,11 +162,12 @@ async function checkAndCreateUserFields(
   traits,
   categoryEndpoint,
   fieldJson,
-  headers
+  headers,
+  baseEndpoint
 ) {
   let newFields = [];
 
-  const url = endPoint + categoryEndpoint;
+  const url = baseEndpoint + categoryEndpoint;
   const config = { headers };
 
   try {
@@ -180,7 +189,10 @@ async function checkAndCreateUserFields(
       }
     }
   } catch (error) {
-    logger.debug("Error :", error.response ? error.response.data : error);
+    logger.debug(
+      `${NAME}:: Error :`,
+      error.response ? error.response.data : error
+    );
   }
 }
 
@@ -227,13 +239,13 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
  * @param {*} headers headers for authorizations
  * @returns
  */
-const getUserIdByExternalId = async (message, headers) => {
+const getUserIdByExternalId = async (message, headers, baseEndpoint) => {
   const externalId = getFieldValueFromMessage(message, "userIdOnly");
   if (!externalId) {
-    logger.debug("externalId is required for getting zenuserId");
+    logger.debug(`${NAME}:: externalId is required for getting zenuserId`);
     return undefined;
   }
-  const url = `${endPoint}users/search.json?query=${externalId}`;
+  const url = `${baseEndpoint}users/search.json?query=${externalId}`;
   const config = { headers };
 
   try {
@@ -243,38 +255,37 @@ const getUserIdByExternalId = async (message, headers) => {
       const zendeskUserId = get(resp, "response.data.users.0.id");
       return zendeskUserId;
     }
-    logger.debug("Failed in fetching User details");
+    logger.debug(`${NAME}:: Failed in fetching User details`);
   } catch (error) {
     logger.debug(
-      `Cannot get userId for externalId : ${externalId}`,
+      `${NAME}:: Cannot get userId for externalId : ${externalId}`,
       error.response
     );
     return undefined;
   }
 };
 
-async function getUserId(message, headers, type) {
+async function getUserId(message, headers, baseEndpoint, type) {
   const traits =
     type === "group"
       ? get(message, "context.traits")
       : getFieldValueFromMessage(message, "traits");
   const userEmail = traits?.email || traits?.primaryEmail;
   if (!userEmail) {
-    logger.debug("Email ID is required for getting zenuserId");
+    logger.debug(`${NAME}:: Email ID is required for getting zenuserId`);
     return undefined;
   }
-  const url = `${endPoint}users/search.json?query=${userEmail}`;
-  // let url  = endPoint + `users/search.json?external_id=${externalId}`;
+  const url = `${baseEndpoint}users/search.json?query=${userEmail}`;
   const config = { headers };
 
   try {
     const resp = await axios.get(url, config);
     if (!resp || !resp.data || resp.data.count === 0) {
-      logger.debug("User not found");
+      logger.debug(`${NAME}:: User not found`);
       return undefined;
     }
 
-    const zendeskUserId = resp.data.users[0].id;
+    const zendeskUserId = resp?.data?.users?.[0]?.id;
     return zendeskUserId;
   } catch (error) {
     // logger.debug(
@@ -285,21 +296,30 @@ async function getUserId(message, headers, type) {
   }
 }
 
-async function isUserAlreadyAssociated(userId, orgId, headers) {
-  const url = `${endPoint}/users/${userId}/organization_memberships.json`;
+async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint) {
+  const url = `${baseEndpoint}/users/${userId}/organization_memberships.json`;
   const config = { headers };
-  const response = await axios.get(url, config);
-  if (
-    response.data &&
-    response.data.organization_memberships.length > 0 &&
-    response.data.organization_memberships[0].organization_id === orgId
-  ) {
-    return true;
+  try {
+    const response = await axios.get(url, config);
+    if (
+      response?.data?.organization_memberships?.[0]?.organization_id === orgId
+    ) {
+      return true;
+    }
+  } catch (error) {
+    logger.debug(`${NAME}:: Error :`);
+    logger.debug(error?.response?.data || error);
   }
   return false;
 }
 
-async function createUser(message, headers, destinationConfig, type) {
+async function createUser(
+  message,
+  headers,
+  destinationConfig,
+  baseEndpoint,
+  type
+) {
   const traits =
     type === "group"
       ? get(message, "context.traits")
@@ -312,7 +332,7 @@ async function createUser(message, headers, destinationConfig, type) {
     userObject.verified = true;
   }
   const category = ConfigCategory.IDENTIFY;
-  const url = endPoint + category.createOrUpdateUserEndpoint;
+  const url = baseEndpoint + category.createOrUpdateUserEndpoint;
   const config = { headers };
   const payload = { user: userObject };
 
@@ -320,12 +340,12 @@ async function createUser(message, headers, destinationConfig, type) {
     const resp = await axios.post(url, payload, config);
 
     if (!resp.data || !resp.data.user || !resp.data.user.id) {
-      logger.debug(`Couldn't create User: ${name}`);
+      logger.debug(`${NAME}:: Couldn't create User: ${name}`);
       throw new NetworkInstrumentationError("user not found");
     }
 
-    const userID = resp.data.user.id;
-    const userEmail = resp.data.user.email;
+    const userID = resp?.data?.user?.id;
+    const userEmail = resp?.data?.user.email;
     return { zendeskUserId: userID, email: userEmail };
   } catch (error) {
     logger.debug(error);
@@ -338,10 +358,11 @@ async function getUserMembershipPayload(
   message,
   headers,
   orgId,
-  destinationConfig
+  destinationConfig,
+  baseEndpoint
 ) {
   // let zendeskUserID = await getUserId(message.userId, headers);
-  let zendeskUserID = await getUserId(message, headers, "group");
+  let zendeskUserID = await getUserId(message, headers, baseEndpoint, "group");
   const traits = get(message, "context.traits");
   if (!zendeskUserID) {
     if (traits && traits.name && traits.email) {
@@ -349,6 +370,7 @@ async function getUserMembershipPayload(
         message,
         headers,
         destinationConfig,
+        baseEndpoint,
         "group"
       );
       zendeskUserID = zendeskUserId;
@@ -370,13 +392,15 @@ async function createOrganization(
   message,
   category,
   headers,
-  destinationConfig
+  destinationConfig,
+  baseEndpoint
 ) {
   await checkAndCreateUserFields(
     message.traits,
     category.organizationFieldsEndpoint,
     category.organizationFieldsJson,
-    headers
+    headers,
+    baseEndpoint
   );
   const mappingJson = mappingConfig[category.name];
   const payload = constructPayload(message, mappingJson);
@@ -408,21 +432,25 @@ async function createOrganization(
     return payload;
   }
 
-  const url = endPoint + category.createEndpoint;
+  const url = baseEndpoint + category.createEndpoint;
   const config = { headers };
 
   try {
     const resp = await axios.post(url, payload, config);
 
     if (!resp.data || !resp.data.organization) {
-      logger.debug(`Couldn't create Organization: ${message.traits.name}`);
+      logger.debug(
+        `${NAME}:: Couldn't create Organization: ${message.traits.name}`
+      );
       return undefined;
     }
 
-    const orgId = resp.data.organization.id;
+    const orgId = resp?.data?.organization?.id;
     return orgId;
   } catch (error) {
-    logger.debug(`Couldn't create Organization: ${message.traits.name}`);
+    logger.debug(
+      `${NAME}:: Couldn't create Organization: ${message.traits.name}`
+    );
     return undefined;
   }
 }
@@ -436,7 +464,12 @@ function validateUserId(message) {
   }
 }
 
-async function processIdentify(message, destinationConfig, headers) {
+async function processIdentify(
+  message,
+  destinationConfig,
+  headers,
+  baseEndpoint
+) {
   validateUserId(message);
   const category = ConfigCategory.IDENTIFY;
   const traits = getFieldValueFromMessage(message, "traits");
@@ -446,7 +479,8 @@ async function processIdentify(message, destinationConfig, headers) {
     getFieldValueFromMessage(message, "traits"),
     category.userFieldsEndpoint,
     category.userFieldsJson,
-    headers
+    headers,
+    baseEndpoint
   );
 
   const payload = getIdentifyPayload(
@@ -455,17 +489,22 @@ async function processIdentify(message, destinationConfig, headers) {
     destinationConfig,
     "identify"
   );
-  const url = endPoint + category.createOrUpdateUserEndpoint;
+  const url = baseEndpoint + category.createOrUpdateUserEndpoint;
   const returnList = [];
 
   if (destinationConfig.searchByExternalId) {
-    const userIdByExternalId = await getUserIdByExternalId(message, headers);
+    const userIdByExternalId = await getUserIdByExternalId(
+      message,
+      headers,
+      baseEndpoint
+    );
     const userEmail = traits?.email;
     if (userIdByExternalId && userEmail) {
       const payloadForUpdatingEmail = await payloadBuilderforUpdatingEmail(
         userIdByExternalId,
         headers,
-        userEmail
+        userEmail,
+        baseEndpoint
       );
       if (!isEmptyObject(payloadForUpdatingEmail))
         returnList.push(payloadForUpdatingEmail);
@@ -479,37 +518,31 @@ async function processIdentify(message, destinationConfig, headers) {
     traits.company.id
   ) {
     const orgId = traits.company.id;
-    const userId = await getUserId(message, headers);
+    const userId = await getUserId(message, headers, baseEndpoint);
     if (userId) {
-      const membershipUrl = `${endPoint}users/${userId}/organization_memberships.json`;
+      const membershipUrl = `${baseEndpoint}users/${userId}/organization_memberships.json`;
       try {
         const config = { headers };
         const response = await axios.get(membershipUrl, config);
-        if (
-          response.data &&
-          response.data.organization_memberships &&
-          response.data.organization_memberships.length > 0
-        ) {
+        if (response?.data?.organization_memberships?.length > 0) {
           if (
-            orgId === response.data.organization_memberships[0].organization_id
+            orgId === response.data.organization_memberships[0]?.organization_id
           ) {
-            const membershipId = response.data.organization_memberships[0].id;
+            const membershipId = response.data.organization_memberships[0]?.id;
             const deleteResponse = defaultRequestConfig();
 
-            deleteResponse.endpoint = `${endPoint}users/${userId}/organization_memberships/${membershipId}.json`;
+            deleteResponse.endpoint = `${baseEndpoint}users/${userId}/organization_memberships/${membershipId}.json`;
             deleteResponse.method = defaultDeleteRequestConfig.requestMethod;
             deleteResponse.headers = {
               ...headers,
-              "X-Zendesk-Marketplace-Name": ZENDESK_MARKET_PLACE_NAME,
-              "X-Zendesk-Marketplace-Organization-Id": ZENDESK_MARKET_PLACE_ORG_ID,
-              "X-Zendesk-Marketplace-App-Id": ZENDESK_MARKET_PLACE_APP_ID
+              ...DEFAULT_HEADERS
             };
             deleteResponse.userId = message.anonymousId;
             returnList.push(deleteResponse);
           }
         }
       } catch (error) {
-        logger.debug(error);
+        logger.debug(`${NAME}:: ${error}`);
       }
     }
   }
@@ -518,7 +551,7 @@ async function processIdentify(message, destinationConfig, headers) {
   return returnList;
 }
 
-async function processTrack(message, destinationConfig, headers) {
+async function processTrack(message, destinationConfig, headers, baseEndpoint) {
   validateUserId(message);
   const traits = getFieldValueFromMessage(message, "traits");
   let userEmail;
@@ -530,25 +563,40 @@ async function processTrack(message, destinationConfig, headers) {
   }
   let zendeskUserID;
 
-  let url = `${endPoint}users/search.json?query=${userEmail}`;
+  const url = `${baseEndpoint}users/search.json?query=${userEmail}`;
   const config = { headers };
-  const userResponse = await axios.get(url, config);
-  if (!get(userResponse, "data.users.0.id") || userResponse.data.count === 0) {
-    const { zendeskUserId, email } = await createUser(
-      message,
-      headers,
-      destinationConfig
+  try {
+    const userResponse = await axios.get(url, config);
+    if (
+      !get(userResponse, "data.users.0.id") ||
+      userResponse.data.count === 0
+    ) {
+      const { zendeskUserId, email } = await createUser(
+        message,
+        headers,
+        destinationConfig,
+        baseEndpoint
+      );
+      if (!zendeskUserId) {
+        throw new NetworkInstrumentationError("User not found");
+      }
+      if (!email) {
+        throw new NetworkInstrumentationError("User email not found", 400);
+      }
+      zendeskUserID = zendeskUserId;
+      userEmail = email;
+    }
+    zendeskUserID = zendeskUserID || userResponse?.data?.users?.[0]?.id;
+  } catch (error) {
+    throw new NetworkError(
+      `Failed to fetch user with email: ${userEmail} due to ${error.message}`,
+      error.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(error.status)
+      },
+      error?.response?.data || error?.response || error
     );
-    if (!zendeskUserId) {
-      throw new NetworkInstrumentationError("User not found");
-    }
-    if (!email) {
-      throw new NetworkInstrumentationError("User email not found", 400);
-    }
-    zendeskUserID = zendeskUserId;
-    userEmail = email;
   }
-  zendeskUserID = zendeskUserID || userResponse.data.users[0].id;
 
   const eventObject = {};
   eventObject.description = message.event;
@@ -562,13 +610,18 @@ async function processTrack(message, destinationConfig, headers) {
   profileObject.identifiers = [{ type: "email", value: userEmail }];
 
   const eventPayload = { event: eventObject, profile: profileObject };
-  url = `${endPoint}users/${zendeskUserID}/events`;
+  const eventEndpoint = `${baseEndpoint}users/${zendeskUserID}/events`;
 
-  const response = responseBuilder(message, headers, eventPayload, url);
+  const response = responseBuilder(
+    message,
+    headers,
+    eventPayload,
+    eventEndpoint
+  );
   return response;
 }
 
-async function processGroup(message, destinationConfig, headers) {
+async function processGroup(message, destinationConfig, headers, baseEndpoint) {
   const category = ConfigCategory.GROUP;
   let payload;
   let url;
@@ -578,16 +631,18 @@ async function processGroup(message, destinationConfig, headers) {
       message,
       category,
       headers,
-      destinationConfig
+      destinationConfig,
+      baseEndpoint
     );
-    url = endPoint + category.createEndpoint;
+    url = baseEndpoint + category.createEndpoint;
   } else {
     validateUserId(message);
     const orgId = await createOrganization(
       message,
       category,
       headers,
-      destinationConfig
+      destinationConfig,
+      baseEndpoint
     );
     if (!orgId) {
       throw new NetworkInstrumentationError(
@@ -600,12 +655,13 @@ async function processGroup(message, destinationConfig, headers) {
       message,
       headers,
       orgId,
-      destinationConfig
+      destinationConfig,
+      baseEndpoint
     );
-    url = endPoint + category.userMembershipEndpoint;
+    url = baseEndpoint + category.userMembershipEndpoint;
 
     const userId = payload.organization_membership.user_id;
-    if (await isUserAlreadyAssociated(userId, orgId, headers)) {
+    if (await isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint)) {
       throw new InstrumentationError(
         "User is already associated with organization"
       );
@@ -618,17 +674,16 @@ async function processGroup(message, destinationConfig, headers) {
   // category = ConfigCategory.IDENTIFY;
   // payload = getIdentifyPayload(message, category, destinationConfig, "group");
   // payload.user.organization_id = orgId;
-  // url = endPoint + category.createOrUpdateUserEndpoint;
+  // url = baseEndpoint + category.createOrUpdateUserEndpoint;
   // return responseBuilder(message, headers, payload, url);
 
   return responseBuilder(message, headers, payload, url);
 }
 
 async function processSingleMessage(event) {
-  const { message } = event;
   const destinationConfig = event.destination.Config;
-  const messageType = message.type.toLowerCase();
   const unencodedBase64Str = `${destinationConfig.email}/token:${destinationConfig.apiToken}`;
+  const baseEndpoint = getBaseEndpoint(destinationConfig.domain);
   const headers = {
     Authorization: `Basic ${Buffer.from(unencodedBase64Str).toString(
       "base64"
@@ -636,22 +691,23 @@ async function processSingleMessage(event) {
     "Content-Type": "application/json"
   };
 
-  switch (messageType) {
+  const { message } = event;
+  const evType = getEventType(message);
+  switch (evType) {
     case EventType.IDENTIFY:
-      return processIdentify(message, destinationConfig, headers);
+      return processIdentify(message, destinationConfig, headers, baseEndpoint);
     case EventType.GROUP:
-      return processGroup(message, destinationConfig, headers);
+      return processGroup(message, destinationConfig, headers, baseEndpoint);
     case EventType.TRACK:
-      return processTrack(message, destinationConfig, headers);
+      return processTrack(message, destinationConfig, headers, baseEndpoint);
     default:
       throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
+        `Event type ${evType} is not supported`
       );
   }
 }
 
 async function process(event) {
-  endPoint = `https://${event.destination.Config.domain}.zendesk.com/api/v2/`;
   const resp = await processSingleMessage(event);
   return resp;
 }

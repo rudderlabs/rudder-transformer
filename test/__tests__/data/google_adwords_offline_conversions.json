@@ -1367,7 +1367,7 @@
           "developer_token": "ijkl91011"
         }
       },
-      "statusCode": 500,
+      "statusCode": 400,
       "error": "Event name 'purchase' is not valid",
       "statTags": {
         "destination": "google_adwords_offline_conversions",
@@ -2695,7 +2695,7 @@
       "metadata": {
         "secret": null
       },
-      "statusCode": 500,
+      "statusCode": 400,
       "error": "loginCustomerId is required as subAccount is enabled",
       "statTags": {
         "destination": "google_adwords_offline_conversions",

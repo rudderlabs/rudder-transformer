@@ -21,7 +21,7 @@ const getInsertIdColValue = (properties, insertIdCol) => {
   return null;
 };
 
-const process = async (event) => {
+const process = (event) => {
   const { message } = event;
   const { properties, type } = message;
   // EventType validation
@@ -97,7 +97,7 @@ const batchEvents = (eventsChunk) => {
   return batchedResponseList;
 };
 
-const processRouterDest = async (inputs) => {
+const processRouterDest = (inputs) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
@@ -105,7 +105,7 @@ const processRouterDest = async (inputs) => {
 
   const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];
-  await Promise.all(
+  Promise.all(
     inputs.map(async (event) => {
       try {
         if (event.message.statusCode) {
@@ -113,7 +113,7 @@ const processRouterDest = async (inputs) => {
           eventsChunk.push(event);
         } else {
           // if not transformed
-          let response = await process(event);
+          let response = process(event);
           response = Array.isArray(response) ? response : [response];
           response.forEach((res) => {
             eventsChunk.push({

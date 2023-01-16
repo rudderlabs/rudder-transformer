@@ -55,7 +55,6 @@ Now you can run `make test`.
 
 If you wish you can destroy the cluster manually with `make destroy`.
 
-
 ## Contact Us
 
 If you come across any issues while setting up or running the RudderStack Transformer, feel free to start a conversation on our [Slack](https://resources.rudderstack.com/join-rudderstack-slack) channel.

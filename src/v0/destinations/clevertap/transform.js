@@ -1,13 +1,13 @@
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-nested-ternary */
-const get = require("get-value");
-const { EventType } = require("../../../constants");
+const get = require('get-value');
+const { EventType } = require('../../../constants');
 const {
   getEndpoint,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
-  CLEVERTAP_DEFAULT_EXCLUSION
-} = require("./config");
+  CLEVERTAP_DEFAULT_EXCLUSION,
+} = require('./config');
 
 const {
   defaultRequestConfig,
@@ -18,12 +18,9 @@ const {
   removeUndefinedAndNullValues,
   toUnixTimestamp,
   isAppleFamily,
-  simpleProcessRouterDest
-} = require("../../util");
-const {
-  InstrumentationError,
-  TransformationError
-} = require("../../util/errorTypes");
+  simpleProcessRouterDest,
+} = require('../../util');
+const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 
 /*
 Following behaviour is expected when "enableObjectIdMapping" is enabled
@@ -52,9 +49,9 @@ const responseWrapper = (payload, destination) => {
   response.endpoint = getEndpoint(destination.Config);
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    "X-CleverTap-Account-Id": destination.Config.accountId,
-    "X-CleverTap-Passcode": destination.Config.passcode,
-    "Content-Type": "application/json"
+    'X-CleverTap-Account-Id': destination.Config.accountId,
+    'X-CleverTap-Passcode': destination.Config.passcode,
+    'Content-Type': 'application/json',
   };
   response.body.JSON = payload;
   return response;
@@ -82,14 +79,11 @@ const responseWrapper = (payload, destination) => {
  * @returns
  * return the final payload after converting to the relevant data-types.
  */
-const convertObjectAndArrayToString = payload => {
+const convertObjectAndArrayToString = (payload) => {
   const finalPayload = {};
   if (payload) {
-    Object.keys(payload).forEach(key => {
-      if (
-        payload[key] &&
-        (Array.isArray(payload[key]) || typeof payload[key] === "object")
-      ) {
+    Object.keys(payload).forEach((key) => {
+      if (payload[key] && (Array.isArray(payload[key]) || typeof payload[key] === 'object')) {
         finalPayload[key] = JSON.stringify(payload[key]);
       } else {
         finalPayload[key] = payload[key];
@@ -101,12 +95,12 @@ const convertObjectAndArrayToString = payload => {
 
 // generates clevertap identify payload with both objectId and identity
 const mapIdentifyPayloadWithObjectId = (message, profile) => {
-  const userId = getFieldValueFromMessage(message, "userIdOnly");
-  const anonymousId = get(message, "anonymousId");
+  const userId = getFieldValueFromMessage(message, 'userIdOnly');
+  const anonymousId = get(message, 'anonymousId');
   const payload = {
-    type: "profile",
+    type: 'profile',
     profileData: profile,
-    ts: get(message, "traits.ts") || get(message, "context.traits.ts")
+    ts: get(message, 'traits.ts') || get(message, 'context.traits.ts'),
   };
 
   // If timestamp is not in unix format
@@ -126,7 +120,7 @@ const mapIdentifyPayloadWithObjectId = (message, profile) => {
     payload.identity = userId;
   }
   return {
-    d: [payload]
+    d: [payload],
   };
 };
 
@@ -135,12 +129,12 @@ const mapIdentifyPayload = (message, profile) => {
   const payload = {
     d: [
       {
-        type: "profile",
+        type: 'profile',
         profileData: profile,
-        ts: get(message, "traits.ts") || get(message, "context.traits.ts"),
-        identity: getFieldValueFromMessage(message, "userId")
-      }
-    ]
+        ts: get(message, 'traits.ts') || get(message, 'context.traits.ts'),
+        identity: getFieldValueFromMessage(message, 'userId'),
+      },
+    ],
   };
 
   // If timestamp is not in unix format
@@ -150,16 +144,16 @@ const mapIdentifyPayload = (message, profile) => {
   return payload;
 };
 
-const mapAliasPayload = message => {
+const mapAliasPayload = (message) => {
   const payload = {
     d: [
       {
-        type: "profile",
+        type: 'profile',
         profileData: { identity: message.userId },
-        ts: get(message, "traits.ts") || get(message, "context.traits.ts"),
-        identity: message.previousId
-      }
-    ]
+        ts: get(message, 'traits.ts') || get(message, 'context.traits.ts'),
+        identity: message.previousId,
+      },
+    ],
   };
 
   // If timestamp is not in unix format
@@ -171,8 +165,8 @@ const mapAliasPayload = message => {
 
 // generates clevertap tracking payload with objectId or identity
 const mapTrackPayloadWithObjectId = (message, eventPayload) => {
-  const userId = getFieldValueFromMessage(message, "userIdOnly");
-  const anonymousId = get(message, "anonymousId");
+  const userId = getFieldValueFromMessage(message, 'userIdOnly');
+  const anonymousId = get(message, 'anonymousId');
   if (anonymousId) {
     // If anonymousId is present set it as objectId in root
     eventPayload.objectId = anonymousId;
@@ -181,16 +175,14 @@ const mapTrackPayloadWithObjectId = (message, eventPayload) => {
     eventPayload.identity = userId;
   } else {
     // Flow should not reach here fail safety
-    throw InstrumentationError(
-      "Unable to process without anonymousId or userId"
-    );
+    throw InstrumentationError('Unable to process without anonymousId or userId');
   }
   return eventPayload;
 };
 
 // generates clevertap tracking payload with only identity
 const mapTrackPayload = (message, eventPayload) => {
-  eventPayload.identity = getFieldValueFromMessage(message, "userId");
+  eventPayload.identity = getFieldValueFromMessage(message, 'userId');
   return eventPayload;
 };
 
@@ -200,20 +192,20 @@ const getClevertapProfile = (message, category) => {
   let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
   if (
-    !get(profile, "Name") &&
-    getFieldValueFromMessage(message, "firstName") &&
-    getFieldValueFromMessage(message, "lastName")
+    !get(profile, 'Name') &&
+    getFieldValueFromMessage(message, 'firstName') &&
+    getFieldValueFromMessage(message, 'lastName')
   ) {
-    profile.Name = `${getFieldValueFromMessage(
+    profile.Name = `${getFieldValueFromMessage(message, 'firstName')} ${getFieldValueFromMessage(
       message,
-      "firstName"
-    )} ${getFieldValueFromMessage(message, "lastName")}`;
+      'lastName',
+    )}`;
   }
   profile = extractCustomFields(
     message,
     profile,
-    ["traits", "context.traits"],
-    CLEVERTAP_DEFAULT_EXCLUSION
+    ['traits', 'context.traits'],
+    CLEVERTAP_DEFAULT_EXCLUSION,
   );
   profile = convertObjectAndArrayToString(profile);
   return removeUndefinedAndNullValues(profile);
@@ -224,7 +216,7 @@ const responseBuilderSimple = (message, category, destination) => {
   // For identify type of events we require a specific type of payload
   // Source: https://developer.clevertap.com/docs/upload-user-profiles-api
   // ---------------------------------------------------------------------
-  if (category.type === "identify") {
+  if (category.type === 'identify') {
     const profile = getClevertapProfile(message, category);
     if (destination.Config.enableObjectIdMapping) {
       payload = mapIdentifyPayloadWithObjectId(message, profile);
@@ -233,28 +225,28 @@ const responseBuilderSimple = (message, category, destination) => {
       // object is the upload device token payload
       // TO use uploadDeviceToken api "enableObjectIdMapping" should be enabled
       // also anoymousId should be present to map it with objectId
-      const deviceToken = get(message, "context.device.token");
-      let deviceOS = get(message, "context.os.name");
+      const deviceToken = get(message, 'context.device.token');
+      let deviceOS = get(message, 'context.os.name');
       if (deviceOS) {
         deviceOS = deviceOS.toLowerCase();
       }
       if (
-        get(message, "anonymousId") &&
+        get(message, 'anonymousId') &&
         deviceToken &&
-        (deviceOS === "android" || isAppleFamily(deviceOS))
+        (deviceOS === 'android' || isAppleFamily(deviceOS))
       ) {
-        const tokenType = deviceOS === "android" ? "fcm" : "apns";
+        const tokenType = deviceOS === 'android' ? 'fcm' : 'apns';
         const payloadForDeviceToken = {
           d: [
             {
-              type: "token",
+              type: 'token',
               tokenData: {
                 id: deviceToken,
-                type: tokenType
+                type: tokenType,
               },
-              objectId: get(message, "anonymousId")
-            }
-          ]
+              objectId: get(message, 'anonymousId'),
+            },
+          ],
         };
         const respArr = [];
         respArr.push(responseWrapper(payload, destination)); // identify
@@ -264,42 +256,31 @@ const responseBuilderSimple = (message, category, destination) => {
     } else {
       payload = mapIdentifyPayload(message, profile);
     }
-  } else if (category.type === "alias") {
+  } else if (category.type === 'alias') {
     // const profile = getClevertapProfile(message, category);
     payload = mapAliasPayload(message);
   } else {
     // If trackAnonymous option is disabled from dashboard then we will check for presence of userId only
     // if userId is not present we will throw error. If it is enabled we will process the event with anonId.
-    if (
-      !destination.Config.trackAnonymous &&
-      !getFieldValueFromMessage(message, "userIdOnly")
-    ) {
-      throw new InstrumentationError(
-        "userId, not present cannot track anonymous user"
-      );
+    if (!destination.Config.trackAnonymous && !getFieldValueFromMessage(message, 'userIdOnly')) {
+      throw new InstrumentationError('userId, not present cannot track anonymous user');
     }
     let eventPayload;
     // For 'Order Completed' type of events we are mapping it as 'Charged'
     // Special event in Clevertap.
     // Source: https://developer.clevertap.com/docs/concepts-events#recording-customer-purchases
-    if (
-      get(message.event) &&
-      get(message.event).toLowerCase() === "order completed"
-    ) {
+    if (get(message.event) && get(message.event).toLowerCase() === 'order completed') {
       eventPayload = {
-        evtName: "Charged",
-        evtData: constructPayload(
-          message,
-          MAPPING_CONFIG[CONFIG_CATEGORIES.ECOM.name]
-        ),
-        ts: get(message, "properties.ts")
+        evtName: 'Charged',
+        evtData: constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.ECOM.name]),
+        ts: get(message, 'properties.ts'),
       };
 
       eventPayload.evtData = extractCustomFields(
         message,
         eventPayload.evtData,
-        ["properties"],
-        ["checkout_id", "revenue", "products", "ts"]
+        ['properties'],
+        ['checkout_id', 'revenue', 'products', 'ts'],
       );
     }
     // For other type of events we need to follow payload for sending events
@@ -308,12 +289,10 @@ const responseBuilderSimple = (message, category, destination) => {
     else {
       eventPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
     }
-    eventPayload.type = "event";
+    eventPayload.type = 'event';
     // stringify the evtData if it's an Object or array.
     if (eventPayload.evtData) {
-      eventPayload.evtData = convertObjectAndArrayToString(
-        eventPayload.evtData
-      );
+      eventPayload.evtData = convertObjectAndArrayToString(eventPayload.evtData);
     }
 
     // setting identification for tracking payload here based on destination config
@@ -329,7 +308,7 @@ const responseBuilderSimple = (message, category, destination) => {
     }
 
     payload = {
-      d: [removeUndefinedAndNullValues(eventPayload)]
+      d: [removeUndefinedAndNullValues(eventPayload)],
     };
   }
 
@@ -337,15 +316,13 @@ const responseBuilderSimple = (message, category, destination) => {
     return responseWrapper(payload, destination);
   }
   // fail-safety for developer error
-  throw new TransformationError("Payload could not be constructed");
+  throw new TransformationError('Payload could not be constructed');
 };
 // Main Process func for processing events
 // Idnetify, Track, Screen, and Page calls are supported
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new InstrumentationError(
-      "Message Type is not present. Aborting message."
-    );
+    throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
   const messageType = message.type.toLowerCase();
 
@@ -367,14 +344,12 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.ALIAS;
       break;
     default:
-      throw new InstrumentationError("Message type not supported");
+      throw new InstrumentationError('Message type not supported');
   }
   return responseBuilderSimple(message, category, destination);
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

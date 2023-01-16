@@ -1,21 +1,15 @@
-const path = require("path");
-const fs = require("fs");
-const Message = require("../message");
-const { generateUUID } = require("../../util");
-const { TransformationError } = require("../../util/errorTypes");
+const path = require('path');
+const fs = require('fs');
+const Message = require('../message');
+const { generateUUID } = require('../../util');
+const { TransformationError } = require('../../util/errorTypes');
 
-const mappingJson = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
-);
+const mappingJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
-const {
-  removeUndefinedAndNullValues,
-  isObject,
-  isAppleFamily
-} = require("../../util");
+const { removeUndefinedAndNullValues, isObject, isAppleFamily } = require('../../util');
 
 function processEvent(event) {
-  const messageType = "track";
+  const messageType = 'track';
 
   if (event.event_name) {
     const eventName = event.event_name;
@@ -26,13 +20,13 @@ function processEvent(event) {
     message.setEventName(eventName);
 
     const properties = { ...event };
-    message.setProperty("properties", properties);
+    message.setProperty('properties', properties);
 
     // set fields in payload from mapping json
     message.setProperties(event, mappingJson);
 
     // Remove the fields from properties that are already mapped to other fields.
-    Object.keys(mappingJson).forEach(key => {
+    Object.keys(mappingJson).forEach((key) => {
       if (message.properties && message.properties[key] !== undefined) {
         delete message.properties[key];
       }
@@ -45,7 +39,7 @@ function processEvent(event) {
     if (event.platform) {
       if (isAppleFamily(event.platform)) {
         message.context.device.advertisingId = event.idfa;
-      } else if (event.platform.toLowerCase() === "android") {
+      } else if (event.platform.toLowerCase() === 'android') {
         message.context.device.advertisingId = event.android_id;
       }
       // remove idfa from message properties as it is already mapped.
@@ -64,20 +58,20 @@ function processEvent(event) {
     if (event.appsflyer_id) {
       message.context.externalId = [
         {
-          type: "appsflyerExternalId",
-          value: event.appsflyer_id
-        }
+          type: 'appsflyerExternalId',
+          value: event.appsflyer_id,
+        },
       ];
       // remove appsflyer_id from message properties as it is already mapped.
       if (message.properties && message.properties.appsflyer_id !== undefined) {
         delete message.properties.appsflyer_id;
       }
     }
-    message.setProperty("anonymousId", generateUUID());
+    message.setProperty('anonymousId', generateUUID());
 
     return message;
   }
-  throw new TransformationError("Unknwon event type from Appsflyer");
+  throw new TransformationError('Unknwon event type from Appsflyer');
 }
 
 function process(event) {

@@ -96,9 +96,7 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": [
-              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
-            ]
+            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
           },
           "JSON": {}
         },
@@ -215,12 +213,7 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/batch"
       },
-      "metadata": [
-        { "job_id": 2 },
-        { "job_id": 3 },
-        { "job_id": 4 },
-        { "job_id": 5 }
-      ],
+      "metadata": [{ "job_id": 2 }, { "job_id": 3 }, { "job_id": 4 }, { "job_id": 5 }],
       "destination": {
         "ID": "a",
         "url": "a",
@@ -323,9 +316,7 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": [
-              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
-            ]
+            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
           },
           "JSON": {}
         },
@@ -442,12 +433,7 @@
         "version": "1",
         "endpoint": "https://api2.amplitude.com/batch"
       },
-      "metadata": [
-        { "job_id": 2 },
-        { "job_id": 3 },
-        { "job_id": 4 },
-        { "job_id": 5 }
-      ],
+      "metadata": [{ "job_id": 2 }, { "job_id": 3 }, { "job_id": 4 }, { "job_id": 5 }],
       "destination": {
         "ID": "a",
         "url": "a",
@@ -706,9 +692,7 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": [
-              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
-            ]
+            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
           },
           "JSON": {}
         },
@@ -983,9 +967,7 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": [
-              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
-            ]
+            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
           },
           "JSON": {}
         },

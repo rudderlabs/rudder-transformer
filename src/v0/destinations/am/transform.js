@@ -1,14 +1,14 @@
 /* eslint-disable no-lonely-if */
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-param-reassign */
-const get = require("get-value");
-const set = require("set-value");
+const get = require('get-value');
+const set = require('set-value');
 const {
   EventType,
   SpecedTraits,
   TraitsMapping,
-  MappedToDestinationKey
-} = require("../../../constants");
+  MappedToDestinationKey,
+} = require('../../../constants');
 const {
   addExternalIdToTraits,
   adduserIdFromExternalId,
@@ -25,33 +25,30 @@ const {
   isDefinedAndNotNull,
   isAppleFamily,
   isDefinedAndNotNullAndNotEmpty,
-  simpleProcessRouterDest
-} = require("../../util");
+  simpleProcessRouterDest,
+} = require('../../util');
 const {
   BASE_URL,
   BASE_URL_EU,
   ConfigCategory,
   mappingConfig,
   batchEventsWithUserIdLengthLowerThanFive,
-  IDENTIFY_AM
-} = require("./config");
-const {
-  client: errNotificationClient
-} = require("../../../util/errorNotifier");
-const tags = require("../../util/tags");
+  IDENTIFY_AM,
+} = require('./config');
+const tags = require('../../util/tags');
 
-const AMUtils = require("./utils");
+const AMUtils = require('./utils');
 
-const logger = require("../../../logger");
-const { InstrumentationError } = require("../../util/errorTypes");
+const logger = require('../../../logger');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
 const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
 
-const baseEndpoint = destConfig => {
+const baseEndpoint = (destConfig) => {
   let retVal;
   switch (destConfig.residencyServer) {
-    case "EU":
+    case 'EU':
       retVal = BASE_URL_EU;
       break;
     default:
@@ -61,50 +58,45 @@ const baseEndpoint = destConfig => {
   return retVal;
 };
 
-const defaultEndpoint = destConfig => {
+const defaultEndpoint = (destConfig) => {
   const retVal = `${baseEndpoint(destConfig)}/2/httpapi`;
   return retVal;
 };
 
-const identifyEndpoint = destConfig => {
-  const retVal = `${baseEndpoint(destConfig)}/identify`;
-  return retVal;
-};
-
-const batchEndpoint = destConfig => {
+const batchEndpoint = (destConfig) => {
   const retVal = `${baseEndpoint(destConfig)}/batch`;
   return retVal;
 };
 
-const groupEndpoint = destConfig => {
+const groupEndpoint = (destConfig) => {
   const retVal = `${baseEndpoint(destConfig)}/groupidentify`;
   return retVal;
 };
 
-const aliasEndpoint = destConfig => {
+const aliasEndpoint = (destConfig) => {
   const retVal = `${baseEndpoint(destConfig)}/usermap`;
   return retVal;
 };
 
 function handleSessionIdUnderRoot(message) {
-  const sessionId = get(message, "session_id");
-  if (typeof sessionId === "string") {
-    return sessionId.substr(sessionId.lastIndexOf(":") + 1, sessionId.length);
+  const sessionId = get(message, 'session_id');
+  if (typeof sessionId === 'string') {
+    return sessionId.substr(sessionId.lastIndexOf(':') + 1, sessionId.length);
   }
   return sessionId;
 }
 
 function handleSessionIdUnderContext(message) {
-  let sessionId = get(message, "context.sessionId");
+  let sessionId = get(message, 'context.sessionId');
   sessionId = Number(sessionId);
   if (Number.isNaN(sessionId)) return -1;
   return sessionId;
 }
 
 function getSessionId(message) {
-  return get(message, "session_id")
+  return get(message, 'session_id')
     ? handleSessionIdUnderRoot(message)
-    : get(message, "context.sessionId")
+    : get(message, 'context.sessionId')
     ? handleSessionIdUnderContext(message)
     : -1;
 }
@@ -132,9 +124,7 @@ function setPriceQuanityInPayload(message, rawPayload) {
 function createRevenuePayload(message, rawPayload) {
   rawPayload.productId = message.properties.product_id;
   rawPayload.revenueType =
-    message.properties.revenueType ||
-    message.properties.revenue_type ||
-    "Purchased";
+    message.properties.revenueType || message.properties.revenue_type || 'Purchased';
   rawPayload = setPriceQuanityInPayload(message, rawPayload);
   return rawPayload;
 }
@@ -148,7 +138,7 @@ function updateTraitsObject(property, traitsObject, actionKey) {
 
 function prepareTraitsConfig(configPropertyTrait, actionKey, traitsObject) {
   traitsObject[actionKey] = {};
-  configPropertyTrait.forEach(traitsElement => {
+  configPropertyTrait.forEach((traitsElement) => {
     const property = traitsElement.traits;
     traitsObject = updateTraitsObject(property, traitsObject, actionKey);
   });
@@ -159,51 +149,33 @@ function handleTraits(messageTrait, destination) {
   let traitsObject = JSON.parse(JSON.stringify(messageTrait));
 
   if (destination.Config.traitsToIncrement) {
-    const actionKey = "$add";
+    const actionKey = '$add';
     traitsObject = prepareTraitsConfig(
       destination.Config.traitsToIncrement,
       actionKey,
-      traitsObject
+      traitsObject,
     );
   }
   if (destination.Config.traitsToSetOnce) {
-    const actionKey = "$setOnce";
-    traitsObject = prepareTraitsConfig(
-      destination.Config.traitsToSetOnce,
-      actionKey,
-      traitsObject
-    );
+    const actionKey = '$setOnce';
+    traitsObject = prepareTraitsConfig(destination.Config.traitsToSetOnce, actionKey, traitsObject);
   }
   if (destination.Config.traitsToAppend) {
-    const actionKey = "$append";
-    traitsObject = prepareTraitsConfig(
-      destination.Config.traitsToAppend,
-      actionKey,
-      traitsObject
-    );
+    const actionKey = '$append';
+    traitsObject = prepareTraitsConfig(destination.Config.traitsToAppend, actionKey, traitsObject);
   }
   if (destination.Config.traitsToPrepend) {
-    const actionKey = "$prepend";
-    traitsObject = prepareTraitsConfig(
-      destination.Config.traitsToPrepend,
-      actionKey,
-      traitsObject
-    );
+    const actionKey = '$prepend';
+    traitsObject = prepareTraitsConfig(destination.Config.traitsToPrepend, actionKey, traitsObject);
   }
   return traitsObject;
 }
 
-function updateConfigProperty(
-  message,
-  payload,
-  mappingJson,
-  validatePayload,
-  Config
-) {
+function updateConfigProperty(message, payload, mappingJson, validatePayload, Config) {
   const sourceKeys = Object.keys(mappingJson);
-  sourceKeys.forEach(sourceKey => {
+  sourceKeys.forEach((sourceKey) => {
     // check if custom processing is required on the payload sourceKey ==> destKey
-    if (typeof mappingJson[sourceKey] === "object") {
+    if (typeof mappingJson[sourceKey] === 'object') {
       const { isFunc, funcName, outKey } = mappingJson[sourceKey];
       if (isFunc) {
         if (validatePayload) {
@@ -261,10 +233,10 @@ function responseBuilderSimple(
   message,
   evType,
   mappingJson,
-  destination
+  destination,
 ) {
   let rawPayload = {};
-  const addOptions = "options";
+  const addOptions = 'options';
   const respList = [];
   const response = defaultRequestConfig();
   const groupResponse = defaultRequestConfig();
@@ -275,18 +247,15 @@ function responseBuilderSimple(
   let endpoint = defaultEndpoint(destination.Config);
   let traits;
 
-  if (EventType.IDENTIFY) {
-    // If mapped to destination, Add externalId to traits
-    if (get(message, MappedToDestinationKey)) {
-      addExternalIdToTraits(message);
-      const identifierType = get(
-        message,
-        "context.externalId.0.identifierType"
-      );
-      if (identifierType === "user_id") {
-        // this can be either device_id / user_id
-        adduserIdFromExternalId(message);
-      }
+  if (
+    EventType.IDENTIFY && // If mapped to destination, Add externalId to traits
+    get(message, MappedToDestinationKey)
+  ) {
+    addExternalIdToTraits(message);
+    const identifierType = get(message, 'context.externalId.0.identifierType');
+    if (identifierType === 'user_id') {
+      // this can be either device_id / user_id
+      adduserIdFromExternalId(message);
     }
   }
 
@@ -295,26 +264,17 @@ function responseBuilderSimple(
   // because we need to make an identify call too along with group entity update
   // to link the user to the partuclar group name/value. (pass in "groups" key to https://api.amplitude.com/2/httpapi where event_type: $identify)
   // Additionally, we will update the user_properties with groupName:groupValue
-  updateConfigProperty(
-    message,
-    rawPayload,
-    mappingJson,
-    false,
-    destination.Config
-  );
+  updateConfigProperty(message, rawPayload, mappingJson, false, destination.Config);
 
   // 2. get campaign info (only present for JS sdk and http calls)
-  const campaign = get(message, "context.campaign") || {};
+  const campaign = get(message, 'context.campaign') || {};
   const initialRef = {
-    initial_referrer: get(message, "context.page.initial_referrer"),
-    initial_referring_domain: get(
-      message,
-      "context.page.initial_referring_domain"
-    )
+    initial_referrer: get(message, 'context.page.initial_referrer'),
+    initial_referring_domain: get(message, 'context.page.initial_referring_domain'),
   };
   const oldKeys = Object.keys(campaign);
   // appends utm_ prefix to all the keys of campaign object. For example the `name` key in campaign object will be changed to `utm_name`
-  oldKeys.forEach(oldKey => {
+  oldKeys.forEach((oldKey) => {
     Object.assign(campaign, { [`utm_${oldKey}`]: campaign[oldKey] });
     delete campaign[oldKey];
   });
@@ -326,7 +286,7 @@ function responseBuilderSimple(
   rawPayload.user_properties = {
     ...rawPayload.user_properties,
     ...initialRef,
-    ...campaign
+    ...campaign,
   };
 
   switch (evType) {
@@ -339,28 +299,24 @@ function responseBuilderSimple(
       if (evType === EventType.IDENTIFY) {
         // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
         // traits like address converted to top level useproperties (think we can skip this extra processing as AM supports nesting upto 40 levels)
-        traits = getFieldValueFromMessage(message, "traits");
+        traits = getFieldValueFromMessage(message, 'traits');
         if (traits) {
           traits = handleTraits(traits, destination);
         }
         rawPayload.user_properties = {
           ...rawPayload.user_properties,
-          ...message.userProperties
+          ...message.userProperties,
         };
         if (traits) {
-          Object.keys(traits).forEach(trait => {
+          Object.keys(traits).forEach((trait) => {
             if (SpecedTraits.includes(trait)) {
               const mapping = TraitsMapping[trait];
-              Object.keys(mapping).forEach(key => {
+              Object.keys(mapping).forEach((key) => {
                 const checkKey = get(rawPayload.user_properties, key);
                 // this is done only if we want to add default values under address to the user_properties
                 // these values are also sent to the destination at the top level.
                 if (!isDefinedAndNotNull(checkKey)) {
-                  set(
-                    rawPayload,
-                    `user_properties.${key}`,
-                    get(traits, mapping[key])
-                  );
+                  set(rawPayload, `user_properties.${key}`, get(traits, mapping[key]));
                 }
               });
             } else {
@@ -370,31 +326,29 @@ function responseBuilderSimple(
         }
       }
 
-      if (evType === EventType.GROUP) {
-        // for Rudder group call, update the user_properties with group info
+      if (
+        evType === EventType.GROUP && // for Rudder group call, update the user_properties with group info
         // Refer (1.)
-        if (groupInfo && groupInfo.group_type && groupInfo.group_value) {
-          groups = {};
-          groups[groupInfo.group_type] = groupInfo.group_value;
-          set(
-            rawPayload,
-            `user_properties.${[groupInfo.group_type]}`,
-            groupInfo.group_value
-          );
-        }
+        groupInfo &&
+        groupInfo.group_type &&
+        groupInfo.group_value
+      ) {
+        groups = {};
+        groups[groupInfo.group_type] = groupInfo.group_value;
+        set(rawPayload, `user_properties.${[groupInfo.group_type]}`, groupInfo.group_value);
       }
       break;
     case EventType.ALIAS:
       endpoint = aliasEndpoint(destination.Config);
       break;
     default:
-      traits = getFieldValueFromMessage(message, "traits");
-      set(rawPayload, "event_properties", message.properties);
+      traits = getFieldValueFromMessage(message, 'traits');
+      set(rawPayload, 'event_properties', message.properties);
 
       if (traits) {
         rawPayload.user_properties = {
           ...rawPayload.user_properties,
-          ...traits
+          ...traits,
         };
       }
 
@@ -417,7 +371,7 @@ function responseBuilderSimple(
   // for  https://api.amplitude.com/2/httpapi , pass the "groups" key
   // refer (1.) for passing "groups" for Rudder group call
   // https://developers.amplitude.com/docs/http-api-v2#schemaevent
-  set(rawPayload, "groups", groups);
+  set(rawPayload, 'groups', groups);
   let payload = removeUndefinedValues(rawPayload);
   let unmapUserId;
   switch (evType) {
@@ -425,7 +379,7 @@ function responseBuilderSimple(
       // By default (1.), Alias config file populates user_id and global_user_id
       // if the alias Rudder call has unmap set, delete the global_user_id key from AM event payload
       // https://help.amplitude.com/hc/en-us/articles/360002750712-Portfolio-Cross-Project-Analysis#h_76557c8b-54cd-4e28-8c82-2f6778f65cd4
-      unmapUserId = get(message, "integrations.Amplitude.unmap");
+      unmapUserId = get(message, 'integrations.Amplitude.unmap');
       if (unmapUserId) {
         payload.user_id = unmapUserId;
         delete payload.global_user_id;
@@ -437,43 +391,37 @@ function responseBuilderSimple(
       payload = removeUndefinedValues(payload);
       aliasResponse.body.FORM = {
         api_key: destination.Config.apiKey,
-        [rootElementName]: [JSON.stringify(payload)]
+        [rootElementName]: [JSON.stringify(payload)],
       };
       respList.push(aliasResponse);
       break;
     default:
-      if (message.channel === "mobile") {
+      if (message.channel === 'mobile') {
         if (!destination.Config.mapDeviceBrand) {
-          set(
-            payload,
-            "device_brand",
-            get(message, "context.device.manufacturer")
-          );
+          set(payload, 'device_brand', get(message, 'context.device.manufacturer'));
         }
 
-        const deviceId = get(message, "context.device.id");
-        const platform = get(message, "context.device.type");
-        const advertId = get(message, "context.device.advertisingId");
+        const deviceId = get(message, 'context.device.id');
+        const platform = get(message, 'context.device.type');
+        const advertId = get(message, 'context.device.advertisingId');
 
         if (platform) {
           if (isAppleFamily(platform)) {
-            set(payload, "idfa", advertId);
-            set(payload, "idfv", deviceId);
-          } else if (platform.toLowerCase() === "android") {
-            set(payload, "adid", advertId);
+            set(payload, 'idfa', advertId);
+            set(payload, 'idfv', deviceId);
+          } else if (platform.toLowerCase() === 'android') {
+            set(payload, 'adid', advertId);
           }
         }
       }
 
-      payload.time = new Date(
-        getFieldValueFromMessage(message, "timestamp")
-      ).getTime();
+      payload.time = new Date(getFieldValueFromMessage(message, 'timestamp')).getTime();
 
       // send user_id only when present, for anonymous users not required
       if (
         message.userId &&
-        message.userId !== "" &&
-        message.userId !== "null" &&
+        message.userId !== '' &&
+        message.userId !== 'null' &&
         message.userId !== null
       ) {
         payload.user_id = message.userId;
@@ -485,7 +433,7 @@ function responseBuilderSimple(
         payload,
         mappingConfig[ConfigCategory.COMMON_CONFIG.name],
         true,
-        destination.Config
+        destination.Config,
       );
 
       // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
@@ -503,25 +451,23 @@ function responseBuilderSimple(
       }
 
       if (!payload.user_id && !payload.device_id) {
-        logger.debug("Either of user ID or device ID fields must be specified");
-        throw new InstrumentationError(
-          "Either of user ID or device ID fields must be specified"
-        );
+        logger.debug('Either of user ID or device ID fields must be specified');
+        throw new InstrumentationError('Either of user ID or device ID fields must be specified');
       }
 
       payload.ip = getParsedIP(message);
-      payload.library = "rudderstack";
+      payload.library = 'rudderstack';
       payload = removeUndefinedAndNullValues(payload);
       response.endpoint = endpoint;
       response.method = defaultPostRequestConfig.requestMethod;
       response.headers = {
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json',
       };
       response.userId = message.anonymousId;
       response.body.JSON = {
         api_key: destination.Config.apiKey,
         [rootElementName]: [payload],
-        [addOptions]: addMinIdlength()
+        [addOptions]: addMinIdlength(),
       };
       respList.push(response);
 
@@ -535,7 +481,7 @@ function responseBuilderSimple(
         groupPayload = removeUndefinedValues(groupPayload);
         groupResponse.body.FORM = {
           api_key: destination.Config.apiKey,
-          identification: [JSON.stringify(groupPayload)]
+          identification: [JSON.stringify(groupPayload)],
         };
         respList.push(groupResponse);
       }
@@ -548,57 +494,53 @@ function responseBuilderSimple(
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
 function processSingleMessage(message, destination) {
-  let payloadObjectName = "events";
+  let payloadObjectName = 'events';
   let evType;
   let groupTraits;
   let groupTypeTrait;
   let groupValueTrait;
   // It is expected that Rudder alias. identify group calls won't have this set
   // To be used for track/page calls to associate the event to a group in AM
-  let groupInfo = get(message, "integrations.Amplitude.groups") || undefined;
+  let groupInfo = get(message, 'integrations.Amplitude.groups') || undefined;
   let category = ConfigCategory.DEFAULT;
 
   const messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.IDENTIFY:
-      payloadObjectName = "events"; // identify same as events
-      evType = "identify";
+      payloadObjectName = 'events'; // identify same as events
+      evType = 'identify';
       category = ConfigCategory.IDENTIFY;
       break;
     case EventType.PAGE:
-      evType = `Viewed ${message.name ||
-        get(message, "properties.category") ||
-        ""} Page`;
+      evType = `Viewed ${message.name || get(message, 'properties.category') || ''} Page`;
       message.properties = {
         ...message.properties,
-        name: message.name || get(message, "properties.category")
+        name: message.name || get(message, 'properties.category'),
       };
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      evType = `Viewed ${message.name ||
-        message.event ||
-        get(message, "properties.category") ||
-        ""} Screen`;
+      evType = `Viewed ${
+        message.name || message.event || get(message, 'properties.category') || ''
+      } Screen`;
       message.properties = {
         ...message.properties,
-        name:
-          message.name || message.event || get(message, "properties.category")
+        name: message.name || message.event || get(message, 'properties.category'),
       };
       category = ConfigCategory.SCREEN;
       break;
     case EventType.GROUP:
-      evType = "group";
-      payloadObjectName = "events";
+      evType = 'group';
+      payloadObjectName = 'events';
       category = ConfigCategory.GROUP;
       // read from group traits from message
       // groupTraits => top level "traits" for JS SDK
       // groupTraits => "context.traits" for mobile SDKs
-      groupTraits = getFieldValueFromMessage(message, "groupTraits");
+      groupTraits = getFieldValueFromMessage(message, 'groupTraits');
       // read destination config related group settings
       // https://developers.amplitude.com/docs/group-identify-api
-      groupTypeTrait = get(destination, "Config.groupTypeTrait");
-      groupValueTrait = get(destination, "Config.groupValueTrait");
+      groupTypeTrait = get(destination, 'Config.groupTypeTrait');
+      groupValueTrait = get(destination, 'Config.groupValueTrait');
       if (groupTypeTrait && groupValueTrait) {
         const groupTypeValue = get(groupTraits, groupTypeTrait);
         const groupNameValue = get(groupTraits, groupValueTrait);
@@ -608,10 +550,9 @@ function processSingleMessage(message, destination) {
         // group value can be array of strings as well.
         if (
           groupTypeValue &&
-          typeof groupTypeValue === "string" &&
+          typeof groupTypeValue === 'string' &&
           groupNameValue &&
-          (typeof groupNameValue === "string" ||
-            typeof groupNameValue === "number")
+          (typeof groupNameValue === 'string' || typeof groupNameValue === 'number')
         ) {
           groupInfo = {};
           groupInfo.group_type = groupTypeValue;
@@ -619,22 +560,22 @@ function processSingleMessage(message, destination) {
           // passing the entire group traits without deleting the above keys
           groupInfo.group_properties = groupTraits;
         } else {
-          logger.debug("Group call parameters are not valid");
-          throw new InstrumentationError("Group call parameters are not valid");
+          logger.debug('Group call parameters are not valid');
+          throw new InstrumentationError('Group call parameters are not valid');
         }
       }
       break;
     case EventType.ALIAS:
-      evType = "alias";
+      evType = 'alias';
       // the alias call params end up under "mapping" params
       // https://help.amplitude.com/hc/en-us/articles/360002750712-Portfolio-Cross-Project-Analysis#h_76557c8b-54cd-4e28-8c82-2f6778f65cd4
-      payloadObjectName = "mapping";
+      payloadObjectName = 'mapping';
       category = ConfigCategory.ALIAS;
       break;
     case EventType.TRACK:
       evType = message.event;
       if (!isDefinedAndNotNullAndNotEmpty(evType)) {
-        throw new InstrumentationError("message type not defined");
+        throw new InstrumentationError('message type not defined');
       }
       if (
         message.properties &&
@@ -649,8 +590,8 @@ function processSingleMessage(message, destination) {
 
       break;
     default:
-      logger.debug("could not determine type");
-      throw new InstrumentationError("message type not supported");
+      logger.debug('could not determine type');
+      throw new InstrumentationError('message type not supported');
   }
   return responseBuilderSimple(
     groupInfo,
@@ -658,14 +599,14 @@ function processSingleMessage(message, destination) {
     message,
     evType,
     mappingConfig[category.name],
-    destination
+    destination,
   );
 }
 
 function createProductPurchasedEvent(message, destination, product, counter) {
   const eventClonePurchaseProduct = JSON.parse(JSON.stringify(message));
 
-  eventClonePurchaseProduct.event = "Product Purchased";
+  eventClonePurchaseProduct.event = 'Product Purchased';
   // In product purchased event event properties consists of the details of each product
   eventClonePurchaseProduct.properties = product;
 
@@ -691,13 +632,13 @@ function getProductPurchasedEvents(message, destination) {
     let counter = 0;
 
     // Create product purchased event for each product in products array.
-    message.properties.products.forEach(product => {
+    message.properties.products.forEach((product) => {
       counter += 1;
       const productPurchasedEvent = createProductPurchasedEvent(
         message,
         destination,
         product,
-        counter
+        counter,
       );
       productPurchasedEvents.push(productPurchasedEvent);
     });
@@ -734,10 +675,7 @@ function trackRevenueEvent(message, destination) {
     destination.Config.trackRevenuePerProduct === true ||
     destination.Config.trackProductsOnce === false
   ) {
-    const productPurchasedEvents = getProductPurchasedEvents(
-      message,
-      destination
-    );
+    const productPurchasedEvents = getProductPurchasedEvents(message, destination);
     if (productPurchasedEvents.length > 0) {
       sendEvents = [...sendEvents, ...productPurchasedEvents];
     }
@@ -754,7 +692,7 @@ function process(event) {
     const { properties } = message;
     if (properties && isDefinedAndNotNull(properties.revenue)) {
       const revenueEvents = trackRevenueEvent(message, destination);
-      revenueEvents.forEach(revenueEvent => {
+      revenueEvents.forEach((revenueEvent) => {
         toSendEvents.push(revenueEvent);
       });
     } else {
@@ -764,7 +702,7 @@ function process(event) {
     toSendEvents.push(message);
   }
 
-  toSendEvents.forEach(sendEvent => {
+  toSendEvents.forEach((sendEvent) => {
     respList.push(...processSingleMessage(sendEvent, destination));
   });
   return respList;
@@ -772,13 +710,11 @@ function process(event) {
 
 function getBatchEvents(message, destination, metadata, batchEventResponse) {
   let batchComplete = false;
-  const batchEventArray =
-    get(batchEventResponse, "batchedRequest.body.JSON.events") || [];
-  const batchEventJobs = get(batchEventResponse, "metadata") || [];
-  const batchPayloadJSON =
-    get(batchEventResponse, "batchedRequest.body.JSON") || {};
-  const incomingMessageJSON = get(message, "body.JSON");
-  let incomingMessageEvent = get(message, "body.JSON.events");
+  const batchEventArray = get(batchEventResponse, 'batchedRequest.body.JSON.events') || [];
+  const batchEventJobs = get(batchEventResponse, 'metadata') || [];
+  const batchPayloadJSON = get(batchEventResponse, 'batchedRequest.body.JSON') || {};
+  const incomingMessageJSON = get(message, 'body.JSON');
+  let incomingMessageEvent = get(message, 'body.JSON.events');
   // check if the incoming singular event is an array or not
   // and set it back to array
   incomingMessageEvent = Array.isArray(incomingMessageEvent)
@@ -802,35 +738,30 @@ function getBatchEvents(message, destination, metadata, batchEventResponse) {
     delete incomingMessageEvent.user_id;
   }
 
-  set(message, "body.JSON.events", [incomingMessageEvent]);
+  set(message, 'body.JSON.events', [incomingMessageEvent]);
   // if this is the first event, push to batch and return
   const BATCH_ENDPOINT = batchEndpoint(destination.Config);
   if (batchEventArray.length === 0) {
     if (JSON.stringify(incomingMessageJSON).length < AMBatchSizeLimit) {
       delete message.body.JSON.options;
       batchEventResponse = Object.assign(batchEventResponse, {
-        batchedRequest: message
+        batchedRequest: message,
       });
 
-      set(batchEventResponse, "batchedRequest.endpoint", BATCH_ENDPOINT);
+      set(batchEventResponse, 'batchedRequest.endpoint', BATCH_ENDPOINT);
       batchEventResponse.metadata = [metadata];
     }
   } else {
     // https://developers.amplitude.com/docs/batch-event-upload-api#feature-comparison-between-httpapi-2httpapi--batch
     if (
       batchEventArray.length < AMBatchEventLimit &&
-      JSON.stringify(batchPayloadJSON).length +
-        JSON.stringify(incomingMessageEvent).length <
+      JSON.stringify(batchPayloadJSON).length + JSON.stringify(incomingMessageEvent).length <
         AMBatchSizeLimit
     ) {
       batchEventArray.push(incomingMessageEvent); // set value
       batchEventJobs.push(metadata);
-      set(
-        batchEventResponse,
-        "batchedRequest.body.JSON.events",
-        batchEventArray
-      );
-      set(batchEventResponse, "metadata", batchEventJobs);
+      set(batchEventResponse, 'batchedRequest.body.JSON.events', batchEventArray);
+      set(batchEventResponse, 'metadata', batchEventJobs);
     } else {
       // event could not be pushed
       // it will be pushed again by a call from the caller of this method
@@ -850,11 +781,11 @@ function batch(destEvents) {
   let deviceId;
   let messageEvent;
   let destinationObject;
-  destEvents.forEach(ev => {
+  destEvents.forEach((ev) => {
     const { message, metadata, destination } = ev;
     destinationObject = { ...destination };
-    jsonBody = get(message, "body.JSON");
-    messageEvent = get(message, "body.JSON.events");
+    jsonBody = get(message, 'body.JSON');
+    messageEvent = get(message, 'body.JSON.events');
     userId =
       messageEvent && Array.isArray(messageEvent)
         ? messageEvent[0].user_id
@@ -873,12 +804,11 @@ function batch(destEvents) {
       const errorResponse = getErrorRespEvents(
         metadata,
         400,
-        "Both userId and deviceId cannot be undefined",
+        'Both userId and deviceId cannot be undefined',
         {
-          [tags.TAG_NAMES.ERROR_CATEGORY]:
-            tags.ERROR_CATEGORIES.DATA_VALIDATION,
-          [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.INSTRUMENTATION
-        }
+          [tags.TAG_NAMES.ERROR_CATEGORY]: tags.ERROR_CATEGORIES.DATA_VALIDATION,
+          [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.INSTRUMENTATION,
+        },
       );
       respList.push(errorResponse);
       return;
@@ -888,13 +818,8 @@ function batch(destEvents) {
     // , send the event as is after batching
     if (
       Object.keys(jsonBody).length === 0 ||
-      (!batchEventsWithUserIdLengthLowerThanFive &&
-        userId &&
-        userId.length < 5) ||
-      (batchEventsWithUserIdLengthLowerThanFive &&
-        userId &&
-        userId.length < 5 &&
-        !deviceId)
+      (!batchEventsWithUserIdLengthLowerThanFive && userId && userId.length < 5) ||
+      (batchEventsWithUserIdLengthLowerThanFive && userId && userId.length < 5 && !deviceId)
     ) {
       response = defaultBatchRequestConfig();
       response = Object.assign(response, { batchedRequest: message });
@@ -903,12 +828,7 @@ function batch(destEvents) {
       respList.push(response);
     } else {
       // check if the event can be pushed to an existing batch
-      isBatchComplete = getBatchEvents(
-        message,
-        destination,
-        metadata,
-        batchEventResponse
-      );
+      isBatchComplete = getBatchEvents(message, destination, metadata, batchEventResponse);
       if (isBatchComplete) {
         // if the batch is already complete, push it to response list
         // and push the event to a new batch
@@ -916,12 +836,7 @@ function batch(destEvents) {
         respList.push({ ...batchEventResponse });
         batchEventResponse = defaultBatchRequestConfig();
         batchEventResponse.destination = destinationObject;
-        isBatchComplete = getBatchEvents(
-          message,
-          destination,
-          metadata,
-          batchEventResponse
-        );
+        isBatchComplete = getBatchEvents(message, destination, metadata, batchEventResponse);
       }
     }
   });
@@ -938,12 +853,10 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return respList;
 };
 
-const responseTransform = input => {
-  return {
-    status: 200,
-    destination: { ...input },
-    message: "Processed Successfully"
-  };
-};
+const responseTransform = (input) => ({
+  status: 200,
+  destination: { ...input },
+  message: 'Processed Successfully',
+});
 
 module.exports = { process, processRouterDest, batch, responseTransform };

@@ -103,15 +103,7 @@
           },
           "excludeKeys": [],
           "includeKeys": [],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ]
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
         }
       },
       "Config": {
@@ -178,15 +170,7 @@
           },
           "excludeKeys": [],
           "includeKeys": [],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ]
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
         }
       },
       "Config": {

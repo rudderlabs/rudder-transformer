@@ -228,9 +228,7 @@
                 "id": "507f1f77bcf86cd799439011",
                 "sku": "45790-32",
                 "name": "Monopoly: 3rd Edition",
-                "categories": [
-                  "cars"
-                ],
+                "categories": ["cars"],
                 "price": 19,
                 "quantity": 2,
                 "imageUrl": "https://www.example.com/product/path.jpg",
@@ -240,9 +238,7 @@
                 "id": "507f1f77bcf86cd7994390112",
                 "sku": "45790-322",
                 "name": "Monopoly: 3rd Edition2",
-                "categories": [
-                  "Cars2"
-                ],
+                "categories": ["Cars2"],
                 "price": 192,
                 "quantity": 22,
                 "imageUrl": "https://www.example.com/product/path.jpg2",

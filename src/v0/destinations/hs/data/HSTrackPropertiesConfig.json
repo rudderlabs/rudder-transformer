@@ -1,10 +1,7 @@
 [
   {
     "destKey": "hs_asset_description",
-    "sourceKeys": [
-      "properties.assetDescription",
-      "properties.hsAssetDescription"
-    ],
+    "sourceKeys": ["properties.assetDescription", "properties.hsAssetDescription"],
     "required": false
   },
   {
@@ -19,11 +16,7 @@
   },
   {
     "destKey": "hs_city",
-    "sourceKeys": [
-      "traits.address.city",
-      "context.traits.address.city",
-      "properties.address.city"
-    ],
+    "sourceKeys": ["traits.address.city", "context.traits.address.city", "properties.address.city"],
     "required": false
   },
   {

@@ -1,5 +1,5 @@
-const get = require("get-value");
-const logger = require("../../../logger");
+const get = require('get-value');
+const logger = require('../../../logger');
 const {
   isEmpty,
   isObject,
@@ -12,41 +12,38 @@ const {
   getFieldValueFromMessage,
   getDestinationExternalID,
   removeUndefinedAndNullValues,
-  removeUndefinedAndNullAndEmptyValues
-} = require("../../util");
-const tags = require("../../util/tags");
-const Cache = require("../../util/cache");
+  removeUndefinedAndNullAndEmptyValues,
+} = require('../../util');
+const tags = require('../../util/tags');
+const Cache = require('../../util/cache');
 const {
   getDynamicErrorType,
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
-const { httpGET } = require("../../../adapters/network");
-const {
-  NetworkError,
-  ConfigurationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
-const { AUTH_CACHE_TTL } = require("../../util/constant");
-const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require("./config");
+  processAxiosResponse,
+} = require('../../../adapters/utils/networkUtils');
+const { httpGET } = require('../../../adapters/network');
+const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { AUTH_CACHE_TTL } = require('../../util/constant');
+const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
 
 const customFieldsCache = new Cache(AUTH_CACHE_TTL);
 
-const isValidBase64 = content => {
-  const re = /^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
+const isValidBase64 = (content) => {
+  const re = /^(?:[\d+/A-Za-z]{4})*(?:[\d+/A-Za-z]{2}==|[\d+/A-Za-z]{3}=)?$/;
   return re.test(String(content));
 };
 
 const isValidEvent = (Config, event) => {
   let flag = false;
-  Config.eventNamesSettings.some(eventName => {
+  Config.eventNamesSettings.some((eventName) => {
     if (
       eventName.event &&
-      eventName.event.trim().length !== 0 &&
+      eventName.event.trim().length > 0 &&
       eventName.event.trim().toLowerCase() === event
     ) {
       flag = true;
       return true;
     }
+    return false;
   });
   return flag;
 };
@@ -57,38 +54,32 @@ const isValidEvent = (Config, event) => {
  * @returns
  */
 const validateTrackPayload = (message, Config) => {
-  let event = getValueFromMessage(message, "event");
+  let event = getValueFromMessage(message, 'event');
   if (!event) {
-    throw new InstrumentationError("Event is required for track call");
+    throw new InstrumentationError('Event is required for track call');
   }
   event = event.trim().toLowerCase();
   if (!isValidEvent(Config, event)) {
-    throw new ConfigurationError("Event not configured on dashboard");
+    throw new ConfigurationError('Event not configured on dashboard');
   }
 };
 
-const requiredFieldValidator = payload => {
-  if (!payload.template_id) {
-    if (!payload.content || (payload.content && isEmpty(payload.content))) {
-      throw new InstrumentationError(
-        "Either template id or content is required"
-      );
-    }
+const requiredFieldValidator = (payload) => {
+  if (!payload.template_id && (!payload.content || (payload.content && isEmpty(payload.content)))) {
+    throw new InstrumentationError('Either template id or content is required');
   }
   if (!payload.personalizations || isEmpty(payload.personalizations)) {
-    throw new InstrumentationError(
-      "Personalizations field cannot be missing or empty"
-    );
+    throw new InstrumentationError('Personalizations field cannot be missing or empty');
   }
   if (!payload.from) {
-    throw new InstrumentationError("From is required field");
+    throw new InstrumentationError('From is required field');
   }
   if (payload.from && !payload.from.email) {
-    throw new InstrumentationError("Email inside from object is required");
+    throw new InstrumentationError('Email inside from object is required');
   }
 };
 
-const payloadValidator = payload => {
+const payloadValidator = (payload) => {
   const updatedPayload = payload;
 
   // each item in personalizations array must have 'to' field
@@ -96,7 +87,7 @@ const payloadValidator = payload => {
     payload.personalizations.forEach((keys, index) => {
       const personalizationsArr = [];
       if (keys.to && (payload.subject || keys.subject)) {
-        keys.to.forEach(keyto => {
+        keys.to.forEach((keyto) => {
           if (keyto.email) {
             personalizationsArr.push(keyto);
           }
@@ -111,20 +102,17 @@ const payloadValidator = payload => {
     payload.attachments.forEach((attachment, index) => {
       if (!attachment.content || !attachment.filename) {
         updatedPayload.attachments[index] = null;
-        logger.error("content and filename are required for attachments");
+        logger.error('content and filename are required for attachments');
       }
-      if (
-        payload.attachments.content &&
-        !isValidBase64(payload.attachments.content)
-      ) {
+      if (payload.attachments.content && !isValidBase64(payload.attachments.content)) {
         updatedPayload.attachments[index] = null;
-        logger.error("content should be base64 encoded");
+        logger.error('content should be base64 encoded');
       }
     });
   }
   if (payload.categories) {
     payload.categories.forEach((category, index) => {
-      if (typeof category !== "string") {
+      if (typeof category !== 'string') {
         updatedPayload.categories[index] = JSON.stringify(category);
       }
     });
@@ -133,18 +121,18 @@ const payloadValidator = payload => {
   if (payload.headers && !isObject(payload.headers)) {
     updatedPayload.headers = null;
   }
-  if (payload.subject && payload.subject.length < 1) {
+  if (payload.subject && payload.subject.length === 0) {
     delete updatedPayload.subject;
   }
   if (isEmptyObject(payload.reply_to)) {
     delete updatedPayload.reply_to;
   }
   if (payload.reply_to && !payload.reply_to.email) {
-    logger.error("reply_to object requires email field");
+    logger.error('reply_to object requires email field');
     delete updatedPayload.reply_to;
   }
   if (payload.asm && payload.asm.groups_to_display && !payload.asm.group_id) {
-    logger.error("group Id parameter is required in asm");
+    logger.error('group Id parameter is required in asm');
     delete updatedPayload.asm;
   }
   if (isEmptyObject(payload.asm)) {
@@ -153,10 +141,10 @@ const payloadValidator = payload => {
   return updatedPayload;
 };
 
-const createList = Config => {
+const createList = (Config) => {
   const asmList = [];
   if (Config.groupsToDisplay && Config.groupsToDisplay.length > 0) {
-    Config.groupsToDisplay.forEach(groups => {
+    Config.groupsToDisplay.forEach((groups) => {
       if (
         groups.groupId &&
         groups.groupId.trim() &&
@@ -170,7 +158,7 @@ const createList = Config => {
   return asmList;
 };
 
-const createContent = Config => {
+const createContent = (Config) => {
   const contentList = [];
   if (Config.contents && Config.contents.length > 0) {
     const len = Config.contents.length - 1;
@@ -178,16 +166,14 @@ const createContent = Config => {
       if (content.type && content.value) {
         contentList.push(content);
       } else if (index < len) {
-        logger.error(
-          `item at index ${index} dropped. type and value are required fields`
-        );
+        logger.error(`item at index ${index} dropped. type and value are required fields`);
       }
     });
   }
   return contentList;
 };
 
-const createAttachments = Config => {
+const createAttachments = (Config) => {
   const attachmentList = [];
   if (Config.attachments && Config.attachments.length > 0) {
     const len = Config.attachments.length - 1;
@@ -195,9 +181,7 @@ const createAttachments = Config => {
       if (attachment.content && attachment.filename) {
         attachmentList.push(removeUndefinedAndNullAndEmptyValues(attachment));
       } else if (index < len) {
-        logger.error(
-          `item at index ${index} dropped. content and type are required fields`
-        );
+        logger.error(`item at index ${index} dropped. content and type are required fields`);
       }
     });
   }
@@ -212,7 +196,7 @@ const createMailSettings = (payload, message, Config) => {
     bypass_bounce_management: {},
     bypass_unsubscribe_management: {},
     footer: {},
-    sandbox_mode: {}
+    sandbox_mode: {},
   };
   updatedPayload.mail_settings.footer.enable = Config.footer;
   updatedPayload.mail_settings.footer.text = Config.footerText;
@@ -222,12 +206,10 @@ const createMailSettings = (payload, message, Config) => {
   if (message.properties.mailSettings) {
     const mailObj = message.properties.mailSettings;
     if (mailObj.bypassListManagement) {
-      updatedPayload.mail_settings.bypass_list_management.enable =
-        mailObj.bypassListManagement;
+      updatedPayload.mail_settings.bypass_list_management.enable = mailObj.bypassListManagement;
     } else {
       if (mailObj.bypassSpamManagement) {
-        updatedPayload.mail_settings.bypass_spam_management.enable =
-          mailObj.bypassSpamManagement;
+        updatedPayload.mail_settings.bypass_spam_management.enable = mailObj.bypassSpamManagement;
       }
       if (mailObj.bypassBounceManagement) {
         updatedPayload.mail_settings.bypass_bounce_management.enable =
@@ -252,12 +234,12 @@ const createMailSettings = (payload, message, Config) => {
     }
   }
   const list = [
-    "bypass_list_management",
-    "bypass_spam_management",
-    "bypass_bounce_management",
-    "bypass_unsubscribe_management"
+    'bypass_list_management',
+    'bypass_spam_management',
+    'bypass_bounce_management',
+    'bypass_unsubscribe_management',
   ];
-  list.forEach(key => {
+  list.forEach((key) => {
     if (isEmptyObject(updatedPayload.mail_settings[key])) {
       delete updatedPayload.mail_settings[key];
     }
@@ -269,11 +251,9 @@ const createMailSettings = (payload, message, Config) => {
     updatedPayload.mail_settings.footer.html = null;
   }
   updatedPayload.mail_settings.footer = removeUndefinedAndNullValues(
-    updatedPayload.mail_settings.footer
+    updatedPayload.mail_settings.footer,
   );
-  updatedPayload.mail_settings = removeUndefinedAndNullValues(
-    payload.mail_settings
-  );
+  updatedPayload.mail_settings = removeUndefinedAndNullValues(payload.mail_settings);
   if (!updatedPayload.mail_settings.footer.enable) {
     delete updatedPayload.mail_settings.footer;
   }
@@ -292,11 +272,10 @@ const createTrackSettings = (payload, Config) => {
     click_tracking: {},
     open_tracking: {},
     subscription_tracking: {},
-    ganalytics: {}
+    ganalytics: {},
   };
   updatedPayload.tracking_settings.click_tracking.enable = Config.clickTracking;
-  updatedPayload.tracking_settings.click_tracking.enable_text =
-    Config.clickTrackingEnableText;
+  updatedPayload.tracking_settings.click_tracking.enable_text = Config.clickTrackingEnableText;
 
   updatedPayload.tracking_settings.open_tracking.enable = Config.openTracking;
   updatedPayload.tracking_settings.open_tracking.substitution_tag =
@@ -305,34 +284,26 @@ const createTrackSettings = (payload, Config) => {
   updatedPayload.tracking_settings.subscription_tracking = {};
   updatedPayload.tracking_settings.subscription_tracking.enable =
     Config.subscriptionTracking || false;
-  updatedPayload.tracking_settings.subscription_tracking.text =
-    Config.text || null;
-  updatedPayload.tracking_settings.subscription_tracking.html =
-    Config.html || null;
+  updatedPayload.tracking_settings.subscription_tracking.text = Config.text || null;
+  updatedPayload.tracking_settings.subscription_tracking.html = Config.html || null;
   updatedPayload.tracking_settings.subscription_tracking.substitution_tag =
     Config.substitutionTag || null;
 
   updatedPayload.tracking_settings.ganalytics.enable = Config.ganalytics;
-  updatedPayload.tracking_settings.ganalytics.utm_source =
-    Config.utmSource || null;
-  updatedPayload.tracking_settings.ganalytics.utm_medium =
-    Config.utmMedium || null;
+  updatedPayload.tracking_settings.ganalytics.utm_source = Config.utmSource || null;
+  updatedPayload.tracking_settings.ganalytics.utm_medium = Config.utmMedium || null;
   updatedPayload.tracking_settings.ganalytics.utm_term = Config.utmTerm || null;
-  updatedPayload.tracking_settings.ganalytics.utm_content =
-    Config.utmContent || null;
-  updatedPayload.tracking_settings.ganalytics.utm_campaign =
-    Config.utmCampaign || null;
+  updatedPayload.tracking_settings.ganalytics.utm_content = Config.utmContent || null;
+  updatedPayload.tracking_settings.ganalytics.utm_campaign = Config.utmCampaign || null;
 
-  const list = ["ganalytics", "subscription_tracking", "open_tracking"];
-  list.forEach(key => {
+  const list = ['ganalytics', 'subscription_tracking', 'open_tracking'];
+  list.forEach((key) => {
     updatedPayload.tracking_settings[key] = removeUndefinedAndNullValues(
-      payload.tracking_settings[key]
+      payload.tracking_settings[key],
     );
   });
 
-  updatedPayload.tracking_settings = removeUndefinedAndNullValues(
-    payload.tracking_settings
-  );
+  updatedPayload.tracking_settings = removeUndefinedAndNullValues(payload.tracking_settings);
   // when not enabled then its any fields inside it are not required
   if (!updatedPayload.tracking_settings.subscription_tracking.enable) {
     delete updatedPayload.tracking_settings.subscription_tracking;
@@ -366,10 +337,7 @@ const generatePayloadFromConfig = (payload, Config) => {
   if (Config.templateId && !payload.template_id) {
     updatedPayload.template_id = Config.templateId;
   }
-  if (
-    !payload.attachments ||
-    (payload.attachments && isEmpty(payload.attachments))
-  ) {
+  if (!payload.attachments || (payload.attachments && isEmpty(payload.attachments))) {
     const attachments = createAttachments(Config);
     if (attachments.length > 0) {
       updatedPayload.attachments = attachments;
@@ -391,12 +359,8 @@ const generatePayloadFromConfig = (payload, Config) => {
   }
   if (!payload.reply_to) {
     updatedPayload.reply_to = {};
-    updatedPayload.reply_to.email = Config.replyToEmail
-      ? Config.replyToEmail
-      : null;
-    updatedPayload.reply_to.name = Config.replyToName
-      ? Config.replyToName
-      : null;
+    updatedPayload.reply_to.email = Config.replyToEmail ? Config.replyToEmail : null;
+    updatedPayload.reply_to.name = Config.replyToName ? Config.replyToName : null;
   }
   return updatedPayload;
 };
@@ -406,10 +370,10 @@ const generatePayloadFromConfig = (payload, Config) => {
  * @param {*} message
  * @returns
  */
-const validateIdentifyPayload = message => {
-  const email = getFieldValueFromMessage(message, "email");
+const validateIdentifyPayload = (message) => {
+  const email = getFieldValueFromMessage(message, 'email');
   if (!email) {
-    throw new InstrumentationError("Parameter mail is required");
+    throw new InstrumentationError('Parameter mail is required');
   }
 };
 
@@ -418,12 +382,12 @@ const validateIdentifyPayload = message => {
  * @param {*} address
  * @returns
  */
-const flattenAddress = address => {
+const flattenAddress = (address) => {
   const addressType = typeof address;
-  let companyAddress = "";
-  if (addressType === "object") {
+  let companyAddress = '';
+  if (addressType === 'object') {
     const keys = Object.keys(address);
-    keys.forEach(key => {
+    keys.forEach((key) => {
       companyAddress += `${address[key]} `;
     });
   } else {
@@ -442,13 +406,13 @@ const flattenAddress = address => {
 const getContactListIds = (message, destination) => {
   const { Config } = destination;
   const contactListIds = [];
-  const listIds = getDestinationExternalID(message, "listIds");
+  const listIds = getDestinationExternalID(message, 'listIds');
 
   if (Config.listId) {
     contactListIds.push(Config.listId);
   }
 
-  if (listIds && typeof listIds === "string") {
+  if (listIds && typeof listIds === 'string') {
     contactListIds.push(listIds);
   }
 
@@ -463,16 +427,16 @@ const getContactListIds = (message, destination) => {
  * @param {*} destination
  * @returns
  */
-const fetchCustomFields = async destination => {
+const fetchCustomFields = async (destination) => {
   const { apiKey } = destination.Config;
   return customFieldsCache.get(destination.ID, async () => {
     const requestOptions = {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`
-      }
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${apiKey}`,
+      },
     };
-    const endpoint = "https://api.sendgrid.com/v3/marketing/field_definitions";
+    const endpoint = 'https://api.sendgrid.com/v3/marketing/field_definitions';
 
     const resonse = await httpGET(endpoint, requestOptions);
     const processedResponse = processAxiosResponse(resonse);
@@ -487,9 +451,9 @@ const fetchCustomFields = async destination => {
       message,
       status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
-      processedResponse.response
+      processedResponse.response,
     );
   });
 };
@@ -503,27 +467,20 @@ const fetchCustomFields = async destination => {
  */
 const getCustomFields = async (message, destination) => {
   const customFields = {};
-  const payload = get(message, "context.traits");
+  const payload = get(message, 'context.traits');
   const { customFieldsMapping } = destination.Config;
-  const fieldsMapping = getHashFromArray(
-    customFieldsMapping,
-    "from",
-    "to",
-    false
-  );
+  const fieldsMapping = getHashFromArray(customFieldsMapping, 'from', 'to', false);
   const fields = Object.keys(fieldsMapping);
   if (fields.length > 0) {
     const destinationCustomFields = await fetchCustomFields(destination);
     const customFieldNameToIdMapping = {};
-    const customFieldNamesArray = destinationCustomFields.map(
-      destinationCustomField => {
-        const { id, name } = destinationCustomField;
-        customFieldNameToIdMapping[name] = id;
-        return name;
-      }
-    );
+    const customFieldNamesArray = destinationCustomFields.map((destinationCustomField) => {
+      const { id, name } = destinationCustomField;
+      customFieldNameToIdMapping[name] = id;
+      return name;
+    });
 
-    fields.forEach(field => {
+    fields.forEach((field) => {
       if (payload[field]) {
         const customFieldName = fieldsMapping[field];
         if (customFieldNamesArray.includes(customFieldName)) {
@@ -543,14 +500,9 @@ const getCustomFields = async (message, destination) => {
  * @returns
  */
 const createOrUpdateContactPayloadBuilder = async (message, destination) => {
-  const contactDetails = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
-  );
+  const contactDetails = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]);
   if (contactDetails.address_line_1) {
-    contactDetails.address_line_1 = flattenAddress(
-      contactDetails.address_line_1
-    );
+    contactDetails.address_line_1 = flattenAddress(contactDetails.address_line_1);
   }
   const contactListIds = getContactListIds(message, destination);
   contactDetails.custom_fields = await getCustomFields(message, destination);
@@ -570,5 +522,5 @@ module.exports = {
   requiredFieldValidator,
   validateIdentifyPayload,
   generatePayloadFromConfig,
-  createOrUpdateContactPayloadBuilder
+  createOrUpdateContactPayloadBuilder,
 };

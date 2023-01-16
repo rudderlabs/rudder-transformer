@@ -41,6 +41,12 @@
     "statusCode": 200
   },
   {
+    "destination": {
+      "Config": {
+        "apiKey": "93EMyDLvfpbRxxYn"
+      },
+      "ID": "june123"
+    },
     "batched": false,
     "error": "Missing required value from \"userIdOnly\"",
     "metadata": [

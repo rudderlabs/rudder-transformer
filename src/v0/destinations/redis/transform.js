@@ -1,15 +1,15 @@
-const _ = require("lodash");
-const flatten = require("flat");
+const _ = require('lodash');
+const flatten = require('flat');
 
-const { isEmpty, isObject } = require("../../util");
-const { EventType } = require("../../../constants");
-const { InstrumentationError } = require("../../util/errorTypes");
+const { isEmpty, isObject } = require('../../util');
+const { EventType } = require('../../../constants');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 // processValues:
 // 1. removes keys with empty values or still an object(empty) after flattening
 // 2. stringifies the values to set them in redis
-const processValues = obj => {
-  Object.keys(obj).forEach(key => {
+const processValues = (obj) => {
+  Object.keys(obj).forEach((key) => {
     if (obj[key] === null || isObject(obj[key])) {
       // eslint-disable-next-line no-param-reassign
       delete obj[key];
@@ -21,7 +21,7 @@ const processValues = obj => {
   });
 };
 
-const process = event => {
+const process = (event) => {
   const { message, destination } = event;
   const messageType = message && message.type && message.type.toLowerCase();
 
@@ -29,22 +29,22 @@ const process = event => {
     return [];
   }
 
-  if (isEmpty(event.message.userId)) {
-    throw new InstrumentationError("Blank userId passed in identify event");
+  if (isEmpty(message.userId)) {
+    throw new InstrumentationError('Blank userId passed in identify event');
   }
 
   const { prefix } = destination.Config;
-  const keyPrefix = isEmpty(prefix) ? "" : `${prefix.trim()}:`;
+  const keyPrefix = isEmpty(prefix) ? '' : `${prefix.trim()}:`;
 
   const hmap = {
-    key: `${keyPrefix}user:${_.toString(event.message.userId)}`,
-    fields: {}
+    key: `${keyPrefix}user:${_.toString(message.userId)}`,
+    fields: {},
   };
 
   if (isObject(message.context) && isObject(message.context.traits)) {
     hmap.fields = flatten(message.context.traits, {
-      delimiter: ".",
-      safe: true
+      delimiter: '.',
+      safe: true,
     });
   }
 
@@ -52,23 +52,21 @@ const process = event => {
     hmap.fields = Object.assign(
       hmap.fields,
       flatten(message.traits, {
-        delimiter: ".",
-        safe: true
-      })
+        delimiter: '.',
+        safe: true,
+      }),
     );
   }
 
   processValues(hmap.fields);
 
   if (Object.keys(hmap.fields).length === 0) {
-    throw new InstrumentationError(
-      "context or context.traits or traits is empty"
-    );
+    throw new InstrumentationError('context or context.traits or traits is empty');
   }
 
   const result = {
     message: hmap,
-    userId: event.message.userId
+    userId: message.userId,
   };
   return result;
 };

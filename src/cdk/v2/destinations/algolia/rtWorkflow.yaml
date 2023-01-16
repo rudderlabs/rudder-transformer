@@ -1,7 +1,7 @@
 bindings:
-- path: ../../../../v0/destinations/algolia/config
-- name: handleRtTfSingleEventError
-  path: ../../../../v0/util/index
+  - path: ../../../../v0/destinations/algolia/config
+  - name: handleRtTfSingleEventError
+    path: ../../../../v0/util/index
 
 steps:
   - name: validateInput
@@ -31,31 +31,31 @@ steps:
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents
     template: |
-        let batches = $.chunk($.outputs.successfulEvents, $.MAX_BATCH_SIZE);
-        batches@batch.({
-          "batchedRequest": {
-            "body": {
-              "JSON": {"events": ~r batch.output[]},
-              "JSON_ARRAY": {},
-              "XML": {},
-              "FORM": {}
-            },
-            "version": "1",
-            "type": "REST",
-            "method": "POST",
-            "endpoint": {{$.ENDPOINT}},
-            "headers": batch[0].destination.Config.().({
-              "X-Algolia-Application-Id": .applicationId,
-              "X-Algolia-API-Key": .apiKey
-            }),
-            "params": {},
-            "files": {}
+      let batches = $.chunk($.outputs.successfulEvents, $.MAX_BATCH_SIZE);
+      batches@batch.({
+        "batchedRequest": {
+          "body": {
+            "JSON": {"events": ~r batch.output[]},
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
           },
-          "metadata": ~r batch.metadata[],
-          "batched": true,
-          "statusCode": 200,
-          "destination": batch[0].destination
-        })[];
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": {{$.ENDPOINT}},
+          "headers": batch[0].destination.Config.().({
+            "X-Algolia-Application-Id": .applicationId,
+            "X-Algolia-API-Key": .apiKey
+          }),
+          "params": {},
+          "files": {}
+        },
+        "metadata": ~r batch.metadata[],
+        "batched": true,
+        "statusCode": 200,
+        "destination": batch[0].destination
+      })[];
   - name: finalPayload
     template: |
       [...$.outputs.failedEvents, ...$.outputs.batchSuccessfulEvents]

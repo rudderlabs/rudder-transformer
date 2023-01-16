@@ -1724,9 +1724,7 @@
       "properties": {
         "monetateId": "1234",
         "products": [
-          {
-            
-          },
+          {},
           {
             "product_id": 2
           }
@@ -1844,7 +1842,7 @@
       "properties": {
         "monetateId": "1234",
         "products": {
-            "product_id": "1"
+          "product_id": "1"
         }
       },
       "timestamp": "2019-09-01T15:46:51.693229+05:30",

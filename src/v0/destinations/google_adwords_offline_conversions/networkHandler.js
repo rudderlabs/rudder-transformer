@@ -18,18 +18,16 @@ const {
 } = require("./config");
 const {
   processAxiosResponse,
-  getDynamicErrorType
-} = require("../../../adapters/utils/networkUtils");
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
 const {
   AbortedError,
   NetworkInstrumentationError,
-  NetworkError
-} = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+  NetworkError,
+} = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
-const conversionCustomVariableCache = new Cache(
-  CONVERSION_CUSTOM_VARIABLE_CACHE_TTL
-);
+const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE_TTL);
 
 /**
  * This function helps to determine the type of error occurred. We set the authErrorCategory
@@ -38,13 +36,13 @@ const conversionCustomVariableCache = new Cache(
  * @param {*} status
  * @returns
  */
-const getAuthErrCategory = status => {
+const getAuthErrCategory = (status) => {
   switch (status) {
     case 401:
       // UNAUTHORIZED
       return REFRESH_TOKEN;
     default:
-      return "";
+      return '';
   }
 };
 
@@ -58,43 +56,35 @@ const getAuthErrCategory = status => {
  */
 const getConversionCustomVariable = async (headers, params) => {
   const conversionCustomVariableKey = sha256(params.customerId).toString();
-  return conversionCustomVariableCache.get(
-    conversionCustomVariableKey,
-    async () => {
-      const data = {
-        query: `SELECT conversion_custom_variable.name FROM conversion_custom_variable`
-      };
-      const endpoint = SEARCH_STREAM.replace(":customerId", params.customerId);
-      const requestOptions = {
-        headers
-      };
-      let searchStreamResponse = await httpPOST(endpoint, data, requestOptions);
-      searchStreamResponse = processAxiosResponse(searchStreamResponse);
-      if (!isHttpStatusSuccess(searchStreamResponse.status)) {
-        throw new NetworkError(
-          `[Google Ads Offline Conversions]:: ${searchStreamResponse.response[0].error.message} during google_ads_offline_conversions response transformation`,
-          searchStreamResponse.status,
-          {
-            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-              searchStreamResponse.status
-            )
-          },
-          searchStreamResponse.response,
-          getAuthErrCategory(searchStreamResponse.status)
-        );
-      }
-      const conversionCustomVariable = get(
-        searchStreamResponse,
-        "response.0.results"
+  return conversionCustomVariableCache.get(conversionCustomVariableKey, async () => {
+    const data = {
+      query: `SELECT conversion_custom_variable.name FROM conversion_custom_variable`,
+    };
+    const endpoint = SEARCH_STREAM.replace(':customerId', params.customerId);
+    const requestOptions = {
+      headers,
+    };
+    let searchStreamResponse = await httpPOST(endpoint, data, requestOptions);
+    searchStreamResponse = processAxiosResponse(searchStreamResponse);
+    if (!isHttpStatusSuccess(searchStreamResponse.status)) {
+      throw new NetworkError(
+        `[Google Ads Offline Conversions]:: ${searchStreamResponse?.response?.[0]?.error?.message} during google_ads_offline_conversions response transformation`,
+        searchStreamResponse.status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(searchStreamResponse.status),
+        },
+        searchStreamResponse?.response || searchStreamResponse,
+        getAuthErrCategory(searchStreamResponse.status),
       );
-      if (!conversionCustomVariable) {
-        throw new NetworkInstrumentationError(
-          `[Google Ads Offline Conversions]:: Conversion Custom Variable has not been created yet in Google Ads`
-        );
-      }
-      return conversionCustomVariable;
     }
-  );
+    const conversionCustomVariable = get(searchStreamResponse, 'response.0.results');
+    if (!conversionCustomVariable) {
+      throw new NetworkInstrumentationError(
+        `[Google Ads Offline Conversions]:: Conversion Custom Variable has not been created yet in Google Ads`,
+      );
+    }
+    return conversionCustomVariable;
+  });
 };
 
 /**
@@ -117,12 +107,11 @@ const getConversionCustomVariable = async (headers, params) => {
  * @param {*} arrays
  * @returns
  */
-const getConversionCustomVariableHashMap = arrays => {
+const getConversionCustomVariableHashMap = (arrays) => {
   const hashMap = {};
   if (Array.isArray(arrays)) {
-    arrays.forEach(array => {
-      hashMap[array.conversionCustomVariable.name] =
-        array.conversionCustomVariable.resourceName;
+    arrays.forEach((array) => {
+      hashMap[array.conversionCustomVariable.name] = array.conversionCustomVariable.resourceName;
     });
   }
   return hashMap;
@@ -133,13 +122,13 @@ const getConversionCustomVariableHashMap = arrays => {
  * @param {*} request
  * @returns
  */
-const ProxyRequest = async request => {
+const ProxyRequest = async (request) => {
   const { method, endpoint, headers, params, body } = request;
 
   // fetch conversionAction
   // httpPOST -> axios.post()
   const conversionActionId = await getConversionActionId(headers, params);
-  set(body.JSON, "conversions.0.conversionAction", conversionActionId);
+  set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
 
   // if custom variables are present, only then we should make the call
   if (isDefinedAndNotNullAndNotEmpty(params.customVariables)) {
@@ -172,7 +161,6 @@ const ProxyRequest = async request => {
 
     if (resultantCustomVariables) {
       set(body.JSON, "conversions.0.customVariables", resultantCustomVariables);
-    }
   }
 
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
@@ -180,7 +168,7 @@ const ProxyRequest = async request => {
   return response;
 };
 
-const responseHandler = destinationResponse => {
+const responseHandler = (destinationResponse) => {
   const message = `[Google Ads Offline Conversions Response Handler] - Request processed successfully`;
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
@@ -190,19 +178,19 @@ const responseHandler = destinationResponse => {
     // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
     if (partialFailureError && partialFailureError.code !== 0) {
       throw new NetworkError(
-        `[Google Ads Offline Conversions]:: partialFailureError - ${partialFailureError.message}`,
+        `[Google Ads Offline Conversions]:: partialFailureError - ${partialFailureError?.message}`,
         status,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
         },
-        partialFailureError
+        partialFailureError,
       );
     }
 
     return {
       status,
       message,
-      destinationResponse
+      destinationResponse,
     };
   }
 
@@ -210,14 +198,14 @@ const responseHandler = destinationResponse => {
   // return status, original destination response, message
   const { response } = destinationResponse;
   throw new AbortedError(
-    `[Google Ads Offline Conversions]:: ${response.error.message} during google_ads_offline_conversions response transformation`,
+    `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_conversions response transformation`,
     status,
     response,
-    getAuthErrCategory(status)
+    getAuthErrCategory(status),
   );
 };
 
-const networkHandler = function() {
+const networkHandler = function () {
   this.prepareProxy = prepareProxyRequest;
   this.proxy = ProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
@@ -225,5 +213,5 @@ const networkHandler = function() {
 };
 
 module.exports = {
-  networkHandler
+  networkHandler,
 };

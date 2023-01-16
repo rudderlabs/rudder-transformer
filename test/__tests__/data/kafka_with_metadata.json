@@ -2,7 +2,7 @@
   {
     "input": {
       "outputEvent": {
-        "message":{
+        "message": {
           "anonymousId": "b255896a-94cd-4bf9-98d5-40389e4b70b8",
           "channel": "web",
           "event": "Purchase",
@@ -50,7 +50,7 @@
           "Enabled": true,
           "Transformations": [],
           "IsProcessorEnabled": true
-        } 
+        }
       },
       "metadata": {
         "anonymousId": "b255896a-94cd-4bf9-98d5-40389e4b70b8",
@@ -61,7 +61,6 @@
         "sourceId": "1bqCEGibwCvR7F0acuLzbEMQYIC",
         "rudderId": "b255896a-94cd-4bf9-98d5-40389e4b70b8<<>>user-12345"
       }
-     
     },
     "output": {
       "anonymousId": "b255896a-94cd-4bf9-98d5-40389e4b70b8",

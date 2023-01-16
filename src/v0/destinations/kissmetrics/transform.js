@@ -6,18 +6,18 @@
 /* eslint-disable no-restricted-globals */
 /* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
-const is = require("is");
-const extend = require("@ndhoule/extend");
-const each = require("component-each");
-const { EventType } = require("../../../constants");
+const is = require('is');
+const extend = require('@ndhoule/extend');
+const each = require('component-each');
+const { EventType } = require('../../../constants');
 const {
   defaultGetRequestConfig,
   defaultRequestConfig,
   getFieldValueFromMessage,
-  simpleProcessRouterDest
-} = require("../../util");
-const { ENDPOINT } = require("./config");
-const { InstrumentationError } = require("../../util/errorTypes");
+  simpleProcessRouterDest,
+} = require('../../util');
+const { ENDPOINT } = require('./config');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 // source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
 function toUnixTimestamp(date) {
@@ -29,8 +29,9 @@ function toUnixTimestamp(date) {
 function flatten(target, opts) {
   opts = opts || {};
 
-  const delimiter = opts.delimiter || ".";
+  const delimiter = opts.delimiter || '.';
   let { maxDepth } = opts;
+  const { safe } = opts;
   let currentDepth = 1;
   const output = {};
 
@@ -38,15 +39,14 @@ function flatten(target, opts) {
     for (const key in object) {
       if (object.hasOwnProperty(key)) {
         const value = object[key];
-        const isarray = opts.safe && is.array(value);
+        const isarray = safe && is.array(value);
         const type = Object.prototype.toString.call(value);
-        const isobject =
-          type === "[object Object]" || type === "[object Array]";
+        const isobject = type === '[object Object]' || type === '[object Array]';
         const arr = [];
 
         const newKey = prev ? prev + delimiter + key : key;
 
-        if (!opts.maxDepth) {
+        if (!maxDepth) {
           maxDepth = currentDepth + 1;
         }
 
@@ -56,7 +56,7 @@ function flatten(target, opts) {
           }
         }
 
-        if (!isarray && isobject && arr.length && currentDepth < maxDepth) {
+        if (!isarray && isobject && arr.length > 0 && currentDepth < maxDepth) {
           ++currentDepth;
           return step(value, newKey);
         }
@@ -78,7 +78,7 @@ function clean(obj) {
   for (const k in obj) {
     if (obj.hasOwnProperty(k)) {
       const value = obj[k];
-      if (value === null || typeof value === "undefined") continue;
+      if (value === null || typeof value === 'undefined') continue;
 
       // convert date to unix
       if (is.date(value)) {
@@ -100,7 +100,7 @@ function clean(obj) {
 
       // convert non objects to strings
       // console.log(value.toString());
-      if (value.toString() !== "[object Object]") {
+      if (value.toString() !== '[object Object]') {
         ret[k] = value.toString();
         continue;
       }
@@ -128,12 +128,12 @@ function clean(obj) {
 //  source : https://github.com/segment-integrations/analytics.js-integration-kissmetrics/blob/master/lib/index.js
 function prefix(event, properties) {
   const prefixed = {};
-  each(properties, function(key, val) {
-    if (key === "Billing Amount") {
+  each(properties, (key, val) => {
+    if (key === 'Billing Amount') {
       prefixed[key] = val;
-    } else if (key === "revenue") {
+    } else if (key === 'revenue') {
       prefixed[`${event} - ${key}`] = val;
-      prefixed["Billing Amount"] = val;
+      prefixed['Billing Amount'] = val;
     } else {
       prefixed[`${event}-${key}`] = val;
     }
@@ -143,28 +143,29 @@ function prefix(event, properties) {
 
 function getCurrency(val) {
   if (!val) return;
-  if (typeof val === "number") {
+  if (typeof val === 'number') {
     return val;
   }
-  if (typeof val !== "string") {
+  if (typeof val !== 'string') {
     return;
   }
 
-  val = val.replace(/\$/g, "");
+  val = val.replace(/\$/g, '');
   val = parseFloat(val);
 
-  if (!isNaN(val)) {
+  if (!Number.isNaN(val)) {
     return val;
   }
 }
 
 function getRevenue(properties, eventName) {
   let { revenue } = properties;
+  const { total } = properties;
   const orderCompletedRegExp = /^[ _]?completed[ _]?order[ _]?|^[ _]?order[ _]?completed[ _]?$/i;
 
   // it's always revenue, unless it's called during an order completion.
   if (!revenue && eventName && eventName.match(orderCompletedRegExp)) {
-    revenue = properties.total;
+    revenue = total;
   }
 
   return getCurrency(revenue);
@@ -176,7 +177,7 @@ function buildResponse(message, properties, endpoint) {
   response.method = defaultGetRequestConfig.requestMethod;
   response.userId = message.userId ? message.userId : message.anonymousId;
   response.params = {
-    ...properties
+    ...properties,
   };
   return response;
 }
@@ -200,9 +201,7 @@ function buildResponse(message, properties, endpoint) {
 
 function processIdentify(message, destination) {
   const { apiKey } = destination.Config;
-  let properties = JSON.parse(
-    JSON.stringify(getFieldValueFromMessage(message, "traits") || {})
-  );
+  let properties = JSON.parse(JSON.stringify(getFieldValueFromMessage(message, 'traits') || {}));
   const timestamp = toUnixTimestamp(message.originalTimestamp);
   const endpoint = ENDPOINT.IDENTIFY;
 
@@ -218,8 +217,8 @@ function processIdentify(message, destination) {
 }
 
 function processTrack(message, destination) {
-  const { apiKey } = destination.Config;
-  const { event } = message;
+  const { apiKey, prefixProperties } = destination.Config;
+  const { event, originalTimestamp, userId, anonymousId } = message;
   const messageType = message.type.toLowerCase();
   let properties = {};
   if (message.properties) {
@@ -227,7 +226,7 @@ function processTrack(message, destination) {
   }
 
   // TODO: Give priority to timestamp, then originalTimestam ?
-  const timestamp = toUnixTimestamp(message.originalTimestamp);
+  const timestamp = toUnixTimestamp(originalTimestamp);
   let endpoint = ENDPOINT.TRACK;
 
   const revenue = getRevenue(properties);
@@ -242,16 +241,16 @@ function processTrack(message, destination) {
 
   properties = clean(properties);
 
-  if (destination.Config.prefixProperties) {
+  if (prefixProperties) {
     if (messageType === EventType.TRACK) {
       properties = prefix(event, properties);
     }
     if (messageType === EventType.PAGE) {
-      properties = prefix("Page", properties);
+      properties = prefix('Page', properties);
     }
   }
   properties._k = apiKey;
-  properties._p = message.userId ? message.userId : message.anonymousId;
+  properties._p = userId || anonymousId;
   properties._n = event;
   properties._t = timestamp;
   properties._d = 1;
@@ -259,11 +258,11 @@ function processTrack(message, destination) {
   const trackList = [];
   trackList.push(buildResponse(message, properties, endpoint));
   if (products) {
-    products.forEach(product => {
+    products.forEach((product) => {
       let item = product;
-      if (destination.Config.prefixProperties) item = prefix(event, item);
+      if (prefixProperties) item = prefix(event, item);
       item._k = apiKey;
-      item._p = message.userId ? message.userId : message.anonymousId;
+      item._p = userId || anonymousId;
 
       endpoint = ENDPOINT.IDENTIFY;
       trackList.push(buildResponse(message, item, endpoint));
@@ -274,11 +273,9 @@ function processTrack(message, destination) {
 
 function processPage(message, destination) {
   const pageName = message.name;
-  const pageCategory = message.properties
-    ? message.properties.category
-    : undefined;
+  const pageCategory = message.properties ? message.properties.category : undefined;
 
-  let eventName = "Loaded a Page";
+  let eventName = 'Loaded a Page';
 
   if (pageName) {
     eventName = `Viewed ${pageName} page`;
@@ -295,11 +292,9 @@ function processPage(message, destination) {
 
 function processScreen(message, destination) {
   const screenName = message.name;
-  const screenCategory = message.properties
-    ? message.properties.category
-    : undefined;
+  const screenCategory = message.properties ? message.properties.category : undefined;
 
-  let eventName = "Loaded a Screen";
+  let eventName = 'Loaded a Screen';
 
   if (screenName) {
     eventName = `Viewed ${screenName} screen`;
@@ -347,7 +342,7 @@ function process(event) {
       break;
     case EventType.TRACK:
       responses = processTrack(message, destination);
-      responses.forEach(element => {
+      responses.forEach((element) => {
         element.statusCode = 200;
         respList.push(element);
       });
@@ -363,9 +358,7 @@ function process(event) {
       respList.push(response);
       break;
     default:
-      throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
-      );
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return respList;
 }

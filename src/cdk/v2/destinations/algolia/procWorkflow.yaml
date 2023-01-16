@@ -1,11 +1,11 @@
 bindings:
-- name: EventType
-  path: ../../../../constants
-- path: ../../../../v0/destinations/algolia/util
-- path: ../../../../v0/destinations/algolia/config
-- name: removeUndefinedAndNullValues
-  path: ../../../../v0/util
-- path: ../../bindings/jsontemplate
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../../../v0/destinations/algolia/util
+  - path: ../../../../v0/destinations/algolia/config
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - path: ../../bindings/jsontemplate
 
 steps:
   - name: validateInput
@@ -16,7 +16,7 @@ steps:
       $.assert(.message.type === {{$.EventType.TRACK}}, 
         "message type " + .message.type + " not supported")
       $.assert(.message.event, "event is required for track call")
-  
+
   - name: preparePayload
     template: |
       $.assert(.message.properties.index, 'Missing required value from "properties.index"');
@@ -35,19 +35,19 @@ steps:
         eventName: event,
         eventType: eventType
       });
-      $.context.payload = $.genericpayloadValidator(payload);  
-  
+      $.context.payload = $.genericpayloadValidator(payload);
+
   - name: populateProductsData
     condition: |
       .message.properties.products && 
-      $.context.payload.eventName in ["product list viewed", "order completed"] 
+      $.context.payload.eventName in ["product list viewed", "order completed"]
     steps:
       - name: populateForClickEvent
         condition: $.context.payload.eventType === "click"
         template: |
-            const products = .message.properties.products;
-            $.context.payload.objectIDs = ~r products.objectId;
-            $.context.payload.positions = ~r products.position;
+          const products = .message.properties.products;
+          $.context.payload.objectIDs = ~r products.objectId;
+          $.context.payload.positions = ~r products.position;
         else:
           name: populateForOtherEvents
           template: |
@@ -63,10 +63,10 @@ steps:
 
   - name: validatePayloadForClickEvent
     condition: $.context.payload.eventType === "click"
-    template: |          
+    template: |
       $.context.payload = $.clickPayloadValidator($.context.payload)
 
-  - name: cleanPayload      
+  - name: cleanPayload
     template: |
       $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
 

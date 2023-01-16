@@ -6,18 +6,12 @@
   },
   {
     "destKey": "sessionId",
-    "sourceKeys": [
-      "properties.kustomerSessionId",
-      "properties.kustomer_session_id"
-    ],
+    "sourceKeys": ["properties.kustomerSessionId", "properties.kustomer_session_id"],
     "required": false
   },
   {
     "destKey": "trackingId",
-    "sourceKeys": [
-      "properties.kustomerTrackingId",
-      "properties.kustomer_tracking_id"
-    ],
+    "sourceKeys": ["properties.kustomerTrackingId", "properties.kustomer_tracking_id"],
     "required": false
   },
   {

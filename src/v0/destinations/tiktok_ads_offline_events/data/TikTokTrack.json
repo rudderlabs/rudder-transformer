@@ -1,0 +1,43 @@
+[
+  {
+    "destKey": "event_set_id",
+    "sourceKeys": "properties.eventSetId",
+    "required": true
+  },
+  {
+    "destKey": "event_id",
+    "sourceKeys": ["properties.eventId", "messageId"],
+    "required": false
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "properties.order_id",
+    "sourceKeys": ["properties.order_id", "properties.orderId"],
+    "required": false
+  },
+  {
+    "destKey": "properties.shop_id",
+    "sourceKeys": ["properties.shop_id", "properties.shopId"],
+    "required": false
+  },
+  {
+    "destKey": "properties.currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "properties.value",
+    "sourceKeys": "properties.value",
+    "required": false
+  },
+  {
+    "destKey": "properties.event_channel",
+    "sourceKeys": "context.channel",
+    "required": false
+  }
+]

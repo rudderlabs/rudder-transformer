@@ -41,21 +41,12 @@
         "DisplayName": "Freshsales",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "domain"
-            ]
+            "defaultConfig": ["apiKey", "domain"]
           },
           "excludeKeys": [],
-          "includeKeys": [
-            "apiKey",
-            "domain"
-          ],
+          "includeKeys": ["apiKey", "domain"],
           "saveDestinationResponse": true,
-          "supportedMessageTypes": [
-            "identify",
-            "group"
-          ],
+          "supportedMessageTypes": ["identify", "group"],
           "supportedSourceTypes": [
             "amp",
             "android",

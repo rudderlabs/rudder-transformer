@@ -2,23 +2,19 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 /* eslint-disable no-shadow */
-const fs = require("fs");
-const path = require("path");
-const Router = require("koa-router");
-const { sendToDestination, userTransformHandler } = require("./routerUtils");
+const fs = require('fs');
+const path = require('path');
+const Router = require('koa-router');
+const { sendToDestination, userTransformHandler } = require('./routerUtils');
 
-const version = "v0";
-const API_VERSION = "1";
+const version = 'v0';
+const API_VERSION = '1';
 
-const isSupportedContentType = contentType => {
+const isSupportedContentType = (contentType) => {
   let supported = false;
-  const SUPPORTED_CONTENT_TYPES = [
-    "application/xml",
-    "application/json",
-    "text"
-  ];
+  const SUPPORTED_CONTENT_TYPES = ['application/xml', 'application/json', 'text'];
   if (contentType) {
-    SUPPORTED_CONTENT_TYPES.some(type => {
+    SUPPORTED_CONTENT_TYPES.some((type) => {
       if (contentType.toLowerCase().includes(type)) {
         supported = true;
         return true;
@@ -29,30 +25,25 @@ const isSupportedContentType = contentType => {
   return supported;
 };
 
-const testRouter = new Router({ prefix: "/test-router" });
+const testRouter = new Router({ prefix: '/test-router' });
 
-const getDestHandler = (version, destination) => {
-  return require(`./${version}/destinations/${destination}/transform`);
-};
+const getDestHandler = (version, destination) =>
+  require(`./${version}/destinations/${destination}/transform`);
 
-const getDestinations = () => {
-  return fs.readdirSync(path.resolve(__dirname, version, "destinations"));
-};
+const getDestinations = () => fs.readdirSync(path.resolve(__dirname, version, 'destinations'));
 
-const transformDestination = dest => {
+const transformDestination = (dest) => {
   function capitalize(s) {
-    return s === "id"
-      ? s.toUpperCase()
-      : s.charAt(0).toUpperCase() + s.slice(1);
+    return s === 'id' ? s.toUpperCase() : s.charAt(0).toUpperCase() + s.slice(1);
   }
   const transformedObj = {};
   const { destinationDefinition } = dest;
-  Object.keys(dest).forEach(key => {
+  Object.keys(dest).forEach((key) => {
     transformedObj[capitalize(key)] = dest[key];
   });
 
   const destDef = {};
-  Object.keys(destinationDefinition).forEach(key => {
+  Object.keys(destinationDefinition).forEach((key) => {
     destDef[capitalize(key)] = destinationDefinition[key];
   });
   transformedObj.DestinationDefinition = destDef;
@@ -63,17 +54,17 @@ const handleTestEvent = async (ctx, dest) => {
   try {
     const { events } = ctx.request.body;
     if (!events || !Array.isArray(events)) {
-      throw new Error("events array is required in payload");
+      throw new Error('events array is required in payload');
     }
     const respList = [];
-    ctx.set("apiVersion", API_VERSION);
+    ctx.set('apiVersion', API_VERSION);
     await Promise.all(
-      events.map(async event => {
+      events.map(async (event) => {
         const { message, destination, stage, libraries } = event;
         const ev = {
           message,
           destination: transformDestination(destination),
-          libraries
+          libraries,
         };
 
         let response = {};
@@ -81,10 +72,8 @@ const handleTestEvent = async (ctx, dest) => {
 
         if (stage.user_transform) {
           let librariesVersionIDs = [];
-          if (event.libraries) {
-            librariesVersionIDs = events[0].libraries.map(
-              library => library.versionId
-            );
+          if (libraries) {
+            librariesVersionIDs = events[0].libraries.map((library) => library.versionId);
           }
           const transformationVersionId =
             ev.destination &&
@@ -97,25 +86,24 @@ const handleTestEvent = async (ctx, dest) => {
               const destTransformedEvents = await userTransformHandler()(
                 [ev],
                 transformationVersionId,
-                librariesVersionIDs
+                librariesVersionIDs,
               );
               const userTransformedEvent = destTransformedEvents[0];
               if (userTransformedEvent.error) {
                 throw new Error(userTransformedEvent.error);
               }
 
-              response.user_transformed_payload =
-                userTransformedEvent.transformedEvent;
+              response.user_transformed_payload = userTransformedEvent.transformedEvent;
               ev.message = userTransformedEvent.transformedEvent;
             } catch (err) {
               errorFound = true;
               response.user_transformed_payload = {
-                error: err.message || JSON.stringify(err)
+                error: err.message || JSON.stringify(err),
               };
             }
           } else {
             response.user_transformed_payload = {
-              error: "Transformation VersionID not found"
+              error: 'Transformation VersionID not found',
             };
           }
         }
@@ -133,12 +121,12 @@ const handleTestEvent = async (ctx, dest) => {
             } catch (err) {
               errorFound = true;
               response.dest_transformed_payload = {
-                error: err.message || JSON.stringify(err)
+                error: err.message || JSON.stringify(err),
               };
             }
           } else {
             response.dest_transformed_payload = {
-              error: "error encountered in user_transformation stage. Aborting."
+              error: 'error encountered in user_transformation stage. Aborting.',
             };
           }
         }
@@ -155,10 +143,10 @@ const handleTestEvent = async (ctx, dest) => {
               // eslint-disable-next-line no-await-in-loop
               const parsedResponse = await sendToDestination(dest, payload);
 
-              let contentType = "";
-              let response = "";
+              let contentType = '';
+              let response = '';
               if (parsedResponse.headers) {
-                contentType = parsedResponse.headers["content-type"];
+                contentType = parsedResponse.headers['content-type'];
                 if (isSupportedContentType(contentType)) {
                   response = parsedResponse.response;
                 }
@@ -186,36 +174,36 @@ const handleTestEvent = async (ctx, dest) => {
             response = {
               ...response,
               destination_response: destResponses,
-              destination_response_status: destResponseStatuses
+              destination_response_status: destResponseStatuses,
             };
           } else {
             response.destination_response = {
-              error: "error encountered in dest_transformation stage. Aborting."
+              error: 'error encountered in dest_transformation stage. Aborting.',
             };
           }
         }
         respList.push(response);
-      })
+      }),
     );
     ctx.body = respList;
   } catch (err) {
     // fail-safety error response
     ctx.body = {
-      error: err.message || JSON.stringify(err)
+      error: err.message || JSON.stringify(err),
     };
     ctx.status = 400;
   }
 };
 
-getDestinations().forEach(async destination => {
-  testRouter.post(`/${version}/${destination}`, async ctx => {
+getDestinations().forEach(async (destination) => {
+  testRouter.post(`/${version}/${destination}`, async (ctx) => {
     await handleTestEvent(ctx, destination);
     return ctx;
   });
 });
 
-testRouter.get(`/${version}/health`, ctx => {
-  ctx.body = "OK";
+testRouter.get(`/${version}/health`, (ctx) => {
+  ctx.body = 'OK';
 });
 
 module.exports = { testRouter, handleTestEvent };

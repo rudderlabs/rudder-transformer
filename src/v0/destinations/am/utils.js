@@ -8,21 +8,21 @@
 // "device_model": "Mac"
 // Note: for http source still the direct mapping from payload sourceKeys is used to
 // populate these dest keys
-const get = require("get-value");
-const uaParser = require("@amplitude/ua-parser-js");
-const logger = require("../../../logger");
-const { isDefined, isDefinedAndNotNull } = require("../../util");
+const get = require('get-value');
+const uaParser = require('@amplitude/ua-parser-js');
+const logger = require('../../../logger');
+const { isDefinedAndNotNull } = require('../../util');
 
 function getInfoFromUA(path, payload, defaultVal) {
-  const ua = get(payload, "context.userAgent");
+  const ua = get(payload, 'context.userAgent');
   const devInfo = ua ? uaParser(ua) : {};
   return get(devInfo, path) || defaultVal;
 }
 
 function getOSName(payload, sourceKey) {
   const payloadVal = get(payload, sourceKey);
-  if (payload.channel && payload.channel.toLowerCase() === "web") {
-    return getInfoFromUA("browser.name", payload, payloadVal);
+  if (payload.channel && payload.channel.toLowerCase() === 'web') {
+    return getInfoFromUA('browser.name', payload, payloadVal);
   }
   return payloadVal;
 }
@@ -30,8 +30,8 @@ function getOSName(payload, sourceKey) {
 function getOSVersion(payload, sourceKey) {
   const payloadVal = get(payload, sourceKey);
 
-  if (payload.channel && payload.channel.toLowerCase() === "web") {
-    return getInfoFromUA("browser.version", payload, payloadVal);
+  if (payload.channel && payload.channel.toLowerCase() === 'web') {
+    return getInfoFromUA('browser.version', payload, payloadVal);
   }
   return payloadVal;
 }
@@ -39,8 +39,8 @@ function getOSVersion(payload, sourceKey) {
 function getDeviceModel(payload, sourceKey) {
   const payloadVal = get(payload, sourceKey);
 
-  if (payload.channel && payload.channel.toLowerCase() === "web") {
-    return getInfoFromUA("os.name", payload, payloadVal);
+  if (payload.channel && payload.channel.toLowerCase() === 'web') {
+    return getInfoFromUA('os.name', payload, payloadVal);
   }
   return payloadVal;
 }
@@ -48,8 +48,8 @@ function getDeviceModel(payload, sourceKey) {
 function getDeviceManufacturer(payload, sourceKey) {
   const payloadVal = get(payload, sourceKey);
 
-  if (payload.channel && payload.channel.toLowerCase() === "web") {
-    return getInfoFromUA("device.vendor", payload, payloadVal);
+  if (payload.channel && payload.channel.toLowerCase() === 'web') {
+    return getInfoFromUA('device.vendor', payload, payloadVal);
   }
   return payloadVal;
 }
@@ -57,8 +57,8 @@ function getDeviceManufacturer(payload, sourceKey) {
 function getPlatform(payload, sourceKey) {
   const payloadVal = get(payload, sourceKey);
   return payload.channel
-    ? payload.channel.toLowerCase() === "web"
-      ? "Web"
+    ? payload.channel.toLowerCase() === 'web'
+      ? 'Web'
       : payloadVal
     : payloadVal;
 }
@@ -75,7 +75,7 @@ function getEventId(payload, sourceKey) {
   const eventId = get(payload, sourceKey);
 
   if (isDefinedAndNotNull(eventId)) {
-    if (typeof eventId === "string") {
+    if (typeof eventId === 'string') {
       logger.info(`event_id should be integer only`);
     } else return eventId;
   }
@@ -89,5 +89,5 @@ module.exports = {
   getDeviceManufacturer,
   getPlatform,
   getBrand,
-  getEventId
+  getEventId,
 };

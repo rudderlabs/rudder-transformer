@@ -8,7 +8,8 @@ class ConfigurationError extends BaseError {
       [tags.TAG_NAMES.ERROR_TYPE]: tags.ERROR_TYPES.CONFIGURATION
     };
 
-    super(message, 500, finalStatTags);
+    // TODO: Change this to a retryable error
+    super(message, 400, finalStatTags);
   }
 }
 

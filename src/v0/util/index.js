@@ -630,7 +630,7 @@ const getFieldValueFromMessage = (message, sourceKey) => {
  */
 function formatValues(inputVal, formatingType, formatOpts = {}) {
   const { integrationsObj, typeFormat } = formatOpts;
-  let formattedVal;
+  let formattedVal = inputVal;
   switch (formatingType) {
     case "timestamp":
       formattedVal = formatTimeStamp(inputVal, typeFormat);

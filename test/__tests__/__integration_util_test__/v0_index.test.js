@@ -2,6 +2,7 @@ const fs = require("fs");
 const path = require("path");
 const { getFormData } = require("../../../src/adapters/network");
 const utilObj = require("../../../src/v0/util");
+const { InstrumentationError } = require("../../../src/v0/util/errorTypes");
 
 const functionsToTest = [
   "handleSourceKeysOperation",
@@ -85,7 +86,7 @@ describe("`FORM` format escape test-cases", () => {
   });
 });
 
-const { getErrorStatusCode } = utilObj;
+const { getErrorStatusCode, formatValues } = utilObj;
 
 describe("error status code when error is thrown", () => {
   it('should return status-code from "response.status"', () => {
@@ -114,5 +115,42 @@ describe("error status code when error is thrown", () => {
     expect(getErrorStatusCode({ message: "An error occurred" }, "502")).toEqual(
       400
     );
+  });
+});
+
+const formatValuesTestCases = [
+  {
+    input: ["http://www.google.com", "domainUrlV2"],
+    expected: "google.com"
+  },
+  {
+    input: ["url", "domainUrlV2"],
+    errorCase: true,
+    expected: new InstrumentationError("Invalid URL: url")
+  },
+  {
+    input: [123, "domainUrlV2"],
+    errorCase: true,
+    expected: new InstrumentationError("Invalid URL: 123")
+  },
+  {
+    input: [undefined, "domainUrlV2"],
+    errorCase: true,
+    expected: new InstrumentationError("Invalid URL: undefined")
+  }
+];
+
+describe("`formatValues` tests", () => {
+  formatValuesTestCases.forEach(({ input, errorCase, expected }) => {
+    it(`input: ${input[0]}, formatType: "${input[1]}" -->> ${expected}`, () => {
+      if (errorCase) {
+        expect(() => {
+          formatValues(...input);
+        }).toThrow(expected);
+      } else {
+        const output = formatValues(...input);
+        expect(output).toEqual(expected);
+      }
+    });
   });
 });

@@ -13,7 +13,7 @@
   ],
   [
     {
-      "statusCode": 500,
+      "statusCode": 400,
       "error": "apiKey is required for deleting user"
     }
   ],

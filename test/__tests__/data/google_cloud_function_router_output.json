@@ -45,7 +45,7 @@
     },
     "metadata": [{ "jobId": "2" }],
     "batched": false,
-    "statusCode": 500,
+    "statusCode": 400,
     "error": "[GCF]:: Url not found. Aborting",
     "statTags": {
       "errorCategory": "dataValidation",

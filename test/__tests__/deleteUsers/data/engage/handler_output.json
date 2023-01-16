@@ -26,7 +26,7 @@
 
   [
     {
-      "statusCode": 500,
+      "statusCode": 400,
       "error": "Public key is a required field for user deletion"
     }
   ],

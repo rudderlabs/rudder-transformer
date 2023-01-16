@@ -48,6 +48,7 @@
     "CAMPAIGN_MANAGER": true,
     "SENDGRID": true,
     "SENDINBLUE": true,
-    "TIKTOK_ADS_OFFLINE_EVENTS": true
+    "TIKTOK_ADS_OFFLINE_EVENTS": true,
+    "CRITEO_AUDIENCE": true
   }
 }

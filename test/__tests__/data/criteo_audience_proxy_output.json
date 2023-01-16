@@ -1,0 +1,39 @@
+[
+    {
+      "output": {
+        "status": 200,
+        "message": "Request Processed Successfully",
+        "destinationResponse": {
+          "response": {
+            "request_status": "SUCCESS",
+            "request_id": "12345",
+            "users": [
+              {
+                "sub_request_status": "SUCCESS",
+                "user": {
+                  "number_uploaded_users": 1
+                }
+              }
+            ]
+          },
+          "status": 200
+        }
+      }
+    },
+    {
+      "output": {
+        "status": 500,
+        "destinationResponse": "",
+        "message": "undefined during snapchat_custom_audience response transformation",
+        "statTags": {
+          "destType": "SNAPCHAT_CUSTOM_AUDIENCE",
+          "errorCategory": "network",
+          "errorType": "retryable",
+          "feature": "dataDelivery",
+          "implementation": "native",
+          "module": "destination"
+        }
+      }
+    }
+  ]
+  

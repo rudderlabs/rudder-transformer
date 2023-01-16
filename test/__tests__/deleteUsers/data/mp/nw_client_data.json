@@ -6050,8 +6050,8 @@
       "response": {
         "status": 200,
         "statusText": "OK",
-        "data":{
-         " message": "1"
+        "data": {
+          " message": "1"
         }
       }
     }
@@ -6082,8 +6082,8 @@
     "response": {
       "status": 200,
       "statusText": "OK",
-      "data":{
-       " message": "1"
+      "data": {
+        " message": "1"
       }
     }
   }

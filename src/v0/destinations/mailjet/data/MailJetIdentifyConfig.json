@@ -13,10 +13,7 @@
   },
   {
     "destKey": "IsExcludedFromCampaigns",
-    "sourceKeys": [
-      "context.traits.IsExcludedFromCampaigns",
-      "traits.IsExcludedFromCampaigns"
-    ],
+    "sourceKeys": ["context.traits.IsExcludedFromCampaigns", "traits.IsExcludedFromCampaigns"],
     "required": false
   }
 ]

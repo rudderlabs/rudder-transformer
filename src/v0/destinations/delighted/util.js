@@ -1,77 +1,69 @@
-const axios = require("axios");
-const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
-const { getValueFromMessage } = require("../../util");
+const axios = require('axios');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { getValueFromMessage } = require('../../util');
 const {
   NetworkInstrumentationError,
-  AbortedError,
-  RetryableError,
   InstrumentationError,
-  NetworkError
-} = require("../../util/errorTypes");
-const { ENDPOINT } = require("./config");
-const tags = require("../../util/tags");
+  NetworkError,
+} = require('../../util/errorTypes');
+const { ENDPOINT } = require('./config');
+const tags = require('../../util/tags');
 
-const isValidEmail = email => {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const isValidEmail = (email) => {
+  const re =
+    /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/;
   return re.test(String(email).toLowerCase());
 };
-const isValidPhone = phone => {
+const isValidPhone = (phone) => {
   const phoneformat = /^\+[1-9]\d{10,14}$/;
   return phoneformat.test(String(phone));
 };
 
 const isValidUserIdOrError = (channel, userId) => {
-  if (channel === "email") {
+  if (channel === 'email') {
     if (!isValidEmail(userId)) {
-      throw new InstrumentationError(
-        "Channel is set to email. Enter correct email."
-      );
+      throw new InstrumentationError('Channel is set to email. Enter correct email.');
     }
-  } else if (channel === "sms") {
+  } else if (channel === 'sms') {
     if (!isValidPhone(userId)) {
       throw new InstrumentationError(
-        "Channel is set to sms. Enter correct phone number i.e. E.164"
+        'Channel is set to sms. Enter correct phone number i.e. E.164',
       );
     }
   } else {
-    throw new InstrumentationError("Invalid Channel type");
+    throw new InstrumentationError('Invalid Channel type');
   }
 
   return {
-    userIdType: channel === "sms" ? "phone_number" : "email",
-    userIdValue: userId
+    userIdType: channel === 'sms' ? 'phone_number' : 'email',
+    userIdValue: userId,
   };
 };
 
 const userValidity = async (channel, Config, userId) => {
   const paramsdata = {};
-  if (channel === "email") {
+  if (channel === 'email') {
     paramsdata.email = userId;
-  } else if (channel === "sms") {
+  } else if (channel === 'sms') {
     paramsdata.phone_number = userId;
   }
 
-  const basicAuth = Buffer.from(Config.apiKey).toString("base64");
+  const basicAuth = Buffer.from(Config.apiKey).toString('base64');
   let response;
   try {
     response = await axios.get(`${ENDPOINT}`, {
       headers: {
         Authorization: `Basic ${basicAuth}`,
-        "Content-Type": "application/json"
+        'Content-Type': 'application/json',
       },
-      params: paramsdata
+      params: paramsdata,
     });
-    if (
-      response &&
-      response.data &&
-      response.status === 200 &&
-      Array.isArray(response.data)
-    ) {
-      return response.data.length !== 0;
+    if (response && response.data && response.status === 200 && Array.isArray(response.data)) {
+      return response.data.length > 0;
     }
-    throw new NetworkInstrumentationError("Invalid response");
+    throw new NetworkInstrumentationError('Invalid response');
   } catch (error) {
-    let errMsg = "";
+    let errMsg = '';
     let errStatus = 400;
     if (error.response && error.response.data) {
       errMsg = JSON.stringify(error.response.data);
@@ -90,26 +82,24 @@ const userValidity = async (channel, Config, userId) => {
           errStatus = 400;
       }
     }
-    throw new NetworkError(
-      `Error occurred while checking user : ${errMsg}`,
-      errStatus,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus)
-      }
-    );
+    throw new NetworkError(`Error occurred while checking user : ${errMsg}`, errStatus, {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errStatus),
+    });
   }
 };
 const eventValidity = (Config, message) => {
-  const event = getValueFromMessage(message, "event");
+  const event = getValueFromMessage(message, 'event');
   if (!event) {
-    throw new InstrumentationError("No event found.");
+    throw new InstrumentationError('No event found.');
   }
   let flag = false;
-  Config.eventNamesSettings.forEach(eventName => {
-    if (eventName.event && eventName.event.trim().length !== 0) {
-      if (eventName.event.trim().toLowerCase() === event.toLowerCase()) {
-        flag = true;
-      }
+  Config.eventNamesSettings.forEach((eventName) => {
+    if (
+      eventName.event &&
+      eventName.event.trim().length > 0 &&
+      eventName.event.trim().toLowerCase() === event.toLowerCase()
+    ) {
+      flag = true;
     }
   });
   return flag;
@@ -120,5 +110,5 @@ module.exports = {
   eventValidity,
   userValidity,
   isValidEmail,
-  isValidPhone
+  isValidPhone,
 };

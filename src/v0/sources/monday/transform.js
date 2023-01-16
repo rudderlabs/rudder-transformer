@@ -1,33 +1,29 @@
-const sha256 = require("sha256");
-const Message = require("../message");
-const { mapping, formEventName } = require("./util");
-const { TransformationError } = require("../../util/errorTypes");
-const { generateUUID, removeUndefinedAndNullValues } = require("../../util");
+const sha256 = require('sha256');
+const Message = require('../message');
+const { mapping, formEventName } = require('./util');
+const { TransformationError } = require('../../util/errorTypes');
+const { generateUUID, removeUndefinedAndNullValues } = require('../../util');
 
 function processNormalEvent(mondayPayload) {
   const message = new Message(`MONDAY`);
   // we are setting event type as track always
-  message.setEventType("track");
+  message.setEventType('track');
   message.setEventName(formEventName(mondayPayload.event.type));
   if (mondayPayload.event?.userId) {
     const stringifiedUserId = mondayPayload.event.userId.toString();
     message.setProperty(
-      "anonymousId",
-      stringifiedUserId
-        ? sha256(stringifiedUserId)
-            .toString()
-            .substring(0, 36)
-        : generateUUID()
+      'anonymousId',
+      stringifiedUserId ? sha256(stringifiedUserId).toString().substring(0, 36) : generateUUID(),
     );
     // setting the userId got from Monday into externalId
     message.context.externalId = [
       {
-        type: "mondayUserId",
-        id: mondayPayload.event.userId
-      }
+        type: 'mondayUserId',
+        id: mondayPayload.event.userId,
+      },
     ];
   } else {
-    throw new TransformationError("UserId not found");
+    throw new TransformationError('UserId not found');
   }
 
   message.setPropertiesV2(mondayPayload, mapping);
@@ -52,10 +48,10 @@ function isChallengeEvent(event) {
 function processChallengeEvent(event) {
   return {
     outputToSource: {
-      body: Buffer.from(JSON.stringify(event)).toString("base64"),
-      contentType: "application/json"
+      body: Buffer.from(JSON.stringify(event)).toString('base64'),
+      contentType: 'application/json',
     },
-    statusCode: 200
+    statusCode: 200,
   };
 }
 

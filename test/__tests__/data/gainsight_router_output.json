@@ -149,15 +149,7 @@
           "includeKeys": [],
           "saveDestinationResponse": true,
           "secretKeys": ["accessKey", "sharedSecret"],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "router",
           "transformAtV1": "router"
         },
@@ -326,15 +318,7 @@
           "includeKeys": [],
           "saveDestinationResponse": true,
           "secretKeys": ["accessKey", "sharedSecret"],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "router",
           "transformAtV1": "router"
         },

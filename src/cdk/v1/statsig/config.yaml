@@ -10,10 +10,10 @@ message:
     transformation:
       spreadMessage: true
       response:
-        endpoint: "https://api.statsig.com/v1/webhooks/rudderstack"
+        endpoint: 'https://api.statsig.com/v1/webhooks/rudderstack'
         method: POST
         # based on the format set, we can formulate
         format: JSON
         headers:
-          STATSIG-API-KEY: "{{ destConfig.secretKey }}"
-          content-type: "application/json"
+          STATSIG-API-KEY: '{{ destConfig.secretKey }}'
+          content-type: 'application/json'

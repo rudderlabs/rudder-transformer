@@ -220,6 +220,19 @@
     "statusCode": 200
   },
   {
+    "destination": {
+      "Config": {
+        "apiToken": "pk_123",
+        "listId": "correctListId123",
+        "keyToCustomFieldName": [
+          {
+            "from": "location",
+            "to": "Location"
+          }
+        ]
+      },
+      "ID": "clickup-1234"
+    },
     "batched": false,
     "error": "Invalid value specified for latitude. Latitude must be in range \"[-90, 90]\"",
     "metadata": [

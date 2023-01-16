@@ -20,20 +20,11 @@
   },
   {
     "destKey": "opt_out",
-    "sourceKeys": [
-      "traits.opt_out",
-      "context.traits.opt_out",
-      "properties.opt_out"
-    ]
+    "sourceKeys": ["traits.opt_out", "context.traits.opt_out", "properties.opt_out"]
   },
   {
     "destKey": "event_id",
-    "sourceKeys": [
-      "traits.event_id",
-      "context.traits.event_id",
-      "properties.event_id",
-      "messageId"
-    ]
+    "sourceKeys": ["traits.event_id", "context.traits.event_id", "properties.event_id", "messageId"]
   },
   {
     "destKey": "action_source",

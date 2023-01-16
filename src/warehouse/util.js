@@ -1,41 +1,37 @@
-const _ = require("lodash");
-const get = require("get-value");
+const _ = require('lodash');
+const get = require('get-value');
 
-const v0 = require("./v0/util");
-const v1 = require("./v1/util");
-const { PlatformError } = require("../v0/util/errorTypes");
+const v0 = require('./v0/util');
+const v1 = require('./v1/util');
+const { PlatformError } = require('../v0/util/errorTypes');
 
-const minTimeInMs = Date.parse("0001-01-01T00:00:00Z");
-const maxTimeInMs = Date.parse("9999-12-31T23:59:59.999Z");
+const minTimeInMs = Date.parse('0001-01-01T00:00:00Z');
+const maxTimeInMs = Date.parse('9999-12-31T23:59:59.999Z');
 
-const sourceCategoriesToUseRecordId = ["cloud", "singer-protocol"];
+const sourceCategoriesToUseRecordId = ['cloud', 'singer-protocol'];
 
-const isObject = value => {
+const isObject = (value) => {
   const type = typeof value;
-  return (
-    value != null &&
-    (type === "object" || type === "function") &&
-    !Array.isArray(value)
-  );
+  return value != null && (type === 'object' || type === 'function') && !Array.isArray(value);
 };
 
 const isValidJsonPathKey = (eventType, key, val, level, jsonKeys = {}) => {
-  return eventType === "track" && jsonKeys[key] === level;
+  return eventType === 'track' && jsonKeys[key] === level;
 };
 
-const isBlank = value => {
+const isBlank = (value) => {
   return _.isEmpty(_.toString(value));
 };
 /*
  * input => ["a", "b.c"]
  * output => { "a": 0, "b_c": 1}
  */
-const getKeysFromJsonPaths = jsonPaths => {
+const getKeysFromJsonPaths = (jsonPaths) => {
   const jsonKeys = {};
-  jsonPaths.forEach(jsonPath => {
+  jsonPaths.forEach((jsonPath) => {
     if (jsonPath.trim()) {
-      const paths = jsonPath.trim().split(".");
-      jsonKeys[paths.join("_")] = paths.length - 1;
+      const paths = jsonPath.trim().split('.');
+      jsonKeys[paths.join('_')] = paths.length - 1;
     }
   });
   return jsonKeys;
@@ -62,9 +58,9 @@ function validTimestamp(input) {
 
 function getVersionedUtils(schemaVersion) {
   switch (schemaVersion) {
-    case "v0":
+    case 'v0':
       return v0;
-    case "v1":
+    case 'v1':
       return v1;
     default:
       return v1;
@@ -72,16 +68,14 @@ function getVersionedUtils(schemaVersion) {
 }
 
 function isRudderSourcesEvent(event) {
-  return event.channel === "sources" || event.CHANNEL === "sources";
+  return event.channel === 'sources' || event.CHANNEL === 'sources';
 }
 
 const getCloudRecordID = (message, fallbackValue) => {
-  if (get(message, "context.sources.version")) {
+  if (get(message, 'context.sources.version')) {
     const { recordId } = message;
-    if (typeof recordId === "object" || isBlank(recordId)) {
-      throw new PlatformError(
-        "recordId cannot be empty for cloud sources events"
-      );
+    if (typeof recordId === 'object' || isBlank(recordId)) {
+      throw new PlatformError('recordId cannot be empty for cloud sources events');
     }
     return recordId;
   }
@@ -98,5 +92,5 @@ module.exports = {
   getVersionedUtils,
   isRudderSourcesEvent,
   sourceCategoriesToUseRecordId,
-  getCloudRecordID
+  getCloudRecordID,
 };

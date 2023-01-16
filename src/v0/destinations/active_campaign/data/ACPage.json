@@ -1,7 +1,13 @@
 [
   {
     "destKey": "name",
-    "sourceKeys": ["properties.domain", "properties.url", "context.page.url", "properties.referring_domain", "context.page.referring_domain"],
+    "sourceKeys": [
+      "properties.domain",
+      "properties.url",
+      "context.page.url",
+      "properties.referring_domain",
+      "context.page.referring_domain"
+    ],
     "required": true,
     "metadata": {
       "type": "domainUrlV2"

@@ -80,66 +80,39 @@
     "destKey": "extinfo.15"
   },
   {
-    "sourceKeys": [
-      "traits.email",
-      "context.traits.email"
-    ],
+    "sourceKeys": ["traits.email", "context.traits.email"],
     "destKey": "ud[em]"
   },
   {
-    "sourceKeys": [
-      "traits.firstName",
-      "context.traits.firstName"
-    ],
+    "sourceKeys": ["traits.firstName", "context.traits.firstName"],
     "destKey": "ud[fn]"
   },
   {
-    "sourceKeys": [
-      "traits.lastName",
-      "context.traits.lastName"
-    ],
+    "sourceKeys": ["traits.lastName", "context.traits.lastName"],
     "destKey": "ud[ln]"
   },
   {
-    "sourceKeys": [
-      "traits.phone",
-      "context.traits.phone"
-    ],
+    "sourceKeys": ["traits.phone", "context.traits.phone"],
     "destKey": "ud[ph]"
   },
   {
-    "sourceKeys": [
-      "traits.gender",
-      "context.traits.gender"
-    ],
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
     "destKey": "ud[ge]"
   },
   {
-    "sourceKeys": [
-      "traits.birthDate",
-      "context.traits.birthDate"
-    ],
+    "sourceKeys": ["traits.birthDate", "context.traits.birthDate"],
     "destKey": "ud[db]"
   },
   {
-    "sourceKeys": [
-      "traits.city",
-      "context.traits.city"
-    ],
+    "sourceKeys": ["traits.city", "context.traits.city"],
     "destKey": "ud[ct]"
   },
   {
-    "sourceKeys": [
-      "traits.state",
-      "context.traits.state"
-    ],
+    "sourceKeys": ["traits.state", "context.traits.state"],
     "destKey": "ud[st]"
   },
   {
-    "sourceKeys": [
-      "traits.zip",
-      "context.traits.zip"
-    ],
+    "sourceKeys": ["traits.zip", "context.traits.zip"],
     "destKey": "ud[zp]"
   },
   {

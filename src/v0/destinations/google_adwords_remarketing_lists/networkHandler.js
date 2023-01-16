@@ -1,16 +1,14 @@
-const { httpSend, prepareProxyRequest } = require("../../../adapters/network");
-const { isHttpStatusSuccess } = require("../../util/index");
+const { httpSend, prepareProxyRequest } = require('../../../adapters/network');
+const { isHttpStatusSuccess } = require('../../util/index');
 
-const {
-  REFRESH_TOKEN
-} = require("../../../adapters/networkhandler/authConstants");
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 
 const {
   processAxiosResponse,
-  getDynamicErrorType
-} = require("../../../adapters/utils/networkUtils");
-const { NetworkError } = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
+const { NetworkError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 /**
  * This function helps to create a offlineUserDataJobs
  * @param endpoint
@@ -26,14 +24,14 @@ const createJob = async (endpoint, customerId, listId, headers, method) => {
     url: jobCreatingUrl,
     data: {
       job: {
-        type: "CUSTOMER_MATCH_USER_LIST",
+        type: 'CUSTOMER_MATCH_USER_LIST',
         customerMatchUserListMetadata: {
-          userList: `customers/${customerId}/userLists/${listId}`
-        }
-      }
+          userList: `customers/${customerId}/userLists/${listId}`,
+        },
+      },
     },
     headers,
-    method
+    method,
   };
   const response = await httpSend(jobCreatingRequest);
   return response;
@@ -53,7 +51,7 @@ const addUserToJob = async (endpoint, headers, method, jobId, body) => {
     url: jobAddingUrl,
     data: body.JSON,
     headers,
-    method
+    method,
   };
   const response = await httpSend(secondRequest);
   return response;
@@ -71,7 +69,7 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
   const thirdRequest = {
     url: jobRunningUrl,
     headers,
-    method
+    method,
   };
   const response = await httpSend(thirdRequest);
   return response;
@@ -83,47 +81,26 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
  * @param {*} request
  * @returns
  */
-const gaAudienceProxyRequest = async request => {
+const gaAudienceProxyRequest = async (request) => {
   const { body, method, params, endpoint } = request;
   const { headers } = request;
   const { customerId, listId } = params;
 
   // step1: offlineUserDataJobs creation
 
-  const firstResponse = await createJob(
-    endpoint,
-    customerId,
-    listId,
-    headers,
-    method
-  );
-  if (
-    !firstResponse.success &&
-    !isHttpStatusSuccess(firstResponse?.response?.response?.status)
-  ) {
+  const firstResponse = await createJob(endpoint, customerId, listId, headers, method);
+  if (!firstResponse.success && !isHttpStatusSuccess(firstResponse?.response?.response?.status)) {
     return firstResponse;
   }
 
   // step2: putting users into the job
   let jobId;
-  if (
-    firstResponse?.response?.data &&
-    firstResponse?.response?.data?.resourceName
-  )
+  if (firstResponse?.response?.data?.resourceName)
     // eslint-disable-next-line prefer-destructuring
-    jobId = firstResponse.response.data.resourceName.split("/")[3];
-  const secondResponse = await addUserToJob(
-    endpoint,
-    headers,
-    method,
-    jobId,
-    body
-  );
+    jobId = firstResponse.response.data.resourceName.split('/')[3];
+  const secondResponse = await addUserToJob(endpoint, headers, method, jobId, body);
   // console.log(JSON.stringify(secondResponse.response.response));
-  if (
-    !secondResponse.success &&
-    !isHttpStatusSuccess(secondResponse?.response?.response?.status)
-  ) {
+  if (!secondResponse.success && !isHttpStatusSuccess(secondResponse?.response?.response?.status)) {
     return secondResponse;
   }
 
@@ -144,9 +121,9 @@ const getAuthErrCategory = (code, response) => {
   switch (code) {
     case 401:
       if (!response.error.details) return REFRESH_TOKEN;
-      return "";
+      return '';
     default:
-      return "";
+      return '';
   }
 };
 
@@ -159,14 +136,14 @@ const gaAudienceRespHandler = (destResponse, stageMsg) => {
     `${response?.error?.message} ${stageMsg}`,
     status,
     {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     response,
-    getAuthErrCategory(status, response)
+    getAuthErrCategory(status, response),
   );
 };
 
-const responseHandler = destinationResponse => {
+const responseHandler = (destinationResponse) => {
   const message = `Request Processed Successfully`;
   const { status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
@@ -174,20 +151,18 @@ const responseHandler = destinationResponse => {
     return {
       status,
       message,
-      destinationResponse
+      destinationResponse,
     };
   }
   // else successfully return status, message and original destination response
-  gaAudienceRespHandler(
-    destinationResponse,
-    "during ga_audience response transformation"
-  );
+  gaAudienceRespHandler(destinationResponse, 'during ga_audience response transformation');
+  return undefined;
 };
 
-const networkHandler = function() {
+function networkHandler() {
   this.proxy = gaAudienceProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
   this.prepareProxy = prepareProxyRequest;
   this.responseHandler = responseHandler;
-};
+}
 module.exports = { networkHandler };

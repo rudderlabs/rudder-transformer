@@ -1,17 +1,14 @@
-const { isHttpStatusSuccess } = require("../../util/index");
-const {
-  proxyRequest,
-  prepareProxyRequest
-} = require("../../../adapters/network");
+const { isHttpStatusSuccess } = require('../../util/index');
+const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const {
   processAxiosResponse,
-  getDynamicErrorType
-} = require("../../../adapters/utils/networkUtils");
-const { NetworkError, AbortedError } = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
+const { NetworkError, AbortedError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
-const responseHandler = destinationResponse => {
-  const message = "Request Processed Successfully";
+const responseHandler = (destinationResponse) => {
+  const message = 'Request Processed Successfully';
   const { response, status } = destinationResponse;
 
   // if the response from destination is not a success case build an explicit error
@@ -20,9 +17,9 @@ const responseHandler = destinationResponse => {
       `Request failed  with status: ${status}`,
       status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
-      destinationResponse
+      destinationResponse,
     );
   }
 
@@ -34,19 +31,15 @@ const responseHandler = destinationResponse => {
   //     "unprocessed": []
   //   }
 
-  if (!!response && response.status !== "success") {
-    throw new AbortedError(
-      `Request failed  with status: ${status}`,
-      400,
-      destinationResponse
-    );
+  if (!!response && response.status !== 'success') {
+    throw new AbortedError(`Request failed  with status: ${status}`, 400, destinationResponse);
   }
 
   // else successfully return status, message and original destination response
   return {
     status,
     message,
-    destinationResponse
+    destinationResponse,
   };
 };
 
@@ -60,5 +53,5 @@ class networkHandler {
 }
 
 module.exports = {
-  networkHandler
+  networkHandler,
 };

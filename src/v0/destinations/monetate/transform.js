@@ -1,28 +1,28 @@
-const get = require("get-value");
-const set = require("set-value");
+const get = require('get-value');
+const set = require('set-value');
 
 const {
   getValueFromMessage,
   defaultRequestConfig,
   removeUndefinedValues,
   simpleProcessRouterDest,
-  isDefinedAndNotNull
-} = require("../../util");
-const { EventType } = require("../../../constants");
-const { ENDPOINT, mappingConfig } = require("./config");
-const { InstrumentationError } = require("../../util/errorTypes");
+  isDefinedAndNotNull,
+} = require('../../util');
+const { EventType } = require('../../../constants');
+const { ENDPOINT, mappingConfig } = require('./config');
+const { InstrumentationError } = require('../../util/errorTypes');
 
-const createObject = type => {
+const createObject = (type) => {
   if (!type) {
-    throw new InstrumentationError("[createObject] type not defined");
+    throw new InstrumentationError('[createObject] type not defined');
   }
   // TODO: check if default makes sense
   let retObj = {};
   switch (type.toLowerCase()) {
-    case "array":
+    case 'array':
       retObj = [];
       break;
-    case "object":
+    case 'object':
       retObj = {};
       break;
     default:
@@ -33,12 +33,12 @@ const createObject = type => {
 
 const getStringValue = (value, key) => {
   let val;
-  if (key === "sourceKeyValue") {
+  if (key === 'sourceKeyValue') {
     val = value;
-  } else if (key.startsWith("sourceKeyValue.")) {
+  } else if (key.startsWith('sourceKeyValue.')) {
     // gets the substring after the first .
     // sourceKeyValue.page.url => page.url
-    const k = key.substring(key.indexOf(".") + 1);
+    const k = key.substring(key.indexOf('.') + 1);
     val = get(value, k);
   } else {
     // leave the sourceKey as it is if cannot be replaced
@@ -49,12 +49,12 @@ const getStringValue = (value, key) => {
 
 const getValue = (value, key) => {
   let val;
-  if (typeof key === "string") {
+  if (typeof key === 'string') {
     val = getStringValue(value, key);
   } else if (Array.isArray(key)) {
     val = [];
-    key.forEach(k => {
-      if (typeof k === "string") {
+    key.forEach((k) => {
+      if (typeof k === 'string') {
         const v = getStringValue(value, k);
         if (v) {
           val.push(v);
@@ -81,8 +81,9 @@ const formatValue = (value, format, required) => {
     let key;
     let val;
     const formatKeys = Object.keys(format);
-    for (let i = 0; i < formatKeys.length; i += 1) {
-      key = formatKeys[i];
+    // eslint-disable-next-line no-restricted-syntax
+    for (const formatKey of formatKeys) {
+      key = formatKey;
       // Object.keys(format).forEach(key => {
       sourceKey = format[key];
       val = getValue(value, sourceKey);
@@ -112,11 +113,7 @@ const customMetadataHandler = (payload, destKey, value, metadata) => {
   } else {
     // value is not a primitive type
     // TODO: add else or refactor for better code cov
-    const targetValue = formatValue(
-      value,
-      metadata.targetFormat,
-      metadata.targetFormatRequired
-    );
+    const targetValue = formatValue(value, metadata.targetFormat, metadata.targetFormatRequired);
     if (metadata.action && payload[destKey][metadata.action] && targetValue) {
       payload[destKey][metadata.action](targetValue);
     }
@@ -133,7 +130,7 @@ function responseBuilder(body, destination) {
   response.endpoint = ENDPOINT + destinationConfig.retailerShortName;
   response.body.JSON = body;
   response.headers = {
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
 
   return response;
@@ -144,7 +141,7 @@ const constructPayload = (message, mappingJson) => {
   if (Array.isArray(mappingJson) && mappingJson.length > 0) {
     const payload = {};
 
-    mappingJson.forEach(mapping => {
+    mappingJson.forEach((mapping) => {
       const { sourceKeys, destKey, required, metadata } = mapping;
       // get the value from event
       const value = getValueFromMessage(message, sourceKeys);
@@ -157,9 +154,7 @@ const constructPayload = (message, mappingJson) => {
         }
       } else if (required) {
         // throw error if reqired value is missing
-        throw new InstrumentationError(
-          `Missing required value from ${JSON.stringify(sourceKeys)}`
-        );
+        throw new InstrumentationError(`Missing required value from ${JSON.stringify(sourceKeys)}`);
       }
     });
     return payload;
@@ -180,47 +175,39 @@ function track(message, destination) {
   const evName = message.event;
   const properties = message.properties || {};
   if (evName) {
-    if (evName === "Product Viewed") {
+    if (evName === 'Product Viewed') {
       if (properties.product_id) {
-        const sku = properties.sku || "";
+        const sku = properties.sku || '';
         rawPayload.events.push({
-          eventType: "monetate:context:ProductDetailView",
+          eventType: 'monetate:context:ProductDetailView',
           products: [
             {
               productId: properties.product_id,
-              sku
-            }
-          ]
+              sku,
+            },
+          ],
         });
       } else {
-        throw new InstrumentationError(
-          "'product_id' is a required field for Product Viewed"
-        );
+        throw new InstrumentationError("'product_id' is a required field for Product Viewed");
       }
-    } else if (evName === "Product List Viewed") {
+    } else if (evName === 'Product List Viewed') {
       if (properties.products && Array.isArray(properties.products)) {
-        const viewedProducts = properties.products.filter(
-          product => product.product_id
-        );
+        const viewedProducts = properties.products.filter((product) => product.product_id);
         if (viewedProducts.length !== properties.products.length) {
           throw new InstrumentationError(
-            "'product_id' is a required field for all products for Product List Viewed"
+            "'product_id' is a required field for all products for Product List Viewed",
           );
         }
         rawPayload.events.push({
-          eventType: "monetate:context:ProductThumbnailView",
-          products: properties.products.map(product =>
-            product.product_id.toString()
-          )
+          eventType: 'monetate:context:ProductThumbnailView',
+          products: properties.products.map((product) => product.product_id.toString()),
         });
       } else {
-        throw new InstrumentationError(
-          "'products' missing or not array in Product List Viewed"
-        );
+        throw new InstrumentationError("'products' missing or not array in Product List Viewed");
       }
-    } else if (evName === "Product Added") {
-      const currency = properties.currency || "USD";
-      const sku = properties.sku || "";
+    } else if (evName === 'Product Added') {
+      const currency = properties.currency || 'USD';
+      const sku = properties.sku || '';
       if (
         properties.product_id &&
         properties.quantity &&
@@ -228,89 +215,85 @@ function track(message, destination) {
         properties.cart_value
       ) {
         rawPayload.events.push({
-          eventType: "monetate:context:Cart",
+          eventType: 'monetate:context:Cart',
           cartLines: [
             {
-              pid: properties.product_id
-                ? properties.product_id.toString()
-                : "",
+              pid: properties.product_id ? properties.product_id.toString() : '',
               sku,
               quantity: properties.quantity,
-              value: properties.cart_value
-                ? properties.cart_value.toString()
-                : "",
-              currency
-            }
-          ]
+              value: properties.cart_value ? properties.cart_value.toString() : '',
+              currency,
+            },
+          ],
         });
       } else {
         throw new InstrumentationError(
-          "'product_id', 'quantity', 'cart_value' are required fields and 'quantity' should be a number for Product Added"
+          "'product_id', 'quantity', 'cart_value' are required fields and 'quantity' should be a number for Product Added",
         );
       }
-    } else if (evName === "Cart Viewed") {
+    } else if (evName === 'Cart Viewed') {
       if (properties.products && Array.isArray(properties.products)) {
         const cartProducts = properties.products.filter(
-          product =>
+          (product) =>
             product.quantity &&
             Number.isInteger(product.quantity) &&
             isDefinedAndNotNull(product.price) &&
-            typeof product.price === "number" &&
-            product.product_id
+            typeof product.price === 'number' &&
+            product.product_id,
         );
         if (cartProducts.length !== properties.products.length) {
           throw new InstrumentationError(
-            "'quantity', 'price' and 'product_id' are required fields and 'quantity' and 'price' should be a number for all products for Cart Viewed"
+            "'quantity', 'price' and 'product_id' are required fields and 'quantity' and 'price' should be a number for all products for Cart Viewed",
           );
         }
         rawPayload.events.push({
-          eventType: "monetate:context:Cart",
-          cartLines: properties.products.map(product => {
+          eventType: 'monetate:context:Cart',
+          cartLines: properties.products.map((product) => {
             const cartValue = (product.quantity * product.price).toFixed(2);
-            const currency = product.currency || properties.currency || "USD";
-            const sku = product.sku || "";
+            const currency = product.currency || properties.currency || 'USD';
+            const sku = product.sku || '';
             return {
-              pid: product.product_id ? product.product_id.toString() : "",
+              pid: product.product_id ? product.product_id.toString() : '',
               sku,
               quantity: product.quantity,
-              value: cartValue ? cartValue.toString() : "",
-              currency
+              value: cartValue ? cartValue.toString() : '',
+              currency,
             };
-          })
+          }),
         });
       }
-    } else if (evName === "Order Completed") {
+    } else if (evName === 'Order Completed') {
       const purchaseId = properties.order_id;
       const { products } = properties;
       if (purchaseId && products && Array.isArray(products)) {
         const purchaseLines = products.filter(
-          product =>
+          (product) =>
             product.quantity &&
             Number.isInteger(product.quantity) &&
             isDefinedAndNotNull(product.price) &&
-            typeof product.price === "number" &&
-            product.product_id
+            typeof product.price === 'number' &&
+            product.product_id,
         );
         if (purchaseLines.length !== products.length) {
           throw new InstrumentationError(
-            "'quantity', 'price' and 'product_id' are required fields and 'quantity' and 'price' should be a number for all products for Order Completed"
+            "'quantity', 'price' and 'product_id' are required fields and 'quantity' and 'price' should be a number for all products for Order Completed",
           );
         }
         rawPayload.events.push({
-          eventType: "monetate:context:Purchase",
+          eventType: 'monetate:context:Purchase',
           purchaseId,
-          purchaseLines: purchaseLines.map(product => {
+          purchaseLines: purchaseLines.map((product) => {
             const valueStr = (product.quantity * product.price).toFixed(2);
-            const currency = product.currency || properties.currency || "USD";
-            const sku = product.sku || "";
+            const currency = product.currency || properties.currency || 'USD';
+            const sku = product.sku || '';
             return {
-              pid: product.product_id ? product.product_id.toString() : "",
+              pid: product.product_id ? product.product_id.toString() : '',
               sku,
               quantity: product.quantity,
-              value: valueStr ? valueStr.toString() : "",
-              currency
+              value: valueStr ? valueStr.toString() : '',
+              currency,
             };
-          })
+          }),
         });
       }
     } else {
@@ -348,7 +331,7 @@ function screen(message, destination) {
 
 function process(event) {
   // get the event type
-  let evType = get(event, "message.type");
+  let evType = get(event, 'message.type');
   evType = evType ? evType.toLowerCase() : undefined;
 
   // call the appropriate handler based on event type
@@ -364,7 +347,7 @@ function process(event) {
         throw new InstrumentationError(`Event type ${evType} is not supported`);
     }
   }
-  throw new InstrumentationError("Event type is required");
+  throw new InstrumentationError('Event type is required');
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {

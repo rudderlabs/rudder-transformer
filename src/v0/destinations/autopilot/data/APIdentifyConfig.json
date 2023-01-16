@@ -1,10 +1,7 @@
 [
   {
     "destKey": "Email",
-    "sourceKeys": [
-      "traits.email",
-      "context.traits.email"
-    ],
+    "sourceKeys": ["traits.email", "context.traits.email"],
     "required": false
   },
   {
@@ -29,34 +26,22 @@
   },
   {
     "destKey": "Phone",
-    "sourceKeys": [
-      "traits.phone",
-      "context.traits.phone"
-    ],
+    "sourceKeys": ["traits.phone", "context.traits.phone"],
     "required": false
   },
   {
     "destKey": "Company",
-    "sourceKeys": [
-      "traits.company.name",
-      "context.traits.company.name"
-    ],
+    "sourceKeys": ["traits.company.name", "context.traits.company.name"],
     "required": false
   },
   {
     "destKey": "Status",
-    "sourceKeys": [
-      "traits.status",
-      "context.traits.status"
-    ],
+    "sourceKeys": ["traits.status", "context.traits.status"],
     "required": false
   },
   {
     "destKey": "LeadSource",
-    "sourceKeys": [
-      "traits.LeadSource",
-      "context.traits.LeadSource"
-    ],
+    "sourceKeys": ["traits.LeadSource", "context.traits.LeadSource"],
     "required": false
   }
 ]

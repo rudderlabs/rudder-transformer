@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary,no-param-reassign */
-const get = require("get-value");
+const get = require('get-value');
 
-const { EventType, MappedToDestinationKey } = require("../../../constants");
+const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   adduserIdFromExternalId,
   defaultBatchRequestConfig,
@@ -10,10 +10,10 @@ const {
   getFieldValueFromMessage,
   removeUndefinedValues,
   isDefinedAndNotNull,
-  simpleProcessRouterDest
-} = require("../../util");
+  simpleProcessRouterDest,
+} = require('../../util');
 
-const { InstrumentationError } = require("../../util/errorTypes");
+const { InstrumentationError } = require('../../util/errorTypes');
 
 const {
   ConfigCategory,
@@ -25,25 +25,25 @@ const {
   TRACK_BRAZE_MAX_REQ_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,
   supportedOperationTypes,
-  nestedOperationTypes
-} = require("./config");
+  nestedOperationTypes,
+} = require('./config');
 
-const logger = require("../../../logger");
+const logger = require('../../../logger');
 
 function formatGender(gender) {
   // few possible cases of woman
-  if (["woman", "female", "w", "f"].indexOf(gender.toLowerCase()) > -1) {
-    return "F";
+  if (['woman', 'female', 'w', 'f'].includes(gender.toLowerCase())) {
+    return 'F';
   }
 
   // few possible cases of man
-  if (["man", "male", "m"].indexOf(gender.toLowerCase()) > -1) {
-    return "M";
+  if (['man', 'male', 'm'].includes(gender.toLowerCase())) {
+    return 'M';
   }
 
   // few possible cases of other
-  if (["other", "o"].indexOf(gender.toLowerCase()) > -1) {
-    return "O";
+  if (['other', 'o'].includes(gender.toLowerCase())) {
+    return 'O';
   }
 
   return null;
@@ -57,11 +57,11 @@ function buildResponse(message, destination, properties, endpoint) {
   return {
     ...response,
     headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${destination.Config.restApiKey}`
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${destination.Config.restApiKey}`,
     },
-    userId: message.userId || message.anonymousId
+    userId: message.userId || message.anonymousId,
   };
 }
 
@@ -69,15 +69,14 @@ function setAliasObjectWithAnonId(payload, message) {
   if (message.anonymousId) {
     payload.user_alias = {
       alias_name: message.anonymousId,
-      alias_label: "rudder_id"
+      alias_label: 'rudder_id',
     };
   }
   return payload;
 }
 
 function setExternalId(payload, message) {
-  const externalId =
-    getDestinationExternalID(message, "brazeExternalId") || message.userId;
+  const externalId = getDestinationExternalID(message, 'brazeExternalId') || message.userId;
   if (externalId) {
     payload.external_id = externalId;
   }
@@ -85,8 +84,8 @@ function setExternalId(payload, message) {
 }
 
 function setExternalIdOrAliasObject(payload, message) {
-  const userId = getFieldValueFromMessage(message, "userIdOnly");
-  if (userId || getDestinationExternalID(message, "brazeExternalId")) {
+  const userId = getFieldValueFromMessage(message, 'userIdOnly');
+  if (userId || getDestinationExternalID(message, 'brazeExternalId')) {
     return setExternalId(payload, message);
   }
 
@@ -107,7 +106,7 @@ function getUserAttributesObject(message, mappingJson) {
   // blank output object
   const data = {};
   // get traits from message
-  const traits = getFieldValueFromMessage(message, "traits");
+  const traits = getFieldValueFromMessage(message, 'traits');
 
   // return the traits as-is if message is mapped to destination
   if (get(message, MappedToDestinationKey)) {
@@ -115,11 +114,11 @@ function getUserAttributesObject(message, mappingJson) {
   }
 
   // iterate over the destKeys and set the value if present
-  Object.keys(mappingJson).forEach(destKey => {
+  Object.keys(mappingJson).forEach((destKey) => {
     let value = get(traits, mappingJson[destKey]);
     if (value) {
       // handle gender special case
-      if (destKey === "gender") {
+      if (destKey === 'gender') {
         value = formatGender(value);
       }
       data[destKey] = value;
@@ -128,21 +127,21 @@ function getUserAttributesObject(message, mappingJson) {
 
   // reserved keys : already mapped through mappingJson
   const reservedKeys = [
-    "address",
-    "birthday",
-    "email",
-    "firstName",
-    "gender",
-    "avatar",
-    "lastName",
-    "phone"
+    'address',
+    'birthday',
+    'email',
+    'firstName',
+    'gender',
+    'avatar',
+    'lastName',
+    'phone',
   ];
 
   if (traits) {
     // iterate over rest of the traits properties
-    Object.keys(traits).forEach(traitKey => {
+    Object.keys(traits).forEach((traitKey) => {
       // if traitKey is not reserved add the value to final output
-      if (reservedKeys.indexOf(traitKey) === -1) {
+      if (!reservedKeys.includes(traitKey)) {
         const value = get(traits, traitKey);
         if (value !== undefined) {
           data[traitKey] = value;
@@ -165,7 +164,7 @@ function processIdentify(message, destination) {
     message,
     destination,
     getIdentifyPayload(message),
-    getIdentifyEndpoint(destination.Config.endPoint)
+    getIdentifyEndpoint(destination.Config.endPoint),
   );
 }
 
@@ -177,7 +176,7 @@ function processTrackWithUserAttributes(message, destination, mappingJson) {
       message,
       destination,
       { attributes: [payload] },
-      getTrackEndPoint(destination.Config.endPoint)
+      getTrackEndPoint(destination.Config.endPoint),
     );
   }
   return null;
@@ -186,16 +185,9 @@ function processTrackWithUserAttributes(message, destination, mappingJson) {
 function handleReservedProperties(props) {
   // remove reserved keys from custom event properties
   // https://www.appboy.com/documentation/Platform_Wide/#reserved-keys
-  const reserved = [
-    "time",
-    "product_id",
-    "quantity",
-    "event_name",
-    "price",
-    "currency"
-  ];
+  const reserved = ['time', 'product_id', 'quantity', 'event_name', 'price', 'currency'];
 
-  reserved.forEach(element => {
+  reserved.forEach((element) => {
     delete props[element];
   });
   return props;
@@ -207,36 +199,30 @@ function addMandatoryEventProperties(payload, message) {
   return payload;
 }
 
-function addMandatoryPurchaseProperties(
-  productId,
-  price,
-  currencyCode,
-  quantity,
-  timestamp
-) {
+function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity, timestamp) {
   if (currencyCode) {
     return {
       product_id: productId,
       price,
       currency: currencyCode,
       quantity,
-      time: timestamp
+      time: timestamp,
     };
   }
   return null;
 }
 
 function getPurchaseObjs(message) {
-  const { products } = message.properties;
-  const currencyCode = message.properties.currency;
+  const { products, currency } = message.properties;
+  const currencyCode = currency;
 
   const purchaseObjs = [];
 
   if (products) {
     // we have to make a separate call to appboy for each product
-    products.forEach(product => {
+    products.forEach((product) => {
       const productId = product.product_id || product.sku;
-      const { price, quantity, currency } = product;
+      const { price, quantity, currency: prodCur } = product;
       if (productId && isDefinedAndNotNull(price) && quantity) {
         if (Number.isNaN(price) || Number.isNaN(quantity)) {
           return;
@@ -244,9 +230,9 @@ function getPurchaseObjs(message) {
         let purchaseObj = addMandatoryPurchaseProperties(
           productId,
           price,
-          currencyCode || currency,
+          currencyCode || prodCur,
           quantity,
-          message.timestamp
+          message.timestamp,
         );
         if (purchaseObj) {
           purchaseObj = setExternalIdOrAliasObject(purchaseObj, message);
@@ -267,7 +253,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   }
   let { properties } = message;
   const requestJson = {
-    partner: BRAZE_PARTNER_NAME
+    partner: BRAZE_PARTNER_NAME,
   };
 
   let attributePayload = getUserAttributesObject(message, mappingJson);
@@ -278,8 +264,8 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
 
   if (
     messageType === EventType.TRACK &&
-    typeof eventName === "string" &&
-    eventName.toLowerCase() === "order completed"
+    typeof eventName === 'string' &&
+    eventName.toLowerCase() === 'order completed'
   ) {
     const purchaseObjs = getPurchaseObjs(message);
 
@@ -298,12 +284,12 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
         {
           attributes: [attributePayload],
           purchases: purchaseObjs,
-          partner: BRAZE_PARTNER_NAME
+          partner: BRAZE_PARTNER_NAME,
         },
-        getTrackEndPoint(destination.Config.endPoint)
+        getTrackEndPoint(destination.Config.endPoint),
       );
     }
-    throw new InstrumentationError("Invalid Order Completed event");
+    throw new InstrumentationError('Invalid Order Completed event');
   }
   properties = handleReservedProperties(properties);
   let payload = {};
@@ -316,22 +302,18 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
     // add,update,remove
     if (destination.Config.enableNestedArrayOperations) {
       Object.keys(properties)
-        .filter(key => Array.isArray(properties[`${key}`]))
-        .forEach(key => {
+        .filter((key) => Array.isArray(properties[`${key}`]))
+        .forEach((key) => {
           // if not specified, send as create attribute
           if (properties.nestedOperationType === nestedOperationTypes.CREATE) {
             attributePayload[key] = properties[key];
-          } else if (
-            supportedOperationTypes.includes(properties.nestedOperationType)
-          ) {
+          } else if (supportedOperationTypes.includes(properties.nestedOperationType)) {
             attributePayload[key] = {};
             const opsResultArray = [];
-            if (
-              properties.nestedOperationType === nestedOperationTypes.UPDATE
-            ) {
+            if (properties.nestedOperationType === nestedOperationTypes.UPDATE) {
               for (let i = 0; i < properties[key].length; i += 1) {
                 const myObj = {};
-                Object.keys(properties[key][i]).forEach(subKey => {
+                Object.keys(properties[key][i]).forEach((subKey) => {
                   myObj[`$${subKey}`] = properties[key][i][subKey];
                 });
                 opsResultArray.push(myObj);
@@ -339,36 +321,29 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
 
               // eslint-disable-next-line no-underscore-dangle
               attributePayload._merge_objects = isDefinedAndNotNull(
-                properties.mergeObjectsUpdateOperation
+                properties.mergeObjectsUpdateOperation,
               )
                 ? properties.mergeObjectsUpdateOperation
                 : false;
-              attributePayload[key][
-                `$${properties.nestedOperationType}`
-              ] = opsResultArray;
-            } else if (
-              properties.nestedOperationType === nestedOperationTypes.REMOVE
-            ) {
+              attributePayload[key][`$${properties.nestedOperationType}`] = opsResultArray;
+            } else if (properties.nestedOperationType === nestedOperationTypes.REMOVE) {
               for (let i = 0; i < properties[key].length; i += 1) {
                 const myObj = {};
-                Object.keys(properties[key][i]).forEach(subKey => {
+                Object.keys(properties[key][i]).forEach((subKey) => {
                   myObj[`$${subKey}`] = properties[key][i][subKey];
                 });
                 opsResultArray.push(myObj);
               }
-              attributePayload[key][
-                `$${properties.nestedOperationType}`
-              ] = opsResultArray;
+              attributePayload[key][`$${properties.nestedOperationType}`] = opsResultArray;
             } else {
               // add case
-              attributePayload[key][`$${properties.nestedOperationType}`] =
-                properties[key];
+              attributePayload[key][`$${properties.nestedOperationType}`] = properties[key];
             }
           }
         });
     }
   } catch (exp) {
-    logger.info("Failure occured during nested array operations", exp);
+    logger.info('Failure occured during nested array operations', exp);
   }
 
   payload = setExternalIdOrAliasObject(payload, message);
@@ -392,7 +367,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
     message,
     destination,
     requestJson,
-    getTrackEndPoint(destination.Config.endPoint)
+    getTrackEndPoint(destination.Config.endPoint),
   );
 }
 
@@ -402,47 +377,45 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
 // Ex: If the groupId is 1234, we'll add a attribute to the user object with the
 // key `ab_rudder_group_1234` with the value `true`
 function processGroup(message, destination) {
-  const groupId = getFieldValueFromMessage(message, "groupId");
+  const groupId = getFieldValueFromMessage(message, 'groupId');
   if (!groupId) {
-    throw new InstrumentationError("Invalid groupId");
+    throw new InstrumentationError('Invalid groupId');
   }
   if (destination.Config.enableSubscriptionGroupInGroupCall) {
     if (!(message.traits && (message.traits.phone || message.traits.email))) {
       throw new InstrumentationError(
-        "Message should have traits with subscriptionState, email or phone"
+        'Message should have traits with subscriptionState, email or phone',
       );
     }
     const subscriptionGroup = {};
     subscriptionGroup.subscription_group_id = groupId;
     if (
-      message.traits.subscriptionState !== "subscribed" &&
-      message.traits.subscriptionState !== "unsubscribed"
+      message.traits.subscriptionState !== 'subscribed' &&
+      message.traits.subscriptionState !== 'unsubscribed'
     ) {
       throw new InstrumentationError(
-        "you must provide a subscription state in traits and possible values are subscribed and unsubscribed."
+        'you must provide a subscription state in traits and possible values are subscribed and unsubscribed.',
       );
     }
     subscriptionGroup.subscription_state = message.traits.subscriptionState;
     subscriptionGroup.external_id = [message.userId || message.anonymousId];
-    const phone = getFieldValueFromMessage(message, "phone");
-    const email = getFieldValueFromMessage(message, "email");
+    const phone = getFieldValueFromMessage(message, 'phone');
+    const email = getFieldValueFromMessage(message, 'email');
     if (phone) {
       subscriptionGroup.phone = phone;
     } else if (email) {
       subscriptionGroup.email = email;
     }
     const response = defaultRequestConfig();
-    response.endpoint = getSubscriptionGroupEndPoint(
-      destination.Config.endPoint
-    );
+    response.endpoint = getSubscriptionGroupEndPoint(destination.Config.endPoint);
     response.body.JSON = removeUndefinedValues(subscriptionGroup);
     return {
       ...response,
       headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        Authorization: `Bearer ${destination.Config.restApiKey}`
-      }
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${destination.Config.restApiKey}`,
+      },
     };
   }
   const groupAttribute = {};
@@ -453,9 +426,9 @@ function processGroup(message, destination) {
     destination,
     {
       attributes: [groupAttribute],
-      partner: BRAZE_PARTNER_NAME
+      partner: BRAZE_PARTNER_NAME,
     },
-    getTrackEndPoint(destination.Config.endPoint)
+    getTrackEndPoint(destination.Config.endPoint),
   );
 }
 
@@ -466,12 +439,12 @@ function process(event) {
   const messageType = message.type.toLowerCase();
 
   // Init -- mostly for test cases
-  destination.Config.endPoint = "https://rest.fra-01.braze.eu";
+  destination.Config.endPoint = 'https://rest.fra-01.braze.eu';
 
   // Ref: https://www.braze.com/docs/user_guide/administrative/access_braze/braze_instances
   if (destination.Config.dataCenter) {
-    const dataCenterArr = destination.Config.dataCenter.trim().split("-");
-    if (dataCenterArr[0].toLowerCase() === "eu") {
+    const dataCenterArr = destination.Config.dataCenter.trim().split('-');
+    if (dataCenterArr[0].toLowerCase() === 'eu') {
       destination.Config.endPoint = `https://rest.fra-${dataCenterArr[1]}.braze.eu`;
     } else {
       destination.Config.endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com`;
@@ -481,34 +454,17 @@ function process(event) {
   let category = ConfigCategory.DEFAULT;
   switch (messageType) {
     case EventType.TRACK:
-      response = processTrackEvent(
-        messageType,
-        message,
-        destination,
-        mappingConfig[category.name]
-      );
+      response = processTrackEvent(messageType, message, destination, mappingConfig[category.name]);
       respList.push(response);
       break;
     case EventType.PAGE:
-      message.event =
-        message.name || get(message, "properties.name") || "Page Viewed";
-      response = processTrackEvent(
-        messageType,
-        message,
-        destination,
-        mappingConfig[category.name]
-      );
+      message.event = message.name || get(message, 'properties.name') || 'Page Viewed';
+      response = processTrackEvent(messageType, message, destination, mappingConfig[category.name]);
       respList.push(response);
       break;
     case EventType.SCREEN:
-      message.event =
-        message.name || get(message, "properties.name") || "Screen Viewed";
-      response = processTrackEvent(
-        messageType,
-        message,
-        destination,
-        mappingConfig[category.name]
-      );
+      message.event = message.name || get(message, 'properties.name') || 'Screen Viewed';
+      response = processTrackEvent(messageType, message, destination, mappingConfig[category.name]);
       respList.push(response);
       break;
     case EventType.IDENTIFY:
@@ -518,11 +474,7 @@ function process(event) {
         respList.push(response);
       }
 
-      response = processTrackWithUserAttributes(
-        message,
-        destination,
-        mappingConfig[category.name]
-      );
+      response = processTrackWithUserAttributes(message, destination, mappingConfig[category.name]);
 
       if (response) {
         respList.push(response);
@@ -533,7 +485,7 @@ function process(event) {
       respList.push(response);
       break;
     default:
-      throw new InstrumentationError("Message type is not supported");
+      throw new InstrumentationError('Message type is not supported');
   }
 
   return respList;
@@ -582,17 +534,17 @@ function batch(destEvents) {
     const { message, metadata, destination } = ev;
 
     // get the JSON body
-    jsonBody = get(message, "body.JSON");
+    jsonBody = get(message, 'body.JSON');
 
     // get the type
-    endPoint = get(message, "endpoint");
-    type = endPoint && endPoint.includes("track") ? "track" : "identify";
+    endPoint = get(message, 'endpoint');
+    type = endPoint && endPoint.includes('track') ? 'track' : 'identify';
 
     index += 1;
 
     // if it is a track keep on adding to the existing track list
     // keep a count of event, attribute, purchases - 75 is the cap
-    if (type === "track") {
+    if (type === 'track') {
       // keep the trackEndpoint for reuse later
       if (!trackEndpoint) {
         trackEndpoint = endPoint;
@@ -605,43 +557,38 @@ function batch(destEvents) {
       const maxCount = Math.max(
         attributesBatch.length + (attributes ? attributes.length : 0),
         eventsBatch.length + (events ? events.length : 0),
-        purchasesBatch.length + (purchases ? purchases.length : 0)
+        purchasesBatch.length + (purchases ? purchases.length : 0),
       );
 
-      if (maxCount > TRACK_BRAZE_MAX_REQ_COUNT) {
-        if (
-          attributesBatch.length > 0 ||
-          eventsBatch.length > 0 ||
-          purchasesBatch.length > 0
-        ) {
-          const batchResponse = defaultRequestConfig();
-          batchResponse.headers = message.headers;
-          batchResponse.endpoint = trackEndpoint;
-          const responseBodyJson = {
-            partner: BRAZE_PARTNER_NAME
-          };
-          if (attributesBatch.length > 0) {
-            responseBodyJson.attributes = attributesBatch;
-          }
-          if (eventsBatch.length > 0) {
-            responseBodyJson.events = eventsBatch;
-          }
-          if (purchasesBatch.length > 0) {
-            responseBodyJson.purchases = purchasesBatch;
-          }
-          batchResponse.body.JSON = responseBodyJson;
-          // modify the endpoint to track endpoint
-          batchResponse.endpoint = trackEndpoint;
-          respList.push(
-            formatBatchResponse(batchResponse, trackMetadataBatch, destination)
-          );
-
-          // clear the arrays and reuse
-          attributesBatch = [];
-          eventsBatch = [];
-          purchasesBatch = [];
-          trackMetadataBatch = [];
+      if (
+        maxCount > TRACK_BRAZE_MAX_REQ_COUNT &&
+        (attributesBatch.length > 0 || eventsBatch.length > 0 || purchasesBatch.length > 0)
+      ) {
+        const batchResponse = defaultRequestConfig();
+        batchResponse.headers = message.headers;
+        batchResponse.endpoint = trackEndpoint;
+        const responseBodyJson = {
+          partner: BRAZE_PARTNER_NAME,
+        };
+        if (attributesBatch.length > 0) {
+          responseBodyJson.attributes = attributesBatch;
         }
+        if (eventsBatch.length > 0) {
+          responseBodyJson.events = eventsBatch;
+        }
+        if (purchasesBatch.length > 0) {
+          responseBodyJson.purchases = purchasesBatch;
+        }
+        batchResponse.body.JSON = responseBodyJson;
+        // modify the endpoint to track endpoint
+        batchResponse.endpoint = trackEndpoint;
+        respList.push(formatBatchResponse(batchResponse, trackMetadataBatch, destination));
+
+        // clear the arrays and reuse
+        attributesBatch = [];
+        eventsBatch = [];
+        purchasesBatch = [];
+        trackMetadataBatch = [];
       }
 
       // add only if present
@@ -664,9 +611,8 @@ function batch(destEvents) {
       if (!identifyEndpoint) {
         identifyEndpoint = endPoint;
       }
-      const aliasObjectArr = get(jsonBody, "aliases_to_identify");
-      const aliasMaxCount =
-        aliasBatch.length + (aliasObjectArr ? aliasObjectArr.length : 0);
+      const aliasObjectArr = get(jsonBody, 'aliases_to_identify');
+      const aliasMaxCount = aliasBatch.length + (aliasObjectArr ? aliasObjectArr.length : 0);
 
       if (aliasMaxCount > IDENTIFY_BRAZE_MAX_REQ_COUNT) {
         // form an identify batch and start over
@@ -674,15 +620,13 @@ function batch(destEvents) {
         batchResponse.headers = message.headers;
         batchResponse.endpoint = identifyEndpoint;
         const responseBodyJson = {
-          partner: BRAZE_PARTNER_NAME
+          partner: BRAZE_PARTNER_NAME,
         };
         if (aliasBatch.length > 0) {
           responseBodyJson.aliases_to_identify = [...aliasBatch];
         }
         batchResponse.body.JSON = responseBodyJson;
-        respList.push(
-          formatBatchResponse(batchResponse, identifyMetadataBatch, destination)
-        );
+        respList.push(formatBatchResponse(batchResponse, identifyMetadataBatch, destination));
 
         // clear the arrays and reuse
         aliasBatch = [];
@@ -706,32 +650,22 @@ function batch(destEvents) {
     const identifyBatchResponse = defaultRequestConfig();
     identifyBatchResponse.headers = message.headers;
     const identifyResponseBodyJson = {
-      partner: BRAZE_PARTNER_NAME
+      partner: BRAZE_PARTNER_NAME,
     };
     identifyResponseBodyJson.aliases_to_identify = aliasBatch;
     identifyBatchResponse.body.JSON = identifyResponseBodyJson;
     // modify the endpoint to identify endpoint
     identifyBatchResponse.endpoint = identifyEndpoint;
-    respList.push(
-      formatBatchResponse(
-        identifyBatchResponse,
-        identifyMetadataBatch,
-        destination
-      )
-    );
+    respList.push(formatBatchResponse(identifyBatchResponse, identifyMetadataBatch, destination));
   }
 
   // process track events
-  if (
-    attributesBatch.length > 0 ||
-    eventsBatch.length > 0 ||
-    purchasesBatch.length > 0
-  ) {
+  if (attributesBatch.length > 0 || eventsBatch.length > 0 || purchasesBatch.length > 0) {
     const trackBatchResponse = defaultRequestConfig();
     trackBatchResponse.headers = message.headers;
     trackBatchResponse.endpoint = trackEndpoint;
     const trackResponseBodyJson = {
-      partner: BRAZE_PARTNER_NAME
+      partner: BRAZE_PARTNER_NAME,
     };
     if (attributesBatch.length > 0) {
       trackResponseBodyJson.attributes = attributesBatch;
@@ -745,9 +679,7 @@ function batch(destEvents) {
     trackBatchResponse.body.JSON = trackResponseBodyJson;
     // modify the endpoint to track endpoint
     trackBatchResponse.endpoint = trackEndpoint;
-    respList.push(
-      formatBatchResponse(trackBatchResponse, trackMetadataBatch, destination)
-    );
+    respList.push(formatBatchResponse(trackBatchResponse, trackMetadataBatch, destination));
   }
 
   return respList;

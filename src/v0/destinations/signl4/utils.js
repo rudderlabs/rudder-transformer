@@ -1,15 +1,15 @@
-const { constructPayload } = require("../../util");
-const { mappingConfig, ConfigCategory } = require("./config");
+const { constructPayload } = require('../../util');
+const { mappingConfig, ConfigCategory } = require('./config');
 
 /**
  * This object is defined to map the fields being taken from UI with proper keys
  */
 const propertyMappingObj = {
-  s4Service: "X-S4-Service",
-  s4Location: "X-S4-Location",
-  s4AlertingScenario: "X-S4-AlertingScenario",
-  s4ExternalID: "X-S4-ExternalID",
-  s4Status: "X-S4-Status"
+  s4Service: 'X-S4-Service',
+  s4Location: 'X-S4-Location',
+  s4AlertingScenario: 'X-S4-AlertingScenario',
+  s4ExternalID: 'X-S4-ExternalID',
+  s4Status: 'X-S4-Status',
 };
 
 /**
@@ -22,17 +22,14 @@ const populatePayload = (message, Config) => {
   const { properties, event } = message;
   const { s4Filter, eventToTitleMapping } = Config;
 
-  let payload = constructPayload(
-    message,
-    mappingConfig[ConfigCategory.TRACK.name]
-  );
+  let payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
 
   // populating all key value pairs of properties into the payload to be returned
   payload = { ...payload, ...properties };
 
   // Overriding event name with Customizable Title if avaiblable
   if (eventToTitleMapping) {
-    eventToTitleMapping.forEach(mapping => {
+    eventToTitleMapping.forEach((mapping) => {
       if (mapping.from === event) {
         payload.Title = mapping.to;
       }
@@ -40,7 +37,7 @@ const populatePayload = (message, Config) => {
   }
 
   // Populating the payload with the fields(properties) taken from UI
-  Object.keys(propertyMappingObj).forEach(element => {
+  Object.keys(propertyMappingObj).forEach((element) => {
     // If the key is provided from web-app for this field mappping it with it's value
     const index = `${element}Property`;
     if (properties[Config[index]]) {
@@ -51,7 +48,7 @@ const populatePayload = (message, Config) => {
     }
   });
   if (s4Filter) {
-    payload["X-S4-Filtering"] = s4Filter;
+    payload['X-S4-Filtering'] = s4Filter;
   }
   return payload;
 };

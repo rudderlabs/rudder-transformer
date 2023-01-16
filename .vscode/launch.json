@@ -18,10 +18,7 @@
       "type": "node",
       "request": "launch",
       "program": "${workspaceRoot}/benchmark",
-      "args": [
-        "--destinations=${input:destinations}",
-        "--feature=${input:feature}"
-      ],
+      "args": ["--destinations=${input:destinations}", "--feature=${input:feature}"],
       "runtimeArgs": ["--nolazy"],
       "sourceMaps": true,
       "runtimeExecutable": "/usr/local/bin/node"

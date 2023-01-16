@@ -1,12 +1,8 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
-const get = require("get-value");
-const {
-  EventType,
-  WhiteListedTraits,
-  MappedToDestinationKey
-} = require("../../../constants");
+const get = require('get-value');
+const { EventType, WhiteListedTraits, MappedToDestinationKey } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,
   BASE_ENDPOINT,
@@ -14,13 +10,9 @@ const {
   ecomExclusionKeys,
   ecomEvents,
   eventNameMapping,
-  jsonNameMapping
-} = require("./config");
-const {
-  isProfileExist,
-  checkForMembersAndSubscribe,
-  createCustomerProperties
-} = require("./util");
+  jsonNameMapping,
+} = require('./config');
+const { isProfileExist, checkForMembersAndSubscribe, createCustomerProperties } = require('./util');
 const {
   defaultRequestConfig,
   constructPayload,
@@ -33,12 +25,9 @@ const {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   defaultPutRequestConfig,
-  simpleProcessRouterDest
-} = require("../../util");
-const {
-  ConfigurationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+  simpleProcessRouterDest,
+} = require('../../util');
+const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 /**
  * Main Identify request handler func
@@ -55,13 +44,9 @@ const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
   if (!destination.Config.publicApiKey || !destination.Config.privateApiKey) {
     if (!destination.Config.publicApiKey) {
-      throw new ConfigurationError(
-        "Public API Key is a required field for identify events"
-      );
+      throw new ConfigurationError('Public API Key is a required field for identify events');
     } else {
-      throw new ConfigurationError(
-        "Private API Key is a required field for identify events"
-      );
+      throw new ConfigurationError('Private API Key is a required field for identify events');
     }
   }
   const mappedToDestination = get(message, MappedToDestinationKey);
@@ -69,50 +54,45 @@ const identifyRequestHandler = async (message, category, destination) => {
     addExternalIdToTraits(message);
     adduserIdFromExternalId(message);
   }
-  const traitsInfo = getFieldValueFromMessage(message, "traits");
+  const traitsInfo = getFieldValueFromMessage(message, 'traits');
   const response = defaultRequestConfig();
   const personId = await isProfileExist(message, destination);
-  let propertyPayload = constructPayload(
-    message,
-    MAPPING_CONFIG[category.name]
-  );
+  let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
   propertyPayload = extractCustomFields(
     message,
     propertyPayload,
-    ["traits", "context.traits"],
-    WhiteListedTraits
+    ['traits', 'context.traits'],
+    WhiteListedTraits,
   );
   if (!personId) {
     propertyPayload = removeUndefinedAndNullValues(propertyPayload);
     if (destination.Config?.enforceEmailAsPrimary) {
       delete propertyPayload.$id;
-      propertyPayload._id = getFieldValueFromMessage(message, "userId");
+      propertyPayload._id = getFieldValueFromMessage(message, 'userId');
     }
     const payload = {
       token: destination.Config.publicApiKey,
-      properties: propertyPayload
+      properties: propertyPayload,
     };
     response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
     response.method = defaultPostRequestConfig.requestMethod;
     response.headers = {
-      "Content-Type": "application/json",
-      Accept: "text/html"
+      'Content-Type': 'application/json',
+      Accept: 'text/html',
     };
     response.body.JSON = removeUndefinedAndNullValues(payload);
   } else {
     response.endpoint = `${BASE_ENDPOINT}/api/v1/person/${personId}`;
     response.method = defaultPutRequestConfig.requestMethod;
     response.headers = {
-      Accept: "application/json"
+      Accept: 'application/json',
     };
     response.params = removeUndefinedAndNullValues(propertyPayload);
     response.params.api_key = destination.Config.privateApiKey;
   }
   const responseArray = [response];
-  responseArray.push(
-    ...checkForMembersAndSubscribe(message, traitsInfo, destination)
-  );
+  responseArray.push(...checkForMembersAndSubscribe(message, traitsInfo, destination));
   return responseArray;
 };
 
@@ -125,11 +105,9 @@ const identifyRequestHandler = async (message, category, destination) => {
 const trackRequestHandler = (message, category, destination) => {
   let payload = {};
   if (!destination.Config.publicApiKey) {
-    throw new ConfigurationError(
-      "Public API Key is a required field for track events"
-    );
+    throw new ConfigurationError('Public API Key is a required field for track events');
   }
-  let event = get(message, "event");
+  let event = get(message, 'event');
   event = event ? event.trim().toLowerCase() : event;
   if (ecomEvents.includes(event) && message.properties) {
     const eventName = eventNameMapping[event];
@@ -138,19 +116,11 @@ const trackRequestHandler = (message, category, destination) => {
     const eventMap = jsonNameMapping[eventName];
     // using identify to create customer properties
     payload.customer_properties = createCustomerProperties(message);
-    if (
-      !payload.customer_properties.$email &&
-      !payload.customer_properties.$phone_number
-    ) {
-      throw new InstrumentationError(
-        "email or phone is required for customer_properties"
-      );
+    if (!payload.customer_properties.$email && !payload.customer_properties.$phone_number) {
+      throw new InstrumentationError('email or phone is required for customer_properties');
     }
     const categ = CONFIG_CATEGORIES[eventMap];
-    payload.properties = constructPayload(
-      message.properties,
-      MAPPING_CONFIG[categ.name]
-    );
+    payload.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
 
     // products mapping using Items.json
     // mapping properties.items to payload.properties.items and using properties.products as a fallback to properties.items
@@ -159,11 +129,8 @@ const trackRequestHandler = (message, category, destination) => {
       const items = message.properties.items || message.properties.products;
       const itemArr = [];
       if (Array.isArray(items)) {
-        items.forEach(key => {
-          let item = constructPayload(
-            key,
-            MAPPING_CONFIG[CONFIG_CATEGORIES.ITEMS.name]
-          );
+        items.forEach((key) => {
+          let item = constructPayload(key, MAPPING_CONFIG[CONFIG_CATEGORIES.ITEMS.name]);
           item = removeUndefinedAndNullValues(item);
           if (!isEmptyObject(item)) {
             itemArr.push(item);
@@ -183,13 +150,13 @@ const trackRequestHandler = (message, category, destination) => {
     customProperties = extractCustomFields(
       message,
       customProperties,
-      ["properties"],
-      ecomExclusionKeys
+      ['properties'],
+      ecomExclusionKeys,
     );
     if (!isEmptyObject(customProperties)) {
       payload.properties = {
         ...payload.properties,
-        ...customProperties
+        ...customProperties,
       };
     }
 
@@ -206,7 +173,7 @@ const trackRequestHandler = (message, category, destination) => {
     const customerProperties = createCustomerProperties(message);
     if (destination.Config.enforceEmailAsPrimary) {
       delete customerProperties.$id;
-      customerProperties._id = getFieldValueFromMessage(message, "userId");
+      customerProperties._id = getFieldValueFromMessage(message, 'userId');
     }
     payload.customer_properties = customerProperties;
   }
@@ -217,8 +184,8 @@ const trackRequestHandler = (message, category, destination) => {
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    "Content-Type": "application/json",
-    Accept: "text/html"
+    'Content-Type': 'application/json',
+    Accept: 'text/html',
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
@@ -232,63 +199,54 @@ const trackRequestHandler = (message, category, destination) => {
 // ----------------------
 const groupRequestHandler = (message, category, destination) => {
   if (!destination.Config.privateApiKey) {
-    throw new ConfigurationError(
-      "Private API Key is a required field for group events"
-    );
+    throw new ConfigurationError('Private API Key is a required field for group events');
   }
   let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
-  const groupWhitelistedTraits = [
-    ...WhiteListedTraits,
-    ...["consent", "smsConsent", "subscribe"]
-  ];
+  const groupWhitelistedTraits = [...WhiteListedTraits, 'consent', 'smsConsent', 'subscribe'];
   profile = extractCustomFields(
     message,
     profile,
-    ["traits", "context.traits"],
-    groupWhitelistedTraits
+    ['traits', 'context.traits'],
+    groupWhitelistedTraits,
   );
   profile = removeUndefinedAndNullValues(profile);
   if (destination.Config.enforceEmailAsPrimary) {
     delete profile.$id;
-    profile._id = getFieldValueFromMessage(message, "userId");
+    profile._id = getFieldValueFromMessage(message, 'userId');
   }
   const responseArray = [];
 
   const payload = {
-    profiles: [profile]
+    profiles: [profile],
   };
   const membersResponse = defaultRequestConfig();
-  membersResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${get(
-    message,
-    "groupId"
-  )}/members`;
+  membersResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${get(message, 'groupId')}/members`;
   membersResponse.headers = {
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
   membersResponse.body.JSON = payload;
   membersResponse.method = defaultPostRequestConfig.requestMethod;
   membersResponse.params = { api_key: destination.Config.privateApiKey };
   responseArray.push(membersResponse);
 
-  if (get(message.traits, "subscribe") === true) {
+  if (get(message.traits, 'subscribe') === true) {
     // Adding Consent Info to Profiles
     const subscribeProfile = JSON.parse(JSON.stringify(profile));
     subscribeProfile.sms_consent =
       message.context?.traits.smsConsent || destination.Config.smsConsent;
-    subscribeProfile.$consent =
-      message.context?.traits.consent || destination.Config.consent;
+    subscribeProfile.$consent = message.context?.traits.consent || destination.Config.consent;
 
     const subscribePayload = {
-      profiles: [subscribeProfile]
+      profiles: [subscribeProfile],
     };
     const subscribeResponse = defaultRequestConfig();
     subscribeResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${get(
       message,
-      "groupId"
+      'groupId',
     )}/subscribe`;
     subscribeResponse.headers = {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json',
     };
     subscribeResponse.body.JSON = subscribePayload;
     subscribeResponse.method = defaultPostRequestConfig.requestMethod;
@@ -301,7 +259,7 @@ const groupRequestHandler = (message, category, destination) => {
 // Main event processor using specific handler funcs
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
   const messageType = message.type.toLowerCase();
 
@@ -322,14 +280,12 @@ const processEvent = async (message, destination) => {
       response = groupRequestHandler(message, category, destination);
       break;
     default:
-      throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
-      );
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
 };
 
-const process = async event => {
+const process = async (event) => {
   const result = await processEvent(event.message, event.destination);
   return result;
 };

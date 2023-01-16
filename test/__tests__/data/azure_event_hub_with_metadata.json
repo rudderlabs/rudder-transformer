@@ -1,64 +1,63 @@
 [
-    {
-      "input": {
-        "outputEvent": {
-          "message": {
-            "anonymousId": "b255896a-94cd-4bf9-98d5-40389e4b70b8",
-            "channel": "web",
-            "event": "Purchase",
-            "messageId": "522224fe-9c65-4036-8f1f-980e39c6b342",
-            "originalTimestamp": "2020-05-14T06:54:08.745Z",
-            "properties": {
-              "currency": "USD",
-              "revenue": 100
-            },
-            "receivedAt": "2020-05-14T12:24:08.781+05:30",
-            "request_ip": "[::1]:53194",
-            "sentAt": "2020-05-14T06:54:08.746Z",
-            "timestamp": "2020-05-14T12:24:08.780+05:30",
-            "type": "track",
-            "userId": "user-12345"
-          },
-          "userId": "user-12345",
-          "topic": "default-topic"
-        },
-        "inputEvent": {
-          "message": {
-            "val": "add boilerplate values if needed"
-          },
-          "destination": {
-            "ID": "1bqCbmPnO0T7dTE159ho8wiyPlD",
-            "Name": "Azure Event Hub",
-            "DestinationDefinition": {},
-            "Config": {
-              "bootstrapServer": "pkc-4kgmg.us-east4.gcp.confluent.cloud:9092",
-              "topic": "default-topic",
-              "eventHubsConnectionString": "skajdkjaskdjkasio"
-            },
-            "Enabled": true,
-            "Transformations": [],
-            "IsProcessorEnabled": true
-          }
-        },
-        "metadata": {
+  {
+    "input": {
+      "outputEvent": {
+        "message": {
           "anonymousId": "b255896a-94cd-4bf9-98d5-40389e4b70b8",
-          "destinationId": "1bqCbmPnO0T7dTE159ho8wiyPlD",
-          "destinationType": "AZURE_EVENT_HUB",
-          "jobId": 12,
+          "channel": "web",
+          "event": "Purchase",
           "messageId": "522224fe-9c65-4036-8f1f-980e39c6b342",
-          "sourceId": "1bqCEGibwCvR7F0acuLzbEMQYIC",
-          "rudderId": "b255896a-94cd-4bf9-98d5-40389e4b70b8<<>>user-12345"
+          "originalTimestamp": "2020-05-14T06:54:08.745Z",
+          "properties": {
+            "currency": "USD",
+            "revenue": 100
+          },
+          "receivedAt": "2020-05-14T12:24:08.781+05:30",
+          "request_ip": "[::1]:53194",
+          "sentAt": "2020-05-14T06:54:08.746Z",
+          "timestamp": "2020-05-14T12:24:08.780+05:30",
+          "type": "track",
+          "userId": "user-12345"
+        },
+        "userId": "user-12345",
+        "topic": "default-topic"
+      },
+      "inputEvent": {
+        "message": {
+          "val": "add boilerplate values if needed"
+        },
+        "destination": {
+          "ID": "1bqCbmPnO0T7dTE159ho8wiyPlD",
+          "Name": "Azure Event Hub",
+          "DestinationDefinition": {},
+          "Config": {
+            "bootstrapServer": "pkc-4kgmg.us-east4.gcp.confluent.cloud:9092",
+            "topic": "default-topic",
+            "eventHubsConnectionString": "skajdkjaskdjkasio"
+          },
+          "Enabled": true,
+          "Transformations": [],
+          "IsProcessorEnabled": true
         }
       },
-      "output": {
+      "metadata": {
         "anonymousId": "b255896a-94cd-4bf9-98d5-40389e4b70b8",
         "destinationId": "1bqCbmPnO0T7dTE159ho8wiyPlD",
         "destinationType": "AZURE_EVENT_HUB",
         "jobId": 12,
         "messageId": "522224fe-9c65-4036-8f1f-980e39c6b342",
         "sourceId": "1bqCEGibwCvR7F0acuLzbEMQYIC",
-        "rudderId": "b255896a-94cd-4bf9-98d5-40389e4b70b8<<>>user-12345<<>>default-topic"
+        "rudderId": "b255896a-94cd-4bf9-98d5-40389e4b70b8<<>>user-12345"
       }
+    },
+    "output": {
+      "anonymousId": "b255896a-94cd-4bf9-98d5-40389e4b70b8",
+      "destinationId": "1bqCbmPnO0T7dTE159ho8wiyPlD",
+      "destinationType": "AZURE_EVENT_HUB",
+      "jobId": 12,
+      "messageId": "522224fe-9c65-4036-8f1f-980e39c6b342",
+      "sourceId": "1bqCEGibwCvR7F0acuLzbEMQYIC",
+      "rudderId": "b255896a-94cd-4bf9-98d5-40389e4b70b8<<>>user-12345<<>>default-topic"
     }
-  ]
-  
+  }
+]

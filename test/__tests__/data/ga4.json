@@ -11509,11 +11509,7 @@
             "city": "kolkata",
             "district": "24pgs"
           },
-          "categoryLevels": [
-            "Furniture",
-            "Bedroom Furniture",
-            "Dressers & Chests"
-          ],
+          "categoryLevels": ["Furniture", "Bedroom Furniture", "Dressers & Chests"],
           "products": [
             {
               "product_id": "1234",

@@ -418,7 +418,7 @@ function getEventChunks(event, identifyEventChunks, trackEventChunks, eventRespo
   // Categorizing identify and track type of events
   // Checking if it is identify type event
   if (
-    event.message.endpoint.includes('api/users/update') ||
+    event.message.endpoint === ConfigCategory.IDENTIFY.endpoint ||
     event.message.operation === 'catalogs'
   ) {
     identifyEventChunks.push(event);

@@ -7,10 +7,7 @@
   {
     "destKey": "context",
     "sourceKeys": "context",
-    "required": true,
-    "metadata": {
-      "defaultValue": {}
-    }
+    "required": true
   },
   {
     "destKey": "messageId",
@@ -24,28 +21,19 @@
   },
   {
     "destKey": "id",
-    "sourceKeys": [
-      "userId",
-      "anonymousId"
-    ],
+    "sourceKeys": ["userId","anonymousId"],
     "required": true
   },
   {
     "destKey": "userId",
-    "sourceKeys": [
-      "userId",
-      "anonymousId"
-    ],
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
     "required": true
   },
   {
     "destKey": "originalTimestamp",
     "sourceKeys": "timestamp",
-    "required": true
-  },
-  {
-    "destKey": "name",
-    "sourceKeys": "name",
+    "sourceFromGenericMap": true,
     "required": true
   }
 ]

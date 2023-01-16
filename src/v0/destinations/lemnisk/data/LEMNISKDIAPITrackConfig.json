@@ -16,5 +16,11 @@
         "destKey": "eventname",
         "sourceKeys": "event",
         "required": false
-    }
+    },
+    {
+        "destKey": "email",
+        "sourceKeys": "email",
+        "sourceFromGenericMap": true,
+        "required": true
+      }
 ]

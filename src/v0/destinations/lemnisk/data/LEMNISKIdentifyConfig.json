@@ -17,7 +17,8 @@
   },
   {
     "destKey": "id",
-    "sourceKeys": ["userId","anonymousId"],
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
     "required": true
   },
   {

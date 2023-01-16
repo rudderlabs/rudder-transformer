@@ -1,16 +1,16 @@
-const get = require("get-value");
-const set = require("set-value");
-const axios = require("axios");
+const get = require('get-value');
+const set = require('set-value');
+const axios = require('axios');
 
-const { EventType } = require("../../../constants");
+const { EventType } = require('../../../constants');
 const {
   ConfigCategory,
   mappingConfig,
   defaultFields,
   NAME,
   getBaseEndpoint,
-  DEFAULT_HEADERS
-} = require("./config");
+  DEFAULT_HEADERS,
+} = require('./config');
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
@@ -21,24 +21,24 @@ const {
   simpleProcessRouterDest,
   defaultPutRequestConfig,
   isEmptyObject,
-  getEventType
-} = require("../../util");
-const logger = require("../../../logger");
-const { httpGET } = require("../../../adapters/network");
+  getEventType,
+} = require('../../util');
+const logger = require('../../../logger');
+const { httpGET } = require('../../../adapters/network');
 const {
   NetworkInstrumentationError,
   InstrumentationError,
-  NetworkError
-} = require("../../util/errorTypes");
-const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
-const tags = require("../../util/tags");
+  NetworkError,
+} = require('../../util/errorTypes');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const tags = require('../../util/tags');
 
 function responseBuilder(message, headers, payload, endpoint) {
   const response = defaultRequestConfig();
 
   const updatedHeaders = {
     ...headers,
-    ...DEFAULT_HEADERS
+    ...DEFAULT_HEADERS,
   };
 
   response.endpoint = endpoint;
@@ -63,21 +63,21 @@ const responseBuilderToUpdatePrimaryAccount = (
   userId,
   headers,
   email,
-  baseEndpoint
+  baseEndpoint,
 ) => {
   const response = defaultRequestConfig();
   const updatedHeaders = {
     ...headers,
-    ...DEFAULT_HEADERS
+    ...DEFAULT_HEADERS,
   };
   response.endpoint = `${baseEndpoint}users/${userId}/identities/${userIdentityId}`;
   response.method = defaultPutRequestConfig.requestMethod;
   response.headers = updatedHeaders;
   response.body.JSON = {
     identity: {
-      type: "email",
-      value: `${email}`
-    }
+      type: 'email',
+      value: `${email}`,
+    },
   };
   return response;
 };
@@ -90,12 +90,7 @@ const responseBuilderToUpdatePrimaryAccount = (
  * @param {*} headers -> Authorizations for API's call
  * @returns it return payloadbuilder for updating email
  */
-const payloadBuilderforUpdatingEmail = async (
-  userId,
-  headers,
-  userEmail,
-  baseEndpoint
-) => {
+const payloadBuilderforUpdatingEmail = async (userId, headers, userEmail, baseEndpoint) => {
   // url for list all identities of user
   const url = `${baseEndpoint}users/${userId}/identities`;
   const config = { headers };
@@ -105,9 +100,7 @@ const payloadBuilderforUpdatingEmail = async (
       const { identities } = res.response.data;
       if (identities && Array.isArray(identities)) {
         const identitiesDetails = identities.find(
-          identitieslist =>
-            identitieslist.primary === true &&
-            identitieslist.value !== userEmail
+          (identitieslist) => identitieslist.primary === true && identitieslist.value !== userEmail,
         );
         if (identitiesDetails?.id && userEmail) {
           return responseBuilderToUpdatePrimaryAccount(
@@ -115,17 +108,14 @@ const payloadBuilderforUpdatingEmail = async (
             userId,
             headers,
             userEmail,
-            baseEndpoint
+            baseEndpoint,
           );
         }
       }
     }
     logger.debug(`${NAME}:: Failed in fetching Identity details`);
   } catch (error) {
-    logger.debug(
-      `${NAME}:: Error :`,
-      error.response ? error.response.data : error
-    );
+    logger.debug(`${NAME}:: Error :`, error.response ? error.response.data : error);
   }
   return {};
 };
@@ -134,15 +124,15 @@ async function createUserFields(url, config, newFields, fieldJson) {
   let fieldData;
   // removing trailing 's' from fieldJson
   const fieldJsonSliced = fieldJson.slice(0, -1);
-  newFields.forEach(async field => {
+  newFields.forEach(async (field) => {
     // create payload for each new user field
     fieldData = {
       [fieldJsonSliced]: {
         title: field,
         active: true,
         key: field,
-        description: field
-      }
+        description: field,
+      },
     };
 
     try {
@@ -163,7 +153,7 @@ async function checkAndCreateUserFields(
   categoryEndpoint,
   fieldJson,
   headers,
-  baseEndpoint
+  baseEndpoint,
 ) {
   let newFields = [];
 
@@ -175,13 +165,13 @@ async function checkAndCreateUserFields(
     const fields = get(response.data, fieldJson);
     if (response.data && fields) {
       // get existing user_fields and concatenate them with default fields
-      let existingKeys = fields.map(field => field.key);
+      let existingKeys = fields.map((field) => field.key);
       existingKeys = existingKeys.concat(defaultFields[fieldJson]);
 
       // check for new fields
       const traitKeys = Object.keys(traits);
       newFields = traitKeys.filter(
-        key => !(existingKeys.includes(key) || typeof traits[key] === "object") // to handle traits.company.remove
+        (key) => !(existingKeys.includes(key) || typeof traits[key] === 'object'), // to handle traits.company.remove
       );
 
       if (newFields.length > 0) {
@@ -189,10 +179,7 @@ async function checkAndCreateUserFields(
       }
     }
   } catch (error) {
-    logger.debug(
-      `${NAME}:: Error :`,
-      error.response ? error.response.data : error
-    );
+    logger.debug(`${NAME}:: Error :`, error.response ? error.response.data : error);
   }
 }
 
@@ -200,35 +187,32 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
   const mappingJson = mappingConfig[category.name];
 
   const traits =
-    type === "group"
-      ? get(message, "context.traits")
-      : getFieldValueFromMessage(message, "traits");
+    type === 'group' ? get(message, 'context.traits') : getFieldValueFromMessage(message, 'traits');
 
   const payload = constructPayload(traits, mappingJson);
   if (!payload.user) {
     payload.user = {};
   }
-  payload.user.external_id =
-    get(traits, "userId") || get(traits, "id") || message.userId;
+  payload.user.external_id = get(traits, 'userId') || get(traits, 'id') || message.userId;
 
   const sourceKeys = defaultFields[ConfigCategory.IDENTIFY.userFieldsJson];
 
   if (payload.user.external_id) {
-    set(payload, "user.user_fields.id", payload.user.external_id);
+    set(payload, 'user.user_fields.id', payload.user.external_id);
   }
 
   // send fields not in sourceKeys as user fields
   const userFields = Object.keys(traits).filter(
-    trait => !(sourceKeys.includes(trait) || typeof traits[trait] === "object")
+    (trait) => !(sourceKeys.includes(trait) || typeof traits[trait] === 'object'),
   );
-  userFields.forEach(field => {
+  userFields.forEach((field) => {
     set(payload, `user.user_fields.${field}`, get(traits, field));
   });
 
   payload.user = removeUndefinedValues(payload.user);
 
   if (destinationConfig.createUsersAsVerified) {
-    set(payload, "user.verified", true);
+    set(payload, 'user.verified', true);
   }
 
   return payload;
@@ -240,7 +224,7 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
  * @returns
  */
 const getUserIdByExternalId = async (message, headers, baseEndpoint) => {
-  const externalId = getFieldValueFromMessage(message, "userIdOnly");
+  const externalId = getFieldValueFromMessage(message, 'userIdOnly');
   if (!externalId) {
     logger.debug(`${NAME}:: externalId is required for getting zenuserId`);
     return undefined;
@@ -252,24 +236,19 @@ const getUserIdByExternalId = async (message, headers, baseEndpoint) => {
     const resp = await httpGET(url, config);
 
     if (resp?.response?.data?.count > 0) {
-      const zendeskUserId = get(resp, "response.data.users.0.id");
+      const zendeskUserId = get(resp, 'response.data.users.0.id');
       return zendeskUserId;
     }
     logger.debug(`${NAME}:: Failed in fetching User details`);
   } catch (error) {
-    logger.debug(
-      `${NAME}:: Cannot get userId for externalId : ${externalId}`,
-      error.response
-    );
-    return undefined;
+    logger.debug(`${NAME}:: Cannot get userId for externalId : ${externalId}`, error.response);
   }
+  return undefined;
 };
 
 async function getUserId(message, headers, baseEndpoint, type) {
   const traits =
-    type === "group"
-      ? get(message, "context.traits")
-      : getFieldValueFromMessage(message, "traits");
+    type === 'group' ? get(message, 'context.traits') : getFieldValueFromMessage(message, 'traits');
   const userEmail = traits?.email || traits?.primaryEmail;
   if (!userEmail) {
     logger.debug(`${NAME}:: Email ID is required for getting zenuserId`);
@@ -301,9 +280,7 @@ async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint) {
   const config = { headers };
   try {
     const response = await axios.get(url, config);
-    if (
-      response?.data?.organization_memberships?.[0]?.organization_id === orgId
-    ) {
+    if (response?.data?.organization_memberships?.[0]?.organization_id === orgId) {
       return true;
     }
   } catch (error) {
@@ -313,19 +290,11 @@ async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint) {
   return false;
 }
 
-async function createUser(
-  message,
-  headers,
-  destinationConfig,
-  baseEndpoint,
-  type
-) {
+async function createUser(message, headers, destinationConfig, baseEndpoint, type) {
   const traits =
-    type === "group"
-      ? get(message, "context.traits")
-      : getFieldValueFromMessage(message, "traits");
+    type === 'group' ? get(message, 'context.traits') : getFieldValueFromMessage(message, 'traits');
   const { name, email } = traits;
-  const userId = getFieldValueFromMessage(message, "userId");
+  const userId = getFieldValueFromMessage(message, 'userId');
 
   const userObject = { name, external_id: userId, email };
   if (destinationConfig.createUsersAsVerified) {
@@ -341,7 +310,7 @@ async function createUser(
 
     if (!resp.data || !resp.data.user || !resp.data.user.id) {
       logger.debug(`${NAME}:: Couldn't create User: ${name}`);
-      throw new NetworkInstrumentationError("user not found");
+      throw new NetworkInstrumentationError('user not found');
     }
 
     const userID = resp?.data?.user?.id;
@@ -354,16 +323,10 @@ async function createUser(
   }
 }
 
-async function getUserMembershipPayload(
-  message,
-  headers,
-  orgId,
-  destinationConfig,
-  baseEndpoint
-) {
+async function getUserMembershipPayload(message, headers, orgId, destinationConfig, baseEndpoint) {
   // let zendeskUserID = await getUserId(message.userId, headers);
-  let zendeskUserID = await getUserId(message, headers, baseEndpoint, "group");
-  const traits = get(message, "context.traits");
+  let zendeskUserID = await getUserId(message, headers, baseEndpoint, 'group');
+  const traits = get(message, 'context.traits');
   if (!zendeskUserID) {
     if (traits && traits.name && traits.email) {
       const { zendeskUserId } = await createUser(
@@ -371,59 +334,44 @@ async function getUserMembershipPayload(
         headers,
         destinationConfig,
         baseEndpoint,
-        "group"
+        'group',
       );
       zendeskUserID = zendeskUserId;
     } else {
-      throw new InstrumentationError("User not found");
+      throw new InstrumentationError('User not found');
     }
   }
   const payload = {
     organization_membership: {
       user_id: zendeskUserID,
-      organization_id: orgId
-    }
+      organization_id: orgId,
+    },
   };
 
   return payload;
 }
 
-async function createOrganization(
-  message,
-  category,
-  headers,
-  destinationConfig,
-  baseEndpoint
-) {
+async function createOrganization(message, category, headers, destinationConfig, baseEndpoint) {
   await checkAndCreateUserFields(
     message.traits,
     category.organizationFieldsEndpoint,
     category.organizationFieldsJson,
     headers,
-    baseEndpoint
+    baseEndpoint,
   );
   const mappingJson = mappingConfig[category.name];
   const payload = constructPayload(message, mappingJson);
   const sourceKeys = defaultFields[ConfigCategory.GROUP.organizationFieldsJson];
 
   if (payload.organization.external_id) {
-    set(
-      payload,
-      "organization.organization_fields.id",
-      payload.organization.external_id
-    );
+    set(payload, 'organization.organization_fields.id', payload.organization.external_id);
   }
   const traitKeys = Object.keys(message.traits);
   const organizationFields = traitKeys.filter(
-    trait =>
-      !(sourceKeys.includes(trait) || typeof message.traits[trait] === "object")
+    (trait) => !(sourceKeys.includes(trait) || typeof message.traits[trait] === 'object'),
   );
-  organizationFields.forEach(field => {
-    set(
-      payload,
-      `organization.organization_fields.${field}`,
-      get(message, `traits.${field}`)
-    );
+  organizationFields.forEach((field) => {
+    set(payload, `organization.organization_fields.${field}`, get(message, `traits.${field}`));
   });
 
   payload.organization = removeUndefinedValues(payload.organization);
@@ -439,75 +387,53 @@ async function createOrganization(
     const resp = await axios.post(url, payload, config);
 
     if (!resp.data || !resp.data.organization) {
-      logger.debug(
-        `${NAME}:: Couldn't create Organization: ${message.traits.name}`
-      );
+      logger.debug(`${NAME}:: Couldn't create Organization: ${message.traits.name}`);
       return undefined;
     }
 
     const orgId = resp?.data?.organization?.id;
     return orgId;
   } catch (error) {
-    logger.debug(
-      `${NAME}:: Couldn't create Organization: ${message.traits.name}`
-    );
+    logger.debug(`${NAME}:: Couldn't create Organization: ${message.traits.name}`);
     return undefined;
   }
 }
 
 function validateUserId(message) {
   if (!message.userId) {
-    throw new InstrumentationError(
-      `UserId is a mandatory field for ${message.type}`,
-      400
-    );
+    throw new InstrumentationError(`UserId is a mandatory field for ${message.type}`, 400);
   }
 }
 
-async function processIdentify(
-  message,
-  destinationConfig,
-  headers,
-  baseEndpoint
-) {
+async function processIdentify(message, destinationConfig, headers, baseEndpoint) {
   validateUserId(message);
   const category = ConfigCategory.IDENTIFY;
-  const traits = getFieldValueFromMessage(message, "traits");
+  const traits = getFieldValueFromMessage(message, 'traits');
 
   // create user fields if required
   await checkAndCreateUserFields(
-    getFieldValueFromMessage(message, "traits"),
+    getFieldValueFromMessage(message, 'traits'),
     category.userFieldsEndpoint,
     category.userFieldsJson,
     headers,
-    baseEndpoint
+    baseEndpoint,
   );
 
-  const payload = getIdentifyPayload(
-    message,
-    category,
-    destinationConfig,
-    "identify"
-  );
+  const payload = getIdentifyPayload(message, category, destinationConfig, 'identify');
   const url = baseEndpoint + category.createOrUpdateUserEndpoint;
   const returnList = [];
 
   if (destinationConfig.searchByExternalId) {
-    const userIdByExternalId = await getUserIdByExternalId(
-      message,
-      headers,
-      baseEndpoint
-    );
+    const userIdByExternalId = await getUserIdByExternalId(message, headers, baseEndpoint);
     const userEmail = traits?.email;
     if (userIdByExternalId && userEmail) {
       const payloadForUpdatingEmail = await payloadBuilderforUpdatingEmail(
         userIdByExternalId,
         headers,
         userEmail,
-        baseEndpoint
+        baseEndpoint,
       );
-      if (!isEmptyObject(payloadForUpdatingEmail))
-        returnList.push(payloadForUpdatingEmail);
+      if (!isEmptyObject(payloadForUpdatingEmail)) returnList.push(payloadForUpdatingEmail);
     }
   }
 
@@ -524,22 +450,23 @@ async function processIdentify(
       try {
         const config = { headers };
         const response = await axios.get(membershipUrl, config);
-        if (response?.data?.organization_memberships?.length > 0) {
-          if (
-            orgId === response.data.organization_memberships[0]?.organization_id
-          ) {
-            const membershipId = response.data.organization_memberships[0]?.id;
-            const deleteResponse = defaultRequestConfig();
+        if (
+          response.data &&
+          response.data.organization_memberships &&
+          response.data.organization_memberships.length > 0 &&
+          orgId === response.data.organization_memberships[0].organization_id
+        ) {
+          const membershipId = response.data.organization_memberships[0]?.id;
+          const deleteResponse = defaultRequestConfig();
 
-            deleteResponse.endpoint = `${baseEndpoint}users/${userId}/organization_memberships/${membershipId}.json`;
-            deleteResponse.method = defaultDeleteRequestConfig.requestMethod;
-            deleteResponse.headers = {
-              ...headers,
-              ...DEFAULT_HEADERS
-            };
-            deleteResponse.userId = message.anonymousId;
-            returnList.push(deleteResponse);
-          }
+          deleteResponse.endpoint = `${baseEndpoint}users/${userId}/organization_memberships/${membershipId}.json`;
+          deleteResponse.method = defaultDeleteRequestConfig.requestMethod;
+          deleteResponse.headers = {
+            ...headers,
+            ...DEFAULT_HEADERS,
+          };
+          deleteResponse.userId = message.anonymousId;
+          returnList.push(deleteResponse);
         }
       } catch (error) {
         logger.debug(`${NAME}:: ${error}`);
@@ -553,13 +480,13 @@ async function processIdentify(
 
 async function processTrack(message, destinationConfig, headers, baseEndpoint) {
   validateUserId(message);
-  const traits = getFieldValueFromMessage(message, "traits");
+  const traits = getFieldValueFromMessage(message, 'traits');
   let userEmail;
   if (traits) {
     userEmail = traits.email ? traits.email : null;
   }
   if (!userEmail) {
-    throw new InstrumentationError("email not found in traits.", 400);
+    throw new InstrumentationError('email not found in traits.', 400);
   }
   let zendeskUserID;
 
@@ -567,21 +494,18 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
   const config = { headers };
   try {
     const userResponse = await axios.get(url, config);
-    if (
-      !get(userResponse, "data.users.0.id") ||
-      userResponse.data.count === 0
-    ) {
+    if (!get(userResponse, 'data.users.0.id') || userResponse.data.count === 0) {
       const { zendeskUserId, email } = await createUser(
         message,
         headers,
         destinationConfig,
-        baseEndpoint
+        baseEndpoint,
       );
       if (!zendeskUserId) {
-        throw new NetworkInstrumentationError("User not found");
+        throw new NetworkInstrumentationError('User not found');
       }
       if (!email) {
-        throw new NetworkInstrumentationError("User email not found", 400);
+        throw new NetworkInstrumentationError('User email not found', 400);
       }
       zendeskUserID = zendeskUserId;
       userEmail = email;
@@ -592,32 +516,27 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
       `Failed to fetch user with email: ${userEmail} due to ${error.message}`,
       error.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(error.status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(error.status),
       },
-      error?.response?.data || error?.response || error
+      error?.response?.data || error?.response || error,
     );
   }
 
   const eventObject = {};
   eventObject.description = message.event;
   eventObject.type = message.event;
-  eventObject.source = "Rudder";
+  eventObject.source = 'Rudder';
   eventObject.properties = message.properties;
 
   const profileObject = {};
   profileObject.type = message.event;
-  profileObject.source = "Rudder";
-  profileObject.identifiers = [{ type: "email", value: userEmail }];
+  profileObject.source = 'Rudder';
+  profileObject.identifiers = [{ type: 'email', value: userEmail }];
 
   const eventPayload = { event: eventObject, profile: profileObject };
   const eventEndpoint = `${baseEndpoint}users/${zendeskUserID}/events`;
 
-  const response = responseBuilder(
-    message,
-    headers,
-    eventPayload,
-    eventEndpoint
-  );
+  const response = responseBuilder(message, headers, eventPayload, eventEndpoint);
   return response;
 }
 
@@ -627,13 +546,7 @@ async function processGroup(message, destinationConfig, headers, baseEndpoint) {
   let url;
 
   if (destinationConfig.sendGroupCallsWithoutUserId && !message.userId) {
-    payload = await createOrganization(
-      message,
-      category,
-      headers,
-      destinationConfig,
-      baseEndpoint
-    );
+    payload = await createOrganization(message, category, headers, destinationConfig, baseEndpoint);
     url = baseEndpoint + category.createEndpoint;
   } else {
     validateUserId(message);
@@ -642,11 +555,11 @@ async function processGroup(message, destinationConfig, headers, baseEndpoint) {
       category,
       headers,
       destinationConfig,
-      baseEndpoint
+      baseEndpoint,
     );
     if (!orgId) {
       throw new NetworkInstrumentationError(
-        `Couldn't create user membership for user having external id ${message.userId} as Organization ${message.traits.name} wasn't created`
+        `Couldn't create user membership for user having external id ${message.userId} as Organization ${message.traits.name} wasn't created`,
       );
     }
     // adds an organization against a user and can add multiple organisation. the last one does not override but adds to the previously added organizations.
@@ -656,15 +569,13 @@ async function processGroup(message, destinationConfig, headers, baseEndpoint) {
       headers,
       orgId,
       destinationConfig,
-      baseEndpoint
+      baseEndpoint,
     );
     url = baseEndpoint + category.userMembershipEndpoint;
 
     const userId = payload.organization_membership.user_id;
     if (await isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint)) {
-      throw new InstrumentationError(
-        "User is already associated with organization"
-      );
+      throw new InstrumentationError('User is already associated with organization');
     }
   }
 
@@ -685,10 +596,8 @@ async function processSingleMessage(event) {
   const unencodedBase64Str = `${destinationConfig.email}/token:${destinationConfig.apiToken}`;
   const baseEndpoint = getBaseEndpoint(destinationConfig.domain);
   const headers = {
-    Authorization: `Basic ${Buffer.from(unencodedBase64Str).toString(
-      "base64"
-    )}`,
-    "Content-Type": "application/json"
+    Authorization: `Basic ${Buffer.from(unencodedBase64Str).toString('base64')}`,
+    'Content-Type': 'application/json',
   };
 
   const { message } = event;
@@ -701,9 +610,7 @@ async function processSingleMessage(event) {
     case EventType.TRACK:
       return processTrack(message, destinationConfig, headers, baseEndpoint);
     default:
-      throw new InstrumentationError(
-        `Event type ${evType} is not supported`
-      );
+      throw new InstrumentationError(`Event type ${evType} is not supported`);
   }
 }
 

@@ -633,16 +633,62 @@
       "version": "1"
     }
   ],
-  [{
-    "body": {
-      "XML": {},
-      "FORM": {},
-      "JSON": {
-        "partner": "RudderStack",
-        "attributes": [
-          {
-            "pets": {
-              "$add": [
+  [
+    {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "partner": "RudderStack",
+          "attributes": [
+            {
+              "pets": {
+                "$add": [
+                  {
+                    "id": 1,
+                    "name": "Gus",
+                    "type": "dog",
+                    "breed": "beagle"
+                  },
+                  {
+                    "id": 2,
+                    "name": "Gerald",
+                    "type": "cat",
+                    "breed": "calico"
+                  }
+                ]
+              },
+              "email": "manashi@gmaiol.com",
+              "external_id": "nestedArrray1"
+            }
+          ]
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "userId": "nestedArrray1",
+      "headers": {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      },
+      "version": "1",
+      "endpoint": "https://rest.fra-01.braze.eu/users/track"
+    }
+  ],
+  [
+    {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "partner": "RudderStack",
+          "attributes": [
+            {
+              "pets": [
                 {
                   "id": 1,
                   "name": "Gus",
@@ -655,159 +701,120 @@
                   "type": "cat",
                   "breed": "calico"
                 }
-              ]
-            },
-            "email": "manashi@gmaiol.com",
-            "external_id": "nestedArrray1"
-          }
-        ]
+              ],
+              "email": "manashi@gmaiol.com",
+              "external_id": "nestedArrray1"
+            }
+          ]
+        },
+        "JSON_ARRAY": {}
       },
-      "JSON_ARRAY": {}
-    },
-    "type": "REST",
-    "files": {},
-    "method": "POST",
-    "params": {},
-    "userId": "nestedArrray1",
-    "headers": {
-      "Accept": "application/json",
-      "Content-Type": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-    },
-    "version": "1",
-    "endpoint": "https://rest.fra-01.braze.eu/users/track"
-  }],
-  [{
-    "body": {
-      "XML": {},
-      "FORM": {},
-      "JSON": {
-        "partner": "RudderStack",
-        "attributes": [
-          {
-            "pets": [
-                {
-                  "id": 1,
-                  "name": "Gus",
-                  "type": "dog",
-                  "breed": "beagle"
-                },
-                {
-                  "id": 2,
-                  "name": "Gerald",
-                  "type": "cat",
-                  "breed": "calico"
-                }
-              ]
-            ,
-            "email": "manashi@gmaiol.com",
-            "external_id": "nestedArrray1"
-          }
-        ]
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "userId": "nestedArrray1",
+      "headers": {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
       },
-      "JSON_ARRAY": {}
-    },
-    "type": "REST",
-    "files": {},
-    "method": "POST",
-    "params": {},
-    "userId": "nestedArrray1",
-    "headers": {
-      "Accept": "application/json",
-      "Content-Type": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-    },
-    "version": "1",
-    "endpoint": "https://rest.fra-01.braze.eu/users/track"
-  }],
-  [{
-    "body": {
-      "XML": {},
-      "FORM": {},
-      "JSON": {
-        "partner": "RudderStack",
-        "attributes": [
-          {
-            "pets": {
-              "$update": [
-                {
-                  "$identifier_key": "id",
-                  "$identifier_value": 4,
-                  "$new_object": {
-                    "breed": "goldfish"
+      "version": "1",
+      "endpoint": "https://rest.fra-01.braze.eu/users/track"
+    }
+  ],
+  [
+    {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "partner": "RudderStack",
+          "attributes": [
+            {
+              "pets": {
+                "$update": [
+                  {
+                    "$identifier_key": "id",
+                    "$identifier_value": 4,
+                    "$new_object": {
+                      "breed": "goldfish"
+                    }
+                  },
+                  {
+                    "$identifier_key": "id",
+                    "$identifier_value": 5,
+                    "$new_object": {
+                      "name": "Annette"
+                    }
                   }
-                },
-                {
-                  "$identifier_key": "id",
-                  "$identifier_value": 5,
-                  "$new_object": {
-                    "name": "Annette"
+                ]
+              },
+              "external_id": "nestedArrray1",
+              "_merge_objects": false
+            }
+          ]
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "userId": "nestedArrray1",
+      "headers": {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      },
+      "version": "1",
+      "endpoint": "https://rest.fra-01.braze.eu/users/track"
+    }
+  ],
+  [
+    {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "partner": "RudderStack",
+          "attributes": [
+            {
+              "pets": {
+                "$remove": [
+                  {
+                    "$identifier_key": "id",
+                    "$identifier_value": 1
+                  },
+                  {
+                    "$identifier_key": "id",
+                    "$identifier_value": 2
+                  },
+                  {
+                    "$identifier_key": "type",
+                    "$identifier_value": "dog"
                   }
-                }
-              ]
-                },
-            "external_id": "nestedArrray1",
-            "_merge_objects": false
-          }
-        ]
+                ]
+              },
+              "email": "manashi@gmaiol.com",
+              "external_id": "nestedArrray1"
+            }
+          ]
+        },
+        "JSON_ARRAY": {}
       },
-      "JSON_ARRAY": {}
-    },
-    "type": "REST",
-    "files": {},
-    "method": "POST",
-    "params": {},
-    "userId": "nestedArrray1",
-    "headers": {
-      "Accept": "application/json",
-      "Content-Type": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-    },
-    "version": "1",
-    "endpoint": "https://rest.fra-01.braze.eu/users/track"
-  }],
-  [{
-    "body": {
-      "XML": {},
-      "FORM": {},
-      "JSON": {
-        "partner": "RudderStack",
-        "attributes": [
-          {
-            "pets": {
-              "$remove": [
-                {
-                  "$identifier_key": "id",
-                  "$identifier_value": 1
-                },
-                {
-                  "$identifier_key": "id",
-                  "$identifier_value": 2
-                },
-                {
-                  "$identifier_key": "type",
-                  "$identifier_value": "dog"
-                }
-              ]
-            },
-            "email": "manashi@gmaiol.com",
-            "external_id": "nestedArrray1"
-          }
-        ]
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "userId": "nestedArrray1",
+      "headers": {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
       },
-      "JSON_ARRAY": {}
-    },
-    "type": "REST",
-    "files": {},
-    "method": "POST",
-    "params": {},
-    "userId": "nestedArrray1",
-    "headers": {
-      "Accept": "application/json",
-      "Content-Type": "application/json",
-      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-    },
-    "version": "1",
-    "endpoint": "https://rest.fra-01.braze.eu/users/track"
-  }]
+      "version": "1",
+      "endpoint": "https://rest.fra-01.braze.eu/users/track"
+    }
+  ]
 ]

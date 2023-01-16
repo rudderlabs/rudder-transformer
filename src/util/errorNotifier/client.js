@@ -23,5 +23,5 @@ function notify(err, context, metadata) {
 module.exports = {
   setNotifier,
   init,
-  notify
+  notify,
 };

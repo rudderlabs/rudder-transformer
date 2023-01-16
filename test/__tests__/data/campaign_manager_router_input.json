@@ -70,9 +70,7 @@
         "quantity": "455678",
         "floodlightActivityId": "456543345245",
         "value": 7,
-        "encryptedUserIdCandidates": [
-          "dfghjbnm"
-        ],
+        "encryptedUserIdCandidates": ["dfghjbnm"],
         "limitAdTracking": true,
         "childDirectedTreatment": true,
         "encryptionSource": "AD_SERVING",
@@ -161,14 +159,12 @@
         "floodlightActivityId": "456543345245",
         "quantity": "455678",
         "value": 7,
-        "encryptedUserIdCandidates": [
-          "dfghjbnm"
-        ],
+        "encryptedUserIdCandidates": ["dfghjbnm"],
         "limitAdTracking": true,
         "childDirectedTreatment": true,
-          "encryptionSource": "AD_SERVING",
-          "encryptionEntityId": "3564523",
-          "encryptionEntityType": "DCM_ACCOUNT",
+        "encryptionSource": "AD_SERVING",
+        "encryptionEntityId": "3564523",
+        "encryptionEntityType": "DCM_ACCOUNT",
         "requestType": "batchupdate"
       },
       "type": "track",
@@ -252,9 +248,7 @@
         "floodlightActivityId": "456543345245",
         "mobileDeviceId": "string",
         "value": 7,
-        "encryptedUserIdCandidates": [
-          "dfghjbnm"
-        ],
+        "encryptedUserIdCandidates": ["dfghjbnm"],
         "gclid": "string",
         "matchId": "string",
         "dclid": "string",

@@ -1,20 +1,12 @@
-const sha256 = require("sha256");
-const get = require("get-value");
-const { httpPOST } = require("../../../adapters/network");
-const { isHttpStatusSuccess } = require("../../util");
-const {
-  REFRESH_TOKEN
-} = require("../../../adapters/networkhandler/authConstants");
-const { SEARCH_STREAM, CONVERSION_ACTION_ID_CACHE_TTL } = require("./config");
-const {
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
-const Cache = require("../../util/cache");
-const {
-  AbortedError,
-  OAuthSecretError,
-  ConfigurationError
-} = require("../../util/errorTypes");
+const sha256 = require('sha256');
+const get = require('get-value');
+const { httpPOST } = require('../../../adapters/network');
+const { isHttpStatusSuccess } = require('../../util');
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const { SEARCH_STREAM, CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
+const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
+const Cache = require('../../util/cache');
+const { AbortedError, OAuthSecretError, ConfigurationError } = require('../../util/errorTypes');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -24,7 +16,7 @@ const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
  */
 const validateDestinationConfig = ({ Config }) => {
   if (!Config.customerId) {
-    throw new ConfigurationError("Customer ID not found. Aborting");
+    throw new ConfigurationError('Customer ID not found. Aborting');
   }
 };
 
@@ -36,7 +28,7 @@ const validateDestinationConfig = ({ Config }) => {
  */
 const getAccessToken = ({ secret }) => {
   if (!secret) {
-    throw new OAuthSecretError("OAuth - access token not found");
+    throw new OAuthSecretError('OAuth - access token not found');
   }
   return secret.access_token;
 };
@@ -48,13 +40,13 @@ const getAccessToken = ({ secret }) => {
  * @param {*} status
  * @returns
  */
-const getAuthErrCategory = status => {
+const getAuthErrCategory = (status) => {
   switch (status) {
     case 401:
       // UNAUTHORIZED
       return REFRESH_TOKEN;
     default:
-      return "";
+      return '';
   }
 };
 
@@ -66,16 +58,14 @@ const getAuthErrCategory = status => {
  * @returns
  */
 const getConversionActionId = async (headers, params) => {
-  const conversionActionIdKey = sha256(
-    params.event + params.customerId
-  ).toString();
+  const conversionActionIdKey = sha256(params.event + params.customerId).toString();
   return conversionActionIdCache.get(conversionActionIdKey, async () => {
     const data = {
-      query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = '${params.event}'`
+      query: `SELECT conversion_action.id FROM conversion_action WHERE conversion_action.name = '${params.event}'`,
     };
-    const endpoint = SEARCH_STREAM.replace(":customerId", params.customerId);
+    const endpoint = SEARCH_STREAM.replace(':customerId', params.customerId);
     const requestOptions = {
-      headers
+      headers,
     };
     let searchStreamResponse = await httpPOST(endpoint, data, requestOptions);
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
@@ -84,17 +74,15 @@ const getConversionActionId = async (headers, params) => {
         `[Google Ads Offline Conversions]:: ${searchStreamResponse.response[0].error.message} during google_ads_offline_conversions response transformation`,
         searchStreamResponse.status,
         searchStreamResponse.response,
-        getAuthErrCategory(get(searchStreamResponse, "status"))
+        getAuthErrCategory(get(searchStreamResponse, 'status')),
       );
     }
     const conversionAction = get(
       searchStreamResponse,
-      "response.0.results.0.conversionAction.resourceName"
+      'response.0.results.0.conversionAction.resourceName',
     );
     if (!conversionAction) {
-      throw new AbortedError(
-        `Unable to find conversionActionId for conversion:${params.event}`
-      );
+      throw new AbortedError(`Unable to find conversionActionId for conversion:${params.event}`);
     }
     return conversionAction;
   });
@@ -107,14 +95,12 @@ const getConversionActionId = async (headers, params) => {
  * @param {*} mapping
  * @returns
  */
-const removeHashToSha256TypeFromMappingJson = mapping => {
+const removeHashToSha256TypeFromMappingJson = (mapping) => {
   const newMapping = [];
-  mapping.forEach(element => {
-    if (get(element, "metadata.type")) {
-      if (element.metadata.type === "hashToSha256") {
-        // eslint-disable-next-line no-param-reassign
-        element.metadata.type = "toString";
-      }
+  mapping.forEach((element) => {
+    if (get(element, 'metadata.type') && element.metadata.type === 'hashToSha256') {
+      // eslint-disable-next-line no-param-reassign
+      element.metadata.type = 'toString';
     }
     newMapping.push(element);
   });
@@ -125,5 +111,5 @@ module.exports = {
   validateDestinationConfig,
   getAccessToken,
   getConversionActionId,
-  removeHashToSha256TypeFromMappingJson
+  removeHashToSha256TypeFromMappingJson,
 };

@@ -60,23 +60,18 @@
     },
     "output": {
       "body": {
-        "XML": {
-        },
-        "FORM": {
-        },
+        "XML": {},
+        "FORM": {},
         "JSON": {
           "location": "http://127.0.0.1:7307/Testing/test/ourSdk.html",
           "referrer": "http://127.0.0.1:7307/Testing/test/"
         },
-        "JSON_ARRAY": {
-        }
+        "JSON_ARRAY": {}
       },
       "type": "REST",
-      "files": {
-      },
+      "files": {},
       "method": "POST",
-      "params": {
-      },
+      "params": {},
       "headers": {
         "Content-Type": "application/json"
       },
@@ -148,24 +143,19 @@
     },
     "output": {
       "body": {
-        "XML": {
-        },
-        "FORM": {
-        },
+        "XML": {},
+        "FORM": {},
         "JSON": {
           "loadTime": 45,
           "location": "http://127.0.0.1:7307/Testing/test/ourSdk.html",
           "referrer": "http://127.0.0.1:7307/Testing/test/"
         },
-        "JSON_ARRAY": {
-        }
+        "JSON_ARRAY": {}
       },
       "type": "REST",
-      "files": {
-      },
+      "files": {},
       "method": "POST",
-      "params": {
-      },
+      "params": {},
       "headers": {
         "Content-Type": "application/json"
       },

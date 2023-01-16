@@ -1,6 +1,6 @@
-const { getMappingConfig } = require("../../util");
+const { getMappingConfig } = require('../../util');
 
-const BASE_ENDPOINT = "https://api.custify.com";
+const BASE_ENDPOINT = 'https://api.custify.com';
 
 // track events | Track
 const TRACK_ENDPOINT = `${BASE_ENDPOINT}/event`;
@@ -12,51 +12,51 @@ const COMAPNY_ENDPOINT = `${BASE_ENDPOINT}/company`;
 const ConfigCategory = {
   TRACK: {
     endpoint: TRACK_ENDPOINT,
-    name: "CUSTIFYTrackConfig"
+    name: 'CUSTIFYTrackConfig',
   },
   IDENTIFY: {
     endpoint: USER_ENDPOINT,
-    name: "CUSTIFYIdentifyConfig"
+    name: 'CUSTIFYIdentifyConfig',
   },
   GROUP_COMPANY: {
     endpoint: COMAPNY_ENDPOINT,
-    name: "CUSTIFYGroupCompanyConfig"
+    name: 'CUSTIFYGroupCompanyConfig',
   },
   GROUP_USER: {
     endpoint: USER_ENDPOINT,
-    name: "CUSTIFYGroupUserConfig"
-  }
+    name: 'CUSTIFYGroupUserConfig',
+  },
 };
 
 const MappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 const ReservedTraitsProperties = [
-  "userId",
-  "email",
-  "phone",
-  "name",
-  "signed_up_at",
-  "session_count",
-  "unsubscribed_from_emails",
-  "unsubscribed_from_calls",
-  "company"
+  'userId',
+  'email',
+  'phone',
+  'name',
+  'signed_up_at',
+  'session_count',
+  'unsubscribed_from_emails',
+  'unsubscribed_from_calls',
+  'company',
 ];
 
 const ReservedCompanyProperties = [
-  "id",
-  "name",
-  "industry",
-  "company_id",
-  "size",
-  "website",
-  "plan",
-  "monthly_revenue",
-  "churned"
+  'id',
+  'name',
+  'industry',
+  'company_id',
+  'size',
+  'website',
+  'plan',
+  'monthly_revenue',
+  'churned',
 ];
 
 module.exports = {
   ConfigCategory,
   MappingConfig,
   ReservedCompanyProperties,
-  ReservedTraitsProperties
+  ReservedTraitsProperties,
 };

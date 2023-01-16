@@ -408,9 +408,7 @@
       "tracking_number": "Sample001test",
       "tracking_numbers": ["Sample001test"],
       "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
-      "tracking_urls": [
-        "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
-      ],
+      "tracking_urls": ["https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"],
       "updated_at": "2022-01-05T18:16:48+05:30",
       "products": [
         {
@@ -524,9 +522,7 @@
       "tracking_number": "Sample001test",
       "tracking_numbers": ["Sample001test"],
       "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
-      "tracking_urls": [
-        "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
-      ],
+      "tracking_urls": ["https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"],
       "updated_at": "2022-01-05T18:16:48+05:30",
       "products": [
         {

@@ -1,24 +1,19 @@
-const { batchEndpoint } = require("./config");
+const { batchEndpoint } = require('./config');
 const {
   defaultPostRequestConfig,
   defaultRequestConfig,
   removeUndefinedAndNullValues,
-  getFieldValueFromMessage
-} = require("../../util");
-const {
-  InstrumentationError,
-  ConfigurationError
-} = require("../../util/errorTypes");
+  getFieldValueFromMessage,
+} = require('../../util');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 function responseBuilderSimple(payload, attributionConfig) {
-  const basicAuth = Buffer.from(`${attributionConfig.writeKey}:`).toString(
-    "base64"
-  );
+  const basicAuth = Buffer.from(`${attributionConfig.writeKey}:`).toString('base64');
 
   const response = defaultRequestConfig();
   const header = {
-    "Content-Type": "application/json",
-    Authorization: `Basic ${basicAuth}`
+    'Content-Type': 'application/json',
+    Authorization: `Basic ${basicAuth}`,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = header;
@@ -31,17 +26,17 @@ function responseBuilderSimple(payload, attributionConfig) {
 
 function getTransformedJSON(message) {
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
 
-  const traits = getFieldValueFromMessage(message, "traits");
+  const traits = getFieldValueFromMessage(message, 'traits');
   if (traits && traits.anonymousId) {
     delete traits.anonymousId;
   }
   const transformedMessage = {
     ...message,
     traits,
-    timestamp: getFieldValueFromMessage(message, "timestamp")
+    timestamp: getFieldValueFromMessage(message, 'timestamp'),
   };
 
   return removeUndefinedAndNullValues(transformedMessage);
@@ -50,7 +45,7 @@ function getTransformedJSON(message) {
 function getAttributionConfig(destination) {
   const { writeKey } = destination.Config;
   if (!writeKey) {
-    throw new ConfigurationError("No writeKey in config");
+    throw new ConfigurationError('No writeKey in config');
   }
 
   return { writeKey };
@@ -60,7 +55,7 @@ function processSingleMessage(message, destination) {
   const attributionConfig = getAttributionConfig(destination);
   const properties = getTransformedJSON(message);
   const respObj = {
-    batch: []
+    batch: [],
   };
   respObj.batch.push(properties);
   return responseBuilderSimple(respObj, attributionConfig);

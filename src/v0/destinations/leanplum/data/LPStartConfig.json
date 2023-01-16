@@ -18,10 +18,7 @@
   },
   {
     "destKey": "appVersion",
-    "sourceKeys": [
-      "context.app.version",
-      "context.app.build"
-    ],
+    "sourceKeys": ["context.app.version", "context.app.build"],
     "required": false
   },
   {
@@ -56,10 +53,7 @@
   },
   {
     "destKey": "userAttributes",
-    "sourceKeys": [
-      "traits",
-      "context.traits"
-    ],
+    "sourceKeys": ["traits", "context.traits"],
     "required": false
   },
   {

@@ -72,14 +72,14 @@ const getConversionCustomVariable = async (headers, params) => {
       searchStreamResponse = processAxiosResponse(searchStreamResponse);
       if (!isHttpStatusSuccess(searchStreamResponse.status)) {
         throw new NetworkError(
-          `[Google Ads Offline Conversions]:: ${searchStreamResponse.response[0].error.message} during google_ads_offline_conversions response transformation`,
+          `[Google Ads Offline Conversions]:: ${searchStreamResponse?.response?.[0]?.error?.message} during google_ads_offline_conversions response transformation`,
           searchStreamResponse.status,
           {
             [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
               searchStreamResponse.status
             )
           },
-          searchStreamResponse.response,
+          searchStreamResponse?.response || searchStreamResponse,
           getAuthErrCategory(searchStreamResponse.status)
         );
       }
@@ -187,7 +187,7 @@ const responseHandler = destinationResponse => {
     // Ref - https://github.com/googleapis/googleapis/blob/master/google/rpc/code.proto
     if (partialFailureError && partialFailureError.code !== 0) {
       throw new NetworkError(
-        `[Google Ads Offline Conversions]:: partialFailureError - ${partialFailureError.message}`,
+        `[Google Ads Offline Conversions]:: partialFailureError - ${partialFailureError?.message}`,
         status,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
@@ -207,7 +207,7 @@ const responseHandler = destinationResponse => {
   // return status, original destination response, message
   const { response } = destinationResponse;
   throw new AbortedError(
-    `[Google Ads Offline Conversions]:: ${response.error.message} during google_ads_offline_conversions response transformation`,
+    `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_conversions response transformation`,
     status,
     response,
     getAuthErrCategory(status)

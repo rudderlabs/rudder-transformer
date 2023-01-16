@@ -42,13 +42,29 @@
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
         "customActivityEventMap": [
-          { "from": "Product Clicked", "to": "100001" }
+          {
+            "from": "Product Clicked",
+            "to": "100001"
+          }
         ],
-        "customActivityPropertyMap": [{ "from": "name", "to": "productName" }],
+        "customActivityPropertyMap": [
+          {
+            "from": "name",
+            "to": "productName"
+          }
+        ],
         "customActivityPrimaryKeyMap": [
-          { "from": "Product Clicked", "to": "name" }
+          {
+            "from": "Product Clicked",
+            "to": "name"
+          }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [
+          {
+            "from": "leadScore",
+            "to": "customLeadScore"
+          }
+        ]
       },
       "secretConfig": {},
       "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",
@@ -72,7 +88,9 @@
               "leadTraitMapping"
             ]
           },
-          "secretKeys": ["clientSecret"],
+          "secretKeys": [
+            "clientSecret"
+          ],
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": true,
@@ -90,20 +108,56 @@
           "responseType": "JSON",
           "rules": {
             "retryable": [
-              { "success": "false", "errors.0.code": 600 },
-              { "success": "false", "errors.0.code": 601 },
-              { "success": "false", "errors.0.code": 602 },
-              { "success": "false", "errors.0.code": 604 },
-              { "success": "false", "errors.0.code": 606 },
-              { "success": "false", "errors.0.code": 607 },
-              { "success": "false", "errors.0.code": 608 },
-              { "success": "false", "errors.0.code": 611 }
+              {
+                "success": "false",
+                "errors.0.code": 600
+              },
+              {
+                "success": "false",
+                "errors.0.code": 601
+              },
+              {
+                "success": "false",
+                "errors.0.code": 602
+              },
+              {
+                "success": "false",
+                "errors.0.code": 604
+              },
+              {
+                "success": "false",
+                "errors.0.code": 606
+              },
+              {
+                "success": "false",
+                "errors.0.code": 607
+              },
+              {
+                "success": "false",
+                "errors.0.code": 608
+              },
+              {
+                "success": "false",
+                "errors.0.code": 611
+              }
             ],
             "abortable": [
-              { "success": "false", "errors.0.code": 603 },
-              { "success": "false", "errors.0.code": 605 },
-              { "success": "false", "errors.0.code": 609 },
-              { "success": "false", "errors.0.code": 610 }
+              {
+                "success": "false",
+                "errors.0.code": 603
+              },
+              {
+                "success": "false",
+                "errors.0.code": 605
+              },
+              {
+                "success": "false",
+                "errors.0.code": 609
+              },
+              {
+                "success": "false",
+                "errors.0.code": 610
+              }
             ]
           }
         },
@@ -161,13 +215,29 @@
         "clientSecret": "marketo_client_secret_success",
         "trackAnonymousEvents": true,
         "customActivityEventMap": [
-          { "from": "Product Clicked", "to": "100001" }
+          {
+            "from": "Product Clicked",
+            "to": "100001"
+          }
         ],
-        "customActivityPropertyMap": [{ "from": "name", "to": "productName" }],
+        "customActivityPropertyMap": [
+          {
+            "from": "name",
+            "to": "productName"
+          }
+        ],
         "customActivityPrimaryKeyMap": [
-          { "from": "Product Clicked", "to": "name" }
+          {
+            "from": "Product Clicked",
+            "to": "name"
+          }
         ],
-        "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
+        "leadTraitMapping": [
+          {
+            "from": "leadScore",
+            "to": "customLeadScore"
+          }
+        ]
       },
       "secretConfig": {},
       "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",
@@ -191,7 +261,9 @@
               "leadTraitMapping"
             ]
           },
-          "secretKeys": ["clientSecret"],
+          "secretKeys": [
+            "clientSecret"
+          ],
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": true,
@@ -209,20 +281,56 @@
           "responseType": "JSON",
           "rules": {
             "retryable": [
-              { "success": "false", "errors.0.code": 600 },
-              { "success": "false", "errors.0.code": 601 },
-              { "success": "false", "errors.0.code": 602 },
-              { "success": "false", "errors.0.code": 604 },
-              { "success": "false", "errors.0.code": 606 },
-              { "success": "false", "errors.0.code": 607 },
-              { "success": "false", "errors.0.code": 608 },
-              { "success": "false", "errors.0.code": 611 }
+              {
+                "success": "false",
+                "errors.0.code": 600
+              },
+              {
+                "success": "false",
+                "errors.0.code": 601
+              },
+              {
+                "success": "false",
+                "errors.0.code": 602
+              },
+              {
+                "success": "false",
+                "errors.0.code": 604
+              },
+              {
+                "success": "false",
+                "errors.0.code": 606
+              },
+              {
+                "success": "false",
+                "errors.0.code": 607
+              },
+              {
+                "success": "false",
+                "errors.0.code": 608
+              },
+              {
+                "success": "false",
+                "errors.0.code": 611
+              }
             ],
             "abortable": [
-              { "success": "false", "errors.0.code": 603 },
-              { "success": "false", "errors.0.code": 605 },
-              { "success": "false", "errors.0.code": 609 },
-              { "success": "false", "errors.0.code": 610 }
+              {
+                "success": "false",
+                "errors.0.code": 603
+              },
+              {
+                "success": "false",
+                "errors.0.code": 605
+              },
+              {
+                "success": "false",
+                "errors.0.code": 609
+              },
+              {
+                "success": "false",
+                "errors.0.code": 610
+              }
             ]
           }
         },
@@ -249,7 +357,154 @@
       {
         "jobId": 3
       }
-    ]
+    ],
+    "destination": {
+      "Config": {
+        "accountId": "valid_account_broken_event",
+        "clientId": "504300cd-76b2-a7l4-bhle-90a07420nx73",
+        "clientSecret": "3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd",
+        "trackAnonymousEvents": false,
+        "createIfNotExist": true,
+        "customActivityEventMap": [
+          {
+            "from": "acq_signup_completed",
+            "to": "100026"
+          },
+          {
+            "from": "act_createwebinarform_submit",
+            "to": "100025"
+          },
+          {
+            "from": "act_presentation_style",
+            "to": "100025"
+          },
+          {
+            "from": "act_webinar_view",
+            "to": "100025"
+          },
+          {
+            "from": "act_webinar_join",
+            "to": "100025"
+          },
+          {
+            "from": "act_presentation_addteammember",
+            "to": "100025"
+          },
+          {
+            "from": "act_engagement_discussions_savediscussion",
+            "to": "100025"
+          },
+          {
+            "to": "100025",
+            "from": "act_engagement_networking_savetime"
+          }
+        ]
+      },
+      "destinationDefinition": {
+        "config": {
+          "destConfig": {
+            "defaultConfig": [
+              "accountId",
+              "clientId",
+              "clientSecret",
+              "trackAnonymousEvents",
+              "customActivityEventMap",
+              "customActivityPropertyMap",
+              "customActivityPrimaryKeyMap",
+              "leadTraitMapping"
+            ]
+          },
+          "secretKeys": [
+            "clientSecret"
+          ],
+          "excludeKeys": [],
+          "includeKeys": [],
+          "routerTransform": true,
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative"
+          ]
+        },
+        "responseRules": {
+          "responseType": "JSON",
+          "rules": {
+            "retryable": [
+              {
+                "success": "false",
+                "errors.0.code": 600
+              },
+              {
+                "success": "false",
+                "errors.0.code": 601
+              },
+              {
+                "success": "false",
+                "errors.0.code": 602
+              },
+              {
+                "success": "false",
+                "errors.0.code": 604
+              },
+              {
+                "success": "false",
+                "errors.0.code": 606
+              },
+              {
+                "success": "false",
+                "errors.0.code": 607
+              },
+              {
+                "success": "false",
+                "errors.0.code": 608
+              },
+              {
+                "success": "false",
+                "errors.0.code": 611
+              }
+            ],
+            "abortable": [
+              {
+                "success": "false",
+                "errors.0.code": 603
+              },
+              {
+                "success": "false",
+                "errors.0.code": 605
+              },
+              {
+                "success": "false",
+                "errors.0.code": 609
+              },
+              {
+                "success": "false",
+                "errors.0.code": 610
+              }
+            ]
+          }
+        },
+        "id": "1aIXqM806xAVm92nx07YwKbRrO9",
+        "name": "MARKETO",
+        "displayName": "Marketo",
+        "createdAt": "2020-04-09T09:24:31.794Z",
+        "updatedAt": "2021-01-11T11:03:28.103Z"
+      },
+      "secretConfig": {},
+      "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVke",
+      "name": "Marketo",
+      "enabled": true,
+      "workspaceId": "1TSN08muJTZwH8iCDmnnRt1pmMd",
+      "deleted": false,
+      "createdAt": "2022-02-10T08:39:32.005Z",
+      "updatedAt": "2022-09-03T16:22:31.374Z",
+      "transformations": [],
+      "isConnectionEnabled": true,
+      "isProcessorEnabled": true
+    }
   },
   {
     "batched": false,
@@ -259,6 +514,153 @@
       "errorCategory": "network",
       "errorType": "aborted",
       "meta": "unhandledStatusCode"
+    },
+    "destination": {
+      "Config": {
+        "accountId": "unhandled_status_code",
+        "clientId": "504300cd-76b2-a7l4-bhle-90a07420nx73",
+        "clientSecret": "3l3gJpzRsZagD6gu7tnTeKXz0bomLGnd",
+        "trackAnonymousEvents": false,
+        "createIfNotExist": true,
+        "customActivityEventMap": [
+          {
+            "from": "acq_signup_completed",
+            "to": "100026"
+          },
+          {
+            "from": "act_createwebinarform_submit",
+            "to": "100025"
+          },
+          {
+            "from": "act_presentation_style",
+            "to": "100025"
+          },
+          {
+            "from": "act_webinar_view",
+            "to": "100025"
+          },
+          {
+            "from": "act_webinar_join",
+            "to": "100025"
+          },
+          {
+            "from": "act_presentation_addteammember",
+            "to": "100025"
+          },
+          {
+            "from": "act_engagement_discussions_savediscussion",
+            "to": "100025"
+          },
+          {
+            "to": "100025",
+            "from": "act_engagement_networking_savetime"
+          }
+        ]
+      },
+      "destinationDefinition": {
+        "config": {
+          "destConfig": {
+            "defaultConfig": [
+              "accountId",
+              "clientId",
+              "clientSecret",
+              "trackAnonymousEvents",
+              "customActivityEventMap",
+              "customActivityPropertyMap",
+              "customActivityPrimaryKeyMap",
+              "leadTraitMapping"
+            ]
+          },
+          "secretKeys": [
+            "clientSecret"
+          ],
+          "excludeKeys": [],
+          "includeKeys": [],
+          "routerTransform": true,
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative"
+          ]
+        },
+        "responseRules": {
+          "responseType": "JSON",
+          "rules": {
+            "retryable": [
+              {
+                "success": "false",
+                "errors.0.code": 600
+              },
+              {
+                "success": "false",
+                "errors.0.code": 601
+              },
+              {
+                "success": "false",
+                "errors.0.code": 602
+              },
+              {
+                "success": "false",
+                "errors.0.code": 604
+              },
+              {
+                "success": "false",
+                "errors.0.code": 606
+              },
+              {
+                "success": "false",
+                "errors.0.code": 607
+              },
+              {
+                "success": "false",
+                "errors.0.code": 608
+              },
+              {
+                "success": "false",
+                "errors.0.code": 611
+              }
+            ],
+            "abortable": [
+              {
+                "success": "false",
+                "errors.0.code": 603
+              },
+              {
+                "success": "false",
+                "errors.0.code": 605
+              },
+              {
+                "success": "false",
+                "errors.0.code": 609
+              },
+              {
+                "success": "false",
+                "errors.0.code": 610
+              }
+            ]
+          }
+        },
+        "id": "1aIXqM806xAVm92nx07YwKbRrO9",
+        "name": "MARKETO",
+        "displayName": "Marketo",
+        "createdAt": "2020-04-09T09:24:31.794Z",
+        "updatedAt": "2021-01-11T11:03:28.103Z"
+      },
+      "secretConfig": {},
+      "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVke",
+      "name": "Marketo",
+      "enabled": true,
+      "workspaceId": "1TSN08muJTZwH8iCDmnnRt1pmMd",
+      "deleted": false,
+      "createdAt": "2022-02-10T08:39:32.005Z",
+      "updatedAt": "2022-09-03T16:22:31.374Z",
+      "transformations": [],
+      "isConnectionEnabled": true,
+      "isProcessorEnabled": true
     },
     "metadata": [
       {
@@ -360,7 +762,9 @@
               "leadTraitMapping"
             ]
           },
-          "secretKeys": ["clientSecret"],
+          "secretKeys": [
+            "clientSecret"
+          ],
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": true,

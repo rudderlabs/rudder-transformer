@@ -43,7 +43,7 @@
   {
     "metadata": [
       {
-        "jobId": 1
+        "jobId": 4
       }
     ],
     "batched": false,
@@ -52,6 +52,21 @@
     "statTags": {
       "errorCategory": "dataValidation",
       "errorType": "configuration"
+    },
+    "destination": {
+      "Config": {
+        "pixelId": "jashdfkjas-3282-49ef1093alsjkdhfjadksf",
+        "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyUlkjhhadfkasdfkhkasdfkj.eyJhdWQiOiJjYW52YXMtY2FudmFzYXBpIiwiaXNzIjoiY2FudmFzLXMyc3Rva2VuIiwibmJmIjoxNjU5MDc3ODA4LCJzdWIiOiJjMmRkMmNkOC02NTQ3LTRiMDAtOTBlZS0xZDZkMzUxN2EwOWN-UFJPRFVDVElPTn45MzZiMTg4My0zNTUyLTQxNTQtOWQyMy00NjZkNGRjN2UxNmIifQ.XdQwpR7qIjH4WMujDWzZSbOIBcZtKwreBWjTPNIiHD.",
+        "appId": "jahsdfjk-5487-asdfa-9957-7c74eb8d3e80",
+        "snapAppId": "",
+        "enableDeduplication": false,
+        "rudderEventsToSnapEvents": [
+          {
+            "from": "Product List Viewed",
+            "to": "product_list_viewed"
+          }
+        ]
+      }
     }
   }
 ]

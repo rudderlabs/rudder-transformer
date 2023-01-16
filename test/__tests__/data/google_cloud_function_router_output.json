@@ -34,6 +34,15 @@
     }
   },
   {
+    "destination": {
+      "Config": {
+        "triggerType": "Http",
+        "apiKeyId": "randomAPI",
+        "enableBatchInput": true,
+        "googleCloudFunctionUrl": "",
+        "maxBatchSize": "2"
+      }
+    },
     "metadata": [{ "jobId": "2" }],
     "batched": false,
     "statusCode": 500,

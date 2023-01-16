@@ -139,7 +139,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
         errResp.message,
         errResp.statTags
       );
-      return [respEvents];
+      return [{ ...respEvents, destination: inputs?.[0]?.destination }];
     }
   } catch (error) {
     // Not using handleRtTfSingleEventError here as this is for multiple events
@@ -150,7 +150,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       errObj.message,
       errObj.statTags
     );
-    return [respEvents];
+    return [{ ...respEvents, destination: inputs?.[0]?.destination }];
   }
 
   // Checking previous status Code. Initially setting to false.

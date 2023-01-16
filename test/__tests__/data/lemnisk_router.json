@@ -20,12 +20,12 @@
                     "Config": {
                         "plWriteKey": "",
                         "pl": "https://crux.lemnisk.co/v2/data",
-                        "passKey": "abcd",
-                        "apiKey": "1234",
+                        "passKey": "",
+                        "apiKey": "",
                         "diapi": " ",
                         "cloudMode": "web",
                         "srcId": "",
-                        "diapiWriteKey": "di api write key"
+                        "diapiWriteKey": ""
                     },
                     "destinationDefinition": {
                         "config": {
@@ -327,6 +327,82 @@
         ],
         "output": [
             {
+                "destination": {
+                    "id": "2JAdls99p6UxoFNSKGwvh0aIt7E",
+                    "name": "Lemnisk Marketing Automation",
+                    "enabled": true,
+                    "Config": {
+                        "plWriteKey": "",
+                        "pl": "https://crux.lemnisk.co/v2/data",
+                        "passKey": "",
+                        "apiKey": "",
+                        "diapi": " ",
+                        "cloudMode": "web",
+                        "srcId": "",
+                        "diapiWriteKey": ""
+                    },
+                    "destinationDefinition": {
+                        "config": {
+                            "transformAt": "processor",
+                            "transformAtV1": "processor",
+                            "saveDestinationResponse": true,
+                            "includeKeys": [
+                                "apiKey",
+                                "passKey",
+                                "cloudMode",
+                                "diapi",
+                                "pl",
+                                "diapiWriteKey",
+                                "plWriteKey",
+                                "srcId"
+                            ],
+                            "excludeKeys": [],
+                            "supportedSourceTypes": [
+                                "android",
+                                "ios",
+                                "web",
+                                "unity",
+                                "amp",
+                                "cloud",
+                                "reactnative",
+                                "flutter",
+                                "cordova",
+                                "warehouse"
+                            ],
+                            "supportedMessageTypes": [
+                                "track",
+                                "identify",
+                                "page"
+                            ],
+                            "destConfig": {
+                                "defaultConfig": [
+                                    "apiKey",
+                                    "passKey",
+                                    "cloudMode",
+                                    "diapi",
+                                    "pl",
+                                    "diapiWriteKey",
+                                    "plWriteKey",
+                                    "deviceModeWriteKey",
+                                    "srcId"
+                                ]
+                            },
+                            "secretKeys": [
+                                "apiKey",
+                                "passKey",
+                                "plWriteKey",
+                                "diapiWriteKey"
+                            ]
+                        },
+                        "responseRules": null,
+                        "id": "1j9dYVEplxUC5swbXkpK9fYT7uk",
+                        "name": "LEMNISK_MARKETING_AUTOMATION",
+                        "displayName": "Lemnisk Marketing Automation",
+                        "createdAt": "2022-12-12T21:58:08.637Z"
+                    },
+                    "rootStore": null,
+                    "isProcessorEnabled": true
+                },
                 "metadata": [
                     {
                         "jobId": 1
@@ -375,7 +451,7 @@
                     "files": {},
                     "userId": "anon-id-new"
                 },
-                "destination":{
+                "destination": {
                     "id": "2JAdls99p6UxoFNSKGwvh0aIt7E",
                     "name": "Lemnisk Marketing Automation",
                     "enabled": true,

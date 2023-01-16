@@ -173,6 +173,12 @@
     "statusCode": 200
   },
   {
+    "destination": {
+      "Config": {
+        "accessToken": "fuwheirujkvjnkrtgkf",
+        "hashUserProperties": true
+      }
+    },
     "batched": false,
     "error": "Event name is required",
     "metadata": [

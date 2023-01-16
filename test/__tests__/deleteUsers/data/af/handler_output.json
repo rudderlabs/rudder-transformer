@@ -13,25 +13,25 @@
   ],
   [
     {
-      "statusCode": 500,
+      "statusCode": 400,
       "error": "API Token and one of Apple ID or Android App Id are required fields for user deletion"
     }
   ],
   [
     {
-      "statusCode": 500,
+      "statusCode": 400,
       "error": "You can send utmost 3 callBackUrls"
     }
   ],
   [
     {
-      "statusCode": 500,
+      "statusCode": 400,
       "error": "androidAppId is required for android_advertising_id type identifier"
     }
   ],
   [
     {
-      "statusCode": 500,
+      "statusCode": 400,
       "error": "appleAppId is required for ios_advertising_id type identifier"
     }
   ],

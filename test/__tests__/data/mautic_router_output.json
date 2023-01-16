@@ -71,7 +71,7 @@
       }
     },
     "batched": false,
-    "statusCode": 500,
+    "statusCode": 400,
     "error": "Invalid user name provided in the destination configuration"
   },
   {

@@ -47,7 +47,7 @@
       }
     ],
     "batched": false,
-    "statusCode": 500,
+    "statusCode": 400,
     "error": "Snap App Id is required for app events",
     "statTags": {
       "errorCategory": "dataValidation",

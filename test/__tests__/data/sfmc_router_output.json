@@ -36,7 +36,7 @@
       "Transformations": []
     },
     "batched": false,
-    "statusCode": 500,
+    "statusCode": 400,
     "error": "Creating or updating contacts is disabled",
     "statTags": {
       "errorCategory": "dataValidation",

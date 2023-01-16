@@ -148,5 +148,86 @@
       },
       "sentAt": "2019-10-14T11:15:53.296Z"
     }
+  },
+  {
+    "message": {
+      "name": "home",
+      "type": "page",
+      "sentAt": "2023-01-10T22:31:10.954Z",
+      "userId": "",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "2.20.0",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "url",
+          "path": "path",
+          "title": "title",
+          "search": "search",
+          "tab_url": "https://simple-tenet.github.io/rudderstack-sample-site/",
+          "referrer": "referrer",
+          "initial_referrer": "$direct",
+          "referring_domain": "",
+          "initial_referring_domain": ""
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1512,
+          "height": 982,
+          "density": 2,
+          "innerWidth": 846,
+          "innerHeight": 782
+        },
+        "traits": {},
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "2.20.0"
+        },
+        "campaign": {},
+        "sessionId": 1673389635049,
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36"
+      },
+      "rudderId": "d37dd81f-5894-48ec-b312-09c590bab15c",
+      "messageId": "2774384870943800-0b15a357-c85d-4b22-916e-ed53286b742a",
+      "timestamp": "2023-01-10T22:31:11.601Z",
+      "properties": {
+        "url": "url",
+        "name": "home",
+        "path": "path",
+        "title": "title",
+        "search": "search",
+        "tab_url": "https://simple-tenet.github.io/rudderstack-sample-site/",
+        "referrer": "referrer",
+        "initial_referrer": "$direct",
+        "referring_domain": "",
+        "initial_referring_domain": ""
+      },
+      "receivedAt": "2023-01-10T22:31:11.612Z",
+      "request_ip": "0.0.0.20",
+      "anonymousId": "878e8f5f-9b6c-4aef-b5d3-1b970a13f17a",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2023-01-10T22:31:10.943Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "apiUrl": "https://active.campaigns.rudder.com",
+        "actid": "476550467",
+        "eventKey": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03"
+      }
+    },
+    "metadata": {
+      "jobId": 5
+    }
   }
 ]

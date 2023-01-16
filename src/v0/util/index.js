@@ -618,6 +618,126 @@ const getFieldValueFromMessage = (message, sourceKey) => {
   return null;
 };
 
+/**
+ * Formatting the input value provided
+ *
+ * @param {*} inputVal
+ * @param {string} formattingType - indicator for how to format the input value
+ * @param {Object} [formatOpts={}] formatOpts - Extra options needed for formatting
+ * @param {string} formatOpts.typeFormat - Type formatting needed for date like values
+ * @param {Object} formatOpts.integrationsObj - integrationsObject
+ * @returns {*} formatted value
+ */
+function formatValues(inputVal, formatingType, formatOpts = {}) {
+  const { integrationsObj, typeFormat } = formatOpts;
+  let formattedVal;
+  switch (formatingType) {
+    case "timestamp":
+      formattedVal = formatTimeStamp(inputVal, typeFormat);
+      break;
+    case "secondTimestamp":
+      if (!moment(inputVal, "x", true).isValid()) {
+        formattedVal = Math.floor(formatTimeStamp(inputVal, typeFormat) / 1000);
+      }
+      break;
+    case "microSecondTimestamp":
+      formattedVal = moment.unix(moment(inputVal).format("X"));
+      formattedVal =
+        formattedVal.toDate().getTime() * 1000 +
+        formattedVal.toDate().getMilliseconds();
+      break;
+    case "flatJson":
+      formattedVal = flattenJson(inputVal);
+      break;
+    case "encodeURIComponent":
+      formattedVal = encodeURIComponent(JSON.stringify(inputVal));
+      break;
+    case "jsonStringify":
+      formattedVal = JSON.stringify(inputVal);
+      break;
+    case "jsonStringifyOnFlatten":
+      formattedVal = JSON.stringify(flattenJson(inputVal));
+      break;
+    case "dobInMMDD":
+      formattedVal = String(inputVal).slice(5);
+      formattedVal = formattedVal.replace("-", "/");
+      break;
+    case "jsonStringifyOnObject":
+      // if already a string, will not stringify
+      // calling stringify on string will add escape characters
+      formattedVal = inputVal;
+      if (typeof inputVal !== "string") {
+        formattedVal = JSON.stringify(inputVal);
+      }
+      break;
+    case "numberForRevenue":
+      if (
+        (typeof inputVal === "string" || inputVal instanceof String) &&
+        inputVal.charAt(0) === "$"
+      ) {
+        formattedVal = inputVal.substring(1);
+      }
+      formattedVal = Number.parseFloat(
+        Number(formattedVal || inputVal || 0).toFixed(2)
+      );
+      if (Number.isNaN(formattedVal)) {
+        throw new InstrumentationError("Revenue is not in the correct format");
+      }
+      break;
+    case "toString":
+      formattedVal = String(inputVal);
+      break;
+    case "toNumber":
+      formattedVal = Number(inputVal);
+      break;
+    case "toFloat":
+      formattedVal = parseFloat(inputVal);
+      break;
+    case "toInt":
+      formattedVal = parseInt(inputVal, 10);
+      break;
+    case "toLower":
+      formattedVal = inputVal.toString().toLowerCase();
+      break;
+    case "hashToSha256":
+      formattedVal =
+        integrationsObj && integrationsObj.hashed
+          ? String(inputVal)
+          : hashToSha256(String(inputVal));
+      break;
+    case "getFbGenderVal":
+      formattedVal = getFbGenderVal(inputVal);
+      break;
+    case "getOffsetInSec":
+      formattedVal = getOffsetInSec(inputVal);
+      break;
+    case "domainUrl":
+      formattedVal = inputVal.replace("https://", "").replace("http://", "");
+      break;
+    case "domainUrlV2": {
+      const url = isValidUrl(inputVal);
+      if (!url) {
+        throw new InstrumentationError(`Invalid URL: ${inputVal}`);
+      }
+      formattedVal = url.hostname.replace("www.", "");
+      break;
+    }
+    case "IsBoolean":
+      if (!(typeof inputVal === "boolean")) {
+        logger.debug("Boolean value missing, so dropping it");
+      }
+      break;
+    case "trim":
+      if (typeof inputVal === "string") {
+        formattedVal = inputVal.trim();
+      }
+      break;
+    default:
+      break;
+  }
+  return formattedVal;
+}
+
 // format the value as per the metadata values
 // Expected metadata keys are: (according to precedence)
 // - - type, typeFormat: expected data type and its format
@@ -726,121 +846,19 @@ const handleMetadataForValue = (
     }
   }
 
-  // handle type and format
-  function formatValues(formatingType) {
-    switch (formatingType) {
-      case "timestamp":
-        formattedVal = formatTimeStamp(formattedVal, typeFormat);
-        break;
-      case "secondTimestamp":
-        if (!moment(formattedVal, "x", true).isValid()) {
-          formattedVal = Math.floor(
-            formatTimeStamp(formattedVal, typeFormat) / 1000
-          );
-        }
-        break;
-      case "microSecondTimestamp":
-        formattedVal = moment.unix(moment(formattedVal).format("X"));
-        formattedVal =
-          formattedVal.toDate().getTime() * 1000 +
-          formattedVal.toDate().getMilliseconds();
-        break;
-      case "flatJson":
-        formattedVal = flattenJson(formattedVal);
-        break;
-      case "encodeURIComponent":
-        formattedVal = encodeURIComponent(JSON.stringify(formattedVal));
-        break;
-      case "jsonStringify":
-        formattedVal = JSON.stringify(formattedVal);
-        break;
-      case "jsonStringifyOnFlatten":
-        formattedVal = JSON.stringify(flattenJson(formattedVal));
-        break;
-      case "dobInMMDD":
-        formattedVal = String(formattedVal).slice(5);
-        formattedVal = formattedVal.replace("-", "/");
-        break;
-      case "jsonStringifyOnObject":
-        // if already a string, will not stringify
-        // calling stringify on string will add escape characters
-        if (typeof formattedVal !== "string") {
-          formattedVal = JSON.stringify(formattedVal);
-        }
-        break;
-      case "numberForRevenue":
-        if (
-          (typeof formattedVal === "string" ||
-            formattedVal instanceof String) &&
-          formattedVal.charAt(0) === "$"
-        ) {
-          formattedVal = formattedVal.substring(1);
-        }
-        formattedVal = Number.parseFloat(Number(formattedVal || 0).toFixed(2));
-        if (Number.isNaN(formattedVal)) {
-          throw new InstrumentationError(
-            "Revenue is not in the correct format"
-          );
-        }
-        break;
-      case "toString":
-        formattedVal = String(formattedVal);
-        break;
-      case "toNumber":
-        formattedVal = Number(formattedVal);
-        break;
-      case "toFloat":
-        formattedVal = parseFloat(formattedVal);
-        break;
-      case "toInt":
-        formattedVal = parseInt(formattedVal, 10);
-        break;
-      case "toLower":
-        formattedVal = formattedVal.toString().toLowerCase();
-        break;
-      case "hashToSha256":
-        formattedVal =
-          integrationsObj && integrationsObj.hashed
-            ? String(formattedVal)
-            : hashToSha256(String(formattedVal));
-        break;
-      case "getFbGenderVal":
-        formattedVal = getFbGenderVal(formattedVal);
-        break;
-      case "getOffsetInSec":
-        formattedVal = getOffsetInSec(formattedVal);
-        break;
-      case "domainUrl":
-        formattedVal = formattedVal
-          .replace("https://", "")
-          .replace("http://", "");
-        break;
-      case "domainUrlV2": {
-        const url = new URL(formattedVal);
-        formattedVal = url.hostname.replace("www.", "");
-        break;
-      }
-      case "IsBoolean":
-        if (!(typeof formattedVal === "boolean")) {
-          logger.debug("Boolean value missing, so dropping it");
-        }
-        break;
-      case "trim":
-        if (typeof formattedVal === "string") {
-          formattedVal = formattedVal.trim();
-        }
-        break;
-      default:
-        break;
-    }
-  }
   if (type) {
     if (Array.isArray(type)) {
       type.forEach(eachType => {
-        formatValues(eachType);
+        formattedVal = formatValues(formattedVal, eachType, {
+          typeFormat,
+          integrationsObj
+        });
       });
     } else {
-      formatValues(type);
+      formattedVal = formatValues(formattedVal, type, {
+        typeFormat,
+        integrationsObj
+      });
     }
   }
 
@@ -1797,9 +1815,9 @@ const isHybridModeEnabled = Config => {
  * @param {RudderMessage} message Rudder message object
  * @returns lower case `type` field inside the Rudder message object
  */
-const getEventType = (message) => {
+const getEventType = message => {
   return message?.type?.toLowerCase();
-}
+};
 
 // ========================================================================
 // EXPORTS
@@ -1894,5 +1912,6 @@ module.exports = {
   validatePhoneWithCountryCode,
   getEventReqMetadata,
   isHybridModeEnabled,
-  getEventType
+  getEventType,
+  formatValues
 };

@@ -114,15 +114,14 @@
       "userId": "ruchu123"
     },
     "destination": {
-      "DestinationDefinition":{
-        "Config":
-        {
-            "cdkEnabled":true
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
         }
-
-    },
+      },
       "Config": {
-        "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
+        "apiKey": "11111122702j2a2U2K2C7H",
+        "stream": "default"
       },
       "Enabled": true,
       "Transformations": [],
@@ -183,15 +182,14 @@
       "userId": "ruchu123"
     },
     "destination": {
-      "DestinationDefinition":{
-        "Config":
-        {
-            "cdkEnabled":true
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
         }
-
-    },
+      },
       "Config": {
-        "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
+        "apiKey": "11111122702j2a2U2K2C7H",
+        "stream": "default"
       },
       "Enabled": true,
       "Transformations": [],
@@ -260,15 +258,14 @@
       "userId": "ruchu123"
     },
     "destination": {
-      "DestinationDefinition":{
-        "Config":
-        {
-            "cdkEnabled":true
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
         }
-
-    },
+      },
       "Config": {
-        "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
+        "apiKey": "11111122702j2a2U2K2C7H",
+        "stream": "default"
       },
       "Enabled": true,
       "Transformations": [],
@@ -329,15 +326,14 @@
       "userId": "ruchu123"
     },
     "destination": {
-      "DestinationDefinition":{
-        "Config":
-        {
-            "cdkEnabled":true
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
         }
-
-    },
+      },
       "Config": {
-        "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
+        "apiKey": "11111122702j2a2U2K2C7H",
+        "stream": "default"
       },
       "Enabled": true,
       "Transformations": [],
@@ -398,15 +394,14 @@
       "userId": "ruchu123"
     },
     "destination": {
-      "DestinationDefinition":{
-        "Config":
-        {
-            "cdkEnabled":true
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
         }
-
-    },
+      },
       "Config": {
-        "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
+        "apiKey": "11111122702j2a2U2K2C7H",
+        "stream": "default"
       },
       "Enabled": true,
       "Transformations": [],
@@ -467,15 +462,14 @@
       "userId": "ruchu123"
     },
     "destination": {
-      "DestinationDefinition":{
-        "Config":
-        {
-            "cdkEnabled":true
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
         }
-
-    },
+      },
       "Config": {
-        "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
+        "apiKey": "11111122702j2a2U2K2C7H",
+        "stream": "default"
       },
       "Enabled": true,
       "Transformations": [],
@@ -535,15 +529,14 @@
       "userId": "ruchu123"
     },
     "destination": {
-      "DestinationDefinition":{
-        "Config":
-        {
-            "cdkEnabled":true
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
         }
-
-    },
+      },
       "Config": {
-        "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
+        "apiKey": "11111122702j2a2U2K2C7H",
+        "stream": "default"
       },
       "Enabled": true,
       "Transformations": [],
@@ -604,15 +597,14 @@
       "userId": "ruchu123"
     },
     "destination": {
-      "DestinationDefinition":{
-        "Config":
-        {
-            "cdkEnabled":true
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
         }
-
-    },
+      },
       "Config": {
-        "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
+        "apiKey": "11111122702j2a2U2K2C7H",
+        "stream": "default"
       },
       "Enabled": true,
       "Transformations": [],
@@ -733,15 +725,14 @@
       "userId": "ruchu123"
     },
     "destination": {
-      "DestinationDefinition":{
-        "Config":
-        {
-            "cdkEnabled":true
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
         }
-
-    },
+      },
       "Config": {
-        "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
+        "apiKey": "11111122702j2a2U2K2C7H",
+        "stream": "default"
       },
       "Enabled": true,
       "Transformations": [],
@@ -749,212 +740,209 @@
     }
   },
   {
-      "message": {
-        "channel": "web",
-        "context": {
-          "app": {
-            "build": "1.0.0",
-            "name": "RudderLabs JavaScript SDK",
-            "namespace": "com.rudderlabs.javascript",
-            "version": "1.0.0"
-          },
-          "traits": {
-            "email": "testhubspot2@email.com",
-            "name": "Test Hubspot",
-            "anonymousId": "12345"
-          },
-          "library": {
-            "name": "RudderLabs JavaScript SDK",
-            "version": "1.0.0"
-          },
-          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-          "locale": "en-GB",
-          "ip": "0.0.0.0",
-          "os": {
-            "name": "",
-            "version": ""
-          },
-          "screen": {
-            "density": 2
-          }
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
         },
-        "type": "screen",
-        "messageId": "e8585d9a-7137-4223-b295-68ab1b17dad7",
-        "originalTimestamp": "2019-10-15T09:35:31.289Z",
-        "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
-        "properties": {
-          "path": "",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": ""
+        "traits": {
+          "email": "testhubspot2@email.com",
+          "name": "Test Hubspot",
+          "anonymousId": "12345"
         },
-        "integrations": {
-          "All": true
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
         },
-        "name": "ApplicationLoaded",
-        "sentAt": "2019-10-14T11:15:53.296Z",
-        "destination_props": {
-          "AF": {
-            "af_uid": "afUid"
-          }
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
         }
       },
-      "destination": {
-        "DestinationDefinition":{
-          "Config":
-          {
-              "cdkEnabled":true
-          }
-
+      "type": "screen",
+      "messageId": "e8585d9a-7137-4223-b295-68ab1b17dad7",
+      "originalTimestamp": "2019-10-15T09:35:31.289Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "path": "",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": ""
       },
-        "Config": {
-          "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
-        },
-        "Enabled": true,
-        "Transformations": [],
-        "IsProcessorEnabled": true
+      "integrations": {
+        "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z",
+      "destination_props": {
+        "AF": {
+          "af_uid": "afUid"
+        }
       }
     },
-    {
-      "message": {
-        "channel": "web",
-        "context": {
-          "app": {
-            "build": "1.0.0",
-            "name": "RudderLabs JavaScript SDK",
-            "namespace": "com.rudderlabs.javascript",
-            "version": "1.0.0"
-          },
-          "traits": {
-            "email": "testhubspot2@email.com",
-            "name": "Test Hubspot",
-            "anonymousId": "12345"
-          },
-          "library": {
-            "name": "RudderLabs JavaScript SDK",
-            "version": "1.0.0"
-          },
-          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-          "locale": "en-GB",
-          "ip": "0.0.0.0",
-          "os": {
-            "name": "",
-            "version": ""
-          },
-          "screen": {
-            "density": 2
-          }
-        },
-        "type": "page",
-        "messageId": "e8585d9a-7137-4223-b295-68ab1b17dad7",
-        "originalTimestamp": "2019-10-15T09:35:31.289Z",
-        "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
-        "properties": {
-          "path": "",
-          "referrer": "",
-          "search": "",
-          "title": "",
-          "url": ""
-        },
-        "integrations": {
-          "All": true
-        },
-        "name": "ApplicationLoaded",
-        "sentAt": "2019-10-14T11:15:53.296Z",
-        "destination_props": {
-          "AF": {
-            "af_uid": "afUid"
-          }
+    "destination": {
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
         }
       },
-      "destination": {
-        "DestinationDefinition":{
-          "Config":
-          {
-              "cdkEnabled":true
-          }
-
+      "Config": {
+        "apiKey": "11111122702j2a2U2K2C7H",
+        "stream": "default"
       },
-        "Config": {
-          "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
-        },
-        "Enabled": true,
-        "Transformations": [],
-        "IsProcessorEnabled": true
-      }
-    },
-    {
-      "message": {
-        "anonymousId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
-        "channel": "web",
-        "context": {
-          "app": {
-            "build": "1.0.0",
-            "name": "RudderLabs JavaScript SDK",
-            "namespace": "com.rudderlabs.javascript",
-            "version": "1.1.6"
-          },
-          "library": {
-            "name": "RudderLabs JavaScript SDK",
-            "version": "1.1.6"
-          },
-          "locale": "en-GB",
-          "os": {
-            "name": "",
-            "version": ""
-          },
-          "page": {
-            "path": "/testing/script-test.html",
-            "referrer": "",
-            "search": "",
-            "title": "",
-            "url": "http://localhost:3243/testing/script-test.html"
-          },
-          "screen": {
-            "density": 2
-          },
-          "traits": {
-            "company": {
-              "id": "abc123"
-            },
-            "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-            "email": "ruchira@gmail.com",
-            "name": "Ruchira Moitra",
-            "plan": "Enterprise",
-            "firstName": "Ruchira",
-            "lastname": "Moitra"
-          },
-          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
-        },
-        "integrations": {
-          "All": true
-        },
-        "messageId": "e108eb05-f6cd-4624-ba8c-568f2e2b3f92",
-        "originalTimestamp": "2020-10-16T08:26:14.938Z",
-        "receivedAt": "2020-10-16T13:56:14.945+05:30",
-        "request_ip": "[::1]",
-        "sentAt": "2020-10-16T08:26:14.939Z",
-        "timestamp": "2020-10-16T13:56:14.944+05:30",
-        "type": "identify",
-        "userId": "ruchu123"
-      },
-      "destination": {
-        "DestinationDefinition":{
-          "Config":
-          {
-              "cdkEnabled":true
-          }
-
-      },
-        "Config": {
-          "apiKey":"11111122702j2a2U2K2C7H","stream":"default"
-        },
-        "Enabled": true,
-        "Transformations": [],
-        "IsProcessorEnabled": true
-      }
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
     }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "testhubspot2@email.com",
+          "name": "Test Hubspot",
+          "anonymousId": "12345"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "page",
+      "messageId": "e8585d9a-7137-4223-b295-68ab1b17dad7",
+      "originalTimestamp": "2019-10-15T09:35:31.289Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "path": "",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": ""
+      },
+      "integrations": {
+        "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z",
+      "destination_props": {
+        "AF": {
+          "af_uid": "afUid"
+        }
+      }
+    },
+    "destination": {
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      },
+      "Config": {
+        "apiKey": "11111122702j2a2U2K2C7H",
+        "stream": "default"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.6"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.6"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "page": {
+          "path": "/testing/script-test.html",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "http://localhost:3243/testing/script-test.html"
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "company": {
+            "id": "abc123"
+          },
+          "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
+          "email": "ruchira@gmail.com",
+          "name": "Ruchira Moitra",
+          "plan": "Enterprise",
+          "firstName": "Ruchira",
+          "lastname": "Moitra"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "e108eb05-f6cd-4624-ba8c-568f2e2b3f92",
+      "originalTimestamp": "2020-10-16T08:26:14.938Z",
+      "receivedAt": "2020-10-16T13:56:14.945+05:30",
+      "request_ip": "[::1]",
+      "sentAt": "2020-10-16T08:26:14.939Z",
+      "timestamp": "2020-10-16T13:56:14.944+05:30",
+      "type": "identify",
+      "userId": "ruchu123"
+    },
+    "destination": {
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      },
+      "Config": {
+        "apiKey": "11111122702j2a2U2K2C7H",
+        "stream": "default"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  }
 ]

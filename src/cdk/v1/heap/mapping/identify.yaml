@@ -7,7 +7,7 @@
     - context.traits.id
     - anonymousId
   required: true
-  
+
 - destKey: properties
   sourceKeys:
     - traits

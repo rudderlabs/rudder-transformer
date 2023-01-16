@@ -1,14 +1,14 @@
-const { httpPOST } = require("../../../adapters/network");
-const { getEndpoint, DEL_MAX_BATCH_SIZE } = require("./config");
+const { httpPOST } = require('../../../adapters/network');
+const { getEndpoint, DEL_MAX_BATCH_SIZE } = require('./config');
 const {
   processAxiosResponse,
-  getDynamicErrorType
-} = require("../../../adapters/utils/networkUtils");
-const { isHttpStatusSuccess } = require("../../util");
-const { executeCommonValidations } = require("../../util/regulation-api");
-const { NetworkError, ConfigurationError } = require("../../util/errorTypes");
-const tags = require("../../util/tags");
-const { getUserIdBatches } = require("../../util/deleteUserUtils");
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
+const { isHttpStatusSuccess } = require('../../util');
+const { executeCommonValidations } = require('../../util/regulation-api');
+const { NetworkError, ConfigurationError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
+const { getUserIdBatches } = require('../../util/deleteUserUtils');
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -20,16 +20,14 @@ const userDeletionHandler = async (userAttributes, config) => {
   const { accountId, passcode } = config;
 
   if (!accountId || !passcode) {
-    throw new ConfigurationError(
-      "Project ID and Passcode is required for delete user"
-    );
+    throw new ConfigurationError('Project ID and Passcode is required for delete user');
   }
 
-  const endpoint = getEndpoint(config, "/delete/profiles.json");
+  const endpoint = getEndpoint(config, '/delete/profiles.json');
   const headers = {
-    "X-CleverTap-Account-Id": accountId,
-    "X-CleverTap-Passcode": passcode,
-    "Content-Type": "application/json"
+    'X-CleverTap-Account-Id': accountId,
+    'X-CleverTap-Passcode': passcode,
+    'Content-Type': 'application/json',
   };
   // userIdBatches = [[u1,u2,u3,...batchSize],[u1,u2,u3,...batchSize]...]
   // ref : https://developer.clevertap.com/docs/disassociate-api
@@ -38,40 +36,38 @@ const userDeletionHandler = async (userAttributes, config) => {
   // where all the batch deletion requests are parallelized as
   // simultaneous requests to CleverTap resulted in hitting API rate limits.
   // Also, the rate limit is not clearly documented.
-  for (let idx = 0; idx < userIdBatches.length; idx += 1) {
-    const curBatch = userIdBatches[idx];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const curBatch of userIdBatches) {
     // eslint-disable-next-line no-await-in-loop
     const deletionResponse = await httpPOST(
       endpoint,
       {
-        identity: curBatch
+        identity: curBatch,
       },
       {
-        headers
-      }
+        headers,
+      },
     );
     const handledDelResponse = processAxiosResponse(deletionResponse);
     if (!isHttpStatusSuccess(handledDelResponse.status)) {
       throw new NetworkError(
-        "User deletion request failed",
+        'User deletion request failed',
         handledDelResponse.status,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-            handledDelResponse.status
-          )
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
         },
-        handledDelResponse
+        handledDelResponse,
       );
     }
   }
 
   return {
     statusCode: 200,
-    status: "successful"
+    status: 'successful',
   };
 };
 
-const processDeleteUsers = event => {
+const processDeleteUsers = (event) => {
   const { userAttributes, config } = event;
   executeCommonValidations(userAttributes);
   const resp = userDeletionHandler(userAttributes, config);

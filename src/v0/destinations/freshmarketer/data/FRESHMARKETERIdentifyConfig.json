@@ -19,10 +19,7 @@
   },
   {
     "destKey": "subscription_status",
-    "sourceKeys": [
-      "traits.subscriptionStatus",
-      "context.traits.subscriptionStatus"
-    ],
+    "sourceKeys": ["traits.subscriptionStatus", "context.traits.subscriptionStatus"],
     "required": false
   },
   {
@@ -121,10 +118,7 @@
   },
   {
     "destKey": "subscription_types",
-    "sourceKeys": [
-      "traits.subscriptionTypes",
-      "context.traits.subscriptionTypes"
-    ],
+    "sourceKeys": ["traits.subscriptionTypes", "context.traits.subscriptionTypes"],
     "required": false
   },
   {
@@ -145,11 +139,7 @@
   },
   {
     "destKey": "keyword",
-    "sourceKeys": [
-      "traits.keyword",
-      "context.traits.keyword",
-      "context.campaign.term"
-    ],
+    "sourceKeys": ["traits.keyword", "context.traits.keyword", "context.campaign.term"],
     "required": false
   },
   {
@@ -159,10 +149,7 @@
   },
   {
     "destKey": "facebook",
-    "sourceKeys": [
-      "traits.facebookUserName",
-      "context.traits.facebookUserName"
-    ],
+    "sourceKeys": ["traits.facebookUserName", "context.traits.facebookUserName"],
     "required": false
   },
   {
@@ -172,10 +159,7 @@
   },
   {
     "destKey": "linkedin",
-    "sourceKeys": [
-      "traits.linkedinUserName",
-      "context.traits.linkedinUserName"
-    ],
+    "sourceKeys": ["traits.linkedinUserName", "context.traits.linkedinUserName"],
     "required": false
   },
   {
@@ -197,10 +181,7 @@
   },
   {
     "destKey": "lifecycle_stage_id",
-    "sourceKeys": [
-      "traits.lifecycleStageId",
-      "context.traits.lifecycleStageId"
-    ],
+    "sourceKeys": ["traits.lifecycleStageId", "context.traits.lifecycleStageId"],
     "required": false
   }
 ]

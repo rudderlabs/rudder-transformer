@@ -8,7 +8,7 @@
     "destKey": "accountId",
     "sourceKeys": ["traits.accountId", "context.traits.accountId"],
     "required": false,
-    "metadata":{
+    "metadata": {
       "type": "toString"
     }
   },
@@ -39,16 +39,7 @@
           "destVal": "MALE"
         },
         {
-          "sourceVal": [
-            "o",
-            "O",
-            "other",
-            "others",
-            "Others",
-            "Other",
-            "OTHERS",
-            "OTHER"
-          ],
+          "sourceVal": ["o", "O", "other", "others", "Others", "Other", "OTHERS", "OTHER"],
           "destVal": "OTHER"
         }
       ]
@@ -64,11 +55,7 @@
   },
   {
     "destKey": "signUpDate",
-    "sourceKeys": [
-      "traits.signUpDate",
-      "context.traits.signUpDate",
-      "originalTimestamp"
-    ],
+    "sourceKeys": ["traits.signUpDate", "context.traits.signUpDate", "originalTimestamp"],
     "required": false,
     "metadata": {
       "type": "timestamp"
@@ -117,11 +104,7 @@
   },
   {
     "destKey": "createDate",
-    "sourceKeys": [
-      "traits.createDate",
-      "context.traits.createDate",
-      "originalTimestamp"
-    ],
+    "sourceKeys": ["traits.createDate", "context.traits.createDate", "originalTimestamp"],
     "required": false,
     "metadata": {
       "type": "timestamp"
@@ -129,10 +112,7 @@
   },
   {
     "destKey": "globalUnsubscribe",
-    "sourceKeys": [
-      "traits.globalUnsubscribe",
-      "context.traits.globalUnsubscribe"
-    ],
+    "sourceKeys": ["traits.globalUnsubscribe", "context.traits.globalUnsubscribe"],
     "required": false
   },
   {

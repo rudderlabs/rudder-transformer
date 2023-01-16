@@ -1,5 +1,5 @@
-const sha256 = require("sha256");
-const get = require("get-value");
+const sha256 = require('sha256');
+const get = require('get-value');
 const {
   isObject,
   formatTimeStamp,
@@ -9,8 +9,8 @@ const {
   getFieldValueFromMessage,
   getDestinationExternalID,
   removeUndefinedAndNullValues,
-  getHashFromArrayWithDuplicate
-} = require("../../util");
+  getHashFromArrayWithDuplicate,
+} = require('../../util');
 
 const {
   ENDPOINT,
@@ -20,9 +20,9 @@ const {
   ACTION_SOURCES_VALUES,
   TRACK_EXCLUSION_FIELDS,
   eventToStandardMapping,
-  MATCH_KEY_FIELD_TYPE_DICTIONARY
-} = require("./config");
-const { ConfigurationError } = require("../../util/errorTypes");
+  MATCH_KEY_FIELD_TYPE_DICTIONARY,
+} = require('./config');
+const { ConfigurationError } = require('../../util/errorTypes');
 
 /**
  * @param {*} message
@@ -33,19 +33,19 @@ const { ConfigurationError } = require("../../util/errorTypes");
  * fbclid : deduced query paramter from context.page.url
  * ref: https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/fbp-and-fbc#fbc
  */
-const deduceFbcParam = message => {
+const deduceFbcParam = (message) => {
   const url = message.context?.page?.url;
   if (!url) {
     return undefined;
   }
   const parseUrl = new URL(url);
   const paramsList = new URLSearchParams(parseUrl.search);
-  const fbclid = paramsList.get("fbclid");
+  const fbclid = paramsList.get('fbclid');
 
   if (!fbclid) {
     return undefined;
   }
-  const creationTime = getFieldValueFromMessage(message, "timestamp");
+  const creationTime = getFieldValueFromMessage(message, 'timestamp');
   return `fb.1.${formatTimeStamp(creationTime)}.${fbclid}`;
 };
 
@@ -54,7 +54,7 @@ const deduceFbcParam = message => {
  * @param {Object} destination
  * @returns
  */
-const getAccessToken = destination => {
+const getAccessToken = (destination) => {
   const { Config } = destination;
   return Config.accessToken;
 };
@@ -70,14 +70,14 @@ const getAccessToken = destination => {
  */
 const prepareUrls = (destination, data, ids, payload) => {
   const urls = [];
-  const uploadTags = payload.upload_tag || "rudderstack";
+  const uploadTags = payload.upload_tag || 'rudderstack';
   const [first] = data;
   const encodedData = `%5B${encodeURIComponent(JSON.stringify(first))}%5D`;
   const accessToken = getAccessToken(destination);
-  ids.forEach(id => {
-    const endpoint = ENDPOINT.replace("OFFLINE_EVENT_SET_ID", id);
+  ids.forEach((id) => {
+    const endpoint = ENDPOINT.replace('OFFLINE_EVENT_SET_ID', id);
     urls.push(
-      `${endpoint}?upload_tag=${uploadTags}&data=${encodedData}&access_token=${accessToken}`
+      `${endpoint}?upload_tag=${uploadTags}&data=${encodedData}&access_token=${accessToken}`,
     );
   });
 
@@ -111,9 +111,9 @@ const prepareMatchKeys = (payload, message) => {
 
   const keys = Object.keys(propertyMapping);
   const matchKeyFields = Object.keys(MATCH_KEY_FIELD_TYPE_DICTIONARY);
-  keys.forEach(key => {
+  keys.forEach((key) => {
     if (matchKeyFields.includes(key)) {
-      if (MATCH_KEY_FIELD_TYPE_DICTIONARY[key] === "string") {
+      if (MATCH_KEY_FIELD_TYPE_DICTIONARY[key] === 'string') {
         data[key] = propertyMapping[key];
       } else {
         data[key] = [propertyMapping[key]];
@@ -135,18 +135,18 @@ const prepareMatchKeys = (payload, message) => {
 const getStandardEvents = (eventsMapping, event) => {
   const standardEvents = [];
   const keys = Object.keys(eventsMapping);
-  keys.forEach(key => {
+  keys.forEach((key) => {
     if (key === event) {
       standardEvents.push(...eventsMapping[key]);
     }
   });
 
-  if (!standardEvents.length && eventToStandardMapping[event]) {
+  if (standardEvents.length === 0 && eventToStandardMapping[event]) {
     standardEvents.push(eventToStandardMapping[event]);
   }
 
-  if (!standardEvents.length) {
-    standardEvents.push("Other");
+  if (standardEvents.length === 0) {
+    standardEvents.push('Other');
   }
 
   return standardEvents;
@@ -160,15 +160,10 @@ const getStandardEvents = (eventsMapping, event) => {
  */
 const getEventSetIds = (eventsToIds, standardEvent) => {
   let eventSetIds = [];
-  const eventsToIdsMapping = getHashFromArrayWithDuplicate(
-    eventsToIds,
-    "from",
-    "to",
-    false
-  );
+  const eventsToIdsMapping = getHashFromArrayWithDuplicate(eventsToIds, 'from', 'to', false);
 
   const keys = Object.keys(eventsToIdsMapping);
-  keys.forEach(key => {
+  keys.forEach((key) => {
     if (key === standardEvent) {
       eventSetIds = [...eventsToIdsMapping[key]];
     }
@@ -188,23 +183,16 @@ const getStandardEventsAndEventSetIds = (destination, event) => {
   const payload = [];
   const { Config } = destination;
   const { eventsToIds, eventsToStandard } = Config;
-  const eventsMapping = getHashFromArrayWithDuplicate(
-    eventsToStandard,
-    "from",
-    "to",
-    false
-  );
+  const eventsMapping = getHashFromArrayWithDuplicate(eventsToStandard, 'from', 'to', false);
   const standardEvents = getStandardEvents(eventsMapping, event);
-  standardEvents.forEach(standardEvent => {
+  standardEvents.forEach((standardEvent) => {
     const eventSetIds = getEventSetIds(eventsToIds, standardEvent);
-    if (eventSetIds.length) {
+    if (eventSetIds.length > 0) {
       payload.push({ standardEvent, eventSetIds });
     }
   });
-  if (!payload.length) {
-    throw new ConfigurationError(
-      "Please Map Your Standard Events With Event Set Ids"
-    );
+  if (payload.length === 0) {
+    throw new ConfigurationError('Please Map Your Standard Events With Event Set Ids');
   }
   return payload;
 };
@@ -218,7 +206,7 @@ const getStandardEventsAndEventSetIds = (destination, event) => {
 const findEventConfigurationPlace = (eventsMapping, event) => {
   let eventIsMappedFromWebapp = false;
   const keys = Object.keys(eventsMapping);
-  keys.forEach(key => {
+  keys.forEach((key) => {
     if (key === event) {
       eventIsMappedFromWebapp = true;
     }
@@ -237,13 +225,8 @@ const findEventConfigurationPlace = (eventsMapping, event) => {
  * @return Content Type array as defined in:
  * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
  */
-const getContentType = (
-  message,
-  standardEvent,
-  categoryToContent,
-  destination
-) => {
-  const { integrations } = message;
+const getContentType = (message, standardEvent, categoryToContent, destination) => {
+  const { integrations, properties } = message;
   if (
     integrations &&
     integrations.FacebookOfflineConversions &&
@@ -255,14 +238,12 @@ const getContentType = (
 
   let contentType;
 
-  let { category } = message.properties;
+  let { category } = properties;
   // category field is mapped from properties.category, if not found, then, category of the first product item from the products array ( if any )
   if (!category) {
-    const { products } = message.properties;
-    if (products && products.length > 0 && Array.isArray(products)) {
-      if (isObject(products[0])) {
-        category = products[0].category;
-      }
+    const { products } = properties;
+    if (products && products.length > 0 && Array.isArray(products) && isObject(products[0])) {
+      category = products[0].category;
     }
   }
 
@@ -272,16 +253,11 @@ const getContentType = (
    * when no product array is not found we are defaulting it to "product_group"
    */
   if (category) {
-    const categoryToContentMapping = getHashFromArray(
-      categoryToContent,
-      "from",
-      "to",
-      false
-    );
+    const categoryToContentMapping = getHashFromArray(categoryToContent, 'from', 'to', false);
 
     const keys = Object.keys(categoryToContentMapping);
 
-    keys.forEach(key => {
+    keys.forEach((key) => {
       if (key === category) {
         contentType = categoryToContentMapping[key];
       }
@@ -289,31 +265,23 @@ const getContentType = (
 
     // if category isn't mapped with contentType then keeping default contentType as "product"
     if (!contentType) {
-      contentType = "product";
+      contentType = 'product';
     }
-  } else if (standardEvent === "ViewContent") {
+  } else if (standardEvent === 'ViewContent') {
     const { event } = message;
     const { products } = message.properties;
     const { eventsToStandard } = destination.Config;
-    const eventsMapping = getHashFromArrayWithDuplicate(
-      eventsToStandard,
-      "from",
-      "to",
-      false
-    );
-    const isEventConfiguredFromWebapp = findEventConfigurationPlace(
-      eventsMapping,
-      event
-    );
-    if (!isEventConfiguredFromWebapp && event === "Product Viewed") {
-      contentType = "product";
+    const eventsMapping = getHashFromArrayWithDuplicate(eventsToStandard, 'from', 'to', false);
+    const isEventConfiguredFromWebapp = findEventConfigurationPlace(eventsMapping, event);
+    if (!isEventConfiguredFromWebapp && event === 'Product Viewed') {
+      contentType = 'product';
     } else if (products && products.length > 0 && Array.isArray(products)) {
-      contentType = "product";
+      contentType = 'product';
     } else {
-      contentType = "product_group";
+      contentType = 'product_group';
     }
   } else {
-    contentType = "product";
+    contentType = 'product';
   }
   return contentType;
 };
@@ -323,7 +291,7 @@ const getContentType = (
  * @param {*} contents
  * @returns
  */
-const getProducts = contents => {
+const getProducts = (contents) => {
   const fbContents = [];
   const products = [];
   if (Array.isArray(contents)) {
@@ -332,7 +300,7 @@ const getProducts = contents => {
     fbContents.push(contents);
   }
 
-  fbContents.forEach(content => {
+  fbContents.forEach((content) => {
     const id = content.product_id || content.id || content.sku;
     const quantity = content.quantity || 1;
     const { price, brand, category } = content;
@@ -350,12 +318,9 @@ const getProducts = contents => {
  * @param {*} payload
  * @returns
  */
-const getActionSource = payload => {
+const getActionSource = (payload) => {
   let actionSource = null;
-  if (
-    payload.action_source &&
-    ACTION_SOURCES_VALUES.includes(payload.action_source)
-  ) {
+  if (payload.action_source && ACTION_SOURCES_VALUES.includes(payload.action_source)) {
     actionSource = payload.action_source;
   }
   return actionSource;
@@ -374,31 +339,26 @@ const prepareData = (payload, message, destination) => {
   const data = {
     match_keys: prepareMatchKeys(payload, message),
     event_time: payload.event_time,
-    currency: payload.currency || "USD",
+    currency: payload.currency || 'USD',
     value: get(message.properties, valueFieldIdentifier) || payload.value || 0,
     order_id: payload.order_id || null,
     item_number: payload.item_number || null,
     contents: payload.contents ? getProducts(payload.contents) : null,
     custom_data: message.properties
-      ? extractCustomFields(
-          message,
-          payload,
-          ["properties"],
-          TRACK_EXCLUSION_FIELDS
-        )
+      ? extractCustomFields(message, payload, ['properties'], TRACK_EXCLUSION_FIELDS)
       : null,
     action_source: getActionSource(payload),
-    event_source_url: payload.event_source_url || null
+    event_source_url: payload.event_source_url || null,
   };
 
   // ref : https://developers.facebook.com/docs/marketing-apis/data-processing-options#conversions-api-and-offline-conversions-api
   if (limitedDataUSage) {
-    const dataProcessingOptions = get(message, "context.dataProcessingOptions");
+    const dataProcessingOptions = get(message, 'context.dataProcessingOptions');
     if (dataProcessingOptions && Array.isArray(dataProcessingOptions)) {
       [
         data.data_processing_options,
         data.data_processing_options_country,
-        data.data_processing_options_state
+        data.data_processing_options_state,
       ] = dataProcessingOptions;
     }
   }
@@ -419,12 +379,7 @@ const getData = (data, standardEvent, message, destination) => {
   const payload = data;
   const [first] = payload;
   first.event_name = standardEvent;
-  first.content_type = getContentType(
-    message,
-    standardEvent,
-    categoryToContent,
-    destination
-  );
+  first.content_type = getContentType(message, standardEvent, categoryToContent, destination);
   return [first];
 };
 
@@ -439,7 +394,7 @@ const preparePayload = (facebookOfflineConversionsPayload, destination) => {
   const payload = {};
 
   const keys = Object.keys(facebookOfflineConversionsPayload);
-  keys.forEach(key => {
+  keys.forEach((key) => {
     if (isHashRequired && HASHING_REQUIRED_KEYS.includes(key)) {
       payload[key] = sha256(facebookOfflineConversionsPayload[key]);
     } else {
@@ -449,7 +404,7 @@ const preparePayload = (facebookOfflineConversionsPayload, destination) => {
 
   if (facebookOfflineConversionsPayload.name) {
     const split = facebookOfflineConversionsPayload.name
-      ? facebookOfflineConversionsPayload.name.split(" ")
+      ? facebookOfflineConversionsPayload.name.split(' ')
       : null;
     if (split !== null && Array.isArray(split) && split.length === 2) {
       payload.fn = isHashRequired ? sha256(split[0]) : split[0];
@@ -470,28 +425,22 @@ const preparePayload = (facebookOfflineConversionsPayload, destination) => {
 const offlineConversionResponseBuilder = (message, destination) => {
   const facebookOfflineConversionsPayload = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.OFFLINE_EVENTS.name]
+    MAPPING_CONFIG[CONFIG_CATEGORIES.OFFLINE_EVENTS.name],
   );
 
-  const payload = preparePayload(
-    facebookOfflineConversionsPayload,
-    destination
-  );
+  const payload = preparePayload(facebookOfflineConversionsPayload, destination);
 
-  const leadId = getDestinationExternalID(message, "LeadId");
+  const leadId = getDestinationExternalID(message, 'LeadId');
 
   if (leadId) {
     payload.lead_id = leadId;
   }
 
   const data = prepareData(payload, message, destination);
-  const eventToIdsArray = getStandardEventsAndEventSetIds(
-    destination,
-    message.event
-  );
+  const eventToIdsArray = getStandardEventsAndEventSetIds(destination, message.event);
 
   const offlineConversionsPayloads = [];
-  eventToIdsArray.forEach(eventToIds => {
+  eventToIdsArray.forEach((eventToIds) => {
     const { standardEvent, eventSetIds } = eventToIds;
     const obj = {};
     obj.data = getData(data, standardEvent, message, destination);

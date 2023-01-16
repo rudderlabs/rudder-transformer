@@ -10,7 +10,7 @@
         "X-Auth-Token": "fb8c05c9-3a32-409a-9993-3f53d307fe75",
         "Content-Type": "application/json"
       },
-      "params":{},
+      "params": {},
       "body": {
         "JSON": {
           "seedList": [

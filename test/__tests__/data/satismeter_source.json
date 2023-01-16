@@ -1,332 +1,75 @@
 [
-    {
-        "description": " All fields Check with event as completed",
-        "input":{
-            "response": {
-              "id": "63767499ca6fb1b7c988d5bb",
-              "created": "2022-11-17T17:51:21.764Z",
-              "rating": 5,
-              "feedback": "Many things to imporve\n",
-              "dismissed": false,
-              "pending": false,
-              "answers": [
-                {
-                  "label": "How likely are you to recommend us to your friends and colleagues?",
-                  "id": "7ddb22b0-64a8-11ed-a4c7-b3bed73771cd",
-                  "value": 5,
-                  "name": "SM_rating",
-                  "type": "scale",
-                  "metric": "nps"
-                },
-                {
-                  "label": "What could we do to improve?",
-                  "id": "7ddb22b1-64a8-11ed-a4c7-b3bed73771cd",
-                  "value": "Many things to imporve\n",
-                  "name": "SM_comment",
-                  "type": "long-text"
-                },
-                {
-                  "label": "The company made it easy for me to handle my issue.",
-                  "id": "1dc53f60-66a0-11ed-856c-6f39711bf041",
-                  "value": 4,
-                  "name": null,
-                  "type": "scale",
-                  "metric": "ces"
-                },
-                {
-                  "label": "How satisfied were you with the service you received?",
-                  "id": "24c5b290-66a0-11ed-856c-6f39711bf041",
-                  "value": 4,
-                  "name": null,
-                  "type": "smiley",
-                  "metric": "csat"
-                },
-                {
-                  "label": "How you like to rate the surevy?",
-                  "id": "27b3d1d0-66a0-11ed-856c-6f39711bf041",
-                  "value": 4,
-                  "type": "scale"
-                },
-                {
-                  "label": "Your Name (Single Answer)",
-                  "id": "37a8c000-66a0-11ed-856c-6f39711bf041",
-                  "value": "a",
-                  "type": "single-choice"
-                },
-                {
-                  "label": "Your Name (Multiple Answer)",
-                  "id": "4b435da0-66a0-11ed-856c-6f39711bf041",
-                  "value": [
-                    "a1",
-                    "b1"
-                  ],
-                  "type": "multiple-choice"
-                }
-              ],
-              "category": "detractor",
-              "score": -100,
-              "user": {
-                "id": "63766fbb7ac7b72676145338",
-                "name": "Anant Doe",
-                "email": "john@doe.com",
-                "userId": "No response",
-                "deleted": false,
-                "groups": {
-                  "group1": "grooupId"
-                },
-                "traits": {
-                  "createdAt": "2022-10-15T05:41:06.016Z",
-                  "custom": {
-                    "key1": "v1",
-                    "key2": "V2"
-                  },
-                  "email": "john@doe.com",
-                  "name": "Anant Doe"
-                }
-              },
-              "device": {
-                "os": "macOS",
-                "type": "desktop"
-              },
-              "location": {
-                "country": "IN",
-                "countryName": "India",
-                "region": "",
-                "city": "",
-                "short": "India",
-                "long": "India"
-              },
-              "referrer": "http://127.0.0.1:5500/testSm.html",
-              "method": "In-app",
-              "language": "en",
-              "project": "6372247a764986ebee62bf66",
-              "campaign": "6373271b764986ebee62bfca"
-            },
-            "traits": {
-              "createdAt": "2022-10-15T05:41:06.016Z",
-              "custom": {
-                "key1": "v1",
-                "key2": "V2"
-              },
-              "email": "john@doe.com",
-              "name": "Anant Doe"
-            },
-            "campaign": {
-              "id": "6373271b764986ebee62bfca",
-              "name": "NPS Survey"
-            },
-            "event": "completed"
+  {
+    "description": " All fields Check with event as completed",
+    "input": {
+      "response": {
+        "id": "63767499ca6fb1b7c988d5bb",
+        "created": "2022-11-17T17:51:21.764Z",
+        "rating": 5,
+        "feedback": "Many things to imporve\n",
+        "dismissed": false,
+        "pending": false,
+        "answers": [
+          {
+            "label": "How likely are you to recommend us to your friends and colleagues?",
+            "id": "7ddb22b0-64a8-11ed-a4c7-b3bed73771cd",
+            "value": 5,
+            "name": "SM_rating",
+            "type": "scale",
+            "metric": "nps"
           },
-        "output":{
-            "event": "Survey completed",
-            "anonymousId":"63766fbb7ac7b72676145338",
-            "context": {
-              "library": {
-                "name": "unknown",
-                "version": "unknown"
-              },
-              "traits": {
-                "createdAt": "2022-10-15T05:41:06.016Z",
-                "custom": {
-                  "key1": "v1",
-                  "key2": "V2"
-                },
-                "email": "john@doe.com",
-                "name": "Anant Doe",
-                "userDeleted": false
-              },
-              "locale":"en",
-              "campaign": {
-                "id": "6373271b764986ebee62bfca",
-                "name": "NPS Survey"
-              },
-              "integration": {
-                 "name": "SATISMETER"
-                  },
-              "location": {
-                "country": "IN",
-                "countryName": "India",
-                "short": "India",
-                "long": "India"
-              },
-              "device": {
-                "os": "macOS",
-                "type": "desktop"
-              },
-              "page": {
-                "referrer": "http://127.0.0.1:5500/testSm.html"
-              }
-            },
-            "integrations": {
-              "SATISMETER": false
-            },
-            "type": "track",
-            "traits": {
-                "groups": {"group1": "grooupId"}
-            },
-            "userId": "No response",
-            "properties":{
-                "category": "detractor",
-                "answers": [
-                    {
-                      "label": "How likely are you to recommend us to your friends and colleagues?",
-                      "id": "7ddb22b0-64a8-11ed-a4c7-b3bed73771cd",
-                      "value": 5,
-                      "name": "SM_rating",
-                      "type": "scale",
-                      "metric": "nps"
-                    },
-                    {
-                      "label": "What could we do to improve?",
-                      "id": "7ddb22b1-64a8-11ed-a4c7-b3bed73771cd",
-                      "value": "Many things to imporve\n",
-                      "name": "SM_comment",
-                      "type": "long-text"
-                    },
-                    {
-                      "label": "The company made it easy for me to handle my issue.",
-                      "id": "1dc53f60-66a0-11ed-856c-6f39711bf041",
-                      "value": 4,
-                      "name": null,
-                      "type": "scale",
-                      "metric": "ces"
-                    },
-                    {
-                      "label": "How satisfied were you with the service you received?",
-                      "id": "24c5b290-66a0-11ed-856c-6f39711bf041",
-                      "value": 4,
-                      "name": null,
-                      "type": "smiley",
-                      "metric": "csat"
-                    },
-                    {
-                      "label": "How you like to rate the surevy?",
-                      "id": "27b3d1d0-66a0-11ed-856c-6f39711bf041",
-                      "value": 4,
-                      "type": "scale"
-                    },
-                    {
-                      "label": "Your Name (Single Answer)",
-                      "id": "37a8c000-66a0-11ed-856c-6f39711bf041",
-                      "value": "a",
-                      "type": "single-choice"
-                    },
-                    {
-                      "label": "Your Name (Multiple Answer)",
-                      "id": "4b435da0-66a0-11ed-856c-6f39711bf041",
-                      "value": [
-                        "a1",
-                        "b1"
-                      ],
-                      "type": "multiple-choice"
-                    }
-                  ],
-                "surveyDismissed":false,
-                "surveyPending": false,
-                "receivedAt":"2022-11-17T17:51:21.764Z"
-            }
+          {
+            "label": "What could we do to improve?",
+            "id": "7ddb22b1-64a8-11ed-a4c7-b3bed73771cd",
+            "value": "Many things to imporve\n",
+            "name": "SM_comment",
+            "type": "long-text"
+          },
+          {
+            "label": "The company made it easy for me to handle my issue.",
+            "id": "1dc53f60-66a0-11ed-856c-6f39711bf041",
+            "value": 4,
+            "name": null,
+            "type": "scale",
+            "metric": "ces"
+          },
+          {
+            "label": "How satisfied were you with the service you received?",
+            "id": "24c5b290-66a0-11ed-856c-6f39711bf041",
+            "value": 4,
+            "name": null,
+            "type": "smiley",
+            "metric": "csat"
+          },
+          {
+            "label": "How you like to rate the surevy?",
+            "id": "27b3d1d0-66a0-11ed-856c-6f39711bf041",
+            "value": 4,
+            "type": "scale"
+          },
+          {
+            "label": "Your Name (Single Answer)",
+            "id": "37a8c000-66a0-11ed-856c-6f39711bf041",
+            "value": "a",
+            "type": "single-choice"
+          },
+          {
+            "label": "Your Name (Multiple Answer)",
+            "id": "4b435da0-66a0-11ed-856c-6f39711bf041",
+            "value": ["a1", "b1"],
+            "type": "multiple-choice"
           }
-    },
-    {
-      "description": " Neither reponse.user.id or response.user.userId is provided in payload then mapping response.id to anonymousId",
-      "input":{
-          "response": {
-            "id": "63767499ca6fb1b7c988d5bb",
-            "created": "2022-11-17T17:51:21.764Z",
-            "rating": 5,
-            "feedback": "Many things to imporve\n",
-            "dismissed": false,
-            "pending": false,
-            "answers": [
-              {
-                "label": "How likely are you to recommend us to your friends and colleagues?",
-                "id": "7ddb22b0-64a8-11ed-a4c7-b3bed73771cd",
-                "value": 5,
-                "name": "SM_rating",
-                "type": "scale",
-                "metric": "nps"
-              },
-              {
-                "label": "What could we do to improve?",
-                "id": "7ddb22b1-64a8-11ed-a4c7-b3bed73771cd",
-                "value": "Many things to imporve\n",
-                "name": "SM_comment",
-                "type": "long-text"
-              },
-              {
-                "label": "The company made it easy for me to handle my issue.",
-                "id": "1dc53f60-66a0-11ed-856c-6f39711bf041",
-                "value": 4,
-                "name": null,
-                "type": "scale",
-                "metric": "ces"
-              },
-              {
-                "label": "How satisfied were you with the service you received?",
-                "id": "24c5b290-66a0-11ed-856c-6f39711bf041",
-                "value": 4,
-                "name": null,
-                "type": "smiley",
-                "metric": "csat"
-              },
-              {
-                "label": "How you like to rate the surevy?",
-                "id": "27b3d1d0-66a0-11ed-856c-6f39711bf041",
-                "value": 4,
-                "type": "scale"
-              },
-              {
-                "label": "Your Name (Single Answer)",
-                "id": "37a8c000-66a0-11ed-856c-6f39711bf041",
-                "value": "a",
-                "type": "single-choice"
-              },
-              {
-                "label": "Your Name (Multiple Answer)",
-                "id": "4b435da0-66a0-11ed-856c-6f39711bf041",
-                "value": [
-                  "a1",
-                  "b1"
-                ],
-                "type": "multiple-choice"
-              }
-            ],
-            "category": "detractor",
-            "score": -100,
-            "user": {
-              "name": "Anant Doe",
-              "email": "john@doe.com",
-              "deleted": false,
-              "groups": {
-                "group1": "grooupId"
-              },
-              "traits": {
-                "createdAt": "2022-10-15T05:41:06.016Z",
-                "custom": {
-                  "key1": "v1",
-                  "key2": "V2"
-                },
-                "email": "john@doe.com",
-                "name": "Anant Doe"
-              }
-            },
-            "device": {
-              "os": "macOS",
-              "type": "desktop"
-            },
-            "location": {
-              "country": "IN",
-              "countryName": "India",
-              "region": "",
-              "city": "",
-              "short": "India",
-              "long": "India"
-            },
-            "referrer": "http://127.0.0.1:5500/testSm.html",
-            "method": "In-app",
-            "language": "en",
-            "project": "6372247a764986ebee62bf66",
-            "campaign": "6373271b764986ebee62bfca"
+        ],
+        "category": "detractor",
+        "score": -100,
+        "user": {
+          "id": "63766fbb7ac7b72676145338",
+          "name": "Anant Doe",
+          "email": "john@doe.com",
+          "userId": "No response",
+          "deleted": false,
+          "groups": {
+            "group1": "grooupId"
           },
           "traits": {
             "createdAt": "2022-10-15T05:41:06.016Z",
@@ -336,120 +79,365 @@
             },
             "email": "john@doe.com",
             "name": "Anant Doe"
-          },
-          "campaign": {
-            "id": "6373271b764986ebee62bfca",
-            "name": "NPS Survey"
-          },
-          "event": "completed"
-        },
-      "output":{
-          "event": "Survey completed",
-          "anonymousId":"63767499ca6fb1b7c988d5bb",
-          "context": {
-            "library": {
-              "name": "unknown",
-              "version": "unknown"
-            },
-            "traits": {
-              "createdAt": "2022-10-15T05:41:06.016Z",
-              "custom": {
-                "key1": "v1",
-                "key2": "V2"
-              },
-              "email": "john@doe.com",
-              "name": "Anant Doe",
-              "userDeleted": false
-            },
-            "locale":"en",
-            "campaign": {
-              "id": "6373271b764986ebee62bfca",
-              "name": "NPS Survey"
-            },
-            "integration": {
-               "name": "SATISMETER"
-                },
-            "location": {
-              "country": "IN",
-              "countryName": "India",
-              "short": "India",
-              "long": "India"
-            },
-            "device": {
-              "os": "macOS",
-              "type": "desktop"
-            },
-            "page": {
-              "referrer": "http://127.0.0.1:5500/testSm.html"
-            }
-          },
-          "integrations": {
-            "SATISMETER": false
-          },
-          "type": "track",
-          "traits": {
-              "groups": {"group1": "grooupId"}
-          },
-          "properties":{
-              "category": "detractor",
-              "answers": [
-                  {
-                    "label": "How likely are you to recommend us to your friends and colleagues?",
-                    "id": "7ddb22b0-64a8-11ed-a4c7-b3bed73771cd",
-                    "value": 5,
-                    "name": "SM_rating",
-                    "type": "scale",
-                    "metric": "nps"
-                  },
-                  {
-                    "label": "What could we do to improve?",
-                    "id": "7ddb22b1-64a8-11ed-a4c7-b3bed73771cd",
-                    "value": "Many things to imporve\n",
-                    "name": "SM_comment",
-                    "type": "long-text"
-                  },
-                  {
-                    "label": "The company made it easy for me to handle my issue.",
-                    "id": "1dc53f60-66a0-11ed-856c-6f39711bf041",
-                    "value": 4,
-                    "name": null,
-                    "type": "scale",
-                    "metric": "ces"
-                  },
-                  {
-                    "label": "How satisfied were you with the service you received?",
-                    "id": "24c5b290-66a0-11ed-856c-6f39711bf041",
-                    "value": 4,
-                    "name": null,
-                    "type": "smiley",
-                    "metric": "csat"
-                  },
-                  {
-                    "label": "How you like to rate the surevy?",
-                    "id": "27b3d1d0-66a0-11ed-856c-6f39711bf041",
-                    "value": 4,
-                    "type": "scale"
-                  },
-                  {
-                    "label": "Your Name (Single Answer)",
-                    "id": "37a8c000-66a0-11ed-856c-6f39711bf041",
-                    "value": "a",
-                    "type": "single-choice"
-                  },
-                  {
-                    "label": "Your Name (Multiple Answer)",
-                    "id": "4b435da0-66a0-11ed-856c-6f39711bf041",
-                    "value": [
-                      "a1",
-                      "b1"
-                    ],
-                    "type": "multiple-choice"
-                  }
-                ],
-              "surveyDismissed":false,
-              "surveyPending": false,
-              "receivedAt":"2022-11-17T17:51:21.764Z"
           }
+        },
+        "device": {
+          "os": "macOS",
+          "type": "desktop"
+        },
+        "location": {
+          "country": "IN",
+          "countryName": "India",
+          "region": "",
+          "city": "",
+          "short": "India",
+          "long": "India"
+        },
+        "referrer": "http://127.0.0.1:5500/testSm.html",
+        "method": "In-app",
+        "language": "en",
+        "project": "6372247a764986ebee62bf66",
+        "campaign": "6373271b764986ebee62bfca"
+      },
+      "traits": {
+        "createdAt": "2022-10-15T05:41:06.016Z",
+        "custom": {
+          "key1": "v1",
+          "key2": "V2"
+        },
+        "email": "john@doe.com",
+        "name": "Anant Doe"
+      },
+      "campaign": {
+        "id": "6373271b764986ebee62bfca",
+        "name": "NPS Survey"
+      },
+      "event": "completed"
+    },
+    "output": {
+      "event": "Survey completed",
+      "anonymousId": "63766fbb7ac7b72676145338",
+      "context": {
+        "library": {
+          "name": "unknown",
+          "version": "unknown"
+        },
+        "traits": {
+          "createdAt": "2022-10-15T05:41:06.016Z",
+          "custom": {
+            "key1": "v1",
+            "key2": "V2"
+          },
+          "email": "john@doe.com",
+          "name": "Anant Doe",
+          "userDeleted": false
+        },
+        "locale": "en",
+        "campaign": {
+          "id": "6373271b764986ebee62bfca",
+          "name": "NPS Survey"
+        },
+        "integration": {
+          "name": "SATISMETER"
+        },
+        "location": {
+          "country": "IN",
+          "countryName": "India",
+          "short": "India",
+          "long": "India"
+        },
+        "device": {
+          "os": "macOS",
+          "type": "desktop"
+        },
+        "page": {
+          "referrer": "http://127.0.0.1:5500/testSm.html"
         }
+      },
+      "integrations": {
+        "SATISMETER": false
+      },
+      "type": "track",
+      "traits": {
+        "groups": { "group1": "grooupId" }
+      },
+      "userId": "No response",
+      "properties": {
+        "category": "detractor",
+        "answers": [
+          {
+            "label": "How likely are you to recommend us to your friends and colleagues?",
+            "id": "7ddb22b0-64a8-11ed-a4c7-b3bed73771cd",
+            "value": 5,
+            "name": "SM_rating",
+            "type": "scale",
+            "metric": "nps"
+          },
+          {
+            "label": "What could we do to improve?",
+            "id": "7ddb22b1-64a8-11ed-a4c7-b3bed73771cd",
+            "value": "Many things to imporve\n",
+            "name": "SM_comment",
+            "type": "long-text"
+          },
+          {
+            "label": "The company made it easy for me to handle my issue.",
+            "id": "1dc53f60-66a0-11ed-856c-6f39711bf041",
+            "value": 4,
+            "name": null,
+            "type": "scale",
+            "metric": "ces"
+          },
+          {
+            "label": "How satisfied were you with the service you received?",
+            "id": "24c5b290-66a0-11ed-856c-6f39711bf041",
+            "value": 4,
+            "name": null,
+            "type": "smiley",
+            "metric": "csat"
+          },
+          {
+            "label": "How you like to rate the surevy?",
+            "id": "27b3d1d0-66a0-11ed-856c-6f39711bf041",
+            "value": 4,
+            "type": "scale"
+          },
+          {
+            "label": "Your Name (Single Answer)",
+            "id": "37a8c000-66a0-11ed-856c-6f39711bf041",
+            "value": "a",
+            "type": "single-choice"
+          },
+          {
+            "label": "Your Name (Multiple Answer)",
+            "id": "4b435da0-66a0-11ed-856c-6f39711bf041",
+            "value": ["a1", "b1"],
+            "type": "multiple-choice"
+          }
+        ],
+        "surveyDismissed": false,
+        "surveyPending": false,
+        "receivedAt": "2022-11-17T17:51:21.764Z"
+      }
+    }
+  },
+  {
+    "description": " Neither reponse.user.id or response.user.userId is provided in payload then mapping response.id to anonymousId",
+    "input": {
+      "response": {
+        "id": "63767499ca6fb1b7c988d5bb",
+        "created": "2022-11-17T17:51:21.764Z",
+        "rating": 5,
+        "feedback": "Many things to imporve\n",
+        "dismissed": false,
+        "pending": false,
+        "answers": [
+          {
+            "label": "How likely are you to recommend us to your friends and colleagues?",
+            "id": "7ddb22b0-64a8-11ed-a4c7-b3bed73771cd",
+            "value": 5,
+            "name": "SM_rating",
+            "type": "scale",
+            "metric": "nps"
+          },
+          {
+            "label": "What could we do to improve?",
+            "id": "7ddb22b1-64a8-11ed-a4c7-b3bed73771cd",
+            "value": "Many things to imporve\n",
+            "name": "SM_comment",
+            "type": "long-text"
+          },
+          {
+            "label": "The company made it easy for me to handle my issue.",
+            "id": "1dc53f60-66a0-11ed-856c-6f39711bf041",
+            "value": 4,
+            "name": null,
+            "type": "scale",
+            "metric": "ces"
+          },
+          {
+            "label": "How satisfied were you with the service you received?",
+            "id": "24c5b290-66a0-11ed-856c-6f39711bf041",
+            "value": 4,
+            "name": null,
+            "type": "smiley",
+            "metric": "csat"
+          },
+          {
+            "label": "How you like to rate the surevy?",
+            "id": "27b3d1d0-66a0-11ed-856c-6f39711bf041",
+            "value": 4,
+            "type": "scale"
+          },
+          {
+            "label": "Your Name (Single Answer)",
+            "id": "37a8c000-66a0-11ed-856c-6f39711bf041",
+            "value": "a",
+            "type": "single-choice"
+          },
+          {
+            "label": "Your Name (Multiple Answer)",
+            "id": "4b435da0-66a0-11ed-856c-6f39711bf041",
+            "value": ["a1", "b1"],
+            "type": "multiple-choice"
+          }
+        ],
+        "category": "detractor",
+        "score": -100,
+        "user": {
+          "name": "Anant Doe",
+          "email": "john@doe.com",
+          "deleted": false,
+          "groups": {
+            "group1": "grooupId"
+          },
+          "traits": {
+            "createdAt": "2022-10-15T05:41:06.016Z",
+            "custom": {
+              "key1": "v1",
+              "key2": "V2"
+            },
+            "email": "john@doe.com",
+            "name": "Anant Doe"
+          }
+        },
+        "device": {
+          "os": "macOS",
+          "type": "desktop"
+        },
+        "location": {
+          "country": "IN",
+          "countryName": "India",
+          "region": "",
+          "city": "",
+          "short": "India",
+          "long": "India"
+        },
+        "referrer": "http://127.0.0.1:5500/testSm.html",
+        "method": "In-app",
+        "language": "en",
+        "project": "6372247a764986ebee62bf66",
+        "campaign": "6373271b764986ebee62bfca"
+      },
+      "traits": {
+        "createdAt": "2022-10-15T05:41:06.016Z",
+        "custom": {
+          "key1": "v1",
+          "key2": "V2"
+        },
+        "email": "john@doe.com",
+        "name": "Anant Doe"
+      },
+      "campaign": {
+        "id": "6373271b764986ebee62bfca",
+        "name": "NPS Survey"
+      },
+      "event": "completed"
+    },
+    "output": {
+      "event": "Survey completed",
+      "anonymousId": "63767499ca6fb1b7c988d5bb",
+      "context": {
+        "library": {
+          "name": "unknown",
+          "version": "unknown"
+        },
+        "traits": {
+          "createdAt": "2022-10-15T05:41:06.016Z",
+          "custom": {
+            "key1": "v1",
+            "key2": "V2"
+          },
+          "email": "john@doe.com",
+          "name": "Anant Doe",
+          "userDeleted": false
+        },
+        "locale": "en",
+        "campaign": {
+          "id": "6373271b764986ebee62bfca",
+          "name": "NPS Survey"
+        },
+        "integration": {
+          "name": "SATISMETER"
+        },
+        "location": {
+          "country": "IN",
+          "countryName": "India",
+          "short": "India",
+          "long": "India"
+        },
+        "device": {
+          "os": "macOS",
+          "type": "desktop"
+        },
+        "page": {
+          "referrer": "http://127.0.0.1:5500/testSm.html"
+        }
+      },
+      "integrations": {
+        "SATISMETER": false
+      },
+      "type": "track",
+      "traits": {
+        "groups": { "group1": "grooupId" }
+      },
+      "properties": {
+        "category": "detractor",
+        "answers": [
+          {
+            "label": "How likely are you to recommend us to your friends and colleagues?",
+            "id": "7ddb22b0-64a8-11ed-a4c7-b3bed73771cd",
+            "value": 5,
+            "name": "SM_rating",
+            "type": "scale",
+            "metric": "nps"
+          },
+          {
+            "label": "What could we do to improve?",
+            "id": "7ddb22b1-64a8-11ed-a4c7-b3bed73771cd",
+            "value": "Many things to imporve\n",
+            "name": "SM_comment",
+            "type": "long-text"
+          },
+          {
+            "label": "The company made it easy for me to handle my issue.",
+            "id": "1dc53f60-66a0-11ed-856c-6f39711bf041",
+            "value": 4,
+            "name": null,
+            "type": "scale",
+            "metric": "ces"
+          },
+          {
+            "label": "How satisfied were you with the service you received?",
+            "id": "24c5b290-66a0-11ed-856c-6f39711bf041",
+            "value": 4,
+            "name": null,
+            "type": "smiley",
+            "metric": "csat"
+          },
+          {
+            "label": "How you like to rate the surevy?",
+            "id": "27b3d1d0-66a0-11ed-856c-6f39711bf041",
+            "value": 4,
+            "type": "scale"
+          },
+          {
+            "label": "Your Name (Single Answer)",
+            "id": "37a8c000-66a0-11ed-856c-6f39711bf041",
+            "value": "a",
+            "type": "single-choice"
+          },
+          {
+            "label": "Your Name (Multiple Answer)",
+            "id": "4b435da0-66a0-11ed-856c-6f39711bf041",
+            "value": ["a1", "b1"],
+            "type": "multiple-choice"
+          }
+        ],
+        "surveyDismissed": false,
+        "surveyPending": false,
+        "receivedAt": "2022-11-17T17:51:21.764Z"
+      }
+    }
   }
 ]

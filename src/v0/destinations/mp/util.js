@@ -1,5 +1,5 @@
-const set = require("set-value");
-const get = require("get-value");
+const set = require('set-value');
+const get = require('get-value');
 const {
   isDefined,
   constructPayload,
@@ -7,19 +7,18 @@ const {
   extractCustomFields,
   isAppleFamily,
   getBrowserInfo,
-  toUnixTimestamp
-} = require("../../util");
+  toUnixTimestamp,
+} = require('../../util');
 const {
   ConfigCategory,
   MP_IDENTIFY_EXCLUSION_LIST,
   GEO_SOURCE_ALLOWED_VALUES,
-  mappingConfig
-} = require("./config");
-const { InstrumentationError } = require("../../util/errorTypes");
+  mappingConfig,
+} = require('./config');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 const mPIdentifyConfigJson = mappingConfig[ConfigCategory.IDENTIFY.name];
-const mPProfileAndroidConfigJson =
-  mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
+const mPProfileAndroidConfigJson = mappingConfig[ConfigCategory.PROFILE_ANDROID.name];
 const mPProfileIosConfigJson = mappingConfig[ConfigCategory.PROFILE_IOS.name];
 
 /**
@@ -35,20 +34,18 @@ const getTransformedJSON = (message, mappingJson, useNewMapping) => {
     isDefined(rawPayload.$geo_source) &&
     !GEO_SOURCE_ALLOWED_VALUES.includes(rawPayload.$geo_source)
   ) {
-    throw new InstrumentationError(
-      "$geo_source value must be either null or 'reverse_geocoding' "
-    );
+    throw new InstrumentationError("$geo_source value must be either null or 'reverse_geocoding' ");
   }
-  const userName = get(rawPayload, "$name");
+  const userName = get(rawPayload, '$name');
   if (!userName) {
-    set(rawPayload, "$name", getFullName(message));
+    set(rawPayload, '$name', getFullName(message));
   }
 
   rawPayload = extractCustomFields(
     message,
     rawPayload,
-    ["traits", "context.traits"],
-    MP_IDENTIFY_EXCLUSION_LIST
+    ['traits', 'context.traits'],
+    MP_IDENTIFY_EXCLUSION_LIST,
   );
 
   /*
@@ -67,19 +64,19 @@ const getTransformedJSON = (message, mappingJson, useNewMapping) => {
     }
   }
 
-  const device = get(message, "context.device");
+  const device = get(message, 'context.device');
   if (device && device.token) {
     let payload;
     if (isAppleFamily(device.type)) {
       payload = constructPayload(message, mPProfileIosConfigJson);
       rawPayload.$ios_devices = [device.token];
-    } else if (device.type.toLowerCase() === "android") {
+    } else if (device.type.toLowerCase() === 'android') {
       payload = constructPayload(message, mPProfileAndroidConfigJson);
       rawPayload.$android_devices = [device.token];
     }
     rawPayload = { ...rawPayload, ...payload };
   }
-  if (message.channel === "web" && message.context?.userAgent) {
+  if (message.channel === 'web' && message.context?.userAgent) {
     const browser = getBrowserInfo(message.context.userAgent);
     rawPayload.$browser = browser.name;
     rawPayload.$browser_version = browser.version;
@@ -96,27 +93,18 @@ const getTransformedJSON = (message, mappingJson, useNewMapping) => {
  * @param {*} responseBuilderSimple function to generate response
  * @returns
  */
-const createIdentifyResponse = (
-  message,
-  type,
-  destination,
-  responseBuilderSimple
-) => {
+const createIdentifyResponse = (message, type, destination, responseBuilderSimple) => {
   // this variable is used for supporting backward compatibility
-  const { useNewMapping } = destination.Config;
+  const { useNewMapping, token } = destination.Config;
   // user payload created
-  const properties = getTransformedJSON(
-    message,
-    mPIdentifyConfigJson,
-    useNewMapping
-  );
+  const properties = getTransformedJSON(message, mPIdentifyConfigJson, useNewMapping);
 
   const parameters = {
     $set: properties,
-    $token: destination.Config.token,
+    $token: token,
     $distinct_id: message.userId || message.anonymousId,
-    $ip: get(message, "context.ip") || message.request_ip,
-    $time: toUnixTimestamp(message.timestamp)
+    $ip: get(message, 'context.ip') || message.request_ip,
+    $time: toUnixTimestamp(message.timestamp),
   };
   if (message.context?.active === false) {
     parameters.$ignore_time = true;
@@ -131,13 +119,10 @@ const createIdentifyResponse = (
  * @param {*} destination inputs from dashboard
  * @returns
  */
-const isImportAuthCredentialsAvailable = destination => {
-  return (
-    destination.Config.apiSecret ||
-    (destination.Config.serviceAccountSecret &&
-      destination.Config.serviceAccountUserName &&
-      destination.Config.projectId)
-  );
-};
+const isImportAuthCredentialsAvailable = (destination) =>
+  destination.Config.apiSecret ||
+  (destination.Config.serviceAccountSecret &&
+    destination.Config.serviceAccountUserName &&
+    destination.Config.projectId);
 
 module.exports = { createIdentifyResponse, isImportAuthCredentialsAvailable };

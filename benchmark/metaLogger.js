@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 
-const logger = require("../src/logger");
+const logger = require('../src/logger');
 
 logger.setLogLevel(Number.POSITIVE_INFINITY);
 
@@ -32,5 +32,5 @@ module.exports = {
   debug,
   info,
   warn,
-  error
+  error,
 };

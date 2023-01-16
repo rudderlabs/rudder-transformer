@@ -9,10 +9,7 @@
   },
   {
     "sourceKeys": ["os", "platform"],
-    "destKeys": [
-      "context.device.type",
-      "context.os.name"
-    ]
+    "destKeys": ["context.device.type", "context.os.name"]
   },
   { "sourceKeys": "start_time", "destKeys": "originalTimeStamp" },
   { "sourceKeys": "sent_at", "destKeys": "sentAt" },

@@ -7,7 +7,10 @@
     "sourceKeys": ["company.name", "company"],
     "metadata": { "defaultValue": "n/a" }
   },
-  { "destKey": "CompanyDunsNumber", "sourceKeys": ["company.companyDunsNumber", "companyDunsNumber"] },
+  {
+    "destKey": "CompanyDunsNumber",
+    "sourceKeys": ["company.companyDunsNumber", "companyDunsNumber"]
+  },
   { "destKey": "Country", "sourceKeys": ["address.country", "country"] },
   { "destKey": "CountryCode", "sourceKeys": ["address.countryCode", "countryCode"] },
   { "destKey": "CurrencyIsoCode", "sourceKeys": "currencyIsoCode" },
@@ -36,7 +39,7 @@
   { "destKey": "NumberOfEmployees", "sourceKeys": "company.employee_count" },
   { "destKey": "OwnerId", "sourceKeys": "ownerId" },
   { "destKey": "Phone", "sourceKeys": "phone" },
-  { "destKey": "PostalCode","sourceKeys": ["address.postalCode", "postalCode"] },
+  { "destKey": "PostalCode", "sourceKeys": ["address.postalCode", "postalCode"] },
   { "destKey": "Rating", "sourceKeys": "rating" },
   { "destKey": "RecordTypeId", "sourceKeys": "recordTypeId" },
   { "destKey": "Salutation", "sourceKeys": "salutation" },

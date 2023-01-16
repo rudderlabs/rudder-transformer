@@ -27,4 +27,4 @@ phases:
       - docker push rudderlabs/develop-rudder-transformer:$VERSION
 artifacts:
   files:
-    - "**/*"
+    - '**/*'

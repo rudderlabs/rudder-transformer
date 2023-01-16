@@ -1,8 +1,8 @@
-const axios = require("axios");
-const get = require("get-value");
-const md5 = require("md5");
-const { MappedToDestinationKey } = require("../../../constants");
-const logger = require("../../../logger");
+const axios = require('axios');
+const get = require('get-value');
+const md5 = require('md5');
+const { MappedToDestinationKey } = require('../../../constants');
+const logger = require('../../../logger');
 const {
   isDefinedAndNotNull,
   isDefined,
@@ -13,37 +13,32 @@ const {
   getFieldValueFromMessage,
   removeUndefinedAndNullValues,
   defaultBatchRequestConfig,
-  constructPayload
-} = require("../../util");
-const { InstrumentationError, NetworkError } = require("../../util/errorTypes");
-const {
-  MERGE_CONFIG,
-  MERGE_ADDRESS,
-  SUBSCRIPTION_STATUS,
-  VALID_STATUSES
-} = require("./config");
-const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
-const tags = require("../../util/tags");
+  constructPayload,
+} = require('../../util');
+const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const { MERGE_CONFIG, MERGE_ADDRESS, SUBSCRIPTION_STATUS, VALID_STATUSES } = require('./config');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const tags = require('../../util/tags');
 
-const ADDRESS_MANDATORY_FIELDS = ["addr1", "city", "state", "zip"];
+const ADDRESS_MANDATORY_FIELDS = ['addr1', 'city', 'state', 'zip'];
 
 const MAILCHIMP_IDENTIFY_EXCLUSION = [
-  "email",
-  "firstName",
-  "lastName",
-  "FirstName",
-  "LastName",
-  "firstname",
-  "lastname",
-  "addr1",
-  "city",
-  "state",
-  "zip",
-  "phone",
-  "address",
-  "addressLine1",
-  "addressLine2",
-  "birthday"
+  'email',
+  'firstName',
+  'lastName',
+  'FirstName',
+  'LastName',
+  'firstname',
+  'lastname',
+  'addr1',
+  'city',
+  'state',
+  'zip',
+  'phone',
+  'address',
+  'addressLine1',
+  'addressLine2',
+  'birthday',
 ];
 
 /**
@@ -52,9 +47,8 @@ const MAILCHIMP_IDENTIFY_EXCLUSION = [
  * @param {*} audienceId <-- from webapp config
  * @returns
  */
-const getMailChimpBaseEndpoint = (datacenterId, audienceId) => {
-  return `https://${datacenterId}.api.mailchimp.com/3.0/lists/${audienceId}`;
-};
+const getMailChimpBaseEndpoint = (datacenterId, audienceId) =>
+  `https://${datacenterId}.api.mailchimp.com/3.0/lists/${audienceId}`;
 
 /**
  * Returns the endpoint fpr adding or updating users to a list
@@ -64,11 +58,8 @@ const getMailChimpBaseEndpoint = (datacenterId, audienceId) => {
  * @param {*} email
  * @returns
  */
-const mailChimpSubscriptionEndpoint = (datacenterId, audienceId, email) => {
-  return `${getMailChimpBaseEndpoint(datacenterId, audienceId)}/members/${md5(
-    email
-  )}`;
-};
+const mailChimpSubscriptionEndpoint = (datacenterId, audienceId, email) =>
+  `${getMailChimpBaseEndpoint(datacenterId, audienceId)}/members/${md5(email)}`;
 
 /**
  * Returns common endpoint for mailchimp
@@ -100,15 +91,12 @@ const getBatchEndpoint = (destConfig, audienceId) => {
  * @returns
  */
 const getAudienceId = (message, Config) => {
-  const integrationsObj = getIntegrationsObj(message, "mailchimp");
-  if (
-    isDefinedAndNotNull(integrationsObj) &&
-    isDefinedAndNotNull(integrationsObj.listId)
-  ) {
+  const integrationsObj = getIntegrationsObj(message, 'mailchimp');
+  if (isDefinedAndNotNull(integrationsObj) && isDefinedAndNotNull(integrationsObj.listId)) {
     return integrationsObj.listId;
   }
   // Need to depricate this
-  if (get(message, "context.MailChimp.listId")) {
+  if (get(message, 'context.MailChimp.listId')) {
     return message.context.MailChimp.listId;
   }
   return Config.audienceId;
@@ -120,9 +108,9 @@ const getAudienceId = (message, Config) => {
  * @param {*} tag
  * @returns
  */
-const filterTagValue = tag => {
+const filterTagValue = (tag) => {
   const maxLength = 10;
-  let newTag = tag.replace(/[^\w\s]/gi, "");
+  let newTag = tag.replace(/[^\s\w]/gi, '');
   if (newTag.length > maxLength) {
     newTag = newTag.slice(0, 10);
   }
@@ -144,28 +132,22 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
   }
   const userStatus = {
     exists: false,
-    subscriptionStatus: null
+    subscriptionStatus: null,
   };
-  const url = `${mailChimpSubscriptionEndpoint(
-    datacenterId,
-    audienceId,
-    email
-  )}`;
-  const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString("base64");
+  const url = `${mailChimpSubscriptionEndpoint(datacenterId, audienceId, email)}`;
+  const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString('base64');
   try {
-    response = await axios.get(url, {
+    const response = await axios.get(url, {
       headers: {
-        Authorization: `Basic ${basicAuth}`
-      }
+        Authorization: `Basic ${basicAuth}`,
+      },
     });
     if (response?.data?.contact_id) {
       userStatus.exists = true;
       userStatus.subscriptionStatus = response.data.status;
     }
   } catch (error) {
-    logger.info(
-      `[Mailchimp] :: Email does not exists, Error: ${error.message}`
-    );
+    logger.info(`[Mailchimp] :: Email does not exists, Error: ${error.message}`);
   }
   return userStatus;
 };
@@ -180,22 +162,18 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
 const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
   let response;
   const url = `${getMailChimpBaseEndpoint(datacenterId, audienceId)}`;
-  const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString("base64");
+  const basicAuth = Buffer.from(`apiKey:${apiKey}`).toString('base64');
   try {
     response = await axios.get(url, {
       headers: {
-        Authorization: `Basic ${basicAuth}`
-      }
+        Authorization: `Basic ${basicAuth}`,
+      },
     });
   } catch (error) {
     const status = error.status || 400;
-    throw new NetworkError(
-      "User does not have access to the requested operation",
-      status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
-      }
-    );
+    throw new NetworkError('User does not have access to the requested operation', status, {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+    });
   }
   return !!response.data.double_optin;
 };
@@ -208,9 +186,9 @@ const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
  */
 const mergeAdditionalTraitsFields = (traits, mergedFieldPayload) => {
   if (isDefined(traits)) {
-    Object.keys(traits).forEach(traitKey => {
+    Object.keys(traits).forEach((traitKey) => {
       // if any trait field is present, other than the fixed mapping, that is passed as well.
-      if (MAILCHIMP_IDENTIFY_EXCLUSION.indexOf(traitKey) === -1) {
+      if (!MAILCHIMP_IDENTIFY_EXCLUSION.includes(traitKey)) {
         const tag = filterTagValue(traitKey);
         mergedFieldPayload[tag] = traits[traitKey];
       }
@@ -226,27 +204,25 @@ const mergeAdditionalTraitsFields = (traits, mergedFieldPayload) => {
  * @param {*} mergedAddressPayload
  * @returns
  */
-const validateAddressObject = mergedAddressPayload => {
+const validateAddressObject = (mergedAddressPayload) => {
   const providedAddressKeys = Object.keys(mergedAddressPayload);
   if (providedAddressKeys.length > 0) {
     if (checkSubsetOfArray(providedAddressKeys, ADDRESS_MANDATORY_FIELDS)) {
-      ADDRESS_MANDATORY_FIELDS.forEach(addressField => {
+      ADDRESS_MANDATORY_FIELDS.forEach((addressField) => {
         if (
           !isDefinedAndNotNullAndNotEmpty(mergedAddressPayload[addressField]) ||
-          typeof mergedAddressPayload[addressField] !== "string"
+          typeof mergedAddressPayload[addressField] !== 'string'
         ) {
           throw new InstrumentationError(
-            `To send as address information, ${addressField} field should be valid string`
+            `To send as address information, ${addressField} field should be valid string`,
           );
         } else {
-          mergedAddressPayload[
-            addressField
-          ] = `${mergedAddressPayload[addressField]}`;
+          mergedAddressPayload[addressField] = `${mergedAddressPayload[addressField]}`;
         }
       });
     } else {
       throw new InstrumentationError(
-        'For sending address information ["addr1", "city", "state", "zip"] fields are mandatory'
+        'For sending address information ["addr1", "city", "state", "zip"] fields are mandatory',
       );
     }
   }
@@ -270,19 +246,19 @@ const validateAddressObject = mergedAddressPayload => {
  * @returns
  */
 const overrideSubscriptionStatus = (message, primaryPayload, userStatus) => {
-  const integrationsObj = getIntegrationsObj(message, "mailchimp");
+  const integrationsObj = getIntegrationsObj(message, 'mailchimp');
   if (
     !isDefinedAndNotNull(integrationsObj) ||
     !isDefinedAndNotNull(integrationsObj.subscriptionStatus)
   ) {
     return {
       ...primaryPayload,
-      status: userStatus.subscriptionStatus || "subscribed"
+      status: userStatus.subscriptionStatus || 'subscribed',
     };
   }
   if (!VALID_STATUSES.includes(integrationsObj.subscriptionStatus)) {
     throw new InstrumentationError(
-      "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]"
+      'The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]',
     );
   }
 
@@ -306,58 +282,43 @@ const processPayload = async (message, Config, audienceId) => {
     // Passing the traits as it is, for reverseETL sources. For these sources,
     // it is expected to have merge fields in proper format, along with appropriate status.
     addExternalIdToTraits(message);
-    primaryPayload = getFieldValueFromMessage(message, "traits");
-    email = get(primaryPayload, "email_address");
-    const mappedAddress = get(primaryPayload, "merge_fields.ADDRESS");
+    primaryPayload = getFieldValueFromMessage(message, 'traits');
+    email = get(primaryPayload, 'email_address');
+    const mappedAddress = get(primaryPayload, 'merge_fields.ADDRESS');
     if (mappedAddress && Object.keys(mappedAddress).length > 0) {
-      primaryPayload.merge_fields.ADDRESS = validateAddressObject(
-        mergedAddressPayload
-      );
+      primaryPayload.merge_fields.ADDRESS = validateAddressObject(mappedAddress);
     }
   } else {
-    email = getFieldValueFromMessage(message, "email");
-    const traits = getFieldValueFromMessage(message, "traits");
+    email = getFieldValueFromMessage(message, 'email');
+    const traits = getFieldValueFromMessage(message, 'traits');
     const mergedFieldPayload = constructPayload(message, MERGE_CONFIG);
     const mergedAddressPayload = constructPayload(message, MERGE_ADDRESS);
-    // From the behaviour of destination we know that, if address
+    // From the behavior of destination we know that, if address
     // data is to be sent all of ["addr1", "city", "state", "zip"] are mandatory.
     if (Object.keys(mergedAddressPayload).length > 0) {
       const correctAddressPayload = validateAddressObject(mergedAddressPayload);
       mergedFieldPayload.ADDRESS = correctAddressPayload;
     }
     primaryPayload = {
-      email_address: email
+      email_address: email,
     };
     // While enableMergeFields option is enabled additional fields will be sent as merge fields
     // ref: https://mailchimp.com/developer/marketing/docs/merge-fields/#structure
     if (isDefined(enableMergeFields) && enableMergeFields === true) {
       primaryPayload = {
         ...primaryPayload,
-        merge_fields: mergeAdditionalTraitsFields(traits, mergedFieldPayload)
+        merge_fields: mergeAdditionalTraitsFields(traits, mergedFieldPayload),
       };
     }
-    const userStatus = await checkIfMailExists(
-      apiKey,
-      datacenterId,
-      audienceId,
-      email
-    );
+    const userStatus = await checkIfMailExists(apiKey, datacenterId, audienceId, email);
 
     if (!userStatus.exists) {
-      const isDoubleOptin = await checkIfDoubleOptIn(
-        apiKey,
-        datacenterId,
-        audienceId
-      );
+      const isDoubleOptin = await checkIfDoubleOptIn(apiKey, datacenterId, audienceId);
       primaryPayload.status = isDoubleOptin
         ? SUBSCRIPTION_STATUS.pending
         : SUBSCRIPTION_STATUS.subscribed;
     } else {
-      primaryPayload = overrideSubscriptionStatus(
-        message,
-        primaryPayload,
-        userStatus
-      );
+      primaryPayload = overrideSubscriptionStatus(message, primaryPayload, userStatus);
     }
   }
 
@@ -377,7 +338,7 @@ const generateBatchedPaylaodForArray = (audienceId, events) => {
   // extracting destination from the first event in a batch
   const { destination } = events[0];
   // Batch event into dest batch structure
-  events.forEach(ev => {
+  events.forEach((ev) => {
     batchResponseList.push(ev.message.body.JSON);
     metadata.push(ev.metadata);
   });
@@ -385,26 +346,24 @@ const generateBatchedPaylaodForArray = (audienceId, events) => {
   batchEventResponse.batchedRequest.body.JSON = {
     members: batchResponseList,
     // setting this to "true" will update user details, if a user already exists
-    update_existing: true
+    update_existing: true,
   };
 
   const BATCH_ENDPOINT = getBatchEndpoint(destination.Config, audienceId);
 
   batchEventResponse.batchedRequest.endpoint = BATCH_ENDPOINT;
 
-  const basicAuth = Buffer.from(`apiKey:${destination.Config.apiKey}`).toString(
-    "base64"
-  );
+  const basicAuth = Buffer.from(`apiKey:${destination.Config.apiKey}`).toString('base64');
 
   batchEventResponse.batchedRequest.headers = {
-    "Content-Type": "application/json",
-    Authorization: `Basic ${basicAuth}`
+    'Content-Type': 'application/json',
+    Authorization: `Basic ${basicAuth}`,
   };
 
   batchEventResponse = {
     ...batchEventResponse,
     metadata,
-    destination
+    destination,
   };
   return batchEventResponse;
 };
@@ -413,5 +372,5 @@ module.exports = {
   getAudienceId,
   generateBatchedPaylaodForArray,
   mailChimpSubscriptionEndpoint,
-  processPayload
+  processPayload,
 };

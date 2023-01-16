@@ -1,14 +1,14 @@
 /* eslint-disable no-nested-ternary */
-const get = require("get-value");
+const get = require('get-value');
 const {
   getValueFromMessage,
   getSuccessRespEvents,
   handleRtTfSingleEventError,
-  checkInvalidRtTfEvents
-} = require("../../util");
-const { ConfigurationError } = require("../../util/errorTypes");
+  checkInvalidRtTfEvents,
+} = require('../../util');
+const { ConfigurationError } = require('../../util/errorTypes');
 
-const SOURCE_KEYS = ["properties", "traits", "context.traits"];
+const SOURCE_KEYS = ['properties', 'traits', 'context.traits'];
 
 /**
  *
@@ -44,8 +44,8 @@ const getMappingFieldValueFormMessage = (message, sourceKey, mappingKey) => {
  */
 const processWithCustomMapping = (message, attributeKeyMapping) => {
   const responseMessage = {};
-  const fromKey = "from";
-  const toKey = "to";
+  const fromKey = 'from';
+  const toKey = 'to';
   let count = 0;
 
   // Adding messageId in the first column to maintain order when whenver
@@ -54,24 +54,20 @@ const processWithCustomMapping = (message, attributeKeyMapping) => {
   // If messageId not present should add UUID?
 
   responseMessage[count] = {
-    attributeKey: "messageId",
-    attributeValue: message.messageId || ""
+    attributeKey: 'messageId',
+    attributeValue: message.messageId || '',
   };
   count += 1;
 
   if (Array.isArray(attributeKeyMapping)) {
-    attributeKeyMapping.forEach(mapping => {
+    attributeKeyMapping.forEach((mapping) => {
       let value;
       // Check in root-level
       value = getValueFromMessage(message, mapping[fromKey]);
       if (!value) {
         // Check in free-flowing object level
-        SOURCE_KEYS.some(sourceKey => {
-          value = getMappingFieldValueFormMessage(
-            message,
-            sourceKey,
-            mapping[fromKey]
-          );
+        SOURCE_KEYS.some((sourceKey) => {
+          value = getMappingFieldValueFormMessage(message, sourceKey, mapping[fromKey]);
           if (value) {
             return true;
           }
@@ -81,7 +77,7 @@ const processWithCustomMapping = (message, attributeKeyMapping) => {
       // Set the value if present else set an empty string
       responseMessage[count] = {
         attributeKey: mapping[toKey],
-        attributeValue: value || ""
+        attributeValue: value || '',
       };
       count += 1;
     });
@@ -89,26 +85,24 @@ const processWithCustomMapping = (message, attributeKeyMapping) => {
   return responseMessage;
 };
 
-const batch = events => {
-  return { batch: events };
-};
+const batch = (events) => ({ batch: events });
 
 // Function for transforming single payload
-const processSingleMessage = event => {
+const processSingleMessage = (event) => {
   const { message, destination } = event;
   if (destination.Config.sheetName) {
     const payload = {
-      message: processWithCustomMapping(message, destination.Config.eventKeyMap)
+      message: processWithCustomMapping(message, destination.Config.eventKeyMap),
     };
     return payload;
   }
-  throw new ConfigurationError("No Spread Sheet set for this event");
+  throw new ConfigurationError('No Spread Sheet set for this event');
 };
 
 // Main process Function to handle transformation
 // Server expects the message to be wrapped in batch attribute,
 // hence the payload is wrapped and returned using this function
-const process = event => {
+const process = (event) => {
   const payload = processSingleMessage(event);
   const batchedResponse = batch(payload);
   batchedResponse.spreadSheetId = event.destination.Config.sheetId;
@@ -125,7 +119,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     return errorRespEvents;
   }
   await Promise.all(
-    inputs.map(async input => {
+    inputs.map(async (input) => {
       try {
         if (input.message.statusCode) {
           // already transformed event
@@ -134,14 +128,10 @@ const processRouterDest = async (inputs, reqMetadata) => {
         // if not transformed
         successRespList.push(processSingleMessage(input));
       } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(
-          input,
-          error,
-          reqMetadata
-        );
+        const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);
         errorRespList.push(errRespEvent);
       }
-    })
+    }),
   );
   const batchedResponse = batch(successRespList);
   batchedResponse.spreadSheetId = inputs[0].destination.Config.sheetId;
@@ -149,13 +139,11 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return [
     getSuccessRespEvents(
       batchedResponse,
-      inputs.map(input => {
-        return input.metadata;
-      }),
+      inputs.map((input) => input.metadata),
       inputs[0].destination,
-      true
+      true,
     ),
-    ...errorRespList
+    ...errorRespList,
   ];
 };
 

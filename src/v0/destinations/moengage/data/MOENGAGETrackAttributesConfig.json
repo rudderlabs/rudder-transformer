@@ -24,10 +24,7 @@
   },
   {
     "destKey": "current_time",
-    "sourceKeys": [
-      "timestamp",
-      "originalTimestamp"
-    ],
+    "sourceKeys": ["timestamp", "originalTimestamp"],
     "required": false
   },
   {

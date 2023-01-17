@@ -1,14 +1,14 @@
-const Koa = require("koa");
-const bodyParser = require("koa-bodyparser");
-const logger = require("./logger");
-require("dotenv").config();
+import Koa from "koa";
+import bodyParser from "koa-bodyparser";
+import logger from "./logger";
+import dotenv from "dotenv";
+import { router } from "./versionedRouter";
+import { testRouter } from "./testRouter";
+import cluster from "./util/cluster";
+import { addPrometheusMiddleware } from "./middleware";
+import { applicationRoutes } from "./routes";
 
-const { router } = require("./versionedRouter");
-const { testRouter } = require("./testRouter");
-const cluster = require("./util/cluster");
-const { addPrometheusMiddleware } = require("./middleware");
-const { applicationRoutes } = require("./routes");
-
+dotenv.config();
 const clusterEnabled = process.env.CLUSTER_ENABLED !== "false";
 const useUpdatedRoutes = process.env.ENABLE_NEW_ROUTES !== "false";
 const port = parseInt(process.env.PORT || "9090", 10);
@@ -35,3 +35,5 @@ if (clusterEnabled) {
   app.listen(port);
   logger.info(`Listening on port: ${port}`);
 }
+
+export default app;

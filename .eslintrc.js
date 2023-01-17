@@ -5,7 +5,8 @@ module.exports = {
     commonjs: true,
     browser: false,
     es6: true,
-    node: true
+    node: true,
+    jest: true
   },
   globals: {
     Atomics: "readonly",

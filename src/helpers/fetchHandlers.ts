@@ -18,7 +18,7 @@ export default class FetchHandler {
   public static getSourceHandler(source: string, version: string) {
     let sourceHandler: any;
     if (this.sourceHandlerMap.get(source)) {
-      sourceHandler = this.destHandlerMap.get(source);
+      sourceHandler = this.sourceHandlerMap.get(source);
     } else {
       sourceHandler = MiscService.getSourceHandler(source, version);
       this.sourceHandlerMap.set(source, sourceHandler);

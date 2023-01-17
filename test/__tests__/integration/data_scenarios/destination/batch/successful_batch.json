@@ -1,0 +1,1702 @@
+{
+  "input": {
+    "input": [
+      {
+        "message": {
+          "body": {
+            "XML": {},
+            "FORM": {},
+            "JSON": {
+              "events": [
+                {
+                  "ip": "[::1]",
+                  "time": 1671869005652,
+                  "library": "rudderstack",
+                  "user_id": "testUser",
+                  "insert_id": "428f20b3-ef76-4463-8720-366b02102dff",
+                  "event_type": "$identify",
+                  "session_id": -1,
+                  "user_properties": {
+                    "$add": {},
+                    "name": "Alex Mamoa",
+                    "email": "alex_mamoa@example.com",
+                    "$append": {},
+                    "$prepend": {},
+                    "$setOnce": {},
+                    "last_name": "Mamoa",
+                    "first_name": "Alex"
+                  }
+                }
+              ],
+              "api_key": "a99702eb473e89c1352300172c142c77",
+              "options": {
+                "min_id_length": 1
+              }
+            },
+            "JSON_ARRAY": {}
+          },
+          "type": "REST",
+          "files": {},
+          "method": "POST",
+          "params": {},
+          "userId": "",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "version": "1",
+          "endpoint": "https://api2.amplitude.com/2/httpapi"
+        },
+        "metadata": {
+          "userId": "<<>>testUser<<>>testUser",
+          "jobId": 1,
+          "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+          "destinationId": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+          "attemptNum": 0,
+          "receivedAt": "2022-12-24T13:33:23.178+05:30",
+          "createdAt": "2022-12-24T08:03:25.699Z",
+          "firstAttemptedAt": "",
+          "transformAt": "processor",
+          "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+          "secret": null,
+          "jobsT": {
+            "UUID": "627426f8-de29-47bd-963a-40fdb795f863",
+            "JobID": 1,
+            "UserID": "<<>>testUser<<>>testUser",
+            "CreatedAt": "2022-12-24T08:03:25.699375Z",
+            "ExpireAt": "2022-12-24T08:03:25.699375Z",
+            "CustomVal": "AM",
+            "EventCount": 1,
+            "EventPayload": {
+              "body": {
+                "XML": {},
+                "FORM": {},
+                "JSON": {
+                  "events": [
+                    {
+                      "ip": "[::1]",
+                      "time": 1671869005652,
+                      "library": "rudderstack",
+                      "user_id": "testUser",
+                      "insert_id": "428f20b3-ef76-4463-8720-366b02102dff",
+                      "event_type": "$identify",
+                      "session_id": -1,
+                      "user_properties": {
+                        "$add": {},
+                        "name": "Alex Mamoa",
+                        "email": "alex_mamoa@example.com",
+                        "$append": {},
+                        "$prepend": {},
+                        "$setOnce": {},
+                        "last_name": "Mamoa",
+                        "first_name": "Alex"
+                      }
+                    }
+                  ],
+                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "options": {
+                    "min_id_length": 1
+                  }
+                },
+                "JSON_ARRAY": {}
+              },
+              "type": "REST",
+              "files": {},
+              "method": "POST",
+              "params": {},
+              "userId": "",
+              "headers": {
+                "Content-Type": "application/json"
+              },
+              "version": "1",
+              "endpoint": "https://api2.amplitude.com/2/httpapi"
+            },
+            "PayloadSize": 837,
+            "LastJobStatus": {
+              "JobID": 0,
+              "JobState": "",
+              "AttemptNum": 0,
+              "ExecTime": "0001-01-01T00:00:00Z",
+              "RetryTime": "0001-01-01T00:00:00Z",
+              "ErrorCode": "",
+              "ErrorResponse": null,
+              "Parameters": null,
+              "WorkspaceId": ""
+            },
+            "Parameters": {
+              "record_id": null,
+              "source_id": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+              "event_name": "",
+              "event_type": "identify",
+              "message_id": "428f20b3-ef76-4463-8720-366b02102dff",
+              "received_at": "2022-12-24T13:33:23.178+05:30",
+              "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+              "transform_at": "processor",
+              "source_job_id": "",
+              "destination_id": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+              "gateway_job_id": 1,
+              "source_task_id": "",
+              "source_batch_id": "",
+              "source_category": "",
+              "source_job_run_id": "",
+              "source_task_run_id": "",
+              "source_definition_id": "1b6gJdqOPOCadT3cddw8eidV591",
+              "destination_definition_id": ""
+            },
+            "WorkspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
+          },
+          "workerAssignedTime": "2022-12-24T13:33:26.593402+05:30"
+        },
+        "destination": {
+          "ID": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+          "Name": "Amplitude-Dev",
+          "DestinationDefinition": {
+            "ID": "1QGzO4fWSyq3lsyFHf4eQAMDSr9",
+            "Name": "AM",
+            "DisplayName": "Amplitude",
+            "Config": {
+              "destConfig": {
+                "android": [
+                  "eventUploadPeriodMillis",
+                  "eventUploadThreshold",
+                  "useNativeSDK",
+                  "enableLocationListening",
+                  "trackSessionEvents",
+                  "useAdvertisingIdForDeviceId"
+                ],
+                "defaultConfig": [
+                  "apiKey",
+                  "groupTypeTrait",
+                  "groupValueTrait",
+                  "trackAllPages",
+                  "trackCategorizedPages",
+                  "trackNamedPages",
+                  "traitsToIncrement",
+                  "traitsToSetOnce",
+                  "traitsToAppend",
+                  "traitsToPrepend",
+                  "trackProductsOnce",
+                  "trackRevenuePerProduct",
+                  "versionName",
+                  "apiSecret",
+                  "residencyServer",
+                  "blacklistedEvents",
+                  "whitelistedEvents",
+                  "eventFilteringOption",
+                  "mapDeviceBrand"
+                ],
+                "flutter": [
+                  "eventUploadPeriodMillis",
+                  "eventUploadThreshold",
+                  "useNativeSDK",
+                  "enableLocationListening",
+                  "trackSessionEvents",
+                  "useAdvertisingIdForDeviceId",
+                  "useIdfaAsDeviceId"
+                ],
+                "ios": [
+                  "eventUploadPeriodMillis",
+                  "eventUploadThreshold",
+                  "useNativeSDK",
+                  "trackSessionEvents",
+                  "useIdfaAsDeviceId"
+                ],
+                "reactnative": [
+                  "eventUploadPeriodMillis",
+                  "eventUploadThreshold",
+                  "useNativeSDK",
+                  "enableLocationListening",
+                  "trackSessionEvents",
+                  "useAdvertisingIdForDeviceId",
+                  "useIdfaAsDeviceId"
+                ],
+                "web": [
+                  "useNativeSDK",
+                  "preferAnonymousIdForDeviceId",
+                  "deviceIdFromUrlParam",
+                  "forceHttps",
+                  "trackGclid",
+                  "trackReferrer",
+                  "saveParamsReferrerOncePerSession",
+                  "trackUtmProperties",
+                  "unsetParamsReferrerOnNewSession",
+                  "batchEvents",
+                  "eventUploadPeriodMillis",
+                  "eventUploadThreshold",
+                  "oneTrustCookieCategories"
+                ]
+              },
+              "excludeKeys": [],
+              "includeKeys": [
+                "apiKey",
+                "groupTypeTrait",
+                "groupValueTrait",
+                "trackAllPages",
+                "trackCategorizedPages",
+                "trackNamedPages",
+                "traitsToIncrement",
+                "traitsToSetOnce",
+                "traitsToAppend",
+                "traitsToPrepend",
+                "trackProductsOnce",
+                "trackRevenuePerProduct",
+                "preferAnonymousIdForDeviceId",
+                "deviceIdFromUrlParam",
+                "forceHttps",
+                "trackGclid",
+                "trackReferrer",
+                "saveParamsReferrerOncePerSession",
+                "trackUtmProperties",
+                "unsetParamsReferrerOnNewSession",
+                "batchEvents",
+                "eventUploadPeriodMillis",
+                "eventUploadThreshold",
+                "versionName",
+                "enableLocationListening",
+                "useAdvertisingIdForDeviceId",
+                "trackSessionEvents",
+                "useIdfaAsDeviceId",
+                "blacklistedEvents",
+                "whitelistedEvents",
+                "oneTrustCookieCategories",
+                "eventFilteringOption",
+                "mapDeviceBrand"
+              ],
+              "saveDestinationResponse": true,
+              "secretKeys": ["apiKey", "apiSecret"],
+              "supportedMessageTypes": [
+                "alias",
+                "group",
+                "identify",
+                "page",
+                "screen",
+                "track"
+              ],
+              "supportedSourceTypes": [
+                "android",
+                "ios",
+                "web",
+                "unity",
+                "amp",
+                "cloud",
+                "warehouse",
+                "reactnative",
+                "flutter",
+                "cordova"
+              ],
+              "supportsVisualMapper": true,
+              "transformAt": "processor",
+              "transformAtV1": "processor"
+            },
+            "ResponseRules": null
+          },
+          "Config": {
+            "apiKey": "a99702eb473e89c1352300172c142c77",
+            "apiSecret": "",
+            "blacklistedEvents": [
+              {
+                "eventName": ""
+              }
+            ],
+            "eventFilteringOption": "disable",
+            "groupTypeTrait": "",
+            "groupValueTrait": "",
+            "mapDeviceBrand": false,
+            "residencyServer": "standard",
+            "trackAllPages": false,
+            "trackCategorizedPages": true,
+            "trackNamedPages": true,
+            "trackProductsOnce": false,
+            "trackRevenuePerProduct": false,
+            "traitsToAppend": [
+              {
+                "traits": ""
+              }
+            ],
+            "traitsToIncrement": [
+              {
+                "traits": ""
+              }
+            ],
+            "traitsToPrepend": [
+              {
+                "traits": ""
+              }
+            ],
+            "traitsToSetOnce": [
+              {
+                "traits": ""
+              }
+            ],
+            "versionName": "",
+            "whitelistedEvents": [
+              {
+                "eventName": ""
+              }
+            ]
+          },
+          "Enabled": true,
+          "WorkspaceID": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+          "Transformations": [],
+          "IsProcessorEnabled": true,
+          "RevisionID": "2JJoTOhsmYEuVu4FeeJkoaIkNBG"
+        }
+      },
+      {
+        "message": {
+          "body": {
+            "XML": {},
+            "FORM": {},
+            "JSON": {
+              "events": [
+                {
+                  "ip": "[::1]",
+                  "time": 1671869005652,
+                  "library": "rudderstack",
+                  "user_id": "testUser",
+                  "device_id": "anon-id",
+                  "insert_id": "a88cea27-2456-4f86-b5a2-79330150dda8",
+                  "event_type": "Product Added",
+                  "session_id": -1,
+                  "user_properties": {
+                    "email": "utsab.c97@gmail.com",
+                    "phone": "+919830311522",
+                    "gender": "Male",
+                    "lastName": "chowdhury",
+                    "firstName": "utsab"
+                  },
+                  "event_properties": {
+                    "sku": "F15",
+                    "url": "https://www.website.com/product/path",
+                    "name": "Game",
+                    "brand": "Gamepro",
+                    "price": 13.49,
+                    "coupon": "DISC21",
+                    "variant": "111",
+                    "category": "Games",
+                    "position": 1,
+                    "quantity": 11,
+                    "image_url": "https://www.website.com/product/path.png",
+                    "product_id": "123"
+                  }
+                }
+              ],
+              "api_key": "a99702eb473e89c1352300172c142c77",
+              "options": {
+                "min_id_length": 1
+              }
+            },
+            "JSON_ARRAY": {}
+          },
+          "type": "REST",
+          "files": {},
+          "method": "POST",
+          "params": {},
+          "userId": "anon-id",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "version": "1",
+          "endpoint": "https://api2.amplitude.com/2/httpapi"
+        },
+        "metadata": {
+          "userId": "<<>>testUser<<>>testUser",
+          "jobId": 2,
+          "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+          "destinationId": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+          "attemptNum": 0,
+          "receivedAt": "2022-12-24T13:33:23.178+05:30",
+          "createdAt": "2022-12-24T08:03:25.699Z",
+          "firstAttemptedAt": "",
+          "transformAt": "processor",
+          "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+          "secret": null,
+          "jobsT": {
+            "UUID": "2780f771-df21-4e97-8583-3bca7c7a78c9",
+            "JobID": 2,
+            "UserID": "<<>>testUser<<>>testUser",
+            "CreatedAt": "2022-12-24T08:03:25.699375Z",
+            "ExpireAt": "2022-12-24T08:03:25.699375Z",
+            "CustomVal": "AM",
+            "EventCount": 1,
+            "EventPayload": {
+              "body": {
+                "XML": {},
+                "FORM": {},
+                "JSON": {
+                  "events": [
+                    {
+                      "ip": "[::1]",
+                      "time": 1671869005652,
+                      "library": "rudderstack",
+                      "user_id": "testUser",
+                      "device_id": "anon-id",
+                      "insert_id": "a88cea27-2456-4f86-b5a2-79330150dda8",
+                      "event_type": "Product Added",
+                      "session_id": -1,
+                      "user_properties": {
+                        "email": "utsab.c97@gmail.com",
+                        "phone": "+919830311522",
+                        "gender": "Male",
+                        "lastName": "chowdhury",
+                        "firstName": "utsab"
+                      },
+                      "event_properties": {
+                        "sku": "F15",
+                        "url": "https://www.website.com/product/path",
+                        "name": "Game",
+                        "brand": "Gamepro",
+                        "price": 13.49,
+                        "coupon": "DISC21",
+                        "variant": "111",
+                        "category": "Games",
+                        "position": 1,
+                        "quantity": 11,
+                        "image_url": "https://www.website.com/product/path.png",
+                        "product_id": "123"
+                      }
+                    }
+                  ],
+                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "options": {
+                    "min_id_length": 1
+                  }
+                },
+                "JSON_ARRAY": {}
+              },
+              "type": "REST",
+              "files": {},
+              "method": "POST",
+              "params": {},
+              "userId": "anon-id",
+              "headers": {
+                "Content-Type": "application/json"
+              },
+              "version": "1",
+              "endpoint": "https://api2.amplitude.com/2/httpapi"
+            },
+            "PayloadSize": 1153,
+            "LastJobStatus": {
+              "JobID": 0,
+              "JobState": "",
+              "AttemptNum": 0,
+              "ExecTime": "0001-01-01T00:00:00Z",
+              "RetryTime": "0001-01-01T00:00:00Z",
+              "ErrorCode": "",
+              "ErrorResponse": null,
+              "Parameters": null,
+              "WorkspaceId": ""
+            },
+            "Parameters": {
+              "record_id": null,
+              "source_id": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+              "event_name": "Product Added",
+              "event_type": "track",
+              "message_id": "a88cea27-2456-4f86-b5a2-79330150dda8",
+              "received_at": "2022-12-24T13:33:23.178+05:30",
+              "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+              "transform_at": "processor",
+              "source_job_id": "",
+              "destination_id": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+              "gateway_job_id": 1,
+              "source_task_id": "",
+              "source_batch_id": "",
+              "source_category": "",
+              "source_job_run_id": "",
+              "source_task_run_id": "",
+              "source_definition_id": "1b6gJdqOPOCadT3cddw8eidV591",
+              "destination_definition_id": ""
+            },
+            "WorkspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
+          },
+          "workerAssignedTime": "2022-12-24T13:33:26.593402+05:30"
+        },
+        "destination": {
+          "ID": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+          "Name": "Amplitude-Dev",
+          "DestinationDefinition": {
+            "ID": "1QGzO4fWSyq3lsyFHf4eQAMDSr9",
+            "Name": "AM",
+            "DisplayName": "Amplitude",
+            "Config": {
+              "destConfig": {
+                "android": [
+                  "eventUploadPeriodMillis",
+                  "eventUploadThreshold",
+                  "useNativeSDK",
+                  "enableLocationListening",
+                  "trackSessionEvents",
+                  "useAdvertisingIdForDeviceId"
+                ],
+                "defaultConfig": [
+                  "apiKey",
+                  "groupTypeTrait",
+                  "groupValueTrait",
+                  "trackAllPages",
+                  "trackCategorizedPages",
+                  "trackNamedPages",
+                  "traitsToIncrement",
+                  "traitsToSetOnce",
+                  "traitsToAppend",
+                  "traitsToPrepend",
+                  "trackProductsOnce",
+                  "trackRevenuePerProduct",
+                  "versionName",
+                  "apiSecret",
+                  "residencyServer",
+                  "blacklistedEvents",
+                  "whitelistedEvents",
+                  "eventFilteringOption",
+                  "mapDeviceBrand"
+                ],
+                "flutter": [
+                  "eventUploadPeriodMillis",
+                  "eventUploadThreshold",
+                  "useNativeSDK",
+                  "enableLocationListening",
+                  "trackSessionEvents",
+                  "useAdvertisingIdForDeviceId",
+                  "useIdfaAsDeviceId"
+                ],
+                "ios": [
+                  "eventUploadPeriodMillis",
+                  "eventUploadThreshold",
+                  "useNativeSDK",
+                  "trackSessionEvents",
+                  "useIdfaAsDeviceId"
+                ],
+                "reactnative": [
+                  "eventUploadPeriodMillis",
+                  "eventUploadThreshold",
+                  "useNativeSDK",
+                  "enableLocationListening",
+                  "trackSessionEvents",
+                  "useAdvertisingIdForDeviceId",
+                  "useIdfaAsDeviceId"
+                ],
+                "web": [
+                  "useNativeSDK",
+                  "preferAnonymousIdForDeviceId",
+                  "deviceIdFromUrlParam",
+                  "forceHttps",
+                  "trackGclid",
+                  "trackReferrer",
+                  "saveParamsReferrerOncePerSession",
+                  "trackUtmProperties",
+                  "unsetParamsReferrerOnNewSession",
+                  "batchEvents",
+                  "eventUploadPeriodMillis",
+                  "eventUploadThreshold",
+                  "oneTrustCookieCategories"
+                ]
+              },
+              "excludeKeys": [],
+              "includeKeys": [
+                "apiKey",
+                "groupTypeTrait",
+                "groupValueTrait",
+                "trackAllPages",
+                "trackCategorizedPages",
+                "trackNamedPages",
+                "traitsToIncrement",
+                "traitsToSetOnce",
+                "traitsToAppend",
+                "traitsToPrepend",
+                "trackProductsOnce",
+                "trackRevenuePerProduct",
+                "preferAnonymousIdForDeviceId",
+                "deviceIdFromUrlParam",
+                "forceHttps",
+                "trackGclid",
+                "trackReferrer",
+                "saveParamsReferrerOncePerSession",
+                "trackUtmProperties",
+                "unsetParamsReferrerOnNewSession",
+                "batchEvents",
+                "eventUploadPeriodMillis",
+                "eventUploadThreshold",
+                "versionName",
+                "enableLocationListening",
+                "useAdvertisingIdForDeviceId",
+                "trackSessionEvents",
+                "useIdfaAsDeviceId",
+                "blacklistedEvents",
+                "whitelistedEvents",
+                "oneTrustCookieCategories",
+                "eventFilteringOption",
+                "mapDeviceBrand"
+              ],
+              "saveDestinationResponse": true,
+              "secretKeys": ["apiKey", "apiSecret"],
+              "supportedMessageTypes": [
+                "alias",
+                "group",
+                "identify",
+                "page",
+                "screen",
+                "track"
+              ],
+              "supportedSourceTypes": [
+                "android",
+                "ios",
+                "web",
+                "unity",
+                "amp",
+                "cloud",
+                "warehouse",
+                "reactnative",
+                "flutter",
+                "cordova"
+              ],
+              "supportsVisualMapper": true,
+              "transformAt": "processor",
+              "transformAtV1": "processor"
+            },
+            "ResponseRules": null
+          },
+          "Config": {
+            "apiKey": "a99702eb473e89c1352300172c142c77",
+            "apiSecret": "",
+            "blacklistedEvents": [
+              {
+                "eventName": ""
+              }
+            ],
+            "eventFilteringOption": "disable",
+            "groupTypeTrait": "",
+            "groupValueTrait": "",
+            "mapDeviceBrand": false,
+            "residencyServer": "standard",
+            "trackAllPages": false,
+            "trackCategorizedPages": true,
+            "trackNamedPages": true,
+            "trackProductsOnce": false,
+            "trackRevenuePerProduct": false,
+            "traitsToAppend": [
+              {
+                "traits": ""
+              }
+            ],
+            "traitsToIncrement": [
+              {
+                "traits": ""
+              }
+            ],
+            "traitsToPrepend": [
+              {
+                "traits": ""
+              }
+            ],
+            "traitsToSetOnce": [
+              {
+                "traits": ""
+              }
+            ],
+            "versionName": "",
+            "whitelistedEvents": [
+              {
+                "eventName": ""
+              }
+            ]
+          },
+          "Enabled": true,
+          "WorkspaceID": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+          "Transformations": [],
+          "IsProcessorEnabled": true,
+          "RevisionID": "2JJoTOhsmYEuVu4FeeJkoaIkNBG"
+        }
+      },
+      {
+        "message": {
+          "body": {
+            "XML": {},
+            "FORM": {},
+            "JSON": {
+              "events": [
+                {
+                  "ip": "[::1]",
+                  "time": 1671869005652,
+                  "library": "rudderstack",
+                  "user_id": "testUser",
+                  "device_id": "anon-id",
+                  "insert_id": "3ab0052c-9ed0-4422-b8d5-8fbc743b2aa2",
+                  "event_type": "Product Viewed",
+                  "session_id": -1,
+                  "user_properties": {
+                    "email": "utsab.c97@gmail.com",
+                    "phone": "+919830311522",
+                    "gender": "Male",
+                    "lastName": "chowdhury",
+                    "firstName": "utsab"
+                  },
+                  "event_properties": {
+                    "sku": "F15",
+                    "url": "https://www.website.com/product/path",
+                    "name": "Game",
+                    "brand": "Gamepro",
+                    "price": 13.49,
+                    "coupon": "DISC21",
+                    "variant": "111",
+                    "category": "Games",
+                    "position": 1,
+                    "quantity": 11,
+                    "image_url": "https://www.website.com/product/path.png",
+                    "product_id": "123"
+                  }
+                }
+              ],
+              "api_key": "a99702eb473e89c1352300172c142c77",
+              "options": {
+                "min_id_length": 1
+              }
+            },
+            "JSON_ARRAY": {}
+          },
+          "type": "REST",
+          "files": {},
+          "method": "POST",
+          "params": {},
+          "userId": "anon-id",
+          "headers": {
+            "Content-Type": "application/json"
+          },
+          "version": "1",
+          "endpoint": "https://api2.amplitude.com/2/httpapi"
+        },
+        "metadata": {
+          "userId": "<<>>testUser<<>>testUser",
+          "jobId": 3,
+          "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+          "destinationId": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+          "attemptNum": 0,
+          "receivedAt": "2022-12-24T13:33:23.178+05:30",
+          "createdAt": "2022-12-24T08:03:25.699Z",
+          "firstAttemptedAt": "",
+          "transformAt": "processor",
+          "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+          "secret": null,
+          "jobsT": {
+            "UUID": "358dcf01-aa84-4f7a-bf3f-6f6dd3a2d6fa",
+            "JobID": 3,
+            "UserID": "<<>>testUser<<>>testUser",
+            "CreatedAt": "2022-12-24T08:03:25.699375Z",
+            "ExpireAt": "2022-12-24T08:03:25.699375Z",
+            "CustomVal": "AM",
+            "EventCount": 1,
+            "EventPayload": {
+              "body": {
+                "XML": {},
+                "FORM": {},
+                "JSON": {
+                  "events": [
+                    {
+                      "ip": "[::1]",
+                      "time": 1671869005652,
+                      "library": "rudderstack",
+                      "user_id": "testUser",
+                      "device_id": "anon-id",
+                      "insert_id": "3ab0052c-9ed0-4422-b8d5-8fbc743b2aa2",
+                      "event_type": "Product Viewed",
+                      "session_id": -1,
+                      "user_properties": {
+                        "email": "utsab.c97@gmail.com",
+                        "phone": "+919830311522",
+                        "gender": "Male",
+                        "lastName": "chowdhury",
+                        "firstName": "utsab"
+                      },
+                      "event_properties": {
+                        "sku": "F15",
+                        "url": "https://www.website.com/product/path",
+                        "name": "Game",
+                        "brand": "Gamepro",
+                        "price": 13.49,
+                        "coupon": "DISC21",
+                        "variant": "111",
+                        "category": "Games",
+                        "position": 1,
+                        "quantity": 11,
+                        "image_url": "https://www.website.com/product/path.png",
+                        "product_id": "123"
+                      }
+                    }
+                  ],
+                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "options": {
+                    "min_id_length": 1
+                  }
+                },
+                "JSON_ARRAY": {}
+              },
+              "type": "REST",
+              "files": {},
+              "method": "POST",
+              "params": {},
+              "userId": "anon-id",
+              "headers": {
+                "Content-Type": "application/json"
+              },
+              "version": "1",
+              "endpoint": "https://api2.amplitude.com/2/httpapi"
+            },
+            "PayloadSize": 1153,
+            "LastJobStatus": {
+              "JobID": 0,
+              "JobState": "",
+              "AttemptNum": 0,
+              "ExecTime": "0001-01-01T00:00:00Z",
+              "RetryTime": "0001-01-01T00:00:00Z",
+              "ErrorCode": "",
+              "ErrorResponse": null,
+              "Parameters": null,
+              "WorkspaceId": ""
+            },
+            "Parameters": {
+              "record_id": null,
+              "source_id": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+              "event_name": "Product Viewed",
+              "event_type": "track",
+              "message_id": "3ab0052c-9ed0-4422-b8d5-8fbc743b2aa2",
+              "received_at": "2022-12-24T13:33:23.178+05:30",
+              "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+              "transform_at": "processor",
+              "source_job_id": "",
+              "destination_id": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+              "gateway_job_id": 1,
+              "source_task_id": "",
+              "source_batch_id": "",
+              "source_category": "",
+              "source_job_run_id": "",
+              "source_task_run_id": "",
+              "source_definition_id": "1b6gJdqOPOCadT3cddw8eidV591",
+              "destination_definition_id": ""
+            },
+            "WorkspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
+          },
+          "workerAssignedTime": "2022-12-24T13:33:26.593402+05:30"
+        },
+        "destination": {
+          "ID": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+          "Name": "Amplitude-Dev",
+          "DestinationDefinition": {
+            "ID": "1QGzO4fWSyq3lsyFHf4eQAMDSr9",
+            "Name": "AM",
+            "DisplayName": "Amplitude",
+            "Config": {
+              "destConfig": {
+                "android": [
+                  "eventUploadPeriodMillis",
+                  "eventUploadThreshold",
+                  "useNativeSDK",
+                  "enableLocationListening",
+                  "trackSessionEvents",
+                  "useAdvertisingIdForDeviceId"
+                ],
+                "defaultConfig": [
+                  "apiKey",
+                  "groupTypeTrait",
+                  "groupValueTrait",
+                  "trackAllPages",
+                  "trackCategorizedPages",
+                  "trackNamedPages",
+                  "traitsToIncrement",
+                  "traitsToSetOnce",
+                  "traitsToAppend",
+                  "traitsToPrepend",
+                  "trackProductsOnce",
+                  "trackRevenuePerProduct",
+                  "versionName",
+                  "apiSecret",
+                  "residencyServer",
+                  "blacklistedEvents",
+                  "whitelistedEvents",
+                  "eventFilteringOption",
+                  "mapDeviceBrand"
+                ],
+                "flutter": [
+                  "eventUploadPeriodMillis",
+                  "eventUploadThreshold",
+                  "useNativeSDK",
+                  "enableLocationListening",
+                  "trackSessionEvents",
+                  "useAdvertisingIdForDeviceId",
+                  "useIdfaAsDeviceId"
+                ],
+                "ios": [
+                  "eventUploadPeriodMillis",
+                  "eventUploadThreshold",
+                  "useNativeSDK",
+                  "trackSessionEvents",
+                  "useIdfaAsDeviceId"
+                ],
+                "reactnative": [
+                  "eventUploadPeriodMillis",
+                  "eventUploadThreshold",
+                  "useNativeSDK",
+                  "enableLocationListening",
+                  "trackSessionEvents",
+                  "useAdvertisingIdForDeviceId",
+                  "useIdfaAsDeviceId"
+                ],
+                "web": [
+                  "useNativeSDK",
+                  "preferAnonymousIdForDeviceId",
+                  "deviceIdFromUrlParam",
+                  "forceHttps",
+                  "trackGclid",
+                  "trackReferrer",
+                  "saveParamsReferrerOncePerSession",
+                  "trackUtmProperties",
+                  "unsetParamsReferrerOnNewSession",
+                  "batchEvents",
+                  "eventUploadPeriodMillis",
+                  "eventUploadThreshold",
+                  "oneTrustCookieCategories"
+                ]
+              },
+              "excludeKeys": [],
+              "includeKeys": [
+                "apiKey",
+                "groupTypeTrait",
+                "groupValueTrait",
+                "trackAllPages",
+                "trackCategorizedPages",
+                "trackNamedPages",
+                "traitsToIncrement",
+                "traitsToSetOnce",
+                "traitsToAppend",
+                "traitsToPrepend",
+                "trackProductsOnce",
+                "trackRevenuePerProduct",
+                "preferAnonymousIdForDeviceId",
+                "deviceIdFromUrlParam",
+                "forceHttps",
+                "trackGclid",
+                "trackReferrer",
+                "saveParamsReferrerOncePerSession",
+                "trackUtmProperties",
+                "unsetParamsReferrerOnNewSession",
+                "batchEvents",
+                "eventUploadPeriodMillis",
+                "eventUploadThreshold",
+                "versionName",
+                "enableLocationListening",
+                "useAdvertisingIdForDeviceId",
+                "trackSessionEvents",
+                "useIdfaAsDeviceId",
+                "blacklistedEvents",
+                "whitelistedEvents",
+                "oneTrustCookieCategories",
+                "eventFilteringOption",
+                "mapDeviceBrand"
+              ],
+              "saveDestinationResponse": true,
+              "secretKeys": ["apiKey", "apiSecret"],
+              "supportedMessageTypes": [
+                "alias",
+                "group",
+                "identify",
+                "page",
+                "screen",
+                "track"
+              ],
+              "supportedSourceTypes": [
+                "android",
+                "ios",
+                "web",
+                "unity",
+                "amp",
+                "cloud",
+                "warehouse",
+                "reactnative",
+                "flutter",
+                "cordova"
+              ],
+              "supportsVisualMapper": true,
+              "transformAt": "processor",
+              "transformAtV1": "processor"
+            },
+            "ResponseRules": null
+          },
+          "Config": {
+            "apiKey": "a99702eb473e89c1352300172c142c77",
+            "apiSecret": "",
+            "blacklistedEvents": [
+              {
+                "eventName": ""
+              }
+            ],
+            "eventFilteringOption": "disable",
+            "groupTypeTrait": "",
+            "groupValueTrait": "",
+            "mapDeviceBrand": false,
+            "residencyServer": "standard",
+            "trackAllPages": false,
+            "trackCategorizedPages": true,
+            "trackNamedPages": true,
+            "trackProductsOnce": false,
+            "trackRevenuePerProduct": false,
+            "traitsToAppend": [
+              {
+                "traits": ""
+              }
+            ],
+            "traitsToIncrement": [
+              {
+                "traits": ""
+              }
+            ],
+            "traitsToPrepend": [
+              {
+                "traits": ""
+              }
+            ],
+            "traitsToSetOnce": [
+              {
+                "traits": ""
+              }
+            ],
+            "versionName": "",
+            "whitelistedEvents": [
+              {
+                "eventName": ""
+              }
+            ]
+          },
+          "Enabled": true,
+          "WorkspaceID": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+          "Transformations": [],
+          "IsProcessorEnabled": true,
+          "RevisionID": "2JJoTOhsmYEuVu4FeeJkoaIkNBG"
+        }
+      }
+    ],
+    "destType": "am"
+  },
+  "output": [
+    {
+      "batchedRequest": {
+        "body": {
+          "XML": {},
+          "FORM": {},
+          "JSON": {
+            "events": [
+              {
+                "ip": "[::1]",
+                "time": 1671869005652,
+                "library": "rudderstack",
+                "user_id": "testUser",
+                "insert_id": "428f20b3-ef76-4463-8720-366b02102dff",
+                "event_type": "$identify",
+                "session_id": -1,
+                "user_properties": {
+                  "$add": {},
+                  "name": "Alex Mamoa",
+                  "email": "alex_mamoa@example.com",
+                  "$append": {},
+                  "$prepend": {},
+                  "$setOnce": {},
+                  "last_name": "Mamoa",
+                  "first_name": "Alex"
+                }
+              },
+              {
+                "ip": "[::1]",
+                "time": 1671869005652,
+                "library": "rudderstack",
+                "user_id": "testUser",
+                "device_id": "anon-id",
+                "insert_id": "a88cea27-2456-4f86-b5a2-79330150dda8",
+                "event_type": "Product Added",
+                "session_id": -1,
+                "user_properties": {
+                  "email": "utsab.c97@gmail.com",
+                  "phone": "+919830311522",
+                  "gender": "Male",
+                  "lastName": "chowdhury",
+                  "firstName": "utsab"
+                },
+                "event_properties": {
+                  "sku": "F15",
+                  "url": "https://www.website.com/product/path",
+                  "name": "Game",
+                  "brand": "Gamepro",
+                  "price": 13.49,
+                  "coupon": "DISC21",
+                  "variant": "111",
+                  "category": "Games",
+                  "position": 1,
+                  "quantity": 11,
+                  "image_url": "https://www.website.com/product/path.png",
+                  "product_id": "123"
+                }
+              },
+              {
+                "ip": "[::1]",
+                "time": 1671869005652,
+                "library": "rudderstack",
+                "user_id": "testUser",
+                "device_id": "anon-id",
+                "insert_id": "3ab0052c-9ed0-4422-b8d5-8fbc743b2aa2",
+                "event_type": "Product Viewed",
+                "session_id": -1,
+                "user_properties": {
+                  "email": "utsab.c97@gmail.com",
+                  "phone": "+919830311522",
+                  "gender": "Male",
+                  "lastName": "chowdhury",
+                  "firstName": "utsab"
+                },
+                "event_properties": {
+                  "sku": "F15",
+                  "url": "https://www.website.com/product/path",
+                  "name": "Game",
+                  "brand": "Gamepro",
+                  "price": 13.49,
+                  "coupon": "DISC21",
+                  "variant": "111",
+                  "category": "Games",
+                  "position": 1,
+                  "quantity": 11,
+                  "image_url": "https://www.website.com/product/path.png",
+                  "product_id": "123"
+                }
+              }
+            ],
+            "api_key": "a99702eb473e89c1352300172c142c77"
+          },
+          "JSON_ARRAY": {}
+        },
+        "type": "REST",
+        "files": {},
+        "method": "POST",
+        "params": {},
+        "userId": "",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "version": "1",
+        "endpoint": "https://api2.amplitude.com/batch"
+      },
+      "metadata": [
+        {
+          "userId": "<<>>testUser<<>>testUser",
+          "jobId": 1,
+          "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+          "destinationId": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+          "attemptNum": 0,
+          "receivedAt": "2022-12-24T13:33:23.178+05:30",
+          "createdAt": "2022-12-24T08:03:25.699Z",
+          "firstAttemptedAt": "",
+          "transformAt": "processor",
+          "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+          "secret": null,
+          "jobsT": {
+            "UUID": "627426f8-de29-47bd-963a-40fdb795f863",
+            "JobID": 1,
+            "UserID": "<<>>testUser<<>>testUser",
+            "CreatedAt": "2022-12-24T08:03:25.699375Z",
+            "ExpireAt": "2022-12-24T08:03:25.699375Z",
+            "CustomVal": "AM",
+            "EventCount": 1,
+            "EventPayload": {
+              "body": {
+                "XML": {},
+                "FORM": {},
+                "JSON": {
+                  "events": [
+                    {
+                      "ip": "[::1]",
+                      "time": 1671869005652,
+                      "library": "rudderstack",
+                      "user_id": "testUser",
+                      "insert_id": "428f20b3-ef76-4463-8720-366b02102dff",
+                      "event_type": "$identify",
+                      "session_id": -1,
+                      "user_properties": {
+                        "$add": {},
+                        "name": "Alex Mamoa",
+                        "email": "alex_mamoa@example.com",
+                        "$append": {},
+                        "$prepend": {},
+                        "$setOnce": {},
+                        "last_name": "Mamoa",
+                        "first_name": "Alex"
+                      }
+                    }
+                  ],
+                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "options": {
+                    "min_id_length": 1
+                  }
+                },
+                "JSON_ARRAY": {}
+              },
+              "type": "REST",
+              "files": {},
+              "method": "POST",
+              "params": {},
+              "userId": "",
+              "headers": {
+                "Content-Type": "application/json"
+              },
+              "version": "1",
+              "endpoint": "https://api2.amplitude.com/2/httpapi"
+            },
+            "PayloadSize": 837,
+            "LastJobStatus": {
+              "JobID": 0,
+              "JobState": "",
+              "AttemptNum": 0,
+              "ExecTime": "0001-01-01T00:00:00Z",
+              "RetryTime": "0001-01-01T00:00:00Z",
+              "ErrorCode": "",
+              "ErrorResponse": null,
+              "Parameters": null,
+              "WorkspaceId": ""
+            },
+            "Parameters": {
+              "record_id": null,
+              "source_id": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+              "event_name": "",
+              "event_type": "identify",
+              "message_id": "428f20b3-ef76-4463-8720-366b02102dff",
+              "received_at": "2022-12-24T13:33:23.178+05:30",
+              "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+              "transform_at": "processor",
+              "source_job_id": "",
+              "destination_id": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+              "gateway_job_id": 1,
+              "source_task_id": "",
+              "source_batch_id": "",
+              "source_category": "",
+              "source_job_run_id": "",
+              "source_task_run_id": "",
+              "source_definition_id": "1b6gJdqOPOCadT3cddw8eidV591",
+              "destination_definition_id": ""
+            },
+            "WorkspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
+          },
+          "workerAssignedTime": "2022-12-24T13:33:26.593402+05:30"
+        },
+        {
+          "userId": "<<>>testUser<<>>testUser",
+          "jobId": 2,
+          "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+          "destinationId": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+          "attemptNum": 0,
+          "receivedAt": "2022-12-24T13:33:23.178+05:30",
+          "createdAt": "2022-12-24T08:03:25.699Z",
+          "firstAttemptedAt": "",
+          "transformAt": "processor",
+          "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+          "secret": null,
+          "jobsT": {
+            "UUID": "2780f771-df21-4e97-8583-3bca7c7a78c9",
+            "JobID": 2,
+            "UserID": "<<>>testUser<<>>testUser",
+            "CreatedAt": "2022-12-24T08:03:25.699375Z",
+            "ExpireAt": "2022-12-24T08:03:25.699375Z",
+            "CustomVal": "AM",
+            "EventCount": 1,
+            "EventPayload": {
+              "body": {
+                "XML": {},
+                "FORM": {},
+                "JSON": {
+                  "events": [
+                    {
+                      "ip": "[::1]",
+                      "time": 1671869005652,
+                      "library": "rudderstack",
+                      "user_id": "testUser",
+                      "device_id": "anon-id",
+                      "insert_id": "a88cea27-2456-4f86-b5a2-79330150dda8",
+                      "event_type": "Product Added",
+                      "session_id": -1,
+                      "user_properties": {
+                        "email": "utsab.c97@gmail.com",
+                        "phone": "+919830311522",
+                        "gender": "Male",
+                        "lastName": "chowdhury",
+                        "firstName": "utsab"
+                      },
+                      "event_properties": {
+                        "sku": "F15",
+                        "url": "https://www.website.com/product/path",
+                        "name": "Game",
+                        "brand": "Gamepro",
+                        "price": 13.49,
+                        "coupon": "DISC21",
+                        "variant": "111",
+                        "category": "Games",
+                        "position": 1,
+                        "quantity": 11,
+                        "image_url": "https://www.website.com/product/path.png",
+                        "product_id": "123"
+                      }
+                    }
+                  ],
+                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "options": {
+                    "min_id_length": 1
+                  }
+                },
+                "JSON_ARRAY": {}
+              },
+              "type": "REST",
+              "files": {},
+              "method": "POST",
+              "params": {},
+              "userId": "anon-id",
+              "headers": {
+                "Content-Type": "application/json"
+              },
+              "version": "1",
+              "endpoint": "https://api2.amplitude.com/2/httpapi"
+            },
+            "PayloadSize": 1153,
+            "LastJobStatus": {
+              "JobID": 0,
+              "JobState": "",
+              "AttemptNum": 0,
+              "ExecTime": "0001-01-01T00:00:00Z",
+              "RetryTime": "0001-01-01T00:00:00Z",
+              "ErrorCode": "",
+              "ErrorResponse": null,
+              "Parameters": null,
+              "WorkspaceId": ""
+            },
+            "Parameters": {
+              "record_id": null,
+              "source_id": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+              "event_name": "Product Added",
+              "event_type": "track",
+              "message_id": "a88cea27-2456-4f86-b5a2-79330150dda8",
+              "received_at": "2022-12-24T13:33:23.178+05:30",
+              "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+              "transform_at": "processor",
+              "source_job_id": "",
+              "destination_id": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+              "gateway_job_id": 1,
+              "source_task_id": "",
+              "source_batch_id": "",
+              "source_category": "",
+              "source_job_run_id": "",
+              "source_task_run_id": "",
+              "source_definition_id": "1b6gJdqOPOCadT3cddw8eidV591",
+              "destination_definition_id": ""
+            },
+            "WorkspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
+          },
+          "workerAssignedTime": "2022-12-24T13:33:26.593402+05:30"
+        },
+        {
+          "userId": "<<>>testUser<<>>testUser",
+          "jobId": 3,
+          "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+          "destinationId": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+          "attemptNum": 0,
+          "receivedAt": "2022-12-24T13:33:23.178+05:30",
+          "createdAt": "2022-12-24T08:03:25.699Z",
+          "firstAttemptedAt": "",
+          "transformAt": "processor",
+          "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+          "secret": null,
+          "jobsT": {
+            "UUID": "358dcf01-aa84-4f7a-bf3f-6f6dd3a2d6fa",
+            "JobID": 3,
+            "UserID": "<<>>testUser<<>>testUser",
+            "CreatedAt": "2022-12-24T08:03:25.699375Z",
+            "ExpireAt": "2022-12-24T08:03:25.699375Z",
+            "CustomVal": "AM",
+            "EventCount": 1,
+            "EventPayload": {
+              "body": {
+                "XML": {},
+                "FORM": {},
+                "JSON": {
+                  "events": [
+                    {
+                      "ip": "[::1]",
+                      "time": 1671869005652,
+                      "library": "rudderstack",
+                      "user_id": "testUser",
+                      "device_id": "anon-id",
+                      "insert_id": "3ab0052c-9ed0-4422-b8d5-8fbc743b2aa2",
+                      "event_type": "Product Viewed",
+                      "session_id": -1,
+                      "user_properties": {
+                        "email": "utsab.c97@gmail.com",
+                        "phone": "+919830311522",
+                        "gender": "Male",
+                        "lastName": "chowdhury",
+                        "firstName": "utsab"
+                      },
+                      "event_properties": {
+                        "sku": "F15",
+                        "url": "https://www.website.com/product/path",
+                        "name": "Game",
+                        "brand": "Gamepro",
+                        "price": 13.49,
+                        "coupon": "DISC21",
+                        "variant": "111",
+                        "category": "Games",
+                        "position": 1,
+                        "quantity": 11,
+                        "image_url": "https://www.website.com/product/path.png",
+                        "product_id": "123"
+                      }
+                    }
+                  ],
+                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "options": {
+                    "min_id_length": 1
+                  }
+                },
+                "JSON_ARRAY": {}
+              },
+              "type": "REST",
+              "files": {},
+              "method": "POST",
+              "params": {},
+              "userId": "anon-id",
+              "headers": {
+                "Content-Type": "application/json"
+              },
+              "version": "1",
+              "endpoint": "https://api2.amplitude.com/2/httpapi"
+            },
+            "PayloadSize": 1153,
+            "LastJobStatus": {
+              "JobID": 0,
+              "JobState": "",
+              "AttemptNum": 0,
+              "ExecTime": "0001-01-01T00:00:00Z",
+              "RetryTime": "0001-01-01T00:00:00Z",
+              "ErrorCode": "",
+              "ErrorResponse": null,
+              "Parameters": null,
+              "WorkspaceId": ""
+            },
+            "Parameters": {
+              "record_id": null,
+              "source_id": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+              "event_name": "Product Viewed",
+              "event_type": "track",
+              "message_id": "3ab0052c-9ed0-4422-b8d5-8fbc743b2aa2",
+              "received_at": "2022-12-24T13:33:23.178+05:30",
+              "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+              "transform_at": "processor",
+              "source_job_id": "",
+              "destination_id": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+              "gateway_job_id": 1,
+              "source_task_id": "",
+              "source_batch_id": "",
+              "source_category": "",
+              "source_job_run_id": "",
+              "source_task_run_id": "",
+              "source_definition_id": "1b6gJdqOPOCadT3cddw8eidV591",
+              "destination_definition_id": ""
+            },
+            "WorkspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
+          },
+          "workerAssignedTime": "2022-12-24T13:33:26.593402+05:30"
+        }
+      ],
+      "destination": {
+        "ID": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+        "Name": "Amplitude-Dev",
+        "DestinationDefinition": {
+          "ID": "1QGzO4fWSyq3lsyFHf4eQAMDSr9",
+          "Name": "AM",
+          "DisplayName": "Amplitude",
+          "Config": {
+            "destConfig": {
+              "android": [
+                "eventUploadPeriodMillis",
+                "eventUploadThreshold",
+                "useNativeSDK",
+                "enableLocationListening",
+                "trackSessionEvents",
+                "useAdvertisingIdForDeviceId"
+              ],
+              "defaultConfig": [
+                "apiKey",
+                "groupTypeTrait",
+                "groupValueTrait",
+                "trackAllPages",
+                "trackCategorizedPages",
+                "trackNamedPages",
+                "traitsToIncrement",
+                "traitsToSetOnce",
+                "traitsToAppend",
+                "traitsToPrepend",
+                "trackProductsOnce",
+                "trackRevenuePerProduct",
+                "versionName",
+                "apiSecret",
+                "residencyServer",
+                "blacklistedEvents",
+                "whitelistedEvents",
+                "eventFilteringOption",
+                "mapDeviceBrand"
+              ],
+              "flutter": [
+                "eventUploadPeriodMillis",
+                "eventUploadThreshold",
+                "useNativeSDK",
+                "enableLocationListening",
+                "trackSessionEvents",
+                "useAdvertisingIdForDeviceId",
+                "useIdfaAsDeviceId"
+              ],
+              "ios": [
+                "eventUploadPeriodMillis",
+                "eventUploadThreshold",
+                "useNativeSDK",
+                "trackSessionEvents",
+                "useIdfaAsDeviceId"
+              ],
+              "reactnative": [
+                "eventUploadPeriodMillis",
+                "eventUploadThreshold",
+                "useNativeSDK",
+                "enableLocationListening",
+                "trackSessionEvents",
+                "useAdvertisingIdForDeviceId",
+                "useIdfaAsDeviceId"
+              ],
+              "web": [
+                "useNativeSDK",
+                "preferAnonymousIdForDeviceId",
+                "deviceIdFromUrlParam",
+                "forceHttps",
+                "trackGclid",
+                "trackReferrer",
+                "saveParamsReferrerOncePerSession",
+                "trackUtmProperties",
+                "unsetParamsReferrerOnNewSession",
+                "batchEvents",
+                "eventUploadPeriodMillis",
+                "eventUploadThreshold",
+                "oneTrustCookieCategories"
+              ]
+            },
+            "excludeKeys": [],
+            "includeKeys": [
+              "apiKey",
+              "groupTypeTrait",
+              "groupValueTrait",
+              "trackAllPages",
+              "trackCategorizedPages",
+              "trackNamedPages",
+              "traitsToIncrement",
+              "traitsToSetOnce",
+              "traitsToAppend",
+              "traitsToPrepend",
+              "trackProductsOnce",
+              "trackRevenuePerProduct",
+              "preferAnonymousIdForDeviceId",
+              "deviceIdFromUrlParam",
+              "forceHttps",
+              "trackGclid",
+              "trackReferrer",
+              "saveParamsReferrerOncePerSession",
+              "trackUtmProperties",
+              "unsetParamsReferrerOnNewSession",
+              "batchEvents",
+              "eventUploadPeriodMillis",
+              "eventUploadThreshold",
+              "versionName",
+              "enableLocationListening",
+              "useAdvertisingIdForDeviceId",
+              "trackSessionEvents",
+              "useIdfaAsDeviceId",
+              "blacklistedEvents",
+              "whitelistedEvents",
+              "oneTrustCookieCategories",
+              "eventFilteringOption",
+              "mapDeviceBrand"
+            ],
+            "saveDestinationResponse": true,
+            "secretKeys": ["apiKey", "apiSecret"],
+            "supportedMessageTypes": [
+              "alias",
+              "group",
+              "identify",
+              "page",
+              "screen",
+              "track"
+            ],
+            "supportedSourceTypes": [
+              "android",
+              "ios",
+              "web",
+              "unity",
+              "amp",
+              "cloud",
+              "warehouse",
+              "reactnative",
+              "flutter",
+              "cordova"
+            ],
+            "supportsVisualMapper": true,
+            "transformAt": "processor",
+            "transformAtV1": "processor"
+          },
+          "ResponseRules": null
+        },
+        "Config": {
+          "apiKey": "a99702eb473e89c1352300172c142c77",
+          "apiSecret": "",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "eventFilteringOption": "disable",
+          "groupTypeTrait": "",
+          "groupValueTrait": "",
+          "mapDeviceBrand": false,
+          "residencyServer": "standard",
+          "trackAllPages": false,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true,
+          "trackProductsOnce": false,
+          "trackRevenuePerProduct": false,
+          "traitsToAppend": [
+            {
+              "traits": ""
+            }
+          ],
+          "traitsToIncrement": [
+            {
+              "traits": ""
+            }
+          ],
+          "traitsToPrepend": [
+            {
+              "traits": ""
+            }
+          ],
+          "traitsToSetOnce": [
+            {
+              "traits": ""
+            }
+          ],
+          "versionName": "",
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
+        },
+        "Enabled": true,
+        "WorkspaceID": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+        "Transformations": [],
+        "IsProcessorEnabled": true,
+        "RevisionID": "2JJoTOhsmYEuVu4FeeJkoaIkNBG"
+      }
+    }
+  ]
+}

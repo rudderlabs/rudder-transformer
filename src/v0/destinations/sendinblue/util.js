@@ -1,48 +1,46 @@
-const { EMAIL_SUFFIX, getContactDetailsEndpoint } = require("./config");
+const { EMAIL_SUFFIX, getContactDetailsEndpoint } = require('./config');
 const {
   getHashFromArray,
   getIntegrationsObj,
   isNotEmpty,
   validateEmail,
   validatePhoneWithCountryCode,
-  getDestinationExternalID
-} = require("../../util");
-const { httpGET } = require("../../../adapters/network");
+  getDestinationExternalID,
+} = require('../../util');
+const { httpGET } = require('../../../adapters/network');
 const {
   processAxiosResponse,
-  getDynamicErrorType
-} = require("../../../adapters/utils/networkUtils");
-const { NetworkError, InstrumentationError } = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
+const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 const prepareHeader = (apiKey, clientKey = null, trackerApi = false) => {
   if (trackerApi) {
     return {
-      "Content-Type": "application/json",
-      "ma-key": clientKey
+      'Content-Type': 'application/json',
+      'ma-key': clientKey,
     };
   }
   return {
-    "Content-Type": "application/json",
-    "api-key": apiKey
+    'Content-Type': 'application/json',
+    'api-key': apiKey,
   };
 };
 
 const checkIfEmailOrPhoneExists = (email, phone) => {
   if (!email && !phone) {
-    throw new InstrumentationError(
-      "At least one of `email` or `phone` is required"
-    );
+    throw new InstrumentationError('At least one of `email` or `phone` is required');
   }
 };
 
 const validateEmailAndPhone = (email, phone = null) => {
   if (email && !validateEmail(email)) {
-    throw new InstrumentationError("The provided email is invalid");
+    throw new InstrumentationError('The provided email is invalid');
   }
 
   if (phone && !validatePhoneWithCountryCode(phone)) {
-    throw new InstrumentationError("The provided phone number is invalid");
+    throw new InstrumentationError('The provided phone number is invalid');
   }
 };
 
@@ -51,20 +49,16 @@ const validateEmailAndPhone = (email, phone = null) => {
  * @param {*} phone +919315446189
  * @returns 919315446189@mailin-sms.com
  */
-const prepareEmailFromPhone = phone => {
-  return `${phone.replace("+", "")}${EMAIL_SUFFIX}`;
-};
+const prepareEmailFromPhone = (phone) => `${phone.replace('+', '')}${EMAIL_SUFFIX}`;
 
 const checkIfContactExists = async (identifier, apiKey) => {
   const endpoint = getContactDetailsEndpoint(identifier);
   const requestOptions = {
-    headers: prepareHeader(apiKey)
+    headers: prepareHeader(apiKey),
   };
   const contactDetailsResponse = await httpGET(endpoint, requestOptions);
 
-  const processedContactDetailsResponse = processAxiosResponse(
-    contactDetailsResponse
-  );
+  const processedContactDetailsResponse = processAxiosResponse(contactDetailsResponse);
   if (
     processedContactDetailsResponse.status === 200 &&
     processedContactDetailsResponse?.response?.id
@@ -75,15 +69,13 @@ const checkIfContactExists = async (identifier, apiKey) => {
   if (processedContactDetailsResponse.status !== 404) {
     throw new NetworkError(
       `Failed to fetch contact details due to "${JSON.stringify(
-        processedContactDetailsResponse.response
+        processedContactDetailsResponse.response,
       )}"`,
       processedContactDetailsResponse.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-          processedContactDetailsResponse.status
-        )
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedContactDetailsResponse.status),
       },
-      processedContactDetailsResponse.response
+      processedContactDetailsResponse.response,
     );
   }
 
@@ -96,11 +88,11 @@ const checkIfContactExists = async (identifier, apiKey) => {
  * @param {*} payload {"key1":"a","":{"id":1}}
  * @returns // {"key1":"a"}
  */
-const removeEmptyKey = payload => {
+const removeEmptyKey = (payload) => {
   const rawPayload = payload;
-  const key = "";
+  const key = '';
   if (Object.prototype.hasOwnProperty.call(rawPayload, key)) {
-    delete rawPayload[""];
+    delete rawPayload[''];
   }
   return rawPayload;
 };
@@ -113,7 +105,7 @@ const removeEmptyKey = payload => {
  */
 const refineUserTraits = (userTraits, attributeMap) => {
   const refinedTraits = userTraits;
-  Object.keys(userTraits).forEach(key => {
+  Object.keys(userTraits).forEach((key) => {
     if (Object.prototype.hasOwnProperty.call(attributeMap, key)) {
       delete refinedTraits[key];
     }
@@ -130,15 +122,10 @@ const refineUserTraits = (userTraits, attributeMap) => {
  */
 const transformUserTraits = (traits, contactAttributeMapping) => {
   // convert destination.Config.contactAttributeMapping to hashMap
-  const attributeMap = getHashFromArray(
-    contactAttributeMapping,
-    "from",
-    "to",
-    false
-  );
+  const attributeMap = getHashFromArray(contactAttributeMapping, 'from', 'to', false);
 
   const userTraits = traits;
-  Object.keys(attributeMap).forEach(key => {
+  Object.keys(attributeMap).forEach((key) => {
     const traitValue = traits[key];
     if (traitValue) {
       userTraits[attributeMap[key]] = traitValue;
@@ -154,7 +141,7 @@ const transformUserTraits = (traits, contactAttributeMapping) => {
 const prepareTrackEventData = (message, payload) => {
   const { messageId, data } = payload;
   if (isNotEmpty(data)) {
-    const integrationsObj = getIntegrationsObj(message, "sendinblue");
+    const integrationsObj = getIntegrationsObj(message, 'sendinblue');
     const idKey = integrationsObj?.propertiesIdKey;
     const id = data[idKey] || messageId;
     return { id, data };
@@ -180,5 +167,5 @@ module.exports = {
   removeEmptyKey,
   transformUserTraits,
   prepareTrackEventData,
-  getListIds
+  getListIds,
 };

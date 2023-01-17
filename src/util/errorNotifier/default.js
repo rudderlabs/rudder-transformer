@@ -1,4 +1,4 @@
-const logger = require("../../logger");
+const logger = require('../../logger');
 
 function init() {}
 
@@ -8,5 +8,5 @@ function notify(err, context, metadata) {
 
 module.exports = {
   init,
-  notify
+  notify,
 };

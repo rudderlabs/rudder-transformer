@@ -502,8 +502,7 @@
         "name": "Ruchira Moitra",
         "plan": "Enterprise"
       },
-      "userAgent":
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
     },
     "output": {
       "app.build": "1.0.0",
@@ -527,8 +526,7 @@
       "traits.email": "ruchira@gmail.com",
       "traits.name": "Ruchira Moitra",
       "traits.plan": "Enterprise",
-      "userAgent":
-      "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
     }
   }
 ]

@@ -1,14 +1,14 @@
-const { getHashFromArray, simpleProcessRouterDest } = require("../../util");
-const { ConfigurationError } = require("../../util/errorTypes");
+const { getHashFromArray, simpleProcessRouterDest } = require('../../util');
+const { ConfigurationError } = require('../../util/errorTypes');
 
 function getDeliveryStreamMapTo(event) {
-  const { message } = event;
-  const { mapEvents } = event.destination.Config;
-  const hashMap = getHashFromArray(mapEvents, "from", "to");
+  const { message, destination } = event;
+  const { mapEvents } = destination.Config;
+  const hashMap = getHashFromArray(mapEvents, 'from', 'to');
   return (
     (message.event ? hashMap[message.event.toLowerCase()] : null) ||
     hashMap[message.type.toLowerCase()] ||
-    hashMap["*"]
+    hashMap['*']
   );
 }
 
@@ -18,10 +18,10 @@ function process(event) {
     return {
       message: event.message,
       userId: event.message.anonymousId,
-      deliveryStreamMapTo
+      deliveryStreamMapTo,
     };
   }
-  throw new ConfigurationError("No delivery stream set for this event");
+  throw new ConfigurationError('No delivery stream set for this event');
 }
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

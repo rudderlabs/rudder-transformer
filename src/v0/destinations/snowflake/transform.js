@@ -1,23 +1,23 @@
-const { processWarehouseMessage } = require("../../../warehouse");
+const { processWarehouseMessage } = require('../../../warehouse');
 
-const snowflake = "snowflake";
+const snowflake = 'snowflake';
 
 function processSingleMessage(message, options) {
   return processWarehouseMessage(message, options);
 }
 
 function getDataTypeOverride(key, val, options, jsonKey = false) {
-  if (key === "violationErrors" || jsonKey) {
-    return "json";
+  if (key === 'violationErrors' || jsonKey) {
+    return 'json';
   }
-  return "string";
+  return 'string';
 }
 
 function process(event) {
-  const whSchemaVersion = event.request.query.whSchemaVersion || "v1";
-  const whIDResolve = event.request.query.whIDResolve === "true" || false;
+  const whSchemaVersion = event.request.query.whSchemaVersion || 'v1';
+  const whIDResolve = event.request.query.whIDResolve === 'true' || false;
   const whStoreEvent = event.destination.Config.storeFullEvent === true;
-  const destJsonPaths = event.destination?.Config?.jsonPaths || "";
+  const destJsonPaths = event.destination?.Config?.jsonPaths || '';
   const provider = snowflake;
   return processSingleMessage(event.message, {
     metadata: event.metadata,
@@ -27,11 +27,11 @@ function process(event) {
     getDataTypeOverride,
     provider,
     sourceCategory: event.metadata ? event.metadata.sourceCategory : null,
-    destJsonPaths
+    destJsonPaths,
   });
 }
 
 module.exports = {
   process,
-  getDataTypeOverride
+  getDataTypeOverride,
 };

@@ -110,26 +110,17 @@
   },
   {
     "destKey": "$iterableCampaignId.value",
-    "sourceKeys": [
-      "traits.iterableCampaignId",
-      "context.traits.iterableCampaignId"
-    ],
+    "sourceKeys": ["traits.iterableCampaignId", "context.traits.iterableCampaignId"],
     "required": false
   },
   {
     "destKey": "$iterableTemplateId.value",
-    "sourceKeys": [
-      "traits.iterableTemplateId",
-      "context.traits.iterableTemplateId"
-    ],
+    "sourceKeys": ["traits.iterableTemplateId", "context.traits.iterableTemplateId"],
     "required": false
   },
   {
     "destKey": "$mixpanelDistinctId.value",
-    "sourceKeys": [
-      "traits.mixpanelDistinctId",
-      "context.traits.mixpanelDistinctId"
-    ],
+    "sourceKeys": ["traits.mixpanelDistinctId", "context.traits.mixpanelDistinctId"],
     "required": false
   },
   {
@@ -144,10 +135,7 @@
   },
   {
     "destKey": "$airshipChannelId.value",
-    "sourceKeys": [
-      "traits.airshipChannelId",
-      "context.traits.airshipChannelId"
-    ],
+    "sourceKeys": ["traits.airshipChannelId", "context.traits.airshipChannelId"],
     "required": false
   },
   {

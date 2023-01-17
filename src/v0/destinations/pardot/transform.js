@@ -33,9 +33,9 @@
  *
  */
 
-const get = require("get-value");
-const { identifyConfig, DESTINATION } = require("./config");
-const logger = require("../../../logger");
+const get = require('get-value');
+const { identifyConfig, DESTINATION } = require('./config');
+const logger = require('../../../logger');
 const {
   defaultRequestConfig,
   constructPayload,
@@ -44,14 +44,14 @@ const {
   removeUndefinedValues,
   getSuccessRespEvents,
   checkInvalidRtTfEvents,
-  handleRtTfSingleEventError
-} = require("../../util");
-const { CONFIG_CATEGORIES } = require("./config");
+  handleRtTfSingleEventError,
+} = require('../../util');
+const { CONFIG_CATEGORIES } = require('./config');
 const {
   OAuthSecretError,
   ConfigurationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+  InstrumentationError,
+} = require('../../util/errorTypes');
 
 /**
  * Get access token to be bound to the event req headers
@@ -64,11 +64,11 @@ const {
  * @param {Object} metadata
  * @returns
  */
-const getAccessToken = metadata => {
+const getAccessToken = (metadata) => {
   // OAuth for this destination
   const { secret } = metadata;
   if (!secret) {
-    throw new OAuthSecretError("Empty/Invalid access token");
+    throw new OAuthSecretError('Empty/Invalid access token');
   }
   return secret.access_token;
 };
@@ -80,15 +80,14 @@ const buildResponse = (payload, url, destination, token) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Bearer ${token}`,
-    "Pardot-Business-Unit-Id": destination.Config.businessUnitId
+    'Pardot-Business-Unit-Id': destination.Config.businessUnitId,
   };
   response.body.FORM = responseBody;
   return response;
 };
 
-const isExtIdNotProperlyDefined = externalId => {
-  return !externalId || (externalId && (!externalId.type || !externalId.id));
-};
+const isExtIdNotProperlyDefined = (externalId) =>
+  !externalId || (externalId && (!externalId.type || !externalId.id));
 
 /**
  * This method provides the url that would be used to send the event to Pardot
@@ -99,27 +98,23 @@ const isExtIdNotProperlyDefined = externalId => {
  * @property {string} email - email sent in the payload
  * @returns {properUrl} - The complete url used for sending event to Pardot
  */
-const getUrl = urlParams => {
+const getUrl = (urlParams) => {
   const { externalId, category, email, nonProperExtId } = urlParams;
   let properUrl = `${category.endPointUpsert}/email/${email}`;
   if (nonProperExtId) {
-    logger.debug(
-      `${DESTINATION}: externalId doesn't exist/invalid datastructure`
-    );
+    logger.debug(`${DESTINATION}: externalId doesn't exist/invalid datastructure`);
     return properUrl;
   }
   // when there is a proper externalId object defined
   switch (externalId.type.toLowerCase()) {
-    case "pardotid":
+    case 'pardotid':
       properUrl = `${category.endPointUpsert}/id/${externalId.id}`;
       break;
-    case "crmfid":
+    case 'crmfid':
       properUrl = `${category.endPointUpsert}/fid/${externalId.id}`;
       break;
     default:
-      logger.debug(
-        `${DESTINATION}: externalId type is different from the ones supported`
-      );
+      logger.debug(`${DESTINATION}: externalId type is different from the ones supported`);
       break;
   }
   return properUrl;
@@ -129,20 +124,20 @@ const processIdentify = ({ message, metadata }, destination, category) => {
   const { campaignId } = destination.Config;
   const accessToken = getAccessToken(metadata);
 
-  let extId = get(message, "context.externalId");
+  let extId = get(message, 'context.externalId');
   extId = extId && extId.length > 0 ? extId[0] : null;
-  const email = getFieldValueFromMessage(message, "email");
+  const email = getFieldValueFromMessage(message, 'email');
 
   const prospectObject = constructPayload(message, identifyConfig);
   const nonProperExtId = isExtIdNotProperlyDefined(extId);
   if (nonProperExtId && !email) {
-    throw new InstrumentationError("Without externalId, email is required");
+    throw new InstrumentationError('Without externalId, email is required');
   }
   const url = getUrl({
     nonProperExtId,
     externalId: extId,
     category,
-    email
+    email,
   });
 
   if (!prospectObject.campaign_id) {
@@ -155,31 +150,27 @@ const processIdentify = ({ message, metadata }, destination, category) => {
 const processEvent = (metadata, message, destination) => {
   let response;
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
   if (!destination.Config.campaignId) {
-    throw new ConfigurationError("Campaign Id is mandatory");
+    throw new ConfigurationError('Campaign Id is mandatory');
   }
 
   if (!destination.Config.businessUnitId) {
-    throw new ConfigurationError("Business Unit Id is mandatory");
+    throw new ConfigurationError('Business Unit Id is mandatory');
   }
 
-  if (message.type === "identify") {
+  if (message.type === 'identify') {
     const category = CONFIG_CATEGORIES.IDENTIFY;
 
     response = processIdentify({ message, metadata }, destination, category);
   } else {
-    throw new InstrumentationError(
-      `Event type ${message.type} is not supported`
-    );
+    throw new InstrumentationError(`Event type ${message.type} is not supported`);
   }
   return response;
 };
 
-const process = event => {
-  return processEvent(event.metadata, event.message, event.destination);
-};
+const process = (event) => processEvent(event.metadata, event.message, event.destination);
 
 const processRouterDest = async (events, reqMetadata) => {
   const errorRespEvents = checkInvalidRtTfEvents(events);
@@ -188,17 +179,13 @@ const processRouterDest = async (events, reqMetadata) => {
   }
 
   const responseList = Promise.all(
-    events.map(event => {
+    events.map((event) => {
       try {
-        return getSuccessRespEvents(
-          process(event),
-          [event.metadata],
-          event.destination
-        );
+        return getSuccessRespEvents(process(event), [event.metadata], event.destination);
       } catch (error) {
         return handleRtTfSingleEventError(event, error, reqMetadata);
       }
-    })
+    }),
   );
   return responseList;
 };

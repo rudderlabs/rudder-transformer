@@ -11,7 +11,7 @@
             "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
             "Name": "HEAP",
             "Config": {
-              "cdkEnabled":true
+              "cdkEnabled": true
             }
           },
           "Enabled": true,
@@ -74,7 +74,7 @@
             "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
             "Name": "HEAP",
             "Config": {
-              "cdkEnabled":true
+              "cdkEnabled": true
             }
           },
           "Enabled": true,
@@ -138,7 +138,7 @@
             "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
             "Name": "HEAP",
             "Config": {
-              "cdkEnabled":true
+              "cdkEnabled": true
             }
           },
           "Enabled": true,
@@ -204,7 +204,7 @@
             "ID": "1WTbl0l5GjOQKOvfmcGwk0T49kV",
             "Name": "HEAP",
             "Config": {
-              "cdkEnabled":true
+              "cdkEnabled": true
             }
           },
           "Enabled": true,

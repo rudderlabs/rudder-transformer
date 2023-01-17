@@ -1,19 +1,19 @@
-const parseStaticImports = require("parse-static-imports");
+const parseStaticImports = require('parse-static-imports');
 
 function parserForImport(code) {
   const obj = {};
   const modules = parseStaticImports(code);
 
-  modules.forEach(mod => {
-    const { moduleName } = mod;
+  modules.forEach((mod) => {
+    const { moduleName, defaultImport, namedImports } = mod;
     if (moduleName) {
       obj[moduleName] = [];
 
-      if (mod.defaultImport) {
-        obj[moduleName].push(mod.defaultImport);
+      if (defaultImport) {
+        obj[moduleName].push(defaultImport);
       }
 
-      mod.namedImports.forEach(imp => {
+      namedImports.forEach((imp) => {
         obj[moduleName].push(imp.name);
       });
     }

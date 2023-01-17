@@ -1,29 +1,26 @@
-const { EventType } = require("../../../constants");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
+const { EventType } = require('../../../constants');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {
   constructPayload,
   defaultPostRequestConfig,
   defaultRequestConfig,
   getFieldValueFromMessage,
   removeUndefinedAndNullValues,
-  simpleProcessRouterDest
-} = require("../../util");
+  simpleProcessRouterDest,
+} = require('../../util');
 
-const {
-  InstrumentationError,
-  TransformationError
-} = require("../../util/errorTypes");
+const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 
 const identifyFields = [
-  "email",
-  "firstname",
-  "firstName",
-  "lastname",
-  "lastName",
-  "phone",
-  "company",
-  "status",
-  "LeadSource"
+  'email',
+  'firstname',
+  'firstName',
+  'lastname',
+  'lastName',
+  'phone',
+  'company',
+  'status',
+  'LeadSource',
 ];
 
 function responseBuilderSimple(message, category, destination) {
@@ -32,8 +29,8 @@ function responseBuilderSimple(message, category, destination) {
     const response = defaultRequestConfig();
     response.headers = {
       autopilotapikey: destination.Config.apiKey,
-      "Content-Type": "application/json",
-      Accept: "application/json"
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
     };
     let responseBody;
     let contactIdOrEmail;
@@ -42,27 +39,27 @@ function responseBuilderSimple(message, category, destination) {
       case EventType.IDENTIFY:
         // fix for cases where traits and context.traits is missing
         customPayload = message.traits || message.context.traits || {};
-        identifyFields.forEach(value => {
+        identifyFields.forEach((value) => {
           delete customPayload[value];
         });
-        if (Object.keys(customPayload).length) {
+        if (Object.keys(customPayload).length > 0) {
           responseBody = {
-            contact: { ...payload, custom: customPayload }
+            contact: { ...payload, custom: customPayload },
           };
         } else {
           responseBody = {
-            contact: { ...payload }
+            contact: { ...payload },
           };
         }
         response.endpoint = category.endPoint;
         break;
       case EventType.TRACK:
         responseBody = { ...payload };
-        contactIdOrEmail = getFieldValueFromMessage(message, "email");
+        contactIdOrEmail = getFieldValueFromMessage(message, 'email');
         if (contactIdOrEmail) {
           response.endpoint = `${category.endPoint}/${destination.Config.triggerId}/contact/${contactIdOrEmail}`;
         } else {
-          throw new InstrumentationError("Email is required for track calls");
+          throw new InstrumentationError('Email is required for track calls');
         }
         break;
       default:
@@ -74,12 +71,12 @@ function responseBuilderSimple(message, category, destination) {
     return response;
   }
   // fail-safety for developer error
-  throw new TransformationError("Payload could not be constructed");
+  throw new TransformationError('Payload could not be constructed');
 }
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new InstrumentationError("invalid message type for autopilot");
+    throw new InstrumentationError('invalid message type for autopilot');
   }
   const messageType = message.type;
   let category;
@@ -91,18 +88,14 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new InstrumentationError(
-        `message type ${messageType} not supported for autopilot`
-      );
+      throw new InstrumentationError(`message type ${messageType} not supported for autopilot`);
   }
 
   // build the response
   return responseBuilderSimple(message, category, destination);
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

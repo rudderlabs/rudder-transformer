@@ -1,8 +1,8 @@
 const {
   defaultRequestConfig,
   simpleProcessRouterDest,
-  removeUndefinedAndNullValues
-} = require("../../util");
+  removeUndefinedAndNullValues,
+} = require('../../util');
 
 const {
   prepareUrl,
@@ -15,33 +15,31 @@ const {
   retrieveUserFromLookup,
   addUserToCompanyPayloadBuilder,
   createOrUpdateUserPayloadBuilder,
-  createEventOccurrencePayloadBuilder
-} = require("./utils");
+  createEventOccurrencePayloadBuilder,
+} = require('./utils');
 const {
   TransformationError,
   InstrumentationError,
-  NetworkInstrumentationError
-} = require("../../util/errorTypes");
+  NetworkInstrumentationError,
+} = require('../../util/errorTypes');
 
-const { EventType } = require("../../../constants");
+const { EventType } = require('../../../constants');
 
 const responseBuilder = async (payload, endpoint, method, apiKey) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.headers = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Token ${apiKey}`,
-      Accept: "*/*;version=2"
+      Accept: '*/*;version=2',
     };
     response.method = method;
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
   }
   // fail-safety for developer error
-  throw new TransformationError(
-    "Something went wrong while constructing the payload"
-  );
+  throw new TransformationError('Something went wrong while constructing the payload');
 };
 
 const identifyResponseBuilder = async (message, destination) => {
@@ -62,7 +60,7 @@ const identifyResponseBuilder = async (message, destination) => {
 
 const trackResponseBuilder = async (message, destination) => {
   if (!message.event) {
-    throw new InstrumentationError("Parameter event is required");
+    throw new InstrumentationError('Parameter event is required');
   }
 
   let payload;
@@ -82,7 +80,7 @@ const trackResponseBuilder = async (message, destination) => {
   }
 
   throw new NetworkInstrumentationError(
-    "No user found with given lookup field, Track event cannot be completed if there is no valid user"
+    'No user found with given lookup field, Track event cannot be completed if there is no valid user',
   );
 };
 
@@ -103,7 +101,7 @@ const pageResponseBuilder = async (message, destination) => {
     return responseBuilder(payload, endpoint, method, apiKey);
   }
   throw new NetworkInstrumentationError(
-    "No user found with given lookup field. Page event cannot be completed if there is no valid user"
+    'No user found with given lookup field. Page event cannot be completed if there is no valid user',
   );
 };
 
@@ -132,19 +130,16 @@ const groupResponseBuilder = async (message, destination) => {
     payload = builder.payload;
     endpoint = builder.endpoint;
     method = builder.method;
-    endpoint = prepareUrl(endpoint, appSubdomain).replace(
-      "<company_id>",
-      builder.companyId
-    );
+    endpoint = prepareUrl(endpoint, appSubdomain).replace('<company_id>', builder.companyId);
     return responseBuilder(payload, endpoint, method, apiKey);
   }
-  throw new NetworkInstrumentationError("No user found with given userId");
+  throw new NetworkInstrumentationError('No user found with given userId');
 };
 
 const processEvent = async (message, destination) => {
   // Validating if message type is even given or not
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -162,16 +157,12 @@ const processEvent = async (message, destination) => {
       response = await pageResponseBuilder(message, destination);
       break;
     default:
-      throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
-      );
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
 };
 
-const process = async event => {
-  return processEvent(event.message, event.destination);
-};
+const process = async (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

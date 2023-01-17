@@ -1,0 +1,8 @@
+node_modules/
+reports/
+CHANGELOG.md
+CONTRIBUTING.md
+LICENSE
+test/**/*.js
+src/util/lodash-es-core.js
+src/util/url-search-params.min.js

@@ -6,18 +6,12 @@
   },
   {
     "destKey": "starting_email_index",
-    "sourceKeys": [
-      "traits.startingEmailIndex",
-      "context.traits.startingEmailIndex"
-    ],
+    "sourceKeys": ["traits.startingEmailIndex", "context.traits.startingEmailIndex"],
     "required": false
   },
   {
     "destKey": "reactivate_if_removed",
-    "sourceKeys": [
-      "traits.reactivateIfRemoved",
-      "context.traits.reactivateIfRemoved"
-    ],
+    "sourceKeys": ["traits.reactivateIfRemoved", "context.traits.reactivateIfRemoved"],
     "required": false
   }
 ]

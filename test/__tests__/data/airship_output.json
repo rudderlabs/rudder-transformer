@@ -1019,5 +1019,33 @@
   {
     "statusCode": 400,
     "error": "API Key is required for authorization for track events"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://go.urbanairship.com/api/custom-events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/vnd.urbanairship+json; version=3",
+      "X-UA-Appkey": "ffdf",
+      "Authorization": "Bearer 34d8efa09c5b048bbacc6af157f2e687"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "user": {
+          "named_user_id": "testuserId1"
+        },
+        "body": {
+          "name": "product_clicked",
+          "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22"
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

@@ -112,7 +112,7 @@
           "ResponseRules": {}
         },
         "Config": {
-          "zapUrl": "https://hooks.zapier.com/hooks/catch/14157843/b7l4oz2/"
+          "zapUrl": "https://hooks.zapier.com/hooks/catch/test/abc/"
         },
         "Enabled": true,
         "WorkspaceID": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
@@ -129,7 +129,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://hooks.zapier.com/hooks/catch/14157843/b7l4oz2/",
+        "endpoint": "https://hooks.zapier.com/hooks/catch/test/abc/",
         "headers": {
           "content-type": "application/json"
         },

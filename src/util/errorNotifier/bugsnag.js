@@ -1,11 +1,11 @@
 /* eslint-disable no-param-reassign */
-const Bugsnag = require("@bugsnag/js");
+const Bugsnag = require('@bugsnag/js');
 const {
   CustomError: CDKCustomError,
-  DataValidationError
-} = require("rudder-transformer-cdk/build/error/index");
-const { logger } = require("../../logger");
-const pkg = require("../../../package.json");
+  DataValidationError,
+} = require('rudder-transformer-cdk/build/error/index');
+const { logger } = require('../../logger');
+const pkg = require('../../../package.json');
 const {
   BaseError,
   TransformationError,
@@ -20,13 +20,10 @@ const {
   AbortedError,
   UnhandledStatusCodeError,
   UnauthorizedError,
-  NetworkInstrumentationError
-} = require("../../v0/util/errorTypes");
+  NetworkInstrumentationError,
+} = require('../../v0/util/errorTypes');
 
-const {
-  BUGSNAG_API_KEY: apiKey,
-  transformer_build_version: imageVersion
-} = process.env;
+const { BUGSNAG_API_KEY: apiKey, transformer_build_version: imageVersion } = process.env;
 
 const errorTypesDenyList = [
   BaseError,
@@ -44,7 +41,7 @@ const errorTypesDenyList = [
   UnauthorizedError,
   NetworkInstrumentationError,
   CDKCustomError,
-  DataValidationError
+  DataValidationError,
 ];
 
 let bugsnagClient;
@@ -56,12 +53,12 @@ function init() {
       appVersion: pkg.version,
       metadata: {
         image: {
-          version: imageVersion
-        }
+          version: imageVersion,
+        },
       },
       onError(event) {
-        event.severity = "error";
-      }
+        event.severity = 'error';
+      },
     });
   } else {
     logger.error(`Invalid Bugsnag API key: ${apiKey}`);
@@ -70,20 +67,18 @@ function init() {
 
 function notify(err, context, metadata) {
   if (bugsnagClient) {
-    const isDeniedErrType = errorTypesDenyList.some(errType => {
-      return err instanceof errType;
-    });
+    const isDeniedErrType = errorTypesDenyList.some((errType) => err instanceof errType);
 
     if (isDeniedErrType) return;
 
-    bugsnagClient.notify(err, event => {
+    bugsnagClient.notify(err, (event) => {
       event.context = context;
-      event.addMetadata("metadata", metadata);
+      event.addMetadata('metadata', metadata);
     });
   }
 }
 
 module.exports = {
   init,
-  notify
+  notify,
 };

@@ -55,19 +55,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -153,19 +142,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -251,19 +229,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -354,19 +321,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -457,19 +413,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -556,19 +501,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -660,19 +594,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -764,19 +687,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -865,19 +777,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -971,19 +872,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -1039,10 +929,7 @@
         "typeOfMovie": "Art Film",
         "itemId": "item 1",
         "userId": "user 1",
-        "impressions": [
-          2,
-          3
-        ],
+        "impressions": [2, 3],
         "eventValue": "3.4abc"
       },
       "receivedAt": "2021-03-13T01:56:44.340+05:30",
@@ -1084,19 +971,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -1151,10 +1027,7 @@
         "typeOfMovie": "Art Film",
         "itemId": "item 1",
         "userId": "user 1",
-        "impressions": [
-          2,
-          3
-        ],
+        "impressions": [2, 3],
         "eventValue": "3.4abc"
       },
       "receivedAt": "2021-03-13T01:56:44.340+05:30",
@@ -1196,19 +1069,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -1321,19 +1183,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -1421,19 +1272,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -1524,19 +1364,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -1627,19 +1456,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -1731,19 +1549,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -1835,19 +1642,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -1939,19 +1735,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -2043,19 +1828,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -2147,19 +1921,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -2251,19 +2014,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -2372,19 +2124,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -2489,19 +2230,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -2606,19 +2336,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -2722,19 +2441,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -2822,19 +2530,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -2925,19 +2622,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -3025,19 +2711,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },
@@ -3125,19 +2800,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "secretAccessKey"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ],
+          "secretKeys": ["accessKeyId", "secretAccessKey"],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"],
           "transformAt": "processor"
         }
       },

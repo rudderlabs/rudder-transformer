@@ -2,7 +2,7 @@ name: Build transformer release image
 on:
   push:
     branches:
-      - "rudder-saas"
+      - 'rudder-saas'
 env:
   REPO_NAME: rudderlabs/rudder-transformer
 

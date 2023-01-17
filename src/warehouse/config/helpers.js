@@ -1,11 +1,11 @@
-const _ = require("lodash");
-const get = require("get-value");
+const _ = require('lodash');
+const get = require('get-value');
 
-const isNull = x => {
+const isNull = (x) => {
   return x === null || x === undefined;
 };
 
-const isBlank = value => {
+const isBlank = (value) => {
   return _.isEmpty(_.toString(value));
 };
 
@@ -22,15 +22,11 @@ const getFirstValidValue = (message, props) => {
 };
 
 function isDataLakeProvider(provider) {
-  return (
-    provider === "s3_datalake" ||
-    provider === "gcs_datalake" ||
-    provider === "azure_datalake"
-  );
+  return provider === 's3_datalake' || provider === 'gcs_datalake' || provider === 'azure_datalake';
 }
 
 module.exports = {
   isNull,
   getFirstValidValue,
-  isDataLakeProvider
+  isDataLakeProvider,
 };

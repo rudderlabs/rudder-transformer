@@ -2245,12 +2245,7 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "siteID",
-              "datacenterEU",
-              "deviceTokenEventName"
-            ],
+            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
             "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
@@ -2377,12 +2372,7 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "siteID",
-              "datacenterEU",
-              "deviceTokenEventName"
-            ],
+            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
             "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
@@ -2509,12 +2499,7 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "siteID",
-              "datacenterEU",
-              "deviceTokenEventName"
-            ],
+            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
             "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
@@ -2641,12 +2626,7 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "siteID",
-              "datacenterEU",
-              "deviceTokenEventName"
-            ],
+            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
             "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
@@ -2770,12 +2750,7 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "siteID",
-              "datacenterEU",
-              "deviceTokenEventName"
-            ],
+            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
             "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
@@ -2903,12 +2878,7 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "siteID",
-              "datacenterEU",
-              "deviceTokenEventName"
-            ],
+            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
             "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
@@ -3035,12 +3005,7 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "siteID",
-              "datacenterEU",
-              "deviceTokenEventName"
-            ],
+            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
             "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
@@ -3167,12 +3132,7 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "siteID",
-              "datacenterEU",
-              "deviceTokenEventName"
-            ],
+            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
             "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
@@ -3299,12 +3259,7 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "siteID",
-              "datacenterEU",
-              "deviceTokenEventName"
-            ],
+            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
             "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
@@ -3428,12 +3383,7 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "siteID",
-              "datacenterEU",
-              "deviceTokenEventName"
-            ],
+            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
             "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
@@ -3561,12 +3511,7 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "siteID",
-              "datacenterEU",
-              "deviceTokenEventName"
-            ],
+            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
             "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],

@@ -1,18 +1,12 @@
 [
   {
     "destKey": "email",
-    "sourceKeys": [
-      "traits.email",
-      "context.traits.email"
-    ],
+    "sourceKeys": ["traits.email", "context.traits.email"],
     "required": false
   },
   {
     "destKey": "dataFields",
-    "sourceKeys": [
-      "traits",
-      "context.traits"
-    ],
+    "sourceKeys": ["traits", "context.traits"],
     "required": false
   },
   {

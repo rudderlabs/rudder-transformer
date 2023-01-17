@@ -1,17 +1,17 @@
 [
-    {
-        "destKey": "email",
-        "sourceKeys": ["traits.email","context.traits.email"],
-        "required": false
-    },
-    {
-        "destKey": "name",
-        "sourceKeys":["traits.name","context.traits.name"],
-        "required": false
-    },
-    {
-        "destKey": "phone_number",
-        "sourceKeys": ["traits.phone","context.traits.phone"],
-        "required":false
-    }
+  {
+    "destKey": "email",
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "required": false
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": ["traits.name", "context.traits.name"],
+    "required": false
+  },
+  {
+    "destKey": "phone_number",
+    "sourceKeys": ["traits.phone", "context.traits.phone"],
+    "required": false
+  }
 ]

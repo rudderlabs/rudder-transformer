@@ -36,11 +36,7 @@
   },
   {
     "destKey": "$organization",
-    "sourceKeys": [
-      "traits.organization",
-      "context.traits.organization",
-      "properties.organization"
-    ],
+    "sourceKeys": ["traits.organization", "context.traits.organization", "properties.organization"],
     "required": false
   },
   {
@@ -94,11 +90,7 @@
   },
   {
     "destKey": "$timezone",
-    "sourceKeys": [
-      "traits.timezone",
-      "context.traits.timezone",
-      "properties.timezone"
-    ],
+    "sourceKeys": ["traits.timezone", "context.traits.timezone", "properties.timezone"],
     "required": false
   }
 ]

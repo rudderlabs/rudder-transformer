@@ -1,11 +1,7 @@
 /* eslint-disable no-nested-ternary */
-const get = require("get-value");
-const { EventType } = require("../../../constants");
-const {
-  CONFIG_CATEGORIES,
-  MAPPING_CONFIG,
-  BASE_ENDPOINT
-} = require("./config");
+const get = require('get-value');
+const { EventType } = require('../../../constants');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG, BASE_ENDPOINT } = require('./config');
 const {
   defaultRequestConfig,
   getFieldValueFromMessage,
@@ -14,75 +10,69 @@ const {
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
   defaultPutRequestConfig,
-  simpleProcessRouterDest
-} = require("../../util");
-const { fetchKustomer, handleAdvancedtransformations } = require("./util");
-const {
-  TransformationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+  simpleProcessRouterDest,
+} = require('../../util');
+const { fetchKustomer, handleAdvancedtransformations } = require('./util');
+const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 
 // Function responsible for constructing the Kustomer (User) Payload for identify
 // type of events.
 const constructKustomerPayload = (message, category, email) => {
-  const kustomerPayload = constructPayload(
-    message,
-    MAPPING_CONFIG[category.name]
-  );
+  const kustomerPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
-  const firstName = getFieldValueFromMessage(message, "firstName");
-  const lastName = getFieldValueFromMessage(message, "lastName");
-  const phone = getFieldValueFromMessage(message, "phone");
-  const url = getFieldValueFromMessage(message, "website");
+  const firstName = getFieldValueFromMessage(message, 'firstName');
+  const lastName = getFieldValueFromMessage(message, 'lastName');
+  const phone = getFieldValueFromMessage(message, 'phone');
+  const url = getFieldValueFromMessage(message, 'website');
 
-  if (!get(kustomerPayload, "name") && firstName && lastName) {
+  if (!get(kustomerPayload, 'name') && firstName && lastName) {
     kustomerPayload.name = `${firstName} ${lastName}`;
   }
 
   if (!kustomerPayload.emails && email) {
     kustomerPayload.emails = [
       {
-        type: "home",
-        email
-      }
+        type: 'home',
+        email,
+      },
     ];
   }
 
   if (!kustomerPayload.phones && phone) {
     kustomerPayload.phones = [
       {
-        type: "home",
-        phone
-      }
+        type: 'home',
+        phone,
+      },
     ];
   }
 
   if (url) {
     kustomerPayload.urls = [
       {
-        url
-      }
+        url,
+      },
     ];
   }
 
-  const address = getFieldValueFromMessage(message, "address");
+  const address = getFieldValueFromMessage(message, 'address');
   if (address) {
     let addrStr;
-    if (typeof address === "string") {
+    if (typeof address === 'string') {
       addrStr = address;
     } else {
       const { street, city, state, postalCode } = address;
       addrStr =
         street || city || state || postalCode
-          ? `${street || ""} ${city || ""} ${state || ""} ${postalCode || ""}`
+          ? `${street || ''} ${city || ''} ${state || ''} ${postalCode || ''}`
           : addrStr;
     }
-    if (typeof addrStr === "string") {
+    if (typeof addrStr === 'string') {
       kustomerPayload.locations = [
         {
-          type: "home",
-          address: addrStr
-        }
+          type: 'home',
+          address: addrStr,
+        },
       ];
     }
   }
@@ -96,7 +86,7 @@ const responseBuilderSimple = async (message, category, destination) => {
   let payload = {};
   let targetUrl;
   let storedState = {
-    userExists: false
+    userExists: false,
   };
   // In case of identify type of event first extract the anonymousId, userId
   // and search if any Kustomer is present in destination.
@@ -107,14 +97,14 @@ const responseBuilderSimple = async (message, category, destination) => {
   // Create Kustomer: https://apidocs.kustomer.com/#07bd1072-4d4b-4875-b526-8369d711e811
   // Update Kustomer: https://apidocs.kustomer.com/#077d653a-184e-4153-8133-d24b6427c1ae
   if (message.type.toLowerCase() === EventType.IDENTIFY) {
-    const userEmail = getFieldValueFromMessage(message, "email");
-    const userId = getFieldValueFromMessage(message, "userIdOnly");
-    const anonymousId = get(message, "anonymousId");
-    const externalId = getDestinationExternalID(message, "kustomerId");
+    const userEmail = getFieldValueFromMessage(message, 'email');
+    const userId = getFieldValueFromMessage(message, 'userIdOnly');
+    const anonymousId = get(message, 'anonymousId');
+    const externalId = getDestinationExternalID(message, 'kustomerId');
     if (externalId) {
       storedState = {
         userExists: true,
-        targetUrl: `${BASE_ENDPOINT}/v1/customers/${externalId}?replace=false`
+        targetUrl: `${BASE_ENDPOINT}/v1/customers/${externalId}?replace=false`,
       };
     }
     // If email exists we first search Kustomer with email if present then we mark it
@@ -122,7 +112,7 @@ const responseBuilderSimple = async (message, category, destination) => {
     if (!storedState.userExists && userEmail) {
       storedState = await fetchKustomer(
         `${BASE_ENDPOINT}/v1/customers/email=${userEmail}`,
-        destination
+        destination,
       );
     }
     // If response.userExists flag is false
@@ -131,7 +121,7 @@ const responseBuilderSimple = async (message, category, destination) => {
     if (!storedState.userExists && userId) {
       storedState = await fetchKustomer(
         `${BASE_ENDPOINT}/v1/customers/externalId=${userId}`,
-        destination
+        destination,
       );
     }
     // If response.userExists flag is still false
@@ -139,11 +129,8 @@ const responseBuilderSimple = async (message, category, destination) => {
     // If present we mark it for update
     if (!storedState.userExists && anonymousId) {
       storedState = await fetchKustomer(
-        `${BASE_ENDPOINT}/v1/customers/externalId=${get(
-          message,
-          "anonymousId"
-        )}`,
-        destination
+        `${BASE_ENDPOINT}/v1/customers/externalId=${get(message, 'anonymousId')}`,
+        destination,
       );
     }
     // URL to use for creating new Kustomer
@@ -169,12 +156,12 @@ const responseBuilderSimple = async (message, category, destination) => {
     switch (message.type.toLowerCase()) {
       case EventType.PAGE:
         if (destination.Config.genericPage) {
-          eventPayload.name = "Web-Page-Viewed";
+          eventPayload.name = 'Web-Page-Viewed';
         }
         break;
       case EventType.SCREEN:
         if (destination.Config.genericScreen) {
-          eventPayload.name = "Screen-Viewed";
+          eventPayload.name = 'Screen-Viewed';
         }
         break;
     }
@@ -184,13 +171,13 @@ const responseBuilderSimple = async (message, category, destination) => {
     }
     payload = {
       identity: {
-        externalId: getFieldValueFromMessage(message, "userId")
+        externalId: getFieldValueFromMessage(message, 'userId'),
       },
-      event: eventPayload
+      event: eventPayload,
     };
     // handle email for track calls
     if (destination.Config.setIdentityEmail) {
-      payload.identity.email = getFieldValueFromMessage(message, "email");
+      payload.identity.email = getFieldValueFromMessage(message, 'email');
       if (destination.Config.disableEmailAsTrackingProperty) {
         delete payload.event.meta.email;
       }
@@ -203,19 +190,19 @@ const responseBuilderSimple = async (message, category, destination) => {
       ? defaultPutRequestConfig.requestMethod
       : defaultPostRequestConfig.requestMethod;
     response.headers = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${destination.Config.apiKey}`
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${destination.Config.apiKey}`,
     };
     response.body.JSON = { ...payload };
     return response;
   }
   // fail-safety for developer error
-  throw new TransformationError("Payload could not be constructed");
+  throw new TransformationError('Payload could not be constructed');
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
   let category;
   switch (message.type.toLowerCase()) {
@@ -232,16 +219,12 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new InstrumentationError(
-        `Event type ${message.type} is not supported`
-      );
+      throw new InstrumentationError(`Event type ${message.type} is not supported`);
   }
   return responseBuilderSimple(message, category, destination);
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

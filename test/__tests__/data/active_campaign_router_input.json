@@ -47,18 +47,11 @@
         "firstName": "James",
         "lastName": "Doe",
         "phone": "92374162212",
-        "tags": [
-          "Test_User",
-          "Interested_User",
-          "DIY_Hobby"
-        ],
+        "tags": ["Test_User", "Interested_User", "DIY_Hobby"],
         "fieldInfo": {
           "Office": "Trastkiv",
           "Country": "Russia",
-          "Likes": [
-            "Potato",
-            "Onion"
-          ],
+          "Likes": ["Potato", "Onion"],
           "Random": "random"
         },
         "lists": [

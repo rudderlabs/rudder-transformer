@@ -41,14 +41,7 @@
     "sourceFromGenericMap": true,
     "required": false,
     "metadata": {
-      "excludes": [
-        "name",
-        "email",
-        "avatar",
-        "avatarURL",
-        "avatar_URL",
-        "companies"
-      ]
+      "excludes": ["name", "email", "avatar", "avatarURL", "avatar_URL", "companies"]
     }
   }
 ]

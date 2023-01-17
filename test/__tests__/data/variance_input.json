@@ -93,13 +93,11 @@
       }
     },
     "destination": {
-      "DestinationDefinition":{
-        "Config":
-        {
-            "cdkEnabled":true
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
         }
-
-    },
+      },
       "Config": {
         "webhookUrl": "http://6b0e6a60.ngrok.io",
         "authHeader": "Basic MVA4dUtGOF="
@@ -200,13 +198,11 @@
       }
     },
     "destination": {
-      "DestinationDefinition":{
-        "Config":
-        {
-            "cdkEnabled":true
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
         }
-
-    },
+      },
       "Config": {
         "webhookUrl": "https://6b0e6a60.ngrok.io/n"
       }
@@ -306,13 +302,11 @@
       }
     },
     "destination": {
-      "DestinationDefinition":{
-        "Config":
-        {
-            "cdkEnabled":true
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
         }
-
-    },
+      },
       "Config": {
         "webhookUrl": "https://6b0e6a60."
       }
@@ -393,13 +387,11 @@
       "request_ip": "127.0.0.1"
     },
     "destination": {
-      "DestinationDefinition":{
-        "Config":
-        {
-            "cdkEnabled":true
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
         }
-
-    },
+      },
       "Config": {
         "webhookUrl": "http://6b0e6a60.ngrok.io",
         "header": [

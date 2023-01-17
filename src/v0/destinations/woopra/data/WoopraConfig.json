@@ -1,100 +1,94 @@
 [
-    {
-        "sourceKeys": [
-            "traits.email",
-            "context.traits.email"
-        ],
-        "destKey": "cv_email"
-    },
-    {
-        "sourceKeys": "title",
-        "destKey": "cv_title",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys": "birthday",
-        "destKey": "cv_birthday",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys": [
-            "traits.age",
-            "context.traits.age"
-        ],
-        "destKey": "cv_age"
-    },
-    {
-        "sourceKeys": "userIdOnly",
-        "destKey": "cv_id",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys": "timestamp",
-        "destKey": "timestamp",
-        "sourceFromGenericMap": true,
-        "metadata": {
-            "type": "timestamp"
-        }
-    },
-    {
-        "sourceKeys": "firstName",
-        "destKey": "cv_firstname",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys": "lastName",
-        "destKey": "cv_lastname",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys": "middleName",
-        "destKey": "cv_middlename",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys": "name",
-        "destKey": "cv_name",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys": "city",
-        "destKey": "cv_city",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys": "website",
-        "destKey": "cv_website",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys": "state",
-        "destKey": "cv_state",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys": "zipcode",
-        "destKey": "cv_zipcode",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys": "context.ip",
-        "destKey": "cv_ip"
-    },
-    {
-        "sourceKeys": "country",
-        "destKey": "cv_country",
-        "sourceFromGenericMap": true
-    },
-    {
-        "sourceKeys": "context.device.type",
-        "destKey": "device"
-    },
-    {
-        "sourceKeys": "context.app.name",
-        "destKey": "app"
-    },
-    {
-        "sourceKeys": "context.os.name",
-        "destKey": "os"
+  {
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "destKey": "cv_email"
+  },
+  {
+    "sourceKeys": "title",
+    "destKey": "cv_title",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "birthday",
+    "destKey": "cv_birthday",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": ["traits.age", "context.traits.age"],
+    "destKey": "cv_age"
+  },
+  {
+    "sourceKeys": "userIdOnly",
+    "destKey": "cv_id",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "timestamp",
+    "destKey": "timestamp",
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "timestamp"
     }
+  },
+  {
+    "sourceKeys": "firstName",
+    "destKey": "cv_firstname",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "lastName",
+    "destKey": "cv_lastname",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "middleName",
+    "destKey": "cv_middlename",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "name",
+    "destKey": "cv_name",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "city",
+    "destKey": "cv_city",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "website",
+    "destKey": "cv_website",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "state",
+    "destKey": "cv_state",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "zipcode",
+    "destKey": "cv_zipcode",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "context.ip",
+    "destKey": "cv_ip"
+  },
+  {
+    "sourceKeys": "country",
+    "destKey": "cv_country",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "context.device.type",
+    "destKey": "device"
+  },
+  {
+    "sourceKeys": "context.app.name",
+    "destKey": "app"
+  },
+  {
+    "sourceKeys": "context.os.name",
+    "destKey": "os"
+  }
 ]

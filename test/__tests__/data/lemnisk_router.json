@@ -413,7 +413,7 @@
                     "errorType": "configuration"
                 },
                 "batched": false,
-                "statusCode": 500,
+                "statusCode": 400,
                 "error": "Configuration for Web Mode requires write key and region url"
             },
             {

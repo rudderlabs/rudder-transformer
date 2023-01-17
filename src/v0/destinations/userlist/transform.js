@@ -1,15 +1,15 @@
-const { EventType } = require("../../../constants");
+const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   getFieldValueFromMessage,
   isBlank,
-  simpleProcessRouterDest
-} = require("../../util");
+  simpleProcessRouterDest,
+} = require('../../util');
 
-const { endpoint } = require("./config");
+const { endpoint } = require('./config');
 
-const { InstrumentationError } = require("../../util/errorTypes");
+const { InstrumentationError } = require('../../util/errorTypes');
 
 // ------------------------------------------------
 // Userlist built a custom endpoint for Rudderstack that processes the messages according to our spec.
@@ -23,7 +23,7 @@ function normalizeMessage(message) {
   return {
     ...message,
     type: message.type && message.type.toLowerCase(),
-    userId: getFieldValueFromMessage(message, "userIdOnly")
+    userId: getFieldValueFromMessage(message, 'userIdOnly'),
   };
 }
 
@@ -34,8 +34,8 @@ function buildResponse(message, destination) {
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    "Content-Type": "application/json",
-    Authorization: `Push ${pushKey}`
+    'Content-Type': 'application/json',
+    Authorization: `Push ${pushKey}`,
   };
   response.body.JSON = message;
   response.statusCode = 200;
@@ -54,17 +54,12 @@ function processSingleMessage(message, destination) {
     case EventType.GROUP:
       return buildResponse(message, destination);
     default:
-      throw new InstrumentationError(
-        `Event type ${message.type} is not supported`
-      );
+      throw new InstrumentationError(`Event type ${message.type} is not supported`);
   }
 }
 
 function process(event) {
-  return processSingleMessage(
-    normalizeMessage(event.message),
-    event.destination
-  );
+  return processSingleMessage(normalizeMessage(event.message), event.destination);
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {

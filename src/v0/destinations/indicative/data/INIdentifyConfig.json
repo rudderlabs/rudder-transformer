@@ -13,17 +13,10 @@
   },
   {
     "destKey": "properties",
-    "sourceKeys": [
-      "traits",
-      "context.traits"
-    ],
+    "sourceKeys": ["traits", "context.traits"],
     "required": false,
     "metadata": {
-      "excludes": [
-        "anonymousId",
-        "userId",
-        "id"
-      ]
+      "excludes": ["anonymousId", "userId", "id"]
     }
   }
 ]

@@ -1,4 +1,4 @@
-const { EventType } = require("../../../constants");
+const { EventType } = require('../../../constants');
 
 const {
   identifyMapping,
@@ -7,8 +7,8 @@ const {
   BASE_URL_EU,
   BASE_URL_US,
   RESERVED_TRAITS_MAPPING,
-  AIRSHIP_TRACK_EXCLUSION
-} = require("./config");
+  AIRSHIP_TRACK_EXCLUSION,
+} = require('./config');
 
 const {
   constructPayload,
@@ -20,46 +20,41 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   extractCustomFields,
   isEmptyObject,
-  simpleProcessRouterDest
-} = require("../../util");
-const {
-  InstrumentationError,
-  ConfigurationError
-} = require("../../util/errorTypes");
+  simpleProcessRouterDest,
+} = require('../../util');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const identifyResponseBuilder = (message, { Config }) => {
   const tagPayload = constructPayload(message, identifyMapping);
   const { apiKey, dataCenter } = Config;
 
   if (!apiKey)
-    throw new ConfigurationError(
-      "API Key is required for authorization for Identify events"
-    );
+    throw new ConfigurationError('API Key is required for authorization for Identify events');
 
   let BASE_URL = BASE_URL_US;
   // check the region and which api end point should be used
   BASE_URL = dataCenter ? BASE_URL_EU : BASE_URL;
 
-  const traits = flattenJson(getFieldValueFromMessage(message, "traits"));
+  const traits = flattenJson(getFieldValueFromMessage(message, 'traits'));
   if (!isDefinedAndNotNullAndNotEmpty(traits)) {
     throw new InstrumentationError(
-      "For identify, tags or attributes properties are required under traits"
+      'For identify, tags or attributes properties are required under traits',
     );
   }
 
   // Creating tags and attribute payload
   tagPayload.add = { rudderstack_integration: [] };
   tagPayload.remove = { rudderstack_integration: [] };
-  let timestamp = getFieldValueFromMessage(message, "timestamp");
-  timestamp = new Date(timestamp).toISOString().replace(/\.[0-9]{3}/, "");
+  let timestamp = getFieldValueFromMessage(message, 'timestamp');
+  timestamp = new Date(timestamp).toISOString().replace(/\.\d{3}/, '');
 
   // Creating attribute payload
   const attributePayload = {};
   attributePayload.attributes = [];
-  Object.keys(traits).forEach(key => {
+  Object.keys(traits).forEach((key) => {
     // tags
-    if (typeof traits[key] === "boolean") {
-      const tag = key.toLowerCase().replace(/\./g, "_");
+    if (typeof traits[key] === 'boolean') {
+      const tag = key.toLowerCase().replace(/\./g, '_');
       if (traits[key] === true) {
         tagPayload.add.rudderstack_integration.push(tag);
       }
@@ -68,14 +63,14 @@ const identifyResponseBuilder = (message, { Config }) => {
       }
     }
     // attribute
-    if (typeof traits[key] !== "boolean") {
+    if (typeof traits[key] !== 'boolean') {
       const attribute = {};
-      attribute.action = "set";
+      attribute.action = 'set';
       const keyMapped = RESERVED_TRAITS_MAPPING[key.toLowerCase()];
       if (keyMapped) {
         attribute.key = keyMapped;
       } else {
-        attribute.key = key.replace(/\./g, "_");
+        attribute.key = key.replace(/\./g, '_');
       }
       attribute.value = traits[key];
       attribute.timestamp = timestamp;
@@ -88,39 +83,36 @@ const identifyResponseBuilder = (message, { Config }) => {
   const arrayPayload = [];
   // Creating tag response
   if (
-    tagPayload.add.rudderstack_integration.length ||
-    tagPayload.remove.rudderstack_integration.length
+    tagPayload.add.rudderstack_integration.length > 0 ||
+    tagPayload.remove.rudderstack_integration.length > 0
   ) {
-    if (!tagPayload.add.rudderstack_integration.length) delete tagPayload.add;
-    if (!tagPayload.remove.rudderstack_integration.length)
-      delete tagPayload.remove;
+    if (tagPayload.add.rudderstack_integration.length === 0) delete tagPayload.add;
+    if (tagPayload.remove.rudderstack_integration.length === 0) delete tagPayload.remove;
     tagResponse = defaultRequestConfig();
     tagResponse.endpoint = `${BASE_URL}/api/named_users/tags`;
     tagResponse.headers = {
-      "Content-Type": "application/json",
-      Accept: "application/vnd.urbanairship+json; version=3",
-      Authorization: `Bearer ${apiKey}`
+      'Content-Type': 'application/json',
+      Accept: 'application/vnd.urbanairship+json; version=3',
+      Authorization: `Bearer ${apiKey}`,
     };
     tagResponse.method = defaultPostRequestConfig.requestMethod;
     tagResponse.body.JSON = removeUndefinedAndNullValues(tagPayload);
     arrayPayload.push(tagResponse);
   }
   // Creating attribute response
-  if (attributePayload.attributes.length) {
+  if (attributePayload.attributes.length > 0) {
     attributeResponse = defaultRequestConfig();
     attributeResponse.endpoint = `${BASE_URL}/api/named_users/${getFieldValueFromMessage(
       message,
-      "userId"
+      'userId',
     )}/attributes`;
     attributeResponse.headers = {
-      "Content-Type": "application/json",
-      Accept: "application/vnd.urbanairship+json; version=3",
-      Authorization: `Bearer ${apiKey}`
+      'Content-Type': 'application/json',
+      Accept: 'application/vnd.urbanairship+json; version=3',
+      Authorization: `Bearer ${apiKey}`,
     };
     attributeResponse.method = defaultPostRequestConfig.requestMethod;
-    attributeResponse.body.JSON = removeUndefinedAndNullValues(
-      attributePayload
-    );
+    attributeResponse.body.JSON = removeUndefinedAndNullValues(attributePayload);
     arrayPayload.push(attributeResponse);
   }
 
@@ -130,52 +122,42 @@ const identifyResponseBuilder = (message, { Config }) => {
 const trackResponseBuilder = async (message, { Config }) => {
   let name = message.event;
   if (!name) {
-    throw new InstrumentationError("event name is required for track");
+    throw new InstrumentationError('event name is required for track');
   }
 
   name = name.toLowerCase();
   const payload = constructPayload(message, trackMapping);
   let properties = {};
-  properties = extractCustomFields(
-    message,
-    properties,
-    ["properties"],
-    AIRSHIP_TRACK_EXCLUSION
-  );
+  properties = extractCustomFields(message, properties, ['properties'], AIRSHIP_TRACK_EXCLUSION);
   if (!isEmptyObject(properties)) {
     payload.properties = properties;
   }
 
-  payload.name = name.replace(/\s+/g, "_");
+  payload.name = name.replace(/\s+/g, '_');
   if (payload.value) {
-    payload.value.replace(/\s+/g, "_");
+    payload.value.replace(/\s+/g, '_');
   }
   const { appKey, dataCenter, apiKey } = Config;
 
   if (!appKey || !apiKey) {
     if (!appKey)
-      throw new ConfigurationError(
-        "App Key is required for authorization for track events"
-      );
-    else
-      throw new ConfigurationError(
-        "API Key is required for authorization for track events"
-      );
+      throw new ConfigurationError('App Key is required for authorization for track events');
+    else throw new ConfigurationError('API Key is required for authorization for track events');
   }
   let BASE_URL = BASE_URL_US;
   // check the region and which api end point should be used
   BASE_URL = dataCenter ? BASE_URL_EU : BASE_URL;
 
   const response = defaultRequestConfig();
-  const timestamp = getFieldValueFromMessage(message, "timestamp");
+  const timestamp = getFieldValueFromMessage(message, 'timestamp');
   if (timestamp) response.body.JSON.occured = timestamp;
   response.body.JSON.user = {};
   response.body.JSON.user.named_user_id = message.userId;
   response.headers = {
-    "Content-Type": "application/json",
-    Accept: "application/vnd.urbanairship+json; version=3",
-    "X-UA-Appkey": `${appKey}`,
-    Authorization: `Bearer ${apiKey}`
+    'Content-Type': 'application/json',
+    Accept: 'application/vnd.urbanairship+json; version=3',
+    'X-UA-Appkey': `${appKey}`,
+    Authorization: `Bearer ${apiKey}`,
   };
 
   response.endpoint = `${BASE_URL}/api/custom-events`;
@@ -190,32 +172,30 @@ const groupResponseBuilder = (message, { Config }) => {
   const { apiKey, dataCenter } = Config;
 
   if (!apiKey)
-    throw new ConfigurationError(
-      "API Key is required for authorization for group events"
-    );
+    throw new ConfigurationError('API Key is required for authorization for group events');
 
   let BASE_URL = BASE_URL_US;
   // check the region and which api end point should be used
   BASE_URL = dataCenter ? BASE_URL_EU : BASE_URL;
 
-  const traits = flattenJson(getFieldValueFromMessage(message, "traits"));
+  const traits = flattenJson(getFieldValueFromMessage(message, 'traits'));
   if (!isDefinedAndNotNullAndNotEmpty(traits)) {
     throw new InstrumentationError(
-      "For group, tags or attributes properties are required under traits"
+      'For group, tags or attributes properties are required under traits',
     );
   }
 
   tagPayload.add = { rudderstack_integration_group: [] };
   tagPayload.remove = { rudderstack_integration_group: [] };
-  let timestamp = getFieldValueFromMessage(message, "timestamp");
-  timestamp = new Date(timestamp).toISOString().replace(/\.[0-9]{3}/, "");
+  let timestamp = getFieldValueFromMessage(message, 'timestamp');
+  timestamp = new Date(timestamp).toISOString().replace(/\.\d{3}/, '');
 
   const attributePayload = {};
   attributePayload.attributes = [];
-  Object.keys(traits).forEach(key => {
+  Object.keys(traits).forEach((key) => {
     // tags
-    if (typeof traits[key] === "boolean") {
-      const tag = key.toLowerCase().replace(/\./g, "_");
+    if (typeof traits[key] === 'boolean') {
+      const tag = key.toLowerCase().replace(/\./g, '_');
       if (traits[key] === true) {
         tagPayload.add.rudderstack_integration_group.push(tag);
       }
@@ -224,14 +204,14 @@ const groupResponseBuilder = (message, { Config }) => {
       }
     }
     // attribute
-    if (typeof traits[key] !== "boolean") {
+    if (typeof traits[key] !== 'boolean') {
       const attribute = {};
-      attribute.action = "set";
+      attribute.action = 'set';
       const keyMapped = RESERVED_TRAITS_MAPPING[key.toLowerCase()];
       if (keyMapped) {
         attribute.key = keyMapped;
       } else {
-        attribute.key = key.replace(/\./g, "_");
+        attribute.key = key.replace(/\./g, '_');
       }
       attribute.value = traits[key];
       attribute.timestamp = timestamp;
@@ -244,52 +224,46 @@ const groupResponseBuilder = (message, { Config }) => {
   const arrayPayload = [];
   // Creating tag response
   if (
-    tagPayload.add.rudderstack_integration_group.length ||
-    tagPayload.remove.rudderstack_integration_group.length
+    tagPayload.add.rudderstack_integration_group.length > 0 ||
+    tagPayload.remove.rudderstack_integration_group.length > 0
   ) {
-    if (!tagPayload.add.rudderstack_integration_group.length)
-      delete tagPayload.add;
-    if (!tagPayload.remove.rudderstack_integration_group.length)
-      delete tagPayload.remove;
+    if (tagPayload.add.rudderstack_integration_group.length === 0) delete tagPayload.add;
+    if (tagPayload.remove.rudderstack_integration_group.length === 0) delete tagPayload.remove;
 
     tagResponse = defaultRequestConfig();
     tagResponse.endpoint = `${BASE_URL}/api/named_users/tags`;
     tagResponse.headers = {
-      "Content-Type": "application/json",
-      Accept: "application/vnd.urbanairship+json; version=3",
-      Authorization: `Bearer ${apiKey}`
+      'Content-Type': 'application/json',
+      Accept: 'application/vnd.urbanairship+json; version=3',
+      Authorization: `Bearer ${apiKey}`,
     };
     tagResponse.method = defaultPostRequestConfig.requestMethod;
     tagResponse.body.JSON = removeUndefinedAndNullValues(tagPayload);
     arrayPayload.push(tagResponse);
   }
   // Creating attribute response
-  if (attributePayload.attributes.length) {
+  if (attributePayload.attributes.length > 0) {
     attributeResponse = defaultRequestConfig();
     attributeResponse.endpoint = `${BASE_URL}/api/named_users/${getFieldValueFromMessage(
       message,
-      "userId"
+      'userId',
     )}/attributes`;
     attributeResponse.headers = {
-      "Content-Type": "application/json",
-      Accept: "application/vnd.urbanairship+json; version=3",
-      Authorization: `Bearer ${apiKey}`
+      'Content-Type': 'application/json',
+      Accept: 'application/vnd.urbanairship+json; version=3',
+      Authorization: `Bearer ${apiKey}`,
     };
     attributeResponse.method = defaultPostRequestConfig.requestMethod;
-    attributeResponse.body.JSON = removeUndefinedAndNullValues(
-      attributePayload
-    );
+    attributeResponse.body.JSON = removeUndefinedAndNullValues(attributePayload);
     arrayPayload.push(attributeResponse);
   }
   return arrayPayload;
 };
 
-const process = async event => {
+const process = async (event) => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new InstrumentationError(
-      "Message Type is not present. Aborting message."
-    );
+    throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
 
   const messageType = message.type.toLowerCase();
@@ -306,9 +280,7 @@ const process = async event => {
       response = await groupResponseBuilder(message, destination);
       break;
     default:
-      throw new InstrumentationError(
-        `message type ${messageType} not supported`
-      );
+      throw new InstrumentationError(`message type ${messageType} not supported`);
   }
   return response;
 };

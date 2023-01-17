@@ -6,11 +6,9 @@ const levelWarn = 2; // Logs about warnings which dont immediately halt the appl
 const levelError = 3; // Logs about errors which dont immediately halt the application
 // any value greater than levelError will work as levelNone
 
-let logLevel = process.env.LOG_LEVEL
-  ? parseInt(process.env.LOG_LEVEL, 10)
-  : levelInfo;
+let logLevel = process.env.LOG_LEVEL ? parseInt(process.env.LOG_LEVEL, 10) : levelInfo;
 
-const setLogLevel = level => {
+const setLogLevel = (level) => {
   logLevel = level || logLevel;
 };
 
@@ -47,5 +45,5 @@ module.exports = {
   levelDebug,
   levelInfo,
   levelWarn,
-  levelError
+  levelError,
 };

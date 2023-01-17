@@ -41,20 +41,12 @@
   },
   {
     "destKey": "$city",
-    "sourceKeys": [
-      "context.traits.city",
-      "context.traits.address.city",
-      "properties.city"
-    ],
+    "sourceKeys": ["context.traits.city", "context.traits.address.city", "properties.city"],
     "required": false
   },
   {
     "destKey": "$region",
-    "sourceKeys": [
-      "context.traits.region",
-      "context.traits.address.region",
-      "properties.region"
-    ],
+    "sourceKeys": ["context.traits.region", "context.traits.address.region", "properties.region"],
     "required": false
   },
   {
@@ -68,11 +60,7 @@
   },
   {
     "destKey": "$zip",
-    "sourceKeys": [
-      "context.traits.zip",
-      "context.traits.address.postalcode",
-      "properties.zip"
-    ],
+    "sourceKeys": ["context.traits.zip", "context.traits.address.postalcode", "properties.zip"],
     "required": false
   },
   {

@@ -1,11 +1,11 @@
-const ivm = require("isolated-vm");
-const fetch = require("node-fetch");
-const _ = require("lodash");
+const ivm = require('isolated-vm');
+const fetch = require('node-fetch');
+const _ = require('lodash');
 
-const stats = require("./stats");
-const { getLibraryCodeV1 } = require("./customTransforrmationsStore-v1");
-const { parserForImport } = require("./parser");
-const logger = require("../logger");
+const stats = require('./stats');
+const { getLibraryCodeV1 } = require('./customTransforrmationsStore-v1');
+const { parserForImport } = require('./parser');
+const logger = require('../logger');
 
 const isolateVmMem = 128;
 async function evaluateModule(isolate, context, moduleCode) {
@@ -25,15 +25,13 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   const createIvmStartTime = new Date();
   const logs = [];
   const libraries = await Promise.all(
-    libraryVersionIds.map(async libraryVersionId =>
-      getLibraryCodeV1(libraryVersionId)
-    )
+    libraryVersionIds.map(async (libraryVersionId) => getLibraryCodeV1(libraryVersionId)),
   );
   const librariesMap = {};
   if (code && libraries) {
     const extractedLibraries = Object.keys(parserForImport(code));
     // TODO: Check if this should this be &&
-    libraries.forEach(library => {
+    libraries.forEach((library) => {
       const libHandleName = _.camelCase(library.name);
       if (extractedLibraries.includes(libHandleName)) {
         librariesMap[libHandleName] = library.code;
@@ -123,9 +121,9 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   await Promise.all(
     Object.entries(librariesMap).map(async ([moduleName, moduleCode]) => {
       compiledModules[moduleName] = {
-        module: await loadModule(isolate, context, moduleCode)
+        module: await loadModule(isolate, context, moduleCode),
       };
-    })
+    }),
   );
 
   // TODO: Add rudder nodejs sdk to libraries
@@ -134,32 +132,28 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
 
   // This make the global object available in the context as 'global'. We use 'derefInto()' here
   // because otherwise 'global' would actually be a Reference{} object in the new isolate.
-  await jail.set("global", jail.derefInto());
+  await jail.set('global', jail.derefInto());
 
   // The entire ivm module is transferable! We transfer the module to the new isolate so that we
   // have access to the library from within the isolate.
-  await jail.set("_ivm", ivm);
+  await jail.set('_ivm', ivm);
   await jail.set(
-    "_fetch",
+    '_fetch',
     new ivm.Reference(async (resolve, ...args) => {
       try {
         const fetchStartTime = new Date();
         const res = await fetch(...args);
         const data = await res.json();
-        stats.timing("fetch_call_duration", fetchStartTime, { versionId });
-        resolve.applyIgnored(undefined, [
-          new ivm.ExternalCopy(data).copyInto()
-        ]);
+        stats.timing('fetch_call_duration', fetchStartTime, { versionId });
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
-        resolve.applyIgnored(undefined, [
-          new ivm.ExternalCopy("ERROR").copyInto()
-        ]);
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
       }
-    })
+    }),
   );
 
   await jail.set(
-    "_fetchV2",
+    '_fetchV2',
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
@@ -172,40 +166,34 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
           url: res.url,
           status: res.status,
           headers: headersContent,
-          body: await res.text()
+          body: await res.text(),
         };
 
         try {
           data.body = JSON.parse(data.body);
         } catch (e) {}
 
-        stats.timing("fetchV2_call_duration", fetchStartTime, { versionId });
-        resolve.applyIgnored(undefined, [
-          new ivm.ExternalCopy(data).copyInto()
-        ]);
+        stats.timing('fetchV2_call_duration', fetchStartTime, { versionId });
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
-        const err = JSON.parse(
-          JSON.stringify(error, Object.getOwnPropertyNames(error))
-        );
+        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
         reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
       }
-    })
+    }),
   );
 
-  await jail.set("log", function(...args) {
+  await jail.set('log', function (...args) {
     if (testMode) {
-      let logString = "Log:";
-      args.forEach(arg => {
-        logString = logString.concat(
-          ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
-        );
+      let logString = 'Log:';
+      args.forEach((arg) => {
+        logString = logString.concat(` ${typeof arg === 'object' ? JSON.stringify(arg) : arg}`);
       });
       logs.push(logString);
     }
   });
 
   const bootstrap = await isolate.compileScript(
-    "new " +
+    'new ' +
       `
     function() {
       // Grab a reference to the ivm module and delete it from global scope. Now this closure is the
@@ -264,14 +252,14 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
         });
       }
 
-        `
+        `,
   );
 
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
   // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
   const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`);
-  await customScriptModule.instantiate(context, spec => {
+  await customScriptModule.instantiate(context, (spec) => {
     if (librariesMap[spec]) {
       return compiledModules[spec].module;
     }
@@ -280,34 +268,32 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   });
   await customScriptModule.evaluate();
 
-  const supportedFuncNames = ["transformEvent", "transformBatch"];
+  const supportedFuncNames = ['transformEvent', 'transformBatch'];
   const supportedFuncs = {};
 
   await Promise.all(
-    supportedFuncNames.map(async sName => {
+    supportedFuncNames.map(async (sName) => {
       const funcRef = await customScriptModule.namespace.get(sName, {
-        reference: true
+        reference: true,
       });
-      if (funcRef && funcRef.typeof === "function") {
+      if (funcRef && funcRef.typeof === 'function') {
         supportedFuncs[sName] = funcRef;
       }
-    })
+    }),
   );
 
   const availableFuncNames = Object.keys(supportedFuncs);
   if (availableFuncNames.length !== 1) {
     throw new Error(
-      `Expected one of ${supportedFuncNames}. Found ${Object.values(
-        availableFuncNames
-      )}`
+      `Expected one of ${supportedFuncNames}. Found ${Object.values(availableFuncNames)}`,
     );
   }
 
-  const fnRef = await customScriptModule.namespace.get("transformWrapper", {
-    reference: true
+  const fnRef = await customScriptModule.namespace.get('transformWrapper', {
+    reference: true,
   });
   const fName = availableFuncNames[0];
-  stats.timing("createivm_duration", createIvmStartTime);
+  stats.timing('createivm_duration', createIvmStartTime);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
 
@@ -322,7 +308,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
     isolateStartWallTime,
     isolateStartCPUTime,
     fName,
-    logs
+    logs,
   };
 }
 
@@ -337,13 +323,13 @@ async function getFactory(code, libraryVersionIds, versionId, testMode) {
     create: async () => {
       return createIvm(code, libraryVersionIds, versionId, testMode);
     },
-    destroy: async client => {
+    destroy: async (client) => {
       client.fnRef.release();
       client.bootstrap.release();
       client.customScriptModule.release();
       client.context.release();
       await client.isolate.dispose();
-    }
+    },
   };
 
   return factory;
@@ -351,5 +337,5 @@ async function getFactory(code, libraryVersionIds, versionId, testMode) {
 
 module.exports = {
   getFactory,
-  compileUserLibrary
+  compileUserLibrary,
 };

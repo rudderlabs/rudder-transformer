@@ -1,13 +1,9 @@
-const qs = require("qs");
-const { httpPOST } = require("../../../adapters/network");
-const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
-const { getDestinationExternalID } = require("../../util");
-const {
-  InstrumentationError,
-  TransformationError,
-  NetworkError
-} = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+const qs = require('qs');
+const { httpPOST } = require('../../../adapters/network');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { getDestinationExternalID } = require('../../util');
+const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 /**
  * Function to retrieve userId from canny using axios
@@ -16,26 +12,24 @@ const tags = require("../../util/tags");
  * @returns canny userId
  */
 const retrieveUserId = async (apiKey, message) => {
-  const cannyId = getDestinationExternalID(message, "cannyUserId");
+  const cannyId = getDestinationExternalID(message, 'cannyUserId');
   if (cannyId) {
     return cannyId;
   }
 
-  const url = "https://canny.io/api/v1/users/retrieve";
+  const url = 'https://canny.io/api/v1/users/retrieve';
 
   const email =
-    message.traits?.email ||
-    message.context?.traits?.email ||
-    message.properties?.email;
+    message.traits?.email || message.context?.traits?.email || message.properties?.email;
   const { userId } = message;
 
   const header = {
-    "Content-Type": "application/x-www-form-urlencoded",
-    Accept: "application/json"
+    'Content-Type': 'application/x-www-form-urlencoded',
+    Accept: 'application/json',
   };
 
   const requestBody = {
-    apiKey: `${apiKey}`
+    apiKey: `${apiKey}`,
   };
   if (email) {
     requestBody.email = `${email}`;
@@ -50,9 +44,9 @@ const retrieveUserId = async (apiKey, message) => {
       `[Canny]:: CannyUserID can't be gnerated due to ${response.data.error}`,
       response.data?.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(response.data?.status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(response.data?.status),
       },
-      response.data?.error
+      response.data?.error,
     );
   }
   return response?.response?.data?.data?.id || response?.response?.data?.id;
@@ -62,12 +56,12 @@ const retrieveUserId = async (apiKey, message) => {
  * Function to validate required fields for making identify call(i.e, create or update user)
  * @param payload
  */
-const validateIdentifyFields = payload => {
+const validateIdentifyFields = (payload) => {
   if (!payload.userID) {
-    throw new InstrumentationError("UserId is not present. Aborting message.");
+    throw new InstrumentationError('UserId is not present. Aborting message.');
   }
   if (!payload.name) {
-    throw new InstrumentationError("Name is not present. Aborting message.");
+    throw new InstrumentationError('Name is not present. Aborting message.');
   }
 };
 
@@ -75,15 +69,15 @@ const validateIdentifyFields = payload => {
  * Function to validate required fields for creating a post
  * @param payload
  */
-const validateCreatePostFields = payload => {
+const validateCreatePostFields = (payload) => {
   if (!payload.boardID) {
-    throw new InstrumentationError("BoardID is not present. Aborting message.");
+    throw new InstrumentationError('BoardID is not present. Aborting message.');
   }
   if (!payload.title) {
-    throw new InstrumentationError("Title is not present. Aborting message.");
+    throw new InstrumentationError('Title is not present. Aborting message.');
   }
   if (!payload.details) {
-    throw new InstrumentationError("Details is not present. Aborting message.");
+    throw new InstrumentationError('Details is not present. Aborting message.');
   }
 };
 
@@ -94,13 +88,11 @@ const validateCreatePostFields = payload => {
  */
 const validateEventMapping = (configuredEventsMap, event) => {
   if (!event) {
-    throw new InstrumentationError("Event name is required");
+    throw new InstrumentationError('Event name is required');
   }
 
   if (!configuredEventsMap[event]) {
-    throw new InstrumentationError(
-      `Event name (${event}) is not present in the mapping`
-    );
+    throw new InstrumentationError(`Event name (${event}) is not present in the mapping`);
   }
 };
 
@@ -108,5 +100,5 @@ module.exports = {
   retrieveUserId,
   validateIdentifyFields,
   validateCreatePostFields,
-  validateEventMapping
+  validateEventMapping,
 };

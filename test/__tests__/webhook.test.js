@@ -40,9 +40,19 @@ describe(`${name} Tests`, () => {
   });
 
   describe("Router Tests", () => {
-    it("Payload", async () => {
-      const routerOutput = await transformer.processRouterDest(inputRouterData);
-      expect(routerOutput).toEqual(expectedRouterData);
+    inputRouterData.forEach((input, index) => {
+      it(`${name} Tests: payload - ${index}`, async () => {
+        let output, expected;
+        try {
+          output = await transformer.processRouterDest(input);
+          expected = expectedRouterData[index];
+        } catch (error) {
+          output = error.message;
+          // console.log(output);
+          expected = expectedRouterData[index].message;
+        }
+        expect(output).toEqual(expected);
+      });
     });
   });
 });

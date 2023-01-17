@@ -51,6 +51,7 @@
     "SENDINBLUE": true,
     "ZENDESK": true,
     "MP": true,
-    "TIKTOK_ADS_OFFLINE_EVENTS": true
+    "TIKTOK_ADS_OFFLINE_EVENTS": true,
+    "CRITEO_AUDIENCE": true
   }
 }

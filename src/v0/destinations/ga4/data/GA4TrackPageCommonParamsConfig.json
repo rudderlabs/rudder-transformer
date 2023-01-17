@@ -9,7 +9,7 @@
   },
   {
     "destKey": "session_id",
-    "sourceKeys": ["properties.sessionId", "properties.session_id"],
+    "sourceKeys": ["properties.sessionId", "properties.session_id", "context.sessionId"],
     "required": false
   }
 ]

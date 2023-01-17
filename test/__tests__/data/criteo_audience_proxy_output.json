@@ -1,0 +1,37 @@
+[
+  {
+    "output": {
+      "status": 200,
+      "message": "Request Processed Successfully",
+      "destinationResponse": {
+        "response": "",
+        "status": 200
+      }
+    }
+  },
+  {
+    "output": {
+      "status": "401",
+      "destinationResponse": {
+        "errors": [
+          {
+            "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
+            "type": "authorization",
+            "code": "authorization-token-invalid",
+            "instance": "/2022-10/audiences/123/contactlist",
+            "title": "The authorization header is invalid"
+          }
+        ]
+      },
+      "message": "The authorization header is invalid during criteo_audience response transformation",
+      "statTags": {
+        "destType": "CRITEO_AUDIENCE",
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  }
+]

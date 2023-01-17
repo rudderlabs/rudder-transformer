@@ -1,16 +1,16 @@
-const Message = require("../message");
-const { refinePayload } = require("../../util");
-const trackMapping = require("./data/trackMapping.json");
+const Message = require('../message');
+const { refinePayload } = require('../../util');
+const trackMapping = require('./data/trackMapping.json');
 
-const buildTrackPayload = event => {
+const buildTrackPayload = (event) => {
   const message = new Message(`SATISMETER`);
-  message.setEventType("track");
+  message.setEventType('track');
   message.setPropertiesV2(event, trackMapping);
   message.event = `Survey ${event.event}`;
   return message;
 };
 
-const processEvent = event => {
+const processEvent = (event) => {
   const message = buildTrackPayload(event);
   // making sure we are returning either userId or AnonymousId
   if (!message?.userId && !message?.anonymousId) {
@@ -19,7 +19,7 @@ const processEvent = event => {
   return message;
 };
 
-const process = event => {
+const process = (event) => {
   const response = processEvent(event);
   const refinedResponse = refinePayload(response);
   return refinedResponse;

@@ -1,10 +1,10 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-prototype-builtins */
-const Handlebars = require("handlebars");
-const axios = require("axios");
-const get = require("get-value");
-const { EventType } = require("../../../constants");
-const { EndPoints, BASE_URL } = require("./config");
+const Handlebars = require('handlebars');
+const axios = require('axios');
+const get = require('get-value');
+const { EventType } = require('../../../constants');
+const { EndPoints, BASE_URL } = require('./config');
 const {
   getHashFromArray,
   removeUndefinedAndNullValues,
@@ -15,17 +15,17 @@ const {
   getFieldValueFromMessage,
   getDestinationExternalID,
   getStringValueOfJSON,
-  ErrorMessage
-} = require("../../util");
+  ErrorMessage,
+} = require('../../util');
 const {
   NetworkError,
   ConfigurationError,
   TransformationError,
   InstrumentationError,
-  NetworkInstrumentationError
-} = require("../../util/errorTypes");
-const tags = require("../../util/tags");
-const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
+  NetworkInstrumentationError,
+} = require('../../util/errorTypes');
+const tags = require('../../util/tags');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 
 /**
  *
@@ -40,14 +40,14 @@ const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
 const getTemplate = (message, destination) => {
   const { event } = message;
   const { eventTemplateMap } = destination.Config;
-  const hashMap = getHashFromArray(eventTemplateMap, "from", "to", false);
+  const hashMap = getHashFromArray(eventTemplateMap, 'from', 'to', false);
   if (!Object.keys(hashMap).includes(event)) {
     throw new ConfigurationError(
-      `${event} is not present in Event-Map template keys, aborting event`
+      `${event} is not present in Event-Map template keys, aborting event`,
     );
   }
 
-  return message.event ? hashMap[message.event] : null;
+  return event ? hashMap[event] : null;
 };
 
 /**
@@ -60,12 +60,9 @@ const getTemplate = (message, destination) => {
  * has to be present based on destination settings.
  */
 const validate = (email, phone, channelIdentifier) => {
-  if (
-    (channelIdentifier === "phone" && !phone) ||
-    (channelIdentifier === "email" && !email)
-  ) {
+  if ((channelIdentifier === 'phone' && !phone) || (channelIdentifier === 'email' && !email)) {
     throw new ConfigurationError(
-      `Mandatory field for Channel-Identifier :${channelIdentifier} not present`
+      `Mandatory field for Channel-Identifier :${channelIdentifier} not present`,
     );
   }
 };
@@ -87,8 +84,8 @@ const lookupContact = async (term, destination) => {
   try {
     res = await axios.get(`${BASE_URL}/contacts?page=1&term=${term}`, {
       headers: {
-        Authorization: `Bearer ${destination.Config.apiToken}`
-      }
+        Authorization: `Bearer ${destination.Config.apiToken}`,
+      },
     });
   } catch (err) {
     // check if exists err.response && err.response.status else 500
@@ -98,22 +95,16 @@ const lookupContact = async (term, destination) => {
       status,
 
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
-      err.response
+      err.response,
     );
   }
-  if (
-    res &&
-    res.status === 200 &&
-    res.data &&
-    res.data.data &&
-    Array.isArray(res.data.data)
-  ) {
+  if (res && res.status === 200 && res.data && res.data.data && Array.isArray(res.data.data)) {
     const { data } = res.data;
     if (data.length > 1) {
       throw new NetworkInstrumentationError(
-        `Inside lookupContact, duplicates present for identifier : ${term}`
+        `Inside lookupContact, duplicates present for identifier : ${term}`,
       );
     } else if (data.length === 1) {
       return data[0].id;
@@ -139,18 +130,18 @@ const contactBuilderTrengo = async (
   destination,
   identifier,
   extIds,
-  createScope = true
+  createScope = true,
 ) => {
   let result;
 
   // External id will override the channelId
-  const externalId = get(extIds, "externalId");
-  const contactName = getFieldValueFromMessage(message, "name")
-    ? getFieldValueFromMessage(message, "name")
-    : `${getFieldValueFromMessage(
+  const externalId = get(extIds, 'externalId');
+  const contactName = getFieldValueFromMessage(message, 'name')
+    ? getFieldValueFromMessage(message, 'name')
+    : `${getFieldValueFromMessage(message, 'firstName')} ${getFieldValueFromMessage(
         message,
-        "firstName"
-      )} ${getFieldValueFromMessage(message, "lastName")}`;
+        'lastName',
+      )}`;
 
   if (createScope) {
     // In create scope we directly create the payload for creating new contact
@@ -159,26 +150,25 @@ const contactBuilderTrengo = async (
     let payload = {
       name: contactName,
       identifier,
-      channel_id: externalId || destination.Config.channelId
+      channel_id: externalId || destination.Config.channelId,
     };
     payload = removeUndefinedAndNullValues(payload);
     result = {
       payload,
-      endpoint: `${BASE_URL}/channels/${externalId ||
-        destination.Config.channelId}/contacts`,
-      method: "POST"
+      endpoint: `${BASE_URL}/channels/${externalId || destination.Config.channelId}/contacts`,
+      method: 'POST',
     };
   } else {
     // If we are in update scope we need to search the contact and get the contactId
     // using the identifier (email/phone) we have.
-    let contactId = get(extIds, "contactId");
+    let contactId = get(extIds, 'contactId');
     if (!contactId) {
       // If we alrady dont have contactId in our message we do lookup
       contactId = await lookupContact(identifier, destination);
       if (!contactId) {
         // In case contactId is returned null we throw error (This indicates and search API issue in trengo end)
         throw new NetworkInstrumentationError(
-          `LookupContact failed for term:${identifier} update failed, aborting as dedup option is enabled`
+          `LookupContact failed for term:${identifier} update failed, aborting as dedup option is enabled`,
         );
       }
       // In case we did not find the contact for this identifier we return -1
@@ -189,13 +179,13 @@ const contactBuilderTrengo = async (
 
     // If we get contactId we update that contact with below payload
     let payload = {
-      name: contactName
+      name: contactName,
     };
     payload = removeUndefinedAndNullValues(payload);
     result = {
       payload,
       endpoint: `${BASE_URL}/contacts/${contactId}`,
-      method: "PUT"
+      method: 'PUT',
     };
   }
   return result;
@@ -204,51 +194,50 @@ const contactBuilderTrengo = async (
 const ticketBuilderTrengo = async (message, destination, identifer, extIds) => {
   let subjectLine;
   const template = getTemplate(message, destination);
-  const externalId = get(extIds, "externalId");
-  let contactId = get(extIds, "contactId");
+  const externalId = get(extIds, 'externalId');
+  let contactId = get(extIds, 'contactId');
   if (!contactId) {
     contactId = await lookupContact(identifer, destination);
     if (!contactId) {
       throw new InstrumentationError(
-        `LookupContact failed for term:${identifer} track event failed`
+        `LookupContact failed for term:${identifer} track event failed`,
       );
     }
 
     if (contactId === -1) {
-      throw new InstrumentationError(
-        `No contact found for term:${identifer} track event failed`
-      );
+      throw new InstrumentationError(`No contact found for term:${identifer} track event failed`);
     }
   }
 
-  if (destination.Config.channelIdentifier === "email") {
-    // check with keys
-    if (template && template.length > 0) {
-      try {
-        const hTemplate = Handlebars.compile(template.trim());
-        const templateInput = {
-          event: message.event,
-          properties: getStringValueOfJSON(message.properties),
-          ...message.properties
-        };
-        subjectLine = hTemplate(templateInput).trim();
-      } catch (err) {
-        throw new InstrumentationError(
-          `Error occurred in parsing event template for ${message.event}`
-        );
-      }
+  if (
+    destination.Config.channelIdentifier === 'email' && // check with keys
+    template &&
+    template.length > 0
+  ) {
+    try {
+      const hTemplate = Handlebars.compile(template.trim());
+      const templateInput = {
+        event: message.event,
+        properties: getStringValueOfJSON(message.properties),
+        ...message.properties,
+      };
+      subjectLine = hTemplate(templateInput).trim();
+    } catch (err) {
+      throw new InstrumentationError(
+        `Error occurred in parsing event template for ${message.event}`,
+      );
     }
   }
   let ticketPayload = {
     contact_id: contactId,
     channel_id: externalId || destination.Config.channelId,
-    subject: subjectLine
+    subject: subjectLine,
   };
   ticketPayload = removeUndefinedAndNullValues(ticketPayload);
   const result = {
     payload: ticketPayload,
     endpoint: EndPoints.createTicket,
-    method: "POST"
+    method: 'POST',
   };
   return result;
 };
@@ -267,24 +256,19 @@ const responseBuilderSimple = async (message, messageType, destination) => {
   let trengoPayload;
   // ChannelId is a mandatory field if it is not present in destination config
   // we will abort events.
-  if (
-    !destination.Config.channelId ||
-    destination.Config.channelId.length === 0
-  ) {
-    throw new InstrumentationError(
-      "Could not process event, missing mandatory field channelId"
-    );
+  if (!destination.Config.channelId || destination.Config.channelId.length === 0) {
+    throw new InstrumentationError('Could not process event, missing mandatory field channelId');
   }
 
-  const email = getFieldValueFromMessage(message, "email");
-  const phone = getFieldValueFromMessage(message, "phone");
+  const email = getFieldValueFromMessage(message, 'email');
+  const phone = getFieldValueFromMessage(message, 'phone');
   // If externalId is present It will take preference over ChannelId
   // If contactId is present we will not lookup for contactId
   const extIds = {
-    externalId: getDestinationExternalID(message, "trengoChannelId"),
-    contactId: getDestinationExternalID(message, "trengoContactId")
+    externalId: getDestinationExternalID(message, 'trengoChannelId'),
+    contactId: getDestinationExternalID(message, 'trengoContactId'),
   };
-  const { channelIdentifier, enableDedup } = destination.Config;
+  const { channelIdentifier, enableDedup, apiToken } = destination.Config;
   // In case of Identify type of events we create contacts or update
   if (messageType === EventType.IDENTIFY) {
     // If deduplication is enabled
@@ -296,9 +280,9 @@ const responseBuilderSimple = async (message, messageType, destination) => {
       trengoPayload = await contactBuilderTrengo(
         message,
         destination,
-        channelIdentifier === "email" ? email : phone,
+        channelIdentifier === 'email' ? email : phone,
         extIds,
-        false
+        false,
       );
       if (trengoPayload === -1) {
         // If not found create new
@@ -309,9 +293,9 @@ const responseBuilderSimple = async (message, messageType, destination) => {
         trengoPayload = await contactBuilderTrengo(
           message,
           destination,
-          channelIdentifier === "email" ? email : phone,
+          channelIdentifier === 'email' ? email : phone,
           extIds,
-          true
+          true,
         );
       }
     } else {
@@ -323,9 +307,9 @@ const responseBuilderSimple = async (message, messageType, destination) => {
       trengoPayload = await contactBuilderTrengo(
         message,
         destination,
-        channelIdentifier === "email" ? email : phone,
+        channelIdentifier === 'email' ? email : phone,
         extIds,
-        true
+        true,
       );
     }
   } else {
@@ -334,8 +318,8 @@ const responseBuilderSimple = async (message, messageType, destination) => {
     trengoPayload = await ticketBuilderTrengo(
       message,
       destination,
-      channelIdentifier === "email" ? email : phone,
-      extIds
+      channelIdentifier === 'email' ? email : phone,
+      extIds,
     );
   }
   // Wrapped payload with structure
@@ -348,16 +332,16 @@ const responseBuilderSimple = async (message, messageType, destination) => {
     const response = defaultRequestConfig();
     response.endpoint = trengoPayload.endpoint;
 
-    if (trengoPayload.method === "PUT") {
+    if (trengoPayload.method === 'PUT') {
       response.method = defaultPutRequestConfig.requestMethod;
     } else {
       response.method = defaultPostRequestConfig.requestMethod;
     }
 
     response.headers = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: `Bearer ${destination.Config.apiToken}`
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${apiToken}`,
     };
     response.body.JSON = trengoPayload.payload;
     return response;
@@ -377,19 +361,17 @@ const responseBuilderSimple = async (message, messageType, destination) => {
  */
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
   const messageType = message.type.toLowerCase();
   if (messageType !== EventType.IDENTIFY && messageType !== EventType.TRACK) {
-    throw new InstrumentationError(
-      `Event type ${messageType} is not supported`
-    );
+    throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   const resp = await responseBuilderSimple(message, messageType, destination);
   return resp;
 };
 
-const process = async event => {
+const process = async (event) => {
   const response = await processEvent(event.message, event.destination);
   return response;
 };

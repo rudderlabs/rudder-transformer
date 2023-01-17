@@ -177,6 +177,17 @@
         "statusCode": 200
       },
       {
+        "destination": {
+          "Config": {
+            "apiKey": "2c646069cc5ae3f22cc0dab36cd060ad",
+            "persistIqAttributesMapping": [
+              {
+                "from": "useroccupation",
+                "to": "occupation"
+              }
+            ]
+          }
+        },
         "metadata": [
           {
             "jobId": 3

@@ -1,79 +1,79 @@
 /* eslint-disable eqeqeq */
-const _ = require("lodash");
-const { isEmpty } = require("lodash");
+const _ = require('lodash');
+const { isEmpty } = require('lodash');
 const {
   isHttpStatusRetryable,
   isDefinedAndNotNullAndNotEmpty,
   isNonFuncObject,
-  isDefinedAndNotNull
-} = require("../../v0/util");
-const { AbortedError } = require("../../v0/util/errorTypes");
-const tags = require("../../v0/util/tags");
+  isDefinedAndNotNull,
+} = require('../../v0/util');
+const { AbortedError } = require('../../v0/util/errorTypes');
+const tags = require('../../v0/util/tags');
 
-const nodeSysErrorToStatus = code => {
+const nodeSysErrorToStatus = (code) => {
   const sysErrorToStatusMap = {
     EACCES: {
       status: 400,
-      message: "[EACCES] :: Permission denied"
+      message: '[EACCES] :: Permission denied',
     },
     EADDRINUSE: {
       status: 400,
-      message: "[EADDRINUSE] :: Address already in use"
+      message: '[EADDRINUSE] :: Address already in use',
     },
     ECONNREFUSED: {
       status: 500,
-      message: "[ECONNREFUSED] :: Connection refused"
+      message: '[ECONNREFUSED] :: Connection refused',
     },
     ECONNRESET: {
       status: 500,
-      message: "[ECONNRESET] :: Connection reset by peer"
+      message: '[ECONNRESET] :: Connection reset by peer',
     },
     EEXIST: {
       status: 400,
-      message: "[EEXIST] :: File exists"
+      message: '[EEXIST] :: File exists',
     },
     EISDIR: {
       status: 400,
-      message: "[EEXIST] :: Is a directory"
+      message: '[EEXIST] :: Is a directory',
     },
     EMFILE: {
       status: 400,
-      message: "[EMFILE] :: Too many open files in system"
+      message: '[EMFILE] :: Too many open files in system',
     },
     ENOENT: {
       status: 400,
-      message: "[ENOENT] :: No such file or directory"
+      message: '[ENOENT] :: No such file or directory',
     },
     ENOTDIR: {
       status: 400,
-      message: "[ENOTDIR] :: Not a directory"
+      message: '[ENOTDIR] :: Not a directory',
     },
     ENOTEMPTY: {
       status: 400,
-      message: "[ENOTEMPTY] :: Directory not empty)"
+      message: '[ENOTEMPTY] :: Directory not empty)',
     },
     ENOTFOUND: {
       status: 400,
-      message: "[ENOTFOUND] :: DNS lookup failed"
+      message: '[ENOTFOUND] :: DNS lookup failed',
     },
     EPERM: {
       status: 400,
-      message: "[EPERM] :: Operation not permitted"
+      message: '[EPERM] :: Operation not permitted',
     },
     EPIPE: {
       status: 400,
-      message: "[EPIPE] :: Broken pipe"
+      message: '[EPIPE] :: Broken pipe',
     },
     ETIMEDOUT: {
       status: 500,
-      message: "[ETIMEDOUT] :: Operation timed out"
-    }
+      message: '[ETIMEDOUT] :: Operation timed out',
+    },
   };
   return sysErrorToStatusMap[code] || { status: 400, message: `[${code}]` };
 };
 
 // Returns dynamic Meta based on Status Code as Input
-const getDynamicErrorType = statusCode => {
+const getDynamicErrorType = (statusCode) => {
   if (isHttpStatusRetryable(statusCode)) {
     return tags.ERROR_TYPES.RETRYABLE;
   }
@@ -85,19 +85,16 @@ const getDynamicErrorType = statusCode => {
   }
 };
 
-const parseDestResponse = (destResponse, destination = "") => {
+const parseDestResponse = (destResponse, destination = '') => {
   // validity of destResponse
-  if (
-    !isDefinedAndNotNullAndNotEmpty(destResponse) ||
-    !isNonFuncObject(destResponse)
-  ) {
+  if (!isDefinedAndNotNullAndNotEmpty(destResponse) || !isNonFuncObject(destResponse)) {
     throw new AbortedError(
       `[ResponseTransform]: Destination Response Invalid, for destination: ${destination}`,
       400,
-      destResponse
+      destResponse,
     );
   }
-  const { responseBody, status } = destResponse;
+  const { responseBody, status, payload } = destResponse;
   // validity of responseBody and status
   if (
     !isDefinedAndNotNull(responseBody) ||
@@ -108,24 +105,24 @@ const parseDestResponse = (destResponse, destination = "") => {
     throw new AbortedError(
       `[ResponseTransform]: Destination Response Body and(or) Status Invalid, for destination: ${destination}`,
       400,
-      destResponse
+      destResponse,
     );
   }
   let parsedDestResponseBody;
   try {
     parsedDestResponseBody = JSON.parse(responseBody);
   } catch (err) {
-    parsedDestResponseBody = !isEmpty(responseBody) ? responseBody : "";
+    parsedDestResponseBody = !isEmpty(responseBody) ? responseBody : '';
   }
   return {
     responseBody: parsedDestResponseBody,
     status,
-    payload: destResponse.payload
+    payload,
   };
 };
 
 // Function to process wrapped axios response from internal http client compatible for response handlers
-const processAxiosResponse = clientResponse => {
+const processAxiosResponse = (clientResponse) => {
   if (!clientResponse.success) {
     const { response, code } = clientResponse.response;
     // node internal http client failure cases
@@ -133,28 +130,28 @@ const processAxiosResponse = clientResponse => {
       const nodeClientError = nodeSysErrorToStatus(code);
       return {
         response: nodeClientError.message,
-        status: nodeClientError.status
+        status: nodeClientError.status,
       };
     }
     // non 2xx status handling for axios response
     if (response) {
       const { data, status } = response;
       return {
-        response: data || "",
-        status: status || 500
+        response: data || '',
+        status: status || 500,
       };
     }
     // (edge case) response and code is not present
     return {
-      response: "",
-      status: 500
+      response: '',
+      status: 500,
     };
   }
   // success(2xx) axios response
   const { data, status } = clientResponse.response;
   return {
-    response: data || "",
-    status: status || 500
+    response: data || '',
+    status: status || 500,
   };
 };
 
@@ -162,5 +159,5 @@ module.exports = {
   nodeSysErrorToStatus,
   getDynamicErrorType,
   parseDestResponse,
-  processAxiosResponse
+  processAxiosResponse,
 };

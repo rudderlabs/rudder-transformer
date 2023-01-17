@@ -1,6 +1,6 @@
 /* eslint-disable no-nested-ternary */
-const get = require("get-value");
-const set = require("set-value");
+const get = require('get-value');
+const set = require('set-value');
 const {
   defaultPostRequestConfig,
   defaultPutRequestConfig,
@@ -13,25 +13,25 @@ const {
   getHashFromArray,
   simpleProcessRouterDest,
   defaultDeleteRequestConfig,
-  getIntegrationsObj
-} = require("../../util");
+  getIntegrationsObj,
+} = require('../../util');
 
-const { EventType } = require("../../../constants");
-const { ConfigurationError } = require("../../util/errorTypes");
+const { EventType } = require('../../../constants');
+const { ConfigurationError } = require('../../util/errorTypes');
 
-const getPropertyParams = message => {
+const getPropertyParams = (message) => {
   if (message.type === EventType.IDENTIFY) {
-    return flattenJson(getFieldValueFromMessage(message, "traits"));
+    return flattenJson(getFieldValueFromMessage(message, 'traits'));
   }
   return flattenJson(message.properties);
 };
-const processEvent = event => {
+const processEvent = (event) => {
   const { DESTINATION, message, destination } = event;
 
   const integrationsObj = getIntegrationsObj(message, DESTINATION);
   // set context.ip from request_ip if it is missing
-  if (!get(message, "context.ip") && isDefinedAndNotNull(message.request_ip)) {
-    set(message, "context.ip", message.request_ip);
+  if (!get(message, 'context.ip') && isDefinedAndNotNull(message.request_ip)) {
+    set(message, 'context.ip', message.request_ip);
   }
   const response = defaultRequestConfig();
   const url = destination.Config[`${DESTINATION}Url`];
@@ -49,7 +49,7 @@ const processEvent = event => {
         response.method = defaultPutRequestConfig.requestMethod;
         response.body.JSON = message;
         response.headers = {
-          "content-type": "application/json"
+          'content-type': 'application/json',
         };
         break;
       }
@@ -57,7 +57,7 @@ const processEvent = event => {
         response.method = defaultPatchRequestConfig.requestMethod;
         response.body.JSON = message;
         response.headers = {
-          "content-type": "application/json"
+          'content-type': 'application/json',
         };
         break;
       }
@@ -71,7 +71,7 @@ const processEvent = event => {
         response.method = defaultPostRequestConfig.requestMethod;
         response.body.JSON = message;
         response.headers = {
-          "content-type": "application/json"
+          'content-type': 'application/json',
         };
         break;
       }
@@ -93,12 +93,12 @@ const processEvent = event => {
     // }
     //
     // ------------------------------------------------
-    const { header } = message;
+    const { header, anonymousId, fullPath, appendPath } = message;
     if (header) {
-      if (typeof header === "object") {
-        Object.keys(header).forEach(key => {
+      if (typeof header === 'object') {
+        Object.keys(header).forEach((key) => {
           const val = header[key];
-          if (val && typeof val === "string") {
+          if (val && typeof val === 'string') {
             response.headers[key] = val;
           }
         });
@@ -109,7 +109,7 @@ const processEvent = event => {
       }
     }
 
-    response.userId = message.anonymousId;
+    response.userId = anonymousId;
     response.endpoint = url;
 
     // Similar hack as above for dynamically changing the full url
@@ -121,12 +121,10 @@ const processEvent = event => {
     //   return event;
     // }
     if (
-      (message.fullPath && typeof message.fullPath === "string") ||
-      (integrationsObj &&
-        integrationsObj.fullPath &&
-        typeof integrationsObj.fullPath === "string")
+      (fullPath && typeof fullPath === 'string') ||
+      (integrationsObj && integrationsObj.fullPath && typeof integrationsObj.fullPath === 'string')
     ) {
-      response.endpoint = message.fullPath || integrationsObj.fullPath;
+      response.endpoint = fullPath || integrationsObj.fullPath;
       delete message.fullPath;
     }
 
@@ -139,34 +137,28 @@ const processEvent = event => {
     //   return event;
     // }
     if (
-      (message.appendPath && typeof message.appendPath === "string") ||
+      (appendPath && typeof appendPath === 'string') ||
       (integrationsObj &&
         integrationsObj.appendPath &&
-        typeof integrationsObj.appendPath === "string")
+        typeof integrationsObj.appendPath === 'string')
     ) {
-      response.endpoint += message.appendPath || integrationsObj.appendPath;
+      response.endpoint += appendPath || integrationsObj.appendPath;
       delete message.appendPath;
     }
 
     return response;
   }
-  throw new ConfigurationError("Invalid URL in destination config");
+  throw new ConfigurationError('Invalid URL in destination config');
 };
-const DESTINATION = "webhook";
-const process = event => {
+const DESTINATION = 'webhook';
+const process = (event) => {
   const response = processEvent({ ...event, DESTINATION });
   return response;
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const destNameRichInputs = inputs.map(input => {
-    return { ...input, DESTINATION };
-  });
-  const respList = await simpleProcessRouterDest(
-    destNameRichInputs,
-    processEvent,
-    reqMetadata
-  );
+  const destNameRichInputs = inputs.map((input) => ({ ...input, DESTINATION }));
+  const respList = await simpleProcessRouterDest(destNameRichInputs, processEvent, reqMetadata);
   return respList;
 };
 

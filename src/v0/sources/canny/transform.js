@@ -1,16 +1,12 @@
-const sha256 = require("sha256");
-const Message = require("../message");
-const {
-  voterMapping,
-  authorMapping,
-  checkForRequiredFields
-} = require("./util");
-const { logger } = require("../../../logger");
-const { TransformationError } = require("../../util/errorTypes");
+const sha256 = require('sha256');
+const Message = require('../message');
+const { voterMapping, authorMapping, checkForRequiredFields } = require('./util');
+const { logger } = require('../../../logger');
+const { TransformationError } = require('../../util/errorTypes');
 
 const CannyOperation = {
-  VOTE_CREATED: "vote.created",
-  VOTE_DELETED: "vote.deleted"
+  VOTE_CREATED: 'vote.created',
+  VOTE_DELETED: 'vote.deleted',
 };
 
 /**
@@ -32,16 +28,14 @@ function settingIds(message, event, typeOfUser) {
     if (event.object[`${typeOfUser}`]?.id) {
       message.context.externalId = [
         {
-          type: "cannyUserId",
-          id: event.object[`${typeOfUser}`].id
-        }
+          type: 'cannyUserId',
+          id: event.object[`${typeOfUser}`].id,
+        },
       ];
     }
   } catch (e) {
     logger?.error(`Missing essential fields from Canny. Error: (${e})`);
-    throw new TransformationError(
-      `Missing essential fields from Canny. Error: (${e})`
-    );
+    throw new TransformationError(`Missing essential fields from Canny. Error: (${e})`);
   }
 }
 
@@ -54,15 +48,15 @@ function settingIds(message, event, typeOfUser) {
 function createMessage(event, typeOfUser) {
   const message = new Message(`Canny`);
 
-  message.setEventType("track");
+  message.setEventType('track');
 
-  if (typeOfUser === "voter") {
+  if (typeOfUser === 'voter') {
     message.setPropertiesV2(event, voterMapping);
   } else {
     message.setPropertiesV2(event, authorMapping);
   }
 
-  message.context.integration.version = "1.0.0";
+  message.context.integration.version = '1.0.0';
 
   settingIds(message, event, typeOfUser);
 
@@ -82,11 +76,11 @@ function process(event) {
   switch (event.type) {
     case CannyOperation?.VOTE_CREATED:
     case CannyOperation?.VOTE_DELETED:
-      typeOfUser = "voter";
+      typeOfUser = 'voter';
       break;
 
     default:
-      typeOfUser = "author";
+      typeOfUser = 'author';
   }
 
   return createMessage(event, typeOfUser);

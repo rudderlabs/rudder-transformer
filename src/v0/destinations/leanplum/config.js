@@ -1,30 +1,30 @@
-const { getMappingConfig } = require("../../util");
+const { getMappingConfig } = require('../../util');
 
 const ConfigCategory = {
   PAGE: {
-    name: "LPPageConfig",
-    action: "advance"
+    name: 'LPPageConfig',
+    action: 'advance',
   },
   IDENTIFY: {
-    name: "LPIdentifyConfig",
-    action: "setUserAttributes"
+    name: 'LPIdentifyConfig',
+    action: 'setUserAttributes',
   },
   TRACK: {
-    name: "LPTrackConfig",
-    action: "track"
+    name: 'LPTrackConfig',
+    action: 'track',
   },
   SCREEN: {
-    name: "LPScreenConfig",
-    action: "advance"
+    name: 'LPScreenConfig',
+    action: 'advance',
   },
   START: {
-    name: "LPStartConfig",
-    action: "start"
-  }
+    name: 'LPStartConfig',
+    action: 'start',
+  },
 };
 
-const ENDPOINT = "https://api.leanplum.com/api";
-const API_VERSION = "1.0.6";
+const ENDPOINT = 'https://api.leanplum.com/api';
+const API_VERSION = '1.0.6';
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
@@ -32,5 +32,5 @@ module.exports = {
   ConfigCategory,
   mappingConfig,
   ENDPOINT,
-  API_VERSION
+  API_VERSION,
 };

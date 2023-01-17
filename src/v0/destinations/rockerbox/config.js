@@ -1,14 +1,14 @@
-const { getMappingConfig } = require("../../util");
+const { getMappingConfig } = require('../../util');
 
-const BASE_ENDPOINT = "https://webhooks.getrockerbox.com/rudderstack";
+const BASE_ENDPOINT = 'https://webhooks.getrockerbox.com/rudderstack';
 
 const CONFIG_CATEGORIES = {
   TRACK: {
-    name: "RockerboxTrackConfig",
-    type: "track",
+    name: 'RockerboxTrackConfig',
+    type: 'track',
     endpoint: `${BASE_ENDPOINT}`,
-    method: "POST"
-  }
+    method: 'POST',
+  },
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
@@ -16,5 +16,5 @@ const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 module.exports = {
   BASE_ENDPOINT,
   CONFIG_CATEGORIES,
-  MAPPING_CONFIG
+  MAPPING_CONFIG,
 };

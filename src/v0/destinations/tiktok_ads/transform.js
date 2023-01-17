@@ -1,9 +1,9 @@
 /* eslint-disable camelcase */
-const _ = require("lodash");
-const { SHA256 } = require("crypto-js");
-const get = require("get-value");
-const set = require("set-value");
-const { EventType } = require("../../../constants");
+const _ = require('lodash');
+const { SHA256 } = require('crypto-js');
+const get = require('get-value');
+const set = require('set-value');
+const { EventType } = require('../../../constants');
 const {
   constructPayload,
   defaultRequestConfig,
@@ -16,34 +16,27 @@ const {
   getFieldValueFromMessage,
   getHashFromArrayWithDuplicate,
   checkInvalidRtTfEvents,
-  handleRtTfSingleEventError
-} = require("../../util");
+  handleRtTfSingleEventError,
+} = require('../../util');
 const {
   trackMapping,
   TRACK_ENDPOINT,
   BATCH_ENDPOINT,
   eventNameMapping,
   MAX_BATCH_SIZE,
-  PARTNER_NAME
-} = require("./config");
-const {
-  ConfigurationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+  PARTNER_NAME,
+} = require('./config');
+const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const getContents = message => {
   const contents = [];
   const { properties } = message;
-  const { products } = properties;
+  const { products, content_type, contentType } = properties;
   if (products && Array.isArray(products) && products.length > 0) {
-    products.forEach(product => {
+    products.forEach((product) => {
       const singleProduct = {};
       singleProduct.content_type =
-        product.contentType ||
-        properties.contentType ||
-        product.content_type ||
-        properties.content_type ||
-        "product";
+        product.contentType || contentType || product.content_type || content_type || 'product';
       singleProduct.content_id = product.product_id;
       singleProduct.content_category = product.category;
       singleProduct.content_name = product.name;
@@ -58,9 +51,9 @@ const getContents = message => {
 
 const checkContentType = (contents, contentType) => {
   if (Array.isArray(contents)) {
-    contents.forEach(content => {
+    contents.forEach((content) => {
       if (!content.content_type) {
-        content.content_type = contentType || "product_group";
+        content.content_type = contentType || 'product_group';
       }
     });
   }
@@ -72,48 +65,41 @@ const getTrackResponse = (message, Config, event) => {
   let payload = constructPayload(message, trackMapping);
 
   // if contents is not an array
-  if (
-    payload.properties?.contents &&
-    !Array.isArray(payload.properties.contents)
-  ) {
+  if (payload.properties?.contents && !Array.isArray(payload.properties.contents)) {
     payload.properties.contents = [payload.properties.contents];
   }
 
-  if (
-    payload.properties &&
-    !payload.properties?.contents &&
-    message.properties?.products
-  ) {
+  if (payload.properties && !payload.properties?.contents && message.properties?.products) {
     // retreiving data from products only when contents is not present
     payload.properties = {
       ...payload.properties,
-      contents: getContents(message)
+      contents: getContents(message),
     };
   }
 
   if (payload.properties?.contents) {
     payload.properties.contents = checkContentType(
       payload.properties?.contents,
-      message.properties?.contentType
+      message.properties?.contentType,
     );
   }
 
-  const externalId = getDestinationExternalID(message, "tiktokExternalId");
+  const externalId = getDestinationExternalID(message, 'tiktokExternalId');
   if (isDefinedAndNotNullAndNotEmpty(externalId)) {
-    set(payload, "context.user.external_id", externalId);
+    set(payload, 'context.user.external_id', externalId);
   }
 
-  const traits = getFieldValueFromMessage(message, "traits");
+  const traits = getFieldValueFromMessage(message, 'traits');
 
   // taking user properties like email and phone from traits
-  let email = get(payload, "context.user.email");
+  let email = get(payload, 'context.user.email');
   if (!isDefinedAndNotNullAndNotEmpty(email) && traits?.email) {
-    set(payload, "context.user.email", traits.email);
+    set(payload, 'context.user.email', traits.email);
   }
 
-  let phone_number = get(payload, "context.user.phone_number");
+  let phone_number = get(payload, 'context.user.phone_number');
   if (!isDefinedAndNotNullAndNotEmpty(phone_number) && traits?.phone) {
-    set(payload, "context.user.phone_number", traits.phone);
+    set(payload, 'context.user.phone_number', traits.phone);
   }
 
   payload = { pixel_code, event, ...payload };
@@ -123,19 +109,17 @@ const getTrackResponse = (message, Config, event) => {
    */
 
   if (Config.hashUserProperties) {
-    const external_id = get(payload, "context.user.external_id");
+    const external_id = get(payload, 'context.user.external_id');
     if (isDefinedAndNotNullAndNotEmpty(external_id)) {
       payload.context.user.external_id = SHA256(external_id.trim()).toString();
     }
 
-    email = get(payload, "context.user.email");
+    email = get(payload, 'context.user.email');
     if (isDefinedAndNotNullAndNotEmpty(email)) {
-      payload.context.user.email = SHA256(
-        email.trim().toLowerCase()
-      ).toString();
+      payload.context.user.email = SHA256(email.trim().toLowerCase()).toString();
     }
 
-    phone_number = get(payload, "context.user.phone_number");
+    phone_number = get(payload, 'context.user.phone_number');
     if (isDefinedAndNotNullAndNotEmpty(phone_number)) {
       payload.context.user.phone_number = SHA256(
         phone_number.trim()
@@ -144,8 +128,8 @@ const getTrackResponse = (message, Config, event) => {
   }
   const response = defaultRequestConfig();
   response.headers = {
-    "Access-Token": Config.accessToken,
-    "Content-Type": "application/json"
+    'Access-Token': Config.accessToken,
+    'Content-Type': 'application/json',
   };
 
   response.method = defaultPostRequestConfig.requestMethod;
@@ -153,7 +137,7 @@ const getTrackResponse = (message, Config, event) => {
   // add partner name
   response.body.JSON = removeUndefinedAndNullValues({
     ...payload,
-    partner_name: PARTNER_NAME
+    partner_name: PARTNER_NAME,
   });
   return response;
 };
@@ -163,22 +147,22 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   let event = message.event?.toLowerCase().trim();
   if (!event) {
-    throw new InstrumentationError("Event name is required");
+    throw new InstrumentationError('Event name is required');
   }
 
   const standardEventsMap = getHashFromArrayWithDuplicate(eventsToStandard);
 
   if (eventNameMapping[event] === undefined && !standardEventsMap[event]) {
     throw new InstrumentationError(
-      `Event name (${event}) is not valid, must be mapped to one of standard events`
+      `Event name (${event}) is not valid, must be mapped to one of standard events`,
     );
   }
 
   const responseList = [];
   if (standardEventsMap[event]) {
-    Object.keys(standardEventsMap).forEach(key => {
+    Object.keys(standardEventsMap).forEach((key) => {
       if (key === event) {
-        standardEventsMap[event].forEach(eventName => {
+        standardEventsMap[event].forEach((eventName) => {
           responseList.push(getTrackResponse(message, Config, eventName));
         });
       }
@@ -191,19 +175,19 @@ const trackResponseBuilder = async (message, { Config }) => {
   return responseList;
 };
 
-const process = async event => {
+const process = async (event) => {
   const { message, destination } = event;
 
   if (!destination.Config.accessToken) {
-    throw new ConfigurationError("Access Token not found. Aborting ");
+    throw new ConfigurationError('Access Token not found. Aborting ');
   }
 
   if (!destination.Config.pixelCode) {
-    throw new ConfigurationError("Pixel Code not found. Aborting");
+    throw new ConfigurationError('Pixel Code not found. Aborting');
   }
 
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
 
   const messageType = message.type.toLowerCase();
@@ -214,9 +198,7 @@ const process = async event => {
       response = await trackResponseBuilder(message, destination);
       break;
     default:
-      throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
-      );
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
 };
@@ -227,7 +209,7 @@ function batchEvents(eventsChunk) {
   // transformed payload of (n) batch size
   const arrayChunks = _.chunk(eventsChunk, MAX_BATCH_SIZE);
 
-  arrayChunks.forEach(chunk => {
+  arrayChunks.forEach((chunk) => {
     const batchResponseList = [];
     const metadata = [];
 
@@ -239,12 +221,12 @@ function batchEvents(eventsChunk) {
     let batchEventResponse = defaultBatchRequestConfig();
 
     // Batch event into dest batch structure
-    chunk.forEach(ev => {
+    chunk.forEach((ev) => {
       // Pixel code must be added above "batch": [..]
       delete ev.message.body.JSON.pixel_code;
       // Partner name must be added above "batch": [..]
       delete ev.message.body.JSON.partner_name;
-      ev.message.body.JSON.type = "track";
+      ev.message.body.JSON.type = 'track';
       batchResponseList.push(ev.message.body.JSON);
       metadata.push(ev.metadata);
     });
@@ -252,26 +234,26 @@ function batchEvents(eventsChunk) {
     batchEventResponse.batchedRequest.body.JSON = {
       pixel_code: pixelCode,
       partner_name: PARTNER_NAME,
-      batch: batchResponseList
+      batch: batchResponseList,
     };
 
     batchEventResponse.batchedRequest.endpoint = BATCH_ENDPOINT;
     batchEventResponse.batchedRequest.headers = {
-      "Access-Token": accessToken,
-      "Content-Type": "application/json"
+      'Access-Token': accessToken,
+      'Content-Type': 'application/json',
     };
     batchEventResponse = {
       ...batchEventResponse,
       metadata,
-      destination
+      destination,
     };
     batchedResponseList.push(
       getSuccessRespEvents(
         batchEventResponse.batchedRequest,
         batchEventResponse.metadata,
         batchEventResponse.destination,
-        true
-      )
+        true,
+      ),
     );
   });
 
@@ -281,17 +263,15 @@ function batchEvents(eventsChunk) {
 function getEventChunks(event, trackResponseList, eventsChunk) {
   // only for already transformed payload
   // eslint-disable-next-line no-param-reassign
-  event.message = Array.isArray(event.message)
-    ? event.message
-    : [event.message];
+  event.message = Array.isArray(event.message) ? event.message : [event.message];
 
-  event.message.forEach(element => {
+  event.message.forEach((element) => {
     // Do not apply batching if the payload contains test_event_code
     // which corresponds to track endpoint
     if (element.body.JSON.test_event_code) {
       const message = element;
       const { metadata, destination } = event;
-      const endpoint = get(message, "endpoint");
+      const endpoint = get(message, 'endpoint');
       delete message.body.JSON.type;
 
       const batchedResponse = defaultBatchRequestConfig();
@@ -299,8 +279,7 @@ function getEventChunks(event, trackResponseList, eventsChunk) {
       batchedResponse.batchedRequest.endpoint = endpoint;
       batchedResponse.batchedRequest.body = message.body;
       batchedResponse.batchedRequest.params = message.params;
-      batchedResponse.batchedRequest.method =
-        defaultPostRequestConfig.requestMethod;
+      batchedResponse.batchedRequest.method = defaultPostRequestConfig.requestMethod;
       batchedResponse.metadata = [metadata];
       batchedResponse.destination = destination;
 
@@ -308,14 +287,14 @@ function getEventChunks(event, trackResponseList, eventsChunk) {
         getSuccessRespEvents(
           batchedResponse.batchedRequest,
           batchedResponse.metadata,
-          batchedResponse.destination
-        )
+          batchedResponse.destination,
+        ),
       );
     } else {
       eventsChunk.push({
         message: element,
         metadata: event.metadata,
-        destination: event.destination
+        destination: event.destination,
       });
     }
   });
@@ -331,7 +310,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];
   await Promise.all(
-    inputs.map(async event => {
+    inputs.map(async (event) => {
       try {
         if (event.message.statusCode) {
           // already transformed event
@@ -342,25 +321,21 @@ const processRouterDest = async (inputs, reqMetadata) => {
             {
               message: await process(event),
               metadata: event.metadata,
-              destination: event.destination
+              destination: event.destination,
             },
             trackResponseList,
-            eventsChunk
+            eventsChunk,
           );
         }
       } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(
-          event,
-          error,
-          reqMetadata
-        );
+        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
         errorRespList.push(errRespEvent);
       }
-    })
+    }),
   );
 
   let batchedResponseList = [];
-  if (eventsChunk.length) {
+  if (eventsChunk.length > 0) {
     batchedResponseList = await batchEvents(eventsChunk);
   }
   return [...batchedResponseList.concat(trackResponseList), ...errorRespList];

@@ -1,31 +1,29 @@
-const get = require("get-value");
-const moment = require("moment");
+const get = require('get-value');
+const moment = require('moment');
 const {
   SEVERITIES,
   EVENT_ACTIONS,
   MAPPING_CONFIG,
   DEFAULT_SEVERITY,
   CONFIG_CATEGORIES,
-  DEFAULT_EVENT_ACTION
-} = require("./config");
-const { constructPayload, getIntegrationsObj } = require("../../util");
-const { InstrumentationError } = require("../../util/errorTypes");
+  DEFAULT_EVENT_ACTION,
+} = require('./config');
+const { constructPayload, getIntegrationsObj } = require('../../util');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 /**
  * Validates the timestamp
  * @param {*} payload
  * @returns
  */
-const validateTimeStamp = payload => {
+const validateTimeStamp = (payload) => {
   if (payload.payload?.timestamp) {
-    const start = moment.unix(moment(payload.payload.timestamp).format("X"));
-    const current = moment.unix(moment().format("X"));
+    const start = moment.unix(moment(payload.payload.timestamp).format('X'));
+    const current = moment.unix(moment().format('X'));
     // calculates past event in hours
     const deltaDay = Math.ceil(moment.duration(current.diff(start)).asHours());
     if (deltaDay > 90) {
-      throw new InstrumentationError(
-        "Events must be sent within ninety days of their occurrence"
-      );
+      throw new InstrumentationError('Events must be sent within ninety days of their occurrence');
     }
   }
 };
@@ -35,12 +33,12 @@ const validateTimeStamp = payload => {
  * @param {*} links
  * @returns
  */
-const getValidLinks = links => {
-  if (typeof links === "string") {
+const getValidLinks = (links) => {
+  if (typeof links === 'string') {
     return [{ href: links }];
   }
   // Removing the objects where href key is not present
-  return links.filter(link => link.href);
+  return links.filter((link) => link.href);
 };
 
 /**
@@ -48,12 +46,12 @@ const getValidLinks = links => {
  * @param {*} images
  * @returns
  */
-const getValidImages = images => {
-  if (typeof images === "string") {
+const getValidImages = (images) => {
+  if (typeof images === 'string') {
     return [{ src: images }];
   }
   // Removing the objects where src key is not present
-  return images.filter(image => image.src);
+  return images.filter((image) => image.src);
 };
 
 /**
@@ -61,11 +59,8 @@ const getValidImages = images => {
  * @param {*} payload
  * @returns
  */
-const getValidSeverity = payload => {
-  if (
-    payload.payload?.severity &&
-    SEVERITIES.includes(payload.payload.severity)
-  ) {
+const getValidSeverity = (payload) => {
+  if (payload.payload?.severity && SEVERITIES.includes(payload.payload.severity)) {
     return payload.payload.severity;
   }
   // If severity is not found in payload then fallback to default value which is "critical"
@@ -77,8 +72,8 @@ const getValidSeverity = payload => {
  * @param {*} message
  * @returns
  */
-const getValidEventAction = message => {
-  const eventAction = get(message.properties, "action");
+const getValidEventAction = (message) => {
+  const eventAction = get(message.properties, 'action');
   if (eventAction && EVENT_ACTIONS.includes(eventAction)) {
     return eventAction;
   }
@@ -101,24 +96,19 @@ const prepareAlertEventPayload = (message, Config) => {
     dedupKey = get(message, Config.dedupKeyFieldIdentifier);
   }
 
-  if (eventAction === "acknowledge" || eventAction === "resolve") {
+  if (eventAction === 'acknowledge' || eventAction === 'resolve') {
     // dedup_key is required if you want to acknowledge or resolve an incident
     if (!dedupKey) {
-      throw new InstrumentationError(
-        `dedup_key required for ${eventAction} events`
-      );
+      throw new InstrumentationError(`dedup_key required for ${eventAction} events`);
     }
 
     return {
       dedup_key: dedupKey,
-      event_action: eventAction
+      event_action: eventAction,
     };
   }
 
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.ALERT_EVENT.name]
-  );
+  const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.ALERT_EVENT.name]);
 
   // If dedup_key is not found when incident is triggered then fallback to messageId
   payload.dedup_key = dedupKey || message.messageId;
@@ -135,20 +125,13 @@ const prepareAlertEventPayload = (message, Config) => {
  * @returns
  */
 const trackEventPayloadBuilder = (message, Config) => {
-  const integrationsObj = getIntegrationsObj(message, "pagerduty");
+  const integrationsObj = getIntegrationsObj(message, 'pagerduty');
 
   let payload;
   let endpoint;
 
-  if (
-    integrationsObj &&
-    integrationsObj.type &&
-    integrationsObj.type === "changeEvent"
-  ) {
-    payload = constructPayload(
-      message,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.CHANGE_EVENT.name]
-    );
+  if (integrationsObj && integrationsObj.type && integrationsObj.type === 'changeEvent') {
+    payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.CHANGE_EVENT.name]);
     endpoint = CONFIG_CATEGORIES.CHANGE_EVENT.endpoint;
   } else {
     payload = prepareAlertEventPayload(message, Config);
@@ -168,5 +151,5 @@ const trackEventPayloadBuilder = (message, Config) => {
 };
 
 module.exports = {
-  trackEventPayloadBuilder
+  trackEventPayloadBuilder,
 };

@@ -48,6 +48,8 @@
     "CAMPAIGN_MANAGER": true,
     "SENDGRID": true,
     "SENDINBLUE": true,
+    "ZENDESK": true,
+    "MP": true,
     "TIKTOK_ADS_OFFLINE_EVENTS": true
   }
 }

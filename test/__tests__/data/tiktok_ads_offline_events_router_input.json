@@ -23,7 +23,7 @@
         "order_id": "abc_xyz",
         "shop_id": "123abc",
         "currency": "USD",
-        "value": 46.00,
+        "value": 46.0,
         "price": 8,
         "quantity": 2,
         "content_type": "product1234",
@@ -104,7 +104,7 @@
         "eventSetId": "6071537445256731123",
         "eventId": "1616318632825_352",
         "currency": "USD",
-        "value": 46.00,
+        "value": 46.0,
         "price": 8,
         "content_type": "product1234"
       },

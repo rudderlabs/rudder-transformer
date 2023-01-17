@@ -1,16 +1,16 @@
-const get = require("get-value");
-const { isAppleFamily } = require("../../util");
-const { itemMapping } = require("./config");
+const get = require('get-value');
+const { isAppleFamily } = require('../../util');
+const { itemMapping } = require('./config');
 
 /**
  * This function checks for missing required fields in destination Configs. Returns comma seperated list of error fields.
  * @param {*} Config
  * @returns {string} errorFields
  */
-const validateConfigFields = Config => {
+const validateConfigFields = (Config) => {
   const errorFields = [];
-  const requiredFields = ["accountSID", "apiKey", "campaignId"];
-  requiredFields.forEach(key => {
+  const requiredFields = ['accountSID', 'apiKey', 'campaignId'];
+  requiredFields.forEach((key) => {
     if (!Config[key]) {
       errorFields.push(key);
     }
@@ -25,14 +25,14 @@ const validateConfigFields = Config => {
  * @returns
  */
 const checkOsAndPopulateValues = (message, payload) => {
-  const os = get(message, "context.os.name");
+  const os = get(message, 'context.os.name');
   const updatedPayload = payload;
   if (os && isAppleFamily(os.toLowerCase())) {
-    updatedPayload.AppleIfv = get(message, "context.device.id");
-    updatedPayload.AppleIfa = get(message, "context.device.advertisingId");
-  } else if (os && os.toLowerCase() === "android") {
-    updatedPayload.AndroidId = get(message, "context.device.id");
-    updatedPayload.GoogAId = get(message, "context.device.advertisingId");
+    updatedPayload.AppleIfv = get(message, 'context.device.id');
+    updatedPayload.AppleIfa = get(message, 'context.device.advertisingId');
+  } else if (os && os.toLowerCase() === 'android') {
+    updatedPayload.AndroidId = get(message, 'context.device.id');
+    updatedPayload.GoogAId = get(message, 'context.device.advertisingId');
   }
   return updatedPayload;
 };
@@ -57,7 +57,7 @@ const getPropertyName = (itemName, index) => {
 const getProductsMapping = (productsMapping, itemName) => {
   let prop;
   if (productsMapping && Array.isArray(productsMapping)) {
-    productsMapping.forEach(mapping => {
+    productsMapping.forEach((mapping) => {
       prop = mapping.to === itemName ? mapping.from : itemMapping[itemName];
     });
   }
@@ -72,37 +72,34 @@ const getProductsMapping = (productsMapping, itemName) => {
  * @returns
  */
 const populateProductProperties = (productsMapping, properties) => {
-  const { products } = properties;
+  const { products, brand, sku, quantity, coupon, price, name, category } = properties;
   const productProperties = {};
   if (products && Array.isArray(products)) {
     products.forEach((item, index) => {
-      productProperties[getPropertyName("ItemBrand", index + 1)] =
-        item[getProductsMapping(productsMapping, "ItemBrand")];
-      productProperties[getPropertyName("ItemCategory", index + 1)] =
-        item[getProductsMapping(productsMapping, "ItemCategory")];
-      productProperties[getPropertyName("ItemName", index + 1)] =
-        item[getProductsMapping(productsMapping, "ItemName")];
-      productProperties[getPropertyName("ItemPrice", index + 1)] =
-        item[getProductsMapping(productsMapping, "ItemPrice")];
-      productProperties[getPropertyName("ItemPromoCode", index + 1)] =
-        item[getProductsMapping(productsMapping, "ItemPromoCode")];
-      productProperties[getPropertyName("ItemQuantity", index + 1)] =
-        item[getProductsMapping(productsMapping, "ItemQuantity")];
-      productProperties[getPropertyName("ItemSku", index + 1)] =
-        item[getProductsMapping(productsMapping, "ItemSku")];
+      productProperties[getPropertyName('ItemBrand', index + 1)] =
+        item[getProductsMapping(productsMapping, 'ItemBrand')];
+      productProperties[getPropertyName('ItemCategory', index + 1)] =
+        item[getProductsMapping(productsMapping, 'ItemCategory')];
+      productProperties[getPropertyName('ItemName', index + 1)] =
+        item[getProductsMapping(productsMapping, 'ItemName')];
+      productProperties[getPropertyName('ItemPrice', index + 1)] =
+        item[getProductsMapping(productsMapping, 'ItemPrice')];
+      productProperties[getPropertyName('ItemPromoCode', index + 1)] =
+        item[getProductsMapping(productsMapping, 'ItemPromoCode')];
+      productProperties[getPropertyName('ItemQuantity', index + 1)] =
+        item[getProductsMapping(productsMapping, 'ItemQuantity')];
+      productProperties[getPropertyName('ItemSku', index + 1)] =
+        item[getProductsMapping(productsMapping, 'ItemSku')];
     });
   } else {
     const index = 1;
-    productProperties[getPropertyName("ItemBrand", index)] = properties.brand;
-    productProperties[getPropertyName("ItemCategory", index)] =
-      properties.category;
-    productProperties[getPropertyName("ItemName", index)] = properties.name;
-    productProperties[getPropertyName("ItemPrice", index)] = properties.price;
-    productProperties[getPropertyName("ItemPromoCode", index)] =
-      properties.coupon;
-    productProperties[getPropertyName("ItemQuantity", index)] =
-      properties.quantity;
-    productProperties[getPropertyName("ItemSku", index)] = properties.sku;
+    productProperties[getPropertyName('ItemBrand', index)] = brand;
+    productProperties[getPropertyName('ItemCategory', index)] = category;
+    productProperties[getPropertyName('ItemName', index)] = name;
+    productProperties[getPropertyName('ItemPrice', index)] = price;
+    productProperties[getPropertyName('ItemPromoCode', index)] = coupon;
+    productProperties[getPropertyName('ItemQuantity', index)] = quantity;
+    productProperties[getPropertyName('ItemSku', index)] = sku;
   }
   return productProperties;
 };
@@ -116,7 +113,7 @@ const populateProductProperties = (productsMapping, properties) => {
 const populateAdditionalParameters = (message, parameters) => {
   const additionalParameters = {};
   if (parameters && Array.isArray(parameters)) {
-    parameters.forEach(mapping => {
+    parameters.forEach((mapping) => {
       additionalParameters[mapping.to] = get(message, mapping.from);
     });
   }
@@ -127,5 +124,5 @@ module.exports = {
   validateConfigFields,
   populateProductProperties,
   populateAdditionalParameters,
-  checkOsAndPopulateValues
+  checkOsAndPopulateValues,
 };

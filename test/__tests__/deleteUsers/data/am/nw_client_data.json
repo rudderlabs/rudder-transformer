@@ -5,9 +5,7 @@
       "reqParams": [
         "https://amplitude.com/api/2/deletions/users",
         {
-          "userIds": [
-            "Batch1"
-          ]
+          "userIds": ["Batch1"]
         },
         {
           "Content-Type": "application/json",
@@ -32,9 +30,7 @@
       "reqParams": [
         "https://amplitude.com/api/2/deletions/users",
         {
-          "userIds": [
-            "Batch2"
-          ]
+          "userIds": ["Batch2"]
         },
         {
           "Content-Type": "application/json",
@@ -56,9 +52,7 @@
       "reqParams": [
         "https://amplitude.com/api/2/deletions/users",
         {
-          "userIds": [
-            "Batch1"
-          ]
+          "userIds": ["Batch1"]
         },
         {
           "Content-Type": "application/json",
@@ -78,9 +72,7 @@
       "reqParams": [
         "https://amplitude.com/api/2/deletions/users",
         {
-          "userIds": [
-            "Batch2"
-          ]
+          "userIds": ["Batch2"]
         },
         {
           "Content-Type": "application/json",

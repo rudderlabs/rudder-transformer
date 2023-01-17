@@ -1,10 +1,10 @@
-const cloneDeep = require("lodash/cloneDeep");
-const { getIntegrationsObj } = require("../../util");
+const cloneDeep = require('lodash/cloneDeep');
+const { getIntegrationsObj } = require('../../util');
 // const { InstrumentationError } = require("../../util/errorTypes");
 
 function process(event) {
   const { message, destination } = event;
-  const integrationsObj = getIntegrationsObj(message, "azure_event_hub");
+  const integrationsObj = getIntegrationsObj(message, 'azure_event_hub');
   const topic = integrationsObj?.topic || destination.Config?.topic;
 
   // TODO: Remove commented lines after server release
@@ -13,9 +13,9 @@ function process(event) {
   // }
 
   const result = {
-    message: event.message,
-    userId: event.message.userId || event.message.anonymousId,
-    topic
+    message,
+    userId: message.userId || message.anonymousId,
+    topic,
   };
   return result;
 }

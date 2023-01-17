@@ -1,31 +1,19 @@
 [
   {
     "destKey": "boardID",
-    "sourceKeys": [
-      "properties.boardID",
-      "properties.boardId",
-      "properties.board.id"
-    ],
+    "sourceKeys": ["properties.boardID", "properties.boardId", "properties.board.id"],
     "sourceFromGenericMap": false,
     "required": true
   },
   {
     "destKey": "byID",
-    "sourceKeys": [
-        "properties.byID",
-        "properties.byId",
-        "properties.by.id"
-      ],
+    "sourceKeys": ["properties.byID", "properties.byId", "properties.by.id"],
     "sourceFromGenericMap": false,
     "required": false
   },
   {
     "destKey": "categoryID",
-    "sourceKeys": [
-        "properties.categoryID",
-        "properties.categoryId",
-        "properties.category.id"
-      ],
+    "sourceKeys": ["properties.categoryID", "properties.categoryId", "properties.category.id"],
     "sourceFromGenericMap": false,
     "required": false
   },

@@ -7,10 +7,10 @@ message:
     transformation:
       spreadMessage: true
       postMapper:
-        name: "commonPostMapper"
+        name: 'commonPostMapper'
       response:
         format: JSON
         method: POST
-        endpoint: "{{ rudderContext.zapUrl }}"
+        endpoint: '{{ rudderContext.zapUrl }}'
         headers:
-          content-type: "application/json"
+          content-type: 'application/json'

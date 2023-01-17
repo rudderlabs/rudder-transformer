@@ -6,28 +6,28 @@ message:
     transformation:
       mapperPath: ./mapping/identify.yaml
       postMapper:
-        name: "identifyPostMapper"
+        name: 'identifyPostMapper'
       response:
-        endpoint: "https://api2.autopilothq.com/v1/contact"
+        endpoint: 'https://api2.autopilothq.com/v1/contact'
         method: POST
         format: JSON
         headers:
-          Accept: "application/json"
-          autopilotapikey: "{{ destConfig.apiKey }}"
-          Content-Type: "application/json"
-        userId: "{{ message.anonymousId }}"
-        
+          Accept: 'application/json'
+          autopilotapikey: '{{ destConfig.apiKey }}'
+          Content-Type: 'application/json'
+        userId: '{{ message.anonymousId }}'
+
   track:
     transformation:
       mapperPath: ./mapping/track.yaml
       postMapper:
-        name: "trackPostMapper"
+        name: 'trackPostMapper'
       response:
-        endpoint: "{{ rudderContext.endpoint }}"
+        endpoint: '{{ rudderContext.endpoint }}'
         method: POST
         format: JSON
         headers:
-          Accept: "application/json"
-          autopilotapikey: "{{ destConfig.apiKey }}"
-          Content-Type: "application/json"
-        userId: "{{ message.anonymousId }}"
+          Accept: 'application/json'
+          autopilotapikey: '{{ destConfig.apiKey }}'
+          Content-Type: 'application/json'
+        userId: '{{ message.anonymousId }}'

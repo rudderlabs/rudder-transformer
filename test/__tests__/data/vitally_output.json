@@ -15,7 +15,7 @@
                 "sentAt": "2023-01-13T09:03:17.562Z"
             }
         },
-        "endpoint": "https://wonderbits.vitally.io/rudderstack",
+        "endpoint": "https://api.vitally.io/rudderstack",
         "files": {},
         "params": {},
         "type": "REST",
@@ -41,7 +41,7 @@
                 "sentAt": "2023-01-13T09:03:17.562Z"
             }
         },
-        "endpoint": "https://wonderbits.vitally.io/rudderstack",
+        "endpoint": "https://api.vitally.io/rudderstack",
         "files": {},
         "params": {},
         "type": "REST",
@@ -65,7 +65,7 @@
                 "sentAt": "2023-01-13T09:03:17.562Z"
             }
         },
-        "endpoint": "https://wonderbits.vitally.io/rudderstack",
+        "endpoint": "https://api.vitally.io/rudderstack",
         "files": {},
         "params": {},
         "type": "REST",

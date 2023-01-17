@@ -28,7 +28,7 @@ const {
 } = require('./config');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
-const getContents = message => {
+const getContents = (message) => {
   const contents = [];
   const { properties } = message;
   const { products, content_type, contentType } = properties;
@@ -121,9 +121,7 @@ const getTrackResponse = (message, Config, event) => {
 
     phone_number = get(payload, 'context.user.phone_number');
     if (isDefinedAndNotNullAndNotEmpty(phone_number)) {
-      payload.context.user.phone_number = SHA256(
-        phone_number.trim()
-      ).toString();
+      payload.context.user.phone_number = SHA256(phone_number.trim()).toString();
     }
   }
   const response = defaultRequestConfig();

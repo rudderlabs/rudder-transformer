@@ -1,7 +1,4 @@
-const genericFieldMapping = require("../../../../v0/util/data/GenericFieldMapping.json");
+const genericFieldMapping = require('../../../../v0/util/data/GenericFieldMapping.json');
 
-exports.getGenericPaths = (key, separator = "??") => {
-  return genericFieldMapping[key]
-    .map(path => `.${path}`)
-    .join(` ${separator} `);
-};
+exports.getGenericPaths = (key, separator = '??') =>
+  genericFieldMapping[key].map((path) => `.${path}`).join(` ${separator} `);

@@ -12395,20 +12395,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "accessKey",
-            "iamRoleARN",
-            "externalID"
-          ],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track",
-            "alias",
-            "group"
-          ],
+          "secretKeys": ["accessKeyId", "accessKey", "iamRoleARN", "externalID"],
+          "supportedMessageTypes": ["identify", "page", "screen", "track", "alias", "group"],
           "supportedSourceTypes": [
             "amp",
             "android",
@@ -18708,20 +18696,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "accessKey",
-            "iamRoleARN",
-            "externalID"
-          ],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track",
-            "alias",
-            "group"
-          ],
+          "secretKeys": ["accessKeyId", "accessKey", "iamRoleARN", "externalID"],
+          "supportedMessageTypes": ["identify", "page", "screen", "track", "alias", "group"],
           "supportedSourceTypes": [
             "amp",
             "android",
@@ -18885,20 +18861,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "accessKey",
-            "iamRoleARN",
-            "externalID"
-          ],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track",
-            "alias",
-            "group"
-          ],
+          "secretKeys": ["accessKeyId", "accessKey", "iamRoleARN", "externalID"],
+          "supportedMessageTypes": ["identify", "page", "screen", "track", "alias", "group"],
           "supportedSourceTypes": [
             "amp",
             "android",
@@ -19060,20 +19024,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "accessKey",
-            "iamRoleARN",
-            "externalID"
-          ],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track",
-            "alias",
-            "group"
-          ],
+          "secretKeys": ["accessKeyId", "accessKey", "iamRoleARN", "externalID"],
+          "supportedMessageTypes": ["identify", "page", "screen", "track", "alias", "group"],
           "supportedSourceTypes": [
             "amp",
             "android",
@@ -19243,20 +19195,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "accessKey",
-            "iamRoleARN",
-            "externalID"
-          ],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track",
-            "alias",
-            "group"
-          ],
+          "secretKeys": ["accessKeyId", "accessKey", "iamRoleARN", "externalID"],
+          "supportedMessageTypes": ["identify", "page", "screen", "track", "alias", "group"],
           "supportedSourceTypes": [
             "amp",
             "android",
@@ -19416,20 +19356,8 @@
           "excludeKeys": [],
           "includeKeys": [],
           "saveDestinationResponse": true,
-          "secretKeys": [
-            "accessKeyId",
-            "accessKey",
-            "iamRoleARN",
-            "externalID"
-          ],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track",
-            "alias",
-            "group"
-          ],
+          "secretKeys": ["accessKeyId", "accessKey", "iamRoleARN", "externalID"],
+          "supportedMessageTypes": ["identify", "page", "screen", "track", "alias", "group"],
           "supportedSourceTypes": [
             "amp",
             "android",

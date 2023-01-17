@@ -1,12 +1,12 @@
-const fetch = require("node-fetch");
-const HttpsProxyAgent = require("https-proxy-agent");
-const _ = require("lodash");
-const { RetryRequestError } = require("./utils");
+const fetch = require('node-fetch');
+const HttpsProxyAgent = require('https-proxy-agent');
+const _ = require('lodash');
+const { RetryRequestError } = require('./utils');
 
 const fetchWithProxy = async (url, options = {}) => {
   try {
     const instanceOptions = {
-      ...options
+      ...options,
     };
 
     if (!options.agent && process.env.HTTPS_PROXY) {

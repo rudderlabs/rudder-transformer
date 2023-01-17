@@ -1,11 +1,7 @@
 [
   {
     "destKey": "eventTypeId",
-    "sourceKeys": [
-      "event",
-      "name",
-      "type"
-    ],
+    "sourceKeys": ["event", "name", "type"],
     "metadata": {
       "type": "toString"
     },
@@ -13,7 +9,7 @@
   },
   {
     "destKey": "key",
-    "sourceKeys":"userId",
+    "sourceKeys": "userId",
     "sourceFromGenericMap": true,
     "required": true
   },
@@ -28,11 +24,7 @@
   },
   {
     "destKey": "value",
-    "sourceKeys": [
-      "properties.revenue",
-      "properties.value",
-      "properties.total"
-    ],
+    "sourceKeys": ["properties.revenue", "properties.value", "properties.total"],
     "metadata": {
       "type": "toFloat"
     },

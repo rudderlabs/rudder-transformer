@@ -1,11 +1,8 @@
-const { isHttpStatusSuccess } = require("../../v0/util/index");
-const { proxyRequest, prepareProxyRequest } = require("../network");
-const {
-  getDynamicErrorType,
-  processAxiosResponse
-} = require("../utils/networkUtils");
-const { NetworkError } = require("../../v0/util/errorTypes");
-const tags = require("../../v0/util/tags");
+const { isHttpStatusSuccess } = require('../../v0/util/index');
+const { proxyRequest, prepareProxyRequest } = require('../network');
+const { getDynamicErrorType, processAxiosResponse } = require('../utils/networkUtils');
+const { NetworkError } = require('../../v0/util/errorTypes');
+const tags = require('../../v0/util/tags');
 
 /**
  * network handler as a fall back for all destination nethandlers, this file provides abstraction
@@ -29,23 +26,23 @@ const responseHandler = (destinationResponse, dest) => {
       `[Generic Response Handler] Request failed for destination ${dest} with status: ${status}`,
       status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
-      destinationResponse
+      destinationResponse,
     );
   }
   return {
     status,
     message,
-    destinationResponse
+    destinationResponse,
   };
 };
 
-const networkHandler = function() {
+function networkHandler() {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
   this.prepareProxy = prepareProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
-};
+}
 
 module.exports = { networkHandler };

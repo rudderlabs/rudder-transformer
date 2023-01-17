@@ -1,24 +1,19 @@
-const ivm = require("isolated-vm");
-const stats = require("./stats");
+const ivm = require('isolated-vm');
+const stats = require('./stats');
 
-const { getFactory } = require("./ivmFactory");
-const { getMetadata } = require("../v0/util");
-const logger = require("../logger");
+const { getFactory } = require('./ivmFactory');
+const { getMetadata } = require('../v0/util');
+const logger = require('../logger');
 
-const userTransformTimeout = parseInt(
-  process.env.USER_TRANSFORM_TIMEOUT || "600000",
-  10
-);
+const userTransformTimeout = parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
 
 async function transform(isolatevm, events) {
   const transformationPayload = {};
   transformationPayload.events = events;
   transformationPayload.transformationType = isolatevm.fName;
   const executionPromise = new Promise(async (resolve, reject) => {
-    const sharedTransformationPayload = new ivm.ExternalCopy(
-      transformationPayload
-    ).copyInto({
-      transferIn: true
+    const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto({
+      transferIn: true,
     });
     try {
       await isolatevm.bootstrapScriptResult.apply(
@@ -27,9 +22,9 @@ async function transform(isolatevm, events) {
           isolatevm.fnRef,
           new ivm.Reference(resolve),
           new ivm.Reference(reject),
-          sharedTransformationPayload
+          sharedTransformationPayload,
         ],
-        { timeout: 4000 }
+        { timeout: 4000 },
       );
     } catch (error) {
       reject(error.message);
@@ -39,11 +34,11 @@ async function transform(isolatevm, events) {
   let setTimeoutHandle;
   const timeoutPromise = new Promise((_, reject) => {
     setTimeoutHandle = setTimeout(() => {
-      reject(new Error("Timed out"));
+      reject(new Error('Timed out'));
     }, userTransformTimeout);
   });
   return Promise.race([executionPromise, timeoutPromise])
-    .catch(e => {
+    .catch((e) => {
       throw new Error(e);
     })
     .finally(() => clearTimeout(setTimeoutHandle));
@@ -57,21 +52,18 @@ async function userTransformHandlerV1(
   events,
   userTransformation,
   libraryVersionIds,
-  testMode = false
+  testMode = false,
 ) {
   /*
   Removing pool usage to address memory leaks
   Env variable ON_DEMAND_ISOLATE_VM is not being used anymore
   */
   if (userTransformation.versionId) {
-    const metaTags =
-      events.length && events[0].metadata
-        ? getMetadata(events[0].metadata)
-        : {};
+    const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
     const tags = {
       transformerVersionId: userTransformation.versionId,
       version: 1,
-      ...metaTags
+      ...metaTags,
     };
 
     logger.debug(`Isolate VM being created... `);
@@ -79,46 +71,30 @@ async function userTransformHandlerV1(
       userTransformation.code,
       libraryVersionIds,
       userTransformation.versionId,
-      testMode
+      testMode,
     );
     const isolatevm = await isolatevmFactory.create();
     logger.debug(`Isolate VM created... `);
 
     // Transform the event...
-    stats.counter("events_into_vm", events.length, tags);
-    const isolateStartWallTime = calculateMsFromIvmTime(
-      isolatevm.isolateStartWallTime
-    );
-    const isolateStartCPUTime = calculateMsFromIvmTime(
-      isolatevm.isolateStartCPUTime
-    );
+    stats.counter('events_into_vm', events.length, tags);
+    const isolateStartWallTime = calculateMsFromIvmTime(isolatevm.isolateStartWallTime);
+    const isolateStartCPUTime = calculateMsFromIvmTime(isolatevm.isolateStartCPUTime);
 
     let transformedEvents;
     // Destroy isolatevm in case of execution errors
     try {
       transformedEvents = await transform(isolatevm, events);
     } catch (err) {
-      logger.error(
-        `Error encountered while executing transformation: ${err.message}`
-      );
+      logger.error(`Error encountered while executing transformation: ${err.message}`);
       isolatevmFactory.destroy(isolatevm);
       throw err;
     }
     const { logs } = isolatevm;
-    const isolateEndWallTime = calculateMsFromIvmTime(
-      isolatevm.isolate.wallTime
-    );
+    const isolateEndWallTime = calculateMsFromIvmTime(isolatevm.isolate.wallTime);
     const isolateEndCPUTime = calculateMsFromIvmTime(isolatevm.isolate.cpuTime);
-    stats.timing(
-      "isolate_wall_time",
-      isolateEndWallTime - isolateStartWallTime,
-      tags
-    );
-    stats.timing(
-      "isolate_cpu_time",
-      isolateEndCPUTime - isolateStartCPUTime,
-      tags
-    );
+    stats.timing('isolate_wall_time', isolateEndWallTime - isolateStartWallTime, tags);
+    stats.timing('isolate_cpu_time', isolateEndCPUTime - isolateStartCPUTime, tags);
 
     // Destroy the isolated vm resources created
     logger.debug(`Isolate VM being destroyed... `);
@@ -138,5 +114,5 @@ async function setUserTransformHandlerV1() {
 
 module.exports = {
   userTransformHandlerV1,
-  setUserTransformHandlerV1
+  setUserTransformHandlerV1,
 };

@@ -1,10 +1,7 @@
 [
   {
     "destKey": "previousId",
-    "sourceKeys": [
-      "previousId",
-      "anonymousId"
-    ],
+    "sourceKeys": ["previousId", "anonymousId"],
     "required": true
   },
   {

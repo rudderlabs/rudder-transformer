@@ -48,9 +48,7 @@
       "trackAnonymousEvents": true,
       "customActivityEventMap": [{ "from": "Product Clicked", "to": "100001" }],
       "customActivityPropertyMap": [{ "from": "name", "to": "productName" }],
-      "customActivityPrimaryKeyMap": [
-        { "from": "Product Clicked", "to": "name" }
-      ],
+      "customActivityPrimaryKeyMap": [{ "from": "Product Clicked", "to": "name" }],
       "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
     },
     "secretConfig": {},
@@ -79,15 +77,7 @@
         "excludeKeys": [],
         "includeKeys": [],
         "routerTransform": true,
-        "supportedSourceTypes": [
-          "android",
-          "ios",
-          "web",
-          "unity",
-          "amp",
-          "cloud",
-          "reactnative"
-        ]
+        "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
       },
       "responseRules": {
         "responseType": "JSON",

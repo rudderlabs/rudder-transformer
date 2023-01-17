@@ -1,18 +1,18 @@
-const { getMappingConfig } = require("../../util");
+const { getMappingConfig } = require('../../util');
 
-const BASE_URL = "https://api.mailmodo.com/api/v1";
+const BASE_URL = 'https://api.mailmodo.com/api/v1';
 
-const DESTINATION = "mailmodo";
+const DESTINATION = 'mailmodo';
 
 const ConfigCategory = {
   IDENTIFY: {
-    name: "identifyConfig",
-    endpoint: "/addToList/batch"
+    name: 'identifyConfig',
+    endpoint: '/addToList/batch',
   },
   TRACK: {
-    name: "trackConfig",
-    endpoint: "/addEvent"
-  }
+    name: 'trackConfig',
+    endpoint: '/addEvent',
+  },
 };
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
@@ -23,5 +23,5 @@ module.exports = {
   IDENTIFY_MAX_BATCH_SIZE,
   ConfigCategory,
   mappingConfig,
-  DESTINATION
+  DESTINATION,
 };

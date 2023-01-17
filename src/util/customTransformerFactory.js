@@ -1,25 +1,16 @@
-const {
-  setLambdaUserTransform,
-  runLambdaUserTransform
-} = require("./customTransformer-lambda");
+const { setLambdaUserTransform, runLambdaUserTransform } = require('./customTransformer-lambda');
 
-const {
-  setOpenFaasUserTransform,
-  runOpenFaasUserTransform
-} = require("./customTransformer-faas");
+const { setOpenFaasUserTransform, runOpenFaasUserTransform } = require('./customTransformer-faas');
 
-const {
-  userTransformHandlerV1,
-  setUserTransformHandlerV1
-} = require("./customTransformer-v1");
+const { userTransformHandlerV1, setUserTransformHandlerV1 } = require('./customTransformer-v1');
 
-const UserTransformHandlerFactory = userTransformation => {
+const UserTransformHandlerFactory = (userTransformation) => {
   const transformHandler = {
-    setUserTransform: async testWithPublish => {
+    setUserTransform: async (testWithPublish) => {
       switch (userTransformation.language) {
-        case "pythonfaas":
+        case 'pythonfaas':
           return setOpenFaasUserTransform(userTransformation, testWithPublish);
-        case "python":
+        case 'python':
           return setLambdaUserTransform(userTransformation, testWithPublish);
         default:
           return setUserTransformHandlerV1();
@@ -28,19 +19,14 @@ const UserTransformHandlerFactory = userTransformation => {
 
     runUserTransfrom: async (events, testMode, libraryVersionIDs) => {
       switch (userTransformation.language) {
-        case "pythonfaas":
+        case 'pythonfaas':
           return runOpenFaasUserTransform(events, userTransformation, testMode);
-        case "python":
+        case 'python':
           return runLambdaUserTransform(events, userTransformation, testMode);
         default:
-          return userTransformHandlerV1(
-            events,
-            userTransformation,
-            libraryVersionIDs,
-            testMode
-          );
+          return userTransformHandlerV1(events, userTransformation, libraryVersionIDs, testMode);
       }
-    }
+    },
   };
   return transformHandler;
 };

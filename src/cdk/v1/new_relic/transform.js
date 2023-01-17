@@ -1,57 +1,56 @@
 /* eslint-disable no-param-reassign */
 // const { flattenJson } = require("../../v0/util");
-const { boolean } = require("is");
-const { isBoolean, isDate } = require("lodash");
-const { Utils } = require("rudder-transformer-cdk");
+const { isBoolean } = require('lodash');
+const { Utils } = require('rudder-transformer-cdk');
 
 function commonPostMapper(event, mappedPayload, rudderContext) {
   const { message, destination } = event;
   const payload = mappedPayload;
   const destConfig = destination.Config;
   const reservedNrqlWords = [
-    "ago",
-    "and",
-    "as",
-    "auto",
-    "begin",
-    "begintime",
-    "compare",
-    "day",
-    "days",
-    "end",
-    "endtime",
-    "explain",
-    "facet",
-    "from",
-    "hour",
-    "hours",
-    "in",
-    "is",
-    "like",
-    "limit",
-    "minute",
-    "minutes",
-    "month",
-    "months",
-    "not",
-    "null",
-    "offset",
-    "or",
-    "raw",
-    "second",
-    "seconds",
-    "select",
-    "since",
-    "timeseries",
-    "until",
-    "week",
-    "weeks",
-    "where",
-    "with"
+    'ago',
+    'and',
+    'as',
+    'auto',
+    'begin',
+    'begintime',
+    'compare',
+    'day',
+    'days',
+    'end',
+    'endtime',
+    'explain',
+    'facet',
+    'from',
+    'hour',
+    'hours',
+    'in',
+    'is',
+    'like',
+    'limit',
+    'minute',
+    'minutes',
+    'month',
+    'months',
+    'not',
+    'null',
+    'offset',
+    'or',
+    'raw',
+    'second',
+    'seconds',
+    'select',
+    'since',
+    'timeseries',
+    'until',
+    'week',
+    'weeks',
+    'where',
+    'with',
   ];
-  const reservedWords = ["accountId", "appId", "eventType"];
+  const reservedWords = ['accountId', 'appId', 'eventType'];
 
-  Object.keys(payload).forEach(item => {
+  Object.keys(payload).forEach((item) => {
     if (reservedNrqlWords.includes(item) && isBoolean(payload[item])) {
       const str = `'${item}'`;
       payload[str] = payload[item].toString();
@@ -72,7 +71,7 @@ function commonPostMapper(event, mappedPayload, rudderContext) {
     payload.eventType = destConfig.customEventType;
   } else {
     // If eventType is not provided by the user, by default it is 'rudderstack'
-    payload.eventType = "rudderstack";
+    payload.eventType = 'rudderstack';
   }
 
   // If user enables 'sendUserIdanonymousId', then we include userId and anonymousId into the payload
@@ -87,7 +86,7 @@ function commonPostMapper(event, mappedPayload, rudderContext) {
 
   // Upon users choice for data center, we are updating the endpoint accordingly
   switch (destConfig.dataCenter) {
-    case "eu":
+    case 'eu':
       rudderContext.endpoint = `https://insights-collector.eu01.nr-data.net/v1/accounts/${destConfig.accountId}/events`;
       break;
     default:
@@ -104,11 +103,11 @@ function commonPostMapper(event, mappedPayload, rudderContext) {
     flattenedContext = Utils.flattenJson(message.context);
     responseBody = {
       ...payload,
-      ...flattenedContext
+      ...flattenedContext,
     };
   } else {
     responseBody = {
-      ...payload
+      ...payload,
     };
   }
 

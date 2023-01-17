@@ -1,51 +1,51 @@
-const get = require("get-value");
-const { httpGET, httpPOST } = require("../../../adapters/network");
+const get = require('get-value');
+const { httpGET, httpPOST } = require('../../../adapters/network');
 const {
   processAxiosResponse,
-  getDynamicErrorType
-} = require("../../../adapters/utils/networkUtils");
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
 const {
   getFieldValueFromMessage,
   constructPayload,
   isEmpty,
   getHashFromArray,
   getDestinationExternalIDInfoForRetl,
-  getValueFromMessage
-} = require("../../util");
+  getValueFromMessage,
+} = require('../../util');
 const {
   NetworkInstrumentationError,
   InstrumentationError,
   ConfigurationError,
-  NetworkError
-} = require("../../util/errorTypes");
+  NetworkError,
+} = require('../../util/errorTypes');
 const {
   CONTACT_PROPERTY_MAP_ENDPOINT,
   IDENTIFY_CRM_SEARCH_CONTACT,
   IDENTIFY_CRM_SEARCH_ALL_OBJECTS,
   SEARCH_LIMIT_VALUE,
   hsCommonConfigJson,
-  DESTINATION
-} = require("./config");
+  DESTINATION,
+} = require('./config');
 
-const tags = require("../../util/tags");
+const tags = require('../../util/tags');
 
 /**
  * validate destination config and check for existence of data
  * @param {*} param0
  */
 const validateDestinationConfig = ({ Config }) => {
-  if (Config.authorizationType === "newPrivateAppApi") {
+  if (Config.authorizationType === 'newPrivateAppApi') {
     // NEW API
     if (!Config.accessToken) {
-      throw new ConfigurationError("Access Token not found. Aborting");
+      throw new ConfigurationError('Access Token not found. Aborting');
     }
   } else {
     // Legacy API
     if (!Config.hubID) {
-      throw new ConfigurationError("Hub ID not found. Aborting");
+      throw new ConfigurationError('Hub ID not found. Aborting');
     }
     if (!Config.apiKey) {
-      throw new ConfigurationError("API Key not found. Aborting");
+      throw new ConfigurationError('API Key not found. Aborting');
     }
   }
 };
@@ -55,11 +55,11 @@ const validateDestinationConfig = ({ Config }) => {
  * @param {*} key
  * @returns
  */
-const formatKey = key => {
+const formatKey = (key) => {
   // lowercase and replace spaces and . with _
   let modifiedKey = key.toLowerCase();
-  modifiedKey = modifiedKey.replace(/\s+/g, "_");
-  modifiedKey = modifiedKey.replace(/\./g, "_");
+  modifiedKey = modifiedKey.replace(/\s+/g, '_');
+  modifiedKey = modifiedKey.replace(/\./g, '_');
   return modifiedKey;
 };
 
@@ -68,10 +68,10 @@ const formatKey = key => {
  * @param {*} message
  * @returns
  */
-const fetchFinalSetOfTraits = message => {
+const fetchFinalSetOfTraits = (message) => {
   // get from traits or properties
-  let traits = getFieldValueFromMessage(message, "traits");
-  if (!traits || !Object.keys(traits).length) {
+  let traits = getFieldValueFromMessage(message, 'traits');
+  if (!traits || Object.keys(traits).length === 0) {
     traits = message.properties;
   }
   return traits;
@@ -82,53 +82,42 @@ const fetchFinalSetOfTraits = message => {
  * @param {*} destination
  * @returns
  */
-const getProperties = async destination => {
+const getProperties = async (destination) => {
   let hubspotPropertyMap = {};
   let hubspotPropertyMapResponse;
   const { Config } = destination;
 
   // select API authorization type
-  if (Config.authorizationType === "newPrivateAppApi") {
+  if (Config.authorizationType === 'newPrivateAppApi') {
     // Private Apps
     const requestOptions = {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Config.accessToken}`
-      }
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${Config.accessToken}`,
+      },
     };
-    hubspotPropertyMapResponse = await httpGET(
-      CONTACT_PROPERTY_MAP_ENDPOINT,
-      requestOptions
-    );
-    hubspotPropertyMapResponse = processAxiosResponse(
-      hubspotPropertyMapResponse
-    );
+    hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions);
+    hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   } else {
     // API Key (hapikey)
     const url = `${CONTACT_PROPERTY_MAP_ENDPOINT}?hapikey=${Config.apiKey}`;
     hubspotPropertyMapResponse = await httpGET(url);
-    hubspotPropertyMapResponse = processAxiosResponse(
-      hubspotPropertyMapResponse
-    );
+    hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   }
 
   if (hubspotPropertyMapResponse.status !== 200) {
     throw new NetworkError(
-      `Failed to get hubspot properties: ${JSON.stringify(
-        hubspotPropertyMapResponse.response
-      )}`,
+      `Failed to get hubspot properties: ${JSON.stringify(hubspotPropertyMapResponse.response)}`,
       hubspotPropertyMapResponse.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-          hubspotPropertyMapResponse.status
-        )
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(hubspotPropertyMapResponse.status),
       },
-      hubspotPropertyMapResponse
+      hubspotPropertyMapResponse,
     );
   }
 
   const propertyMap = {};
-  hubspotPropertyMapResponse.response.forEach(element => {
+  hubspotPropertyMapResponse.response.forEach((element) => {
     propertyMap[element.name] = element.type;
   });
   hubspotPropertyMap = propertyMap;
@@ -159,12 +148,12 @@ const getTransformedJSON = async (message, destination, propertyMap) => {
 
     // if there is any extra/custom property in hubspot, that has not already
     // been mapped but exists in the traits, we will include those values to the final payload
-    traitsKeys.forEach(traitsKey => {
+    traitsKeys.forEach((traitsKey) => {
       // lowercase and replace ' ' & '.' with '_'
       const hsSupportedKey = formatKey(traitsKey);
       if (!rawPayload[traitsKey] && propertyMap[hsSupportedKey]) {
         let propValue = traits[traitsKey];
-        if (propertyMap[hsSupportedKey] === "date") {
+        if (propertyMap[hsSupportedKey] === 'date') {
           const time = propValue;
           const date = new Date(time);
           date.setUTCHours(0, 0, 0, 0);
@@ -198,11 +187,8 @@ const getTransformedJSON = async (message, destination, propertyMap) => {
  * @param {*} propMap
  * @returns
  */
-const formatPropertyValueForIdentify = propMap => {
-  return Object.keys(propMap).map(key => {
-    return { property: key, value: propMap[key] };
-  });
-};
+const formatPropertyValueForIdentify = (propMap) =>
+  Object.keys(propMap).map((key) => ({ property: key, value: propMap[key] }));
 
 /**
  * for batching -
@@ -210,11 +196,11 @@ const formatPropertyValueForIdentify = propMap => {
  * @param {*} properties
  * @returns
  */
-const getEmailAndUpdatedProps = properties => {
-  const index = properties.findIndex(prop => prop.property === "email");
+const getEmailAndUpdatedProps = (properties) => {
+  const index = properties.findIndex((prop) => prop.property === 'email');
   return {
     email: properties[index].value,
-    updatedProperties: properties.filter((prop, i) => i !== index)
+    updatedProperties: properties.filter((prop, i) => i !== index),
   };
 };
 
@@ -240,11 +226,11 @@ const getMappingFieldValueFormMessage = (message, sourceKey, lookupField) => {
  * @returns object containing the name of the lookupField and the lookup value
  */
 const getLookupFieldValue = (message, lookupField) => {
-  const SOURCE_KEYS = ["traits", "context.traits", "properties"];
+  const SOURCE_KEYS = ['traits', 'context.traits', 'properties'];
   let value = getValueFromMessage(message, `${lookupField}`);
   if (!value) {
     // Check in free-flowing object level
-    SOURCE_KEYS.some(sourceKey => {
+    SOURCE_KEYS.some((sourceKey) => {
       value = getMappingFieldValueFormMessage(message, sourceKey, lookupField);
       if (value) {
         return true;
@@ -266,17 +252,14 @@ const searchContacts = async (message, destination) => {
   const { Config } = destination;
   let searchContactsResponse;
   let contactId;
-  if (!getFieldValueFromMessage(message, "traits") && !message.properties) {
-    throw new InstrumentationError(
-      "Identify - Invalid traits value for lookup field"
-    );
+  if (!getFieldValueFromMessage(message, 'traits') && !message.properties) {
+    throw new InstrumentationError('Identify - Invalid traits value for lookup field');
   }
   const lookupFieldInfo =
-    getLookupFieldValue(message, Config.lookupField) ||
-    getLookupFieldValue(message, "email");
+    getLookupFieldValue(message, Config.lookupField) || getLookupFieldValue(message, 'email');
   if (!lookupFieldInfo?.value) {
     throw new InstrumentationError(
-      "Identify:: email i.e a default lookup field for contact lookup not found in traits"
+      'Identify:: email i.e a default lookup field for contact lookup not found in traits',
     );
   }
 
@@ -287,29 +270,29 @@ const searchContacts = async (message, destination) => {
           {
             propertyName: lookupFieldInfo.fieldName,
             value: lookupFieldInfo.value,
-            operator: "EQ"
-          }
-        ]
-      }
+            operator: 'EQ',
+          },
+        ],
+      },
     ],
-    sorts: ["ascending"],
+    sorts: ['ascending'],
     properties: [lookupFieldInfo.fieldName],
     limit: 2,
-    after: 0
+    after: 0,
   };
 
-  if (Config.authorizationType === "newPrivateAppApi") {
+  if (Config.authorizationType === 'newPrivateAppApi') {
     // Private Apps
     const requestOptions = {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Config.accessToken}`
-      }
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${Config.accessToken}`,
+      },
     };
     searchContactsResponse = await httpPOST(
       IDENTIFY_CRM_SEARCH_CONTACT,
       requestData,
-      requestOptions
+      requestOptions,
     );
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
   } else {
@@ -321,23 +304,19 @@ const searchContacts = async (message, destination) => {
 
   if (searchContactsResponse.status !== 200) {
     throw new NetworkError(
-      `Failed to get hubspot contacts: ${JSON.stringify(
-        searchContactsResponse.response
-      )}`,
+      `Failed to get hubspot contacts: ${JSON.stringify(searchContactsResponse.response)}`,
       searchContactsResponse.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-          searchContactsResponse.status
-        )
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(searchContactsResponse.status),
       },
-      searchContactsResponse
+      searchContactsResponse,
     );
   }
 
   // throw error if more than one contact is found as it's ambiguous
   if (searchContactsResponse.response?.results?.length > 1) {
     throw new NetworkInstrumentationError(
-      "Unable to get single Hubspot contact. More than one contacts found. Retry with unique lookupPropertyName and lookupValue"
+      'Unable to get single Hubspot contact. More than one contacts found. Retry with unique lookupPropertyName and lookupValue',
     );
   } else if (searchContactsResponse.response?.results?.length === 1) {
     // a single and unique contact found
@@ -361,9 +340,9 @@ const searchContacts = async (message, destination) => {
 const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   const { hubspotEvents } = destination.Config;
 
-  let event = get(message, "event");
+  let event = get(message, 'event');
   if (!event) {
-    throw new InstrumentationError("event name is required for track call");
+    throw new InstrumentationError('event name is required for track call');
   }
   event = event.trim().toLowerCase();
   let eventName;
@@ -372,17 +351,16 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
 
   // 1. fetch event name from webapp config
   // some will traverse through all the indexes of the array and find the event
-  const hubspotEventFound = hubspotEvents.some(hubspotEvent => {
+  const hubspotEventFound = hubspotEvents.some((hubspotEvent) => {
     if (
       hubspotEvent &&
       hubspotEvent.rsEventName &&
-      hubspotEvent.rsEventName.trim().toLowerCase() === event
+      hubspotEvent.rsEventName.trim().toLowerCase() === event &&
+      !isEmpty(hubspotEvent.hubspotEventName)
     ) {
-      if (!isEmpty(hubspotEvent.hubspotEventName)) {
-        eventName = hubspotEvent.hubspotEventName.trim();
-        eventProperties = hubspotEvent.eventProperties;
-        return true;
-      }
+      eventName = hubspotEvent.hubspotEventName.trim();
+      eventProperties = hubspotEvent.eventProperties;
+      return true;
     }
     return false;
   });
@@ -394,7 +372,7 @@ const getEventAndPropertiesFromConfig = (message, destination, payload) => {
   // 2. fetch event properties from webapp config
   eventProperties = getHashFromArray(eventProperties, ...Array(2), false);
 
-  Object.keys(eventProperties).forEach(key => {
+  Object.keys(eventProperties).forEach((key) => {
     const value = get(message, `properties.${key}`);
     if (value) {
       properties[eventProperties[key]] = value;
@@ -421,26 +399,17 @@ const getExistingData = async (inputs, destination) => {
   let identifierType = null;
 
   if (firstMessage) {
-    objectType = getDestinationExternalIDInfoForRetl(firstMessage, DESTINATION)
-      .objectType;
-    identifierType = getDestinationExternalIDInfoForRetl(
-      firstMessage,
-      DESTINATION
-    ).identifierType;
+    objectType = getDestinationExternalIDInfoForRetl(firstMessage, DESTINATION).objectType;
+    identifierType = getDestinationExternalIDInfoForRetl(firstMessage, DESTINATION).identifierType;
     if (!objectType || !identifierType) {
-      throw new InstrumentationError("rETL - external Id not found.");
+      throw new InstrumentationError('rETL - external Id not found.');
     }
   } else {
-    throw new InstrumentationError(
-      "rETL - objectType or identifier type not found. "
-    );
+    throw new InstrumentationError('rETL - objectType or identifier type not found. ');
   }
-  inputs.map(async input => {
+  inputs.map(async (input) => {
     const { message } = input;
-    const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
-      message,
-      DESTINATION
-    );
+    const { destinationExternalId } = getDestinationExternalIDInfoForRetl(message, DESTINATION);
     values.push(destinationExternalId);
   });
   const requestData = {
@@ -450,21 +419,21 @@ const getExistingData = async (inputs, destination) => {
           {
             propertyName: identifierType,
             values,
-            operator: "IN"
-          }
-        ]
-      }
+            operator: 'IN',
+          },
+        ],
+      },
     ],
     properties: [identifierType],
     limit: SEARCH_LIMIT_VALUE,
-    after: 0
+    after: 0,
   };
 
   const requestOptions = {
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${Config.accessToken}`
-    }
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${Config.accessToken}`,
+    },
   };
   let checkAfter = 1; // variable to keep checking if we have more results
 
@@ -476,17 +445,14 @@ const getExistingData = async (inputs, destination) => {
    * */
 
   while (checkAfter) {
-    const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(
-      ":objectType",
-      objectType
-    );
+    const endpoint = IDENTIFY_CRM_SEARCH_ALL_OBJECTS.replace(':objectType', objectType);
 
     const url =
-      Config.authorizationType === "newPrivateAppApi"
+      Config.authorizationType === 'newPrivateAppApi'
         ? endpoint
         : `${endpoint}?hapikey=${Config.apiKey}`;
     searchResponse =
-      Config.authorizationType === "newPrivateAppApi"
+      Config.authorizationType === 'newPrivateAppApi'
         ? await httpPOST(url, requestData, requestOptions)
         : await httpPOST(url, requestData);
     searchResponse = processAxiosResponse(searchResponse);
@@ -496,11 +462,9 @@ const getExistingData = async (inputs, destination) => {
         `rETL - Error during searching object record. ${searchResponse.response?.message}`,
         searchResponse.status,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-            searchResponse.status
-          )
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(searchResponse.status),
         },
-        searchResponse
+        searchResponse,
       );
     }
 
@@ -511,7 +475,7 @@ const getExistingData = async (inputs, destination) => {
 
     const results = searchResponse.response?.results;
     if (results) {
-      updateHubspotIds = results.map(result => {
+      updateHubspotIds = results.map((result) => {
         const propertyValue = result.properties[identifierType];
         return { id: result.id, property: propertyValue };
       });
@@ -525,7 +489,7 @@ const setHsSearchId = (input, id) => {
   const resultExternalId = [];
   const externalIdArray = message.context?.externalId;
   if (externalIdArray) {
-    externalIdArray.forEach(extIdObj => {
+    externalIdArray.forEach((extIdObj) => {
       const { type } = extIdObj;
       const extIdObjParam = extIdObj;
       if (type.includes(DESTINATION)) {
@@ -549,39 +513,33 @@ const splitEventsForCreateUpdate = async (inputs, destination) => {
   // get all the id and properties of already existing objects needed for update.
   const updateHubspotIds = await getExistingData(inputs, destination);
 
-  const resultInput = inputs.map(input => {
+  const resultInput = inputs.map((input) => {
     const { message } = input;
     const inputParam = input;
-    const { destinationExternalId } = getDestinationExternalIDInfoForRetl(
-      message,
-      DESTINATION
-    );
+    const { destinationExternalId } = getDestinationExternalIDInfoForRetl(message, DESTINATION);
 
     const filteredInfo = updateHubspotIds.filter(
-      update => update.property.toString() === destinationExternalId.toString()
+      (update) => update.property.toString() === destinationExternalId.toString(),
     );
 
-    if (filteredInfo.length) {
-      inputParam.message.context.externalId = setHsSearchId(
-        input,
-        filteredInfo[0].id
-      );
-      inputParam.message.context.hubspotOperation = "updateObject";
+    if (filteredInfo.length > 0) {
+      inputParam.message.context.externalId = setHsSearchId(input, filteredInfo[0].id);
+      inputParam.message.context.hubspotOperation = 'updateObject';
       return inputParam;
     }
-    inputParam.message.context.hubspotOperation = "createObject";
+    inputParam.message.context.hubspotOperation = 'createObject';
     return inputParam;
   });
 
   return resultInput;
 };
 
-const getHsSearchId = message => {
+const getHsSearchId = (message) => {
   const externalIdArray = message.context?.externalId;
   let hsSearchId = null;
 
   if (externalIdArray) {
-    externalIdArray.forEach(extIdObj => {
+    externalIdArray.forEach((extIdObj) => {
       const { type } = extIdObj;
       if (type.includes(DESTINATION)) {
         hsSearchId = extIdObj.hsSearchId;
@@ -602,5 +560,5 @@ module.exports = {
   getEventAndPropertiesFromConfig,
   searchContacts,
   splitEventsForCreateUpdate,
-  getHsSearchId
+  getHsSearchId,
 };

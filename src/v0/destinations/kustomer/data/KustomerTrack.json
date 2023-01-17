@@ -15,10 +15,7 @@
   },
   {
     "destKey": "trackingId",
-    "sourceKeys": [
-      "properties.kustomerTrackingId",
-      "properties.kustomer_tracking_id"
-    ],
+    "sourceKeys": ["properties.kustomerTrackingId", "properties.kustomer_tracking_id"],
     "required": false
   },
   {

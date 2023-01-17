@@ -17,11 +17,7 @@
   },
   {
     "destKey": "objectId",
-    "sourceKeys": [
-      "traits.objectId",
-      "context.traits.objectId",
-      "properties.objectId"
-    ],
+    "sourceKeys": ["traits.objectId", "context.traits.objectId", "properties.objectId"],
     "required": false
   }
 ]

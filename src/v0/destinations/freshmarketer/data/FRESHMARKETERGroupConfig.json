@@ -28,10 +28,7 @@
   },
   {
     "destKey": "number_of_employees",
-    "sourceKeys": [
-      "traits.numberOfEmployees",
-      "context.traits.numberOfEmployees"
-    ],
+    "sourceKeys": ["traits.numberOfEmployees", "context.traits.numberOfEmployees"],
     "required": false
   },
   {
@@ -92,10 +89,7 @@
   },
   {
     "destKey": "parent_sales_account_id",
-    "sourceKeys": [
-      "traits.parentSalesAccountId",
-      "context.traits.parentSalesAccountId"
-    ],
+    "sourceKeys": ["traits.parentSalesAccountId", "context.traits.parentSalesAccountId"],
     "required": false
   },
   {
@@ -105,10 +99,7 @@
   },
   {
     "destKey": "facebook",
-    "sourceKeys": [
-      "traits.facebookUserName",
-      "context.traits.facebookUserName"
-    ],
+    "sourceKeys": ["traits.facebookUserName", "context.traits.facebookUserName"],
     "required": false
   },
   {
@@ -118,10 +109,7 @@
   },
   {
     "destKey": "linkedin",
-    "sourceKeys": [
-      "traits.linkedinUserName",
-      "context.traits.linkedinUserName"
-    ],
+    "sourceKeys": ["traits.linkedinUserName", "context.traits.linkedinUserName"],
     "required": false
   },
   {

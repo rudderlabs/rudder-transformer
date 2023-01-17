@@ -1,20 +1,18 @@
-const get = require("get-value");
-const { CONFIG_CATEGORIES } = require("./config");
-const { getHashFromArray, getFieldValueFromMessage } = require("../../util");
-const { InstrumentationError } = require("../../util/errorTypes");
+const get = require('get-value');
+const { CONFIG_CATEGORIES } = require('./config');
+const { getHashFromArray, getFieldValueFromMessage } = require('../../util');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 /**
  * Validation for userId and an email
  * @param {*} message
  * @returns
  */
-const validatePayload = message => {
-  const userId = getFieldValueFromMessage(message, "userIdOnly");
-  const email = getFieldValueFromMessage(message, "email");
+const validatePayload = (message) => {
+  const userId = getFieldValueFromMessage(message, 'userIdOnly');
+  const email = getFieldValueFromMessage(message, 'email');
   if (!userId && !email) {
-    throw new InstrumentationError(
-      "At least one of `userId` or `email` is required"
-    );
+    throw new InstrumentationError('At least one of `userId` or `email` is required');
   }
 };
 
@@ -27,7 +25,7 @@ const validatePayload = message => {
 const replaceDestAttributes = (attributesMap, destinationPayload) => {
   const payload = destinationPayload;
   const keys = Object.keys(attributesMap);
-  keys.forEach(key => {
+  keys.forEach((key) => {
     if (payload[key]) {
       const value = payload[key];
       payload[attributesMap[key]] = value;
@@ -47,22 +45,14 @@ const replaceDestAttributes = (attributesMap, destinationPayload) => {
 const getAccountTraits = (message, destination) => {
   const { accountAttributesMapping } = destination.Config;
   // all the traits fields, that are not mapped in webapp are going as it is
-  const traits = getFieldValueFromMessage(message, "groupTraits");
-  const id = getFieldValueFromMessage(message, "groupId");
+  const traits = getFieldValueFromMessage(message, 'groupTraits');
+  const id = getFieldValueFromMessage(message, 'groupId');
   let groupUsersPayload = {
     ...traits,
-    id
+    id,
   };
-  const accountAttributesMap = getHashFromArray(
-    accountAttributesMapping,
-    "from",
-    "to",
-    false
-  );
-  groupUsersPayload = replaceDestAttributes(
-    accountAttributesMap,
-    groupUsersPayload
-  );
+  const accountAttributesMap = getHashFromArray(accountAttributesMapping, 'from', 'to', false);
+  groupUsersPayload = replaceDestAttributes(accountAttributesMap, groupUsersPayload);
   return groupUsersPayload;
 };
 
@@ -76,28 +66,23 @@ const getAccountTraits = (message, destination) => {
 const identifyUserPayloadBuilder = (message, destination) => {
   const { userAttributesMapping } = destination.Config;
   // mapping refiner remote_id with userId
-  const userId = getFieldValueFromMessage(message, "userIdOnly");
-  const email = getFieldValueFromMessage(message, "email");
+  const userId = getFieldValueFromMessage(message, 'userIdOnly');
+  const email = getFieldValueFromMessage(message, 'email');
   // all the traits fields, that are not mapped in webapp are going as it is
-  const traits = getFieldValueFromMessage(message, "traits");
-  const contextTraits = get(message, "context.traits");
+  const traits = getFieldValueFromMessage(message, 'traits');
+  const contextTraits = get(message, 'context.traits');
   let payload = {
     ...traits,
     ...contextTraits,
     userId,
-    email
+    email,
   };
-  const userAttributesMap = getHashFromArray(
-    userAttributesMapping,
-    "from",
-    "to",
-    false
-  );
+  const userAttributesMap = getHashFromArray(userAttributesMapping, 'from', 'to', false);
   payload = replaceDestAttributes(userAttributesMap, payload);
   const { endpoint } = CONFIG_CATEGORIES.IDENTIFY_USER;
   return {
     payload,
-    endpoint
+    endpoint,
   };
 };
 
@@ -107,10 +92,10 @@ const identifyUserPayloadBuilder = (message, destination) => {
  * @param {*} message
  * @returns
  */
-const trackEventPayloadBuilder = message => {
+const trackEventPayloadBuilder = (message) => {
   const payload = {};
-  const userId = getFieldValueFromMessage(message, "userIdOnly");
-  const email = getFieldValueFromMessage(message, "email");
+  const userId = getFieldValueFromMessage(message, 'userIdOnly');
+  const email = getFieldValueFromMessage(message, 'email');
   const { event } = message;
   if (userId) {
     payload.id = userId;
@@ -129,11 +114,11 @@ const trackEventPayloadBuilder = message => {
  * @param {*} message
  * @returns
  */
-const pageEventPayloadBuilder = message => {
+const pageEventPayloadBuilder = (message) => {
   const payload = {};
   let event;
-  const userId = getFieldValueFromMessage(message, "userIdOnly");
-  const email = getFieldValueFromMessage(message, "email");
+  const userId = getFieldValueFromMessage(message, 'userIdOnly');
+  const email = getFieldValueFromMessage(message, 'email');
   if (userId) {
     payload.id = userId;
   }
@@ -163,8 +148,8 @@ const pageEventPayloadBuilder = message => {
  */
 const groupUsersPayloadBuilder = (message, destination) => {
   const payload = {};
-  const userId = getFieldValueFromMessage(message, "userIdOnly");
-  const email = getFieldValueFromMessage(message, "context.traits.email");
+  const userId = getFieldValueFromMessage(message, 'userIdOnly');
+  const email = getFieldValueFromMessage(message, 'context.traits.email');
   if (userId) {
     payload.id = userId;
   }
@@ -180,14 +165,14 @@ const groupUsersPayloadBuilder = (message, destination) => {
    */
   const accountTraits = getAccountTraits(message, destination);
   const keys = Object.keys(accountTraits);
-  keys.forEach(key => {
+  keys.forEach((key) => {
     payload[`account[${key}]`] = accountTraits[key];
   });
 
   const { endpoint } = CONFIG_CATEGORIES.GROUP_USERS;
   return {
     payload,
-    endpoint
+    endpoint,
   };
 };
 
@@ -196,5 +181,5 @@ module.exports = {
   identifyUserPayloadBuilder,
   trackEventPayloadBuilder,
   groupUsersPayloadBuilder,
-  pageEventPayloadBuilder
+  pageEventPayloadBuilder,
 };

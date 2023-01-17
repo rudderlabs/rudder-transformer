@@ -1,16 +1,10 @@
-const path = require("path");
-const fs = require("fs/promises");
-const {
-  WorkflowExecutionError,
-  WorkflowCreationError
-} = require("rudder-workflow-engine");
-const logger = require("../../logger");
-const { generateErrorObject } = require("../../v0/util");
-const {
-  PlatformError,
-  TransformationError
-} = require("../../v0/util/errorTypes");
-const tags = require("../../v0/util/tags");
+const path = require('path');
+const fs = require('fs/promises');
+const { WorkflowExecutionError, WorkflowCreationError } = require('rudder-workflow-engine');
+const logger = require('../../logger');
+const { generateErrorObject } = require('../../v0/util');
+const { PlatformError } = require('../../v0/util/errorTypes');
+const tags = require('../../v0/util/tags');
 
 const CDK_V2_ROOT_DIR = __dirname;
 
@@ -18,28 +12,24 @@ async function getWorkflowPath(destDir, feature) {
   // The values are of array type to support aliases
   const featureWorkflowMap = {
     // Didn't add any prefix as processor transformation is the default
-    [tags.FEATURES.PROCESSOR]: ["workflow.yaml", "procWorkflow.yaml"],
-    [tags.FEATURES.ROUTER]: ["rtWorkflow.yaml"],
+    [tags.FEATURES.PROCESSOR]: ['workflow.yaml', 'procWorkflow.yaml'],
+    [tags.FEATURES.ROUTER]: ['rtWorkflow.yaml'],
     // Note: intentionally avoided the `proxy` term here
-    [tags.FEATURES.DATA_DELIVERY]: ["dataDeliveryWorkflow.yaml"],
-    [tags.FEATURES.BATCH]: ["batchWorkflow.yaml"]
+    [tags.FEATURES.DATA_DELIVERY]: ['dataDeliveryWorkflow.yaml'],
+    [tags.FEATURES.BATCH]: ['batchWorkflow.yaml'],
   };
 
   const workflowFilenames = featureWorkflowMap[feature];
   // Find the first workflow file that exists
   const files = await fs.readdir(destDir);
-  const matchedFilename = workflowFilenames?.find(filename =>
-    files.includes(filename)
-  );
+  const matchedFilename = workflowFilenames?.find((filename) => files.includes(filename));
   let validWorkflowFilepath;
   if (matchedFilename) {
     validWorkflowFilepath = path.join(destDir, matchedFilename);
   }
 
   if (!validWorkflowFilepath) {
-    throw new PlatformError(
-      "Unable to identify the workflow file. Invalid feature input"
-    );
+    throw new PlatformError('Unable to identify the workflow file. Invalid feature input');
   }
   return validWorkflowFilepath;
 }
@@ -47,15 +37,15 @@ async function getWorkflowPath(destDir, feature) {
 function getRootPathForDestination(destName) {
   // TODO: Resolve the CDK v2 destination directory
   // path from the root directory
-  return path.join(CDK_V2_ROOT_DIR, "destinations", destName);
+  return path.join(CDK_V2_ROOT_DIR, 'destinations', destName);
 }
 
 async function getPlatformBindingsPaths() {
-  const allowedExts = [".js"];
+  const allowedExts = ['.js'];
   const bindingsPaths = [];
-  const bindingsDir = path.join(CDK_V2_ROOT_DIR, "bindings");
+  const bindingsDir = path.join(CDK_V2_ROOT_DIR, 'bindings');
   const files = await fs.readdir(bindingsDir);
-  files.forEach(fileName => {
+  files.forEach((fileName) => {
     const { ext } = path.parse(fileName);
     if (allowedExts.includes(ext.toLowerCase())) {
       bindingsPaths.push(path.resolve(bindingsDir, fileName));
@@ -70,12 +60,9 @@ async function getPlatformBindingsPaths() {
  * @param {*} err
  */
 function getWorkflowEngineErrorMessage(err) {
-  let errMsg = err instanceof Error ? err.message : "";
+  let errMsg = err instanceof Error ? err.message : '';
 
-  if (
-    err instanceof WorkflowCreationError ||
-    err instanceof WorkflowExecutionError
-  ) {
+  if (err instanceof WorkflowCreationError || err instanceof WorkflowExecutionError) {
     errMsg = `${err.message}: Workflow: ${err.workflowName}, Step: ${err.stepName}, ChildStep: ${err.childStepName}`;
 
     if (err instanceof WorkflowExecutionError) {
@@ -98,10 +85,8 @@ function getErrorInfo(err, isProd, defTags) {
 
   if (err instanceof WorkflowExecutionError) {
     logger.error(
-      `Error occurred during workflow step execution: ${getWorkflowEngineErrorMessage(
-        err
-      )}`,
-      err
+      `Error occurred during workflow step execution: ${getWorkflowEngineErrorMessage(err)}`,
+      err,
     );
 
     // Determine the error instance
@@ -118,9 +103,9 @@ function getErrorInfo(err, isProd, defTags) {
   // Treat all other errors as platform related errors
   logger.error(
     `Error occurred during workflow creation or unrecognized error during workflow execution: ${getWorkflowEngineErrorMessage(
-      err
+      err,
     )}`,
-    err
+    err,
   );
 
   return generateErrorObject(new PlatformError(message), defTags);
@@ -128,15 +113,13 @@ function getErrorInfo(err, isProd, defTags) {
 
 function isCdkV2Destination(event) {
   return (
-    process.env.CDK_V2_Enabled === "true" &&
+    process.env.CDK_V2_Enabled === 'true' &&
     Boolean(event?.destination?.DestinationDefinition?.Config?.cdkV2Enabled)
   );
 }
 
 function getCdkV2TestThreshold(event) {
-  return (
-    event.destination?.DestinationDefinition?.Config?.cdkV2TestThreshold || 0
-  );
+  return event.destination?.DestinationDefinition?.Config?.cdkV2TestThreshold || 0;
 }
 
 module.exports = {
@@ -145,5 +128,5 @@ module.exports = {
   getPlatformBindingsPaths,
   getErrorInfo,
   isCdkV2Destination,
-  getCdkV2TestThreshold
+  getCdkV2TestThreshold,
 };

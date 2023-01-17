@@ -270,9 +270,7 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": [
-              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
-            ]
+            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
           },
           "JSON": {}
         },
@@ -554,9 +552,7 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": [
-              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
-            ]
+            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
           },
           "JSON": {}
         },
@@ -1287,9 +1283,7 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": [
-              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
-            ]
+            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
           },
           "JSON": {}
         },
@@ -1581,9 +1575,7 @@
           "JSON_ARRAY": {},
           "FORM": {
             "api_key": "4c7ed7573eb73517ee4c26ed4bde9a85",
-            "mapping": [
-              "{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"
-            ]
+            "mapping": ["{\"global_user_id\":\"newUserIdAlias\",\"user_id\":\"sampleusrRudder3\"}"]
           },
           "JSON": {}
         },

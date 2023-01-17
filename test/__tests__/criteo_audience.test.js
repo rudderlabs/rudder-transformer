@@ -5,7 +5,7 @@ const integration = "criteo_audience";
 const name = "Criteo_Audience";
 const version = "v0";
 
-const transformer = require(`../${version}/destinations/${integration}/transform`);
+const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
 
 // Processor Test Data
 const testDataFile = fs.readFileSync(
@@ -37,10 +37,10 @@ describe(`${name} Tests`, () => {
     });
   });
 
-    describe("Router Tests", () => {
-      it("Payload", async () => {
-        const routerOutput = await transformer.processRouterDest(inputRouterData);
-        expect(routerOutput).toEqual(expectedRouterData);
-      });
+  describe("Router Tests", () => {
+    it("Payload", async () => {
+      const routerOutput = await transformer.processRouterDest(inputRouterData);
+      expect(routerOutput).toEqual(expectedRouterData);
     });
+  });
 });

@@ -4,9 +4,7 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "accessToken": "success_access_token"
         }
       },
       "message": {
@@ -93,9 +91,7 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "accessToken": "success_access_token"
         }
       },
       "message": {
@@ -179,9 +175,7 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "accessToken": "success_access_token"
         }
       },
       "message": {
@@ -306,9 +300,7 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "accessToken": "success_access_token"
         }
       },
       "message": {
@@ -433,9 +425,7 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "accessToken": "success_access_token"
         }
       },
       "message": {
@@ -563,9 +553,7 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "accessToken": "success_access_token"
         }
       },
       "message": {
@@ -614,7 +602,7 @@
       }
     },
     "output": {
-      "error": "[Criteo_Audience]:: Message type identify not supoorted"
+      "error": "Event type identify is not supported"
     }
   },
   {
@@ -622,9 +610,7 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "accessToken": "success_access_token"
         }
       },
       "destination": {
@@ -682,7 +668,7 @@
       }
     },
     "output": {
-      "error": "[Criteo_Audience]:: Message properties is not present. Aborting message."
+      "error": "Message properties is not present. Aborting message."
     }
   },
   {
@@ -690,9 +676,7 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "accessToken": "success_access_token"
         }
       },
       "destination": {
@@ -743,7 +727,7 @@
       }
     },
     "output": {
-      "error": "[Criteo_Audience]:: listData is not present inside properties. Aborting message."
+      "error": "listData is not present inside properties. Aborting message."
     }
   },
   {
@@ -751,9 +735,7 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "accessToken": "success_access_token"
         }
       },
       "message": {
@@ -781,7 +763,7 @@
       }
     },
     "output": {
-      "error": "[Criteo_Audience]:: Payload could not be populated"
+      "error": "Payload could not be populated"
     }
   }
 ]

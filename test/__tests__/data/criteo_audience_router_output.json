@@ -4,7 +4,7 @@
             "version": "1",
             "type": "REST",
             "method": "PATCH",
-            "endpoint": "https://api.criteo.com/2022-10//audiences/34893/contactlist",
+            "endpoint": "https://api.criteo.com/2022-10/audiences/34893/contactlist",
             "headers": {
                 "Authorization": "Bearer success_access_token",
                 "Content-Type": "application/json",
@@ -35,7 +35,10 @@
         },
         "metadata": [
             {
-                "jobId": 1
+                "jobId": 1,
+                "secret": {
+                    "accessToken": "success_access_token"
+                }
             }
         ],
         "batched": false,
@@ -56,7 +59,7 @@
                 "version": "1",
                 "type": "REST",
                 "method": "PATCH",
-                "endpoint": "https://api.criteo.com/2022-10//audiences/34893/contactlist",
+                "endpoint": "https://api.criteo.com/2022-10/audiences/34893/contactlist",
                 "headers": {
                     "Authorization": "Bearer success_access_token",
                     "Content-Type": "application/json",
@@ -89,7 +92,7 @@
                 "version": "1",
                 "type": "REST",
                 "method": "PATCH",
-                "endpoint": "https://api.criteo.com/2022-10//audiences/34893/contactlist",
+                "endpoint": "https://api.criteo.com/2022-10/audiences/34893/contactlist",
                 "headers": {
                     "Authorization": "Bearer success_access_token",
                     "Content-Type": "application/json",
@@ -119,7 +122,10 @@
         ],
         "metadata": [
             {
-                "jobId": 2
+                "jobId": 2,
+                "secret": {
+                    "accessToken": "success_access_token"
+                }
             }
         ],
         "batched": false,

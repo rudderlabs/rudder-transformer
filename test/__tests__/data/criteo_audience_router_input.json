@@ -10,6 +10,9 @@
             "ID": "iwehr83843"
         },
         "metadata": {
+            "secret": {
+                "accessToken": "success_access_token"
+            },
             "jobId": 1
         },
         "message": {
@@ -59,6 +62,9 @@
             "ID": "iwehr83843"
         },
         "metadata": {
+            "secret": {
+                "accessToken": "success_access_token"
+            },
             "jobId": 2
         },
         "message": {

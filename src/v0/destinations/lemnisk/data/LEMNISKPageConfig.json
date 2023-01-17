@@ -35,5 +35,10 @@
     "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,
     "required": true
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": "name",
+    "required": true
   }
 ]

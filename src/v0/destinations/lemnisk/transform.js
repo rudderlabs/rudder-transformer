@@ -12,7 +12,7 @@ const {
   defaultRequestConfig,
   simpleProcessRouterDest
 } = require("../../util");
-const { generatePageName, fetchPlatform } = require("./utils");
+const { fetchPlatform } = require("./utils");
 const {
   ConfigurationError,
   TransformationError,
@@ -32,9 +32,6 @@ const responseBuilder = (message, category, destination, platform) => {
       );
     }
     payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-    if (category.type === "page") {
-      payload.name = generatePageName(message);
-    }
     payload.writeKey = plWriteKey;
     payload.context.userAgent = {
       ua: payload.context.userAgent

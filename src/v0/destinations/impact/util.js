@@ -60,6 +60,8 @@ const getProductsMapping = (productsMapping, itemName) => {
     productsMapping.forEach((mapping) => {
       prop = mapping.to === itemName ? mapping.from : itemMapping[itemName];
     });
+  } else {
+    prop = itemMapping[itemName];
   }
   return prop;
 };

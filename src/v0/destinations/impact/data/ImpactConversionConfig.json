@@ -9,7 +9,7 @@
     "destKey": "EventDate",
     "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,
-    "required": false
+    "required": true
   },
   {
     "destKey": "CurrencyCode",

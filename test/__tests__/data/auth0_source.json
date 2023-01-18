@@ -1,0 +1,1120 @@
+[
+  {
+    "description": "successful signup",
+    "input": [
+      {
+        "log_id": "90020221031055712103169676686005480714681762668315934738",
+        "data": {
+          "date": "2022-10-31T05:57:06.859Z",
+          "type": "ss",
+          "description": "",
+          "connection": "Username-Password-Authentication",
+          "connection_id": "con_djwCjiwyID0vZy1S",
+          "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+          "client_name": "All Applications",
+          "ip": "35.166.202.113",
+          "user_agent": "unknown",
+          "details": {
+            "body": {
+              "email": "bhalalamark+21@gmail.com",
+              "tenant": "dev-cu4jy2zgao6yx15x",
+              "password": "*****",
+              "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+              "connection": "Username-Password-Authentication"
+            }
+          },
+          "user_id": "auth0|*****",
+          "user_name": "bhalalamark+21@gmail.com",
+          "strategy": "auth0",
+          "strategy_type": "database",
+          "log_id": "90020221031055712103169676686005480714681762668315934738"
+        }
+      },
+      {
+        "log_id": "90020221031055712103169676686007898566320991926665347090",
+        "data": {
+          "date": "2022-10-31T05:57:06.874Z",
+          "type": "sapi",
+          "description": "Create a User",
+          "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+          "client_name": "",
+          "ip": "35.166.202.113",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+          "details": {
+            "request": {
+              "ip": "35.166.202.113",
+              "auth": {
+                "user": {
+                  "name": "Bhalala Mihir",
+                  "email": "bhalalamark@gmail.com",
+                  "user_id": "auth0|*****"
+                },
+                "strategy": "jwt",
+                "credentials": {
+                  "jti": "571921bf7833a97efabf08d765a0ec8f",
+                  "scopes": [
+                    "create:actions",
+                    "create:actions_log_sessions",
+                    "create:client_credentials",
+                    "create:client_grants",
+                    "create:clients",
+                    "create:connections",
+                    "create:custom_domains",
+                    "create:email_provider",
+                    "create:email_templates",
+                    "create:guardian_enrollment_tickets",
+                    "create:integrations",
+                    "create:log_streams",
+                    "create:organization_connections",
+                    "create:organization_invitations",
+                    "create:organization_member_roles",
+                    "create:organization_members",
+                    "create:organizations",
+                    "create:requested_scopes",
+                    "create:resource_servers",
+                    "create:roles",
+                    "create:rules",
+                    "create:shields",
+                    "create:signing_keys",
+                    "create:tenant_invitations",
+                    "create:test_email_dispatch",
+                    "create:users",
+                    "delete:actions",
+                    "delete:anomaly_blocks",
+                    "delete:branding",
+                    "delete:client_credentials",
+                    "delete:client_grants",
+                    "delete:clients",
+                    "delete:connections",
+                    "delete:custom_domains",
+                    "delete:device_credentials",
+                    "delete:email_provider",
+                    "delete:email_templates",
+                    "delete:grants",
+                    "delete:guardian_enrollments",
+                    "delete:integrations",
+                    "delete:log_streams",
+                    "delete:organization_connections",
+                    "delete:organization_invitations",
+                    "delete:organization_member_roles",
+                    "delete:organization_members",
+                    "delete:organizations",
+                    "delete:owners",
+                    "delete:requested_scopes",
+                    "delete:resource_servers",
+                    "delete:roles",
+                    "delete:rules",
+                    "delete:rules_configs",
+                    "delete:shields",
+                    "delete:tenant_invitations",
+                    "delete:tenant_members",
+                    "delete:tenants",
+                    "delete:users",
+                    "read:actions",
+                    "read:anomaly_blocks",
+                    "read:attack_protection",
+                    "read:branding",
+                    "read:checks",
+                    "read:client_credentials",
+                    "read:client_grants",
+                    "read:client_keys",
+                    "read:clients",
+                    "read:connections",
+                    "read:custom_domains",
+                    "read:device_credentials",
+                    "read:email_provider",
+                    "read:email_templates",
+                    "read:email_triggers",
+                    "read:entity_counts",
+                    "read:grants",
+                    "read:guardian_factors",
+                    "read:insights",
+                    "read:integrations",
+                    "read:log_streams",
+                    "read:logs",
+                    "read:mfa_policies",
+                    "read:organization_connections",
+                    "read:organization_invitations",
+                    "read:organization_member_roles",
+                    "read:organization_members",
+                    "read:organizations",
+                    "read:prompts",
+                    "read:requested_scopes",
+                    "read:resource_servers",
+                    "read:roles",
+                    "read:rules",
+                    "read:rules_configs",
+                    "read:shields",
+                    "read:signing_keys",
+                    "read:stats",
+                    "read:tenant_invitations",
+                    "read:tenant_members",
+                    "read:tenant_settings",
+                    "read:triggers",
+                    "read:users",
+                    "run:checks",
+                    "update:actions",
+                    "update:attack_protection",
+                    "update:branding",
+                    "update:client_credentials",
+                    "update:client_grants",
+                    "update:client_keys",
+                    "update:clients",
+                    "update:connections",
+                    "update:custom_domains",
+                    "update:email_provider",
+                    "update:email_templates",
+                    "update:email_triggers",
+                    "update:guardian_factors",
+                    "update:integrations",
+                    "update:log_streams",
+                    "update:mfa_policies",
+                    "update:organization_connections",
+                    "update:organizations",
+                    "update:prompts",
+                    "update:requested_scopes",
+                    "update:resource_servers",
+                    "update:roles",
+                    "update:rules",
+                    "update:rules_configs",
+                    "update:shields",
+                    "update:signing_keys",
+                    "update:tenant_members",
+                    "update:tenant_settings",
+                    "update:triggers",
+                    "update:users"
+                  ]
+                }
+              },
+              "body": {
+                "email": "bhalalamark+21@gmail.com",
+                "password": "*****",
+                "connection": "Username-Password-Authentication"
+              },
+              "path": "/api/v2/users",
+              "query": {},
+              "method": "post",
+              "channel": "https://manage.auth0.com/",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+            },
+            "response": {
+              "body": {
+                "name": "bhalalamark+21@gmail.com",
+                "email": "bhalalamark+21@gmail.com",
+                "picture": "https://s.gravatar.com/avatar/0902f9d02b92aed9f0ac59aaf9475b60?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fbh.png",
+                "user_id": "auth0|*****",
+                "nickname": "bhalalamark+21",
+                "created_at": "2022-10-31T05:57:06.864Z",
+                "identities": [
+                  {
+                    "user_id": "auth0|*****",
+                    "isSocial": false,
+                    "provider": "auth0",
+                    "connection": "Username-Password-Authentication"
+                  }
+                ],
+                "updated_at": "2022-10-31T05:57:06.864Z",
+                "email_verified": false
+              },
+              "statusCode": 201
+            }
+          },
+          "user_id": "auth0|*****",
+          "log_id": "90020221031055712103169676686007898566320991926665347090"
+        }
+      }
+    ],
+    "output": [
+      {
+        "type": "identify",
+        "sentAt": "2022-10-31T05:57:06.859Z",
+        "traits": {
+          "connection": "Username-Password-Authentication",
+          "connection_id": "con_djwCjiwyID0vZy1S"
+        },
+        "userId": "auth0|*****",
+        "context": {
+          "traits": {
+            "userId": "auth0|*****",
+            "user_name": "bhalalamark+21@gmail.com"
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "userAgent": "unknown",
+          "request_ip": "35.166.202.113",
+          "integration": {
+            "name": "Auth0"
+          }
+        },
+        "properties": {
+          "log_id": "90020221031055712103169676686005480714681762668315934738",
+          "details": {
+            "body": {
+              "email": "bhalalamark+21@gmail.com",
+              "tenant": "dev-cu4jy2zgao6yx15x",
+              "password": "*****",
+              "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+              "connection": "Username-Password-Authentication"
+            }
+          },
+          "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+          "client_name": "All Applications",
+          "description": ""
+        },
+        "integrations": {
+          "Auth0": false
+        },
+        "originalTimestamp": "2022-10-31T05:57:06.859Z"
+      },
+      {
+        "type": "track",
+        "event": "Success API Operation",
+        "sentAt": "2022-10-31T05:57:06.874Z",
+        "userId": "auth0|*****",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "userId": "auth0|*****"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+          "request_ip": "35.166.202.113",
+          "integration": {
+            "name": "Auth0"
+          }
+        },
+        "properties": {
+          "log_id": "90020221031055712103169676686007898566320991926665347090",
+          "details": {
+            "request": {
+              "ip": "35.166.202.113",
+              "auth": {
+                "user": {
+                  "name": "Bhalala Mihir",
+                  "email": "bhalalamark@gmail.com",
+                  "user_id": "auth0|*****"
+                },
+                "strategy": "jwt",
+                "credentials": {
+                  "jti": "571921bf7833a97efabf08d765a0ec8f",
+                  "scopes": [
+                    "create:actions",
+                    "create:actions_log_sessions",
+                    "create:client_credentials",
+                    "create:client_grants",
+                    "create:clients",
+                    "create:connections",
+                    "create:custom_domains",
+                    "create:email_provider",
+                    "create:email_templates",
+                    "create:guardian_enrollment_tickets",
+                    "create:integrations",
+                    "create:log_streams",
+                    "create:organization_connections",
+                    "create:organization_invitations",
+                    "create:organization_member_roles",
+                    "create:organization_members",
+                    "create:organizations",
+                    "create:requested_scopes",
+                    "create:resource_servers",
+                    "create:roles",
+                    "create:rules",
+                    "create:shields",
+                    "create:signing_keys",
+                    "create:tenant_invitations",
+                    "create:test_email_dispatch",
+                    "create:users",
+                    "delete:actions",
+                    "delete:anomaly_blocks",
+                    "delete:branding",
+                    "delete:client_credentials",
+                    "delete:client_grants",
+                    "delete:clients",
+                    "delete:connections",
+                    "delete:custom_domains",
+                    "delete:device_credentials",
+                    "delete:email_provider",
+                    "delete:email_templates",
+                    "delete:grants",
+                    "delete:guardian_enrollments",
+                    "delete:integrations",
+                    "delete:log_streams",
+                    "delete:organization_connections",
+                    "delete:organization_invitations",
+                    "delete:organization_member_roles",
+                    "delete:organization_members",
+                    "delete:organizations",
+                    "delete:owners",
+                    "delete:requested_scopes",
+                    "delete:resource_servers",
+                    "delete:roles",
+                    "delete:rules",
+                    "delete:rules_configs",
+                    "delete:shields",
+                    "delete:tenant_invitations",
+                    "delete:tenant_members",
+                    "delete:tenants",
+                    "delete:users",
+                    "read:actions",
+                    "read:anomaly_blocks",
+                    "read:attack_protection",
+                    "read:branding",
+                    "read:checks",
+                    "read:client_credentials",
+                    "read:client_grants",
+                    "read:client_keys",
+                    "read:clients",
+                    "read:connections",
+                    "read:custom_domains",
+                    "read:device_credentials",
+                    "read:email_provider",
+                    "read:email_templates",
+                    "read:email_triggers",
+                    "read:entity_counts",
+                    "read:grants",
+                    "read:guardian_factors",
+                    "read:insights",
+                    "read:integrations",
+                    "read:log_streams",
+                    "read:logs",
+                    "read:mfa_policies",
+                    "read:organization_connections",
+                    "read:organization_invitations",
+                    "read:organization_member_roles",
+                    "read:organization_members",
+                    "read:organizations",
+                    "read:prompts",
+                    "read:requested_scopes",
+                    "read:resource_servers",
+                    "read:roles",
+                    "read:rules",
+                    "read:rules_configs",
+                    "read:shields",
+                    "read:signing_keys",
+                    "read:stats",
+                    "read:tenant_invitations",
+                    "read:tenant_members",
+                    "read:tenant_settings",
+                    "read:triggers",
+                    "read:users",
+                    "run:checks",
+                    "update:actions",
+                    "update:attack_protection",
+                    "update:branding",
+                    "update:client_credentials",
+                    "update:client_grants",
+                    "update:client_keys",
+                    "update:clients",
+                    "update:connections",
+                    "update:custom_domains",
+                    "update:email_provider",
+                    "update:email_templates",
+                    "update:email_triggers",
+                    "update:guardian_factors",
+                    "update:integrations",
+                    "update:log_streams",
+                    "update:mfa_policies",
+                    "update:organization_connections",
+                    "update:organizations",
+                    "update:prompts",
+                    "update:requested_scopes",
+                    "update:resource_servers",
+                    "update:roles",
+                    "update:rules",
+                    "update:rules_configs",
+                    "update:shields",
+                    "update:signing_keys",
+                    "update:tenant_members",
+                    "update:tenant_settings",
+                    "update:triggers",
+                    "update:users"
+                  ]
+                }
+              },
+              "body": {
+                "email": "bhalalamark+21@gmail.com",
+                "password": "*****",
+                "connection": "Username-Password-Authentication"
+              },
+              "path": "/api/v2/users",
+              "query": {},
+              "method": "post",
+              "channel": "https://manage.auth0.com/",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+            },
+            "response": {
+              "body": {
+                "name": "bhalalamark+21@gmail.com",
+                "email": "bhalalamark+21@gmail.com",
+                "picture": "https://s.gravatar.com/avatar/0902f9d02b92aed9f0ac59aaf9475b60?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fbh.png",
+                "user_id": "auth0|*****",
+                "nickname": "bhalalamark+21",
+                "created_at": "2022-10-31T05:57:06.864Z",
+                "identities": [
+                  {
+                    "user_id": "auth0|*****",
+                    "isSocial": false,
+                    "provider": "auth0",
+                    "connection": "Username-Password-Authentication"
+                  }
+                ],
+                "updated_at": "2022-10-31T05:57:06.864Z",
+                "email_verified": false
+              },
+              "statusCode": 201
+            }
+          },
+          "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+          "client_name": "",
+          "description": "Create a User"
+        },
+        "integrations": {
+          "Auth0": false
+        },
+        "originalTimestamp": "2022-10-31T05:57:06.874Z"
+      }
+    ]
+  },
+  {
+    "description": "Add member to an organization",
+    "input": [
+      {
+        "log_id": "90020221031061004280169676882609459981150114445973782546",
+        "data": {
+          "date": "2022-10-31T06:09:59.135Z",
+          "type": "sapi",
+          "description": "Add members to an organization",
+          "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+          "client_name": "",
+          "ip": "35.167.74.121",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+          "details": {
+            "request": {
+              "ip": "35.167.74.121",
+              "auth": {
+                "user": {
+                  "name": "Bhalala Mihir",
+                  "email": "bhalalamark@gmail.com",
+                  "user_id": "google-oauth2|123456"
+                },
+                "strategy": "jwt",
+                "credentials": {
+                  "jti": "571921bf7833a97efabf08d765a0ec8f"
+                }
+              },
+              "body": {
+                "members": ["auth0|123456"]
+              },
+              "path": "/api/v2/organizations/org_eoe8p2atZ7furBxg/members",
+              "query": {},
+              "method": "post",
+              "channel": "https://manage.auth0.com/",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+            },
+            "response": {
+              "body": {},
+              "statusCode": 204
+            }
+          },
+          "user_id": "google-oauth2|123456",
+          "log_id": "90020221031061004280169676882609459981150114445973782546"
+        }
+      }
+    ],
+    "output": [
+      {
+        "type": "group",
+        "sentAt": "2022-10-31T06:09:59.135Z",
+        "userId": "google-oauth2|123456",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "userId": "google-oauth2|123456"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+          "request_ip": "35.167.74.121",
+          "integration": {
+            "name": "Auth0"
+          }
+        },
+        "groupId": "org_eoe8p2atZ7furBxg",
+        "properties": {
+          "log_id": "90020221031061004280169676882609459981150114445973782546",
+          "details": {
+            "request": {
+              "ip": "35.167.74.121",
+              "auth": {
+                "user": {
+                  "name": "Bhalala Mihir",
+                  "email": "bhalalamark@gmail.com",
+                  "user_id": "google-oauth2|123456"
+                },
+                "strategy": "jwt",
+                "credentials": {
+                  "jti": "571921bf7833a97efabf08d765a0ec8f"
+                }
+              },
+              "body": {
+                "members": ["auth0|123456"]
+              },
+              "path": "/api/v2/organizations/org_eoe8p2atZ7furBxg/members",
+              "query": {},
+              "method": "post",
+              "channel": "https://manage.auth0.com/",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+            },
+            "response": {
+              "body": {},
+              "statusCode": 204
+            }
+          },
+          "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+          "client_name": "",
+          "description": "Add members to an organization"
+        },
+        "integrations": {
+          "Auth0": false
+        },
+        "originalTimestamp": "2022-10-31T06:09:59.135Z"
+      }
+    ]
+  },
+  {
+    "description": "Update tenant settings",
+    "input": [
+      {
+        "log_id": "90020221031061527239169676960191065529099349299958906898",
+        "data": {
+          "date": "2022-10-31T06:15:25.201Z",
+          "type": "sapi",
+          "description": "Update tenant settings",
+          "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+          "client_name": "",
+          "ip": "35.160.3.103",
+          "user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+          "details": {
+            "request": {
+              "ip": "35.160.3.103",
+              "auth": {
+                "user": {
+                  "name": "Bhalala Mihir",
+                  "email": "bhalalamark@gmail.com",
+                  "user_id": "google-oauth2|123456"
+                },
+                "strategy": "jwt",
+                "credentials": {
+                  "jti": "571921bf7833a97efabf08d765a0ec8f",
+                  "scopes": [
+                    "create:actions",
+                    "create:actions_log_sessions",
+                    "create:client_credentials",
+                    "create:client_grants",
+                    "create:clients",
+                    "create:connections",
+                    "create:custom_domains",
+                    "create:email_provider",
+                    "create:email_templates",
+                    "create:guardian_enrollment_tickets",
+                    "create:integrations",
+                    "create:log_streams",
+                    "create:organization_connections",
+                    "create:organization_invitations",
+                    "create:organization_member_roles",
+                    "create:organization_members",
+                    "create:organizations",
+                    "create:requested_scopes",
+                    "create:resource_servers",
+                    "create:roles",
+                    "create:rules",
+                    "create:shields",
+                    "create:signing_keys",
+                    "create:tenant_invitations",
+                    "create:test_email_dispatch",
+                    "create:users",
+                    "delete:actions",
+                    "delete:anomaly_blocks",
+                    "delete:branding",
+                    "delete:client_credentials",
+                    "delete:client_grants",
+                    "delete:clients",
+                    "delete:connections",
+                    "delete:custom_domains",
+                    "delete:device_credentials",
+                    "delete:email_provider",
+                    "delete:email_templates",
+                    "delete:grants",
+                    "delete:guardian_enrollments",
+                    "delete:integrations",
+                    "delete:log_streams",
+                    "delete:organization_connections",
+                    "delete:organization_invitations",
+                    "delete:organization_member_roles",
+                    "delete:organization_members",
+                    "delete:organizations",
+                    "delete:owners",
+                    "delete:requested_scopes",
+                    "delete:resource_servers",
+                    "delete:roles",
+                    "delete:rules",
+                    "delete:rules_configs",
+                    "delete:shields",
+                    "delete:tenant_invitations",
+                    "delete:tenant_members",
+                    "delete:tenants",
+                    "delete:users",
+                    "read:actions",
+                    "read:anomaly_blocks",
+                    "read:attack_protection",
+                    "read:branding",
+                    "read:checks",
+                    "read:client_credentials",
+                    "read:client_grants",
+                    "read:client_keys",
+                    "read:clients",
+                    "read:connections",
+                    "read:custom_domains",
+                    "read:device_credentials",
+                    "read:email_provider",
+                    "read:email_templates",
+                    "read:email_triggers",
+                    "read:entity_counts",
+                    "read:grants",
+                    "read:guardian_factors",
+                    "read:insights",
+                    "read:integrations",
+                    "read:log_streams",
+                    "read:logs",
+                    "read:mfa_policies",
+                    "read:organization_connections",
+                    "read:organization_invitations",
+                    "read:organization_member_roles",
+                    "read:organization_members",
+                    "read:organizations",
+                    "read:prompts",
+                    "read:requested_scopes",
+                    "read:resource_servers",
+                    "read:roles",
+                    "read:rules",
+                    "read:rules_configs",
+                    "read:shields",
+                    "read:signing_keys",
+                    "read:stats",
+                    "read:tenant_invitations",
+                    "read:tenant_members",
+                    "read:tenant_settings",
+                    "read:triggers",
+                    "read:users",
+                    "run:checks",
+                    "update:actions",
+                    "update:attack_protection",
+                    "update:branding",
+                    "update:client_credentials",
+                    "update:client_grants",
+                    "update:client_keys",
+                    "update:clients",
+                    "update:connections",
+                    "update:custom_domains",
+                    "update:email_provider",
+                    "update:email_templates",
+                    "update:email_triggers",
+                    "update:guardian_factors",
+                    "update:integrations",
+                    "update:log_streams",
+                    "update:mfa_policies",
+                    "update:organization_connections",
+                    "update:organizations",
+                    "update:prompts",
+                    "update:requested_scopes",
+                    "update:resource_servers",
+                    "update:roles",
+                    "update:rules",
+                    "update:rules_configs",
+                    "update:shields",
+                    "update:signing_keys",
+                    "update:tenant_members",
+                    "update:tenant_settings",
+                    "update:triggers",
+                    "update:users"
+                  ]
+                }
+              },
+              "body": {
+                "picture_url": "",
+                "support_url": "",
+                "friendly_name": "mecro-action",
+                "support_email": "support@test.com"
+              },
+              "path": "/api/v2/tenants/settings",
+              "query": {},
+              "method": "patch",
+              "channel": "https://manage.auth0.com/",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+            },
+            "response": {
+              "body": {
+                "flags": {
+                  "enable_sso": true,
+                  "universal_login": true,
+                  "disable_impersonation": true,
+                  "allow_changing_enable_sso": false,
+                  "revoke_refresh_token_grant": false,
+                  "disable_clickjack_protection_headers": false,
+                  "new_universal_login_experience_enabled": true,
+                  "enforce_client_authentication_on_passwordless_start": true,
+                  "cannot_change_enforce_client_authentication_on_passwordless_start": true
+                },
+                "picture_url": "",
+                "support_url": "",
+                "friendly_name": "mecro-action",
+                "support_email": "support@test.com",
+                "enabled_locales": ["en"],
+                "sandbox_version": "16",
+                "universal_login": {}
+              },
+              "statusCode": 200
+            }
+          },
+          "user_id": "google-oauth2|123456",
+          "log_id": "90020221031061527239169676960191065529099349299958906898"
+        }
+      },
+      {
+        "log_id": "90020221031061530247169676961198100736838335677367058450",
+        "data": {
+          "date": "2022-10-31T06:15:25.196Z",
+          "type": "gd_tenant_update",
+          "description": "Guardian - Updates tenant settings",
+          "ip": "35.160.3.103",
+          "details": {
+            "request": {
+              "ip": "35.160.3.103",
+              "auth": {
+                "scopes": [
+                  "read:authenticators",
+                  "remove:authenticators",
+                  "update:authenticators",
+                  "create:authenticators",
+                  "read:enrollments",
+                  "delete:enrollments",
+                  "read:factors",
+                  "update:factors",
+                  "update:tenant_settings",
+                  "update:users",
+                  "create:enrollment_tickets",
+                  "create:users"
+                ],
+                "subject": "google-oauth2|123456",
+                "strategy": "jwt_api2_internal_token"
+              },
+              "body": {
+                "picture_url": "[REDACTED]",
+                "friendly_name": "[REDACTED]"
+              },
+              "path": "/api/tenants/settings",
+              "query": {},
+              "method": "PATCH"
+            },
+            "response": {
+              "body": {
+                "name": "dev-cu4jy2zgao6yx15x",
+                "picture_url": "[REDACTED]",
+                "friendly_name": "[REDACTED]",
+                "guardian_mfa_page": "[REDACTED]"
+              },
+              "statusCode": 200
+            }
+          },
+          "user_id": "google-oauth2|123456",
+          "log_id": "90020221031061530247169676961198100736838335677367058450"
+        }
+      }
+    ],
+    "output": [
+      {
+        "type": "track",
+        "event": "Success API Operation",
+        "sentAt": "2022-10-31T06:15:25.201Z",
+        "userId": "google-oauth2|123456",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "userId": "google-oauth2|123456"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36",
+          "request_ip": "35.160.3.103",
+          "integration": {
+            "name": "Auth0"
+          }
+        },
+        "properties": {
+          "log_id": "90020221031061527239169676960191065529099349299958906898",
+          "details": {
+            "request": {
+              "ip": "35.160.3.103",
+              "auth": {
+                "user": {
+                  "name": "Bhalala Mihir",
+                  "email": "bhalalamark@gmail.com",
+                  "user_id": "google-oauth2|123456"
+                },
+                "strategy": "jwt",
+                "credentials": {
+                  "jti": "571921bf7833a97efabf08d765a0ec8f",
+                  "scopes": [
+                    "create:actions",
+                    "create:actions_log_sessions",
+                    "create:client_credentials",
+                    "create:client_grants",
+                    "create:clients",
+                    "create:connections",
+                    "create:custom_domains",
+                    "create:email_provider",
+                    "create:email_templates",
+                    "create:guardian_enrollment_tickets",
+                    "create:integrations",
+                    "create:log_streams",
+                    "create:organization_connections",
+                    "create:organization_invitations",
+                    "create:organization_member_roles",
+                    "create:organization_members",
+                    "create:organizations",
+                    "create:requested_scopes",
+                    "create:resource_servers",
+                    "create:roles",
+                    "create:rules",
+                    "create:shields",
+                    "create:signing_keys",
+                    "create:tenant_invitations",
+                    "create:test_email_dispatch",
+                    "create:users",
+                    "delete:actions",
+                    "delete:anomaly_blocks",
+                    "delete:branding",
+                    "delete:client_credentials",
+                    "delete:client_grants",
+                    "delete:clients",
+                    "delete:connections",
+                    "delete:custom_domains",
+                    "delete:device_credentials",
+                    "delete:email_provider",
+                    "delete:email_templates",
+                    "delete:grants",
+                    "delete:guardian_enrollments",
+                    "delete:integrations",
+                    "delete:log_streams",
+                    "delete:organization_connections",
+                    "delete:organization_invitations",
+                    "delete:organization_member_roles",
+                    "delete:organization_members",
+                    "delete:organizations",
+                    "delete:owners",
+                    "delete:requested_scopes",
+                    "delete:resource_servers",
+                    "delete:roles",
+                    "delete:rules",
+                    "delete:rules_configs",
+                    "delete:shields",
+                    "delete:tenant_invitations",
+                    "delete:tenant_members",
+                    "delete:tenants",
+                    "delete:users",
+                    "read:actions",
+                    "read:anomaly_blocks",
+                    "read:attack_protection",
+                    "read:branding",
+                    "read:checks",
+                    "read:client_credentials",
+                    "read:client_grants",
+                    "read:client_keys",
+                    "read:clients",
+                    "read:connections",
+                    "read:custom_domains",
+                    "read:device_credentials",
+                    "read:email_provider",
+                    "read:email_templates",
+                    "read:email_triggers",
+                    "read:entity_counts",
+                    "read:grants",
+                    "read:guardian_factors",
+                    "read:insights",
+                    "read:integrations",
+                    "read:log_streams",
+                    "read:logs",
+                    "read:mfa_policies",
+                    "read:organization_connections",
+                    "read:organization_invitations",
+                    "read:organization_member_roles",
+                    "read:organization_members",
+                    "read:organizations",
+                    "read:prompts",
+                    "read:requested_scopes",
+                    "read:resource_servers",
+                    "read:roles",
+                    "read:rules",
+                    "read:rules_configs",
+                    "read:shields",
+                    "read:signing_keys",
+                    "read:stats",
+                    "read:tenant_invitations",
+                    "read:tenant_members",
+                    "read:tenant_settings",
+                    "read:triggers",
+                    "read:users",
+                    "run:checks",
+                    "update:actions",
+                    "update:attack_protection",
+                    "update:branding",
+                    "update:client_credentials",
+                    "update:client_grants",
+                    "update:client_keys",
+                    "update:clients",
+                    "update:connections",
+                    "update:custom_domains",
+                    "update:email_provider",
+                    "update:email_templates",
+                    "update:email_triggers",
+                    "update:guardian_factors",
+                    "update:integrations",
+                    "update:log_streams",
+                    "update:mfa_policies",
+                    "update:organization_connections",
+                    "update:organizations",
+                    "update:prompts",
+                    "update:requested_scopes",
+                    "update:resource_servers",
+                    "update:roles",
+                    "update:rules",
+                    "update:rules_configs",
+                    "update:shields",
+                    "update:signing_keys",
+                    "update:tenant_members",
+                    "update:tenant_settings",
+                    "update:triggers",
+                    "update:users"
+                  ]
+                }
+              },
+              "body": {
+                "picture_url": "",
+                "support_url": "",
+                "friendly_name": "mecro-action",
+                "support_email": "support@test.com"
+              },
+              "path": "/api/v2/tenants/settings",
+              "query": {},
+              "method": "patch",
+              "channel": "https://manage.auth0.com/",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"
+            },
+            "response": {
+              "body": {
+                "flags": {
+                  "enable_sso": true,
+                  "universal_login": true,
+                  "disable_impersonation": true,
+                  "allow_changing_enable_sso": false,
+                  "revoke_refresh_token_grant": false,
+                  "disable_clickjack_protection_headers": false,
+                  "new_universal_login_experience_enabled": true,
+                  "enforce_client_authentication_on_passwordless_start": true,
+                  "cannot_change_enforce_client_authentication_on_passwordless_start": true
+                },
+                "picture_url": "",
+                "support_url": "",
+                "friendly_name": "mecro-action",
+                "support_email": "support@test.com",
+                "enabled_locales": ["en"],
+                "sandbox_version": "16",
+                "universal_login": {}
+              },
+              "statusCode": 200
+            }
+          },
+          "client_id": "vQcJNDTxsM1W72eHFonRJdzyOvawlwIt",
+          "client_name": "",
+          "description": "Update tenant settings"
+        },
+        "integrations": {
+          "Auth0": false
+        },
+        "originalTimestamp": "2022-10-31T06:15:25.201Z"
+      },
+      {
+        "type": "track",
+        "event": "Guardian tenant update",
+        "sentAt": "2022-10-31T06:15:25.196Z",
+        "userId": "google-oauth2|123456",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "traits": {
+            "userId": "google-oauth2|123456"
+          },
+          "request_ip": "35.160.3.103",
+          "integration": {
+            "name": "Auth0"
+          }
+        },
+        "properties": {
+          "log_id": "90020221031061530247169676961198100736838335677367058450",
+          "details": {
+            "request": {
+              "ip": "35.160.3.103",
+              "auth": {
+                "scopes": [
+                  "read:authenticators",
+                  "remove:authenticators",
+                  "update:authenticators",
+                  "create:authenticators",
+                  "read:enrollments",
+                  "delete:enrollments",
+                  "read:factors",
+                  "update:factors",
+                  "update:tenant_settings",
+                  "update:users",
+                  "create:enrollment_tickets",
+                  "create:users"
+                ],
+                "subject": "google-oauth2|123456",
+                "strategy": "jwt_api2_internal_token"
+              },
+              "body": {
+                "picture_url": "[REDACTED]",
+                "friendly_name": "[REDACTED]"
+              },
+              "path": "/api/tenants/settings",
+              "query": {},
+              "method": "PATCH"
+            },
+            "response": {
+              "body": {
+                "name": "dev-cu4jy2zgao6yx15x",
+                "picture_url": "[REDACTED]",
+                "friendly_name": "[REDACTED]",
+                "guardian_mfa_page": "[REDACTED]"
+              },
+              "statusCode": 200
+            }
+          },
+          "description": "Guardian - Updates tenant settings"
+        },
+        "integrations": {
+          "Auth0": false
+        },
+        "originalTimestamp": "2022-10-31T06:15:25.196Z"
+      }
+    ]
+  }
+]

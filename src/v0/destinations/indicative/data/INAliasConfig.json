@@ -1,0 +1,18 @@
+[
+  {
+    "destKey": "previousId",
+    "sourceKeys": ["previousId", "anonymousId"],
+    "required": true
+  },
+  {
+    "destKey": "newId",
+    "sourceKeys": [
+      "userId",
+      "traits.userId",
+      "traits.id",
+      "context.traits.userId",
+      "context.traits.id"
+    ],
+    "required": true
+  }
+]

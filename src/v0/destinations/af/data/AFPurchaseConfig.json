@@ -1,0 +1,8 @@
+{
+  "properties.revenue": "af_revenue",
+  "properties.price": "af_price",
+  "properties.product_id": "af_content_id",
+  "properties.category": "af_content_type",
+  "properties.quantity": "af_quantity",
+  "properties.order_id": "af_order_id"
+}

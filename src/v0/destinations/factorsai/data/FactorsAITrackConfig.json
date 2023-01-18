@@ -1,0 +1,47 @@
+[
+  {
+    "destKey": "anonymousId",
+    "sourceKeys": "anonymousId",
+    "required": false
+  },
+  {
+    "destKey": "userId",
+    "sourceKeys": "userId",
+    "required": false
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": "originalTimestamp",
+    "required": true
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "required": false
+  },
+  {
+    "destKey": "messageId",
+    "sourceKeys": "messageId",
+    "required": false
+  },
+  {
+    "destKey": "event",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "type",
+    "sourceKeys": "type",
+    "required": true
+  },
+  {
+    "sourceKeys": "context",
+    "destKey": "context",
+    "required": false
+  },
+  {
+    "destKey": "channel",
+    "sourceKeys": "channel",
+    "required": false
+  }
+]

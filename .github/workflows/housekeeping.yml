@@ -23,17 +23,17 @@ jobs:
           stale-pr-label: 'Stale'
 
   branches:
-      name: Cleanup old branches
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout repository
-          uses: actions/checkout@v2
-        - name: Run delete-old-branches-action
-          uses: beatlabs/delete-old-branches-action@v0.0.9
-          with:
-            repo_token: ${{ github.token }}
-            date: '6 months ago'
-            dry_run: false
-            delete_tags: false
-            extra_protected_branch_regex: ^(main|master|release.*|rudder-saas)$
-            exclude_open_pr_branches: true
+    name: Cleanup old branches
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Run delete-old-branches-action
+        uses: beatlabs/delete-old-branches-action@v0.0.9
+        with:
+          repo_token: ${{ github.token }}
+          date: '6 months ago'
+          dry_run: false
+          delete_tags: false
+          extra_protected_branch_regex: ^(main|master|release.*|rudder-saas)$
+          exclude_open_pr_branches: true

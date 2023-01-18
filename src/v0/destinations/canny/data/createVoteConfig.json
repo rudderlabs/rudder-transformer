@@ -1,0 +1,8 @@
+[
+  {
+    "destKey": "postID",
+    "sourceKeys": ["properties.postID", "properties.postId", "properties.post.id"],
+    "sourceFromGenericMap": false,
+    "required": true
+  }
+]

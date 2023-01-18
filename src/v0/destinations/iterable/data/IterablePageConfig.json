@@ -1,0 +1,44 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": ["properties.email", "context.traits.email"],
+    "required": false
+  },
+  {
+    "destKey": "dataFields",
+    "sourceKeys": "properties",
+    "required": false
+  },
+  {
+    "destKey": "userId",
+    "sourceKeys": [
+      "userId",
+      "traits.userId",
+      "traits.id",
+      "context.traits.userId",
+      "context.traits.id",
+      "anonymousId"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "eventName",
+    "sourceKeys": ["name", "properties.name"],
+    "required": false
+  },
+  {
+    "destKey": "createdAt",
+    "sourceKeys": "originalTimestamp",
+    "required": false
+  },
+  {
+    "destKey": "campaignId",
+    "sourceKeys": "properties.campaignId",
+    "required": false
+  },
+  {
+    "destKey": "templateId",
+    "sourceKeys": "properties.templateId",
+    "required": false
+  }
+]

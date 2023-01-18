@@ -28,15 +28,6 @@ const {
 } = require('./config');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
-function checkIfValidPhoneNumber(str) {
-  // Ref - https://ads.tiktok.com/marketing_api/docs?id=1727541103358977
-  // Regular expression to check whether it has country code
-  // but should not include +86
-  const regexExp = /^(\+(?!86)\d{1,3})?\d{1,12}$/gi;
-
-  return regexExp.test(str);
-}
-
 const getContents = (message) => {
   const contents = [];
   const { properties } = message;
@@ -130,13 +121,7 @@ const getTrackResponse = (message, Config, event) => {
 
     phone_number = get(payload, 'context.user.phone_number');
     if (isDefinedAndNotNullAndNotEmpty(phone_number)) {
-      if (checkIfValidPhoneNumber(phone_number.trim())) {
-        payload.context.user.phone_number = SHA256(phone_number.trim()).toString();
-      } else {
-        throw new InstrumentationError(
-          'Invalid phone number. Ideal Format : /^(+(?!86)d{1,3})?d{1,12}$/g, Include proper country code except +86 and the phone number length must be no longer than 15 digit',
-        );
-      }
+      payload.context.user.phone_number = SHA256(phone_number.trim()).toString();
     }
   }
   const response = defaultRequestConfig();

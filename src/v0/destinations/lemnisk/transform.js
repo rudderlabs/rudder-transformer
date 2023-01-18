@@ -10,7 +10,8 @@ const {
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   defaultRequestConfig,
-  simpleProcessRouterDest
+  simpleProcessRouterDest,
+  isDefinedAndNotNullAndNotEmpty
 } = require("../../util");
 const { fetchPlatform } = require("./utils");
 const {
@@ -26,7 +27,7 @@ const responseBuilder = (message, category, destination, platform) => {
   response.method = defaultPostRequestConfig.requestMethod;
   if (platform === "pl") {
     const { plWriteKey, pl } = Config;
-    if (!plWriteKey || !plWriteKey.length > 0 || !pl || !pl.length > 0) {
+    if (!isDefinedAndNotNullAndNotEmpty(plWriteKey) || !isDefinedAndNotNullAndNotEmpty(pl)) {
       throw new ConfigurationError(
         "Configuration for Web Mode requires write key and region url"
       );
@@ -44,12 +45,9 @@ const responseBuilder = (message, category, destination, platform) => {
     // diapi
     const { diapi, apiKey, passKey, diapiWriteKey, srcId } = Config;
     if (
-      !diapi ||
-      !diapi.length > 0 ||
-      !apiKey ||
-      !apiKey.length > 0 ||
-      !passKey ||
-      !passKey.length > 0
+      !isDefinedAndNotNullAndNotEmpty(diapi) ||
+      !isDefinedAndNotNullAndNotEmpty(apiKey) ||
+      !isDefinedAndNotNullAndNotEmpty(passKey)
     ) {
       throw new ConfigurationError(
         "Configuration for Server Mode requires Api key, Pass Key and region url"

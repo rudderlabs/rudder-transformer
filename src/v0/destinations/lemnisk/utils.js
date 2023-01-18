@@ -1,4 +1,4 @@
-const { TransformationError } = require("../../util/errorTypes");
+const { ConfigurationError } = require("../../util/errorTypes");
 
 /**
  * Fetches the platform type from the destination Config
@@ -13,7 +13,7 @@ const fetchPlatform = destination => {
   if (cloudMode === "server") {
     return "diapi";
   }
-  throw new TransformationError("Payload contains invalid configuration");
+  throw new ConfigurationError("Payload contains invalid configuration");
 };
 
 module.exports = { fetchPlatform };

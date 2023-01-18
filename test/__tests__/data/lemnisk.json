@@ -650,7 +650,7 @@
             }
         },
         "output": {
-            "error": "Missing required value from \"email\""
+            "error": "Missing required value from \"emailOnly\""
         }
     },
     {

@@ -50,5 +50,23 @@
       ],
       "status": 503
     }
+  },
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/6": {
+    "response": {
+      "data": {
+        "error": "invalid_grant",
+        "error_description": "authentication failure"
+      },
+      "status": 400
+    }
+  },
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/sobjects/Lead/7": {
+    "response": {
+      "data": {
+        "message": "Server Unavailable",
+        "errorCode": "SERVER_UNAVAILABLE"
+      },
+      "status": 503
+    }
   }
 }

@@ -19,7 +19,7 @@
   {
     "output": {
       "status": 500,
-      "message": "Salesforce Request Failed - due to Session expired or invalid, (Retryable).during Salesforce Response Handling",
+      "message": "Salesforce Request Failed - due to \"Session expired or invalid\", (Retryable) during Salesforce Response Handling",
       "destinationResponse": {
         "response": [
           {
@@ -47,7 +47,7 @@
   {
     "output": {
       "status": 400,
-      "message": "Salesforce Request Failed: 401 due to INVALID_HEADER_TYPE, (Aborted). during Salesforce Response Handling",
+      "message": "Salesforce Request Failed: \"401\" due to \"INVALID_HEADER_TYPE\", (Aborted) during Salesforce Response Handling",
       "destinationResponse": {
         "response": [
           {
@@ -75,7 +75,7 @@
   {
     "output": {
       "status": 429,
-      "message": "Salesforce Request Failed - due to Request limit exceeded, (Throttled).during Salesforce Response Handling",
+      "message": "Salesforce Request Failed - due to \"Request limit exceeded\", (Throttled) during Salesforce Response Handling",
       "destinationResponse": {
         "response": [
           {
@@ -103,7 +103,7 @@
   {
     "output": {
       "status": 500,
-      "message": "Salesforce Request Failed - due to Server Unavailable, (Retryable).during Salesforce Response Handling",
+      "message": "Salesforce Request Failed - due to \"Server Unavailable\", (Retryable) during Salesforce Response Handling",
       "destinationResponse": {
         "response": [
           {
@@ -126,6 +126,58 @@
         "implementation": "native",
         "module": "destination"
       }
+    }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "Salesforce Request Failed: \"400\" due to \"{\"error\":\"invalid_grant\",\"error_description\":\"authentication failure\"}\", (Aborted) during Salesforce Response Handling",
+      "destinationResponse": {
+        "response": {
+          "error": "invalid_grant",
+          "error_description": "authentication failure"
+        },
+        "status": 400,
+        "rudderJobMetadata": {
+          "destInfo": {
+            "authKey": "2HezPl1w11opbFSxnLDEgZ7kWTf"
+          }
+        }
+      },
+      "statTags": {
+        "destType": "SALESFORCE",
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
+      "destinationResponse": {
+        "response": {
+          "errorCode": "SERVER_UNAVAILABLE",
+          "message": "Server Unavailable"
+        },
+        "rudderJobMetadata": {
+          "destInfo": {
+            "authKey": "2HezPl1w11opbFSxnLDEgZ7kWTf"
+          }
+        },
+        "status": 503
+      },
+      "message": "Salesforce Request Failed - due to \"{\"message\":\"Server Unavailable\",\"errorCode\":\"SERVER_UNAVAILABLE\"}\", (Retryable) during Salesforce Response Handling",
+      "statTags": {
+        "destType": "SALESFORCE",
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      },
+      "status": 500
     }
   }
 ]

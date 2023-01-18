@@ -41,7 +41,7 @@
     "metadata": {}
   },
   {
-    "transformedEvent":{
+    "transformedEvent": {
       "channel": "web",
       "context": {
         "app": {
@@ -91,7 +91,7 @@
     "metadata": {}
   },
   {
-    "transformedEvent":{
+    "transformedEvent": {
       "channel": "web",
       "context": {
         "app": {
@@ -136,6 +136,5 @@
       "promise": "resolved"
     },
     "metadata": {}
-
   }
 ]

@@ -1,19 +1,12 @@
-const {
-  proxyRequest,
-  prepareProxyRequest
-} = require("../../../adapters/network");
+const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const {
   getDynamicErrorType,
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
-const {
-  isDefinedAndNotNull,
-  isDefined,
-  isHttpStatusSuccess
-} = require("../../util");
+  processAxiosResponse,
+} = require('../../../adapters/utils/networkUtils');
+const { isDefinedAndNotNull, isDefined, isHttpStatusSuccess } = require('../../util');
 
-const { NetworkError } = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+const { NetworkError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 const responseHandler = (destinationResponse, dest) => {
   const message = `[GA4 Response Handler] - Request Processed Successfully`;
@@ -34,18 +27,14 @@ const responseHandler = (destinationResponse, dest) => {
       status = 200;
     } else {
       // Build the error in case the validationMessages[] is non-empty
-      const {
-        description,
-        validationCode,
-        fieldPath
-      } = response.validationMessages[0];
+      const { description, validationCode, fieldPath } = response.validationMessages[0];
       throw new NetworkError(
         `Validation Server Response Handler:: Validation Error for ${dest} of field path :${fieldPath} | ${validationCode}-${description}`,
         status,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
         },
-        response?.validationMessages[0]?.description
+        response?.validationMessages[0]?.description,
       );
     }
   }
@@ -56,20 +45,20 @@ const responseHandler = (destinationResponse, dest) => {
       `[GA4 Response Handler] Request failed for destination ${dest} with status: ${status}`,
       status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
-      destinationResponse
+      destinationResponse,
     );
   }
 
   return {
     status,
     message,
-    destinationResponse
+    destinationResponse,
   };
 };
 
-const networkHandler = function() {
+const networkHandler = function () {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
   this.prepareProxy = prepareProxyRequest;
@@ -77,5 +66,5 @@ const networkHandler = function() {
 };
 
 module.exports = {
-  networkHandler
+  networkHandler,
 };

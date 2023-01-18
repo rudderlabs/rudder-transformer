@@ -261,10 +261,7 @@
       "destination": {
         "Config": {
           "apiKey": "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",
-          "eventNamesSettings": [
-            { "event": "testing" },
-            { "event": "clicked" }
-          ],
+          "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
           "subject": "A sample subject",
           "replyToEmail": "ankit@rudderstack.com",
           "contents": [
@@ -378,10 +375,7 @@
       "destination": {
         "Config": {
           "apiKey": "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",
-          "eventNamesSettings": [
-            { "event": "testing" },
-            { "event": "clicked" }
-          ],
+          "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
           "subject": "A sample subject",
           "replyToEmail": "ankit@rudderstack.com",
           "contents": [
@@ -497,10 +491,7 @@
       "destination": {
         "Config": {
           "apiKey": "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",
-          "eventNamesSettings": [
-            { "event": "testing" },
-            { "event": "clicked" }
-          ],
+          "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
           "subject": "A sample subject",
           "replyToEmail": "ankit@rudderstack.com",
           "contents": [
@@ -519,11 +510,7 @@
           "subscriptionTracking": false,
           "clickTrackingEnableText": false,
           "group": "12345",
-          "groupsToDisplay": [
-            { "groupId": "12345" },
-            { "groupId": "abc" },
-            { "groupId": "12346" }
-          ]
+          "groupsToDisplay": [{ "groupId": "12345" }, { "groupId": "abc" }, { "groupId": "12346" }]
         }
       },
       "message": {
@@ -626,10 +613,7 @@
       "destination": {
         "Config": {
           "apiKey": "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",
-          "eventNamesSettings": [
-            { "event": "testing" },
-            { "event": "clicked" }
-          ],
+          "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
           "subject": "A sample subject",
           "replyToEmail": "ankit@rudderstack.com",
           "contents": [
@@ -648,11 +632,7 @@
           "subscriptionTracking": false,
           "clickTrackingEnableText": false,
           "group": "12345",
-          "groupsToDisplay": [
-            { "groupId": "12345" },
-            { "groupId": "abc" },
-            { "groupId": "12346" }
-          ]
+          "groupsToDisplay": [{ "groupId": "12345" }, { "groupId": "abc" }, { "groupId": "12346" }]
         }
       },
       "message": {
@@ -714,10 +694,7 @@
       "destination": {
         "Config": {
           "apiKey": "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",
-          "eventNamesSettings": [
-            { "event": "testing" },
-            { "event": "clicked" }
-          ],
+          "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
           "subject": "A sample subject",
           "replyToEmail": "ankit@rudderstack.com",
           "contents": [
@@ -736,11 +713,7 @@
           "subscriptionTracking": false,
           "clickTrackingEnableText": false,
           "group": "12345",
-          "groupsToDisplay": [
-            { "groupId": "12345" },
-            { "groupId": "abc" },
-            { "groupId": "12346" }
-          ],
+          "groupsToDisplay": [{ "groupId": "12345" }, { "groupId": "abc" }, { "groupId": "12346" }],
           "attachments": [
             {
               "content": "YXNkZ2FmZ3FlcmRxZ2Iua2puYWRrbGpuYWtqc2Rmbg==",
@@ -855,10 +828,7 @@
       "destination": {
         "Config": {
           "apiKey": "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",
-          "eventNamesSettings": [
-            { "event": "testing" },
-            { "event": "clicked" }
-          ],
+          "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
           "subject": "A sample subject",
           "replyToEmail": "ankit@rudderstack.com",
           "contents": [
@@ -877,11 +847,7 @@
           "subscriptionTracking": false,
           "clickTrackingEnableText": false,
           "group": "12345",
-          "groupsToDisplay": [
-            { "groupId": "12345" },
-            { "groupId": "abc" },
-            { "groupId": "12346" }
-          ],
+          "groupsToDisplay": [{ "groupId": "12345" }, { "groupId": "abc" }, { "groupId": "12346" }],
           "attachments": [
             {
               "content": "YXNkZ21hcyxkLm1mO29xd2llbGpmbWwuYWRrbXMuLGFtZHM=",
@@ -999,10 +965,7 @@
       "destination": {
         "Config": {
           "apiKey": "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",
-          "eventNamesSettings": [
-            { "event": "testing" },
-            { "event": "clicked" }
-          ],
+          "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
           "subject": "A sample subject",
           "replyToEmail": "ankit@rudderstack.com",
           "contents": [
@@ -1021,11 +984,7 @@
           "subscriptionTracking": false,
           "clickTrackingEnableText": false,
           "group": "12345",
-          "groupsToDisplay": [
-            { "groupId": "12345" },
-            { "groupId": "abc" },
-            { "groupId": "12346" }
-          ],
+          "groupsToDisplay": [{ "groupId": "12345" }, { "groupId": "abc" }, { "groupId": "12346" }],
           "attachments": [
             {
               "content": "YXNkZ21hcyxkLm1mO29xd2llbGpmbWwuYWRrbXMuLGFtZHM=",

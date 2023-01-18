@@ -1,10 +1,7 @@
 /* eslint-disable one-var */
 /* eslint-disable camelcase */
-const { EventType } = require("../../../constants");
-const {
-  ConfigurationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+const { EventType } = require('../../../constants');
+const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const {
   constructPayload,
   extractCustomFields,
@@ -18,8 +15,8 @@ const {
   getIntegrationsObj,
   getSuccessRespEvents,
   checkInvalidRtTfEvents,
-  handleRtTfSingleEventError
-} = require("../../util/index");
+  handleRtTfSingleEventError,
+} = require('../../util/index');
 const {
   MAX_BATCH_SIZE,
   ecomEvents,
@@ -32,27 +29,27 @@ const {
   CUSTOM_EVENT_EXCLUSION_FIELDS,
   ORDER_EXCLUSION_FIELDS,
   ENDPOINT,
-  MARKETING_OPTIN_LIST
-} = require("./config");
+  MARKETING_OPTIN_LIST,
+} = require('./config');
 const {
   isValidTimestamp,
   createLineItems,
   addressMappper,
-  contactPayloadValidator
-} = require("./util");
+  contactPayloadValidator,
+} = require('./util');
 
 const identifyResponseBuilder = (message, { Config }) => {
   let payload = constructPayload(message, contactDataMapping);
   payload = contactPayloadValidator(payload);
 
-  payload["@type"] = "contact";
+  payload['@type'] = 'contact';
   if (!payload.properties) {
     let customFields = {};
     customFields = extractCustomFields(
       message,
       customFields,
-      ["traits", "context.traits"],
-      IDENTIFY_EXCLUSION_FIELDS
+      ['traits', 'context.traits'],
+      IDENTIFY_EXCLUSION_FIELDS,
     );
     if (!isEmptyObject(customFields)) {
       payload.properties = customFields;
@@ -62,7 +59,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   let { marketingOptin, allowMarketing, allowTransactional } = Config;
   let dt_updated_marketing, dt_updated_transactional;
 
-  const integrationsObj = getIntegrationsObj(message, "ometria");
+  const integrationsObj = getIntegrationsObj(message, 'ometria');
   if (integrationsObj) {
     if (
       integrationsObj.marketingOptin &&
@@ -75,8 +72,7 @@ const identifyResponseBuilder = (message, { Config }) => {
     }
 
     allowMarketing = integrationsObj.allowMarketing || allowMarketing;
-    allowTransactional =
-      integrationsObj.allowTransactional || allowTransactional;
+    allowTransactional = integrationsObj.allowTransactional || allowTransactional;
     if (
       integrationsObj.dt_updated_marketing &&
       isValidTimestamp(integrationsObj.dt_updated_marketing)
@@ -92,9 +88,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   }
 
   if (!payload.id) {
-    throw new InstrumentationError(
-      "Parameter listingId is required for identify"
-    );
+    throw new InstrumentationError('Parameter listingId is required for identify');
   }
   payload.marketing_optin = marketingOptin;
   payload.channels = {
@@ -102,16 +96,13 @@ const identifyResponseBuilder = (message, { Config }) => {
       dt_updated_marketing,
       dt_updated_transactional,
       allow_marketing: allowMarketing,
-      allow_transactional: allowTransactional
-    })
+      allow_transactional: allowTransactional,
+    }),
   };
 
-  const name = getValueFromMessage(message, [
-    "traits.name",
-    "context.traits.name"
-  ]);
+  const name = getValueFromMessage(message, ['traits.name', 'context.traits.name']);
   if (name) {
-    const splitArr = name.split(" ");
+    const splitArr = name.split(' ');
     const [fName, mName, lName] = splitArr;
     if (splitArr && splitArr.length <= 2) {
       payload.firstname = fName || null;
@@ -126,10 +117,10 @@ const identifyResponseBuilder = (message, { Config }) => {
   return removeUndefinedAndNullValues(payload);
 };
 
-const trackResponseBuilder = message => {
-  let event = getValueFromMessage(message, "event");
+const trackResponseBuilder = (message) => {
+  let event = getValueFromMessage(message, 'event');
   if (!event) {
-    throw new InstrumentationError("Event name is required for track call");
+    throw new InstrumentationError('Event name is required for track call');
   }
 
   event = event.trim().toLowerCase();
@@ -137,33 +128,31 @@ const trackResponseBuilder = message => {
   if (ecomEvents.includes(event)) {
     payload = constructPayload(message, orderMapping);
     if (!isValidTimestamp(payload.timestamp)) {
-      throw new InstrumentationError("Timestamp format must be ISO-8601");
+      throw new InstrumentationError('Timestamp format must be ISO-8601');
     }
     payload.currency = payload.currency.trim().toUpperCase();
     if (!currencyList.includes(payload.currency)) {
       throw new InstrumentationError(
-        "Parameter currency should be only 3 characters and must follow format ISO 4217"
+        'Parameter currency should be only 3 characters and must follow format ISO 4217',
       );
     }
 
     const customer = removeUndefinedAndNullValues({
-      id: getFieldValueFromMessage(message, "userId"),
+      id: getFieldValueFromMessage(message, 'userId'),
       email: getValueFromMessage(message, [
-        "traits.email",
-        "context.traits.email",
-        "properties.email"
+        'traits.email',
+        'context.traits.email',
+        'properties.email',
       ]),
-      firstname: getFieldValueFromMessage(message, "firstName"),
-      lastname: getFieldValueFromMessage(message, "lastName")
+      firstname: getFieldValueFromMessage(message, 'firstName'),
+      lastname: getFieldValueFromMessage(message, 'lastName'),
     });
     if (!customer.id || !customer.email) {
-      throw new InstrumentationError(
-        "customer_id and email is required for order related event"
-      );
+      throw new InstrumentationError('customer_id and email is required for order related event');
     }
 
     payload.customer = customer;
-    payload["@type"] = "order";
+    payload['@type'] = 'order';
     payload.status = eventNameMapping[event];
     payload.is_valid = true;
     if (!payload.properties) {
@@ -171,14 +160,14 @@ const trackResponseBuilder = message => {
       customFields = extractCustomFields(
         message,
         customFields,
-        ["properties"],
-        ORDER_EXCLUSION_FIELDS
+        ['properties'],
+        ORDER_EXCLUSION_FIELDS,
       );
       if (!isEmptyObject(customFields)) {
         payload.properties = customFields;
       }
     }
-    const items = getValueFromMessage(message, "properties.products");
+    const items = getValueFromMessage(message, 'properties.products');
     if (items) {
       const lineitems = createLineItems(items);
       if (lineitems && lineitems.length > 0) {
@@ -197,20 +186,20 @@ const trackResponseBuilder = message => {
   // custom events
   payload = constructPayload(message, customEventMapping);
   if (!isValidTimestamp(payload.timestamp)) {
-    throw new InstrumentationError("Timestamp format must be ISO-8601");
+    throw new InstrumentationError('Timestamp format must be ISO-8601');
   }
   if (!payload.id) {
     payload.id = message.messageId;
   }
-  payload["@type"] = "custom_event";
+  payload['@type'] = 'custom_event';
   payload.event_type = event;
   if (!payload.properties) {
     let customFields = {};
     customFields = extractCustomFields(
       message,
       customFields,
-      ["properties"],
-      CUSTOM_EVENT_EXCLUSION_FIELDS
+      ['properties'],
+      CUSTOM_EVENT_EXCLUSION_FIELDS,
     );
     payload.properties = customFields;
   }
@@ -219,7 +208,7 @@ const trackResponseBuilder = message => {
 
 const handleMessage = (message, destination) => {
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
   const messageType = message.type.toLowerCase();
   let payload;
@@ -231,9 +220,7 @@ const handleMessage = (message, destination) => {
       payload = trackResponseBuilder(message);
       break;
     default:
-      throw new InstrumentationError(
-        `message type ${messageType} is not supported`
-      );
+      throw new InstrumentationError(`message type ${messageType} is not supported`);
   }
   return payload;
 };
@@ -241,14 +228,14 @@ const handleMessage = (message, destination) => {
 /**
  * Processing Single event
  */
-const process = event => {
+const process = (event) => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
 
   if (!destination.Config.apiKey) {
-    throw new ConfigurationError("Invalid Api Key");
+    throw new ConfigurationError('Invalid Api Key');
   }
 
   const payload = handleMessage(message, destination);
@@ -257,7 +244,7 @@ const process = event => {
   response.body.JSON_ARRAY = { batch: JSON.stringify([payload]) };
   response.endpoint = ENDPOINT;
   response.headers = {
-    "X-Ometria-Auth": destination.Config.apiKey
+    'X-Ometria-Auth': destination.Config.apiKey,
   };
   return response;
 };
@@ -270,39 +257,33 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const inputChunks = returnArrayOfSubarrays(inputs, MAX_BATCH_SIZE);
   const successList = [];
   const errorList = [];
-  inputChunks.forEach(chunk => {
+  inputChunks.forEach((chunk) => {
     const eventsList = [];
     const metadataList = [];
 
     // using the first destination config in chunk for transforming the events in one
     // chunk into a batch
     const { destination } = chunk[0];
-    chunk.forEach(async input => {
+    chunk.forEach(async (input) => {
       try {
         const transformedEvent = handleMessage(input.message, destination);
         eventsList.push(transformedEvent);
         metadataList.push(input.metadata);
       } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(
-          input,
-          error,
-          reqMetadata
-        );
+        const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);
         errorList.push(errRespEvent);
       }
     });
 
-    if (eventsList.length !== 0) {
+    if (eventsList.length > 0) {
       // setting up the batched request json here
       const batchedRequest = defaultRequestConfig();
       batchedRequest.endpoint = ENDPOINT;
       batchedRequest.headers = {
-        "X-Ometria-Auth": destination.Config.apiKey
+        'X-Ometria-Auth': destination.Config.apiKey,
       };
       batchedRequest.body.JSON_ARRAY = { batch: JSON.stringify(eventsList) };
-      successList.push(
-        getSuccessRespEvents(batchedRequest, metadataList, destination, true)
-      );
+      successList.push(getSuccessRespEvents(batchedRequest, metadataList, destination, true));
     }
   });
   return [...errorList, ...successList];

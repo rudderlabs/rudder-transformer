@@ -42,5 +42,400 @@
         }
       ]
     }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "CLEVERTAP",
+          "userAttributes": [
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            },
+            {
+              "userId": "test_user_id"
+            },
+            {
+              "userId": "user_sdk2"
+            }
+          ],
+          "config": {
+            "accountId": "testFail",
+            "passcode": "tofail",
+            "trackAnonymous": true,
+            "enableObjectIdMapping": false
+          }
+        }
+      ]
+    }
   }
 ]

@@ -130,14 +130,7 @@
             "includeKeys": [],
             "saveDestinationResponse": true,
             "secretKeys": ["accessKeyId", "accessKey"],
-            "supportedMessageTypes": [
-              "identify",
-              "page",
-              "screen",
-              "track",
-              "alias",
-              "group"
-            ],
+            "supportedMessageTypes": ["identify", "page", "screen", "track", "alias", "group"],
             "supportedSourceTypes": [
               "amp",
               "android",
@@ -310,14 +303,7 @@
             "includeKeys": [],
             "saveDestinationResponse": true,
             "secretKeys": ["accessKeyId", "accessKey"],
-            "supportedMessageTypes": [
-              "identify",
-              "page",
-              "screen",
-              "track",
-              "alias",
-              "group"
-            ],
+            "supportedMessageTypes": ["identify", "page", "screen", "track", "alias", "group"],
             "supportedSourceTypes": [
               "amp",
               "android",

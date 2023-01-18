@@ -10,10 +10,10 @@ message:
       mapperPath: ./mapping/userlist_default.yaml
       spreadMessage: true
       response:
-        endpoint: "https://incoming.userlist.com/rudderstack/events"
+        endpoint: 'https://incoming.userlist.com/rudderstack/events'
         method: POST
         format: JSON
         statusCode: 200 # probably this can be removed also.
         headers:
-          Authorization: "Push {{destConfig.pushKey}}"
-          Content-Type: "application/json"        
+          Authorization: 'Push {{destConfig.pushKey}}'
+          Content-Type: 'application/json'

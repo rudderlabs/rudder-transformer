@@ -86,10 +86,7 @@
   },
   {
     "destKey": "eu_consent_message",
-    "sourceKeys": [
-      "traits.euConsentMessage",
-      "context.traits.euConsentMessage"
-    ],
+    "sourceKeys": ["traits.euConsentMessage", "context.traits.euConsentMessage"],
     "required": false
   },
   {

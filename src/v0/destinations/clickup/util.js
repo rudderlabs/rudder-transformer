@@ -1,29 +1,28 @@
-const { httpGET } = require("../../../adapters/network");
+const { httpGET } = require('../../../adapters/network');
 const {
   processAxiosResponse,
-  getDynamicErrorType
-} = require("../../../adapters/utils/networkUtils");
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
 const {
   getHashFromArray,
   getHashFromArrayWithValueAsObject,
-  formatTimeStamp
-} = require("../../util");
-const { getCustomFieldsEndPoint } = require("./config");
-const { NetworkError, InstrumentationError } = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+  formatTimeStamp,
+} = require('../../util');
+const { getCustomFieldsEndPoint } = require('./config');
+const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 /**
  * Validates priority
  * @param {*} priority
  */
-const validatePriority = priority => {
+const validatePriority = (priority) => {
   if (
-    (priority &&
-      !(Number.isInteger(priority) && priority >= 1 && priority <= 4)) ||
+    (priority && !(Number.isInteger(priority) && priority >= 1 && priority <= 4)) ||
     priority === 0
   ) {
     throw new InstrumentationError(
-      `Invalid value specified for priority. Value must be Integer and in range "[1,4]"`
+      `Invalid value specified for priority. Value must be Integer and in range "[1,4]"`,
     );
   }
 };
@@ -32,10 +31,10 @@ const validatePriority = priority => {
  * Validates phone with country code
  * @param {*} phone
  */
-const validatePhoneWithCountryCode = phone => {
-  const regex = /^\+(?:[{0-9] ?){6,14}[0-9]$/;
+const validatePhoneWithCountryCode = (phone) => {
+  const regex = /^\+(?:[\d{] ?){6,14}\d$/;
   if (!regex.test(phone)) {
-    throw new InstrumentationError("The provided phone number is invalid");
+    throw new InstrumentationError('The provided phone number is invalid');
   }
 };
 
@@ -43,10 +42,11 @@ const validatePhoneWithCountryCode = phone => {
  * Validates email
  * @param {*} email
  */
-const validateEmail = email => {
-  const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+const validateEmail = (email) => {
+  const regex =
+    /^(([^\s"(),.:;<>@[\\\]]+(\.[^\s"(),.:;<>@[\\\]]+)*)|(".+"))@((\[(?:\d{1,3}\.){3}\d{1,3}])|(([\dA-Za-z-]+\.)+[A-Za-z]{2,}))$/;
   if (!regex.test(email)) {
-    throw new InstrumentationError("The provided email is invalid");
+    throw new InstrumentationError('The provided email is invalid');
   }
 };
 
@@ -54,10 +54,10 @@ const validateEmail = email => {
  * Validates url
  * @param {*} url
  */
-const validateUrl = url => {
-  const regex = /^(http(s)?:\/\/)[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+const validateUrl = (url) => {
+  const regex = /^(http(s)?:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w!#$&'()*+,./:;=?@[\]~-]+$/;
   if (!regex.test(url)) {
-    throw new InstrumentationError("The provided url is invalid");
+    throw new InstrumentationError('The provided url is invalid');
   }
 };
 
@@ -65,17 +65,17 @@ const validateUrl = url => {
  * Validates location latitude/longitude
  * @param {*} location
  */
-const validateLocation = location => {
+const validateLocation = (location) => {
   const lat = location?.lat;
   const lng = location?.lng;
   if (lat && !(lat >= -90 && lat <= 90)) {
     throw new InstrumentationError(
-      `Invalid value specified for latitude. Latitude must be in range "[-90, 90]"`
+      `Invalid value specified for latitude. Latitude must be in range "[-90, 90]"`,
     );
   }
   if (lng && !(lng >= -180 && lng <= 180)) {
     throw new InstrumentationError(
-      `Invalid value specified for longitude. Longitude must be in range "[-180, 180]"`
+      `Invalid value specified for longitude. Longitude must be in range "[-180, 180]"`,
     );
   }
 };
@@ -89,7 +89,7 @@ const validateRating = (customField, rating) => {
   const count = customField?.type_config?.count;
   if (rating && !(rating >= 0 && rating <= count)) {
     throw new InstrumentationError(
-      `Invalid value specified for rating. Value must be in range "[0,${count}]"`
+      `Invalid value specified for rating. Value must be in range "[0,${count}]"`,
     );
   }
 };
@@ -102,19 +102,19 @@ const validateRating = (customField, rating) => {
  */
 const validateUserSentCustomFieldValues = (customField, value) => {
   switch (customField?.type) {
-    case "location":
+    case 'location':
       validateLocation(value);
       break;
-    case "phone":
+    case 'phone':
       validatePhoneWithCountryCode(value);
       break;
-    case "email":
+    case 'email':
       validateEmail(value);
       break;
-    case "url":
+    case 'url':
       validateUrl(value);
       break;
-    case "emoji":
+    case 'emoji':
       validateRating(customField, value);
       break;
     default:
@@ -132,7 +132,7 @@ const validateUserSentCustomFieldValues = (customField, value) => {
 const getDropDown = (customField, value) => {
   const options = customField?.type_config?.options;
   const dropDownOption = options.find(
-    option => option?.name.toLowerCase() === value.toLowerCase()
+    (option) => option?.name.toLowerCase() === value.toLowerCase(),
   );
   return dropDownOption?.id;
 };
@@ -147,9 +147,9 @@ const getDropDown = (customField, value) => {
 const getLabels = (customField, value) => {
   const options = customField?.type_config?.options;
   const labelIds = [];
-  value.forEach(label => {
+  value.forEach((label) => {
     const labelOption = options.find(
-      option => option?.label.toLowerCase() === label.toLowerCase()
+      (option) => option?.label.toLowerCase() === label.toLowerCase(),
     );
     if (labelOption?.id) {
       labelIds.push(labelOption?.id);
@@ -164,12 +164,12 @@ const getLabels = (customField, value) => {
  * @param {*} value {"lat":-28.016667,"lng":153.4,"formattedAddress":"Gold Coast QLD, Australia"}
  * @returns // {"location":{"lat":-28.016667,"lng":153.4},"formatted_address":"Gold Coast QLD, Australia"}
  */
-const getLocation = value => {
+const getLocation = (value) => {
   let location;
   if (value.lat && value.lng && value.formattedAddress) {
     location = {
       location: { lat: value.lat, lng: value.lng },
-      formatted_address: value.formattedAddress
+      formatted_address: value.formattedAddress,
     };
   }
   return location;
@@ -188,7 +188,7 @@ const getListOfAssignees = (message, type) => {
     externalIdArray = message.context.externalId;
   }
   if (externalIdArray) {
-    externalIdArray.forEach(extIdObj => {
+    externalIdArray.forEach((extIdObj) => {
       if (extIdObj.type === type) {
         destinationExternalId.push(extIdObj.id);
       }
@@ -209,27 +209,23 @@ const retrieveCustomFields = async (listId, apiToken) => {
   const endpoint = getCustomFieldsEndPoint(listId);
   const requestOptions = {
     headers: {
-      "Content-Type": "application/json",
-      Authorization: apiToken
-    }
+      'Content-Type': 'application/json',
+      Authorization: apiToken,
+    },
   };
   const customFieldsResponse = await httpGET(endpoint, requestOptions);
-  const processedCustomFieldsResponse = processAxiosResponse(
-    customFieldsResponse
-  );
+  const processedCustomFieldsResponse = processAxiosResponse(customFieldsResponse);
 
   if (processedCustomFieldsResponse.status !== 200) {
     throw new NetworkError(
       `Failed to fetch available custom fields due to "${JSON.stringify(
-        processedCustomFieldsResponse.response
+        processedCustomFieldsResponse.response,
       )}"`,
       processedCustomFieldsResponse.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-          processedCustomFieldsResponse.status
-        )
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedCustomFieldsResponse.status),
       },
-      processedCustomFieldsResponse.response
+      processedCustomFieldsResponse.response,
     );
   }
 
@@ -244,13 +240,13 @@ const retrieveCustomFields = async (listId, apiToken) => {
  */
 const populateCustomFieldValue = (customField, value) => {
   switch (customField?.type) {
-    case "drop_down":
+    case 'drop_down':
       return getDropDown(customField, value);
-    case "labels":
+    case 'labels':
       return getLabels(customField, value);
-    case "location":
+    case 'location':
       return getLocation(value);
-    case "date":
+    case 'date':
       return formatTimeStamp(value);
     default:
       return value;
@@ -260,7 +256,7 @@ const populateCustomFieldValue = (customField, value) => {
 const extractUIMappedCustomFieldDetails = (
   availableCustomFieldsMap,
   configCustomFieldsMap,
-  propertiesKey
+  propertiesKey,
 ) => {
   const fieldName = configCustomFieldsMap[propertiesKey];
   return availableCustomFieldsMap[fieldName];
@@ -275,12 +271,7 @@ const extractUIMappedCustomFieldDetails = (
  * @param {*} apiToken
  * @returns [{"id":"b0f40a94-ea2a-4998-a514-8074d0eddcde","value":"https://www.rudderstack.com/"}]
  */
-const customFieldsBuilder = async (
-  keyToCustomFieldName,
-  properties,
-  listId,
-  apiToken
-) => {
+const customFieldsBuilder = async (keyToCustomFieldName, properties, listId, apiToken) => {
   const responseArray = [];
   if (properties && keyToCustomFieldName) {
     // retrieve available clickup custom field for the given list
@@ -288,35 +279,27 @@ const customFieldsBuilder = async (
     // convert array to hashMap with key as field name and value as custom field object
     const availableCustomFieldsMap = getHashFromArrayWithValueAsObject(
       availableCustomFields,
-      "name",
-      false
+      'name',
+      false,
     );
 
     // convert destination.Config.keyToCustomFieldName to hashMap
-    const configCustomFieldsMap = getHashFromArray(
-      keyToCustomFieldName,
-      "from",
-      "to",
-      false
-    );
+    const configCustomFieldsMap = getHashFromArray(keyToCustomFieldName, 'from', 'to', false);
 
-    Object.keys(configCustomFieldsMap).forEach(propertiesKey => {
+    Object.keys(configCustomFieldsMap).forEach((propertiesKey) => {
       let fieldValue = properties[propertiesKey];
       if (fieldValue) {
         const customFieldDetailedInfo = extractUIMappedCustomFieldDetails(
           availableCustomFieldsMap,
           configCustomFieldsMap,
-          propertiesKey
+          propertiesKey,
         );
         validateUserSentCustomFieldValues(customFieldDetailedInfo, fieldValue);
-        fieldValue = populateCustomFieldValue(
-          customFieldDetailedInfo,
-          fieldValue
-        );
+        fieldValue = populateCustomFieldValue(customFieldDetailedInfo, fieldValue);
         if (fieldValue && customFieldDetailedInfo) {
           responseArray.push({
             id: customFieldDetailedInfo.id,
-            value: fieldValue
+            value: fieldValue,
           });
         }
       }
@@ -336,12 +319,11 @@ const checkEventIfUIMapped = (message, destination) => {
 
   if (whitelistedEvents && whitelistedEvents.length > 0) {
     const allowEvent = whitelistedEvents.some(
-      whiteListedEvent =>
-        whiteListedEvent.eventName.toLowerCase() === event.toLowerCase()
+      (whiteListedEvent) => whiteListedEvent.eventName.toLowerCase() === event.toLowerCase(),
     );
     if (!allowEvent) {
       throw new InstrumentationError(
-        "The event was discarded as it was not allow listed in the destination configuration"
+        'The event was discarded as it was not allow listed in the destination configuration',
       );
     }
   }
@@ -351,5 +333,5 @@ module.exports = {
   validatePriority,
   customFieldsBuilder,
   getListOfAssignees,
-  checkEventIfUIMapped
+  checkEventIfUIMapped,
 };

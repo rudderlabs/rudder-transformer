@@ -1,20 +1,20 @@
-const { getMappingConfig } = require("../../util");
+const { getMappingConfig } = require('../../util');
 
-const ENDPOINT = "https://engine.monetate.net/api/engine/v1/decide/";
+const ENDPOINT = 'https://engine.monetate.net/api/engine/v1/decide/';
 
 const mappingConfig = getMappingConfig(
   {
     Track: {
-      name: "MONETATETrack"
+      name: 'MONETATETrack',
     },
     Page: {
-      name: "MONETATEPage"
+      name: 'MONETATEPage',
     },
     Screen: {
-      name: "MONETATEScreen"
-    }
+      name: 'MONETATEScreen',
+    },
   },
-  __dirname
+  __dirname,
 );
 
 exports.ENDPOINT = ENDPOINT;

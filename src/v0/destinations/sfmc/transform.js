@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary */
-const axios = require("axios");
-const { EventType } = require("../../../constants");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require("./config");
+const axios = require('axios');
+const { EventType } = require('../../../constants');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require('./config');
 const {
   removeUndefinedAndNullValues,
   getFieldValueFromMessage,
@@ -13,19 +13,14 @@ const {
   toTitleCase,
   getHashFromArray,
   isEmpty,
-  simpleProcessRouterDest
-} = require("../../util");
+  simpleProcessRouterDest,
+} = require('../../util');
 const {
   getDynamicErrorType,
-  nodeSysErrorToStatus
-} = require("../../../adapters/utils/networkUtils");
-const {
-  NetworkError,
-  ConfigurationError,
-  InstrumentationError,
-  TransformationError
-} = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+  nodeSysErrorToStatus,
+} = require('../../../adapters/utils/networkUtils');
+const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 // DOC: https://developer.salesforce.com/docs/atlas.en-us.mc-app-development.meta/mc-app-development/access-token-s2s.htm
 
@@ -34,46 +29,38 @@ const getToken = async (clientId, clientSecret, subdomain) => {
     const resp = await axios.post(
       `https://${subdomain}.${ENDPOINTS.GET_TOKEN}`,
       {
-        grant_type: "client_credentials",
+        grant_type: 'client_credentials',
         client_id: clientId,
-        client_secret: clientSecret
+        client_secret: clientSecret,
       },
       {
-        "Content-Type": "application/json"
-      }
+        'Content-Type': 'application/json',
+      },
     );
     if (resp && resp.data) {
       return resp.data.access_token;
     }
     const status = resp.status || 400;
     throw new NetworkError(
-      "Could not retrieve access token",
+      'Could not retrieve access token',
       status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
-      resp
+      resp,
     );
   } catch (error) {
     if (!isEmpty(error.response)) {
       const status = error.status || 400;
-      throw new NetworkError(
-        `Authorization Failed ${error.response.statusText}`,
-        status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
-        }
-      );
+      throw new NetworkError(`Authorization Failed ${error.response.statusText}`, status, {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      });
     } else {
       const httpError = nodeSysErrorToStatus(error.code);
       const status = httpError.status || 400;
-      throw new NetworkError(
-        `Authorization Failed ${httpError.message}`,
-        status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
-        }
-      );
+      throw new NetworkError(`Authorization Failed ${httpError.message}`, status, {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      });
     }
   }
 };
@@ -86,15 +73,14 @@ const responseBuilderForIdentifyContacts = (message, subdomain, authToken) => {
   response.method = defaultPostRequestConfig.requestMethod;
   // set contact key as userId or email from traits. Either of these two is required.
   const contactKey =
-    getFieldValueFromMessage(message, "userIdOnly") ||
-    getFieldValueFromMessage(message, "email");
+    getFieldValueFromMessage(message, 'userIdOnly') || getFieldValueFromMessage(message, 'email');
   if (!contactKey) {
-    throw new InstrumentationError("Either userId or email is required");
+    throw new InstrumentationError('Either userId or email is required');
   }
   response.body.JSON = { attributeSets: [], contactKey };
   response.headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${authToken}`
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${authToken}`,
   };
   return response;
 };
@@ -109,66 +95,63 @@ const responseBuilderForInsertData = (
   authToken,
   type,
   primaryKey,
-  uuid
+  uuid,
 ) => {
   // set contact key as userId or email from traits. Either of these two is required.
   const contactKey =
-    getFieldValueFromMessage(message, "userIdOnly") ||
-    getFieldValueFromMessage(message, "email");
+    getFieldValueFromMessage(message, 'userIdOnly') || getFieldValueFromMessage(message, 'email');
   if (!contactKey) {
-    throw new InstrumentationError("Either userId or email is required");
+    throw new InstrumentationError('Either userId or email is required');
   }
 
   const response = defaultRequestConfig();
   response.method = defaultPutRequestConfig.requestMethod;
   response.headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${authToken}`
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${authToken}`,
   };
   // multiple primary keys can be set by the user as comma separated.
   let primaryKeyArray;
   if (primaryKey) {
-    primaryKeyArray = primaryKey.split(",");
+    primaryKeyArray = primaryKey.split(',');
   }
   // Rudder handles the payload by sending the properties as title case only as the user is instructed to set column names in data
   // extensions as title case.
   const payload = removeUndefinedAndNullValues(
-    toTitleCase(
-      flattenJson(constructPayload(message, MAPPING_CONFIG[category.name]))
-    )
+    toTitleCase(flattenJson(constructPayload(message, MAPPING_CONFIG[category.name]))),
   );
   // for both identify and track calls with only one primary key set as "Contact Key" is same.
   if (
-    type === "identify" ||
-    (type === "track" &&
+    type === 'identify' ||
+    (type === 'track' &&
       primaryKeyArray.length === 1 &&
-      primaryKeyArray.includes("Contact Key") &&
+      primaryKeyArray.includes('Contact Key') &&
       !uuid)
   ) {
     response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/Contact Key:${contactKey}`;
     response.body.JSON = {
       values: {
-        "Contact Key": contactKey,
-        ...payload
-      }
+        'Contact Key': contactKey,
+        ...payload,
+      },
     };
-  } else if (type === "track" && uuid) {
+  } else if (type === 'track' && uuid) {
     // for track calls and uuid as true the primary keys set will be overridden and only Uuid will be set as the primary key
     const generateUuid = message.messageId; // messageId is set as the Uuid.
     response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/Uuid:${generateUuid}`;
     response.body.JSON = {
       values: {
         Uuid: generateUuid,
-        ...payload
-      }
+        ...payload,
+      },
     };
   } else {
     // other track cases where there are multiple primary keys or one primary key which is not "Contact Key" and uuid is false
-    let strPrimary = "";
+    let strPrimary = '';
     primaryKeyArray.forEach((key, index) => {
       const keyTrimmed = key.trim();
       let payloadValue = payload[keyTrimmed];
-      if (keyTrimmed === "Contact Key") {
+      if (keyTrimmed === 'Contact Key') {
         // if one of the multiple primary key is "Contact Key"
         payloadValue = contactKey;
       }
@@ -182,8 +165,8 @@ const responseBuilderForInsertData = (
     response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/${strPrimary}`;
     response.body.JSON = {
       values: {
-        ...payload
-      }
+        ...payload,
+      },
     };
   }
 
@@ -199,23 +182,23 @@ const responseBuilderSimple = async (message, category, destination) => {
     externalKey,
     eventToExternalKey,
     eventToPrimaryKey,
-    eventToUUID
+    eventToUUID,
   } = destination.Config;
   // map from an event name to an external key of a data extension.
-  const hashMapExternalKey = getHashFromArray(eventToExternalKey, "from", "to");
+  const hashMapExternalKey = getHashFromArray(eventToExternalKey, 'from', 'to');
   // map from an event name to a primary key of the data extension.
-  const hashMapPrimaryKey = getHashFromArray(eventToPrimaryKey, "from", "to");
+  const hashMapPrimaryKey = getHashFromArray(eventToPrimaryKey, 'from', 'to');
   // map from an event name to uuid as true or false to determine to send uuid as primary key or not.
-  const hashMapUUID = getHashFromArray(eventToUUID, "event", "uuid");
+  const hashMapUUID = getHashFromArray(eventToUUID, 'event', 'uuid');
   // token needed for authorization for subsequent calls
   const authToken = await getToken(clientId, clientSecret, subDomain);
   // if createOrUpdateContacts is true identify calls for create and update of contacts will not occur.
-  if (category.type === "identify" && !createOrUpdateContacts) {
+  if (category.type === 'identify' && !createOrUpdateContacts) {
     // first call to identify the contact
     const identifyContactsPayload = responseBuilderForIdentifyContacts(
       message,
       subDomain,
-      authToken
+      authToken,
     );
     // second call to insert/update data against the contact in the data extension
     const identifyInsertDataPayload = responseBuilderForInsertData(
@@ -224,37 +207,34 @@ const responseBuilderSimple = async (message, category, destination) => {
       subDomain,
       category,
       authToken,
-      "identify"
+      'identify',
     );
     return [identifyContactsPayload, identifyInsertDataPayload];
   }
 
-  if (category.type === "identify" && createOrUpdateContacts) {
-    throw new ConfigurationError("Creating or updating contacts is disabled");
+  if (category.type === 'identify' && createOrUpdateContacts) {
+    throw new ConfigurationError('Creating or updating contacts is disabled');
   }
 
-  if (
-    category.type === "track" &&
-    hashMapExternalKey[message.event.toLowerCase()]
-  ) {
+  if (category.type === 'track' && hashMapExternalKey[message.event.toLowerCase()]) {
     return responseBuilderForInsertData(
       message,
       hashMapExternalKey[message.event.toLowerCase()],
       subDomain,
       category,
       authToken,
-      "track",
-      hashMapPrimaryKey[message.event.toLowerCase()] || "Contact Key",
-      hashMapUUID[message.event.toLowerCase()]
+      'track',
+      hashMapPrimaryKey[message.event.toLowerCase()] || 'Contact Key',
+      hashMapUUID[message.event.toLowerCase()],
     );
   }
 
-  throw new ConfigurationError("Event not mapped for this track call");
+  throw new ConfigurationError('Event not mapped for this track call');
 };
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
 
   const messageType = message.type.toLowerCase();
@@ -268,9 +248,7 @@ const processEvent = async (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
-      );
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
 
   // build the response
@@ -278,7 +256,7 @@ const processEvent = async (message, destination) => {
   return response;
 };
 
-const process = async event => {
+const process = async (event) => {
   const response = await processEvent(event.message, event.destination);
   return response;
 };

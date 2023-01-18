@@ -13,10 +13,7 @@
   },
   {
     "destKey": "state",
-    "sourceKeys": [
-      "properties.name",
-      "event"
-    ],
+    "sourceKeys": ["properties.name", "event"],
     "required": true
   },
   {

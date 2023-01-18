@@ -2,7 +2,7 @@ name: Build transformer master image
 on:
   push:
     branches:
-      - "master"
+      - 'master'
 env:
   REPO_NAME: rudderlabs/develop-rudder-transformer
 

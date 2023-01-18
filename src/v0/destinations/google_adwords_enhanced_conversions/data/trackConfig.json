@@ -116,10 +116,7 @@
   },
   {
     "destKey": "conversionAdjustments[0].userIdentifiers[2].addressInfo.postalCode",
-    "sourceKeys": [
-      "context.traits.postalCode",
-      "context.traits.address.postalCode"
-    ],
+    "sourceKeys": ["context.traits.postalCode", "context.traits.address.postalCode"],
     "required": false,
     "metadata": {
       "type": "toString"

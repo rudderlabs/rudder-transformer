@@ -79,6 +79,11 @@
     "statusCode": 200
   },
   {
+    "destination": {
+      "Config": {
+        "projectName": "int.com"
+      }
+    },
     "metadata": [
       {
         "jobId": 3

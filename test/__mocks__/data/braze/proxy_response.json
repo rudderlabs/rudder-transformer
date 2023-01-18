@@ -28,9 +28,7 @@
   "https://rest.iad-03.braze.com/users/identify/test6": {
     "code": "[ENOTFOUND] :: DNS lookup failed"
   },
-  "https://rest.iad-03.braze.com/users/identify/test7":{
-    "response":{
-        
-    }
+  "https://rest.iad-03.braze.com/users/identify/test7": {
+    "response": {}
   }
 }

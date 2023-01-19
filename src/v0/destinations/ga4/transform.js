@@ -371,7 +371,6 @@ const responseBuilder = (message, { Config }) => {
 };
 
 const process = (event) => {
-  console.log(event);
   const { message, destination } = event;
   const { Config } = destination;
 

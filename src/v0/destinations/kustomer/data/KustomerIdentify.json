@@ -37,10 +37,7 @@
   },
   {
     "destKey": "lastCustomerActivityAt",
-    "sourceKeys": [
-      "traits.lastCustomerActivityAt",
-      "context.traits.lastCustomerActivityAt"
-    ],
+    "sourceKeys": ["traits.lastCustomerActivityAt", "context.traits.lastCustomerActivityAt"],
     "required": false
   },
   {

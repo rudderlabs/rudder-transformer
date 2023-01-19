@@ -46,16 +46,7 @@
           "destVal": "male"
         },
         {
-          "sourceVal": [
-            "o",
-            "O",
-            "Other",
-            "other",
-            "OTHER",
-            "Others",
-            "Others",
-            "OTHERS"
-          ],
+          "sourceVal": ["o", "O", "Other", "other", "OTHER", "Others", "Others", "OTHERS"],
           "destVal": "other"
         }
       ]

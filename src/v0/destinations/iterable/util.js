@@ -1,10 +1,7 @@
-const { getDestinationExternalIDInfoForRetl } = require("../../util");
+const { getDestinationExternalIDInfoForRetl } = require('../../util');
 
 const getCatalogEndpoint = (category, message) => {
-  const externalIdInfo = getDestinationExternalIDInfoForRetl(
-    message,
-    "ITERABLE"
-  );
+  const externalIdInfo = getDestinationExternalIDInfoForRetl(message, 'ITERABLE');
   return `${category.endpoint}/${externalIdInfo.objectType}/items/${externalIdInfo.destinationExternalId}`;
 };
 

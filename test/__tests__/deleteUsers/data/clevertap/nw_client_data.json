@@ -1,46 +1,177 @@
 [
-    [
+  [
+    {
+      "type": "post",
+      "reqParams": [
+        "https://api.clevertap.com/1/delete/profiles.json",
         {
-            "type": "post",
-             "reqParams": [
-            "https://api.clevertap.com/1/delete/profiles.json",
-            {
-                "identity": ["test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2"]
-            },
-              {
-                  "X-CleverTap-Account-Id": "testFail", "X-CleverTap-Passcode": "tofail"
-              }
-        ],
-        "response": {
-          "code": 400,
-          "statusText": "fail",
-          "response": {
-            "data": {
-                "code": 400,
-                "message": "Bad Req",
-                "status": "Fail Case"
-              },
-              "status":400
-          }
+          "identity": [
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "user_sdk2"
+          ]
+        },
+        {
+          "X-CleverTap-Account-Id": "testFail",
+          "X-CleverTap-Passcode": "tofail"
         }
-      },
-       { "type": "post",
-        "reqParams": [
-            "https://api.clevertap.com/1/delete/profiles.json",
-            {
-                "identity": ["test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2", "test_user_id", "user_sdk2"]
-            },
-              {
-                  "X-CleverTap-Account-Id": "testFail", "X-CleverTap-Passcode": "tofail"
-              }
-        ],
+      ],
+      "response": {
+        "code": 400,
+        "statusText": "fail",
         "response": {
-          "status": 200,
-          "statusText": "OK",
-          "data":{
-           " message": "rpoxy"
-          }
+          "data": {
+            "code": 400,
+            "message": "Bad Req",
+            "status": "Fail Case"
+          },
+          "status": 400
         }
       }
-    ]
+    },
+    {
+      "type": "post",
+      "reqParams": [
+        "https://api.clevertap.com/1/delete/profiles.json",
+        {
+          "identity": [
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2",
+            "test_user_id",
+            "user_sdk2"
+          ]
+        },
+        {
+          "X-CleverTap-Account-Id": "testFail",
+          "X-CleverTap-Passcode": "tofail"
+        }
+      ],
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "data": {
+          " message": "rpoxy"
+        }
+      }
+    }
   ]
+]

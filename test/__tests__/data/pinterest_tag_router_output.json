@@ -21,30 +21,14 @@
                 "app_id": "429047995",
                 "advertiser_id": "429047995",
                 "user_data": {
-                  "em": [
-                    "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-                  ],
-                  "ph": [
-                    "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-                  ],
-                  "ln": [
-                    "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-                  ],
-                  "fn": [
-                    "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-                  ],
-                  "ct": [
-                    "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-                  ],
-                  "st": [
-                    "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-                  ],
-                  "zp": [
-                    "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-                  ],
-                  "country": [
-                    "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-                  ],
+                  "em": ["48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"],
+                  "ph": ["d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"],
+                  "ln": ["bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"],
+                  "fn": ["ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"],
+                  "ct": ["6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"],
+                  "st": ["3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"],
+                  "zp": ["1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"],
+                  "country": ["582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"],
                   "hashed_maids": [
                     "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
                   ],
@@ -56,10 +40,7 @@
                   "order_id": "50314b8e9bcf000000000000",
                   "num_items": 3,
                   "opt_out_type": "LDP",
-                  "content_ids": [
-                    "507f1f77bcf86cd799439011",
-                    "505bd76785ebb509fc183733"
-                  ],
+                  "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
                   "contents": [
                     {
                       "quantity": 1,
@@ -80,30 +61,14 @@
                 "app_id": "429047995",
                 "advertiser_id": "429047995",
                 "user_data": {
-                  "em": [
-                    "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-                  ],
-                  "ph": [
-                    "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-                  ],
-                  "ln": [
-                    "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-                  ],
-                  "fn": [
-                    "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-                  ],
-                  "ct": [
-                    "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-                  ],
-                  "st": [
-                    "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-                  ],
-                  "zp": [
-                    "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-                  ],
-                  "country": [
-                    "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-                  ],
+                  "em": ["48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"],
+                  "ph": ["d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"],
+                  "ln": ["bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"],
+                  "fn": ["ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"],
+                  "ct": ["6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"],
+                  "st": ["3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"],
+                  "zp": ["1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"],
+                  "country": ["582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"],
                   "hashed_maids": [
                     "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
                   ],
@@ -115,10 +80,7 @@
                   "order_id": "50314b8e9bcf000000000000",
                   "num_items": 3,
                   "opt_out_type": "LDP",
-                  "content_ids": [
-                    "507f1f77bcf86cd799439011",
-                    "505bd76785ebb509fc183733"
-                  ],
+                  "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
                   "contents": [
                     {
                       "quantity": 1,
@@ -139,30 +101,14 @@
                 "app_id": "429047995",
                 "advertiser_id": "429047995",
                 "user_data": {
-                  "em": [
-                    "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-                  ],
-                  "ph": [
-                    "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-                  ],
-                  "ln": [
-                    "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-                  ],
-                  "fn": [
-                    "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-                  ],
-                  "ct": [
-                    "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-                  ],
-                  "st": [
-                    "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-                  ],
-                  "zp": [
-                    "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-                  ],
-                  "country": [
-                    "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-                  ],
+                  "em": ["48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"],
+                  "ph": ["d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"],
+                  "ln": ["bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"],
+                  "fn": ["ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"],
+                  "ct": ["6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"],
+                  "st": ["3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"],
+                  "zp": ["1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"],
+                  "country": ["582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"],
                   "hashed_maids": [
                     "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
                   ],
@@ -173,10 +119,7 @@
                   "value": 27.5,
                   "order_id": "50314b8e9bcf000000000000",
                   "num_items": 3,
-                  "content_ids": [
-                    "507f1f77bcf86cd799439011",
-                    "505bd76785ebb509fc183733"
-                  ],
+                  "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
                   "contents": [
                     {
                       "quantity": 1,
@@ -197,30 +140,14 @@
                 "app_id": "429047995",
                 "advertiser_id": "429047995",
                 "user_data": {
-                  "em": [
-                    "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-                  ],
-                  "ph": [
-                    "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-                  ],
-                  "ln": [
-                    "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-                  ],
-                  "fn": [
-                    "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-                  ],
-                  "ct": [
-                    "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-                  ],
-                  "st": [
-                    "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-                  ],
-                  "zp": [
-                    "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-                  ],
-                  "country": [
-                    "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-                  ],
+                  "em": ["48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"],
+                  "ph": ["d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"],
+                  "ln": ["bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"],
+                  "fn": ["ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"],
+                  "ct": ["6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"],
+                  "st": ["3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"],
+                  "zp": ["1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"],
+                  "country": ["582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"],
                   "hashed_maids": [
                     "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
                   ],
@@ -248,30 +175,14 @@
                 "app_id": "429047995",
                 "advertiser_id": "429047995",
                 "user_data": {
-                  "em": [
-                    "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-                  ],
-                  "ph": [
-                    "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-                  ],
-                  "ln": [
-                    "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-                  ],
-                  "fn": [
-                    "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-                  ],
-                  "ct": [
-                    "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-                  ],
-                  "st": [
-                    "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-                  ],
-                  "zp": [
-                    "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-                  ],
-                  "country": [
-                    "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-                  ],
+                  "em": ["48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"],
+                  "ph": ["d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"],
+                  "ln": ["bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"],
+                  "fn": ["ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"],
+                  "ct": ["6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"],
+                  "st": ["3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"],
+                  "zp": ["1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"],
+                  "country": ["582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"],
                   "hashed_maids": [
                     "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
                   ],
@@ -282,10 +193,7 @@
                   "value": 27.5,
                   "order_id": "50314b8e9bcf000000000000",
                   "num_items": 3,
-                  "content_ids": [
-                    "507f1f77bcf86cd799439011",
-                    "505bd76785ebb509fc183733"
-                  ],
+                  "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
                   "contents": [
                     {
                       "quantity": 1,
@@ -306,30 +214,14 @@
                 "app_id": "429047995",
                 "advertiser_id": "429047995",
                 "user_data": {
-                  "em": [
-                    "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-                  ],
-                  "ph": [
-                    "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-                  ],
-                  "ln": [
-                    "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-                  ],
-                  "fn": [
-                    "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-                  ],
-                  "ct": [
-                    "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-                  ],
-                  "st": [
-                    "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-                  ],
-                  "zp": [
-                    "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-                  ],
-                  "country": [
-                    "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-                  ],
+                  "em": ["48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"],
+                  "ph": ["d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"],
+                  "ln": ["bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"],
+                  "fn": ["ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"],
+                  "ct": ["6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"],
+                  "st": ["3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"],
+                  "zp": ["1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"],
+                  "country": ["582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"],
                   "hashed_maids": [
                     "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
                   ],
@@ -340,10 +232,7 @@
                   "value": 27.5,
                   "order_id": "50314b8e9bcf000000000000",
                   "num_items": 3,
-                  "content_ids": [
-                    "507f1f77bcf86cd799439011",
-                    "505bd76785ebb509fc183733"
-                  ],
+                  "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
                   "contents": [
                     {
                       "quantity": 1,
@@ -364,30 +253,14 @@
                 "app_id": "429047995",
                 "advertiser_id": "429047995",
                 "user_data": {
-                  "em": [
-                    "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"
-                  ],
-                  "ph": [
-                    "d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"
-                  ],
-                  "ln": [
-                    "bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"
-                  ],
-                  "fn": [
-                    "ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"
-                  ],
-                  "ct": [
-                    "6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"
-                  ],
-                  "st": [
-                    "3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"
-                  ],
-                  "zp": [
-                    "1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"
-                  ],
-                  "country": [
-                    "582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"
-                  ],
+                  "em": ["48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08"],
+                  "ph": ["d164bbe036663cb5c96835e9ccc6501e9a521127ea62f6359744928ba932413b"],
+                  "ln": ["bdfdee6414a89d72bfbf5ee90b1f85924467bae1e3980d83c2cd348dc31d5819"],
+                  "fn": ["ee5db3fe0253b651aca3676692e0c59b25909304f5c51d223a02a215d104144b"],
+                  "ct": ["6689106ca7922c30b2fd2c175c85bc7fc2d52cc4941bdd7bb622c6cdc6284a85"],
+                  "st": ["3b45022ab36728cdae12e709e945bba267c50ee8a91e6e4388539a8e03a3fdcd"],
+                  "zp": ["1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"],
+                  "country": ["582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"],
                   "hashed_maids": [
                     "6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"
                   ],
@@ -398,10 +271,7 @@
                   "value": 27.5,
                   "order_id": "50314b8e9bcf000000000000",
                   "num_items": 3,
-                  "content_ids": [
-                    "507f1f77bcf86cd799439011",
-                    "505bd76785ebb509fc183733"
-                  ],
+                  "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
                   "contents": [
                     {
                       "quantity": 1,

@@ -1,5 +1,5 @@
 - destKey: identity
-  sourceKeys:  
+  sourceKeys:
     - userId
     - traits.userId
     - traits.id
@@ -11,7 +11,7 @@
 - destKey: event
   sourceKeys: event
   required: true
-  
+
 - destKey: properties
   sourceKeys: properties
   metadata:
@@ -25,4 +25,3 @@
 - destKey: idempotency_key
   sourceKeys: properties.idempotencyKey
   required: false
-

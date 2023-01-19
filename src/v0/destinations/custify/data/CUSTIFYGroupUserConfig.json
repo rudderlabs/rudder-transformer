@@ -37,11 +37,7 @@
   },
   {
     "destKey": "signed_up_at",
-    "sourceKeys": [
-      "context.traits.signedUpAt",
-      "timestamp",
-      "originalTimestamp"
-    ],
+    "sourceKeys": ["context.traits.signedUpAt", "timestamp", "originalTimestamp"],
     "required": false
   },
   {

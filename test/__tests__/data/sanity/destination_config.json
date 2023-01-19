@@ -25,15 +25,9 @@
           "clientId": "marketo_client_id_success",
           "clientSecret": "marketo_client_secret_success",
           "trackAnonymousEvents": true,
-          "customActivityEventMap": [
-            { "from": "Product Clicked", "to": "100001" }
-          ],
-          "customActivityPropertyMap": [
-            { "from": "name", "to": "productName" }
-          ],
-          "customActivityPrimaryKeyMap": [
-            { "from": "Product Clicked", "to": "name" }
-          ],
+          "customActivityEventMap": [{ "from": "Product Clicked", "to": "100001" }],
+          "customActivityPropertyMap": [{ "from": "name", "to": "productName" }],
+          "customActivityPrimaryKeyMap": [{ "from": "Product Clicked", "to": "name" }],
           "leadTraitMapping": [{ "from": "leadScore", "to": "customLeadScore" }]
         },
         "secretConfig": {},

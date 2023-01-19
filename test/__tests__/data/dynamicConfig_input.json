@@ -225,13 +225,8 @@
             "key1": "{{ message.key1 || \" default value  }}",
             "key2": "{{ message.key1 || default value \" }}",
             "key3": "{{ message.traits.appId || 123.1234 }}",
-            "key4": [
-              "{{ message.traits.key4 || defaultVal }}",
-              "{{ message.key4 || defaultVal }}"
-            ],
-            "key5": [
-              { "key2": { "key3": "{{ message.key5 || defaultVal }}" } }
-            ],
+            "key4": ["{{ message.traits.key4 || defaultVal }}", "{{ message.key4 || defaultVal }}"],
+            "key5": [{ "key2": { "key3": "{{ message.key5 || defaultVal }}" } }],
             "key6": [
               [
                 { "key2": { "key3": "{{ message.key5 || defaultVal }}" } },
@@ -266,13 +261,8 @@
             "key1": "{{ event.key1 || \" default value  }}",
             "key2": "{{ event.key1 || default value \" }}",
             "key3": "{{ message.traits.appId || 123.1234 }}",
-            "key4": [
-              "{{ event.traits.key4 || defaultVal }}",
-              "{{ event.key4 || defaultVal }}"
-            ],
-            "key5": [
-              { "key2": { "key3": "{{ event.key5 || defaultVal }}" } }
-            ],
+            "key4": ["{{ event.traits.key4 || defaultVal }}", "{{ event.key4 || defaultVal }}"],
+            "key5": [{ "key2": { "key3": "{{ event.key5 || defaultVal }}" } }],
             "key6": [
               [
                 { "key2": { "key3": "{{ event.key5 || defaultVal }}" } },

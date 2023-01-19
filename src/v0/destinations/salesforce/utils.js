@@ -1,17 +1,13 @@
-const { handleHttpRequest } = require("../../../adapters/network");
-const { isHttpStatusSuccess } = require("../../util");
-const Cache = require("../../util/cache");
-const {
-  RetryableError,
-  ThrottledError,
-  AbortedError
-} = require("../../util/errorTypes");
+const { handleHttpRequest } = require('../../../adapters/network');
+const { isHttpStatusSuccess } = require('../../util');
+const Cache = require('../../util/cache');
+const { RetryableError, ThrottledError, AbortedError } = require('../../util/errorTypes');
 const {
   ACCESS_TOKEN_CACHE_TTL,
   SF_TOKEN_REQUEST_URL_SANDBOX,
   SF_TOKEN_REQUEST_URL,
-  DESTINATION
-} = require("./config");
+  DESTINATION,
+} = require('./config');
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
@@ -28,26 +24,22 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
 
   // if the response from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status) && status >= 400) {
-    const matchErrorCode = errorCode =>
-      response &&
-      Array.isArray(response) &&
-      response.some(resp => {
-        return resp.errorCode === errorCode;
-      });
-    if (status === 401 && authKey && matchErrorCode("INVALID_SESSION_ID")) {
+    const matchErrorCode = (errorCode) =>
+      response && Array.isArray(response) && response.some((resp) => resp.errorCode === errorCode);
+    if (status === 401 && authKey && matchErrorCode('INVALID_SESSION_ID')) {
       // checking for invalid/expired token errors and evicting cache in that case
       // rudderJobMetadata contains some destination info which is being used to evict the cache
       ACCESS_TOKEN_CACHE.del(authKey);
       throw new RetryableError(
         `${DESTINATION} Request Failed - due to ${response[0].message}, (Retryable).${sourceMessage}`,
         500,
-        destResponse
+        destResponse,
       );
-    } else if (status === 403 && matchErrorCode("REQUEST_LIMIT_EXCEEDED")) {
+    } else if (status === 403 && matchErrorCode('REQUEST_LIMIT_EXCEEDED')) {
       // If the error code is REQUEST_LIMIT_EXCEEDED, you’ve exceeded API request limits in your org.
       throw new ThrottledError(
         `${DESTINATION} Request Failed - due to ${response[0].message}, (Throttled).${sourceMessage}`,
-        destResponse
+        destResponse,
       );
     } else if (status === 503) {
       // The salesforce server is unavailable to handle the request. Typically this occurs if the server is down
@@ -55,11 +47,11 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
       throw new RetryableError(
         `${DESTINATION} Request Failed - due to ${response[0].message}, (Retryable).${sourceMessage}`,
         500,
-        destResponse
+        destResponse,
       );
     }
     // check the error message
-    let errorMessage = "";
+    let errorMessage = '';
     if (response && Array.isArray(response)) {
       errorMessage = response[0].message;
     }
@@ -67,7 +59,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
     throw new AbortedError(
       `${DESTINATION} Request Failed: ${status} due to ${errorMessage}, (Aborted). ${sourceMessage}`,
       400,
-      destResponse
+      destResponse,
     );
   }
 };
@@ -79,7 +71,7 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
  * @param {*} destination
  * @returns
  */
-const getAccessToken = async destination => {
+const getAccessToken = async (destination) => {
   const accessTokenKey = destination.ID;
 
   return ACCESS_TOKEN_CACHE.get(accessTokenKey, async () => {
@@ -91,16 +83,12 @@ const getAccessToken = async destination => {
     }
     const authUrl = `${SF_TOKEN_URL}?username=${
       destination.Config.userName
-    }&password=${encodeURIComponent(
-      destination.Config.password
-    )}${encodeURIComponent(destination.Config.initialAccessToken)}&client_id=${
-      destination.Config.consumerKey
-    }&client_secret=${destination.Config.consumerSecret}&grant_type=password`;
-    const { httpResponse, processedResponse } = await handleHttpRequest(
-      "post",
-      authUrl,
-      {}
-    );
+    }&password=${encodeURIComponent(destination.Config.password)}${encodeURIComponent(
+      destination.Config.initialAccessToken,
+    )}&client_id=${destination.Config.consumerKey}&client_secret=${
+      destination.Config.consumerSecret
+    }&grant_type=password`;
+    const { httpResponse, processedResponse } = await handleHttpRequest('post', authUrl, {});
     // If the request fails, throwing error.
     if (!httpResponse.success) {
       const { error } = httpResponse.response.response.data;
@@ -108,13 +96,13 @@ const getAccessToken = async destination => {
         processedResponse.response,
         `access token could not be generated due to ${error}`,
         undefined,
-        accessTokenKey
+        accessTokenKey,
       );
     }
     const token = httpResponse.response.data;
     return {
       token: `Bearer ${token.access_token}`,
-      instanceUrl: token.instance_url
+      instanceUrl: token.instance_url,
     };
   });
 };

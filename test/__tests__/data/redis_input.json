@@ -53,7 +53,7 @@
           "Cízǔ": "test",
           "CamelCase123Key": "test",
           "1CComega": "test",
-          "arrayProp": [{"x": 1, "y":2}],
+          "arrayProp": [{ "x": 1, "y": 2 }],
           "nestedProp": {
             "innerProp1": "innerPropVal1",
             "innerProp2": "innerPropVal2",
@@ -130,7 +130,7 @@
           "Cízǔ": "test",
           "CamelCase123Key": "test",
           "1CComega": "test",
-          "arrayProp": [{"x": 1, "y":2}],
+          "arrayProp": [{ "x": 1, "y": 2 }],
           "nestedProp": {
             "innerProp1": "innerPropVal1",
             "innerProp2": "innerPropVal2",
@@ -196,7 +196,7 @@
         "traits": {
           "country": "UK",
           "lastname": "Mouse",
-          "arrayProp": [{"x": 1, "y":2}],
+          "arrayProp": [{ "x": 1, "y": 2 }],
           "nestedProp": {
             "innerProp1": "innerPropVal1",
             "innerProp2": "innerPropVal2",
@@ -266,7 +266,7 @@
         "traits": {
           "country": "UK",
           "lastname": "Mouse",
-          "arrayProp": [{"x": 1, "y":2}],
+          "arrayProp": [{ "x": 1, "y": 2 }],
           "emptyKey": "",
           "nestedProp": {
             "innerProp1": "innerPropVal1",

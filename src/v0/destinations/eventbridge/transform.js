@@ -1,18 +1,12 @@
-const {
-  removeUndefinedAndNullValues,
-  simpleProcessRouterDest
-} = require("../../util");
-const {
-  ConfigurationError,
-  TransformationError
-} = require("../../util/errorTypes");
+const { removeUndefinedAndNullValues, simpleProcessRouterDest } = require('../../util');
+const { ConfigurationError } = require('../../util/errorTypes');
 
 function getResouceList(config) {
   let resource;
   const resourceList = [];
-  const key = "arn";
+  const key = 'arn';
   if (config) {
-    config.forEach(obj => {
+    config.forEach((obj) => {
       resource = obj[key];
       if (resource) {
         resourceList.push(resource);
@@ -30,16 +24,13 @@ function process(event) {
       Detail: JSON.stringify(event.message),
       EventBusName: event.destination.Config.eventBusName,
       Resources: getResouceList(event.destination.Config.resourceID),
-      Source: "rudderstack",
-      userId: event.message.userId || event.message.anonymousId
+      Source: 'rudderstack',
+      userId: event.message.userId || event.message.anonymousId,
     });
   }
 
   // drop event if config is empty
-  throw new ConfigurationError(
-    "EventBridge: received empty config, dropping event",
-    400
-  );
+  throw new ConfigurationError('EventBridge: received empty config, dropping event', 400);
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {

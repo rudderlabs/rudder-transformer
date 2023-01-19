@@ -23,10 +23,7 @@
   },
   {
     "destKey": "eventTime",
-    "sourceKeys": [
-      "originalTimestamp",
-      "timestamp"
-    ],
+    "sourceKeys": ["originalTimestamp", "timestamp"],
     "required": true,
     "metadata": {
       "type": "timestamp"

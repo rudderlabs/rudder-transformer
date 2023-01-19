@@ -1,10 +1,10 @@
 version: 0.2
 env:
   parameter-store:
-    dockerhub_passwd: "/prod/codebuild/dockerhub-password"
-    GITHUB_TOKEN: "build-deploy-pkey"
-    MAIL: "mail-id"
-    USER_NAME: "user-name"
+    dockerhub_passwd: '/prod/codebuild/dockerhub-password'
+    GITHUB_TOKEN: 'build-deploy-pkey'
+    MAIL: 'mail-id'
+    USER_NAME: 'user-name'
 
 phases:
   install:
@@ -54,4 +54,4 @@ phases:
       - hub pull-request -m "rudder-transformer version change-$VERSION"
 artifacts:
   files:
-    - "**/*"
+    - '**/*'

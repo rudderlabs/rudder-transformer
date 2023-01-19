@@ -31,10 +31,7 @@
   },
   {
     "destKey": "number_of_employees",
-    "sourceKeys": [
-      "traits.numberOfEmployees",
-      "context.traits.numberOfEmployees"
-    ],
+    "sourceKeys": ["traits.numberOfEmployees", "context.traits.numberOfEmployees"],
     "metadata": {
       "type": "toNumber"
     }
@@ -96,10 +93,7 @@
   },
   {
     "destKey": "parent_sales_account_id",
-    "sourceKeys": [
-      "traits.parentSalesAccountId",
-      "context.traits.parentSalesAccountId"
-    ],
+    "sourceKeys": ["traits.parentSalesAccountId", "context.traits.parentSalesAccountId"],
     "metadata": {
       "type": "toNumber"
     }

@@ -138,9 +138,7 @@
         "domain": "demo-domain.gainsightcloud.com",
         "accessKey": "sample-access-key",
         "sharedSecret": "sample-shared-secret",
-        "eventNameMap": [
-          { "from": "Ticket Resolved", "to": "Ticket Resolved Event" }
-        ],
+        "eventNameMap": [{ "from": "Ticket Resolved", "to": "Ticket Resolved Event" }],
         "eventVersionMap": [{ "from": "Ticket Resolved", "to": "1.0.0" }],
         "topicName": "Ticket Actions",
         "tenantId": "sample-tenant-id",
@@ -323,9 +321,7 @@
         "domain": "demo-domain.gainsightcloud.com",
         "accessKey": "sample-access-key",
         "sharedSecret": "sample-shared-secret",
-        "eventNameMap": [
-          { "from": "Ticket Resolved", "to": "Ticket Resolved Event" }
-        ],
+        "eventNameMap": [{ "from": "Ticket Resolved", "to": "Ticket Resolved Event" }],
         "eventVersionMap": [{ "from": "Ticket Resolved", "to": "1.0.0" }],
         "topicName": "Ticket Actions",
         "tenantId": "sample-tenant-id",
@@ -376,9 +372,7 @@
       "Config": {
         "domain": "demo-domain.gainsightcloud.com",
         "accessKey": "sample-access-key",
-        "personMap": [
-          { "from": "car", "to": "car__gc" }
-        ],
+        "personMap": [{ "from": "car", "to": "car__gc" }],
         "companyMap": [],
         "eventNameMap": [],
         "eventVersionMap": []

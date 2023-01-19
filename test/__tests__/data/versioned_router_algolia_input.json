@@ -94,22 +94,13 @@
               "DisplayName": "Algolia",
               "Config": {
                 "destConfig": {
-                  "defaultConfig": [
-                    "apiKey",
-                    "applicationId",
-                    "eventTypeSettings"
-                  ]
+                  "defaultConfig": ["apiKey", "applicationId", "eventTypeSettings"]
                 },
                 "excludeKeys": [],
                 "includeKeys": [],
                 "saveDestinationResponse": true,
-                "secretKeys": [
-                  "apiKey",
-                  "applicationId"
-                ],
-                "supportedMessageTypes": [
-                  "track"
-                ],
+                "secretKeys": ["apiKey", "applicationId"],
+                "supportedMessageTypes": ["track"],
                 "supportedSourceTypes": [
                   "android",
                   "ios",
@@ -205,10 +196,7 @@
             "timestamp": "2021-10-25T15:10:08.943+05:30",
             "properties": {
               "index": "products",
-              "filters": [
-                "field1:hello",
-                "val1:val2"
-              ]
+              "filters": ["field1:hello", "val1:val2"]
             },
             "receivedAt": "2021-10-25T15:10:08.943+05:30",
             "request_ip": "[::1]",
@@ -230,22 +218,13 @@
               "DisplayName": "Algolia",
               "Config": {
                 "destConfig": {
-                  "defaultConfig": [
-                    "apiKey",
-                    "applicationId",
-                    "eventTypeSettings"
-                  ]
+                  "defaultConfig": ["apiKey", "applicationId", "eventTypeSettings"]
                 },
                 "excludeKeys": [],
                 "includeKeys": [],
                 "saveDestinationResponse": true,
-                "secretKeys": [
-                  "apiKey",
-                  "applicationId"
-                ],
-                "supportedMessageTypes": [
-                  "track"
-                ],
+                "secretKeys": ["apiKey", "applicationId"],
+                "supportedMessageTypes": ["track"],
                 "supportedSourceTypes": [
                   "android",
                   "ios",

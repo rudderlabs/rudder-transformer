@@ -1,16 +1,10 @@
-const { isNumber } = require("lodash");
-const { httpPOST } = require("../../../adapters/network");
-const {
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
-const { getDestinationExternalID } = require("../../util");
-const {
-  NetworkError,
-  ConfigurationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
-const { getDynamicErrorType } = require("../../../adapters/utils/networkUtils");
-const tags = require("../../util/tags");
+const { isNumber } = require('lodash');
+const { httpPOST } = require('../../../adapters/network');
+const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
+const { getDestinationExternalID } = require('../../util');
+const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const tags = require('../../util/tags');
 
 /**
  * This function is taking the board(received from the lookup call) and groupTitle as parameter
@@ -20,9 +14,9 @@ const tags = require("../../util/tags");
  * @returns
  */
 const getGroupId = (groupTitle, board) => {
-  const { groups } = board?.boards[0];
+  const { groups } = board.boards[0];
   let groupId;
-  groups.forEach(group => {
+  groups.forEach((group) => {
     if (group.title === groupTitle) {
       groupId = group.id;
     }
@@ -30,9 +24,7 @@ const getGroupId = (groupTitle, board) => {
   if (groupId) {
     return groupId;
   }
-  throw new ConfigurationError(
-    `Group ${groupTitle} doesn't exist in the board`
-  );
+  throw new ConfigurationError(`Group ${groupTitle} doesn't exist in the board`);
 };
 
 /**
@@ -43,9 +35,9 @@ const getGroupId = (groupTitle, board) => {
  * @returns
  */
 const getColumnId = (columnTitle, board) => {
-  const { columns } = board?.boards[0];
+  const { columns } = board.boards[0];
   let columnId;
-  columns.forEach(column => {
+  columns.forEach((column) => {
     if (column.title === columnTitle) {
       columnId = column.id;
     }
@@ -53,9 +45,7 @@ const getColumnId = (columnTitle, board) => {
   if (columnId) {
     return columnId;
   }
-  throw new ConfigurationError(
-    `Column ${columnTitle} doesn't exist in the board`
-  );
+  throw new ConfigurationError(`Column ${columnTitle} doesn't exist in the board`);
 };
 
 /**
@@ -67,44 +57,44 @@ const getColumnId = (columnTitle, board) => {
  * @returns
  */
 const getColumnValue = (properties, columnName, key, board) => {
-  const { columns } = board?.boards[0];
+  const { columns } = board.boards[0];
   let columnValue;
-  columns.forEach(column => {
+  columns.forEach((column) => {
     if (column.title === columnName && properties[key]) {
       switch (column.type) {
-        case "color":
+        case 'color':
           columnValue = { label: properties[key] };
           break;
-        case "boolean":
+        case 'boolean':
           columnValue = { checked: true };
           break;
-        case "numeric":
+        case 'numeric':
           if (isNumber(parseInt(properties[key], 10))) {
             columnValue = properties[key];
           }
           break;
-        case "text":
+        case 'text':
           columnValue = properties[key];
 
           break;
-        case "country":
+        case 'country':
           if (properties.countryCode) {
             columnValue = {
               countryName: properties[key],
-              countryCode: properties.countryCode
+              countryCode: properties.countryCode,
             };
           }
           break;
-        case "email":
+        case 'email':
           columnValue = {
             email: properties[key],
-            text: properties.emailText
+            text: properties.emailText,
           };
           if (!columnValue.text) {
             columnValue.text = columnValue.email;
           }
           break;
-        case "location":
+        case 'location':
           if (
             properties.latitude &&
             properties.longitude &&
@@ -116,32 +106,32 @@ const getColumnValue = (properties, columnName, key, board) => {
             columnValue = {
               address: properties[key],
               lat: properties.latitude,
-              lng: properties.longitude
+              lng: properties.longitude,
             };
           break;
-        case "phone":
+        case 'phone':
           if (properties[key] && properties?.countryShortName) {
             columnValue = {
               phone: properties[key],
-              countryShortName: properties.countryShortName
+              countryShortName: properties.countryShortName,
             };
           }
           break;
-        case "rating":
+        case 'rating':
           if (isNumber(parseInt(properties[key], 10))) {
             columnValue = parseInt(properties[key], 10);
           }
           break;
-        case "link":
+        case 'link':
           columnValue = { url: properties[key], text: properties.linkText };
           if (!columnValue.text) {
             columnValue.text = columnValue.url;
           }
           break;
-        case "long-text":
+        case 'long-text':
           columnValue = { text: properties[key] };
           break;
-        case "timezone":
+        case 'timezone':
           columnValue = { timezone: properties[key] };
           break;
         default:
@@ -164,12 +154,12 @@ const getColumnValue = (properties, columnName, key, board) => {
  */
 const mapColumnValues = (properties, columnToPropertyMapping, board) => {
   const columnValues = {};
-  columnToPropertyMapping.forEach(mapping => {
+  columnToPropertyMapping.forEach((mapping) => {
     columnValues[getColumnId(mapping.from, board)] = getColumnValue(
       properties,
       mapping.from,
       mapping.to,
-      board
+      board,
     );
   });
   return JSON.stringify(columnValues);
@@ -186,30 +176,28 @@ const getBoardDetails = async (url, boardID, apiToken) => {
   const clientResponse = await httpPOST(
     url,
     {
-      query: `query { boards (ids: ${boardID}) { name, columns {id title type settings_str}, groups {id title} }}`
+      query: `query { boards (ids: ${boardID}) { name, columns {id title type settings_str}, groups {id title} }}`,
     },
     {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `${apiToken}`
-      }
-    }
+        'Content-Type': 'application/json',
+        Authorization: `${apiToken}`,
+      },
+    },
   );
-  const boardDeatailsResponse = processAxiosResponse(clientResponse);
-  if (boardDeatailsResponse.status !== 200) {
+  const boardDetailsResponse = processAxiosResponse(clientResponse);
+  if (boardDetailsResponse.status !== 200) {
     throw new NetworkError(
       `The lookup call could not be completed with the error:
-      ${JSON.stringify(boardDeatailsResponse.response)}`,
-      boardDeatailsResponse.status,
+      ${JSON.stringify(boardDetailsResponse.response)}`,
+      boardDetailsResponse.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-          boardDeatailsResponse.status
-        )
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(boardDetailsResponse.status),
       },
-      boardDeatailsResponse.response
+      boardDetailsResponse.response,
     );
   }
-  return boardDeatailsResponse;
+  return boardDetailsResponse;
 };
 
 /**
@@ -222,7 +210,7 @@ const getBoardDetails = async (url, boardID, apiToken) => {
 const populatePayload = (message, Config, boardDeatailsResponse) => {
   const { groupTitle, columnToPropertyMapping } = Config;
   const payload = {};
-  let boardId = getDestinationExternalID(message, "boardId");
+  let boardId = getDestinationExternalID(message, 'boardId');
   if (!boardId) {
     boardId = Config.boardId;
   }
@@ -230,22 +218,19 @@ const populatePayload = (message, Config, boardDeatailsResponse) => {
   const columnValues = mapColumnValues(
     message.properties,
     columnToPropertyMapping,
-    boardDeatailsResponse.response?.data
+    boardDeatailsResponse.response?.data,
   );
   if (groupTitle) {
     if (!message.properties?.name) {
-      throw new InstrumentationError("Item name is required to create an item");
+      throw new InstrumentationError('Item name is required to create an item');
     }
-    const groupId = getGroupId(
-      groupTitle,
-      boardDeatailsResponse.response?.data
-    );
+    const groupId = getGroupId(groupTitle, boardDeatailsResponse.response?.data);
     payload.query = `mutation { create_item (board_id: ${boardId}, group_id: ${groupId} item_name: ${JSON.stringify(
-      message.properties?.name
+      message.properties?.name,
     )}, column_values: ${JSON.stringify(columnValues)}) {id}}`;
   } else {
     payload.query = `mutation { create_item (board_id: ${boardId},  item_name: ${JSON.stringify(
-      message.properties?.name
+      message.properties?.name,
     )}, column_values: ${JSON.stringify(columnValues)}) {id}}`;
   }
   return payload;
@@ -256,8 +241,7 @@ const checkAllowedEventNameFromUI = (event, Config) => {
   let allowEvent;
   if (whitelistedEvents && whitelistedEvents.length > 0) {
     allowEvent = whitelistedEvents.some(
-      whiteListedEvent =>
-        whiteListedEvent.eventName.toLowerCase() === event.toLowerCase()
+      (whiteListedEvent) => whiteListedEvent.eventName.toLowerCase() === event.toLowerCase(),
     );
   }
   return !!allowEvent;
@@ -266,5 +250,5 @@ const checkAllowedEventNameFromUI = (event, Config) => {
 module.exports = {
   getBoardDetails,
   populatePayload,
-  checkAllowedEventNameFromUI
+  checkAllowedEventNameFromUI,
 };

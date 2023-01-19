@@ -1,18 +1,13 @@
-const { EventType } = require("../../../constants");
-const {
-  ConfigCategory,
-  mappingConfig,
-  ENDPOINT,
-  API_VERSION
-} = require("./config");
+const { EventType } = require('../../../constants');
+const { ConfigCategory, mappingConfig, ENDPOINT, API_VERSION } = require('./config');
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
   constructPayload,
-  simpleProcessRouterDest
-} = require("../../util");
-const { InstrumentationError } = require("../../util/errorTypes");
+  simpleProcessRouterDest,
+} = require('../../util');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 function preparePayload(message, name, destination) {
   const mappingJson = mappingConfig[name];
@@ -20,10 +15,10 @@ function preparePayload(message, name, destination) {
     appId: destination.Config.applicationId,
     clientKey: destination.Config.clientKey,
     apiVersion: API_VERSION,
-    ...constructPayload(message, mappingJson)
+    ...constructPayload(message, mappingJson),
   };
 
-  if (rawPayload.newUserId === "") {
+  if (rawPayload.newUserId === '') {
     delete rawPayload.newUserId;
   }
 
@@ -50,12 +45,12 @@ function responseBuilderSimple(message, category, destination) {
   response.endpoint = ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
   response.userId = message.anonymousId;
   response.body.JSON = preparePayload(message, category.name, destination);
   response.params = {
-    action: category.action
+    action: category.action,
   };
 
   return response;
@@ -67,7 +62,7 @@ function startSession(message, destination) {
 
 function processSingleMessage(message, destination) {
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
   const messageType = message.type.toLowerCase();
   let category;
@@ -86,9 +81,7 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.SCREEN;
       break;
     default:
-      throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
-      );
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
 
   // build the response

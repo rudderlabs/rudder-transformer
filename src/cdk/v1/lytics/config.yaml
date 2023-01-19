@@ -15,7 +15,7 @@ message:
         format: JSON
         headers:
           Content-Type: application/json
-      
+
   page:
     transformation:
       mapperPath: ./mappings/page-screen.yaml
@@ -27,14 +27,14 @@ message:
         format: JSON
         headers:
           Content-Type: application/json
-      
+
   screen:
     transformation:
       mapperPath: ./mappings/page-screen.yaml
       postMapper:
         name: cleanResponse
       response:
-        endpoint: "https://api.lytics.io/collect/json/{{destConfig.stream}}?access_token={{destConfig.apiKey}}"
+        endpoint: 'https://api.lytics.io/collect/json/{{destConfig.stream}}?access_token={{destConfig.apiKey}}'
         method: POST
         format: JSON
         headers:
@@ -46,9 +46,8 @@ message:
       postMapper:
         name: cleanResponse
       response:
-        endpoint: "https://api.lytics.io/collect/json/{{destConfig.stream}}?access_token={{destConfig.apiKey}}"
+        endpoint: 'https://api.lytics.io/collect/json/{{destConfig.stream}}?access_token={{destConfig.apiKey}}'
         method: POST
         format: JSON
         headers:
           Content-Type: application/json
-

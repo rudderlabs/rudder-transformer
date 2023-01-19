@@ -1,28 +1,28 @@
 [
-    {
-        "destKey": "FNAME",
-        "sourceKeys": "firstName",
-        "sourceFromGenericMap": true,
-        "required": false
-    },
-    {
-        "destKey": "LNAME",
-        "sourceKeys": "lastName",
-        "sourceFromGenericMap": true,
-        "required": false
-    },
-    {
-        "destKey": "PHONE",
-        "sourceKeys": "phone",
-        "sourceFromGenericMap": true,
-        "required": false
-    },
-    {
-        "destKey": "BIRTHDAY",
-        "sourceKeys": ["traits.birthday", "context.traits.birthday"],
-        "required": false,
-        "metadata": {
-            "type": "dobInMMDD"
-          }
+  {
+    "destKey": "FNAME",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "LNAME",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "PHONE",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "BIRTHDAY",
+    "sourceKeys": ["traits.birthday", "context.traits.birthday"],
+    "required": false,
+    "metadata": {
+      "type": "dobInMMDD"
     }
+  }
 ]

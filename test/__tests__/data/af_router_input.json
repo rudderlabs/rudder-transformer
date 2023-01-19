@@ -56,12 +56,12 @@
       }
     },
     "metadata": {
-      "jobId":2
+      "jobId": 2
     },
     "destination": {
       "Config": {
         "devKey": "ef1d42390426e3f7c90ac78272e74344",
-        "androidAppId":"com.rudderlabs.javascript"
+        "androidAppId": "com.rudderlabs.javascript"
       },
       "Enabled": true
     }
@@ -119,12 +119,12 @@
       }
     },
     "metadata": {
-      "jobId":2
+      "jobId": 2
     },
     "destination": {
       "Config": {
         "devKey": "ef1d42390426e3f7c90ac78272e74344",
-        "androidAppId":"com.rudderlabs.javascript"
+        "androidAppId": "com.rudderlabs.javascript"
       },
       "Enabled": true
     }
@@ -186,7 +186,7 @@
       }
     },
     "metadata": {
-      "jobId":2
+      "jobId": 2
     },
     "destination": {
       "Config": {

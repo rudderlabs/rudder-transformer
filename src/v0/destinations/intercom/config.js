@@ -1,6 +1,6 @@
-const { getMappingConfig } = require("../../util");
+const { getMappingConfig } = require('../../util');
 
-const BASE_ENDPOINT = "https://api.intercom.io";
+const BASE_ENDPOINT = 'https://api.intercom.io';
 
 // track events | Track
 const TRACK_ENDPOINT = `${BASE_ENDPOINT}/events`;
@@ -12,12 +12,12 @@ const IDENTIFY_ENDPOINT = `${BASE_ENDPOINT}/users`;
 const ConfigCategory = {
   TRACK: {
     endpoint: TRACK_ENDPOINT,
-    name: "INTERCOMTrackConfig"
+    name: 'INTERCOMTrackConfig',
   },
   IDENTIFY: {
     endpoint: IDENTIFY_ENDPOINT,
-    name: "INTERCOMIdentifyConfig"
-  }
+    name: 'INTERCOMIdentifyConfig',
+  },
   // ,
   // GROUP: {
   //   endpoint: GROUP_ENDPOINT,
@@ -28,23 +28,23 @@ const ConfigCategory = {
 const MappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 const ReservedTraitsProperties = [
-  "userId",
-  "email",
-  "phone",
-  "name",
-  "createdAt",
-  "firstName",
-  "lastName",
-  "firstname",
-  "lastname",
-  "company"
+  'userId',
+  'email',
+  'phone',
+  'name',
+  'createdAt',
+  'firstName',
+  'lastName',
+  'firstname',
+  'lastname',
+  'company',
 ];
 
-const ReservedCompanyProperties = ["id", "name", "industry"];
+const ReservedCompanyProperties = ['id', 'name', 'industry'];
 
 module.exports = {
   ConfigCategory,
   MappingConfig,
   ReservedCompanyProperties,
-  ReservedTraitsProperties
+  ReservedTraitsProperties,
 };

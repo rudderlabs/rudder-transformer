@@ -69,10 +69,7 @@
         "customerId": "1234567890",
         "subAccount": true,
         "loginCustomerId": "11",
-        "listOfConversions": [
-          { "conversions": "Page View" },
-          { "conversions": "Product Added" }
-        ],
+        "listOfConversions": [{ "conversions": "Page View" }, { "conversions": "Product Added" }],
         "authStatus": "active"
       }
     }

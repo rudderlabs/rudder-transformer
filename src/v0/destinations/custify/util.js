@@ -1,23 +1,23 @@
-const get = require("get-value");
+const get = require('get-value');
 const {
   ConfigCategory,
   MappingConfig,
   ReservedTraitsProperties,
-  ReservedCompanyProperties
-} = require("./config");
-const { httpPOST } = require("../../../adapters/network");
+  ReservedCompanyProperties,
+} = require('./config');
+const { httpPOST } = require('../../../adapters/network');
 const {
   processAxiosResponse,
-  getDynamicErrorType
-} = require("../../../adapters/utils/networkUtils");
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
 const {
   getFieldValueFromMessage,
   removeUndefinedAndNullValues,
   constructPayload,
-  isHttpStatusSuccess
-} = require("../../util");
-const { InstrumentationError, NetworkError } = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+  isHttpStatusSuccess,
+} = require('../../util');
+const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 /**
  *
@@ -27,27 +27,23 @@ const tags = require("../../util/tags");
  * @api https://docs.custify.com/#tag/Company/paths/~1company/post
  */
 const createUpdateCompany = async (companyPayload, Config) => {
-  const companyResponse = await httpPOST(
-    ConfigCategory.GROUP_COMPANY.endpoint,
-    companyPayload,
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${Config.apiKey}`
-      }
-    }
-  );
+  const companyResponse = await httpPOST(ConfigCategory.GROUP_COMPANY.endpoint, companyPayload, {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${Config.apiKey}`,
+    },
+  });
   const processedCompanyResponse = processAxiosResponse(companyResponse);
   if (!isHttpStatusSuccess(processedCompanyResponse.status)) {
-    const errMessage = JSON.stringify(processedCompanyResponse.response) || "";
+    const errMessage = JSON.stringify(processedCompanyResponse.response) || '';
     const errorStatus = processedCompanyResponse.status || 500;
     throw new NetworkError(
       `[Group]: failed create/update company details ${errMessage}`,
       errorStatus,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
       },
-      companyResponse
+      companyResponse,
     );
   }
 };
@@ -57,7 +53,7 @@ const getCompanyAttribute = (companyId, remove = false) => {
     const companiesList = [];
     companiesList.push({
       company_id: companyId,
-      remove
+      remove,
     });
     return companiesList;
   }
@@ -76,11 +72,11 @@ const postPorcessUserPayload = (userPayload, message) => {
   const finalPayload = userPayload;
 
   if (!userPayload.user_id && !userPayload.email) {
-    throw new InstrumentationError("Email or userId is mandatory");
+    throw new InstrumentationError('Email or userId is mandatory');
   }
-  if (userPayload.name === undefined || userPayload.name === "") {
-    const firstName = getFieldValueFromMessage(message, "firstName");
-    const lastName = getFieldValueFromMessage(message, "lastName");
+  if (userPayload.name === undefined || userPayload.name === '') {
+    const firstName = getFieldValueFromMessage(message, 'firstName');
+    const lastName = getFieldValueFromMessage(message, 'lastName');
     if (firstName && lastName) {
       finalPayload.name = `${firstName} ${lastName}`;
     } else {
@@ -89,18 +85,18 @@ const postPorcessUserPayload = (userPayload, message) => {
   }
 
   finalPayload.companies = getCompanyAttribute(
-    get(finalPayload, "custom_attributes.company.id") || message.groupId,
-    get(finalPayload, "custom_attributes.company.remove")
+    get(finalPayload, 'custom_attributes.company.id') || message.groupId,
+    get(finalPayload, 'custom_attributes.company.remove'),
   );
 
   if (finalPayload.custom_attributes) {
-    ReservedTraitsProperties.forEach(trait => {
+    ReservedTraitsProperties.forEach((trait) => {
       delete finalPayload.custom_attributes[trait];
     });
 
-    Object.keys(finalPayload.custom_attributes).forEach(key => {
+    Object.keys(finalPayload.custom_attributes).forEach((key) => {
       const val = finalPayload.custom_attributes[key];
-      if (typeof val === "object" || Array.isArray(val)) {
+      if (typeof val === 'object' || Array.isArray(val)) {
         delete finalPayload.custom_attributes[key];
       }
     });
@@ -117,10 +113,7 @@ const postPorcessUserPayload = (userPayload, message) => {
  * @api https://docs.custify.com/#tag/People/paths/~1people/post
  */
 const processIdentify = (message, { Config }) => {
-  const userPayload = constructPayload(
-    message,
-    MappingConfig[ConfigCategory.IDENTIFY.name]
-  );
+  const userPayload = constructPayload(message, MappingConfig[ConfigCategory.IDENTIFY.name]);
   const { sendAnonymousId } = Config;
   if (sendAnonymousId && !userPayload.user_id) {
     userPayload.user_id = message.anonymousId;
@@ -138,28 +131,23 @@ const processIdentify = (message, { Config }) => {
  * @api https://docs.custify.com/#tag/Event/paths/~1event/post
  */
 const processTrack = (message, { Config }) => {
-  const eventPayload = constructPayload(
-    message,
-    MappingConfig[ConfigCategory.TRACK.name]
-  );
-  const { sendAnonymousId } = Config;
+  const eventPayload = constructPayload(message, MappingConfig[ConfigCategory.TRACK.name]);
+  const { sendAnonymousId, deduplicationField, enablededuplication } = Config;
   if (sendAnonymousId && !eventPayload.user_id) {
     eventPayload.user_id = message.anonymousId;
   }
   if (!eventPayload.user_id && !eventPayload.email) {
-    throw new InstrumentationError("Email or userId is mandatory");
+    throw new InstrumentationError('Email or userId is mandatory');
   }
   const metadata = {};
   const { properties } = message;
   if (properties) {
     eventPayload.company_id =
-      properties.organization_id ||
-      properties.company_id ||
-      properties.companyId;
+      properties.organization_id || properties.company_id || properties.companyId;
 
-    Object.keys(properties).forEach(key => {
+    Object.keys(properties).forEach((key) => {
       const val = properties[key];
-      if (val && typeof val !== "object" && !Array.isArray(val)) {
+      if (val && typeof val !== 'object' && !Array.isArray(val)) {
         metadata[key] = val;
       }
     });
@@ -168,9 +156,9 @@ const processTrack = (message, { Config }) => {
     metadata.user_id = eventPayload.user_id;
   }
 
-  if (Config.enablededuplication) {
+  if (enablededuplication) {
     eventPayload.deduplication_id =
-      get(message, `${Config.deduplicationField}`) || get(message, "messageId");
+      get(message, `${deduplicationField}`) || get(message, 'messageId');
   }
 
   return removeUndefinedAndNullValues({ ...eventPayload, metadata });
@@ -188,31 +176,25 @@ const processTrack = (message, { Config }) => {
  * @api https://docs.custify.com/#tag/Company/paths/~1company/post
  */
 const processGroup = async (message, { Config }) => {
-  let companyPayload = constructPayload(
-    message,
-    MappingConfig[ConfigCategory.GROUP_COMPANY.name]
-  );
+  let companyPayload = constructPayload(message, MappingConfig[ConfigCategory.GROUP_COMPANY.name]);
   if (!companyPayload.company_id) {
-    throw new InstrumentationError("groupId Id is mandatory");
+    throw new InstrumentationError('groupId Id is mandatory');
   }
   if (companyPayload.custom_attributes) {
-    ReservedCompanyProperties.forEach(trait => {
+    ReservedCompanyProperties.forEach((trait) => {
       delete companyPayload.custom_attributes[trait];
     });
 
-    Object.keys(companyPayload.custom_attributes).forEach(key => {
+    Object.keys(companyPayload.custom_attributes).forEach((key) => {
       const val = companyPayload.custom_attributes[key];
-      if (typeof val === "object" || Array.isArray(val)) {
+      if (typeof val === 'object' || Array.isArray(val)) {
         delete companyPayload.custom_attributes[key];
       }
     });
   }
   companyPayload = removeUndefinedAndNullValues(companyPayload);
   await createUpdateCompany(companyPayload, Config);
-  const userPayload = constructPayload(
-    message,
-    MappingConfig[ConfigCategory.GROUP_USER.name]
-  );
+  const userPayload = constructPayload(message, MappingConfig[ConfigCategory.GROUP_USER.name]);
   const { sendAnonymousId } = Config;
   if (sendAnonymousId && !userPayload.user_id) {
     userPayload.user_id = message.anonymousId;
@@ -225,5 +207,5 @@ module.exports = {
   createUpdateCompany,
   processIdentify,
   processTrack,
-  processGroup
+  processGroup,
 };

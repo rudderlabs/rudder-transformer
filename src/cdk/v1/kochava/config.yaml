@@ -9,7 +9,7 @@ message:
         name: processExtraPayloadParams
       response:
         endpoint: https://control.kochava.com/track/json
-        userId: "{{ message.anonymousId }}"
+        userId: '{{ message.anonymousId }}'
         format: JSON
         method: POST
         headers: {}

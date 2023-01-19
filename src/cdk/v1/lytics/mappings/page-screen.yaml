@@ -1,7 +1,7 @@
 - destKey: event
   sourceKeys: name
 
-- destKey: "..."
+- destKey: '...'
   sourceKeys: properties
   metadata:
     type: flatJson
@@ -10,9 +10,8 @@
   sourceKeys:
     - properties.firstName
     - properties.firstname
-  
+
 - destKey: last_name
   sourceKeys:
     - properties.lastName
     - properties.lastname
-  

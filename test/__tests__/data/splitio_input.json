@@ -293,10 +293,7 @@
         "timestamp": 1513357833000,
         "value": "bc2",
         "martin": 21.565,
-        "vertical": [
-          "restaurant",
-          "mall"
-        ],
+        "vertical": ["restaurant", "mall"],
         "GMV": true,
         "abc": "new-val"
       },

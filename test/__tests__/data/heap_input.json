@@ -438,10 +438,7 @@
           "City": "Los Angeles",
           "State": "CA"
         },
-        "hobbies": [
-          "Music",
-          "Running"
-        ]
+        "hobbies": ["Music", "Running"]
       },
       "receivedAt": "2020-01-16T18:53:23.804+05:30",
       "request_ip": "[::1]:62312",

@@ -1,10 +1,10 @@
-const { set } = require("lodash");
+const { set } = require('lodash');
 const {
   getBrowserInfo,
   getFieldValueFromMessage,
-  getDestinationExternalID
-} = require("../../util");
-const { commomGenericFields } = require("./config");
+  getDestinationExternalID,
+} = require('../../util');
+const { commomGenericFields } = require('./config');
 
 /**
  * @param {Object} attributes
@@ -16,7 +16,7 @@ const { commomGenericFields } = require("./config");
  */
 const customFieldsPayloadMapping = (attributes, prefix, genericFields) => {
   const payload = {};
-  Object.keys(attributes).forEach(v => {
+  Object.keys(attributes).forEach((v) => {
     if (!genericFields.includes(v)) {
       set(payload, `${prefix}_${v}`, attributes[v]);
     }
@@ -28,8 +28,8 @@ const customFieldsPayloadMapping = (attributes, prefix, genericFields) => {
  * @param {*} message
  * @returns the value for cookie Field
  */
-const getCookie = message => {
-  const woopraId = getDestinationExternalID(message, "woopraId");
+const getCookie = (message) => {
+  const woopraId = getDestinationExternalID(message, 'woopraId');
   if (woopraId) {
     return woopraId;
   }
@@ -41,14 +41,14 @@ const getCookie = message => {
  * concatenates only values of the object
  * @returns the concatenated string
  */
-const getBrowserValue = browser => {
+const getBrowserValue = (browser) => {
   if (browser?.name && browser?.version) {
     return `${browser.name}${browser.version}`;
   }
   return null;
 };
 
-const getEvent = message => {
+const getEvent = (message) => {
   let pageFullName;
   if (!message.name && !message.category) {
     pageFullName = `Viewed a Page`;
@@ -73,30 +73,22 @@ const refinePayload = (message, specificGenericFields) => {
   const browser = getBrowserValue(getBrowserInfo(message.context?.userAgent));
   let payload = {};
   if (browser) {
-    set(payload, "browser", browser);
+    set(payload, 'browser', browser);
   }
   const cookie = getCookie(message);
-  set(payload, "cookie", cookie);
-  const traits = getFieldValueFromMessage(message, "traits");
+  set(payload, 'cookie', cookie);
+  const traits = getFieldValueFromMessage(message, 'traits');
   let customTraitsPayload;
   // For User Properties
   if (traits) {
-    customTraitsPayload = customFieldsPayloadMapping(
-      traits,
-      "cv",
-      commomGenericFields
-    );
+    customTraitsPayload = customFieldsPayloadMapping(traits, 'cv', commomGenericFields);
   }
   payload = { ...payload, ...customTraitsPayload };
   // For event Properties
   const { properties } = message;
   let customPropertiesPayload;
   if (properties) {
-    customPropertiesPayload = customFieldsPayloadMapping(
-      properties,
-      "ce",
-      specificGenericFields
-    );
+    customPropertiesPayload = customFieldsPayloadMapping(properties, 'ce', specificGenericFields);
   }
   payload = { ...payload, ...customPropertiesPayload };
   return payload;

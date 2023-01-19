@@ -1,197 +1,197 @@
 [
-    [
+  [
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.engage.so/v1/users/1",
+        {},
         {
-            "type": "delete",
-            "reqParams": [
-                "https://api.engage.so/v1/users/1",
-                {},
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic YWJjZDplZmdo"
-                }
-            ],
-            "response": {
-                "code": 400,
-                "statusText": "fail",
-                "response": {
-                    "data": {
-                        "code": 400,
-                        "message": "Bad Req",
-                        "status": "Fail first"
-                    },
-                    "status": 400
-                }
-            }
-        },
-        {
-            "type": "delete",
-            "reqParams": [
-                "https://api.engage.so/v1/users/2",
-                {},
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic YWJjZDplZmdo"
-                }
-            ],
-            "response": {
-                "status": 200,
-                "statusText": "success"
-            }
-        },
-        {
-            "type": "delete",
-            "reqParams": [
-                "https://api.engage.so/v1/users/3",
-                {},
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic YWJjZDplZmdo"
-                }
-            ],
-            "response": {
-                "status": 200,
-                "statusText": "success"
-            }
+          "Content-Type": "application/json",
+          "Authorization": "Basic YWJjZDplZmdo"
         }
-    ],
-    [
-        {
-            "type": "delete",
-            "reqParams": [
-                "https://api.engage.so/v1/users/4",
-                {},
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic YWJjZDplZmdo"
-                }
-            ],
-            "response": {
-                "status": 200,
-                "statusText": "success"
-            }
-        },
-        {
-            "type": "delete",
-            "reqParams": [
-                "https://api.engage.so/v1/users/5",
-                {},
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic YWJjZDplZmdo"
-                }
-            ],
-            "response": {
-                "status": 200,
-                "statusText": "success"
-            }
-        },
-        {
-            "type": "delete",
-            "reqParams": [
-                "https://api.engage.so/v1/users/6",
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic YWJjZDplZmdo"
-                }
-            ],
-            "response": {
-                "code": 400,
-                "statusText": "fail",
-                "response": {
-                    "data": {
-                        "code": 400,
-                        "message": "Bad Req",
-                        "status": "fail 6 "
-                    },
-                    "status": 400
-                }
-            }
+      ],
+      "response": {
+        "code": 400,
+        "statusText": "fail",
+        "response": {
+          "data": {
+            "code": 400,
+            "message": "Bad Req",
+            "status": "Fail first"
+          },
+          "status": 400
         }
-    ],
-    [
+      }
+    },
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.engage.so/v1/users/2",
+        {},
         {
-            "type": "delete",
-            "reqParams": [
-                "https://api.engage.so/v1/users/7",
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic YWJjZDplZmdo"
-                }
-            ],
-            "response": {
-                "status": 200,
-                "statusText": "success"
-            }
-        },
-        {
-            "type": "delete",
-            "reqParams": [
-                "https://api.engage.so/v1/users/8",
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic YWJjZDplZmdo"
-                }
-            ],
-            "response": {
-                "code": 400,
-                "statusText": "fail",
-                "response": {
-                    "data": {
-                        "code": 400,
-                        "message": "Bad Req",
-                        "status": "fail mid case 8"
-                    },
-                    "status": 400
-                }
-            }
-        },
-        {
-            "type": "delete",
-            "reqParams": [
-                "https://api.engage.so/v1/users/9",
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic YWJjZDplZmdo"
-                }
-            ],
-            "response": {
-                "status": 200,
-                "statusText": "success"
-            }
+          "Content-Type": "application/json",
+          "Authorization": "Basic YWJjZDplZmdo"
         }
-    ],
-    [
+      ],
+      "response": {
+        "status": 200,
+        "statusText": "success"
+      }
+    },
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.engage.so/v1/users/3",
+        {},
         {
-            "type": "delete",
-            "reqParams": [
-                "https://api.engage.so/v1/users/1",
-                {},
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic YWJjZDplZmdo"
-                }
-            ],
-            "response": {
-                "status": 200,
-                "statusText": "success"
-            }
+          "Content-Type": "application/json",
+          "Authorization": "Basic YWJjZDplZmdo"
         }
-    ],
-    [
+      ],
+      "response": {
+        "status": 200,
+        "statusText": "success"
+      }
+    }
+  ],
+  [
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.engage.so/v1/users/4",
+        {},
         {
-            "type": "delete",
-            "reqParams": [
-                "https://api.engage.so/v1/users/user_sdk2",
-                {},
-                {
-                    "Content-Type": "application/json",
-                    "Authorization": "Basic YWJjZDplZmdo"
-                }
-            ],
-            "response": {
-                "status": 200,
-                "statusText": "success"
-            }
+          "Content-Type": "application/json",
+          "Authorization": "Basic YWJjZDplZmdo"
         }
-    ]
+      ],
+      "response": {
+        "status": 200,
+        "statusText": "success"
+      }
+    },
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.engage.so/v1/users/5",
+        {},
+        {
+          "Content-Type": "application/json",
+          "Authorization": "Basic YWJjZDplZmdo"
+        }
+      ],
+      "response": {
+        "status": 200,
+        "statusText": "success"
+      }
+    },
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.engage.so/v1/users/6",
+        {
+          "Content-Type": "application/json",
+          "Authorization": "Basic YWJjZDplZmdo"
+        }
+      ],
+      "response": {
+        "code": 400,
+        "statusText": "fail",
+        "response": {
+          "data": {
+            "code": 400,
+            "message": "Bad Req",
+            "status": "fail 6 "
+          },
+          "status": 400
+        }
+      }
+    }
+  ],
+  [
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.engage.so/v1/users/7",
+        {
+          "Content-Type": "application/json",
+          "Authorization": "Basic YWJjZDplZmdo"
+        }
+      ],
+      "response": {
+        "status": 200,
+        "statusText": "success"
+      }
+    },
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.engage.so/v1/users/8",
+        {
+          "Content-Type": "application/json",
+          "Authorization": "Basic YWJjZDplZmdo"
+        }
+      ],
+      "response": {
+        "code": 400,
+        "statusText": "fail",
+        "response": {
+          "data": {
+            "code": 400,
+            "message": "Bad Req",
+            "status": "fail mid case 8"
+          },
+          "status": 400
+        }
+      }
+    },
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.engage.so/v1/users/9",
+        {
+          "Content-Type": "application/json",
+          "Authorization": "Basic YWJjZDplZmdo"
+        }
+      ],
+      "response": {
+        "status": 200,
+        "statusText": "success"
+      }
+    }
+  ],
+  [
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.engage.so/v1/users/1",
+        {},
+        {
+          "Content-Type": "application/json",
+          "Authorization": "Basic YWJjZDplZmdo"
+        }
+      ],
+      "response": {
+        "status": 200,
+        "statusText": "success"
+      }
+    }
+  ],
+  [
+    {
+      "type": "delete",
+      "reqParams": [
+        "https://api.engage.so/v1/users/user_sdk2",
+        {},
+        {
+          "Content-Type": "application/json",
+          "Authorization": "Basic YWJjZDplZmdo"
+        }
+      ],
+      "response": {
+        "status": 200,
+        "statusText": "success"
+      }
+    }
+  ]
 ]

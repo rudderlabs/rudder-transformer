@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - "master"
+      - 'master'
 
 name: release-please
 jobs:
@@ -16,7 +16,7 @@ jobs:
         id: release
         with:
           token: ${{ github.token }}
-          pull-request-title-pattern: "chore: release ${version}"
+          pull-request-title-pattern: 'chore: release ${version}'
           release-type: node
           package-name: rudder-transformer
           default-branch: ${{ steps.extract_branch.outputs.branch }}

@@ -1,4 +1,4 @@
-const get = require("get-value");
+const get = require('get-value');
 const {
   getHashFromArray,
   constructPayload,
@@ -8,23 +8,18 @@ const {
   getFieldValueFromMessage,
   defaultPutRequestConfig,
   defaultPostRequestConfig,
-  isDefinedAndNotNullAndNotEmpty
-} = require("../../util");
-const { httpGET, httpPOST, httpPUT } = require("../../../adapters/network");
-const {
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
+  isDefinedAndNotNullAndNotEmpty,
+} = require('../../util');
+const { httpGET, httpPOST, httpPUT } = require('../../../adapters/network');
+const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const {
   BASE_ENDPOINT,
   MAPPING_CONFIG,
   CONFIG_CATEGORIES,
   groupSourceKeys,
-  identifySourceKeys
-} = require("./config");
-const {
-  InstrumentationError,
-  NetworkInstrumentationError
-} = require("../../util/errorTypes");
+  identifySourceKeys,
+} = require('./config');
+const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
 
 /**
  * Returns updated User.com url
@@ -32,9 +27,7 @@ const {
  * @param {*} appSubdomain
  * @returns
  */
-const prepareUrl = (endpoint, appSubdomain) => {
-  return endpoint.replace("appSubdomainName", appSubdomain);
-};
+const prepareUrl = (endpoint, appSubdomain) => endpoint.replace('appSubdomainName', appSubdomain);
 
 /**
  * Returns company address in string format
@@ -42,12 +35,12 @@ const prepareUrl = (endpoint, appSubdomain) => {
  * @param {*} appSubdomain
  * @returns
  */
-const prepareCompanyAddress = address => {
+const prepareCompanyAddress = (address) => {
   const addressType = typeof address;
-  let companyAddress = "";
-  if (addressType === "object") {
+  let companyAddress = '';
+  if (addressType === 'object') {
     const keys = Object.keys(address);
-    keys.forEach(key => {
+    keys.forEach((key) => {
       companyAddress += address[key];
     });
   } else {
@@ -62,9 +55,9 @@ const prepareCompanyAddress = address => {
  * @param {*} sourceKeys
  * @returns
  */
-const getIdentifyTraits = message => {
-  const traits = getFieldValueFromMessage(message, "traits");
-  const contextTraits = get(message, "context.traits");
+const getIdentifyTraits = (message) => {
+  const traits = getFieldValueFromMessage(message, 'traits');
+  const contextTraits = get(message, 'context.traits');
   return { ...traits, ...contextTraits };
 };
 
@@ -78,7 +71,7 @@ const getIdentifyTraits = message => {
 const getRemainingAttributes = (traits, sourceKeys) => {
   const properties = {};
   const keys = Object.keys(traits);
-  keys.forEach(key => {
+  keys.forEach((key) => {
     if (!sourceKeys.includes(key)) {
       properties[key] = traits[key];
     }
@@ -99,7 +92,7 @@ const getAttributes = (attributesMap, properties, excludeKeys) => {
   const data = {};
   const attributesMapKeys = Object.keys(attributesMap);
 
-  attributesMapKeys.forEach(key => {
+  attributesMapKeys.forEach((key) => {
     if (properties[key]) {
       const destinationAttributeName = attributesMap[key];
       data[destinationAttributeName] = properties[key];
@@ -118,28 +111,15 @@ const getAttributes = (attributesMap, properties, excludeKeys) => {
  * @param {*} message
  * @returns
  */
-const prepareIdentifyPayload = (
-  destination,
-  commonUserPropertiesPayload,
-  message
-) => {
+const prepareIdentifyPayload = (destination, commonUserPropertiesPayload, message) => {
   const payload = commonUserPropertiesPayload;
   const { userAttributesMapping } = destination.Config;
-  const userAttributesMap = getHashFromArray(
-    userAttributesMapping,
-    "from",
-    "to",
-    false
-  );
+  const userAttributesMap = getHashFromArray(userAttributesMapping, 'from', 'to', false);
   const traits = getIdentifyTraits(message);
-  const customUserAttributes = getAttributes(
-    userAttributesMap,
-    traits,
-    identifySourceKeys
-  );
+  const customUserAttributes = getAttributes(userAttributesMap, traits, identifySourceKeys);
   return {
     ...payload,
-    ...customUserAttributes
+    ...customUserAttributes,
   };
 };
 
@@ -151,28 +131,15 @@ const prepareIdentifyPayload = (
  * @param {*} commonCompanyProperties
  * @returns
  */
-const prepareCreateOrUpdateCompanyPayload = (
-  destination,
-  message,
-  commonCompanyProperties
-) => {
+const prepareCreateOrUpdateCompanyPayload = (destination, message, commonCompanyProperties) => {
   let commonCompanyPropertiesPayload = commonCompanyProperties;
   const { companyAttributesMapping } = destination.Config;
-  const companyAttributesMap = getHashFromArray(
-    companyAttributesMapping,
-    "from",
-    "to",
-    false
-  );
-  const traits = getFieldValueFromMessage(message, "traits");
-  const customCompanyAttributes = getAttributes(
-    companyAttributesMap,
-    traits,
-    groupSourceKeys
-  );
+  const companyAttributesMap = getHashFromArray(companyAttributesMapping, 'from', 'to', false);
+  const traits = getFieldValueFromMessage(message, 'traits');
+  const customCompanyAttributes = getAttributes(companyAttributesMap, traits, groupSourceKeys);
   commonCompanyPropertiesPayload = {
     ...commonCompanyPropertiesPayload,
-    ...customCompanyAttributes
+    ...customCompanyAttributes,
   };
   if (commonCompanyPropertiesPayload.address) {
     const { address } = commonCompanyPropertiesPayload;
@@ -189,12 +156,11 @@ const prepareCreateOrUpdateCompanyPayload = (
  * @param {*} name
  * @returns
  */
-const getUserEvent = (userEvents, name) => {
-  return userEvents.filter(userEvent => {
+const getUserEvent = (userEvents, name) =>
+  userEvents.filter((userEvent) => {
     const { rsEventName } = userEvent;
     return rsEventName === name;
   });
-};
 
 /**
  * validating the page call payload
@@ -202,19 +168,19 @@ const getUserEvent = (userEvents, name) => {
  * @param {*} message
  * @returns
  */
-const validatePagePayload = message => {
-  const pageUrl = getFieldValueFromMessage(message, "pageUrl");
-  const pagePath = getFieldValueFromMessage(message, "pagePath");
-  const timestamp = getFieldValueFromMessage(message, "timestamp");
+const validatePagePayload = (message) => {
+  const pageUrl = getFieldValueFromMessage(message, 'pageUrl');
+  const pagePath = getFieldValueFromMessage(message, 'pagePath');
+  const timestamp = getFieldValueFromMessage(message, 'timestamp');
 
   if (!pageUrl) {
-    throw new InstrumentationError("Parameter url is required");
+    throw new InstrumentationError('Parameter url is required');
   }
   if (!pagePath) {
-    throw new InstrumentationError("Parameter path is required");
+    throw new InstrumentationError('Parameter path is required');
   }
   if (!timestamp) {
-    throw new InstrumentationError("Parameter timestamp is required");
+    throw new InstrumentationError('Parameter timestamp is required');
   }
 };
 
@@ -224,11 +190,11 @@ const validatePagePayload = message => {
  * @param {*} message
  * @returns
  */
-const validateGroupPayload = message => {
-  const traits = getFieldValueFromMessage(message, "traits");
+const validateGroupPayload = (message) => {
+  const traits = getFieldValueFromMessage(message, 'traits');
   const { name } = traits;
   if (!name) {
-    throw new InstrumentationError("Parameter name is required");
+    throw new InstrumentationError('Parameter name is required');
   }
 };
 
@@ -242,12 +208,12 @@ const validateGroupPayload = message => {
 const createCompany = async (message, destination) => {
   const commonCompanyPropertiesPayload = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_COMPANY.name]
+    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_COMPANY.name],
   );
   const payload = prepareCreateOrUpdateCompanyPayload(
     destination,
     message,
-    commonCompanyPropertiesPayload
+    commonCompanyPropertiesPayload,
   );
   let { endpoint } = CONFIG_CATEGORIES.CREATE_COMPANY;
   const { Config } = destination;
@@ -256,10 +222,10 @@ const createCompany = async (message, destination) => {
 
   const requestOptions = {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Token ${apiKey}`,
-      Accept: "*/*;version=2"
-    }
+      Accept: '*/*;version=2',
+    },
   };
 
   const response = await httpPOST(endpoint, payload, requestOptions);
@@ -278,28 +244,25 @@ const createCompany = async (message, destination) => {
 const updateCompany = async (message, destination, company) => {
   const commonCompanyPropertiesPayload = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_COMPANY.name]
+    MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_COMPANY.name],
   );
   const payload = prepareCreateOrUpdateCompanyPayload(
     destination,
     message,
-    commonCompanyPropertiesPayload
+    commonCompanyPropertiesPayload,
   );
   let { endpoint } = CONFIG_CATEGORIES.UPDATE_COMPANY;
   const { Config } = destination;
   const { appSubdomain, apiKey } = Config;
   const { id: companyId } = company;
-  endpoint = prepareUrl(endpoint, appSubdomain).replace(
-    "<company_id>",
-    companyId
-  );
+  endpoint = prepareUrl(endpoint, appSubdomain).replace('<company_id>', companyId);
 
   const requestOptions = {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Token ${apiKey}`,
-      Accept: "*/*;version=2"
-    }
+      Accept: '*/*;version=2',
+    },
   };
 
   const response = await httpPUT(endpoint, payload, requestOptions);
@@ -316,16 +279,13 @@ const updateCompany = async (message, destination, company) => {
  * @returns
  */
 const getUserByUserKey = async (apiKey, userKey, appSubdomain) => {
-  const endpoint = prepareUrl(
-    `${BASE_ENDPOINT}/users/search/?key=${userKey}`,
-    appSubdomain
-  );
+  const endpoint = prepareUrl(`${BASE_ENDPOINT}/users/search/?key=${userKey}`, appSubdomain);
   const requestOptions = {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Token ${apiKey}`,
-      Accept: "*/*;version=2"
-    }
+      Accept: '*/*;version=2',
+    },
   };
 
   const userResponse = await httpGET(endpoint, requestOptions);
@@ -346,19 +306,16 @@ const getUserByUserKey = async (apiKey, userKey, appSubdomain) => {
  */
 const getUserByEmail = async (apiKey, email, appSubdomain) => {
   if (!email) {
-    throw new InstrumentationError("Lookup field : email value is not present");
+    throw new InstrumentationError('Lookup field : email value is not present');
   }
 
-  const endpoint = prepareUrl(
-    `${BASE_ENDPOINT}/users/search/?email=${email}`,
-    appSubdomain
-  );
+  const endpoint = prepareUrl(`${BASE_ENDPOINT}/users/search/?email=${email}`, appSubdomain);
   const requestOptions = {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Token ${apiKey}`,
-      Accept: "*/*;version=2"
-    }
+      Accept: '*/*;version=2',
+    },
   };
 
   const userResponse = await httpGET(endpoint, requestOptions);
@@ -381,19 +338,19 @@ const getUserByEmail = async (apiKey, email, appSubdomain) => {
  */
 const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
   if (!phoneNumber) {
-    throw new InstrumentationError("Lookup field : phone value is not present");
+    throw new InstrumentationError('Lookup field : phone value is not present');
   }
 
   const endpoint = prepareUrl(
     `${BASE_ENDPOINT}/users/search/?phone_number=${phoneNumber}`,
-    appSubdomain
+    appSubdomain,
   );
   const requestOptions = {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Token ${apiKey}`,
-      Accept: "*/*;version=2"
-    }
+      Accept: '*/*;version=2',
+    },
   };
 
   const userResponse = await httpGET(endpoint, requestOptions);
@@ -403,13 +360,9 @@ const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
     const { response } = processedUserResponse;
     const { results } = response;
     if (results.length === 0) {
-      throw new NetworkInstrumentationError(
-        "No user found for a given lookup field"
-      );
+      throw new NetworkInstrumentationError('No user found for a given lookup field');
     } else if (results.length > 1) {
-      throw new NetworkInstrumentationError(
-        "Multiple users obtained for a given lookup field"
-      );
+      throw new NetworkInstrumentationError('Multiple users obtained for a given lookup field');
     } else {
       const [first] = results;
       return first;
@@ -429,19 +382,16 @@ const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
 const getUserByCustomId = async (message, destination) => {
   const { Config } = destination;
   const { appSubdomain, apiKey } = Config;
-  const userCustomId = getFieldValueFromMessage(message, "userId");
+  const userCustomId = getFieldValueFromMessage(message, 'userId');
   let { endpoint } = CONFIG_CATEGORIES.GET_USER_BY_USER_CUSTOM_ID;
-  endpoint = prepareUrl(endpoint, appSubdomain).replace(
-    "<user_custom_id>",
-    userCustomId
-  );
+  endpoint = prepareUrl(endpoint, appSubdomain).replace('<user_custom_id>', userCustomId);
 
   const requestOptions = {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Token ${apiKey}`,
-      Accept: "*/*;version=2"
-    }
+      Accept: '*/*;version=2',
+    },
   };
 
   const userResponse = await httpGET(endpoint, requestOptions);
@@ -464,19 +414,16 @@ const getUserByCustomId = async (message, destination) => {
 const getCompanyByCustomId = async (message, destination) => {
   const { Config } = destination;
   const { appSubdomain, apiKey } = Config;
-  const companyCustomId = getFieldValueFromMessage(message, "groupId");
+  const companyCustomId = getFieldValueFromMessage(message, 'groupId');
   let { endpoint } = CONFIG_CATEGORIES.GET_COMPANY_BY_COMPANY_CUSTOM_ID;
-  endpoint = prepareUrl(endpoint, appSubdomain).replace(
-    "<company_custom_id>",
-    companyCustomId
-  );
+  endpoint = prepareUrl(endpoint, appSubdomain).replace('<company_custom_id>', companyCustomId);
 
   const requestOptions = {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Token ${apiKey}`,
-      Accept: "*/*;version=2"
-    }
+      Accept: '*/*;version=2',
+    },
   };
 
   const response = await httpGET(endpoint, requestOptions);
@@ -498,40 +445,38 @@ const getCompanyByCustomId = async (message, destination) => {
 const retrieveUserFromLookup = async (message, destination) => {
   const { Config } = destination;
   const { appSubdomain, apiKey } = Config;
-  const userKey = getDestinationExternalID(message, "userKey");
+  const userKey = getDestinationExternalID(message, 'userKey');
   if (isDefinedAndNotNullAndNotEmpty(userKey)) {
     return getUserByUserKey(apiKey, userKey, appSubdomain);
   }
 
-  const integrationsObj = getIntegrationsObj(message, "user");
+  const integrationsObj = getIntegrationsObj(message, 'user');
   if (integrationsObj && integrationsObj.lookup) {
     const { lookup: lookupField } = integrationsObj;
     const lookupFieldValue = getFieldValueFromMessage(message, lookupField);
 
-    if (lookupField === "email") {
+    if (lookupField === 'email') {
       return getUserByEmail(apiKey, lookupFieldValue, appSubdomain);
     }
 
-    if (lookupField === "phone") {
+    if (lookupField === 'phone') {
       return getUserByPhoneNumber(apiKey, lookupFieldValue, appSubdomain);
     }
 
     throw new InstrumentationError(
-      `Lookup field : ${lookupField} is not supported for this destination`
+      `Lookup field : ${lookupField} is not supported for this destination`,
     );
   } else {
-    const userId = getValueFromMessage(message, "userId");
+    const userId = getValueFromMessage(message, 'userId');
     if (userId) {
       return getUserByCustomId(message, destination);
     }
-    const email = getFieldValueFromMessage(message, "email");
+    const email = getFieldValueFromMessage(message, 'email');
     if (isDefinedAndNotNullAndNotEmpty(email)) {
       return getUserByEmail(apiKey, email, appSubdomain);
     }
 
-    throw new InstrumentationError(
-      "Default lookup field : email value is empty"
-    );
+    throw new InstrumentationError('Default lookup field : email value is empty');
   }
 };
 
@@ -546,19 +491,15 @@ const createOrUpdateUserPayloadBuilder = (message, destination, id = null) => {
   const { appSubdomain } = destination.Config;
   const commonUserPropertiesPayload = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_USER.name]
+    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_USER.name],
   );
-  const payload = prepareIdentifyPayload(
-    destination,
-    commonUserPropertiesPayload,
-    message
-  );
+  const payload = prepareIdentifyPayload(destination, commonUserPropertiesPayload, message);
   let endpoint = id
     ? CONFIG_CATEGORIES.UPDATE_USER.endpoint
     : CONFIG_CATEGORIES.CREATE_USER.endpoint;
   endpoint = prepareUrl(endpoint, appSubdomain);
   if (id) {
-    endpoint = endpoint.replace("<user_id>", id);
+    endpoint = endpoint.replace('<user_id>', id);
   }
   const method = id
     ? defaultPutRequestConfig.requestMethod
@@ -577,7 +518,7 @@ const createEventOccurrencePayloadBuilder = (message, user, destination) => {
   const { properties } = message;
   const payload = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_EVENT_OCCURRENCE.name]
+    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_EVENT_OCCURRENCE.name],
   );
   const { Config } = destination;
   const { userEvents } = Config;
@@ -585,14 +526,9 @@ const createEventOccurrencePayloadBuilder = (message, user, destination) => {
   const userEvent = getUserEvent(userEvents, name);
   if (userEvent.length === 1) {
     const [first] = userEvent;
-    const { eventProperties: eventPropertiesMapping } = first;
-    const eventPropertiesMap = getHashFromArray(
-      eventPropertiesMapping,
-      "from",
-      "to",
-      false
-    );
-    payload.name = first.userEventName;
+    const { eventProperties: eventPropertiesMapping, userEventName } = first;
+    const eventPropertiesMap = getHashFromArray(eventPropertiesMapping, 'from', 'to', false);
+    payload.name = userEventName;
     payload.data = getAttributes(eventPropertiesMap, properties, []);
   }
 
@@ -614,7 +550,7 @@ const pageVisitPayloadBuilder = (message, user) => {
   const { user_key: userKey } = user;
   const payload = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_SITE_VIEWS.name]
+    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_SITE_VIEWS.name],
   );
   payload.client_user = userKey;
   const { endpoint } = CONFIG_CATEGORIES.CREATE_SITE_VIEWS;
@@ -633,7 +569,7 @@ const addUserToCompanyPayloadBuilder = (user, company) => {
   const { id: userId, custom_id: userCustomId } = user;
   const { id: companyId } = company;
   let { endpoint } = CONFIG_CATEGORIES.ADD_USER_TO_COMPANY;
-  endpoint = endpoint.replace("<company_id>", companyId);
+  endpoint = endpoint.replace('<company_id>', companyId);
   payload.user_id = userId;
   payload.user_custom_id = userCustomId;
   const method = defaultPostRequestConfig.requestMethod;
@@ -651,5 +587,5 @@ module.exports = {
   pageVisitPayloadBuilder,
   addUserToCompanyPayloadBuilder,
   createOrUpdateUserPayloadBuilder,
-  createEventOccurrencePayloadBuilder
+  createEventOccurrencePayloadBuilder,
 };

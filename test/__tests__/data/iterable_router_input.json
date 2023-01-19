@@ -1,5 +1,5 @@
 {
-  "rETL" :[
+  "rETL": [
     {
       "message": {
         "receivedAt": "2022-09-27T11:12:59.080Z",
@@ -18,7 +18,7 @@
             "job_run_id": "ccpdlajh6cfi19mr1vs0",
             "task_run_id": "ccpdlajh6cfi19mr1vsg",
             "batch_id": "4917ad78-280b-40d2-a30d-119434152a0f",
-            "job_id": "2FLKJDcTdjPHQpq7pUjB34dQ5w6\/Syncher",
+            "job_id": "2FLKJDcTdjPHQpq7pUjB34dQ5w6/Syncher",
             "task_id": "rows_100"
           },
           "mappedToDestination": "true",
@@ -65,7 +65,7 @@
             "job_run_id": "ccpdlajh6cfi19mr1vs0",
             "task_run_id": "ccpdlajh6cfi19mr1vsg",
             "batch_id": "4917ad78-280b-40d2-a30d-119434152a0f",
-            "job_id": "2FLKJDcTdjPHQpq7pUjB34dQ5w6\/Syncher",
+            "job_id": "2FLKJDcTdjPHQpq7pUjB34dQ5w6/Syncher",
             "task_id": "rows_100"
           },
           "mappedToDestination": "true",
@@ -95,7 +95,7 @@
       }
     }
   ],
-  "others" :[
+  "others": [
     {
       "message": {
         "type": "track",
@@ -302,12 +302,7 @@
             "includeKeys": [],
             "saveDestinationResponse": true,
             "secretKeys": [],
-            "supportedMessageTypes": [
-              "identify",
-              "page",
-              "screen",
-              "track"
-            ],
+            "supportedMessageTypes": ["identify", "page", "screen", "track"],
             "supportedSourceTypes": [
               "android",
               "ios",

@@ -13,7 +13,11 @@ const {
   getIntegrationsObj,
   isHybridModeEnabled,
 } = require('../../util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  UnsupportedEventError,
+} = require('../../util/errorTypes');
 const {
   ENDPOINT,
   DEBUG_ENDPOINT,
@@ -367,6 +371,7 @@ const responseBuilder = (message, { Config }) => {
 };
 
 const process = (event) => {
+  console.log(event);
   const { message, destination } = event;
   const { Config } = destination;
 
@@ -431,8 +436,10 @@ const process = (event) => {
       if (!isHybridModeEnabled(Config)) {
         message.event = 'page_view';
         response = responseBuilder(message, destination);
-      }else{
-        throw new InstrumentationError("GA4 Hybrid mode is enabled, page calls will be sent through device mode")
+      } else {
+        throw new UnsupportedEventError(
+          'GA4 Hybrid mode is enabled, page calls will be sent through device mode',
+        );
       }
       break;
     case EventType.GROUP:

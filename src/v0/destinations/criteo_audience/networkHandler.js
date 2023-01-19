@@ -21,14 +21,12 @@ const { NetworkError } = require("../../util/errorTypes");
  * @param {*} response
  * @returns
  */
-const getAuthErrCategory = code => {
-  switch (code) {
-    // https://developers.criteo.com/marketing-solutions/docs/api-error-types#:~:text=If%20Criteo%20API%20responded%20with%20401%20it%20means
-    case 401:
-      return REFRESH_TOKEN;
-    default:
-      return "";
+const getAuthErrCategory = (status,code) => {
+  if (status === '401' && code === 'authorization-token-invalid') {
+    return REFRESH_TOKEN;
   }
+
+  return "";
 };
 
 const criteoAudienceRespHandler = (destResponse, stageMsg) => {
@@ -40,7 +38,7 @@ const criteoAudienceRespHandler = (destResponse, stageMsg) => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
     },
     response,
-    getAuthErrCategory(status)
+    getAuthErrCategory(status,response?.errors[0]?.code)
   );
 };
 

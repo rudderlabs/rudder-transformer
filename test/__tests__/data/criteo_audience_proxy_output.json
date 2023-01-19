@@ -12,6 +12,7 @@
   {
     "output": {
       "status": "401",
+      "authErrorCategory": "REFRESH_TOKEN",
       "destinationResponse": {
         "errors": [
           {

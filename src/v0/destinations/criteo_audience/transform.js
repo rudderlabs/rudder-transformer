@@ -1,7 +1,6 @@
 const {
   BASE_ENDPOINT,
-  CRITEO_ADD_USER,
-  CRITEO_REMOVE_USER
+  operation
 } = require("./config");
 const {
   defaultRequestConfig,
@@ -33,32 +32,22 @@ const prepareResponse = (payload, audienceId, accessToken) => {
  */
 const responseBuilder = async (message, destination, accessToken) => {
   const responseArray = [];
-  let criteoAddPayload = {};
-  let criteoRemovePayload = {};
   const { Config } = destination;
   const { audienceId } = Config;
   const { listData } = message.properties;
+  operation.forEach(op => {
+    if (listData[op]) {
+      const criteoPayload = preparePayload(
+        listData[op],
+        op,
+        Config
+      );
+      responseArray.push(
+        prepareResponse(criteoPayload, audienceId, accessToken)
+      );
+    }
+  });
 
-  if (listData[CRITEO_ADD_USER]) {
-    criteoAddPayload = preparePayload(
-      listData[CRITEO_ADD_USER],
-      CRITEO_ADD_USER,
-      Config
-    );
-    responseArray.push(
-      prepareResponse(criteoAddPayload, audienceId, accessToken)
-    );
-  }
-  if (listData[CRITEO_REMOVE_USER]) {
-    criteoRemovePayload = preparePayload(
-      listData[CRITEO_REMOVE_USER],
-      CRITEO_REMOVE_USER,
-      Config
-    );
-    responseArray.push(
-      prepareResponse(criteoRemovePayload, audienceId, accessToken)
-    );
-  }
   if (responseArray.length === 0) {
     throw new InstrumentationError(`Payload could not be populated`);
   }

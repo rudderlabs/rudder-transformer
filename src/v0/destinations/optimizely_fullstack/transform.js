@@ -28,30 +28,35 @@ const responseBuilder = (payload, endpoint, destination) => {
 };
 
 const trackResponseBuilder = (message, destination) => {
-  const { event } = message;
+  const { event, anonymousId } = message;
   if (!event) {
     throw new InstrumentationError('Event name is required');
   }
-  const { baseUrl } = destination.Config;
+  const { baseUrl, trackKnownUsers } = destination.Config;
   const endpoint = getTrackEndPoint(baseUrl, event);
   const { name } = CONFIG_CATEGORIES.TRACK;
   const payload = constructPayload(message, MAPPING_CONFIG[name]);
+  if (!trackKnownUsers) {
+    payload.userId = anonymousId;
+  }
   return responseBuilder(payload, endpoint, destination);
 };
 
 const pageResponseBuilder = (message, destination) => {
-  let event;
-  if (message.category && destination.Config.trackCategorizedPages) {
-    event = `Viewed ${message.category} page`;
-  }
-  if (message.name && destination.Config.trackNamedPages) {
-    event = `Viewed ${message.name} page`;
-  }
-
+  const { trackCategorizedPages, trackNamedPages } = destination.Config;
   const newMessage = { ...message };
-  newMessage.event = event;
+  const returnValue = [];
 
-  return trackResponseBuilder(newMessage, destination);
+  if (message.category && trackCategorizedPages) {
+    newMessage.event = `Viewed ${message.category} page`;
+    returnValue.push(trackResponseBuilder(newMessage, destination));
+  }
+  if (message.name && trackNamedPages) {
+    newMessage.event = `Viewed ${message.name} page`;
+    returnValue.push(trackResponseBuilder(newMessage, destination));
+  }
+
+  return returnValue;
 };
 
 const processEvent = (message, destination) => {

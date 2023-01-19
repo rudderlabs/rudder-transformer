@@ -101,7 +101,7 @@
         "Config": {
           "sdkKey": "test-sdk-key",
           "baseUrl": "https://example.com",
-          "trackKnownUsers": false,
+          "trackKnownUsers": true,
           "nonInteraction": false,
           "listen": false,
           "trackCategorizedPages": true,
@@ -181,33 +181,6 @@
     }
   },
   {
-    "description": "Page call without category and name",
-    "input": {
-      "message": {
-        "type": "page",
-        "channel": "web",
-        "userId": "test123",
-        "context": {},
-        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
-        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
-      },
-      "destination": {
-        "Config": {
-          "sdkKey": "test-sdk-key",
-          "baseUrl": "https://example.com",
-          "trackKnownUsers": false,
-          "nonInteraction": false,
-          "listen": false,
-          "trackCategorizedPages": true,
-          "trackNamedPages": true
-        }
-      }
-    },
-    "output": {
-      "error": "Event name is required"
-    }
-  },
-  {
     "description": "Page call with Track Categorized Pages is enabled",
     "input": {
       "message": {
@@ -227,7 +200,7 @@
         "Config": {
           "sdkKey": "test-sdk-key",
           "baseUrl": "https://example.com",
-          "trackKnownUsers": false,
+          "trackKnownUsers": true,
           "nonInteraction": false,
           "listen": false,
           "trackCategorizedPages": true,
@@ -235,34 +208,36 @@
         }
       }
     },
-    "output": {
-      "body": {
-        "FORM": {},
-        "JSON": {
-          "userId": "test123",
-          "userAttributes": { "firstName": "John", "age": 27 },
-          "eventTags": {
-            "url": "https://www.google.com/",
-            "title": "Google home"
-          }
+    "output": [
+      {
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "userId": "test123",
+            "userAttributes": { "firstName": "John", "age": 27 },
+            "eventTags": {
+              "url": "https://www.google.com/",
+              "title": "Google home"
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
         },
-        "JSON_ARRAY": {},
-        "XML": {}
-      },
-      "endpoint": "https://example.com/v1/track?eventKey=Viewed%20food%20page",
-      "files": {},
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Optimizely-SDK-Key": "test-sdk-key"
-      },
-      "method": "POST",
-      "params": {},
-      "type": "REST",
-      "version": "1"
-    }
+        "endpoint": "https://example.com/v1/track?eventKey=Viewed%20food%20page",
+        "files": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Optimizely-SDK-Key": "test-sdk-key"
+        },
+        "method": "POST",
+        "params": {},
+        "type": "REST",
+        "version": "1"
+      }
+    ]
   },
   {
-    "description": "Page call with Track Named Pages  is enabled",
+    "description": "Page call with Track Named Pages is enabled",
     "input": {
       "message": {
         "type": "page",
@@ -281,7 +256,7 @@
         "Config": {
           "sdkKey": "test-sdk-key",
           "baseUrl": "https://example.com",
-          "trackKnownUsers": false,
+          "trackKnownUsers": true,
           "nonInteraction": false,
           "listen": false,
           "trackCategorizedPages": false,
@@ -289,30 +264,114 @@
         }
       }
     },
-    "output": {
-      "body": {
-        "FORM": {},
-        "JSON": {
-          "userId": "test123",
-          "userAttributes": { "firstName": "John", "age": 27 },
-          "eventTags": {
-            "url": "https://www.google.com/",
-            "title": "Google home"
-          }
+    "output": [
+      {
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "userId": "test123",
+            "userAttributes": { "firstName": "John", "age": 27 },
+            "eventTags": {
+              "url": "https://www.google.com/",
+              "title": "Google home"
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
         },
-        "JSON_ARRAY": {},
-        "XML": {}
+        "endpoint": "https://example.com/v1/track?eventKey=Viewed%20Thank%20You%20page",
+        "files": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Optimizely-SDK-Key": "test-sdk-key"
+        },
+        "method": "POST",
+        "params": {},
+        "type": "REST",
+        "version": "1"
+      }
+    ]
+  },
+  {
+    "description": "Page call with both Track Categorized Pages and Track Named Pages toggles are enabled",
+    "input": {
+      "message": {
+        "type": "page",
+        "channel": "web",
+        "userId": "test123",
+        "category": "Docs",
+        "name": "Index",
+        "properties": {
+          "url": "https://www.google.com/",
+          "title": "Google home"
+        },
+        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
       },
-      "endpoint": "https://example.com/v1/track?eventKey=Viewed%20Thank%20You%20page",
-      "files": {},
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Optimizely-SDK-Key": "test-sdk-key"
+      "destination": {
+        "Config": {
+          "sdkKey": "test-sdk-key",
+          "baseUrl": "https://example.com",
+          "trackKnownUsers": true,
+          "nonInteraction": false,
+          "listen": false,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "userId": "test123",
+            "userAttributes": { "firstName": "John", "age": 27 },
+            "eventTags": {
+              "url": "https://www.google.com/",
+              "title": "Google home"
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "endpoint": "https://example.com/v1/track?eventKey=Viewed%20Docs%20page",
+        "files": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Optimizely-SDK-Key": "test-sdk-key"
+        },
+        "method": "POST",
+        "params": {},
+        "type": "REST",
+        "version": "1"
       },
-      "method": "POST",
-      "params": {},
-      "type": "REST",
-      "version": "1"
-    }
+      {
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "userId": "test123",
+            "userAttributes": { "firstName": "John", "age": 27 },
+            "eventTags": {
+              "url": "https://www.google.com/",
+              "title": "Google home"
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "endpoint": "https://example.com/v1/track?eventKey=Viewed%20Index%20page",
+        "files": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Optimizely-SDK-Key": "test-sdk-key"
+        },
+        "method": "POST",
+        "params": {},
+        "type": "REST",
+        "version": "1"
+      }
+    ]
   }
 ]

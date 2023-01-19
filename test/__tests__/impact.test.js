@@ -1,8 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 
-const integration = "impact_radius";
-const name = "IMPACT_RADIUS";
+const integration = "impact";
+const name = "IMPACT";
 const version = "v0";
 
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);

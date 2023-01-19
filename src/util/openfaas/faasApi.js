@@ -52,6 +52,17 @@ const invokeFunction = async (functionName, payload) =>
       .catch((err) => reject(parseAxiosError(err)));
   });
 
+const checkFunctionHealth = async (functionName) =>
+  new Promise((resolve, reject) => {
+    const url = `${OPENFAAS_GATEWAY_URL}/function/${functionName}`;
+    axios
+      .get(url, {
+        headers: { "X-REQUEST-TYPE": "HEALTH-CHECK"}
+      })
+      .then((resp) => resolve(resp))
+      .catch((err) => reject(parseAxiosError(err)));
+  });
+
 const deployFunction = async (payload) =>
   new Promise((resolve, reject) => {
     const url = `${OPENFAAS_GATEWAY_URL}/system/functions`;

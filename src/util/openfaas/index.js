@@ -148,6 +148,9 @@ async function setupFaasFunction(functionName, code, versionId, testMode) {
 const executeFaasFunction = async (functionName, events, versionId, testMode) => {
   try {
     logger.debug('[Faas] Invoking faas function');
+
+    if (testMode) await awaitFunctionReadiness(functionName);
+
     const res = await invokeFunction(functionName, events);
     logger.debug('[Faas] Invoked faas function');
     return res;

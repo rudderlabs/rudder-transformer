@@ -3,7 +3,7 @@ const get = require('get-value');
 const sha256 = require('sha256');
 const { prepareProxyRequest, httpSend, httpPOST } = require('../../../adapters/network');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
-const { isHttpStatusSuccess, getHashFromArray } = require('../../util');
+const { isHttpStatusSuccess, getHashFromArray, isDefinedAndNotNullAndNotEmpty } = require('../../util');
 const { getConversionActionId } = require('./utils');
 const Cache = require('../../util/cache');
 const { CONVERSION_CUSTOM_VARIABLE_CACHE_TTL, SEARCH_STREAM } = require('./config');
@@ -121,29 +121,31 @@ const ProxyRequest = async (request) => {
   const conversionActionId = await getConversionActionId(headers, params);
   set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
 
-  // fetch all conversion custom variable in google ads
-  let conversionCustomVariable = await getConversionCustomVariable(headers, params);
+  if (isDefinedAndNotNullAndNotEmpty(params.customVariables)) {
+    // fetch all conversion custom variable in google ads
+    let conversionCustomVariable = await getConversionCustomVariable(headers, params);
 
-  // convert it into hashMap
-  conversionCustomVariable = getConversionCustomVariableHashMap(conversionCustomVariable);
+    // convert it into hashMap
+    conversionCustomVariable = getConversionCustomVariableHashMap(conversionCustomVariable);
 
-  const { properties } = params;
-  let { customVariables } = params;
-  const resultantCustomVariables = [];
-  customVariables = getHashFromArray(customVariables);
-  Object.keys(customVariables).forEach((key) => {
-    if (properties[key] && conversionCustomVariable[customVariables[key]]) {
-      // 1. set custom variable name
-      // 2. set custom variable value
-      resultantCustomVariables.push({
-        conversionCustomVariable: conversionCustomVariable[customVariables[key]],
-        value: String(properties[key]),
-      });
+    const { properties } = params;
+    let { customVariables } = params;
+    const resultantCustomVariables = [];
+    customVariables = getHashFromArray(customVariables);
+    Object.keys(customVariables).forEach((key) => {
+      if (properties[key] && conversionCustomVariable[customVariables[key]]) {
+        // 1. set custom variable name
+        // 2. set custom variable value
+        resultantCustomVariables.push({
+          conversionCustomVariable: conversionCustomVariable[customVariables[key]],
+          value: String(properties[key]),
+        });
+      }
+    });
+
+    if (resultantCustomVariables) {
+      set(body.JSON, 'conversions.0.customVariables', resultantCustomVariables);
     }
-  });
-
-  if (resultantCustomVariables) {
-    set(body.JSON, 'conversions.0.customVariables', resultantCustomVariables);
   }
 
   const requestBody = { url: endpoint, data: body.JSON, headers, method };

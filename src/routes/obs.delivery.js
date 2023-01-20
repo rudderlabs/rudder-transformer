@@ -8,7 +8,7 @@
 
 const KoaRouter = require('koa-router');
 const path = require('path');
-const { DestProxyController } = require('../controllers/destinationProxy');
+const { DestProxyController } = require('../controllers/obs.delivery');
 const { getIntegrations } = require('./utils');
 const { SUPPORTED_VERSIONS, API_VERSION } = require('./utils/constants');
 

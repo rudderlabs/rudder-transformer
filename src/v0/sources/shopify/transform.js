@@ -21,7 +21,7 @@ const {
 } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 
-const identifyPayloadBuilder = (event) => {
+const identifyPayloadBuilder = event => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.IDENTIFY);
   message.setPropertiesV2(event, MAPPING_CATEGORIES[EventType.IDENTIFY]);
@@ -39,9 +39,7 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
 
   let properties = createPropertiesForEcomEvent(event);
   properties = removeUndefinedAndNullValues(properties);
-  Object.keys(properties).forEach((key) =>
-    message.setProperty(`properties.${key}`, properties[key]),
-  );
+  Object.keys(properties).forEach(key => message.setProperty(`properties.${key}`, properties[key]));
   // Map Customer details if present
   const customerDetails = get(event, 'customer');
   if (customerDetails) {
@@ -74,7 +72,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   message.setEventName(SHOPIFY_TRACK_MAP[shopifyTopic]);
   Object.keys(event)
     .filter(
-      (key) =>
+      key =>
         ![
           'type',
           'event',
@@ -84,7 +82,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
           'billing_address',
         ].includes(key),
     )
-    .forEach((key) => {
+    .forEach(key => {
       message.setProperty(`properties.${key}`, event[key]);
     });
   // eslint-disable-next-line camelcase
@@ -109,7 +107,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   return message;
 };
 
-const processEvent = (inputEvent) => {
+const processEvent = inputEvent => {
   let message;
   const event = _.cloneDeep(inputEvent);
   const shopifyTopic = getShopifyTopic(event);
@@ -154,7 +152,22 @@ const processEvent = (inputEvent) => {
   message = removeUndefinedAndNullValues(message);
   return message;
 };
-
-const process = (event) => processEvent(event);
+const isdentifierEvent = event => {
+  if (event?.event?.[0] === 'rudderIdentifier') {
+    return true;
+  }
+  return false;
+};
+const processIdentifierEvent = () => {
+  return {
+    outputToSource: {
+      contentType: 'application/json',
+    },
+    statusCode: 200,
+  };
+};
+const process = event => {
+  return isdentifierEvent(event) ? processIdentifierEvent(event) : processEvent(event);
+};
 
 exports.process = process;

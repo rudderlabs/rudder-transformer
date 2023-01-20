@@ -11896,7 +11896,7 @@
     }
   },
     {
-      "description": "when useNativeSDKToSend flag is not present inside config, it should send page calls",
+      "description": "when useNativeSDKToSend flag is not present inside config and device mode is disabled, it should send page calls",
       "input": {
         "message": {
           "channel": "web",

@@ -14,6 +14,11 @@ const testDataFile = fs.readFileSync(
 );
 const testData = JSON.parse(testDataFile);
 
+// Router Test files
+const routerTestDataFile = fs.readFileSync(
+    path.resolve(__dirname, `./data/${integration}_router.json`)
+  );
+const routerTestData = JSON.parse(routerTestDataFile);
 
 describe(`${name} Tests`, () => {
   describe("Processor", () => {
@@ -25,6 +30,15 @@ describe(`${name} Tests`, () => {
         } catch (error) {
           expect(error.message).toEqual(dataPoint.output.error);
         }
+      });
+    });
+  });
+
+  describe("Router Tests", () => {
+    routerTestData.forEach(dataPoint => {
+      it("Payload", async () => {
+        const output = await transformer.processRouterDest(dataPoint.input);
+        expect(output).toEqual(dataPoint.output);
       });
     });
   });

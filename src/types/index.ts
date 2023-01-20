@@ -108,7 +108,7 @@ type ProcessorTransformResponse = {
 type RouterTransformResponse = {
   batchedRequest?: TransformedEvent | Object;
   metadata: Metadata[];
-  destination?: Destination;
+  destination: Destination;
   batched: boolean;
   statusCode: number;
   error: string;

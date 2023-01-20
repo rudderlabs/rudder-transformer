@@ -1186,6 +1186,10 @@
       },
       "batched": false,
       "statusCode": 400,
+      "statTags":  {
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation"
+      },
       "error": "Both userId and deviceId cannot be undefined"
     },
     {

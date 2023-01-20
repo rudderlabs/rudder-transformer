@@ -1217,6 +1217,122 @@
           "destinationId": "2JIqVoWNvSOHa9ppKOqSo4hPuc0",
           "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
           "context": "[Native Integration Service] Failure During Processor Transform"
+        },
+        "destination": {
+          "ID": "2JIqVoWNvSOHa9ppKOqSo4hPuc0",
+          "Name": "Pinterest-test",
+          "DestinationDefinition": {
+            "ID": "1s0w2bMAleYngscZRgH1ExynlpT",
+            "Name": "PINTEREST_TAG",
+            "DisplayName": "Pinterest Tag",
+            "Config": {
+              "cdkV2TestThreshold": 1,
+              "destConfig": {
+                "defaultConfig": [
+                  "tagId",
+                  "appId",
+                  "advertiserId",
+                  "sendingUnHashedData",
+                  "enableDeduplication",
+                  "deduplicationKey",
+                  "customProperties",
+                  "eventsMapping",
+                  "enhancedMatch",
+                  "blacklistedEvents",
+                  "whitelistedEvents",
+                  "eventFilteringOption"
+                ],
+                "web": [
+                  "useNativeSDK",
+                  "oneTrustCookieCategories"
+                ]
+              },
+              "excludeKeys": [
+      
+              ],
+              "includeKeys": [
+                "tagId",
+                "advertiserId",
+                "appId",
+                "customProperties",
+                "eventsMapping",
+                "enhancedMatch",
+                "enableDeduplication",
+                "deduplicationKey",
+                "blacklistedEvents",
+                "whitelistedEvents",
+                "oneTrustCookieCategories",
+                "eventFilteringOption"
+              ],
+              "saveDestinationResponse": false,
+              "secretKeys": [
+      
+              ],
+              "supportedSourceTypes": [
+                "android",
+                "ios",
+                "web",
+                "unity",
+                "amp",
+                "cloud",
+                "warehouse",
+                "reactnative",
+                "flutter",
+                "cordova"
+              ],
+              "transformAt": "router",
+              "transformAtV1": "router"
+            },
+            "ResponseRules": {
+      
+            }
+          },
+          "Config": {
+            "advertiserId": "549764492980",
+            "appId": "",
+            "blacklistedEvents": [
+              {
+                "eventName": ""
+              }
+            ],
+            "customProperties": [
+              {
+                "properties": ""
+              }
+            ],
+            "deduplicationKey": "",
+            "enableDeduplication": false,
+            "enhancedMatch": false,
+            "eventFilteringOption": "disable",
+            "eventsMapping": [
+              {
+                "from": "Product Added",
+                "to": "AddToCart"
+              },
+              {
+                "from": "Product Viewed",
+                "to": "ViewCategory"
+              },
+              {
+                "from": "Product Seen",
+                "to": "PageVisit"
+              }
+            ],
+            "sendingUnHashedData": true,
+            "tagId": "Techno@2020",
+            "whitelistedEvents": [
+              {
+                "eventName": ""
+              }
+            ]
+          },
+          "Enabled": true,
+          "WorkspaceID": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+          "Transformations": [
+      
+          ],
+          "IsProcessorEnabled": true,
+          "RevisionID": "2JMx40BCnDdWUqaz5Qu2bKro3Ih"
         }
       }
     ]

@@ -139,7 +139,7 @@
         "sourceDefinitionId": "1b6gJdqOPOCadT3cddw8eidV591",
         "destinationDefinitionId": ""
       },
-      "statusCode": 500,
+      "statusCode": 400,
       "error": "Invalid URL in destination config",
       "statTags": {
         "errorCategory": "dataValidation",

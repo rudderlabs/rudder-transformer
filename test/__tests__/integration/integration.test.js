@@ -139,7 +139,7 @@ describe("Destination api tests", () => {
       expect(response.status).toEqual(200);
       expect(response.data).toEqual(data.output);
     });
-    test("(pinterest_tag) failure router transform(partial failure", async () => {
+    test("(pinterest_tag) failure router transform(partial failure)", async () => {
       const data = getDataFromPath(
         "./data_scenarios/destination/router/failure_test.json"
       );

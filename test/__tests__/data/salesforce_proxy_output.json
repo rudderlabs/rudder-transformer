@@ -19,7 +19,7 @@
   {
     "output": {
       "status": 500,
-      "message": "Salesforce Request Failed - due to \"Session expired or invalid\", (Retryable) during Salesforce Response Handling",
+      "message": "Salesforce Request Failed - due to \"INVALID_SESSION_ID\", (Retryable) during Salesforce Response Handling",
       "destinationResponse": {
         "response": [
           {
@@ -75,7 +75,7 @@
   {
     "output": {
       "status": 429,
-      "message": "Salesforce Request Failed - due to \"Request limit exceeded\", (Throttled) during Salesforce Response Handling",
+      "message": "Salesforce Request Failed - due to \"REQUEST_LIMIT_EXCEEDED\", (Throttled) during Salesforce Response Handling",
       "destinationResponse": {
         "response": [
           {

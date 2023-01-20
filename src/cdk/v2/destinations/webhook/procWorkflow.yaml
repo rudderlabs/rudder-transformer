@@ -17,14 +17,10 @@ steps:
     template: |
       $.batchMode ? .message.body.JSON : .message
     onComplete: return
-  - name: messageType
-    template: |
-      .message.type.toLowerCase()
   - name: validateInput
     template: |
-      let messageType = $.outputs.messageType;
       $.assertConfig(.destination.Config.webhookUrl, "Invalid URL in destination config");
-      $.assert(messageType, "Message type is not present. Aborting message.");
+      $.assert(.message.type.toLowerCase(), "Message type is not present. Aborting message.");
   - name: deduceMethod
     template: |
        $.context.method = .destination.Config.webhookMethod ?? 'POST';
@@ -83,12 +79,4 @@ steps:
           "params": $.context.params,
           "files": {}
         })
-
-
-
-      
         
-      
-        
-           
-  

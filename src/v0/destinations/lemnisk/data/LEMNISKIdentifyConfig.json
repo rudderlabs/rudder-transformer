@@ -1,0 +1,41 @@
+[
+  {
+    "destKey": "type",
+    "sourceKeys": "type",
+    "required": true
+  },
+  {
+    "destKey": "context",
+    "sourceKeys": "context",
+    "required": true
+  },
+  {
+    "destKey": "customerProperties",
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "id",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "userId",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "messageId",
+    "sourceKeys": "messageId",
+    "required": true
+  },
+  {
+    "destKey": "originalTimestamp",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": true
+  }
+]

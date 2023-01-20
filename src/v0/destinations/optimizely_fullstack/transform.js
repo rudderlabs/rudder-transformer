@@ -27,6 +27,7 @@ const responseBuilder = (payload, endpoint, destination) => {
   throw new TransformationError('Something went wrong while constructing the payload');
 };
 
+// ref:- https://docs.developers.optimizely.com/experimentation/v3.1.0-full-stack/reference/trackevent
 const trackResponseBuilder = (message, destination) => {
   const { event, anonymousId } = message;
   if (!event) {

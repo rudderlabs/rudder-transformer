@@ -61,6 +61,10 @@ const getMailChimpBaseEndpoint = (datacenterId, audienceId) =>
 const mailChimpSubscriptionEndpoint = (datacenterId, audienceId, email) =>
   `${getMailChimpBaseEndpoint(datacenterId, audienceId)}/members/${md5(email)}`;
 
+const mailchimpEventsEndpoint = (datacenterId, audienceId, email) => {
+  return `${getMailChimpBaseEndpoint(datacenterId, audienceId)}/members/${md5(email)}/events`;
+};
+
 /**
  * Returns common endpoint for mailchimp
  * If enableMergeFields option is not present in config, we will set it to false
@@ -372,5 +376,6 @@ module.exports = {
   getAudienceId,
   generateBatchedPaylaodForArray,
   mailChimpSubscriptionEndpoint,
+  mailchimpEventsEndpoint,
   processPayload,
 };

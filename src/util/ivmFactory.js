@@ -48,7 +48,6 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
       librariesMap[library.name] = library.code;
     });
   }
-  librariesMap['rsadd@1.1.1'] = 'export function add(a, b) {\n    return a+b;\n}';
 
   const codeWithWrapper =
     // eslint-disable-next-line prefer-template

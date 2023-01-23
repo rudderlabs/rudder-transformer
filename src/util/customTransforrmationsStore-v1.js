@@ -92,4 +92,4 @@ async function getRudderLibraryCode(importName) {
   }
 }
 
-module.exports = { getTransformationCodeV1, getLibraryCodeV1 };
+module.exports = { getTransformationCodeV1, getLibraryCodeV1, getRudderLibraryCode };

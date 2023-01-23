@@ -21,6 +21,7 @@ const { NetworkError } = require("../../util/errorTypes");
  * @param {*} response
  * @returns
  */
+//  https://developers.criteo.com/marketing-solutions/v2021.01/docs/how-to-handle-api-errors#:~:text=the%20response%20body.-,401,-Authentication%20error
 const getAuthErrCategory = (status,code) => {
   if (status === '401' && code === 'authorization-token-invalid') {
     return REFRESH_TOKEN;

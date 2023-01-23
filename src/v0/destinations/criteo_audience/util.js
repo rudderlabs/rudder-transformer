@@ -15,7 +15,7 @@ const {
  * @param {Object} metadata
  * @returns
  */
-const getAccessToken = async metadata => {
+const getAccessToken = metadata => {
   // OAuth for this destination
   const { secret } = metadata;
   // we would need to verify if secret is present and also if the access token field is present in secret

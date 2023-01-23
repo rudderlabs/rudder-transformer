@@ -27,7 +27,7 @@ const responseBuilderSimple = (message, { Config }) => {
   // We will convert the event to revenue events
   if (!sessionEvent && Array.isArray(message?.properties?.products)) {
     return generateRevenuePayloadArray(
-      message?.properties?.products,
+      message.properties.products,
       payload,
       Config,
       eventAttributes,

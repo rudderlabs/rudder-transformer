@@ -42,7 +42,20 @@ const {
   getCachedWorkflowEngine,
   processCdkV2Workflow
 } = require("./cdk/v2/handler");
+const promClient = require("prom-client");
 
+const proxyBatchCounterMetric = new promClient.Counter({
+  name: "proxy_batch_dest_batch_size",
+  help: "batch size in proxyBatch endpoint",
+  labelNames: ["destType", "size"]
+});
+const batchCounterMetric = new promClient.Counter({
+  name: "batch_dest_batch_size",
+  help: "batch size in proxyBatch endpoint",
+  labelNames: ["destType", "size"]
+});
+prometheusRegistry.registerMetric(batchCounterMetric)
+prometheusRegistry.registerMetric(proxyBatchCounterMetric);
 const CDK_DEST_PATH = "cdk";
 const basePath = path.resolve(__dirname, `./${CDK_DEST_PATH}`);
 ConfigFactory.init({ basePath, loggingMode: "production" });
@@ -923,11 +936,14 @@ if (startSourceTransformer) {
   });
 }
 
+
+
 async function handleProxyBatchRequest(destination, ctx) {
   const { metadatas, messages } = ctx.request.body;
   const destNetworkHandler = networkHandlerFactory.getNetworkHandler(
     destination
   );
+  proxyBatchCounterMetric.inc({ destType: destination?.toUpperCase(), size: messages?.length || 0 }, messages?.length || 0)
   const stTime = new Date();
   const responses = await Promise.allSettled(
     messages.map(async (destinationRequest, mIndex) => {
@@ -1153,6 +1169,7 @@ const batchHandler = ctx => {
   Object.entries(allDestEvents).map(async ([destID, destEvents]) => {
     // TODO: check await needed?
     try {
+      batchCounterMetric.inc({ destType, size: destEvents.length }, 1);
       destEvents = processDynamicConfig(destEvents, "batch");
       const destBatchedRequests = destHandler.batch(destEvents);
       response.batchedRequests.push(...destBatchedRequests);

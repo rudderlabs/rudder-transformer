@@ -9,7 +9,7 @@ on:
       - ready_for_review
       - synchronize
 env:
-  REPO_NAME: rudderlabs/develop-rudder-transformer
+  REPO_NAME: dockeronce.azurecr.io/kubernetes/rudder-transformer
 
 jobs:
   user-transformer-build:

@@ -12,6 +12,7 @@ const AbortedError = require('./abortedError');
 const UnhandledStatusCodeError = require('./unhandledStatusCodeError');
 const UnauthorizedError = require('./unauthorizedError');
 const NetworkInstrumentationError = require('./networkInstrumentationError');
+const UnsupportedEventError = require('./unsupportedEventError');
 
 module.exports = {
   BaseError,
@@ -28,4 +29,5 @@ module.exports = {
   UnhandledStatusCodeError,
   UnauthorizedError,
   NetworkInstrumentationError,
+  UnsupportedEventError,
 };

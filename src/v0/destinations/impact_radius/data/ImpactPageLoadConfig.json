@@ -1,0 +1,115 @@
+[
+  {
+    "destKey": "EventDate",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "CustomerEmail",
+    "sourceKeys": "email",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "CustomerId",
+    "sourceKeys": "userIdOnly",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "CustomProfileId",
+    "sourceKeys": "anonymousId",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "PageUrl",
+    "sourceKeys": [
+      "context.page.url",
+      "properties.url",
+      "context.page.referrer",
+      "context.referrer.url"
+    ],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "ReferringUrl",
+    "sourceKeys": ["context.referrer.url", "context.page.referrer"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "UserAgent",
+    "sourceKeys": "context.userAgent",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "IpAddress",
+    "sourceKeys": ["context.request_ip", "context.ip"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "AppName",
+    "sourceKeys": "context.app.name",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "AppPackage",
+    "sourceKeys": "context.app.build",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "AppVer",
+    "sourceKeys": "context.app.version",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "DeviceCarrier",
+    "sourceKeys": "context.network.carrier",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "DeviceLocale",
+    "sourceKeys": "context.locale",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "DeviceMfr",
+    "sourceKeys": "context.device.manufacturer",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "DeviceModel",
+    "sourceKeys": "context.device.model",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "TrackingConsent",
+    "sourceKeys": "context.device.adTrackingEnabled",
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "DeviceOs",
+    "sourceKeys": ["context.device.type", "context.os.name"],
+    "sourceFromGenericMap": false,
+    "required": false
+  },
+  {
+    "destKey": "DeviceOsVer",
+    "sourceKeys": "context.os.version",
+    "sourceFromGenericMap": false,
+    "required": false
+  }
+]

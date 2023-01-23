@@ -5,11 +5,13 @@ const { responseStatusHandler } = require('./utils');
 
 const transformationCache = {};
 const libraryCache = {};
+const rudderLibraryCache = {};
 
 // const CONFIG_BACKEND_URL = "http://localhost:5000";
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
 const getTransformationURL = `${CONFIG_BACKEND_URL}/transformation/getByVersionId`;
 const getLibrariesUrl = `${CONFIG_BACKEND_URL}/transformationLibrary/getByVersionId`;
+const getRudderLibrariesUrl = `${CONFIG_BACKEND_URL}/rudderstackTransformationLibrary/getByImportName`;
 
 // Gets the transformation from config backend.
 // Stores the transformation object in memory with time to live after which it expires.
@@ -56,6 +58,32 @@ async function getLibraryCodeV1(versionId) {
     stats.timing('get_libraries_code', startTime, tags);
     const myJson = await response.json();
     libraryCache[versionId] = myJson;
+    return myJson;
+  } catch (error) {
+    logger.error(error);
+    stats.increment('get_libraries_code.error', tags);
+    throw error;
+  }
+}
+
+async function getRudderLibraryCode(importName) {
+  const rudderLibrary = rudderLibraryCache[importName];
+  if (rudderLibrary) return rudderLibrary;
+  const tags = {
+    libraryVersionId: importName,
+    version: 1,
+    type: 'rudderlibrary',
+  };
+  try {
+    const url = `${getRudderLibrariesUrl}?importName=${importName}`;
+    const startTime = new Date();
+    const response = await fetchWithProxy(url);
+
+    responseStatusHandler(response.status, 'Rudder Library', importName, url);
+    stats.increment('get_libraries_code.success', tags);
+    stats.timing('get_libraries_code', startTime, tags);
+    const myJson = await response.json();
+    rudderLibraryCache[importName] = myJson;
     return myJson;
   } catch (error) {
     logger.error(error);

@@ -11,7 +11,7 @@ const {
   getDynamicErrorType,
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const { NetworkError } = require("../../util/errorTypes");
+const { NetworkError, NetworkInstrumentationError } = require("../../util/errorTypes");
 
 /**
  * This function helps to determine type of error occured. According to the response
@@ -22,16 +22,23 @@ const { NetworkError } = require("../../util/errorTypes");
  * @returns
  */
 //  https://developers.criteo.com/marketing-solutions/v2021.01/docs/how-to-handle-api-errors#:~:text=the%20response%20body.-,401,-Authentication%20error
-const getAuthErrCategory = (status,code) => {
-  if (status === '401' && code === 'authorization-token-invalid') {
+const getAuthErrCategory = (status, code) => {
+  if (status === 401 && code === 'authorization-token-invalid') {
     return REFRESH_TOKEN;
   }
-
+  if (status === 404 && code === 'audience-invalid') {
+    return 'audience-invalid';
+  }
   return "";
 };
 
 const criteoAudienceRespHandler = (destResponse, stageMsg) => {
   const { status, response } = destResponse;
+  const category = getAuthErrCategory(status, response?.errors[0]?.code);
+  if (category === 'audience-invalid') {
+    throw new NetworkInstrumentationError(
+      "AudienceId is Invalid. Pleae Provide Valid AudienceId", response);
+  }
   throw new NetworkError(
     `${response?.errors[0]?.title} ${stageMsg}`,
     status,
@@ -39,7 +46,7 @@ const criteoAudienceRespHandler = (destResponse, stageMsg) => {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
     },
     response,
-    getAuthErrCategory(status,response?.errors[0]?.code)
+    category
   );
 };
 

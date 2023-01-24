@@ -75,7 +75,7 @@ const processEvent = async (metadata, message, destination) => {
       "listData is not present inside properties. Aborting message."
     );
   }
-  if (message?.type.toLowerCase() === "audiencelist") {
+  if (message?.type?.toLowerCase() === "audiencelist") {
     response = await responseBuilder(message, destination, accessToken);
   } else {
     throw new InstrumentationError(

@@ -16,7 +16,22 @@
             }
           ]
       },
-      "status": "401"
+      "status": 401
+    }
+  },
+  "https://api.criteo.com/2022-10/audiences/34896/contactlist": {
+    "code": "400",
+    "response": {
+      "data": {
+          "errors": [
+            {
+              "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
+              "type": "authorization",
+              "code": "audience-invalid"
+            }
+          ]
+      },
+      "status": 404
     }
   }
 }

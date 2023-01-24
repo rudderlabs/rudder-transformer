@@ -56,6 +56,63 @@
     }
   },
   {
+    "description": "Invalid Configuration (Track known users toggle is on and userId is missing in request)",
+    "input": {
+      "message": {
+        "type": "track",
+        "channel": "web",
+        "event": "Product Added",
+        "properties": { "price": 999, "quantity": 1 },
+        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+      },
+      "destination": {
+        "Config": {
+          "sdkKey": "test-sdk-key",
+          "baseUrl": "https://example.com",
+          "trackKnownUsers": true,
+          "nonInteraction": false,
+          "listen": false,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true
+        }
+      }
+    },
+    "output": {
+      "error": "RudderStack will only track users associated with a userId when the trackKnownUsers setting is enabled"
+    }
+  },
+  {
+    "description": "Invalid Configuration (Track known users toggle is off and anonymousId is missing in request)",
+    "input": {
+      "message": {
+        "type": "track",
+        "channel": "web",
+        "event": "Product Added",
+        "properties": { "price": 999, "quantity": 1 },
+        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff"
+      },
+      "destination": {
+        "Config": {
+          "sdkKey": "test-sdk-key",
+          "baseUrl": "https://example.com",
+          "trackKnownUsers": false,
+          "nonInteraction": false,
+          "listen": false,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true
+        }
+      }
+    },
+    "output": {
+      "error": "AnonymousId is required when trackKnownUsers setting is disabled"
+    }
+  },
+  {
     "description": "Track call without event",
     "input": {
       "message": {

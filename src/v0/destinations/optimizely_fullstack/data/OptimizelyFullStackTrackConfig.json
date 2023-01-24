@@ -1,11 +1,5 @@
 [
   {
-    "destKey": "userId",
-    "sourceKeys": "userId",
-    "sourceFromGenericMap": true,
-    "required": true
-  },
-  {
     "destKey": "userAttributes",
     "sourceKeys": "traits",
     "sourceFromGenericMap": true

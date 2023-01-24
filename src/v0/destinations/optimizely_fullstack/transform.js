@@ -6,7 +6,7 @@ const {
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
 } = require('../../util');
-const { validateConfig } = require('./util');
+const { validateConfig, validateEvent } = require('./util');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, getTrackEndPoint } = require('./config');
 const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 
@@ -29,16 +29,20 @@ const responseBuilder = (payload, endpoint, destination) => {
 
 // ref:- https://docs.developers.optimizely.com/experimentation/v3.1.0-full-stack/reference/trackevent
 const trackResponseBuilder = (message, destination) => {
-  const { event, anonymousId } = message;
+  const { event, userId, anonymousId } = message;
   if (!event) {
     throw new InstrumentationError('Event name is required');
   }
+
+  validateEvent(message, destination);
   const { baseUrl, trackKnownUsers } = destination.Config;
   const endpoint = getTrackEndPoint(baseUrl, event);
   const { name } = CONFIG_CATEGORIES.TRACK;
   const payload = constructPayload(message, MAPPING_CONFIG[name]);
-  if (!trackKnownUsers) {
-    payload.userId = anonymousId;
+
+  payload.userId = anonymousId;
+  if (trackKnownUsers) {
+    payload.userId = userId;
   }
   return responseBuilder(payload, endpoint, destination);
 };

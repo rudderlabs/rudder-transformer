@@ -51,9 +51,6 @@ const responseBuilder = async (message, destination, accessToken) => {
   if (responseArray.length === 0) {
     throw new InstrumentationError(`Payload could not be populated`);
   }
-  if (responseArray.length === 1) {
-    return responseArray[0];
-  }
   return responseArray;
 };
 

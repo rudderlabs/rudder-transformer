@@ -20,6 +20,7 @@ const {
   generateBatchedPaylaodForArray,
   mailchimpTrackEventEndpoint,
   mailchimpEventsEndpoint,
+  formatTimestampMailchimp,
 } = require('./utils');
 const { MAX_BATCH_SIZE, VALID_STATUSES, TRACK_CONFIG } = require('./config');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
@@ -48,7 +49,7 @@ const responseBuilderSimple = (finalPayload, endpoint, Config, audienceId) => {
   };
 };
 
-const trackResponseBuilder = async (message, { Config }) => {
+const trackResponseBuilder = (message, { Config }) => {
   const { datacenterId } = Config;
   const audienceId = getAudienceId(message, Config);
   const email = getFieldValueFromMessage(message, 'email');
@@ -57,6 +58,8 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
   const endpoint = mailchimpEventsEndpoint(datacenterId, audienceId, email);
   const processedPayload = constructPayload(message, TRACK_CONFIG);
+  processedPayload.occurred_at =
+    processedPayload.occurred_at && formatTimestampMailchimp(processedPayload.occurred_at);
   processedPayload.name = processedPayload.name.trim().replace(/\s+/g, '_');
   if (isDefinedAndNotNull(processedPayload.properties?.is_syncing)) {
     delete processedPayload.properties.is_syncing;
@@ -103,7 +106,7 @@ const process = async (event) => {
       response = await identifyResponseBuilder(message, destination);
       break;
     case EventType.TRACK:
-      response = await trackResponseBuilder(message, destination);
+      response = trackResponseBuilder(message, destination);
       break;
     default:
       throw new InstrumentationError(`message type ${messageType} is not supported`);

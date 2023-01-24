@@ -32,38 +32,33 @@ function handleContextData(payload, destination, message) {
   return payload;
 }
 
-function handleEvar(payload, destination, message) {
-  const { eVarMapping } = destination;
-  const eVar = {};
+function rudderPropToDestMap (destVarMapping, message, payload, destVarStrPrefix) {
+  const mappedVar = {};
   // pass the Rudder Property mapped in the ui whose evar you want to map
-  Object.keys(eVarMapping).forEach(key => {
+  Object.keys(destVarMapping).forEach(key => {
     const val = get(message, `properties.${key}`);
     if (isDefinedAndNotNull(val)) {
-      eVar[`eVar${eVarMapping[key]}`] = val;
+      const destVarKey = destVarStrPrefix + destVarMapping[key]
+      mappedVar[destVarKey] = val;
     }
   });
-  if (Object.keys(eVar).length > 0) {
+  if (Object.keys(mappedVar).length > 0) {
     // non-empty object
-    Object.assign(payload, eVar);
+    Object.assign(payload, mappedVar);
   }
   return payload;
+}
+
+function handleEvar(payload, destination, message) {
+  // pass the Rudder Property mapped in the ui whose evar you want to map
+  const { eVarMapping } = destination;
+  return rudderPropToDestMap(eVarMapping, message, payload, 'eVar');
 }
 
 function handleHier(payload, destination, message) {
   // pass the Rudder Property mapped in the ui whose hier you want to map
   const { hierMapping } = destination;
-  const hier = {};
-  Object.keys(hierMapping).forEach(key => {
-    const val = get(message, `properties.${key}`);
-    if (isDefinedAndNotNull(val)) {
-      hier[`hier${hierMapping[key]}`] = val;
-    }
-  });
-  if (Object.keys(hier).length > 0) {
-    // non-empty object
-    Object.assign(payload, hier);
-  }
-  return payload;
+  return rudderPropToDestMap(hierMapping, message, payload, 'hier');
 }
 
 function handleList(payload, destination, message, properties) {

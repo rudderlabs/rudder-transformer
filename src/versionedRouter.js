@@ -36,6 +36,7 @@ const { isCdkV2Destination, getCdkV2TestThreshold } = require('./cdk/v2/utils');
 const { PlatformError } = require('./v0/util/errorTypes');
 const { getCachedWorkflowEngine, processCdkV2Workflow } = require('./cdk/v2/handler');
 const { processCdkV1 } = require('./cdk/v1/handler');
+const {oncehubTransformer} = require("./util/oncehub-custom-transformer");
 
 const CDK_V1_DEST_PATH = 'cdk/v1';
 
@@ -222,8 +223,10 @@ async function handleDest(ctx, version, destination) {
   let destHandler = null;
   const respList = await Promise.all(
     events.map(async (event) => {
-      try {
-        let parsedEvent = event;
+      try {        
+        // look for traits under every object in file v0\util\data\GenericFieldMapping.json like
+        // "traits": ["traits", "context.traits"]
+        let parsedEvent = oncehubTransformer(destination,event);
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;

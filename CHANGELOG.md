@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.12.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.11.1...v1.12.0) (2023-01-19)
+
+
+### Features
+
+* **BQStream:** add batch support ([#1377](https://github.com/rudderlabs/rudder-transformer/issues/1377)) ([14c7531](https://github.com/rudderlabs/rudder-transformer/commit/14c7531635b5348ef518dcad483f25d4adeddddd))
+* **destination:** onboard lemnisk integration  ([#1787](https://github.com/rudderlabs/rudder-transformer/issues/1787)) ([3c6b9e1](https://github.com/rudderlabs/rudder-transformer/commit/3c6b9e148dff559357fb61de49602f9d1689d699))
+* ga4 page calls are discarded if hybrid mode is enabled ([#1794](https://github.com/rudderlabs/rudder-transformer/issues/1794)) ([ca12d07](https://github.com/rudderlabs/rudder-transformer/commit/ca12d078e3f936c4c0fd4449259d1a55ba0a4424))
+* sessionId consistency across destinations ([#1789](https://github.com/rudderlabs/rudder-transformer/issues/1789)) ([ff68a44](https://github.com/rudderlabs/rudder-transformer/commit/ff68a4488e50f4a44c950395d0f9e5dc514db1df))
+
+
+### Bug Fixes
+
+* add sources as valid channel to cdkv1 ([bd74ef7](https://github.com/rudderlabs/rudder-transformer/commit/bd74ef7eff712d4db75856a205ddaa473d80ddd9))
+* add sources as valid channel to cdkv1 ([#1803](https://github.com/rudderlabs/rudder-transformer/issues/1803)) ([e3057db](https://github.com/rudderlabs/rudder-transformer/commit/e3057dbff9d8daa1f64b5cd6de6b57ab97c016ee))
+* array type check for externalIdArray ([#1785](https://github.com/rudderlabs/rudder-transformer/issues/1785)) ([dec3bb6](https://github.com/rudderlabs/rudder-transformer/commit/dec3bb6661b6737203964b2c4b5e3d2bd7421433))
+* change destination configuration errors to abortable ([#1790](https://github.com/rudderlabs/rudder-transformer/issues/1790)) ([fb1281d](https://github.com/rudderlabs/rudder-transformer/commit/fb1281d2bc090bda34c7420c10946504e83756ef))
+* **integration:** GAOC - fix timestamp format, allow calls without custom variables ([#1796](https://github.com/rudderlabs/rudder-transformer/issues/1796)) ([7c450ee](https://github.com/rudderlabs/rudder-transformer/commit/7c450ee78db2052bbb70866cbc6bd98cfd9c32b4))
+* iterable alias call is separated from identify batching ([#1777](https://github.com/rudderlabs/rudder-transformer/issues/1777)) ([3676c45](https://github.com/rudderlabs/rudder-transformer/commit/3676c4591e8b241ad6a7873954bc8f07e7a69584))
+* products array mapping and rename impact_radius to impact ([#1797](https://github.com/rudderlabs/rudder-transformer/issues/1797)) ([f812f0d](https://github.com/rudderlabs/rudder-transformer/commit/f812f0d3fbff6d6bfdd3670c59cf8ea01744f80f))
+* remove regex validation for phone_number ([#1771](https://github.com/rudderlabs/rudder-transformer/issues/1771)) ([6c01642](https://github.com/rudderlabs/rudder-transformer/commit/6c016428b496cea7e3771d3cf5ab4dfbbd7e382b))
+
+
+### Miscellaneous
+
+* fix formatting and linting issues ([#1772](https://github.com/rudderlabs/rudder-transformer/issues/1772)) ([fb8b818](https://github.com/rudderlabs/rudder-transformer/commit/fb8b818b2cbd05f784117b9f3040856dab1a7346))
+* **owner:** added a code owner ([#1793](https://github.com/rudderlabs/rudder-transformer/issues/1793)) ([1c6f92a](https://github.com/rudderlabs/rudder-transformer/commit/1c6f92a90363489bfc3e9430ec50fb30b2a65557))
+
 ## [1.11.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.11.0...v1.11.1) (2023-01-13)
 
 

@@ -1,6 +1,26 @@
 const get = require('get-value');
-const { isDefinedAndNotNull } = require('../../util');
+const { isDefinedAndNotNull, getValueFromMessage } = require('../../util');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const SOURCE_KEYS = ['context.traits', 'properties', 'traits'];
+
+/**
+ *
+ * @param {*} message
+ * @param {*} sourceKey
+ * @param {*} mappingKey
+ *
+ * here we iterate through free flowing objects inside our events
+ * and check for the property value. Property with Whitespace between them
+ * is also supported
+ */
+const getMappingFieldValueFormMessage = (message, sourceKey, mappingKey) => {
+  let value;
+  const tempStore = getValueFromMessage(message, sourceKey);
+  if (tempStore) {
+    value = tempStore[mappingKey] || get(tempStore, mappingKey);
+  }
+  return value;
+};
 
 const stringifyValue = val => {
   if (val === null) {
@@ -36,10 +56,18 @@ function rudderPropToDestMap (destVarMapping, message, payload, destVarStrPrefix
   const mappedVar = {};
   // pass the Rudder Property mapped in the ui whose evar you want to map
   Object.keys(destVarMapping).forEach(key => {
-    const val = get(message, `properties.${key}`);
+    let val = get(message, `properties.${key}`);
     if (isDefinedAndNotNull(val)) {
       const destVarKey = destVarStrPrefix + destVarMapping[key]
       mappedVar[destVarKey] = val;
+    }
+    else {
+      SOURCE_KEYS.some((sourceKey) => {
+        val = getMappingFieldValueFormMessage(message, sourceKey, key);
+        if (isDefinedAndNotNull(val)) {
+          mappedVar[`${destVarStrPrefix}${[destVarMapping[key]]}`] = val;
+        }
+      })
     }
   });
   if (Object.keys(mappedVar).length > 0) {

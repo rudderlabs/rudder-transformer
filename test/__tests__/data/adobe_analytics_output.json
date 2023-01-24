@@ -35,7 +35,7 @@
       "JSON": {},
       "JSON_ARRAY": {},
       "XML": {
-        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><events>scOpen</events><products/><reportSuiteID>drdev2</reportSuiteID></request>"
+        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><events>scOpen</events><products>;;1;0</products><reportSuiteID>drdev2</reportSuiteID></request>"
       },
       "FORM": {}
     },
@@ -54,7 +54,7 @@
       "JSON": {},
       "JSON_ARRAY": {},
       "XML": {
-        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><purchaseID>undefined</purchaseID><transactionID>undefined</transactionID><events>scCheckout</events><products/><reportSuiteID>drdev2</reportSuiteID></request>"
+        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><purchaseID>undefined</purchaseID><transactionID>undefined</transactionID><events>scCheckout</events><products>;;1;0</products><reportSuiteID>drdev2</reportSuiteID></request>"
       },
       "FORM": {}
     },
@@ -73,7 +73,7 @@
       "JSON": {},
       "JSON_ARRAY": {},
       "XML": {
-        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><events>scView</events><products/><reportSuiteID>drdev2</reportSuiteID></request>"
+        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><events>scView</events><products>;;1;0</products><reportSuiteID>drdev2</reportSuiteID></request>"
       },
       "FORM": {}
     },
@@ -92,7 +92,7 @@
       "JSON": {},
       "JSON_ARRAY": {},
       "XML": {
-        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><purchaseID>undefined</purchaseID><transactionID>undefined</transactionID><events>purchase</events><products/><reportSuiteID>drdev2</reportSuiteID></request>"
+        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><purchaseID>undefined</purchaseID><transactionID>undefined</transactionID><events>purchase</events><products>;;1;0</products><reportSuiteID>drdev2</reportSuiteID></request>"
       },
       "FORM": {}
     },
@@ -111,7 +111,7 @@
       "JSON": {},
       "JSON_ARRAY": {},
       "XML": {
-        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><events>scRemove</events><products/><reportSuiteID>drdev2</reportSuiteID></request>"
+        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><events>scRemove</events><products>;;1;0</products><reportSuiteID>drdev2</reportSuiteID></request>"
       },
       "FORM": {}
     },
@@ -130,7 +130,7 @@
       "JSON": {},
       "JSON_ARRAY": {},
       "XML": {
-        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><events>scAdd</events><products/><reportSuiteID>drdev2</reportSuiteID></request>"
+        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><events>scAdd</events><products>;;1;0</products><reportSuiteID>drdev2</reportSuiteID></request>"
       },
       "FORM": {}
     },
@@ -149,7 +149,7 @@
       "JSON": {},
       "JSON_ARRAY": {},
       "XML": {
-        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><events>prodView</events><products/><reportSuiteID>drdev2</reportSuiteID></request>"
+        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><events>prodView</events><products>;;1;0</products><reportSuiteID>drdev2</reportSuiteID></request>"
       },
       "FORM": {}
     },
@@ -475,7 +475,7 @@
       "JSON": {},
       "JSON_ARRAY": {},
       "XML": {
-        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><purchaseID>oid100</purchaseID><transactionID>oid100</transactionID><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><events>scCheckout</events><products/><reportSuiteID>drdev2</reportSuiteID></request>"
+        "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><purchaseID>oid100</purchaseID><transactionID>oid100</transactionID><marketingcloudorgid>00E287634SDFE6200A495E6B@AdobeOrg</marketingcloudorgid><events>scCheckout</events><products>;;1;0</products><reportSuiteID>drdev2</reportSuiteID></request>"
       },
       "FORM": {}
     },

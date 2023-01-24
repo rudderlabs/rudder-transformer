@@ -171,20 +171,24 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
     });
   }
 
+  const ECOM_PRODUCT_EVENTS = ["product viewed", "viewed product", "product list viewed", "viewed product list", "product added", "added product", "product removed", "removed product", "order completed", "completed order", "cart viewed", "viewed cart", "checkout started", "started checkout", "cart opened", "opened cart"]
   // product string section
   const adobeProdEvent = productMerchEventToAdobeEvent[event];
   const prodString = [];
   let prodEventString = '';
   let prodEVarsString = '';
 
-  if (adobeProdEvent) {
+  if (adobeProdEvent || ECOM_PRODUCT_EVENTS.includes(event.toLowerCase())) {
     const isSingleProdEvent =
       adobeProdEvent === 'scAdd' ||
       adobeProdEvent === 'scRemove' ||
       (adobeProdEvent === 'prodView' && event.toLowerCase() !== 'product list viewed') ||
       !Array.isArray(properties.products);
     const productsArr = isSingleProdEvent ? [properties] : properties.products;
-    const adobeProdEventArr = adobeProdEvent.split(',');
+    let adobeProdEventArr = [];
+    if (adobeProdEvent) {
+      adobeProdEventArr = adobeProdEvent.split(',');
+    }
 
     productsArr.forEach(value => {
       const category = value.category || '';
@@ -341,7 +345,6 @@ const process = async event => {
   }
   if (payload) {
     const response = await responseBuilderSimple(message, formattedDestination, payload);
-    console.log(response);
     return response;
   }
   throw new TransformationError('AA: Unprocessable Event');

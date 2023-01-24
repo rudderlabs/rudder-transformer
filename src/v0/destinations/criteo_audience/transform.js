@@ -32,21 +32,24 @@ const prepareResponse = (payload, audienceId, accessToken) => {
  * @param {*} destination
  * @returns
  */
-const responseBuilder = async (message, destination, accessToken) => {
+const responseBuilder = (message, destination, accessToken) => {
   const responseArray = [];
   const { Config } = destination;
   const { audienceId } = Config;
   const { listData } = message.properties;
   operation.forEach(op => {
     if (listData[op]) {
-      const criteoPayload = preparePayload(
+      const criteoPayloadArray = preparePayload(
         listData[op],
         op,
         Config
       );
-      responseArray.push(
-        prepareResponse(criteoPayload, audienceId, accessToken)
-      );
+      criteoPayloadArray.forEach(criteoPayload => {
+        responseArray.push(
+          prepareResponse(criteoPayload, audienceId, accessToken)
+        );
+      });
+      
     }
   });
 

@@ -274,10 +274,10 @@ async function handleDest(ctx, version, destination) {
               output: { ...ev, userId },
               metadata: destHandler?.processMetadata
                 ? destHandler.processMetadata({
-                    metadata: event.metadata,
-                    inputEvent: parsedEvent,
-                    outputEvent: ev,
-                  })
+                  metadata: event.metadata,
+                  inputEvent: parsedEvent,
+                  outputEvent: ev,
+                })
                 : event.metadata,
               statusCode: 200,
             };
@@ -507,6 +507,17 @@ async function routerHandleDest(ctx) {
           [tags.TAG_NAMES.WORKSPACE_ID]: resp.metadata[0]?.workspaceId,
         };
       });
+    respEvents.forEach((resp) => {
+      const { statusCode, batchedRequest } = resp;
+      let {userId}= batchedRequest;
+      if (!userId) {
+        userId = '';
+      }
+      if (statusCode !== 400 && userId) {
+        userId = `${userId}`;
+      }
+      batchedRequest.userId = userId;
+    });
   } catch (error) {
     logger.error(error);
 

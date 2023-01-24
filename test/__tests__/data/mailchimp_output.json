@@ -319,7 +319,7 @@
     "body": {
       "JSON": {
         "name": "local_testing",
-        "occured_at": "2019-11-15T10:26:53Z",
+        "occurred_at": "2019-11-15T10:26:53Z",
         "properties": {
           "brand": "Aster",
           "product": "Garments"
@@ -345,7 +345,7 @@
     "body": {
       "JSON": {
         "name": "local_testing",
-        "occured_at": "2019-11-15T10:26:53Z",
+        "occurred_at": "2019-11-15T10:26:53Z",
         "is_syncing": false,
         "properties": {
           "brand": "Aster",
@@ -378,7 +378,7 @@
     "body": {
       "JSON": {
         "name": "local_testing",
-        "occured_at": "2019-11-15T10:26:53Z"
+        "occurred_at": "2019-11-15T10:26:53Z"
       },
       "XML": {},
       "JSON_ARRAY": {},

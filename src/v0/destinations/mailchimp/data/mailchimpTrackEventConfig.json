@@ -10,7 +10,7 @@
     "required": false
   },
   {
-    "destKey": "occured_at",
+    "destKey": "occurred_at",
     "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,
     "required": false

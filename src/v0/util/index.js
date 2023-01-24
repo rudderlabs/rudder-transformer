@@ -742,7 +742,10 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
         formattedVal = formattedVal.replace('https://', '').replace('http://', '');
         break;
       case 'domainUrlV2': {
-        const url = new URL(formattedVal);
+        const url = isValidUrl(formattedVal);
+        if (!url) {
+          throw new InstrumentationError(`Invalid URL: ${formattedVal}`);
+        }
         formattedVal = url.hostname.replace('www.', '');
         break;
       }

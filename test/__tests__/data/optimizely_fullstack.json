@@ -430,5 +430,59 @@
         "version": "1"
       }
     ]
+  },
+  {
+    "description": "Screen call",
+    "input": {
+      "message": {
+        "type": "screen",
+        "channel": "web",
+        "userId": "test123",
+        "name": "Main",
+        "properties": {
+          "url": "https://www.google.com/",
+          "title": "Google Main"
+        },
+        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+      },
+      "destination": {
+        "Config": {
+          "sdkKey": "test-sdk-key",
+          "baseUrl": "https://example.com",
+          "trackKnownUsers": true,
+          "nonInteraction": false,
+          "listen": false,
+          "trackCategorizedPages": false,
+          "trackNamedPages": true
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "userId": "test123",
+          "userAttributes": { "firstName": "John", "age": 27 },
+          "eventTags": {
+            "url": "https://www.google.com/",
+            "title": "Google Main"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://example.com/v1/track?eventKey=Viewed%20Main%20screen",
+      "files": {},
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Optimizely-SDK-Key": "test-sdk-key"
+      },
+      "method": "POST",
+      "params": {},
+      "type": "REST",
+      "version": "1"
+    }
   }
 ]

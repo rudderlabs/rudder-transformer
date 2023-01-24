@@ -64,6 +64,15 @@ const pageResponseBuilder = (message, destination) => {
   return returnValue;
 };
 
+const screenResponseBuilder = (message, destination) => {
+  const newMessage = { ...message };
+  newMessage.event = 'Viewed screen';
+  if (message.name) {
+    newMessage.event = `Viewed ${message.name} screen`;
+  }
+  return trackResponseBuilder(newMessage, destination);
+};
+
 const processEvent = (message, destination) => {
   validateConfig(destination);
   if (!message.type) {
@@ -78,6 +87,9 @@ const processEvent = (message, destination) => {
       break;
     case EventType.PAGE:
       response = pageResponseBuilder(message, destination);
+      break;
+    case EventType.SCREEN:
+      response = screenResponseBuilder(message, destination);
       break;
     default:
       throw new InstrumentationError(`Event type "${messageType}" is not supported`);

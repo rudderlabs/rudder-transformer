@@ -6,11 +6,13 @@ const {
   defaultRequestConfig,
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
-  defaultPatchRequestConfig
+  defaultPatchRequestConfig,
+  getAccessToken,
+  getEventType
 } = require("../../util");
 const { InstrumentationError } = require("../../util/errorTypes");
 
-const { getAccessToken, preparePayload } = require("./util");
+const { preparePayload } = require("./util");
 
 const prepareResponse = (payload, audienceId, accessToken) => {
   const response = defaultRequestConfig();
@@ -55,7 +57,7 @@ const responseBuilder = async (message, destination, accessToken) => {
 };
 
 const processEvent = async (metadata, message, destination) => {
-  const accessToken = getAccessToken(metadata);
+  const accessToken = getAccessToken(metadata, 'accessToken');
   let response;
   if (!message.type) {
     throw new InstrumentationError(
@@ -72,7 +74,7 @@ const processEvent = async (metadata, message, destination) => {
       "listData is not present inside properties. Aborting message."
     );
   }
-  if (message?.type?.toLowerCase() === "audiencelist") {
+  if (getEventType(message) === "audiencelist") {
     response = await responseBuilder(message, destination, accessToken);
   } else {
     throw new InstrumentationError(
@@ -82,9 +84,7 @@ const processEvent = async (metadata, message, destination) => {
   return response;
 };
 
-const process = async event => {
-  return processEvent(event.metadata, event.message, event.destination);
-};
+const process = async event => processEvent(event.metadata, event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

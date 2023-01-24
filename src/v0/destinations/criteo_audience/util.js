@@ -1,29 +1,9 @@
 const { isDefinedAndNotNullAndNotEmpty } = require("../../util");
 const {
   ConfigurationError,
-  OAuthSecretError,
   InstrumentationError
 } = require("../../util/errorTypes");
-/**
- * Get access token to be bound to the event req headers
- *
- * Note:
- * This method needs to be implemented particular to the destination
- * As the schema that we'd get in `metadata.secret` can be different
- * for different destinations
- *
- * @param {Object} metadata
- * @returns
- */
-const getAccessToken = metadata => {
-  // OAuth for this destination
-  const { secret } = metadata;
-  // we would need to verify if secret is present and also if the access token field is present in secret
-  if (!secret || !secret.accessToken) {
-    throw new OAuthSecretError("Empty/Invalid access token");
-  }
-  return secret.accessToken;
-};
+
 const populateIdentifiers = (audienceList, audienceType) => {
   const identifiers = [];
   audienceList.forEach(userTraits => {
@@ -71,6 +51,5 @@ const preparePayload = (audienceList, operationType, Config) => {
 };
 
 module.exports = {
-  getAccessToken,
   preparePayload
 };

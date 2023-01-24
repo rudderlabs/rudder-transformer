@@ -2,6 +2,15 @@ const get = require('get-value');
 const { isDefinedAndNotNull } = require('../../util');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
+const stringifyValue = val => {
+  if (val === null) {
+    return String(val);
+  }
+  return val;
+};
+
+const stringifyValueAndJoinWithDelimitter = (valArr, delimitter=';') => valArr.map(stringifyValue).join(delimitter);
+
 function handleContextData(payload, destination, message) {
   const { contextDataPrefix, contextDataMapping } = destination;
   const cDataPrefix = contextDataPrefix ? `${contextDataPrefix}` : '';
@@ -120,4 +129,5 @@ module.exports = {
   handleHier,
   handleList,
   handleCustomProperties,
+  stringifyValueAndJoinWithDelimitter
 };

@@ -25,19 +25,20 @@ const {
   handleHier,
   handleList,
   handleCustomProperties,
+  stringifyValueAndJoinWithDelimitter,
 } = require('./utils');
 
-const responseBuilderSimple = async (message, destination, basicPayload) => {
+const responseBuilderSimple = async (message, destinationConfig, basicPayload) => {
   let payload = constructPayload(message, commonConfig);
   const { context, properties } = message;
   // handle contextData
-  payload = handleContextData(payload, destination, message);
+  payload = handleContextData(payload, destinationConfig, message);
 
   // handle eVar
-  payload = handleEvar(payload, destination, message);
+  payload = handleEvar(payload, destinationConfig, message);
 
   // handle fallbackVisitorId
-  const { noFallbackVisitorId } = destination;
+  const { noFallbackVisitorId } = destinationConfig;
   // 'AdobeFallbackVisitorId' should be the type of external id in the payload i.e "AdobeFallbackVisitorId": "value"
   if (!noFallbackVisitorId) {
     const fallbackVisitorId = getDestinationExternalID(message, 'AdobeFallbackVisitorId');
@@ -47,22 +48,22 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
   }
 
   // handle hier
-  payload = handleHier(payload, destination, message);
+  payload = handleHier(payload, destinationConfig, message);
 
   // handle list
-  payload = handleList(payload, destination, message, properties);
+  payload = handleList(payload, destinationConfig, message, properties);
 
   // handle pageName, pageUrl
-  const contextPageUrl = context && context.page ? context.page.url : undefined;
-  const propertiesPageUrl = properties && properties.pageUrl;
+  const contextPageUrl = context?.page?.url;
+  const propertiesPageUrl = properties?.pageUrl;
   const pageUrl = contextPageUrl || propertiesPageUrl;
   if (isDefinedAndNotNullAndNotEmpty(pageUrl)) {
     payload.pageUrl = pageUrl;
   }
-  if (destination.trackPageName) {
+  if (destinationConfig?.trackPageName) {
     // better handling possible here, both error and implementation wise
-    const contextPageName = context && context.page ? context.page.name : undefined;
-    const propertiesPageName = properties && properties.pageName;
+    const contextPageName = context?.page?.name;
+    const propertiesPageName = properties?.pageName;
     const pageName = propertiesPageName || contextPageName;
     if (isDefinedAndNotNullAndNotEmpty(pageName)) {
       payload.pageName = pageName;
@@ -70,7 +71,7 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
   }
 
   // handle custom properties
-  payload = handleCustomProperties(payload, destination, message, properties);
+  payload = handleCustomProperties(payload, destinationConfig, message, properties);
 
   // handle visitorID and timestamp
   const {
@@ -79,7 +80,7 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
     preferVisitorId,
     timestampOptionalReporting,
     reportSuiteIds,
-  } = destination;
+  } = destinationConfig;
   if (!dropVisitorId) {
     const userId = getFieldValueFromMessage(message, 'userIdOnly');
     if (isDefinedAndNotNullAndNotEmpty(userId)) {
@@ -101,7 +102,7 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
   }
 
   // handle marketingcloudorgid
-  const { marketingCloudOrgId } = destination;
+  const { marketingCloudOrgId } = destinationConfig;
   if (isDefinedAndNotNull(marketingCloudOrgId)) {
     payload.marketingcloudorgid = marketingCloudOrgId;
   }
@@ -117,7 +118,7 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
     true, // add generic XML header
   );
 
-  const { trackingServerSecureUrl } = destination;
+  const { trackingServerSecureUrl } = destinationConfig;
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.XML = { payload: xmlResponse };
@@ -131,7 +132,7 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
   return response;
 };
 
-const processTrackEvent = (message, adobeEventName, destination, extras = {}) => {
+const processTrackEvent = (message, adobeEventName, destinationConfig, extras = {}) => {
   // set event string and product string only
   // handle extra properties
   // rest of the properties are handled under common properties
@@ -142,15 +143,16 @@ const processTrackEvent = (message, adobeEventName, destination, extras = {}) =>
     productIdentifier,
     productMerchProperties,
     productMerchEvarsMap,
-  } = destination;
-  const { event, properties } = message;
+  } = destinationConfig;
+  const { event: rawMessageEvent, properties } = message;
+  const event = rawMessageEvent.toLowerCase();
   const adobeEventArr = adobeEventName ? adobeEventName.split(',') : [];
   // adobeEventArr is an array of events which is defined as
   // ["eventName", "mapped Adobe Event=mapped merchproperty's value", "mapped Adobe Event=mapped merchproperty's value", . . .]
 
   // merch event section
-  if (eventMerchEventToAdobeEvent[event.toLowerCase()] && eventMerchProperties) {
-    const adobeMerchEvent = eventMerchEventToAdobeEvent[event.toLowerCase()].split(',');
+  if (eventMerchEventToAdobeEvent[event] && eventMerchProperties) {
+    const adobeMerchEvent = eventMerchEventToAdobeEvent[event].split(',');
     eventMerchProperties.forEach(rudderProp => {
       if (rudderProp.eventMerchProperties in properties) {
         adobeMerchEvent.forEach(value => {
@@ -163,14 +165,14 @@ const processTrackEvent = (message, adobeEventName, destination, extras = {}) =>
     });
   }
 
-  if (productMerchEventToAdobeEvent[event.toLowerCase()]) {
+  if (productMerchEventToAdobeEvent[event]) {
     Object.keys(productMerchEventToAdobeEvent).forEach(value => {
       adobeEventArr.push(productMerchEventToAdobeEvent[value]);
     });
   }
 
   // product string section
-  const adobeProdEvent = productMerchEventToAdobeEvent[event.toLowerCase()];
+  const adobeProdEvent = productMerchEventToAdobeEvent[event];
   const prodString = [];
   let prodEventString = '';
   let prodEVarsString = '';
@@ -196,7 +198,7 @@ const processTrackEvent = (message, adobeEventName, destination, extras = {}) =>
       }
 
       const merchMap = [];
-      if (productMerchEventToAdobeEvent[event.toLowerCase()] && productMerchProperties) {
+      if (productMerchEventToAdobeEvent[event] && productMerchProperties) {
         productMerchProperties.forEach(rudderProp => {
           // adding product level merchandise properties
           if (
@@ -239,27 +241,12 @@ const processTrackEvent = (message, adobeEventName, destination, extras = {}) =>
       }
       // preparing the product string for the final payload
       // if prodEventString or prodEVarsString are missing or not
-      if (prodEventString !== '' || prodEVarsString !== '') {
-        const test = [category, item, quantity, total, prodEventString, prodEVarsString].map(
-          val => {
-            if (val == null) {
-              return String(val);
-            }
-            return val;
-          },
-        );
-        prodString.push(test.join(';'));
-      } else {
-        const test = [category, item, quantity, total]
-          .map(val => {
-            if (val === null) {
-              return String(val);
-            }
-            return val;
-          })
-          .join(';');
-        prodString.push(test);
+      let prodArr = [category, item, quantity, total];
+      if (prodEventString || prodEVarsString) {
+        prodArr = [ ...prodArr, prodEventString, prodEVarsString ];
       }
+      const test = stringifyValueAndJoinWithDelimitter(prodArr);
+      prodString.push(test);
     });
   }
 
@@ -270,29 +257,30 @@ const processTrackEvent = (message, adobeEventName, destination, extras = {}) =>
   };
 };
 
-const handleTrack = (message, destination) => {
-  const { event } = message;
+const handleTrack = (message, destinationConfig) => {
+  const { event: rawEvent } = message;
   let payload = null;
   // handle ecommerce events separately
   // generic events should go to the default
-  switch (event && event.toLowerCase()) {
+  const event = rawEvent?.toLowerCase();
+  switch (event) {
     case 'product viewed':
     case 'viewed product':
     case 'product list viewed':
     case 'viewed product list':
-      payload = processTrackEvent(message, 'prodView', destination);
+      payload = processTrackEvent(message, 'prodView', destinationConfig);
       break;
     case 'product added':
     case 'added product':
-      payload = processTrackEvent(message, 'scAdd', destination);
+      payload = processTrackEvent(message, 'scAdd', destinationConfig);
       break;
     case 'product removed':
     case 'removed product':
-      payload = processTrackEvent(message, 'scRemove', destination);
+      payload = processTrackEvent(message, 'scRemove', destinationConfig);
       break;
     case 'order completed':
     case 'completed order':
-      payload = processTrackEvent(message, 'purchase', destination, {
+      payload = processTrackEvent(message, 'purchase', destinationConfig, {
         purchaseID: get(message, 'properties.purchaseId') || get(message, 'properties.order_id'),
         transactionID:
           get(message, 'properties.transactionId') || get(message, 'properties.order_id'),
@@ -300,11 +288,11 @@ const handleTrack = (message, destination) => {
       break;
     case 'cart viewed':
     case 'viewed cart':
-      payload = processTrackEvent(message, 'scView', destination);
+      payload = processTrackEvent(message, 'scView', destinationConfig);
       break;
     case 'checkout started':
     case 'started checkout':
-      payload = processTrackEvent(message, 'scCheckout', destination, {
+      payload = processTrackEvent(message, 'scCheckout', destinationConfig, {
         purchaseID: get(message, 'properties.purchaseId') || get(message, 'properties.order_id'),
         transactionID:
           get(message, 'properties.transactionId') || get(message, 'properties.order_id'),
@@ -312,14 +300,14 @@ const handleTrack = (message, destination) => {
       break;
     case 'cart opened':
     case 'opened cart':
-      payload = processTrackEvent(message, 'scOpen', destination);
+      payload = processTrackEvent(message, 'scOpen', destinationConfig);
       break;
     default:
-      if (destination.rudderEventsToAdobeEvents[event.toLowerCase()]) {
+      if (destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()]) {
         payload = processTrackEvent(
           message,
-          destination.rudderEventsToAdobeEvents[event.toLowerCase()].trim(),
-          destination,
+          destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()].trim(),
+          destinationConfig,
         );
       }
       break;

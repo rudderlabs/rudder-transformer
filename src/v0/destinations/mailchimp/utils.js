@@ -1,6 +1,5 @@
 const axios = require('axios');
 const get = require('get-value');
-const moment = require('moment');
 const md5 = require('md5');
 const { MappedToDestinationKey } = require('../../../constants');
 const logger = require('../../../logger');
@@ -41,18 +40,6 @@ const MAILCHIMP_IDENTIFY_EXCLUSION = [
   'addressLine2',
   'birthday',
 ];
-
-/**
- * Returns ISO8601 formatted timestamp in mailchimp acceptable format
- * @param {*} datacenterId <-- from webapp config
- * @param {*} audienceId <-- from webapp config
- * @returns
- */
-const formatTimestampMailchimp = (timestamp) => {
-  let desiredFormat = 'YYYY-MM-DDTHH:mm:ss+00:00';
-  let momentObj = moment(timestamp);
-  return momentObj.format(desiredFormat);
-};
 
 /**
  * Returns common endpoint for mailchimp
@@ -387,7 +374,6 @@ const generateBatchedPaylaodForArray = (audienceId, events) => {
 
 module.exports = {
   getAudienceId,
-  formatTimestampMailchimp,
   generateBatchedPaylaodForArray,
   mailChimpSubscriptionEndpoint,
   mailchimpEventsEndpoint,

@@ -6,6 +6,7 @@ const {
   constructPayload,
   defaultPostRequestConfig,
   isDefinedAndNotNull,
+  formatTimeStamp,
 } = require('../../util');
 const { EventType } = require('../../../constants');
 const {
@@ -18,14 +19,13 @@ const {
   mailChimpSubscriptionEndpoint,
   getAudienceId,
   generateBatchedPaylaodForArray,
-  mailchimpTrackEventEndpoint,
   mailchimpEventsEndpoint,
 } = require('./utils');
 const { MAX_BATCH_SIZE, VALID_STATUSES, TRACK_CONFIG } = require('./config');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const responseBuilderSimple = (finalPayload, endpoint, Config, audienceId) => {
-  const { datacenterId, apiKey } = Config;
+  const { apiKey } = Config;
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.method = endpoint.includes('events')
@@ -48,7 +48,7 @@ const responseBuilderSimple = (finalPayload, endpoint, Config, audienceId) => {
   };
 };
 
-const trackResponseBuilder = async (message, { Config }) => {
+const trackResponseBuilder = (message, { Config }) => {
   const { datacenterId } = Config;
   const audienceId = getAudienceId(message, Config);
   const email = getFieldValueFromMessage(message, 'email');
@@ -58,6 +58,10 @@ const trackResponseBuilder = async (message, { Config }) => {
   const endpoint = mailchimpEventsEndpoint(datacenterId, audienceId, email);
   const processedPayload = constructPayload(message, TRACK_CONFIG);
   processedPayload.name = processedPayload.name.trim().replace(/\s+/g, '_');
+  processedPayload.occurred_at = formatTimeStamp(
+    processedPayload.occurred_at,
+    'YYYY-MM-DDTHH:mm:ssZ',
+  );
   if (isDefinedAndNotNull(processedPayload.properties?.is_syncing)) {
     delete processedPayload.properties.is_syncing;
   }
@@ -103,7 +107,7 @@ const process = async (event) => {
       response = await identifyResponseBuilder(message, destination);
       break;
     case EventType.TRACK:
-      response = await trackResponseBuilder(message, destination);
+      response = trackResponseBuilder(message, destination);
       break;
     default:
       throw new InstrumentationError(`message type ${messageType} is not supported`);

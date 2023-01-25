@@ -140,9 +140,9 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
     if (Object.keys(objectDiff).length > 0) {
       stats.counter('cdk_live_compare_test_failed', 1, { destType, feature });
       logger.error(
-      `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff_keys=${JSON.stringify(
-        Object.keys(objectDiff)
-      )}`
+        `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff_keys=${JSON.stringify(
+          Object.keys(objectDiff)
+        )}`
       );
       // logger.error(
       //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff=${JSON.stringify(
@@ -175,9 +175,9 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
  * @param {Object} transformedEvent - single transformed event
  * @returns transformedEvent after enrichment
  */
-const enrichTransformedEvent = (transformedEvent) => ({
-    output: { ...transformedEvent, userId: checkAndCorrectUserId(transformedEvent.statusCode, transformedEvent?.userId) },
-  });
+const enrichTransformedEvent = (transformedEvent) => (
+  { ...transformedEvent, userId: checkAndCorrectUserId(transformedEvent.statusCode, transformedEvent?.userId) }
+);
 
 async function handleV0Destination(destHandler, destType, inputArr, feature) {
   const v0Result = {};
@@ -268,16 +268,16 @@ async function handleDest(ctx, version, destination) {
             respEvents = [respEvents];
           }
           return respEvents.map((ev) => ({
-              output: enrichTransformedEvent(ev),
-              metadata: destHandler?.processMetadata
-                ? destHandler.processMetadata({
-                  metadata: event.metadata,
-                  inputEvent: parsedEvent,
-                  outputEvent: ev,
-                })
-                : event.metadata,
-              statusCode: 200,
-            }));
+            output: enrichTransformedEvent(ev),
+            metadata: destHandler?.processMetadata
+              ? destHandler.processMetadata({
+                metadata: event.metadata,
+                inputEvent: parsedEvent,
+                outputEvent: ev,
+              })
+              : event.metadata,
+            statusCode: 200,
+          }));
         }
         return undefined;
       } catch (error) {

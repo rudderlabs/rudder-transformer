@@ -36,7 +36,6 @@ function getData(url) {
       path.resolve(__dirname, `./data/${directory}/proxy_response.json`)
     );
     const data = JSON.parse(dataFile);
-    const response = data[url];
     return data[url];
   }
   return {};

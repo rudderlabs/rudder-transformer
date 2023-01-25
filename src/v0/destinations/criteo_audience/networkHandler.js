@@ -36,7 +36,7 @@ const criteoAudienceRespHandler = (destResponse, stageMsg) => {
   } else if (status === 404 && matchErrorCode('audience-invalid', response)) {
     // to handle the case when audience-id is invalid
     throw new NetworkInstrumentationError(
-      `AudienceId is Invalid. Pleae Provide Valid AudienceId`,
+      `AudienceId is Invalid. Please Provide Valid AudienceId`,
       destResponse,
     );
   } else if (status === 429) {

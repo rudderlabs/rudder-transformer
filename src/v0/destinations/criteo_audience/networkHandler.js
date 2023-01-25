@@ -11,42 +11,55 @@ const {
   getDynamicErrorType,
   processAxiosResponse
 } = require("../../../adapters/utils/networkUtils");
-const { NetworkError, NetworkInstrumentationError } = require("../../util/errorTypes");
+const { NetworkError, ThrottledError, NetworkInstrumentationError, AbortedError, RetryableError } = require("../../util/errorTypes");
 
-/**
- * This function helps to determine type of error occured. According to the response
- * we set authErrorCategory to take decision if we need to refresh the access_token
- * or need to disable the destination.
- * @param {*} code
- * @param {*} response
- * @returns
- */
 //  https://developers.criteo.com/marketing-solutions/v2021.01/docs/how-to-handle-api-errors#:~:text=the%20response%20body.-,401,-Authentication%20error
-const getAuthErrCategory = (status, code) => {
-  if (status === 401 && code === 'authorization-token-invalid') {
-    return REFRESH_TOKEN;
-  }
-  if (status === 404 && code === 'audience-invalid') {
-    return 'audience-invalid';
-  }
-  return "";
-};
+// Following fucntion tells us if there is a particular error code in the response.
+const matchErrorCode = (errorCode, response) =>
+  response && Array.isArray(response?.errors) && response.errors.some((resp) => resp?.code === errorCode);
 
 const criteoAudienceRespHandler = (destResponse, stageMsg) => {
   const { status, response } = destResponse;
-  const category = getAuthErrCategory(status, response?.errors[0]?.code);
-  if (category === 'audience-invalid') {
+
+  // https://developers.criteo.com/marketing-solutions/docs/api-error-types#error-category-types
+  // to handle the case when authorization-token is invalid
+  if (status === 401 && matchErrorCode('authorization-token-invalid', response)) {
+    throw new NetworkError(
+      `${response?.errors[0]?.title} ${stageMsg}`,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+      },
+      response,
+      REFRESH_TOKEN
+    );
+  } else if (status === 404 && matchErrorCode('audience-invalid', response)) {
+    // to handle the case when audience-id is invalid
     throw new NetworkInstrumentationError(
-      "AudienceId is Invalid. Pleae Provide Valid AudienceId", response);
+      `AudienceId is Invalid. Pleae Provide Valid AudienceId`,
+      destResponse,
+    );
+  } else if (status === 429) {
+    // https://developers.criteo.com/marketing-solutions/docs/api-error-types#429
+    throw new ThrottledError(
+      `Request Failed: ${stageMsg} - due to Request Limit exceeded, (Throttled)`,
+      destResponse,
+    );
+  } else if (status === 503 || status === 500) {
+    // see if its 500 internal error or 503 service unavailable
+    throw new RetryableError(
+      `Request Failed: ${stageMsg} (Retryable)`,
+      500,
+      destResponse,
+    );
   }
-  throw new NetworkError(
-    `${response?.errors[0]?.title} ${stageMsg}`,
-    status,
-    {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
-    },
-    response,
-    category
+  // else throw the error
+  const errorMessage = response?.errors;
+  throw new AbortedError(
+    `Request Failed: ${stageMsg} with status "${status}" due to "${errorMessage? errorMessage[0] : JSON.stringify(response)
+    }", (Aborted) `,
+    400,
+    destResponse,
   );
 };
 

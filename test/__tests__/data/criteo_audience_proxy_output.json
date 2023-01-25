@@ -39,13 +39,16 @@
     "output": {
       "message": "AudienceId is Invalid. Pleae Provide Valid AudienceId",
       "destinationResponse": {
-        "errors": [
-          {
-            "code": "audience-invalid",
-            "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
-            "type": "authorization"
-          }
-        ]
+        "response": {
+          "errors": [
+            {
+              "code": "audience-invalid",
+              "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
+              "type": "authorization"
+            }
+          ]
+        },
+        "status": 404
       },
       "statTags": {
         "destType": "CRITEO_AUDIENCE",
@@ -54,6 +57,70 @@
         "feature": "dataDelivery",
         "implementation": "native",
         "meta": "instrumentation",
+        "module": "destination"
+      },
+      "status": 400
+    }
+  },
+  {
+    "output": {
+      "destinationResponse": {
+        "response": {
+          "errors": [
+            {
+              "code": "audience-invalid",
+              "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
+              "type": "authorization"
+            }
+          ]
+        },
+        "status": 503
+      },
+      "message": "Request Failed: during criteo_audience response transformation (Retryable)",
+      "statTags": {
+        "destType": "CRITEO_AUDIENCE",
+        "errorCategory": "network",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "errorType": "retryable",
+        "module": "destination"
+      },
+      "status": 500
+    }
+  },
+  {
+    "output": {
+      "destinationResponse": {
+        "response": {},
+        "status": 429
+      },
+      "message": "Request Failed: during criteo_audience response transformation - due to Request Limit exceeded, (Throttled)",
+      "statTags": {
+        "destType": "CRITEO_AUDIENCE",
+        "errorCategory": "network",
+        "errorType": "throttled",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      },
+      "status": 429
+    }
+  },
+  {
+    "output": {
+      "destinationResponse":{
+        "response": {
+          "message": "unknown error"
+        },
+        "status": 410
+      },
+      "message": "Request Failed: during criteo_audience response transformation with status \"410\" due to \"{\"message\":\"unknown error\"}\", (Aborted) ",
+      "statTags": {
+        "destType": "CRITEO_AUDIENCE",
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
         "module": "destination"
       },
       "status": 400

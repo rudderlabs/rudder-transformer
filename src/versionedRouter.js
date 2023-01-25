@@ -487,7 +487,7 @@ async function routerHandleDest(ctx) {
         // enriching transformed event
         listOutput.forEach(listOut => {
           let { batchedRequest } = listOut;
-          if (batchedRequest && Array.isArray(batchedRequest)) {
+          if (Array.isArray(batchedRequest)) {
             batchedRequest = batchedRequest.map(batReq => enrichTransformedEvent(batReq));
           } else if (batchedRequest && typeof batchedRequest === 'object') {
             batchedRequest = enrichTransformedEvent(batchedRequest);

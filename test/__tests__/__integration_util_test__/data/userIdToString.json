@@ -5,26 +5,21 @@
             "statusCode": 200,
             "userId": 1234
         },
-        "output": {
-            "userId": "1234"
-        }
+        "output": "1234"
     },
     {
         "description": "userId not given",
         "input": {
             "statusCode": 200
         },
-        "output": {
-            "userId": ""
-        }
+        "output": ""
     },
     {
         "description": "userID as string",
         "input": {
-            "statusCode": 200
-        },
-        "output": {
+            "statusCode": 200,
             "userId": "abcd1234"
-        }
+        },
+        "output": "abcd1234"
     }
 ]

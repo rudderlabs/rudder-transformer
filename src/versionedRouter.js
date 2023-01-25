@@ -28,9 +28,8 @@ const profilingRouter = require('./routes/profiling');
 const destProxyRoutes = require('./routes/destinationProxy');
 const eventValidator = require('./util/eventValidation');
 const { prometheusRegistry } = require('./middleware');
-const { compileUserLibrary } = require('./util/ivmFactory');
 const { getIntegrations } = require('./routes/utils');
-const { setupUserTransformHandler } = require('./util/customTransformer');
+const { setupUserTransformHandler, validateCode } = require('./util/customTransformer');
 const { CommonUtils } = require('./util/common');
 const { RespStatusError, RetryRequestError } = require('./util/utils');
 const { isCdkV2Destination, getCdkV2TestThreshold } = require('./cdk/v2/utils');
@@ -785,12 +784,13 @@ if (transformerTestModeEnabled) {
 
   router.post('/transformationLibrary/test', async (ctx) => {
     try {
-      const { code } = ctx.request.body;
+      const { code, language = "javascript" } = ctx.request.body;
+
       if (!code) {
         throw new Error('Invalid request. Missing code');
       }
 
-      const res = await compileUserLibrary(code);
+      const res = await validateCode(code, language);
       ctx.body = res;
     } catch (error) {
       ctx.body = { error: error.message };

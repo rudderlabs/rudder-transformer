@@ -1,8 +1,10 @@
 const ivm = require('isolated-vm');
+const { compileUserLibrary } = require('../util/ivmFactory');
 const fetch = require('node-fetch');
 const { getTransformationCode } = require('./customTransforrmationsStore');
 const stats = require('./stats');
 const { UserTransformHandlerFactory } = require('./customTransformerFactory');
+const { validatePythonCode } = require('./openfaas/index');
 
 async function runUserTransform(events, code, eventsMetadata, versionId, testMode = false) {
   const tags = {
@@ -265,7 +267,20 @@ async function setupUserTransformHandler(
   const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(testWithPublish);
   return resp;
 }
+
+async function validateCode(code, language) {
+  if (language === "javascript") {
+    return compileUserLibrary(code);
+  }
+  if (language === "python" || language === "pythonfaas") {
+    return validatePythonCode(code)
+  }
+
+  throw Error('Unsupported language');
+}
+
 module.exports = {
   userTransformHandler,
   setupUserTransformHandler,
+  validateCode
 };

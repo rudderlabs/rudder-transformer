@@ -7,7 +7,7 @@ const parseAxiosError = (error) => {
   if (error.response) {
     const status = error.response.status || 400;
     const errorData = error.response?.data;
-    const message = (errorData && (errorData.message || errorData)) || error.message;
+    const message = (errorData && (errorData.message || errorData.error || errorData)) || error.message;
     return new RespStatusError(message, status);
   }
   if (error.request) {

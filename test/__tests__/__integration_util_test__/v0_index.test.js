@@ -85,7 +85,7 @@ describe("`FORM` format escape test-cases", () => {
   });
 });
 
-const { getErrorStatusCode } = utilObj;
+const { getErrorStatusCode, checkAndCorrectUserId } = utilObj;
 
 describe("error status code when error is thrown", () => {
   it('should return status-code from "response.status"', () => {
@@ -114,5 +114,41 @@ describe("error status code when error is thrown", () => {
     expect(getErrorStatusCode({ message: "An error occurred" }, "502")).toEqual(
       400
     );
+  });
+});
+
+
+const userIdToStringTestCases = [
+  {
+      description: "userId as an integer",
+      input: {
+          statusCode: 200,
+          userId: 1234
+      },
+      output: "1234"
+  },
+  {
+      description: "userId not given",
+      input: {
+          statusCode: 200
+      },
+      output: ""
+  },
+  {
+      description: "userID as string",
+      input: {
+          statusCode: 200,
+          userId: "abcd1234"
+      },
+      output: "abcd1234"
+  }
+];
+
+describe("userIdCheckandCorrect util test", () => {
+  userIdToStringTestCases.forEach(async (dataPoint, index) => {
+      it(`Test Case ${index}.: ${dataPoint.description}`, async () => {
+          const outputArray = checkAndCorrectUserId(dataPoint.input.statusCode, dataPoint.input.userId);
+          expect(outputArray).toEqual(dataPoint.output);
+      });
   });
 });

@@ -37,7 +37,7 @@
   },
   {
     "output": {
-      "message": "AudienceId is Invalid. Pleae Provide Valid AudienceId",
+      "message": "AudienceId is Invalid. Please Provide Valid AudienceId",
       "destinationResponse": {
         "response": {
           "errors": [

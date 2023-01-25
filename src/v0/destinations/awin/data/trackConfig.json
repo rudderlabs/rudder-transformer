@@ -22,11 +22,7 @@
   },
   {
     "destKey": "params.cr",
-    "sourceKeys": [
-      "properties.currency",
-      "properties.currencyCode",
-      "properties.currency_code"
-    ],
+    "sourceKeys": ["properties.currency", "properties.currencyCode", "properties.currency_code"],
     "required": false
   },
   {

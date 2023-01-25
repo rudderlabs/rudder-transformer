@@ -1,12 +1,11 @@
-const NodeCache = require("node-cache");
-const { fetchWithProxy } = require("./fetch");
-const logger = require("../logger");
-const stats = require("./stats");
-const { responseStatusHandler } = require("./utils");
+const NodeCache = require('node-cache');
+const { fetchWithProxy } = require('./fetch');
+const logger = require('../logger');
+const stats = require('./stats');
+const { responseStatusHandler } = require('./utils');
 
 const tpCache = new NodeCache();
-const CONFIG_BACKEND_URL =
-  process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
+const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
 const TRACKING_PLAN_URL = `${CONFIG_BACKEND_URL}/workspaces`;
 
 /**
@@ -28,14 +27,14 @@ async function getTrackingPlan(tpId, version, workspaceId) {
     const startTime = new Date();
     const response = await fetchWithProxy(url);
 
-    responseStatusHandler(response.status, "Tracking plan", tpId, url);
-    stats.timing("get_tracking_plan", startTime);
+    responseStatusHandler(response.status, 'Tracking plan', tpId, url);
+    stats.timing('get_tracking_plan', startTime);
     const myJson = await response.json();
     tpCache.set(`${tpId}::${version}`, myJson);
     return myJson;
   } catch (error) {
     logger.error(`Failed during trackingPlan fetch : ${error}`);
-    stats.increment("get_tracking_plan.error");
+    stats.increment('get_tracking_plan.error');
     throw error;
   }
 }
@@ -50,27 +49,21 @@ async function getTrackingPlan(tpId, version, workspaceId) {
  *
  * Gets the event schema.
  */
-async function getEventSchema(
-  tpId,
-  tpVersion,
-  eventType,
-  eventName,
-  workspaceId
-) {
+async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId) {
   try {
     let eventSchema;
     const tp = await getTrackingPlan(tpId, tpVersion, workspaceId);
 
-    if (eventType !== "track") {
+    if (eventType !== 'track') {
       if (Object.prototype.hasOwnProperty.call(tp.rules, eventType)) {
         eventSchema = tp.rules[eventType];
       }
-    } else if (Object.prototype.hasOwnProperty.call(tp.rules, "events")) {
+    } else if (Object.prototype.hasOwnProperty.call(tp.rules, 'events')) {
       const { events } = tp.rules;
-      for (let i = 0; i < events.length; i += 1) {
+      for (const event of events) {
         // eventName will be unique
-        if (events[i].name === eventName) {
-          eventSchema = events[i].rules;
+        if (event.name === eventName) {
+          eventSchema = event.rules;
           break;
         }
       }
@@ -78,12 +71,12 @@ async function getEventSchema(
     return eventSchema;
   } catch (error) {
     logger.info(`Failed during eventSchema fetch : ${JSON.stringify(error)}`);
-    stats.increment("get_eventSchema.error");
+    stats.increment('get_eventSchema.error');
     throw error;
   }
 }
 
 module.exports = {
   getEventSchema,
-  getTrackingPlan
+  getTrackingPlan,
 };

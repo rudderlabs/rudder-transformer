@@ -309,15 +309,64 @@
       "files": {}
     }
   ],
-  {
-    "statusCode": 400,
-    "error": "Invalid phone number. Ideal Format : /^(+(?!86)d{1,3})?d{1,12}$/g, Include proper country code except +86 and the phone number length must be no longer than 15 digit",
-    "statTags": {
-      "destination": "tiktok_ads",
-      "stage": "transform",
-      "scope": "exception"
+  [
+    {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "context": {
+            "ad": { "callback": "123ATXSfe" },
+            "ip": "13.57.97.131",
+            "page": {
+              "referrer": "http://demo.mywebsite.com",
+              "url": "http://demo.mywebsite.com/purchase"
+            },
+            "user": {
+              "email": "774efc08cebab8c50c0f0eb2d3a2d2e560872a64f6c1617314c4f03b1c3d4dfa",
+              "external_id": "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4",
+              "phone_number": "1d96e70d2bf54087e33586457cde2790825bee7b1a3b05d26481cb12ec8e63fd"
+            },
+            "user_agent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion"
+          },
+          "event": "Subscribe",
+          "event_id": "1616318632825_357",
+          "partner_name": "RudderStack",
+          "pixel_code": "A1T8T4UYGVIQA8ORZMX9",
+          "properties": {
+            "contents": [
+              {
+                "content_id": "1077218",
+                "content_type": "socks",
+                "price": 8,
+                "quantity": 2
+              },
+              {
+                "content_id": "1197218",
+                "content_type": "dress",
+                "price": 30,
+                "quantity": 1
+              }
+            ],
+            "currency": "USD",
+            "value": 46
+          },
+          "timestamp": "2020-09-17T19:49:27Z"
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "files": {},
+      "headers": {
+        "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
+        "Content-Type": "application/json"
+      },
+      "method": "POST",
+      "params": {},
+      "type": "REST",
+      "version": "1"
     }
-  },
+  ],
   [
     {
       "version": "1",

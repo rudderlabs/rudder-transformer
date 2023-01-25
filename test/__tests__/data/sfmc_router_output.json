@@ -5,8 +5,38 @@
         "jobId": 2
       }
     ],
+    "destination": {
+      "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
+      "Name": "SFMC",
+      "DestinationDefinition": {
+        "ID": "1pYpYSeQd8OeN6xPdw6VGDzqUd1",
+        "Name": "SFMC",
+        "DisplayName": "Salesforce Marketing Cloud",
+        "Config": {
+          "destConfig": [],
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "supportedSourceTypes": [],
+          "transformAt": "processor"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "clientId": "vcn7AQ2W9GGIAZSsN6Mfq",
+        "clientSecret": "vcn7AQ2W9GGIAZSsN6Mfq",
+        "createOrUpdateContacts": true,
+        "eventDelivery": true,
+        "eventDeliveryTS": 1615371070621,
+        "eventToUUID": [],
+        "externalKey": "f3ffa19b-e0b3-4967-829f-549b781080e6",
+        "subDomain": "vcn7AQ2W9GGIAZSsN6Mfq"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
     "batched": false,
-    "statusCode": 500,
+    "statusCode": 400,
     "error": "Creating or updating contacts is disabled",
     "statTags": {
       "errorCategory": "dataValidation",

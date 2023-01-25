@@ -1,9 +1,5 @@
 {
-  "logs": [
-    "Log: Transformation test",
-    "Log: Transformation test",
-    "Log: Transformation test"
-  ],
+  "logs": ["Log: Transformation test", "Log: Transformation test", "Log: Transformation test"],
   "transformedEvents": [
     {
       "anonymousId": "123456",

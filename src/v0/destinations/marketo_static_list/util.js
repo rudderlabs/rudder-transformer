@@ -1,4 +1,4 @@
-const { InstrumentationError } = require("../../util/errorTypes");
+const { InstrumentationError } = require('../../util/errorTypes');
 
 /**
  * Fetches the ids from the array of objects
@@ -6,11 +6,11 @@ const { InstrumentationError } = require("../../util/errorTypes");
  * @param {*} array
  * @returns array of Ids
  */
-const getIds = array => {
+const getIds = (array) => {
   if (Array.isArray(array)) {
     const leadIds = [];
     if (array.length > 0) {
-      array.forEach(object => {
+      array.forEach((object) => {
         leadIds.push(object?.id);
       });
     }
@@ -27,16 +27,14 @@ const getIds = array => {
  */
 const validateMessageType = (message, allowedTypes) => {
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
   if (!allowedTypes.includes(message.type.toLowerCase())) {
-    throw new InstrumentationError(
-      `Event type ${message.type} is not supported`
-    );
+    throw new InstrumentationError(`Event type ${message.type} is not supported`);
   }
 };
 
 module.exports = {
   getIds,
-  validateMessageType
+  validateMessageType,
 };

@@ -1,32 +1,39 @@
-const get = require("get-value");
+const get = require('get-value');
 const {
   defaultRequestConfig,
   removeUndefinedAndNullValues,
   constructPayload,
   simpleProcessRouterDest,
-  getHashFromArray
-} = require("../../util");
-const { EventType } = require("../../../constants");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
-const {
-  ConfigurationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+  getHashFromArray,
+  isDefinedAndNotNullAndNotEmpty,
+} = require('../../util');
+const { EventType } = require('../../../constants');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
+const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   // conversion_source is explicitly set to RudderStack
-  payload.conversion_source = "RudderStack";
+  payload.conversion_source = 'RudderStack';
 
-  const { advertiserId, eventsMap } = destination.Config;
+  const { advertiserId, eventsMap, customPropsMapping } = destination.Config;
   // we will map the events to their rockerbox counterparts from UI
   const eventsHashMap = getHashFromArray(eventsMap);
 
+  //handle custom properties mapped in the UI
+  const customPropsHashMap = getHashFromArray(customPropsMapping);
+
+  if(isDefinedAndNotNullAndNotEmpty(customPropsHashMap)){
+    for (const key in customPropsHashMap) {
+      // check if the custom property is passed in event properties
+      if (isDefinedAndNotNullAndNotEmpty(message.properties[key]))
+        payload[customPropsHashMap[key]] = message.properties[key]
+    }
+  }
+
   // Reject other unmapped events
   if (!eventsHashMap[message.event.toLowerCase()]) {
-    throw new ConfigurationError(
-      "The event is not associated to a RockerBox event. Aborting!"
-    );
+    throw new ConfigurationError('The event is not associated to a RockerBox event. Aborting!');
   } else {
     payload.action = eventsHashMap[message.event.toLowerCase()];
   }
@@ -40,31 +47,25 @@ const responseBuilderSimple = (message, category, destination) => {
   return response;
 };
 
-const process = event => {
+const process = (event) => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
 
-  const advertiserId = get(destination, "Config.advertiserId");
+  const advertiserId = get(destination, 'Config.advertiserId');
   if (!advertiserId) {
-    throw new ConfigurationError("Advertiser Id is required.");
+    throw new ConfigurationError('Advertiser Id is required.');
   }
 
   let response;
   const messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.TRACK:
-      response = responseBuilderSimple(
-        message,
-        CONFIG_CATEGORIES.TRACK,
-        destination
-      );
+      response = responseBuilderSimple(message, CONFIG_CATEGORIES.TRACK, destination);
       break;
     default:
-      throw new InstrumentationError(
-        `Message type ${messageType} is not supported`
-      );
+      throw new InstrumentationError(`Message type ${messageType} is not supported`);
   }
   return response;
 };

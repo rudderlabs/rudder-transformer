@@ -1,23 +1,21 @@
-const path = require("path");
-const fs = require("fs");
-const md5 = require("md5");
-const Message = require("../message");
-const { TransformationError } = require("../../util/errorTypes");
+const path = require('path');
+const fs = require('fs');
+const md5 = require('md5');
+const Message = require('../message');
+const { TransformationError } = require('../../util/errorTypes');
 
 // import mapping json using JSON.parse to preserve object key order
-const mapping = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
-);
+const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
 function process(event) {
   // throw an error if (email, eventName) are not present
   if (!(event.email && event.eventName)) {
-    throw new TransformationError("Unknwon event type from Iterable");
+    throw new TransformationError('Unknwon event type from Iterable');
   }
   const message = new Message(`Iterable`);
 
   // event type is always track
-  const eventType = "track";
+  const eventType = 'track';
 
   message.setEventType(eventType);
 
@@ -25,7 +23,7 @@ function process(event) {
 
   message.setPropertiesV2(event, mapping);
 
-  message.context.integration.version = "1.0.0";
+  message.context.integration.version = '1.0.0';
 
   if (event.dataFields?.createdAt) {
     const ts = new Date(event.dataFields.createdAt).toISOString();

@@ -150,15 +150,7 @@
           "includeKeys": [],
           "routerTransform": false,
           "secretKeys": ["apiToken"],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ]
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
         },
         "ResponseRules": {}
       },
@@ -593,15 +585,7 @@
           "includeKeys": [],
           "routerTransform": false,
           "secretKeys": ["apiToken"],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ]
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
         },
         "ResponseRules": {}
       },
@@ -711,15 +695,7 @@
           "includeKeys": [],
           "routerTransform": false,
           "secretKeys": ["apiToken"],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ]
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
         },
         "ResponseRules": {}
       },
@@ -829,15 +805,7 @@
           "includeKeys": [],
           "routerTransform": false,
           "secretKeys": ["apiToken"],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ]
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
         },
         "ResponseRules": {}
       },
@@ -950,15 +918,7 @@
           "includeKeys": [],
           "routerTransform": false,
           "secretKeys": ["apiToken"],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ]
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
         },
         "ResponseRules": {}
       },
@@ -1071,15 +1031,7 @@
           "includeKeys": [],
           "routerTransform": false,
           "secretKeys": ["apiToken"],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ]
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
         },
         "ResponseRules": {}
       },

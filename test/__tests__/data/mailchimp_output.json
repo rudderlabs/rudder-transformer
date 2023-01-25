@@ -59,9 +59,41 @@
     "audienceId": "df42a82d07"
   },
   {
-    "error": "User does not have access to the requested operation"
+    "error": "User does not have access to the requested operation",
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "Titli Ganguly",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "25adacdcd8c4ef4672fbdc626fbcf331-us6",
+        "audienceId": "df42a82d07",
+        "datacenterId": "us20"
+      },
+      "Enabled": true,
+      "Transformations": []
+    }
   },
   {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "Titli Ganguly",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "25adacdcd8c4ef4442fbdc626fbcf331-us6",
+        "audienceId": "df42a82d07",
+        "datacenterId": "us20"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
     "error": "message type page is not supported"
   },
   {
@@ -90,9 +122,41 @@
     "audienceId": "df42a82d07"
   },
   {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
+        "audienceId": "df42a82d07",
+        "datacenterId": "us20"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
     "error": "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]"
   },
   {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "d966df2e59d105c00f13de330d94000b-us14",
+        "audienceId": "ff21810ddc",
+        "datacenterId": "us14"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
     "statusCode": 400,
     "error": "Email is required for identify",
     "statTags": {
@@ -168,15 +232,78 @@
     "audienceId": "df42a82d07"
   },
   {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "",
+        "audienceId": "df42a82d07",
+        "datacenterId": "us20"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
     "error": "API Key not found. Aborting"
   },
   {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "awesrdcfgvhbjnkkjhgf",
+        "datacenterId": "us20"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
     "error": "Audience Id not found. Aborting"
   },
   {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "w4a5346yeu75jyhrgfred",
+        "audienceId": "df42a82d07",
+        "datacenterId": ""
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
     "error": "DataCenter Id not found. Aborting"
   },
   {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "zesrxdthfcjg345yruikyhntbgrafvd",
+        "audienceId": "df42a82d07",
+        "datacenterId": "us20"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
     "error": "message type track is not supported"
   }
 ]

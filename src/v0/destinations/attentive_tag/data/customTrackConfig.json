@@ -26,6 +26,6 @@
   {
     "destKey": "externalEventId",
     "sourceKeys": "properties.eventId",
-    "required": false 
+    "required": false
   }
 ]

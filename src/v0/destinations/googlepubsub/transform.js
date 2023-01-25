@@ -1,7 +1,7 @@
-const { simpleProcessRouterDest } = require("../../util");
-const { ConfigurationError } = require("../../util/errorTypes");
+const { simpleProcessRouterDest } = require('../../util');
+const { ConfigurationError } = require('../../util/errorTypes');
 
-const { getTopic, createAttributesMetadata } = require("./util");
+const { getTopic, createAttributesMetadata } = require('./util');
 
 function process(event) {
   const { message, destination } = event;
@@ -13,10 +13,10 @@ function process(event) {
       userId: message.userId || message.anonymousId,
       message,
       topicId,
-      attributes
+      attributes,
     };
   }
-  throw new ConfigurationError("No topic set for this event");
+  throw new ConfigurationError('No topic set for this event');
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {

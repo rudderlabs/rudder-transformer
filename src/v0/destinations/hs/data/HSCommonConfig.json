@@ -47,11 +47,7 @@
   },
   {
     "destKey": "city",
-    "sourceKeys": [
-      "traits.address.city",
-      "context.traits.address.city",
-      "properties.address.city"
-    ],
+    "sourceKeys": ["traits.address.city", "context.traits.address.city", "properties.address.city"],
     "required": false
   },
   {
@@ -83,11 +79,7 @@
   },
   {
     "destKey": "company",
-    "sourceKeys": [
-      "traits.company.name",
-      "context.traits.company.name",
-      "properties.company.name"
-    ],
+    "sourceKeys": ["traits.company.name", "context.traits.company.name", "properties.company.name"],
     "required": false
   }
 ]

@@ -12,10 +12,7 @@
   },
   {
     "destKey": "email",
-    "sourceKeys": [
-      "traits.email",
-      "context.traits.email"
-    ],
+    "sourceKeys": ["traits.email", "context.traits.email"],
     "required": false
   },
   {
@@ -25,10 +22,7 @@
   },
   {
     "destKey": "created",
-    "sourceKeys": [
-      "originalTimestamp",
-      "timestamp"
-    ],
+    "sourceKeys": ["originalTimestamp", "timestamp"],
     "required": true,
     "metadata": {
       "type": "secondTimestamp"

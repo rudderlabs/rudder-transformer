@@ -215,13 +215,7 @@
             "cordova"
           ],
           "supportsVisualMapper": true,
-          "supportedMessageTypes": [
-            "group",
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["group", "identify", "page", "screen", "track"],
           "saveDestinationResponse": true
         },
         "configSchema": {},

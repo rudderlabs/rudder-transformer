@@ -1,18 +1,14 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-param-reassign */
-const { httpPOST } = require("../../../adapters/network");
+const { httpPOST } = require('../../../adapters/network');
 const {
   processAxiosResponse,
-  getDynamicErrorType
-} = require("../../../adapters/utils/networkUtils");
-const { generateUUID, isHttpStatusSuccess } = require("../../util");
-const {
-  ConfigurationError,
-  InstrumentationError,
-  NetworkError
-} = require("../../util/errorTypes");
-const tags = require("../../util/tags");
-const { executeCommonValidations } = require("../../util/regulation-api");
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
+const { generateUUID, isHttpStatusSuccess } = require('../../util');
+const { ConfigurationError, InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
+const { executeCommonValidations } = require('../../util/regulation-api');
 
 /**
  * This function is making the ultimate call to delete the user
@@ -31,14 +27,12 @@ const deleteUser = async (endpoint, body, identityType, identityValue) => {
   const handledDelResponse = processAxiosResponse(response);
   if (!isHttpStatusSuccess(handledDelResponse.status)) {
     throw new NetworkError(
-      "User deletion request failed",
+      'User deletion request failed',
       handledDelResponse.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-          handledDelResponse.status
-        )
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
       },
-      handledDelResponse
+      handledDelResponse,
     );
   }
   return handledDelResponse;
@@ -53,38 +47,30 @@ const deleteUser = async (endpoint, body, identityType, identityValue) => {
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config?.apiToken || !(config?.appleAppId || config?.androidAppId)) {
     throw new ConfigurationError(
-      "API Token and one of Apple ID or Android App Id are required fields for user deletion"
+      'API Token and one of Apple ID or Android App Id are required fields for user deletion',
     );
   }
   const body = {
-    subject_request_type: "erasure",
-    subject_identities: [{ identity_format: "raw" }]
+    subject_request_type: 'erasure',
+    subject_identities: [{ identity_format: 'raw' }],
   };
   if (config.statusCallbackUrls) {
-    const statusCallbackUrlsArray = config.statusCallbackUrls.split(",");
-    const filteredStatusCallbackUrlsArray = statusCallbackUrlsArray.filter(
-      statusCallbackUrl => {
-        const URLRegex = new RegExp(
-          "^(?:http(s)?:\\/\\/)?[\\w.-]+(?:\\.[\\w\\.-]+)+[\\w\\-\\._~:/?#[\\]@!\\$&'\\(\\)\\*\\+,;=.]+$"
-        );
-        return statusCallbackUrl.match(URLRegex);
-      }
-    );
+    const statusCallbackUrlsArray = config.statusCallbackUrls.split(',');
+    const filteredStatusCallbackUrlsArray = statusCallbackUrlsArray.filter((statusCallbackUrl) => {
+      const URLRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w!#$&'()*+,./:;=?@[\]~-]+$/;
+      return statusCallbackUrl.match(URLRegex);
+    });
     if (filteredStatusCallbackUrlsArray.length > 3) {
-      throw new ConfigurationError("You can send utmost 3 callBackUrls");
+      throw new ConfigurationError('You can send utmost 3 callBackUrls');
     }
     body.status_callback_urls = filteredStatusCallbackUrlsArray;
   }
   const endpoint = `https://hq1.appsflyer.com/gdpr/opengdpr_requests?api_token=${config.apiToken}`;
   await Promise.all(
-    userAttributes.map(async ua => {
-      if (
-        !ua.android_advertising_id &&
-        !ua.ios_advertising_id &&
-        !ua.appsflyer_id
-      ) {
+    userAttributes.map(async (ua) => {
+      if (!ua.android_advertising_id && !ua.ios_advertising_id && !ua.appsflyer_id) {
         throw new InstrumentationError(
-          "none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion"
+          'none of the possible identityTypes i.e.(ios_advertising_id, android_advertising_id, appsflyer_id) is provided for deletion',
         );
       }
       /**
@@ -92,44 +78,32 @@ const userDeletionHandler = async (userAttributes, config) => {
        * appsflyer_id, ios_advertising_id, android_advertising_id
        */
       if (ua?.appsflyer_id) {
-        body.property_id = config.androidAppId
-          ? config.androidAppId
-          : config.appleAppId;
-        await deleteUser(endpoint, body, "appsflyer_id", ua.appsflyer_id);
+        body.property_id = config.androidAppId ? config.androidAppId : config.appleAppId;
+        await deleteUser(endpoint, body, 'appsflyer_id', ua.appsflyer_id);
       } else if (ua?.ios_advertising_id) {
         body.property_id = config.appleAppId;
         if (!body.property_id) {
           throw new ConfigurationError(
-            "appleAppId is required for ios_advertising_id type identifier"
+            'appleAppId is required for ios_advertising_id type identifier',
           );
         }
-        await deleteUser(
-          endpoint,
-          body,
-          "ios_advertising_id",
-          ua.ios_advertising_id
-        );
+        await deleteUser(endpoint, body, 'ios_advertising_id', ua.ios_advertising_id);
       } else {
         body.property_id = config.androidAppId;
         if (!body.property_id) {
           throw new ConfigurationError(
-            "androidAppId is required for android_advertising_id type identifier"
+            'androidAppId is required for android_advertising_id type identifier',
           );
         }
-        await deleteUser(
-          endpoint,
-          body,
-          "android_advertising_id",
-          ua.android_advertising_id
-        );
+        await deleteUser(endpoint, body, 'android_advertising_id', ua.android_advertising_id);
       }
-    })
+    }),
   );
 
-  return { statusCode: 200, status: "successful" };
+  return { statusCode: 200, status: 'successful' };
 };
 
-const processDeleteUsers = event => {
+const processDeleteUsers = (event) => {
   const { userAttributes, config } = event;
   executeCommonValidations(userAttributes);
   const resp = userDeletionHandler(userAttributes, config);

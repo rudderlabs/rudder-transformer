@@ -4,8 +4,8 @@
 
 - destKey: ord
   sourceKeys:
-  - properties.orderId
-  - properties.order_id
+    - properties.orderId
+    - properties.order_id
   required: false
 
 - destKey: qty

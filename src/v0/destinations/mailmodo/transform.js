@@ -1,13 +1,8 @@
-const _ = require("lodash");
-const get = require("get-value");
-const { isEmpty } = require("lodash");
-const { EventType } = require("../../../constants");
-const {
-  ConfigCategory,
-  IDENTIFY_MAX_BATCH_SIZE,
-  mappingConfig,
-  BASE_URL
-} = require("./config");
+const _ = require('lodash');
+const get = require('get-value');
+const { isEmpty } = require('lodash');
+const { EventType } = require('../../../constants');
+const { ConfigCategory, IDENTIFY_MAX_BATCH_SIZE, mappingConfig, BASE_URL } = require('./config');
 const {
   defaultRequestConfig,
   constructPayload,
@@ -16,15 +11,12 @@ const {
   removeUndefinedAndNullValues,
   getErrorRespEvents,
   getSuccessRespEvents,
-  handleRtTfSingleEventError
-} = require("../../util");
-const { deduceAddressFields, extractCustomProperties } = require("./utils");
-const {
-  ConfigurationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+  handleRtTfSingleEventError,
+} = require('../../util');
+const { deduceAddressFields, extractCustomProperties } = require('./utils');
+const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
-const responseBuilder = responseConfgs => {
+const responseBuilder = (responseConfgs) => {
   const { resp, apiKey, endpoint } = responseConfgs;
 
   const response = defaultRequestConfig();
@@ -32,7 +24,7 @@ const responseBuilder = responseConfgs => {
     response.endpoint = `${BASE_URL}${endpoint}`;
     response.headers = {
       mmApiKey: `${apiKey}`,
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json',
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.body.JSON = removeUndefinedAndNullValues(resp);
@@ -44,10 +36,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
   let { listName } = Config;
 
-  const payload = constructPayload(
-    message,
-    mappingConfig[ConfigCategory.IDENTIFY.name]
-  );
+  const payload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
 
   // adding unmapped properties(custom properties)
   const customProperties = extractCustomProperties(message);
@@ -63,8 +52,8 @@ const identifyResponseBuilder = (message, { Config }) => {
   if (address1) payload.data.address1 = address1;
   if (address2) payload.data.address2 = address2;
 
-  if (typeof listName === "string" && listName.trim().length === 0) {
-    listName = "Rudderstack";
+  if (typeof listName === 'string' && listName.trim().length === 0) {
+    listName = 'Rudderstack';
   }
 
   const valuesArray = [payload];
@@ -75,34 +64,31 @@ const identifyResponseBuilder = (message, { Config }) => {
   const responseConfgs = {
     resp,
     apiKey,
-    endpoint
+    endpoint,
   };
   return responseBuilder(responseConfgs);
 };
 
 const trackResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
-  const resp = constructPayload(
-    message,
-    mappingConfig[ConfigCategory.TRACK.name]
-  );
+  const resp = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
 
   const { endpoint } = ConfigCategory.TRACK;
 
   const responseConfgs = {
     resp,
     apiKey,
-    endpoint
+    endpoint,
   };
   return responseBuilder(responseConfgs);
 };
 
 const processEvent = (message, destination) => {
   if (!destination.Config.apiKey) {
-    throw new ConfigurationError("API Key is not present, Aborting event");
+    throw new ConfigurationError('API Key is not present, Aborting event');
   }
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
   const messageType = message.type.toLowerCase();
 
@@ -115,16 +101,12 @@ const processEvent = (message, destination) => {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
-      );
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
 function batchEvents(eventsChunk) {
   const batchedResponseList = [];
@@ -132,7 +114,7 @@ function batchEvents(eventsChunk) {
   const arrayChunks = _.chunk(eventsChunk, IDENTIFY_MAX_BATCH_SIZE);
 
   // list of chunks [ [..], [..] ]
-  arrayChunks.forEach(chunk => {
+  arrayChunks.forEach((chunk) => {
     const metadatas = [];
     const values = [];
 
@@ -145,34 +127,34 @@ function batchEvents(eventsChunk) {
     let batchEventResponse = defaultBatchRequestConfig();
 
     // Batch event into dest batch structure
-    chunk.forEach(event => {
+    chunk.forEach((event) => {
       values.push(event?.message?.body?.JSON?.values[0]);
       metadatas.push(event.metadata);
     });
     // batching into identify batch structure
     batchEventResponse.batchedRequest.body.JSON = {
       listName: `${listName}`,
-      values
+      values,
     };
     batchEventResponse.batchedRequest.endpoint = `${BASE_URL}/addToList/batch`;
 
     batchEventResponse.batchedRequest.headers = {
-      "Content-Type": "application/json",
-      mmApiKey: apiKey
+      'Content-Type': 'application/json',
+      mmApiKey: apiKey,
     };
 
     batchEventResponse = {
       ...batchEventResponse,
       metadata: metadatas,
-      destination
+      destination,
     };
     batchedResponseList.push(
       getSuccessRespEvents(
         batchEventResponse.batchedRequest,
         batchEventResponse.metadata,
         batchEventResponse.destination,
-        true
-      )
+        true,
+      ),
     );
   });
 
@@ -181,20 +163,19 @@ function batchEvents(eventsChunk) {
 
 function getEventChunks(event, identifyEventChunks, eventResponseList) {
   // Checking if event type is identify
-  if (event.message.endpoint.includes("/addToList/batch")) {
+  if (event.message.endpoint.includes('/addToList/batch')) {
     identifyEventChunks.push(event);
   } else {
     // any other type of event
     const { message, metadata, destination } = event;
-    const endpoint = get(message, "endpoint");
+    const endpoint = get(message, 'endpoint');
 
     const batchedResponse = defaultBatchRequestConfig();
     batchedResponse.batchedRequest.headers = message.headers;
     batchedResponse.batchedRequest.endpoint = endpoint;
     batchedResponse.batchedRequest.body = message.body;
     batchedResponse.batchedRequest.params = message.params;
-    batchedResponse.batchedRequest.method =
-      defaultPostRequestConfig.requestMethod;
+    batchedResponse.batchedRequest.method = defaultPostRequestConfig.requestMethod;
     batchedResponse.metadata = [metadata];
     batchedResponse.destination = destination;
 
@@ -202,54 +183,48 @@ function getEventChunks(event, identifyEventChunks, eventResponseList) {
       getSuccessRespEvents(
         batchedResponse.batchedRequest,
         batchedResponse.metadata,
-        batchedResponse.destination
-      )
+        batchedResponse.destination,
+      ),
     );
   }
 }
 
 const processRouterDest = (inputs, reqMetadata) => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
     return [respEvents];
   }
 
   const identifyEventChunks = []; // list containing identify events in batched format
   const eventResponseList = []; // list containing other events in batched format
   const errorRespList = [];
-  Promise.all(
-    inputs.map(event => {
-      try {
-        if (event.message.statusCode) {
-          // already transformed event
-          getEventChunks(event, identifyEventChunks, eventResponseList);
-        } else {
-          // if not transformed
-          getEventChunks(
-            {
-              message: process(event),
-              metadata: event.metadata,
-              destination: event.destination
-            },
-            identifyEventChunks,
-            eventResponseList
-          );
-        }
-      } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(
-          event,
-          error,
-          reqMetadata
+  inputs.forEach((event) => {
+    try {
+      if (event.message.statusCode) {
+        // already transformed event
+        getEventChunks(event, identifyEventChunks, eventResponseList);
+      } else {
+        // if not transformed
+        getEventChunks(
+          {
+            message: process(event),
+            metadata: event.metadata,
+            destination: event.destination,
+          },
+          identifyEventChunks,
+          eventResponseList,
         );
-        errorRespList.push(errRespEvent);
       }
-    })
-  );
+    } catch (error) {
+      const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+      errorRespList.push(errRespEvent);
+    }
+  });
 
   // batching identifyEventChunks
   let identifyBatchedResponseList = [];
 
-  if (identifyEventChunks.length) {
+  if (identifyEventChunks.length > 0) {
     identifyBatchedResponseList = batchEvents(identifyEventChunks);
   }
 

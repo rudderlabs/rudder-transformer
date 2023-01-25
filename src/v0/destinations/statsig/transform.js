@@ -1,16 +1,13 @@
-const { EventType } = require("../../../constants");
-const {
-  defaultPostRequestConfig,
-  defaultRequestConfig
-} = require("../../util");
-const { ENDPOINT } = require("./config");
-const { InstrumentationError } = require("../../util/errorTypes");
+const { EventType } = require('../../../constants');
+const { defaultPostRequestConfig, defaultRequestConfig } = require('../../util');
+const { ENDPOINT } = require('./config');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 function process(event) {
   const { message, destination } = event;
 
   if (!message.type) {
-    throw new InstrumentationError("Event type not present");
+    throw new InstrumentationError('Event type not present');
   }
   const messageType = message.type;
 
@@ -23,9 +20,7 @@ function process(event) {
     case EventType.GROUP:
       break;
     default:
-      throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
-      );
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
 
   const response = defaultRequestConfig();
@@ -34,8 +29,8 @@ function process(event) {
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = message;
   response.headers = {
-    "content-type": "application/json",
-    "STATSIG-API-KEY": secretKey
+    'content-type': 'application/json',
+    'STATSIG-API-KEY': secretKey,
   };
 
   response.endpoint = ENDPOINT;

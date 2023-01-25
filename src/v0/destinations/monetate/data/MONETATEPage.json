@@ -1,10 +1,7 @@
 [
   {
     "destKey": "events",
-    "sourceKeys": [
-      "properties.page",
-      "context.page"
-    ],
+    "sourceKeys": ["properties.page", "context.page"],
     "metadata": {
       "targetType": "Array",
       "isTargetTypePrimitive": false,
@@ -13,23 +10,15 @@
         "eventType": "monetate:context:PageView",
         "url": "sourceKeyValue.url",
         "path": "sourceKeyValue.path",
-        "categories": [
-          "sourceKeyValue.category"
-        ],
-        "breadcrumbs": [
-          "sourceKeyValue.breadcrumbs"
-        ]
+        "categories": ["sourceKeyValue.category"],
+        "breadcrumbs": ["sourceKeyValue.breadcrumbs"]
       },
       "action": "push"
     }
   },
   {
     "destKey": "events",
-    "sourceKeys": [
-      "properties.page.referrer",
-      "context.page.referrer",
-      "context.referrer.url"
-    ],
+    "sourceKeys": ["properties.page.referrer", "context.page.referrer", "context.referrer.url"],
     "metadata": {
       "targetType": "Array",
       "isTargetTypePrimitive": false,

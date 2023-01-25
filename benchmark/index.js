@@ -6,15 +6,15 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
-const Benchmark = require("benchmark-suite");
-const fs = require("fs");
-const path = require("path");
-const Commander = require("commander");
-const logger = require("./metaLogger");
-const versionedRouter = require("../src/versionedRouter");
-const cdkV2Handler = require("../src/cdk/v2/handler");
+const Benchmark = require('benchmark-suite');
+const fs = require('fs');
+const path = require('path');
+const Commander = require('commander');
+const logger = require('./metaLogger');
+const versionedRouter = require('../src/versionedRouter');
+const cdkV2Handler = require('../src/cdk/v2/handler');
 
-const supportedDestinations = ["algolia", "pinterest_tag"];
+const supportedDestinations = ['algolia', 'pinterest_tag'];
 
 logger.info();
 
@@ -22,37 +22,34 @@ const command = new Commander.Command();
 command
   .allowUnknownOption()
   .option(
-    "-d, --destinations <string>",
-    "Enter destination names separated by comma",
-    supportedDestinations.toString()
+    '-d, --destinations <string>',
+    'Enter destination names separated by comma',
+    supportedDestinations.toString(),
   )
   .option(
-    "-bt, --benchmarktype <string>",
-    "Enter the benchmark type (Operations or Memory)",
-    "Operations"
+    '-bt, --benchmarktype <string>',
+    'Enter the benchmark type (Operations or Memory)',
+    'Operations',
   )
-  .option("-f, --feature <string>", "Enter feature name (proc or rt)", "proc")
+  .option('-f, --feature <string>', 'Enter feature name (proc or rt)', 'proc')
   .parse();
 
 const getTestFileName = (intg, testSufix) => {
-  const featureSufix = cmdOpts.feature === "rt" ? "_router" : "";
+  const featureSufix = cmdOpts.feature === 'rt' ? '_router' : '';
   return `${intg}${featureSufix}${testSufix}.json`;
 };
 
-const testDataDir = path.join(__dirname, "../test/__tests__/data");
+const testDataDir = path.join(__dirname, '../test/__tests__/data');
 const getTestData = (intgList, fileNameSuffixes) => {
   const intgTestData = {};
-  intgList.forEach(intg => {
+  intgList.forEach((intg) => {
     // Use the last valid test data file
-    fileNameSuffixes.forEach(fileNameSuffix => {
+    fileNameSuffixes.forEach((fileNameSuffix) => {
       try {
         intgTestData[intg] = JSON.parse(
-          fs.readFileSync(
-            path.join(testDataDir, getTestFileName(intg, fileNameSuffix)),
-            {
-              encoding: "utf-8"
-            }
-          )
+          fs.readFileSync(path.join(testDataDir, getTestFileName(intg, fileNameSuffix)), {
+            encoding: 'utf-8',
+          }),
         );
       } catch (err) {
         // logger.error(
@@ -69,12 +66,12 @@ const cmdOpts = command.opts();
 
 // Initialize data for destinations
 const destinationsList = cmdOpts.destinations
-  .split(",")
-  .map(x => x.trim())
-  .filter(x => x !== "");
-logger.info("Destinations:", destinationsList, "feature:", cmdOpts.feature);
+  .split(',')
+  .map((x) => x.trim())
+  .filter((x) => x !== '');
+logger.info('Destinations:', destinationsList, 'feature:', cmdOpts.feature);
 logger.info();
-const destDataset = getTestData(destinationsList, ["_input", ""]);
+const destDataset = getTestData(destinationsList, ['_input', '']);
 
 const nativeDestHandlers = {};
 const destCdKWorkflowEngines = {};
@@ -82,9 +79,9 @@ const destCdKWorkflowEngines = {};
 const benchmarkType = cmdOpts.benchmarktype.trim();
 
 const getNativeHandleName = () => {
-  let handleName = "process";
-  if (cmdOpts.feature === "rt") {
-    handleName = "processRouterDest";
+  let handleName = 'process';
+  if (cmdOpts.feature === 'rt') {
+    handleName = 'processRouterDest';
   }
   return handleName;
 };
@@ -94,30 +91,25 @@ async function initializeHandlers() {
     const dest = destinationsList[idx];
 
     // Native destination handler
-    nativeDestHandlers[dest] = versionedRouter.getDestHandler("v0", dest)[
-      getNativeHandleName()
-    ];
+    nativeDestHandlers[dest] = versionedRouter.getDestHandler('v0', dest)[getNativeHandleName()];
 
     // Get the CDK 2.0 workflow engine instance
-    destCdKWorkflowEngines[dest] = await cdkV2Handler.getWorkflowEngine(
-      dest,
-      cmdOpts.feature
-    );
+    destCdKWorkflowEngines[dest] = await cdkV2Handler.getWorkflowEngine(dest, cmdOpts.feature);
   }
 }
 
 async function runDataset(suitDesc, input, intg, params) {
-  logger.info("==========================================");
+  logger.info('==========================================');
   logger.info(suitDesc);
-  logger.info("==========================================");
+  logger.info('==========================================');
 
   const results = {};
   const suite = new Benchmark(suitDesc, benchmarkType);
 
-  Object.keys(params).forEach(opName => {
+  Object.keys(params).forEach((opName) => {
     const handler = params[opName].handlerResolver(intg);
     const args = params[opName].argsResolver(intg, input);
-    suite.add(opName, async function() {
+    suite.add(opName, async () => {
       try {
         await handler(...args);
       } catch (err) {
@@ -128,30 +120,30 @@ async function runDataset(suitDesc, input, intg, params) {
   });
 
   suite
-    .on("cycle", function(result) {
+    .on('cycle', (result) => {
       results[result.end.name] = { stats: result.end.stats };
     })
-    .on("complete", function(result) {
+    .on('complete', (result) => {
       logger.info(
-        benchmarkType === "Operations" ? "Fastest: " : "Memory intensive: ",
-        `"${result.end.name}"`
+        benchmarkType === 'Operations' ? 'Fastest: ' : 'Memory intensive: ',
+        `"${result.end.name}"`,
       );
       logger.info();
-      Object.keys(results).forEach(impl => {
+      Object.keys(results).forEach((impl) => {
         logger.info(`"${impl}" - `, suite.formatStats(results[impl].stats));
 
         if (result.end.name !== impl) {
-          if (benchmarkType === "Operations") {
+          if (benchmarkType === 'Operations') {
             logger.info(
               `-> "${result.end.name}" is faster by ${(
                 results[impl].stats.mean / result.end.stats.mean
-              ).toFixed(1)} times to "${impl}"`
+              ).toFixed(1)} times to "${impl}"`,
             );
           } else {
             logger.info(
               `-> "${result.end.name}" consumed ${(
                 result.end.stats.mean / results[impl].stats.mean
-              ).toFixed(1)} times memory compared to "${impl}"`
+              ).toFixed(1)} times memory compared to "${impl}"`,
             );
           }
         }
@@ -170,11 +162,7 @@ async function runIntgDataset(dataset, type, params) {
       let tcInput = curTcData;
       let tcDesc = `${type} - ${intg} - ${cmdOpts.feature} - ${tc}`;
       // New test data file structure
-      if (
-        "description" in curTcData &&
-        "input" in curTcData &&
-        "output" in curTcData
-      ) {
+      if ('description' in curTcData && 'input' in curTcData && 'output' in curTcData) {
         tcInput = curTcData.input;
         tcDesc += ` - "${curTcData.description}"`;
       }
@@ -189,15 +177,15 @@ async function run() {
   await initializeHandlers();
 
   // Destinations
-  await runIntgDataset(destDataset, "Destination", {
+  await runIntgDataset(destDataset, 'Destination', {
     native: {
-      handlerResolver: intg => nativeDestHandlers[intg],
-      argsResolver: (_intg, input) => [input]
+      handlerResolver: (intg) => nativeDestHandlers[intg],
+      argsResolver: (_intg, input) => [input],
     },
-    "CDK 2.0": {
+    'CDK 2.0': {
       handlerResolver: () => cdkV2Handler.process,
-      argsResolver: (intg, input) => [destCdKWorkflowEngines[intg], input]
-    }
+      argsResolver: (intg, input) => [destCdKWorkflowEngines[intg], input],
+    },
   });
 }
 

@@ -1,17 +1,14 @@
-const { EventType } = require("../../../constants");
+const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
   simpleProcessRouterDest,
   constructPayload,
   removeUndefinedAndNullValues,
   defaultPostRequestConfig,
-  getDestinationExternalID
-} = require("../../util");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
-const {
-  TransformationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+  getDestinationExternalID,
+} = require('../../util');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
+const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilder = (payload, endpoint, destination) => {
   if (payload) {
@@ -19,39 +16,29 @@ const responseBuilder = (payload, endpoint, destination) => {
     const { apiKey } = destination.Config;
     response.endpoint = endpoint;
     response.headers = {
-      "Content-Type": "application/json",
-      Authorization: `Basic ${apiKey}`
+      'Content-Type': 'application/json',
+      Authorization: `Basic ${apiKey}`,
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
   }
   // fail-safety for developer error
-  throw new TransformationError(
-    "Something went wrong while constructing the payload"
-  );
+  throw new TransformationError('Something went wrong while constructing the payload');
 };
 
 // ref :- https://www.june.so/docs/api#:~:text=Copy-,Identifying%20users,-You%20can%20use
 const identifyResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.IDENTIFY;
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
-  );
+  const { endpoint, name } = CONFIG_CATEGORIES.IDENTIFY;
+  const payload = constructPayload(message, MAPPING_CONFIG[name]);
   return responseBuilder(payload, endpoint, destination);
 };
 
 // ref :- https://www.june.so/docs/api#:~:text=Copy-,Send%20track%20events,-In%20order%20to
 const trackResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.TRACK;
-  const groupId =
-    getDestinationExternalID(message, "juneGroupId") ||
-    message.properties?.groupId;
-  let payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name]
-  );
+  const { endpoint, name } = CONFIG_CATEGORIES.TRACK;
+  const groupId = getDestinationExternalID(message, 'juneGroupId') || message.properties?.groupId;
+  let payload = constructPayload(message, MAPPING_CONFIG[name]);
 
   if (groupId) {
     payload = { ...payload, context: { groupId } };
@@ -62,17 +49,14 @@ const trackResponseBuilder = (message, destination) => {
 
 // ref :- https://www.june.so/docs/api#:~:text=Copy-,Identifying%20companies,-(optional)
 const groupResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.GROUP;
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.GROUP.name]
-  );
+  const { endpoint, name } = CONFIG_CATEGORIES.GROUP;
+  const payload = constructPayload(message, MAPPING_CONFIG[name]);
   return responseBuilder(payload, endpoint, destination);
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
 
   const messageType = message.type.toLowerCase();
@@ -88,16 +72,12 @@ const processEvent = (message, destination) => {
       response = groupResponseBuilder(message, destination);
       break;
     default:
-      throw new InstrumentationError(
-        `Event type "${messageType}" is not supported`
-      );
+      throw new InstrumentationError(`Event type "${messageType}" is not supported`);
   }
   return response;
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

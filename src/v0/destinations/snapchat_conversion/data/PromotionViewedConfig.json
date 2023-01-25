@@ -1,52 +1,47 @@
 [
-    {
-      "destKey": "transaction_id",
-      "sourceKeys": ["properties.transaction_id","properties.transactionId"],
-      "required": false
-    },
-    {
-      "destKey": "item_ids",
-      "sourceKeys": "properties.item_ids",
-      "required": false
-    },
-    {
-      "destKey": "item_category",
-      "sourceKeys": "properties.category",
-      "required": false
-    },
-    {
-      "destKey": "number_items",
-      "sourceKeys": "properties.number_items",
-      "required": false
-    },
-    {
-      "destKey": "price",
-      "sourceKeys": [
-        "properties.price",
-        "properties.value",
-        "properties.revenue"
-      ],
-      "required": false
-    },
-    {
-      "destKey": "currency",
-      "sourceKeys": "properties.currency",
-      "required": false
-    },
-    {
-      "destKey": "search_string",
-      "sourceKeys": "properties.search_string",
-      "required": false
-    },
-    {
-      "destKey": "sign_up_method",
-      "sourceKeys": ["properties.signUpMethod", "properties.sign_up_method"],
-      "required": false
-    },
-    {
-      "destKey": "client_dedup_id",
-      "sourceKeys": "properties.client_dedup_id",
-      "required": false
-    }
-  ]
-  
+  {
+    "destKey": "transaction_id",
+    "sourceKeys": ["properties.transaction_id", "properties.transactionId"],
+    "required": false
+  },
+  {
+    "destKey": "item_ids",
+    "sourceKeys": "properties.item_ids",
+    "required": false
+  },
+  {
+    "destKey": "item_category",
+    "sourceKeys": "properties.category",
+    "required": false
+  },
+  {
+    "destKey": "number_items",
+    "sourceKeys": "properties.number_items",
+    "required": false
+  },
+  {
+    "destKey": "price",
+    "sourceKeys": ["properties.price", "properties.value", "properties.revenue"],
+    "required": false
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "properties.currency",
+    "required": false
+  },
+  {
+    "destKey": "search_string",
+    "sourceKeys": "properties.search_string",
+    "required": false
+  },
+  {
+    "destKey": "sign_up_method",
+    "sourceKeys": ["properties.signUpMethod", "properties.sign_up_method"],
+    "required": false
+  },
+  {
+    "destKey": "client_dedup_id",
+    "sourceKeys": "properties.client_dedup_id",
+    "required": false
+  }
+]

@@ -1,30 +1,32 @@
 [
   {
-       "output":  {
-       "destinationResponse": {
-         "error": {
-           "code": 403,
-           "message": "The caller does not have permission",
-           "errors": [{
-             "message": "Invalid Credentials",
-             "domain": "global",
-             "reason": "authError",
-             "location": "Authorization",
-             "locationType": "header"
-           }],
-           "status": "PERMISSION_DENIED"
-         }
-       },
-       "message": "Campaign Manager: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during CAMPAIGN_MANAGER response transformation",
-       "statTags":  {
-         "destType": "CAMPAIGN_MANAGER",
-         "errorAt": "proxy",
-         "scope": "exception",
-         "stage": "responseTransform"
-       },
-       "status": 403
-     }
-   },
+    "output": {
+      "destinationResponse": {
+        "error": {
+          "code": 403,
+          "message": "The caller does not have permission",
+          "errors": [
+            {
+              "message": "Invalid Credentials",
+              "domain": "global",
+              "reason": "authError",
+              "location": "Authorization",
+              "locationType": "header"
+            }
+          ],
+          "status": "PERMISSION_DENIED"
+        }
+      },
+      "message": "Campaign Manager: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during CAMPAIGN_MANAGER response transformation",
+      "statTags": {
+        "destType": "CAMPAIGN_MANAGER",
+        "errorAt": "proxy",
+        "scope": "exception",
+        "stage": "responseTransform"
+      },
+      "status": 403
+    }
+  },
   {
     "output": {
       "status": 200,

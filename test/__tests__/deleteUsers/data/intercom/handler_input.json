@@ -79,9 +79,7 @@
       "body": [
         {
           "destType": "INTERCOM",
-          "userAttributes": [
-            {}
-          ],
+          "userAttributes": [{}],
           "config": {
             "apiKey": "a="
           }

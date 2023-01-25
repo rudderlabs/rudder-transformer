@@ -1,14 +1,14 @@
 /* eslint-disable no-restricted-syntax */
-const get = require("get-value");
-const moment = require("moment");
+const get = require('get-value');
+const moment = require('moment');
 const {
   constructPayload,
   isDefinedAndNotNull,
   getDestinationExternalID,
-  isDefinedAndNotNullAndNotEmpty
-} = require("../../util");
-const { InstrumentationError } = require("../../util/errorTypes");
-const { mappingConfig, ConfigCategory } = require("./config");
+  isDefinedAndNotNullAndNotEmpty,
+} = require('../../util');
+const { InstrumentationError } = require('../../util/errorTypes');
+const { mappingConfig, ConfigCategory } = require('./config');
 
 /**
  * The keys should not contain any of the values inside the validationArray.
@@ -17,8 +17,8 @@ const { mappingConfig, ConfigCategory } = require("./config");
  * @param {*} payload
  * @returns
  */
-const getPropertiesKeyValidation = payload => {
-  const validationArray = [`'`, `"`, `{`, `}`, `[`, `]`, ",", `,`];
+const getPropertiesKeyValidation = (payload) => {
+  const validationArray = [`'`, `"`, `{`, `}`, `[`, `]`, ',', `,`];
   const keys = Object.keys(payload.properties);
   for (const key of keys) {
     for (const validationChar of validationArray) {
@@ -36,14 +36,14 @@ const getPropertiesKeyValidation = payload => {
  * @param {*} message
  * @returns
  */
-const getExternalIdentifiersMapping = message => {
+const getExternalIdentifiersMapping = (message) => {
   // Data Structure expected:
   // context.externalId: [ {type: clientUserId, id: __id}, {type: shopifyId, id: __id}, {type: klaviyoId, id: __id}]
-  const externalIdentifiers = ["clientUserId", "shopifyId", "klaviyoId"];
-  const externalId = get(message, "context.externalId");
+  const externalIdentifiers = ['clientUserId', 'shopifyId', 'klaviyoId'];
+  const externalId = get(message, 'context.externalId');
   const idObj = {};
   if (externalId && Array.isArray(externalId)) {
-    externalId.forEach(id => {
+    externalId.forEach((id) => {
       const idType = id.type;
       const val = getDestinationExternalID(message, idType);
       if (val && externalIdentifiers.includes(idType)) {
@@ -61,8 +61,7 @@ const getExternalIdentifiersMapping = message => {
   //    ]
   //  }
   const customIdentifiers =
-    get(message, "traits.customIdentifiers") ||
-    get(message, "context.traits.customIdentifiers");
+    get(message, 'traits.customIdentifiers') || get(message, 'context.traits.customIdentifiers');
   if (customIdentifiers && Array.isArray(customIdentifiers)) {
     idObj.customIdentifiers = customIdentifiers;
   }
@@ -77,10 +76,10 @@ const getExternalIdentifiersMapping = message => {
  * @param {*} timeStamp
  * @returns
  */
-const validateTimestamp = timeStamp => {
+const validateTimestamp = (timeStamp) => {
   if (timeStamp) {
-    const start = moment.unix(moment(timeStamp).format("X"));
-    const current = moment.unix(moment().format("X"));
+    const start = moment.unix(moment(timeStamp).format('X'));
+    const current = moment.unix(moment().format('X'));
     // calculates past event in hours
     const deltaDay = Math.ceil(moment.duration(current.diff(start)).asHours());
     if (deltaDay > 12) {
@@ -92,16 +91,13 @@ const validateTimestamp = timeStamp => {
 
 const getDestinationItemProperties = (message, isItemsRequired) => {
   let items;
-  const products = get(message, "properties.products");
+  const products = get(message, 'properties.products');
   if (!products) {
     items = [];
     const price = [];
     const pricing = {};
-    const properties = get(message, "properties");
-    const props = constructPayload(
-      properties,
-      mappingConfig[ConfigCategory.ITEMS.name]
-    );
+    const properties = get(message, 'properties');
+    const props = constructPayload(properties, mappingConfig[ConfigCategory.ITEMS.name]);
     pricing.value = parseInt(properties.price, 10);
     pricing.currency = properties.currency;
     price.push(pricing);
@@ -110,17 +106,12 @@ const getDestinationItemProperties = (message, isItemsRequired) => {
     return items;
   }
   if ((!products && isItemsRequired) || (products && products.length === 0)) {
-    throw new InstrumentationError(
-      `Products is an required field for '${message.event}' event`
-    );
+    throw new InstrumentationError(`Products is an required field for '${message.event}' event`);
   }
   if (products && Array.isArray(products)) {
     items = [];
-    products.forEach(item => {
-      const element = constructPayload(
-        item,
-        mappingConfig[ConfigCategory.ITEMS.name]
-      );
+    products.forEach((item) => {
+      const element = constructPayload(item, mappingConfig[ConfigCategory.ITEMS.name]);
       const price = [];
       const pricing = {};
       pricing.value = parseInt(item.price, 10);
@@ -131,15 +122,13 @@ const getDestinationItemProperties = (message, isItemsRequired) => {
         !isDefinedAndNotNull(element.productVariantId) ||
         !isDefinedAndNotNull(pricing.value)
       ) {
-        throw new InstrumentationError(
-          "product_id and product_variant_id and price are required"
-        );
+        throw new InstrumentationError('product_id and product_variant_id and price are required');
       }
       element.price = price;
       items.push(element);
     });
   } else if (products && !Array.isArray(products)) {
-    throw new InstrumentationError("Invalid type. Expected Array of products");
+    throw new InstrumentationError('Invalid type. Expected Array of products');
   }
   return items;
 };
@@ -148,5 +137,5 @@ module.exports = {
   getDestinationItemProperties,
   getExternalIdentifiersMapping,
   getPropertiesKeyValidation,
-  validateTimestamp
+  validateTimestamp,
 };

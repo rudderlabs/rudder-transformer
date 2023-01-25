@@ -1,19 +1,19 @@
-const get = require("get-value");
-const sha256 = require("sha256");
-const { logger } = require("handlebars");
+const get = require('get-value');
+const sha256 = require('sha256');
+const { logger } = require('handlebars');
 
 const {
   isDefinedAndNotNull,
   getFieldValueFromMessage,
-  defaultBatchRequestConfig
-} = require("../../util");
-const { ENDPOINT } = require("./config");
+  defaultBatchRequestConfig,
+} = require('../../util');
+const { ENDPOINT } = require('./config');
 
 const channelMapping = {
-  web: "WEB",
-  mobile: "MOBILE_APP",
-  mobile_app: "MOBILE_APP",
-  offline: "OFFLINE"
+  web: 'WEB',
+  mobile: 'MOBILE_APP',
+  mobile_app: 'MOBILE_APP',
+  offline: 'OFFLINE',
 };
 
 function msUnixTimestamp(timestamp) {
@@ -23,7 +23,7 @@ function msUnixTimestamp(timestamp) {
 
 function getHashedValue(identifier) {
   if (identifier) {
-    const regexExp = /^[a-f0-9]{64}$/gi;
+    const regexExp = /^[\da-f]{64}$/gi;
     if (!regexExp.test(identifier)) {
       return sha256(identifier);
     }
@@ -33,8 +33,8 @@ function getHashedValue(identifier) {
 }
 
 function getNormalizedPhoneNumber(message) {
-  const regexExp = /^[a-f0-9]{64}$/gi;
-  let phoneNumber = getFieldValueFromMessage(message, "phone");
+  const regexExp = /^[\da-f]{64}$/gi;
+  let phoneNumber = getFieldValueFromMessage(message, 'phone');
   if (regexExp.test(phoneNumber)) {
     return phoneNumber;
   }
@@ -42,10 +42,10 @@ function getNormalizedPhoneNumber(message) {
   if (phoneNumber) {
     for (let i = 0; i < phoneNumber.length; i += 1) {
       if (Number.isNaN(parseInt(phoneNumber[i], 10))) {
-        phoneNumber = phoneNumber.replace(phoneNumber[i], "");
+        phoneNumber = phoneNumber.replace(phoneNumber[i], '');
         i -= 1;
-      } else if (phoneNumber[i] === "0" && leadingZero) {
-        phoneNumber = phoneNumber.replace(phoneNumber[i], "");
+      } else if (phoneNumber[i] === '0' && leadingZero) {
+        phoneNumber = phoneNumber.replace(phoneNumber[i], '');
         i -= 1;
       } else {
         leadingZero = false;
@@ -57,7 +57,7 @@ function getNormalizedPhoneNumber(message) {
 }
 
 function getDataUseValue(message) {
-  const att = get(message, "context.device.attTrackingStatus");
+  const att = get(message, 'context.device.attTrackingStatus');
   let limitAdTracking;
   if (isDefinedAndNotNull(att)) {
     if (att === 3) {
@@ -75,7 +75,7 @@ function getDataUseValue(message) {
 
 function getItemIds(message) {
   let itemIds = [];
-  const products = get(message, "properties.products");
+  const products = get(message, 'properties.products');
   if (products && Array.isArray(products)) {
     products.forEach((element, index) => {
       const pId = element.product_id;
@@ -92,9 +92,9 @@ function getItemIds(message) {
 }
 function getPriceSum(message) {
   let priceSum = 0;
-  const products = get(message, "properties.products");
+  const products = get(message, 'properties.products');
   if (products && Array.isArray(products)) {
-    products.forEach(element => {
+    products.forEach((element) => {
       const pPrice = element.price;
       if (pPrice && !Number.isNaN(parseFloat(pPrice))) {
         priceSum += parseFloat(pPrice);
@@ -123,24 +123,24 @@ function generateBatchedPayloadForArray(events) {
   let batchEventResponse = defaultBatchRequestConfig();
 
   // Batch event into dest batch structure
-  events.forEach(ev => {
+  events.forEach((ev) => {
     batchResponseList.push(ev.message.body.JSON);
     metadata.push(ev.metadata);
   });
 
   batchEventResponse.batchedRequest.body.JSON_ARRAY = {
-    batch: JSON.stringify(batchResponseList)
+    batch: JSON.stringify(batchResponseList),
   };
 
   batchEventResponse.batchedRequest.endpoint = ENDPOINT;
   batchEventResponse.batchedRequest.headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${apiKey}`
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${apiKey}`,
   };
   batchEventResponse = {
     ...batchEventResponse,
     metadata,
-    destination
+    destination,
   };
 
   return batchEventResponse;
@@ -154,5 +154,5 @@ module.exports = {
   getNormalizedPhoneNumber,
   getHashedValue,
   channelMapping,
-  generateBatchedPayloadForArray
+  generateBatchedPayloadForArray,
 };

@@ -1,23 +1,19 @@
-const sha256 = require("sha256");
-const {
-  isObject,
-  getFieldValueFromMessage,
-  formatTimeStamp
-} = require("../../util");
+const sha256 = require('sha256');
+const { isObject, getFieldValueFromMessage, formatTimeStamp } = require('../../util');
 
-const { InstrumentationError } = require("../../util/errorTypes");
+const { InstrumentationError } = require('../../util/errorTypes');
 
 /**  format revenue according to fb standards with max two decimal places.
  * @param revenue
  * @return number
  */
 
-const formatRevenue = revenue => {
+const formatRevenue = (revenue) => {
   const formattedRevenue = parseFloat(parseFloat(revenue || 0).toFixed(2));
-  if (!isNaN(formattedRevenue)) {
+  if (!Number.isNaN(formattedRevenue)) {
     return formattedRevenue;
   }
-  throw new InstrumentationError("Revenue could not be converted to number");
+  throw new InstrumentationError('Revenue could not be converted to number');
 };
 
 /**
@@ -32,7 +28,7 @@ const formatRevenue = revenue => {
  * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
  */
 const getContentType = (message, defaultValue, categoryToContent) => {
-  const { integrations } = message;
+  const { integrations, properties } = message;
   if (
     integrations &&
     integrations.FacebookPixel &&
@@ -42,13 +38,11 @@ const getContentType = (message, defaultValue, categoryToContent) => {
     return integrations.FacebookPixel.contentType;
   }
 
-  let { category } = message.properties;
+  let { category } = properties;
   if (!category) {
-    const { products } = message.properties;
-    if (products && products.length > 0 && Array.isArray(products)) {
-      if (isObject(products[0])) {
-        category = products[0].category;
-      }
+    const { products } = properties;
+    if (products && products.length > 0 && Array.isArray(products) && isObject(products[0])) {
+      category = products[0].category;
     }
   } else {
     if (categoryToContent === undefined) {
@@ -60,8 +54,8 @@ const getContentType = (message, defaultValue, categoryToContent) => {
         filtered = map.to;
       }
       return filtered;
-    }, "");
-    if (mappedTo.length) {
+    }, '');
+    if (mappedTo.length > 0) {
       return mappedTo;
     }
   }
@@ -131,23 +125,23 @@ const transformedPayloadData = (
   whitelistPiiProperties,
   isStandard,
   eventCustomProperties,
-  integrationsObj
+  integrationsObj,
 ) => {
   const defaultPiiProperties = [
-    "email",
-    "firstName",
-    "lastName",
-    "firstname",
-    "lastname",
-    "first_name",
-    "last_name",
-    "gender",
-    "city",
-    "country",
-    "phone",
-    "state",
-    "zip",
-    "birthday"
+    'email',
+    'firstName',
+    'lastName',
+    'firstname',
+    'lastname',
+    'first_name',
+    'last_name',
+    'gender',
+    'city',
+    'country',
+    'phone',
+    'state',
+    'zip',
+    'birthday',
   ];
   blacklistPiiProperties = blacklistPiiProperties || [];
   whitelistPiiProperties = whitelistPiiProperties || [];
@@ -155,36 +149,30 @@ const transformedPayloadData = (
   const customBlackListedPiiProperties = {};
   const customWhiteListedProperties = {};
   const customEventProperties = {};
-  for (const property of blacklistPiiProperties) {
+  blacklistPiiProperties.forEach((property) => {
     const singularConfigInstance = property;
-    customBlackListedPiiProperties[
-      singularConfigInstance.blacklistPiiProperties
-    ] = singularConfigInstance.blacklistPiiHash;
-  }
-  for (const property of whitelistPiiProperties) {
+    customBlackListedPiiProperties[singularConfigInstance.blacklistPiiProperties] =
+      singularConfigInstance.blacklistPiiHash;
+  });
+
+  whitelistPiiProperties.forEach((property) => {
     const singularConfigInstance = property;
-    customWhiteListedProperties[
-      singularConfigInstance.whitelistPiiProperties
-    ] = true;
-  }
-  for (const property of eventCustomProperties) {
+    customWhiteListedProperties[singularConfigInstance.whitelistPiiProperties] = true;
+  });
+
+  eventCustomProperties.forEach((property) => {
     const singularConfigInstance = property;
     customEventProperties[singularConfigInstance.eventCustomProperties] = true;
-  }
-  Object.keys(customData).forEach(eventProp => {
-    const isDefaultPiiProperty = defaultPiiProperties.indexOf(eventProp) >= 0;
-    const isProperyWhiteListed =
-      customWhiteListedProperties[eventProp] || false;
+  });
+
+  Object.keys(customData).forEach((eventProp) => {
+    const isDefaultPiiProperty = defaultPiiProperties.includes(eventProp);
+    const isProperyWhiteListed = customWhiteListedProperties[eventProp] || false;
     if (isDefaultPiiProperty && !isProperyWhiteListed) {
       delete customData[eventProp];
     }
 
-    if (
-      Object.prototype.hasOwnProperty.call(
-        customBlackListedPiiProperties,
-        eventProp
-      )
-    ) {
+    if (Object.prototype.hasOwnProperty.call(customBlackListedPiiProperties, eventProp)) {
       if (customBlackListedPiiProperties[eventProp]) {
         customData[eventProp] =
           integrationsObj && integrationsObj.hashed
@@ -218,7 +206,7 @@ const transformedPayloadData = (
  *
  * ref: https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/fbp-and-fbc#fbc
  */
-const deduceFbcParam = message => {
+const deduceFbcParam = (message) => {
   const url = message.context?.page?.url;
   if (!url) {
     return undefined;
@@ -230,12 +218,12 @@ const deduceFbcParam = message => {
     return undefined;
   }
   const paramsList = new URLSearchParams(parseUrl.search);
-  const fbclid = paramsList.get("fbclid");
+  const fbclid = paramsList.get('fbclid');
 
   if (!fbclid) {
     return undefined;
   }
-  const creationTime = getFieldValueFromMessage(message, "timestamp");
+  const creationTime = getFieldValueFromMessage(message, 'timestamp');
   return `fb.1.${formatTimeStamp(creationTime)}.${fbclid}`;
 };
 
@@ -243,5 +231,5 @@ module.exports = {
   deduceFbcParam,
   formatRevenue,
   getContentType,
-  transformedPayloadData
+  transformedPayloadData,
 };

@@ -124,6 +124,15 @@
     }
   },
   {
+    "destination": {
+      "Config": {
+        "treatmentForUnderage": false,
+        "limitAdTracking": false,
+        "childDirectedTreatment": false,
+        "nonPersonalizedAd": false,
+        "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
+      }
+    },
     "batched": false,
     "error": "[CAMPAIGN MANAGER (DCM)]: properties.requestType must be one of batchinsert or batchupdate.",
     "metadata": [

@@ -3,20 +3,17 @@ const {
   defaultRequestConfig,
   simpleProcessRouterDest,
   removeUndefinedAndNullValues,
-  defaultPostRequestConfig
-} = require("../../util");
+  defaultPostRequestConfig,
+} = require('../../util');
 const {
   validatePayload,
   pageEventPayloadBuilder,
   groupUsersPayloadBuilder,
   trackEventPayloadBuilder,
-  identifyUserPayloadBuilder
-} = require("./utils");
-const { EventType } = require("../../../constants");
-const {
-  TransformationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+  identifyUserPayloadBuilder,
+} = require('./utils');
+const { EventType } = require('../../../constants');
+const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilder = (payload, endpoint, destination) => {
   if (payload) {
@@ -24,8 +21,8 @@ const responseBuilder = (payload, endpoint, destination) => {
     const { apiKey } = destination.Config;
     response.endpoint = endpoint;
     response.headers = {
-      "Content-Type": "application/x-www-form-urlencoded",
-      Authorization: `Bearer ${apiKey}`
+      'Content-Type': 'application/x-www-form-urlencoded',
+      Authorization: `Bearer ${apiKey}`,
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.body.FORM = removeUndefinedAndNullValues(payload);
@@ -45,7 +42,7 @@ const identifyResponseBuilder = (message, destination) => {
 const trackResponseBuilder = (message, destination) => {
   validatePayload(message);
   if (!message.event) {
-    throw new InstrumentationError("Event name is required");
+    throw new InstrumentationError('Event name is required');
   }
   const builder = trackEventPayloadBuilder(message);
   const { payload, endpoint } = builder;
@@ -69,7 +66,7 @@ const groupResponseBuilder = (message, destination) => {
 const processEvent = (message, destination) => {
   // Validating if message type is even given or not
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -87,16 +84,12 @@ const processEvent = (message, destination) => {
       response = groupResponseBuilder(message, destination);
       break;
     default:
-      throw new InstrumentationError(
-        `Event type "${messageType}" is not supported`
-      );
+      throw new InstrumentationError(`Event type "${messageType}" is not supported`);
   }
   return response;
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

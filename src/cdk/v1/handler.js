@@ -1,23 +1,21 @@
-const { ConfigFactory, Executor } = require("rudder-transformer-cdk");
-const { CustomError } = require("rudder-transformer-cdk/build/error");
-const {
-  TRANSFORMER_METRIC
-} = require("rudder-transformer-cdk/build/constants");
-const path = require("path");
+const { ConfigFactory, Executor } = require('rudder-transformer-cdk');
+const { CustomError } = require('rudder-transformer-cdk/build/error');
+const { TRANSFORMER_METRIC } = require('rudder-transformer-cdk/build/constants');
+const path = require('path');
 
 const basePath = path.resolve(__dirname);
-ConfigFactory.init({ basePath, loggingMode: "production" });
+ConfigFactory.init({ basePath, loggingMode: 'production' });
 
-const tags = require("../../v0/util/tags");
-const { generateErrorObject } = require("../../v0/util");
+const tags = require('../../v0/util/tags');
+const { generateErrorObject } = require('../../v0/util');
 const {
   TransformationError,
   ConfigurationError,
-  InstrumentationError
-} = require("../../v0/util/errorTypes");
+  InstrumentationError,
+} = require('../../v0/util/errorTypes');
 
 const defTags = {
-  [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.CDK_V1
+  [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.CDK_V1,
 };
 
 /**
@@ -27,36 +25,32 @@ const defTags = {
  */
 function getErrorInfo(err) {
   if (err instanceof CustomError) {
-    let errInstance = "";
+    let errInstance = '';
     switch (err.statTags?.meta) {
       case TRANSFORMER_METRIC.MEASUREMENT_TYPE.CDK.META.BAD_CONFIG:
         errInstance = new TransformationError(
-          `Bad transformer configuration file. Original error: ${err.message}`
+          `Bad transformer configuration file. Original error: ${err.message}`,
         );
         break;
 
       case TRANSFORMER_METRIC.MEASUREMENT_TYPE.CDK.META.CONFIGURATION:
-        errInstance = new ConfigurationError(
-          `Bad configuration. Original error: ${err.message}`
-        );
+        errInstance = new ConfigurationError(`Bad configuration. Original error: ${err.message}`);
         break;
 
       case TRANSFORMER_METRIC.MEASUREMENT_TYPE.CDK.META.TF_FUNC:
         errInstance = new TransformationError(
-          `Bad pre/post transformation function. Original error: ${err.message}`
+          `Bad pre/post transformation function. Original error: ${err.message}`,
         );
         break;
 
       case TRANSFORMER_METRIC.MEASUREMENT_TYPE.CDK.META.BAD_EVENT:
       case TRANSFORMER_METRIC.MEASUREMENT_TYPE.CDK.META.INSTRUMENTATION:
-        errInstance = new InstrumentationError(
-          `Bad event. Original error: ${err.message}`
-        );
+        errInstance = new InstrumentationError(`Bad event. Original error: ${err.message}`);
         break;
 
       case TRANSFORMER_METRIC.MEASUREMENT_TYPE.CDK.META.EXCEPTION:
         errInstance = new TransformationError(
-          `Unknown error occurred. Original error: ${err.message}`
+          `Unknown error occurred. Original error: ${err.message}`,
         );
         break;
       default:
@@ -66,7 +60,7 @@ function getErrorInfo(err) {
     switch (err.statTags.scope) {
       case TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE:
         errInstance = new TransformationError(
-          `Unknown error occurred. Original error: ${err.message}`
+          `Unknown error occurred. Original error: ${err.message}`,
         );
         break;
       default:
@@ -92,5 +86,5 @@ async function processCdkV1(destType, parsedEvent) {
 }
 
 module.exports = {
-  processCdkV1
+  processCdkV1,
 };

@@ -1,15 +1,15 @@
-const _ = require("lodash");
-const get = require("get-value");
+const _ = require('lodash');
+const get = require('get-value');
 const {
   getShopifyTopic,
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
   extractEmailFromPayload,
-  setAnonymousId
-} = require("./util");
-const { removeUndefinedAndNullValues } = require("../../util");
-const Message = require("../message");
-const { EventType } = require("../../../constants");
+  setAnonymousId,
+} = require('./util');
+const { removeUndefinedAndNullValues } = require('../../util');
+const Message = require('../message');
+const { EventType } = require('../../../constants');
 const {
   INTEGERATION,
   MAPPING_CATEGORIES,
@@ -17,11 +17,11 @@ const {
   ECOM_TOPICS,
   RUDDER_ECOM_MAP,
   SUPPORTED_TRACK_EVENTS,
-  SHOPIFY_TRACK_MAP
-} = require("./config");
-const { TransformationError } = require("../../util/errorTypes");
+  SHOPIFY_TRACK_MAP,
+} = require('./config');
+const { TransformationError } = require('../../util/errorTypes');
 
-const identifyPayloadBuilder = event => {
+const identifyPayloadBuilder = (event) => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.IDENTIFY);
   message.setPropertiesV2(event, MAPPING_CATEGORIES[EventType.IDENTIFY]);
@@ -39,16 +39,13 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
 
   let properties = createPropertiesForEcomEvent(event);
   properties = removeUndefinedAndNullValues(properties);
-  Object.keys(properties).forEach(key =>
-    message.setProperty(`properties.${key}`, properties[key])
+  Object.keys(properties).forEach((key) =>
+    message.setProperty(`properties.${key}`, properties[key]),
   );
   // Map Customer details if present
-  const customerDetails = get(event, "customer");
+  const customerDetails = get(event, 'customer');
   if (customerDetails) {
-    message.setPropertiesV2(
-      customerDetails,
-      MAPPING_CATEGORIES[EventType.IDENTIFY]
-    );
+    message.setPropertiesV2(customerDetails, MAPPING_CATEGORIES[EventType.IDENTIFY]);
   }
   if (event.updated_at) {
     // TODO: look for created_at for checkout_create?
@@ -56,19 +53,16 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
     message.setTimestamp(new Date(event.updated_at).toISOString());
   }
   if (event.customer) {
-    message.setPropertiesV2(
-      event.customer,
-      MAPPING_CATEGORIES[EventType.IDENTIFY]
-    );
+    message.setPropertiesV2(event.customer, MAPPING_CATEGORIES[EventType.IDENTIFY]);
   }
   if (event.shipping_address) {
-    message.setProperty("traits.shippingAddress", event.shipping_address);
+    message.setProperty('traits.shippingAddress', event.shipping_address);
   }
   if (event.billing_address) {
-    message.setProperty("traits.billingAddress", event.billing_address);
+    message.setProperty('traits.billingAddress', event.billing_address);
   }
   if (!message.userId && event.user_id) {
-    message.setProperty("userId", event.user_id);
+    message.setProperty('userId', event.user_id);
   }
 
   return message;
@@ -80,41 +74,42 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   message.setEventName(SHOPIFY_TRACK_MAP[shopifyTopic]);
   Object.keys(event)
     .filter(
-      key =>
+      (key) =>
         ![
-          "type",
-          "event",
-          "line_items",
-          "customer",
-          "shipping_address",
-          "billing_address"
-        ].includes(key)
+          'type',
+          'event',
+          'line_items',
+          'customer',
+          'shipping_address',
+          'billing_address',
+        ].includes(key),
     )
-    .forEach(key => {
+    .forEach((key) => {
       message.setProperty(`properties.${key}`, event[key]);
     });
-  const { line_items: lineItems } = event;
+  // eslint-disable-next-line camelcase
+  const { line_items: lineItems, billing_address, user_id, shipping_address, customer } = event;
   const productsList = getProductsListFromLineItems(lineItems);
-  message.setProperty("properties.products", productsList);
-  if (event.customer) {
-    message.setPropertiesV2(
-      event.customer,
-      MAPPING_CATEGORIES[EventType.IDENTIFY]
-    );
+  message.setProperty('properties.products', productsList);
+  if (customer) {
+    message.setPropertiesV2(customer, MAPPING_CATEGORIES[EventType.IDENTIFY]);
   }
-  if (event.shipping_address) {
-    message.setProperty("traits.shippingAddress", event.shipping_address);
+  // eslint-disable-next-line camelcase
+  if (shipping_address) {
+    message.setProperty('traits.shippingAddress', shipping_address);
   }
-  if (event.billing_address) {
-    message.setProperty("traits.billingAddress", event.billing_address);
+  // eslint-disable-next-line camelcase
+  if (billing_address) {
+    message.setProperty('traits.billingAddress', billing_address);
   }
-  if (!message.userId && event.user_id) {
-    message.setProperty("userId", event.user_id);
+  // eslint-disable-next-line camelcase
+  if (!message.userId && user_id) {
+    message.setProperty('userId', user_id);
   }
   return message;
 };
 
-const processEvent = inputEvent => {
+const processEvent = (inputEvent) => {
   let message;
   const event = _.cloneDeep(inputEvent);
   const shopifyTopic = getShopifyTopic(event);
@@ -132,9 +127,7 @@ const processEvent = inputEvent => {
       break;
     default:
       if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
-        throw new TransformationError(
-          `event type ${shopifyTopic} not supported`
-        );
+        throw new TransformationError(`event type ${shopifyTopic} not supported`);
       }
       message = trackPayloadBuilder(event, shopifyTopic);
       break;
@@ -143,27 +136,25 @@ const processEvent = inputEvent => {
   if (message.userId) {
     message.userId = String(message.userId);
   }
-  if (!get(message, "traits.email")) {
+  if (!get(message, 'traits.email')) {
     const email = extractEmailFromPayload(event);
     if (email) {
-      message.setProperty("traits.email", email);
+      message.setProperty('traits.email', email);
     }
   }
   if (message.type !== EventType.IDENTIFY) {
     setAnonymousId(message);
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
-  message.setProperty("context.library", {
-    name: "RudderStack Shopify Cloud",
-    version: "1.0.0"
+  message.setProperty('context.library', {
+    name: 'RudderStack Shopify Cloud',
+    version: '1.0.0',
   });
-  message.setProperty("context.topic", shopifyTopic);
+  message.setProperty('context.topic', shopifyTopic);
   message = removeUndefinedAndNullValues(message);
   return message;
 };
 
-const process = event => {
-  return processEvent(event);
-};
+const process = (event) => processEvent(event);
 
 exports.process = process;

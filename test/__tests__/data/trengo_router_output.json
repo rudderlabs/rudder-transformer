@@ -84,15 +84,7 @@
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": true,
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ]
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
         },
         "id": "1aIXqM806xAVm92nx07YwKbRrO9",
         "name": "TRENGO",
@@ -191,15 +183,7 @@
           "excludeKeys": [],
           "includeKeys": [],
           "routerTransform": true,
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "web",
-            "unity",
-            "amp",
-            "cloud",
-            "reactnative"
-          ]
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
         },
         "id": "1aIXqM806xAVm92nx07YwKbRrO9",
         "name": "TRENGO",

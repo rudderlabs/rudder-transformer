@@ -19,10 +19,7 @@
   },
   {
     "destKey": "events",
-    "sourceKeys": [
-      "properties.page",
-      "context.page"
-    ],
+    "sourceKeys": ["properties.page", "context.page"],
     "metadata": {
       "targetType": "Array",
       "isTargetTypePrimitive": false,
@@ -31,12 +28,8 @@
         "eventType": "monetate:context:PageView",
         "url": "sourceKeyValue.url",
         "path": "sourceKeyValue.path",
-        "categories": [
-          "sourceKeyValue.category"
-        ],
-        "breadcrumbs": [
-          "sourceKeyValue.breadcrumbs"
-        ]
+        "categories": ["sourceKeyValue.category"],
+        "breadcrumbs": ["sourceKeyValue.breadcrumbs"]
       },
       "action": "push"
     }

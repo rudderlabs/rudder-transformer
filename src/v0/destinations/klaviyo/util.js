@@ -1,7 +1,7 @@
-const get = require("get-value");
-const { httpGET } = require("../../../adapters/network");
+const get = require('get-value');
+const { httpGET } = require('../../../adapters/network');
 
-const { WhiteListedTraits } = require("../../../constants");
+const { WhiteListedTraits } = require('../../../constants');
 
 const {
   defaultRequestConfig,
@@ -11,21 +11,16 @@ const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   extractCustomFields,
-  removeUndefinedAndNullValues
-} = require("../../util");
+  removeUndefinedAndNullValues,
+} = require('../../util');
 
-const {
-  BASE_ENDPOINT,
-  LIST_CONF,
-  MAPPING_CONFIG,
-  CONFIG_CATEGORIES
-} = require("./config");
+const { BASE_ENDPOINT, LIST_CONF, MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
 const {
   getDynamicErrorType,
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
-const { NetworkError } = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+  processAxiosResponse,
+} = require('../../../adapters/utils/networkUtils');
+const { NetworkError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 /**
  * This function is used to check if the user/profile already exists or not, if already exists unique person_id
@@ -38,36 +33,33 @@ const tags = require("../../util/tags");
 const isProfileExist = async (message, { Config }) => {
   const { privateApiKey } = Config;
   const userIdentifiers = {
-    email: getFieldValueFromMessage(message, "email"),
-    external_id: getFieldValueFromMessage(message, "userId"),
-    phone_number: getFieldValueFromMessage(message, "phone")
+    email: getFieldValueFromMessage(message, 'email'),
+    external_id: getFieldValueFromMessage(message, 'userId'),
+    phone_number: getFieldValueFromMessage(message, 'phone'),
   };
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const id in userIdentifiers) {
     if (isDefinedAndNotNull(userIdentifiers[id])) {
-      const profileResponse = await httpGET(
-        `${BASE_ENDPOINT}/api/v2/people/search`,
-        {
-          header: {
-            Accept: "application/json"
-          },
-          params: {
-            api_key: privateApiKey,
-            [id]: userIdentifiers[id]
-          }
-        }
-      );
+      // eslint-disable-next-line no-await-in-loop
+      const profileResponse = await httpGET(`${BASE_ENDPOINT}/api/v2/people/search`, {
+        header: {
+          Accept: 'application/json',
+        },
+        params: {
+          api_key: privateApiKey,
+          [id]: userIdentifiers[id],
+        },
+      });
       const processedProfileResponse = processAxiosResponse(profileResponse);
-      if (
-        processedProfileResponse.status === 200 &&
-        processedProfileResponse.response?.id
-      ) {
+      if (processedProfileResponse.status === 200 && processedProfileResponse.response?.id) {
         return processedProfileResponse.response.id;
-      } else if (
+      }
+      if (
         !(
           processedProfileResponse.status === 404 &&
           processedProfileResponse?.response.detail ===
-            "There is no profile matching the given parameters."
+            'There is no profile matching the given parameters.'
         )
       ) {
         throw new NetworkError(
@@ -75,11 +67,9 @@ const isProfileExist = async (message, { Config }) => {
           ${JSON.stringify(processedProfileResponse.response)}`,
           processedProfileResponse.status,
           {
-            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-              processedProfileResponse.status
-            )
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedProfileResponse.status),
           },
-          processedProfileResponse
+          processedProfileResponse,
         );
       }
     }
@@ -94,16 +84,18 @@ const isProfileExist = async (message, { Config }) => {
  */
 const addUserToList = (message, traitsInfo, conf, destination) => {
   // listId from message properties are preferred over Config listId
-  let targetUrl = `${BASE_ENDPOINT}/api/v2/list/${traitsInfo.properties
-    ?.listId || destination.Config.listId}`;
+  let targetUrl = `${BASE_ENDPOINT}/api/v2/list/${
+    traitsInfo.properties?.listId || destination.Config.listId
+  }`;
   let profile = {
-    id: getFieldValueFromMessage(message, "userId"),
-    email: getFieldValueFromMessage(message, "email"),
-    phone_number: getFieldValueFromMessage(message, "phone")
+    id: getFieldValueFromMessage(message, 'userId'),
+    email: getFieldValueFromMessage(message, 'email'),
+    phone_number: getFieldValueFromMessage(message, 'phone'),
   };
   if (destination.Config.enforceEmailAsPrimary) {
     delete profile.id;
-    profile._id = getFieldValueFromMessage(message, "userId");
+    // eslint-disable-next-line no-underscore-dangle
+    profile._id = getFieldValueFromMessage(message, 'userId');
   }
   // If func is called as membership func else subscribe func
   if (conf === LIST_CONF.MEMBERSHIP) {
@@ -111,21 +103,19 @@ const addUserToList = (message, traitsInfo, conf, destination) => {
   } else {
     // get consent statuses from message if availabe else from dest config
     targetUrl = `${targetUrl}/subscribe`;
-    profile.sms_consent =
-      traitsInfo.properties?.smsConsent || destination.Config.smsConsent;
-    profile.$consent =
-      traitsInfo.properties?.consent || destination.Config.consent;
+    profile.sms_consent = traitsInfo.properties?.smsConsent || destination.Config.smsConsent;
+    profile.$consent = traitsInfo.properties?.consent || destination.Config.consent;
   }
   profile = removeUndefinedValues(profile);
   const payload = {
-    profiles: [profile]
+    profiles: [profile],
   };
   const response = defaultRequestConfig();
   response.endpoint = targetUrl;
   response.method = defaultPostRequestConfig.requestMethod;
   response.params = { api_key: destination.Config.privateApiKey };
   response.headers = {
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
 
@@ -144,22 +134,17 @@ const addUserToList = (message, traitsInfo, conf, destination) => {
 const checkForMembersAndSubscribe = (message, traitsInfo, destination) => {
   const responseArray = [];
   if (
-    (!!destination.Config.listId || !!get(traitsInfo.properties, "listId")) &&
+    (!!destination.Config.listId || !!get(traitsInfo.properties, 'listId')) &&
     destination.Config.privateApiKey
   ) {
-    const membersResponse = addUserToList(
-      message,
-      traitsInfo,
-      LIST_CONF.MEMBERSHIP,
-      destination
-    );
+    const membersResponse = addUserToList(message, traitsInfo, LIST_CONF.MEMBERSHIP, destination);
     responseArray.push(membersResponse);
-    if (get(traitsInfo.properties, "subscribe") === true) {
+    if (get(traitsInfo.properties, 'subscribe') === true) {
       const subscribeResponse = addUserToList(
         message,
         traitsInfo,
         LIST_CONF.SUBSCRIBE,
-        destination
+        destination,
       );
       responseArray.push(subscribeResponse);
     }
@@ -169,17 +154,17 @@ const checkForMembersAndSubscribe = (message, traitsInfo, destination) => {
 };
 
 // This function is used for creating and returning customer properties using mapping json
-const createCustomerProperties = message => {
+const createCustomerProperties = (message) => {
   let customerProperties = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name]
+    MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name],
   );
   // Extract other K-V property from traits about user custom properties
   customerProperties = extractCustomFields(
     message,
     customerProperties,
-    ["traits", "context.traits"],
-    WhiteListedTraits
+    ['traits', 'context.traits'],
+    WhiteListedTraits,
   );
   customerProperties = removeUndefinedAndNullValues(customerProperties);
   return customerProperties;
@@ -189,5 +174,5 @@ module.exports = {
   isProfileExist,
   addUserToList,
   checkForMembersAndSubscribe,
-  createCustomerProperties
+  createCustomerProperties,
 };

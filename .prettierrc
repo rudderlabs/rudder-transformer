@@ -1,5 +1,7 @@
 {
-  "arrowParens": "avoid",
+  "trailingComma": "all",
   "tabWidth": 2,
-  "files": ["*.js", "*.json"]
+  "semi": true,
+  "singleQuote": true,
+  "printWidth": 100
 }

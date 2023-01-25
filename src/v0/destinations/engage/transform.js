@@ -1,4 +1,4 @@
-const { set } = require("lodash");
+const { set } = require('lodash');
 const {
   defaultRequestConfig,
   constructPayload,
@@ -6,32 +6,27 @@ const {
   getFieldValueFromMessage,
   simpleProcessRouterDest,
   defaultPutRequestConfig,
-  defaultDeleteRequestConfig
-} = require("../../util");
+  defaultDeleteRequestConfig,
+} = require('../../util');
 
-const { getDestinationExternalID } = require("../../util");
+const { getDestinationExternalID } = require('../../util');
 
-const { EventType } = require("../../../constants");
-const { mappingConfig, ConfigCategories } = require("./config");
-const { refinePayload, generatePageName, getLists } = require("./utils");
-const {
-  TransformationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+const { EventType } = require('../../../constants');
+const { mappingConfig, ConfigCategories } = require('./config');
+const { refinePayload, generatePageName, getLists } = require('./utils');
+const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilder = (payload, endpoint, method, Config) => {
   if (!payload) {
-    throw new TransformationError("Parameters could not be found.");
+    throw new TransformationError('Parameters could not be found.');
   }
   const { publicKey, privateKey } = Config;
   const response = defaultRequestConfig();
   // Authentication Ref : https://engage.so/docs/api/
-  const basicAuth = Buffer.from(`${publicKey}:${privateKey}`).toString(
-    "base64"
-  );
+  const basicAuth = Buffer.from(`${publicKey}:${privateKey}`).toString('base64');
   response.headers = {
-    "Content-Type": "application/json",
-    Authorization: `Basic ${basicAuth}`
+    'Content-Type': 'application/json',
+    Authorization: `Basic ${basicAuth}`,
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.endpoint = endpoint;
@@ -42,153 +37,110 @@ const responseBuilder = (payload, endpoint, method, Config) => {
 // Engage Api Doc for identify, track, page calls Ref:https://engage.so/docs/api/users
 
 const identifyResponseBuilder = (message, Config) => {
-  const payload = constructPayload(
-    message,
-    mappingConfig[ConfigCategories.IDENTIFY.name]
-  );
+  const payload = constructPayload(message, mappingConfig[ConfigCategories.IDENTIFY.name]);
   const { traits } = message;
   const uid =
-    getDestinationExternalID(message, "engageId") ||
-    getFieldValueFromMessage(message, "userIdOnly");
+    getDestinationExternalID(message, 'engageId') ||
+    getFieldValueFromMessage(message, 'userIdOnly');
   if (!uid) {
-    throw new InstrumentationError(
-      "Neither externalId or userId is available."
-    );
+    throw new InstrumentationError('Neither externalId or userId is available.');
   }
-  const endpoint = `${ConfigCategories.IDENTIFY.endpoint.replace("uid", uid)}`;
-  const refinedPayload = refinePayload(
-    traits,
-    ConfigCategories.IDENTIFY.genericFields
-  );
-  set(payload, "meta", refinedPayload);
+  const endpoint = `${ConfigCategories.IDENTIFY.endpoint.replace('uid', uid)}`;
+  const refinedPayload = refinePayload(traits, ConfigCategories.IDENTIFY.genericFields);
+  set(payload, 'meta', refinedPayload);
   const listIds = getLists(message, Config);
   if (listIds.length > 0) {
-    set(payload, "lists", listIds);
+    set(payload, 'lists', listIds);
   }
-  return responseBuilder(
-    payload,
-    endpoint,
-    ConfigCategories.IDENTIFY.method,
-    Config
-  );
+  return responseBuilder(payload, endpoint, ConfigCategories.IDENTIFY.method, Config);
 };
 
 const trackResponseBuilder = (message, Config) => {
   if (!message.event) {
-    throw new InstrumentationError("Event Name can not be empty.");
+    throw new InstrumentationError('Event Name can not be empty.');
   }
-  const { properties } = message;
+  const { properties, event } = message;
   const payload = {};
   const meta = refinePayload(properties, ConfigCategories.TRACK.genericFields);
   const uid =
-    getDestinationExternalID(message, "engageId") ||
-    getFieldValueFromMessage(message, "userIdOnly");
+    getDestinationExternalID(message, 'engageId') ||
+    getFieldValueFromMessage(message, 'userIdOnly');
   if (!uid) {
-    throw new InstrumentationError(
-      "Neither externalId or userId is available."
-    );
+    throw new InstrumentationError('Neither externalId or userId is available.');
   }
-  const endpoint = `${ConfigCategories.TRACK.endpoint.replace("uid", uid)}`;
+  const endpoint = `${ConfigCategories.TRACK.endpoint.replace('uid', uid)}`;
   payload.properties = meta;
-  payload.event = message.event;
-  payload.timestamp = getFieldValueFromMessage(message, "timestamp");
-  return responseBuilder(
-    payload,
-    endpoint,
-    ConfigCategories.TRACK.method,
-    Config
-  );
+  payload.event = event;
+  payload.timestamp = getFieldValueFromMessage(message, 'timestamp');
+  return responseBuilder(payload, endpoint, ConfigCategories.TRACK.method, Config);
 };
 const pageResponseBuilder = (message, Config) => {
   const uid =
-    getDestinationExternalID(message, "engageId") ||
-    getFieldValueFromMessage(message, "userIdOnly");
+    getDestinationExternalID(message, 'engageId') ||
+    getFieldValueFromMessage(message, 'userIdOnly');
   if (!uid) {
-    throw new InstrumentationError(
-      "Neither externalId or userId is available."
-    );
+    throw new InstrumentationError('Neither externalId or userId is available.');
   }
-  const endpoint = `${ConfigCategories.PAGE.endpoint.replace("uid", uid)}`;
+  const endpoint = `${ConfigCategories.PAGE.endpoint.replace('uid', uid)}`;
 
   const { properties } = message;
   const payload = {};
   const meta = refinePayload(properties, ConfigCategories.PAGE.genericFields);
-  const pagePayload = constructPayload(
-    message,
-    mappingConfig[ConfigCategories.PAGE.name]
-  );
+  const pagePayload = constructPayload(message, mappingConfig[ConfigCategories.PAGE.name]);
   const mergedPayload = { ...meta, ...pagePayload };
   payload.properties = mergedPayload;
-  payload.timestamp = getFieldValueFromMessage(message, "timestamp");
+  payload.timestamp = getFieldValueFromMessage(message, 'timestamp');
   const name = generatePageName(message);
   payload.event = name;
-  return responseBuilder(
-    payload,
-    endpoint,
-    ConfigCategories.PAGE.method,
-    Config
-  );
+  return responseBuilder(payload, endpoint, ConfigCategories.PAGE.method, Config);
 };
 
 // Engage Api Doc for group calls Ref: https://engage.so/docs/api/lists
 const groupResponseBuilder = (message, Config) => {
-  const { groupId } = message;
+  const { groupId, context } = message;
   if (!groupId) {
-    throw new InstrumentationError("Group Id can not be empty.");
+    throw new InstrumentationError('Group Id can not be empty.');
   }
   const uid =
-    getDestinationExternalID(message, "engageId") ||
-    getFieldValueFromMessage(message, "userIdOnly");
-  const traits = getFieldValueFromMessage(message, "traits");
-  if (
-    traits.operation &&
-    traits.operation !== "remove" &&
-    traits.operation !== "add"
-  ) {
+    getDestinationExternalID(message, 'engageId') ||
+    getFieldValueFromMessage(message, 'userIdOnly');
+  const traits = getFieldValueFromMessage(message, 'traits');
+  if (traits.operation && traits.operation !== 'remove' && traits.operation !== 'add') {
     throw new InstrumentationError(
-      `${traits.operation} is invalid for Operation field. Available are add or remove.`
+      `${traits.operation} is invalid for Operation field. Available are add or remove.`,
     );
   }
-  const operation = traits.operation ? traits.operation : "add";
-  if (!uid && operation === "remove") {
-    throw new InstrumentationError(
-      "engageID is required for remove operation."
-    );
+  const operation = traits.operation ? traits.operation : 'add';
+  if (!uid && operation === 'remove') {
+    throw new InstrumentationError('engageID is required for remove operation.');
   }
   let { method } = ConfigCategories.GROUP;
-  let endpoint = `${ConfigCategories.GROUP.endpoint.replace("id", groupId)}`;
-  const subscriberStatus = message?.context?.traits?.subscriberStatus || true;
+  const { genericFields, name } = ConfigCategories.GROUP;
+  let endpoint = `${ConfigCategories.GROUP.endpoint.replace('id', groupId)}`;
+  const subscriberStatus = context?.traits?.subscriberStatus || true;
   let payload = { subscribed: subscriberStatus };
   if (uid) {
     endpoint = `${endpoint}/${uid}`;
-    if (operation === "add") {
+    if (operation === 'add') {
       method = defaultPutRequestConfig.requestMethod;
     } else {
       method = defaultDeleteRequestConfig.requestMethod;
     }
   } else {
-    const userPayload = constructPayload(
-      message,
-      mappingConfig[ConfigCategories.GROUP.name]
-    );
+    const userPayload = constructPayload(message, mappingConfig[name]);
     payload = { ...payload, ...userPayload };
 
-    const refinedPayload = refinePayload(
-      traits,
-      ConfigCategories.GROUP.genericFields
-    );
-    set(payload, "meta", refinedPayload);
+    const refinedPayload = refinePayload(traits, genericFields);
+    set(payload, 'meta', refinedPayload);
   }
   return responseBuilder(payload, endpoint, method, Config);
 };
-const process = event => {
+const process = (event) => {
   const { message, destination } = event;
   const { Config } = destination;
 
   if (!message.type) {
-    throw new InstrumentationError(
-      "Message Type is not present. Aborting message."
-    );
+    throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -206,9 +158,7 @@ const process = event => {
       response = groupResponseBuilder(message, Config);
       break;
     default:
-      throw new InstrumentationError(
-        `Message type ${(messageType, Config)} not supported.`
-      );
+      throw new InstrumentationError(`Message type ${(messageType, Config)} not supported.`);
   }
   return response;
 };

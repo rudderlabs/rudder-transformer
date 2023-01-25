@@ -1,17 +1,17 @@
-const get = require("get-value");
-const { EventType } = require("../../../constants");
+const get = require('get-value');
+const { EventType } = require('../../../constants');
 const {
   KOCHAVA_ENDPOINT,
   //   mappingConfig,
-  eventNameMapping
-} = require("./config");
+  eventNameMapping,
+} = require('./config');
 const {
   defaultRequestConfig,
   simpleProcessRouterDest,
   formatTimeStamp,
-  isAppleFamily
-} = require("../../util");
-const { InstrumentationError } = require("../../util/errorTypes");
+  isAppleFamily,
+} = require('../../util');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 // build final response
 // --------------------
@@ -25,18 +25,18 @@ const { InstrumentationError } = require("../../util/errorTypes");
 function responseBuilder(eventName, eventData, message, destination) {
   // build the event json
   const eventJson = {
-    action: "event",
+    action: 'event',
     kochava_app_id: destination.Config.apiKey,
-    kochava_device_id: get(message, "context.device.id") || message.anonymousId
+    kochava_device_id: get(message, 'context.device.id') || message.anonymousId,
   };
 
   // build the data json
   const data = {
     app_tracking_transparency: {
-      att: get(message, "context.device.attTrackingStatus") === 3 || false
+      att: get(message, 'context.device.attTrackingStatus') === 3 || false,
     },
     usertime: formatTimeStamp(message.originalTimestamp || message.timestamp),
-    app_version: get(message, "context.app.build"),
+    app_version: get(message, 'context.app.build'),
     device_ver:
       message.context &&
       message.context.device &&
@@ -45,56 +45,50 @@ function responseBuilder(eventName, eventData, message, destination) {
       message.context.os.name &&
       message.context.os.version
         ? `${message.context.device.model}-${message.context.os.name}-${message.context.os.version}`
-        : "",
+        : '',
     device_ids: {
       idfa:
         message.context &&
         message.context.os &&
         message.context.os.name &&
         isAppleFamily(message.context.os.name)
-          ? message.context.device.advertisingId || ""
-          : "",
+          ? message.context.device.advertisingId || ''
+          : '',
       idfv:
         message.context &&
         message.context.os &&
         message.context.os.name &&
         isAppleFamily(message.context.os.name)
-          ? message.context.device.id || message.anonymousId || ""
-          : "",
+          ? message.context.device.id || message.anonymousId || ''
+          : '',
       adid:
         message.context &&
         message.context.os &&
         message.context.os.name &&
-        message.context.os.name.toLowerCase() === "android"
-          ? message.context.device.advertisingId || ""
-          : "",
+        message.context.os.name.toLowerCase() === 'android'
+          ? message.context.device.advertisingId || ''
+          : '',
       android_id:
         message.context &&
         message.context.os &&
         message.context.os.name &&
-        message.context.os.name.toLowerCase() === "android"
-          ? message.context.device.id || message.anonymousId || ""
-          : ""
+        message.context.os.name.toLowerCase() === 'android'
+          ? message.context.device.id || message.anonymousId || ''
+          : '',
     },
-    device_ua: (message.context && message.context.userAgent) || "",
+    device_ua: (message.context && message.context.userAgent) || '',
     event_name: eventName,
-    origination_ip: get(message, "context.ip") || message.request_ip,
-    currency: (eventData && eventData.currency) || "USD",
+    origination_ip: get(message, 'context.ip') || message.request_ip,
+    currency: (eventData && eventData.currency) || 'USD',
     event_data: eventData,
     // ---------------------
     // here we add the extra properties we got by debugging the SDK
     // ---------------------
-    app_name:
-      message.context && message.context.app && message.context.app.name,
-    app_short_string:
-      message.context && message.context.app && message.context.app.version,
+    app_name: message.context && message.context.app && message.context.app.name,
+    app_short_string: message.context && message.context.app && message.context.app.version,
     locale: message.context && message.context.locale,
-    os_version:
-      message.context && message.context.os && message.context.os.version,
-    screen_dpi:
-      message.context &&
-      message.context.screen &&
-      message.context.screen.density
+    os_version: message.context && message.context.os && message.context.os.version,
+    screen_dpi: message.context && message.context.screen && message.context.screen.density,
   };
 
   // set the mandatory fields for kochava
@@ -145,7 +139,7 @@ function processMessage(message, destination) {
 
   switch (messageType.toLowerCase()) {
     case EventType.SCREEN:
-      eventName = "screen view";
+      eventName = 'screen view';
       if (message.properties && message.properties.name) {
         eventName += ` ${message.properties.name}`;
       }
@@ -162,9 +156,7 @@ function processMessage(message, destination) {
       customParams = processTrackEvents(message);
       break;
     default:
-      throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
-      );
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
 
   return responseBuilder(eventName, customParams, message, destination);

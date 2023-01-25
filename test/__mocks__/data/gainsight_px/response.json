@@ -88,7 +88,7 @@
       }
     },
     "numberOfUsers": 0,
-    "propertyKeys": [ "AP-XABC-123" ],
+    "propertyKeys": ["AP-XABC-123"],
     "createDate": 1624261864923,
     "lastModifiedDate": 1624261864923,
     "customAttributes": null,

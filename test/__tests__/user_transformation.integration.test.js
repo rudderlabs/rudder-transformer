@@ -36,11 +36,10 @@ const contructTrRevCode = vid => {
 };
 
 describe("Function Creation Tests", () => {
-  afterAll(async done => {
+  afterAll(async () => {
     (await getFunctionList()).forEach(fn => {
       deleteFunction(fn.name).catch(() => {});
     });
-    done();
   });
 
   const trRevCode = contructTrRevCode(versionId);
@@ -82,11 +81,10 @@ describe("Function Creation Tests", () => {
 });
 
 describe("Function invocation & creation tests", () => {
-  afterAll(async done => {
+  afterAll(async () => {
     (await getFunctionList()).forEach(fn => {
       deleteFunction(fn.name).catch(() => {});
     });
-    done();
   });
 
   it("Function creation & invocation in test mode - Unmodified events returned", async () => {

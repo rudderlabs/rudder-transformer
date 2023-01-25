@@ -16,11 +16,7 @@
   },
   {
     "destKey": "profile_id",
-    "sourceKeys": [
-      "traits.profile_id",
-      "context.traits.profile_id",
-      "properties.profile_id"
-    ],
+    "sourceKeys": ["traits.profile_id", "context.traits.profile_id", "properties.profile_id"],
     "required": false
   },
   {

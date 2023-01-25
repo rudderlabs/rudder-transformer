@@ -1,25 +1,23 @@
-const set = require("set-value");
-const get = require("get-value");
+const set = require('set-value');
+const get = require('get-value');
 
-const { getValueFromMessage } = require("../util");
+const { getValueFromMessage } = require('../util');
 
-const context = integration => {
-  return {
-    library: {
-      name: "unknown",
-      version: "unknown"
-    },
-    integration: {
-      name: integration
-    }
-  };
-};
+const context = (integration) => ({
+  library: {
+    name: 'unknown',
+    version: 'unknown',
+  },
+  integration: {
+    name: integration,
+  },
+});
 
 class Message {
   constructor(integration) {
     this.context = context(integration);
     this.integrations = {
-      [integration]: false
+      [integration]: false,
     };
   }
 
@@ -36,13 +34,13 @@ class Message {
   }
 
   setProperties(event, mapping) {
-    Object.keys(mapping).forEach(key => {
+    Object.keys(mapping).forEach((key) => {
       const setVal = get(event, key);
       let destKeys = mapping[key];
       if (!Array.isArray(destKeys)) {
         destKeys = [destKeys];
       }
-      destKeys.forEach(destKey => {
+      destKeys.forEach((destKey) => {
         const existingVal = get(this, destKey);
         // do not set if val setVal nil
         // give higher pref to first key in mapping.json in case of same value
@@ -58,14 +56,14 @@ class Message {
   }
 
   setPropertiesV2(event, mappingJson) {
-    mappingJson.forEach(mapping => {
+    mappingJson.forEach((mapping) => {
       const { sourceKeys } = mapping;
       let { destKeys } = mapping;
       const setVal = getValueFromMessage(event, sourceKeys);
       if (!Array.isArray(destKeys)) {
         destKeys = [destKeys];
       }
-      destKeys.forEach(destKey => {
+      destKeys.forEach((destKey) => {
         const existingVal = get(this, destKey);
         // do not set if val setVal nil
         // give higher pref to first key in mapping.json in case of same value

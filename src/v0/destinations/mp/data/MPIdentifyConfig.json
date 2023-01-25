@@ -47,10 +47,7 @@
   },
   {
     "destKey": "$avatar",
-    "sourceKeys": [
-      "traits.avatar",
-      "context.traits.avatar"
-    ],
+    "sourceKeys": ["traits.avatar", "context.traits.avatar"],
     "required": false
   },
   {
@@ -138,27 +135,17 @@
   },
   {
     "destKey": "$unsubscribed",
-    "sourceKeys": [
-      "traits.unsubscribed",
-      "context.traits.unsubscribed",
-      "properties.unsubscribed"
-    ],
+    "sourceKeys": ["traits.unsubscribed", "context.traits.unsubscribed", "properties.unsubscribed"],
     "required": false
   },
   {
     "destKey": "$initial_referrer",
-    "sourceKeys": [
-      "context.page.initial_referrer",
-      "context.page.initialReferrer"
-    ],
+    "sourceKeys": ["context.page.initial_referrer", "context.page.initialReferrer"],
     "required": false
   },
   {
     "destKey": "$initial_referring_domain",
-    "sourceKeys": [
-      "context.page.initial_referring_domain",
-      "context.page.initialReferringDomain"
-    ],
+    "sourceKeys": ["context.page.initial_referring_domain", "context.page.initialReferringDomain"],
     "required": false
   }
 ]

@@ -1,4 +1,4 @@
-name: "Semantic pull requests"
+name: 'Semantic pull requests'
 
 on:
   pull_request:

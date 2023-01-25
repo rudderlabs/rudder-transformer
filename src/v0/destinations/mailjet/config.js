@@ -1,12 +1,11 @@
-const { getMappingConfig } = require("../../util");
+const { getMappingConfig } = require('../../util');
 
 const CONFIG_CATEGORIES = {
   CREATE_OR_UPDATE_CONTACT: {
-    name: "MailJetIdentifyConfig",
-    type: "identify",
-    endpoint:
-      "https://api.mailjet.com/v3/REST/contactslist/list_ID/managemanycontacts"
-  }
+    name: 'MailJetIdentifyConfig',
+    type: 'identify',
+    endpoint: 'https://api.mailjet.com/v3/REST/contactslist/list_ID/managemanycontacts',
+  },
 };
 
 // This has been decided by trial and error
@@ -19,7 +18,7 @@ ref : https://dev.mailjet.com/email/guides/contact-management/#bulk-contact-mana
 3) remove : Remove the contacts from the list
 4) unsub : Unsubscribe the contacts from the list
 */
-const ACTIONS = ["addforce", "addnoforce", "remove", "unsub"];
+const ACTIONS = ['addforce', 'addnoforce', 'remove', 'unsub'];
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
@@ -28,5 +27,5 @@ module.exports = {
   MAPPING_CONFIG,
   MAX_BATCH_SIZE,
   CONFIG_CATEGORIES,
-  DESTINATION: "MAILJET"
+  DESTINATION: 'MAILJET',
 };

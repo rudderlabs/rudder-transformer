@@ -22,18 +22,12 @@
   },
   {
     "destKey": "userAttributes",
-    "sourceKeys": [
-      "traits",
-      "context.traits"
-    ],
+    "sourceKeys": ["traits", "context.traits"],
     "required": false
   },
   {
     "destKey": "created",
-    "sourceKeys": [
-      "traits.createAt",
-      "context.traits.createAt"
-    ],
+    "sourceKeys": ["traits.createAt", "context.traits.createAt"],
     "required": false
   },
   {

@@ -1,35 +1,25 @@
-const NodeCache = require("node-cache");
-const {
-  getFunction,
-  deleteFunction,
-  deployFunction,
-  invokeFunction
-} = require("./faasApi");
-const logger = require("../../logger");
-const { RetryRequestError, RespStatusError } = require("../utils");
+const NodeCache = require('node-cache');
+const { getFunction, deleteFunction, deployFunction, invokeFunction } = require('./faasApi');
+const logger = require('../../logger');
+const { RetryRequestError, RespStatusError } = require('../utils');
 
-const FAAS_BASE_IMG =
-  process.env.FAAS_BASE_IMG || "rudderlabs/openfaas-flask:main";
-const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || "40";
-const FAAS_REQUESTS_CPU = process.env.FAAS_REQUESTS_CPU || "0.5";
-const FAAS_REQUESTS_MEMORY = process.env.FAAS_REQUESTS_MEMORY || "140Mi";
+const FAAS_BASE_IMG = process.env.FAAS_BASE_IMG || 'rudderlabs/openfaas-flask:main';
+const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || '40';
+const FAAS_REQUESTS_CPU = process.env.FAAS_REQUESTS_CPU || '0.5';
+const FAAS_REQUESTS_MEMORY = process.env.FAAS_REQUESTS_MEMORY || '140Mi';
 const FAAS_LIMITS_CPU = process.env.FAAS_LIMITS_CPU || FAAS_REQUESTS_CPU;
-const FAAS_LIMITS_MEMORY =
-  process.env.FAAS_LIMITS_MEMORY || FAAS_REQUESTS_MEMORY;
-const FAAS_MAX_INFLIGHT = process.env.FAAS_MAX_INFLIGHT || "4";
-const FAAS_EXEC_TIMEOUT = process.env.FAAS_EXEC_TIMEOUT || "4s";
-const FAAS_ENABLE_WATCHDOG_ENV_VARS =
-  process.env.FAAS_ENABLE_WATCHDOG_ENV_VARS || "true";
-const CONFIG_BACKEND_URL =
-  process.env.CONFIG_BACKEND_URL || "https://api.rudderlabs.com";
+const FAAS_LIMITS_MEMORY = process.env.FAAS_LIMITS_MEMORY || FAAS_REQUESTS_MEMORY;
+const FAAS_MAX_INFLIGHT = process.env.FAAS_MAX_INFLIGHT || '4';
+const FAAS_EXEC_TIMEOUT = process.env.FAAS_EXEC_TIMEOUT || '4s';
+const FAAS_ENABLE_WATCHDOG_ENV_VARS = process.env.FAAS_ENABLE_WATCHDOG_ENV_VARS || 'true';
+const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
 
 // Initialise node cache
 const functionListCache = new NodeCache();
-const FUNC_LIST_KEY = "fn-list";
+const FUNC_LIST_KEY = 'fn-list';
 functionListCache.set(FUNC_LIST_KEY, []);
 
-const delayInMs = async (ms = 2000) =>
-  new Promise(resolve => setTimeout(resolve, ms));
+const delayInMs = async (ms = 2000) => new Promise((resolve) => setTimeout(resolve, ms));
 
 const callWithRetry = async (fn, count = 0, ...args) => {
   try {
@@ -43,12 +33,12 @@ const callWithRetry = async (fn, count = 0, ...args) => {
   }
 };
 
-const isFunctionDeployed = functionName => {
+const isFunctionDeployed = (functionName) => {
   const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
   return funcList.includes(functionName);
 };
 
-const setFunctionInCache = functionName => {
+const setFunctionInCache = (functionName) => {
   const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
   funcList.push(functionName);
   functionListCache.set(FUNC_LIST_KEY, funcList);
@@ -60,8 +50,8 @@ const invalidateFnCache = () => {
 
 const deployFaasFunction = async (functionName, code, versionId, testMode) => {
   try {
-    logger.debug("[Faas] Deploying a faas function");
-    let envProcess = "python index.py";
+    logger.debug('[Faas] Deploying a faas function');
+    let envProcess = 'python index.py';
 
     if (!testMode) {
       envProcess = `${envProcess} --vid ${versionId} --config-backend-url ${CONFIG_BACKEND_URL}`;
@@ -70,7 +60,7 @@ const deployFaasFunction = async (functionName, code, versionId, testMode) => {
     }
 
     const envVars = {};
-    if (FAAS_ENABLE_WATCHDOG_ENV_VARS.trim().toLowerCase() === "true") {
+    if (FAAS_ENABLE_WATCHDOG_ENV_VARS.trim().toLowerCase() === 'true') {
       envVars.max_inflight = FAAS_MAX_INFLIGHT;
       envVars.exec_timeout = FAAS_EXEC_TIMEOUT;
     }
@@ -82,32 +72,30 @@ const deployFaasFunction = async (functionName, code, versionId, testMode) => {
       envProcess,
       envVars,
       labels: {
-        "openfaas-fn": "true",
-        "parent-component": "openfaas",
-        "com.openfaas.scale.max": FAAS_MAX_PODS_IN_TEXT
+        'openfaas-fn': 'true',
+        'parent-component': 'openfaas',
+        'com.openfaas.scale.max': FAAS_MAX_PODS_IN_TEXT,
       },
       annotations: {
-        "prometheus.io.scrape": "true"
+        'prometheus.io.scrape': 'true',
       },
       limits: {
         memory: FAAS_LIMITS_MEMORY,
-        cpu: FAAS_LIMITS_CPU
+        cpu: FAAS_LIMITS_CPU,
       },
       requests: {
         memory: FAAS_REQUESTS_MEMORY,
-        cpu: FAAS_REQUESTS_CPU
-      }
+        cpu: FAAS_REQUESTS_CPU,
+      },
     };
 
     await deployFunction(payload);
-    logger.debug("[Faas] Deployed a faas function");
+    logger.debug('[Faas] Deployed a faas function');
   } catch (error) {
-    logger.error(
-      `[Faas] Error while deploying ${functionName}: ${error.message}`
-    );
+    logger.error(`[Faas] Error while deploying ${functionName}: ${error.message}`);
     // To handle concurrent create requests,
     // throw retry error if already exists so that request can be retried
-    if (error.statusCode === 500 && error.message.includes("already exists")) {
+    if (error.statusCode === 500 && error.message.includes('already exists')) {
       setFunctionInCache(functionName);
       throw new RetryRequestError(`${functionName} already exists`);
     }
@@ -117,11 +105,9 @@ const deployFaasFunction = async (functionName, code, versionId, testMode) => {
 
 async function setupFaasFunction(functionName, code, versionId, testMode) {
   try {
-    if (!testMode) {
-      if (isFunctionDeployed(functionName)) {
-        logger.debug(`[Faas] Function ${functionName} already deployed`);
-        return;
-      }
+    if (!testMode && isFunctionDeployed(functionName)) {
+      logger.debug(`[Faas] Function ${functionName} already deployed`);
+      return;
     }
     // deploy faas function
     await deployFaasFunction(functionName, code, versionId, testMode);
@@ -133,28 +119,19 @@ async function setupFaasFunction(functionName, code, versionId, testMode) {
     setFunctionInCache(functionName);
     logger.debug(`[Faas] Finished deploying faas function ${functionName}`);
   } catch (error) {
-    logger.error(
-      `[Faas] Error while setting function ${functionName}: ${error.message}`
-    );
+    logger.error(`[Faas] Error while setting function ${functionName}: ${error.message}`);
     throw error;
   }
 }
 
-const executeFaasFunction = async (
-  functionName,
-  events,
-  versionId,
-  testMode
-) => {
+const executeFaasFunction = async (functionName, events, versionId, testMode) => {
   try {
-    logger.debug("[Faas] Invoking faas function");
+    logger.debug('[Faas] Invoking faas function');
     const res = await invokeFunction(functionName, events);
-    logger.debug("[Faas] Invoked faas function");
+    logger.debug('[Faas] Invoked faas function');
     return res;
   } catch (error) {
-    logger.error(
-      `[Faas] Error while invoking ${functionName}: ${error.message}`
-    );
+    logger.error(`[Faas] Error while invoking ${functionName}: ${error.message}`);
     if (
       error.statusCode === 404 &&
       error.message.includes(`error finding function ${functionName}`)
@@ -172,16 +149,14 @@ const executeFaasFunction = async (
     }
 
     if (error.statusCode === 504) {
-      throw new RespStatusError("Timed out");
+      throw new RespStatusError('Timed out');
     }
 
     throw error;
   } finally {
     if (testMode) {
-      deleteFunction(functionName).catch(err => {
-        logger.error(
-          `[Faas] Error while deleting ${functionName}: ${err.message}`
-        );
+      deleteFunction(functionName).catch((err) => {
+        logger.error(`[Faas] Error while deleting ${functionName}: ${err.message}`);
       });
     }
   }
@@ -190,5 +165,5 @@ const executeFaasFunction = async (
 module.exports = {
   executeFaasFunction,
   setupFaasFunction,
-  invalidateFnCache
+  invalidateFnCache,
 };

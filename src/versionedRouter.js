@@ -18,6 +18,7 @@ const {
   getErrorRespEvents,
   isCdkDestination,
   getErrorStatusCode,
+  checkAndCorrectUserId,
 } = require('./v0/util');
 const { processDynamicConfig } = require('./util/dynamicConfig');
 const { DestHandlerMap } = require('./constants/destinationCanonicalNames');
@@ -167,6 +168,17 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
   }
 }
 
+/**
+ * Enriches the transformed event with more information
+ * - userId stringification
+ * 
+ * @param {Object} transformedEvent - single transformed event
+ * @returns transformedEvent after enrichment
+ */
+const enrichTransformedEvent = (transformedEvent) => ({
+    output: { ...transformedEvent, userId: checkAndCorrectUserId(transformedEvent.statusCode, transformedEvent?.userId) },
+  });
+
 async function handleV0Destination(destHandler, destType, inputArr, feature) {
   const v0Result = {};
   let v0Time = 0;
@@ -255,23 +267,8 @@ async function handleDest(ctx, version, destination) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];
           }
-          return respEvents.map((ev) => {
-            let { userId } = ev;
-            const { statusCode } = ev;
-            // Set the user ID to an empty string for
-            // all the falsy values (including 0 and false)
-            // Otherwise, server panics while un-marshalling the response
-            // while expecting only strings.
-            if (!userId) {
-              userId = '';
-            }
-
-            if (statusCode !== 400 && userId) {
-              userId = `${userId}`;
-            }
-
-            return {
-              output: { ...ev, userId },
+          return respEvents.map((ev) => ({
+              output: enrichTransformedEvent(ev),
               metadata: destHandler?.processMetadata
                 ? destHandler.processMetadata({
                   metadata: event.metadata,
@@ -280,8 +277,7 @@ async function handleDest(ctx, version, destination) {
                 })
                 : event.metadata,
               statusCode: 200,
-            };
-          });
+            }));
         }
         return undefined;
       } catch (error) {
@@ -487,11 +483,20 @@ async function routerHandleDest(ctx) {
             tags.FEATURES.ROUTER,
           );
         }
-        if (routerDestHandler.processMetadataForRouter) {
-          listOutput.forEach((output) => {
-            output.metadata = routerDestHandler.processMetadataForRouter(output);
-          });
-        }
+        const hasProcMetadataForRouter = routerDestHandler.processMetadataForRouter;
+        // enriching transformed event
+        listOutput.forEach(listOut => {
+          let { batchedRequest } = listOut;
+          if (batchedRequest && Array.isArray(batchedRequest)) {
+            batchedRequest = batchedRequest.map(batReq => enrichTransformedEvent(batReq));
+          } else if (batchedRequest && typeof batchedRequest === 'object') {
+            batchedRequest = enrichTransformedEvent(batchedRequest);
+          }
+
+          if (hasProcMetadataForRouter) {
+            listOut.metadata = routerDestHandler.processMetadataForRouter(listOut);
+          }
+        });
         respEvents.push(...listOutput);
       }),
     );
@@ -507,17 +512,6 @@ async function routerHandleDest(ctx) {
           [tags.TAG_NAMES.WORKSPACE_ID]: resp.metadata[0]?.workspaceId,
         };
       });
-    respEvents.forEach((resp) => {
-      const { statusCode, batchedRequest } = resp;
-      let {userId}= batchedRequest;
-      if (!userId) {
-        userId = '';
-      }
-      if (statusCode !== 400 && userId) {
-        userId = `${userId}`;
-      }
-      batchedRequest.userId = userId;
-    });
   } catch (error) {
     logger.error(error);
 

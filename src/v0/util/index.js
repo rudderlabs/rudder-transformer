@@ -980,7 +980,7 @@ function getDestinationExternalID(message, type) {
   }
 
   if (Array.isArray(externalIdArray)) {
-    externalIdArray.forEach(extIdObj => {
+    externalIdArray.forEach((extIdObj) => {
       if (extIdObj.type === type) {
         destinationExternalId = extIdObj.id;
       }
@@ -1669,8 +1669,10 @@ const validatePhoneWithCountryCode = (phone) => {
  * @returns
  */
 const isHybridModeEnabled = (Config) => {
-  const { useNativeSDK, useNativeSDKToSend } = Config;
-  return useNativeSDK && !useNativeSDKToSend;
+  if (isDefinedAndNotNull(Config.useNativeSDK) && isDefinedAndNotNull(Config.useNativeSDKToSend)) {
+    return Config.useNativeSDK && !Config.useNativeSDKToSend;
+  }
+  return false;
 };
 
 /**

@@ -17,17 +17,17 @@ export default class TrackingPlanservice {
         const parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         const hv = await eventValidator.handleValidation(parsedEvent);
-        if (hv.dropEvent) {
-          const errMessage = `Error occurred while validating because : ${hv.violationType}`;
+        if (hv["dropEvent"]) {
+          const errMessage = `Error occurred while validating because : ${hv["violationType"]}`;
           respList.push({
             output: event.message,
             metadata: event.metadata,
             statusCode: 400,
-            validationErrors: hv.validationErrors,
+            validationErrors: hv["validationErrors"],
             error: errMessage
           });
           stats.counter("hv_violation_type", 1, {
-            violationType: hv.violationType,
+            violationType: hv["violationType"],
             ...metaTags
           });
         } else {
@@ -35,7 +35,7 @@ export default class TrackingPlanservice {
             output: event.message,
             metadata: event.metadata,
             statusCode: 200,
-            validationErrors: hv.validationErrors
+            validationErrors: hv["validationErrors"]
           });
           stats.counter("hv_propagated_events", 1, {
             ...metaTags

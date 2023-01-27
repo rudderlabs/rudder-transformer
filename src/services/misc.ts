@@ -1,4 +1,5 @@
 import fs from "fs";
+import path from "path";
 import { Context } from "koa";
 import { DestHandlerMap } from "../constants/destinationCanonicalNames";
 import { Metadata } from "../types";
@@ -52,9 +53,12 @@ export default class MiscService {
   public static getVersion() {
     return process.env.npm_package_version || "Version Info not found";
   }
-
+  
   public static getFetaures() {
-    const obj = JSON.parse(fs.readFileSync("features.json", "utf8"));
+    const obj = JSON.parse(fs.readFileSync(
+      path.resolve(__dirname, "../../features.json"),
+      "utf8"
+    ));
     return JSON.stringify(obj);
   }
 }

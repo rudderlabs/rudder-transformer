@@ -14,7 +14,7 @@ export default class RegulationController {
   private static getReqMetadata(ctx: Context) {
     try {
       const reqBody = ctx.request.body;
-      return { destType: reqBody?.destType };
+      return { destType: reqBody["destType"] };
     } catch (error) {
       // Do nothing
     }
@@ -22,7 +22,7 @@ export default class RegulationController {
   }
 
   // TODO: use new format
-  private static getCommonMetadata(ctx) {
+  private static getCommonMetadata(ctx: Context) {
     // TODO: Parse information such as
     // cluster, namespace, etc information
     // from the request
@@ -47,14 +47,14 @@ export default class RegulationController {
       return {};
     };
 
-    const { body } = ctx.request;
+    const body: any = ctx.request.body;
     const respList = [];
     const rudderDestInfo = getRudderDestInfo();
     let response;
     await Promise.all(
       body.map(async reqBody => {
         const { destType } = reqBody;
-        const destUserDeletionHandler = this.getDeletionUserHandler(
+        const destUserDeletionHandler: any = this.getDeletionUserHandler(
           "v0",
           destType.toLowerCase()
         );
@@ -85,7 +85,7 @@ export default class RegulationController {
           };
           // Support for OAuth refresh
           if (error.authErrorCategory) {
-            resp.authErrorCategory = error.authErrorCategory;
+            resp["authErrorCategory"] = error.authErrorCategory;
           }
           respList.push(resp);
           logger.error(

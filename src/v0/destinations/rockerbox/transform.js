@@ -5,7 +5,7 @@ const {
   constructPayload,
   simpleProcessRouterDest,
   getHashFromArray,
-  isDefinedAndNotNullAndNotEmpty,
+  isDefinedAndNotNull,
 } = require('../../util');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
@@ -23,11 +23,11 @@ const responseBuilderSimple = (message, category, destination) => {
   //handle custom properties mapped in the UI
   const customPropsHashMap = getHashFromArray(customPropsMapping);
 
-  if(isDefinedAndNotNullAndNotEmpty(customPropsHashMap)){
+  if (isDefinedAndNotNull(customPropsHashMap)) {
     for (const key in customPropsHashMap) {
       // check if the custom property is passed in event properties
-      if (isDefinedAndNotNullAndNotEmpty(message.properties[key]))
-        payload[customPropsHashMap[key]] = message.properties[key]
+      if (isDefinedAndNotNull(message.properties[key]))
+        payload[customPropsHashMap[key]] = message.properties[key];
     }
   }
 

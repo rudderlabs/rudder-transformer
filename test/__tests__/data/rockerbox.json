@@ -466,7 +466,7 @@
           }
         },
         "properties": {
-          "unit_id": "123",
+          "unit_id": 123,
           "merch_id": "merchFBoXoX101",
           "bounceiD": "fakefake",
           "counce_id": ""
@@ -489,7 +489,7 @@
           "action": "conv.add_to_cart",
           "merch_id": "merchFBoXoX101",
           "timestamp": 1571043797,
-          "unitID": "123",
+          "unitID": 123,
           "customer_id": "anon_id",
           "conversion_source": "RudderStack"
         },

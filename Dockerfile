@@ -14,6 +14,11 @@ RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
 FROM base AS development
 
+ARG version
+ARG GIT_COMMIT_SHA
+ENV transformer_build_version=$version
+ENV git_commit_sha=$GIT_COMMIT_SHA
+
 # Create app directory
 WORKDIR /home/node/app
 ADD . .

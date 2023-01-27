@@ -1,0 +1,11 @@
+[
+  {
+    "destKey": "userAttributes",
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "eventTags",
+    "sourceKeys": "properties"
+  }
+]

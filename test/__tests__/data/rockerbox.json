@@ -467,7 +467,7 @@
         },
         "properties": {
           "unit_id": 123,
-          "merch_id": "merchFBoXoX101",
+          "merch_id": false,
           "bounceiD": "fakefake",
           "counce_id": ""
         },
@@ -487,7 +487,7 @@
           "email": "jamesDoe@gmail.com",
           "phone": "92374162212",
           "action": "conv.add_to_cart",
-          "merch_id": "merchFBoXoX101",
+          "merch_id": false,
           "timestamp": 1571043797,
           "unitID": 123,
           "customer_id": "anon_id",

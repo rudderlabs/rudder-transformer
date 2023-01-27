@@ -64,7 +64,8 @@ const validatePythonCode = (code) => {
     {
       message: {
         messageId: '',
-        code
+        code,
+        validateImports: true
       },
       metadata: {}
     }

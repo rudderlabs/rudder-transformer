@@ -41,7 +41,7 @@ FROM base AS prodbuilder
 
 WORKDIR /home/node/app
 USER node
-COPY --chown=node:node --from=builder /home/node/app/package.json   ./
+COPY --chown=node:node --from=development /home/node/app/package.json   ./
 
 RUN npm install --production
 
@@ -56,7 +56,7 @@ WORKDIR /home/node/app
 
 USER node
 
-COPY --chown=node:node --from=builder /home/node/app/dist/  ./dist
+COPY --chown=node:node --from=development /home/node/app/dist/  ./dist
 COPY --chown=node:node --from=prodBuilder /home/node/app/package.json   ./
 COPY --chown=node:node --from=prodBuilder /home/node/app/node_modules   ./node_modules
 

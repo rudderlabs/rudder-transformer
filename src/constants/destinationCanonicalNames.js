@@ -87,6 +87,14 @@ const DestCanonicalNames = {
   ga4: ['GA4', 'ga4', 'Ga4', 'Google Analytics 4', 'googleAnalytics4'],
   pipedream: ['Pipedream', 'PipeDream', 'pipedream', 'PIPEDREAM'],
   pagerduty: ['pagerduty', 'PAGERDUTY', 'PagerDuty', 'Pagerduty', 'pagerDuty'],
+  optimizely_fullstack: [
+    'Optimizely Fullstack',
+    'OPTIMIZELY FULLSTACK',
+    'optimizely fullstack',
+    'OptimizelyFullstack',
+    'Optimizely_Fullstack',
+    'optimizely_fullstack',
+  ],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

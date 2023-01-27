@@ -1,0 +1,32 @@
+{
+  "https://api.sendinblue.com/v3/contacts/gordon_pittman%40example.com": {
+    "email": "gordon_pittman@example.com",
+    "id": 42,
+    "emailBlacklisted": false,
+    "smsBlacklisted": false,
+    "createdAt": "2022-12-04T18:22:48.384+05:30",
+    "modifiedAt": "2022-12-18T14:06:20.515+05:30",
+    "attributes": {
+      "LASTNAME": "Pittman",
+      "FIRSTNAME": "Gordon",
+      "AGE": 33
+    },
+    "listIds": [5],
+    "statistics": {}
+  },
+  "https://api.sendinblue.com/v3/contacts/42": {
+    "email": "gordon_pittman@example.com",
+    "id": 42,
+    "emailBlacklisted": false,
+    "smsBlacklisted": false,
+    "createdAt": "2022-12-04T18:22:48.384+05:30",
+    "modifiedAt": "2022-12-18T14:06:20.515+05:30",
+    "attributes": {
+      "LASTNAME": "Pittman",
+      "FIRSTNAME": "Gordon",
+      "AGE": 33
+    },
+    "listIds": [5],
+    "statistics": {}
+  }
+}

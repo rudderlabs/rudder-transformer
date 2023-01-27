@@ -1,0 +1,106 @@
+[
+  {
+    "destKey": "item_id",
+    "sourceKeys": "product_id",
+    "required": false
+  },
+  {
+    "destKey": "item_name",
+    "sourceKeys": "name",
+    "required": false
+  },
+  {
+    "destKey": "coupon",
+    "sourceKeys": "coupon",
+    "required": false
+  },
+  {
+    "destKey": "item_category",
+    "sourceKeys": "category",
+    "required": false
+  },
+  {
+    "destKey": "item_brand",
+    "sourceKeys": "brand",
+    "required": false
+  },
+  {
+    "destKey": "item_variant",
+    "sourceKeys": "variant",
+    "required": false
+  },
+  {
+    "destKey": "price",
+    "sourceKeys": "price",
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": false
+  },
+  {
+    "destKey": "quantity",
+    "sourceKeys": "quantity",
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": false
+  },
+  {
+    "destKey": "index",
+    "sourceKeys": "position",
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": false
+  },
+  {
+    "destKey": "affiliation",
+    "sourceKeys": "affiliation",
+    "required": false
+  },
+  {
+    "destKey": "currency",
+    "sourceKeys": "currency",
+    "required": false
+  },
+  {
+    "destKey": "discount",
+    "sourceKeys": "discount",
+    "required": false
+  },
+  {
+    "destKey": "item_category2",
+    "sourceKeys": "item_category2",
+    "required": false
+  },
+  {
+    "destKey": "item_category3",
+    "sourceKeys": "item_category3",
+    "required": false
+  },
+  {
+    "destKey": "item_category4",
+    "sourceKeys": "item_category4",
+    "required": false
+  },
+  {
+    "destKey": "item_category5",
+    "sourceKeys": "item_category5",
+    "required": false
+  },
+  {
+    "destKey": "item_list_id",
+    "sourceKeys": "item_list_id",
+    "required": false
+  },
+  {
+    "destKey": "item_list_name",
+    "sourceKeys": "item_list_name",
+    "required": false
+  },
+  {
+    "destKey": "location_id",
+    "sourceKeys": "location_id",
+    "required": false
+  }
+]

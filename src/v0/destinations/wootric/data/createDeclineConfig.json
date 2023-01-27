@@ -1,0 +1,26 @@
+[
+  {
+    "destKey": "origin_url",
+    "sourceKeys": "pageUrl",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "created_at",
+    "sourceKeys": "createdAtOnly",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "excludes": ["userId", "anonymousId", "id", "email", "phone", "createdAt"]
+    }
+  }
+]

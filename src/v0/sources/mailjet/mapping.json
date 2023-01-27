@@ -1,0 +1,46 @@
+[
+  {
+    "sourceKeys": "email",
+    "destKeys": "context.traits.email"
+  },
+  {
+    "sourceKeys": "messageId",
+    "destKeys": "properties.mailJetMessageId"
+  },
+  {
+    "sourceKeys": "url",
+    "destKeys": "properties.url"
+  },
+  {
+    "sourceKeys": "ip",
+    "destKeys": ["properties.ip", "context.ip"]
+  },
+  {
+    "sourceKeys": "customId",
+    "destKeys": "userId"
+  },
+  {
+    "sourceKeys": "customcampaign",
+    "destKeys": "properties.customcampaign"
+  },
+  {
+    "sourceKeys": "mj_campaign_id",
+    "destKeys": "properties.mj_campaign_id"
+  },
+  {
+    "sourceKeys": "Payload",
+    "destKeys": "properties.Payload"
+  },
+  {
+    "sourceKeys": "agent",
+    "destKeys": "context.userAgent"
+  },
+  {
+    "sourceKeys": "url",
+    "destKeys": "context.page.url"
+  },
+  {
+    "sourceKeys": "source",
+    "destKeys": "context.campaign.source"
+  }
+]

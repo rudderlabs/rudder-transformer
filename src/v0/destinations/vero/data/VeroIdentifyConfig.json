@@ -1,0 +1,50 @@
+[
+  {
+    "sourceKeys": "userId",
+    "destKey": "id",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "email",
+    "destKey": "email",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": ["context.traits", "traits"],
+    "destKey": "data",
+    "metadata": {
+      "excludes": ["email"]
+    }
+  },
+  {
+    "sourceKeys": "context.os.name",
+    "destKey": "channels.platform"
+  },
+  {
+    "sourceKeys": "context.device.token",
+    "destKey": "channels.address"
+  },
+  {
+    "sourceKeys": "context.device.name",
+    "destKey": "channels.device"
+  },
+  {
+    "sourceKeys": "",
+    "destKey": "channels.type",
+    "metadata": {
+      "defaultValue": "push"
+    }
+  },
+  {
+    "sourceKeys": "context.timezone",
+    "destKey": "data.timezone"
+  },
+  {
+    "sourceKeys": "context.locale",
+    "destKey": "data.locale"
+  },
+  {
+    "sourceKeys": "context.userAgent",
+    "destKey": "data.userAgent"
+  }
+]

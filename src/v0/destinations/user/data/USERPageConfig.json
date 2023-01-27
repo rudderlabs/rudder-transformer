@@ -1,0 +1,26 @@
+[
+  {
+    "sourceKeys": "userId",
+    "destKey": "client_user",
+    "required": true,
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "pageUrl",
+    "destKey": "page_domain",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "sourceKeys": "pagePath",
+    "destKey": "page_path",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "sourceKeys": "timestamp",
+    "destKey": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": true
+  }
+]

@@ -1,0 +1,12 @@
+[
+  {
+    "destKey": "currentEmail",
+    "sourceKeys": "previousId",
+    "required": true
+  },
+  {
+    "destKey": "newEmail",
+    "sourceKeys": "userId",
+    "required": true
+  }
+]

@@ -1,10 +1,10 @@
 version: 0.2
 env:
   parameter-store:
-    dockerhub_passwd: "/prod/codebuild/dockerhub-password"
-    GITHUB_TOKEN: "build-deploy-pkey"
-    MAIL: "mail-id"
-    USER_NAME: "user-name"
+    dockerhub_passwd: '/prod/codebuild/dockerhub-password'
+    GITHUB_TOKEN: 'build-deploy-pkey'
+    MAIL: 'mail-id'
+    USER_NAME: 'user-name'
 
 phases:
   install:
@@ -22,9 +22,13 @@ phases:
     commands:
       - VERSION="$(date '+%d%m%Y.%H%M%S')"
       - ls
-      - docker build --build-arg version=${VERSION} -t rudderlabs/rudder-transformer:$VERSION -f Dockerfile .
-      - docker run rudderlabs/rudder-transformer:$VERSION npm run testDestinations
-      - docker run rudderlabs/rudder-transformer:$VERSION npm run testVersionedRouter
+      - >
+        docker build 
+        --build-arg version=${VERSION} 
+        --build-arg GIT_COMMIT_SHA=$CODEBUILD_RESOLVED_SOURCE_VERSION 
+        -t rudderlabs/rudder-transformer:$VERSION 
+        -f Dockerfile .
+      - docker run rudderlabs/rudder-transformer:$VERSION npm run test
       - echo $?
   post_build:
     commands:
@@ -41,12 +45,19 @@ phases:
       - git config --global user.email \"$MAIL\"
       - git config --global user.name \"$USER_NAME\"
       - cd rudder-devops/helm-charts/shared-services/per-az
-      - git checkout -b shared-transformer-\"$VERSION\"
+      - git checkout -b shared-transformer-$VERSION
       - yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml
-      - git add values.blue-release.yaml
+      - yq eval -i ".user-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml
+      - yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.prod.yaml
+      - yq eval -i ".user-transformer.image.tag=\"$VERSION\"" values.prod.yaml
+      - git add values.blue-release.yaml values.prod.yaml
+      - cd ../../config-be-rudder-transformer
+      - yq eval -i ".config-be-rudder-transformer.image.tag=\"$VERSION\"" values.prod.yaml
+      - yq eval -i ".config-be-user-transformer.image.tag=\"$VERSION\"" values.prod.yaml
+      - git add values.prod.yaml
       - git commit -m "changing version for shared transformer"
-      - git push -u origin shared-transformer-\"$VERSION\"
-      - hub pull-request -m "rudder-transformer version change-\"$VERSION\" "
+      - git push -u origin shared-transformer-$VERSION
+      - hub pull-request -m "rudder-transformer version change-$VERSION"
 artifacts:
   files:
-    - "**/*"
+    - '**/*'

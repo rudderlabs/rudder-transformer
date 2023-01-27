@@ -1,0 +1,278 @@
+[
+  {
+    "request": {
+      "body": {
+        "type": "REST",
+        "endpoint": "https://api.amplitude.com/2/httpapi/test1",
+        "method": "POST",
+        "userId": "gabi_anonId_45",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "api_key": "c9d8a13b8bcab46a547f7be5200c483d",
+            "events": [
+              {
+                "app_name": "Rudder-CleverTap_Example",
+                "app_version": "1.0",
+                "time": 1619006730330,
+                "user_id": "gabi_userId_45",
+                "user_properties": {
+                  "Residence": "Shibuya",
+                  "city": "Tokyo",
+                  "country": "JP",
+                  "email": "gabi29@gmail.com",
+                  "gender": "M",
+                  "name": "User2 Gabi2",
+                  "organization": "Company",
+                  "region": "ABC",
+                  "title": "Owner",
+                  "zip": "100-0001"
+                }
+              }
+            ],
+            "options": {
+              "min_id_length": 1
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "type": "REST",
+        "endpoint": "https://api.amplitude.com/2/httpapi/test2",
+        "method": "POST",
+        "userId": "gabi_anonId_45",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "api_key": "c9d8a13b8bcab46a547f7be5200c483d",
+            "events": [
+              {
+                "app_name": "Rudder-CleverTap_Example",
+                "app_version": "1.0",
+                "time": 1619006730330,
+                "user_id": "gabi_userId_45",
+                "user_properties": {
+                  "Residence": "Shibuya",
+                  "city": "Tokyo",
+                  "country": "JP",
+                  "email": "gabi29@gmail.com",
+                  "gender": "M",
+                  "name": "User2 Gabi2",
+                  "organization": "Company",
+                  "region": "ABC",
+                  "title": "Owner",
+                  "zip": "100-0001"
+                }
+              }
+            ],
+            "options": {
+              "min_id_length": 1
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "type": "REST",
+        "endpoint": "https://api.amplitude.com/2/httpapi/test3",
+        "method": "POST",
+        "userId": "gabi_anonId_45",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "api_key": "c9d8a13b8bcab46a547f7be5200c483d",
+            "events": [
+              {
+                "app_name": "Rudder-CleverTap_Example",
+                "app_version": "1.0",
+                "time": 1619006730330,
+                "user_id": "gabi_userId_45",
+                "user_properties": {
+                  "Residence": "Shibuya",
+                  "city": "Tokyo",
+                  "country": "JP",
+                  "email": "gabi29@gmail.com",
+                  "gender": "M",
+                  "name": "User2 Gabi2",
+                  "organization": "Company",
+                  "region": "ABC",
+                  "title": "Owner",
+                  "zip": "100-0001"
+                }
+              }
+            ],
+            "options": {
+              "min_id_length": 1
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "type": "REST",
+        "endpoint": "https://api.amplitude.com/2/httpapi/test4",
+        "method": "POST",
+        "userId": "gabi_anonId_45",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "api_key": "c9d8a13b8bcab46a547f7be5200c483d",
+            "events": [
+              {
+                "app_name": "Rudder-CleverTap_Example",
+                "app_version": "1.0",
+                "time": 1619006730330,
+                "user_id": "gabi_userId_45",
+                "user_properties": {
+                  "Residence": "Shibuya",
+                  "city": "Tokyo",
+                  "country": "JP",
+                  "email": "gabi29@gmail.com",
+                  "gender": "M",
+                  "name": "User2 Gabi2",
+                  "organization": "Company",
+                  "region": "ABC",
+                  "title": "Owner",
+                  "zip": "100-0001"
+                }
+              }
+            ],
+            "options": {
+              "min_id_length": 1
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "type": "REST",
+        "endpoint": "https://api.amplitude.com/2/httpapi/test5",
+        "method": "POST",
+        "userId": "gabi_anonId_45",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "api_key": "c9d8a13b8bcab46a547f7be5200c483d",
+            "events": [
+              {
+                "app_name": "Rudder-CleverTap_Example",
+                "app_version": "1.0",
+                "time": 1619006730330,
+                "user_id": "gabi_userId_45",
+                "user_properties": {
+                  "Residence": "Shibuya",
+                  "city": "Tokyo",
+                  "country": "JP",
+                  "email": "gabi29@gmail.com",
+                  "gender": "M",
+                  "name": "User2 Gabi2",
+                  "organization": "Company",
+                  "region": "ABC",
+                  "title": "Owner",
+                  "zip": "100-0001"
+                }
+              }
+            ],
+            "options": {
+              "min_id_length": 1
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "type": "REST",
+        "endpoint": "https://api.amplitude.com/2/httpapi/test6",
+        "method": "POST",
+        "userId": "gabi_anonId_45",
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "api_key": "c9d8a13b8bcab46a547f7be5200c483d",
+            "events": [
+              {
+                "app_name": "Rudder-CleverTap_Example",
+                "app_version": "1.0",
+                "time": 1619006730330,
+                "user_id": "gabi_userId_45",
+                "user_properties": {
+                  "Residence": "Shibuya",
+                  "city": "Tokyo",
+                  "country": "JP",
+                  "email": "gabi29@gmail.com",
+                  "gender": "M",
+                  "name": "User2 Gabi2",
+                  "organization": "Company",
+                  "region": "ABC",
+                  "title": "Owner",
+                  "zip": "100-0001"
+                }
+              }
+            ],
+            "options": {
+              "min_id_length": 1
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "files": {}
+      }
+    }
+  }
+]

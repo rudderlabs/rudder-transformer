@@ -1,0 +1,34 @@
+[
+  {
+    "sourceKeys": "email",
+    "destKeys": "context.traits.email"
+  },
+  {
+    "sourceKeys": "remote_id",
+    "destKeys": "userId"
+  },
+  {
+    "sourceKeys": "attributes",
+    "destKeys": "context.traits"
+  },
+  {
+    "sourceKeys": "response.data",
+    "destKeys": "traits"
+  },
+  {
+    "sourceKeys": "form.uuid",
+    "destKeys": "context.formUuid"
+  },
+  {
+    "sourceKeys": "form.name",
+    "destKeys": "context.formName"
+  },
+  {
+    "sourceKeys": "segments",
+    "destKeys": "context.traits.segments"
+  },
+  {
+    "sourceKeys": "response.received_at",
+    "destKeys": "originalTimestamp"
+  }
+]

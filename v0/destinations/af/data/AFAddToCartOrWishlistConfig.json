@@ -1,7 +1,0 @@
-{
-  "properties.price": "af_price",
-  "properties.category": "af_content_type",
-  "properties.product_id": "af_content_id",
-  "properties.currency": "af_currency",
-  "properties.quantity": "af_quantity"
-}

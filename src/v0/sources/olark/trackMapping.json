@@ -1,0 +1,66 @@
+[
+  {
+    "sourceKeys": "kind",
+    "destKeys": "event"
+  },
+  {
+    "sourceKeys": "visitor.id",
+    "destKeys": "userId"
+  },
+  {
+    "sourceKeys": "visitor.fullName",
+    "destKeys": "context.traits.name"
+  },
+  {
+    "sourceKeys": "visitor.phoneNumber",
+    "destKeys": "context.traits.phone"
+  },
+  {
+    "sourceKeys": "ip",
+    "destKeys": ["properties.ip", "context.ip"]
+  },
+  {
+    "sourceKeys": "visitor.emailAddress",
+    "destKeys": "context.traits.email"
+  },
+  {
+    "sourceKeys": "visitor.city",
+    "destKeys": "context.traits.city"
+  },
+  {
+    "sourceKeys": "visitor.region",
+    "destKeys": "context.traits.region"
+  },
+  {
+    "sourceKeys": "visitor.country",
+    "destKeys": "context.traits.country"
+  },
+  {
+    "sourceKeys": "visitor.operatingSystem",
+    "destKeys": "context.os.name"
+  },
+  {
+    "sourceKeys": "visitor.referrer",
+    "destKeys": "context.page.referrer"
+  },
+  {
+    "sourceKeys": "visitor.conversationBeginPage",
+    "destKeys": "context.page.url"
+  },
+  {
+    "sourceKeys": "visitor.organization",
+    "destKeys": "traits.organization"
+  },
+  {
+    "sourceKeys": "items",
+    "destKeys": "properties.items"
+  },
+  {
+    "sourceKeys": "tags",
+    "destKeys": "properties.tags"
+  },
+  {
+    "sourceKeys": "visitor.chat_feedback",
+    "destKeys": "traits.chat_feedback"
+  }
+]

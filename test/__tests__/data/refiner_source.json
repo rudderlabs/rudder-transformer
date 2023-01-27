@@ -1,0 +1,394 @@
+[
+  {
+    "description": "Refiner webhook response",
+    "input": {
+      "uuid": "d769e130-49cf-11ed-968d-936a69fadf81",
+      "project_uuid": "0d8759d0-401c-11ed-8ded-9757c4929b55",
+      "remote_id": "user@17",
+      "email": "test17@user.com",
+      "display_name": "test user",
+      "first_seen_at": "2022-10-12T01:47:33.000000Z",
+      "last_seen_at": "2022-10-12T02:00:00.000000Z",
+      "attributes": {
+        "address": null,
+        "address_city": null,
+        "address_state": null,
+        "age": null,
+        "another_attribute": null,
+        "city": null,
+        "country": null,
+        "created_at": null,
+        "email": "test17@user.com",
+        "event": null,
+        "first_name": null,
+        "first_seen_at": "2022-10-12T01:47:33.000000Z",
+        "form_submissions_count": "1",
+        "form_views_count": "2",
+        "gender": null,
+        "last_form_submission_at": "2022-10-12T02:05:55.000000Z",
+        "last_form_view_at": "2022-10-12T02:03:46.000000Z",
+        "last_name": null,
+        "last_seen_at": "2022-10-12T02:00:00.000000Z",
+        "name": "test user",
+        "phone": null,
+        "some_attribute": null,
+        "status": null,
+        "student": null,
+        "tag": null,
+        "trait1": null,
+        "trait2": null,
+        "trait3": null,
+        "url": null,
+        "user_address_city": null,
+        "user_address_state": null,
+        "user_country": null,
+        "user_id": null,
+        "username": null,
+        "useroccupation": null,
+        "why_did_you_cancel_your_subscription": "Pricing"
+      },
+      "segments": [
+        {
+          "uuid": "0d91d7a0-401c-11ed-8898-bb1ee0c23ae5",
+          "name": "All Users",
+          "created_at": "2022-10-12T01:47:34.000000Z",
+          "updated_at": "2022-10-12T01:47:34.000000Z"
+        },
+        {
+          "uuid": "f71ad940-455c-11ed-85e0-bf25f168b224",
+          "name": "test-segment",
+          "created_at": "2022-10-12T01:47:34.000000Z",
+          "updated_at": "2022-10-12T01:47:34.000000Z"
+        }
+      ],
+      "account": {
+        "uuid": "d76c9e80-49cf-11ed-a783-6317eca951a6",
+        "remote_id": "ACCOUNT-ID-ABC-1",
+        "domain": null,
+        "display_name": "Awesome Inc.",
+        "first_seen_at": "2022-10-12T01:47:33.000000Z",
+        "last_seen_at": "2022-10-12T02:00:00.000000Z",
+        "attributes": {
+          "a_date_at": "2022-10-01T00:00:00.000000Z",
+          "business_email": null,
+          "company": null,
+          "email": null,
+          "isfunded": null,
+          "name": "Awesome Inc.",
+          "revenue": null,
+          "some_account_data": "something",
+          "trait1": null,
+          "trait2": null,
+          "trait3": null
+        }
+      },
+      "triggered_event": "Completed Survey",
+      "form": {
+        "uuid": "0d94c790-401c-11ed-bb27-e31f6832c5ae",
+        "name": "Customer Churn Survey"
+      },
+      "response": {
+        "uuid": "eb117cb0-49cf-11ed-b050-03a44b32151c",
+        "first_shown_at": "2022-10-12T01:48:06.000000Z",
+        "last_shown_at": "2022-10-12T02:03:46.000000Z",
+        "show_counter": null,
+        "first_data_reception_at": "2022-10-12T02:05:55.000000Z",
+        "last_data_reception_at": "2022-10-12T02:05:55.000000Z",
+        "completed_at": "2022-10-12T02:05:55.000000Z",
+        "dismissed_at": null,
+        "received_at": "2022-10-12T02:05:55.000000Z",
+        "data": {
+          "why_did_you_cancel_your_subscription": "Pricing"
+        },
+        "tags": []
+      }
+    },
+    "output": [
+      {
+        "context": {
+          "traits": {
+            "email": "test17@user.com",
+            "segments": [
+              {
+                "name": "All Users",
+                "uuid": "0d91d7a0-401c-11ed-8898-bb1ee0c23ae5",
+                "created_at": "2022-10-12T01:47:34.000000Z",
+                "updated_at": "2022-10-12T01:47:34.000000Z"
+              },
+              {
+                "name": "test-segment",
+                "uuid": "f71ad940-455c-11ed-85e0-bf25f168b224",
+                "created_at": "2022-10-12T01:47:34.000000Z",
+                "updated_at": "2022-10-12T01:47:34.000000Z"
+              }
+            ]
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Refiner"
+          },
+          "formUuid": "0d94c790-401c-11ed-bb27-e31f6832c5ae",
+          "formName": "Customer Churn Survey"
+        },
+        "integrations": { "Refiner": false },
+        "type": "identify",
+        "userId": "user@17",
+        "traits": { "why_did_you_cancel_your_subscription": "Pricing" },
+        "originalTimestamp": "2022-10-12T02:05:55.000000Z"
+      },
+      {
+        "type": "track",
+        "event": "Completed Survey",
+        "userId": "user@17",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "formName": "Customer Churn Survey",
+          "formUuid": "0d94c790-401c-11ed-bb27-e31f6832c5ae",
+          "integration": {
+            "name": "Refiner"
+          }
+        },
+        "properties": {
+          "response": {
+            "data": {
+              "why_did_you_cancel_your_subscription": "Pricing"
+            },
+            "tags": [],
+            "uuid": "eb117cb0-49cf-11ed-b050-03a44b32151c",
+            "received_at": "2022-10-12T02:05:55.000000Z",
+            "completed_at": "2022-10-12T02:05:55.000000Z",
+            "last_shown_at": "2022-10-12T02:03:46.000000Z",
+            "first_shown_at": "2022-10-12T01:48:06.000000Z",
+            "last_data_reception_at": "2022-10-12T02:05:55.000000Z",
+            "first_data_reception_at": "2022-10-12T02:05:55.000000Z"
+          },
+          "refiner_form_name": "Customer Churn Survey",
+          "refiner_form_uuid": "0d94c790-401c-11ed-bb27-e31f6832c5ae"
+        },
+        "integrations": {
+          "Refiner": false
+        },
+        "originalTimestamp": "2022-10-12T02:05:55.000000Z"
+      },
+      {
+        "type": "group",
+        "traits": {
+          "name": "Awesome Inc.",
+          "a_date_at": "2022-10-01T00:00:00.000000Z",
+          "some_account_data": "something"
+        },
+        "userId": "user@17",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "integration": {
+            "name": "Refiner"
+          }
+        },
+        "groupId": "ACCOUNT-ID-ABC-1",
+        "integrations": {
+          "Refiner": false
+        },
+        "originalTimestamp": "2022-10-12T02:05:55.000000Z"
+      }
+    ]
+  },
+  {
+    "description": "Refiner webhook response",
+    "input": {
+      "uuid": "69b83e20-4ea2-11ed-941c-e1cb6c7a3870",
+      "cookie_uuid": "2f9b7e6a-9ba8-1c68-d474-48d719d92a60",
+      "project_uuid": "0d8759d0-401c-11ed-8ded-9757c4929b55",
+      "remote_id": "sdk@30",
+      "email": "sdk30@gmail.com",
+      "display_name": "",
+      "first_seen_at": "2022-10-18T05:04:58.000000Z",
+      "last_seen_at": "2022-10-18T05:04:58.000000Z",
+      "attributes": {
+        "address": null,
+        "address_city": null,
+        "address_state": null,
+        "age": null,
+        "another_attribute": null,
+        "city": null,
+        "country": null,
+        "created_at": null,
+        "email": "sdk30@gmail.com",
+        "event": null,
+        "first_name": null,
+        "first_seen_at": "2022-10-18T05:04:58.000000Z",
+        "form_submissions_count": "1",
+        "form_views_count": "1",
+        "gender": null,
+        "last_form_submission_at": "2022-10-18T05:05:45.000000Z",
+        "last_form_view_at": "2022-10-18T05:05:29.000000Z",
+        "last_name": null,
+        "last_seen_at": "2022-10-18T05:04:58.000000Z",
+        "name": null,
+        "phone": null,
+        "some_attribute": null,
+        "status": null,
+        "student": null,
+        "tag": null,
+        "trait1": null,
+        "trait2": null,
+        "trait3": null,
+        "url": null,
+        "user_address_city": null,
+        "user_address_state": null,
+        "user_country": null,
+        "user_id": null,
+        "username": null,
+        "useroccupation": null,
+        "why_did_you_cancel_your_subscription": "Missing features"
+      },
+      "segments": [
+        {
+          "uuid": "0d91d7a0-401c-11ed-8898-bb1ee0c23ae5",
+          "name": "All Users",
+          "created_at": "2022-10-18T05:04:58.000000Z",
+          "updated_at": "2022-10-18T05:04:58.000000Z"
+        },
+        {
+          "uuid": "f71ad940-455c-11ed-85e0-bf25f168b224",
+          "name": "test-segment",
+          "created_at": "2022-10-18T05:04:58.000000Z",
+          "updated_at": "2022-10-18T05:04:58.000000Z"
+        }
+      ],
+      "account": {
+        "uuid": "69ba2030-4ea2-11ed-adfc-595e70c7ab07",
+        "remote_id": null,
+        "domain": null,
+        "display_name": "",
+        "first_seen_at": "2022-10-18T05:04:58.000000Z",
+        "last_seen_at": "2022-10-18T05:04:58.000000Z",
+        "attributes": {
+          "1": null,
+          "2": null,
+          "3": null,
+          "4": null,
+          "a_date_at": null,
+          "business_email": null,
+          "company": null,
+          "email": null,
+          "isfunded": null,
+          "location": null,
+          "name": null,
+          "revenue": null,
+          "some_account_data": null,
+          "trait1": null,
+          "trait2": null,
+          "trait3": null,
+          "user_id": null
+        }
+      },
+      "triggered_event": "Completed Survey",
+      "form": {
+        "uuid": "0d94c790-401c-11ed-bb27-e31f6832c5ae",
+        "name": "Customer Churn Survey"
+      },
+      "response": {
+        "uuid": "7c508c60-4ea2-11ed-9302-57708fe11d26",
+        "first_shown_at": "2022-10-18T05:05:29.000000Z",
+        "last_shown_at": "2022-10-18T05:05:29.000000Z",
+        "show_counter": null,
+        "first_data_reception_at": "2022-10-18T05:05:45.000000Z",
+        "last_data_reception_at": "2022-10-18T05:05:45.000000Z",
+        "completed_at": "2022-10-18T05:05:45.000000Z",
+        "dismissed_at": null,
+        "received_at": "2022-10-18T05:05:45.000000Z",
+        "data": {
+          "why_did_you_cancel_your_subscription": "Missing features"
+        },
+        "tags": []
+      }
+    },
+    "output": [
+      {
+        "type": "identify",
+        "traits": {
+          "why_did_you_cancel_your_subscription": "Missing features"
+        },
+        "userId": "sdk@30",
+        "context": {
+          "traits": {
+            "email": "sdk30@gmail.com",
+            "segments": [
+              {
+                "name": "All Users",
+                "uuid": "0d91d7a0-401c-11ed-8898-bb1ee0c23ae5",
+                "created_at": "2022-10-18T05:04:58.000000Z",
+                "updated_at": "2022-10-18T05:04:58.000000Z"
+              },
+              {
+                "name": "test-segment",
+                "uuid": "f71ad940-455c-11ed-85e0-bf25f168b224",
+                "created_at": "2022-10-18T05:04:58.000000Z",
+                "updated_at": "2022-10-18T05:04:58.000000Z"
+              }
+            ]
+          },
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "formName": "Customer Churn Survey",
+          "formUuid": "0d94c790-401c-11ed-bb27-e31f6832c5ae",
+          "integration": {
+            "name": "Refiner"
+          }
+        },
+        "integrations": {
+          "Refiner": false
+        },
+        "originalTimestamp": "2022-10-18T05:05:45.000000Z"
+      },
+      {
+        "type": "track",
+        "event": "Completed Survey",
+        "userId": "sdk@30",
+        "context": {
+          "library": {
+            "name": "unknown",
+            "version": "unknown"
+          },
+          "formName": "Customer Churn Survey",
+          "formUuid": "0d94c790-401c-11ed-bb27-e31f6832c5ae",
+          "integration": {
+            "name": "Refiner"
+          }
+        },
+        "properties": {
+          "response": {
+            "data": {
+              "why_did_you_cancel_your_subscription": "Missing features"
+            },
+            "tags": [],
+            "uuid": "7c508c60-4ea2-11ed-9302-57708fe11d26",
+            "received_at": "2022-10-18T05:05:45.000000Z",
+            "completed_at": "2022-10-18T05:05:45.000000Z",
+            "last_shown_at": "2022-10-18T05:05:29.000000Z",
+            "first_shown_at": "2022-10-18T05:05:29.000000Z",
+            "last_data_reception_at": "2022-10-18T05:05:45.000000Z",
+            "first_data_reception_at": "2022-10-18T05:05:45.000000Z"
+          },
+          "refiner_form_name": "Customer Churn Survey",
+          "refiner_form_uuid": "0d94c790-401c-11ed-bb27-e31f6832c5ae"
+        },
+        "integrations": {
+          "Refiner": false
+        },
+        "originalTimestamp": "2022-10-18T05:05:45.000000Z"
+      }
+    ]
+  }
+]

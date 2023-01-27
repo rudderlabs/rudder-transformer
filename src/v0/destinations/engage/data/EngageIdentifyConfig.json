@@ -1,0 +1,25 @@
+[
+  {
+    "sourceKeys": ["traits.email", "context.traits.email"],
+    "destKey": "email"
+  },
+  {
+    "sourceKeys": "firstName",
+    "destKey": "first_name",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "lastName",
+    "destKey": "last_name",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "phone",
+    "destKey": "number",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "originalTimestamp",
+    "destKey": "created_at"
+  }
+]

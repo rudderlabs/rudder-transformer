@@ -12,17 +12,29 @@ phases:
       - VERSION=$(head -1 .version)
       - ls
       - echo build Docker image on `date`
+       - >
+        docker build 
+        --build-arg version=${VERSION} 
+        --build-arg GIT_COMMIT_SHA=$CODEBUILD_RESOLVED_SOURCE_VERSION 
+        --target development
+        -t rudderlabs/rudder-transformer:prodtest 
+        -f Dockerfile .
       - >
         docker build 
         --build-arg version=${VERSION} 
         --build-arg GIT_COMMIT_SHA=$CODEBUILD_RESOLVED_SOURCE_VERSION 
+        --target production
         -t rudderlabs/rudder-transformer:$VERSION 
         -f Dockerfile .
-      - docker run rudderlabs/rudder-transformer:$VERSION npm run test
       - echo $?
   post_build:
     commands:
       - echo build Docker image complete `date`
+      - docker run rudderlabs/rudder-transformer:prodtest npm run test
+      - echo $?
+      - docker run rudderlabs/rudder-transformer:prodtest npm run test:integration
+      - echo $?
+      - echo testing of Docker image complete `date`
       - echo push latest Docker images to docker hub...
       - docker push rudderlabs/rudder-transformer:$VERSION
 artifacts:

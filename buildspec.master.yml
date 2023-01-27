@@ -16,13 +16,18 @@ phases:
         docker build 
         --build-arg version=${VERSION} 
         --build-arg GIT_COMMIT_SHA=$CODEBUILD_RESOLVED_SOURCE_VERSION 
+        --target development
         -t rudderlabs/develop-rudder-transformer:$VERSION 
         -f Dockerfile .
-      - docker run rudderlabs/develop-rudder-transformer:$VERSION npm run test
       - echo $?
   post_build:
     commands:
       - echo build Docker image complete `date`
+      - docker run rudderlabs/develop-rudder-transformer:$VERSION npm run test
+      - echo $?
+      - docker run rudderlabs/develop-rudder-transformer:$VERSION npm run test:integration
+      - echo $?
+      - echo testing of Docker image complete `date`
       - echo push latest Docker images to docker hub...
       - docker push rudderlabs/develop-rudder-transformer:$VERSION
 artifacts:

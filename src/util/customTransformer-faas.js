@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
 const stats = require('./stats');
 const { getMetadata } = require('../v0/util');
 const { setupFaasFunction, executeFaasFunction } = require('./openfaas');
@@ -9,7 +10,11 @@ function generateFunctionName(userTransformation, testMode) {
     return funcName.substring(0, 63).toLowerCase();
   }
 
-  return `fn-${userTransformation.workspaceId}-${userTransformation.versionId}`
+  userTransformation.libraryVersionIds = userTransformation.libraryVersionIds || [];
+  const ids = [userTransformation.workspaceId, userTransformation.versionId].concat(userTransformation.libraryVersionIds);
+  const hash = crypto.createHash('md5').update(`${ids}`).digest('hex');
+
+  return `fn-${userTransformation.workspaceId}-${hash}`
     .substring(0, 63)
     .toLowerCase();
 }
@@ -38,6 +43,7 @@ async function setOpenFaasUserTransform(
     functionName,
     userTransformation.code,
     userTransformation.versionId,
+    userTransformation.libraryVersionIds,
     testMode,
   );
 
@@ -75,6 +81,7 @@ async function runOpenFaasUserTransform(events, userTransformation, testMode = f
     functionName,
     events,
     userTransformation.versionId,
+    userTransformation.libraryVersionIds,
     testMode,
   );
   stats.timing('run_time', invokeTime, tags);

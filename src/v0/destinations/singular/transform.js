@@ -23,13 +23,15 @@ const responseBuilderSimple = (message, { Config }) => {
   const { eventAttributes, payload } = platformWisePayloadGenerator(message, sessionEvent);
   const endpoint = sessionEvent ? `${BASE_URL}/launch` : `${BASE_URL}/evt`;
 
-  if (!sessionEvent) {
-    const { products } = message.properties;
-    // If we have an event where we have an array of Products, example Order Completed
-    // We will convert the event to revenue events
-    if (products && Array.isArray(products)) {
-      return generateRevenuePayloadArray(products, payload, Config, eventAttributes);
-    }
+  // If we have an event where we have an array of Products, example Order Completed
+  // We will convert the event to revenue events
+  if (!sessionEvent && Array.isArray(message?.properties?.products)) {
+    return generateRevenuePayloadArray(
+      message.properties.products,
+      payload,
+      Config,
+      eventAttributes,
+    );
   }
 
   const response = {

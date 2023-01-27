@@ -1,4 +1,5 @@
-FROM node:14.20-alpine3.15
+# syntax=docker/dockerfile:1.4
+FROM node:14.21.1-alpine3.15
 
 RUN apk update
 RUN apk upgrade
@@ -20,6 +21,9 @@ COPY build.js ./
 RUN npm install --unsafe-perm=true
 
 COPY . .
+
+HEALTHCHECK --interval=1s --timeout=30s --retries=30 \
+    CMD  wget --no-verbose --tries=5 --spider http://localhost:9090/health || exit 1
 
 ENTRYPOINT ["/sbin/tini", "--"]
 CMD [ "npm", "start" ]

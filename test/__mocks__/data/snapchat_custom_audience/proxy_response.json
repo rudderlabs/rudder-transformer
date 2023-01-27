@@ -1,0 +1,34 @@
+{
+  "https://adsapi.snapchat.com/v1/segments/123/users": {
+    "data": {
+      "request_status": "SUCCESS",
+      "request_id": "12345",
+      "users": [
+        {
+          "sub_request_status": "SUCCESS",
+          "user": {
+            "number_uploaded_users": 1
+          }
+        }
+      ]
+    },
+    "status": 200,
+    "statusText": "OK"
+  },
+  "https://adsapi.snapchat.com/v1/segments/456/users": {
+    "data": "unauthorized",
+    "status": 401,
+    "statusText": "Unauthorized"
+  },
+  "https://adsapi.snapchat.com/v1/segments/789/users": {
+    "data": {
+      "request_status": "ERROR",
+      "request_id": "98e2a602-3cf4-4596-a8f9-7f034161f89a",
+      "debug_message": "Caller does not have permission",
+      "display_message": "We're sorry, but the requested resource is not available at this time",
+      "error_code": "E3002"
+    },
+    "status": 403,
+    "statusText": "Forbidden"
+  }
+}

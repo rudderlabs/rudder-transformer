@@ -1,7 +1,7 @@
 name: 'Pull Request Description'
 on:
   pull_request:
-    types: 
+    types:
       - opened
       - edited
       - reopened

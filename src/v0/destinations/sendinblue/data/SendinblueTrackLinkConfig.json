@@ -1,0 +1,19 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": "emailOnly",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "link",
+    "sourceKeys": "properties.link",
+    "required": true
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "metadata": {
+      "excludes": ["email", "link"]
+    }
+  }
+]

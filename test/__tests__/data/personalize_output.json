@@ -1,0 +1,334 @@
+[
+  {
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "userId": "identified user id",
+    "eventList": [
+      {
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+        "eventType": "PRODUCT ADDED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "movieWatched": "2",
+          "numberOfRatings": "checking with webapp change"
+        }
+      }
+    ]
+  },
+  {
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "userId": "identified user id",
+    "eventList": [
+      {
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+        "eventType": "PRODUCT DELETED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "typeOfMovie": "Art Film",
+          "numberOfRatings": "checking with webapp change"
+        }
+      }
+    ]
+  },
+  {
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "userId": "identified user id",
+    "eventList": [
+      {
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+        "eventType": "PRODUCT DELETED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "typeOfMovie": "Art Film",
+          "numberOfRatings": "checking with webapp change"
+        }
+      }
+    ]
+  },
+  {
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "userId": "identified user id",
+    "eventList": [
+      {
+        "itemId": "item 1",
+        "eventType": "PRODUCT DELETED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "typeOfMovie": "Art Film",
+          "numberOfRatings": "checking with webapp change"
+        }
+      }
+    ]
+  },
+  {
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "userId": "identified user id",
+    "eventList": [
+      {
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+        "eventType": "PRODUCT DELETED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "typeOfMovie": "Art Film",
+          "numberOfRatings": "checking with webapp change"
+        }
+      }
+    ]
+  },
+  {
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "userId": "identified user id",
+    "eventList": [
+      {
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+        "eventType": "PRODUCT DELETED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "typeOfMovie": "Art Film",
+          "numberOfRatings": "checking with webapp change"
+        }
+      }
+    ]
+  },
+  {
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "userId": "user 1",
+    "eventList": [
+      {
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+        "eventType": "PRODUCT DELETED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "typeOfMovie": "Art Film",
+          "numberOfRatings": "checking with webapp change"
+        }
+      }
+    ]
+  },
+  {
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "userId": "identified user id",
+    "eventList": [
+      {
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+        "eventType": "PRODUCT DELETED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "typeOfMovie": "Art Film",
+          "numberOfRatings": "checking with webapp change"
+        }
+      }
+    ]
+  },
+  {
+    "userId": "identified user id",
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "PRODUCT DELETED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "typeOfMovie": "Art Film",
+          "numberOfRatings": "checking with webapp change"
+        },
+        "impression": ["abc"],
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
+      }
+    ]
+  },
+  {
+    "userId": "identified user id",
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "PRODUCT DELETED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "typeOfMovie": "Art Film",
+          "numberOfRatings": "checking with webapp change"
+        },
+        "impression": ["abc"],
+        "eventValue": 3.4,
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
+      }
+    ]
+  },
+  {
+    "userId": "identified user id",
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "PRODUCT DELETED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "typeOfMovie": "Art Film",
+          "numberOfRatings": "checking with webapp change"
+        },
+        "impression": ["2", "3"],
+        "eventValue": 3.4,
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
+      }
+    ]
+  },
+  {
+    "userId": "identified user id",
+    "sessionId": "identified user id",
+    "trackingId": "c60",
+    "eventList": [
+      {
+        "eventType": "PRODUCT DELETED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "typeOfMovie": "Art Film",
+          "numberOfRatings": "checking with webapp change"
+        },
+        "impression": ["2", "3"],
+        "eventValue": 3.4,
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
+      }
+    ]
+  },
+  {
+    "payload": {
+      "datasetArn": "arn:aws:personalize:us-east-1:454531037350:dataset/putTest_DataSetGroup/USERS",
+      "users": [
+        {
+          "userId": "123456",
+          "properties": {
+            "typeOfMovie": "art film",
+            "numberOfRatings": "13"
+          }
+        }
+      ]
+    },
+    "choice": "PutUsers"
+  },
+  {
+    "payload": {
+      "datasetArn": "arn:aws:personalize:us-east-1:454531037350:dataset/putTest_DataSetGroup/ITEMS",
+      "items": [
+        {
+          "properties": {
+            "typeOfMovie": "Art Film",
+            "numberOfRatings": "checking with webapp change"
+          },
+          "itemId": "1"
+        }
+      ]
+    },
+    "choice": "PutItems"
+  },
+  {
+    "error": "Event type is required"
+  },
+  {
+    "error": "Mapped property typeOfMovie not found"
+  },
+  {
+    "error": "Either Dataset ARN is not correctly entered or invalid"
+  },
+  {
+    "error": "Dataset ARN is a mandatory information to use putItems"
+  },
+  {
+    "error": "PutUsers is not supported for Track Calls"
+  },
+  {
+    "error": "Tracking Id is a mandatory information to use putEvents"
+  },
+  {
+    "error": "itemId is a mandatory property for using PutItems"
+  },
+  {
+    "error": "Cannot process if no event name specified"
+  },
+  {
+    "error": "This Message Type does not support PutItems. Aborting message"
+  },
+  {
+    "error": "Dataset ARN is a mandatory information to use putUsers"
+  },
+  {
+    "error": "Either Dataset ARN is not correctly entered or invalid"
+  },
+  {
+    "error": "Mapped property numberOfRatings not found"
+  },
+  {
+    "error": "Event type screen is not supported"
+  },
+  {
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "userId": "identified user id",
+    "eventList": [
+      {
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+        "eventType": "PRODUCT ADDED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "movieWatched": "2",
+          "numberOfRatings": "checking with webapp change"
+        }
+      }
+    ]
+  },
+  {
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "userId": "identified user id",
+    "eventList": [
+      {
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+        "eventType": "PRODUCT ADDED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "movieWatched": 2,
+          "numberOfRatings": "checking with webapp change"
+        }
+      }
+    ]
+  },
+  {
+    "sessionId": "anon-id-new",
+    "trackingId": "c60",
+    "userId": "identified user id",
+    "eventList": [
+      {
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+        "eventType": "PRODUCT ADDED",
+        "sentAt": "2020-02-02T00:23:09.544Z",
+        "properties": {
+          "movieWatched": "2",
+          "numberOfRatings": "checking with webapp change"
+        }
+      }
+    ]
+  },
+  {
+    "sessionId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+    "trackingId": "c60",
+    "userId": null,
+    "eventList": [
+      {
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+        "eventType": "PRODUCT ADDED",
+        "sentAt": "2023-01-10T01:56:46.896+05:30",
+        "properties": {
+          "movieWatched": "2",
+          "numberOfRatings": "checking with webapp change"
+        }
+      }
+    ]
+  }
+]

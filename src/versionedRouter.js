@@ -486,14 +486,17 @@ async function routerHandleDest(ctx) {
         const hasProcMetadataForRouter = routerDestHandler.processMetadataForRouter;
         // enriching transformed event
         listOutput.forEach(listOut => {
-          let { batchedRequest } = listOut;
+          const { batchedRequest } = listOut;
           if (Array.isArray(batchedRequest)) {
-            batchedRequest = batchedRequest.map(batReq => enrichTransformedEvent(batReq));
+            // eslint-disable-next-line no-param-reassign
+            listOut.batchedRequest = batchedRequest.map(batReq => enrichTransformedEvent(batReq));
           } else if (batchedRequest && typeof batchedRequest === 'object') {
-            batchedRequest = enrichTransformedEvent(batchedRequest);
+            // eslint-disable-next-line no-param-reassign
+            listOut.batchedRequest = enrichTransformedEvent(batchedRequest);
           }
 
           if (hasProcMetadataForRouter) {
+            // eslint-disable-next-line no-param-reassign
             listOut.metadata = routerDestHandler.processMetadataForRouter(listOut);
           }
         });

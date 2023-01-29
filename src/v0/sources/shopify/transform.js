@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const get = require('get-value');
+const stats = require('../../../util/stats');
 const {
   getShopifyTopic,
   createPropertiesForEcomEvent,
@@ -21,7 +22,7 @@ const {
 } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 
-const identifyPayloadBuilder = event => {
+const identifyPayloadBuilder = (event) => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.IDENTIFY);
   message.setPropertiesV2(event, MAPPING_CATEGORIES[EventType.IDENTIFY]);
@@ -39,7 +40,9 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
 
   let properties = createPropertiesForEcomEvent(event);
   properties = removeUndefinedAndNullValues(properties);
-  Object.keys(properties).forEach(key => message.setProperty(`properties.${key}`, properties[key]));
+  Object.keys(properties).forEach((key) =>
+    message.setProperty(`properties.${key}`, properties[key]),
+  );
   // Map Customer details if present
   const customerDetails = get(event, 'customer');
   if (customerDetails) {
@@ -72,7 +75,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   message.setEventName(SHOPIFY_TRACK_MAP[shopifyTopic]);
   Object.keys(event)
     .filter(
-      key =>
+      (key) =>
         ![
           'type',
           'event',
@@ -82,7 +85,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
           'billing_address',
         ].includes(key),
     )
-    .forEach(key => {
+    .forEach((key) => {
       message.setProperty(`properties.${key}`, event[key]);
     });
   // eslint-disable-next-line camelcase
@@ -107,7 +110,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   return message;
 };
 
-const processEvent = inputEvent => {
+const processEvent = (inputEvent) => {
   let message;
   const event = _.cloneDeep(inputEvent);
   const shopifyTopic = getShopifyTopic(event);
@@ -150,24 +153,33 @@ const processEvent = inputEvent => {
   });
   message.setProperty('context.topic', shopifyTopic);
   message = removeUndefinedAndNullValues(message);
+  stats.increment('shopify_server_side_identifier_event', 1, {
+    writeKey: event.query_parameters?.writeKey?.[0],
+    timestamp: Date.now(),
+  });
   return message;
 };
-const isdentifierEvent = event => {
-  if (event?.event?.[0] === 'rudderIdentifier') {
+const isIdentifierEvent = (event) => {
+  if (event?.event === 'rudderIdentifier') {
+    stats.increment('shopify_client_side_identifier_event', 1, {
+      writeKey: event.query_parameters?.writeKey?.[0],
+      timestamp: Date.now(),
+    });
     return true;
   }
   return false;
 };
 const processIdentifierEvent = () => {
-  return {
+  const result = {
     outputToSource: {
-      contentType: 'application/json',
+      body: Buffer.from('OK').toString('base64'),
+      contentType: 'text/plain',
     },
     statusCode: 200,
   };
+  return result;
 };
-const process = event => {
-  return isdentifierEvent(event) ? processIdentifierEvent(event) : processEvent(event);
-};
+const process = (event) =>
+  isIdentifierEvent(event) ? processIdentifierEvent() : processEvent(event);
 
 exports.process = process;

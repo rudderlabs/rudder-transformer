@@ -742,7 +742,10 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
         formattedVal = formattedVal.replace('https://', '').replace('http://', '');
         break;
       case 'domainUrlV2': {
-        const url = new URL(formattedVal);
+        const url = isValidUrl(formattedVal);
+        if (!url) {
+          throw new InstrumentationError(`Invalid URL: ${formattedVal}`);
+        }
         formattedVal = url.hostname.replace('www.', '');
         break;
       }
@@ -977,7 +980,7 @@ function getDestinationExternalID(message, type) {
   }
 
   if (Array.isArray(externalIdArray)) {
-    externalIdArray.forEach(extIdObj => {
+    externalIdArray.forEach((extIdObj) => {
       if (extIdObj.type === type) {
         destinationExternalId = extIdObj.id;
       }
@@ -1666,8 +1669,10 @@ const validatePhoneWithCountryCode = (phone) => {
  * @returns
  */
 const isHybridModeEnabled = (Config) => {
-  const { useNativeSDK, useNativeSDKToSend } = Config;
-  return useNativeSDK && !useNativeSDKToSend;
+  if (isDefinedAndNotNull(Config.useNativeSDK) && isDefinedAndNotNull(Config.useNativeSDKToSend)) {
+    return Config.useNativeSDK && !Config.useNativeSDKToSend;
+  }
+  return false;
 };
 
 /**

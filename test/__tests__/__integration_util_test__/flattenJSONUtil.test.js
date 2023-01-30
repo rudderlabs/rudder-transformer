@@ -6,11 +6,11 @@ const fnName = "flattenJson";
 
 // Test file
 const testDataFile = fs.readFileSync(
-  path.resolve(__dirname, `./data/flattenJsonTestCases.json`)
+  path.resolve(__dirname, `./data/flattenJson.json`)
 );
 const testData = JSON.parse(testDataFile);
 
-describe("flattenJSon util test", () => {
+describe("flattenJson tests", () => {
   testData.forEach(async (dataPoint, index) => {
     it(`Test Case ${index}.`, async () => {
       const outputArray = utilObj[fnName](dataPoint.input);

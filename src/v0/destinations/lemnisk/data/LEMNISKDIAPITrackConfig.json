@@ -21,6 +21,6 @@
         "destKey": "email",
         "sourceKeys": "emailOnly",
         "sourceFromGenericMap": true,
-        "required": true
+        "required": false
       }
 ]

@@ -1697,8 +1697,6 @@ const checkAndCorrectUserId = (statusCode, userId) => {
   return userId;
 };
 
-
-=======
 /**
  * Get access token to be bound to the event req headers
  *

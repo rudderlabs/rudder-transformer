@@ -131,7 +131,7 @@ function createRevenuePayload(message, rawPayload) {
 
 function updateTraitsObject(property, traitsObject, actionKey) {
   const propertyToUpdate = getValueFromMessage(traitsObject, property);
-  if (property && property.length > 0) {
+  if (traitsObject[actionKey] && property && typeof property === 'string' && property.length > 0) {
     traitsObject[actionKey][property] = propertyToUpdate;
     deleteObjectProperty(traitsObject, property);
   }
@@ -144,7 +144,7 @@ function prepareTraitsConfig(configPropertyTrait, actionKey, traitsObject) {
     const property = traitsElement.traits;
     traitsObject = updateTraitsObject(property, traitsObject, actionKey);
   });
-  if(Object.keys(traitsObject[actionKey]).length === 0) {
+  if (Object.keys(traitsObject[actionKey]).length === 0) {
     delete traitsObject[actionKey];
   }
   return traitsObject;

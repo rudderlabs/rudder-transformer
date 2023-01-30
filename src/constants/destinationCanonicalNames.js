@@ -95,7 +95,15 @@ const DestCanonicalNames = {
     "CRITEO AUDIENCE",
     "CRITEO_AUDIENCE",
     "CRITEOAUDIENCE"
-  ]
+  ],
+  optimizely_fullstack: [
+    'Optimizely Fullstack',
+    'OPTIMIZELY FULLSTACK',
+    'optimizely fullstack',
+    'OptimizelyFullstack',
+    'Optimizely_Fullstack',
+    'optimizely_fullstack',
+  ],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

@@ -1,5 +1,5 @@
 const { processDynamicConfig } = require("../../../src/util/dynamicConfig");
-const { getFuncTestData } = require("./helper");
+const { getFuncTestData } = require("./testHelper");
 
 const funcName = "processDynamicConfig";
 const reqType = "processor";

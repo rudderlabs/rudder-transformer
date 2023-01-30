@@ -1,6 +1,6 @@
 
 const utilities = require("../../../src/v0/util");
-const { getFuncTestData } = require("./helper");
+const { getFuncTestData } = require("./testHelper");
 
 const functionsToTest = [
   "flattenJson",

@@ -985,6 +985,75 @@ async function handleProxyRequest(destination, ctx) {
   return ctx.body;
 }
 
+async function handleDefaultDestProxyRequest(destination, ctx) {
+  const getReqMetadata = () => {
+    try {
+      return { destType: destination };
+    } catch (error) {
+      // Do nothing
+    }
+    return {};
+  };
+  // eslint-disable-next-line no-promise-executor-return
+  const sleep = (s) => new Promise((r) => setTimeout(r, s*1000));
+
+  const { metadata } = ctx.request.body;
+  let response;
+  try {
+    stats.counter('tf_proxy_dest_req_count', 1, {
+      destination,
+    });
+    await sleep((Math.random() * 10) + 0.01)
+    stats.counter('tf_proxy_resp_handler_count', 1, {
+      destination,
+    });
+    response = {
+      status: 200,
+      destinationResponse: {
+        response: "success"
+      },
+      message: "Request processed successfully",
+    }
+  } catch (err) {
+    logger.error('Error occurred while completing proxy request:');
+    logger.error(err);
+
+    const errObj = generateErrorObject(err, {
+      [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),
+      [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+      [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
+      [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY,
+      [tags.TAG_NAMES.DESTINATION_ID]: metadata?.destinationId,
+      [tags.TAG_NAMES.WORKSPACE_ID]: metadata?.workspaceId,
+    });
+
+    response = {
+      status: errObj.status,
+      ...(errObj.authErrorCategory && {
+        authErrorCategory: errObj.authErrorCategory,
+      }),
+      destinationResponse: errObj.destinationResponse,
+      message: errObj.message,
+      statTags: errObj.statTags,
+    };
+
+    stats.counter('tf_proxy_err_count', 1, {
+      destination,
+    });
+
+    errNotificationClient.notify(err, 'Data Delivery', {
+      ...response,
+      ...getCommonMetadata(ctx),
+      ...getReqMetadata(),
+    });
+  }
+  ctx.body = { output: response };
+  // Sending `204` status(obtained from destination) is not working as expected
+  // Since this is success scenario, we'll be forcefully sending `200` status-code to server
+  ctx.status = isHttpStatusSuccess(response.status) ? 200 : response.status;
+  return ctx.body;
+}
+
 if (transformerProxy) {
   SUPPORTED_VERSIONS.forEach((version) => {
     const destinations = getIntegrations(path.resolve(__dirname, `./${version}/destinations`));
@@ -999,6 +1068,15 @@ if (transformerProxy) {
         });
       });
     });
+    router.post('/v0/destinations/default_dest/proxy', async (ctx) => {
+      const startTime = new Date();
+      ctx.set('apiVersion', API_VERSION);
+      await handleDefaultDestProxyRequest('default_dest', ctx);
+      stats.timing('transformer_total_proxy_latency', startTime, {
+        destination: 'default_dest',
+        version,
+      });
+    })
   });
 }
 

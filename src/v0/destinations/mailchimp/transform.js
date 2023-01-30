@@ -62,8 +62,8 @@ const trackResponseBuilder = (message, { Config }) => {
     processedPayload.occurred_at,
     'YYYY-MM-DDTHH:mm:ssZ',
   );
-  if (isDefinedAndNotNull(processedPayload.properties?.is_syncing)) {
-    delete processedPayload.properties.is_syncing;
+  if (isDefinedAndNotNull(processedPayload.properties?.isSyncing)) {
+    delete processedPayload.properties.isSyncing;
   }
   return responseBuilderSimple(processedPayload, endpoint, Config, audienceId);
 };

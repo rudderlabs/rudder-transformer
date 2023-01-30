@@ -17,7 +17,7 @@
   },
   {
     "destKey": "is_syncing",
-    "sourceKeys": "properties.is_syncing",
+    "sourceKeys": "properties.isSyncing",
     "sourceFromGenericMap": false,
     "required": false
   }

@@ -957,7 +957,7 @@
       "properties": {
         "brand": "Aster",
         "product": "Garments",
-        "is_syncing": false
+        "isSyncing": false
       },
       "messageId": "6d1f3ca8-e2d0-4d34-9926-44596171af0c",
       "originalTimestamp": "2019-11-15T10:26:53Z",
@@ -1035,7 +1035,7 @@
       "properties": {
         "brand": "Aster",
         "product": "Garments",
-        "is_syncing": false
+        "isSyncing": false
       },
       "messageId": "6d1f3ca8-e2d0-4d34-9926-44596171af0c",
       "originalTimestamp": "2019-11-15T10:26:53Z",

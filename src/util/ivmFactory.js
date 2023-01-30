@@ -40,12 +40,14 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
     });
 
     // Extract ruddder libraries from import names
-    const rudderLibImportNames = extractedLibImportNames.filter((name) => RUDDER_LIBRARY_REGEX.test(name));
+    const rudderLibImportNames = extractedLibImportNames.filter((name) =>
+      RUDDER_LIBRARY_REGEX.test(name),
+    );
     const rudderLibraries = await Promise.all(
       rudderLibImportNames.map(async (name) => await getRudderLibraryCode(name)),
     );
     rudderLibraries.forEach((library) => {
-      librariesMap[library.name] = library.code;
+      librariesMap[library.importName] = library.code;
     });
   }
 

@@ -7,11 +7,11 @@ const transformationCache = {};
 const libraryCache = {};
 const rudderLibraryCache = {};
 
-// const CONFIG_BACKEND_URL = "http://localhost:5000";
+// const CONFIG_BACKEND_URL = 'http://localhost:5000';
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
 const getTransformationURL = `${CONFIG_BACKEND_URL}/transformation/getByVersionId`;
 const getLibrariesUrl = `${CONFIG_BACKEND_URL}/transformationLibrary/getByVersionId`;
-const getRudderLibrariesUrl = `${CONFIG_BACKEND_URL}/rudderstackTransformationLibrary/getByImportName`;
+const getRudderLibrariesUrl = `${CONFIG_BACKEND_URL}/rudderstackTransformationLibraries`;
 
 // Gets the transformation from config backend.
 // Stores the transformation object in memory with time to live after which it expires.
@@ -75,7 +75,7 @@ async function getRudderLibraryCode(importName) {
     type: 'rudderlibrary',
   };
   try {
-    const url = `${getRudderLibrariesUrl}?importName=${importName}`;
+    const url = `${getRudderLibrariesUrl}/${importName}`;
     const startTime = new Date();
     const response = await fetchWithProxy(url);
 

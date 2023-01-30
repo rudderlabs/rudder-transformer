@@ -1,6 +1,6 @@
 [
   {
-    "description": "Invalid priority",
+    "description": "Should return flattened JSON if the input contains array of objects",
     "input": {
       "checkout_id": "what is checkout id here??",
       "coupon": "APPARELSALE",
@@ -137,7 +137,7 @@
     }
   },
   {
-    "description": "Custom field: Invalid phone number",
+    "description": "Should return flattened JSON if the input contains array of objects containing arrays",
     "input": {
       "checkout_id": "what is checkout id here??",
       "coupon": "APPARELSALE",
@@ -328,7 +328,7 @@
     }
   },
   {
-    "description": "Custom field: Invalid url",
+    "description": "Should return flattened JSON and preserve the arrays order if the input contains array of objects containing arrays",
     "input": {
       "checkout_id": "what is checkout id here??",
       "coupon": "APPARELSALE",
@@ -465,7 +465,7 @@
     }
   },
   {
-    "description": "Custom field: Invalid location latitude",
+    "description": "Should return flattened JSON if the input contains objects and simple fields (of all data types)",
     "input": {
       "timezone": "Asia/Kolkata",
       "app": {
@@ -481,7 +481,7 @@
       "locale": "en-GB",
       "os": {
         "name": "",
-        "version": ""
+        "version": 2.3
       },
       "page": {
         "path": "/testing/script-test.html",
@@ -513,7 +513,7 @@
       "library.version": "1.1.6",
       "locale": "en-GB",
       "os.name": "",
-      "os.version": "",
+      "os.version": 2.3,
       "page.path": "/testing/script-test.html",
       "page.referrer": "",
       "page.search": "",

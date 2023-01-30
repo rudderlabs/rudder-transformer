@@ -219,27 +219,27 @@ describe("Source api tests", () => {
   });
 });
 
-// describe("CDK V1 api tests", () => {
-//   test("(zapier) successful transform", async () => {
-//     const data = getDataFromPath("./data_scenarios/cdk_v1/success.json");
-//     const response = await request(server).post(
-//       "/v0/destinations/zapier").
-//         set("Accept", "application/json").
-//         send(data.input);
-//     expect(response.status).toEqual(200);
-//     expect(JSON.parse(response.text)).toEqual(data.output);
-//   });
+describe("CDK V1 api tests", () => {
+  test("(zapier) successful transform", async () => {
+    const data = getDataFromPath("./data_scenarios/cdk_v1/success.json");
+    const response = await request(server).post(
+      "/v0/destinations/zapier").
+        set("Accept", "application/json").
+        send(data.input);
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual(data.output);
+  });
 
-//   test("(zapier) failure transform", async () => {
-//     const data = getDataFromPath("./data_scenarios/cdk_v1/failure.json");
-//     const response = await request(server).post(
-//       "/v0/destinations/zapier").
-//         set("Accept", "application/json").
-//         send(data.input);
-//     expect(response.status).toEqual(200);
-//     expect(JSON.parse(response.text)).toEqual(data.output);
-//   });
-// });
+  test("(zapier) failure transform", async () => {
+    const data = getDataFromPath("./data_scenarios/cdk_v1/failure.json");
+    const response = await request(server).post(
+      "/v0/destinations/zapier").
+        set("Accept", "application/json").
+        send(data.input);
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual(data.output);
+  });
+});
 
 describe("CDK V2 api tests", () => {
   test("(pinterest_tag) successful transform", async () => {

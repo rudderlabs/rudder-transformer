@@ -157,7 +157,7 @@
         "destinationDefinitionId": ""
       },
       "statusCode": 400,
-      "error": "Unsupported \"channel\": \"offline\". It must be one of: web,server,mobile",
+      "error": "Unsupported \"channel\": \"offline\". It must be one of: web,server,mobile,sources",
       "statTags": {
         "errorCategory": "transformation",
         "destType": "ZAPIER",

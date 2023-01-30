@@ -17,7 +17,9 @@ import PostTransformationServiceDestination from "./postTransformation";
 
 export default class CDKV2DestinationService
   implements IntegrationDestinationService {
- 
+  public init() {
+  }
+
   public getTags(
     destType: string,
     destinationId: string,

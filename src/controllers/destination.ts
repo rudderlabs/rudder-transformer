@@ -32,6 +32,7 @@ export default class DestinationController {
     }: { version: string; destination: string } = ctx.params;
     const integrationService = ServiceSelector.getDestinationService(events);
     try {
+      integrationService.init();
       events = PreTransformationDestinationService.preProcess(
         events,
         ctx

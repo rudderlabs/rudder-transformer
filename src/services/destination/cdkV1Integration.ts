@@ -13,9 +13,17 @@ import {
 import { TransformationError } from "../../v0/util/errorTypes";
 import PostTransformationServiceDestination from "./postTransformation";
 import tags from "../../v0/util/tags";
+import path from "path";
 
 export default class CDKV1DestinationService
   implements IntegrationDestinationService {
+  public init() {
+    ConfigFactory.init({
+      basePath: path.resolve(__dirname, '../../cdk/v1'),
+      loggingMode: 'production'
+    });
+  }
+
   public getTags(
     destType: string,
     destinationId: string,

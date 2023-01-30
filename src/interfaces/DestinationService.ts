@@ -9,6 +9,8 @@ import {
 } from "../types/index";
 
 export default interface DestinationService {
+  init(): void;
+
   getTags(
     destType: string,
     destinationId: string,

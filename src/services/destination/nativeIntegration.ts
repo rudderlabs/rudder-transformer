@@ -17,6 +17,9 @@ import tags from "../../v0/util/tags";
 
 export default class NativeIntegrationDestinationService
   implements IntegrationDestinationService {
+  public init() {
+  }
+
   public getTags(
     destType: string,
     destinationId: string,

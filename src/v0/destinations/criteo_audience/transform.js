@@ -78,7 +78,7 @@ const processEvent = async (metadata, message, destination) => {
     );
   }
   if (getEventType(message) === "audiencelist") {
-    response = await responseBuilder(message, destination, accessToken);
+    response = responseBuilder(message, destination, accessToken);
   } else {
     throw new InstrumentationError(
       `Event type ${message.type} is not supported`

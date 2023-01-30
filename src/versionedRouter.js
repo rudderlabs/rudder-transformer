@@ -1003,7 +1003,7 @@ async function handleDefaultDestProxyRequest(destination, ctx) {
     stats.counter('tf_proxy_dest_req_count', 1, {
       destination,
     });
-    await sleep((Math.random() * 10) + 0.01)
+    await sleep(0.01)
     stats.counter('tf_proxy_resp_handler_count', 1, {
       destination,
     });

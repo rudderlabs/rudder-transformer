@@ -4,7 +4,8 @@ const { getFuncTestData } = require("./testHelper");
 
 const functionsToTest = [
   "flattenJson",
-  "getDestinationExternalID"
+  "getDestinationExternalID",
+  "isHybridModeEnabled"
 ]
 
 describe("Utility Functions Tests", () => {

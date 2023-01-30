@@ -1,0 +1,228 @@
+[
+  {
+    "input": [
+      {
+        "message": {
+          "type": "track",
+          "channel": "web",
+          "event": "Product Added",
+          "userId": "test123",
+          "properties": { "price": 999, "quantity": 1 },
+          "context": { "traits": { "firstName": "John", "age": 27 } },
+          "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+          "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+          "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+        },
+        "destination": {
+          "Config": {
+            "sdkKey": "test-sdk-key",
+            "baseUrl": "https://example.com",
+            "trackKnownUsers": true,
+            "nonInteraction": false,
+            "listen": false,
+            "trackCategorizedPages": true,
+            "trackNamedPages": true
+          }
+        },
+        "metadata": {
+          "jobId": 1
+        }
+      },
+      {
+        "message": {
+          "type": "page",
+          "channel": "web",
+          "userId": "test123",
+          "category": "Docs",
+          "name": "Index",
+          "properties": {
+            "url": "https://www.google.com/",
+            "title": "Google home"
+          },
+          "context": { "traits": { "firstName": "John", "age": 27 } },
+          "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+          "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+        },
+        "destination": {
+          "Config": {
+            "sdkKey": "test-sdk-key",
+            "baseUrl": "https://example.com",
+            "trackKnownUsers": true,
+            "nonInteraction": false,
+            "listen": false,
+            "trackCategorizedPages": true,
+            "trackNamedPages": true
+          }
+        },
+        "metadata": {
+          "jobId": 2
+        }
+      },
+      {
+        "message": {
+          "type": "track",
+          "channel": "web",
+          "event": "Product Added",
+          "properties": {},
+          "context": {},
+          "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+          "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+          "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+        },
+        "destination": {
+          "Config": {
+            "sdkKey": "test-sdk-key",
+            "trackKnownUsers": false,
+            "nonInteraction": false,
+            "listen": false,
+            "trackCategorizedPages": true,
+            "trackNamedPages": true
+          }
+        },
+        "metadata": {
+          "jobId": 3
+        }
+      }
+    ],
+    "output": [
+      {
+        "batched": false,
+        "batchedRequest": {
+          "body": {
+            "FORM": {},
+            "JSON": {
+              "userId": "test123",
+              "userAttributes": { "firstName": "John", "age": 27 },
+              "eventTags": { "price": 999, "quantity": 1 }
+            },
+            "JSON_ARRAY": {},
+            "XML": {}
+          },
+          "endpoint": "https://example.com/v1/track?eventKey=Product%20Added",
+          "files": {},
+          "headers": {
+            "Content-Type": "application/json",
+            "X-Optimizely-SDK-Key": "test-sdk-key"
+          },
+          "method": "POST",
+          "params": {},
+          "type": "REST",
+          "version": "1"
+        },
+        "destination": {
+          "Config": {
+            "sdkKey": "test-sdk-key",
+            "baseUrl": "https://example.com",
+            "trackKnownUsers": true,
+            "nonInteraction": false,
+            "listen": false,
+            "trackCategorizedPages": true,
+            "trackNamedPages": true
+          }
+        },
+        "metadata": [
+          {
+            "jobId": 1
+          }
+        ],
+        "statusCode": 200
+      },
+      {
+        "batched": false,
+        "batchedRequest": [
+          {
+            "body": {
+              "FORM": {},
+              "JSON": {
+                "userId": "test123",
+                "userAttributes": { "firstName": "John", "age": 27 },
+                "eventTags": {
+                  "url": "https://www.google.com/",
+                  "title": "Google home"
+                }
+              },
+              "JSON_ARRAY": {},
+              "XML": {}
+            },
+            "endpoint": "https://example.com/v1/track?eventKey=Viewed%20Docs%20page",
+            "files": {},
+            "headers": {
+              "Content-Type": "application/json",
+              "X-Optimizely-SDK-Key": "test-sdk-key"
+            },
+            "method": "POST",
+            "params": {},
+            "type": "REST",
+            "version": "1"
+          },
+          {
+            "body": {
+              "FORM": {},
+              "JSON": {
+                "userId": "test123",
+                "userAttributes": { "firstName": "John", "age": 27 },
+                "eventTags": {
+                  "url": "https://www.google.com/",
+                  "title": "Google home"
+                }
+              },
+              "JSON_ARRAY": {},
+              "XML": {}
+            },
+            "endpoint": "https://example.com/v1/track?eventKey=Viewed%20Index%20page",
+            "files": {},
+            "headers": {
+              "Content-Type": "application/json",
+              "X-Optimizely-SDK-Key": "test-sdk-key"
+            },
+            "method": "POST",
+            "params": {},
+            "type": "REST",
+            "version": "1"
+          }
+        ],
+        "destination": {
+          "Config": {
+            "sdkKey": "test-sdk-key",
+            "baseUrl": "https://example.com",
+            "trackKnownUsers": true,
+            "nonInteraction": false,
+            "listen": false,
+            "trackCategorizedPages": true,
+            "trackNamedPages": true
+          }
+        },
+        "metadata": [
+          {
+            "jobId": 2
+          }
+        ],
+        "statusCode": 200
+      },
+      {
+        "batched": false,
+        "error": "Base url is required",
+        "metadata": [
+          {
+            "jobId": 3
+          }
+        ],
+        "statTags": {
+          "errorCategory": "dataValidation",
+          "errorType": "configuration"
+        },
+        "statusCode": 400,
+        "destination": {
+          "Config": {
+            "sdkKey": "test-sdk-key",
+            "trackKnownUsers": false,
+            "nonInteraction": false,
+            "listen": false,
+            "trackCategorizedPages": true,
+            "trackNamedPages": true
+          }
+        }
+      }
+    ]
+  }
+]

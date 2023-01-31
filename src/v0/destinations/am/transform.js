@@ -97,8 +97,8 @@ function getSessionId(message) {
   return get(message, 'session_id')
     ? handleSessionIdUnderRoot(message)
     : get(message, 'context.sessionId')
-    ? handleSessionIdUnderContext(message)
-    : -1;
+      ? handleSessionIdUnderContext(message)
+      : -1;
 }
 
 function addMinIdlength() {
@@ -131,8 +131,10 @@ function createRevenuePayload(message, rawPayload) {
 
 function updateTraitsObject(property, traitsObject, actionKey) {
   const propertyToUpdate = getValueFromMessage(traitsObject, property);
-  traitsObject[actionKey][property] = propertyToUpdate;
-  deleteObjectProperty(traitsObject, property);
+  if (traitsObject[actionKey] && property && typeof property === 'string') {
+    traitsObject[actionKey][property] = propertyToUpdate;
+    deleteObjectProperty(traitsObject, property);
+  }
   return traitsObject;
 }
 
@@ -142,6 +144,9 @@ function prepareTraitsConfig(configPropertyTrait, actionKey, traitsObject) {
     const property = traitsElement.traits;
     traitsObject = updateTraitsObject(property, traitsObject, actionKey);
   });
+  if (Object.keys(traitsObject[actionKey]).length === 0) {
+    delete traitsObject[actionKey];
+  }
   return traitsObject;
 }
 
@@ -520,9 +525,8 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      evType = `Viewed ${
-        message.name || message.event || get(message, 'properties.category') || ''
-      } Screen`;
+      evType = `Viewed ${message.name || message.event || get(message, 'properties.category') || ''
+        } Screen`;
       message.properties = {
         ...message.properties,
         name: message.name || message.event || get(message, 'properties.category'),
@@ -756,7 +760,7 @@ function getBatchEvents(message, destination, metadata, batchEventResponse) {
     if (
       batchEventArray.length < AMBatchEventLimit &&
       JSON.stringify(batchPayloadJSON).length + JSON.stringify(incomingMessageEvent).length <
-        AMBatchSizeLimit
+      AMBatchSizeLimit
     ) {
       batchEventArray.push(incomingMessageEvent); // set value
       batchEventJobs.push(metadata);
@@ -790,14 +794,14 @@ function batch(destEvents) {
       messageEvent && Array.isArray(messageEvent)
         ? messageEvent[0].user_id
         : messageEvent
-        ? messageEvent.user_id
-        : undefined;
+          ? messageEvent.user_id
+          : undefined;
     deviceId =
       messageEvent && Array.isArray(messageEvent)
         ? messageEvent[0].device_id
         : messageEvent
-        ? messageEvent.device_id
-        : undefined;
+          ? messageEvent.device_id
+          : undefined;
     // this case shold not happen and should be filtered already
     // by the first pass of single event transformation
     if (messageEvent && !userId && !deviceId) {

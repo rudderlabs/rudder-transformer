@@ -131,7 +131,7 @@ function createRevenuePayload(message, rawPayload) {
 
 function updateTraitsObject(property, traitsObject, actionKey) {
   const propertyToUpdate = getValueFromMessage(traitsObject, property);
-  if (traitsObject[actionKey] && property && typeof property === 'string' && property.length > 0) {
+  if (traitsObject[actionKey] && property && typeof property === 'string') {
     traitsObject[actionKey][property] = propertyToUpdate;
     deleteObjectProperty(traitsObject, property);
   }

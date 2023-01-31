@@ -1,4 +1,4 @@
-[
+const data = [
   {
     "name": "canny",
     "description": "Identify call for creating or updating user",
@@ -137,4 +137,8 @@
       }
     ]
   }
-]
+];
+
+module.exports = {
+  data
+}

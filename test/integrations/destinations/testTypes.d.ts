@@ -30,7 +30,7 @@ interface mockType {
   }
 }
 
-interface testCaseType {
+interface testCaseDataType {
   name: string,
   description: string,
   feature: string,
@@ -38,7 +38,7 @@ interface testCaseType {
   version?: string
   input: inputType,
   output: outputType,
-  mock: mockType[]
+  mock?: mockType[]
 };
 
 

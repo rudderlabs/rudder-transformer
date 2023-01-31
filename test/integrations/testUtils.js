@@ -7,7 +7,7 @@ const getTestDataFilePaths = (dirPath) => {
   dirEntries.forEach(dEntry => {
     const dEntryPath = path.join(dirPath, dEntry);
     const stats = fs.statSync(dEntryPath);
-    if (stats.isFile() && dEntry.toLowerCase() === "data.json") {
+    if (stats.isFile() && dEntry.toLowerCase() === "data.js") {
       testDataFilePaths.push(dEntryPath);
     } else if (stats.isDirectory()) {
       testDataFilePaths.push(...getTestDataFilePaths(dEntryPath));
@@ -17,12 +17,7 @@ const getTestDataFilePaths = (dirPath) => {
 };
 
 const getTestData = (filePath) => {
-  try {
-    const tData = JSON.parse(fs.readFileSync(filePath));
-    return tData;
-  } catch (error) {
-    // TODO: Log error here
-  }
+  return require(filePath).data;
 }
 
 module.exports = {

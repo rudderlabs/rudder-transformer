@@ -1,33 +1,28 @@
+interface requestType {
+  method: string,
+  body?: any,
+  headers?: Record<string,string>,
+  params?: Record<string,string>
+}
+
+interface responseType {
+  status: number,
+  body?: any,
+  headers?: Record<string,string>
+}
+
 interface inputType {
-  request: {
-    method: string,
-    body?: any,
-    headers?: Record<string,string>,
-    params?: Record<string,string>,
-  },
+  request: requestType,
   pathSuffix?: string
 }
 
 interface outputType {
-  response?: {
-    status: number,
-    body?: any,
-    headers?: Record<string,string>
-  }
+  response?: responseType
 }
 
 interface mockType {
-  request: {
-    method: string,
-    body?: any,
-    headers?: Record<string,string>,
-    params?: Record<string,string>,
-  },
-  response: {
-    status: number,
-    body?: any,
-    headers?: Record<string,string>
-  }
+  request: requestType,
+  response: responseType
 }
 
 interface testCaseDataType {

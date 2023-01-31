@@ -13,7 +13,8 @@ const destinations = [
   "snapchat_custom_audience",
   "clevertap",
   "salesforce",
-  "marketo_static_list"
+  "marketo_static_list",
+  "criteo_audience"
 ];
 const service = require("../../src/versionedRouter").handleProxyRequest;
 

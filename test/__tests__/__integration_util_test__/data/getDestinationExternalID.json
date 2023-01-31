@@ -1,33 +1,36 @@
 [
   {
-    "description": "Passing externalIdArray as Array",
-    "input": {
-      "type": "track",
-      "event": "Product Reviewed",
-      "userId": "5136633649",
-      "properties": {
-        "review_id": "12345",
-        "product_id": "123",
-        "rating": 3.0,
-        "review_body": "Average product, expected much more.",
-        "groupId": "test-12345"
+    "description": "Should return the correct value if the external ID is an array",
+    "input": [
+      {
+        "type": "track",
+        "event": "Product Reviewed",
+        "userId": "5136633649",
+        "properties": {
+          "review_id": "12345",
+          "product_id": "123",
+          "rating": 3.0,
+          "review_body": "Average product, expected much more.",
+          "groupId": "test-12345"
+        },
+        "context": {
+          "externalId": [
+            {
+              "type": "randomType",
+              "id": "91Yb32830"
+            }
+          ]
+        },
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "originalTimestamp": "2022-01-20T13:39:21.032Z"
       },
-      "context": {
-        "externalId": [
-          {
-            "type": "juneGroupId",
-            "id": "91Yb32830"
-          }
-        ]
-      },
-      "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
-      "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
-      "originalTimestamp": "2022-01-20T13:39:21.032Z"
-    },
+      "randomType"
+    ],
     "output": "91Yb32830"
   },
   {
-    "description": "Not Passing externalIdArray at all",
+    "description": "Should return null if no external ID is defined",
     "input": {
       "type": "track",
       "event": "Product Reviewed",
@@ -53,7 +56,7 @@
     "output": null
   },
   {
-    "description": "Passing externalIdArray as Object",
+    "description": "Should return null if the external ID is an object",
     "input": {
       "type": "track",
       "event": "Product Reviewed",
@@ -66,11 +69,10 @@
         "groupId": "test-12345"
       },
       "context": {
-        "externalId": 
-          {
-            "type": "juneGroupId",
-            "id": "91Yb32830"
-          }
+        "externalId": {
+          "type": "juneGroupId",
+          "id": "91Yb32830"
+        }
       },
       "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
       "anonymousId": "bf412108-0357-4330-b119-7305e767823c",

@@ -332,7 +332,7 @@
           "errorCategory": "dataValidation",
           "errorType": "configuration"
         },
-        "statusCode": 500,
+        "statusCode": 400,
         "destination": {
           "Config": {
             "accessToken": "ABC...",
@@ -371,7 +371,7 @@
           "errorType": "configuration"
         },
         "batched": false,
-        "statusCode": 500,
+        "statusCode": 400,
         "destination": {
           "Config": {
             "accessToken": "ABC...",

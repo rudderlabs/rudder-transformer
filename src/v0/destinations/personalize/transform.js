@@ -84,7 +84,7 @@ const putEventsHandler = (message, destination) => {
         : userId,
     // not using getFieldValueFromMessage(message, "userId") as we want to
     // prioritize anonymousId over userId
-    sessionId: anonymousId || userId,
+    sessionId: anonymousId || userId || message.context?.sessionId,
     trackingId,
     eventList: [outputEvent],
   };

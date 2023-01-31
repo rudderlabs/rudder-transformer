@@ -2832,5 +2832,98 @@
     "request": {
       "query": {}
     }
+  },
+  {
+    "message": {
+      "context": {
+        "ip": "14.5.67.21",
+        "library": {
+          "name": "http"
+        },
+        "sessionId": "4bb69e26-b5a6-446a-a140-dbb6263369c9"
+      },
+      "event": "PRODUCT ADDED",
+      "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+      "originalTimestamp": "2023-01-10T01:56:46.896+05:30",
+      "properties": {
+        "numberOfRatings": "checking with webapp change",
+        "movieWatched": 2,
+        "eventValue": 7.06
+      },
+      "type": "track"
+    },
+    "metadata": {
+      "sourceId": "1pe7ty3hMMQCnrfZ0Mn2QG48884",
+      "destinationId": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+      "jobId": 1,
+      "destinationType": "PERSONALIZE",
+      "messageId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+      "messageIds": null,
+      "rudderId": "daf823fb-e8d3-413a-8313-d34cd756f968"
+    },
+    "destination": {
+      "ID": "1pe9WgFOuFHOSIfmUkkhVTD1Rsd",
+      "Name": "personalize Dev Testing",
+      "DestinationDefinition": {
+        "ID": "1pdthjPnz8gQhSTE2QTbm2LUMGM",
+        "Name": "PERSONALIZE",
+        "DisplayName": "AWS Personalize",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "accessKeyId",
+              "secretAccessKey",
+              "region",
+              "trackingId",
+              "eventName",
+              "customMappings"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": [
+            "accessKeyId",
+            "secretAccessKey"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative"
+          ],
+          "transformAt": "processor"
+        }
+      },
+      "Config": {
+        "accessKeyId": "ABC",
+        "customMappings": [
+          {
+            "from": "MOVIE_WATCHED",
+            "to": "movieWatched"
+          },
+          {
+            "from": "NUMBER_OF_RATINGS",
+            "to": "numberOfRatings"
+          }
+        ],
+        "datasetARN": "",
+        "eventChoice": "PutEvents",
+        "disableStringify": false,
+        "region": "us-east-1",
+        "secretAccessKey": "DEF",
+        "trackingId": "c60"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "libraries": [],
+    "request": {
+      "query": {}
+    }
   }
 ]

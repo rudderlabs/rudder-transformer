@@ -25,7 +25,7 @@
   },
   {
     "destKey": "sessionId",
-    "sourceKeys": "properties.sessionId",
+    "sourceKeys": ["properties.sessionId", "context.sessionId"],
     "required": false
   },
   {

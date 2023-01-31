@@ -6,7 +6,11 @@
   },
   {
     "destKey": "sessionId",
-    "sourceKeys": ["properties.kustomerSessionId", "properties.kustomer_session_id"],
+    "sourceKeys": [
+      "properties.kustomerSessionId",
+      "properties.kustomer_session_id",
+      "context.sessionId"
+    ],
     "required": false
   },
   {

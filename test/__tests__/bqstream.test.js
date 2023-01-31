@@ -8,28 +8,44 @@ const version = "v0";
 
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
 
-//for router test
-const inputRouterDataFile = fs.readFileSync(
+// Processor
+const inputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_input.json`)
 );
-const outputRouterDataFile = fs.readFileSync(
+const outputDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_output.json`)
 );
-const inputProcData = JSON.parse(inputRouterDataFile);
-const expectedProcData = JSON.parse(outputRouterDataFile);
+const inputData = JSON.parse(inputDataFile);
+const expectedData = JSON.parse(outputDataFile);
+
+// Router Test files
+const inputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_input.json`)
+);
+const outputRouterDataFile = fs.readFileSync(
+  path.resolve(__dirname, `./data/${integration}_router_output.json`)
+);
+const inputRouterData = JSON.parse(inputRouterDataFile);
+const expectedRouterData = JSON.parse(outputRouterDataFile);
 
 describe(`${name} Tests`, () => {
-  describe("Router Tests", () => {
-    it("Payload", async () => {
-      inputProcData.forEach(async (input, ind) => {
+  describe("Processor", () => {
+    inputData.forEach(async (input, index) => {
+      it(`Payload - ${index}`, async () => {
         try {
-          const routerOutput = await transformer.process(input);
-          expect(routerOutput).toEqual(expectedProcData[ind]);
+          const output = await transformer.process(input);
+          expect(output).toEqual(expectedData[index]);
         } catch (error) {
-          console.error(error);
-          expect(routerOutput).toEqual(error);
+          expect(error.message).toEqual(expectedData[index].error);
         }
       });
+    });
+  });
+
+  describe("Router Tests", () => {
+    it("Payload", async () => {
+      const routerOutput = await transformer.processRouterDest(inputRouterData);
+      expect(routerOutput).toEqual(expectedRouterData);
     });
   });
 });

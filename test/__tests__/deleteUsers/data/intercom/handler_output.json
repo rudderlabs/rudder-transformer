@@ -13,13 +13,13 @@
   ],
   [
     {
-      "statusCode": 500,
+      "statusCode": 400,
       "error": "Config for deletion not present"
     }
   ],
   [
     {
-      "statusCode": 500,
+      "statusCode": 400,
       "error": "api key for deletion not present"
     }
   ],

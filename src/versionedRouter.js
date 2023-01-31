@@ -138,6 +138,11 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
     const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
     if (Object.keys(objectDiff).length > 0) {
       stats.counter('cdk_live_compare_test_failed', 1, { destType, feature });
+      logger.error(
+      `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff_keys=${JSON.stringify(
+        Object.keys(objectDiff)
+      )}`
+      );
       // logger.error(
       //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff=${JSON.stringify(
       //     objectDiff

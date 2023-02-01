@@ -72,12 +72,12 @@ const destinationTestHandler = async (tcData) => {
       route = 'deleteUsers';
       break;
     case tags.FEATURES.PROCESSOR:
-      // Intentionally fail the test case
-      expect(true).toEqual(false);
-      break;
-    default:
       // Processor transformation
       route = `/${path.join(tcData.version || DEFAULT_VERSION, "destinations", tcData.name)}`;
+      break;
+    default:
+      // Intentionally fail the test case
+      expect(true).toEqual(false);
       break;
   }
   route = path.join(route, tcData.input.pathSuffix);

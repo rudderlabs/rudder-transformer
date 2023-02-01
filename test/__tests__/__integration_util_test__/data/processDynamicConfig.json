@@ -1,0 +1,519 @@
+[
+  {
+    "description": "Should return parsed destination config if a single field has templated config",
+    "input": {
+      "destination": {
+        "Config": {
+          "appId": "{{ message.traits.appId || \"<APP_ID>\" }}"
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com",
+          "appId": "testAppId"
+        }
+      }
+    },
+    "output": {
+      "destination": {
+        "Config": {
+          "appId": "testAppId"
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com"
+        }
+      }
+    }
+  },
+  {
+    "description": "Should return parsed destination config if multiple fields have templated config",
+    "input": {
+      "destination": {
+        "Config": {
+          "appId": [
+            {
+              "from": "{{ message.traits.appId || \"<APP_ID>\" }}",
+              "to": "{{ message.traits.anonymousId || \"1234\" }}"
+            }
+          ]
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com",
+          "appId": "testAppId"
+        }
+      }
+    },
+    "output": {
+      "destination": {
+        "Config": {
+          "appId": [{ "from": "testAppId", "to": "sampath" }]
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "email": "sampath@gmail.com"
+        }
+      }
+    }
+  },
+  {
+    "description": "Should return parsed destination config if the templated config is defined inside object of an array",
+    "input": {
+      "destination": {
+        "Config": {
+          "appId": {
+            "key2": "hey",
+            "key3": "{{ message.traits.appId || \"email\" }}",
+            "key4": [
+              {
+                "from": "{{ message.traits.email || \"email\" }}",
+                "to": "no"
+              }
+            ]
+          }
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com",
+          "appId": "testAppId"
+        }
+      }
+    },
+    "output": {
+      "destination": {
+        "Config": {
+          "appId": {
+            "key2": "hey",
+            "key3": "testAppId",
+            "key4": [{ "from": "sampath@gmail.com", "to": "no" }]
+          }
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath"
+        }
+      }
+    }
+  },
+  {
+    "description": "Should return parsed destination config if the templated config is defined inside object of an array inside an object",
+    "input": {
+      "destination": {
+        "Config": {
+          "appId": [
+            { "key2": "hey" },
+            { "key3": "{{ message.traits.appId || \"email\" }}" },
+            {
+              "key4": [
+                {
+                  "from": "{{ message.traits.email || \"email\" }}",
+                  "to": "no"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com",
+          "appId": "testAppId"
+        }
+      }
+    },
+    "output": {
+      "destination": {
+        "Config": {
+          "appId": [
+            { "key2": "hey" },
+            { "key3": "testAppId" },
+            {
+              "key4": [
+                {
+                  "from": "sampath@gmail.com",
+                  "to": "no"
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath"
+        }
+      }
+    }
+  },
+  {
+    "description": "Should return parsed destination config if the templated config field is invalid but a default value is specified",
+    "input": {
+      "destination": {
+        "Config": {
+          "appId": [
+            { "key2": "hey" },
+            { "key3": "{{ message.traits.appId || \"email\" }}" },
+            {
+              "key4": ["{{ message.traits.email || \"email\" }}", "no"]
+            }
+          ]
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com",
+          "appId": "testAppId"
+        }
+      }
+    },
+    "output": {
+      "destination": {
+        "Config": {
+          "appId": [
+            { "key2": "hey" },
+            { "key3": "testAppId" },
+            {
+              "key4": ["sampath@gmail.com", "no"]
+            }
+          ]
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath"
+        }
+      }
+    }
+  },
+  {
+    "description": "Should return the same destination config if there are no fields with templated configuration",
+    "input": {
+      "destination": {
+        "Config": {
+          "appId": false
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com",
+          "appId": "testAppId"
+        }
+      }
+    },
+    "output": {
+      "destination": {
+        "Config": {
+          "appId": false
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com",
+          "appId": "testAppId"
+        }
+      }
+    }
+  },
+  {
+    "description": "Should return parsed destination config if the templated config is defined inside an array",
+    "input": {
+      "destination": {
+        "Config": {
+          "appId": [
+            { "abc": 1234, "def": "{{message.traits.email|| \"email\"}}" },
+            "{{message.traits.appId|| \"testAppId\"}}"
+          ]
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath",
+          "email": "sampath@gmail.com",
+          "appId": "testAppId"
+        }
+      }
+    },
+    "output": {
+      "destination": {
+        "Config": {
+          "appId": [{ "abc": 1234, "def": "sampath@gmail.com" }, "testAppId"]
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath"
+        }
+      }
+    }
+  },
+  {
+    "description": "Should return parsed destination config if the templated config is defined inside an object",
+    "input": {
+      "destination": {
+        "Config": {
+          "appId": [
+            { "abc": 1234, "def": "{{message.traits.email|| 12345 }}" },
+            "{{message.traits.appId|| false }}"
+          ]
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath"
+        }
+      }
+    },
+    "output": {
+      "destination": {
+        "Config": {
+          "appId": [{ "abc": 1234, "def": "12345" }, "false"]
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath"
+        }
+      }
+    }
+  },
+  {
+    "description": "Should return parsed destination config if the templated config is deeply nested",
+    "input": {
+      "destination": {
+        "Config": {
+          "appId": "{{ message.traits.appId || appId }} ",
+          "email": "   {{ message.trait.email || \"test@gmail.com  \" }}",
+          "key": "{{ message.key || \" default value \" }}",
+          "key1": "{{ message.key1 || \" default value  }}",
+          "key2": "{{ message.key1 || default value \" }}",
+          "key3": "{{ message.traits.appId || 123.1234 }}",
+          "key4": ["{{ message.traits.key4 || defaultVal }}", "{{ message.key4 || defaultVal }}"],
+          "key5": [{ "key2": { "key3": "{{ message.key5 || defaultVal }}" } }],
+          "key6": [
+            [
+              { "key2": { "key3": "{{ message.key5 || defaultVal }}" } },
+              { "key4": "{{ mesage.traits.key4 || defaultVal }}" }
+            ],
+            "defaultVal"
+          ]
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "key": "val",
+        "key4": "val4",
+        "key5": "val5",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath",
+          "appId": "testAppId"
+        }
+      }
+    },
+    "output": {
+      "destination": {
+        "Config": {
+          "appId": "testAppId",
+          "email": "test@gmail.com",
+          "key": "val",
+          "key1": "default value",
+          "key2": "default value",
+          "key3": "123.1234",
+          "key4": ["defaultVal", "val4"],
+          "key5": [{ "key2": { "key3": "val5" } }],
+          "key6": [[{ "key2": { "key3": "defaultVal" } }, { "key4": "defaultVal" }], "defaultVal"]
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath"
+        }
+      }
+    }
+  },
+  {
+    "description": "Should return parsed destination config with whitespace trimmed if the templated config has default values surrounded with whitespaces",
+    "input": {
+      "destination": {
+        "Config": {
+          "appId": "{{ event.traits.appId || appId }} ",
+          "email": "   {{ event.trait.email || \"test@gmail.com  \" }}",
+          "key": "{{ event.key || \" default value \" }}",
+          "key1": "{{ event.key1 || \" default value  }}",
+          "key2": "{{ event.key1 || default value \" }}",
+          "key3": "{{ message.traits.appId || 123.1234 }}",
+          "key4": ["{{ event.traits.key4 || defaultVal }}", "{{ event.key4 || defaultVal }}"],
+          "key5": [{ "key2": { "key3": "{{ event.key5 || defaultVal }}" } }],
+          "key6": [
+            [
+              { "key2": { "key3": "{{ event.key5 || defaultVal }}" } },
+              { "key4": "{{ evnt.traits.key4 || defaultVal }}" }
+            ],
+            "defaultVal"
+          ]
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "key": "val",
+        "key4": "val4",
+        "key5": "val5",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath",
+          "appId": "testAppId"
+        }
+      }
+    },
+    "output": {
+      "destination": {
+        "Config": {
+          "appId": "testAppId",
+          "email": "test@gmail.com",
+          "key": "val",
+          "key1": "default value",
+          "key2": "default value",
+          "key3": "123.1234",
+          "key4": ["defaultVal", "val4"],
+          "key5": [{ "key2": { "key3": "val5" } }],
+          "key6": [[{ "key2": { "key3": "defaultVal" } }, { "key4": "defaultVal" }], "defaultVal"]
+        }
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "sampath",
+        "channel": "web",
+        "context": {},
+        "traits": {
+          "anonymousId": "sampath"
+        }
+      }
+    }
+  }
+]

@@ -1,32 +1,32 @@
-import groupBy from "lodash/groupBy";
-import isEmpty from "lodash/isEmpty";
-import { userTransformHandler } from "../routerUtils";
+import groupBy from 'lodash/groupBy';
+import isEmpty from 'lodash/isEmpty';
+import { userTransformHandler } from '../routerUtils';
 import {
   UserTransformationLibrary,
   ProcessorTransformRequest,
   ProcessorTransformResponse,
   UserTransformResponse,
-  UserTransfromServiceResponse
-} from "../types/index";
-import { RespStatusError, RetryRequestError } from "../util/utils";
-import { getMetadata, isNonFuncObject } from "../v0/util";
-import logger from "../logger";
+  UserTransfromServiceResponse,
+} from '../types/index';
+import { RespStatusError, RetryRequestError } from '../util/utils';
+import { getMetadata, isNonFuncObject } from '../v0/util';
+import logger from '../logger';
 
 export default class UserTransformService {
   public static async transformRoutine(
-    events: ProcessorTransformRequest[]
+    events: ProcessorTransformRequest[],
   ): Promise<UserTransfromServiceResponse> {
     let retryStatus = 200;
     const groupedEvents: Object = groupBy(
       events,
       (event: ProcessorTransformRequest) =>
-        `${event.metadata.destinationId}_${event.metadata.sourceId}`
+        `${event.metadata.destinationId}_${event.metadata.sourceId}`,
     );
     const transformedEvents = [];
     let librariesVersionIDs = [];
     if (events[0].libraries) {
       librariesVersionIDs = events[0].libraries.map(
-        (library: UserTransformationLibrary) => library.VersionID
+        (library: UserTransformationLibrary) => library.VersionID,
       );
     }
     const responses = await Promise.all<any>(
@@ -35,7 +35,7 @@ export default class UserTransformService {
         const eventsToProcess = destEvents as ProcessorTransformRequest[];
         const transformationVersionId =
           eventsToProcess[0]?.destination?.Transformations[0]?.VersionID;
-        const messageIds = eventsToProcess.map(ev => {
+        const messageIds = eventsToProcess.map((ev) => {
           return ev.metadata?.messageId;
         });
 
@@ -43,21 +43,21 @@ export default class UserTransformService {
           sourceId: eventsToProcess[0]?.metadata?.sourceId,
           destinationId: eventsToProcess[0]?.metadata.destinationId,
           destinationType: eventsToProcess[0]?.metadata.destinationType,
-          messageIds
+          messageIds,
         };
 
         const metaTags =
           eventsToProcess.length && eventsToProcess[0].metadata
             ? getMetadata(eventsToProcess[0].metadata)
             : {};
-            
+
         if (!transformationVersionId) {
-          const errorMessage = "Transformation VersionID not found";
+          const errorMessage = 'Transformation VersionID not found';
           logger.error(`[CT] ${errorMessage}`);
           transformedEvents.push({
             statusCode: 400,
             error: errorMessage,
-            metadata: commonMetadata
+            metadata: commonMetadata,
           } as ProcessorTransformResponse);
           return transformedEvents;
         }
@@ -66,32 +66,32 @@ export default class UserTransformService {
           const destTransformedEvents: UserTransformResponse[] = await userTransformHandler()(
             eventsToProcess,
             transformationVersionId,
-            librariesVersionIDs
+            librariesVersionIDs,
           );
           transformedEvents.push(
-            ...destTransformedEvents.map(ev => {
+            ...destTransformedEvents.map((ev) => {
               if (ev.error) {
                 return {
                   statusCode: 400,
                   error: ev.error,
-                  metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata
+                  metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
                 } as ProcessorTransformResponse;
               }
               if (!isNonFuncObject(ev.transformedEvent)) {
                 return {
                   statusCode: 400,
                   error: `returned event in events from user transformation is not an object. transformationVersionId:${transformationVersionId} and returned event: ${JSON.stringify(
-                    ev.transformedEvent
+                    ev.transformedEvent,
                   )}`,
-                  metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata
+                  metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
                 } as ProcessorTransformResponse;
               }
               return {
                 output: ev.transformedEvent,
                 metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
-                statusCode: 200
+                statusCode: 200,
               } as ProcessorTransformResponse;
-            })
+            }),
           );
           return transformedEvents;
         } catch (error) {
@@ -108,25 +108,25 @@ export default class UserTransformService {
             status = error.statusCode;
           }
           transformedEvents.push(
-            ...eventsToProcess.map(e => {
+            ...eventsToProcess.map((e) => {
               return {
                 statusCode: status,
                 metadata: e.metadata,
-                error: errorString
+                error: errorString,
               } as ProcessorTransformResponse;
-            })
+            }),
           );
           return transformedEvents;
         } finally {
           //stats
         }
-      })
+      }),
     );
 
     const flattenedResponses: ProcessorTransformResponse[] = responses.flat();
     return {
       transformedEvents: flattenedResponses,
-      retryStatus
+      retryStatus,
     } as UserTransfromServiceResponse;
   }
 
@@ -134,28 +134,22 @@ export default class UserTransformService {
     let response;
     try {
       if (!trRevCode || !trRevCode.code || !trRevCode.codeVersion) {
-        throw new Error(
-          "Invalid Request. Missing parameters in transformation code block"
-        );
+        throw new Error('Invalid Request. Missing parameters in transformation code block');
       }
       if (!events || events.length === 0) {
-        throw new Error("Invalid request. Missing events");
+        throw new Error('Invalid request. Missing events');
       }
 
       logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
-      trRevCode.versionId = "testVersionId";
+      trRevCode.versionId = 'testVersionId';
       response.body = await userTransformHandler()(
         events,
         trRevCode.versionId,
         libraryVersionIDs,
         trRevCode,
-        true
+        true,
       );
-      logger.debug(
-        `[CT] Test Output Events: ${JSON.stringify(
-          response.body.transformedEvents
-        )}`
-      );
+      logger.debug(`[CT] Test Output Events: ${JSON.stringify(response.body.transformedEvents)}`);
       response.status = 200;
     } catch (error) {
       response.status = 400;

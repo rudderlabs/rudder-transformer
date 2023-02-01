@@ -1,5 +1,5 @@
-import { client as errNotificationClient } from "../util/errorNotifier";
-import logger from "../logger";
+import { client as errNotificationClient } from '../util/errorNotifier';
+import logger from '../logger';
 // TODO: To be refactored and redisgned
 
 const getDestFileUploadHandler = (version, dest) => {
@@ -12,20 +12,20 @@ const getJobStatusHandler = (version, dest) => {
   return require(`../${version}/destinations/${dest}/fetchJobStatus`);
 };
 
-const getCommonMetadata = ctx => {
+const getCommonMetadata = (ctx) => {
   // TODO: Parse information such as
   // cluster, namespace, etc information
   // from the request
   return {
-    namespace: "Unknown",
-    cluster: "Unknown"
+    namespace: 'Unknown',
+    cluster: 'Unknown',
   };
 };
 
-export const fileUpload = async ctx => {
+export const fileUpload = async (ctx) => {
   logger.debug(
-    "Native(Bulk-Upload): Request to transformer:: /fileUpload route",
-    JSON.stringify(ctx.request.body)
+    'Native(Bulk-Upload): Request to transformer:: /fileUpload route',
+    JSON.stringify(ctx.request.body),
   );
   const getReqMetadata = () => {
     try {
@@ -38,10 +38,7 @@ export const fileUpload = async ctx => {
   };
 
   const { destType } = ctx.request.body;
-  const destFileUploadHandler = getDestFileUploadHandler(
-    "v0",
-    destType.toLowerCase()
-  );
+  const destFileUploadHandler = getDestFileUploadHandler('v0', destType.toLowerCase());
 
   if (!destFileUploadHandler || !destFileUploadHandler.processFileData) {
     ctx.status = 404;
@@ -54,27 +51,27 @@ export const fileUpload = async ctx => {
   } catch (error) {
     response = {
       statusCode: error.response ? error.response.status : 400,
-      error: error.message || "Error occurred while processing payload.",
-      metadata: error.response ? error.response.metadata : null
+      error: error.message || 'Error occurred while processing payload.',
+      metadata: error.response ? error.response.metadata : null,
     };
-    errNotificationClient.notify(error, "File Upload", {
+    errNotificationClient.notify(error, 'File Upload', {
       ...response,
       ...getCommonMetadata(ctx),
-      ...getReqMetadata()
+      ...getReqMetadata(),
     });
   }
   ctx.body = response;
   logger.debug(
-    "Native(Bulk-Upload): Response from transformer:: /fileUpload route",
-    JSON.stringify(ctx.body)
+    'Native(Bulk-Upload): Response from transformer:: /fileUpload route',
+    JSON.stringify(ctx.body),
   );
   return ctx.body;
 };
 
-export const pollStatus = async ctx => {
+export const pollStatus = async (ctx) => {
   logger.debug(
-    "Native(Bulk-Upload): Request to transformer:: /pollStatus route",
-    JSON.stringify(ctx.request.body)
+    'Native(Bulk-Upload): Request to transformer:: /pollStatus route',
+    JSON.stringify(ctx.request.body),
   );
   const getReqMetadata = () => {
     try {
@@ -87,10 +84,7 @@ export const pollStatus = async ctx => {
   };
 
   const { destType } = ctx.request.body;
-  const destFileUploadHandler = getPollStatusHandler(
-    "v0",
-    destType.toLowerCase()
-  );
+  const destFileUploadHandler = getPollStatusHandler('v0', destType.toLowerCase());
   let response;
   if (!destFileUploadHandler || !destFileUploadHandler.processPolling) {
     ctx.status = 404;
@@ -102,26 +96,26 @@ export const pollStatus = async ctx => {
   } catch (error) {
     response = {
       statusCode: error.response?.status || 400,
-      error: error.message || "Error occurred while processing payload."
+      error: error.message || 'Error occurred while processing payload.',
     };
-    errNotificationClient.notify(error, "Poll Status", {
+    errNotificationClient.notify(error, 'Poll Status', {
       ...response,
       ...getCommonMetadata(ctx),
-      ...getReqMetadata()
+      ...getReqMetadata(),
     });
   }
   ctx.body = response;
   logger.debug(
-    "Native(Bulk-Upload): Request from transformer:: /pollStatus route",
-    JSON.stringify(ctx.body)
+    'Native(Bulk-Upload): Request from transformer:: /pollStatus route',
+    JSON.stringify(ctx.body),
   );
   return ctx.body;
 };
 
-export const getWarnJobStatus = async ctx => {
+export const getWarnJobStatus = async (ctx) => {
   logger.debug(
-    "Native(Bulk-Upload): Request to transformer:: /getWarningJobs route",
-    JSON.stringify(ctx.request.body)
+    'Native(Bulk-Upload): Request to transformer:: /getWarningJobs route',
+    JSON.stringify(ctx.request.body),
   );
   const getReqMetadata = () => {
     try {
@@ -134,10 +128,7 @@ export const getWarnJobStatus = async ctx => {
   };
 
   const { destType } = ctx.request.body;
-  const destFileUploadHandler = getJobStatusHandler(
-    "v0",
-    destType.toLowerCase()
-  );
+  const destFileUploadHandler = getJobStatusHandler('v0', destType.toLowerCase());
 
   if (!destFileUploadHandler || !destFileUploadHandler.processJobStatus) {
     ctx.status = 404;
@@ -146,33 +137,30 @@ export const getWarnJobStatus = async ctx => {
   }
   let response;
   try {
-    response = await destFileUploadHandler.processJobStatus(
-      ctx.request.body,
-      "warn"
-    );
+    response = await destFileUploadHandler.processJobStatus(ctx.request.body, 'warn');
   } catch (error) {
     response = {
       statusCode: error.response ? error.response.status : 400,
-      error: error.message || "Error occurred while processing payload."
+      error: error.message || 'Error occurred while processing payload.',
     };
-    errNotificationClient.notify(error, "Job Status", {
+    errNotificationClient.notify(error, 'Job Status', {
       ...response,
       ...getCommonMetadata(ctx),
-      ...getReqMetadata()
+      ...getReqMetadata(),
     });
   }
   ctx.body = response;
   logger.debug(
-    "Native(Bulk-Upload): Request from transformer:: /getWarningJobs route",
-    JSON.stringify(ctx.body)
+    'Native(Bulk-Upload): Request from transformer:: /getWarningJobs route',
+    JSON.stringify(ctx.body),
   );
   return ctx.body;
 };
 
-export const getFailedJobStatus = async ctx => {
+export const getFailedJobStatus = async (ctx) => {
   logger.debug(
-    "Native(Bulk-Upload): Request to transformer:: /getFailedJobs route",
-    JSON.stringify(ctx.request.body)
+    'Native(Bulk-Upload): Request to transformer:: /getFailedJobs route',
+    JSON.stringify(ctx.request.body),
   );
   const getReqMetadata = () => {
     try {
@@ -185,10 +173,7 @@ export const getFailedJobStatus = async ctx => {
   };
 
   const { destType } = ctx.request.body;
-  const destFileUploadHandler = getJobStatusHandler(
-    "v0",
-    destType.toLowerCase()
-  );
+  const destFileUploadHandler = getJobStatusHandler('v0', destType.toLowerCase());
 
   if (!destFileUploadHandler || !destFileUploadHandler.processJobStatus) {
     ctx.status = 404;
@@ -197,25 +182,22 @@ export const getFailedJobStatus = async ctx => {
   }
   let response;
   try {
-    response = await destFileUploadHandler.processJobStatus(
-      ctx.request.body,
-      "fail"
-    );
+    response = await destFileUploadHandler.processJobStatus(ctx.request.body, 'fail');
   } catch (error) {
     response = {
       statusCode: error.response ? error.response.status : 400,
-      error: error.message || "Error occurred while processing payload."
+      error: error.message || 'Error occurred while processing payload.',
     };
-    errNotificationClient.notify(error, "Job Status", {
+    errNotificationClient.notify(error, 'Job Status', {
       ...response,
       ...getCommonMetadata(ctx),
-      ...getReqMetadata()
+      ...getReqMetadata(),
     });
   }
   ctx.body = response;
   logger.debug(
-    "Native(Bulk-Upload): Request from transformer:: /getFailedJobs route",
-    JSON.stringify(ctx.body)
+    'Native(Bulk-Upload): Request from transformer:: /getFailedJobs route',
+    JSON.stringify(ctx.body),
   );
   return ctx.body;
 };

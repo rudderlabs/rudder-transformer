@@ -1,15 +1,15 @@
-import { Context } from "koa";
-import MiscService from "../services/misc";
-import ServiceSelector from "../helpers/serviceSelector";
-import ControllerUtility from "./util";
-import logger from "../logger";
-import PostTransformationServiceSource from "../services/source/postTransformation";
+import { Context } from 'koa';
+import MiscService from '../services/misc';
+import ServiceSelector from '../helpers/serviceSelector';
+import ControllerUtility from './util';
+import logger from '../logger';
+import PostTransformationServiceSource from '../services/source/postTransformation';
 
 export default class SourceController {
   public static async sourceTransform(ctx: Context) {
     logger.debug(
-      "Native(Source-Transform):: Request to transformer::",
-      JSON.stringify(ctx.request.body)
+      'Native(Source-Transform):: Request to transformer::',
+      JSON.stringify(ctx.request.body),
     );
     let requestMetadata = MiscService.getRequestMetadata(ctx);
     const events = ctx.request.body as Object[];
@@ -20,21 +20,18 @@ export default class SourceController {
         events,
         source,
         version,
-        requestMetadata
+        requestMetadata,
       );
       ctx.body = resplist;
     } catch (err) {
       const metaTO = integrationService.getTags();
-      const resp = PostTransformationServiceSource.handleFailureEventsSource(
-        err,
-        metaTO
-      );
+      const resp = PostTransformationServiceSource.handleFailureEventsSource(err, metaTO);
       ctx.body = [resp];
     }
     ControllerUtility.postProcess(ctx);
     logger.debug(
-      "Native(Source-Transform):: Response from transformer::",
-      JSON.stringify(ctx.body)
+      'Native(Source-Transform):: Response from transformer::',
+      JSON.stringify(ctx.body),
     );
     return ctx;
   }

@@ -1,9 +1,8 @@
-import { Context } from "koa";
-import  MiscService  from "../services/misc";
-import ProfileService from "../services/profile";
-import ControllerUtility from "./util";
+import { Context } from 'koa';
+import MiscService from '../services/misc';
+import ProfileService from '../services/profile';
+import ControllerUtility from './util';
 export default class ProfileController {
-
   /**
    * Example usage of API
    * 
@@ -34,7 +33,7 @@ export default class ProfileController {
     const format = ctx.request.query.format as string;
     const { credBucketDetails } = ctx.request.body as any;
     const response = await ProfileService.profile(credBucketDetails, format);
-    const status: number = response.success? 200 : 400;
+    const status: number = response.success ? 200 : 400;
     ctx.body = response.message;
     ctx.status = status;
     ControllerUtility.postProcess(ctx, status);

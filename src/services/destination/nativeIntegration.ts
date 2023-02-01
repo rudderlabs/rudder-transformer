@@ -1,5 +1,5 @@
-import groupBy from "lodash/groupBy";
-import IntegrationDestinationService from "../../interfaces/DestinationService";
+import groupBy from 'lodash/groupBy';
+import IntegrationDestinationService from '../../interfaces/DestinationService';
 import {
   DeliveryResponse,
   ErrorDetailer,
@@ -8,23 +8,21 @@ import {
   ProcessorTransformResponse,
   RouterTransformRequestData,
   RouterTransformResponse,
-  TransformedEvent
-} from "../../types/index";
-import PostTransformationServiceDestination from "./postTransformation";
-import networkHandlerFactory from "../../adapters/networkHandlerFactory";
-import FetchHandler from "../../helpers/fetchHandlers";
-import tags from "../../v0/util/tags";
+  TransformedEvent,
+} from '../../types/index';
+import PostTransformationServiceDestination from './postTransformation';
+import networkHandlerFactory from '../../adapters/networkHandlerFactory';
+import FetchHandler from '../../helpers/fetchHandlers';
+import tags from '../../v0/util/tags';
 
-export default class NativeIntegrationDestinationService
-  implements IntegrationDestinationService {
-  public init() {
-  }
+export default class NativeIntegrationDestinationService implements IntegrationDestinationService {
+  public init() {}
 
   public getTags(
     destType: string,
     destinationId: string,
     workspaceId: string,
-    feature: string
+    feature: string,
   ): MetaTransferObject {
     const metaTO = {
       errorDetails: {
@@ -34,9 +32,8 @@ export default class NativeIntegrationDestinationService
         feature,
         destinationId,
         workspaceId,
-        context:
-          "[Native Integration Service] Failure During Processor Transform"
-      } as ErrorDetailer
+        context: '[Native Integration Service] Failure During Processor Transform',
+      } as ErrorDetailer,
     } as MetaTransferObject;
     return metaTO;
   }
@@ -45,35 +42,32 @@ export default class NativeIntegrationDestinationService
     events: ProcessorTransformRequest[],
     destinationType: string,
     version: string,
-    _requestMetadata: Object
+    _requestMetadata: Object,
   ): Promise<ProcessorTransformResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const respList: ProcessorTransformResponse[][] = await Promise.all(
-      events.map(async event => {
+      events.map(async (event) => {
         try {
-          let transformedPayloads:
-            | TransformedEvent
-            | TransformedEvent[] = await destHandler.process(event);
+          let transformedPayloads: TransformedEvent | TransformedEvent[] =
+            await destHandler.process(event);
           return PostTransformationServiceDestination.handleSuccessEventsAtProcessorDest(
             event,
             transformedPayloads,
-            destHandler
+            destHandler,
           );
         } catch (error) {
           const metaTO = this.getTags(
             destinationType,
             event.metadata.destinationId,
             event.metadata.workspaceId,
-            tags.FEATURES.PROCESSOR
+            tags.FEATURES.PROCESSOR,
           );
           metaTO.metadata = event.metadata;
-          const erroredResp = PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(
-            error,
-            metaTO
-          );
+          const erroredResp =
+            PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(error, metaTO);
           return [erroredResp];
         }
-      })
+      }),
     );
     return respList.flat();
   }
@@ -82,12 +76,12 @@ export default class NativeIntegrationDestinationService
     events: RouterTransformRequestData[],
     destinationType: string,
     version: string,
-    _requestMetadata: Object
+    _requestMetadata: Object,
   ): Promise<RouterTransformResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const allDestEvents: Object = groupBy(
       events,
-      (ev: RouterTransformRequestData) => ev.destination?.ID
+      (ev: RouterTransformRequestData) => ev.destination?.ID,
     );
     const groupedEvents: RouterTransformRequestData[][] = Object.values(allDestEvents);
     const response: RouterTransformResponse[][] = await Promise.all(
@@ -96,28 +90,27 @@ export default class NativeIntegrationDestinationService
           destinationType,
           destInputArray[0].metadata.destinationId,
           destInputArray[0].metadata.workspaceId,
-          tags.FEATURES.ROUTER
+          tags.FEATURES.ROUTER,
         );
         try {
-          const routerRoutineResponse: RouterTransformResponse[] = await destHandler.processRouterDest(
-            destInputArray
-          );
+          const routerRoutineResponse: RouterTransformResponse[] =
+            await destHandler.processRouterDest(destInputArray);
           return PostTransformationServiceDestination.handleSuccessEventsAtRouterDest(
             routerRoutineResponse,
             destHandler,
-            metaTO
+            metaTO,
           );
         } catch (error) {
-          metaTO.metadatas = destInputArray.map(input => {
+          metaTO.metadatas = destInputArray.map((input) => {
             return input.metadata;
           });
           const errorResp = PostTransformationServiceDestination.handleFailureEventsAtRouterDest(
             error,
-            metaTO
+            metaTO,
           );
           return [errorResp];
         }
-      })
+      }),
     );
     return response.flat();
   }
@@ -126,7 +119,7 @@ export default class NativeIntegrationDestinationService
     events: RouterTransformRequestData[],
     destinationType: string,
     version: any,
-    _requestMetadata: Object
+    _requestMetadata: Object,
   ): RouterTransformResponse[] {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     if (!destHandler.batch) {
@@ -134,28 +127,26 @@ export default class NativeIntegrationDestinationService
     }
     const allDestEvents: Object = groupBy(
       events,
-      (ev: RouterTransformRequestData) => ev.destination?.ID
+      (ev: RouterTransformRequestData) => ev.destination?.ID,
     );
     const groupedEvents: RouterTransformRequestData[][] = Object.values(allDestEvents);
-    const response = groupedEvents.map(destEvents => {
+    const response = groupedEvents.map((destEvents) => {
       try {
-        const destBatchedRequests: RouterTransformResponse[] = destHandler.batch(
-          destEvents
-        );
+        const destBatchedRequests: RouterTransformResponse[] = destHandler.batch(destEvents);
         return destBatchedRequests;
       } catch (error) {
         const metaTO = this.getTags(
           destinationType,
           destEvents[0].metadata.destinationId,
           destEvents[0].metadata.workspaceId,
-          tags.FEATURES.BATCH
+          tags.FEATURES.BATCH,
         );
-        metaTO.metadatas = events.map(event => {
+        metaTO.metadatas = events.map((event) => {
           return event.metadata;
         });
         const errResp = PostTransformationServiceDestination.handleFailureEventsAtBatchDest(
           error,
-          metaTO
+          metaTO,
         );
         return [errResp];
       }
@@ -166,35 +157,28 @@ export default class NativeIntegrationDestinationService
   public async deliveryRoutine(
     destinationRequest: TransformedEvent,
     destinationType: string,
-    _requestMetadata: Object
+    _requestMetadata: Object,
   ): Promise<DeliveryResponse> {
     try {
-      const networkHandler = networkHandlerFactory.getNetworkHandler(
-        destinationType
-      );
+      const networkHandler = networkHandlerFactory.getNetworkHandler(destinationType);
       const rawProxyResponse = await networkHandler.proxy(destinationRequest);
-      const processedProxyResponse = networkHandler.processAxiosResponse(
-        rawProxyResponse
-      );
+      const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
       return networkHandler.responseHandler(
         {
           ...processedProxyResponse,
-          rudderJobMetadata: destinationRequest.metadata
+          rudderJobMetadata: destinationRequest.metadata,
         },
-        destinationType
+        destinationType,
       ) as DeliveryResponse;
     } catch (err) {
       const metaTO = this.getTags(
         destinationType,
-        destinationRequest.metadata?.destinationId || "Non-determininable",
-        destinationRequest.metadata?.workspaceId || "Non-determininable",
-        tags.FEATURES.DATA_DELIVERY
+        destinationRequest.metadata?.destinationId || 'Non-determininable',
+        destinationRequest.metadata?.workspaceId || 'Non-determininable',
+        tags.FEATURES.DATA_DELIVERY,
       );
       metaTO.metadata = destinationRequest.metadata;
-      return PostTransformationServiceDestination.handleFailureEventsAtDeliveryDest(
-        err,
-        metaTO
-      );
+      return PostTransformationServiceDestination.handleFailureEventsAtDeliveryDest(err, metaTO);
     }
   }
 }

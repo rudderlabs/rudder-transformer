@@ -1,60 +1,57 @@
-import { Context } from "koa";
-import MiscService from "../services/misc";
-import PreTransformationDestinationService from "../services/destination/preTransformation";
-import PostTransformationDestinationService from "../services/destination/postTransformation";
+import { Context } from 'koa';
+import MiscService from '../services/misc';
+import PreTransformationDestinationService from '../services/destination/preTransformation';
+import PostTransformationDestinationService from '../services/destination/postTransformation';
 import {
   ProcessorTransformRequest,
   RouterTransformRequestData,
   RouterTransformRequest,
-  ProcessorTransformResponse
-} from "../types/index";
-import ServiceSelector from "../helpers/serviceSelector";
-import ControllerUtility from "./util";
-import stats from "../util/stats";
-import logger from "../logger";
-import { getIntegrationVersion } from "../util/utils";
-import tags from "../v0/util/tags";
+  ProcessorTransformResponse,
+} from '../types/index';
+import ServiceSelector from '../helpers/serviceSelector';
+import ControllerUtility from './util';
+import stats from '../util/stats';
+import logger from '../logger';
+import { getIntegrationVersion } from '../util/utils';
+import tags from '../v0/util/tags';
 
 export default class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
     const startTime = new Date();
     logger.debug(
-      "Native(Process-Transform):: Requst to transformer::",
-      JSON.stringify(ctx.request.body)
+      'Native(Process-Transform):: Requst to transformer::',
+      JSON.stringify(ctx.request.body),
     );
     let resplist: ProcessorTransformResponse[];
     let requestMetadata = MiscService.getRequestMetadata(ctx);
     let events = ctx.request.body as ProcessorTransformRequest[];
     const metaTags = MiscService.getMetaTags(events[0].metadata);
-    const {
-      version,
-      destination
-    }: { version: string; destination: string } = ctx.params;
+    const { version, destination }: { version: string; destination: string } = ctx.params;
     const integrationService = ServiceSelector.getDestinationService(events);
     try {
       integrationService.init();
       events = PreTransformationDestinationService.preProcess(
         events,
-        ctx
+        ctx,
       ) as ProcessorTransformRequest[];
       resplist = await integrationService.processorRoutine(
         events,
         destination,
         version,
-        requestMetadata
+        requestMetadata,
       );
     } catch (error) {
-      resplist = events.map(ev => {
+      resplist = events.map((ev) => {
         const metaTO = integrationService.getTags(
           destination,
           ev.metadata.destinationId,
           ev.metadata.workspaceId,
-          tags.FEATURES.PROCESSOR
+          tags.FEATURES.PROCESSOR,
         );
         metaTO.metadata = ev.metadata;
         const errResp = PostTransformationDestinationService.handleFailedEventsAtProcessorDest(
           error,
-          metaTO
+          metaTO,
         );
         return errResp;
       });
@@ -62,26 +59,26 @@ export default class DestinationController {
     ctx.body = resplist;
     ControllerUtility.postProcess(ctx);
     logger.debug(
-      "Native(Process-Transform):: Response from transformer::",
-      JSON.stringify(ctx.body)
+      'Native(Process-Transform):: Response from transformer::',
+      JSON.stringify(ctx.body),
     );
-    stats.timing("dest_transform_request_latency", startTime, {
+    stats.timing('dest_transform_request_latency', startTime, {
       destination,
       version,
-      ...metaTags
+      ...metaTags,
     });
-    stats.increment("dest_transform_requests", 1, {
+    stats.increment('dest_transform_requests', 1, {
       destination,
       version,
-      ...metaTags
+      ...metaTags,
     });
     return ctx;
   }
 
   public static async destinationTransformAtRouter(ctx: Context) {
     logger.debug(
-      "Native(Router-Transform):: Requst to transformer::",
-      JSON.stringify(ctx.request.body)
+      'Native(Router-Transform):: Requst to transformer::',
+      JSON.stringify(ctx.request.body),
     );
     let requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterTransformRequest;
@@ -91,13 +88,13 @@ export default class DestinationController {
     try {
       events = PreTransformationDestinationService.preProcess(
         events,
-        ctx
+        ctx,
       ) as RouterTransformRequestData[];
       const resplist = await integrationService.routerRoutine(
         events,
         destination,
         getIntegrationVersion(),
-        requestMetadata
+        requestMetadata,
       );
       ctx.body = { output: resplist };
     } catch (error) {
@@ -105,29 +102,29 @@ export default class DestinationController {
         destination,
         events[0].metadata.destinationId,
         events[0].metadata.workspaceId,
-        tags.FEATURES.ROUTER
+        tags.FEATURES.ROUTER,
       );
-      metaTO.metadatas = events.map(ev => {
+      metaTO.metadatas = events.map((ev) => {
         return ev.metadata;
       });
       const errResp = PostTransformationDestinationService.handleFailureEventsAtRouterDest(
         error,
-        metaTO
+        metaTO,
       );
       ctx.body = { output: [errResp] };
     }
     ControllerUtility.postProcess(ctx);
     logger.debug(
-      "Native(Router-Transform):: Response from transformer::",
-      JSON.stringify(ctx.body)
+      'Native(Router-Transform):: Response from transformer::',
+      JSON.stringify(ctx.body),
     );
     return ctx;
   }
 
   public static batchProcess(ctx: Context) {
     logger.debug(
-      "Native(Process-Transform-Batch):: Requst to transformer::",
-      JSON.stringify(ctx.request.body)
+      'Native(Process-Transform-Batch):: Requst to transformer::',
+      JSON.stringify(ctx.request.body),
     );
     let requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterTransformRequest;
@@ -137,13 +134,13 @@ export default class DestinationController {
     try {
       events = PreTransformationDestinationService.preProcess(
         events,
-        ctx
+        ctx,
       ) as RouterTransformRequestData[];
       const resplist = integrationService.batchRoutine(
         events,
         destination,
         getIntegrationVersion(),
-        requestMetadata
+        requestMetadata,
       );
       ctx.body = resplist;
     } catch (error) {
@@ -151,21 +148,21 @@ export default class DestinationController {
         destination,
         events[0].metadata.destinationId,
         events[0].metadata.workspaceId,
-        tags.FEATURES.BATCH
+        tags.FEATURES.BATCH,
       );
-      metaTO.metadatas = events.map(ev => {
+      metaTO.metadatas = events.map((ev) => {
         return ev.metadata;
       });
       const errResp = PostTransformationDestinationService.handleFailureEventsAtBatchDest(
         error,
-        metaTO
+        metaTO,
       );
       ctx.body = [errResp];
     }
     ControllerUtility.postProcess(ctx);
     logger.debug(
-      "Native(Process-Transform-Batch):: Response from transformer::",
-      JSON.stringify(ctx.body)
+      'Native(Process-Transform-Batch):: Response from transformer::',
+      JSON.stringify(ctx.body),
     );
     return ctx;
   }

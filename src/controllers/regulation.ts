@@ -1,7 +1,7 @@
-import { Context } from "koa";
-import logger from "../logger";
-import { getErrorStatusCode } from "../v0/util";
-import { client as errNotificationClient } from "../util/errorNotifier";
+import { Context } from 'koa';
+import logger from '../logger';
+import { getErrorStatusCode } from '../v0/util';
+import { client as errNotificationClient } from '../util/errorNotifier';
 
 // TODO: refactor this class to new format
 export default class RegulationController {
@@ -14,7 +14,7 @@ export default class RegulationController {
   private static getReqMetadata(ctx: Context) {
     try {
       const reqBody = ctx.request.body;
-      return { destType: reqBody["destType"] };
+      return { destType: reqBody['destType'] };
     } catch (error) {
       // Do nothing
     }
@@ -27,22 +27,20 @@ export default class RegulationController {
     // cluster, namespace, etc information
     // from the request
     return {
-      namespace: "Unknown",
-      cluster: "Unknown"
+      namespace: 'Unknown',
+      cluster: 'Unknown',
     };
   }
   public static async handleUserDeletion(ctx: Context) {
     const getRudderDestInfo = () => {
       try {
-        const rudderDestInfoHeader = ctx.get("x-rudder-dest-info");
+        const rudderDestInfoHeader = ctx.get('x-rudder-dest-info');
         const destInfoHeader = JSON.parse(rudderDestInfoHeader);
         if (!Array.isArray(destInfoHeader)) {
           return destInfoHeader;
         }
       } catch (error) {
-        logger.error(
-          `Error while getting rudderDestInfo header value: ${error}`
-        );
+        logger.error(`Error while getting rudderDestInfo header value: ${error}`);
       }
       return {};
     };
@@ -52,16 +50,13 @@ export default class RegulationController {
     const rudderDestInfo = getRudderDestInfo();
     let response;
     await Promise.all(
-      body.map(async reqBody => {
+      body.map(async (reqBody) => {
         const { destType } = reqBody;
         const destUserDeletionHandler: any = this.getDeletionUserHandler(
-          "v0",
-          destType.toLowerCase()
+          'v0',
+          destType.toLowerCase(),
         );
-        if (
-          !destUserDeletionHandler ||
-          !destUserDeletionHandler.processDeleteUsers
-        ) {
+        if (!destUserDeletionHandler || !destUserDeletionHandler.processDeleteUsers) {
           ctx.status = 404;
           ctx.body = "Doesn't support deletion of users";
           return null;
@@ -70,7 +65,7 @@ export default class RegulationController {
         try {
           response = await destUserDeletionHandler.processDeleteUsers({
             ...reqBody,
-            rudderDestInfo
+            rudderDestInfo,
           });
           if (response) {
             respList.push(response);
@@ -81,23 +76,21 @@ export default class RegulationController {
           ctx.status = errorStatus;
           const resp = {
             statusCode: errorStatus,
-            error: error.message || "Error occurred while processing"
+            error: error.message || 'Error occurred while processing',
           };
           // Support for OAuth refresh
           if (error.authErrorCategory) {
-            resp["authErrorCategory"] = error.authErrorCategory;
+            resp['authErrorCategory'] = error.authErrorCategory;
           }
           respList.push(resp);
-          logger.error(
-            `Error Response List: ${JSON.stringify(respList, null, 2)}`
-          );
-          errNotificationClient.notify(error, "User Deletion", {
+          logger.error(`Error Response List: ${JSON.stringify(respList, null, 2)}`);
+          errNotificationClient.notify(error, 'User Deletion', {
             ...resp,
             ...this.getCommonMetadata(ctx),
-            ...this.getReqMetadata(ctx)
+            ...this.getReqMetadata(ctx),
           });
         }
-      })
+      }),
     );
     ctx.body = respList;
     return ctx.body;

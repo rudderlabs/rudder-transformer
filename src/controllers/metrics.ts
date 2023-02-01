@@ -1,5 +1,5 @@
-import { Context } from "koa";
-import { prometheusRegistry } from "../middleware";
+import { Context } from 'koa';
+import { prometheusRegistry } from '../middleware';
 
 export default class MetricsController {
   public static async exportMetric(ctx: Context) {

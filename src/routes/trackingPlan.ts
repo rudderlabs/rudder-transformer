@@ -1,8 +1,8 @@
-import Router from "koa-router";
-import TrackingPlanController from "../controllers/trackingPlan";
+import Router from 'koa-router';
+import TrackingPlanController from '../controllers/trackingPlan';
 
 const router = new Router();
 
-router.post("/:version/validate", TrackingPlanController.validateTrackingPlan);
+router.post('/:version/validate', TrackingPlanController.validateTrackingPlan);
 
-export const trackingPlanRoutes= router.routes();
+export const trackingPlanRoutes = router.routes();

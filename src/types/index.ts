@@ -136,13 +136,13 @@ type DeliveryResponse = {
 };
 
 enum MessageType {
-  IDENTIFY = "identify",
-  TRACK = "track",
-  PAGE = "page",
-  SCREEN = "screen",
-  GROUP = "group",
-  ALIAS = "alias",
-  AUDIENCE_LIST = "audiencelist"
+  IDENTIFY = 'identify',
+  TRACK = 'track',
+  PAGE = 'page',
+  SCREEN = 'screen',
+  GROUP = 'group',
+  ALIAS = 'alias',
+  AUDIENCE_LIST = 'audiencelist',
 }
 
 type RudderMessage = {
@@ -209,5 +209,5 @@ export {
   ErrorDetailer,
   UserTransformResponse,
   UserTransfromServiceResponse,
-  MetaTransferObject
+  MetaTransferObject,
 };

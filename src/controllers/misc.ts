@@ -1,5 +1,5 @@
-import { Context } from "koa";
-import MiscService from "../services/misc";
+import { Context } from 'koa';
+import MiscService from '../services/misc';
 
 export default class MiscController {
   public static healthStats(ctx: Context) {

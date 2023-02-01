@@ -5,8 +5,8 @@ import {
   ProcessorTransformResponse,
   RouterTransformRequestData,
   RouterTransformResponse,
-  TransformedEvent
-} from "../types/index";
+  TransformedEvent,
+} from '../types/index';
 
 export default interface DestinationService {
   init(): void;
@@ -15,33 +15,33 @@ export default interface DestinationService {
     destType: string,
     destinationId: string,
     workspaceId: string,
-    feature: string
+    feature: string,
   ): MetaTransferObject;
 
   processorRoutine(
     events: ProcessorTransformRequest[],
     destinationType: string,
     version: string,
-    requestMetadata: Object
+    requestMetadata: Object,
   ): Promise<ProcessorTransformResponse[]>;
 
   routerRoutine(
     events: RouterTransformRequestData[],
     destinationType: string,
     version: string,
-    requestMetadata: Object
+    requestMetadata: Object,
   ): Promise<RouterTransformResponse[]>;
 
   batchRoutine(
     events: RouterTransformRequestData[],
     destinationType: string,
     version: string,
-    requestMetadata: Object
+    requestMetadata: Object,
   ): RouterTransformResponse[];
 
   deliveryRoutine(
     event: TransformedEvent,
     destinationType: string,
-    requestMetadata: Object
+    requestMetadata: Object,
   ): Promise<DeliveryResponse>;
 }

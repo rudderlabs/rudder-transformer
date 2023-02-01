@@ -1,8 +1,8 @@
-import logger from "../logger";
-import { RetryRequestError, RespStatusError } from "../util/utils";
-import { getMetadata } from "../v0/util";
-import eventValidator from "../util/eventValidation";
-import stats from "../util/stats";
+import logger from '../logger';
+import { RetryRequestError, RespStatusError } from '../util/utils';
+import { getMetadata } from '../v0/util';
+import eventValidator from '../util/eventValidation';
+import stats from '../util/stats';
 
 export default class TrackingPlanservice {
   public static async validateTrackingPlan(events, requestSize, reqParams) {
@@ -17,28 +17,28 @@ export default class TrackingPlanservice {
         const parsedEvent = event;
         parsedEvent.request = { query: reqParams };
         const hv = await eventValidator.handleValidation(parsedEvent);
-        if (hv["dropEvent"]) {
-          const errMessage = `Error occurred while validating because : ${hv["violationType"]}`;
+        if (hv['dropEvent']) {
+          const errMessage = `Error occurred while validating because : ${hv['violationType']}`;
           respList.push({
             output: event.message,
             metadata: event.metadata,
             statusCode: 400,
-            validationErrors: hv["validationErrors"],
-            error: errMessage
+            validationErrors: hv['validationErrors'],
+            error: errMessage,
           });
-          stats.counter("hv_violation_type", 1, {
-            violationType: hv["violationType"],
-            ...metaTags
+          stats.counter('hv_violation_type', 1, {
+            violationType: hv['violationType'],
+            ...metaTags,
           });
         } else {
           respList.push({
             output: event.message,
             metadata: event.metadata,
             statusCode: 200,
-            validationErrors: hv["validationErrors"]
+            validationErrors: hv['validationErrors'],
           });
-          stats.counter("hv_propagated_events", 1, {
-            ...metaTags
+          stats.counter('hv_propagated_events', 1, {
+            ...metaTags,
           });
         }
       } catch (error) {
@@ -56,24 +56,24 @@ export default class TrackingPlanservice {
           metadata: event.metadata,
           statusCode: status,
           validationErrors: [],
-          error: errMessage
+          error: errMessage,
         });
-        stats.counter("hv_errors", 1, {
-          ...metaTags
+        stats.counter('hv_errors', 1, {
+          ...metaTags,
         });
       } finally {
-        stats.timing("hv_event_latency", eventStartTime, {
-          ...metaTags
+        stats.timing('hv_event_latency', eventStartTime, {
+          ...metaTags,
         });
       }
-      stats.counter("hv_events_count", events.length, {
-        ...metaTags
+      stats.counter('hv_events_count', events.length, {
+        ...metaTags,
       });
-      stats.counter("hv_request_size", requestSize, {
-        ...metaTags
+      stats.counter('hv_request_size', requestSize, {
+        ...metaTags,
       });
-      stats.timing("hv_request_latency", requestStartTime, {
-        ...metaTags
+      stats.timing('hv_request_latency', requestStartTime, {
+        ...metaTags,
       });
     }
     return { body: respList, status: ctxStatusCode };

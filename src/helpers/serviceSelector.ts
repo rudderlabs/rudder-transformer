@@ -1,22 +1,21 @@
-import { ProcessorTransformRequest, RouterTransformRequestData } from "../types/index";
-import { INTEGRATION_SERVICE } from "../routes/utils/constants";
-import CDKV1DestinationService from "../services/destination/cdkV1Integration";
-import CDKV2DestinationService from "../services/destination/cdkV2Integration";
-import DestinationService from "../interfaces/DestinationService";
-import NativeIntegrationDestinationService from "../services/destination/nativeIntegration";
-import SourceService from "../interfaces/SourceService";
-import NativeIntegrationSourceService from "../services/source/nativeIntegration";
+import { ProcessorTransformRequest, RouterTransformRequestData } from '../types/index';
+import { INTEGRATION_SERVICE } from '../routes/utils/constants';
+import CDKV1DestinationService from '../services/destination/cdkV1Integration';
+import CDKV2DestinationService from '../services/destination/cdkV2Integration';
+import DestinationService from '../interfaces/DestinationService';
+import NativeIntegrationDestinationService from '../services/destination/nativeIntegration';
+import SourceService from '../interfaces/SourceService';
+import NativeIntegrationSourceService from '../services/source/nativeIntegration';
 
 export default class ServiceSelector {
-
   private static serviceMap: Map<string, any> = new Map();
 
   private static isCdkDestination(destinationDefinitionConfig: Object) {
-    return !!destinationDefinitionConfig?.["cdkEnabled"];
+    return !!destinationDefinitionConfig?.['cdkEnabled'];
   }
 
   private static isCdkV2Destination(destinationDefinitionConfig: Object) {
-    return !!destinationDefinitionConfig?.["cdkV2Enabled"];
+    return !!destinationDefinitionConfig?.['cdkV2Enabled'];
   }
 
   private static fetchCachedService(serviceType: string) {
@@ -26,34 +25,27 @@ export default class ServiceSelector {
     } else {
       switch (serviceType) {
         case INTEGRATION_SERVICE.CDK_V1_DEST:
-          this.serviceMap.set(
-            INTEGRATION_SERVICE.CDK_V1_DEST,
-            new CDKV1DestinationService()
-          );
+          this.serviceMap.set(INTEGRATION_SERVICE.CDK_V1_DEST, new CDKV1DestinationService());
           break;
         case INTEGRATION_SERVICE.CDK_V2_DEST:
-          this.serviceMap.set(
-            INTEGRATION_SERVICE.CDK_V2_DEST,
-            new CDKV2DestinationService()
-          );
+          this.serviceMap.set(INTEGRATION_SERVICE.CDK_V2_DEST, new CDKV2DestinationService());
           break;
         case INTEGRATION_SERVICE.NATIVE_DEST:
           this.serviceMap.set(
             INTEGRATION_SERVICE.NATIVE_DEST,
-            new NativeIntegrationDestinationService()
+            new NativeIntegrationDestinationService(),
           );
           break;
         case INTEGRATION_SERVICE.NATIVE_SOURCE:
           this.serviceMap.set(
             INTEGRATION_SERVICE.NATIVE_SOURCE,
-            new NativeIntegrationSourceService()
+            new NativeIntegrationSourceService(),
           );
       }
       service = this.serviceMap.get(serviceType);
     }
     return service;
   }
-
 
   public static getNativeDestinationService(): DestinationService {
     return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
@@ -64,10 +56,9 @@ export default class ServiceSelector {
   }
 
   public static getDestinationService(
-    events: ProcessorTransformRequest[] | RouterTransformRequestData[]
+    events: ProcessorTransformRequest[] | RouterTransformRequestData[],
   ): DestinationService {
-    const destinationDefinitionConfig: Object =
-      events[0].destination.DestinationDefinition.Config;
+    const destinationDefinitionConfig: Object = events[0].destination.DestinationDefinition.Config;
     if (this.isCdkDestination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
     } else if (this.isCdkV2Destination(destinationDefinitionConfig)) {

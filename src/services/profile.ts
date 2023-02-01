@@ -4,7 +4,7 @@ import { S3Client } from '@aws-sdk/client-s3';
 import moment from 'moment';
 import v8 from 'v8';
 
-import pprof, { heap } from "pprof";
+import pprof, { heap } from 'pprof';
 import { promisify } from 'util';
 import logger from '../logger';
 
@@ -21,7 +21,6 @@ logger.info(`Interval Bytes set: ${intervalBytes}`);
 heap.start(intervalBytes, stackDepth);
 
 export default class ProfileService {
-
   private static async promisifiedRead(readable: any) {
     new Promise((resolve, reject) => {
       // Instructions for reading data
@@ -124,14 +123,14 @@ export default class ProfileService {
         success: true,
         message: `Generated ${
           credBucketDetails.sendTo ? credBucketDetails.sendTo : 'locally'
-        } with filename: ${fileName}`
-      }
+        } with filename: ${fileName}`,
+      };
     } catch (error) {
       logger.error(error);
       return {
         success: false,
-        message: error.message
-      }
+        message: error.message,
+      };
     } finally {
       // if (snapshotReadableStream) {
       //   snapshotReadableStream.destroy();
@@ -139,4 +138,3 @@ export default class ProfileService {
     }
   }
 }
-

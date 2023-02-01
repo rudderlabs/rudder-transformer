@@ -1,5 +1,5 @@
-import { ConfigFactory, Executor } from "rudder-transformer-cdk";
-import IntegrationDestinationService from "../../interfaces/DestinationService";
+import { ConfigFactory, Executor } from 'rudder-transformer-cdk';
+import IntegrationDestinationService from '../../interfaces/DestinationService';
 import {
   DeliveryResponse,
   ErrorDetailer,
@@ -8,19 +8,18 @@ import {
   ProcessorTransformResponse,
   RouterTransformRequestData,
   RouterTransformResponse,
-  TransformedEvent
-} from "../../types/index";
-import { TransformationError } from "../../v0/util/errorTypes";
-import PostTransformationServiceDestination from "./postTransformation";
-import tags from "../../v0/util/tags";
-import path from "path";
+  TransformedEvent,
+} from '../../types/index';
+import { TransformationError } from '../../v0/util/errorTypes';
+import PostTransformationServiceDestination from './postTransformation';
+import tags from '../../v0/util/tags';
+import path from 'path';
 
-export default class CDKV1DestinationService
-  implements IntegrationDestinationService {
+export default class CDKV1DestinationService implements IntegrationDestinationService {
   public init() {
     ConfigFactory.init({
       basePath: path.resolve(__dirname, '../../cdk/v1'),
-      loggingMode: 'production'
+      loggingMode: 'production',
     });
   }
 
@@ -28,7 +27,7 @@ export default class CDKV1DestinationService
     destType: string,
     destinationId: string,
     workspaceId: string,
-    feature: string
+    feature: string,
   ): MetaTransferObject {
     const metaTO = {
       errorDetails: {
@@ -38,8 +37,8 @@ export default class CDKV1DestinationService
         feature,
         destinationId,
         workspaceId,
-        context: "[CDKV1 Integration Service] Failure During Proc Transform"
-      } as ErrorDetailer
+        context: '[CDKV1 Integration Service] Failure During Proc Transform',
+      } as ErrorDetailer,
     } as MetaTransferObject;
     return metaTO;
   }
@@ -48,37 +47,32 @@ export default class CDKV1DestinationService
     events: ProcessorTransformRequest[],
     destinationType: string,
     _version: string,
-    _requestMetadata: Object
+    _requestMetadata: Object,
   ): Promise<ProcessorTransformResponse[]> {
     const tfConfig = await ConfigFactory.getConfig(destinationType);
     const respList: ProcessorTransformResponse[][] = await Promise.all(
-      events.map(async event => {
+      events.map(async (event) => {
         try {
-          let transformedPayloads: any = await Executor.execute(
-            event as any,
-            tfConfig
-          );
+          let transformedPayloads: any = await Executor.execute(event as any, tfConfig);
           // We are not passing destinationHandler to post processor as we don't have post processing in CDK flows
           return PostTransformationServiceDestination.handleSuccessEventsAtProcessorDest(
             event,
             transformedPayloads,
-            undefined
+            undefined,
           );
         } catch (error) {
           const metaTO = this.getTags(
             destinationType,
             event.metadata.destinationId,
             event.metadata.workspaceId,
-            tags.FEATURES.PROCESSOR
+            tags.FEATURES.PROCESSOR,
           );
           metaTO.metadata = event.metadata;
-          const erroredResp = PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(
-            error,
-            metaTO
-          );
+          const erroredResp =
+            PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(error, metaTO);
           return [erroredResp];
         }
-      })
+      }),
     );
     return respList.flat();
   }
@@ -87,29 +81,25 @@ export default class CDKV1DestinationService
     _events: RouterTransformRequestData[],
     _destinationType: string,
     _version: string,
-    _requestMetadata: Object
+    _requestMetadata: Object,
   ): Promise<RouterTransformResponse[]> {
-    throw new TransformationError(
-      "CDKV1 Does not Implement Router Transform Routine"
-    );
+    throw new TransformationError('CDKV1 Does not Implement Router Transform Routine');
   }
 
   public batchRoutine(
     _events: RouterTransformRequestData[],
     _destinationType: string,
     _version: any,
-    _requestMetadata: Object
+    _requestMetadata: Object,
   ): RouterTransformResponse[] {
-    throw new TransformationError(
-      "CDKV1 Does not Implement Batch Transform Routine"
-    );
+    throw new TransformationError('CDKV1 Does not Implement Batch Transform Routine');
   }
 
   public deliveryRoutine(
     _event: TransformedEvent,
     _destinationType: string,
-    _requestMetadata: Object
+    _requestMetadata: Object,
   ): Promise<DeliveryResponse> {
-    throw new TransformationError("CDV1 Does not Implement Delivery Routine");
+    throw new TransformationError('CDV1 Does not Implement Delivery Routine');
   }
 }

@@ -1,32 +1,30 @@
-import cloneDeep from "lodash/cloneDeep";
-import { ProcessorTransformRequest, RouterTransformRequestData } from "../types/index";
+import cloneDeep from 'lodash/cloneDeep';
+import { ProcessorTransformRequest, RouterTransformRequestData } from '../types/index';
 
 /* eslint-disable no-param-reassign */
-const get = require("get-value");
-const unset = require("unset-value");
+const get = require('get-value');
+const unset = require('unset-value');
 
 export class DynamicConfigParser {
   private static getDynamicConfigValue(
     event: ProcessorTransformRequest | RouterTransformRequestData,
-    value: any
+    value: any,
   ) {
     // this regex checks for pattern  "only spaces {{ path || defaultvalue }}  only spaces" .
     //  " {{message.traits.key  ||   \"email\" }} "
     //  " {{ message.traits.key || 1233 }} "
-    const defFormat = /^\s*\{\{\s*(?<path>[a-zA-Z_]([a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*)+)+\s*\|\|\s*(?<defaultVal>.*)\s*\}\}\s*$/;
+    const defFormat =
+      /^\s*\{\{\s*(?<path>[a-zA-Z_]([a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*)+)+\s*\|\|\s*(?<defaultVal>.*)\s*\}\}\s*$/;
     const matResult = value.match(defFormat);
     if (matResult) {
       // Support "event.<obj1>.<key>" alias for "message.<obj1>.<key>"
-      const fieldPath = matResult.groups.path.replace(
-        /^event\.(.*)$/,
-        "message.$1"
-      );
+      const fieldPath = matResult.groups.path.replace(/^event\.(.*)$/, 'message.$1');
       const pathVal = get(event, fieldPath);
       if (pathVal) {
         value = pathVal;
         unset(event, fieldPath);
       } else {
-        value = matResult.groups.defaultVal.replace(/"/g, "").trim();
+        value = matResult.groups.defaultVal.replace(/"/g, '').trim();
       }
       return value;
     }
@@ -41,7 +39,7 @@ export class DynamicConfigParser {
 
   private static configureVal(
     value: any,
-    event: ProcessorTransformRequest | RouterTransformRequestData
+    event: ProcessorTransformRequest | RouterTransformRequestData,
   ) {
     if (value) {
       return value;
@@ -50,11 +48,11 @@ export class DynamicConfigParser {
       value.forEach((key, index) => {
         value[index] = this.configureVal(key, event);
       });
-    } else if (typeof value === "object") {
-      Object.keys(value).forEach(obj => {
+    } else if (typeof value === 'object') {
+      Object.keys(value).forEach((obj) => {
         value[obj] = this.configureVal(value[obj], event);
       });
-    } else if (typeof value === "string") {
+    } else if (typeof value === 'string') {
       value = this.getDynamicConfigValue(event, value);
     }
     return value;
@@ -68,13 +66,11 @@ export class DynamicConfigParser {
   }
 
   public static processDynamicConfig(
-    events: ProcessorTransformRequest[] | RouterTransformRequestData[]
+    events: ProcessorTransformRequest[] | RouterTransformRequestData[],
   ) {
-    const eventRespArr = events.map(
-      (e: ProcessorTransformRequest | RouterTransformRequestData) => {
-        return this.getDynamicConfig(e);
-      }
-    );
+    const eventRespArr = events.map((e: ProcessorTransformRequest | RouterTransformRequestData) => {
+      return this.getDynamicConfig(e);
+    });
     return eventRespArr;
   }
 }

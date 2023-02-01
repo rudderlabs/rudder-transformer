@@ -1,8 +1,8 @@
-import fs from "fs";
-import path from "path";
-import { Context } from "koa";
-import { DestHandlerMap } from "../constants/destinationCanonicalNames";
-import { Metadata } from "../types";
+import fs from 'fs';
+import path from 'path';
+import { Context } from 'koa';
+import { DestHandlerMap } from '../constants/destinationCanonicalNames';
+import { Metadata } from '../types';
 
 export default class MiscService {
   public static getDestHandler(dest: string, version: string) {
@@ -21,8 +21,8 @@ export default class MiscService {
     // cluster, namespace, etc information
     // from the request
     return {
-      namespace: "Unknown",
-      cluster: "Unknown"
+      namespace: 'Unknown',
+      cluster: 'Unknown',
     };
   }
 
@@ -30,35 +30,29 @@ export default class MiscService {
     return {
       sourceType: metadata.sourceType,
       destinationType: metadata.destinationType,
-      k8_namespace: metadata.namespace
+      k8_namespace: metadata.namespace,
     };
   }
 
   public static getHealthInfo() {
-    const {
-      git_commit_sha: gitCommitSha,
-      transformer_build_version: imageVersion
-    } = process.env;
+    const { git_commit_sha: gitCommitSha, transformer_build_version: imageVersion } = process.env;
     return {
-      service: "UP",
+      service: 'UP',
       ...(imageVersion && { version: imageVersion }),
-      ...(gitCommitSha && { gitCommitSha })
+      ...(gitCommitSha && { gitCommitSha }),
     };
   }
 
   public static getBuildVersion() {
-    return process.env.transformer_build_version || "Version Info not found";
+    return process.env.transformer_build_version || 'Version Info not found';
   }
 
   public static getVersion() {
-    return process.env.npm_package_version || "Version Info not found";
+    return process.env.npm_package_version || 'Version Info not found';
   }
-  
+
   public static getFetaures() {
-    const obj = JSON.parse(fs.readFileSync(
-      path.resolve(__dirname, "../../features.json"),
-      "utf8"
-    ));
+    const obj = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../features.json'), 'utf8'));
     return JSON.stringify(obj);
   }
 }

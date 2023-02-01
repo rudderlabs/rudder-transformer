@@ -1,7 +1,27 @@
+/* eslint-disable unicorn/no-for-loop */
+/* eslint-disable no-restricted-syntax */
 const get = require('get-value');
 const { isDefinedAndNotNull, getValueFromMessage } = require('../../util');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
-const SOURCE_KEYS = ['context.traits', 'properties', 'traits'];
+
+const SOURCE_KEYS = ['properties', 'traits', 'context.traits', 'context'];
+
+/**
+ * 
+ * @param {*} obj 
+ * @param {*} path 
+ * @returns value of the property present in absolute path of the object
+ */
+function getValueByPath(obj, path) {
+  const propertyPath = path.split('.');
+  for (let i = 0; i < propertyPath.length; i++) {
+    // recurse into the message object as per the path provided
+    if (!obj || typeof obj !== 'object') return undefined;
+    obj = obj[propertyPath[i]];
+  }
+  return obj;
+}
+
 
 /**
  *
@@ -66,6 +86,11 @@ function rudderPropToDestMap (destVarMapping, message, payload, destVarStrPrefix
         val = getMappingFieldValueFormMessage(message, sourceKey, key);
         if (isDefinedAndNotNull(val)) {
           mappedVar[`${destVarStrPrefix}${[destVarMapping[key]]}`] = val;
+        } else {
+          val = getValueByPath(message, key)
+          if (isDefinedAndNotNull(val)) {
+            mappedVar[`${destVarStrPrefix}${[destVarMapping[key]]}`] = val;
+          }
         }
       })
     }
@@ -90,27 +115,26 @@ function handleHier(payload, destination, message) {
 }
 
 function handleList(payload, destination, message, properties) {
-  const { listMapping, listDelimiter, trackPageName } = destination;
+  const { listMapping, listDelimiter } = destination;
   const list = {};
-  if (properties) {
     Object.keys(properties).forEach(key => {
+      // TODO check dependency of delimiter
       if (listMapping[key] && listDelimiter[key]) {
         let val = get(message, `properties.${key}`);
-        if (typeof val !== 'string' && !Array.isArray(val)) {
-          throw new ConfigurationError(
-            'List Mapping properties variable is neither a string nor an array',
-          );
-        }
-        if (typeof val === 'string') {
-          val = val.replace(/\s*,+\s*/g, listDelimiter[key]);
-        } else {
-          val = val.join(listDelimiter[key]);
-        }
-
-        list[`list${listMapping[key]}`] = val.toString();
+          if (typeof val !== 'string' && !Array.isArray(val)) {
+            throw new ConfigurationError(
+              'List Mapping properties variable is neither a string nor an array',
+            );
+          }
+          if (typeof val === 'string') {
+            val = val.replace(/\s*,+\s*/g, listDelimiter[key]);
+          } else {
+            val = val.join(listDelimiter[key]);
+          }
+          list[`list${listMapping[key]}`] = val.toString();
       }
     });
-  }
+  
   // add to the payload
   if (Object.keys(list).length > 0) {
     Object.assign(payload, list);
@@ -125,8 +149,8 @@ function handleCustomProperties(payload, destination, message, properties) {
     Object.keys(properties).forEach(key => {
       if (customPropsMapping[key]) {
         let val = get(message, `properties.${key}`);
-        if (typeof val !== 'string' && !Array.isArray(val)) {
-          throw new InstrumentationError('prop variable is neither a string nor an array');
+        if (typeof val !== 'string' && !Array.isArray(val) && typeof val !== 'number') {
+          throw new InstrumentationError('prop variable is neither a string, number or an array');
         }
         const delimeter = propsDelimiter[key] || '|';
         if (typeof val === 'string') {

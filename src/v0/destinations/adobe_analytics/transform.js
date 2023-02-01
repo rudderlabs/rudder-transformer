@@ -1,7 +1,7 @@
 const jsonxml = require('jsontoxml');
 const get = require('get-value');
 const { EventType } = require('../../../constants');
-const { commonConfig, formatDestinationConfig } = require('./config');
+const { ECOM_PRODUCT_EVENTS, commonConfig, formatDestinationConfig } = require('./config');
 const {
   constructPayload,
   defaultPostRequestConfig,
@@ -10,7 +10,7 @@ const {
   getFieldValueFromMessage,
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
-
+  getIntegrationsObj,
   simpleProcessRouterDest,
 } = require('../../util');
 const {
@@ -30,7 +30,7 @@ const {
 
 const responseBuilderSimple = async (message, destinationConfig, basicPayload) => {
   let payload = constructPayload(message, commonConfig);
-  const { context, properties } = message;
+  const { event, context, properties } = message;
   // handle contextData
   payload = handleContextData(payload, destinationConfig, message);
 
@@ -46,6 +46,13 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
       payload.fallbackVisitorId = fallbackVisitorId;
     }
   }
+
+  // handle link values
+  // default linktype to 'o', linkName to event name, linkURL to ctx.page.url if not passed in integrations object
+  const adobeIntegrationsObject = getIntegrationsObj(message, 'adobe_analytics');
+  payload.linkType = adobeIntegrationsObject?.linkType || "o";
+  payload.linkName = adobeIntegrationsObject?.linkName || event;
+  payload.linkURL = adobeIntegrationsObject?.linkURL || context?.page?.url || "No linkURL provided";
 
   // handle hier
   payload = handleHier(payload, destinationConfig, message);
@@ -67,6 +74,9 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
     const pageName = propertiesPageName || contextPageName;
     if (isDefinedAndNotNullAndNotEmpty(pageName)) {
       payload.pageName = pageName;
+    } else {
+      // pageName is defaulted to URL.  
+      payload.pageName = pageUrl;
     }
   }
 
@@ -95,7 +105,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   }
 
   if (timestampOptionalReporting) {
-    const timestamp = getFieldValueFromMessage(message, 'timestamp');
+    const timestamp = getFieldValueFromMessage(message, 'timestamp') || getFieldValueFromMessage(message, 'originalTimestamp');
     if (timestampOption === 'enabled' || (timestampOption === 'hybrid' && !preferVisitorId)) {
       payload.timestamp = timestamp;
     }
@@ -171,7 +181,6 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
     });
   }
 
-  const ECOM_PRODUCT_EVENTS = ["product viewed", "viewed product", "product list viewed", "viewed product list", "product added", "added product", "product removed", "removed product", "order completed", "completed order", "cart viewed", "viewed cart", "checkout started", "started checkout", "cart opened", "opened cart"]
   // product string section
   const adobeProdEvent = productMerchEventToAdobeEvent[event];
   const prodString = [];
@@ -250,8 +259,17 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
         prodArr = [ ...prodArr, prodEventString, prodEVarsString ];
       }
       const test = stringifyValueAndJoinWithDelimitter(prodArr);
-      prodString.push(test);
+      if(isSingleProdEvent) {
+        prodString.push(test);
+      } else {
+        prodString.push(test);
+        prodString.push(",");
+      } 
     });
+    // we delimit multiple products by ',' removing the trailing here
+    if(prodString[prodString.length-1] === ",") {
+      prodString.pop();
+    }
   }
 
   return {
@@ -313,6 +331,8 @@ const handleTrack = (message, destinationConfig) => {
           destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()].trim(),
           destinationConfig,
         );
+      } else {
+        throw new ConfigurationError('The event is not a supported ECOM event or a mapped custom event. Aborting.');
       }
       break;
   }

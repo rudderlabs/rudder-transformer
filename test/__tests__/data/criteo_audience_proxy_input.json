@@ -1,0 +1,223 @@
+[
+    {
+        "request": {
+            "body": {
+                "version": "1",
+                "type": "REST",
+                "method": "PATCH",
+                "endpoint": "https://api.criteo.com/2022-10/audiences/34894/contactlist",
+                "headers": {
+                    "Authorization": "Bearer success_access_token",
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                "params": {},
+                "body": {
+                    "JSON": {
+                        "data": {
+                            "type": "ContactlistAmendment",
+                            "attributes": {
+                                "operation": "remove",
+                                "identifierType": "gum",
+                                "identifiers": [
+                                    "sample_gum3"
+                                ],
+                                "internalIdentifiers": false,
+                                "gumCallerId": "329739"
+                            }
+                        }
+                    },
+                    "JSON_ARRAY": {},
+                    "XML": {},
+                    "FORM": {}
+                },
+                "files": {}
+            }
+        }
+    },
+    {
+        "request": {
+            "body": {
+                "version": "1",
+                "type": "REST",
+                "method": "PATCH",
+                "endpoint": "https://api.criteo.com/2022-10/audiences/34895/contactlist",
+                "headers": {
+                    "Authorization": "Bearer success_access_token",
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                "params": {},
+                "body": {
+                    "JSON": {
+                        "data": {
+                            "type": "ContactlistAmendment",
+                            "attributes": {
+                                "operation": "add",
+                                "identifierType": "madid",
+                                "identifiers": [
+                                    "sample_madid",
+                                    "sample_madid_1",
+                                    "sample_madid_2"
+                                ],
+                                "internalIdentifiers": false
+                            }
+                        }
+                    },
+                    "JSON_ARRAY": {},
+                    "XML": {},
+                    "FORM": {}
+                },
+                "files": {}
+            }
+        }
+    },
+    {
+        "request": {
+            "body": {
+                "version": "1",
+                "type": "REST",
+                "method": "PATCH",
+                "endpoint": "https://api.criteo.com/2022-10/audiences/34896/contactlist",
+                "headers": {
+                    "Authorization": "Bearer success_access_token",
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                "params": {},
+                "body": {
+                    "JSON": {
+                        "data": {
+                            "type": "ContactlistAmendment",
+                            "attributes": {
+                                "operation": "add",
+                                "identifierType": "madid",
+                                "identifiers": [
+                                    "sample_madid",
+                                    "sample_madid_1",
+                                    "sample_madid_2"
+                                ],
+                                "internalIdentifiers": false
+                            }
+                        }
+                    },
+                    "JSON_ARRAY": {},
+                    "XML": {},
+                    "FORM": {}
+                },
+                "files": {}
+            }
+        }
+    },
+    {
+        "request": {
+            "body": {
+                "version": "1",
+                "type": "REST",
+                "method": "PATCH",
+                "endpoint": "https://api.criteo.com/2022-10/audiences/34897/contactlist",
+                "headers": {
+                    "Authorization": "Bearer success_access_token",
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                "params": {},
+                "body": {
+                    "JSON": {
+                        "data": {
+                            "type": "ContactlistAmendment",
+                            "attributes": {
+                                "operation": "add",
+                                "identifierType": "madid",
+                                "identifiers": [
+                                    "sample_madid",
+                                    "sample_madid_1",
+                                    "sample_madid_2"
+                                ],
+                                "internalIdentifiers": false
+                            }
+                        }
+                    },
+                    "JSON_ARRAY": {},
+                    "XML": {},
+                    "FORM": {}
+                },
+                "files": {}
+            }
+        }
+    },
+    {
+        "request": {
+            "body": {
+                "version": "1",
+                "type": "REST",
+                "method": "PATCH",
+                "endpoint": "https://api.criteo.com/2022-10/audiences/34898/contactlist",
+                "headers": {
+                    "Authorization": "Bearer success_access_token",
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                "params": {},
+                "body": {
+                    "JSON": {
+                        "data": {
+                            "type": "ContactlistAmendment",
+                            "attributes": {
+                                "operation": "add",
+                                "identifierType": "madid",
+                                "identifiers": [
+                                    "sample_madid",
+                                    "sample_madid_1",
+                                    "sample_madid_2"
+                                ],
+                                "internalIdentifiers": false
+                            }
+                        }
+                    },
+                    "JSON_ARRAY": {},
+                    "XML": {},
+                    "FORM": {}
+                },
+                "files": {}
+            }
+        }
+    },
+    {
+        "request": {
+            "body": {
+                "version": "1",
+                "type": "REST",
+                "method": "PATCH",
+                "endpoint": "https://api.criteo.com/2022-10/audiences/34899/contactlist",
+                "headers": {
+                    "Authorization": "Bearer success_access_token",
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                "params": {},
+                "body": {
+                    "JSON": {
+                        "data": {
+                            "type": "ContactlistAmendment",
+                            "attributes": {
+                                "operation": "add",
+                                "identifierType": "madid",
+                                "identifiers": [
+                                    "sample_madid",
+                                    "sample_madid_1",
+                                    "sample_madid_2"
+                                ],
+                                "internalIdentifiers": false
+                            }
+                        }
+                    },
+                    "JSON_ARRAY": {},
+                    "XML": {},
+                    "FORM": {}
+                },
+                "files": {}
+            }
+        }
+    }
+]

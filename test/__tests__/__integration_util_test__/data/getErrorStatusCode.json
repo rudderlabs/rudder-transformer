@@ -1,0 +1,60 @@
+[
+  {
+    "description": "Should return status code from 'response.status' if it is a positive integer",
+    "input": {
+      "response": { "status": 403 }
+    },
+    "output": 403
+  },
+  {
+    "description": "Should return status code from 'code' if it is a positive integer",
+    "input": {
+      "code": 403
+    },
+    "output": 403
+  },
+  {
+    "description": "Should return status code from 'status' if it is a positive integer",
+    "input": {
+      "status": 403
+    },
+    "output": 403
+  },
+  {
+    "description": "Should return 400 status code if 'response.status' is not a positive integer",
+    "input": {
+      "response": { "status": "403" }
+    },
+    "output": 400
+  },
+  {
+    "description": "Should return the supplied default status code if 'response.status' is not a positive integer",
+    "input": [
+      {
+        "response": { "status": "403" }
+      },
+      500
+    ],
+    "output": 500
+  },
+  {
+    "description": "Should return the supplied default status code if no status code is present",
+    "input": [
+      {
+        "message": "An error occurred"
+      },
+      502
+    ],
+    "output": 502
+  },
+  {
+    "description": "Should return 400 status code if no status code is present and the the default status code is not a positive integer",
+    "input": [
+      {
+        "message": "An error occurred"
+      },
+      "502"
+    ],
+    "output": 400
+  }
+]

@@ -473,8 +473,8 @@
           }
         },
         "properties": {
-          "unit_id": "123",
-          "merch_id": "merchFBoXoX101",
+          "unit_id": 123,
+          "merch_id": false,
           "bounceiD": "fakefake",
           "counce_id": ""
         },

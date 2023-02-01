@@ -4,7 +4,7 @@ const _ = require('lodash');
 
 const stats = require('./stats');
 const { getLibraryCodeV1 } = require('./customTransforrmationsStore-v1');
-const { parserForImport } = require('./parser');
+const { extractLibraries } = require('./libExtractor');
 const logger = require('../logger');
 
 const isolateVmMem = 128;
@@ -29,7 +29,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   );
   const librariesMap = {};
   if (code && libraries) {
-    const extractedLibraries = Object.keys(await parserForImport(code));
+    const extractedLibraries = Object.keys(await extractLibraries(code));
     // TODO: Check if this should this be &&
     libraries.forEach((library) => {
       const libHandleName = _.camelCase(library.name);

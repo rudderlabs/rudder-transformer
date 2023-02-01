@@ -1,8 +1,13 @@
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
+const NodeCache = require('node-cache');
 const stats = require('./stats');
 const { getMetadata } = require('../v0/util');
 const { setupFaasFunction, executeFaasFunction } = require('./openfaas');
+const { getLibraryCodeV1 } = require('./customTransforrmationsStore-v1');
+const { extractLibraries } = require('./libExtractor');
+
+const libVersionIdsCache = new NodeCache();
 
 function generateFunctionName(userTransformation, testMode) {
   if (testMode) {
@@ -17,6 +22,34 @@ function generateFunctionName(userTransformation, testMode) {
   return `fn-${userTransformation.workspaceId}-${hash}`
     .substring(0, 63)
     .toLowerCase();
+}
+
+async function extractRelevantLibraryVersionIdsForVersionId(functionName, versionId, libraryVersionIds) {
+  const cachedLvids = libVersionIdsCache.get(functionName);
+
+  if (cachedLvids) return cachedLvids;
+
+  const libraries = await Promise.all(
+    libraryVersionIds.map(async (libraryVersionId) => getLibraryCodeV1(libraryVersionId)),
+  );
+
+  const relevantLvids = [];
+
+  if (libraries) {
+    const extractedLibraries = Object.keys(await extractLibraries(null, versionId, "pythonfaas"));
+
+    libraries.forEach((library) => {
+      const libHandleName = library.handleName || _.camelCase(library.name);
+      if (extractedLibraries.includes(libHandleName)) {
+        relevantLvids.push(library.versionId);
+      }
+    });
+  } else {
+    throw new Error(`Failed to extract library version ids for function ${functionName}`);
+  }
+
+  libVersionIdsCache.set(functionName, relevantLvids);
+  return relevantLvids;
 }
 
 async function setOpenFaasUserTransform(
@@ -43,7 +76,7 @@ async function setOpenFaasUserTransform(
     functionName,
     userTransformation.code,
     userTransformation.versionId,
-    userTransformation.libraryVersionIds,
+    extractRelevantLibraryVersionIdsForVersionId(functionName, userTransformation.versionId, userTransformation.libraryVersionIds),
     testMode,
   );
 
@@ -69,6 +102,10 @@ async function runOpenFaasUserTransform(events, userTransformation, testMode = f
     ...metaTags,
   };
 
+  const libraries = await Promise.all(
+    libraryVersionIds.map(async (libraryVersionId) => getLibraryCodeV1(libraryVersionId)),
+  );
+
   // check and deploy faas function if not exists
   const functionName = generateFunctionName(userTransformation, testMode);
   if (testMode) {
@@ -81,7 +118,7 @@ async function runOpenFaasUserTransform(events, userTransformation, testMode = f
     functionName,
     events,
     userTransformation.versionId,
-    userTransformation.libraryVersionIds,
+    extractRelevantLibraryVersionIdsForVersionId(functionName, userTransformation.versionId, userTransformation.libraryVersionIds),
     testMode,
   );
   stats.timing('run_time', invokeTime, tags);

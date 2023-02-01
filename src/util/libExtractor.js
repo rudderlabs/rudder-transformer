@@ -1,8 +1,18 @@
 const { parserForImport } = require('./parser');
+const { getTransformationCodeV1 } = require('./customTransforrmationsStore-v1');
 
-// param 'validateImports' supported for python/pythonfaas.
-async function extractLibraries(code, validateImports, language = "javascript") {
-    return parserForImport(code, validateImports, language);
+async function extractLibraries(code, versionId, language = "javascript") {
+    if (code === "javascript") return Object.keys(parserForImport(code));
+
+    let transformation;
+
+    if (versionId) transformation = getTransformationCodeV1(versionId);
+
+    if (transformation?.imports == null) {
+        return parserForImport(code || transformation?.code, language);
+    }
+
+    return transformation.imports;
 }
 
 exports.extractLibraries = extractLibraries;

@@ -154,7 +154,7 @@ const processEvent = (inputEvent) => {
   message.setProperty('context.topic', shopifyTopic);
   message = removeUndefinedAndNullValues(message);
   stats.increment('shopify_server_side_identifier_event', 1, {
-    writeKey: event.query_parameters?.writeKey?.[0],
+    writeKey: inputEvent.query_parameters?.writeKey?.[0],
     timestamp: Date.now(),
   });
   return message;

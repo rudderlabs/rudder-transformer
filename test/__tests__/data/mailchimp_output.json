@@ -386,5 +386,34 @@
     },
     "files": {},
     "audienceId": "df42a82d07"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic YXBpS2V5Onplc3J4ZHRoZmNqZzM0NXlydWlreWhudGJncmFmdmQ="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "name": "local_testing",
+        "occurred_at": "2019-11-15T10:26:53+00:00",
+        "is_syncing": false,
+        "properties": {
+          "brand": "Aster",
+          "product": "Garments",
+          "products": "[{\"product_id\":\"123\",\"price\":\"14\"},{\"product_id\":\"123\",\"price\":14}]",
+          "purchased": "false"
+        }
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "audienceId": "df42a82d07"
   }
 ]

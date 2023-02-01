@@ -20,6 +20,7 @@ const {
   getAudienceId,
   generateBatchedPaylaodForArray,
   mailchimpEventsEndpoint,
+  stringifyPropertiesValues,
 } = require('./utils');
 const { MAX_BATCH_SIZE, VALID_STATUSES, TRACK_CONFIG } = require('./config');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
@@ -57,6 +58,9 @@ const trackResponseBuilder = (message, { Config }) => {
   }
   const endpoint = mailchimpEventsEndpoint(datacenterId, audienceId, email);
   const processedPayload = constructPayload(message, TRACK_CONFIG);
+  if (processedPayload?.properties) {
+    processedPayload.properties = stringifyPropertiesValues(processedPayload.properties);
+  }
   processedPayload.name = processedPayload.name.trim().replace(/\s+/g, '_');
   processedPayload.occurred_at = formatTimeStamp(
     processedPayload.occurred_at,

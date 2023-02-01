@@ -71,6 +71,10 @@ const destinationTestHandler = async (tcData) => {
     case tags.FEATURES.USER_DELETION:
       route = 'deleteUsers';
       break;
+    case tags.FEATURES.PROCESSOR:
+      // Intentionally fail the test case
+      expect(true).toEqual(false);
+      break;
     default:
       // Processor transformation
       route = `/${path.join(tcData.version || DEFAULT_VERSION, "destinations", tcData.name)}`;
@@ -97,6 +101,9 @@ describe.each(allTestDataFilePaths)("%s Tests", (testDataPath) => {
         await sourceTestHandler(tcData);
         break;
       default:
+        console.log('Invalid module');
+        // Intentionally fail the test case
+        expect(true).toEqual(false);
         break;
     }
   });

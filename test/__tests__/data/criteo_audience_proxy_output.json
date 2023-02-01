@@ -1,0 +1,129 @@
+[
+  {
+    "output": {
+      "status": 200,
+      "message": "Request Processed Successfully",
+      "destinationResponse": {
+        "response": "",
+        "status": 200
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 401,
+      "authErrorCategory": "REFRESH_TOKEN",
+      "destinationResponse": {
+        "errors": [
+          {
+            "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
+            "type": "authorization",
+            "code": "authorization-token-invalid",
+            "instance": "/2022-10/audiences/123/contactlist",
+            "title": "The authorization header is invalid"
+          }
+        ]
+      },
+      "message": "The authorization header is invalid during criteo_audience response transformation",
+      "statTags": {
+        "destType": "CRITEO_AUDIENCE",
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
+      "message": "AudienceId is Invalid. Please Provide Valid AudienceId",
+      "destinationResponse": {
+        "response": {
+          "errors": [
+            {
+              "code": "audience-invalid",
+              "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
+              "type": "authorization"
+            }
+          ]
+        },
+        "status": 404
+      },
+      "statTags": {
+        "destType": "CRITEO_AUDIENCE",
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "meta": "instrumentation",
+        "module": "destination"
+      },
+      "status": 400
+    }
+  },
+  {
+    "output": {
+      "destinationResponse": {
+        "response": {
+          "errors": [
+            {
+              "code": "audience-invalid",
+              "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
+              "type": "authorization"
+            }
+          ]
+        },
+        "status": 503
+      },
+      "message": "Request Failed: during criteo_audience response transformation (Retryable)",
+      "statTags": {
+        "destType": "CRITEO_AUDIENCE",
+        "errorCategory": "network",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "errorType": "retryable",
+        "module": "destination"
+      },
+      "status": 500
+    }
+  },
+  {
+    "output": {
+      "destinationResponse": {
+        "response": {},
+        "status": 429
+      },
+      "message": "Request Failed: during criteo_audience response transformation - due to Request Limit exceeded, (Throttled)",
+      "statTags": {
+        "destType": "CRITEO_AUDIENCE",
+        "errorCategory": "network",
+        "errorType": "throttled",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      },
+      "status": 429
+    }
+  },
+  {
+    "output": {
+      "destinationResponse":{
+        "response": {
+          "message": "unknown error"
+        },
+        "status": 410
+      },
+      "message": "Request Failed: during criteo_audience response transformation with status \"410\" due to \"{\"message\":\"unknown error\"}\", (Aborted) ",
+      "statTags": {
+        "destType": "CRITEO_AUDIENCE",
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      },
+      "status": 400
+    }
+  }
+]

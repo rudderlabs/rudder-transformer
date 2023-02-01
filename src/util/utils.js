@@ -22,12 +22,12 @@ const responseStatusHandler = (status, entity, id, url) => {
 };
 
 const getIntegrationVersion = () => {
-  return "v0";
+  return 'v0';
 };
 
 module.exports = {
   RespStatusError,
   RetryRequestError,
   responseStatusHandler,
-  getIntegrationVersion
+  getIntegrationVersion,
 };

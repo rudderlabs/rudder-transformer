@@ -210,11 +210,7 @@ async function getSalesforceIdFromPayload(message, authorizationData, destinatio
     );
 
     if (processedLeadQueryResponse.status !== 200) {
-      salesforceResponseHandler(
-        processedLeadQueryResponse,
-        `:- during Lead Query`,
-        destination.ID,
-      );
+      salesforceResponseHandler(processedLeadQueryResponse, `:- during Lead Query`, destination.ID);
     }
 
     if (processedLeadQueryResponse.response.searchRecords.length > 0) {

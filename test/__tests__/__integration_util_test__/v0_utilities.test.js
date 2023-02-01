@@ -28,7 +28,6 @@ describe('Utility Functions Tests', () => {
         expect(result).toEqual(output);
       } catch (e) {
         // Explicitly fail the test case
-
         expect(true).toEqual(false);
       }
     });

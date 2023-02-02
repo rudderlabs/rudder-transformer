@@ -78,11 +78,10 @@ const isProfileExist = async (message, { Config }) => {
 };
 
 /**
- * This function is used for creating response for adding members to a specific list
- * and subscribing members to a particular list depending on the condition passed.
+ * This function is used for creating response for subscribing users to a particular list.
  * DOCS: https://www.klaviyo.com/docs/api/v2/lists
  */
-const addUserToList = (message, traitsInfo, conf, destination) => {
+const subscribeUserToList = (message, traitsInfo, conf, destination) => {
   // listId from message properties are preferred over Config listId
   let targetUrl = `${BASE_ENDPOINT}/api/v2/list/${
     traitsInfo.properties?.listId || destination.Config.listId
@@ -97,10 +96,7 @@ const addUserToList = (message, traitsInfo, conf, destination) => {
     // eslint-disable-next-line no-underscore-dangle
     profile._id = getFieldValueFromMessage(message, 'userId');
   }
-  // If func is called as membership func else subscribe func
-  if (conf === LIST_CONF.MEMBERSHIP) {
-    targetUrl = `${targetUrl}/members`;
-  } else {
+  if (conf === LIST_CONF.SUBSCRIBE) {
     // get consent statuses from message if availabe else from dest config
     targetUrl = `${targetUrl}/subscribe`;
     profile.sms_consent = traitsInfo.properties?.smsConsent || destination.Config.smsConsent;
@@ -123,33 +119,27 @@ const addUserToList = (message, traitsInfo, conf, destination) => {
 };
 
 /**
- * This function is used to check if the user needs to be added to list or needs to be subscribed or not.
- * Building and returning response array for both the members(for adding to the list) and subscribe
- * endpoints (for subscribing)
+ * This function is used to check if the user needs to be subscribed or not.
+ * Building and returning response array for subscribe endpoint (for subscribing)
  * @param {*} message
  * @param {*} traitsInfo
  * @param {*} destination
  * @returns
  */
-const checkForMembersAndSubscribe = (message, traitsInfo, destination) => {
+const checkForSubscribe = (message, traitsInfo, destination) => {
   const responseArray = [];
   if (
-    (!!destination.Config.listId || !!get(traitsInfo.properties, 'listId')) &&
-    destination.Config.privateApiKey
+    get(traitsInfo.properties, 'subscribe') === true &&
+    (!!destination.Config.listId || !!get(traitsInfo.properties, 'listId'))
   ) {
-    const membersResponse = addUserToList(message, traitsInfo, LIST_CONF.MEMBERSHIP, destination);
-    responseArray.push(membersResponse);
-    if (get(traitsInfo.properties, 'subscribe') === true) {
-      const subscribeResponse = addUserToList(
-        message,
-        traitsInfo,
-        LIST_CONF.SUBSCRIBE,
-        destination,
-      );
-      responseArray.push(subscribeResponse);
-    }
+    const subscribeResponse = subscribeUserToList(
+      message,
+      traitsInfo,
+      LIST_CONF.SUBSCRIBE,
+      destination,
+    );
+    responseArray.push(subscribeResponse);
   }
-
   return responseArray;
 };
 
@@ -172,7 +162,7 @@ const createCustomerProperties = (message) => {
 
 module.exports = {
   isProfileExist,
-  addUserToList,
-  checkForMembersAndSubscribe,
+  subscribeUserToList,
+  checkForSubscribe,
   createCustomerProperties,
 };

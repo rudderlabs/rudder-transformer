@@ -12,7 +12,7 @@ const {
   eventNameMapping,
   jsonNameMapping,
 } = require('./config');
-const { isProfileExist, checkForMembersAndSubscribe, createCustomerProperties } = require('./util');
+const { isProfileExist, createCustomerProperties, checkForSubscribe } = require('./util');
 const {
   defaultRequestConfig,
   constructPayload,
@@ -92,7 +92,7 @@ const identifyRequestHandler = async (message, category, destination) => {
     response.params.api_key = destination.Config.privateApiKey;
   }
   const responseArray = [response];
-  responseArray.push(...checkForMembersAndSubscribe(message, traitsInfo, destination));
+  responseArray.push(...checkForSubscribe(message, traitsInfo, destination));
   return responseArray;
 };
 
@@ -216,19 +216,6 @@ const groupRequestHandler = (message, category, destination) => {
     profile._id = getFieldValueFromMessage(message, 'userId');
   }
   const responseArray = [];
-
-  const payload = {
-    profiles: [profile],
-  };
-  const membersResponse = defaultRequestConfig();
-  membersResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${get(message, 'groupId')}/members`;
-  membersResponse.headers = {
-    'Content-Type': 'application/json',
-  };
-  membersResponse.body.JSON = payload;
-  membersResponse.method = defaultPostRequestConfig.requestMethod;
-  membersResponse.params = { api_key: destination.Config.privateApiKey };
-  responseArray.push(membersResponse);
 
   if (get(message.traits, 'subscribe') === true) {
     // Adding Consent Info to Profiles

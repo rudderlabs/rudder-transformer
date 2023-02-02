@@ -1,6 +1,6 @@
 [
   {
-    "description": "Profile updation call and list and subcribe user",
+    "description": "Profile updation call and subcribe user",
     "input": {
       "destination": {
         "Config": {
@@ -93,33 +93,6 @@
         },
         "body": {
           "JSON": {},
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/members",
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "params": {
-          "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
-        },
-        "body": {
-          "JSON": {
-            "profiles": [
-              {
-                "id": "utsabc",
-                "email": "utsab@rudderstack.com",
-                "phone_number": "+12 345 578 900"
-              }
-            ]
-          },
           "JSON_ARRAY": {},
           "XML": {},
           "FORM": {}
@@ -410,33 +383,6 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/members",
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "params": {
-          "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
-        },
-        "body": {
-          "JSON": {
-            "profiles": [
-              {
-                "email": "utsab@rudderstack.com",
-                "phone_number": "+12 345 678 900",
-                "$id": "user123"
-              }
-            ]
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
         "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/subscribe",
         "headers": {
           "Content-Type": "application/json"
@@ -588,33 +534,6 @@
               "Flagged": false,
               "Residence": "Shibuya"
             }
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/members",
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "params": {
-          "api_key": "pk_a68c7b5163d98807fcb57e6f921216629d"
-        },
-        "body": {
-          "JSON": {
-            "profiles": [
-              {
-                "id": "batsu",
-                "email": "batsu@rudderstack.com",
-                "phone_number": "+12 345 578 900"
-              }
-            ]
           },
           "JSON_ARRAY": {},
           "XML": {},

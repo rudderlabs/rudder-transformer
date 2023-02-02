@@ -24,7 +24,7 @@ function generateFunctionName(userTransformation, testMode) {
     .toLowerCase();
 }
 
-async function extractRelevantLibraryVersionIdsForVersionId(functionName, versionId, libraryVersionIds) {
+async function extractRelevantLibraryVersionIdsForVersionId(functionName, code, versionId, libraryVersionIds) {
   const cachedLvids = libVersionIdsCache.get(functionName);
 
   if (cachedLvids) return cachedLvids;
@@ -36,7 +36,7 @@ async function extractRelevantLibraryVersionIdsForVersionId(functionName, versio
   const relevantLvids = [];
 
   if (libraries) {
-    const extractedLibraries = Object.keys(await extractLibraries(null, versionId, "pythonfaas"));
+    const extractedLibraries = Object.keys(await extractLibraries(code, versionId, "pythonfaas"));
 
     libraries.forEach((library) => {
       const libHandleName = library.handleName || _.camelCase(library.name);
@@ -76,7 +76,7 @@ async function setOpenFaasUserTransform(
     functionName,
     userTransformation.code,
     userTransformation.versionId,
-    extractRelevantLibraryVersionIdsForVersionId(functionName, userTransformation.versionId, userTransformation.libraryVersionIds),
+    await extractRelevantLibraryVersionIdsForVersionId(functionName, userTransformation.code, userTransformation.versionId, userTransformation.libraryVersionIds),
     testMode,
   );
 
@@ -103,7 +103,7 @@ async function runOpenFaasUserTransform(events, userTransformation, testMode = f
   };
 
   const libraries = await Promise.all(
-    libraryVersionIds.map(async (libraryVersionId) => getLibraryCodeV1(libraryVersionId)),
+    (userTransformation.libraryVersionIds || []).map(async (libraryVersionId) => getLibraryCodeV1(libraryVersionId)),
   );
 
   // check and deploy faas function if not exists
@@ -118,7 +118,7 @@ async function runOpenFaasUserTransform(events, userTransformation, testMode = f
     functionName,
     events,
     userTransformation.versionId,
-    extractRelevantLibraryVersionIdsForVersionId(functionName, userTransformation.versionId, userTransformation.libraryVersionIds),
+    await extractRelevantLibraryVersionIdsForVersionId(functionName, userTransformation.code, userTransformation.versionId, userTransformation.libraryVersionIds),
     testMode,
   );
   stats.timing('run_time', invokeTime, tags);

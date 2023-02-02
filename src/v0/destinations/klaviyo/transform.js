@@ -201,6 +201,9 @@ const groupRequestHandler = (message, category, destination) => {
   if (!destination.Config.privateApiKey) {
     throw new ConfigurationError('Private API Key is a required field for group events');
   }
+  if (!message.groupId) {
+    throw new InstrumentationError('groupId is a required field for group events');
+  }
   let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
   const groupWhitelistedTraits = [...WhiteListedTraits, 'consent', 'smsConsent', 'subscribe'];
@@ -215,32 +218,24 @@ const groupRequestHandler = (message, category, destination) => {
     delete profile.$id;
     profile._id = getFieldValueFromMessage(message, 'userId');
   }
-  const responseArray = [];
 
-  if (get(message.traits, 'subscribe') === true) {
-    // Adding Consent Info to Profiles
-    const subscribeProfile = JSON.parse(JSON.stringify(profile));
-    subscribeProfile.sms_consent =
-      message.context?.traits.smsConsent || destination.Config.smsConsent;
-    subscribeProfile.$consent = message.context?.traits.consent || destination.Config.consent;
+  const subscribeProfile = JSON.parse(JSON.stringify(profile));
+  subscribeProfile.sms_consent =
+    message.context?.traits.smsConsent || destination.Config.smsConsent;
+  subscribeProfile.$consent = message.context?.traits.consent || destination.Config.consent;
 
-    const subscribePayload = {
-      profiles: [subscribeProfile],
-    };
-    const subscribeResponse = defaultRequestConfig();
-    subscribeResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${get(
-      message,
-      'groupId',
-    )}/subscribe`;
-    subscribeResponse.headers = {
-      'Content-Type': 'application/json',
-    };
-    subscribeResponse.body.JSON = subscribePayload;
-    subscribeResponse.method = defaultPostRequestConfig.requestMethod;
-    subscribeResponse.params = { api_key: destination.Config.privateApiKey };
-    responseArray.push(subscribeResponse);
-  }
-  return responseArray;
+  const subscribePayload = {
+    profiles: [subscribeProfile],
+  };
+  const subscribeResponse = defaultRequestConfig();
+  subscribeResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${get(message, 'groupId')}/subscribe`;
+  subscribeResponse.headers = {
+    'Content-Type': 'application/json',
+  };
+  subscribeResponse.body.JSON = subscribePayload;
+  subscribeResponse.method = defaultPostRequestConfig.requestMethod;
+  subscribeResponse.params = { api_key: destination.Config.privateApiKey };
+  return subscribeResponse;
 };
 
 // Main event processor using specific handler funcs

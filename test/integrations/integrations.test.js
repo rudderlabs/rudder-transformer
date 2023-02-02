@@ -40,9 +40,9 @@ const testRoute = async (route, tcData) => {
   }
 
   const response = await stHandler
-  .set(headers)
-  .query(params)
-  .send(body);
+  .set(headers || {})
+  .query(params || {})
+  .send(body || "");
 
   const outputResp = tcData.output.response;
   expect(response.status).toEqual(outputResp.status);

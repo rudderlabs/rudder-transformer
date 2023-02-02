@@ -115,7 +115,8 @@
     "node-notifier": "^10.0.1",
     "pre-commit": "^1.2.2",
     "prettier": "^2.8.2",
-    "standard-version": "^9.5.0"
+    "standard-version": "^9.5.0",
+    "supertest": "^6.3.3"
   },
   "lint-staged": {
     "*.{js,ts}": "eslint --fix",

@@ -97,5 +97,27 @@
         "eventKey": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03"
       }
     }
+  },
+  {
+    "batched": false,
+    "error": "Invalid URL: url",
+    "metadata": [
+      {
+        "jobId": 5
+      }
+    ],
+    "destination": {
+      "Config": {
+        "apiKey": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "apiUrl": "https://active.campaigns.rudder.com",
+        "actid": "476550467",
+        "eventKey": "f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03"
+      }
+    },
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    },
+    "statusCode": 400
   }
 ]

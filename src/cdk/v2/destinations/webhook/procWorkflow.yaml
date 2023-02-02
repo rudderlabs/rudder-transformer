@@ -1,0 +1,82 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - path: ../../../../v0/destinations/webhook/utils
+  - name: getHashFromArray
+    path: ../../../../v0/util
+  - name: getIntegrationsObj
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+
+steps:
+  - name: checkIfProcessed
+    condition: .message.statusCode
+    template: |
+      $.batchMode ? .message.body.JSON : .message
+    onComplete: return
+  - name: validateInput
+    template: |
+      $.assertConfig(.destination.Config.webhookUrl, "Invalid URL in destination config");
+      $.assert(.message.type.toLowerCase(), "Message type is not present. Aborting message.");
+  - name: deduceMethod
+    template: |
+       $.context.method = .destination.Config.webhookMethod ?? 'POST';
+  - name: buildHeaderBlock
+    template: |
+        let defaultHeaders = $.context.method in ['POST', 'PUT', 'PATCH'] ? {"content-type": "application/json"} : {}
+        let configHeaders = $.getHashFromArray(.destination.Config.headers)  
+        let messageHeader = typeof .message.header === "object" ? Object.assign(...Object.entries(.message.header).{typeof .[1] === 'string'}[].({[.[0]]: .[1]})[]) : {}  
+        $.context.finalHeaders = {
+          ...defaultHeaders,
+          ...configHeaders,
+          ...messageHeader
+        }
+
+  - name: deduceEndPoint
+    template: |
+        let integrationsObjects = $.getIntegrationsObj(.message, "webhook");
+        let defaultEndpoint = .destination.Config.webhookUrl;
+        let messageAppendPath = .message.appendPath ?? integrationsObjects.appendPath ?? "";
+        
+        $.context.finalEndpoint = .message.fullPath ?? integrationsObjects.fullPath ?? defaultEndpoint;
+        $.context.finalEndpoint = $.context.finalEndpoint + messageAppendPath;
+  - name: prepareContext
+    template: |
+      $.context.params = {}
+      $.context.payload = {}
+  - name: prepareParams
+    condition: $.context.method in ['GET', 'DELETE']
+    template: |
+      $.context.params = $.getPropertyParams(.message) ?? {}
+  - name: prepareBody
+    condition: $.context.method in ['POST', 'PUT', 'PATCH']
+    template: |
+      let ip = .message.context.ip ?? .message.request_ip;
+      let payload = .message{~["fullPath", "appendPath", "header"]}
+      ip && (
+        payload.context = payload.context || {};
+        payload.context.ip = ip;
+      )
+      $.context.payload = $.removeUndefinedAndNullValues(payload)
+  - name: buildResponseForProcessTransformation
+    template: |
+       $.context.payload.({
+          "body": {
+            "JSON": .,
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "version": "1",
+          "userId": ^.message.anonymousId,
+          "type": "REST",
+          "method": $.context.method,
+          "endpoint": $.context.finalEndpoint,
+          "headers": $.context.finalHeaders,
+          "params": $.context.params,
+          "files": {}
+        })
+        

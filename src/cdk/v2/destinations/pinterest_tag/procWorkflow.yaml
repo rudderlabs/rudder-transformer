@@ -8,6 +8,8 @@ bindings:
     path: ../../../../v0/destinations/pinterest_tag/config
   - name: removeUndefinedValues
     path: ../../../../v0/util
+  - name: removeEmptyValues
+    path: ../../../../v0/util
 steps:
   - name: checkIfProcessed
     condition: .message.statusCode
@@ -93,6 +95,7 @@ steps:
         "client_user_agent": .context.userAgent
       });
       userFields = $.removeUndefinedValues(userFields);
+      userFields = $.removeEmptyValues(userFields);
       .destination.Config.sendingUnHashedData ? 
         $.processUserPayload(userFields) :
         $.processHashedUserPayload(userFields, .message)

@@ -495,9 +495,9 @@
           "phone": "92374162212",
           "action": "conv.add_to_cart",
           "bounceiD": "fakefake",
-          "merch_id": "merchFBoXoX101",
+          "merch_id": false,
           "timestamp": 1571043797,
-          "unit_id": "123",
+          "unit_id": 123,
           "customer_id": "anon_id",
           "conversion_source": "RudderStack",
           "counce_id": ""

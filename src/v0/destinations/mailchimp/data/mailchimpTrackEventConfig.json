@@ -1,0 +1,24 @@
+[
+  {
+    "destKey": "name",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "required": false
+  },
+  {
+    "destKey": "occurred_at",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "is_syncing",
+    "sourceKeys": "properties.isSyncing",
+    "sourceFromGenericMap": false,
+    "required": false
+  }
+]

@@ -18,6 +18,7 @@ const {
   getErrorRespEvents,
   isCdkDestination,
   getErrorStatusCode,
+  checkAndCorrectUserId,
 } = require('./v0/util');
 const { processDynamicConfig } = require('./util/dynamicConfig');
 const { DestHandlerMap } = require('./constants/destinationCanonicalNames');
@@ -139,9 +140,9 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
     if (Object.keys(objectDiff).length > 0) {
       stats.counter('cdk_live_compare_test_failed', 1, { destType, feature });
       logger.error(
-      `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff_keys=${JSON.stringify(
-        Object.keys(objectDiff)
-      )}`
+        `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff_keys=${JSON.stringify(
+          Object.keys(objectDiff)
+        )}`
       );
       // logger.error(
       //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff=${JSON.stringify(
@@ -166,6 +167,17 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
     logger.error(`[LIVE_COMPARE_TEST] errored for destType=${destType}, feature=${feature}`, error);
   }
 }
+
+/**
+ * Enriches the transformed event with more information
+ * - userId stringification
+ * 
+ * @param {Object} transformedEvent - single transformed event
+ * @returns transformedEvent after enrichment
+ */
+const enrichTransformedEvent = (transformedEvent) => (
+  { ...transformedEvent, userId: checkAndCorrectUserId(transformedEvent.statusCode, transformedEvent?.userId) }
+);
 
 async function handleV0Destination(destHandler, destType, inputArr, feature) {
   const v0Result = {};
@@ -255,33 +267,17 @@ async function handleDest(ctx, version, destination) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];
           }
-          return respEvents.map((ev) => {
-            let { userId } = ev;
-            const { statusCode } = ev;
-            // Set the user ID to an empty string for
-            // all the falsy values (including 0 and false)
-            // Otherwise, server panics while un-marshalling the response
-            // while expecting only strings.
-            if (!userId) {
-              userId = '';
-            }
-
-            if (statusCode !== 400 && userId) {
-              userId = `${userId}`;
-            }
-
-            return {
-              output: { ...ev, userId },
-              metadata: destHandler?.processMetadata
-                ? destHandler.processMetadata({
-                    metadata: event.metadata,
-                    inputEvent: parsedEvent,
-                    outputEvent: ev,
-                  })
-                : event.metadata,
-              statusCode: 200,
-            };
-          });
+          return respEvents.map((ev) => ({
+            output: enrichTransformedEvent(ev),
+            metadata: destHandler?.processMetadata
+              ? destHandler.processMetadata({
+                metadata: event.metadata,
+                inputEvent: parsedEvent,
+                outputEvent: ev,
+              })
+              : event.metadata,
+            statusCode: 200,
+          }));
         }
         return undefined;
       } catch (error) {
@@ -487,11 +483,23 @@ async function routerHandleDest(ctx) {
             tags.FEATURES.ROUTER,
           );
         }
-        if (routerDestHandler.processMetadataForRouter) {
-          listOutput.forEach((output) => {
-            output.metadata = routerDestHandler.processMetadataForRouter(output);
-          });
-        }
+        const hasProcMetadataForRouter = routerDestHandler.processMetadataForRouter;
+        // enriching transformed event
+        listOutput.forEach(listOut => {
+          const { batchedRequest } = listOut;
+          if (Array.isArray(batchedRequest)) {
+            // eslint-disable-next-line no-param-reassign
+            listOut.batchedRequest = batchedRequest.map(batReq => enrichTransformedEvent(batReq));
+          } else if (batchedRequest && typeof batchedRequest === 'object') {
+            // eslint-disable-next-line no-param-reassign
+            listOut.batchedRequest = enrichTransformedEvent(batchedRequest);
+          }
+
+          if (hasProcMetadataForRouter) {
+            // eslint-disable-next-line no-param-reassign
+            listOut.metadata = routerDestHandler.processMetadataForRouter(listOut);
+          }
+        });
         respEvents.push(...listOutput);
       }),
     );

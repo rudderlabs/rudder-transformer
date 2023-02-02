@@ -7,6 +7,7 @@ const router = new Router();
 router.post(
   '/:version/sources/:source',
   RouteActivationController.isSourceRouteActive,
+  RouteActivationController.sourceFilter,
   SourceController.sourceTransform,
 );
 

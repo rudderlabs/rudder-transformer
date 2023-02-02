@@ -7,6 +7,7 @@ const router = new Router();
 router.post(
   '/:version/destinations/:destination/proxy',
   RouteActivationController.isDeliveryRouteActive,
+  RouteActivationController.destinationDeliveryFilter,
   DeliveryController.deliverToDestination,
 );
 

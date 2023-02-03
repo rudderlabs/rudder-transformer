@@ -114,6 +114,9 @@ jobs:
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ steps.extract_branch.outputs.branch }}
             ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }}
+          platforms: |
+            linux/amd64
+            linux/arm64
           build-args: |
             VERSION=${{ steps.extract_branch.outputs.branch }}
             COMMIT_HASH=${{ github.sha }}

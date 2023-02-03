@@ -58,6 +58,9 @@ jobs:
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ steps.get_version.outputs.version }}
             ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }}
+          platforms: |
+            linux/amd64
+            linux/arm64
           build-args: |
             VERSION=${{ steps.get_version.outputs.version }}
             COMMIT_HASH=${{ github.sha }}

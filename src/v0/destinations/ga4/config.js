@@ -60,22 +60,26 @@ const ConfigCategory = {
   PRODUCT_CLICKED: {
     name: 'GA4ProductClickedConfig',
     event: 'select_item',
+    itemList: 'NO',
     item: 'YES',
   },
   PRODUCT_VIEWED: {
     name: 'GA4ProductViewedConfig',
     event: 'view_item',
+    itemList: 'NO',
     item: 'YES',
   },
   PRODUCT_ADDED: {
     name: 'GA4ProductAddedConfig',
     event: 'add_to_cart',
-    itemList: 'YES',
+    itemList: 'NO',
+    item: 'YES',
   },
   PRODUCT_REMOVED: {
     name: 'GA4ProductRemovedConfig',
     event: 'remove_from_cart',
-    itemList: 'YES',
+    itemList: 'NO',
+    item: 'YES',
   },
   CART_VIEWED: {
     name: 'GA4CartViewedConfig',
@@ -112,7 +116,8 @@ const ConfigCategory = {
   PRODUCT_ADDED_TO_WISHLIST: {
     name: 'GA4ProductAddedToWishlistConfig',
     event: 'add_to_wishlist',
-    itemList: 'YES',
+    itemList: 'NO',
+    item: 'YES',
   },
 
   /* Sharing Section */

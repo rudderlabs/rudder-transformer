@@ -129,17 +129,32 @@ const responseBuilder = (message, { Config }) => {
     payload.name = evConfigEvent;
     payload.params = constructPayload(message, mappingConfig[name]);
 
-    if (item) {
+    let mapPropertiesToItems;
+    if (itemList && item) {
+      payload.params.items = getItemList(message, itemList === 'YES');
+
+      if (!(payload.params.items && payload.params.items.length > 0)) {
+        mapPropertiesToItems = true;
+        payload.params.items = getItem(message, item === 'YES');
+      }
+    } else if (item) {
       // item
       payload.params.items = getItem(message, item === 'YES');
+      mapPropertiesToItems = true;
     } else if (itemList) {
       // itemList
       payload.params.items = getItemList(message, itemList === 'YES');
     }
 
-    // for select_item and view_item event we take custom properties from properties
     // excluding items/product properties
-    if (payload.name === 'select_item' || payload.name === 'view_item') {
+    if (
+      mapPropertiesToItems &&
+      (payload.name === 'select_item' ||
+        payload.name === 'view_item' ||
+        payload.name === 'add_to_cart' ||
+        payload.name === 'remove_from_cart' ||
+        payload.name === 'add_to_wishlist')
+    ) {
       // exclude event properties
       let ITEM_EXCLUSION_LIST = getGA4ExclusionList(mappingConfig[name]);
       // exclude items/product properties

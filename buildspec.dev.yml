@@ -5,7 +5,7 @@ phases:
     runtime-versions:
       nodejs: 14
     commands:
-      - 'echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin'
+      - 'echo "${DOCKERHUB_PASSWORD}" | docker login --username rudderlabs --password-stdin'
       - wget https://github.com/docker/buildx/releases/download/v0.10.2/buildx-v0.10.2.linux-amd64
       - mkdir -p ~/.docker/cli-plugins
       - mv buildx-v0.10.2.linux-amd64 ~/.docker/cli-plugins/docker-buildx

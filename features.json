@@ -34,6 +34,7 @@
     "LAMBDA": true,
     "WOOTRIC": true,
     "GOOGLE_CLOUD_FUNCTION": true,
+    "BQSTREAM": true,
     "CLICKUP": true,
     "FRESHMARKETER": true,
     "FRESHSALES": true,
@@ -48,6 +49,9 @@
     "CAMPAIGN_MANAGER": true,
     "SENDGRID": true,
     "SENDINBLUE": true,
-    "TIKTOK_ADS_OFFLINE_EVENTS": true
+    "ZENDESK": true,
+    "MP": true,
+    "TIKTOK_ADS_OFFLINE_EVENTS": true,
+    "CRITEO_AUDIENCE": true
   }
 }

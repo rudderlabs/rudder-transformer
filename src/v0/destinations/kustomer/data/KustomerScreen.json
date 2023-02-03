@@ -12,16 +12,14 @@
     "destKey": "sessionId",
     "sourceKeys": [
       "properties.kustomerSessionId",
-      "properties.kustomer_session_id"
+      "properties.kustomer_session_id",
+      "context.sessionId"
     ],
     "required": false
   },
   {
     "destKey": "trackingId",
-    "sourceKeys": [
-      "properties.kustomerTrackingId",
-      "properties.kustomer_tracking_id"
-    ],
+    "sourceKeys": ["properties.kustomerTrackingId", "properties.kustomer_tracking_id"],
     "required": false
   },
   {

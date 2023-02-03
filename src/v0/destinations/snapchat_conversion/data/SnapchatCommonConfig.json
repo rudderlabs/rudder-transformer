@@ -1,7 +1,7 @@
 [
   {
     "destKey": "transaction_id",
-    "sourceKeys": ["properties.transaction_id","properties.transactionId"],
+    "sourceKeys": ["properties.transaction_id", "properties.transactionId"],
     "required": false
   },
   {
@@ -21,11 +21,7 @@
   },
   {
     "destKey": "price",
-    "sourceKeys": [
-      "properties.price",
-      "properties.value",
-      "properties.revenue"
-    ],
+    "sourceKeys": ["properties.price", "properties.value", "properties.revenue"],
     "required": false
   },
   {

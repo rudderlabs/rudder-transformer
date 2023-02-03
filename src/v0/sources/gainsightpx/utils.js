@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
-const { isDefinedAndNotNullAndNotEmpty } = require("../../util");
-const { traitsToDelete, accountTraitsToDelete } = require("./config");
+const { isDefinedAndNotNullAndNotEmpty } = require('../../util');
+const { traitsToDelete, accountTraitsToDelete } = require('./config');
 
 /**
  * This function removes all those variables which are
@@ -8,22 +8,18 @@ const { traitsToDelete, accountTraitsToDelete } = require("./config");
  * @param {*} obj
  * @returns payload without empty null or undefined variables
  */
-const refinePayload = obj => {
+const refinePayload = (obj) => {
   const refinedPayload = {};
-  Object.keys(obj).forEach(ele => {
-    if (
-      obj[ele] != null &&
-      typeof obj[ele] === "object" &&
-      !Array.isArray(obj[ele])
-    ) {
+  Object.keys(obj).forEach((ele) => {
+    if (obj[ele] != null && typeof obj[ele] === 'object' && !Array.isArray(obj[ele])) {
       const refinedObject = refinePayload(obj[ele]);
-      if (Object.keys(refinedObject).length !== 0) {
+      if (Object.keys(refinedObject).length > 0) {
         refinedPayload[ele] = refinePayload(obj[ele]);
       }
     } else if (
-      typeof obj[ele] === "boolean" ||
+      typeof obj[ele] === 'boolean' ||
       // eslint-disable-next-line no-restricted-globals
-      typeof obj[ele] === "number" ||
+      typeof obj[ele] === 'number' ||
       isDefinedAndNotNullAndNotEmpty(obj[ele])
     ) {
       refinedPayload[ele] = obj[ele];
@@ -37,12 +33,12 @@ const refinePayload = obj => {
  * @param {*} message
  * @returns message payload withoout redundancy
  */
-const refineTraitPayload = message => {
-  traitsToDelete.forEach(ele => {
+const refineTraitPayload = (message) => {
+  traitsToDelete.forEach((ele) => {
     delete message.traits[ele];
   });
   if (message.traits?.account) {
-    accountTraitsToDelete.forEach(ele => {
+    accountTraitsToDelete.forEach((ele) => {
       delete message.traits.account[ele];
     });
   }

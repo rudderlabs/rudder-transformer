@@ -32,7 +32,6 @@
     "files": {}
   },
   {
-
     "statusCode": 400,
     "error": "[Attentive Tag]:The event name contains characters which is not allowed"
   },

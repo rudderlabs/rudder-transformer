@@ -1,11 +1,11 @@
 /* eslint-disable no-param-reassign */
-const { EventType } = require("../../../constants");
+const { EventType } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   WEBENGAGE_IDENTIFY_EXCLUSION,
-  ENDPOINT
-} = require("./config");
+  ENDPOINT,
+} = require('./config');
 
 const {
   defaultRequestConfig,
@@ -13,12 +13,9 @@ const {
   defaultPostRequestConfig,
   ErrorMessage,
   simpleProcessRouterDest,
-  extractCustomFields
-} = require("../../util");
-const {
-  InstrumentationError,
-  TransformationError
-} = require("../../util/errorTypes");
+  extractCustomFields,
+} = require('../../util');
+const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 
 const responseBuilder = (message, category, { Config }) => {
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -29,17 +26,13 @@ const responseBuilder = (message, category, { Config }) => {
     throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
   if (!payload.userId && !payload.anonymousId) {
-    throw new InstrumentationError(
-      "Either one of userId or anonymousId is mandatory"
-    );
+    throw new InstrumentationError('Either one of userId or anonymousId is mandatory');
   }
 
-  if (category.type === "identify") {
+  if (category.type === 'identify') {
     const eventTimeStamp = payload.birthDate;
-    if (eventTimeStamp === "Invalid date") {
-      throw new InstrumentationError(
-        "birthday must be in this (YYYY-MM-DD) format"
-      );
+    if (eventTimeStamp === 'Invalid date') {
+      throw new InstrumentationError('birthday must be in this (YYYY-MM-DD) format');
     }
     const customAttributes = {};
     payload = {
@@ -47,25 +40,23 @@ const responseBuilder = (message, category, { Config }) => {
       attributes: extractCustomFields(
         message,
         customAttributes,
-        ["context.traits", "traits"],
-        WEBENGAGE_IDENTIFY_EXCLUSION
-      )
+        ['context.traits', 'traits'],
+        WEBENGAGE_IDENTIFY_EXCLUSION,
+      ),
     };
     endPoint = `${ENDPOINT(dataCenter)}/${licenseCode}/users`;
   } else {
     const eventTimeStamp = payload.eventTime;
-    if (eventTimeStamp === "Invalid date") {
-      throw new InstrumentationError(
-        "Timestamp must be ISO format (YYYY-MM-DD)"
-      );
+    if (eventTimeStamp === 'Invalid date') {
+      throw new InstrumentationError('Timestamp must be ISO format (YYYY-MM-DD)');
     }
     endPoint = `${ENDPOINT(dataCenter)}/${licenseCode}/events`;
   }
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${apiKey}`
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${apiKey}`,
   };
   response.endpoint = endPoint;
   response.body.JSON = payload;
@@ -74,7 +65,7 @@ const responseBuilder = (message, category, { Config }) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
   let eventName;
   let category;
@@ -101,15 +92,11 @@ const processEvent = (message, destination) => {
       message.event = eventName;
       return responseBuilder(message, CONFIG_CATEGORIES.EVENT, destination);
     default:
-      throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
-      );
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

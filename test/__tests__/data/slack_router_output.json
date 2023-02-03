@@ -1,5 +1,62 @@
 [
   {
+    "destination": {
+      "ID": "1ZQVSU9SXNg6KYgZALaqjAO3PIL",
+      "Name": "test-slack",
+      "DestinationDefinition": {
+        "ID": "1ZQUiJVMlmF7lfsdfXg7KXQnlLV",
+        "Name": "SLACK",
+        "DisplayName": "Slack",
+        "Config": {
+          "excludeKeys": [],
+          "includeKeys": []
+        }
+      },
+      "Config": {
+        "eventChannelSettings": [
+          {
+            "eventChannel": "#slack_integration",
+            "eventName": "is",
+            "eventRegex": true
+          },
+          {
+            "eventChannel": "",
+            "eventName": "",
+            "eventRegex": false
+          },
+          {
+            "eventChannel": "",
+            "eventName": "",
+            "eventRegex": false
+          }
+        ],
+        "eventTemplateSettings": [
+          {
+            "eventName": "is",
+            "eventRegex": true,
+            "eventTemplate": "{{name}} performed {{event}} with {{properties.key1}} {{properties.key2}}"
+          },
+          {
+            "eventName": "",
+            "eventRegex": false,
+            "eventTemplate": ""
+          }
+        ],
+        "identifyTemplate": "identified {{name}} with {{traits}}",
+        "webhookUrl": "https://hooks.slack.com/services/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",
+        "whitelistedTraitsSettings": [
+          {
+            "trait": "hiji"
+          },
+          {
+            "trait": ""
+          }
+        ]
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
     "metadata": [
       {
         "anonymousId": "4de817fb-7f8e-4e23-b9be-f6736dbda20f",

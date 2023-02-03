@@ -115,21 +115,14 @@ def transformWrapper(events):
     return result
 `;
 
-const isABufferValue = value => {
-  return (
-    value &&
-    value.buffer instanceof ArrayBuffer &&
-    value.byteLength !== undefined
-  );
-};
+const isABufferValue = (value) =>
+  value && value.buffer instanceof ArrayBuffer && value.byteLength !== undefined;
 
-const bufferToString = value => {
-  return Buffer.from(value).toString();
-};
+const bufferToString = (value) => Buffer.from(value).toString();
 
 module.exports = {
   LOG_DEF_CODE,
   TRANSFORM_WRAPPER_CODE,
   bufferToString,
-  isABufferValue
+  isABufferValue,
 };

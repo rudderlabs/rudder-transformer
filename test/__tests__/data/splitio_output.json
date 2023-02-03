@@ -186,7 +186,7 @@
     "error": "Event type abc is not supported"
   },
   {
-    "error": "eventTypeId does not match with ideal format /^[a-zA-Z0-9][-_.a-zA-Z0-9]{0,79}$/"
+    "error": "eventTypeId does not match with ideal format /^[\\dA-Za-z][\\w.-]{0,79}$/"
   },
   {
     "version": "1",

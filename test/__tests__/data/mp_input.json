@@ -3411,77 +3411,77 @@
   },
   {
     "destination": {
-        "Config": {
-            "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-            "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-            "prefixProperties": true,
-            "useNativeSDK": false,
-            "groupKeySettings": [
-                {
-                    "groupKey": "groupId"
-                }
-            ]
-        },
-        "DestinationDefinition": {
-            "DisplayName": "Kiss Metrics",
-            "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
-            "Name": "MIXPANEL"
-        },
-        "Enabled": true,
-        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
-        "Name": "Kiss Metrics",
-        "Transformations": []
+      "Config": {
+        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false,
+        "groupKeySettings": [
+          {
+            "groupKey": "groupId"
+          }
+        ]
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Kiss Metrics",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MIXPANEL"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Kiss Metrics",
+      "Transformations": []
     },
     "message": {
-        "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-        "channel": "mobile",
-        "name": "Contact Us",
-        "context": {
-            "app": {
-                "build": "1.0.0",
-                "name": "RudderLabs Android SDK",
-                "namespace": "com.rudderlabs.javascript",
-                "version": "1.0.5"
-            },
-            "ip": "0.0.0.0",
-            "library": {
-                "name": "RudderLabs JavaScript SDK",
-                "version": "1.0.5"
-            },
-            "locale": "en-GB",
-            "os": {
-                "name": "",
-                "version": ""
-            },
-            "screen": {
-                "density": 2
-            },
-            "traits": {},
-            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+      "channel": "mobile",
+      "name": "Contact Us",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs Android SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
         },
-        "integrations": {
-            "All": true
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
         },
-        "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
-        "originalTimestamp": "2020-01-24T06:29:02.358Z",
-        "properties": {
-            "path": "/tests/html/index2.html",
-            "referrer": "",
-            "search": "",
-            "title": "",
-            "url": "http://localhost/tests/html/index2.html"
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
         },
-        "traits": {
-            "company": "testComp",
-            "groupId" : "groupIdInTraits"
+        "screen": {
+          "density": 2
         },
-        "receivedAt": "2020-01-24T11:59:02.403+05:30",
-        "request_ip": "[::1]:53708",
-        "sentAt": "2020-01-24T06:29:02.359Z",
-        "timestamp": "2020-01-24T11:59:02.402+05:30",
-        "type": "group",
-        "userId": "hjikl",
-        "groupId": "testGroupId"
+        "traits": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+      "originalTimestamp": "2020-01-24T06:29:02.358Z",
+      "properties": {
+        "path": "/tests/html/index2.html",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": "http://localhost/tests/html/index2.html"
+      },
+      "traits": {
+        "company": "testComp",
+        "groupId": "groupIdInTraits"
+      },
+      "receivedAt": "2020-01-24T11:59:02.403+05:30",
+      "request_ip": "[::1]:53708",
+      "sentAt": "2020-01-24T06:29:02.359Z",
+      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "type": "group",
+      "userId": "hjikl",
+      "groupId": "testGroupId"
     }
-}
+  }
 ]

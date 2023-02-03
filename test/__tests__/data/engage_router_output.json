@@ -102,6 +102,20 @@
         "jobId": 3
       }
     ],
+    "destination": {
+      "Config": {
+        "publicKey": "49ur490rjfo34gi04y38r9go",
+        "privateKey": "n89g389yr389fgbef0u2rff",
+        "listIds": [
+          {
+            "listId": "9834trg3rgy3g08oi9893rgfb"
+          },
+          {
+            "listId": "f39487tyh49go3h093gh2if2f2"
+          }
+        ]
+      }
+    },
     "statTags": {
       "errorCategory": "dataValidation",
       "errorType": "instrumentation"

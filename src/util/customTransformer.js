@@ -1,19 +1,13 @@
-const ivm = require("isolated-vm");
-const fetch = require("node-fetch");
-const { getTransformationCode } = require("./customTransforrmationsStore");
-const stats = require("./stats");
-const { UserTransformHandlerFactory } = require("./customTransformerFactory");
+const ivm = require('isolated-vm');
+const fetch = require('node-fetch');
+const { getTransformationCode } = require('./customTransforrmationsStore');
+const stats = require('./stats');
+const { UserTransformHandlerFactory } = require('./customTransformerFactory');
 
-async function runUserTransform(
-  events,
-  code,
-  eventsMetadata,
-  versionId,
-  testMode = false
-) {
+async function runUserTransform(events, code, eventsMetadata, versionId, testMode = false) {
   const tags = {
     transformerVersionId: versionId,
-    version: 0
+    version: 0,
   };
   // TODO: Decide on the right value for memory limit
   const isolate = new ivm.Isolate({ memoryLimit: 128 });
@@ -22,32 +16,28 @@ async function runUserTransform(
   const jail = context.global;
   // This make the global object available in the context as 'global'. We use 'derefInto()' here
   // because otherwise 'global' would actually be a Reference{} object in the new isolate.
-  await jail.set("global", jail.derefInto());
+  await jail.set('global', jail.derefInto());
 
   // The entire ivm module is transferable! We transfer the module to the new isolate so that we
   // have access to the library from within the isolate.
-  await jail.set("_ivm", ivm);
+  await jail.set('_ivm', ivm);
   await jail.set(
-    "_fetch",
+    '_fetch',
     new ivm.Reference(async (resolve, ...args) => {
       try {
         const fetchStartTime = new Date();
         const res = await fetch(...args);
         const data = await res.json();
-        stats.timing("fetch_call_duration", fetchStartTime, { versionId });
-        resolve.applyIgnored(undefined, [
-          new ivm.ExternalCopy(data).copyInto()
-        ]);
+        stats.timing('fetch_call_duration', fetchStartTime, { versionId });
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
-        resolve.applyIgnored(undefined, [
-          new ivm.ExternalCopy("ERROR").copyInto()
-        ]);
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
       }
-    })
+    }),
   );
 
   await jail.set(
-    "_fetchV2",
+    '_fetchV2',
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
@@ -60,45 +50,39 @@ async function runUserTransform(
           url: res.url,
           status: res.status,
           headers: headersContent,
-          body: await res.text()
+          body: await res.text(),
         };
 
         try {
           data.body = JSON.parse(data.body);
         } catch (e) {}
 
-        stats.timing("fetchV2_call_duration", fetchStartTime, { versionId });
-        resolve.applyIgnored(undefined, [
-          new ivm.ExternalCopy(data).copyInto()
-        ]);
+        stats.timing('fetchV2_call_duration', fetchStartTime, { versionId });
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
-        const err = JSON.parse(
-          JSON.stringify(error, Object.getOwnPropertyNames(error))
-        );
+        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
         reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
       }
-    })
+    }),
   );
 
-  jail.setSync("log", function(...args) {
+  jail.setSync('log', function (...args) {
     if (testMode) {
-      let logString = "Log:";
-      args.forEach(arg => {
-        logString = logString.concat(
-          ` ${typeof arg === "object" ? JSON.stringify(arg) : arg}`
-        );
+      let logString = 'Log:';
+      args.forEach((arg) => {
+        logString = logString.concat(` ${typeof arg === 'object' ? JSON.stringify(arg) : arg}`);
       });
       logs.push(logString);
     }
   });
 
-  jail.setSync("metadata", function(...args) {
+  jail.setSync('metadata', function (...args) {
     const eventMetadata = eventsMetadata[args[0].messageId] || {};
     return new ivm.ExternalCopy(eventMetadata).copyInto();
   });
 
   const bootstrap = await isolate.compileScript(
-    "new " +
+    'new ' +
       `
     function() {
       // Grab a reference to the ivm module and delete it from global scope. Now this closure is the
@@ -156,7 +140,7 @@ async function runUserTransform(
           });
         }
 
-        `
+        `,
   );
 
   // Now we can execute the script we just compiled:
@@ -164,20 +148,20 @@ async function runUserTransform(
 
   const customScript = await isolate.compileScript(`${code}`);
   await customScript.run(context);
-  const fnRef = await jail.get("transform", { reference: true });
+  const fnRef = await jail.get('transform', { reference: true });
   // stat
-  stats.counter("events_into_vm", events.length, tags);
+  stats.counter('events_into_vm', events.length, tags);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
   const executionPromise = new Promise(async (resolve, reject) => {
     const sharedMessagesList = new ivm.ExternalCopy(events).copyInto({
-      transferIn: true
+      transferIn: true,
     });
     try {
       await bootstrapScriptResult.apply(undefined, [
         fnRef,
         new ivm.Reference(resolve),
-        sharedMessagesList
+        sharedMessagesList,
       ]);
     } catch (error) {
       reject(error.message);
@@ -185,15 +169,15 @@ async function runUserTransform(
   });
   let result;
   try {
-    const timeoutPromise = new Promise(resolve => {
+    const timeoutPromise = new Promise((resolve) => {
       const wait = setTimeout(() => {
         clearTimeout(wait);
-        resolve("Timedout");
+        resolve('Timedout');
       }, 4000);
     });
     result = await Promise.race([executionPromise, timeoutPromise]);
-    if (result === "Timedout") {
-      throw new Error("Timed out");
+    if (result === 'Timedout') {
+      throw new Error('Timed out');
     }
   } catch (error) {
     throw error;
@@ -208,7 +192,7 @@ async function runUserTransform(
 
   return {
     transformedEvents: result,
-    logs
+    logs,
   };
 }
 
@@ -217,38 +201,38 @@ async function userTransformHandler(
   versionId,
   libraryVersionIDs,
   trRevCode = {},
-  testMode = false
+  testMode = false,
 ) {
   if (versionId) {
     const res = testMode ? trRevCode : await getTransformationCode(versionId);
     if (res) {
       // Events contain message and destination. We take the message part of event and run transformation on it.
       // And put back the destination after transforrmation
-      const eventMessages = events.map(event => event.message);
+      const eventMessages = events.map((event) => event.message);
       const eventsMetadata = {};
-      events.forEach(ev => {
+      events.forEach((ev) => {
         eventsMetadata[ev.message.messageId] = ev.metadata;
       });
 
       let userTransformedEvents = [];
       let result;
-      if (res.codeVersion && res.codeVersion === "1") {
+      if (res.codeVersion && res.codeVersion === '1') {
         result = await UserTransformHandlerFactory(res).runUserTransfrom(
           events,
           testMode,
-          libraryVersionIDs
+          libraryVersionIDs,
         );
 
         userTransformedEvents = result.transformedEvents;
         if (testMode) {
           userTransformedEvents = {
-            transformedEvents: result.transformedEvents.map(ev => {
+            transformedEvents: result.transformedEvents.map((ev) => {
               if (ev.error) {
                 return { error: ev.error };
               }
               return ev.transformedEvent;
             }),
-            logs: result.logs
+            logs: result.logs,
           };
         }
       } else {
@@ -257,14 +241,14 @@ async function userTransformHandler(
           res.code,
           eventsMetadata,
           versionId,
-          testMode
+          testMode,
         );
 
         userTransformedEvents = testMode
           ? result
-          : result.transformedEvents.map(ev => ({
+          : result.transformedEvents.map((ev) => ({
               transformedEvent: ev,
-              metadata: {}
+              metadata: {},
             }));
       }
       return userTransformedEvents;
@@ -276,14 +260,12 @@ async function userTransformHandler(
 async function setupUserTransformHandler(
   trRevCode = {},
   libraryVersionIDs,
-  testWithPublish = false
+  testWithPublish = false,
 ) {
-  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(
-    testWithPublish
-  );
+  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(testWithPublish);
   return resp;
 }
 module.exports = {
   userTransformHandler,
-  setupUserTransformHandler
+  setupUserTransformHandler,
 };

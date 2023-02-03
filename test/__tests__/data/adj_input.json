@@ -88,12 +88,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -209,12 +204,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -331,12 +321,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -453,12 +438,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -575,12 +555,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -697,12 +672,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -818,12 +788,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -940,12 +905,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -1061,12 +1021,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -1182,12 +1137,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -1303,12 +1253,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -1424,12 +1369,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -1526,12 +1466,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -1648,12 +1583,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -1750,12 +1680,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -1852,12 +1777,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -1974,12 +1894,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },
@@ -2115,12 +2030,7 @@
         "Config": {
           "destConfig": {
             "android": ["useNativeSDK"],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
             "ios": ["useNativeSDK"],
             "reactnative": ["useNativeSDK"]
           },

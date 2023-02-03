@@ -1,12 +1,12 @@
-const { getMappingConfig } = require("../../util");
+const { getMappingConfig } = require('../../util');
 
 const ConfigCategory = {
   IDENTIFY: {
-    name: "BrazeUserAttributesConfig"
+    name: 'BrazeUserAttributesConfig',
   },
   DEFAULT: {
-    name: "BrazeUserAttributesConfig"
-  }
+    name: 'BrazeUserAttributesConfig',
+  },
 };
 
 function getIdentifyEndpoint(endPoint) {
@@ -23,7 +23,7 @@ function getSubscriptionGroupEndPoint(endPoint) {
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
-const BRAZE_PARTNER_NAME = "RudderStack";
+const BRAZE_PARTNER_NAME = 'RudderStack';
 
 // max requests per batch
 // Ref: https://www.braze.com/docs/api/endpoints/user_data/post_user_track/
@@ -32,19 +32,19 @@ const IDENTIFY_BRAZE_MAX_REQ_COUNT = 50;
 // https://www.braze.com/docs/api/endpoints/user_data/post_user_delete/
 
 const DEL_MAX_BATCH_SIZE = 50;
-const DESTINATION = "braze";
+const DESTINATION = 'braze';
 
 const nestedOperationTypes = {
-  REMOVE: "remove",
-  UPDATE: "update",
-  ADD: "add",
-  CREATE: "create"
+  REMOVE: 'remove',
+  UPDATE: 'update',
+  ADD: 'add',
+  CREATE: 'create',
 };
 
 const supportedOperationTypes = [
   nestedOperationTypes.ADD,
   nestedOperationTypes.REMOVE,
-  nestedOperationTypes.UPDATE
+  nestedOperationTypes.UPDATE,
 ];
 
 module.exports = {
@@ -59,5 +59,5 @@ module.exports = {
   DESTINATION,
   nestedOperationTypes,
   supportedOperationTypes,
-  DEL_MAX_BATCH_SIZE
+  DEL_MAX_BATCH_SIZE,
 };

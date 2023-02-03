@@ -188,9 +188,7 @@
         "Config": {
           "apiKey": "262fbbda-b85b-48b8-a719-c2fceaf8afaf",
           "appSubdomain": "commander",
-          "userAttributesMapping": [
-            { "from": "useroccupation", "to": "occupation" }
-          ]
+          "userAttributesMapping": [{ "from": "useroccupation", "to": "occupation" }]
         }
       }
     },
@@ -261,9 +259,7 @@
         "Config": {
           "apiKey": "262fbbda-b85b-48b8-a719-c2fceaf8afaf",
           "appSubdomain": "commander",
-          "userAttributesMapping": [
-            { "from": "useroccupation", "to": "occupation" }
-          ]
+          "userAttributesMapping": [{ "from": "useroccupation", "to": "occupation" }]
         }
       }
     },
@@ -352,9 +348,7 @@
         "Config": {
           "apiKey": "262fbbda-b85b-48b8-a719-c2fceaf8afaf",
           "appSubdomain": "commander",
-          "userAttributesMapping": [
-            { "from": "useroccupation", "to": "occupation" }
-          ],
+          "userAttributesMapping": [{ "from": "useroccupation", "to": "occupation" }],
           "userEvents": [
             {
               "rsEventName": "login",
@@ -454,9 +448,7 @@
         "Config": {
           "apiKey": "262fbbda-b85b-48b8-a719-c2fceaf8afaf",
           "appSubdomain": "commander",
-          "userAttributesMapping": [
-            { "from": "useroccupation", "to": "occupation" }
-          ],
+          "userAttributesMapping": [{ "from": "useroccupation", "to": "occupation" }],
           "userEvents": [
             {
               "rsEventName": "login",
@@ -527,9 +519,7 @@
         "Config": {
           "apiKey": "262fbbda-b85b-48b8-a719-c2fceaf8afaf",
           "appSubdomain": "commander",
-          "userAttributesMapping": [
-            { "from": "useroccupation", "to": "occupation" }
-          ],
+          "userAttributesMapping": [{ "from": "useroccupation", "to": "occupation" }],
           "userEvents": [
             {
               "rsEventName": "login",

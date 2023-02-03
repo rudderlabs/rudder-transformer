@@ -6,10 +6,7 @@
         "destination": {
           "Config": {
             "apiKey": "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",
-            "eventNamesSettings": [
-              { "event": "testing" },
-              { "event": "clicked" }
-            ],
+            "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
             "subject": "A sample subject",
             "replyToEmail": "ankit@rudderstack.com",
             "contents": [
@@ -130,10 +127,7 @@
         "destination": {
           "Config": {
             "apiKey": "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",
-            "eventNamesSettings": [
-              { "event": "testing" },
-              { "event": "clicked" }
-            ],
+            "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
             "subject": "A sample subject",
             "replyToEmail": "ankit@rudderstack.com",
             "contents": [

@@ -72,15 +72,27 @@
         "Name": "OMETRIA",
         "DisplayName": "Ometria",
         "Config": {
-              "transformAt": "router",
-              "transformAtV1": "router",
-              "saveDestinationResponse": true,
-              "includeKeys": [],
-              "excludeKeys": [],
-              "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative", "flutter", "cordova"],
-              "supportedMessageTypes": ["identify", "track"],
-              "destConfig": { "defaultConfig": ["apiKey", "marketingOptin", "allowMarketing", "allowTransactional"] },
-              "secretKeys": ["apiKey"]
+          "transformAt": "router",
+          "transformAtV1": "router",
+          "saveDestinationResponse": true,
+          "includeKeys": [],
+          "excludeKeys": [],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportedMessageTypes": ["identify", "track"],
+          "destConfig": {
+            "defaultConfig": ["apiKey", "marketingOptin", "allowMarketing", "allowTransactional"]
+          },
+          "secretKeys": ["apiKey"]
         },
         "ResponseRules": {}
       },
@@ -169,15 +181,27 @@
         "Name": "OMETRIA",
         "DisplayName": "Ometria",
         "Config": {
-              "transformAt": "router",
-              "transformAtV1": "router",
-              "saveDestinationResponse": true,
-              "includeKeys": [],
-              "excludeKeys": [],
-              "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative", "flutter", "cordova"],
-              "supportedMessageTypes": ["identify", "track"],
-              "destConfig": { "defaultConfig": ["apiKey", "marketingOptin", "allowMarketing", "allowTransactional"] },
-              "secretKeys": ["apiKey"]
+          "transformAt": "router",
+          "transformAtV1": "router",
+          "saveDestinationResponse": true,
+          "includeKeys": [],
+          "excludeKeys": [],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportedMessageTypes": ["identify", "track"],
+          "destConfig": {
+            "defaultConfig": ["apiKey", "marketingOptin", "allowMarketing", "allowTransactional"]
+          },
+          "secretKeys": ["apiKey"]
         },
         "ResponseRules": {}
       },

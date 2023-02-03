@@ -70,11 +70,7 @@
   },
   {
     "destKey": "timezone",
-    "sourceKeys": [
-      "context.timezone",
-      "traits.timezone",
-      "context.traits.timezone"
-    ],
+    "sourceKeys": ["context.timezone", "traits.timezone", "context.traits.timezone"],
     "required": false
   },
   {
@@ -89,18 +85,12 @@
   },
   {
     "destKey": "timestamp_subscribed",
-    "sourceKeys": [
-      "traits.timestampSubscribed",
-      "context.traits.timestampSubscribed"
-    ],
+    "sourceKeys": ["traits.timestampSubscribed", "context.traits.timestampSubscribed"],
     "required": false
   },
   {
     "destKey": "timestamp_unsubscribed",
-    "sourceKeys": [
-      "traits.timestampUnsubscribed",
-      "context.traits.timestampUnsubscribed"
-    ],
+    "sourceKeys": ["traits.timestampUnsubscribed", "context.traits.timestampUnsubscribed"],
     "required": false
   },
   {

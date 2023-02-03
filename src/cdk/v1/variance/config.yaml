@@ -6,8 +6,8 @@ message:
       response:
         format: JSON
         method: POST
-        endpoint: "{{ destConfig.webhookUrl }}"
+        endpoint: '{{ destConfig.webhookUrl }}'
         headers:
-          authorization: "{{ destConfig.authHeader }}"
-          content-type: "application/json"
-        userId: "{{ message.anonymousId }}"
+          authorization: '{{ destConfig.authHeader }}'
+          content-type: 'application/json'
+        userId: '{{ message.anonymousId }}'

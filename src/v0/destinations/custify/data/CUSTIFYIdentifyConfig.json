@@ -24,18 +24,12 @@
   },
   {
     "destKey": "unsubscribed_from_emails",
-    "sourceKeys": [
-      "traits.unsubscribedFromEmails",
-      "context.traits.unsubscribedFromEmails"
-    ],
+    "sourceKeys": ["traits.unsubscribedFromEmails", "context.traits.unsubscribedFromEmails"],
     "required": false
   },
   {
     "destKey": "unsubscribed_from_calls",
-    "sourceKeys": [
-      "traits.unsubscribedFromCalls",
-      "context.traits.unsubscribedFromCalls"
-    ],
+    "sourceKeys": ["traits.unsubscribedFromCalls", "context.traits.unsubscribedFromCalls"],
     "required": false
   },
   {

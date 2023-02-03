@@ -320,6 +320,50 @@
     }
   },
   {
+    "destination": {
+      "Config": {
+        "rudderAccountId": "1z8LpaSAuFR9TPWL6fECZfjmRa-",
+        "businessUnitId": "0Uv2v000000k9tHCAQ",
+        "campaignId": 42213,
+        "authStatus": "active",
+        "eventDelivery": true,
+        "eventDeliveryTS": 1636965406397
+      },
+      "DestinationDefinition": {
+        "name": "PARDOT",
+        "displayName": "Pardot",
+        "config": {
+          "auth": {
+            "type": "OAuth"
+          },
+          "transformAt": "router",
+          "transformAtV1": "router",
+          "saveDestinationResponse": true,
+          "includeKeys": [],
+          "excludeKeys": [],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "destConfig": {
+            "defaultConfig": ["rudderAccountId", "businessUnitId", "campaignId"]
+          },
+          "secretKeys": ["businessUnitId"]
+        }
+      },
+      "Enabled": true,
+      "ID": "1WXjIHpu7ETXgjfiGPW3kCUgZFR",
+      "Name": "test destination",
+      "Transformations": []
+    },
     "metadata": [
       {
         "secret": null

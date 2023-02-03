@@ -1,16 +1,12 @@
-const { httpDELETE } = require("../../../adapters/network");
-const { delIdUrlLimit, DELETE_CONTACTS_ENDPOINT } = require("./config");
+const { httpDELETE } = require('../../../adapters/network');
+const { delIdUrlLimit, DELETE_CONTACTS_ENDPOINT } = require('./config');
 const {
   processAxiosResponse,
-  getDynamicErrorType
-} = require("../../../adapters/utils/networkUtils");
-const { isHttpStatusSuccess } = require("../../util");
-const {
-  NetworkError,
-  ConfigurationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
+const { isHttpStatusSuccess } = require('../../util');
+const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 /**
  * This drops the user if userId is not available and converts the ids's into list of strings
@@ -22,26 +18,22 @@ const tags = require("../../util/tags");
 const getUserIdChunks = (userAttributes, maxUrlLength) => {
   const userIdBatchEndpoints = [];
   let idBatch = [];
-  let idBatchString = "";
-  userAttributes.forEach(ua => {
+  let idBatchString = '';
+  userAttributes.forEach((ua) => {
     // Dropping the user if userId is not present
     if (ua.userId) {
       idBatch.push(ua.userId);
       if (idBatch.toString().length < maxUrlLength) {
         idBatchString = idBatch.toString();
       } else {
-        userIdBatchEndpoints.push(
-          `${DELETE_CONTACTS_ENDPOINT.replace("[IDS]", idBatchString)}`
-        );
+        userIdBatchEndpoints.push(`${DELETE_CONTACTS_ENDPOINT.replace('[IDS]', idBatchString)}`);
         idBatch = [ua.userId];
         idBatchString = idBatch.toString();
       }
     }
   });
   if (idBatchString.length > 0) {
-    userIdBatchEndpoints.push(
-      `${DELETE_CONTACTS_ENDPOINT.replace("IDS", idBatchString)}`
-    );
+    userIdBatchEndpoints.push(`${DELETE_CONTACTS_ENDPOINT.replace('IDS', idBatchString)}`);
   }
   return userIdBatchEndpoints;
 };
@@ -55,18 +47,18 @@ const getUserIdChunks = (userAttributes, maxUrlLength) => {
 const userDeletionHandler = async (userAttributes, config) => {
   const { apiKey } = config;
   if (!Array.isArray(userAttributes)) {
-    throw new InstrumentationError("userAttributes is not an array");
+    throw new InstrumentationError('userAttributes is not an array');
   }
 
   if (!apiKey) {
-    throw new ConfigurationError("apiKey is required for deleting user");
+    throw new ConfigurationError('apiKey is required for deleting user');
   }
 
   let endpoint = DELETE_CONTACTS_ENDPOINT;
   const requestOptions = {
     headers: {
-      Authorization: `Bearer ${apiKey}`
-    }
+      Authorization: `Bearer ${apiKey}`,
+    },
   };
   // ref : https://docs.sendgrid.com/api-reference/contacts/delete-contacts
   /**
@@ -90,33 +82,31 @@ const userDeletionHandler = async (userAttributes, config) => {
   // batchEvents = [["e1,e2,e3,..urlLimit"],["e1,e2,e3,..urlLimit"]..]
   const batchEndpoints = getUserIdChunks(userAttributes, delIdUrlLimit);
   await Promise.all(
-    batchEndpoints.map(async batchEndpoint => {
+    batchEndpoints.map(async (batchEndpoint) => {
       endpoint = batchEndpoint;
       const deletionResponse = await httpDELETE(endpoint, requestOptions);
       const handledDelResponse = processAxiosResponse(deletionResponse);
 
       if (!isHttpStatusSuccess(handledDelResponse.status)) {
         throw new NetworkError(
-          "User deletion request failed",
+          'User deletion request failed',
           handledDelResponse.status,
           {
-            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-              handledDelResponse.status
-            )
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
           },
-          handledDelResponse
+          handledDelResponse,
         );
       }
-    })
+    }),
   );
 
   return {
     statusCode: 200,
-    status: "successful"
+    status: 'successful',
   };
 };
 
-const processDeleteUsers = event => {
+const processDeleteUsers = (event) => {
   const { userAttributes, config } = event;
   const resp = userDeletionHandler(userAttributes, config);
   return resp;

@@ -1,33 +1,33 @@
 /* Ajv meta load to support draft-04/06/07/2019 */
-const Ajv2019 = require("ajv/dist/2019");
-const Ajv = require("ajv-draft-04");
-const draft7MetaSchema = require("ajv/dist/refs/json-schema-draft-07.json");
-const draft6MetaSchema = require("ajv/dist/refs/json-schema-draft-06.json");
+const Ajv2019 = require('ajv/dist/2019');
+const Ajv = require('ajv-draft-04');
+const draft7MetaSchema = require('ajv/dist/refs/json-schema-draft-07.json');
+const draft6MetaSchema = require('ajv/dist/refs/json-schema-draft-06.json');
 
-const NodeCache = require("node-cache");
-const hash = require("object-hash");
-const logger = require("../logger");
-const trackingPlan = require("./trackingPlan");
+const NodeCache = require('node-cache');
+const hash = require('object-hash');
+const logger = require('../logger');
+const trackingPlan = require('./trackingPlan');
 
 const eventSchemaCache = new NodeCache();
 const ajv19Cache = new NodeCache({ useClones: false });
 const ajv4Cache = new NodeCache({ useClones: false });
-const { isEmptyObject } = require("../v0/util");
+const { isEmptyObject } = require('../v0/util');
 
 const defaultOptions = {
   strictRequired: true,
   allErrors: true,
   verbose: true,
-  allowUnionTypes: true
+  allowUnionTypes: true,
   // removeAdditional: false, // "all" - it purges extra properties from event,
   // useDefaults: false
 };
 const violationTypes = {
-  RequiredMissing: "Required-Missing",
-  DatatypeMismatch: "Datatype-Mismatch",
-  AdditionalProperties: "Additional-Properties",
-  UnknownViolation: "Unknown-Violation",
-  UnplannedEvent: "Unplanned-Event"
+  RequiredMissing: 'Required-Missing',
+  DatatypeMismatch: 'Datatype-Mismatch',
+  AdditionalProperties: 'Additional-Properties',
+  UnknownViolation: 'Unknown-Violation',
+  UnplannedEvent: 'Unplanned-Event',
 };
 
 const supportedEventTypes = {
@@ -36,7 +36,7 @@ const supportedEventTypes = {
   identify: true,
   page: false,
   screen: false,
-  alias: false
+  alias: false,
 };
 
 // When no ajv options are provided, ajv constructed from defaultOptions will be used
@@ -70,7 +70,7 @@ function getAjv(ajvOptions, isDraft4 = false) {
  * Else throws an error.
  */
 function checkForPropertyMissing(property) {
-  if (!(property && property !== "")) {
+  if (!(property && property !== '')) {
     throw new Error(`${property} does not exist for event`);
   }
 }
@@ -98,16 +98,8 @@ function isEventTypeSupported(eventType) {
  *
  * Generates hash.
  */
-function eventSchemaHash(
-  tpId,
-  tpVersion,
-  eventType,
-  eventName,
-  isDraft4 = false
-) {
-  return `${tpId}::${tpVersion}::${eventType}::${eventName}::${
-    isDraft4 ? 4 : 19
-  }`;
+function eventSchemaHash(tpId, tpVersion, eventType, eventName, isDraft4 = false) {
+  return `${tpId}::${tpVersion}::${eventType}::${eventName}::${isDraft4 ? 4 : 19}`;
 }
 
 /**
@@ -122,33 +114,33 @@ async function validate(event) {
     checkForPropertyMissing(event.metadata.trackingPlanVersion);
     checkForPropertyMissing(event.metadata.workspaceId);
 
-    const { sourceTpConfig } = event.metadata;
+    const { sourceTpConfig, trackingPlanId, trackingPlanVersion, workspaceId } = event.metadata;
     const eventSchema = await trackingPlan.getEventSchema(
-      event.metadata.trackingPlanId,
-      event.metadata.trackingPlanVersion,
+      trackingPlanId,
+      trackingPlanVersion,
       event.message.type,
       event.message.event,
-      event.metadata.workspaceId
+      workspaceId,
     );
 
     // UnPlanned event case - since no event schema is found. Violation is raised
     // Return this violation error only in case of track calls.
     if (!eventSchema || eventSchema === {}) {
-      if (event.message.type !== "track") {
+      if (event.message.type !== 'track') {
         return [];
       }
       const rudderValidationError = {
         type: violationTypes.UnplannedEvent,
-        message: `no schema for eventName : ${event.message.event}, eventType : ${event.message.type} in trackingPlanID : ${event.metadata.trackingPlanId}::${event.metadata.trackingPlanVersion}`,
-        meta: {}
+        message: `no schema for eventName : ${event.message.event}, eventType : ${event.message.type} in trackingPlanID : ${trackingPlanId}::${trackingPlanVersion}`,
+        meta: {},
       };
       return [rudderValidationError];
     }
     // Assumes schema is in draft 7 by default
     let isDraft4 = false;
     if (
-      Object.prototype.hasOwnProperty.call(eventSchema, "$schema") &&
-      eventSchema.$schema.includes("draft-04")
+      Object.prototype.hasOwnProperty.call(eventSchema, '$schema') &&
+      eventSchema.$schema.includes('draft-04')
     ) {
       isDraft4 = true;
     }
@@ -157,20 +149,18 @@ async function validate(event) {
     delete eventSchema.version;
 
     const schemaHash = eventSchemaHash(
-      event.metadata.trackingPlanId,
-      event.metadata.trackingPlanVersion,
+      trackingPlanId,
+      trackingPlanVersion,
       event.message.type,
       event.message.event,
-      isDraft4
+      isDraft4,
     );
-    const eventTypeAjvOptions =
-      sourceTpConfig[event.message.type]?.ajvOptions || {};
-    const globalAjvOptions =
-      (sourceTpConfig.global && sourceTpConfig.global.ajvOptions) || {};
+    const eventTypeAjvOptions = sourceTpConfig[event.message.type]?.ajvOptions || {};
+    const globalAjvOptions = (sourceTpConfig.global && sourceTpConfig.global.ajvOptions) || {};
     const merged = {
       ...defaultOptions,
       ...globalAjvOptions,
-      ...eventTypeAjvOptions
+      ...eventTypeAjvOptions,
     };
 
     let ajv = isDraft4 ? ajv4 : ajv19;
@@ -195,38 +185,38 @@ async function validate(event) {
       return [];
     }
 
-    const validationErrors = validateEvent.errors.map(error => {
+    const validationErrors = validateEvent.errors.map((error) => {
       let rudderValidationError;
       switch (error.keyword) {
-        case "required":
+        case 'required':
           rudderValidationError = {
             type: violationTypes.RequiredMissing,
             message: error.message,
             meta: {
               instacePath: error.instancePath,
               schemaPath: error.schemaPath,
-              missingProperty: error.params.missingProperty
-            }
+              missingProperty: error.params.missingProperty,
+            },
           };
           break;
-        case "type":
+        case 'type':
           rudderValidationError = {
             type: violationTypes.DatatypeMismatch,
             message: error.message,
             meta: {
               instacePath: error.instancePath,
-              schemaPath: error.schemaPath
-            }
+              schemaPath: error.schemaPath,
+            },
           };
           break;
-        case "additionalProperties":
+        case 'additionalProperties':
           rudderValidationError = {
             type: violationTypes.AdditionalProperties,
             message: `${error.message} : ${error.params.additionalProperty}`,
             meta: {
               instacePath: error.instancePath,
-              schemaPath: error.schemaPath
-            }
+              schemaPath: error.schemaPath,
+            },
           };
           break;
         default:
@@ -235,8 +225,8 @@ async function validate(event) {
             message: error.message,
             meta: {
               instacePath: error.instancePath,
-              schemaPath: error.schemaPath
-            }
+              schemaPath: error.schemaPath,
+            },
           };
       }
       return rudderValidationError;
@@ -256,7 +246,7 @@ async function validate(event) {
  */
 async function handleValidation(event) {
   let dropEvent = false;
-  let violationType = "None";
+  let violationType = 'None';
 
   try {
     const { sourceTpConfig, mergedTpConfig } = event.metadata;
@@ -265,7 +255,7 @@ async function handleValidation(event) {
       return {
         dropEvent,
         violationType,
-        validationErrors: []
+        validationErrors: [],
       };
     }
 
@@ -274,7 +264,7 @@ async function handleValidation(event) {
       return {
         dropEvent,
         violationType,
-        validationErrors: []
+        validationErrors: [],
       };
     }
 
@@ -283,11 +273,11 @@ async function handleValidation(event) {
       return {
         dropEvent,
         violationType,
-        validationErrors
+        validationErrors,
       };
     }
 
-    const violationsByType = new Set(validationErrors.map(err => err.type));
+    const violationsByType = new Set(validationErrors.map((err) => err.type));
     // eslint-disable-next-line no-restricted-syntax
     for (const [key, val] of Object.entries(mergedTpConfig)) {
       // To have compatibility for config-backend, spread-sheet plugin and postman collection
@@ -295,37 +285,35 @@ async function handleValidation(event) {
       const value = val?.toString()?.toLowerCase();
       // eslint-disable-next-line default-case
       switch (key) {
-        case "allowUnplannedEvents": {
+        case 'allowUnplannedEvents': {
           const exists = violationsByType.has(violationTypes.UnplannedEvent);
-          if (value === "false" && exists) {
+          if (value === 'false' && exists) {
             dropEvent = true;
             violationType = violationTypes.UnplannedEvent;
             break;
           }
-          if (!(value === "true" || value === "false")) {
+          if (!(value === 'true' || value === 'false')) {
             logger.error(`Unknown option ${value} in ${key}"`);
           }
           break;
         }
-        case "unplannedProperties": {
-          const exists = violationsByType.has(
-            violationTypes.AdditionalProperties
-          );
-          if (value === "drop" && exists) {
+        case 'unplannedProperties': {
+          const exists = violationsByType.has(violationTypes.AdditionalProperties);
+          if (value === 'drop' && exists) {
             dropEvent = true;
             violationType = violationTypes.AdditionalProperties;
             break;
           }
-          if (!(value === "forward" || value === "drop")) {
+          if (!(value === 'forward' || value === 'drop')) {
             logger.error(`Unknown option ${value} in ${key}"`);
           }
           break;
         }
-        case "anyOtherViolation": {
+        case 'anyOtherViolation': {
           const exists1 = violationsByType.has(violationTypes.UnknownViolation);
           const exists2 = violationsByType.has(violationTypes.DatatypeMismatch);
           const exists3 = violationsByType.has(violationTypes.RequiredMissing);
-          if (value === "drop" && (exists1 || exists2 || exists3)) {
+          if (value === 'drop' && (exists1 || exists2 || exists3)) {
             if (exists1) {
               violationType = violationTypes.UnknownViolation;
             } else if (exists2) {
@@ -336,13 +324,13 @@ async function handleValidation(event) {
             dropEvent = true;
             break;
           }
-          if (!(value === "forward" || value === "drop")) {
+          if (!(value === 'forward' || value === 'drop')) {
             logger.error(`Unknown option ${value} in ${key}"`);
           }
           break;
         }
-        case "sendViolatedEventsTo": {
-          if (value !== "procerrors") {
+        case 'sendViolatedEventsTo': {
+          if (value !== 'procerrors') {
             logger.error(`Unknown option ${value} in ${key}"`);
           }
           break;
@@ -353,7 +341,7 @@ async function handleValidation(event) {
     return {
       dropEvent,
       violationType,
-      validationErrors
+      validationErrors,
     };
   } catch (error) {
     logger.error(`TP handle validation error: ${error.message}`);
@@ -365,5 +353,5 @@ module.exports = {
   handleValidation,
   validate,
   isEventTypeSupported,
-  violationTypes
+  violationTypes,
 };

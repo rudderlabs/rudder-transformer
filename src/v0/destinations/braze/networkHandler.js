@@ -1,16 +1,13 @@
 /* eslint-disable no-unused-vars */
-const { isHttpStatusSuccess } = require("../../util/index");
-const {
-  proxyRequest,
-  prepareProxyRequest
-} = require("../../../adapters/network");
+const { isHttpStatusSuccess } = require('../../util/index');
+const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const {
   getDynamicErrorType,
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
-const { DESTINATION } = require("./config");
-const { NetworkError } = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+  processAxiosResponse,
+} = require('../../../adapters/utils/networkUtils');
+const { DESTINATION } = require('./config');
+const { NetworkError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 const responseHandler = (destinationResponse, _dest) => {
   const message = `Request for ${DESTINATION} Processed Successfully`;
@@ -21,15 +18,15 @@ const responseHandler = (destinationResponse, _dest) => {
       `Request failed for ${DESTINATION} with status: ${status}`,
       status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
-      destinationResponse
+      destinationResponse,
     );
   }
   // application level errors
   if (
     !!response &&
-    response.message !== "success" &&
+    response.message !== 'success' &&
     response.errors &&
     response.errors.length > 0
   ) {
@@ -37,19 +34,19 @@ const responseHandler = (destinationResponse, _dest) => {
       `Request failed for ${DESTINATION} with status: ${status}`,
       status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
       },
-      destinationResponse
+      destinationResponse,
     );
   }
   return {
     status,
     message,
-    destinationResponse
+    destinationResponse,
   };
 };
 
-const networkHandler = function() {
+const networkHandler = function () {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
   this.prepareProxy = prepareProxyRequest;
@@ -57,5 +54,5 @@ const networkHandler = function() {
 };
 
 module.exports = {
-  networkHandler
+  networkHandler,
 };

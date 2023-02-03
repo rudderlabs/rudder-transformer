@@ -1,4 +1,4 @@
-const { getMappingConfig } = require("../../util");
+const { getMappingConfig } = require('../../util');
 
 // For IDENTIFY
 // https://developers.activecampaign.com/reference/create-or-update-contact-new
@@ -22,34 +22,34 @@ const { getMappingConfig } = require("../../util");
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: {
-    name: "ACIdentify",
+    name: 'ACIdentify',
     // default api-url for creating contact
-    endPoint: "/api/3/contact/sync",
-    tagEndPoint: "/api/3/tags",
-    fieldEndPoint: "/api/3/fields",
-    mergeTagWithContactUrl: "/api/3/contactTags",
-    mergeFieldValueWithContactUrl: "/api/3/fieldValues",
-    mergeListWithContactUrl: "/api/3/contactLists"
+    endPoint: '/api/3/contact/sync',
+    tagEndPoint: '/api/3/tags',
+    fieldEndPoint: '/api/3/fields',
+    mergeTagWithContactUrl: '/api/3/contactTags',
+    mergeFieldValueWithContactUrl: '/api/3/fieldValues',
+    mergeListWithContactUrl: '/api/3/contactLists',
   },
 
-  PAGE: { name: "ACPage", endPoint: "/api/3/siteTrackingDomains" },
+  PAGE: { name: 'ACPage', endPoint: '/api/3/siteTrackingDomains' },
 
   SCREEN: {
-    name: "ACScreen",
-    endPoint: "https://trackcmp.net/event",
-    getEventEndPoint: "/api/3/eventTrackingEvents"
+    name: 'ACScreen',
+    endPoint: 'https://trackcmp.net/event',
+    getEventEndPoint: '/api/3/eventTrackingEvents',
   },
 
   TRACK: {
-    name: "ACTrack",
-    endPoint: "https://trackcmp.net/event",
-    getEventEndPoint: "/api/3/eventTrackingEvents"
-  }
+    name: 'ACTrack',
+    endPoint: 'https://trackcmp.net/event',
+    getEventEndPoint: '/api/3/eventTrackingEvents',
+  },
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
   CONFIG_CATEGORIES,
-  MAPPING_CONFIG
+  MAPPING_CONFIG,
 };

@@ -41,7 +41,7 @@
           "order_id": "abc_xyz",
           "shop_id": "123abc",
           "currency": "USD",
-          "value": 46.00,
+          "value": 46.0,
           "price": 8,
           "quantity": 2,
           "content_type": "product1234",
@@ -94,7 +94,7 @@
               ],
               "event_channel": "web",
               "currency": "USD",
-              "value": 46.00
+              "value": 46.0
             }
           },
           "JSON_ARRAY": {},
@@ -217,21 +217,21 @@
         "params": {},
         "body": {
           "JSON": {
-            "event":"SubmitForm",
-            "context":{
-              "user":{
-                "phone_numbers":[
+            "event": "SubmitForm",
+            "context": {
+              "user": {
+                "phone_numbers": [
                   "c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646"
                 ]
               }
             },
-            "event_id":"1616318632003_004",
-            "timestamp":"2023-01-03",
-            "properties":{
-              "event_channel":"web"
+            "event_id": "1616318632003_004",
+            "timestamp": "2023-01-03",
+            "properties": {
+              "event_channel": "web"
             },
-            "event_set_id":"7185009018564395009",
-            "partner_name":"RudderStack"
+            "event_set_id": "7185009018564395009",
+            "partner_name": "RudderStack"
           },
           "JSON_ARRAY": {},
           "XML": {},
@@ -328,9 +328,7 @@
                 "phone_numbers": [
                   "c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646"
                 ],
-                "emails": [
-                  "d9fcca64ec1b250da4261a3f89a8e0f7749c4e0f5a1a918e5397194c8b5a9f16"
-                ]
+                "emails": ["d9fcca64ec1b250da4261a3f89a8e0f7749c4e0f5a1a918e5397194c8b5a9f16"]
               }
             },
             "properties": {

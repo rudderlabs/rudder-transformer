@@ -182,6 +182,15 @@
       "errorCategory": "dataValidation",
       "errorType": "instrumentation"
     },
-    "statusCode": 400
+    "statusCode": 400,
+    "destination": {
+      "Config": {
+        "apiKey": "apiKey123",
+        "clientKey": "clientKey123",
+        "templateId": 3,
+        "doi": true,
+        "redirectionUrl": "https://app.sendinblue.com/marketing-dashboard"
+      }
+    }
   }
 ]

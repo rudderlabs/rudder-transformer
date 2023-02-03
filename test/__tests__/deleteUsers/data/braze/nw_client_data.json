@@ -5,9 +5,7 @@
       "reqParams": [
         "https://rest.iad-03.braze.com/users/delete",
         {
-          "externalIds": [
-            "Batch1"
-          ]
+          "externalIds": ["Batch1"]
         },
         {
           "Content-Type": "application/json",
@@ -32,9 +30,7 @@
       "reqParams": [
         "https://rest.iad-03.braze.com/users/delete",
         {
-          "externalIds": [
-            "Batch2"
-          ]
+          "externalIds": ["Batch2"]
         },
         {
           "Content-Type": "application/json",
@@ -56,9 +52,7 @@
       "reqParams": [
         "https://rest.iad-03.braze.com/users/delete",
         {
-          "externalIds": [
-            "Batch4"
-          ]
+          "externalIds": ["Batch4"]
         },
         {
           "Content-Type": "application/json",
@@ -81,9 +75,7 @@
       "reqParams": [
         "https://rest.iad-03.braze.com/users/delete",
         {
-          "externalIds": [
-            "Batch"
-          ]
+          "externalIds": ["Batch"]
         },
         {
           "Content-Type": "application/json",

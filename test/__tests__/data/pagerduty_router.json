@@ -273,6 +273,12 @@
         "statTags": {
           "errorCategory": "dataValidation",
           "errorType": "instrumentation"
+        },
+        "destination": {
+          "Config": {
+            "routingKey": "9552b56325dc490bd0139be85f7b8fac",
+            "dedupKeyFieldIdentifier": "properties.dedupKey"
+          }
         }
       }
     ]

@@ -314,5 +314,21 @@
         }
       }
     ]
+  },
+  {
+    "sessionId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+    "trackingId": "c60",
+    "userId": null,
+    "eventList": [
+      {
+        "itemId": "4bb69e26-b5a6-446a-a140-dbb6263369c9",
+        "eventType": "PRODUCT ADDED",
+        "sentAt": "2023-01-10T01:56:46.896+05:30",
+        "properties": {
+          "movieWatched": "2",
+          "numberOfRatings": "checking with webapp change"
+        }
+      }
+    ]
   }
 ]

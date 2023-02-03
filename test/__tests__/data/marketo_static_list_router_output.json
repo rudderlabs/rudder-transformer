@@ -139,6 +139,26 @@
         "jobId": 3
       }
     ],
+    "destination": {
+      "ID": "1zia9wKshXt80YksLmUdJnr7IHI",
+      "Name": "test_marketo",
+      "DestinationDefinition": {
+        "ID": "1iVQvTRMsPPyJzwol0ifH93QTQ6",
+        "Name": "MARKETO",
+        "DisplayName": "Marketo",
+        "transformAt": "processor",
+        "transformAtV1": "processor"
+      },
+      "Config": {
+        "clientId": "marketo_client_id_success",
+        "clientSecret": "marketo_client_secret_success",
+        "accountId": "marketo_acct_id_success",
+        "staticListId": 1234
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
     "batched": false,
     "statusCode": 400,
     "error": "Event type track is not supported",

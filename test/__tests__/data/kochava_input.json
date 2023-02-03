@@ -5,10 +5,9 @@
         "apiKey": "<kochava guid goes here>"
       },
       "DestinationDefinition": {
-        "Config":
-                {
-                    "cdkEnabled":true
-                },
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Kochava",
         "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
         "Name": "KOCHAVA"
@@ -85,15 +84,13 @@
       "sentAt": "2019-10-14T09:03:22.563Z"
     },
     "destination": {
-      
       "Config": {
         "apiKey": "<kochava guid goes here>"
       },
       "DestinationDefinition": {
-        "Config":
-                {
-                    "cdkEnabled":true
-                },
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Kochava",
         "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
         "Name": "KOCHAVA"
@@ -145,10 +142,9 @@
         "apiKey": "<kochava guid goes here>"
       },
       "DestinationDefinition": {
-        "Config":
-                {
-                    "cdkEnabled":true
-                },
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Kochava",
         "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
         "Name": "KOCHAVA"
@@ -202,10 +198,9 @@
         "apiKey": "<kochava guid goes here>"
       },
       "DestinationDefinition": {
-        "Config":
-                {
-                    "cdkEnabled":true
-                },
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Kochava",
         "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
         "Name": "KOCHAVA"
@@ -280,10 +275,9 @@
         "apiKey": "<kochava guid goes here>"
       },
       "DestinationDefinition": {
-        "Config":
-                {
-                    "cdkEnabled":true
-                },
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Kochava",
         "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
         "Name": "KOCHAVA"
@@ -359,10 +353,9 @@
         "apiKey": "<kochava guid goes here>"
       },
       "DestinationDefinition": {
-        "Config":
-                {
-                    "cdkEnabled":true
-                },
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Kochava",
         "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
         "Name": "KOCHAVA"
@@ -437,10 +430,9 @@
         "apiKey": "<kochava guid goes here>"
       },
       "DestinationDefinition": {
-        "Config":
-                {
-                    "cdkEnabled":true
-                },
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Kochava",
         "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
         "Name": "KOCHAVA"
@@ -513,10 +505,9 @@
         "apiKey": "<kochava guid goes here>"
       },
       "DestinationDefinition": {
-        "Config":
-                {
-                    "cdkEnabled":true
-                },
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Kochava",
         "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
         "Name": "KOCHAVA"
@@ -585,10 +576,9 @@
         "apiKey": "<kochava guid goes here>"
       },
       "DestinationDefinition": {
-        "Config":
-                {
-                    "cdkEnabled":true
-                },
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Kochava",
         "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
         "Name": "KOCHAVA"
@@ -640,10 +630,9 @@
         "apiKey": "<kochava guid goes here>"
       },
       "DestinationDefinition": {
-        "Config":
-                {
-                    "cdkEnabled":true
-                },
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Kochava",
         "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
         "Name": "KOCHAVA"
@@ -698,10 +687,9 @@
         "apiKey": "<kochava guid goes here>"
       },
       "DestinationDefinition": {
-        "Config":
-                {
-                    "cdkEnabled":true
-                },
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Kochava",
         "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
         "Name": "KOCHAVA"
@@ -753,10 +741,9 @@
         "apiKey": "<kochava guid goes here>"
       },
       "DestinationDefinition": {
-        "Config":
-                {
-                    "cdkEnabled":true
-                },
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Kochava",
         "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
         "Name": "KOCHAVA"
@@ -808,10 +795,9 @@
         "apiKey": "<kochava guid goes here>"
       },
       "DestinationDefinition": {
-        "Config":
-                {
-                    "cdkEnabled":true
-                },
+        "Config": {
+          "cdkEnabled": true
+        },
         "DisplayName": "Kochava",
         "ID": "1WTpBSTiL3iAUHUdW7rHT4sawgU",
         "Name": "KOCHAVA"

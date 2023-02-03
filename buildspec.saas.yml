@@ -1,7 +1,6 @@
 version: 0.2
 env:
   parameter-store:
-    dockerhub_passwd: '/prod/codebuild/dockerhub-password'
     GITHUB_TOKEN: 'build-deploy-pkey'
     MAIL: 'mail-id'
     USER_NAME: 'user-name'
@@ -18,7 +17,7 @@ phases:
       - apt install -y hub
   pre_build:
     commands:
-      - docker login --username rudderlabs --password $dockerhub_passwd
+      - docker login --username rudderlabs --password ${{ secrets.DOCKERHUB_PROD_TOKEN }}
   build:
     commands:
       - VERSION="$(date '+%d%m%Y.%H%M%S')"

@@ -1,16 +1,12 @@
 version: 0.2
 
-env:
-  parameter-store:
-    dockerhub_passwd: '/prod/codebuild/dockerhub-password'
-
 phases:
   install:
     runtime-versions:
       nodejs: 14
   pre_build:
     commands:
-      - docker login --username rudderlabs --password $dockerhub_passwd
+      - docker login --username rudderlabs --password ${{ secrets.DOCKERHUB_PROD_TOKEN }}
   build:
     commands:
       - VERSION=master

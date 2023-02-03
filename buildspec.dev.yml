@@ -4,6 +4,13 @@ phases:
   install:
     runtime-versions:
       nodejs: 14
+    commands:
+      - 'echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin'
+      - wget https://github.com/docker/buildx/releases/download/v0.10.2/buildx-v0.10.2.linux-amd64
+      - mkdir -p ~/.docker/cli-plugins
+      - mv buildx-v0.10.2.linux-amd64 ~/.docker/cli-plugins/docker-buildx
+      - chmod a+rx ~/.docker/cli-plugins/docker-buildx
+      - docker run --privileged --rm tonistiigi/binfmt --install arm64,amd64
   pre_build:
     commands:
       - docker login --username rudderlabs --password $DOCKERHUB_PASSWORD

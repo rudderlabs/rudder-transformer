@@ -60,8 +60,8 @@ jobs:
           file: Dockerfile
           push: true
           tags: |
-            ${{ env.REPO_NAME_OLD }}:${{ steps.extract_branch.outputs.version }}
-            ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.version }}
+            ${{ env.REPO_NAME_OLD }}:${{ steps.extract_branch.outputs.branch }}
+            ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }}
           build-args: |
             VERSION=${{ steps.extract_branch.outputs.branch }}
             COMMIT_HASH=${{ github.sha }}
@@ -112,8 +112,8 @@ jobs:
           file: Dockerfile-ut-func
           push: true
           tags: |
-            ${{ env.REPO_NAME_OLD }}:${{ steps.extract_branch.outputs.version }}
-            ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.version }}
+            ${{ env.REPO_NAME_OLD }}:${{ steps.extract_branch.outputs.branch }}
+            ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }}
           build-args: |
             VERSION=${{ steps.extract_branch.outputs.branch }}
             COMMIT_HASH=${{ github.sha }}

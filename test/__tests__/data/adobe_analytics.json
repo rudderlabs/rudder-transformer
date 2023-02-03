@@ -81,8 +81,8 @@
       },
       "destination": {
         "Config": {
-          "trackingServerUrl": "footlocker.sc.omtrdc.net",
-          "trackingServerSecureUrl": "footlocker.sc.omtrdc.net",
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
           "reportSuiteIds": "footlockerrudderstackpoc",
           "sslHeartbeat": true,
           "heartbeatTrackingServerUrl": "",
@@ -249,7 +249,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://footlocker.sc.omtrdc.net/b/ss//6",
+      "endpoint": "https://flk.gc.gmtidc.net/b/ss//6",
       "headers": { "Content-type": "application/xml" },
       "params": {},
       "body": {
@@ -328,8 +328,8 @@
       },
       "destination": {
         "Config": {
-          "trackingServerUrl": "footlocker.sc.omtrdc.net",
-          "trackingServerSecureUrl": "footlocker.sc.omtrdc.net",
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
           "reportSuiteIds": "footlockerrudderstackpoc",
           "sslHeartbeat": true,
           "heartbeatTrackingServerUrl": "",
@@ -496,7 +496,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://footlocker.sc.omtrdc.net/b/ss//6",
+      "endpoint": "https://flk.gc.gmtidc.net/b/ss//6",
       "headers": { "Content-type": "application/xml" },
       "params": {},
       "body": {
@@ -575,8 +575,8 @@
       },
       "destination": {
         "Config": {
-          "trackingServerUrl": "footlocker.sc.omtrdc.net",
-          "trackingServerSecureUrl": "footlocker.sc.omtrdc.net",
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
           "reportSuiteIds": "footlockerrudderstackpoc",
           "sslHeartbeat": true,
           "heartbeatTrackingServerUrl": "",
@@ -743,7 +743,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://footlocker.sc.omtrdc.net/b/ss//6",
+      "endpoint": "https://flk.gc.gmtidc.net/b/ss//6",
       "headers": { "Content-type": "application/xml" },
       "params": {},
       "body": {
@@ -834,8 +834,8 @@
       },
       "destination": {
         "Config": {
-          "trackingServerUrl": "footlocker.sc.omtrdc.net",
-          "trackingServerSecureUrl": "footlocker.sc.omtrdc.net",
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
           "reportSuiteIds": "footlockerrudderstackpoc",
           "sslHeartbeat": true,
           "heartbeatTrackingServerUrl": "",
@@ -1002,7 +1002,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://footlocker.sc.omtrdc.net/b/ss//6",
+      "endpoint": "https://flk.gc.gmtidc.net/b/ss//6",
       "headers": { "Content-type": "application/xml" },
       "params": {},
       "body": {
@@ -1101,8 +1101,8 @@
       },
       "destination": {
         "Config": {
-          "trackingServerUrl": "footlocker.sc.omtrdc.net",
-          "trackingServerSecureUrl": "footlocker.sc.omtrdc.net",
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
           "reportSuiteIds": "footlockerrudderstackpoc",
           "sslHeartbeat": true,
           "heartbeatTrackingServerUrl": "",
@@ -1269,7 +1269,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://footlocker.sc.omtrdc.net/b/ss//6",
+      "endpoint": "https://flk.gc.gmtidc.net/b/ss//6",
       "headers": { "Content-type": "application/xml" },
       "params": {},
       "body": {
@@ -1369,8 +1369,8 @@
       },
       "destination": {
         "Config": {
-          "trackingServerUrl": "footlocker.sc.omtrdc.net",
-          "trackingServerSecureUrl": "footlocker.sc.omtrdc.net",
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
           "reportSuiteIds": "footlockerrudderstackpoc",
           "sslHeartbeat": true,
           "heartbeatTrackingServerUrl": "",
@@ -1537,7 +1537,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://footlocker.sc.omtrdc.net/b/ss//6",
+      "endpoint": "https://flk.gc.gmtidc.net/b/ss//6",
       "headers": { "Content-type": "application/xml" },
       "params": {},
       "body": {
@@ -1628,8 +1628,8 @@
       },
       "destination": {
         "Config": {
-          "trackingServerUrl": "footlocker.sc.omtrdc.net",
-          "trackingServerSecureUrl": "footlocker.sc.omtrdc.net",
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
           "reportSuiteIds": "footlockerrudderstackpoc",
           "sslHeartbeat": true,
           "heartbeatTrackingServerUrl": "",
@@ -1796,7 +1796,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://footlocker.sc.omtrdc.net/b/ss//6",
+      "endpoint": "https://flk.gc.gmtidc.net/b/ss//6",
       "headers": { "Content-type": "application/xml" },
       "params": {},
       "body": {
@@ -1867,8 +1867,8 @@
       },
       "destination": {
         "Config": {
-          "trackingServerUrl": "footlocker.sc.omtrdc.net",
-          "trackingServerSecureUrl": "footlocker.sc.omtrdc.net",
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
           "reportSuiteIds": "footlockerrudderstackpoc",
           "sslHeartbeat": true,
           "heartbeatTrackingServerUrl": "",
@@ -2047,7 +2047,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://footlocker.sc.omtrdc.net/b/ss//6",
+      "endpoint": "https://flk.gc.gmtidc.net/b/ss//6",
       "headers": { "Content-type": "application/xml" },
       "params": {},
       "body": {
@@ -2125,8 +2125,8 @@
       },
       "destination": {
         "Config": {
-          "trackingServerUrl": "footlocker.sc.omtrdc.net",
-          "trackingServerSecureUrl": "footlocker.sc.omtrdc.net",
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
           "reportSuiteIds": "footlockerrudderstackpoc",
           "sslHeartbeat": true,
           "heartbeatTrackingServerUrl": "",
@@ -2297,7 +2297,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://footlocker.sc.omtrdc.net/b/ss//6",
+      "endpoint": "https://flk.gc.gmtidc.net/b/ss//6",
       "headers": { "Content-type": "application/xml" },
       "params": {},
       "body": {
@@ -2396,8 +2396,8 @@
       },
       "destination": {
         "Config": {
-          "trackingServerUrl": "footlocker.sc.omtrdc.net",
-          "trackingServerSecureUrl": "footlocker.sc.omtrdc.net",
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
           "reportSuiteIds": "footlockerrudderstackpoc",
           "sslHeartbeat": true,
           "heartbeatTrackingServerUrl": "",
@@ -2584,7 +2584,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://footlocker.sc.omtrdc.net/b/ss//6",
+      "endpoint": "https://flk.gc.gmtidc.net/b/ss//6",
       "headers": { "Content-type": "application/xml" },
       "params": {},
       "body": {

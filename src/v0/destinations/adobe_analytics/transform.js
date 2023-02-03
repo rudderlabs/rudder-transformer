@@ -50,9 +50,9 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   // handle link values
   // default linktype to 'o', linkName to event name, linkURL to ctx.page.url if not passed in integrations object
   const adobeIntegrationsObject = getIntegrationsObj(message, 'adobe_analytics');
-  payload.linkType = adobeIntegrationsObject?.linkType || "o";
+  payload.linkType = adobeIntegrationsObject?.linkType || 'o';
   payload.linkName = adobeIntegrationsObject?.linkName || event;
-  payload.linkURL = adobeIntegrationsObject?.linkURL || context?.page?.url || "No linkURL provided";
+  payload.linkURL = adobeIntegrationsObject?.linkURL || context?.page?.url || 'No linkURL provided';
 
   // handle hier
   payload = handleHier(payload, destinationConfig, message);
@@ -62,12 +62,13 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
 
   // handle pageName, pageUrl
   const contextPageUrl = context?.page?.url;
+  const { trackPageName } = destinationConfig;
   const propertiesPageUrl = properties?.pageUrl;
   const pageUrl = contextPageUrl || propertiesPageUrl;
   if (isDefinedAndNotNullAndNotEmpty(pageUrl)) {
     payload.pageUrl = pageUrl;
   }
-  if (destinationConfig?.trackPageName) {
+  if (trackPageName) {
     // better handling possible here, both error and implementation wise
     const contextPageName = context?.page?.name;
     const propertiesPageName = properties?.pageName;
@@ -75,7 +76,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
     if (isDefinedAndNotNullAndNotEmpty(pageName)) {
       payload.pageName = pageName;
     } else {
-      // pageName is defaulted to URL.  
+      // pageName is defaulted to URL.
       payload.pageName = pageUrl;
     }
   }
@@ -105,7 +106,9 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   }
 
   if (timestampOptionalReporting) {
-    const timestamp = getFieldValueFromMessage(message, 'timestamp') || getFieldValueFromMessage(message, 'originalTimestamp');
+    const timestamp =
+      getFieldValueFromMessage(message, 'timestamp') ||
+      getFieldValueFromMessage(message, 'originalTimestamp');
     if (timestampOption === 'enabled' || (timestampOption === 'hybrid' && !preferVisitorId)) {
       payload.timestamp = timestamp;
     }
@@ -163,9 +166,9 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
   // merch event section
   if (eventMerchEventToAdobeEvent[event] && eventMerchProperties) {
     const adobeMerchEvent = eventMerchEventToAdobeEvent[event].split(',');
-    eventMerchProperties.forEach(rudderProp => {
+    eventMerchProperties.forEach((rudderProp) => {
       if (rudderProp.eventMerchProperties in properties) {
-        adobeMerchEvent.forEach(value => {
+        adobeMerchEvent.forEach((value) => {
           if (properties[rudderProp.eventMerchProperties]) {
             const merchEventString = `${value}=${properties[rudderProp.eventMerchProperties]}`;
             adobeEventArr.push(merchEventString);
@@ -176,7 +179,7 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
   }
 
   if (productMerchEventToAdobeEvent[event]) {
-    Object.keys(productMerchEventToAdobeEvent).forEach(value => {
+    Object.keys(productMerchEventToAdobeEvent).forEach((value) => {
       adobeEventArr.push(productMerchEventToAdobeEvent[value]);
     });
   }
@@ -199,7 +202,7 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
       adobeProdEventArr = adobeProdEvent.split(',');
     }
 
-    productsArr.forEach(value => {
+    productsArr.forEach((value) => {
       const category = value.category || '';
       const quantity = value.quantity || 1;
       const total = value.price ? (value.price * quantity).toFixed(2) : 0;
@@ -212,7 +215,7 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
 
       const merchMap = [];
       if (productMerchEventToAdobeEvent[event] && productMerchProperties) {
-        productMerchProperties.forEach(rudderProp => {
+        productMerchProperties.forEach((rudderProp) => {
           // adding product level merchandise properties
           if (
             rudderProp.productMerchProperties.startsWith('products.') &&
@@ -222,13 +225,13 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
             const key = rudderProp.productMerchProperties.split('.');
             const v = get(value, key[1]);
             if (isDefinedAndNotNull(v)) {
-              adobeProdEventArr.forEach(val => {
+              adobeProdEventArr.forEach((val) => {
                 merchMap.push(`${val}=${v}`);
               });
             }
           } else if (rudderProp.productMerchProperties in properties) {
             // adding root level merchandise properties
-            adobeProdEventArr.forEach(val => {
+            adobeProdEventArr.forEach((val) => {
               merchMap.push(`${val}=${properties[rudderProp.productMerchProperties]}`);
             });
           }
@@ -237,7 +240,7 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
         prodEventString = merchMap.join('|');
 
         const eVars = [];
-        Object.keys(productMerchEvarsMap).forEach(prodKey => {
+        Object.keys(productMerchEvarsMap).forEach((prodKey) => {
           const prodVal = productMerchEvarsMap[prodKey];
 
           if (prodKey.startsWith('products.')) {
@@ -256,18 +259,18 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
       // if prodEventString or prodEVarsString are missing or not
       let prodArr = [category, item, quantity, total];
       if (prodEventString || prodEVarsString) {
-        prodArr = [ ...prodArr, prodEventString, prodEVarsString ];
+        prodArr = [...prodArr, prodEventString, prodEVarsString];
       }
       const test = stringifyValueAndJoinWithDelimitter(prodArr);
-      if(isSingleProdEvent) {
+      if (isSingleProdEvent) {
         prodString.push(test);
       } else {
         prodString.push(test);
-        prodString.push(",");
-      } 
+        prodString.push(',');
+      }
     });
     // we delimit multiple products by ',' removing the trailing here
-    if(prodString[prodString.length-1] === ",") {
+    if (prodString[prodString.length - 1] === ',') {
       prodString.pop();
     }
   }
@@ -332,7 +335,9 @@ const handleTrack = (message, destinationConfig) => {
           destinationConfig,
         );
       } else {
-        throw new ConfigurationError('The event is not a supported ECOM event or a mapped custom event. Aborting.');
+        throw new ConfigurationError(
+          'The event is not a supported ECOM event or a mapped custom event. Aborting.',
+        );
       }
       break;
   }
@@ -340,10 +345,10 @@ const handleTrack = (message, destinationConfig) => {
   return payload;
 };
 
-const process = async event => {
+const process = async (event) => {
   const { message, destination } = event;
   if (!message.type) {
-    throw InstrumentationError('Message Type is not present. Aborting message.');
+    throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
   const messageType = message.type.toLowerCase();
   const formattedDestination = formatDestinationConfig(destination.Config);

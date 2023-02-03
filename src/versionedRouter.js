@@ -284,7 +284,7 @@ async function handleDest(ctx, version, destination) {
         logger.error(error);
 
         let implementation = tags.IMPLEMENTATIONS.NATIVE;
-        let errCtx = 'Destination Transformation';
+        let errCtx = 'Processor Transformation';
         if (isCdkV2Destination(event)) {
           errCtx = `CDK V2 - ${errCtx}`;
           implementation = tags.IMPLEMENTATIONS.CDK_V2;

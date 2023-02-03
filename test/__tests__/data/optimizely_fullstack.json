@@ -1,0 +1,488 @@
+[
+  {
+    "description": "Invalid Configuration (missing sdk key)",
+    "input": {
+      "message": {
+        "type": "track",
+        "channel": "web",
+        "event": "Product Added",
+        "properties": {},
+        "context": {},
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+      },
+      "destination": {
+        "Config": {
+          "baseUrl": "https://example.com",
+          "trackKnownUsers": false,
+          "nonInteraction": false,
+          "listen": false,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true
+        }
+      }
+    },
+    "output": {
+      "error": "SDK key is required"
+    }
+  },
+  {
+    "description": "Invalid Configuration (missing bsase url)",
+    "input": {
+      "message": {
+        "type": "track",
+        "channel": "web",
+        "event": "Product Added",
+        "properties": {},
+        "context": {},
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+      },
+      "destination": {
+        "Config": {
+          "sdkKey": "test-sdk-key",
+          "trackKnownUsers": false,
+          "nonInteraction": false,
+          "listen": false,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true
+        }
+      }
+    },
+    "output": {
+      "error": "Base url is required"
+    }
+  },
+  {
+    "description": "Invalid Configuration (Track known users toggle is on and userId is missing in request)",
+    "input": {
+      "message": {
+        "type": "track",
+        "channel": "web",
+        "event": "Product Added",
+        "properties": { "price": 999, "quantity": 1 },
+        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+      },
+      "destination": {
+        "Config": {
+          "sdkKey": "test-sdk-key",
+          "baseUrl": "https://example.com",
+          "trackKnownUsers": true,
+          "nonInteraction": false,
+          "listen": false,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true
+        }
+      }
+    },
+    "output": {
+      "error": "RudderStack will only track users associated with a userId when the trackKnownUsers setting is enabled"
+    }
+  },
+  {
+    "description": "Invalid Configuration (Track known users toggle is off and anonymousId is missing in request)",
+    "input": {
+      "message": {
+        "type": "track",
+        "channel": "web",
+        "event": "Product Added",
+        "properties": { "price": 999, "quantity": 1 },
+        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff"
+      },
+      "destination": {
+        "Config": {
+          "sdkKey": "test-sdk-key",
+          "baseUrl": "https://example.com",
+          "trackKnownUsers": false,
+          "nonInteraction": false,
+          "listen": false,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true
+        }
+      }
+    },
+    "output": {
+      "error": "AnonymousId is required when trackKnownUsers setting is disabled"
+    }
+  },
+  {
+    "description": "Track call without event",
+    "input": {
+      "message": {
+        "type": "track",
+        "channel": "web",
+        "properties": {},
+        "context": {},
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+      },
+      "destination": {
+        "Config": {
+          "sdkKey": "test-sdk-key",
+          "baseUrl": "https://example.com",
+          "trackKnownUsers": false,
+          "nonInteraction": false,
+          "listen": false,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true
+        }
+      }
+    },
+    "output": {
+      "error": "Event name is required"
+    }
+  },
+  {
+    "description": "Track call with userId",
+    "input": {
+      "message": {
+        "type": "track",
+        "channel": "web",
+        "event": "Product Added",
+        "userId": "test123",
+        "properties": { "price": 999, "quantity": 1 },
+        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+      },
+      "destination": {
+        "Config": {
+          "sdkKey": "test-sdk-key",
+          "baseUrl": "https://example.com",
+          "trackKnownUsers": true,
+          "nonInteraction": false,
+          "listen": false,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "userId": "test123",
+          "userAttributes": { "firstName": "John", "age": 27 },
+          "eventTags": { "price": 999, "quantity": 1 }
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://example.com/v1/track?eventKey=Product%20Added",
+      "files": {},
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Optimizely-SDK-Key": "test-sdk-key"
+      },
+      "method": "POST",
+      "params": {},
+      "type": "REST",
+      "version": "1"
+    }
+  },
+  {
+    "description": "Track call with anonymousId",
+    "input": {
+      "message": {
+        "type": "track",
+        "channel": "web",
+        "event": "Product Added",
+        "properties": { "price": 999, "quantity": 1 },
+        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+      },
+      "destination": {
+        "Config": {
+          "sdkKey": "test-sdk-key",
+          "baseUrl": "https://example.com",
+          "trackKnownUsers": false,
+          "nonInteraction": false,
+          "listen": false,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "userId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+          "userAttributes": { "firstName": "John", "age": 27 },
+          "eventTags": { "price": 999, "quantity": 1 }
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://example.com/v1/track?eventKey=Product%20Added",
+      "files": {},
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Optimizely-SDK-Key": "test-sdk-key"
+      },
+      "method": "POST",
+      "params": {},
+      "type": "REST",
+      "version": "1"
+    }
+  },
+  {
+    "description": "Page call with Track Categorized Pages is enabled",
+    "input": {
+      "message": {
+        "type": "page",
+        "channel": "web",
+        "userId": "test123",
+        "category": "food",
+        "properties": {
+          "url": "https://www.google.com/",
+          "title": "Google home"
+        },
+        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+      },
+      "destination": {
+        "Config": {
+          "sdkKey": "test-sdk-key",
+          "baseUrl": "https://example.com",
+          "trackKnownUsers": true,
+          "nonInteraction": false,
+          "listen": false,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "userId": "test123",
+            "userAttributes": { "firstName": "John", "age": 27 },
+            "eventTags": {
+              "url": "https://www.google.com/",
+              "title": "Google home"
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "endpoint": "https://example.com/v1/track?eventKey=Viewed%20food%20page",
+        "files": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Optimizely-SDK-Key": "test-sdk-key"
+        },
+        "method": "POST",
+        "params": {},
+        "type": "REST",
+        "version": "1"
+      }
+    ]
+  },
+  {
+    "description": "Page call with Track Named Pages is enabled",
+    "input": {
+      "message": {
+        "type": "page",
+        "channel": "web",
+        "userId": "test123",
+        "name": "Thank You",
+        "properties": {
+          "url": "https://www.google.com/",
+          "title": "Google home"
+        },
+        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+      },
+      "destination": {
+        "Config": {
+          "sdkKey": "test-sdk-key",
+          "baseUrl": "https://example.com",
+          "trackKnownUsers": true,
+          "nonInteraction": false,
+          "listen": false,
+          "trackCategorizedPages": false,
+          "trackNamedPages": true
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "userId": "test123",
+            "userAttributes": { "firstName": "John", "age": 27 },
+            "eventTags": {
+              "url": "https://www.google.com/",
+              "title": "Google home"
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "endpoint": "https://example.com/v1/track?eventKey=Viewed%20Thank%20You%20page",
+        "files": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Optimizely-SDK-Key": "test-sdk-key"
+        },
+        "method": "POST",
+        "params": {},
+        "type": "REST",
+        "version": "1"
+      }
+    ]
+  },
+  {
+    "description": "Page call with both Track Categorized Pages and Track Named Pages toggles are enabled",
+    "input": {
+      "message": {
+        "type": "page",
+        "channel": "web",
+        "userId": "test123",
+        "category": "Docs",
+        "name": "Index",
+        "properties": {
+          "url": "https://www.google.com/",
+          "title": "Google home"
+        },
+        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+      },
+      "destination": {
+        "Config": {
+          "sdkKey": "test-sdk-key",
+          "baseUrl": "https://example.com",
+          "trackKnownUsers": true,
+          "nonInteraction": false,
+          "listen": false,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true
+        }
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "userId": "test123",
+            "userAttributes": { "firstName": "John", "age": 27 },
+            "eventTags": {
+              "url": "https://www.google.com/",
+              "title": "Google home"
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "endpoint": "https://example.com/v1/track?eventKey=Viewed%20Docs%20page",
+        "files": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Optimizely-SDK-Key": "test-sdk-key"
+        },
+        "method": "POST",
+        "params": {},
+        "type": "REST",
+        "version": "1"
+      },
+      {
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "userId": "test123",
+            "userAttributes": { "firstName": "John", "age": 27 },
+            "eventTags": {
+              "url": "https://www.google.com/",
+              "title": "Google home"
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "endpoint": "https://example.com/v1/track?eventKey=Viewed%20Index%20page",
+        "files": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Optimizely-SDK-Key": "test-sdk-key"
+        },
+        "method": "POST",
+        "params": {},
+        "type": "REST",
+        "version": "1"
+      }
+    ]
+  },
+  {
+    "description": "Screen call",
+    "input": {
+      "message": {
+        "type": "screen",
+        "channel": "web",
+        "userId": "test123",
+        "name": "Main",
+        "properties": {
+          "url": "https://www.google.com/",
+          "title": "Google Main"
+        },
+        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+      },
+      "destination": {
+        "Config": {
+          "sdkKey": "test-sdk-key",
+          "baseUrl": "https://example.com",
+          "trackKnownUsers": true,
+          "nonInteraction": false,
+          "listen": false,
+          "trackCategorizedPages": false,
+          "trackNamedPages": true
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "userId": "test123",
+          "userAttributes": { "firstName": "John", "age": 27 },
+          "eventTags": {
+            "url": "https://www.google.com/",
+            "title": "Google Main"
+          }
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://example.com/v1/track?eventKey=Viewed%20Main%20screen",
+      "files": {},
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Optimizely-SDK-Key": "test-sdk-key"
+      },
+      "method": "POST",
+      "params": {},
+      "type": "REST",
+      "version": "1"
+    }
+  }
+]

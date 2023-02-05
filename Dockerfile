@@ -1,3 +1,4 @@
+# syntax=docker/dockerfile:1.4
 FROM node:14.21.1-alpine3.15 AS base
 
 RUN apk update
@@ -25,7 +26,7 @@ ADD . .
 RUN chown -R node:node /home/node/app
 USER node
 
-RUN npm install
+RUN npm ci
 RUN npm run build
 
 ENTRYPOINT ["/sbin/tini", "--"]

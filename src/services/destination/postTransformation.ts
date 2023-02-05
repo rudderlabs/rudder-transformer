@@ -2,10 +2,10 @@ import cloneDeep from 'lodash/cloneDeep';
 import isObject from 'lodash/isObject';
 import isEmpty from 'lodash/isEmpty';
 import {
-  ProcessorTransformRequest,
-  ProcessorTransformResponse,
-  RouterTransformResponse,
-  ProcessorTransformOutput,
+  ProcessorTransformationRequest,
+  ProcessorTransformationResponse,
+  RouterTransformationResponse,
+  ProcessorTransformationOutput,
   DeliveryResponse,
   MetaTransferObject,
   UserDeletionResponse,
@@ -15,10 +15,10 @@ import ErrorReportingService from '../errorReporting';
 
 export default class PostTransformationDestinationService {
   public static handleSuccessEventsAtProcessorDest(
-    event: ProcessorTransformRequest,
-    transformedPayloads: ProcessorTransformOutput | ProcessorTransformOutput[],
+    event: ProcessorTransformationRequest,
+    transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[],
     destHandler: any,
-  ): ProcessorTransformResponse[] {
+  ): ProcessorTransformationResponse[] {
     if (!Array.isArray(transformedPayloads)) {
       transformedPayloads = [transformedPayloads];
     }
@@ -39,7 +39,7 @@ export default class PostTransformationDestinationService {
             })
           : event.metadata,
         statusCode: 200,
-      } as ProcessorTransformResponse;
+      } as ProcessorTransformationResponse;
     });
     return result;
   }
@@ -47,24 +47,24 @@ export default class PostTransformationDestinationService {
   public static handleFailedEventsAtProcessorDest(
     error: Object,
     metaTO: MetaTransferObject,
-  ): ProcessorTransformResponse {
+  ): ProcessorTransformationResponse {
     const errObj = generateErrorObject(error, metaTO.errorDetails);
     const resp = {
       metadata: metaTO.metadata,
       statusCode: errObj.status,
       error: errObj.message || '[Processor Transform] Error occurred while processing the payload.',
       statTags: errObj.statTags,
-    } as ProcessorTransformResponse;
+    } as ProcessorTransformationResponse;
     ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
     return resp;
   }
 
   public static handleSuccessEventsAtRouterDest(
-    transformedPayloads: RouterTransformResponse[],
+    transformedPayloads: RouterTransformationResponse[],
     destHandler: any,
     metaTO: MetaTransferObject,
-  ): RouterTransformResponse[] {
-    let resultantPayloads: RouterTransformResponse[] = cloneDeep(transformedPayloads);
+  ): RouterTransformationResponse[] {
+    let resultantPayloads: RouterTransformationResponse[] = cloneDeep(transformedPayloads);
     if (destHandler?.processMetadataForRouter) {
       return resultantPayloads.map((resultantPayload) => {
         resultantPayload.metadata = destHandler.processMetadataForRouter(resultantPayload);
@@ -85,7 +85,7 @@ export default class PostTransformationDestinationService {
   public static handleFailureEventsAtRouterDest(
     error: Object,
     metaTO: MetaTransferObject,
-  ): RouterTransformResponse {
+  ): RouterTransformationResponse {
     const errObj = generateErrorObject(error, metaTO.errorDetails);
     const resp = {
       metadata: metaTO.metadatas,
@@ -93,7 +93,7 @@ export default class PostTransformationDestinationService {
       statusCode: errObj.status,
       error: errObj.message || '[Router Transform] Error occurred while processing the payload.',
       statTags: errObj.statTags,
-    } as RouterTransformResponse;
+    } as RouterTransformationResponse;
     ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
     return resp;
   }
@@ -101,7 +101,7 @@ export default class PostTransformationDestinationService {
   public static handleFailureEventsAtBatchDest(
     error: Object,
     metaTO: MetaTransferObject,
-  ): RouterTransformResponse {
+  ): RouterTransformationResponse {
     const errObj = generateErrorObject(error, metaTO.errorDetails);
     const resp = {
       metadata: metaTO.metadatas,
@@ -109,7 +109,7 @@ export default class PostTransformationDestinationService {
       statusCode: 500, // for batch we should consider code error hence keeping retryable
       error: errObj.message || '[Batch Transform] Error occurred while processing payload.',
       statTags: errObj.statTags,
-    } as RouterTransformResponse;
+    } as RouterTransformationResponse;
     ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
     return resp;
   }

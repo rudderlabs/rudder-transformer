@@ -4,11 +4,11 @@ import {
   DeliveryResponse,
   ErrorDetailer,
   MetaTransferObject,
-  ProcessorTransformRequest,
-  ProcessorTransformResponse,
-  RouterTransformRequestData,
-  RouterTransformResponse,
-  ProcessorTransformOutput,
+  ProcessorTransformationRequest,
+  ProcessorTransformationResponse,
+  RouterTransformationRequestData,
+  RouterTransformationResponse,
+  ProcessorTransformationOutput,
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../../types/index';
@@ -46,13 +46,13 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
   }
 
   public async processorRoutine(
-    events: ProcessorTransformRequest[],
+    events: ProcessorTransformationRequest[],
     destinationType: string,
     _version: string,
     _requestMetadata: Object,
-  ): Promise<ProcessorTransformResponse[]> {
+  ): Promise<ProcessorTransformationResponse[]> {
     const tfConfig = await ConfigFactory.getConfig(destinationType);
-    const respList: ProcessorTransformResponse[][] = await Promise.all(
+    const respList: ProcessorTransformationResponse[][] = await Promise.all(
       events.map(async (event) => {
         try {
           let transformedPayloads: any = await Executor.execute(event as any, tfConfig);
@@ -80,25 +80,25 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
   }
 
   public routerRoutine(
-    _events: RouterTransformRequestData[],
+    _events: RouterTransformationRequestData[],
     _destinationType: string,
     _version: string,
     _requestMetadata: Object,
-  ): Promise<RouterTransformResponse[]> {
+  ): Promise<RouterTransformationResponse[]> {
     throw new TransformationError('CDKV1 Does not Implement Router Transform Routine');
   }
 
   public batchRoutine(
-    _events: RouterTransformRequestData[],
+    _events: RouterTransformationRequestData[],
     _destinationType: string,
     _version: any,
     _requestMetadata: Object,
-  ): RouterTransformResponse[] {
+  ): RouterTransformationResponse[] {
     throw new TransformationError('CDKV1 Does not Implement Batch Transform Routine');
   }
 
   public deliveryRoutine(
-    _event: ProcessorTransformOutput,
+    _event: ProcessorTransformationOutput,
     _destinationType: string,
     _requestMetadata: Object,
   ): Promise<DeliveryResponse> {

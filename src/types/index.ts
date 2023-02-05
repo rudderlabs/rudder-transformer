@@ -1,26 +1,10 @@
-enum Method {
-  GET = 'GET',
-  POST = 'POST',
-  DELETE = 'DELETE',
-  PUT = 'PUT',
-  PATCH = 'PATCH',
-}
-
-enum Version {
-  ONE = "1"
-}
-
-enum Type {
-  REST = "REST"
-}
-
-type ProcessorTransformOutput = {
-  version: Version;
-  type: Type;
-  method: Method;
+type ProcessorTransformationOutput = {
+  version: string;
+  type: string;
+  method: string;
   endpoint: string;
   userId: string;
-  headers: Record<string, unknown>;
+  headers?: Record<string, unknown>;
   params?: Record<string, unknown>;
   body?: {
     JSON?: Record<string, unknown>;
@@ -92,7 +76,7 @@ type UserTransformationLibrary = {
   VersionID: string;
 };
 
-type ProcessorTransformRequest = {
+type ProcessorTransformationRequest = {
   request?: Object;
   message: Object;
   metadata: Metadata;
@@ -100,28 +84,28 @@ type ProcessorTransformRequest = {
   libraries: UserTransformationLibrary[];
 };
 
-type RouterTransformRequestData = {
+type RouterTransformationRequestData = {
   request?: Object;
   message: Object;
   metadata: Metadata;
   destination: Destination;
 };
 
-type RouterTransformRequest = {
-  input: RouterTransformRequestData[];
+type RouterTransformationRequest = {
+  input: RouterTransformationRequestData[];
   destType: string;
 };
 
-type ProcessorTransformResponse = {
-  output?: ProcessorTransformOutput | RudderMessage | Object;
+type ProcessorTransformationResponse = {
+  output?: ProcessorTransformationOutput | RudderMessage | Object;
   metadata: Metadata;
   statusCode: number;
   error?: string;
   statTags: Object;
 };
 
-type RouterTransformResponse = {
-  batchedRequest?: ProcessorTransformOutput | Object;
+type RouterTransformationResponse = {
+  batchedRequest?: ProcessorTransformationOutput | Object;
   metadata: Metadata[];
   destination: Destination;
   batched: boolean;
@@ -130,12 +114,12 @@ type RouterTransformResponse = {
   statTags: Object;
 };
 
-type SourceTransformOutput = {
+type SourceTransformationOutput = {
   batch: RudderMessage[];
 };
 
-type SourceTransformResponse = {
-  output: SourceTransformOutput;
+type SourceTransformationResponse = {
+  output: SourceTransformationOutput;
   error: Object;
   statusCode: number;
   outputToSource: Object;
@@ -176,9 +160,9 @@ type RudderMessage = {
 };
 
 type ErrorDetailer = {
-  module?: string;
-  implementation?: string;
-  feature?: string;
+  module: string;
+  implementation: string;
+  feature: string;
   errorCategory?: string;
   errorType?: string;
   meta?: string;
@@ -198,14 +182,14 @@ type MetaTransferObject = {
   errorDetails: ErrorDetailer;
 };
 
-type UserTransformResponse = {
+type UserTransformationResponse = {
   transformedEvent: RudderMessage;
   metadata: Metadata;
   error: Object;
 };
 
-type UserTransfromServiceResponse = {
-  transformedEvents: ProcessorTransformResponse[];
+type UserTransformationServiceResponse = {
+  transformedEvents: ProcessorTransformationResponse[];
   retryStatus: number;
 };
 
@@ -227,22 +211,19 @@ type UserDeletionResponse = {
 export {
   Metadata,
   UserTransformationLibrary,
-  ProcessorTransformRequest,
-  ProcessorTransformResponse,
-  RouterTransformRequest,
-  RouterTransformRequestData,
-  RouterTransformResponse,
+  ProcessorTransformationRequest,
+  ProcessorTransformationResponse,
+  RouterTransformationRequest,
+  RouterTransformationRequestData,
+  RouterTransformationResponse,
   RudderMessage,
-  ProcessorTransformOutput,
-  SourceTransformResponse,
+  ProcessorTransformationOutput,
+  SourceTransformationResponse,
   DeliveryResponse,
   ErrorDetailer,
-  UserTransformResponse,
-  UserTransfromServiceResponse,
+  UserTransformationResponse,
+  UserTransformationServiceResponse,
   MetaTransferObject,
   UserDeletionRequest,
   UserDeletionResponse,
-  Method,
-  Version,
-  Type
 };

@@ -3,10 +3,10 @@ import isEmpty from 'lodash/isEmpty';
 import { userTransformHandler } from '../routerUtils';
 import {
   UserTransformationLibrary,
-  ProcessorTransformRequest,
-  ProcessorTransformResponse,
-  UserTransformResponse,
-  UserTransfromServiceResponse,
+  ProcessorTransformationRequest,
+  ProcessorTransformationResponse,
+  UserTransformationResponse,
+  UserTransformationServiceResponse,
 } from '../types/index';
 import { RespStatusError, RetryRequestError } from '../util/utils';
 import { getMetadata, isNonFuncObject } from '../v0/util';
@@ -14,12 +14,12 @@ import logger from '../logger';
 
 export default class UserTransformService {
   public static async transformRoutine(
-    events: ProcessorTransformRequest[],
-  ): Promise<UserTransfromServiceResponse> {
+    events: ProcessorTransformationRequest[],
+  ): Promise<UserTransformationServiceResponse> {
     let retryStatus = 200;
     const groupedEvents: Object = groupBy(
       events,
-      (event: ProcessorTransformRequest) =>
+      (event: ProcessorTransformationRequest) =>
         `${event.metadata.destinationId}_${event.metadata.sourceId}`,
     );
     const transformedEvents = [];
@@ -32,7 +32,7 @@ export default class UserTransformService {
     const responses = await Promise.all<any>(
       Object.entries(groupedEvents).map(async ([dest, destEvents]) => {
         logger.debug(`dest: ${dest}`);
-        const eventsToProcess = destEvents as ProcessorTransformRequest[];
+        const eventsToProcess = destEvents as ProcessorTransformationRequest[];
         const transformationVersionId =
           eventsToProcess[0]?.destination?.Transformations[0]?.VersionID;
         const messageIds = eventsToProcess.map((ev) => {
@@ -58,12 +58,12 @@ export default class UserTransformService {
             statusCode: 400,
             error: errorMessage,
             metadata: commonMetadata,
-          } as ProcessorTransformResponse);
+          } as ProcessorTransformationResponse);
           return transformedEvents;
         }
 
         try {
-          const destTransformedEvents: UserTransformResponse[] = await userTransformHandler()(
+          const destTransformedEvents: UserTransformationResponse[] = await userTransformHandler()(
             eventsToProcess,
             transformationVersionId,
             librariesVersionIDs,
@@ -75,7 +75,7 @@ export default class UserTransformService {
                   statusCode: 400,
                   error: ev.error,
                   metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
-                } as ProcessorTransformResponse;
+                } as ProcessorTransformationResponse;
               }
               if (!isNonFuncObject(ev.transformedEvent)) {
                 return {
@@ -84,13 +84,13 @@ export default class UserTransformService {
                     ev.transformedEvent,
                   )}`,
                   metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
-                } as ProcessorTransformResponse;
+                } as ProcessorTransformationResponse;
               }
               return {
                 output: ev.transformedEvent,
                 metadata: isEmpty(ev.metadata) ? commonMetadata : ev.metadata,
                 statusCode: 200,
-              } as ProcessorTransformResponse;
+              } as ProcessorTransformationResponse;
             }),
           );
           return transformedEvents;
@@ -113,7 +113,7 @@ export default class UserTransformService {
                 statusCode: status,
                 metadata: e.metadata,
                 error: errorString,
-              } as ProcessorTransformResponse;
+              } as ProcessorTransformationResponse;
             }),
           );
           return transformedEvents;
@@ -123,11 +123,11 @@ export default class UserTransformService {
       }),
     );
 
-    const flattenedResponses: ProcessorTransformResponse[] = responses.flat();
+    const flattenedResponses: ProcessorTransformationResponse[] = responses.flat();
     return {
       transformedEvents: flattenedResponses,
       retryStatus,
-    } as UserTransfromServiceResponse;
+    } as UserTransformationServiceResponse;
   }
 
   public static async testTransformRoutine(events, trRevCode, libraryVersionIDs) {

@@ -3,7 +3,7 @@ import {
   ErrorDetailer,
   MetaTransferObject,
   RudderMessage,
-  SourceTransformResponse,
+  SourceTransformationResponse,
 } from '../../types/index';
 import PostTransformationServiceSource from './postTransformation';
 import FetchHandler from '../../helpers/fetchHandlers';
@@ -27,12 +27,12 @@ export default class NativeIntegrationSourceService implements IntegrationSource
     sourceType: string,
     version: string,
     _requestMetadata: Object,
-  ): Promise<SourceTransformResponse[]> {
+  ): Promise<SourceTransformationResponse[]> {
     const sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
-    const respList: SourceTransformResponse[] = await Promise.all<any>(
+    const respList: SourceTransformationResponse[] = await Promise.all<any>(
       sourceEvents.map(async (sourceEvent) => {
         try {
-          const respEvents: RudderMessage | RudderMessage[] | SourceTransformResponse =
+          const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
             await sourceHandler.process(sourceEvent);
           return PostTransformationServiceSource.handleSuccessEventsSource(respEvents);
         } catch (error) {

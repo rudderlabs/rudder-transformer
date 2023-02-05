@@ -26,7 +26,6 @@ const {
   OAuthSecretError,
 } = require('./errorTypes');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
-const { Method } = require('../../types/index');
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -306,30 +305,30 @@ const getFbGenderVal = (gender) => {
 // GET
 const defaultGetRequestConfig = {
   requestFormat: 'PARAMS',
-  requestMethod: Method.GET,
+  requestMethod: 'GET',
 };
 
 // POST
 const defaultPostRequestConfig = {
   requestFormat: 'JSON',
-  requestMethod: Method.POST,
+  requestMethod: 'POST',
 };
 
 // DELETE
 const defaultDeleteRequestConfig = {
   requestFormat: 'JSON',
-  requestMethod: Method.DELETE,
+  requestMethod: 'DELETE',
 };
 
 // PUT
 const defaultPutRequestConfig = {
   requestFormat: 'JSON',
-  requestMethod: Method.PUT,
+  requestMethod: 'PUT',
 };
 // PATCH
 const defaultPatchRequestConfig = {
   requestFormat: 'JSON',
-  requestMethod: Method.PATCH,
+  requestMethod: 'PATCH',
 };
 
 // DEFAULT

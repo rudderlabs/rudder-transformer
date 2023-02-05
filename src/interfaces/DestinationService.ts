@@ -1,11 +1,11 @@
 import {
   DeliveryResponse,
   MetaTransferObject,
-  ProcessorTransformRequest,
-  ProcessorTransformResponse,
-  RouterTransformRequestData,
-  RouterTransformResponse,
-  ProcessorTransformOutput,
+  ProcessorTransformationRequest,
+  ProcessorTransformationResponse,
+  RouterTransformationRequestData,
+  RouterTransformationResponse,
+  ProcessorTransformationOutput,
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../types/index';
@@ -21,28 +21,28 @@ export default interface DestinationService {
   ): MetaTransferObject;
 
   processorRoutine(
-    events: ProcessorTransformRequest[],
+    events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
     requestMetadata: Object,
-  ): Promise<ProcessorTransformResponse[]>;
+  ): Promise<ProcessorTransformationResponse[]>;
 
   routerRoutine(
-    events: RouterTransformRequestData[],
+    events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
     requestMetadata: Object,
-  ): Promise<RouterTransformResponse[]>;
+  ): Promise<RouterTransformationResponse[]>;
 
   batchRoutine(
-    events: RouterTransformRequestData[],
+    events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
     requestMetadata: Object,
-  ): RouterTransformResponse[];
+  ): RouterTransformationResponse[];
 
   deliveryRoutine(
-    event: ProcessorTransformOutput,
+    event: ProcessorTransformationOutput,
     destinationType: string,
     requestMetadata: Object,
   ): Promise<DeliveryResponse>;

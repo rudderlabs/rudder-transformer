@@ -1,4 +1,4 @@
-import { MetaTransferObject, SourceTransformResponse } from '../types/index';
+import { MetaTransferObject, SourceTransformationResponse } from '../types/index';
 
 export default interface SourceService {
   getTags(): MetaTransferObject;
@@ -8,5 +8,5 @@ export default interface SourceService {
     sourceType: string,
     version: string,
     requestMetadata: Object,
-  ): Promise<SourceTransformResponse[]>;
+  ): Promise<SourceTransformationResponse[]>;
 }

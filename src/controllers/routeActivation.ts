@@ -1,6 +1,6 @@
 import { Context } from 'koa';
 import dotenv from 'dotenv';
-import { ProcessorTransformRequest, RouterTransformRequest } from '../types';
+import { ProcessorTransformationRequest, RouterTransformationRequest } from '../types';
 
 dotenv.config();
 
@@ -93,7 +93,7 @@ export default class RouteActivationController {
   }
 
   public static destinationRtFilter(ctx: Context, next: any) {
-    const routerRequest = ctx.request.body as RouterTransformRequest;
+    const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
     if (
       Array.isArray(destinationFilterList) &&
@@ -107,7 +107,7 @@ export default class RouteActivationController {
   }
 
   public static destinationBatchFilter(ctx: Context, next: any) {
-    const routerRequest = ctx.request.body as RouterTransformRequest;
+    const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
     if (
       Array.isArray(destinationFilterList) &&

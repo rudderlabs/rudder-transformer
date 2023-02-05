@@ -155,7 +155,7 @@ type RudderMessage = {
   sentAt: Date;
   event?: string;
   integrations?: Object;
-  messageId?: string;
+  messageId: string;
   properties?: Object;
   traits?: Object;
 };
@@ -194,6 +194,22 @@ type UserTransfromServiceResponse = {
   retryStatus: number;
 };
 
+type UserDeletionRequest = {
+  userAttributes: any[];
+  config: Object;
+  destType: string;
+  jobId: string;
+};
+
+type UserDeletionResponse = {
+  statusCode: number;
+  error?: string;
+  status?: string;
+  authErrorCategory: any;
+  statTags: Object;
+
+};
+
 export {
   Metadata,
   UserTransformationLibrary,
@@ -210,4 +226,6 @@ export {
   UserTransformResponse,
   UserTransfromServiceResponse,
   MetaTransferObject,
+  UserDeletionRequest,
+  UserDeletionResponse,
 };

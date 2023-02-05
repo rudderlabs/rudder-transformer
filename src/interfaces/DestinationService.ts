@@ -6,6 +6,8 @@ import {
   RouterTransformRequestData,
   RouterTransformResponse,
   TransformedEvent,
+  UserDeletionRequest,
+  UserDeletionResponse,
 } from '../types/index';
 
 export default interface DestinationService {
@@ -44,4 +46,9 @@ export default interface DestinationService {
     destinationType: string,
     requestMetadata: Object,
   ): Promise<DeliveryResponse>;
+
+  deletionRoutine(
+    requests: UserDeletionRequest[],
+    rudderDestInfo: string,
+  ): Promise<UserDeletionResponse[]>;
 }

@@ -16,6 +16,10 @@ export default class MiscService {
     return require(`../${version}/sources/${source}/transform`);
   }
 
+  public static getDeletionHandler(dest: string, version: string) {
+    return require(`../${version}/destinations/${dest}/deleteUsers`);
+  }
+
   public static getRequestMetadata(ctx: Context) {
     // TODO: Parse information such as
     // cluster, namespace, etc information

@@ -8,6 +8,7 @@ import {
   TransformedEvent,
   DeliveryResponse,
   MetaTransferObject,
+  UserDeletionResponse,
 } from '../../types/index';
 import { generateErrorObject } from '../../v0/util';
 import ErrorReportingService from '../errorReporting';
@@ -127,6 +128,23 @@ export default class PostTransformationDestinationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as DeliveryResponse;
+    ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
+    return resp;
+  }
+
+  public static handleFailureEventsAtUserDeletion(
+    error: Object,
+    metaTO: MetaTransferObject,
+  ): UserDeletionResponse {
+    const errObj = generateErrorObject(error, metaTO.errorDetails);
+    //TODO: Add stat tags here
+    const resp = {
+      statusCode: errObj.status,
+      error: errObj.message,
+      ...(errObj.authErrorCategory && {
+        authErrorCategory: errObj.authErrorCategory,
+      }),
+    } as UserDeletionResponse;
     ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
     return resp;
   }

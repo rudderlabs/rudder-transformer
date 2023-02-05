@@ -9,6 +9,8 @@ import {
   RouterTransformRequestData,
   RouterTransformResponse,
   TransformedEvent,
+  UserDeletionRequest,
+  UserDeletionResponse,
 } from '../../types/index';
 import PostTransformationServiceDestination from './postTransformation';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
@@ -180,5 +182,42 @@ export default class NativeIntegrationDestinationService implements IntegrationD
       metaTO.metadata = destinationRequest.metadata;
       return PostTransformationServiceDestination.handleFailureEventsAtDeliveryDest(err, metaTO);
     }
+  }
+
+  public async deletionRoutine(
+    requests: UserDeletionRequest[],
+    rudderDestInfo: string,
+  ): Promise<UserDeletionResponse[]> {
+    const response = await Promise.all(
+      requests.map(async (request) => {
+        const { destType } = request;
+        const destUserDeletionHandler: any = FetchHandler.getDeletionHandler(
+          destType.toLowerCase(),
+          'v0',
+        );
+        if (!destUserDeletionHandler || !destUserDeletionHandler.processDeleteUsers) {
+          return {
+            statusCode: 404,
+            error: `${destType}: Doesn't support deletion of users`,
+          } as UserDeletionResponse;
+        }
+        try {
+          const result: UserDeletionResponse = await destUserDeletionHandler.processDeleteUsers({
+            ...request,
+            rudderDestInfo,
+          });
+          if (result) {
+            return result;
+          }
+        } catch (error) {
+          const metaTO = this.getTags(destType, 'unknown', 'unknown', tags.FEATURES.USER_DELETION);
+          return PostTransformationServiceDestination.handleFailureEventsAtUserDeletion(
+            error,
+            metaTO,
+          );
+        }
+      }),
+    );
+    return response;
   }
 }

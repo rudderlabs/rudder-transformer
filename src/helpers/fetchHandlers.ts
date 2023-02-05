@@ -3,6 +3,7 @@ import MiscService from '../services/misc';
 export default class FetchHandler {
   private static sourceHandlerMap: Map<string, any> = new Map();
   private static destHandlerMap: Map<string, any> = new Map();
+  private static deletionHandlerMap: Map<string, any> = new Map();
 
   public static getDestHandler(dest: string, version: string) {
     let destinationHandler: any;
@@ -24,5 +25,16 @@ export default class FetchHandler {
       this.sourceHandlerMap.set(source, sourceHandler);
     }
     return sourceHandler;
+  }
+
+  public static getDeletionHandler(dest: string, version: string) {
+    let deletionHandler: any;
+    if(this.deletionHandlerMap.get(dest)) {
+      deletionHandler = this.deletionHandlerMap.get(dest);
+    } else {
+      deletionHandler = MiscService.getDeletionHandler(dest,version);
+      this.deletionHandlerMap.set(dest, deletionHandler);
+    }
+    return deletionHandler;
   }
 }

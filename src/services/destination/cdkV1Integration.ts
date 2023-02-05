@@ -9,6 +9,8 @@ import {
   RouterTransformRequestData,
   RouterTransformResponse,
   TransformedEvent,
+  UserDeletionRequest,
+  UserDeletionResponse,
 } from '../../types/index';
 import { TransformationError } from '../../v0/util/errorTypes';
 import PostTransformationServiceDestination from './postTransformation';
@@ -101,5 +103,12 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
     _requestMetadata: Object,
   ): Promise<DeliveryResponse> {
     throw new TransformationError('CDV1 Does not Implement Delivery Routine');
+  }
+
+  public deletionRoutine(
+    requests: UserDeletionRequest[],
+    rudderDestInfo: string,
+  ): Promise<UserDeletionResponse[]> {
+    throw new TransformationError('CDV1 Does not Implement Deletion Routine');
   }
 }

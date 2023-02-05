@@ -10,6 +10,8 @@ import {
   RouterTransformRequestData,
   RouterTransformResponse,
   TransformedEvent,
+  UserDeletionRequest,
+  UserDeletionResponse,
 } from '../../types/index';
 import { TransformationError } from '../../v0/util/errorTypes';
 import tags from '../../v0/util/tags';
@@ -132,5 +134,12 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     _requestMetadata: Object,
   ): Promise<DeliveryResponse> {
     throw new TransformationError('CDV2 Does not Implement Delivery Routine');
+  }
+
+  public deletionRoutine(
+    requests: UserDeletionRequest[],
+    rudderDestInfo: string,
+  ): Promise<UserDeletionResponse[]> {
+    throw new TransformationError('CDV2 Does not Implement Deletion Routine');
   }
 }

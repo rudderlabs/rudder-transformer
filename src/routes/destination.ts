@@ -24,6 +24,6 @@ router.post(
   DestinationController.batchProcess,
 );
 
-router.post('/deleteUsers', RegulationController.handleUserDeletion);
+router.post('/deleteUsers', RegulationController.deleteUsers);
 
 export const destinationRoutes = router.routes();

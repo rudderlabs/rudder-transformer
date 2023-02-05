@@ -12,7 +12,7 @@ export default class PreTransformationDestinationService {
       event.request = { query: reqParams };
       return event;
     });
-    events = DynamicConfigParser.processDynamicConfig(events);
+    events = DynamicConfigParser.process(events);
     return events;
   }
 }

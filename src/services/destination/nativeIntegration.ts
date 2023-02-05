@@ -8,7 +8,7 @@ import {
   ProcessorTransformResponse,
   RouterTransformRequestData,
   RouterTransformResponse,
-  TransformedEvent,
+  ProcessorTransformOutput,
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../../types/index';
@@ -50,7 +50,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     const respList: ProcessorTransformResponse[][] = await Promise.all(
       events.map(async (event) => {
         try {
-          let transformedPayloads: TransformedEvent | TransformedEvent[] =
+          let transformedPayloads: ProcessorTransformOutput | ProcessorTransformOutput[] =
             await destHandler.process(event);
           return PostTransformationServiceDestination.handleSuccessEventsAtProcessorDest(
             event,
@@ -157,7 +157,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
   }
 
   public async deliveryRoutine(
-    destinationRequest: TransformedEvent,
+    destinationRequest: ProcessorTransformOutput,
     destinationType: string,
     _requestMetadata: Object,
   ): Promise<DeliveryResponse> {

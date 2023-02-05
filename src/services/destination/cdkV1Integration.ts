@@ -8,7 +8,7 @@ import {
   ProcessorTransformResponse,
   RouterTransformRequestData,
   RouterTransformResponse,
-  TransformedEvent,
+  ProcessorTransformOutput,
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../../types/index';
@@ -98,7 +98,7 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
   }
 
   public deliveryRoutine(
-    _event: TransformedEvent,
+    _event: ProcessorTransformOutput,
     _destinationType: string,
     _requestMetadata: Object,
   ): Promise<DeliveryResponse> {

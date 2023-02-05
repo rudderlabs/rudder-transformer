@@ -1,6 +1,6 @@
 import { Context } from 'koa';
 import MiscService from '../services/misc';
-import { DeliveryResponse, TransformedEvent } from '../types/index';
+import { DeliveryResponse, ProcessorTransformOutput } from '../types/index';
 import ServiceSelector from '../helpers/serviceSelector';
 import DeliveryTestService from '../services/delivertTest/deliveryTest';
 import ControllerUtility from './util';
@@ -13,7 +13,7 @@ export default class DeliveryController {
     logger.debug('Native(Delivery):: Request to transformer::', JSON.stringify(ctx.request.body));
     let deliveryResponse: DeliveryResponse;
     let requestMetadata = MiscService.getRequestMetadata(ctx);
-    let event = ctx.request.body as TransformedEvent;
+    let event = ctx.request.body as ProcessorTransformOutput;
     const { version, destination }: { version: string; destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
     try {

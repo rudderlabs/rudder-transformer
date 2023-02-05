@@ -1,7 +1,23 @@
-type TransformedEvent = {
-  version: string;
-  type: string;
-  method: string;
+enum Method {
+  GET = 'GET',
+  POST = 'POST',
+  DELETE = 'DELETE',
+  PUT = 'PUT',
+  PATCH = 'PATCH',
+}
+
+enum Version {
+  ONE = "1"
+}
+
+enum Type {
+  REST = "REST"
+}
+
+type ProcessorTransformOutput = {
+  version: Version;
+  type: Type;
+  method: Method;
   endpoint: string;
   userId: string;
   headers: Record<string, unknown>;
@@ -59,7 +75,6 @@ type DestinationDefinition = {
   Name: string;
   DisplayName: string;
   Config: Object;
-  ResponseRules: Object;
 };
 
 type Destination = {
@@ -69,8 +84,8 @@ type Destination = {
   Config: Object;
   Enabled: boolean;
   WorkspaceID: string;
-  Transformations: UserTransformationInput[];
-  RevisionID: string;
+  Transformations?: UserTransformationInput[];
+  RevisionID?: string;
 };
 
 type UserTransformationLibrary = {
@@ -98,7 +113,7 @@ type RouterTransformRequest = {
 };
 
 type ProcessorTransformResponse = {
-  output?: TransformedEvent | RudderMessage | Object;
+  output?: ProcessorTransformOutput | RudderMessage | Object;
   metadata: Metadata;
   statusCode: number;
   error?: string;
@@ -106,7 +121,7 @@ type ProcessorTransformResponse = {
 };
 
 type RouterTransformResponse = {
-  batchedRequest?: TransformedEvent | Object;
+  batchedRequest?: ProcessorTransformOutput | Object;
   metadata: Metadata[];
   destination: Destination;
   batched: boolean;
@@ -207,7 +222,6 @@ type UserDeletionResponse = {
   status?: string;
   authErrorCategory: any;
   statTags: Object;
-
 };
 
 export {
@@ -219,7 +233,7 @@ export {
   RouterTransformRequestData,
   RouterTransformResponse,
   RudderMessage,
-  TransformedEvent,
+  ProcessorTransformOutput,
   SourceTransformResponse,
   DeliveryResponse,
   ErrorDetailer,
@@ -228,4 +242,7 @@ export {
   MetaTransferObject,
   UserDeletionRequest,
   UserDeletionResponse,
+  Method,
+  Version,
+  Type
 };

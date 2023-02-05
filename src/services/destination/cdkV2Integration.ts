@@ -9,7 +9,7 @@ import {
   ProcessorTransformResponse,
   RouterTransformRequestData,
   RouterTransformResponse,
-  TransformedEvent,
+  ProcessorTransformOutput,
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../../types/index';
@@ -50,7 +50,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     const respList: ProcessorTransformResponse[][] = await Promise.all(
       events.map(async (event) => {
         try {
-          let transformedPayloads: TransformedEvent | TransformedEvent[] =
+          let transformedPayloads: ProcessorTransformOutput | ProcessorTransformOutput[] =
             await processCdkV2Workflow(destinationType, event, tags.FEATURES.PROCESSOR);
           // We are not passing destination handler for CDK flows
           return PostTransformationServiceDestination.handleSuccessEventsAtProcessorDest(
@@ -129,7 +129,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
   }
 
   public deliveryRoutine(
-    _event: TransformedEvent,
+    _event: ProcessorTransformOutput,
     _destinationType: string,
     _requestMetadata: Object,
   ): Promise<DeliveryResponse> {

@@ -5,7 +5,7 @@ import {
   ProcessorTransformRequest,
   ProcessorTransformResponse,
   RouterTransformResponse,
-  TransformedEvent,
+  ProcessorTransformOutput,
   DeliveryResponse,
   MetaTransferObject,
   UserDeletionResponse,
@@ -16,7 +16,7 @@ import ErrorReportingService from '../errorReporting';
 export default class PostTransformationDestinationService {
   public static handleSuccessEventsAtProcessorDest(
     event: ProcessorTransformRequest,
-    transformedPayloads: TransformedEvent | TransformedEvent[],
+    transformedPayloads: ProcessorTransformOutput | ProcessorTransformOutput[],
     destHandler: any,
   ): ProcessorTransformResponse[] {
     if (!Array.isArray(transformedPayloads)) {

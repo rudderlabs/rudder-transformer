@@ -5,7 +5,7 @@ import {
   ProcessorTransformResponse,
   RouterTransformRequestData,
   RouterTransformResponse,
-  TransformedEvent,
+  ProcessorTransformOutput,
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../types/index';
@@ -42,7 +42,7 @@ export default interface DestinationService {
   ): RouterTransformResponse[];
 
   deliveryRoutine(
-    event: TransformedEvent,
+    event: ProcessorTransformOutput,
     destinationType: string,
     requestMetadata: Object,
   ): Promise<DeliveryResponse>;

@@ -36,7 +36,12 @@ async function extractRelevantLibraryVersionIdsForVersionId(functionName, code, 
   const relevantLvids = [];
 
   if (libraries) {
-    const extractedLibraries = Object.keys(await extractLibraries(code, versionId, "pythonfaas"));
+    const extractedLibraries = Object.keys(await extractLibraries(
+      code,
+      versionId,
+      libraries.map((library) => library?.handleName || _.camelCase(library?.name)),
+      "pythonfaas"
+    ));
 
     libraries.forEach((library) => {
       const libHandleName = library.handleName || _.camelCase(library.name);

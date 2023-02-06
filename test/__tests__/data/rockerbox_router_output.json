@@ -13,10 +13,13 @@
       "body": {
         "JSON": {
           "action": "conv.add_to_cart",
+          "checkout_id": "12345",
           "conversion_source": "RudderStack",
           "customer_id": "userSampleX138",
           "email": "userSampleX120@gmail.com",
           "phone": "9878764736",
+          "product_name": "Red T-shirt",
+          "product_url": "http://www.yourdomain.com/products/red-t-shirt",
           "timestamp": 1659902539
         },
         "JSON_ARRAY": {},
@@ -87,10 +90,13 @@
       "body": {
         "JSON": {
           "action": "conv.add_to_cart",
+          "checkout_id": "12345",
           "conversion_source": "RudderStack",
           "customer_id": "userSampleX138",
           "email": "userSampleX120@gmail.com",
           "phone": "9878764736",
+          "product_name": "Red T-shirt",
+          "product_url": "http://www.yourdomain.com/products/red-t-shirt",
           "timestamp": 1659902539
         },
         "JSON_ARRAY": {},

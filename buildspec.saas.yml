@@ -16,6 +16,12 @@ phases:
       - curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
       - apt-get update
       - apt install -y hub
+      - 'echo "${DOCKERHUB_PASSWORD}" | docker login --username rudderlabs --password-stdin'
+      - wget https://github.com/docker/buildx/releases/download/v0.10.2/buildx-v0.10.2.linux-amd64
+      - mkdir -p ~/.docker/cli-plugins
+      - mv buildx-v0.10.2.linux-amd64 ~/.docker/cli-plugins/docker-buildx
+      - chmod a+rx ~/.docker/cli-plugins/docker-buildx
+      - docker run --privileged --rm tonistiigi/binfmt --install arm64,amd64
   pre_build:
     commands:
       - docker login --username rudderlabs --password $dockerhub_passwd
@@ -28,14 +34,31 @@ phases:
         --build-arg version=${VERSION} 
         --build-arg GIT_COMMIT_SHA=$CODEBUILD_RESOLVED_SOURCE_VERSION 
         -t rudderlabs/rudder-transformer:$VERSION 
+        -t rudderstack/rudder-transformer:$VERSION 
         -f Dockerfile .
-      - docker run rudderlabs/rudder-transformer:$VERSION npm run test
+      - docker run rudderstack/rudder-transformer:$VERSION npm run test
       - echo $?
-      - docker tag rudderlabs/rudder-transformer:$VERSION rudderlabs/rudder-transformer:latest
   post_build:
     commands:
-      - docker push rudderlabs/rudder-transformer:$VERSION
-      - docker push rudderlabs/rudder-transformer:latest
+      - VERSION="$(date '+%d%m%Y.%H%M%S')"
+
+      # creates a docker builder instance to build multi-platform docker images
+      - docker buildx create --use
+
+      # builds and pushes multi-platform docker images to docker registry
+      - >
+        docker buildx build 
+        --build-arg version=${VERSION}
+        --build-arg GIT_COMMIT_SHA=$CODEBUILD_RESOLVED_SOURCE_VERSION 
+        --platform=linux/amd64,linux/arm64 
+        -t rudderlabs/rudder-transformer:latest 
+        -t rudderlabs/rudder-transformer:$VERSION 
+        -t rudderstack/rudder-transformer:latest 
+        -t rudderstack/rudder-transformer:$VERSION 
+        -f Dockerfile 
+        --push .
+
+      # raise a pull request to update default transformer version
       - git clone https://$GITHUB_TOKEN@github.com/rudderlabs/rudder-devops.git
       - git config --global user.email \"$MAIL\"
       - git config --global user.name \"$USER_NAME\"

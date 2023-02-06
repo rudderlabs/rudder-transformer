@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const get = require('get-value');
+const stats = require('../../../util/stats');
 const {
   getShopifyTopic,
   createPropertiesForEcomEvent,
@@ -152,9 +153,33 @@ const processEvent = (inputEvent) => {
   });
   message.setProperty('context.topic', shopifyTopic);
   message = removeUndefinedAndNullValues(message);
+  stats.increment('shopify_server_side_identifier_event', 1, {
+    writeKey: inputEvent.query_parameters?.writeKey?.[0],
+    timestamp: Date.now(),
+  });
   return message;
 };
-
-const process = (event) => processEvent(event);
+const isIdentifierEvent = (event) => {
+  if (event?.event === 'rudderIdentifier') {
+    stats.increment('shopify_client_side_identifier_event', 1, {
+      writeKey: event.query_parameters?.writeKey?.[0],
+      timestamp: Date.now(),
+    });
+    return true;
+  }
+  return false;
+};
+const processIdentifierEvent = () => {
+  const result = {
+    outputToSource: {
+      body: Buffer.from('OK').toString('base64'),
+      contentType: 'text/plain',
+    },
+    statusCode: 200,
+  };
+  return result;
+};
+const process = (event) =>
+  isIdentifierEvent(event) ? processIdentifierEvent() : processEvent(event);
 
 exports.process = process;

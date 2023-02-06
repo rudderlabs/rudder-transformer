@@ -5,10 +5,10 @@ const {
   constructPayload,
   simpleProcessRouterDest,
   getHashFromArray,
-  isDefinedAndNotNull,
+  extractCustomFields,
 } = require('../../util');
 const { EventType } = require('../../../constants');
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG, ROCKERBOX_DEFINED_PROPERTIES } = require('./config');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilderSimple = (message, category, destination) => {
@@ -16,20 +16,9 @@ const responseBuilderSimple = (message, category, destination) => {
   // conversion_source is explicitly set to RudderStack
   payload.conversion_source = 'RudderStack';
 
-  const { advertiserId, eventsMap, customPropsMapping } = destination.Config;
+  const { advertiserId, eventsMap } = destination.Config;
   // we will map the events to their rockerbox counterparts from UI
   const eventsHashMap = getHashFromArray(eventsMap);
-
-  //handle custom properties mapped in the UI
-  const customPropsHashMap = getHashFromArray(customPropsMapping);
-
-  if (isDefinedAndNotNull(customPropsHashMap)) {
-    for (const key in customPropsHashMap) {
-      // check if the custom property is passed in event properties
-      if (isDefinedAndNotNull(message.properties[key]))
-        payload[customPropsHashMap[key]] = message.properties[key];
-    }
-  }
 
   // Reject other unmapped events
   if (!eventsHashMap[message.event.toLowerCase()]) {
@@ -37,6 +26,7 @@ const responseBuilderSimple = (message, category, destination) => {
   } else {
     payload.action = eventsHashMap[message.event.toLowerCase()];
   }
+  extractCustomFields(message, payload, ['properties'], ROCKERBOX_DEFINED_PROPERTIES);
   const response = defaultRequestConfig();
   response.endpoint = category.endpoint;
   // the endpoint has advertiser = ADVERTISER_ID in the query params

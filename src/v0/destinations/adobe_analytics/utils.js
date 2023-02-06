@@ -1,3 +1,5 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable array-callback-return */
 /* eslint-disable unicorn/no-for-loop */
 /* eslint-disable no-restricted-syntax */
 const get = require('get-value');
@@ -7,9 +9,9 @@ const { InstrumentationError, ConfigurationError } = require('../../util/errorTy
 const SOURCE_KEYS = ['properties', 'traits', 'context.traits', 'context'];
 
 /**
- * 
- * @param {*} obj 
- * @param {*} path 
+ *
+ * @param {*} obj
+ * @param {*} path
  * @returns value of the property present in absolute path of the object
  */
 function getValueByPath(obj, path) {
@@ -21,7 +23,6 @@ function getValueByPath(obj, path) {
   }
   return obj;
 }
-
 
 /**
  *
@@ -42,20 +43,21 @@ const getMappingFieldValueFormMessage = (message, sourceKey, mappingKey) => {
   return value;
 };
 
-const stringifyValue = val => {
+const stringifyValue = (val) => {
   if (val === null) {
     return String(val);
   }
   return val;
 };
 
-const stringifyValueAndJoinWithDelimitter = (valArr, delimitter=';') => valArr.map(stringifyValue).join(delimitter);
+const stringifyValueAndJoinWithDelimitter = (valArr, delimitter = ';') =>
+  valArr.map(stringifyValue).join(delimitter);
 
 function handleContextData(payload, destination, message) {
   const { contextDataPrefix, contextDataMapping } = destination;
   const cDataPrefix = contextDataPrefix ? `${contextDataPrefix}` : '';
   const contextData = {};
-  Object.keys(contextDataMapping).forEach(key => {
+  Object.keys(contextDataMapping).forEach((key) => {
     const val =
       get(message, key) ||
       get(message, `properties.${key}`) ||
@@ -72,27 +74,26 @@ function handleContextData(payload, destination, message) {
   return payload;
 }
 
-function rudderPropToDestMap (destVarMapping, message, payload, destVarStrPrefix) {
+function rudderPropToDestMap(destVarMapping, message, payload, destVarStrPrefix) {
   const mappedVar = {};
   // pass the Rudder Property mapped in the ui whose evar you want to map
-  Object.keys(destVarMapping).forEach(key => {
+  Object.keys(destVarMapping).forEach((key) => {
     let val = get(message, `properties.${key}`);
     if (isDefinedAndNotNull(val)) {
-      const destVarKey = destVarStrPrefix + destVarMapping[key]
+      const destVarKey = destVarStrPrefix + destVarMapping[key];
       mappedVar[destVarKey] = val;
-    }
-    else {
+    } else {
       SOURCE_KEYS.some((sourceKey) => {
         val = getMappingFieldValueFormMessage(message, sourceKey, key);
         if (isDefinedAndNotNull(val)) {
           mappedVar[`${destVarStrPrefix}${[destVarMapping[key]]}`] = val;
         } else {
-          val = getValueByPath(message, key)
+          val = getValueByPath(message, key);
           if (isDefinedAndNotNull(val)) {
             mappedVar[`${destVarStrPrefix}${[destVarMapping[key]]}`] = val;
           }
         }
-      })
+      });
     }
   });
   if (Object.keys(mappedVar).length > 0) {
@@ -102,11 +103,15 @@ function rudderPropToDestMap (destVarMapping, message, payload, destVarStrPrefix
   return payload;
 }
 
+// eVar reference: https://experienceleague.adobe.com/docs/analytics/implementation/vars/page-vars/evar.html?lang=en
+
 function handleEvar(payload, destination, message) {
   // pass the Rudder Property mapped in the ui whose evar you want to map
   const { eVarMapping } = destination;
   return rudderPropToDestMap(eVarMapping, message, payload, 'eVar');
 }
+
+// hier reference: https://experienceleague.adobe.com/docs/analytics/implementation/vars/page-vars/hier.html?lang=en
 
 function handleHier(payload, destination, message) {
   // pass the Rudder Property mapped in the ui whose hier you want to map
@@ -114,27 +119,29 @@ function handleHier(payload, destination, message) {
   return rudderPropToDestMap(hierMapping, message, payload, 'hier');
 }
 
+// list reference: https://experienceleague.adobe.com/docs/analytics/implementation/vars/page-vars/list.html?lang=en
+
 function handleList(payload, destination, message, properties) {
   const { listMapping, listDelimiter } = destination;
   const list = {};
-    Object.keys(properties).forEach(key => {
-      // TODO check dependency of delimiter
-      if (listMapping[key] && listDelimiter[key]) {
-        let val = get(message, `properties.${key}`);
-          if (typeof val !== 'string' && !Array.isArray(val)) {
-            throw new ConfigurationError(
-              'List Mapping properties variable is neither a string nor an array',
-            );
-          }
-          if (typeof val === 'string') {
-            val = val.replace(/\s*,+\s*/g, listDelimiter[key]);
-          } else {
-            val = val.join(listDelimiter[key]);
-          }
-          list[`list${listMapping[key]}`] = val.toString();
+  Object.keys(properties).forEach((key) => {
+    // TODO check dependency of delimiter
+    if (listMapping[key] && listDelimiter[key]) {
+      let val = get(message, `properties.${key}`);
+      if (typeof val !== 'string' && !Array.isArray(val)) {
+        throw new ConfigurationError(
+          'List Mapping properties variable is neither a string nor an array',
+        );
       }
-    });
-  
+      if (typeof val === 'string') {
+        val = val.replace(/\s*,+\s*/g, listDelimiter[key]);
+      } else {
+        val = val.join(listDelimiter[key]);
+      }
+      list[`list${listMapping[key]}`] = val.toString();
+    }
+  });
+
   // add to the payload
   if (Object.keys(list).length > 0) {
     Object.assign(payload, list);
@@ -142,11 +149,13 @@ function handleList(payload, destination, message, properties) {
   return payload;
 }
 
+// prop reference: https://experienceleague.adobe.com/docs/analytics/implementation/vars/page-vars/prop.html?lang=en
+
 function handleCustomProperties(payload, destination, message, properties) {
   const { customPropsMapping, propsDelimiter } = destination;
   const props = {};
   if (properties) {
-    Object.keys(properties).forEach(key => {
+    Object.keys(properties).forEach((key) => {
       if (customPropsMapping[key]) {
         let val = get(message, `properties.${key}`);
         if (typeof val !== 'string' && !Array.isArray(val) && typeof val !== 'number') {
@@ -176,5 +185,5 @@ module.exports = {
   handleHier,
   handleList,
   handleCustomProperties,
-  stringifyValueAndJoinWithDelimitter
+  stringifyValueAndJoinWithDelimitter,
 };

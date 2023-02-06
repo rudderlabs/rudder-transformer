@@ -27,7 +27,10 @@ const {
   handleCustomProperties,
   stringifyValueAndJoinWithDelimitter,
 } = require('./utils');
-
+/*
+  Configuration variables documentation: https://experienceleague.adobe.com/docs/analytics/implementation/vars/config-vars/configuration-variables.html?lang=en
+  Page variables documentation: https://experienceleague.adobe.com/docs/analytics/implementation/vars/page-vars/page-variables.html?lang=en
+*/
 const responseBuilderSimple = async (message, destinationConfig, basicPayload) => {
   let payload = constructPayload(message, commonConfig);
   const { event, context, properties } = message;

@@ -216,10 +216,13 @@
         "FORM": {},
         "JSON": {
           "action": "conv.add_to_cart",
+          "checkout_id": "12345",
           "email": "userSampleX120@gmail.com",
           "conversion_source": "RudderStack",
           "customer_id": "userSampleX138",
           "phone": "9878764736",
+          "product_name": "Red T-shirt",
+          "product_url": "http://www.yourdomain.com/products/red-t-shirt",
           "timestamp": 1659902539
         },
         "JSON_ARRAY": {},
@@ -340,12 +343,16 @@
         "JSON": {
           "customer_id": "userSampleX138",
           "email": "userSampleX120@gmail.com",
+          "externalId": "rbUid",
           "phone": "9878764736",
+          "product_name": "Red T-shirt",
+          "product_url": "http://www.yourdomain.com/products/red-t-shirt",
           "timestamp": 1659902539,
           "country_code": "IN",
           "listing_id": "10101",
           "conversion_source": "RudderStack",
-          "action": "conv.add_to_cart"
+          "action": "conv.add_to_cart",
+          "checkout_id": "12345"
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -487,11 +494,13 @@
           "email": "jamesDoe@gmail.com",
           "phone": "92374162212",
           "action": "conv.add_to_cart",
+          "bounceiD": "fakefake",
           "merch_id": false,
           "timestamp": 1571043797,
-          "unitID": 123,
+          "unit_id": 123,
           "customer_id": "anon_id",
-          "conversion_source": "RudderStack"
+          "conversion_source": "RudderStack",
+          "counce_id": ""
         },
         "JSON_ARRAY": {}
       },

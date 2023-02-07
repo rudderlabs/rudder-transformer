@@ -56,7 +56,7 @@ const criteoAudienceRespHandler = (destResponse, stageMsg) => {
   // else throw the error
   const errorMessage = response?.errors;
   throw new AbortedError(
-    `Request Failed: ${stageMsg} with status "${status}" due to "${errorMessage? errorMessage[0] : JSON.stringify(response)
+    `Request Failed: ${stageMsg} with status "${status}" due to "${errorMessage? JSON.stringify(errorMessage[0]) : JSON.stringify(response)
     }", (Aborted) `,
     400,
     destResponse,

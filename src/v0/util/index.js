@@ -1683,6 +1683,20 @@ const isHybridModeEnabled = (Config) => {
  */
 const getEventType = (message) => message?.type?.toLowerCase();
 
+// Set the user ID to an empty string for
+// all the falsy values (including 0 and false)
+// Otherwise, server panics while un-marshalling the response
+// while expecting only strings.
+const checkAndCorrectUserId = (statusCode, userId) => {
+  if (!userId) {
+    return '';
+  }
+  if (statusCode !== 400 && userId) {
+    return `${userId}`;
+  }
+  return userId;
+};
+
 /**
  * Get access token to be bound to the event req headers
  *
@@ -1805,5 +1819,6 @@ module.exports = {
   getEventReqMetadata,
   isHybridModeEnabled,
   getEventType,
+  checkAndCorrectUserId,
   getAccessToken
 };

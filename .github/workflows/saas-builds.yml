@@ -30,17 +30,28 @@ jobs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
-      - name: Build image
+      - name: Build development image
         uses: docker/build-push-action@v3
         with:
           context: .
           file: Dockerfile
+          target: development
+          load: true
+          tags: ${{ env.REPO_NAME_OLD }}:prodtest
+
+      - name: Build production image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          target: production
           load: true
           tags: ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }}
 
       - name: Run Tests
         run: |
-          docker run ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }} npm run test
+          docker run ${{ env.REPO_NAME_OLD }}:prodtest npm run test
+          docker run ${{ env.REPO_NAME_OLD }}:prodtest npm run test:integration
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2

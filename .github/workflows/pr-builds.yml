@@ -39,12 +39,14 @@ jobs:
           context: .
           file: Dockerfile
           load: true
+          target: development
           tags: |
             ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }}
 
       - name: Run Tests
         run: |
           docker run ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }} npm run test
+          docker run ${{ env.REPO_NAME }}:${{ steps.extract_branch.outputs.branch }} npm run test:integration
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2

@@ -587,6 +587,17 @@ if (startDestTransformer) {
   });
 
   if (functionsEnabled()) {
+    router.post('/extractLibs', async (ctx) => {
+      try {
+        const { code, validateImports = false, language = "javascript" } = ctx.request.body;
+        const obj = await extractLibraries(code, validateImports, language);
+        ctx.body = obj;
+      } catch (err) {
+        ctx.status = 400;
+        ctx.body = { "error": err.error || err.message };
+      }
+    });
+
     router.post('/customTransform', async (ctx) => {
       const startTime = new Date();
       const events = ctx.request.body;
@@ -1027,17 +1038,6 @@ router.get('/health', (ctx) => {
 router.get('/features', (ctx) => {
   const obj = JSON.parse(fs.readFileSync('features.json', 'utf8'));
   ctx.body = JSON.stringify(obj);
-});
-
-router.post('/extractLibs', async (ctx) => {
-  try {
-    const { code, validateImports = false, language = "javascript" } = ctx.request.body;
-    const obj = await extractLibraries(code, validateImports, language);
-    ctx.body = obj;
-  } catch (err) {
-    ctx.status = 400;
-    ctx.body = { "error": err.error || err.message };
-  }
 });
 
 const batchHandler = (ctx) => {

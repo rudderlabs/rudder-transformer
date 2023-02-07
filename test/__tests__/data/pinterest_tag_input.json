@@ -1410,5 +1410,226 @@
       "Enabled": true,
       "Transformations": []
     }
+  },
+  {
+    "message": {
+        "name": "Test Tool",
+        "type": "page",
+        "sentAt": "2023-02-01T00:00:00.379Z",
+        "userId": "",
+        "channel": "web",
+        "context": {
+            "os": {
+                "name": "",
+                "version": ""
+            },
+            "app": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.22.3",
+                "namespace": "com.rudderlabs.javascript"
+            },
+            "page": {
+                "url": "https://www.abc.com/s598907",
+                "path": "/test-path/s598907",
+                "title": "Test Tool + Reviews | Rudderstack",
+                "search": "",
+                "tab_url": "https://www.abc.com/s598907",
+                "referrer": "$direct",
+                "initial_referrer": "$direct",
+                "referring_domain": "",
+                "initial_referring_domain": ""
+            },
+            "locale": "en-US",
+            "screen": {
+                "width": 1024,
+                "height": 1024,
+                "density": 1,
+                "innerWidth": 1024,
+                "innerHeight": 1024
+            },
+            "traits": {},
+            "library": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.22.3"
+            },
+            "campaign": {},
+            "doNotSell": false,
+            "sessionId": 1675209600203,
+            "userAgent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/109.0.5414.101 Safari/537.36",
+            "gaClientId": {
+                "integrations": {
+                    "Google Ads": {
+                        "gclid": ""
+                    },
+                    "Google Analytics": {
+                        "clientId": "1518934611.1234569600"
+                    }
+                }
+            },
+            "sessionStart": true
+        },
+        "rudderId": "7291a10f-e7dd-49f9-94ce-0154f53897y6",
+        "messageId": "1c77a616-13a7-4a2e-a8e7-e1a0971897y6",
+        "timestamp": "2023-02-01T12:47:30.030Z",
+        "properties": {
+            "sku": "45790-32",
+            "url": "https://www.abc.com/23rty",
+            "name": "Test Tool",
+            "path": "/test-path/tool",
+            "email": "",
+            "title": "Test Tool + Reviews | Rudderstack",
+            "review": {
+                "reviewCount": 2,
+                "averageReview": 5,
+                "reviewContentID": [
+                    "238300132"
+                ]
+            },
+            "search": "",
+            "tab_url": "https://www.abc/com",
+            "pageInfo": {
+                "pageId": "s592897",
+                "category": {
+                    "pageType": "product",
+                    "subCategory": "Dining & Kitchen Furniture",
+                    "pageTemplate": "product detail grouper",
+                    "primaryCategory": "Furniture"
+                },
+                "brandType": "new brand"
+            },
+            "referrer": "",
+            "subCategory": "Dining & Kitchen Furniture",
+            "primaryCategory": "Furniture",
+            "initial_referrer": "$direct",
+            "referring_domain": "",
+            "initial_referring_domain": ""
+        },
+        "receivedAt": "2023-02-01T12:47:30.038Z",
+        "request_ip": "66.249.72.218",
+        "anonymousId": "a61c77a6-1613-474a-aee8-e7e1a0971047",
+        "integrations": {
+            "All": true
+        },
+        "originalTimestamp": "2023-02-01T00:00:00.371Z"
+    },
+    "destination": {
+        "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
+        "Name": "PINTEREST_TAG",
+        "Config": {
+            "tagId": "123456789",
+            "advertiserId": "123478671210",
+            "sendingUnHashedData": false,
+            "enableDeduplication": false,
+            "eventsMapping": [
+                {
+                    "from": "Product Added",
+                    "to": "AddToCart"
+                },
+                {
+                    "from": "Order Completed",
+                    "to": "Checkout"
+                },
+                {
+                    "from": "Product Viewed",
+                    "to": "PageVisit"
+                },
+                {
+                    "from": "Lead",
+                    "to": "Lead"
+                },
+                {
+                    "from": "Signup",
+                    "to": "Signup"
+                }
+            ],
+            "enhancedMatch": true
+        },
+        "Enabled": true,
+        "Transformations": []
+    }
+},
+{
+  "message": {
+      "type": "track",
+      "event": "custom event",
+      "channel": "web",
+      "sentAt": "2020-08-14T05:30:30.118Z",
+      "context": {
+          "source": "test",
+          "userAgent": "chrome",
+          "traits": {
+              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+              "email": "abc@gmail.com",
+              "phone": "+1234589947",
+              "ge": "male",
+              "db": "19950715",
+              "lastname": "Ganguly",
+              "firstName": "Shrouti",
+              "address": {
+                  "city": "Kolkata",
+                  "state": "WB",
+                  "zip": "700114",
+                  "country": "IN"
+              }
+          },
+          "device": {
+              "advertisingId": "abc123"
+          },
+          "library": {
+              "name": "rudder-sdk-ruby-sync",
+              "version": "1.0.6"
+          }
+      },
+      "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {
+          "sku": "1234",
+          "tax": 2,
+          "total": 27.5,
+          "coupon": "hasbros",
+          "revenue": 48,
+          "currency": "USD",
+          "discount": 2.5,
+          "order_id": "50314b8e9bcf000000000000",
+          "requestIP": "123.0.0.0",
+          "shipping": 3,
+          "subtotal": 22.5,
+          "affiliation": "Google Store",
+          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+      },
+      "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+      "integrations": {
+          "All": true
+      }
+  },
+  "destination": {
+      "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
+      "Name": "PINTEREST_TAG",
+      "Config": {
+          "tagId": "123456789",
+          "advertiserId": "123456",
+          "appId": "429047995",
+          "sendingUnHashedData": true,
+          "enableDeduplication": true,
+          "deduplicationKey": "messageId",
+          "enhancedMatch": true,
+          "customProperties": [
+              {
+                  "properties": "presentclass"
+              },
+              {
+                  "properties": "presentgrade"
+              }
+          ],
+          "eventsMapping": [
+              {
+                  "from": "ABC Searched",
+                  "to": "Watch Video"
+              }
+          ]
+      },
+      "Enabled": true,
+      "Transformations": []
   }
+}
 ]

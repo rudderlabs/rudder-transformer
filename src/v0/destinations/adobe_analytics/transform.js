@@ -55,6 +55,10 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   const adobeIntegrationsObject = getIntegrationsObj(message, 'adobe_analytics');
   payload.linkType = adobeIntegrationsObject?.linkType || 'o';
   payload.linkName = adobeIntegrationsObject?.linkName || event;
+  // setting linkname to page view for page calls
+  if (message.type === 'page') {
+    payload.linkName = 'page view';
+  }
   payload.linkURL = adobeIntegrationsObject?.linkURL || context?.page?.url || 'No linkURL provided';
 
   // handle hier

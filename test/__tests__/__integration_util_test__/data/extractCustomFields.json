@@ -1,0 +1,166 @@
+[
+  {
+    "description": "Check for message fields absent from the exclusion list and adding them to payload object - 1",
+    "input": [
+      {
+        "type": "track",
+        "event": "Product Added",
+        "sentAt": "2022-08-07T20:02:19.352Z",
+        "userId": "userSampleX138",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "locale": "en-IN",
+          "traits": {
+            "email": "userSampleX120@gmail.com",
+            "phone": "9878764736",
+            "last_name": "Stack",
+            "first_name": "Rudder"
+          },
+          "externalId": [
+            {
+              "type": "rockerboxExternalId",
+              "id": "rbUid"
+            }
+          ],
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+        },
+        "rudderId": "4a47e99b-2afc-45c6-b902-ed69282ca805",
+        "messageId": "1659902539347900-c622426c-a1dd-44c0-ac6d-d4dbee3f4a93",
+        "properties": {
+          "checkout_id": "12345",
+          "product_url": "http://www.yourdomain.com/products/red-t-shirt",
+          "product_name": "Red T-shirt",
+          "externalId": "rbUid",
+          "countryCode": "IN",
+          "listingId": "10101"
+        },
+        "anonymousId": "5f093403-1457-4a2c-b4e4-c61ec3bacf56",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2022-08-07T20:02:19.347Z"
+      },
+      {
+        "customer_id": "userSampleX138",
+        "email": "userSampleX120@gmail.com",
+        "phone": "9878764736",
+        "timestamp": 1659902539,
+        "country_code": "IN",
+        "listing_id": "10101",
+        "conversion_source": "RudderStack",
+        "action": "conv.add_to_cart"
+      },
+      ["properties"],
+      [
+        "userId",
+        "email",
+        "phone",
+        "timestamp",
+        "revenue",
+        "value",
+        "price",
+        "total",
+        "orderId",
+        "order_id",
+        "in_store",
+        "salesforce",
+        "countryCode",
+        "listingId"
+      ]
+    ],
+    "output": {
+      "customer_id": "userSampleX138",
+      "email": "userSampleX120@gmail.com",
+      "phone": "9878764736",
+      "timestamp": 1659902539,
+      "country_code": "IN",
+      "listing_id": "10101",
+      "conversion_source": "RudderStack",
+      "action": "conv.add_to_cart",
+      "checkout_id": "12345",
+      "product_url": "http://www.yourdomain.com/products/red-t-shirt",
+      "product_name": "Red T-shirt",
+      "externalId": "rbUid"
+    }
+  },
+  {
+    "description": "Check for message fields absent from the exclusion list and adding them to payload object - 2",
+    "input": [
+      {
+        "type": "track",
+        "event": "Product Viewed",
+        "sentAt": "2022-08-07T20:02:19.352Z",
+        "userId": "userSampleX138",
+        "channel": "web",
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "locale": "en-IN",
+          "traits": {
+            "email": "userSampleX120@gmail.com",
+            "phone": "9878764736",
+            "last_name": "Stack",
+            "first_name": "Rudder"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36"
+        },
+        "rudderId": "4a47e99b-2afc-45c6-b902-ed69282ca805",
+        "messageId": "1659902539347900-c622426c-a1dd-44c0-ac6d-d4dbee3f4a93",
+        "properties": {
+          "checkout_id": "12345",
+          "product_url": "http://www.yourdomain.com/products/red-t-shirt",
+          "product_name": "Red T-shirt"
+        },
+        "anonymousId": "5f093403-1457-4a2c-b4e4-c61ec3bacf56",
+        "integrations": {
+          "All": true
+        },
+        "originalTimestamp": "2022-08-07T20:02:19.347Z"
+      },
+      {
+        "customer_id": "userSampleX138",
+        "email": "userSampleX120@gmail.com",
+        "phone": "9878764736",
+        "timestamp": 1659902539,
+        "conversion_source": "RudderStack",
+        "action": "conv.add_to_cart"
+      },
+      ["properties"],
+      [
+        "userId",
+        "email",
+        "phone",
+        "timestamp",
+        "revenue",
+        "value",
+        "price",
+        "total",
+        "orderId",
+        "order_id",
+        "in_store",
+        "salesforce",
+        "countryCode",
+        "listingId"
+      ]
+    ],
+    "output": {
+      "customer_id": "userSampleX138",
+      "email": "userSampleX120@gmail.com",
+      "phone": "9878764736",
+      "timestamp": 1659902539,
+      "conversion_source": "RudderStack",
+      "action": "conv.add_to_cart",
+      "checkout_id": "12345",
+      "product_url": "http://www.yourdomain.com/products/red-t-shirt",
+      "product_name": "Red T-shirt"
+    }
+  }
+]

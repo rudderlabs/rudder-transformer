@@ -36,6 +36,7 @@ const { isCdkV2Destination, getCdkV2TestThreshold } = require('./cdk/v2/utils');
 const { PlatformError } = require('./v0/util/errorTypes');
 const { getCachedWorkflowEngine, processCdkV2Workflow } = require('./cdk/v2/handler');
 const { processCdkV1 } = require('./cdk/v1/handler');
+const { extractLibraries } = require('./util/libExtractor');
 
 const CDK_V1_DEST_PATH = 'cdk/v1';
 
@@ -1026,6 +1027,17 @@ router.get('/health', (ctx) => {
 router.get('/features', (ctx) => {
   const obj = JSON.parse(fs.readFileSync('features.json', 'utf8'));
   ctx.body = JSON.stringify(obj);
+});
+
+router.post('/extractLibs', async (ctx) => {
+  try {
+    const { code, validateImports = false, language = "javascript" } = ctx.request.body;
+    const obj = await extractLibraries(code, validateImports, language);
+    ctx.body = obj;
+  } catch (err) {
+    ctx.status = 400;
+    ctx.body = { "error": err.error || err.message };
+  }
 });
 
 const batchHandler = (ctx) => {

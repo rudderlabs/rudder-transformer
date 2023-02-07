@@ -1,5 +1,5 @@
 const NodeCache = require('node-cache');
-const { getFunction, deleteFunction, deployFunction, invokeFunction } = require('./faasApi');
+const { getFunction, deleteFunction, deployFunction, invokeFunction, checkFunctionHealth } = require('./faasApi');
 const logger = require('../../logger');
 const { RetryRequestError, RespStatusError } = require('../utils');
 
@@ -34,6 +34,25 @@ const callWithRetry = async (fn, count = 0, ...args) => {
     return callWithRetry(fn, count + 1);
   }
 };
+
+const awaitFunctionReadiness = async (functionName, maxWaitInMs = 22000) => {
+  const start = new Date().getTime();
+  let response;
+
+  while(new Date().getTime() - start <= maxWaitInMs) {
+    try {
+      response = await checkFunctionHealth(functionName);
+
+      if (response.status == 200) return true;
+    } catch(err) {
+    }
+
+    delayInMs(250);
+  }
+
+  logger.info(`${functionName} not ready...`);
+  return false;
+}
 
 const isFunctionDeployed = (functionName) => {
   const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
@@ -165,6 +184,7 @@ const executeFaasFunction = async (functionName, events, versionId, testMode) =>
 };
 
 module.exports = {
+  awaitFunctionReadiness,
   executeFaasFunction,
   setupFaasFunction,
   invalidateFnCache,

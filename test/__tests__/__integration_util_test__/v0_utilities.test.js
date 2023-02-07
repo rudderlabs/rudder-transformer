@@ -9,6 +9,7 @@ const functionNames = [
   'handleSourceKeysOperation',
   'getValueFromPropertiesOrTraits',
   'getErrorStatusCode',
+  'extractCustomFields'
 ];
 
 // Names of the utility functions to test which expects multiple arguments as values and not objects

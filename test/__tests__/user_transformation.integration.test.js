@@ -15,6 +15,7 @@ const {
   getFunction
 } = require("../../src/util/openfaas/faasApi");
 const { invalidateFnCache } = require("../../src/util/openfaas/index");
+const { extractLibraries } = require('../../src/util/libExtractor');
 const { RetryRequestError } = require("../../src/util/utils");
 
 jest.setTimeout(15000);
@@ -34,6 +35,22 @@ const contructTrRevCode = vid => {
     versionId: vid
   };
 };
+
+const faasCodeParsedForLibs = [
+  {
+    code: "import uuid\nimport requests\ndef transformEvent(event, metadata):\n    return event\n",
+    response: {
+      uuid: [],
+      requests: []
+    },
+  },
+  {
+    code: "from time import sleep\ndef transformBatch(events, metadata):\n    return events\n",
+    response: {
+      time: []
+    },
+  }
+]
 
 describe("Function Creation Tests", () => {
   afterAll(async () => {
@@ -125,5 +142,14 @@ describe("Function invocation & creation tests", () => {
     // If function is not found, it will be created
     const deployedFn = await getFunction(funcName);
     expect(deployedFn.name).toEqual(funcName);
+  });
+});
+
+describe("Auxiliary tests", () => {
+  it("Should be able to extract libraries from code", async () => {
+    for(const testObj of faasCodeParsedForLibs) {
+      const response = await extractLibraries(testObj.code, testObj.validateImports || false, "pythonfaas");
+      expect(response).toEqual(testObj.response);
+    }
   });
 });

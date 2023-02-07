@@ -2,6 +2,9 @@ name: codacy-coverage-reporter
 
 on: push
 
+env:
+  FAAS_BASE_IMG: rudderlabs/openfaas-flask:feat.pythonLibraries
+
 jobs:
   test:
     name: setup environment and run tests

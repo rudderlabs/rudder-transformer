@@ -15,7 +15,7 @@ const {
   getFunction
 } = require("../../src/util/openfaas/faasApi");
 const { invalidateFnCache, awaitFunctionReadiness, FAAS_AST_FN_NAME, FAAS_AST_VID } = require("../../src/util/openfaas/index");
-const { extractLibraries } = require('../../src/util/libExtractor');
+const { extractLibraries } = require('../../src/util/customTransformer');
 const { RetryRequestError } = require("../../src/util/utils");
 
 jest.setTimeout(25000);

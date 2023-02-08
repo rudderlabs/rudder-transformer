@@ -2,9 +2,9 @@ const axios = require('axios');
 const parseStaticImports = require('parse-static-imports');
 const { executeFaasFunction, FAAS_AST_VID, FAAS_AST_FN_NAME } = require('./openfaas');
 
-const OPENFAAS_GATEWAY_URL = process.env.OPENFAAS_GATEWAY_URL || 'http://localhost:8080';
-
 async function parserForImport(code, validateImports=true, language="javascript") {
+  if (!code || code.trim().length === 0) throw Error('No code for parsing');
+
   switch(language) {
     case "javascript":
       return parserForJSImports(code);
@@ -42,7 +42,7 @@ async function parserForPythonImports(code, validateImports=true, additionalLibs
 
   const payload = [{
     message: {
-      messageId: "-",
+      messageId: "1",
       code,
       validateImports,
       additionalLibraries: additionalLibs

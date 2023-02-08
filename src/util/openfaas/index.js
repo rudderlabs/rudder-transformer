@@ -23,35 +23,41 @@ functionListCache.set(FUNC_LIST_KEY, []);
 
 const delayInMs = async (ms = 2000) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const callWithRetry = async (fn, count = 0, ...args) => {
+const callWithRetry = async (fn, count = 0, delay = 2000, retryThreshold = 2, ...args) => {
   try {
     return await fn(...args);
   } catch (err) {
-    if (count > 2) {
+    if (count > retryThreshold) {
       throw err;
     }
-    await delayInMs();
-    return callWithRetry(fn, count + 1);
+    await delayInMs(delay);
+    return callWithRetry(fn, count + 1, delay, retryThreshold);
   }
 };
 
-const awaitFunctionReadiness = async (functionName, maxWaitInMs = 22000) => {
-  const start = new Date().getTime();
-  let response;
+const awaitFunctionReadiness = async (functionName, maxWaitInMs = 22000, waitBetweenIntervalsInMs = 250) => {
+  const timeoutPromise = new Promise((resolve) => {
+    const wait = setTimeout(() => {
+      clearTimeout(wait);
+      resolve('Timedout');
+    }, maxWaitInMs);
+  });
 
-  while(new Date().getTime() - start <= maxWaitInMs) {
+  const executionPromise = new Promise(async (resolve, reject) => {
     try {
-      response = await checkFunctionHealth(functionName);
-
-      if (response.status == 200) return true;
-    } catch(err) {
+      await callWithRetry(
+        (functionName) => checkFunctionHealth(functionName),
+        0,
+        waitBetweenIntervalsInMs,
+        Math.floor(maxWaitInMs/waitBetweenIntervalsInMs),
+        functionName
+      );
+    } catch (error) {
+      reject(error.message);
     }
+  });
 
-    delayInMs(250);
-  }
-
-  logger.info(`${functionName} not ready...`);
-  return false;
+  return Promise.race([executionPromise, timeoutPromise]);
 }
 
 const isFunctionDeployed = (functionName) => {
@@ -135,7 +141,7 @@ async function setupFaasFunction(functionName, code, versionId, testMode) {
 
     // This api call is only used to check if function is spinned eventually
     // TODO: call health endpoint instead of get function to get correct status
-    await callWithRetry(getFunction, 0, functionName);
+    await callWithRetry(getFunction, 0, 2000, 2, functionName);
 
     setFunctionInCache(functionName);
     logger.debug(`[Faas] Finished deploying faas function ${functionName}`);

@@ -219,16 +219,15 @@ const groupRequestHandler = (message, category, destination) => {
     profile._id = getFieldValueFromMessage(message, 'userId');
   }
 
-  const subscribeProfile = JSON.parse(JSON.stringify(profile));
-  subscribeProfile.sms_consent =
-    message.context?.traits.smsConsent || destination.Config.smsConsent;
-  subscribeProfile.$consent = message.context?.traits.consent || destination.Config.consent;
+  // const subscribeProfile = JSON.parse(JSON.stringify(profile));
+  profile.sms_consent = message.context?.traits.smsConsent || destination.Config.smsConsent;
+  profile.$consent = message.context?.traits.consent || destination.Config.consent;
 
   const subscribePayload = {
-    profiles: [subscribeProfile],
+    profiles: [profile],
   };
   const subscribeResponse = defaultRequestConfig();
-  subscribeResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${get(message, 'groupId')}/subscribe`;
+  subscribeResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${message.groupId}/subscribe`;
   subscribeResponse.headers = {
     'Content-Type': 'application/json',
   };

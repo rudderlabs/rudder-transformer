@@ -1,4 +1,3 @@
-const get = require('get-value');
 const { httpGET } = require('../../../adapters/network');
 
 const { WhiteListedTraits } = require('../../../constants');
@@ -129,8 +128,8 @@ const subscribeUserToList = (message, traitsInfo, conf, destination) => {
 const checkForSubscribe = (message, traitsInfo, destination) => {
   const responseArray = [];
   if (
-    get(traitsInfo.properties, 'subscribe') === true &&
-    (!!destination.Config.listId || !!get(traitsInfo.properties, 'listId'))
+    traitsInfo?.properties?.subscribe === true &&
+    (!!destination.Config.listId || !!traitsInfo.properties?.listId)
   ) {
     const subscribeResponse = subscribeUserToList(
       message,

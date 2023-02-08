@@ -61,6 +61,9 @@ const getMailChimpBaseEndpoint = (datacenterId, audienceId) =>
 const mailChimpSubscriptionEndpoint = (datacenterId, audienceId, email) =>
   `${getMailChimpBaseEndpoint(datacenterId, audienceId)}/members/${md5(email)}`;
 
+const mailchimpEventsEndpoint = (datacenterId, audienceId, email) =>
+  `${getMailChimpBaseEndpoint(datacenterId, audienceId)}/members/${md5(email)}/events`;
+
 /**
  * Returns common endpoint for mailchimp
  * If enableMergeFields option is not present in config, we will set it to false
@@ -82,6 +85,21 @@ const getBatchEndpoint = (destConfig, audienceId) => {
   const BASE_URL = `https://${datacenterId}.api.mailchimp.com/3.0/lists/${audienceId}`;
   const BATCH_ENDPOINT = `${BASE_URL}?skip_merge_validation=${mergeFieldOption}&skip_duplicate_check=false`;
   return BATCH_ENDPOINT;
+};
+
+/**
+ * Returns the properties object with stringified values of properties[key] as mailchimp only supports string as the values for properties[key]
+ * @param {*} properties
+ * @returns
+ */
+const stringifyPropertiesValues = (properties) => {
+  const updatedProperties = properties;
+  const keys = Object.keys(updatedProperties);
+  keys.forEach((key) => {
+    if (typeof updatedProperties[key] !== 'string')
+      updatedProperties[key] = JSON.stringify(updatedProperties[key]);
+  });
+  return updatedProperties;
 };
 
 /**
@@ -372,5 +390,7 @@ module.exports = {
   getAudienceId,
   generateBatchedPaylaodForArray,
   mailChimpSubscriptionEndpoint,
+  mailchimpEventsEndpoint,
   processPayload,
+  stringifyPropertiesValues,
 };

@@ -39,6 +39,7 @@ async function extractRelevantLibraryVersionIdsForVersionId(functionName, code, 
     const extractedLibraries = Object.keys(await extractLibraries(
       code,
       versionId,
+      true,
       libraries.map((library) => library?.handleName || _.camelCase(library?.name)),
       "pythonfaas"
     ));
@@ -106,10 +107,6 @@ async function runOpenFaasUserTransform(events, userTransformation, testMode = f
     testMode,
     ...metaTags,
   };
-
-  const libraries = await Promise.all(
-    (userTransformation.libraryVersionIds || []).map(async (libraryVersionId) => getLibraryCodeV1(libraryVersionId)),
-  );
 
   // check and deploy faas function if not exists
   const functionName = generateFunctionName(userTransformation, testMode);

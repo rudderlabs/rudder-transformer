@@ -21,9 +21,12 @@ const functionListCache = new NodeCache();
 const FUNC_LIST_KEY = 'fn-list';
 functionListCache.set(FUNC_LIST_KEY, []);
 
+const DEFAULT_RETRY_DELAY_MS = 2000;
+const DEFAULT_RETRY_THRESHOLD = 2;
+
 const delayInMs = async (ms = 2000) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const callWithRetry = async (fn, count = 0, delay = 2000, retryThreshold = 2, ...args) => {
+const callWithRetry = async (fn, count = 0, delay = DEFAULT_RETRY_DELAY_MS, retryThreshold = DEFAULT_RETRY_THRESHOLD, ...args) => {
   try {
     return await fn(...args);
   } catch (err) {
@@ -52,12 +55,20 @@ const awaitFunctionReadiness = async (functionName, maxWaitInMs = 22000, waitBet
         Math.floor(maxWaitInMs/waitBetweenIntervalsInMs),
         functionName
       );
+
+      resolve(true);
     } catch (error) {
       reject(error.message);
     }
   });
 
-  return Promise.race([executionPromise, timeoutPromise]);
+  const result = await Promise.race([executionPromise, timeoutPromise]);
+
+  if (result !== true) {
+    throw new Error(result);
+  }
+
+  return result;
 }
 
 const isFunctionDeployed = (functionName) => {
@@ -154,6 +165,9 @@ async function setupFaasFunction(functionName, code, versionId, testMode) {
 const executeFaasFunction = async (functionName, events, versionId, testMode) => {
   try {
     logger.debug('[Faas] Invoking faas function');
+
+    if (testMode) await awaitFunctionReadiness(functionName);
+
     const res = await invokeFunction(functionName, events);
     logger.debug('[Faas] Invoked faas function');
     return res;

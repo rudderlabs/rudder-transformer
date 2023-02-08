@@ -5,7 +5,7 @@ const stats = require('./stats');
 const { getMetadata } = require('../v0/util');
 const { setupFaasFunction, executeFaasFunction } = require('./openfaas');
 const { getLibraryCodeV1 } = require('./customTransforrmationsStore-v1');
-const { extractLibraries } = require('./libExtractor');
+const { extractLibraries } = require('./customTransformer');
 
 const libVersionIdsCache = new NodeCache();
 

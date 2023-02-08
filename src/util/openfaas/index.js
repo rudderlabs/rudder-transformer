@@ -21,37 +21,54 @@ const functionListCache = new NodeCache();
 const FUNC_LIST_KEY = 'fn-list';
 functionListCache.set(FUNC_LIST_KEY, []);
 
+const DEFAULT_RETRY_DELAY_MS = 2000;
+const DEFAULT_RETRY_THRESHOLD = 2;
+
 const delayInMs = async (ms = 2000) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const callWithRetry = async (fn, count = 0, ...args) => {
+const callWithRetry = async (fn, count = 0, delay = DEFAULT_RETRY_DELAY_MS, retryThreshold = DEFAULT_RETRY_THRESHOLD, ...args) => {
   try {
     return await fn(...args);
   } catch (err) {
-    if (count > 2) {
+    if (count > retryThreshold) {
       throw err;
     }
-    await delayInMs();
-    return callWithRetry(fn, count + 1);
+    await delayInMs(delay);
+    return callWithRetry(fn, count + 1, delay, retryThreshold);
   }
 };
 
-const awaitFunctionReadiness = async (functionName, maxWaitInMs = 22000) => {
-  const start = new Date().getTime();
-  let response;
+const awaitFunctionReadiness = async (functionName, maxWaitInMs = 22000, waitBetweenIntervalsInMs = 250) => {
+  const timeoutPromise = new Promise((resolve) => {
+    const wait = setTimeout(() => {
+      clearTimeout(wait);
+      resolve('Timedout');
+    }, maxWaitInMs);
+  });
 
-  while(new Date().getTime() - start <= maxWaitInMs) {
+  const executionPromise = new Promise(async (resolve, reject) => {
     try {
-      response = await checkFunctionHealth(functionName);
+      await callWithRetry(
+        (functionName) => checkFunctionHealth(functionName),
+        0,
+        waitBetweenIntervalsInMs,
+        Math.floor(maxWaitInMs/waitBetweenIntervalsInMs),
+        functionName
+      );
 
-      if (response.status == 200) return true;
-    } catch(err) {
+      resolve(true);
+    } catch (error) {
+      reject(error.message);
     }
+  });
 
-    delayInMs(250);
+  const result = await Promise.race([executionPromise, timeoutPromise]);
+
+  if (result !== true) {
+    throw new Error(result);
   }
 
-  logger.info(`${functionName} not ready...`);
-  return false;
+  return result;
 }
 
 const isFunctionDeployed = (functionName) => {
@@ -152,7 +169,7 @@ async function setupFaasFunction(functionName, code, versionId, libraryVersionID
 
     // This api call is only used to check if function is spinned eventually
     // TODO: call health endpoint instead of get function to get correct status
-    await callWithRetry(getFunction, 0, functionName);
+    await callWithRetry(getFunction, 0, DEFAULT_RETRY_DELAY_MS, DEFAULT_RETRY_THRESHOLD, functionName);
 
     setFunctionInCache(functionName);
     logger.debug(`[Faas] Finished deploying faas function ${functionName}`);

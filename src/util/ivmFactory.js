@@ -4,7 +4,7 @@ const _ = require('lodash');
 
 const stats = require('./stats');
 const { getLibraryCodeV1 } = require('./customTransforrmationsStore-v1');
-const { extractLibraries } = require('./libExtractor');
+const { extractLibraries } = require('./customTransformer');
 const logger = require('../logger');
 
 const isolateVmMem = 128;

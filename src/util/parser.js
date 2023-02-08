@@ -2,8 +2,6 @@ const axios = require('axios');
 const parseStaticImports = require('parse-static-imports');
 const { executeFaasFunction, FAAS_AST_VID, FAAS_AST_FN_NAME } = require('./openfaas');
 
-const OPENFAAS_GATEWAY_URL = process.env.OPENFAAS_GATEWAY_URL || 'http://localhost:8080';
-
 async function parserForImport(code, validateImports=false, additionalLibraries=[], language="javascript") {
   switch(language) {
     case null:
@@ -44,7 +42,7 @@ async function parserForPythonImports(code, validateImports=true, additionalLibr
 
   const payload = [{
     message: {
-      messageId: "-",
+      messageId: "1",
       code,
       validateImports,
       additionalLibraries

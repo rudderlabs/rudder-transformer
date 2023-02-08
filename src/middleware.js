@@ -4,6 +4,9 @@ const prometheusClient = require('prom-client');
 const prometheusRegistry = new prometheusClient.Registry();
 prometheusClient.collectDefaultMetrics({ register: prometheusRegistry });
 
+const promAggregatorRegistry = new prometheusClient.AggregatorRegistry();
+prometheusClient.AggregatorRegistry.setRegistries(promAggregatorRegistry);
+
 // const startGcStats = gcStats(prometheusRegistry); // gcStats() would have the same effect in this case
 // startGcStats();
 
@@ -39,4 +42,5 @@ module.exports = {
   addPrometheusMiddleware,
   durationMiddleware,
   prometheusRegistry,
+  promAggregatorRegistry,
 };

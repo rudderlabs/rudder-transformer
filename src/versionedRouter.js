@@ -27,7 +27,7 @@ const networkHandlerFactory = require('./adapters/networkHandlerFactory');
 const profilingRouter = require('./routes/profiling');
 const destProxyRoutes = require('./routes/destinationProxy');
 const eventValidator = require('./util/eventValidation');
-const { prometheusRegistry } = require('./middleware');
+const { prometheusRegistry, promAggregatorRegistry } = require('./middleware');
 const { compileUserLibrary } = require('./util/ivmFactory');
 const { getIntegrations } = require('./routes/utils');
 const { setupUserTransformHandler } = require('./util/customTransformer');
@@ -1309,6 +1309,13 @@ const metricsController = async (ctx) => {
   return ctx.body;
 };
 
+const clusterMetricsController = async (ctx) => {
+  ctx.status = 200;
+  ctx.type = promAggregatorRegistry.contentType;
+  ctx.body = await promAggregatorRegistry.clusterMetrics();
+  return ctx.body;
+};
+
 router.post('/fileUpload', async (ctx) => {
   await fileUpload(ctx);
 });
@@ -1351,6 +1358,10 @@ router.post(`/deleteUsers`, async (ctx) => {
 
 router.get('/metrics', async (ctx) => {
   await metricsController(ctx);
+});
+
+router.get('/clusterMetrics', async (ctx) => {
+  await clusterMetricsController(ctx);
 });
 
 module.exports = {

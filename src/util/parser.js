@@ -4,13 +4,15 @@ const { executeFaasFunction, FAAS_AST_VID, FAAS_AST_FN_NAME } = require('./openf
 
 const OPENFAAS_GATEWAY_URL = process.env.OPENFAAS_GATEWAY_URL || 'http://localhost:8080';
 
-async function parserForImport(code, validateImports=true, language="javascript") {
+async function parserForImport(code, validateImports=false, additionalLibraries=[], language="javascript") {
   switch(language) {
+    case null:
+    case undefined:
     case "javascript":
       return parserForJSImports(code);
     case "python":
     case "pythonfaas":
-      return parserForPythonImports(code, validateImports);
+      return parserForPythonImports(code, validateImports, additionalLibraries);
     default:
       throw Error(`Unsupported language ${language}`);
   }
@@ -37,7 +39,7 @@ function parserForJSImports(code) {
   return obj;
 }
 
-async function parserForPythonImports(code, validateImports=true, additionalLibs=[]) {
+async function parserForPythonImports(code, validateImports=true, additionalLibraries=[]) {
   const obj = {};
 
   const payload = [{
@@ -45,7 +47,7 @@ async function parserForPythonImports(code, validateImports=true, additionalLibs
       messageId: "-",
       code,
       validateImports,
-      additionalLibraries: additionalLibs
+      additionalLibraries
     }
   }];
 
@@ -53,6 +55,7 @@ async function parserForPythonImports(code, validateImports=true, additionalLibs
     FAAS_AST_FN_NAME,
     payload,
     FAAS_AST_VID,
+    [],
     false
   );
 

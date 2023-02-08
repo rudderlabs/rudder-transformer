@@ -71,7 +71,7 @@ const validatePythonCode = (code) => {
     }
   ]
 
-  return executeFaasFunction(AST_FUNCTION, payload, AST_FUNCTION_VID, [], false);
+  return executeFaasFunction(FAAS_AST_FN_NAME, payload, FAAS_AST_VID, [], false);
 }
 
 const setFunctionInCache = (functionName) => {

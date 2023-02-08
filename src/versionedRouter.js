@@ -596,8 +596,8 @@ if (startDestTransformer) {
   if (functionsEnabled()) {
     router.post('/extractLibs', async (ctx) => {
       try {
-        const { code, validateImports = false, language = "javascript" } = ctx.request.body;
-        const obj = await extractLibraries(code, validateImports, language);
+        const { code, versionId, validateImports = false, additionalLibs = [], language = "javascript" } = ctx.request.body;
+        const obj = await extractLibraries(code, versionId, validateImports, additionalLibraries, language);
         ctx.body = obj;
       } catch (err) {
         ctx.status = 400;

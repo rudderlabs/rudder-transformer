@@ -1,8 +1,12 @@
 const prometheusClient = require('prom-client');
+const os = require('os');
 // const gcStats = require("prometheus-gc-stats");
 
 const prometheusRegistry = new prometheusClient.Registry();
-prometheusClient.collectDefaultMetrics({ register: prometheusRegistry });
+prometheusClient.collectDefaultMetrics({
+  register: prometheusRegistry,
+  labels: { hostname: os.hostname() },
+});
 
 // const startGcStats = gcStats(prometheusRegistry); // gcStats() would have the same effect in this case
 // startGcStats();

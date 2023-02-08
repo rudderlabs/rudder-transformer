@@ -27,6 +27,7 @@ const name = "User Transformations";
 
 const util = require("util");
 const fs = require("fs");
+const crypto = require('crypto');
 const path = require("path");
 const {
   userTransformHandler,
@@ -68,8 +69,13 @@ const pyTrRevCode = versionId => {
   };
 };
 
-const pyfaasFuncName = (workspaceId, versionId) => {
-  return `fn-${workspaceId}-${versionId}`.toLowerCase().substring(0, 63);
+const pyfaasFuncName = (workspaceId, versionId, libraryVersionIds=[]) => {
+  const ids = [workspaceId, versionId].concat(libraryVersionIds.sort());
+  const hash = crypto.createHash('md5').update(`${ids}`).digest('hex');
+
+  return `fn-${workspaceId}-${hash}`
+    .substring(0, 63)
+    .toLowerCase();
 };
 
 const getfetchResponse = (resp, url) =>

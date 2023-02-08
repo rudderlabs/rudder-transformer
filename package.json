@@ -84,7 +84,7 @@
     "sha256": "^0.2.0",
     "statsd-client": "^0.4.7",
     "truncate-utf8-bytes": "^1.0.2",
-    "ua-parser-js": "^0.8.1",
+    "ua-parser-js": "^1.0.33",
     "unset-value": "^2.0.1",
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9"

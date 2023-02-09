@@ -152,10 +152,19 @@ const ConfigCategory = {
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
+const VALID_ITEM_OR_PRODUCT_PROPERTIES = [
+  ConfigCategory.PRODUCT_CLICKED.event,
+  ConfigCategory.PRODUCT_VIEWED.event,
+  ConfigCategory.PRODUCT_ADDED.event,
+  ConfigCategory.PRODUCT_REMOVED.event,
+  ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.event,
+];
+
 module.exports = {
   ENDPOINT,
   DEBUG_ENDPOINT,
   ConfigCategory,
   mappingConfig,
   trackCommonConfig: mappingConfig[ConfigCategory.COMMON.name],
+  VALID_ITEM_OR_PRODUCT_PROPERTIES,
 };

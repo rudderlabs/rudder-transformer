@@ -24,6 +24,7 @@ const {
   trackCommonConfig,
   mappingConfig,
   ConfigCategory,
+  VALID_ITEM_OR_PRODUCT_PROPERTIES,
 } = require('./config');
 const {
   isReservedEventName,
@@ -147,14 +148,7 @@ const responseBuilder = (message, { Config }) => {
     }
 
     // excluding items/product properties
-    if (
-      mapPropertiesToItems &&
-      (payload.name === 'select_item' ||
-        payload.name === 'view_item' ||
-        payload.name === 'add_to_cart' ||
-        payload.name === 'remove_from_cart' ||
-        payload.name === 'add_to_wishlist')
-    ) {
+    if (mapPropertiesToItems && VALID_ITEM_OR_PRODUCT_PROPERTIES.includes(payload.name)) {
       // exclude event properties
       let ITEM_EXCLUSION_LIST = getGA4ExclusionList(mappingConfig[name]);
       // exclude items/product properties

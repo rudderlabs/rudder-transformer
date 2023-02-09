@@ -34,7 +34,7 @@ const callWithRetry = async (fn, count = 0, delay = DEFAULT_RETRY_DELAY_MS, retr
       throw err;
     }
     await delayInMs(delay);
-    return callWithRetry(fn, count + 1, delay, retryThreshold);
+    return callWithRetry(fn, count + 1, delay, retryThreshold, args);
   }
 };
 
@@ -49,7 +49,7 @@ const awaitFunctionReadiness = async (functionName, maxWaitInMs = 22000, waitBet
   const executionPromise = new Promise(async (resolve, reject) => {
     try {
       await callWithRetry(
-        (functionName) => checkFunctionHealth(functionName),
+        checkFunctionHealth,
         0,
         waitBetweenIntervalsInMs,
         Math.floor(maxWaitInMs/waitBetweenIntervalsInMs),

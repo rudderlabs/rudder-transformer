@@ -6,6 +6,7 @@ import DestinationService from '../interfaces/DestinationService';
 import NativeIntegrationDestinationService from '../services/destination/nativeIntegration';
 import SourceService from '../interfaces/SourceService';
 import NativeIntegrationSourceService from '../services/source/nativeIntegration';
+import { PlatformError } from '../v0/util/errorTypes';
 
 export default class ServiceSelector {
   private static serviceMap: Map<string, any> = new Map();
@@ -70,5 +71,18 @@ export default class ServiceSelector {
 
   public static getSourceService(arg: unknown) {
     // Implement source event based descision logic for selecting service
+  }
+
+  public static getDestinationServiceByName(name: string): DestinationService {
+    switch (name) {
+      case INTEGRATION_SERVICE.CDK_V1_DEST:
+        return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
+      case INTEGRATION_SERVICE.CDK_V2_DEST:
+        return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V2_DEST);
+      case INTEGRATION_SERVICE.NATIVE_DEST:
+        return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
+      default:
+        throw new PlatformError('Invalid Service');
+    }
   }
 }

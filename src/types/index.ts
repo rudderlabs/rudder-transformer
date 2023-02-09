@@ -226,4 +226,5 @@ export {
   MetaTransferObject,
   UserDeletionRequest,
   UserDeletionResponse,
+  Destination,
 };

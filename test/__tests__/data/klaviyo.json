@@ -1158,7 +1158,7 @@
     }
   },
   {
-    "description": "Throwing error if list Id is not in the payload",
+    "description": "Identify call for existing profile details when mappedToDestination key is true",
     "input": {
       "destination": {
         "Config": {
@@ -1211,21 +1211,24 @@
       {
         "version": "1",
         "type": "REST",
-        "method": "PUT",
-        "endpoint": "https://a.klaviyo.com/api/v1/person/01G79MV4XVPABNP8G5FSK40QES",
+        "method": "POST",
+        "endpoint": "https://a.klaviyo.com/api/identify",
         "headers": {
-          "Accept": "application/json"
+          "Content-Type": "application/json",
+          "Accept": "text/html"
         },
-        "params": {
-          "$id": "utsab@rudderstack.com",
-          "$email": "utsab@rudderstack.com",
-          "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d",
-          "$first_name": "Utsab",
-          "$last_name": "Chowdhury",
-          "omega": "omegashenron"
-        },
+        "params": {},
         "body": {
-          "JSON": {},
+          "JSON": {
+            "token": "WJqij9",
+            "properties": {
+              "$email": "utsab@rudderstack.com",
+              "omega": "omegashenron",
+              "$last_name": "Chowdhury",
+              "$first_name": "Utsab",
+              "$id": "utsab@rudderstack.com"
+            }
+          },
           "JSON_ARRAY": {},
           "XML": {},
           "FORM": {}

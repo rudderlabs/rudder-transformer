@@ -57,7 +57,7 @@ const identifyRequestHandler = async (message, category, destination) => {
   const traitsInfo = getFieldValueFromMessage(message, 'traits');
   const response = defaultRequestConfig();
   let personId;
-  if (!mappedToDestination) {
+  if (message.channel !== 'sources') {
     personId = await isProfileExist(message, destination);
   }
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);

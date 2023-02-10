@@ -1158,7 +1158,7 @@
     }
   },
   {
-    "description": "Identify call for existing profile details when mappedToDestination key is true",
+    "description": "Identify call for existing profile details when channel === 'sources'",
     "input": {
       "destination": {
         "Config": {
@@ -1170,9 +1170,8 @@
         "type": "identify",
         "sentAt": "2021-01-03T17:02:53.195Z",
         "userId": "utsabc",
-        "channel": "web",
+        "channel": "sources",
         "context": {
-          "mappedToDestination": true,
           "externalId": [
             {
               "identifierType": "$email",
@@ -1226,7 +1225,7 @@
               "omega": "omegashenron",
               "$last_name": "Chowdhury",
               "$first_name": "Utsab",
-              "$id": "utsab@rudderstack.com"
+              "$id": "utsabc"
             }
           },
           "JSON_ARRAY": {},

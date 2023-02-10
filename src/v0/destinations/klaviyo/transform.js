@@ -219,7 +219,6 @@ const groupRequestHandler = (message, category, destination) => {
     profile._id = getFieldValueFromMessage(message, 'userId');
   }
 
-  // const subscribeProfile = JSON.parse(JSON.stringify(profile));
   profile.sms_consent = message.context?.traits.smsConsent || destination.Config.smsConsent;
   profile.$consent = message.context?.traits.consent || destination.Config.consent;
 

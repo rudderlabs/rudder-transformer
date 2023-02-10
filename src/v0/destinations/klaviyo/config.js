@@ -50,7 +50,6 @@ const jsonNameMapping = {
 };
 const LIST_CONF = {
   SUBSCRIBE: 'Subscribe',
-  MEMBERSHIP: 'Membership',
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

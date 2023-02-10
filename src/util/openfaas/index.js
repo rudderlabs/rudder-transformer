@@ -39,14 +39,7 @@ const callWithRetry = async (fn, count = 0, delay = DEFAULT_RETRY_DELAY_MS, retr
 };
 
 const awaitFunctionReadiness = async (functionName, maxWaitInMs = 22000, waitBetweenIntervalsInMs = 250) => {
-  const timeoutPromise = new Promise((resolve) => {
-    const wait = setTimeout(() => {
-      clearTimeout(wait);
-      resolve('Timedout');
-    }, maxWaitInMs);
-  });
-
-  const executionPromise = new Promise(async (resolve, reject) => {
+  const executionPromise = new Promise(async (resolve) => {
     try {
       await callWithRetry(
         checkFunctionHealth,
@@ -58,17 +51,20 @@ const awaitFunctionReadiness = async (functionName, maxWaitInMs = 22000, waitBet
 
       resolve(true);
     } catch (error) {
-      reject(error.message);
+      logger.error(`Error while waiting for function ${functionName} to be ready: ${error}`);
+      resolve(error.message);
     }
   });
 
-  const result = await Promise.race([executionPromise, timeoutPromise]);
+  let setTimeoutHandle;
+  const timeoutPromise = new Promise((resolve) => {
+    setTimeoutHandle = setTimeout(() => {
+      resolve('Timedout');
+    }, maxWaitInMs);
+  });
 
-  if (result !== true) {
-    throw new Error(result);
-  }
-
-  return result;
+  return Promise.race([executionPromise, timeoutPromise])
+    .finally(() => clearTimeout(setTimeoutHandle));
 }
 
 const isFunctionDeployed = (functionName) => {

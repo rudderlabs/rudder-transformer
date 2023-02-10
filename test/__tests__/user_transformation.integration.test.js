@@ -15,8 +15,9 @@ const {
   getFunction
 } = require("../../src/util/openfaas/faasApi");
 const { invalidateFnCache, awaitFunctionReadiness, FAAS_AST_FN_NAME, FAAS_AST_VID } = require("../../src/util/openfaas/index");
-const { extractLibraries } = require('../../src/util/libExtractor');
+const { extractLibraries } = require('../../src/util/customTransformer');
 const { RetryRequestError } = require("../../src/util/utils");
+const { before } = require("lodash");
 
 jest.setTimeout(25000);
 jest.mock("axios", () => ({
@@ -32,7 +33,8 @@ const contructTrRevCode = vid => {
     testName: "pytest",
     code: "def transformEvent(event, metadata):\n    return event\n",
     workspaceId,
-    versionId: vid
+    versionId: vid,
+    imports: []
   };
 };
 
@@ -54,10 +56,25 @@ const faasCodeParsedForLibs = [
   }
 ]
 
+beforeAll(async () => {
+  (await setOpenFaasUserTransform(
+    {
+      language: "pythonfaas",
+      versionId: FAAS_AST_VID
+    },
+    true,
+    FAAS_AST_FN_NAME
+  ));
+
+  await awaitFunctionReadiness(FAAS_AST_FN_NAME);
+});
+
 describe("Function Creation Tests", () => {
   afterAll(async () => {
     (await getFunctionList()).forEach(fn => {
-      deleteFunction(fn.name).catch(() => {});
+      if ((fn.name) !== FAAS_AST_FN_NAME) {
+        deleteFunction(fn.name).catch(() => {});
+      }
     });
   });
 
@@ -74,7 +91,7 @@ describe("Function Creation Tests", () => {
     const deployedFns = await getFunctionList();
     const fnNames = deployedFns.map(fn => fn.name);
 
-    expect(fnNames).toEqual([funcName]);
+    expect(fnNames.sort()).toEqual([funcName, FAAS_AST_FN_NAME].sort());
   });
 
   it("Setting up already existing function with testWithPublish as true - return from cache", async () => {
@@ -87,7 +104,7 @@ describe("Function Creation Tests", () => {
     const fnNames = deployedFns.map(fn => fn.name);
     const currentCreatedAt = deployedFns[0].createdAt;
 
-    expect(fnNames).toEqual([funcName]);
+    expect(fnNames.sort()).toEqual([funcName, FAAS_AST_FN_NAME].sort());
     expect(fnCreatedAt).toEqual(currentCreatedAt);
   });
 
@@ -102,7 +119,9 @@ describe("Function Creation Tests", () => {
 describe("Function invocation & creation tests", () => {
   afterAll(async () => {
     (await getFunctionList()).forEach(fn => {
-      deleteFunction(fn.name).catch(() => {});
+      if ((fn.name) !== FAAS_AST_FN_NAME) {
+        deleteFunction(fn.name).catch(() => {});
+      }
     });
   });
 
@@ -148,21 +167,9 @@ describe("Function invocation & creation tests", () => {
 });
 
 describe("Auxiliary tests", () => {
-  beforeAll(async () => {
-    (await setOpenFaasUserTransform(
-      {
-        language: "pythonfaas",
-        versionId: FAAS_AST_VID
-      },
-      true,
-      FAAS_AST_FN_NAME
-    ));
-
-    await awaitFunctionReadiness(FAAS_AST_FN_NAME);
-  });
   it("Should be able to extract libraries from code", async () => {
     for(const testObj of faasCodeParsedForLibs) {
-      const response = await extractLibraries(testObj.code, testObj.validateImports || false, testObj.language);
+      const response = await extractLibraries(testObj.code, null, testObj.validateImports || false, [], testObj.language);
       expect(response).toEqual(testObj.response);
     }
   });

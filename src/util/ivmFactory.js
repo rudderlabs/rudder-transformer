@@ -4,7 +4,6 @@ const _ = require('lodash');
 
 const stats = require('./stats');
 const { getLibraryCodeV1 } = require('./customTransforrmationsStore-v1');
-const { extractLibraries } = require('./customTransformer');
 const logger = require('../logger');
 
 const isolateVmMem = 128;
@@ -29,7 +28,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   );
   const librariesMap = {};
   if (code && libraries) {
-    const extractedLibraries = Object.keys(await extractLibraries(code));
+    const extractedLibraries = Object.keys(await require('./customTransformer').extractLibraries(code));
 
     // TODO: Check if this should this be &&
     libraries.forEach((library) => {

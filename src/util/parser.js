@@ -57,6 +57,12 @@ async function parserForPythonImports(code, validateImports=true, additionalLibr
     false
   );
 
+  const err = result.transformedEvents[0].error;
+
+  if (err) {
+    throw Error(err);
+  }
+
   result.transformedEvents[0].transformedEvent.modules.forEach((mod) =>  obj[mod.name] = []);
   return obj;
 }

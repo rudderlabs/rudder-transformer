@@ -3,9 +3,8 @@ const crypto = require('crypto');
 const NodeCache = require('node-cache');
 const stats = require('./stats');
 const { getMetadata } = require('../v0/util');
-const { setupFaasFunction, executeFaasFunction } = require('./openfaas');
+const { setupFaasFunction, executeFaasFunction, FAAS_AST_FN_NAME } = require('./openfaas');
 const { getLibraryCodeV1 } = require('./customTransforrmationsStore-v1');
-const { extractLibraries } = require('./customTransformer');
 
 const libVersionIdsCache = new NodeCache();
 
@@ -24,25 +23,33 @@ function generateFunctionName(userTransformation, testMode) {
     .toLowerCase();
 }
 
-async function extractRelevantLibraryVersionIdsForVersionId(functionName, code, versionId, libraryVersionIds) {
+async function extractRelevantLibraryVersionIdsForVersionId(functionName, code, versionId, libraryVersionIds, prepopulatedImports) {
+  if (functionName === FAAS_AST_FN_NAME) return [];
+
   const cachedLvids = libVersionIdsCache.get(functionName);
 
   if (cachedLvids) return cachedLvids;
 
   const libraries = await Promise.all(
-    libraryVersionIds.map(async (libraryVersionId) => getLibraryCodeV1(libraryVersionId)),
+    (libraryVersionIds || []).map(async (libraryVersionId) => getLibraryCodeV1(libraryVersionId)),
   );
 
   const relevantLvids = [];
 
   if (libraries) {
-    const extractedLibraries = Object.keys(await extractLibraries(
-      code,
-      versionId,
-      true,
-      libraries.map((library) => library?.handleName || _.camelCase(library?.name)),
-      "pythonfaas"
-    ));
+    let extractedLibraries;
+
+    if (Array.isArray(prepopulatedImports)) {
+      extractedLibraries = prepopulatedImports
+    } else {
+      extractedLibraries = Object.keys(await require('./customTransformer').extractLibraries(
+        code,
+        versionId,
+        true,
+        libraries.map((library) => library?.handleName || _.camelCase(library?.name)),
+        "pythonfaas"
+      ));
+    }
 
     libraries.forEach((library) => {
       const libHandleName = library.handleName || _.camelCase(library.name);
@@ -82,7 +89,13 @@ async function setOpenFaasUserTransform(
     functionName,
     userTransformation.code,
     userTransformation.versionId,
-    await extractRelevantLibraryVersionIdsForVersionId(functionName, userTransformation.code, userTransformation.versionId, userTransformation.libraryVersionIds),
+    await extractRelevantLibraryVersionIdsForVersionId(
+      functionName,
+      userTransformation.code,
+      userTransformation.versionId,
+      userTransformation.libraryVersionIds,
+      userTransformation.imports
+    ),
     testMode,
   );
 
@@ -120,7 +133,13 @@ async function runOpenFaasUserTransform(events, userTransformation, testMode = f
     functionName,
     events,
     userTransformation.versionId,
-    await extractRelevantLibraryVersionIdsForVersionId(functionName, userTransformation.code, userTransformation.versionId, userTransformation.libraryVersionIds),
+    await extractRelevantLibraryVersionIdsForVersionId(
+      functionName,
+      userTransformation.code,
+      userTransformation.versionId,
+      userTransformation.libraryVersionIds,
+      userTransformation.imports
+    ),
     testMode,
   );
   stats.timing('run_time', invokeTime, tags);

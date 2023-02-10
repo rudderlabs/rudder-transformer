@@ -286,7 +286,9 @@ async function extractLibraries(code, versionId, validateImports, additionalLibs
 
   let transformation;
 
-  if (versionId && versionId !== "testVersionId") transformation = getTransformationCodeV1(versionId);
+  if (versionId && versionId !== "testVersionId") {
+    transformation = await getTransformationCodeV1(versionId);
+  }
 
   if (transformation?.imports == null) {
       return parserForImport(code || transformation?.code, validateImports, additionalLibs, language);

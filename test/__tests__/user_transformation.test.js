@@ -65,7 +65,8 @@ const pyTrRevCode = versionId => {
         return event
     `,
     workspaceId: "workspaceId",
-    versionId
+    versionId,
+    imports: []
   };
 };
 
@@ -1176,7 +1177,7 @@ describe("Python transformations", () => {
     expect(output).toEqual(outputData);
 
     expect(axios.post).toHaveBeenCalledTimes(2);
-    expect(axios.get).toHaveBeenCalledTimes(1);
+    expect(axios.get).toHaveBeenCalledTimes(2);
     expect(axios.delete).toHaveBeenCalledTimes(1);
   });
 

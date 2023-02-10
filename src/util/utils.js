@@ -21,9 +21,7 @@ const responseStatusHandler = (status, entity, id, url) => {
   }
 };
 
-const getIntegrationVersion = () => {
-  return 'v0';
-};
+const getIntegrationVersion = () => 'v0';
 
 module.exports = {
   RespStatusError,

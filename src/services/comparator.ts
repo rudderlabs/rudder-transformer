@@ -1,5 +1,10 @@
-import DestinationService from '../interfaces/DestinationService';
-import { ProcessorTransformationRequest, RouterTransformationRequest, Destination } from '../types';
+import dotenv from 'dotenv';
+import {
+  ComparatorInput,
+  Destination,
+  ProcessorTransformationRequest,
+  RouterTransformationRequestData,
+} from '../types';
 import ServiceSelector from '../helpers/serviceSelector';
 import tags from '../v0/util/tags';
 import stats from '../util/stats';
@@ -8,34 +13,31 @@ import { CommonUtils } from '../util/common';
 import { PlatformError } from '../v0/util/errorTypes';
 const NS_PER_SEC = 1e9;
 
+dotenv.config();
+
 export default class ComparatorService {
   private static getTestThreshold(destination: Destination) {
-    return destination.DestinationDefinition?.Config['cdkV2TestThreshold'] || 0;
+    return destination.DestinationDefinition?.Config['camparisonTestThreshold'] || 0;
   }
 
+  public static async compareDestinationService(input: ComparatorInput): Promise<void> {
+    const { events, version, destination, requestMetadata, feature } = input;
 
-  public static async compareDestinationServiceAtProc(
-    primaryServiceName: string,
-    secondaryServiceName: string,
-    input: any,
-  ) {
-    const { events } = input;
-    const { version, destination }: { version: string; destination: string } = input;
-    const { requestMetadata }: { requestMetadata: Object } = input;
-    const { feature }: { feature: string } = input;
-
-    const envThreshold = parseFloat(process.env.COMPARISON_TEST || '0');
-    const destThreshold = this.getTestThreshold(events[0].destination);
-    const compareTestThreshold = envThreshold * destThreshold;
-
-    if (
-      Number.isNaN(compareTestThreshold) ||
-      !compareTestThreshold ||
-      compareTestThreshold < Math.random()
-    ) {
-      return;
-    }
     try {
+      const primaryServiceName = process.env.COMPARISON_TEST_PRIMARY_SERVICE;
+      const secondaryServiceName = process.env.COMPARISON_TEST_SECONDARY_SERVICE;
+
+      const envThreshold = parseFloat(process.env.COMPARISON_TEST || '0');
+      const destThreshold = this.getTestThreshold(events[0].destination);
+      const compareTestThreshold = envThreshold * destThreshold;
+      if (
+        Number.isNaN(compareTestThreshold) ||
+        !compareTestThreshold ||
+        compareTestThreshold < Math.random()
+      ) {
+        return;
+      }
+
       const primaryIntegrationService =
         ServiceSelector.getDestinationServiceByName(primaryServiceName);
       const secondaryIntegrationService =
@@ -45,31 +47,24 @@ export default class ComparatorService {
 
       let primaryRoutine: any;
       let secondaryRoutine: any;
-      let definedInput
+      let definedEvents: any;
       switch (feature) {
         case tags.FEATURES.PROCESSOR: {
+          definedEvents = events as ProcessorTransformationRequest[];
           primaryRoutine = primaryIntegrationService.processorRoutine;
           secondaryRoutine = secondaryIntegrationService.processorRoutine;
           break;
         }
         case tags.FEATURES.ROUTER: {
+          definedEvents = events as RouterTransformationRequestData[];
           primaryRoutine = primaryIntegrationService.routerRoutine;
           secondaryRoutine = secondaryIntegrationService.routerRoutine;
           break;
         }
         case tags.FEATURES.BATCH: {
+          definedEvents = events as RouterTransformationRequestData[];
           primaryRoutine = primaryIntegrationService.batchRoutine;
           secondaryRoutine = secondaryIntegrationService.batchRoutine;
-          break;
-        }
-        case tags.FEATURES.DATA_DELIVERY: {
-          primaryRoutine = primaryIntegrationService.deliveryRoutine;
-          secondaryRoutine = secondaryIntegrationService.deliveryRoutine;
-          break;
-        }
-        case tags.FEATURES.USER_DELETION: {
-          primaryRoutine = primaryIntegrationService.deletionRoutine;
-          secondaryRoutine = secondaryIntegrationService.deletionRoutine;
           break;
         }
         default:
@@ -77,8 +72,8 @@ export default class ComparatorService {
       }
 
       const primaryStartTime = process.hrtime();
-      const primaryResplist = await primaryIntegrationService.processorRoutine(
-        events.slice(0, 1),
+      const primaryResplist = await primaryRoutine(
+        definedEvents.slice(0, 1),
         destination,
         version,
         requestMetadata,
@@ -91,8 +86,8 @@ export default class ComparatorService {
       });
 
       const secondaryStartTime = process.hrtime();
-      const secondaryResplist = await secondaryIntegrationService.processorRoutine(
-        events.slice(0, 1),
+      const secondaryResplist = await secondaryRoutine(
+        definedEvents.slice(0, 1),
         destination,
         version,
         requestMetadata,
@@ -156,10 +151,10 @@ export default class ComparatorService {
         destination,
         feature: feature,
       });
-      //   logger.error(
-      //     `[LIVE_COMPARE_TEST] errored for destType=${destination}, feature=${feature}`,
-      //     error,
-      //   );
+      logger.error(
+        `[LIVE_COMPARE_TEST] errored for destType=${destination}, feature=${feature}`,
+        error,
+      );
     }
   }
 }

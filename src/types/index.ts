@@ -208,6 +208,14 @@ type UserDeletionResponse = {
   statTags: Object;
 };
 
+type ComparatorInput = {
+  events: ProcessorTransformationRequest[] | RouterTransformationRequestData[];
+  destination: string;
+  version: string;
+  requestMetadata: Object;
+  feature: string;
+};
+
 export {
   Metadata,
   UserTransformationLibrary,
@@ -227,4 +235,5 @@ export {
   UserDeletionRequest,
   UserDeletionResponse,
   Destination,
+  ComparatorInput
 };

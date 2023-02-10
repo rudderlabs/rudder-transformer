@@ -55,7 +55,7 @@ const responseInit = url => {
   };
 };
 
-const pyTrRevCode = versionId => {
+const pyTrRevCode = (versionId, imports=[]) => {
   return {
     codeVersion: "1",
     language: "pythonfaas",
@@ -66,9 +66,23 @@ const pyTrRevCode = versionId => {
     `,
     workspaceId: "workspaceId",
     versionId,
-    imports: []
+    imports
   };
 };
+
+const pyLibCode = (name, versionId) => {
+  return {
+    code: `
+      def add(a, b):
+        return a + b
+    `,
+    language: "pythonfaas",
+    name,
+    handleName: _.camelCase(name),
+    workspaceId: "workspaceId",
+    versionId
+  }
+}
 
 const pyfaasFuncName = (workspaceId, versionId, libraryVersionIds=[]) => {
   const ids = [workspaceId, versionId].concat(libraryVersionIds.sort());
@@ -84,6 +98,8 @@ const getfetchResponse = (resp, url) =>
     typeof resp === "object" ? JSON.stringify(resp) : resp,
     responseInit(url)
   );
+
+let importNameLibraryVersionIdsMap;
 
 describe("User transformation", () => {
   beforeEach(() => {
@@ -1176,6 +1192,93 @@ describe("Python transformations", () => {
     );
     expect(output).toEqual(outputData);
 
+    expect(axios.post).toHaveBeenCalledTimes(2);
+    expect(axios.get).toHaveBeenCalledTimes(2);
+    expect(axios.delete).toHaveBeenCalledTimes(1);
+  });
+
+  it("Test transformation with user library imports - create, invoke & delete faas function", async () => {
+    importNameLibraryVersionIdsMap = {
+      mathlib: randomID(),
+      constants: randomID(),
+      strlib: randomID()
+    }
+    const trRevCode = pyTrRevCode(randomID(), Object.keys(importNameLibraryVersionIdsMap));
+    const inputData = require(`./data/${integration}_input.json`);
+    const respData = require(`./data/${integration}_output.json`);
+    const outputData = require(`./data/${integration}_pycode_test_output.json`);
+
+    for(const pyImport of Object.keys(importNameLibraryVersionIdsMap)) {
+      const versionId = importNameLibraryVersionIdsMap[pyImport];
+      const respBody = pyLibCode(pyImport, versionId);
+      const libUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${versionId}`;
+      when(fetch)
+        .calledWith(libUrl)
+        .mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue(respBody)
+        });
+    }
+
+    axios.get.mockResolvedValue({}); // get function
+    axios.post
+      .mockResolvedValueOnce({}) // create function
+      .mockResolvedValueOnce({
+        data: { transformedEvents: respData, logs: [] } // invoke function
+      });
+    axios.delete.mockResolvedValue({}); // delete function
+
+    const output = await userTransformHandler(
+      inputData,
+      trRevCode.versionId,
+      Object.values(importNameLibraryVersionIdsMap),
+      trRevCode,
+      true
+    );
+    expect(output).toEqual(outputData);
+    
+    expect(fetch).toHaveBeenCalledTimes(3);
+    expect(axios.post).toHaveBeenCalledTimes(2);
+    expect(axios.get).toHaveBeenCalledTimes(2);
+    expect(axios.delete).toHaveBeenCalledTimes(1);
+  });
+
+  it("Test transformation with cached user library imports - create, invoke & delete faas function", async () => {
+    const trRevCode = pyTrRevCode(randomID(), Object.keys(importNameLibraryVersionIdsMap));
+    const inputData = require(`./data/${integration}_input.json`);
+    const respData = require(`./data/${integration}_output.json`);
+    const outputData = require(`./data/${integration}_pycode_test_output.json`);
+
+    for(const pyImport of Object.keys(importNameLibraryVersionIdsMap)) {
+      const versionId = importNameLibraryVersionIdsMap[pyImport];
+      const respBody = pyLibCode(pyImport, versionId);
+      const libUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${versionId}`;
+      when(fetch)
+        .calledWith(libUrl)
+        .mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue(respBody)
+        });
+    }
+
+    axios.get.mockResolvedValue({}); // get function
+    axios.post
+      .mockResolvedValueOnce({}) // create function
+      .mockResolvedValueOnce({
+        data: { transformedEvents: respData, logs: [] } // invoke function
+      });
+    axios.delete.mockResolvedValue({}); // delete function
+
+    const output = await userTransformHandler(
+      inputData,
+      trRevCode.versionId,
+      Object.values(importNameLibraryVersionIdsMap),
+      trRevCode,
+      true
+    );
+    expect(output).toEqual(outputData);
+    
+    expect(fetch).toHaveBeenCalledTimes(0);
     expect(axios.post).toHaveBeenCalledTimes(2);
     expect(axios.get).toHaveBeenCalledTimes(2);
     expect(axios.delete).toHaveBeenCalledTimes(1);

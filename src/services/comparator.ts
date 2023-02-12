@@ -1,32 +1,216 @@
-import dotenv from 'dotenv';
+import IntegrationDestinationService from '../interfaces/DestinationService';
 import {
-  ComparatorInput,
+  DeliveryResponse,
   Destination,
+  ErrorDetailer,
+  MetaTransferObject,
+  ProcessorTransformationOutput,
   ProcessorTransformationRequest,
+  ProcessorTransformationResponse,
   RouterTransformationRequestData,
+  RouterTransformationResponse,
+  UserDeletionRequest,
+  UserDeletionResponse,
 } from '../types';
-import ServiceSelector from '../helpers/serviceSelector';
 import tags from '../v0/util/tags';
 import stats from '../util/stats';
 import logger from '../logger';
 import { CommonUtils } from '../util/common';
-import { PlatformError } from '../v0/util/errorTypes';
 const NS_PER_SEC = 1e9;
 
-dotenv.config();
+export default class ComparatorService implements IntegrationDestinationService {
+  secondaryService: IntegrationDestinationService;
+  primaryService: IntegrationDestinationService;
 
-export default class ComparatorService {
-  private static getTestThreshold(destination: Destination) {
+  constructor(
+    primaryService: IntegrationDestinationService,
+    secondaryService: IntegrationDestinationService,
+  ) {
+    this.primaryService = primaryService;
+    this.secondaryService = secondaryService;
+  }
+
+  public init(): void {
+    this.primaryService.init();
+    this.secondaryService.init();
+  }
+
+  public getName(): string {
+    return 'Comparator';
+  }
+
+  public getTags(
+    destType: string,
+    destinationId: string,
+    workspaceId: string,
+    feature: string,
+  ): MetaTransferObject {
+    const metaTO = {
+      errorDetails: {
+        destType: destType.toUpperCase(),
+        module: tags.MODULES.DESTINATION,
+        implementation: this.primaryService.getName(),
+        feature,
+        destinationId,
+        workspaceId,
+        context: '[Native Integration Service] Failure During Processor Transform',
+      } as ErrorDetailer,
+    } as MetaTransferObject;
+    return metaTO;
+  }
+
+  private getTestThreshold(destination: Destination) {
     return destination.DestinationDefinition?.Config['camparisonTestThreshold'] || 0;
   }
 
-  public static async compareDestinationService(input: ComparatorInput): Promise<void> {
-    const { events, version, destination, requestMetadata, feature } = input;
+  private getComparisonLogs(
+    primaryResplist: any,
+    secondaryResplist: any,
+    destinationId: string,
+    destination: string,
+    feature: string,
+  ) {
+    if (primaryResplist.length !== secondaryResplist.length) {
+      logger.error(
+        `[LIVE_COMPARE_TEST] failed for destinationId=${destinationId}, destType=${destination}, feature=${feature}, ${this.primaryService.getName()} output size: ${
+          primaryResplist.length
+        },  ${this.secondaryService.getName()} output size: ${secondaryResplist.length}`,
+      );
+      return;
+    }
+
+    for (let index = 0; index < primaryResplist.length; index++) {
+      const objectDiff = CommonUtils.objectDiff(primaryResplist[index], secondaryResplist[index]);
+      if (Object.keys(objectDiff).length > 0) {
+        logger.error(
+          `[LIVE_COMPARE_TEST] failed for destinationId=${destinationId}, destType=${destination}, feature=${feature}, diff_keys=${JSON.stringify(
+            Object.keys(objectDiff),
+          )}`,
+        );
+
+        //   logger.error(
+        //     `[LIVE_COMPARE_TEST] failed for  destinationId=${destinationId}, destType=${destination}, feature=${feature}, diff=${JSON.stringify(
+        //       objectDiff,
+        //     )}`,
+        //   );
+        //   logger.error(
+        //     `[LIVE_COMPARE_TEST] failed for  destinationId=${destinationId}, destType=${destination}, feature=${feature}, input=${JSON.stringify(
+        //       events[0],
+        //     )}`,
+        //   );
+        //   logger.error(
+        //     `[LIVE_COMPARE_TEST] failed for  destinationId=${destinationId}, destType=${destination}, feature=${feature}, results=${JSON.stringify(
+        //       {
+        //         primaryResult: primaryResplist[index],
+        //         secondaryResult: secondaryResplist[index],
+        //       },
+        //     )}`,
+        //   );
+      }
+    }
+  }
+
+  private getComaprisonStats(
+    primaryResplist: any,
+    secondaryResplist: any,
+    destinationId: string,
+    destination: string,
+    feature: string,
+  ) {
+    if (primaryResplist.length !== secondaryResplist.length) {
+      stats.counter('compare_test_failed_count', 1, {
+        destinationId,
+        destination,
+        feature,
+      });
+      return;
+    }
+
+    let hasComparisonFailed = false;
+    for (let index = 0; index < primaryResplist.length; index++) {
+      const objectDiff = CommonUtils.objectDiff(primaryResplist[index], secondaryResplist[index]);
+      if (Object.keys(objectDiff).length > 0) {
+        stats.counter('compare_test_failed_count', 1, {
+          destinationId,
+          destination,
+          feature,
+        });
+        hasComparisonFailed = true;
+      }
+    }
+
+    if (!hasComparisonFailed) {
+      stats.counter('compare_test_success_count', 1, {
+        destinationId,
+        destination,
+        feature,
+      });
+    }
+  }
+
+  private async compare(
+    events: any,
+    primaryResplist: any,
+    secondaryServiceCallback: any,
+    destinationType: string,
+    version: string,
+    requestMetadata: Object,
+    feature: string,
+    destinationId: string,
+  ): Promise<void> {
+    const secondaryStartTime = process.hrtime();
+    const secondaryResplist = await secondaryServiceCallback(
+      events,
+      destinationType,
+      version,
+      requestMetadata,
+    );
+    const secondaryTimeDiff = process.hrtime(secondaryStartTime);
+    const secondaryTime = secondaryTimeDiff[0] * NS_PER_SEC + secondaryTimeDiff[1];
+    stats.gauge(`${this.secondaryService.getName()}_transformation_time`, secondaryTime, {
+      destination: destinationType,
+      feature,
+    });
+
+    this.getComaprisonStats(
+      primaryResplist,
+      secondaryResplist,
+      destinationId,
+      destinationType,
+      feature,
+    );
+    this.getComparisonLogs(
+      primaryResplist,
+      secondaryResplist,
+      destinationId,
+      destinationType,
+      feature,
+    );
+  }
+
+  public async processorRoutine(
+    events: ProcessorTransformationRequest[],
+    destinationType: string,
+    version: string,
+    requestMetadata: Object,
+  ): Promise<ProcessorTransformationResponse[]> {
+    const destinationId = events[0].destination.ID;
+    const primaryStartTime = process.hrtime();
+    const primaryResplist = await this.primaryService.processorRoutine(
+      events,
+      destinationType,
+      version,
+      requestMetadata,
+    );
+    const primaryTimeDiff = process.hrtime(primaryStartTime);
+    const primaryTime = primaryTimeDiff[0] * NS_PER_SEC + primaryTimeDiff[1];
+    stats.gauge(`${this.primaryService.getName()}_transformation_time`, primaryTime, {
+      destinationId,
+      destination: destinationType,
+      feature: tags.FEATURES.PROCESSOR,
+    });
 
     try {
-      const primaryServiceName = process.env.COMPARISON_TEST_PRIMARY_SERVICE;
-      const secondaryServiceName = process.env.COMPARISON_TEST_SECONDARY_SERVICE;
-
       const envThreshold = parseFloat(process.env.COMPARISON_TEST || '0');
       const destThreshold = this.getTestThreshold(events[0].destination);
       const compareTestThreshold = envThreshold * destThreshold;
@@ -35,126 +219,171 @@ export default class ComparatorService {
         !compareTestThreshold ||
         compareTestThreshold < Math.random()
       ) {
-        return;
+        return primaryResplist;
       }
-
-      const primaryIntegrationService =
-        ServiceSelector.getDestinationServiceByName(primaryServiceName);
-      const secondaryIntegrationService =
-        ServiceSelector.getDestinationServiceByName(secondaryServiceName);
-      primaryIntegrationService.init();
-      secondaryIntegrationService.init();
-
-      let primaryRoutine: any;
-      let secondaryRoutine: any;
-      let definedEvents: any;
-      switch (feature) {
-        case tags.FEATURES.PROCESSOR: {
-          definedEvents = events as ProcessorTransformationRequest[];
-          primaryRoutine = primaryIntegrationService.processorRoutine;
-          secondaryRoutine = secondaryIntegrationService.processorRoutine;
-          break;
-        }
-        case tags.FEATURES.ROUTER: {
-          definedEvents = events as RouterTransformationRequestData[];
-          primaryRoutine = primaryIntegrationService.routerRoutine;
-          secondaryRoutine = secondaryIntegrationService.routerRoutine;
-          break;
-        }
-        case tags.FEATURES.BATCH: {
-          definedEvents = events as RouterTransformationRequestData[];
-          primaryRoutine = primaryIntegrationService.batchRoutine;
-          secondaryRoutine = secondaryIntegrationService.batchRoutine;
-          break;
-        }
-        default:
-          throw new PlatformError('Incorrect Integration Feature for comparison');
-      }
-
-      const primaryStartTime = process.hrtime();
-      const primaryResplist = await primaryRoutine(
-        definedEvents.slice(0, 1),
-        destination,
+      this.compare(
+        events,
+        primaryResplist,
+        this.secondaryService.processorRoutine,
+        destinationType,
         version,
         requestMetadata,
+        tags.FEATURES.PROCESSOR,
+        destinationId,
       );
-      const primaryTimeDiff = process.hrtime(primaryStartTime);
-      const primaryTime = primaryTimeDiff[0] * NS_PER_SEC + primaryTimeDiff[1];
-      stats.gauge(`${primaryIntegrationService.getName}_transformation_time`, primaryTime, {
-        destination,
-        feature,
-      });
-
-      const secondaryStartTime = process.hrtime();
-      const secondaryResplist = await secondaryRoutine(
-        definedEvents.slice(0, 1),
-        destination,
-        version,
-        requestMetadata,
-      );
-      const secondaryTimeDiff = process.hrtime(secondaryStartTime);
-      const secondaryTime = secondaryTimeDiff[0] * NS_PER_SEC + secondaryTimeDiff[1];
-      stats.gauge(`${secondaryIntegrationService.getName}_transformation_time`, secondaryTime, {
-        destination,
-        feature,
-      });
-
-      if (primaryResplist.length !== secondaryResplist.length) {
-        logger.error(
-          `[LIVE_COMPARE_TEST] failed for destType=${destination}, feature=${feature}, ${primaryIntegrationService.getName()} output size: ${
-            primaryResplist.length
-          },  ${secondaryIntegrationService.getName()} output size: ${secondaryResplist.length}`,
-        );
-      }
-
-      for (let index = 0; index < primaryResplist.length; index++) {
-        const objectDiff = CommonUtils.objectDiff(primaryResplist[index], secondaryResplist[index]);
-        if (Object.keys(objectDiff).length > 0) {
-          stats.counter('compare_test_failed_count', 1, {
-            destination,
-            feature,
-          });
-          logger.error(
-            `[LIVE_COMPARE_TEST] failed for destType=${destination}, feature=${feature}, diff_keys=${JSON.stringify(
-              Object.keys(objectDiff),
-            )}`,
-          );
-
-          //   logger.error(
-          //     `[LIVE_COMPARE_TEST] failed for destType=${destination}, feature=${feature}, diff=${JSON.stringify(
-          //       objectDiff,
-          //     )}`,
-          //   );
-          //   logger.error(
-          //     `[LIVE_COMPARE_TEST] failed for destType=${destination}, feature=${feature}, input=${JSON.stringify(
-          //       events[0],
-          //     )}`,
-          //   );
-          //   logger.error(
-          //     `[LIVE_COMPARE_TEST] failed for destType=${destination}, feature=${feature}, results=${JSON.stringify(
-          //       {
-          //         primaryResult: primaryResplist[index],
-          //         secondaryResult: secondaryResplist[index],
-          //       },
-          //     )}`,
-          //   );
-          return;
-        }
-      }
-
-      stats.counter('compare_test_success_count', 1, {
-        destination,
-        feature: feature,
-      });
     } catch (error) {
       stats.counter('compare_test_failed_count', 1, {
-        destination,
-        feature: feature,
+        destinationId,
+        destination: destinationType,
+        feature: tags.FEATURES.PROCESSOR,
       });
       logger.error(
-        `[LIVE_COMPARE_TEST] errored for destType=${destination}, feature=${feature}`,
+        `[LIVE_COMPARE_TEST] errored for destinationId=${destinationId}, destType=${destinationType}, feature=${tags.FEATURES.PROCESSOR}`,
         error,
       );
     }
+
+    return primaryResplist;
+  }
+
+  public async routerRoutine(
+    events: RouterTransformationRequestData[],
+    destinationType: string,
+    version: string,
+    requestMetadata: Object,
+  ): Promise<RouterTransformationResponse[]> {
+    const destinationId = events[0].destination.ID;
+    const primaryStartTime = process.hrtime();
+    const primaryResplist = await this.primaryService.routerRoutine(
+      events,
+      destinationType,
+      version,
+      requestMetadata,
+    );
+    const primaryTimeDiff = process.hrtime(primaryStartTime);
+    const primaryTime = primaryTimeDiff[0] * NS_PER_SEC + primaryTimeDiff[1];
+    stats.gauge(`${this.primaryService.getName()}_transformation_time`, primaryTime, {
+      destinationId,
+      destination: destinationType,
+      feature: tags.FEATURES.ROUTER,
+    });
+
+    try {
+      const envThreshold = parseFloat(process.env.COMPARISON_TEST || '0');
+      const destThreshold = this.getTestThreshold(events[0].destination);
+      const compareTestThreshold = envThreshold * destThreshold;
+      if (
+        Number.isNaN(compareTestThreshold) ||
+        !compareTestThreshold ||
+        compareTestThreshold < Math.random()
+      ) {
+        return primaryResplist;
+      }
+      this.compare(
+        events,
+        primaryResplist,
+        this.secondaryService.routerRoutine,
+        destinationType,
+        version,
+        requestMetadata,
+        tags.FEATURES.ROUTER,
+        destinationId,
+      );
+    } catch (error) {
+      stats.counter('compare_test_failed_count', 1, {
+        destinationId,
+        destination: destinationType,
+        feature: tags.FEATURES.ROUTER,
+      });
+      logger.error(
+        `[LIVE_COMPARE_TEST] errored for destinationId=${destinationId}, destType=${destinationType}, feature=${tags.FEATURES.ROUTER}`,
+        error,
+      );
+    }
+
+    return primaryResplist;
+  }
+
+  public batchRoutine(
+    events: RouterTransformationRequestData[],
+    destinationType: string,
+    version: string,
+    requestMetadata: Object,
+  ): RouterTransformationResponse[] {
+    const destinationId = events[0].destination.ID;
+    const primaryStartTime = process.hrtime();
+    const primaryResplist = this.primaryService.batchRoutine(
+      events,
+      destinationType,
+      version,
+      requestMetadata,
+    );
+    const primaryTimeDiff = process.hrtime(primaryStartTime);
+    const primaryTime = primaryTimeDiff[0] * NS_PER_SEC + primaryTimeDiff[1];
+    stats.gauge(`${this.primaryService.getName()}_transformation_time`, primaryTime, {
+      destinationId,
+      destination: destinationType,
+      feature: tags.FEATURES.BATCH,
+    });
+
+    try {
+      const envThreshold = parseFloat(process.env.COMPARISON_TEST || '0');
+      const destThreshold = this.getTestThreshold(events[0].destination);
+      const compareTestThreshold = envThreshold * destThreshold;
+      if (
+        Number.isNaN(compareTestThreshold) ||
+        !compareTestThreshold ||
+        compareTestThreshold < Math.random()
+      ) {
+        return primaryResplist;
+      }
+      this.compare(
+        events,
+        primaryResplist,
+        this.secondaryService.routerRoutine,
+        destinationType,
+        version,
+        requestMetadata,
+        tags.FEATURES.BATCH,
+        destinationId,
+      );
+    } catch (error) {
+      stats.counter('compare_test_failed_count', 1, {
+        destinationId,
+        destination: destinationType,
+        feature: tags.FEATURES.BATCH,
+      });
+      logger.error(
+        `[LIVE_COMPARE_TEST] errored for destinationId=${destinationId}, destType=${destinationType}, feature=${tags.FEATURES.BATCH}`,
+        error,
+      );
+    }
+
+    return primaryResplist;
+  }
+
+  public async deliveryRoutine(
+    event: ProcessorTransformationOutput,
+    destinationType: string,
+    requestMetadata: Object,
+  ): Promise<DeliveryResponse> {
+    const primaryResplist = await this.primaryService.deliveryRoutine(
+      event,
+      destinationType,
+      requestMetadata,
+    );
+    logger.error('[LIVE_COMPARE_TEST] not implemented for delivery routine');
+
+    return primaryResplist;
+  }
+
+  public async deletionRoutine(
+    requests: UserDeletionRequest[],
+    rudderDestInfo: string,
+  ): Promise<UserDeletionResponse[]> {
+    const primaryResplist = await this.primaryService.deletionRoutine(requests, rudderDestInfo);
+    logger.error('[LIVE_COMPARE_TEST] not implemented for deletion routine');
+
+    return primaryResplist;
   }
 }

@@ -14,7 +14,7 @@ import stats from '../util/stats';
 import logger from '../logger';
 import { getIntegrationVersion } from '../util/utils';
 import tags from '../v0/util/tags';
-import ComparatorService from '../services/comparator';
+
 
 export default class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
@@ -57,14 +57,6 @@ export default class DestinationController {
         return errResp;
       });
     }
-    ComparatorService.compareDestinationService({
-      events,
-      destination,
-      version,
-      requestMetadata,
-      feature: tags.FEATURES.PROCESSOR,
-    });
-
     ctx.body = resplist;
     ControllerUtility.postProcess(ctx);
     logger.debug(
@@ -122,15 +114,6 @@ export default class DestinationController {
       );
       ctx.body = { output: [errResp] };
     }
-
-    ComparatorService.compareDestinationService({
-      events: routerRequest.input,
-      destination: routerRequest.destType,
-      version: getIntegrationVersion(),
-      requestMetadata: requestMetadata,
-      feature: tags.FEATURES.ROUTER,
-    });
-
     ControllerUtility.postProcess(ctx);
     logger.debug(
       'Native(Router-Transform):: Response from transformer::',
@@ -177,15 +160,6 @@ export default class DestinationController {
       );
       ctx.body = [errResp];
     }
-
-    ComparatorService.compareDestinationService({
-      events: routerRequest.input,
-      destination: routerRequest.destType,
-      version: getIntegrationVersion(),
-      requestMetadata: requestMetadata,
-      feature: tags.FEATURES.BATCH,
-    });
-
     ControllerUtility.postProcess(ctx);
     logger.debug(
       'Native(Process-Transform-Batch):: Response from transformer::',

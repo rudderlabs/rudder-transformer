@@ -83,7 +83,7 @@ const isProfileExist = async (message, { Config }) => {
 const subscribeUserToList = (message, traitsInfo, conf, destination) => {
   // listId from message properties are preferred over Config listId
   const targetUrl = `${BASE_ENDPOINT}/api/v2/list/${
-    traitsInfo.properties?.listId || destination.Config.listId
+    traitsInfo.properties?.listId || destination.Config?.listId
   }/subscribe`;
   let profile = {
     id: getFieldValueFromMessage(message, 'userId'),
@@ -127,8 +127,8 @@ const subscribeUserToList = (message, traitsInfo, conf, destination) => {
 const checkForSubscribe = (message, traitsInfo, destination) => {
   const responseArray = [];
   if (
-    (traitsInfo.properties?.listId || destination.Config.listId) &&
-    traitsInfo.properties.subscribe === true
+    (traitsInfo.properties?.listId || destination.Config?.listId) &&
+    traitsInfo.properties?.subscribe === true
   ) {
     const subscribeResponse = subscribeUserToList(
       message,
@@ -137,7 +137,7 @@ const checkForSubscribe = (message, traitsInfo, destination) => {
       destination,
     );
     responseArray.push(subscribeResponse);
-  } else if (traitsInfo.properties?.listId || destination.Config.listId) {
+  } else if (traitsInfo.properties?.listId || destination.Config?.listId) {
     const subscribeResponse = subscribeUserToList(
       message,
       traitsInfo,

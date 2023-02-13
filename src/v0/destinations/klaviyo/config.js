@@ -49,7 +49,8 @@ const jsonNameMapping = {
   'Started Checkout': 'STARTED_CHECKOUT',
 };
 const LIST_CONF = {
-  SUBSCRIBE: 'Subscribe',
+  SUBSCRIBE: 'subscribe_with_consentInfo',
+  LIST: 'subscribe_without_consentInfo',
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

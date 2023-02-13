@@ -221,9 +221,10 @@ const groupRequestHandler = (message, category, destination) => {
     delete profile.$id;
     profile._id = getFieldValueFromMessage(message, 'userId');
   }
-
-  profile.sms_consent = message.context?.traits.smsConsent || destination.Config.smsConsent;
-  profile.$consent = message.context?.traits.consent || destination.Config.consent;
+  if (message.traits.subscribe === true) {
+    profile.sms_consent = message.context?.traits.smsConsent || destination.Config.smsConsent;
+    profile.$consent = message.context?.traits.consent || destination.Config.consent;
+  }
 
   const subscribePayload = {
     profiles: [profile],

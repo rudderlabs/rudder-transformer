@@ -82,9 +82,9 @@ const isProfileExist = async (message, { Config }) => {
  */
 const subscribeUserToList = (message, traitsInfo, conf, destination) => {
   // listId from message properties are preferred over Config listId
-  let targetUrl = `${BASE_ENDPOINT}/api/v2/list/${
+  const targetUrl = `${BASE_ENDPOINT}/api/v2/list/${
     traitsInfo.properties?.listId || destination.Config.listId
-  }`;
+  }/subscribe`;
   let profile = {
     id: getFieldValueFromMessage(message, 'userId'),
     email: getFieldValueFromMessage(message, 'email'),
@@ -97,7 +97,6 @@ const subscribeUserToList = (message, traitsInfo, conf, destination) => {
   }
   if (conf === LIST_CONF.SUBSCRIBE) {
     // get consent statuses from message if availabe else from dest config
-    targetUrl = `${targetUrl}/subscribe`;
     profile.sms_consent = traitsInfo.properties?.smsConsent || destination.Config.smsConsent;
     profile.$consent = traitsInfo.properties?.consent || destination.Config.consent;
   }
@@ -128,8 +127,8 @@ const subscribeUserToList = (message, traitsInfo, conf, destination) => {
 const checkForSubscribe = (message, traitsInfo, destination) => {
   const responseArray = [];
   if (
-    traitsInfo?.properties?.subscribe === true &&
-    (!!destination.Config.listId || !!traitsInfo.properties?.listId)
+    (traitsInfo.properties?.listId || destination.Config.listId) &&
+    traitsInfo.properties.subscribe === true
   ) {
     const subscribeResponse = subscribeUserToList(
       message,
@@ -137,6 +136,9 @@ const checkForSubscribe = (message, traitsInfo, destination) => {
       LIST_CONF.SUBSCRIBE,
       destination,
     );
+    responseArray.push(subscribeResponse);
+  } else if (traitsInfo.properties?.listId || destination.Config.listId) {
+    const subscribeResponse = subscribeUserToList(message, traitsInfo, LIST_CONF.LIST, destination);
     responseArray.push(subscribeResponse);
   }
   return responseArray;

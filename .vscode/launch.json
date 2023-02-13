@@ -8,10 +8,22 @@
       "name": "transformer",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceRoot}/destTransformer.js",
+      "program": "${workspaceRoot}/src/index.js",
       "runtimeArgs": ["--nolazy"],
       "sourceMaps": true,
       "runtimeExecutable": "/usr/local/bin/node"
+    },
+    {
+      "name": "transformer-mock proxy",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceRoot}/src/index.js",
+      "runtimeArgs": ["--nolazy"],
+      "sourceMaps": true,
+      "runtimeExecutable": "/usr/local/bin/node",
+      "env": {
+        "MOCK_PROXY": "true"
+      }
     },
     {
       "name": "benchmark",

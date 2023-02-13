@@ -2,9 +2,12 @@
 /* eslint-disable import/no-dynamic-require */
 const path = require('path');
 const { networkHandler: GenericNetworkHandler } = require('./networkhandler/genericNetworkHandler');
+const { mockNetworkHandler } = require('./networkhandler/mockNetworkHandler');
 
 const { SUPPORTED_VERSIONS } = require('../routes/utils/constants');
 const { getIntegrations } = require('../routes/utils');
+
+const shouldProxyBeMocked = process?.env?.MOCK_PROXY === 'true';
 
 const handlers = {
   generic: GenericNetworkHandler,
@@ -25,7 +28,10 @@ SUPPORTED_VERSIONS.forEach((version) => {
 });
 
 const getNetworkHandler = (type) => {
-  const NetworkHandler = handlers[type] || handlers.generic;
+  let NetworkHandler = handlers[type] || handlers.generic;
+  if (shouldProxyBeMocked) {
+    NetworkHandler = mockNetworkHandler(type, new NetworkHandler());
+  }
   return new NetworkHandler();
 };
 

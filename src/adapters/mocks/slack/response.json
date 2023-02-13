@@ -1,0 +1,30 @@
+[
+  {
+   "response": {
+    "data": "ok",
+    "status": 200
+   },
+   "success": true
+  },
+  {
+    "response": {
+      "data": "empty",
+      "status": 204
+    },
+   "success": true
+  },
+  {
+    "response": {
+      "data": "internal server error",
+      "status": 500
+    },
+    "success": false
+  },
+  {
+    "response": {
+      "data": "client error",
+      "status": 400
+    },
+    "success": false
+  }
+]

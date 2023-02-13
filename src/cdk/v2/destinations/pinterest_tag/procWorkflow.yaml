@@ -127,7 +127,7 @@ steps:
         template: |
           let products = .message.properties.products;
           {
-            "num_items": $.sum(products.quantity.(Number(.))) || 0,
+            "num_items": $.sum(products.quantity.(Number(.))[]) || 0,
             "content_ids": products.(.product_id ?? .sku ?? .id)[],
             "contents": .message.properties@prop.products.({
               "quantity": Number(.quantity ?? prop.quantity ?? 1),

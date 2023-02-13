@@ -13,7 +13,7 @@ import {
 import { generateErrorObject } from '../../v0/util';
 import ErrorReportingService from '../errorReporting';
 
-export default class PostTransformationDestinationService {
+export default class DestinationPostTransformationService {
   public static handleSuccessEventsAtProcessorDest(
     event: ProcessorTransformationRequest,
     transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[],

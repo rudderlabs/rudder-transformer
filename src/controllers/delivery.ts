@@ -5,7 +5,7 @@ import ServiceSelector from '../helpers/serviceSelector';
 import DeliveryTestService from '../services/delivertTest/deliveryTest';
 import ControllerUtility from './util';
 import logger from '../logger';
-import PostTransformationServiceDestination from '../services/destination/postTransformation';
+import DestinationPostTransformationService from '../services/destination/postTransformation';
 import tags from '../v0/util/tags';
 
 export default class DeliveryController {
@@ -30,7 +30,7 @@ export default class DeliveryController {
         tags.FEATURES.DATA_DELIVERY,
       );
       metaTO.metadata = event.metadata;
-      deliveryResponse = PostTransformationServiceDestination.handleFailureEventsAtDeliveryDest(
+      deliveryResponse = DestinationPostTransformationService.handleFailureEventsAtDeliveryDest(
         error,
         metaTO,
       );

@@ -13,7 +13,7 @@ import {
   UserDeletionResponse,
 } from '../../types/index';
 import { TransformationError } from '../../v0/util/errorTypes';
-import PostTransformationServiceDestination from './postTransformation';
+import DestinationPostTransformationService from './postTransformation';
 import tags from '../../v0/util/tags';
 import path from 'path';
 
@@ -57,7 +57,7 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
         try {
           let transformedPayloads: any = await Executor.execute(event as any, tfConfig);
           // We are not passing destinationHandler to post processor as we don't have post processing in CDK flows
-          return PostTransformationServiceDestination.handleSuccessEventsAtProcessorDest(
+          return DestinationPostTransformationService.handleSuccessEventsAtProcessorDest(
             event,
             transformedPayloads,
             undefined,
@@ -71,7 +71,7 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
           );
           metaTO.metadata = event.metadata;
           const erroredResp =
-            PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(error, metaTO);
+            DestinationPostTransformationService.handleFailedEventsAtProcessorDest(error, metaTO);
           return [erroredResp];
         }
       }),

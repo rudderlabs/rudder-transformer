@@ -15,7 +15,7 @@ import {
 } from '../../types/index';
 import { TransformationError } from '../../v0/util/errorTypes';
 import tags from '../../v0/util/tags';
-import PostTransformationServiceDestination from './postTransformation';
+import DestinationPostTransformationService from './postTransformation';
 
 export default class CDKV2DestinationService implements IntegrationDestinationService {
   public init() {}
@@ -53,7 +53,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
           let transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[] =
             await processCdkV2Workflow(destinationType, event, tags.FEATURES.PROCESSOR);
           // We are not passing destination handler for CDK flows
-          return PostTransformationServiceDestination.handleSuccessEventsAtProcessorDest(
+          return DestinationPostTransformationService.handleSuccessEventsAtProcessorDest(
             event,
             transformedPayloads,
             undefined,
@@ -67,7 +67,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
           );
           metaTO.metadata = event.metadata;
           const erroredResp =
-            PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(error, metaTO);
+            DestinationPostTransformationService.handleFailedEventsAtProcessorDest(error, metaTO);
           return [erroredResp];
         }
       }),
@@ -99,7 +99,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
             destInputArray,
             tags.FEATURES.ROUTER,
           );
-          return PostTransformationServiceDestination.handleSuccessEventsAtRouterDest(
+          return DestinationPostTransformationService.handleSuccessEventsAtRouterDest(
             routerRoutineResponse,
             undefined,
             metaTO,
@@ -108,7 +108,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
           metaTO.metadatas = destInputArray.map((input) => {
             return input.metadata;
           });
-          const erroredResp = PostTransformationServiceDestination.handleFailureEventsAtRouterDest(
+          const erroredResp = DestinationPostTransformationService.handleFailureEventsAtRouterDest(
             error,
             metaTO,
           );

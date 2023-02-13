@@ -50,7 +50,7 @@ const jsonNameMapping = {
 };
 const LIST_CONF = {
   SUBSCRIBE: 'subscribe_with_consentInfo',
-  LIST: 'subscribe_without_consentInfo',
+  ADD_TO_LIST: 'subscribe_without_consentInfo',
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);

@@ -138,7 +138,12 @@ const checkForSubscribe = (message, traitsInfo, destination) => {
     );
     responseArray.push(subscribeResponse);
   } else if (traitsInfo.properties?.listId || destination.Config.listId) {
-    const subscribeResponse = subscribeUserToList(message, traitsInfo, LIST_CONF.LIST, destination);
+    const subscribeResponse = subscribeUserToList(
+      message,
+      traitsInfo,
+      LIST_CONF.ADD_TO_LIST,
+      destination,
+    );
     responseArray.push(subscribeResponse);
   }
   return responseArray;

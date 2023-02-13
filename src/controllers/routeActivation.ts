@@ -1,4 +1,4 @@
-import { Context } from 'koa';
+import { Context, Next } from 'koa';
 import dotenv from 'dotenv';
 import { ProcessorTransformationRequest, RouterTransformationRequest } from '../types';
 
@@ -19,130 +19,87 @@ const sourceFilteList = process.env.SOURCE_FILTER_LIST?.toLocaleLowerCase();
 const deliveryFilterList = process.env.DESTINATION_DELIVERY_FILTER_LIST?.toLocaleLowerCase();
 
 export default class RouteActivationController {
-  public static isDestinationRouteActive(ctx: Context, next: any) {
-    if (!startDestTransformer) {
+  private static async executeActivationRule(ctx: Context, next: Next, condition: boolean) {
+    if (condition) {
       ctx.status = 404;
       ctx.body = 'This route is disabled';
       return ctx;
     } else {
-      return next();
+      return await next();
     }
   }
-
-  public static isSourceRouteActive(ctx: Context, next: any) {
-    if (!startSourceTransformer) {
-      ctx.status = 404;
-      ctx.body = 'This route is disabled';
-      return ctx;
-    } else {
-      return next();
-    }
+  public static async isDestinationRouteActive(ctx: Context, next: Next) {
+    return await this.executeActivationRule(ctx, next, !startDestTransformer);
   }
 
-  public static isDeliveryRouteActive(ctx: Context, next: any) {
-    if (!transformerDelivery) {
-      ctx.status = 404;
-      ctx.body = 'This route is disabled';
-      return ctx;
-    } else {
-      return next();
-    }
+  public static async isSourceRouteActive(ctx: Context, next: Next) {
+    return await this.executeActivationRule(ctx, next, !startSourceTransformer);
   }
 
-  public static isDeliveryTestRouteActive(ctx: Context, next: any) {
-    if (!deliveryTestModeEnabled) {
-      ctx.status = 404;
-      ctx.body = 'This route is disabled';
-      return ctx;
-    } else {
-      return next();
-    }
+  public static async isDeliveryRouteActive(ctx: Context, next: Next) {
+    return await this.executeActivationRule(ctx, next, !transformerDelivery);
   }
 
-  public static isUserTransformRouteActive(ctx: Context, next: any) {
-    if (!areFunctionsEnabled) {
-      ctx.status = 404;
-      ctx.body = 'This route is disabled';
-      return ctx;
-    } else {
-      return next();
-    }
+  public static async isDeliveryTestRouteActive(ctx: Context, next: Next) {
+    return await this.executeActivationRule(ctx, next, !deliveryTestModeEnabled);
   }
 
-  public static isUserTransformTestRouteActive(ctx: Context, next: any) {
-    if (!transformerTestModeEnabled) {
-      ctx.status = 404;
-      ctx.body = 'This route is disabled';
-      return ctx;
-    } else {
-      return next();
-    }
+  public static async isUserTransformRouteActive(ctx: Context, next: Next) {
+    return await this.executeActivationRule(ctx, next, !areFunctionsEnabled);
   }
 
-  public static destinationProcFilter(ctx: Context, next: any) {
+  public static async isUserTransformTestRouteActive(ctx: Context, next: Next) {
+    return await this.executeActivationRule(ctx, next, !transformerTestModeEnabled);
+  }
+
+  public static async destinationProcFilter(ctx: Context, next: Next) {
     const { destination }: { destination: string } = ctx.params;
-    if (
+    return await this.executeActivationRule(
+      ctx,
+      next,
       Array.isArray(destinationFilterList) &&
-      !destinationFilterList.split(',').includes(destination.toLowerCase())
-    ) {
-      ctx.status = 401;
-      ctx.body = `This route is disabled for destination: ${destination}`;
-      return ctx;
-    }
-    return next();
+        !destinationFilterList.split(',').includes(destination.toLowerCase()),
+    );
   }
 
-  public static destinationRtFilter(ctx: Context, next: any) {
+  public static async destinationRtFilter(ctx: Context, next: Next) {
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
-    if (
+    return await this.executeActivationRule(
+      ctx,
+      next,
       Array.isArray(destinationFilterList) &&
-      !destinationFilterList.split(',').includes(destination.toLowerCase())
-    ) {
-      ctx.status = 401;
-      ctx.body = `This route is disabled for destination: ${destination}`;
-      return ctx;
-    }
-    return next();
+        !destinationFilterList.split(',').includes(destination.toLowerCase()),
+    );
   }
 
-  public static destinationBatchFilter(ctx: Context, next: any) {
+  public static async destinationBatchFilter(ctx: Context, next: Next) {
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
-    if (
+    return await this.executeActivationRule(
+      ctx,
+      next,
       Array.isArray(destinationFilterList) &&
-      !destinationFilterList.split(',').includes(destination.toLowerCase())
-    ) {
-      ctx.status = 401;
-      ctx.body = `This route is disabled for destination: ${destination}`;
-      return ctx;
-    }
-    return next();
+        !destinationFilterList.split(',').includes(destination.toLowerCase()),
+    );
   }
 
-  public static sourceFilter(ctx: Context, next: any) {
+  public static async sourceFilter(ctx: Context, next: Next) {
     const { source }: { source: string } = ctx.params;
-    if (
-      Array.isArray(sourceFilteList) &&
-      !sourceFilteList.split(',').includes(source.toLowerCase())
-    ) {
-      ctx.status = 401;
-      ctx.body = `This route is disabled for source: ${source}`;
-      return ctx;
-    }
-    return next();
+    return await this.executeActivationRule(
+      ctx,
+      next,
+      Array.isArray(sourceFilteList) && !sourceFilteList.split(',').includes(source.toLowerCase()),
+    );
   }
 
-  public static destinationDeliveryFilter(ctx: Context, next: any) {
+  public static async destinationDeliveryFilter(ctx: Context, next: Next) {
     const { destination }: { destination: string } = ctx.params;
-    if (
+    return await this.executeActivationRule(
+      ctx,
+      next,
       Array.isArray(deliveryFilterList) &&
-      !deliveryFilterList.split(',').includes(destination.toLowerCase())
-    ) {
-      ctx.status = 401;
-      ctx.body = `This route is disabled for source: ${destination}`;
-      return ctx;
-    }
-    return next();
+        !deliveryFilterList.split(',').includes(destination.toLowerCase()),
+    );
   }
 }

@@ -3,12 +3,15 @@ const SDC = require('statsd-client');
 const enableStats = process.env.ENABLE_STATS !== 'false';
 const statsServerHost = process.env.STATSD_SERVER_HOST || 'localhost';
 const statsServerPort = parseInt(process.env.STATSD_SERVER_PORT || '8125', 10);
+const instanceID = process.env.INSTANCE_ID || 'localhost';
 
 const statsdClient = new SDC({
   host: statsServerHost,
   port: statsServerPort,
   prefix: 'transformer',
-  tags: {},
+  tags: {
+    instanceName: instanceID,
+  },
 });
 
 // Sends the diff between current time and start as the stat

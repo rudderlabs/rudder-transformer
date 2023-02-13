@@ -152,6 +152,12 @@ const processEvent = (inputEvent) => {
     version: '1.0.0',
   });
   message.setProperty('context.topic', shopifyTopic);
+
+  // attaching cart, checkout and order tokens in context object
+  message.setProperty(`context.cart_token`, event.cart_token);
+  message.setProperty(`context.checkout_token`, event.checkout_token);
+  message.setProperty(`context.order_token`, event.order_token);
+
   message = removeUndefinedAndNullValues(message);
   stats.increment('shopify_server_side_identifier_event', 1, {
     writeKey: inputEvent.query_parameters?.writeKey?.[0],

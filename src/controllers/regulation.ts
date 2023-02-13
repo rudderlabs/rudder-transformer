@@ -40,7 +40,7 @@ export default class RegulationController {
         'unknown',
         tags.FEATURES.USER_DELETION,
       );
-      const errResp = PostTransformationDestinationService.handleFailureEventsAtUserDeletion(
+      const errResp = PostTransformationDestinationService.handleUserDeletionFailureEvents(
         error,
         metaTO,
       );

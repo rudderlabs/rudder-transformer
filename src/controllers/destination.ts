@@ -49,7 +49,7 @@ export default class DestinationController {
           tags.FEATURES.PROCESSOR,
         );
         metaTO.metadata = ev.metadata;
-        const errResp = PostTransformationDestinationService.handleFailedEventsAtProcessorDest(
+        const errResp = PostTransformationDestinationService.handleProcessorTransformFailureEvents(
           error,
           metaTO,
         );
@@ -107,7 +107,7 @@ export default class DestinationController {
       metaTO.metadatas = events.map((ev) => {
         return ev.metadata;
       });
-      const errResp = PostTransformationDestinationService.handleFailureEventsAtRouterDest(
+      const errResp = PostTransformationDestinationService.handleRouterTransformFailureEvents(
         error,
         metaTO,
       );
@@ -153,7 +153,7 @@ export default class DestinationController {
       metaTO.metadatas = events.map((ev) => {
         return ev.metadata;
       });
-      const errResp = PostTransformationDestinationService.handleFailureEventsAtBatchDest(
+      const errResp = PostTransformationDestinationService.handleBatchTransformFailureEvents(
         error,
         metaTO,
       );

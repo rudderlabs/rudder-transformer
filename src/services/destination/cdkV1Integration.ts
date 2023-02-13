@@ -57,7 +57,7 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
         try {
           let transformedPayloads: any = await Executor.execute(event as any, tfConfig);
           // We are not passing destinationHandler to post processor as we don't have post processing in CDK flows
-          return DestinationPostTransformationService.handleSuccessEventsAtProcessorDest(
+          return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,
             transformedPayloads,
             undefined,
@@ -71,7 +71,7 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
           );
           metaTO.metadata = event.metadata;
           const erroredResp =
-            DestinationPostTransformationService.handleFailedEventsAtProcessorDest(error, metaTO);
+            DestinationPostTransformationService.handleProcessorTransformFailureEvents(error, metaTO);
           return [erroredResp];
         }
       }),

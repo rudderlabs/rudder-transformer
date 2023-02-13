@@ -26,7 +26,7 @@ export default class DeliveryController {
         tags.FEATURES.DATA_DELIVERY,
       );
       metaTO.metadata = event.metadata;
-      deliveryResponse = DestinationPostTransformationService.handleFailureEventsAtDeliveryDest(
+      deliveryResponse = DestinationPostTransformationService.handleDeliveryFailureEvents(
         error,
         metaTO,
       );

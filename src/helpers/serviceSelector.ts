@@ -41,7 +41,7 @@ export default class ServiceSelector {
           new NativeIntegrationSourceService(),
         );
     }
-    return  this.serviceMap.get(serviceType);
+    return this.serviceMap.get(serviceType);
   }
 
   public static getNativeDestinationService(): DestinationService {

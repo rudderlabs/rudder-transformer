@@ -3,6 +3,7 @@ const Ajv2019 = require('ajv/dist/2019');
 const Ajv = require('ajv-draft-04');
 const draft7MetaSchema = require('ajv/dist/refs/json-schema-draft-07.json');
 const draft6MetaSchema = require('ajv/dist/refs/json-schema-draft-06.json');
+const addFormats = require("ajv-formats");
 
 const NodeCache = require('node-cache');
 const hash = require('object-hash');
@@ -41,8 +42,10 @@ const supportedEventTypes = {
 
 // When no ajv options are provided, ajv constructed from defaultOptions will be used
 const ajv4 = new Ajv(defaultOptions);
+addFormats(ajv4);
 
 const ajv19 = new Ajv2019(defaultOptions);
+addFormats(ajv19);
 ajv19.addMetaSchema(draft6MetaSchema);
 ajv19.addMetaSchema(draft7MetaSchema);
 
@@ -55,11 +58,14 @@ ajv19.addMetaSchema(draft7MetaSchema);
  */
 function getAjv(ajvOptions, isDraft4 = false) {
   if (isDraft4) {
-    return new Ajv(ajvOptions);
+    const ajv = new Ajv(ajvOptions);
+    addFormats(ajv);
+    return ajv;
   }
   const ajv = new Ajv2019(ajvOptions);
   ajv.addMetaSchema(draft6MetaSchema);
   ajv.addMetaSchema(draft7MetaSchema);
+  addFormats(ajv);
   return ajv;
 }
 

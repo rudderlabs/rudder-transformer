@@ -17,11 +17,7 @@ export default class DeliveryController {
     const { version, destination }: { version: string; destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
     try {
-      deliveryResponse = await integrationService.deliveryRoutine(
-        event,
-        destination,
-        requestMetadata,
-      );
+      deliveryResponse = await integrationService.deliver(event, destination, requestMetadata);
     } catch (error) {
       const metaTO = integrationService.getTags(
         destination,
@@ -47,8 +43,14 @@ export default class DeliveryController {
       JSON.stringify(ctx.request.body),
     );
     const { version, destination }: { version: string; destination: string } = ctx.params;
-    const { deliveryPayload, destinationRequestPayload } = ctx.request.body as any;
-    const response = await DeliveryTestService.deliverTestRoutine(
+    const {
+      deliveryPayload,
+      destinationRequestPayload,
+    }: {
+      deliveryPayload: ProcessorTransformationOutput;
+      destinationRequestPayload: ProcessorTransformationOutput;
+    } = ctx.request.body as any;
+    const response = await DeliveryTestService.doTestDelivery(
       destination,
       destinationRequestPayload,
       deliveryPayload,

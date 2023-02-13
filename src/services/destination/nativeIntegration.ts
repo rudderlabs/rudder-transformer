@@ -40,7 +40,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     return metaTO;
   }
 
-  public async processorRoutine(
+  public async doProcessorTransformation(
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
@@ -74,7 +74,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     return respList.flat();
   }
 
-  public async routerRoutine(
+  public async doRouterTransformation(
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
@@ -95,10 +95,10 @@ export default class NativeIntegrationDestinationService implements IntegrationD
           tags.FEATURES.ROUTER,
         );
         try {
-          const routerRoutineResponse: RouterTransformationResponse[] =
+          const doRouterTransformationResponse: RouterTransformationResponse[] =
             await destHandler.processRouterDest(destInputArray);
           return DestinationPostTransformationService.handleSuccessEventsAtRouterDest(
-            routerRoutineResponse,
+            doRouterTransformationResponse,
             destHandler,
             metaTO,
           );
@@ -117,7 +117,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     return response.flat();
   }
 
-  public batchRoutine(
+  public doBatchTransformation(
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: any,
@@ -156,7 +156,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     return response.flat();
   }
 
-  public async deliveryRoutine(
+  public async deliver(
     destinationRequest: ProcessorTransformationOutput,
     destinationType: string,
     _requestMetadata: Object,
@@ -184,7 +184,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     }
   }
 
-  public async deletionRoutine(
+  public async processUserDeletion(
     requests: UserDeletionRequest[],
     rudderDestInfo: string,
   ): Promise<UserDeletionResponse[]> {

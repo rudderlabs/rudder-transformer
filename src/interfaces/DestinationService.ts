@@ -20,34 +20,34 @@ export default interface DestinationService {
     feature: string,
   ): MetaTransferObject;
 
-  processorRoutine(
+  doProcessorTransformation(
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
     requestMetadata: Object,
   ): Promise<ProcessorTransformationResponse[]>;
 
-  routerRoutine(
+  doRouterTransformation(
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
     requestMetadata: Object,
   ): Promise<RouterTransformationResponse[]>;
 
-  batchRoutine(
+  doBatchTransformation(
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
     requestMetadata: Object,
   ): RouterTransformationResponse[];
 
-  deliveryRoutine(
+  deliver(
     event: ProcessorTransformationOutput,
     destinationType: string,
     requestMetadata: Object,
   ): Promise<DeliveryResponse>;
 
-  deletionRoutine(
+  processUserDeletion(
     requests: UserDeletionRequest[],
     rudderDestInfo: string,
   ): Promise<UserDeletionResponse[]>;

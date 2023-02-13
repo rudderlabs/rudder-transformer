@@ -34,7 +34,7 @@ export default class DestinationController {
         events,
         ctx,
       ) as ProcessorTransformationRequest[];
-      resplist = await integrationService.processorRoutine(
+      resplist = await integrationService.doProcessorTransformation(
         events,
         destination,
         version,
@@ -90,7 +90,7 @@ export default class DestinationController {
         events,
         ctx,
       ) as RouterTransformationRequestData[];
-      const resplist = await integrationService.routerRoutine(
+      const resplist = await integrationService.doRouterTransformation(
         events,
         destination,
         getIntegrationVersion(),
@@ -136,7 +136,7 @@ export default class DestinationController {
         events,
         ctx,
       ) as RouterTransformationRequestData[];
-      const resplist = integrationService.batchRoutine(
+      const resplist = integrationService.doBatchTransformation(
         events,
         destination,
         getIntegrationVersion(),

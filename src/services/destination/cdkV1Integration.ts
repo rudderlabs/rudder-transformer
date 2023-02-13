@@ -45,7 +45,7 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
     return metaTO;
   }
 
-  public async processorRoutine(
+  public async doProcessorTransformation(
     events: ProcessorTransformationRequest[],
     destinationType: string,
     _version: string,
@@ -79,7 +79,7 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
     return respList.flat();
   }
 
-  public routerRoutine(
+  public doRouterTransformation(
     _events: RouterTransformationRequestData[],
     _destinationType: string,
     _version: string,
@@ -88,7 +88,7 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
     throw new TransformationError('CDKV1 Does not Implement Router Transform Routine');
   }
 
-  public batchRoutine(
+  public doBatchTransformation(
     _events: RouterTransformationRequestData[],
     _destinationType: string,
     _version: any,
@@ -97,7 +97,7 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
     throw new TransformationError('CDKV1 Does not Implement Batch Transform Routine');
   }
 
-  public deliveryRoutine(
+  public deliver(
     _event: ProcessorTransformationOutput,
     _destinationType: string,
     _requestMetadata: Object,
@@ -105,7 +105,7 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
     throw new TransformationError('CDV1 Does not Implement Delivery Routine');
   }
 
-  public deletionRoutine(
+  public processUserDeletion(
     requests: UserDeletionRequest[],
     rudderDestInfo: string,
   ): Promise<UserDeletionResponse[]> {

@@ -1100,6 +1100,66 @@ describe("Timeout tests", () => {
   });
 });
 
+describe("Rudder library tests", () => {
+  beforeEach(() => {});
+  it(`Simple ${name} async test for V1 transformation - with rudder library rsUrlParser `, async () => {
+    const versionId = randomID();
+    const rudderLibraryImportName = 'rsUrlParser@1.0.0';
+    const inputData = require(`./data/${integration}_input_large.json`);
+    const expectedData = require(`./data/${integration}_async_output_large.json`);
+
+    const respBody = {
+      code: `
+      import url from 'rsUrlParser@1.0.0';
+      async function foo() {
+        return 'resolved';
+      }
+      export async function transformEvent(event, metadata) {
+          const pr = await foo();
+          if(event.properties && event.properties.url){
+            const x = new url.URLSearchParams(event.properties.url).get("client");
+          }
+          event.promise = pr;
+          return event;
+        }
+        `,
+      name: "url",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const urlCode = `${fs.readFileSync(
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
+      "utf8"
+    )};
+    export default self;
+    `;
+
+    const rudderLibraryUrl = `https://api.rudderlabs.com/rudderstackTransformationLibraries/${rudderLibraryImportName}`;
+    when(fetch)
+      .calledWith(rudderLibraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: urlCode, name: "rsUrlParser", importName: rudderLibraryImportName })
+      });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+
+    expect(output).toEqual(expectedData);
+  });
+});
+
 // Running tests for python transformations with openfaas mocks
 describe("Python transformations", () => {
   beforeEach(() => {

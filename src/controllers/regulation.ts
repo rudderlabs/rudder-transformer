@@ -27,7 +27,7 @@ export default class RegulationController {
     const userDeletionRequests = ctx.request.body as UserDeletionRequest[];
     const integrationService = ServiceSelector.getNativeDestinationService();
     try {
-      const resplist = await integrationService.deletionRoutine(
+      const resplist = await integrationService.processUserDeletion(
         userDeletionRequests,
         rudderDestInfo,
       );
@@ -40,7 +40,7 @@ export default class RegulationController {
         'unknown',
         tags.FEATURES.USER_DELETION,
       );
-      const errResp = PostTransformationDestinationService.handleFailureEventsAtUserDeletion(
+      const errResp = PostTransformationDestinationService.handleUserDeletionFailureEvents(
         error,
         metaTO,
       );

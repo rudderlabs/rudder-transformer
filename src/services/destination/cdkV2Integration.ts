@@ -15,7 +15,7 @@ import {
 } from '../../types/index';
 import { TransformationError } from '../../v0/util/errorTypes';
 import tags from '../../v0/util/tags';
-import PostTransformationServiceDestination from './postTransformation';
+import DestinationPostTransformationService from './postTransformation';
 
 export default class CDKV2DestinationService implements IntegrationDestinationService {
   public init() {}
@@ -44,7 +44,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     return metaTO;
   }
 
-  public async processorRoutine(
+  public async doProcessorTransformation(
     events: ProcessorTransformationRequest[],
     destinationType: string,
     _version: string,
@@ -57,7 +57,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
           let transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[] =
             await processCdkV2Workflow(destinationType, event, tags.FEATURES.PROCESSOR);
           // We are not passing destination handler for CDK flows
-          return PostTransformationServiceDestination.handleSuccessEventsAtProcessorDest(
+          return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,
             transformedPayloads,
             undefined,
@@ -71,7 +71,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
           );
           metaTO.metadata = event.metadata;
           const erroredResp =
-            PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(error, metaTO);
+            DestinationPostTransformationService.handleProcessorTransformFailureEvents(error, metaTO);
           return [erroredResp];
         }
       }),
@@ -79,7 +79,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     return respList.flat();
   }
 
-  public async routerRoutine(
+  public async doRouterTransformation(
     events: RouterTransformationRequestData[],
     destinationType: string,
     _version: string,
@@ -98,13 +98,13 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
           tags.FEATURES.ROUTER,
         );
         try {
-          const routerRoutineResponse: RouterTransformationResponse[] = await processCdkV2Workflow(
+          const doRouterTransformationResponse: RouterTransformationResponse[] = await processCdkV2Workflow(
             destinationType,
             destInputArray,
             tags.FEATURES.ROUTER,
           );
-          return PostTransformationServiceDestination.handleSuccessEventsAtRouterDest(
-            routerRoutineResponse,
+          return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
+            doRouterTransformationResponse,
             undefined,
             metaTO,
           );
@@ -112,7 +112,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
           metaTO.metadatas = destInputArray.map((input) => {
             return input.metadata;
           });
-          const erroredResp = PostTransformationServiceDestination.handleFailureEventsAtRouterDest(
+          const erroredResp = DestinationPostTransformationService.handleRouterTransformFailureEvents(
             error,
             metaTO,
           );
@@ -123,7 +123,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     return response.flat();
   }
 
-  public batchRoutine(
+  public doBatchTransformation(
     _events: RouterTransformationRequestData[],
     _destinationType: string,
     _version: string,
@@ -132,7 +132,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     throw new TransformationError('CDKV2 Does not Implement Batch Transform Routine');
   }
 
-  public deliveryRoutine(
+  public deliver(
     _event: ProcessorTransformationOutput,
     _destinationType: string,
     _requestMetadata: Object,
@@ -140,7 +140,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     throw new TransformationError('CDV2 Does not Implement Delivery Routine');
   }
 
-  public deletionRoutine(
+  public processUserDeletion(
     requests: UserDeletionRequest[],
     rudderDestInfo: string,
   ): Promise<UserDeletionResponse[]> {

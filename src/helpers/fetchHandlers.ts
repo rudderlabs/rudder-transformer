@@ -7,7 +7,7 @@ export default class FetchHandler {
 
   public static getDestHandler(dest: string, version: string) {
     let destinationHandler: any;
-    if (this.destHandlerMap.get(dest)) {
+    if (this.destHandlerMap.has(dest)) {
       destinationHandler = this.destHandlerMap.get(dest);
     } else {
       destinationHandler = MiscService.getDestHandler(dest, version);
@@ -18,7 +18,7 @@ export default class FetchHandler {
 
   public static getSourceHandler(source: string, version: string) {
     let sourceHandler: any;
-    if (this.sourceHandlerMap.get(source)) {
+    if (this.sourceHandlerMap.has(source)) {
       sourceHandler = this.sourceHandlerMap.get(source);
     } else {
       sourceHandler = MiscService.getSourceHandler(source, version);
@@ -29,7 +29,7 @@ export default class FetchHandler {
 
   public static getDeletionHandler(dest: string, version: string) {
     let deletionHandler: any;
-    if(this.deletionHandlerMap.get(dest)) {
+    if(this.deletionHandlerMap.has(dest)) {
       deletionHandler = this.deletionHandlerMap.get(dest);
     } else {
       deletionHandler = MiscService.getDeletionHandler(dest,version);

@@ -13,8 +13,8 @@ import {
 import { generateErrorObject } from '../../v0/util';
 import ErrorReportingService from '../errorReporting';
 
-export default class PostTransformationDestinationService {
-  public static handleSuccessEventsAtProcessorDest(
+export default class DestinationPostTransformationService {
+  public static handleProcessorTransformSucessEvents(
     event: ProcessorTransformationRequest,
     transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[],
     destHandler: any,
@@ -44,7 +44,7 @@ export default class PostTransformationDestinationService {
     return result;
   }
 
-  public static handleFailedEventsAtProcessorDest(
+  public static handleProcessorTransformFailureEvents(
     error: Object,
     metaTO: MetaTransferObject,
   ): ProcessorTransformationResponse {
@@ -59,7 +59,7 @@ export default class PostTransformationDestinationService {
     return resp;
   }
 
-  public static handleSuccessEventsAtRouterDest(
+  public static handleRouterTransformSuccessEvents(
     transformedPayloads: RouterTransformationResponse[],
     destHandler: any,
     metaTO: MetaTransferObject,
@@ -82,7 +82,7 @@ export default class PostTransformationDestinationService {
     return resultantPayloads;
   }
 
-  public static handleFailureEventsAtRouterDest(
+  public static handleRouterTransformFailureEvents(
     error: Object,
     metaTO: MetaTransferObject,
   ): RouterTransformationResponse {
@@ -98,7 +98,7 @@ export default class PostTransformationDestinationService {
     return resp;
   }
 
-  public static handleFailureEventsAtBatchDest(
+  public static handleBatchTransformFailureEvents(
     error: Object,
     metaTO: MetaTransferObject,
   ): RouterTransformationResponse {
@@ -114,7 +114,7 @@ export default class PostTransformationDestinationService {
     return resp;
   }
 
-  public static handleFailureEventsAtDeliveryDest(
+  public static handleDeliveryFailureEvents(
     error: Object,
     metaTO: MetaTransferObject,
   ): DeliveryResponse {
@@ -132,7 +132,7 @@ export default class PostTransformationDestinationService {
     return resp;
   }
 
-  public static handleFailureEventsAtUserDeletion(
+  public static handleUserDeletionFailureEvents(
     error: Object,
     metaTO: MetaTransferObject,
   ): UserDeletionResponse {

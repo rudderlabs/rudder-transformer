@@ -5,7 +5,7 @@ import ServiceSelector from '../helpers/serviceSelector';
 import DeliveryTestService from '../services/delivertTest/deliveryTest';
 import ControllerUtility from './util';
 import logger from '../logger';
-import PostTransformationServiceDestination from '../services/destination/postTransformation';
+import DestinationPostTransformationService from '../services/destination/postTransformation';
 import tags from '../v0/util/tags';
 
 export default class DeliveryController {
@@ -17,11 +17,7 @@ export default class DeliveryController {
     const { version, destination }: { version: string; destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
     try {
-      deliveryResponse = await integrationService.deliveryRoutine(
-        event,
-        destination,
-        requestMetadata,
-      );
+      deliveryResponse = await integrationService.deliver(event, destination, requestMetadata);
     } catch (error) {
       const metaTO = integrationService.getTags(
         destination,
@@ -30,7 +26,7 @@ export default class DeliveryController {
         tags.FEATURES.DATA_DELIVERY,
       );
       metaTO.metadata = event.metadata;
-      deliveryResponse = PostTransformationServiceDestination.handleFailureEventsAtDeliveryDest(
+      deliveryResponse = DestinationPostTransformationService.handleDeliveryFailureEvents(
         error,
         metaTO,
       );
@@ -47,8 +43,14 @@ export default class DeliveryController {
       JSON.stringify(ctx.request.body),
     );
     const { version, destination }: { version: string; destination: string } = ctx.params;
-    const { deliveryPayload, destinationRequestPayload } = ctx.request.body as any;
-    const response = await DeliveryTestService.deliverTestRoutine(
+    const {
+      deliveryPayload,
+      destinationRequestPayload,
+    }: {
+      deliveryPayload: ProcessorTransformationOutput;
+      destinationRequestPayload: ProcessorTransformationOutput;
+    } = ctx.request.body as any;
+    const response = await DeliveryTestService.doTestDelivery(
       destination,
       destinationRequestPayload,
       deliveryPayload,

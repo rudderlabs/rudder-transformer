@@ -8,7 +8,7 @@ import logger from '../../logger';
 import tags from '../../v0/util/tags';
 
 export default class DeliveryTestService {
-  public static async deliverTestRoutine(
+  public static async doTestDelivery(
     destination: string,
     routerDestReqPayload: any,
     routerDeliveryPayload: any,

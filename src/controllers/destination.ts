@@ -35,7 +35,7 @@ export default class DestinationController {
         events,
         ctx,
       ) as ProcessorTransformationRequest[];
-      resplist = await integrationService.processorRoutine(
+      resplist = await integrationService.doProcessorTransformation(
         events,
         destination,
         version,
@@ -50,7 +50,7 @@ export default class DestinationController {
           tags.FEATURES.PROCESSOR,
         );
         metaTO.metadata = ev.metadata;
-        const errResp = PostTransformationDestinationService.handleFailedEventsAtProcessorDest(
+        const errResp = PostTransformationDestinationService.handleProcessorTransformFailureEvents(
           error,
           metaTO,
         );
@@ -91,7 +91,7 @@ export default class DestinationController {
         events,
         ctx,
       ) as RouterTransformationRequestData[];
-      const resplist = await integrationService.routerRoutine(
+      const resplist = await integrationService.doRouterTransformation(
         events,
         destination,
         getIntegrationVersion(),
@@ -108,7 +108,7 @@ export default class DestinationController {
       metaTO.metadatas = events.map((ev) => {
         return ev.metadata;
       });
-      const errResp = PostTransformationDestinationService.handleFailureEventsAtRouterDest(
+      const errResp = PostTransformationDestinationService.handleRouterTransformFailureEvents(
         error,
         metaTO,
       );
@@ -137,7 +137,7 @@ export default class DestinationController {
         events,
         ctx,
       ) as RouterTransformationRequestData[];
-      const resplist = integrationService.batchRoutine(
+      const resplist = integrationService.doBatchTransformation(
         events,
         destination,
         getIntegrationVersion(),
@@ -154,7 +154,7 @@ export default class DestinationController {
       metaTO.metadatas = events.map((ev) => {
         return ev.metadata;
       });
-      const errResp = PostTransformationDestinationService.handleFailureEventsAtBatchDest(
+      const errResp = PostTransformationDestinationService.handleBatchTransformFailureEvents(
         error,
         metaTO,
       );

@@ -12,7 +12,7 @@ import {
   UserDeletionRequest,
   UserDeletionResponse,
 } from '../../types/index';
-import PostTransformationServiceDestination from './postTransformation';
+import DestinationPostTransformationService from './postTransformation';
 import networkHandlerFactory from '../../adapters/networkHandlerFactory';
 import FetchHandler from '../../helpers/fetchHandlers';
 import tags from '../../v0/util/tags';
@@ -44,7 +44,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     return metaTO;
   }
 
-  public async processorRoutine(
+  public async doProcessorTransformation(
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
@@ -56,7 +56,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
         try {
           let transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[] =
             await destHandler.process(event);
-          return PostTransformationServiceDestination.handleSuccessEventsAtProcessorDest(
+          return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,
             transformedPayloads,
             destHandler,
@@ -70,7 +70,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
           );
           metaTO.metadata = event.metadata;
           const erroredResp =
-            PostTransformationServiceDestination.handleFailedEventsAtProcessorDest(error, metaTO);
+            DestinationPostTransformationService.handleProcessorTransformFailureEvents(error, metaTO);
           return [erroredResp];
         }
       }),
@@ -78,7 +78,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     return respList.flat();
   }
 
-  public async routerRoutine(
+  public async doRouterTransformation(
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
@@ -99,10 +99,10 @@ export default class NativeIntegrationDestinationService implements IntegrationD
           tags.FEATURES.ROUTER,
         );
         try {
-          const routerRoutineResponse: RouterTransformationResponse[] =
+          const doRouterTransformationResponse: RouterTransformationResponse[] =
             await destHandler.processRouterDest(destInputArray);
-          return PostTransformationServiceDestination.handleSuccessEventsAtRouterDest(
-            routerRoutineResponse,
+          return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
+            doRouterTransformationResponse,
             destHandler,
             metaTO,
           );
@@ -110,7 +110,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
           metaTO.metadatas = destInputArray.map((input) => {
             return input.metadata;
           });
-          const errorResp = PostTransformationServiceDestination.handleFailureEventsAtRouterDest(
+          const errorResp = DestinationPostTransformationService.handleRouterTransformFailureEvents(
             error,
             metaTO,
           );
@@ -121,7 +121,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     return response.flat();
   }
 
-  public batchRoutine(
+  public doBatchTransformation(
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: any,
@@ -150,7 +150,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
         metaTO.metadatas = events.map((event) => {
           return event.metadata;
         });
-        const errResp = PostTransformationServiceDestination.handleFailureEventsAtBatchDest(
+        const errResp = DestinationPostTransformationService.handleBatchTransformFailureEvents(
           error,
           metaTO,
         );
@@ -160,7 +160,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     return response.flat();
   }
 
-  public async deliveryRoutine(
+  public async deliver(
     destinationRequest: ProcessorTransformationOutput,
     destinationType: string,
     _requestMetadata: Object,
@@ -184,11 +184,11 @@ export default class NativeIntegrationDestinationService implements IntegrationD
         tags.FEATURES.DATA_DELIVERY,
       );
       metaTO.metadata = destinationRequest.metadata;
-      return PostTransformationServiceDestination.handleFailureEventsAtDeliveryDest(err, metaTO);
+      return DestinationPostTransformationService.handleDeliveryFailureEvents(err, metaTO);
     }
   }
 
-  public async deletionRoutine(
+  public async processUserDeletion(
     requests: UserDeletionRequest[],
     rudderDestInfo: string,
   ): Promise<UserDeletionResponse[]> {
@@ -215,7 +215,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
           }
         } catch (error) {
           const metaTO = this.getTags(destType, 'unknown', 'unknown', tags.FEATURES.USER_DELETION);
-          return PostTransformationServiceDestination.handleFailureEventsAtUserDeletion(
+          return DestinationPostTransformationService.handleUserDeletionFailureEvents(
             error,
             metaTO,
           );

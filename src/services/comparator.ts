@@ -188,7 +188,7 @@ export default class ComparatorService implements IntegrationDestinationService 
     );
   }
 
-  public async processorRoutine(
+  public async doProcessorTransformation(
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
@@ -196,7 +196,7 @@ export default class ComparatorService implements IntegrationDestinationService 
   ): Promise<ProcessorTransformationResponse[]> {
     const destinationId = events[0].destination.ID;
     const primaryStartTime = process.hrtime();
-    const primaryResplist = await this.primaryService.processorRoutine(
+    const primaryResplist = await this.primaryService.doProcessorTransformation(
       events,
       destinationType,
       version,
@@ -224,7 +224,7 @@ export default class ComparatorService implements IntegrationDestinationService 
       this.compare(
         events,
         primaryResplist,
-        this.secondaryService.processorRoutine,
+        this.secondaryService.doProcessorTransformation,
         destinationType,
         version,
         requestMetadata,
@@ -246,7 +246,7 @@ export default class ComparatorService implements IntegrationDestinationService 
     return primaryResplist;
   }
 
-  public async routerRoutine(
+  public async doRouterTransformation(
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
@@ -254,7 +254,7 @@ export default class ComparatorService implements IntegrationDestinationService 
   ): Promise<RouterTransformationResponse[]> {
     const destinationId = events[0].destination.ID;
     const primaryStartTime = process.hrtime();
-    const primaryResplist = await this.primaryService.routerRoutine(
+    const primaryResplist = await this.primaryService.doRouterTransformation(
       events,
       destinationType,
       version,
@@ -282,7 +282,7 @@ export default class ComparatorService implements IntegrationDestinationService 
       this.compare(
         events,
         primaryResplist,
-        this.secondaryService.routerRoutine,
+        this.secondaryService.doRouterTransformation,
         destinationType,
         version,
         requestMetadata,
@@ -304,7 +304,7 @@ export default class ComparatorService implements IntegrationDestinationService 
     return primaryResplist;
   }
 
-  public batchRoutine(
+  public doBatchTransformation(
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
@@ -312,7 +312,7 @@ export default class ComparatorService implements IntegrationDestinationService 
   ): RouterTransformationResponse[] {
     const destinationId = events[0].destination.ID;
     const primaryStartTime = process.hrtime();
-    const primaryResplist = this.primaryService.batchRoutine(
+    const primaryResplist = this.primaryService.doBatchTransformation(
       events,
       destinationType,
       version,
@@ -340,7 +340,7 @@ export default class ComparatorService implements IntegrationDestinationService 
       this.compare(
         events,
         primaryResplist,
-        this.secondaryService.routerRoutine,
+        this.secondaryService.doBatchTransformation,
         destinationType,
         version,
         requestMetadata,
@@ -362,12 +362,12 @@ export default class ComparatorService implements IntegrationDestinationService 
     return primaryResplist;
   }
 
-  public async deliveryRoutine(
+  public async deliver(
     event: ProcessorTransformationOutput,
     destinationType: string,
     requestMetadata: Object,
   ): Promise<DeliveryResponse> {
-    const primaryResplist = await this.primaryService.deliveryRoutine(
+    const primaryResplist = await this.primaryService.deliver(
       event,
       destinationType,
       requestMetadata,
@@ -377,11 +377,11 @@ export default class ComparatorService implements IntegrationDestinationService 
     return primaryResplist;
   }
 
-  public async deletionRoutine(
+  public async processUserDeletion(
     requests: UserDeletionRequest[],
     rudderDestInfo: string,
   ): Promise<UserDeletionResponse[]> {
-    const primaryResplist = await this.primaryService.deletionRoutine(requests, rudderDestInfo);
+    const primaryResplist = await this.primaryService.processUserDeletion(requests, rudderDestInfo);
     logger.error('[LIVE_COMPARE_TEST] not implemented for deletion routine');
 
     return primaryResplist;

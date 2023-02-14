@@ -79,9 +79,7 @@ export default class ServiceSelector {
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
     const destinationDefinitionConfig: Object = events[0].destination.DestinationDefinition.Config;
-    if (this.isComparatorEnabled(destinationDefinitionConfig)) {
-      return this.fetchCachedService(INTEGRATION_SERVICE.COMPARATOR);
-    } else if (this.isCdkDestination(destinationDefinitionConfig)) {
+    if (this.isCdkDestination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
     } else if (this.isCdkV2Destination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V2_DEST);
@@ -97,7 +95,8 @@ export default class ServiceSelector {
   public static getDestinationService(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
-    const destinationDefinitionConfig: Object = events[0].destination.DestinationDefinition.Config;
+    const destinationDefinition = events[0].destination.DestinationDefinition;
+    const destinationDefinitionConfig = destinationDefinition.Config;
     const primaryService = this.getPrimaryDestinationService(events);
     if (this.isComparatorEnabled(destinationDefinitionConfig)) {
       if (this.serviceMap.has(INTEGRATION_SERVICE.COMPARATOR)) {
@@ -106,11 +105,10 @@ export default class ServiceSelector {
       const secondaryServiceName = this.getSecondaryServiceName(destinationDefinitionConfig);
       const secondaryService = this.getDestinationServiceByName(secondaryServiceName);
       const comparatorService = new ComparatorService(primaryService, secondaryService);
-      this.serviceMap.set(INTEGRATION_SERVICE.COMPARATOR, comparatorService);
+      const comparatorServiceStateKey = `${destinationDefinition.ID}#${INTEGRATION_SERVICE.COMPARATOR}`;
+      this.serviceMap.set(comparatorServiceStateKey, comparatorService);
       return comparatorService;
     }
     return primaryService;
   }
-
- 
 }

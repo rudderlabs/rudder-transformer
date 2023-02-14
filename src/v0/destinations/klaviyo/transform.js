@@ -56,7 +56,10 @@ const identifyRequestHandler = async (message, category, destination) => {
   }
   const traitsInfo = getFieldValueFromMessage(message, 'traits');
   const response = defaultRequestConfig();
-  const personId = await isProfileExist(message, destination);
+  let personId;
+  if (message.channel !== 'sources') {
+    personId = await isProfileExist(message, destination);
+  }
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
   propertyPayload = extractCustomFields(

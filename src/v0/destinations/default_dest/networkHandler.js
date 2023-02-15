@@ -4,9 +4,9 @@ const { processAxiosResponse } = require("../../../adapters/utils/networkUtils")
 // eslint-disable-next-line no-promise-executor-return
 const sleep = (s) => new Promise((r) => setTimeout(r, s*1000));
 
-const convertEnvToInt = env => {
+const convertEnvToFloat = env => {
   try {
-    return parseInt(env, 10);
+    return parseFloat(env);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
@@ -22,8 +22,8 @@ const convertEnvToInt = env => {
  */
 // eslint-disable-next-line no-unused-vars
 const destDefProxyRequest = async _request => {
-  const delayFactor = convertEnvToInt(process.env.DELAY_FACTOR)
-  const sleepTime = convertEnvToInt(process.env.DEFAULT_SLEEP_TIME);
+  const delayFactor = convertEnvToFloat(process.env.DELAY_FACTOR)
+  const sleepTime = convertEnvToFloat(process.env.DEFAULT_SLEEP_TIME);
   const defaultSleepTime = sleepTime > 0 ? sleepTime : 0.01;
   await sleep(defaultSleepTime + (Math.random() * delayFactor));
   return {

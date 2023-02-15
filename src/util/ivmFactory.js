@@ -31,7 +31,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   );
   const librariesMap = {};
   if (code && libraries) {
-    const extractedLibImportNames = Object.keys(parserForImport(code));
+    const extractedLibImportNames = Object.keys(await parserForImport(code));
 
     libraries.forEach((library) => {
       const libHandleName = _.camelCase(library.name);

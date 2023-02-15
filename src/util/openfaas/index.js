@@ -1,5 +1,5 @@
 const NodeCache = require('node-cache');
-const { getFunction, deleteFunction, deployFunction, invokeFunction } = require('./faasApi');
+const { getFunction, deleteFunction, deployFunction, invokeFunction, checkFunctionHealth } = require('./faasApi');
 const logger = require('../../logger');
 const { RetryRequestError, RespStatusError } = require('../utils');
 
@@ -13,25 +13,59 @@ const FAAS_MAX_INFLIGHT = process.env.FAAS_MAX_INFLIGHT || '4';
 const FAAS_EXEC_TIMEOUT = process.env.FAAS_EXEC_TIMEOUT || '4s';
 const FAAS_ENABLE_WATCHDOG_ENV_VARS = process.env.FAAS_ENABLE_WATCHDOG_ENV_VARS || 'true';
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
+const FAAS_AST_VID = "ast";
+const FAAS_AST_FN_NAME = "fn-ast";
 
 // Initialise node cache
 const functionListCache = new NodeCache();
 const FUNC_LIST_KEY = 'fn-list';
 functionListCache.set(FUNC_LIST_KEY, []);
 
+const DEFAULT_RETRY_DELAY_MS = 2000;
+const DEFAULT_RETRY_THRESHOLD = 2;
+
 const delayInMs = async (ms = 2000) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const callWithRetry = async (fn, count = 0, ...args) => {
+const callWithRetry = async (fn, count = 0, delay = DEFAULT_RETRY_DELAY_MS, retryThreshold = DEFAULT_RETRY_THRESHOLD, ...args) => {
   try {
     return await fn(...args);
   } catch (err) {
-    if (count > 2) {
+    if (count > retryThreshold) {
       throw err;
     }
-    await delayInMs();
-    return callWithRetry(fn, count + 1);
+    await delayInMs(delay);
+    return callWithRetry(fn, count + 1, delay, retryThreshold, args);
   }
 };
+
+const awaitFunctionReadiness = async (functionName, maxWaitInMs = 22000, waitBetweenIntervalsInMs = 250) => {
+  const executionPromise = new Promise(async (resolve) => {
+    try {
+      await callWithRetry(
+        checkFunctionHealth,
+        0,
+        waitBetweenIntervalsInMs,
+        Math.floor(maxWaitInMs/waitBetweenIntervalsInMs),
+        functionName
+      );
+
+      resolve(true);
+    } catch (error) {
+      logger.error(`Error while waiting for function ${functionName} to be ready: ${error}`);
+      resolve(error.message);
+    }
+  });
+
+  let setTimeoutHandle;
+  const timeoutPromise = new Promise((resolve) => {
+    setTimeoutHandle = setTimeout(() => {
+      resolve('Timedout');
+    }, maxWaitInMs);
+  });
+
+  return Promise.race([executionPromise, timeoutPromise])
+    .finally(() => clearTimeout(setTimeoutHandle));
+}
 
 const isFunctionDeployed = (functionName) => {
   const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
@@ -114,7 +148,7 @@ async function setupFaasFunction(functionName, code, versionId, testMode) {
 
     // This api call is only used to check if function is spinned eventually
     // TODO: call health endpoint instead of get function to get correct status
-    await callWithRetry(getFunction, 0, functionName);
+    await callWithRetry(getFunction, 0, 2000, 2, functionName);
 
     setFunctionInCache(functionName);
     logger.debug(`[Faas] Finished deploying faas function ${functionName}`);
@@ -127,6 +161,9 @@ async function setupFaasFunction(functionName, code, versionId, testMode) {
 const executeFaasFunction = async (functionName, events, versionId, testMode) => {
   try {
     logger.debug('[Faas] Invoking faas function');
+
+    if (testMode) await awaitFunctionReadiness(functionName);
+
     const res = await invokeFunction(functionName, events);
     logger.debug('[Faas] Invoked faas function');
     return res;
@@ -163,7 +200,10 @@ const executeFaasFunction = async (functionName, events, versionId, testMode) =>
 };
 
 module.exports = {
+  awaitFunctionReadiness,
   executeFaasFunction,
   setupFaasFunction,
   invalidateFnCache,
+  FAAS_AST_VID,
+  FAAS_AST_FN_NAME
 };

@@ -9,6 +9,7 @@ const mockResponses = {};
 // Dynamically import the network handlers for all
 // the supported destinations
 const destinations = getIntegrations(path.resolve(__dirname, `../mocks`));
+console.log(`Destinations for proxy: ${destinations}`);
 destinations.forEach((dest) => {
   mockResponses[dest] = require(`../mocks/${dest}/response.json`);
 });

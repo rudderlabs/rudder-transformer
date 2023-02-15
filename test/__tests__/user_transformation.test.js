@@ -842,7 +842,7 @@ describe("User transformation", () => {
     expect(output).toEqual(expectedData);
   });
 
-  it(`Simple ${name} Test for library parser`, () => {
+  it(`Simple ${name} Test for library parser`, async () => {
     const outputImport = {
       "@angular2/core": ["Component"],
       "module-name1": ["defaultMember"],
@@ -864,7 +864,7 @@ describe("User transformation", () => {
       import { member1 , member2 as alias2 , member3 as alias3 } from "module-name6"; 
       import defaultMember, { member, member } from "module-name7";
     `;
-    const output = parserForImport(code);
+    const output = await parserForImport(code);
 
     expect(output).toEqual(outputImport);
   });
@@ -1216,7 +1216,7 @@ describe("Python transformations", () => {
     expect(output).toEqual(outputData);
 
     expect(axios.post).toHaveBeenCalledTimes(2);
-    expect(axios.get).toHaveBeenCalledTimes(1);
+    expect(axios.get).toHaveBeenCalledTimes(2);
     expect(axios.delete).toHaveBeenCalledTimes(1);
   });
 

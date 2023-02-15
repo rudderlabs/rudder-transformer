@@ -29,7 +29,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   );
   const librariesMap = {};
   if (code && libraries) {
-    const extractedLibraries = Object.keys(parserForImport(code));
+    const extractedLibraries = Object.keys(await parserForImport(code));
     // TODO: Check if this should this be &&
     libraries.forEach((library) => {
       const libHandleName = _.camelCase(library.name);
@@ -259,10 +259,12 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   const bootstrapScriptResult = await bootstrap.run(context);
   // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
   const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`);
-  await customScriptModule.instantiate(context, (spec) => {
+  await customScriptModule.instantiate(context, async (spec) => {
     if (librariesMap[spec]) {
       return compiledModules[spec].module;
     }
+    // Release the isolate context before throwing an error
+    await context.release();
     console.log(`import from ${spec} failed. Module not found.`);
     throw new Error(`import from ${spec} failed. Module not found.`);
   });

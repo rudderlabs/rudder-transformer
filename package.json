@@ -43,6 +43,7 @@
     "@ndhoule/extend": "^2.0.0",
     "ajv": "^8.12.0",
     "ajv-draft-04": "^1.0.0",
+    "ajv-formats": "^2.1.1",
     "aws-sdk": "^2.1292.0",
     "axios": "^0.27.2",
     "btoa": "^1.2.1",
@@ -84,7 +85,7 @@
     "sha256": "^0.2.0",
     "statsd-client": "^0.4.7",
     "truncate-utf8-bytes": "^1.0.2",
-    "ua-parser-js": "^0.8.1",
+    "ua-parser-js": "^1.0.33",
     "unset-value": "^2.0.1",
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9"
@@ -115,7 +116,8 @@
     "node-notifier": "^10.0.1",
     "pre-commit": "^1.2.2",
     "prettier": "^2.8.2",
-    "standard-version": "^9.5.0"
+    "standard-version": "^9.5.0",
+    "supertest": "^6.3.3"
   },
   "lint-staged": {
     "*.{js,ts}": "eslint --fix",

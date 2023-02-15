@@ -842,7 +842,7 @@ describe("User transformation", () => {
     expect(output).toEqual(expectedData);
   });
 
-  it(`Simple ${name} Test for library parser`, () => {
+  it(`Simple ${name} Test for library parser`, async () => {
     const outputImport = {
       "@angular2/core": ["Component"],
       "module-name1": ["defaultMember"],
@@ -864,9 +864,55 @@ describe("User transformation", () => {
       import { member1 , member2 as alias2 , member3 as alias3 } from "module-name6"; 
       import defaultMember, { member, member } from "module-name7";
     `;
-    const output = parserForImport(code);
+    const output = await parserForImport(code);
 
     expect(output).toEqual(outputImport);
+  });
+
+  it(`Simple ${name} Test for invalid library import error`, async () => {
+    const versionId = randomID();
+    const libraryVersionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+
+    const respBody = {
+      code: `
+      import { add } from 'addLib';
+      import { sub } from 'somelib';
+      export async function transformEvent(event, metadata) {
+          event.add = add(1, 2);
+          event.sub = sub(1, 2);
+          return event;
+        }
+        `,
+      name: "import from non existing library",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const addLibCode = `
+    export function add(a, b) {
+      return a + b;
+    }
+    `;
+
+    const libraryUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${libraryVersionId}`;
+    when(fetch)
+      .calledWith(libraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: addLibCode, name: "addLib" })
+      });
+
+    await expect(async () => {
+      await userTransformHandler(inputData, versionId, [libraryVersionId]);
+    }).rejects.toThrow("import from somelib failed. Module not found.");
   });
 
   it(`Simple ${name} async test for V1 transformation code`, async () => {
@@ -1170,7 +1216,7 @@ describe("Python transformations", () => {
     expect(output).toEqual(outputData);
 
     expect(axios.post).toHaveBeenCalledTimes(2);
-    expect(axios.get).toHaveBeenCalledTimes(1);
+    expect(axios.get).toHaveBeenCalledTimes(2);
     expect(axios.delete).toHaveBeenCalledTimes(1);
   });
 

@@ -1104,13 +1104,13 @@ describe("Rudder library tests", () => {
   beforeEach(() => {});
   it(`Simple ${name} async test for V1 transformation - with rudder library rsUrlParser `, async () => {
     const versionId = randomID();
-    const rudderLibraryImportName = 'rsUrlParser@1.0.0';
+    const rudderLibraryImportName = '@rs/urlParser/v1';
     const inputData = require(`./data/${integration}_input_large.json`);
     const expectedData = require(`./data/${integration}_async_output_large.json`);
 
     const respBody = {
       code: `
-      import url from 'rsUrlParser@1.0.0';
+      import url from '@rs/urlParser/v1';
       async function foo() {
         return 'resolved';
       }
@@ -1123,7 +1123,7 @@ describe("Rudder library tests", () => {
           return event;
         }
         `,
-      name: "url",
+      name: "urlParser",
       codeVersion: "1"
     };
     respBody.versionId = versionId;
@@ -1142,12 +1142,12 @@ describe("Rudder library tests", () => {
     export default self;
     `;
 
-    const rudderLibraryUrl = `https://api.rudderlabs.com/rudderstackTransformationLibraries/${rudderLibraryImportName}`;
+    const rudderLibraryUrl = `https://api.rudderlabs.com/rudderstackTransformationLibraries/importName?importName=${rudderLibraryImportName}`;
     when(fetch)
       .calledWith(rudderLibraryUrl)
       .mockResolvedValue({
         status: 200,
-        json: jest.fn().mockResolvedValue({ code: urlCode, name: "rsUrlParser", importName: rudderLibraryImportName })
+        json: jest.fn().mockResolvedValue({ code: urlCode, name: "urlParser", importName: rudderLibraryImportName })
       });
 
     const output = await userTransformHandler(inputData, versionId, []);

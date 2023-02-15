@@ -7,7 +7,7 @@ const { getLibraryCodeV1, getRudderLibraryCode } = require('./customTransforrmat
 const { parserForImport } = require('./parser');
 const logger = require('../logger');
 
-const RUDDER_LIBRARY_REGEX = /^rs[A-Za-z]+@([0-9].[0-9].[0-9])$/;
+const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
 
 const isolateVmMem = 128;
 async function evaluateModule(isolate, context, moduleCode) {

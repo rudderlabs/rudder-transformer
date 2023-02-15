@@ -94,14 +94,29 @@ describe("Function Creation Tests", () => {
   });
 
   it("Setting up already existing function with testWithPublish as true - return from cache", async () => {
-    const fnCreatedAt = (await getFunctionList())[0].createdAt;
+    let fnCreatedAt;
+    
+    for(const fn of (await getFunctionList())) {
+      if (fn.name === FAAS_AST_FN_NAME) continue;
+
+      fnCreatedAt = fn.createdAt;
+      break;
+    }
+
     const outputData = await setupUserTransformHandler(trRevCode, [], true);
 
     expect(outputData).toEqual(expectedData);
 
     const deployedFns = await getFunctionList();
     const fnNames = deployedFns.map(fn => fn.name);
-    const currentCreatedAt = deployedFns[0].createdAt;
+    let currentCreatedAt;
+    
+    for(const fn of deployedFns) {
+      if (fn.name === FAAS_AST_FN_NAME) continue;
+
+      currentCreatedAt = fn.createdAt;
+      break;
+    }
 
     expect(fnNames.sort()).toEqual([funcName, FAAS_AST_FN_NAME].sort());
     expect(fnCreatedAt).toEqual(currentCreatedAt);

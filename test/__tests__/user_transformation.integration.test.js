@@ -17,7 +17,6 @@ const {
 const { invalidateFnCache, awaitFunctionReadiness, FAAS_AST_FN_NAME, FAAS_AST_VID } = require("../../src/util/openfaas/index");
 const { extractLibraries } = require('../../src/util/customTransformer');
 const { RetryRequestError } = require("../../src/util/utils");
-const { before } = require("lodash");
 
 jest.setTimeout(25000);
 jest.mock("axios", () => ({

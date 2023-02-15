@@ -597,6 +597,11 @@ if (startDestTransformer) {
     router.post('/extractLibs', async (ctx) => {
       try {
         const { code, versionId, validateImports = false, additionalLibraries = [], language = "javascript" } = ctx.request.body;
+
+        if (!code) {
+          throw new Error('Invalid request. Code is missing');
+        }
+
         const obj = await extractLibraries(code, versionId, validateImports, additionalLibraries, language);
         ctx.body = obj;
       } catch (err) {

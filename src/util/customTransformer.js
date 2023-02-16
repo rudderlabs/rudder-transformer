@@ -5,7 +5,6 @@ const { getTransformationCode } = require('./customTransforrmationsStore');
 const { getTransformationCodeV1 } = require('./customTransforrmationsStore-v1');
 const stats = require('./stats');
 const { UserTransformHandlerFactory } = require('./customTransformerFactory');
-const { validatePythonCode } = require('./openfaas/index');
 const { parserForImport } = require('./parser');
 
 async function runUserTransform(events, code, eventsMetadata, versionId, testMode = false) {
@@ -275,7 +274,7 @@ async function validateCode(code, language) {
     return compileUserLibrary(code);
   }
   if (language === "python" || language === "pythonfaas") {
-    return validatePythonCode(code)
+    return parserForImport(code, true, [], language);
   }
 
   throw Error('Unsupported language');

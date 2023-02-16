@@ -72,21 +72,6 @@ const isFunctionDeployed = (functionName) => {
   return funcList.includes(functionName);
 };
 
-const validatePythonCode = (code) => {
-  const payload = [
-    {
-      message: {
-        messageId: '',
-        code,
-        validateImports: true
-      },
-      metadata: {}
-    }
-  ]
-
-  return executeFaasFunction(FAAS_AST_FN_NAME, payload, FAAS_AST_VID, [], false);
-}
-
 const setFunctionInCache = (functionName) => {
   const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
   funcList.push(functionName);
@@ -218,7 +203,6 @@ const executeFaasFunction = async (functionName, events, versionId, libraryVersi
 
 module.exports = {
   awaitFunctionReadiness,
-  validatePythonCode,
   executeFaasFunction,
   setupFaasFunction,
   invalidateFnCache,

@@ -9,6 +9,8 @@ const { getLibraryCodeV1 } = require('./customTransforrmationsStore-v1');
 const libVersionIdsCache = new NodeCache();
 
 function generateFunctionName(userTransformation, testMode) {
+  if (userTransformation.versionId === FAAS_AST_VID) return FAAS_AST_FN_NAME;
+
   if (testMode) {
     const funcName = `fn-test-${uuidv4()}`;
     return funcName.substring(0, 63).toLowerCase();

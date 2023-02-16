@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const NodeCache = require('node-cache');
 const stats = require('./stats');
 const { getMetadata } = require('../v0/util');
-const { setupFaasFunction, executeFaasFunction, FAAS_AST_FN_NAME } = require('./openfaas');
+const { setupFaasFunction, executeFaasFunction, FAAS_AST_FN_NAME, FAAS_AST_VID } = require('./openfaas');
 const { getLibraryCodeV1 } = require('./customTransforrmationsStore-v1');
 
 const libVersionIdsCache = new NodeCache();
@@ -24,7 +24,7 @@ function generateFunctionName(userTransformation, testMode) {
 }
 
 async function extractRelevantLibraryVersionIdsForVersionId(functionName, code, versionId, libraryVersionIds, prepopulatedImports) {
-  if (functionName === FAAS_AST_FN_NAME) return [];
+  if (functionName === FAAS_AST_FN_NAME || versionId == FAAS_AST_VID) return [];
 
   const cachedLvids = libVersionIdsCache.get(functionName);
 

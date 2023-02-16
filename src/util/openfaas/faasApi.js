@@ -61,10 +61,22 @@ const deployFunction = async (payload) =>
       .catch((err) => reject(parseAxiosError(err)));
   });
 
+const checkFunctionHealth = async (functionName) =>
+  new Promise((resolve, reject) => {
+    const url = `${OPENFAAS_GATEWAY_URL}/function/${functionName}`;
+    axios
+      .get(url, {
+        headers: { "X-REQUEST-TYPE": "HEALTH-CHECK"}
+      })
+      .then((resp) => resolve(resp))
+      .catch((err) => reject(parseAxiosError(err)));
+  });
+
 module.exports = {
   deleteFunction,
   deployFunction,
   getFunction,
   getFunctionList,
   invokeFunction,
+  checkFunctionHealth
 };

@@ -1,32 +1,30 @@
-const { EventType } = require("../../../constants");
-const { BASE_URL } = require("./config");
-const { populatePayload } = require("./utils");
+const { EventType } = require('../../../constants');
+const { BASE_URL } = require('./config');
+const { populatePayload } = require('./utils');
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   simpleProcessRouterDest,
-  removeUndefinedAndNullAndEmptyValues
-} = require("../../util");
+  removeUndefinedAndNullAndEmptyValues,
+} = require('../../util');
 const {
   ConfigurationError,
   TransformationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+  InstrumentationError,
+} = require('../../util/errorTypes');
 
 const responseBuilder = (payload, endpoint) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.headers = {
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json',
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.body.JSON = removeUndefinedAndNullAndEmptyValues(payload);
     return response;
   }
-  throw new TransformationError(
-    "Payload could not be populated due to wrong input"
-  );
+  throw new TransformationError('Payload could not be populated due to wrong input');
 };
 
 /**
@@ -40,7 +38,7 @@ const trackResponseBuilder = (message, { Config }) => {
   const { event } = message;
 
   if (!event) {
-    throw new InstrumentationError("Event is not present in the input payload");
+    throw new InstrumentationError('Event is not present in the input payload');
   }
 
   const endpoint = `${BASE_URL}/${apiKey}`;
@@ -52,10 +50,10 @@ const trackResponseBuilder = (message, { Config }) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
   if (!destination.Config.apiKey) {
-    throw new ConfigurationError("ApiKey is a required field");
+    throw new ConfigurationError('ApiKey is a required field');
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -64,16 +62,12 @@ const processEvent = (message, destination) => {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new InstrumentationError(
-        `Event type ${messageType} is not supported`
-      );
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
 };
 
-const process = async event => {
-  return processEvent(event.message, event.destination);
-};
+const process = async (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

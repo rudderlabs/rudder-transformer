@@ -1,20 +1,20 @@
-const _ = require("lodash");
+const _ = require('lodash');
 
-const reservedANSIKeywordsMap = require("../config/ReservedKeywords.json");
-const { isDataLakeProvider } = require("../config/helpers");
-const { TransformationError } = require("../../v0/util/errorTypes");
+const reservedANSIKeywordsMap = require('../config/ReservedKeywords.json');
+const { isDataLakeProvider } = require('../config/helpers');
+const { TransformationError } = require('../../v0/util/errorTypes');
 
-function safeTableName(options, name = "") {
+function safeTableName(options, name = '') {
   const { provider } = options;
   const skipReservedKeywordsEscaping =
     options.integrationOptions?.skipReservedKeywordsEscaping || false;
   let tableName = name;
-  if (tableName === "") {
-    throw new TransformationError("Table name cannot be empty.");
+  if (tableName === '') {
+    throw new TransformationError('Table name cannot be empty.');
   }
-  if (provider === "snowflake") {
+  if (provider === 'snowflake') {
     tableName = tableName.toUpperCase();
-  } else if (provider === "postgres") {
+  } else if (provider === 'postgres') {
     tableName = tableName.substr(0, 63);
     tableName = tableName.toLowerCase();
   } else {
@@ -34,17 +34,17 @@ function safeTableName(options, name = "") {
   return tableName.substr(0, 127);
 }
 
-function safeColumnName(options, name = "") {
+function safeColumnName(options, name = '') {
   const { provider } = options;
   const skipReservedKeywordsEscaping =
     options.integrationOptions?.skipReservedKeywordsEscaping || false;
   let columnName = name;
-  if (columnName === "") {
-    throw new TransformationError("Column name cannot be empty.");
+  if (columnName === '') {
+    throw new TransformationError('Column name cannot be empty.');
   }
-  if (provider === "snowflake") {
+  if (provider === 'snowflake') {
     columnName = columnName.toUpperCase();
-  } else if (provider === "postgres") {
+  } else if (provider === 'postgres') {
     columnName = columnName.substr(0, 63);
     columnName = columnName.toLowerCase();
   } else {
@@ -82,9 +82,9 @@ function safeColumnName(options, name = "") {
   path to $1,00,000 to path_to_1_00_000
   return an empty string if it couldn't find a char if its ascii value doesnt belong to numbers or english alphabets
 */
-function transformName(provider, name = "") {
+function transformName(provider, name = '') {
   const extractedValues = [];
-  let extractedValue = "";
+  let extractedValue = '';
   for (let i = 0; i < name.length; i += 1) {
     const c = name[i];
     const asciiValue = c.charCodeAt(0);
@@ -95,29 +95,29 @@ function transformName(provider, name = "") {
     ) {
       extractedValue += c;
     } else {
-      if (extractedValue !== "") {
+      if (extractedValue !== '') {
         extractedValues.push(extractedValue);
       }
-      extractedValue = "";
+      extractedValue = '';
     }
   }
-  if (extractedValue !== "") {
+  if (extractedValue !== '') {
     extractedValues.push(extractedValue);
   }
-  let key = extractedValues.join("_");
-  if (name.startsWith("_")) {
+  let key = extractedValues.join('_');
+  if (name.startsWith('_')) {
     // do not remove leading underscores to allow esacaping rudder keywords with underscore
     // _timestamp -> _timestamp
     // __timestamp -> __timestamp
-    key = name.match(/^_*/)[0] + _.snakeCase(key.replace(/^_*/, ""));
+    key = name.match(/^_*/)[0] + _.snakeCase(key.replace(/^_*/, ''));
   } else {
     key = _.snakeCase(key);
   }
 
-  if (key !== "" && key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
+  if (key !== '' && key.charCodeAt(0) >= 48 && key.charCodeAt(0) <= 57) {
     key = `_${key}`;
   }
-  if (provider === "postgres") {
+  if (provider === 'postgres') {
     key = key.substr(0, 63);
   }
   return key;
@@ -131,29 +131,29 @@ function transformName(provider, name = "") {
   path to $1,00,000 to path_to_$1_00_000
   return an empty string if it couldn't find a char
 */
-function transformNameToBlendoCase(provider, name = "") {
-  let key = name.replace(/[^a-zA-Z0-9\\$]/g, "_");
+function transformNameToBlendoCase(provider, name = '') {
+  let key = name.replace(/[^a-zA-Z0-9\\$]/g, '_');
 
   const re = /^[a-zA-Z_].*/;
   if (!re.test(key)) {
     key = `_${key}`;
   }
-  if (provider === "postgres") {
+  if (provider === 'postgres') {
     key = key.substr(0, 63);
   }
   return key.toLowerCase();
 }
 
-function toBlendoCase(name = "") {
+function toBlendoCase(name = '') {
   return name.trim().toLowerCase();
 }
 
-function transformTableName(options, name = "") {
+function transformTableName(options, name = '') {
   const useBlendoCasing = options.integrationOptions?.useBlendoCasing || false;
-  return useBlendoCasing ? toBlendoCase(name) : transformName("", name);
+  return useBlendoCasing ? toBlendoCase(name) : transformName('', name);
 }
 
-function transformColumnName(options, name = "") {
+function transformColumnName(options, name = '') {
   const { provider } = options;
   const useBlendoCasing = options.integrationOptions?.useBlendoCasing || false;
   return useBlendoCasing
@@ -165,5 +165,5 @@ module.exports = {
   safeColumnName,
   safeTableName,
   transformColumnName,
-  transformTableName
+  transformTableName,
 };

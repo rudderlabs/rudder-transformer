@@ -1,21 +1,19 @@
 const {
   nodeSysErrorToStatus,
-  getDynamicErrorType
-} = require("../../../adapters/utils/networkUtils");
-const { NetworkError } = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
+const { NetworkError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 const errorHandler = (err, message) => {
   if (err.response) {
     throw new NetworkError(
-      `${message} (${err.response?.statusText},${JSON.stringify(
-        err.response?.data
-      )})`,
+      `${message} (${err.response?.statusText},${JSON.stringify(err.response?.data)})`,
       err.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(err.status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(err.status),
       },
-      err
+      err,
     );
   } else {
     const httpError = nodeSysErrorToStatus(err.code);
@@ -23,9 +21,9 @@ const errorHandler = (err, message) => {
       `${message} ${httpError.message}`,
       httpError.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(httpError.status)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(httpError.status),
       },
-      err
+      err,
     );
   }
 };

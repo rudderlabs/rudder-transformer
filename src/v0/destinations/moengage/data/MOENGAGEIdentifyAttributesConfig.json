@@ -1,10 +1,7 @@
 [
   {
     "destKey": "name",
-    "sourceKeys": [
-      "traits.name",
-      "context.traits.name"
-    ],
+    "sourceKeys": ["traits.name", "context.traits.name"],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -42,10 +39,7 @@
   },
   {
     "destKey": "email",
-    "sourceKeys": [
-      "traits.email",
-      "context.traits.email"
-    ],
+    "sourceKeys": ["traits.email", "context.traits.email"],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -53,10 +47,7 @@
   },
   {
     "destKey": "age",
-    "sourceKeys": [
-      "traits.age",
-      "context.traits.age"
-    ],
+    "sourceKeys": ["traits.age", "context.traits.age"],
     "required": false,
     "metadata": {
       "type": "toNumber"
@@ -64,10 +55,7 @@
   },
   {
     "destKey": "gender",
-    "sourceKeys": [
-      "traits.gender",
-      "context.traits.gender"
-    ],
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -75,10 +63,7 @@
   },
   {
     "destKey": "mobile",
-    "sourceKeys": [
-      "traits.mobile",
-      "context.traits.mobile"
-    ],
+    "sourceKeys": ["traits.mobile", "context.traits.mobile"],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -86,10 +71,7 @@
   },
   {
     "destKey": "source",
-    "sourceKeys": [
-      "traits.source",
-      "context.traits.source"
-    ],
+    "sourceKeys": ["traits.source", "context.traits.source"],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -97,10 +79,7 @@
   },
   {
     "destKey": "created_time",
-    "sourceKeys": [
-      "traits.createdAt",
-      "context.traits.createdAt"
-    ],
+    "sourceKeys": ["traits.createdAt", "context.traits.createdAt"],
     "required": false
   },
   {
@@ -115,10 +94,7 @@
   },
   {
     "destKey": "transactions",
-    "sourceKeys": [
-      "traits.transactions",
-      "context.traits.transactions"
-    ],
+    "sourceKeys": ["traits.transactions", "context.traits.transactions"],
     "required": false,
     "metadata": {
       "type": "toNumber"
@@ -126,10 +102,7 @@
   },
   {
     "destKey": "revenue",
-    "sourceKeys": [
-      "traits.revenue",
-      "context.traits.revenue"
-    ],
+    "sourceKeys": ["traits.revenue", "context.traits.revenue"],
     "required": false,
     "metadata": {
       "type": "toNumber"
@@ -147,10 +120,7 @@
   },
   {
     "destKey": "",
-    "sourceKeys": [
-      "traits",
-      "context.traits"
-    ],
+    "sourceKeys": ["traits", "context.traits"],
     "required": false,
     "metadata": {
       "excludes": [

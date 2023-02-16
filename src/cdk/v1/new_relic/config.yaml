@@ -5,11 +5,11 @@ message:
     transformation:
       mapperPath: ./mapping/track.yaml
       postMapper:
-        name: "commonPostMapper"
+        name: 'commonPostMapper'
       response:
-        endpoint: "{{ rudderContext.endpoint }}"
+        endpoint: '{{ rudderContext.endpoint }}'
         method: POST
         format: JSON
         headers:
-          Api-Key: "{{ rudderContext.insertKey }}"
-          Content-Type: "application/json"
+          Api-Key: '{{ rudderContext.insertKey }}'
+          Content-Type: 'application/json'

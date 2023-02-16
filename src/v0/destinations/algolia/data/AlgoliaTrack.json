@@ -1,39 +1,38 @@
 [
-    {
-      "destKey": "index",
-      "sourceKeys": "properties.index",
-      "required": true
-    },
-    {
-      "destKey": "userToken",
-      "sourceKeys": "userId",
-      "sourceFromGenericMap": true,
-      "required": false
-    },
-    {
-      "destKey": "timestamp",
-      "sourceKeys": "properties.timestamp",
-      "required": false
-    },
-    {
-      "destKey": "queryID",
-      "sourceKeys": "properties.queryId",
-      "required": false
-    },
-    {
-      "destKey": "filters",
-      "sourceKeys": "properties.filters",
-      "required": false
-    },
-    {
-      "destKey": "objectIDs",
-      "sourceKeys": "properties.objectIds",
-      "required": false
-    },
-    {
-      "destKey": "positions",
-      "sourceKeys": "properties.positions",
-      "required": false
-    }
-  ]
-  
+  {
+    "destKey": "index",
+    "sourceKeys": "properties.index",
+    "required": true
+  },
+  {
+    "destKey": "userToken",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": "properties.timestamp",
+    "required": false
+  },
+  {
+    "destKey": "queryID",
+    "sourceKeys": "properties.queryId",
+    "required": false
+  },
+  {
+    "destKey": "filters",
+    "sourceKeys": "properties.filters",
+    "required": false
+  },
+  {
+    "destKey": "objectIDs",
+    "sourceKeys": "properties.objectIds",
+    "required": false
+  },
+  {
+    "destKey": "positions",
+    "sourceKeys": "properties.positions",
+    "required": false
+  }
+]

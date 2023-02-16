@@ -1,21 +1,20 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-undef */
 
-const _ = require("lodash");
-const http = require("http");
-const https = require("https");
-const axios = require("axios");
-const log = require("../logger");
-const { removeUndefinedValues } = require("../v0/util");
-const { processAxiosResponse } = require("./utils/networkUtils");
+const _ = require('lodash');
+const http = require('http');
+const https = require('https');
+const axios = require('axios');
+const log = require('../logger');
+const { removeUndefinedValues } = require('../v0/util');
+const { processAxiosResponse } = require('./utils/networkUtils');
 
-const MAX_CONTENT_LENGTH =
-  parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 100000000;
+const MAX_CONTENT_LENGTH = parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 100000000;
 const MAX_BODY_LENGTH = parseInt(process.env.MAX_BODY_LENGTH, 10) || 100000000;
 // (httpsAgent, httpsAgent) ,these are deployment specific configs not request specific
 const networkClientConfigs = {
   // `method` is the request method to be used when making the request
-  method: "get",
+  method: 'get',
 
   // `timeout` specifies the number of milliseconds before the request times out. If the request takes longer than `timeout`, the request will be aborted.
   timeout: 1000 * 60,
@@ -24,10 +23,10 @@ const networkClientConfigs = {
   withCredentials: false,
 
   // `responseType` indicates the type of data that the server will respond with options are: 'arraybuffer', 'document', 'json', 'text', 'stream'
-  responseType: "json",
+  responseType: 'json',
 
   // `responseEncoding` indicates encoding to use for decoding responses (Node.js only),
-  responseEncoding: "utf8",
+  responseEncoding: 'utf8',
 
   // `maxBodyLength` (Node only option) defines the max size of the http request content in bytes allowed,
   maxBodyLength: 1000 * 1000 * 10,
@@ -39,7 +38,7 @@ const networkClientConfigs = {
   httpAgent: new http.Agent({ keepAlive: true }),
 
   // and https requests, respectively, in node.js. This allows options to be added like `keepAlive` that are not enabled by default.
-  httpsAgent: new https.Agent({ keepAlive: true })
+  httpsAgent: new https.Agent({ keepAlive: true }),
 };
 
 /**
@@ -47,14 +46,14 @@ const networkClientConfigs = {
  * @param {*} options
  * @returns
  */
-const httpSend = async options => {
+const httpSend = async (options) => {
   let clientResponse;
   // here the options argument K-Vs will take priority over requestOptions
   const requestOptions = {
     ...networkClientConfigs,
     ...options,
     maxContentLength: MAX_CONTENT_LENGTH,
-    maxBodyLength: MAX_BODY_LENGTH
+    maxBodyLength: MAX_BODY_LENGTH,
   };
   try {
     const response = await axios(requestOptions);
@@ -163,7 +162,7 @@ const httpPATCH = async (url, data, options) => {
   return clientResponse;
 };
 
-const getPayloadData = body => {
+const getPayloadData = (body) => {
   let payload;
   let payloadFormat;
   Object.entries(body).forEach(([key, value]) => {
@@ -186,10 +185,10 @@ const getPayloadData = body => {
 function stringifyQueryParam(value) {
   let stringifiedValue = `${value}`;
   if (Array.isArray(value)) {
-    stringifiedValue = value.map(v => stringifyQueryParam(v)).join(",");
+    stringifiedValue = value.map((v) => stringifyQueryParam(v)).join(',');
     return `[${stringifiedValue}]`;
   }
-  if (value && typeof value === "object") {
+  if (value && typeof value === 'object') {
     // check for value is being done to avoid null inside since typeof null = "object"
     stringifiedValue = JSON.stringify(value);
   }
@@ -204,7 +203,7 @@ function stringifyQueryParam(value) {
  */
 function getFormData(payload) {
   const data = new URLSearchParams();
-  Object.keys(payload).forEach(key => {
+  Object.keys(payload).forEach((key) => {
     const payloadValStr = stringifyQueryParam(payload[key]);
     data.append(key, payloadValStr);
   });
@@ -216,33 +215,33 @@ function getFormData(payload) {
  * @param {*} request
  * @returns
  */
-const prepareProxyRequest = request => {
+const prepareProxyRequest = (request) => {
   const { body, method, params, endpoint, headers } = request;
   const { payload, payloadFormat } = getPayloadData(body);
   let data;
 
   switch (payloadFormat) {
-    case "JSON_ARRAY":
+    case 'JSON_ARRAY':
       data = payload.batch;
       // TODO: add headers
       break;
-    case "JSON":
+    case 'JSON':
       data = payload;
       break;
-    case "XML":
+    case 'XML':
       data = payload.payload;
       break;
-    case "FORM":
+    case 'FORM':
       data = getFormData(payload);
       break;
-    case "MULTIPART-FORM":
+    case 'MULTIPART-FORM':
       // TODO:
       break;
     default:
       log.debug(`body format ${payloadFormat} not supported`);
   }
   // Ref: https://github.com/rudderlabs/rudder-server/blob/master/router/network.go#L164
-  headers["User-Agent"] = "RudderLabs";
+  headers['User-Agent'] = 'RudderLabs';
   return removeUndefinedValues({ endpoint, data, params, headers, method });
 };
 
@@ -252,16 +251,14 @@ const prepareProxyRequest = request => {
  * @param {*} request
  * @returns
  */
-const proxyRequest = async request => {
-  const { endpoint, data, method, params, headers } = prepareProxyRequest(
-    request
-  );
+const proxyRequest = async (request) => {
+  const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
   const requestOptions = {
     url: endpoint,
     data,
     params,
     headers,
-    method
+    method,
   };
   const response = await httpSend(requestOptions);
   return response;
@@ -291,22 +288,22 @@ const proxyRequest = async request => {
       }
     })
  */
-const handleHttpRequest = async (requestType = "post", ...httpArgs) => {
+const handleHttpRequest = async (requestType = 'post', ...httpArgs) => {
   let httpWrapperMethod;
   switch (requestType.toLowerCase()) {
-    case "get":
+    case 'get':
       httpWrapperMethod = httpGET;
       break;
-    case "put":
+    case 'put':
       httpWrapperMethod = httpPUT;
       break;
-    case "patch":
+    case 'patch':
       httpWrapperMethod = httpPATCH;
       break;
-    case "delete":
+    case 'delete':
       httpWrapperMethod = httpDELETE;
       break;
-    case "constructor":
+    case 'constructor':
       httpWrapperMethod = httpSend;
       break;
     default:
@@ -329,5 +326,5 @@ module.exports = {
   prepareProxyRequest,
   getPayloadData,
   getFormData,
-  handleHttpRequest
+  handleHttpRequest,
 };

@@ -1,10 +1,7 @@
 [
   {
     "destKey": "subscription_alias",
-    "sourceKeys": [
-      "traits.subscriptionAlias",
-      "context.traits.subscriptionAlias"
-    ],
+    "sourceKeys": ["traits.subscriptionAlias", "context.traits.subscriptionAlias"],
     "required": false
   },
   {

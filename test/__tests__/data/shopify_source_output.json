@@ -93,7 +93,10 @@
       "integration": {
         "name": "SHOPIFY"
       },
-      "topic": "orders_updated"
+      "topic": "orders_updated",
+      "cart_token": "7ed2aa8c6e74666534b023e197fffd41",
+      "checkout_token": "7ed2aa8c6e74666534b023e197fffd41",
+      "order_token": "4e72b2e04f9e9faa1ec4f8bdb5a36502"
     },
     "integrations": {
       "SHOPIFY": true
@@ -408,9 +411,7 @@
       "tracking_number": "Sample001test",
       "tracking_numbers": ["Sample001test"],
       "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
-      "tracking_urls": [
-        "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
-      ],
+      "tracking_urls": ["https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"],
       "updated_at": "2022-01-05T18:16:48+05:30",
       "products": [
         {
@@ -524,9 +525,7 @@
       "tracking_number": "Sample001test",
       "tracking_numbers": ["Sample001test"],
       "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
-      "tracking_urls": [
-        "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
-      ],
+      "tracking_urls": ["https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"],
       "updated_at": "2022-01-05T18:16:48+05:30",
       "products": [
         {

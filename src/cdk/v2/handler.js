@@ -1,12 +1,9 @@
-const {
-  WorkflowEngineFactory,
-  TemplateType
-} = require("rudder-workflow-engine");
+const { WorkflowEngineFactory, TemplateType } = require('rudder-workflow-engine');
 
-const tags = require("../../v0/util/tags");
+const tags = require('../../v0/util/tags');
 
 const defTags = {
-  [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.CDK_V2
+  [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.CDK_V2,
 };
 
 const {
@@ -14,8 +11,8 @@ const {
   getRootPathForDestination,
   getWorkflowPath,
   getPlatformBindingsPaths,
-  isCdkV2Destination
-} = require("./utils");
+  isCdkV2Destination,
+} = require('./utils');
 
 async function getWorkflowEngine(destName, feature, bindings = {}) {
   const destRootDir = getRootPathForDestination(destName);
@@ -25,7 +22,7 @@ async function getWorkflowEngine(destName, feature, bindings = {}) {
     rootPath: destRootDir,
     bindingsPaths: platformBindingsPaths,
     creationTimeBindings: bindings,
-    templateType: TemplateType.JSON_TEMPLATE
+    templateType: TemplateType.JSON_TEMPLATE,
   });
 }
 
@@ -34,14 +31,9 @@ const workflowEnginePromiseMap = new Map();
 function getCachedWorkflowEngine(destName, feature, bindings = {}) {
   // Create a new instance of the engine for the destination if needed
   // TODO: Use cache to avoid long living engine objects
-  workflowEnginePromiseMap[destName] =
-    workflowEnginePromiseMap[destName] || new Map();
+  workflowEnginePromiseMap[destName] = workflowEnginePromiseMap[destName] || new Map();
   if (!workflowEnginePromiseMap[destName][feature]) {
-    workflowEnginePromiseMap[destName][feature] = getWorkflowEngine(
-      destName,
-      feature,
-      bindings
-    );
+    workflowEnginePromiseMap[destName][feature] = getWorkflowEngine(destName, feature, bindings);
   }
   return workflowEnginePromiseMap[destName][feature];
 }
@@ -56,18 +48,9 @@ async function process(workflowEngine, parsedEvent) {
   }
 }
 
-async function processCdkV2Workflow(
-  destType,
-  parsedEvent,
-  feature,
-  bindings = {}
-) {
+async function processCdkV2Workflow(destType, parsedEvent, feature, bindings = {}) {
   try {
-    const workflowEngine = await getCachedWorkflowEngine(
-      destType,
-      feature,
-      bindings
-    );
+    const workflowEngine = await getCachedWorkflowEngine(destType, feature, bindings);
     return process(workflowEngine, parsedEvent);
   } catch (error) {
     throw getErrorInfo(error, isCdkV2Destination(parsedEvent), defTags);
@@ -78,5 +61,5 @@ module.exports = {
   getWorkflowEngine,
   getCachedWorkflowEngine,
   processCdkV2Workflow,
-  process
+  process,
 };

@@ -9,7 +9,10 @@
   { "destKey": "OriginalSourceInfo", "sourceKeys": "leadSource" },
   { "destKey": "NumberOfEmployees", "sourceKeys": "company.employee_count" },
   { "destKey": "Phone", "sourceKeys": "phone" },
-  { "destKey": "PostalCode", "sourceKeys": ["address.zip","zip", "address.postalCode", "postalCode"] },
+  {
+    "destKey": "PostalCode",
+    "sourceKeys": ["address.zip", "zip", "address.postalCode", "postalCode"]
+  },
   { "destKey": "Rating", "sourceKeys": "rating" },
   { "destKey": "State", "sourceKeys": ["address.state", "state"] },
   { "destKey": "Address", "sourceKeys": ["address.street", "street"] },

@@ -1,11 +1,11 @@
-const NodeCache = require("node-cache");
+const NodeCache = require('node-cache');
 
 class Cache {
   constructor(ttlSeconds) {
     this.cache = new NodeCache({
       stdTTL: ttlSeconds,
       checkperiod: ttlSeconds * 0.2,
-      useClones: false
+      useClones: false,
     });
   }
 
@@ -19,7 +19,7 @@ class Cache {
     // store in cache if the value is valid, else skip
     let retVal = result;
     if (result) {
-      if (typeof result === "object" && "value" in result && "age" in result) {
+      if (typeof result === 'object' && 'value' in result && 'age' in result) {
         this.cache.set(key, result.value, result.age);
         retVal = result.value;
       } else {

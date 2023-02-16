@@ -5,10 +5,10 @@
     groupId : org_DqzHLxgABzej3mwL
  * @param {*} event
  */
-const getGroupId = event => {
-  if (!event?.details?.request?.path) return "";
+const getGroupId = (event) => {
+  if (!event?.details?.request?.path) return '';
   const { path } = event.details.request;
-  const pathArray = path.split("/");
+  const pathArray = path.split('/');
   return pathArray[pathArray.length - 2];
 };
 

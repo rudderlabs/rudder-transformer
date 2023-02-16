@@ -22,9 +22,7 @@
       "category": null,
       "commentCount": 0,
       "created": "2022-07-28T10:52:46.172Z",
-      "customFields": [
-        { "id": "62e13820d7949d44b92d3876", "name": "abc", "value": "123" }
-      ],
+      "customFields": [{ "id": "62e13820d7949d44b92d3876", "name": "abc", "value": "123" }],
       "details": "Array of images",
       "eta": null,
       "id": "62e26a7e1d4ea13c124337bd",
@@ -201,9 +199,7 @@
       "by": null,
       "category": null,
       "changeComment": {
-        "imageURLs": [
-          "https://canny.io/images/0a4b1c6a967ad9fc17f0c71dc11d1de2.webp"
-        ],
+        "imageURLs": ["https://canny.io/images/0a4b1c6a967ad9fc17f0c71dc11d1de2.webp"],
         "value": ""
       },
       "changedAt": "2022-07-26T18:07:03.143Z",
@@ -258,9 +254,7 @@
       },
       "created": "2022-07-26T10:52:17.618Z",
       "id": "62dfc761af6e2b467381b103",
-      "imageURLs": [
-        "https://canny.io/images/59ef1b731f87d1c84bbdc078d0b9221e.webp"
-      ],
+      "imageURLs": ["https://canny.io/images/59ef1b731f87d1c84bbdc078d0b9221e.webp"],
       "internal": true,
       "mentions": [],
       "parentID": null,
@@ -483,9 +477,7 @@
       "category": null,
       "commentCount": 0,
       "created": "2022-07-28T10:52:46.172Z",
-      "customFields": [
-        { "id": "62e13820d7949d44b92d3876", "name": "abc", "value": "123" }
-      ],
+      "customFields": [{ "id": "62e13820d7949d44b92d3876", "name": "abc", "value": "123" }],
       "details": "Array of images",
       "eta": null,
       "id": "62e26a7e1d4ea13c124337bd",

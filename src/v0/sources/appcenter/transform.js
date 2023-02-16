@@ -1,14 +1,12 @@
-const path = require("path");
-const fs = require("fs");
-const Message = require("../message");
+const path = require('path');
+const fs = require('fs');
+const Message = require('../message');
 
-const mappingJson = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, "./mapping.json"), "utf-8")
-);
+const mappingJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
-const { removeUndefinedAndNullValues } = require("../../util");
+const { removeUndefinedAndNullValues } = require('../../util');
 
-const { TransformationError } = require("../../util/errorTypes");
+const { TransformationError } = require('../../util/errorTypes');
 
 const guidGenerator = () => {
   const S4 = () =>
@@ -17,33 +15,28 @@ const guidGenerator = () => {
   return `${S4() + S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
 };
 
-const processNormalEvent = event => {
+const processNormalEvent = (event) => {
   const message = new Message(`APPCENTER`);
-  message.setEventType("track");
+  message.setEventType('track');
 
-  if (event.build_status && event.build_status === "Succeeded") {
-    message.setEventName("Build Succeeded");
-  } else if (event.build_status && event.build_status === "Broken") {
-    message.setEventName("Build Failed");
+  if (event.build_status && event.build_status === 'Succeeded') {
+    message.setEventName('Build Succeeded');
+  } else if (event.build_status && event.build_status === 'Broken') {
+    message.setEventName('Build Failed');
   } else if (
     event.release_id &&
-    event.release_id !== "" &&
+    event.release_id !== '' &&
     event.short_version &&
-    event.short_version !== ""
+    event.short_version !== ''
   ) {
     message.setEventName(`Released Version ${event.short_version}`);
-  } else if (
-    event.id &&
-    event.id !== "" &&
-    event.reason &&
-    event.reason !== ""
-  ) {
-    message.setEventName("App Crashed");
+  } else if (event.id && event.id !== '' && event.reason && event.reason !== '') {
+    message.setEventName('App Crashed');
   } else {
     throw new TransformationError(`Unknown event type from Appcenter`);
   }
   const properties = { ...event };
-  message.setProperty("properties", properties);
+  message.setProperty('properties', properties);
 
   // set fields in payload from mapping json
   message.setPropertiesV2(event, mappingJson);
@@ -58,24 +51,18 @@ const processNormalEvent = event => {
  * @param {*} event
  * @returns
  */
-const isTestEvent = event => {
-  return !!event?.text;
-};
+const isTestEvent = (event) => !!event?.text;
 
-const processTestEvent = event => {
-  return {
-    outputToSource: {
-      body: Buffer.from(JSON.stringify(event)).toString("base64"),
-      contentType: "application/json"
-    },
-    statusCode: 200
-  };
-};
+const processTestEvent = (event) => ({
+  outputToSource: {
+    body: Buffer.from(JSON.stringify(event)).toString('base64'),
+    contentType: 'application/json',
+  },
+  statusCode: 200,
+});
 
-const process = event => {
-  const response = isTestEvent(event)
-    ? processTestEvent(event)
-    : processNormalEvent(event);
+const process = (event) => {
+  const response = isTestEvent(event) ? processTestEvent(event) : processNormalEvent(event);
   // to bypass the unit testcases ( we may change this)
   // response.anonymousId = "7e32188a4dab669f";
   return removeUndefinedAndNullValues(response);

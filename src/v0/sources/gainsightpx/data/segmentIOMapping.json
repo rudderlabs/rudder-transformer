@@ -1,42 +1,42 @@
 [
-    {
-        "sourceKeys": "user",
-        "destKeys": "context.traits"
-    },
-    {
-        "sourceKeys": "event.segmentIOEvent",
-        "destKeys": "properties"
-    },
-    {
-        "sourceKeys": "event.propertyKey",
-        "destKeys": "properties.propertyKey"
-    },
-    {
-        "sourceKeys": "user.identifyId",
-        "destKeys": "userId"
-    },
-    {
-        "sourceKeys": "event.globalContext",
-        "destKeys": "properties.globalContext"
-    },
-    {
-        "sourceKeys": "user.location.countryName",
-        "destKeys": "context.traits.country"
-    },
-    {
-        "sourceKeys": "user.location.stateName",
-        "destKeys": "context.traits.state"
-    },
-    {
-        "sourceKeys": "account",
-        "destKeys": "context.traits.account"
-    },
-    {
-        "sourceKeys": "event.eventType",
-        "destKeys": "category"
-    },
-    {
-        "sourceKeys": "user.lastVisitedUserAgentData",
-        "destKeys": "context.userAgent"
-    }
+  {
+    "sourceKeys": "user",
+    "destKeys": "context.traits"
+  },
+  {
+    "sourceKeys": "event.segmentIOEvent",
+    "destKeys": "properties"
+  },
+  {
+    "sourceKeys": "event.propertyKey",
+    "destKeys": "properties.propertyKey"
+  },
+  {
+    "sourceKeys": "user.identifyId",
+    "destKeys": "userId"
+  },
+  {
+    "sourceKeys": "event.globalContext",
+    "destKeys": "properties.globalContext"
+  },
+  {
+    "sourceKeys": "user.location.countryName",
+    "destKeys": "context.traits.country"
+  },
+  {
+    "sourceKeys": "user.location.stateName",
+    "destKeys": "context.traits.state"
+  },
+  {
+    "sourceKeys": "account",
+    "destKeys": "context.traits.account"
+  },
+  {
+    "sourceKeys": "event.eventType",
+    "destKeys": "category"
+  },
+  {
+    "sourceKeys": "user.lastVisitedUserAgentData",
+    "destKeys": "context.userAgent"
+  }
 ]

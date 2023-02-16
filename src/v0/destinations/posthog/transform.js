@@ -1,10 +1,6 @@
-const get = require("get-value");
-const { EventType } = require("../../../constants");
-const {
-  DEFAULT_BASE_ENDPOINT,
-  CONFIG_CATEGORIES,
-  MAPPING_CONFIG
-} = require("./config");
+const get = require('get-value');
+const { EventType } = require('../../../constants');
+const { DEFAULT_BASE_ENDPOINT, CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const {
   defaultRequestConfig,
   getBrowserInfo,
@@ -16,15 +12,12 @@ const {
   stripTrailingSlash,
   isDefinedAndNotNull,
   removeUndefinedAndNullValues,
-  simpleProcessRouterDest
-} = require("../../util");
-const {
-  InstrumentationError,
-  TransformationError
-} = require("../../util/errorTypes");
+  simpleProcessRouterDest,
+} = require('../../util');
+const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 
 // Logic To match destination Property key that is in Rudder Stack Properties Object.
-const generatePropertyDefination = message => {
+const generatePropertyDefination = (message) => {
   const PHPropertyJson = CONFIG_CATEGORIES.PROPERTY.name;
   const propertyJson = MAPPING_CONFIG[PHPropertyJson];
   let data = {};
@@ -44,11 +37,7 @@ const generatePropertyDefination = message => {
   data = constructPayload(message, propertyJson);
 
   // This logic ensures to get browser info only for payload generated from web.
-  if (
-    message.channel === "web" &&
-    message.context &&
-    message.context.userAgent
-  ) {
+  if (message.channel === 'web' && message.context && message.context.userAgent) {
     const browser = getBrowserInfo(message.context.userAgent);
     const osInfo = getDeviceModel(message);
     data.$os = osInfo;
@@ -73,7 +62,7 @@ const generatePropertyDefination = message => {
   if (message.type.toLowerCase() !== EventType.IDENTIFY && userTraits) {
     data = {
       $set: userTraits,
-      ...data
+      ...data,
     };
   }
 
@@ -83,11 +72,8 @@ const generatePropertyDefination = message => {
 const responseBuilderSimple = (message, category, destination) => {
   // This is to ensure backward compatibility of group calls.
   let payload;
-  if (category.type === "group" && destination.Config.useV2Group) {
-    payload = constructPayload(
-      message,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.GROUPV2.name]
-    );
+  if (category.type === 'group' && destination.Config.useV2Group) {
+    payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.GROUPV2.name]);
   } else {
     payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   }
@@ -98,7 +84,7 @@ const responseBuilderSimple = (message, category, destination) => {
 
   payload.properties = {
     ...generatePropertyDefination(message),
-    ...payload.properties
+    ...payload.properties,
   };
 
   if (category.type === CONFIG_CATEGORIES.GROUP.type) {
@@ -109,11 +95,11 @@ const responseBuilderSimple = (message, category, destination) => {
     }
     // This will add the attributes $groups, which will associate the group with the user.
     if (payload.properties) {
-      const groupType = get(payload, "properties.$group_type");
-      const groupKey = get(payload, "properties.$group_key");
+      const groupType = get(payload, 'properties.$group_type');
+      const groupKey = get(payload, 'properties.$group_key');
       if (groupType && groupKey) {
         payload.properties.$groups = {
-          [groupType]: groupKey
+          [groupType]: groupKey,
         };
       }
     }
@@ -123,10 +109,7 @@ const responseBuilderSimple = (message, category, destination) => {
   if (isDefinedAndNotNull(payload.distinct_id)) {
     payload.distinct_id = payload.distinct_id.toString();
   }
-  if (
-    payload.properties &&
-    isDefinedAndNotNull(payload.properties.distinct_id)
-  ) {
+  if (payload.properties && isDefinedAndNotNull(payload.properties.distinct_id)) {
     payload.properties.distinct_id = payload.properties.distinct_id.toString();
   }
 
@@ -138,14 +121,15 @@ const responseBuilderSimple = (message, category, destination) => {
   const responseBody = {
     ...payload,
     api_key: destination.Config.teamApiKey,
-    type: category.type
+    type: category.type,
   };
   const response = defaultRequestConfig();
-  response.endpoint = `${stripTrailingSlash(destination.Config.yourInstance) ||
-    DEFAULT_BASE_ENDPOINT}/batch`;
+  response.endpoint = `${
+    stripTrailingSlash(destination.Config.yourInstance) || DEFAULT_BASE_ENDPOINT
+  }/batch`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
   response.body.JSON = responseBody;
   return response;
@@ -153,22 +137,18 @@ const responseBuilderSimple = (message, category, destination) => {
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
 
   const category = CONFIG_CATEGORIES[message.type.toUpperCase()];
   if (!category) {
-    throw new InstrumentationError(
-      `Event type ${message.type} is not supported`
-    );
+    throw new InstrumentationError(`Event type ${message.type} is not supported`);
   }
 
   return responseBuilderSimple(message, category, destination);
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

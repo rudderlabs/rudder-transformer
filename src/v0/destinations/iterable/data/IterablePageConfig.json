@@ -1,10 +1,7 @@
 [
   {
     "destKey": "email",
-    "sourceKeys": [
-      "properties.email",
-      "context.traits.email"
-    ],
+    "sourceKeys": ["properties.email", "context.traits.email"],
     "required": false
   },
   {
@@ -26,10 +23,7 @@
   },
   {
     "destKey": "eventName",
-    "sourceKeys": [
-      "name",
-      "properties.name"
-    ],
+    "sourceKeys": ["name", "properties.name"],
     "required": false
   },
   {

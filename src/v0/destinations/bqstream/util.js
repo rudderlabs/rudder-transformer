@@ -1,31 +1,24 @@
 /* eslint-disable no-param-reassign */
-const getValue = require("get-value");
+const getValue = require('get-value');
 const {
   getDynamicErrorType,
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
-const {
-  DISABLE_DEST,
-  REFRESH_TOKEN
-} = require("../../../adapters/networkhandler/authConstants");
-const { isHttpStatusSuccess } = require("../../util");
-const { proxyRequest } = require("../../../adapters/network");
-const {
-  UnhandledStatusCodeError,
-  NetworkError,
-  AbortedError
-} = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+  processAxiosResponse,
+} = require('../../../adapters/utils/networkUtils');
+const { DISABLE_DEST, REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
+const { isHttpStatusSuccess } = require('../../util');
+const { proxyRequest } = require('../../../adapters/network');
+const { UnhandledStatusCodeError, NetworkError, AbortedError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
-const DESTINATION_NAME = "bqstream";
+const DESTINATION_NAME = 'bqstream';
 
-const trimBqStreamResponse = response => ({
-  code: getValue(response, "response.response.data.error.code"), // data.error.status which contains PERMISSION_DENIED
-  status: getValue(response, "response.response.status"),
-  statusText: getValue(response, "response.response.statusText"),
-  headers: getValue(response, "response.response.headers"),
-  data: getValue(response, "response.response.data"), // Incase of errors, this contains error data
-  success: getValue(response, "suceess")
+const trimBqStreamResponse = (response) => ({
+  code: getValue(response, 'response.response.data.error.code'), // data.error.status which contains PERMISSION_DENIED
+  status: getValue(response, 'response.response.status'),
+  statusText: getValue(response, 'response.response.statusText'),
+  headers: getValue(response, 'response.response.headers'),
+  data: getValue(response, 'response.response.data'), // Incase of errors, this contains error data
+  success: getValue(response, 'suceess'),
 });
 /**
  * Obtains the Destination OAuth Error Category based on the error code obtained from destination
@@ -38,31 +31,31 @@ const trimBqStreamResponse = response => ({
  * @param {string} errorCategory - The error code obtained from the destination
  * @returns Destination OAuth Error Category
  */
-const getDestAuthCategory = errorCategory => {
+const getDestAuthCategory = (errorCategory) => {
   switch (errorCategory) {
-    case "PERMISSION_DENIED":
+    case 'PERMISSION_DENIED':
       return DISABLE_DEST;
-    case "UNAUTHENTICATED":
+    case 'UNAUTHENTICATED':
       return REFRESH_TOKEN;
     default:
-      return "";
+      return '';
   }
 };
 
 const destToRudderStatusMap = {
   403: {
     rateLimitExceeded: 429,
-    default: 400
+    default: 400,
   },
   400: {
     tableUnavailable: 500,
-    default: 400
+    default: 400,
   },
   500: { default: 500 },
   503: { default: 500 },
   401: { default: 500 },
   404: { default: 400 },
-  501: { default: 400 }
+  501: { default: 400 },
 };
 
 const getStatusAndCategory = (dresponse, status) => {
@@ -74,8 +67,7 @@ const getStatusAndCategory = (dresponse, status) => {
     dresponse.error.errors[0].reason;
 
   const trStatus = destToRudderStatusMap[status]
-    ? destToRudderStatusMap[status][reason] ||
-      destToRudderStatusMap[status].default
+    ? destToRudderStatusMap[status][reason] || destToRudderStatusMap[status].default
     : 500;
   return { status: trStatus, authErrorCategory };
 };
@@ -103,53 +95,49 @@ const processResponse = ({ dresponse, status } = {}) => {
   const isSuccess =
     !dresponse.error &&
     isHttpStatusSuccess(status) &&
-    (!dresponse.insertErrors ||
-      (dresponse.insertErrors && dresponse.insertErrors.length === 0));
+    (!dresponse.insertErrors || (dresponse.insertErrors && dresponse.insertErrors.length === 0));
 
   if (!isSuccess) {
     if (dresponse.error) {
       const { status: trStatus } = getStatusAndCategory(dresponse, status);
       throw new NetworkError(
-        dresponse.error.message ||
-          `Request failed for ${DESTINATION_NAME} with status: ${status}`,
+        dresponse.error.message || `Request failed for ${DESTINATION_NAME} with status: ${status}`,
         trStatus,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(trStatus)
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(trStatus),
         },
-        dresponse
+        dresponse,
       );
     } else if (dresponse.insertErrors && dresponse.insertErrors.length > 0) {
       const temp = trimBqStreamResponse(dresponse);
       throw new AbortedError(
-        "Problem during insert operation",
+        'Problem during insert operation',
         400,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(temp.status || 400)
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(temp.status || 400),
         },
         temp,
-        getDestAuthCategory(temp.code)
+        getDestAuthCategory(temp.code),
       );
     }
-    throw new UnhandledStatusCodeError(
-      "Unhandled error type while sending to destination"
-    );
+    throw new UnhandledStatusCodeError('Unhandled error type while sending to destination');
   }
 };
 
-const responseHandler = respTransformPayload => {
+const responseHandler = (respTransformPayload) => {
   const { response, status } = respTransformPayload;
   processResponse({
     dresponse: response,
-    status
+    status,
   });
   return {
     status,
     destinationResponse: response,
-    message: "Request Processed Successfully"
+    message: 'Request Processed Successfully',
   };
 };
 
-const networkHandler = function() {
+const networkHandler = function () {
   this.responseHandler = responseHandler;
   this.proxy = proxyRequest;
   this.processAxiosResponse = processAxiosResponse;

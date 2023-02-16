@@ -30,7 +30,7 @@
   { "destKey": "MailingGeocodeAccuracy", "sourceKeys": "geocodeAccuracy" },
   { "destKey": "MailingLatitude", "sourceKeys": ["address.latitude", "latitude"] },
   { "destKey": "MailingLongitude", "sourceKeys": ["address.longitude", "longitude"] },
-  { "destKey": "MailingPostalCode","sourceKeys": ["address.postalCode", "postalCode"] },
+  { "destKey": "MailingPostalCode", "sourceKeys": ["address.postalCode", "postalCode"] },
   { "destKey": "MailingState", "sourceKeys": ["address.state", "state"] },
   { "destKey": "MailingStateCode", "sourceKeys": ["address.stateCode", "stateCode"] },
   { "destKey": "MailingStreet", "sourceKeys": ["address.street", "street"] },

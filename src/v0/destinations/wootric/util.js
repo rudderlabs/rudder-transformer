@@ -1,22 +1,15 @@
-const qs = require("qs");
-const { httpGET, httpPOST } = require("../../../adapters/network");
+const qs = require('qs');
+const { httpGET, httpPOST } = require('../../../adapters/network');
 const {
   getDynamicErrorType,
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
-const {
-  BASE_ENDPOINT,
-  VERSION,
-  ACCESS_TOKEN_CACHE_TTL_SECONDS
-} = require("./config");
-const {
-  constructPayload,
-  isDefinedAndNotNullAndNotEmpty
-} = require("../../util");
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require("./config");
-const Cache = require("../../util/cache");
-const { InstrumentationError, NetworkError } = require("../../util/errorTypes");
-const tags = require("../../util/tags");
+  processAxiosResponse,
+} = require('../../../adapters/utils/networkUtils');
+const { BASE_ENDPOINT, VERSION, ACCESS_TOKEN_CACHE_TTL_SECONDS } = require('./config');
+const { constructPayload, isDefinedAndNotNullAndNotEmpty } = require('../../util');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
+const Cache = require('../../util/cache');
+const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL_SECONDS);
 
@@ -26,7 +19,7 @@ const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL_SECONDS);
  * @param {*} destination
  * @returns
  */
-const getAccessToken = async destination => {
+const getAccessToken = async (destination) => {
   const { username, password, accountToken } = destination.Config;
   const accessTokenKey = destination.ID;
 
@@ -38,36 +31,30 @@ const getAccessToken = async destination => {
   return ACCESS_TOKEN_CACHE.get(accessTokenKey, async () => {
     const request = {
       header: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Accept: "application/json"
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: 'application/json',
       },
       url: `${BASE_ENDPOINT}/oauth/token?account_token=${accountToken}`,
       data: qs.stringify({
-        grant_type: "password",
+        grant_type: 'password',
         username,
-        password
+        password,
       }),
-      method: "POST"
+      method: 'POST',
     };
-    const wootricAuthResponse = await httpPOST(
-      request.url,
-      request.data,
-      request.header
-    );
+    const wootricAuthResponse = await httpPOST(request.url, request.data, request.header);
     const processedAuthResponse = processAxiosResponse(wootricAuthResponse);
     // If the request fails, throwing error.
     if (processedAuthResponse.status !== 200) {
       throw new NetworkError(
         `Access token could not be generated due to ${JSON.stringify(
-          processedAuthResponse.response
+          processedAuthResponse.response,
         )}`,
         processedAuthResponse.status,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-            processedAuthResponse.status
-          )
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedAuthResponse.status),
         },
-        processedAuthResponse
+        processedAuthResponse,
       );
     }
     return processedAuthResponse.response?.access_token;
@@ -93,15 +80,15 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
     endpoint = `${BASE_ENDPOINT}/${VERSION}/end_users/${externalId}?lookup_by_external_id=true`;
   } else {
     throw new InstrumentationError(
-      "wootricEndUserId/userId are missing. At least one parameter must be provided"
+      'wootricEndUserId/userId are missing. At least one parameter must be provided',
     );
   }
 
   const requestOptions = {
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`
-    }
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${accessToken}`,
+    },
   };
 
   const userResponse = await httpGET(endpoint, requestOptions);
@@ -113,16 +100,12 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
 
   if (processedUserResponse.status !== 404) {
     throw new NetworkError(
-      `Unable to retrieve userId due to ${JSON.stringify(
-        processedUserResponse.response
-      )}`,
+      `Unable to retrieve userId due to ${JSON.stringify(processedUserResponse.response)}`,
       processedUserResponse.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(
-          processedUserResponse.status
-        )
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedUserResponse.status),
       },
-      processedUserResponse
+      processedUserResponse,
     );
   }
 
@@ -138,16 +121,13 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
 const validateCreateUserPayload = (userId, email, phone) => {
   // for creating a user userId is mandatory.
   if (!isDefinedAndNotNullAndNotEmpty(userId)) {
-    throw new InstrumentationError("userId is missing");
+    throw new InstrumentationError('userId is missing');
   }
 
-  if (
-    !isDefinedAndNotNullAndNotEmpty(email) &&
-    !isDefinedAndNotNullAndNotEmpty(phone)
-  ) {
+  if (!isDefinedAndNotNullAndNotEmpty(email) && !isDefinedAndNotNullAndNotEmpty(phone)) {
     throw new InstrumentationError(
-      "email/phone number are missing. At least one parameter must be provided",
-      400
+      'email/phone number are missing. At least one parameter must be provided',
+      400,
     );
   }
 };
@@ -157,18 +137,11 @@ const validateCreateUserPayload = (userId, email, phone) => {
  * @param {*} message
  * @returns
  */
-const createUserPayloadBuilder = message => {
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_USER.name]
-  );
+const createUserPayloadBuilder = (message) => {
+  const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_USER.name]);
   const { endpoint } = CONFIG_CATEGORIES.CREATE_USER;
-  const method = "POST";
-  validateCreateUserPayload(
-    payload.external_id,
-    payload.email,
-    payload.phone_number
-  );
+  const method = 'POST';
+  validateCreateUserPayload(payload.external_id, payload.email, payload.phone_number);
   return { payload, endpoint, method };
 };
 
@@ -187,7 +160,7 @@ const buildPayloadProperties = (payload, userDetails) => {
   ) {
     payloadProperties = {
       ...userDetails.properties,
-      ...payload.properties
+      ...payload.properties,
     };
   }
   return payloadProperties;
@@ -199,13 +172,10 @@ const buildPayloadProperties = (payload, userDetails) => {
  * @returns
  */
 const updateUserPayloadBuilder = (message, userDetails) => {
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_USER.name]
-  );
+  const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_USER.name]);
   payload.properties = buildPayloadProperties(payload, userDetails);
   const { endpoint } = CONFIG_CATEGORIES.UPDATE_USER;
-  const method = "PUT";
+  const method = 'PUT';
   delete payload.external_id;
   return { payload, endpoint, method };
 };
@@ -214,9 +184,9 @@ const updateUserPayloadBuilder = (message, userDetails) => {
  * Validates score
  * @param {*} score
  */
-const validateScore = score => {
+const validateScore = (score) => {
   if (!(score >= 0 && score <= 10)) {
-    throw new InstrumentationError("Invalid Score");
+    throw new InstrumentationError('Invalid Score');
   }
 };
 
@@ -226,13 +196,10 @@ const validateScore = score => {
  * @returns
  */
 const createResponsePayloadBuilder = (message, userDetails) => {
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_RESPONSE.name]
-  );
+  const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_RESPONSE.name]);
   payload.properties = buildPayloadProperties(payload, userDetails);
   const { endpoint } = CONFIG_CATEGORIES.CREATE_RESPONSE;
-  const method = "POST";
+  const method = 'POST';
   validateScore(payload.score);
   return { payload, endpoint, method };
 };
@@ -243,13 +210,10 @@ const createResponsePayloadBuilder = (message, userDetails) => {
  * @returns
  */
 const createDeclinePayloadBuilder = (message, userDetails) => {
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_DECLINE.name]
-  );
+  const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_DECLINE.name]);
   payload.properties = buildPayloadProperties(payload, userDetails);
   const { endpoint } = CONFIG_CATEGORIES.CREATE_DECLINE;
-  const method = "POST";
+  const method = 'POST';
   return { payload, endpoint, method };
 };
 
@@ -275,7 +239,7 @@ const flattenProperties = (payload, destKey) => {
  * Stringy the Identify payload last_surveyed and external_created_at properties.
  * @param {*} payload
  */
-const stringifyIdentifyPayloadTimeStamps = payload => {
+const stringifyIdentifyPayloadTimeStamps = (payload) => {
   const rawPayload = { ...payload };
   if (rawPayload.last_surveyed) {
     rawPayload.last_surveyed = `${rawPayload.last_surveyed}`;
@@ -290,7 +254,7 @@ const stringifyIdentifyPayloadTimeStamps = payload => {
  * Stringy the Track payload created_at property.
  * @param {*} payload
  */
-const stringifyTrackPayloadTimeStamps = payload => {
+const stringifyTrackPayloadTimeStamps = (payload) => {
   const rawPayload = { ...payload };
   if (rawPayload.created_at) {
     rawPayload.created_at = `${payload.created_at}`;
@@ -307,5 +271,5 @@ module.exports = {
   createUserPayloadBuilder,
   updateUserPayloadBuilder,
   createResponsePayloadBuilder,
-  createDeclinePayloadBuilder
+  createDeclinePayloadBuilder,
 };

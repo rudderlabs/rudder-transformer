@@ -1,40 +1,39 @@
 [
-    {
-      "sourceKeys": "context.page.path",
-      "destKey": "pagepath"
-    },
-    {
-      "sourceKeys": "context.page.initial_referring_domain",
-      "destKey": "page_initial_referring_domain"
-    },
-  
-    {
-      "sourceKeys": "context.page.initial_referrer",
-      "destKey": "page_intial_referrer"
-    },
-    {
-      "sourceKeys": "context.page.referring_domain",
-      "destKey": "page_referring_domain"
-    },
-    {
-      "sourceKeys": "GApageRef",
-      "destKey": "referrer",
-      "sourceFromGenericMap": true
-    },
-    {
-      "sourceKeys": "GApageSearch",
-      "destKey": "search",
-      "sourceFromGenericMap": true
-    },
-    {
-      "sourceKeys": "pageTitle",
-      "destKey": "title",
-      "sourceFromGenericMap": true
-    },
-    {
-      "sourceKeys": "pageUrl",
-      "destKey": "url",
-      "sourceFromGenericMap": true
-    }
-  ]
-  
+  {
+    "sourceKeys": "context.page.path",
+    "destKey": "pagepath"
+  },
+  {
+    "sourceKeys": "context.page.initial_referring_domain",
+    "destKey": "page_initial_referring_domain"
+  },
+
+  {
+    "sourceKeys": "context.page.initial_referrer",
+    "destKey": "page_intial_referrer"
+  },
+  {
+    "sourceKeys": "context.page.referring_domain",
+    "destKey": "page_referring_domain"
+  },
+  {
+    "sourceKeys": "GApageRef",
+    "destKey": "referrer",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "GApageSearch",
+    "destKey": "search",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "pageTitle",
+    "destKey": "title",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "pageUrl",
+    "destKey": "url",
+    "sourceFromGenericMap": true
+  }
+]

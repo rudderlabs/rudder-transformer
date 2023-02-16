@@ -1,10 +1,10 @@
 class BaseError extends Error {
   constructor(
-    message = "Unknown error occurred",
+    message = 'Unknown error occurred',
     statusCode = 400,
     sTags = {},
-    destResponse = "",
-    authErrorCategory = ""
+    destResponse = '',
+    authErrorCategory = '',
   ) {
     super(message);
     this.status = statusCode;

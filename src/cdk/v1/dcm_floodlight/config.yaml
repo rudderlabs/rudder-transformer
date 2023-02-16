@@ -6,21 +6,21 @@ message:
     transformation:
       mapperPath: ./mapping/DCMFloodlightConfig.yaml
       postMapper:
-        name: "postMapper"
+        name: 'postMapper'
       response:
-        endpoint: "{{ rudderContext.endpoint }}"
+        endpoint: '{{ rudderContext.endpoint }}'
         method: GET
         format: JSON
         headers:
-          User-Agent: "{{ rudderContext.userAgent }}"
+          User-Agent: '{{ rudderContext.userAgent }}'
   page:
     transformation:
       mapperPath: ./mapping/DCMFloodlightConfig.yaml
       postMapper:
-        name: "postMapper"
+        name: 'postMapper'
       response:
-        endpoint: "{{ rudderContext.endpoint }}"
+        endpoint: '{{ rudderContext.endpoint }}'
         method: GET
         format: JSON
         headers:
-          User-Agent: "{{ rudderContext.userAgent }}"
+          User-Agent: '{{ rudderContext.userAgent }}'

@@ -40,9 +40,7 @@
             "eventDelivery": true,
             "eventDeliveryTS": 1665475307930,
             "eventFilteringOption": "disable",
-            "userAttributesMapping": [
-              { "from": "address", "to": "userAddress" }
-            ],
+            "userAttributesMapping": [{ "from": "address", "to": "userAddress" }],
             "whitelistedEvents": [{ "eventName": "" }]
           }
         }
@@ -126,9 +124,7 @@
             "eventDelivery": true,
             "eventDeliveryTS": 1665475307930,
             "eventFilteringOption": "disable",
-            "userAttributesMapping": [
-              { "from": "address", "to": "userAddress" }
-            ],
+            "userAttributesMapping": [{ "from": "address", "to": "userAddress" }],
             "whitelistedEvents": [{ "eventName": "" }]
           }
         }
@@ -158,17 +154,13 @@
         },
         "destination": {
           "Config": {
-            "accountAttributesMapping": [
-              { "from": "email", "to": "businessEmail" }
-            ],
+            "accountAttributesMapping": [{ "from": "email", "to": "businessEmail" }],
             "apiKey": "dc70156e-05a3-4fa1-bb1c-da767fd036b4",
             "blacklistedEvents": [{ "eventName": "" }],
             "eventDelivery": true,
             "eventDeliveryTS": 1665476456112,
             "eventFilteringOption": "disable",
-            "userAttributesMapping": [
-              { "from": "address", "to": "userAddress" }
-            ],
+            "userAttributesMapping": [{ "from": "address", "to": "userAddress" }],
             "whitelistedEvents": [{ "eventName": "" }]
           }
         }
@@ -216,9 +208,7 @@
             "eventDelivery": true,
             "eventDeliveryTS": 1665475307930,
             "eventFilteringOption": "disable",
-            "userAttributesMapping": [
-              { "from": "address", "to": "userAddress" }
-            ],
+            "userAttributesMapping": [{ "from": "address", "to": "userAddress" }],
             "whitelistedEvents": [{ "eventName": "" }]
           }
         },
@@ -256,9 +246,7 @@
             "eventDelivery": true,
             "eventDeliveryTS": 1665475307930,
             "eventFilteringOption": "disable",
-            "userAttributesMapping": [
-              { "from": "address", "to": "userAddress" }
-            ],
+            "userAttributesMapping": [{ "from": "address", "to": "userAddress" }],
             "whitelistedEvents": [{ "eventName": "" }]
           }
         },
@@ -292,17 +280,13 @@
         },
         "destination": {
           "Config": {
-            "accountAttributesMapping": [
-              { "from": "email", "to": "businessEmail" }
-            ],
+            "accountAttributesMapping": [{ "from": "email", "to": "businessEmail" }],
             "apiKey": "dc70156e-05a3-4fa1-bb1c-da767fd036b4",
             "blacklistedEvents": [{ "eventName": "" }],
             "eventDelivery": true,
             "eventDeliveryTS": 1665476456112,
             "eventFilteringOption": "disable",
-            "userAttributesMapping": [
-              { "from": "address", "to": "userAddress" }
-            ],
+            "userAttributesMapping": [{ "from": "address", "to": "userAddress" }],
             "whitelistedEvents": [{ "eventName": "" }]
           }
         },

@@ -1,28 +1,18 @@
-const { BASE_URL, ConfigCategory, mappingConfig } = require("./config");
-const {
-  defaultRequestConfig,
-  constructPayload,
-  simpleProcessRouterDest
-} = require("../../util");
+const { BASE_URL, ConfigCategory, mappingConfig } = require('./config');
+const { defaultRequestConfig, constructPayload, simpleProcessRouterDest } = require('../../util');
 
-const { getParams } = require("./utils");
-const {
-  InstrumentationError,
-  ConfigurationError
-} = require("../../util/errorTypes");
+const { getParams } = require('./utils');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const responseBuilder = (message, { Config }) => {
   const { advertiserId, eventsToTrack } = Config;
 
-  const payload = constructPayload(
-    message,
-    mappingConfig[ConfigCategory.TRACK.name]
-  );
+  const payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
 
   let params = {};
   if (Array.isArray(eventsToTrack)) {
     const eventsList = [];
-    eventsToTrack.forEach(object => {
+    eventsToTrack.forEach((object) => {
       eventsList.push(object.eventName);
     });
 
@@ -32,7 +22,7 @@ const responseBuilder = (message, { Config }) => {
     } else {
       throw new InstrumentationError(
         "Event is not present in 'Events to Track' list. Aborting message.",
-        400
+        400,
       );
     }
   }
@@ -45,32 +35,24 @@ const responseBuilder = (message, { Config }) => {
 
 const processEvent = (message, destination) => {
   if (!destination.Config.advertiserId) {
-    throw new ConfigurationError(
-      "Advertiser Id is not present. Aborting message.",
-      400
-    );
+    throw new ConfigurationError('Advertiser Id is not present. Aborting message.', 400);
   }
   if (!message.type) {
-    throw new InstrumentationError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError('Message Type is not present. Aborting message.', 400);
   }
   const messageType = message.type.toLowerCase();
 
   let response;
-  if (messageType === "track") {
+  if (messageType === 'track') {
     response = responseBuilder(message, destination);
   } else {
-    throw new InstrumentationError("Message type not supported", 400);
+    throw new InstrumentationError('Message type not supported', 400);
   }
 
   return response;
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

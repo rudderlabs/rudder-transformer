@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-const { EventType } = require("../../../constants");
+const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
   simpleProcessRouterDest,
@@ -10,13 +10,9 @@ const {
   getDestinationExternalID,
   defaultPutRequestConfig,
   getIntegrationsObj,
-  ErrorMessage
-} = require("../../util");
-const {
-  CONFIG_CATEGORIES,
-  MAPPING_CONFIG,
-  getUnlinkContactEndpoint
-} = require("./config");
+  ErrorMessage,
+} = require('../../util');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG, getUnlinkContactEndpoint } = require('./config');
 const {
   prepareEmailFromPhone,
   checkIfEmailOrPhoneExists,
@@ -26,19 +22,16 @@ const {
   removeEmptyKey,
   transformUserTraits,
   prepareTrackEventData,
-  getListIds
-} = require("./util");
-const {
-  TransformationError,
-  InstrumentationError
-} = require("../../util/errorTypes");
+  getListIds,
+} = require('./util');
+const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilder = (
   payload,
   endpoint,
   destination,
   trackerApi = false,
-  method = defaultPostRequestConfig.requestMethod
+  method = defaultPostRequestConfig.requestMethod,
 ) => {
   if (payload) {
     const response = defaultRequestConfig();
@@ -57,9 +50,9 @@ const responseBuilder = (
 const unlinkContact = (message, destination, unlinkListIds) => {
   const returnValue = [];
   let payload;
-  const email = getFieldValueFromMessage(message, "emailOnly");
-  let phone = getFieldValueFromMessage(message, "phone");
-  const contactId = getDestinationExternalID(message, "sendinblueContactId");
+  const email = getFieldValueFromMessage(message, 'emailOnly');
+  let phone = getFieldValueFromMessage(message, 'phone');
+  const contactId = getDestinationExternalID(message, 'sendinblueContactId');
 
   if (phone) {
     phone = prepareEmailFromPhone(phone);
@@ -70,11 +63,11 @@ const unlinkContact = (message, destination, unlinkListIds) => {
     payload = { ids: [contactId] };
   } else {
     throw new InstrumentationError(
-      "At least one of `email` or `phone` or `contactId` is required to unlink the contact from a given list"
+      'At least one of `email` or `phone` or `contactId` is required to unlink the contact from a given list',
     );
   }
 
-  unlinkListIds.forEach(listId => {
+  unlinkListIds.forEach((listId) => {
     const endpoint = getUnlinkContactEndpoint(listId);
     const response = responseBuilder(payload, endpoint, destination);
     returnValue.push(response);
@@ -84,11 +77,8 @@ const unlinkContact = (message, destination, unlinkListIds) => {
 
 // ref:- https://developers.sendinblue.com/reference/createcontact
 const createOrUpdateContactResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.CREATE_OR_UPDATE_CONTACT;
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_OR_UPDATE_CONTACT.name]
-  );
+  const { endpoint, name } = CONFIG_CATEGORIES.CREATE_OR_UPDATE_CONTACT;
+  const payload = constructPayload(message, MAPPING_CONFIG[name]);
 
   checkIfEmailOrPhoneExists(payload.email, payload.attributes?.SMS);
   validateEmailAndPhone(payload.email, payload.attributes?.SMS);
@@ -97,19 +87,19 @@ const createOrUpdateContactResponseBuilder = (message, destination) => {
   // Can update a contact in the same request
   payload.updateEnabled = true;
 
-  const listIds = getListIds(message, "sendinblueIncludeListIds");
+  const listIds = getListIds(message, 'sendinblueIncludeListIds');
 
   if (listIds.length > 0) {
     payload.listIds = listIds;
   }
 
-  const integrationsObj = getIntegrationsObj(message, "sendinblue");
+  const integrationsObj = getIntegrationsObj(message, 'sendinblue');
   payload.emailBlacklisted = integrationsObj?.emailBlacklisted;
   payload.smsBlacklisted = integrationsObj?.smsBlacklisted;
 
   const userTraits = transformUserTraits(
     payload.attributes,
-    destination.Config.contactAttributeMapping
+    destination.Config.contactAttributeMapping,
   );
 
   payload.attributes = userTraits;
@@ -119,31 +109,25 @@ const createOrUpdateContactResponseBuilder = (message, destination) => {
 
 // ref:- https://developers.sendinblue.com/reference/createdoicontact
 const createDOIContactResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.CREATE_DOI_CONTACT;
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_DOI_CONTACT.name]
-  );
-  const { templateId, redirectionUrl } = destination.Config;
-  let doiTemplateId =
-    getDestinationExternalID(message, "sendinblueDOITemplateId") || templateId;
+  const { endpoint, name } = CONFIG_CATEGORIES.CREATE_DOI_CONTACT;
+  const payload = constructPayload(message, MAPPING_CONFIG[name]);
+  const { templateId, redirectionUrl, contactAttributeMapping } = destination.Config;
+  let doiTemplateId = getDestinationExternalID(message, 'sendinblueDOITemplateId') || templateId;
 
   if (!doiTemplateId) {
-    throw new InstrumentationError(
-      "templateId is required to create a contact using DOI"
-    );
+    throw new InstrumentationError('templateId is required to create a contact using DOI');
   }
 
   doiTemplateId = parseInt(doiTemplateId, 10);
 
   if (Number.isNaN(doiTemplateId)) {
-    throw new InstrumentationError("templateId must be an integer");
+    throw new InstrumentationError('templateId must be an integer');
   }
 
-  const listIds = getListIds(message, "sendinblueIncludeListIds");
+  const listIds = getListIds(message, 'sendinblueIncludeListIds');
   if (listIds.length === 0) {
     throw new InstrumentationError(
-      "sendinblueIncludeListIds is required to create a contact using DOI"
+      'sendinblueIncludeListIds is required to create a contact using DOI',
     );
   }
 
@@ -151,10 +135,7 @@ const createDOIContactResponseBuilder = (message, destination) => {
   payload.redirectionUrl = redirectionUrl;
   payload.includeListIds = listIds;
 
-  const userTraits = transformUserTraits(
-    payload.attributes,
-    destination.Config.contactAttributeMapping
-  );
+  const userTraits = transformUserTraits(payload.attributes, contactAttributeMapping);
 
   payload.attributes = userTraits;
 
@@ -165,16 +146,14 @@ const createDOIContactResponseBuilder = (message, destination) => {
 // identifier -> email or phone or contact id
 const updateDOIContactResponseBuilder = (message, destination, identifier) => {
   let { endpoint } = CONFIG_CATEGORIES.UPDATE_DOI_CONTACT;
-  endpoint = endpoint.replace("<identifier>", identifier);
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.UPDATE_DOI_CONTACT.name]
-  );
+  const { name } = CONFIG_CATEGORIES.UPDATE_DOI_CONTACT;
+  endpoint = endpoint.replace('<identifier>', identifier);
+  const payload = constructPayload(message, MAPPING_CONFIG[name]);
 
   validateEmailAndPhone(payload.attributes?.EMAIL);
 
-  const listIds = getListIds(message, "sendinblueIncludeListIds");
-  const unlinkListIds = getListIds(message, "sendinblueUnlinkListIds");
+  const listIds = getListIds(message, 'sendinblueIncludeListIds');
+  const unlinkListIds = getListIds(message, 'sendinblueUnlinkListIds');
 
   if (listIds.length > 0) {
     payload.listIds = listIds;
@@ -183,7 +162,7 @@ const updateDOIContactResponseBuilder = (message, destination, identifier) => {
     payload.unlinkListIds = unlinkListIds;
   }
 
-  const integrationsObj = getIntegrationsObj(message, "sendinblue");
+  const integrationsObj = getIntegrationsObj(message, 'sendinblue');
   payload.emailBlacklisted = integrationsObj?.emailBlacklisted;
   payload.smsBlacklisted = integrationsObj?.smsBlacklisted;
 
@@ -192,16 +171,13 @@ const updateDOIContactResponseBuilder = (message, destination, identifier) => {
     endpoint,
     destination,
     false,
-    defaultPutRequestConfig.requestMethod
+    defaultPutRequestConfig.requestMethod,
   );
 };
 
-const createOrUpdateDOIContactResponseBuilder = async (
-  message,
-  destination
-) => {
-  let email = getFieldValueFromMessage(message, "emailOnly");
-  const phone = getFieldValueFromMessage(message, "phone");
+const createOrUpdateDOIContactResponseBuilder = async (message, destination) => {
+  let email = getFieldValueFromMessage(message, 'emailOnly');
+  const phone = getFieldValueFromMessage(message, 'phone');
 
   validateEmailAndPhone(email, phone);
 
@@ -209,12 +185,12 @@ const createOrUpdateDOIContactResponseBuilder = async (
     email = encodeURIComponent(email);
   }
 
-  const contactId = getDestinationExternalID(message, "sendinblueContactId");
+  const contactId = getDestinationExternalID(message, 'sendinblueContactId');
   const identifier = email || contactId;
 
   if (!identifier) {
     throw new InstrumentationError(
-      "At least one of `email` or `contactId` is required to update the contact using DOI"
+      'At least one of `email` or `contactId` is required to update the contact using DOI',
     );
   }
 
@@ -231,7 +207,7 @@ const createOrUpdateDOIContactResponseBuilder = async (
 const identifyResponseBuilder = async (message, destination) => {
   const { doi } = destination.Config;
   if (!doi) {
-    const unlinkListIds = getListIds(message, "sendinblueUnlinkListIds");
+    const unlinkListIds = getListIds(message, 'sendinblueUnlinkListIds');
     if (unlinkListIds.length > 0) {
       return unlinkContact(message, destination, unlinkListIds);
     }
@@ -243,11 +219,8 @@ const identifyResponseBuilder = async (message, destination) => {
 
 // ref:- https://tracker-doc.sendinblue.com/reference/trackevent-3
 const trackEventResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.TRACK_EVENTS;
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_EVENTS.name]
-  );
+  const { endpoint, name } = CONFIG_CATEGORIES.TRACK_EVENTS;
+  const payload = constructPayload(message, MAPPING_CONFIG[name]);
 
   checkIfEmailOrPhoneExists(payload.email, payload.properties?.SMS);
   validateEmailAndPhone(payload.email, payload.properties?.SMS);
@@ -268,7 +241,7 @@ const trackEventResponseBuilder = (message, destination) => {
 
   const userTraits = transformUserTraits(
     payload.properties,
-    destination.Config.contactAttributeMapping
+    destination.Config.contactAttributeMapping,
   );
 
   payload.properties = userTraits;
@@ -278,13 +251,10 @@ const trackEventResponseBuilder = (message, destination) => {
 
 // ref:- https://tracker-doc.sendinblue.com/reference/tracklink-3
 const trackLinkResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.TRACK_LINK;
-  const payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_LINK.name]
-  );
+  const { endpoint, name } = CONFIG_CATEGORIES.TRACK_LINK;
+  const payload = constructPayload(message, MAPPING_CONFIG[name]);
 
-  const phone = getFieldValueFromMessage(message, "phone");
+  const phone = getFieldValueFromMessage(message, 'phone');
   checkIfEmailOrPhoneExists(payload.email, phone);
   validateEmailAndPhone(payload.email, phone);
 
@@ -297,11 +267,9 @@ const trackLinkResponseBuilder = (message, destination) => {
 const trackResponseBuilder = (message, destination) => {
   const { event } = message;
   if (!event) {
-    throw new InstrumentationError("Event name is required");
+    throw new InstrumentationError('Event name is required');
   }
-  if (
-    event.toLowerCase() === CONFIG_CATEGORIES.TRACK_LINK.eventName.toLowerCase()
-  ) {
+  if (event.toLowerCase() === CONFIG_CATEGORIES.TRACK_LINK.eventName.toLowerCase()) {
     return trackLinkResponseBuilder(message, destination);
   }
 
@@ -310,13 +278,10 @@ const trackResponseBuilder = (message, destination) => {
 
 // ref:- https://tracker-doc.sendinblue.com/reference/trackpage-3
 const pageResponseBuilder = (message, destination) => {
-  const { endpoint } = CONFIG_CATEGORIES.PAGE;
-  let payload = constructPayload(
-    message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.PAGE.name]
-  );
+  const { endpoint, name } = CONFIG_CATEGORIES.PAGE;
+  let payload = constructPayload(message, MAPPING_CONFIG[name]);
 
-  const phone = getFieldValueFromMessage(message, "phone");
+  const phone = getFieldValueFromMessage(message, 'phone');
 
   checkIfEmailOrPhoneExists(payload.email, phone);
 
@@ -324,21 +289,14 @@ const pageResponseBuilder = (message, destination) => {
     payload.email = prepareEmailFromPhone(phone);
   }
 
-  const {
-    ma_title,
-    ma_path,
-    ma_referrer,
-    sib_name,
-    properties,
-    ...rest
-  } = payload;
+  const { ma_title, ma_path, ma_referrer, sib_name, properties, ...rest } = payload;
 
   const propertiesObject = {
     ma_title,
     ma_path,
     ma_referrer,
     sib_name,
-    ...properties
+    ...properties,
   };
 
   payload = { ...rest, properties: propertiesObject };
@@ -348,7 +306,7 @@ const pageResponseBuilder = (message, destination) => {
 
 const processEvent = async (message, destination) => {
   if (!message.type) {
-    throw new InstrumentationError("Event type is required");
+    throw new InstrumentationError('Event type is required');
   }
 
   const messageType = message.type.toLowerCase();
@@ -364,18 +322,14 @@ const processEvent = async (message, destination) => {
       response = pageResponseBuilder(message, destination);
       break;
     default:
-      throw new InstrumentationError(
-        `Event type "${messageType}" is not supported`
-      );
+      throw new InstrumentationError(`Event type "${messageType}" is not supported`);
   }
   return response;
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
-const processRouterDest = async inputs => {
+const processRouterDest = async (inputs) => {
   const respList = await simpleProcessRouterDest(inputs, process, process);
   return respList;
 };

@@ -47,34 +47,14 @@
         "DisplayName": "Adjust",
         "Config": {
           "destConfig": {
-            "android": [
-              "useNativeSDK"
-            ],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
-            "ios": [
-              "useNativeSDK"
-            ],
-            "reactnative": [
-              "useNativeSDK"
-            ]
+            "android": ["useNativeSDK"],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
+            "ios": ["useNativeSDK"],
+            "reactnative": ["useNativeSDK"]
           },
           "excludeKeys": [],
-          "includeKeys": [
-            "appToken",
-            "customMappings",
-            "delay"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "reactnative",
-            "cloud"
-          ]
+          "includeKeys": ["appToken", "customMappings", "delay"],
+          "supportedSourceTypes": ["android", "ios", "reactnative", "cloud"]
         }
       },
       "Config": {
@@ -144,34 +124,14 @@
         "DisplayName": "Adjust",
         "Config": {
           "destConfig": {
-            "android": [
-              "useNativeSDK"
-            ],
-            "defaultConfig": [
-              "appToken",
-              "customMappings",
-              "delay",
-              "environment"
-            ],
-            "ios": [
-              "useNativeSDK"
-            ],
-            "reactnative": [
-              "useNativeSDK"
-            ]
+            "android": ["useNativeSDK"],
+            "defaultConfig": ["appToken", "customMappings", "delay", "environment"],
+            "ios": ["useNativeSDK"],
+            "reactnative": ["useNativeSDK"]
           },
           "excludeKeys": [],
-          "includeKeys": [
-            "appToken",
-            "customMappings",
-            "delay"
-          ],
-          "supportedSourceTypes": [
-            "android",
-            "ios",
-            "reactnative",
-            "cloud"
-          ]
+          "includeKeys": ["appToken", "customMappings", "delay"],
+          "supportedSourceTypes": ["android", "ios", "reactnative", "cloud"]
         }
       },
       "Config": {

@@ -343,7 +343,10 @@ const batchEvents = (successRespList) => {
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
     const eventChunks = _.chunk(batchedData, MAX_BATCH_SIZE);
 
-    // Creating a requests of batch size 1000
+    /** 
+     * Ref : https://www.customer.io/docs/api/track/#operation/batch
+     * Creating a requests of batch size 1000
+     */
     eventChunks.forEach((chunk) => {
       const request = defaultRequestConfig();
       request.endpoint = endpoint;

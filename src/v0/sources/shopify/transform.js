@@ -7,6 +7,7 @@ const {
   getProductsListFromLineItems,
   extractEmailFromPayload,
   setAnonymousId,
+  postToDB
 } = require('./util');
 const { removeUndefinedAndNullValues } = require('../../util');
 const Message = require('../message');
@@ -177,7 +178,8 @@ const isIdentifierEvent = (event) => {
   }
   return false;
 };
-const processIdentifierEvent = () => {
+const processIdentifierEvent = (event) => {
+  postToDB(event.cart_token, event.anonymousId);
   const result = {
     outputToSource: {
       body: Buffer.from('OK').toString('base64'),
@@ -188,6 +190,6 @@ const processIdentifierEvent = () => {
   return result;
 };
 const process = (event) =>
-  isIdentifierEvent(event) ? processIdentifierEvent() : processEvent(event);
+  isIdentifierEvent(event) ? processIdentifierEvent(event) : processEvent(event);
 
 exports.process = process;

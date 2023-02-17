@@ -102,7 +102,9 @@ const SUPPORTED_TRACK_EVENTS = [
   'orders_paid',
   'orders_partially_fullfilled',
 ];
-
+const ORDER_CACHE_TTL = process.env.SHOPIFY_ORDER_CACHE_TTL
+  ? parseInt(process.env.SHOPIFY_ORDER_CACHE_TTL, 10)
+  : 60 * 60;
 module.exports = {
   ECOM_TOPICS,
   IDENTIFY_TOPICS,
@@ -115,4 +117,5 @@ module.exports = {
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
+  ORDER_CACHE_TTL
 };

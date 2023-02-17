@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-const sha256 = require('sha256');
 const { constructPayload, extractCustomFields, flattenJson, generateUUID } = require('../../util');
 const logger = require('../../../logger');
 const {
@@ -9,8 +8,22 @@ const {
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   RUDDER_ECOM_MAP,
   SHOPIFY_TRACK_MAP,
+  ORDER_CACHE_TTL,
 } = require('./config');
+const Cache = require('../../util/cache');
+
+const orderIdCache = new Cache(ORDER_CACHE_TTL); // 1 hr
+
 const { TransformationError } = require('../../util/errorTypes');
+
+/** update Database with key Val pair */
+const postToDB = (key, val) => {
+  console.log(key, val);
+};
+const getFromDB = (key) => {
+  console.log(key);
+  return 1;
+};
 
 /**
  * query_parameters : { topic: ['<shopify_topic>'], ...}
@@ -18,7 +31,7 @@ const { TransformationError } = require('../../util/errorTypes');
  * @param {*} event
  * @returns
  */
-const getShopifyTopic = (event) => {
+function getShopifyTopic(event) {
   const { query_parameters: qParams } = event;
   logger.info(`[Shopify] Input event: query_params: ${JSON.stringify(qParams)}`);
   if (!qParams) {
@@ -33,7 +46,7 @@ const getShopifyTopic = (event) => {
     throw new TransformationError('Topic not found');
   }
   return topic[0];
-};
+}
 
 const getVariantString = (lineItem) => {
   const { variant_id, variant_price, variant_title } = lineItem;
@@ -79,17 +92,11 @@ const extractEmailFromPayload = (event) => {
 
 // Hash the id and use it as anonymousId (limiting 256 -> 36 chars)
 const setAnonymousId = (message) => {
+  let sessionKey;
   switch (message.event) {
-    case SHOPIFY_TRACK_MAP.carts_create:
-    case SHOPIFY_TRACK_MAP.carts_update:
-      message.setProperty(
-        'anonymousId',
-        message.properties?.id
-          ? sha256(message.properties.id).toString().substring(0, 36)
-          : generateUUID(),
-      );
-      break;
-    case SHOPIFY_TRACK_MAP.orders_delete:
+    /**
+     * Following events will contain cart_token and we will map it in sessionKey
+     */
     case SHOPIFY_TRACK_MAP.orders_edited:
     case SHOPIFY_TRACK_MAP.orders_cancelled:
     case SHOPIFY_TRACK_MAP.orders_fulfilled:
@@ -99,17 +106,50 @@ const setAnonymousId = (message) => {
     case RUDDER_ECOM_MAP.checkouts_update:
     case RUDDER_ECOM_MAP.orders_create:
     case RUDDER_ECOM_MAP.orders_updated:
-      message.setProperty(
-        'anonymousId',
-        message.properties?.cart_token
-          ? sha256(message.properties.cart_token).toString().substring(0, 36)
-          : generateUUID(),
-      );
+      // cache the orderID to cart_token to help the fullfillments events to get anonymousID
+      orderIdCache.get(message?.properties?.id, async () => message?.properties?.cart_token);
+      if (message?.properties?.cart_token === null) {
+        /**
+         * This case will rise when we will be using Shopify Admin Dashboard to create, update, delete orders etc.
+         * Since it is done by admin we will set "userId" to be "admin"
+         */
+        message.setProperty('userId', 'admin');
+        return;
+      }
+      sessionKey = message?.properties?.cart_token;
+      break;
+    /*
+     * we dont have cart_token for carts_create and update events but have id and token field
+     * which later on for orders become cart_token so we are fethcing sesionKey from id
+     */
+    case SHOPIFY_TRACK_MAP.carts_create:
+    case SHOPIFY_TRACK_MAP.carts_update:
+      sessionKey = message?.properties?.id;
+      break;
+    case SHOPIFY_TRACK_MAP.orders_delete:
+      /* 
+       * "delete" event dont have "cart_token" but an "id" which is "order_id" in other order events using which
+       * we will be fetching the "cart_token" through cache
+       */
+      sessionKey = orderIdCache.get(message?.properties?.id, async () => null);
+      break;
+
+    case SHOPIFY_TRACK_MAP.fulfillments_create:
+    case SHOPIFY_TRACK_MAP.fulfillments_update:
+      /** "fulfillments" event dont have "cart_token" but an "order_id" same as in order events using which
+       * we will be fetching the "cart_token" through cache
+       */
+      sessionKey = orderIdCache.get(message.properties?.order_id, async () => null);
       break;
     default:
       message.setProperty('anonymousId', generateUUID());
       break;
   }
+  if (!sessionKey) {
+    throw new Error('Impossible');
+  }
+  const anonymousIDfromDB =  getFromDB(sessionKey)
+  message.setProperty('anonymousId', anonymousIDfromDB || "Not Found" );
 };
 
 module.exports = {
@@ -118,4 +158,6 @@ module.exports = {
   createPropertiesForEcomEvent,
   extractEmailFromPayload,
   setAnonymousId,
+  postToDB,
+  getFromDB,
 };

@@ -811,8 +811,8 @@ if (transformerTestModeEnabled) {
   router.post('/transformation/sethandle', async (ctx) => {
     try {
       const { trRevCode, libraryVersionIDs = [] } = ctx.request.body;
-      const { code, language, testName, testWithPublish = false } = trRevCode || {};
-      if (!code || !language || !testName) {
+      const { code, versionId, language, testName, testWithPublish = false } = trRevCode || {};
+      if (!code || !language || !testName || (language === 'pythonfaas' && !versionId)) {
         throw new Error('Invalid Request. Missing parameters in transformation code block');
       }
 

@@ -9,7 +9,6 @@ const {
   getDestinationExternalID,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
-  getFieldValueFromMessage,
   getIntegrationsObj,
   isHybridModeEnabled,
 } = require('../../util');
@@ -24,6 +23,7 @@ const {
   trackCommonConfig,
   mappingConfig,
   ConfigCategory,
+  USER_IDENTIFIERS_EVENTS,
 } = require('./config');
 const {
   isReservedEventName,
@@ -129,114 +129,49 @@ const responseBuilder = (message, { Config }) => {
     payload.name = evConfigEvent;
     payload.params = constructPayload(message, mappingConfig[name]);
 
-    if (item) {
-      // item
-      payload.params.items = getItem(message, item === 'YES');
-    } else if (itemList) {
-      // itemList
-      payload.params.items = getItemList(message, itemList === 'YES');
-    }
-
-    // for select_item and view_item event we take custom properties from properties
-    // excluding items/product properties
-    if (payload.name === 'select_item' || payload.name === 'view_item') {
-      // exclude event properties
-      let ITEM_EXCLUSION_LIST = getGA4ExclusionList(mappingConfig[name]);
-      // exclude items/product properties
-      ITEM_EXCLUSION_LIST = ITEM_EXCLUSION_LIST.concat(
-        getGA4ExclusionList(mappingConfig[ConfigCategory.ITEM.name]),
-      );
-
-      payload.params = getGA4CustomParameters(
-        message,
-        ['properties'],
-        ITEM_EXCLUSION_LIST,
-        payload,
-      );
-    } else {
-      payload.params = getGA4CustomParameters(
-        message,
-        ['properties'],
-        getGA4ExclusionList(mappingConfig[name]),
-        payload,
-      );
-    }
-
-    // take optional params parameters for track()
-    payload.params = {
-      ...payload.params,
-      ...constructPayload(message, mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]),
-    };
-  } else if (message.type === 'identify') {
-    payload.name = event;
-    const traits = getFieldValueFromMessage(message, 'traits');
-
-    // exclusion list for login/signup and generate_lead
-    // identify has newOrExistingUserTrait, loginSignupMethod
-    // generateLeadValueTrait, generateLeadCurrencyTrait property
-    const GA4_IDENTIFY_EXCLUSION = [
-      `${Config.newOrExistingUserTrait}`,
-      `${Config.loginSignupMethod}`,
-      `${Config.generateLeadValueTrait}`,
-      `${Config.generateLeadCurrencyTrait}`,
-    ];
-
-    switch (event) {
-      case 'login':
-      case 'sign_up': {
-        // taking method property from traits
-        // depending on loginSignupMethod key defined in Config
-        const method = traits[`${Config.loginSignupMethod}`];
-
-        if (method) {
-          // params for login and sign_up event
-          payload.params = { method }; // method: "Google"
-        }
-        break;
+    if (!USER_IDENTIFIERS_EVENTS.includes(payload.name)) {
+      if (item) {
+        // item
+        payload.params.items = getItem(message, item === 'YES');
+      } else if (itemList) {
+        // itemList
+        payload.params.items = getItemList(message, itemList === 'YES');
       }
-      case 'generate_lead': {
-        let parameter = {};
-        // taking value parameter
-        // depending on generateLeadValueTrait key defined in Config
-        parameter.value = traits[`${Config.generateLeadValueTrait}`];
-        // taking currency paramter
-        // depending on generateLeadCurrencyTrait key defined in Config
-        parameter.currency = traits[`${Config.generateLeadCurrencyTrait}`];
-        parameter = removeUndefinedAndNullValues(parameter);
 
-        if (!isDefinedAndNotNull(parameter.value)) {
-          throw new InstrumentationError(
-            `[GA4] Identify:: '${Config.generateLeadValueTrait}' is a required field in traits for 'generate_lead' event`,
-          );
-        }
+      // for select_item and view_item event we take custom properties from properties
+      // excluding items/product properties
+      if (payload.name === 'select_item' || payload.name === 'view_item') {
+        // exclude event properties
+        let ITEM_EXCLUSION_LIST = getGA4ExclusionList(mappingConfig[name]);
+        // exclude items/product properties
+        ITEM_EXCLUSION_LIST = ITEM_EXCLUSION_LIST.concat(
+          getGA4ExclusionList(mappingConfig[ConfigCategory.ITEM.name]),
+        );
 
-        if (!isDefinedAndNotNull(parameter.currency)) {
-          parameter.currency = 'USD';
-        }
-
-        parameter.value = parseFloat(parameter.value);
-        payload.params = parameter;
-        break;
+        payload.params = getGA4CustomParameters(
+          message,
+          ['properties'],
+          ITEM_EXCLUSION_LIST,
+          payload,
+        );
+      } else {
+        payload.params = getGA4CustomParameters(
+          message,
+          ['properties'],
+          getGA4ExclusionList(mappingConfig[name]),
+          payload,
+        );
       }
-      default:
-        break;
+
+      // take optional params parameters for track()
+      payload.params = {
+        ...payload.params,
+        ...constructPayload(
+          message,
+          mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name],
+        ),
+      };
     }
-
-    payload.params = getGA4CustomParameters(
-      message,
-      ['traits', 'context.traits'],
-      GA4_IDENTIFY_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
-      payload,
-    );
-
-    // take optional params parameters for identify()
-    payload.params = {
-      ...payload.params,
-      ...constructPayload(
-        message,
-        mappingConfig[ConfigCategory.IdentifyGroupCommonParamsConfig.name],
-      ),
-    };
   } else if (message.type === 'page') {
     // page event
     payload.name = event;
@@ -394,39 +329,6 @@ const process = (event) => {
   const messageType = message.type.toLowerCase();
   let response;
   switch (messageType) {
-    case EventType.IDENTIFY:
-      if (Config.enableServerSideIdentify) {
-        response = [];
-        // 1. send login/signup event based on config
-        // Convert identify event to Login or Signup event
-        const traits = getFieldValueFromMessage(message, 'traits');
-        // newOrExistingUserTrait can be 'firstLogin' keyword - true/false
-        const firstLogin = traits[`${Config.newOrExistingUserTrait}`];
-        if (!isDefinedAndNotNull(firstLogin)) {
-          throw new InstrumentationError(
-            `Identify:: traits should contain '${Config.newOrExistingUserTrait}' parameter with a boolean value to differentiate between the new or existing user`,
-          );
-        }
-
-        if (Config.sendLoginSignup) {
-          if (firstLogin) {
-            message.event = 'sign_up';
-          } else {
-            message.event = 'login';
-          }
-
-          response.push(responseBuilder(message, destination));
-        }
-
-        // 2. send generate_lead based on config
-        if (Config.generateLead && firstLogin === true) {
-          message.event = 'generate_lead';
-          response.push(responseBuilder(message, destination));
-        }
-      } else {
-        throw new ConfigurationError('Identify:: Server side identify is not enabled');
-      }
-      break;
     case EventType.TRACK:
       response = responseBuilder(message, destination);
       break;

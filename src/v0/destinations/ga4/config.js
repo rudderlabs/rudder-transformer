@@ -30,6 +30,20 @@ const ConfigCategory = {
   },
   TrackPageCommonParamsConfig: { name: 'GA4TrackPageCommonParamsConfig' },
 
+  /* User Identifier Events */
+  LOGIN: {
+    name: 'GA4LoginSignupConfig',
+    event: 'login',
+  },
+  SIGN_UP: {
+    name: 'GA4LoginSignupConfig',
+    event: 'sign_up',
+  },
+  GENERATE_LEAD: {
+    name: 'GA4GenerateLeadConfig',
+    event: 'generate_lead',
+  },
+
   /* E-Commerce Events */
   // Ref - https://www.rudderstack.com/docs/rudderstack-api/api-specification/rudderstack-ecommerce-events-specification/
 
@@ -145,6 +159,7 @@ const ConfigCategory = {
   },
 };
 
+const USER_IDENTIFIERS_EVENTS = ['login', 'sign_up', 'generate_lead'];
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 module.exports = {
@@ -152,5 +167,6 @@ module.exports = {
   DEBUG_ENDPOINT,
   ConfigCategory,
   mappingConfig,
+  USER_IDENTIFIERS_EVENTS,
   trackCommonConfig: mappingConfig[ConfigCategory.COMMON.name],
 };

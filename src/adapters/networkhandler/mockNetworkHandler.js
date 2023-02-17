@@ -21,14 +21,16 @@ function mockNetworkHandler (type, originalNetworkHandler) {
   const destMockResponses = mockResponses[type];
 
   return function networkHandler() {
-    // eslint-disable-next-line no-unused-vars
-    this.proxy = async (_request) => {
-      // TODO: Logic to send some random responses
+    this.proxy = async (request) => {
+      if(!destMockResponses?.length || destMockResponses?.length === 0) {
+        // No destMockResponses available or if the destMockResponses is empty
+        return originalNetworkHandler?.proxy(request);
+      }
       const randomIndex = Math.floor(Math.random() * (destMockResponses.length - 1));
       if (destMockResponses?.[randomIndex]?.sleep) {
         await sleep(destMockResponses?.[randomIndex]?.sleep?.timeoutInMs || 0)
       }
-      return destMockResponses[randomIndex];
+      return destMockResponses?.[randomIndex];
     }
     // These are taken from the original network handler for the destination
     this.prepareProxy = originalNetworkHandler?.prepareProxyRequest;

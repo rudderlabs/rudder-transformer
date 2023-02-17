@@ -60,13 +60,11 @@ const ConfigCategory = {
   PRODUCT_CLICKED: {
     name: 'GA4ProductClickedConfig',
     event: 'select_item',
-    itemList: 'NO',
     item: 'YES',
   },
   PRODUCT_VIEWED: {
     name: 'GA4ProductViewedConfig',
     event: 'view_item',
-    itemList: 'NO',
     item: 'YES',
   },
   PRODUCT_ADDED: {

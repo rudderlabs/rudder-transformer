@@ -1,0 +1,56 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": "emailOnly",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "event",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "context.traits"
+  },
+  {
+    "destKey": "properties.FIRSTNAME",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.LASTNAME",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "properties.SMS",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "",
+    "sourceKeys": "traits",
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "excludes": [
+        "firstName",
+        "firstname",
+        "first_name",
+        "lastName",
+        "lastname",
+        "last_name",
+        "phone",
+        "email"
+      ]
+    }
+  },
+  {
+    "destKey": "messageId",
+    "sourceKeys": "messageId"
+  },
+  {
+    "destKey": "data",
+    "sourceKeys": "properties"
+  }
+]

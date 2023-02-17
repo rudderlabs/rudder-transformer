@@ -1,0 +1,18 @@
+[
+  {
+    "destKey": "properties.alias",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "properties.distinct_id",
+    "sourceKeys": "previousId",
+    "required": true
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "required": false
+  }
+]

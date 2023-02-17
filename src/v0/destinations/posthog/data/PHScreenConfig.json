@@ -1,0 +1,33 @@
+[
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "required": false
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "required": false
+  },
+  {
+    "destKey": "category",
+    "sourceKeys": "category",
+    "required": false
+  },
+  {
+    "destKey": "distinct_id",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": "name",
+    "required": false
+  },
+  {
+    "destKey": "messageId",
+    "sourceKeys": "messageId",
+    "required": false
+  }
+]

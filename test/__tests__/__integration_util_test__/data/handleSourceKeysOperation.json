@@ -1,0 +1,141 @@
+[
+  {
+    "description": "success case",
+    "input": {
+      "message": {
+        "properties": {
+          "price": 8.9,
+          "quantity": 10
+        }
+      },
+      "operationObject": {
+        "operation": "multiplication",
+        "args": [
+          {
+            "sourceKeys": "properties.price"
+          },
+          {
+            "sourceKeys": "properties.quantity",
+            "defaultVal": 1
+          }
+        ]
+      }
+    },
+    "output": 89
+  },
+  {
+    "description": "check if default value is taken correctly",
+    "input": {
+      "message": {
+        "properties": {
+          "price": 8.9
+        }
+      },
+      "operationObject": {
+        "operation": "multiplication",
+        "args": [
+          {
+            "sourceKeys": "properties.price"
+          },
+          {
+            "sourceKeys": "properties.quantity",
+            "defaultVal": 1
+          }
+        ]
+      }
+    },
+    "output": 8.9
+  },
+  {
+    "description": "check if value is null and the return is null",
+    "input": {
+      "message": {
+        "properties": {
+          "price": null
+        }
+      },
+      "operationObject": {
+        "operation": "multiplication",
+        "args": [
+          {
+            "sourceKeys": "properties.price"
+          },
+          {
+            "sourceKeys": "properties.quantity",
+            "defaultVal": 1
+          }
+        ]
+      }
+    },
+    "output": null
+  },
+  {
+    "description": "check if the operand is not operable (string input for multiplication)",
+    "input": {
+      "message": {
+        "properties": {
+          "price": "test"
+        }
+      },
+      "operationObject": {
+        "operation": "multiplication",
+        "args": [
+          {
+            "sourceKeys": "properties.price"
+          },
+          {
+            "sourceKeys": "properties.quantity",
+            "defaultVal": 1
+          }
+        ]
+      }
+    },
+    "output": null
+  },
+  {
+    "description": "addition operation",
+    "input": {
+      "message": {
+        "properties": {
+          "value": 8.9,
+          "tax": 2.5
+        }
+      },
+      "operationObject": {
+        "operation": "addition",
+        "args": [
+          {
+            "sourceKeys": "properties.value"
+          },
+          {
+            "sourceKeys": "properties.tax"
+          }
+        ]
+      }
+    },
+    "output": 11.4
+  },
+  {
+    "description": "unsupported operation type",
+    "input": {
+      "message": {
+        "properties": {
+          "price": "test"
+        }
+      },
+      "operationObject": {
+        "operation": "unsupported",
+        "args": [
+          {
+            "sourceKeys": "properties.price"
+          },
+          {
+            "sourceKeys": "properties.quantity",
+            "defaultVal": 1
+          }
+        ]
+      }
+    },
+    "output": null
+  }
+]

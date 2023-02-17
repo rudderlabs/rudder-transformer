@@ -6,15 +6,19 @@ phases:
       nodejs: 14
   pre_build:
     commands:
-      - docker login --username rudderlabs --password $DOCKERHUB_PASSWORD
+      - docker login --username rudderlabs --password ${{ secrets.DOCKERHUB_PROD_TOKEN }}
   build:
     commands:
       - VERSION=$(head -1 .version)
       - ls
       - echo build Docker image on `date`
-      - docker build --build-arg version=${VERSION} -t rudderlabs/rudder-transformer:$VERSION -f Dockerfile .
-      - docker run rudderlabs/rudder-transformer:$VERSION npm run testDestinations
-      - docker run rudderlabs/rudder-transformer:$VERSION npm run testVersionedRouter
+      - >
+        docker build 
+        --build-arg version=${VERSION} 
+        --build-arg GIT_COMMIT_SHA=$CODEBUILD_RESOLVED_SOURCE_VERSION 
+        -t rudderlabs/rudder-transformer:$VERSION 
+        -f Dockerfile .
+      - docker run rudderlabs/rudder-transformer:$VERSION npm run test
       - echo $?
   post_build:
     commands:
@@ -23,4 +27,4 @@ phases:
       - docker push rudderlabs/rudder-transformer:$VERSION
 artifacts:
   files:
-    - "**/*"
+    - '**/*'

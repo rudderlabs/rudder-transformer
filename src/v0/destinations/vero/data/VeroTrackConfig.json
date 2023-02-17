@@ -1,0 +1,27 @@
+[
+  {
+    "sourceKeys": "userId",
+    "destKey": "identity.id",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "email",
+    "destKey": "identity.email",
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "event",
+    "destKey": "event_name"
+  },
+  {
+    "sourceKeys": "properties",
+    "destKey": "data"
+  },
+  {
+    "sourceKeys": "originalTimestamp",
+    "destKey": "extras.check_id",
+    "metadata": {
+      "type": "microSecondTimestamp"
+    }
+  }
+]

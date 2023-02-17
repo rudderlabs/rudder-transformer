@@ -1,0 +1,27 @@
+[
+  {
+    "sourceKeys": "userId",
+    "destKey": "user_id",
+    "required": true,
+    "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "event",
+    "destKey": "name",
+    "required": true
+  },
+  {
+    "sourceKeys": "properties",
+    "destKey": "data",
+    "required": false
+  },
+  {
+    "sourceKeys": "timestamp",
+    "destKey": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "type": "secondTimestamp"
+    }
+  }
+]

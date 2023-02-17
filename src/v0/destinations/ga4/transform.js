@@ -130,29 +130,32 @@ const responseBuilder = (message, { Config }) => {
     payload.name = evConfigEvent;
     payload.params = constructPayload(message, mappingConfig[name]);
 
-    let mapPropertiesToItems;
+    let mapRootLevelPropertiesToGA4ItemsArray;
     if (itemList && item) {
       payload.params.items = getItemList(message, itemList === 'YES');
 
       if (!(payload.params.items && payload.params.items.length > 0)) {
-        mapPropertiesToItems = true;
+        mapRootLevelPropertiesToGA4ItemsArray = true;
         payload.params.items = getItem(message, item === 'YES');
       }
     } else if (item) {
       // item
       payload.params.items = getItem(message, item === 'YES');
-      mapPropertiesToItems = true;
+      mapRootLevelPropertiesToGA4ItemsArray = true;
     } else if (itemList) {
       // itemList
       payload.params.items = getItemList(message, itemList === 'YES');
     }
 
-    // excluding items/product properties
-    if (mapPropertiesToItems && VALID_ITEM_OR_PRODUCT_PROPERTIES.includes(payload.name)) {
-      // exclude event properties
+    // excluding event + root-level properties which are already mapped
+    if (
+      mapRootLevelPropertiesToGA4ItemsArray &&
+      VALID_ITEM_OR_PRODUCT_PROPERTIES.includes(payload.name)
+    ) {
+      // exclude event properties which are already mapped
       let ITEM_EXCLUSION_LIST = getGA4ExclusionList(mappingConfig[name]);
-      // exclude items/product properties
       ITEM_EXCLUSION_LIST = ITEM_EXCLUSION_LIST.concat(
+        // exclude root-level properties (GA4ItemConfig.json) which are already mapped
         getGA4ExclusionList(mappingConfig[ConfigCategory.ITEM.name]),
       );
 

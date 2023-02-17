@@ -7,13 +7,15 @@ const DEBUG_ENDPOINT = 'https://www.google-analytics.com/debug/mp/collect';
  * config for GA4 events
  *
  * For Item list these are the convention that is being followed
- * "YES" - Item list is present and is a required field
- * "NO" - Item list is present and is not a required field
+ * Here, Item list is basically means `products` array parameter in the input and it will be mapped to GA4 `Items` array parameter
+ * "YES" - Item list is present and is a required field in the input
+ * "NO" - Item list is present and is not a required field in the input
  *
  * Item parameters present in properties {}
+ * Here, Item is basically means root-level `properties` present in the input and these will be mapped to GA4 `Items` array parameter
  * following are the convention
- * "YES" - Item is present and is a required field
- * "NO" - Item is present and is not a required field
+ * "YES" - Item is present and is a required field in the input
+ * "NO" - Item is present and is not a required field in the input
  */
 const ConfigCategory = {
   COMMON: { name: 'GA4CommonConfig' },

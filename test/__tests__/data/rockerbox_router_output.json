@@ -1,0 +1,150 @@
+[
+  {
+    "batched": false,
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://webhooks.getrockerbox.com/rudderstack",
+      "headers": {},
+      "params": {
+        "advertiser": "test id"
+      },
+      "body": {
+        "JSON": {
+          "action": "conv.add_to_cart",
+          "conversion_source": "RudderStack",
+          "customer_id": "userSampleX138",
+          "email": "userSampleX120@gmail.com",
+          "phone": "9878764736",
+          "timestamp": 1659902539
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "destination": {
+      "Config": {
+        "advertiserId": "test id",
+        "eventFilteringOption": "disable",
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "eventsMap": [
+          {
+            "from": "Product Added",
+            "to": "conv.add_to_cart"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "clientAuthId": {
+          "web": "test-client-auth-id"
+        },
+        "oneTrustCookieCategories": {
+          "web": [
+            {
+              "oneTrustCookieCategory": "Marketing Sample"
+            }
+          ]
+        },
+        "customDomain": {
+          "web": "https://cookiedomain.com"
+        },
+        "enableCookieSync": {
+          "web": true
+        }
+      }
+    },
+    "metadata": [
+      {
+        "jobId": 1
+      }
+    ],
+    "statusCode": 200
+  },
+  {
+    "batched": false,
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://webhooks.getrockerbox.com/rudderstack",
+      "headers": {},
+      "params": {
+        "advertiser": "test id"
+      },
+      "body": {
+        "JSON": {
+          "action": "conv.add_to_cart",
+          "conversion_source": "RudderStack",
+          "customer_id": "userSampleX138",
+          "email": "userSampleX120@gmail.com",
+          "phone": "9878764736",
+          "timestamp": 1659902539
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "destination": {
+      "Config": {
+        "advertiserId": "test id",
+        "eventFilteringOption": "disable",
+        "whitelistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "blacklistedEvents": [
+          {
+            "eventName": ""
+          }
+        ],
+        "eventsMap": [
+          {
+            "from": "Product Viewed",
+            "to": "conv.add_to_cart"
+          }
+        ],
+        "useNativeSDK": {
+          "web": false
+        },
+        "clientAuthId": {
+          "web": "test-client-auth-id"
+        },
+        "oneTrustCookieCategories": {
+          "web": [
+            {
+              "oneTrustCookieCategory": "Marketing Sample"
+            }
+          ]
+        },
+        "customDomain": {
+          "web": "https://cookiedomain.com"
+        },
+        "enableCookieSync": {
+          "web": true
+        }
+      }
+    },
+    "metadata": [
+      {
+        "jobId": 1
+      }
+    ],
+    "statusCode": 200
+  }
+]

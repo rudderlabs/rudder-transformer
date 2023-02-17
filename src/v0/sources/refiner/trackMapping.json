@@ -1,0 +1,26 @@
+[
+  {
+    "sourceKeys": "triggered_event",
+    "destKeys": "event"
+  },
+  {
+    "sourceKeys": "remote_id",
+    "destKeys": "userId"
+  },
+  {
+    "sourceKeys": "response.received_at",
+    "destKeys": "originalTimestamp"
+  },
+  {
+    "sourceKeys": "response",
+    "destKeys": "properties.response"
+  },
+  {
+    "sourceKeys": "form.uuid",
+    "destKeys": ["properties.refiner_form_uuid", "context.formUuid"]
+  },
+  {
+    "sourceKeys": "form.name",
+    "destKeys": ["properties.refiner_form_name", "context.formName"]
+  }
+]

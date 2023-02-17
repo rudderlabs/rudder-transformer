@@ -1,0 +1,37 @@
+[
+  {
+    "destKey": "traits",
+    "sourceKeys": "traits",
+    "required": false
+  },
+  {
+    "destKey": "type",
+    "sourceKeys": "type",
+    "required": true
+  },
+  {
+    "destKey": "userId",
+    "sourceKeys": "userId",
+    "required": false
+  },
+  {
+    "destKey": "anonymousId",
+    "sourceKeys": "anonymousId",
+    "required": false
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": "originalTimestamp",
+    "required": true
+  },
+  {
+    "destKey": "messageId",
+    "sourceKeys": "messageId",
+    "required": false
+  },
+  {
+    "destKey": "channel",
+    "sourceKeys": "channel",
+    "required": false
+  }
+]

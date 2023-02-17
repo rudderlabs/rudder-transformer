@@ -1,0 +1,41 @@
+[
+  {
+    "destKey": "conversions[0].callerId",
+    "sourceKeys": "properties.callerId",
+    "required": true
+  },
+  {
+    "destKey": "conversions[0].callStartDateTime",
+    "sourceKeys": "properties.callStartDateTime",
+    "required": true
+  },
+  {
+    "destKey": "conversions[0].conversionDateTime",
+    "sourceKeys": ["properties.conversionDateTime", "originalTimestamp"],
+    "required": true,
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "destKey": "conversions[0].conversionValue",
+    "sourceKeys": [
+      "properties.conversionValue",
+      "properties.total",
+      "properties.value",
+      "properties.revenue"
+    ],
+    "required": false,
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "destKey": "conversions[0].currencyCode",
+    "sourceKeys": ["properties.currencyCode", "properties.currency"],
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
+  }
+]

@@ -1,0 +1,542 @@
+[
+  {
+    "description": "[IDENTIFY]: Neither externalId or userId is given.",
+    "input": {
+      "message": {
+        "anonymousId": "1",
+        "traits": {
+          "firstName": "Anant",
+          "lastName": "jain",
+          "email": "anant@r.com",
+          "hasPurchased": "yes"
+        },
+        "type": "identify"
+      },
+      "destination": {
+        "Config": {
+          "publicKey": "49ur490rjfo34gi04y38r9go",
+          "privateKey": "n89g389yr389fgbef0u2rff"
+        }
+      }
+    },
+    "output": {
+      "error": "Neither externalId or userId is available."
+    }
+  },
+  {
+    "description": "[IDENTIFY]: Create a new User with Metadata and lists from externalId",
+    "input": {
+      "message": {
+        "userId": "1",
+        "context": {
+          "externalId": [
+            {
+              "type": "engageListId",
+              "id": "100c983ry8934hf3094yfh348gf1"
+            },
+            {
+              "type": "engageListId",
+              "id": "4r40hfio3rbfln"
+            }
+          ]
+        },
+        "originalTimestamp": "2020-09-28T19:53:31.900Z",
+        "traits": {
+          "firstName": "Anant",
+          "lastName": "jain",
+          "email": "anant@r.com",
+          "hasPurchased": "yes",
+          "address": {
+            "Home": {
+              "city": "iudcb"
+            },
+            "Office": {
+              "abc": "jbc"
+            }
+          },
+          "state": "Delhi",
+          "title": "Mr"
+        },
+        "timestamp": "2020-09-29T14:50:29.907+05:30",
+        "type": "identify"
+      },
+      "destination": {
+        "Config": {
+          "publicKey": "49ur490rjfo34gi04y38r9go",
+          "privateKey": "n89g389yr389fgbef0u2rff",
+          "listIds": [
+            {
+              "listId": "9834trg3rgy3g08oi9893rgfb"
+            },
+            {
+              "listId": "f39487tyh49go3h093gh2if2f2"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "meta": {
+            "abc": "jbc",
+            "city": "iudcb",
+            "state": "Delhi",
+            "title": "Mr",
+            "hasPurchased": "yes"
+          },
+          "email": "anant@r.com",
+          "lists": ["100c983ry8934hf3094yfh348gf1", "4r40hfio3rbfln"],
+          "last_name": "jain",
+          "created_at": "2020-09-28T19:53:31.900Z",
+          "first_name": "Anant"
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "PUT",
+      "params": {},
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm"
+      },
+      "version": "1",
+      "endpoint": "https://api.engage.so/v1/users/1"
+    }
+  },
+  {
+    "description": "[IDENTIFY]: Update a User with UID and lists from Config",
+    "input": {
+      "message": {
+        "userId": "1",
+        "context": {},
+        "originalTimestamp": "2020-09-28T19:53:31.900Z",
+        "traits": {
+          "firstName": "Anant",
+          "lastName": "jain",
+          "email": "abc@xyz.com",
+          "hasPurchased": "yes",
+          "address": {
+            "Home": {
+              "city": "iudcb"
+            },
+            "Office": {
+              "abc": "jbc"
+            }
+          },
+          "state": "Delhi",
+          "title": "Mr"
+        },
+        "timestamp": "2020-09-29T14:50:29.907+05:30",
+        "type": "identify"
+      },
+      "destination": {
+        "Config": {
+          "publicKey": "49ur490rjfo34gi04y38r9go",
+          "privateKey": "n89g389yr389fgbef0u2rff",
+          "listIds": [
+            {
+              "listId": "9834trg3rgy3g08oi9893rgfb"
+            },
+            {
+              "listId": "f39487tyh49go3h093gh2if2f2"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "meta": {
+            "abc": "jbc",
+            "city": "iudcb",
+            "state": "Delhi",
+            "title": "Mr",
+            "hasPurchased": "yes"
+          },
+          "email": "abc@xyz.com",
+          "lists": ["9834trg3rgy3g08oi9893rgfb", "f39487tyh49go3h093gh2if2f2"],
+          "last_name": "jain",
+          "created_at": "2020-09-28T19:53:31.900Z",
+          "first_name": "Anant"
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "PUT",
+      "params": {},
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm"
+      },
+      "version": "1",
+      "endpoint": "https://api.engage.so/v1/users/1"
+    }
+  },
+  {
+    "description": "[IDENTIFY]: Update a User with userId inside traits and no listIds.",
+    "input": {
+      "message": {
+        "anonymousId": 3131,
+        "originalTimestamp": "2020-09-28T19:53:31.900Z",
+        "traits": {
+          "userId": "1",
+          "firstName": "Anant",
+          "lastName": "jain",
+          "email": "anant@r.com",
+          "hasPurchased": "yes",
+          "address": {
+            "Home": {
+              "city": "iudcb"
+            },
+            "Office": {
+              "abc": "jbc"
+            }
+          },
+          "state": "Lucknow",
+          "title": "Mr"
+        },
+        "timestamp": "2020-09-29T14:50:29.907+05:30",
+        "type": "identify"
+      },
+      "destination": {
+        "Config": {
+          "publicKey": "49ur490rjfo34gi04y38r9go",
+          "privateKey": "n89g389yr389fgbef0u2rff"
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "meta": {
+            "abc": "jbc",
+            "city": "iudcb",
+            "state": "Lucknow",
+            "title": "Mr",
+            "userId": "1",
+            "hasPurchased": "yes"
+          },
+          "email": "anant@r.com",
+          "last_name": "jain",
+          "created_at": "2020-09-28T19:53:31.900Z",
+          "first_name": "Anant"
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "PUT",
+      "params": {},
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm"
+      },
+      "version": "1",
+      "endpoint": "https://api.engage.so/v1/users/1"
+    }
+  },
+  {
+    "description": "[TRACK]: Send an Event with userId inside externalID.",
+    "input": {
+      "message": {
+        "anonymousId": 3131,
+        "context": {
+          "externalId": [
+            {
+              "type": "engageId",
+              "id": "1"
+            }
+          ]
+        },
+        "originalTimestamp": "2020-09-28T19:53:31.900Z",
+        "event": "First Investment",
+        "properties": {
+          "currency": "EUR",
+          "revenue": 20.37566
+        },
+        "type": "track"
+      },
+      "destination": {
+        "Config": {
+          "publicKey": "49ur490rjfo34gi04y38r9go",
+          "privateKey": "n89g389yr389fgbef0u2rff"
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "event": "First Investment",
+          "timestamp": "2020-09-28T19:53:31.900Z",
+          "properties": {
+            "revenue": 20.37566,
+            "currency": "EUR"
+          }
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm"
+      },
+      "version": "1",
+      "endpoint": "https://api.engage.so/v1/users/1/events"
+    }
+  },
+  {
+    "description": "[PAGE]: Send an Event with userId not inside externalID and no originalTimestamp and properties.",
+    "input": {
+      "message": {
+        "userId": 1,
+        "name": "Contact Customer Care",
+        "category": "Help",
+        "type": "page"
+      },
+      "destination": {
+        "Config": {
+          "publicKey": "49ur490rjfo34gi04y38r9go",
+          "privateKey": "n89g389yr389fgbef0u2rff"
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "event": "Viewed Help Contact Custom Page",
+          "properties": {}
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm"
+      },
+      "version": "1",
+      "endpoint": "https://api.engage.so/v1/users/1/events"
+    }
+  },
+  {
+    "description": "[ GROUP ]: Group user with list with engageID given inside externalId and operation not given.",
+    "input": {
+      "message": {
+        "anonymousId": "user123",
+        "groupId": "17",
+        "context": {
+          "traits": {
+            "subscriberStatus": "false"
+          },
+          "externalId": [
+            {
+              "type": "engageId",
+              "id": "246"
+            }
+          ]
+        },
+        "traits": {
+          "lastName": "garwal"
+        },
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "publicKey": "49ur490rjfo34gi04y38r9go",
+          "privateKey": "n89g389yr389fgbef0u2rff",
+          "listIds": [
+            {
+              "listId": "9834trg3rgy3g08oi9893rgfb"
+            },
+            {
+              "listId": "f39487tyh49go3h093gh2if2f2"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "PUT",
+      "endpoint": "https://api.engage.so/v1/lists/17/subscribers/246",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "subscribed": "false"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "[ GROUP ]:No ExternalId and operation as remove.",
+    "input": {
+      "message": {
+        "groupId": "17",
+        "traits": {
+          "lastName": "garwal",
+          "operation": "remove",
+          "email": "abc@xyz.com"
+        },
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "publicKey": "49ur490rjfo34gi04y38r9go",
+          "privateKey": "n89g389yr389fgbef0u2rff",
+          "listIds": [
+            {
+              "listId": "9834trg3rgy3g08oi9893rgfb"
+            },
+            {
+              "listId": "f39487tyh49go3h093gh2if2f2"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "error": "engageID is required for remove operation."
+    }
+  },
+  {
+    "description": "[ GROUP ]: Create or update user with payload and link it with list.",
+    "input": {
+      "message": {
+        "groupId": "17",
+        "traits": {
+          "lastName": "Agarwal",
+          "firstName": "Lalu",
+          "email": "lalu@xyz.com",
+          "phone": "634189314",
+          "customField": "customValue"
+        },
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "publicKey": "49ur490rjfo34gi04y38r9go",
+          "privateKey": "n89g389yr389fgbef0u2rff",
+          "listIds": [
+            {
+              "listId": "9834trg3rgy3g08oi9893rgfb"
+            },
+            {
+              "listId": "f39487tyh49go3h093gh2if2f2"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "meta": {
+            "customField": "customValue"
+          },
+          "email": "lalu@xyz.com",
+          "number": "634189314",
+          "last_name": "Agarwal",
+          "first_name": "Lalu",
+          "subscribed": true
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm"
+      },
+      "version": "1",
+      "endpoint": "https://api.engage.so/v1/lists/17/subscribers"
+    }
+  },
+  {
+    "description": "[ GROUP ]: Remove user from List with externalID.",
+    "input": {
+      "anonymousId": 3,
+      "message": {
+        "context": {
+          "externalId": [
+            {
+              "type": "engageId",
+              "id": "1"
+            }
+          ]
+        },
+        "userId": "user123",
+        "groupId": "17",
+        "traits": {
+          "operation": "remove"
+        },
+        "type": "group"
+      },
+      "destination": {
+        "Config": {
+          "publicKey": "49ur490rjfo34gi04y38r9go",
+          "privateKey": "n89g389yr389fgbef0u2rff",
+          "listIds": [
+            {
+              "listId": "9834trg3rgy3g08oi9893rgfb"
+            },
+            {
+              "listId": "f39487tyh49go3h093gh2if2f2"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "subscribed": true
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "DELETE",
+      "params": {},
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm"
+      },
+      "version": "1",
+      "endpoint": "https://api.engage.so/v1/lists/17/subscribers/1"
+    }
+  }
+]

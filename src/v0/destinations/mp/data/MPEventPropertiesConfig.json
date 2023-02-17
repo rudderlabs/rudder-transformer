@@ -1,0 +1,167 @@
+[
+  {
+    "sourceKeys": ["context.ip", "request_ip"],
+    "destKey": "ip"
+  },
+  {
+    "sourceKeys": "context.campaign.name",
+    "destKey": "campaign_id"
+  },
+  {
+    "sourceKeys": "userId",
+    "destKey": "$user_id"
+  },
+  {
+    "sourceKeys": "context.page.url",
+    "destKey": "$current_url"
+  },
+  {
+    "sourceKeys": "context.os.name",
+    "destKey": "$os"
+  },
+  {
+    "sourceKeys": "context.page.referrer",
+    "destKey": "$referrer"
+  },
+  {
+    "sourceKeys": "context.screen.height",
+    "destKey": "$screen_height"
+  },
+  {
+    "sourceKeys": "context.screen.width",
+    "destKey": "$screen_width"
+  },
+  {
+    "sourceKeys": "context.screen.density",
+    "destKey": "$screen_dpi"
+  },
+  {
+    "sourceKeys": "context.campaign.name",
+    "destKey": "utm_campaign"
+  },
+  {
+    "sourceKeys": "context.campaign.source",
+    "destKey": "utm_source"
+  },
+  {
+    "sourceKeys": "context.campaign.medium",
+    "destKey": "utm_medium"
+  },
+  {
+    "sourceKeys": "context.campaign.term",
+    "destKey": "utm_term"
+  },
+  {
+    "sourceKeys": "context.campaign.content",
+    "destKey": "utm_content"
+  },
+  {
+    "sourceKeys": "context.campaign.test",
+    "destKey": "utm_test"
+  },
+  {
+    "sourceKeys": "context.network.carrier",
+    "destKey": "$carrier"
+  },
+  {
+    "sourceKeys": "context.os.version",
+    "destKey": "$os_version"
+  },
+  {
+    "sourceKeys": "context.device.name",
+    "destKey": "$device"
+  },
+  {
+    "sourceKeys": "context.device.manufacturer",
+    "destKey": "$manufacturer"
+  },
+  {
+    "sourceKeys": "context.device.model",
+    "destKey": "$model"
+  },
+  {
+    "sourceKeys": "context.device.model",
+    "destKey": "mp_device_model"
+  },
+  {
+    "sourceKeys": "context.network.wifi",
+    "destKey": "$wifi"
+  },
+  {
+    "sourceKeys": "context.network.bluetooth",
+    "destKey": "$bluetooth_enabled"
+  },
+  {
+    "sourceKeys": "properties.bluetoothVersion",
+    "destKey": "$bluetooth_version"
+  },
+  {
+    "sourceKeys": "context.library.name",
+    "destKey": "mp_lib"
+  },
+  {
+    "sourceKeys": "context.page.initialReferrer",
+    "destKey": "$initial_referrer"
+  },
+  {
+    "sourceKeys": "context.page.initialReferringDomain",
+    "destKey": "$initial_referring_domain"
+  },
+  {
+    "sourceKeys": "properties.mpProcessingTimeMs",
+    "destKey": "mp_processing_time_ms"
+  },
+  {
+    "sourceKeys": ["properties.appBuildNumber", "context.app.build"],
+    "destKey": "$app_build_number"
+  },
+  {
+    "sourceKeys": ["properties.appVersionString", "context.app.version"],
+    "destKey": "$app_version_string"
+  },
+  {
+    "sourceKeys": ["properties.brand", "device.manufacturer"],
+    "destKey": "$brand"
+  },
+  {
+    "sourceKeys": "properties.radio",
+    "destKey": "$radio"
+  },
+  {
+    "sourceKeys": "properties.libVersion",
+    "destKey": "$lib_version"
+  },
+  {
+    "sourceKeys": "properties.searchEngine",
+    "destKey": "$search_engine"
+  },
+  {
+    "sourceKeys": "properties.mpKeyword",
+    "destKey": "mp_keyword"
+  },
+  {
+    "sourceKeys": "properties.hasNfc",
+    "destKey": "$has_nfc"
+  },
+  {
+    "sourceKeys": "properties.hasTelephone",
+    "destKey": "$has_telephone"
+  },
+  {
+    "sourceKeys": "properties.googlePlayServices",
+    "destKey": "$google_play_services"
+  },
+  {
+    "sourceKeys": "messageId",
+    "destKey": "$insert_id"
+  },
+  {
+    "sourceKeys": "sessionId",
+    "destKey": "$session_id",
+    "required": false,
+    "sourceFromGenericMap": true,
+    "metadata": {
+      "type": "toString"
+    }
+  }
+]

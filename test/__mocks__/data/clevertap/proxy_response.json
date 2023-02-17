@@ -1,0 +1,28 @@
+{
+  "https://api.clevertap.com/1/upload/test1": {
+    "data": {
+      "status": "success",
+      "processed": 1,
+      "unprocessed": []
+    },
+    "status": 200
+  },
+  "https://api.clevertap.com/1/upload/test2": {
+    "response": {
+      "data": {
+        "status": "fail",
+        "error": "Invalid Credentials",
+        "code": 401
+      },
+      "status": 401
+    }
+  },
+  "https://api.clevertap.com/1/upload/test3": {
+    "data": {
+      "status": "fail",
+      "processed": 0,
+      "unprocessed": []
+    },
+    "status": 200
+  }
+}

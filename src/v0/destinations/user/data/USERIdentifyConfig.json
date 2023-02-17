@@ -1,0 +1,125 @@
+[
+  {
+    "destKey": "custom_id",
+    "sourceKeys": "userId",
+    "required": true,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "phone_number",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "first_name",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "last_name",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "tags",
+    "sourceKeys": ["traits.tags", "context.traits.tags"],
+    "required": false
+  },
+  {
+    "destKey": "city",
+    "sourceKeys": "city",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "region",
+    "sourceKeys": "region",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": "country",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "gender",
+    "sourceKeys": "gender",
+    "sourceFromGenericMap": true,
+    "required": false,
+    "metadata": {
+      "strictMultiMap": [
+        {
+          "sourceVal": ["U", "u", "unknown", "UNKNOWN", "Unknown"],
+          "destVal": 1
+        },
+        {
+          "sourceVal": ["M", "m", "male", "MALE", "Male"],
+          "destVal": 2
+        },
+        {
+          "sourceVal": ["F", "f", "female", "FEMALE", "Female"],
+          "destVal": 3
+        }
+      ]
+    }
+  },
+  {
+    "destKey": "status",
+    "sourceKeys": ["traits.status", "context.traits.status"],
+    "required": false,
+    "metadata": {
+      "strictMultiMap": [
+        {
+          "sourceVal": ["V", "v", "visitor", "VISITOR", "Visitor"],
+          "destVal": 1
+        },
+        {
+          "sourceVal": ["U", "u", "user", "USER", "User"],
+          "destVal": 2
+        }
+      ]
+    }
+  },
+  {
+    "destKey": "google_url",
+    "sourceKeys": ["traits.googleUrl", "context.traits.googleUrl"],
+    "required": false
+  },
+  {
+    "destKey": "linkedin_url",
+    "sourceKeys": ["traits.linkedinUrl", "context.traits.linkedinUrl"],
+    "required": false
+  },
+  {
+    "destKey": "twitter_url",
+    "sourceKeys": ["traits.twitterUrl", "context.traits.twitterUrl"],
+    "required": false
+  },
+  {
+    "destKey": "facebook_url",
+    "sourceKeys": ["traits.facebookUrl", "context.traits.facebookUrl"],
+    "required": false
+  },
+  {
+    "destKey": "gravatar_url",
+    "sourceKeys": "avatar",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "timezone",
+    "sourceKeys": ["traits.timezone", "context.traits.timezone"],
+    "required": false
+  }
+]

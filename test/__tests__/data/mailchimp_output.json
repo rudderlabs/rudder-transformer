@@ -1,0 +1,309 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "merge_fields": {
+          "ADDRESS": {
+            "addr1": "test",
+            "city": "test",
+            "state": "test",
+            "zip": "123"
+          },
+          "FNAME": "Bob",
+          "LNAME": "Dole",
+          "ANONYMOUSI": "userId12345",
+          "BIRTHDAY": "05/06"
+        },
+        "email_address": "bob.dole@initech.com",
+        "status": "subscribed"
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "audienceId": "df42a82d07"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "status": "subscribed",
+        "email_address": "bob.dole@initech.com",
+        "merge_fields": {
+          "ANONYMOUSI": "userId12345"
+        }
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "audienceId": "df42a82d07"
+  },
+  {
+    "error": "User does not have access to the requested operation",
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "Titli Ganguly",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "25adacdcd8c4ef4672fbdc626fbcf331-us6",
+        "audienceId": "df42a82d07",
+        "datacenterId": "us20"
+      },
+      "Enabled": true,
+      "Transformations": []
+    }
+  },
+  {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "Titli Ganguly",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "25adacdcd8c4ef4442fbdc626fbcf331-us6",
+        "audienceId": "df42a82d07",
+        "datacenterId": "us20"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
+    "error": "message type page is not supported"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "merge_fields": {
+          "FIRSTNAME": "Bob"
+        },
+        "status": "subscribed",
+        "email_address": "bob.dole@initech.com"
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "audienceId": "df42a82d07"
+  },
+  {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
+        "audienceId": "df42a82d07",
+        "datacenterId": "us20"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
+    "error": "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]"
+  },
+  {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "d966df2e59d105c00f13de330d94000b-us14",
+        "audienceId": "ff21810ddc",
+        "datacenterId": "us14"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
+    "statusCode": 400,
+    "error": "Email is required for identify",
+    "statTags": {
+      "destination": "mailchimp",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "status": "subscribed",
+        "email_address": "jhon@gmail.com"
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
+    },
+    "audienceId": "ff21810eec",
+    "version": "1",
+    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/ff21810eec/members/7f3863b197eeff650876bb89eca08e57"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "email_address": "bob.dole@initech.com",
+        "status": "subscribed"
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "PUT",
+    "params": {},
+    "audienceId": "df42a82d07",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
+    },
+    "version": "1",
+    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "PUT",
+    "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "status": "subscribed",
+        "email_address": "bob.dole@initech.com"
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "audienceId": "df42a82d07"
+  },
+  {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "",
+        "audienceId": "df42a82d07",
+        "datacenterId": "us20"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
+    "error": "API Key not found. Aborting"
+  },
+  {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "awesrdcfgvhbjnkkjhgf",
+        "datacenterId": "us20"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
+    "error": "Audience Id not found. Aborting"
+  },
+  {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "w4a5346yeu75jyhrgfred",
+        "audienceId": "df42a82d07",
+        "datacenterId": ""
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
+    "error": "DataCenter Id not found. Aborting"
+  },
+  {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "zesrxdthfcjg345yruikyhntbgrafvd",
+        "audienceId": "df42a82d07",
+        "datacenterId": "us20"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
+    "error": "message type track is not supported"
+  }
+]

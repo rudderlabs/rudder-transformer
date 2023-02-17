@@ -1,0 +1,49 @@
+- destKey: data.event_data
+  sourceKeys:
+    - properties
+  metadata:
+    defaultValue: {}
+
+- destKey: kochava_app_id
+  sourceKeys: apiKey
+  context: destConfig
+
+- destKey: kochava_device_id
+  sourceKeys:
+    - context.device.id
+    - anonymousId
+
+- destKey: data.usertime
+  sourceKeys:
+    - originalTimestamp
+    - timestamp
+  metadata:
+    type: timestamp
+
+- destKey: data.app_version
+  sourceKeys: context.app.build
+
+- destKey: data.origination_ip
+  sourceKeys:
+    - context.ip
+    - request_ip
+
+- destKey: data.app_name
+  sourceKeys: context.app.name
+
+- destKey: data.app_short_string
+  sourceKeys: context.app.version
+
+- destKey: data.locale
+  sourceKeys: context.locale
+
+- destKey: data.os_version
+  sourceKeys: context.os.version
+
+- destKey: data.screen_dpi
+  sourceKeys: context.screen.density
+
+- destKey: action
+  sourceKeys: rudderAction # This will not be available
+  metadata:
+    defaultValue: 'event'

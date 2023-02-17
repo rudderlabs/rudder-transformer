@@ -1,0 +1,113 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": ["traits.email", "context.traits.email", "properties.email"],
+    "required": true
+  },
+  {
+    "destKey": "data.first_name",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "data.last_name",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "data.name",
+    "sourceKeys": "name",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "data.gender",
+    "sourceKeys": ["traits.gender", "context.traits.gender"],
+    "required": false
+  },
+  {
+    "destKey": "data.age",
+    "sourceKeys": ["traits.age", "context.traits.age"],
+    "required": false
+  },
+  {
+    "destKey": "data.birthday",
+    "sourceKeys": "birthday",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "data.phone",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "data.city",
+    "sourceKeys": [
+      "traits.city",
+      "context.traits.city",
+      "traits.address.city",
+      "context.traits.address.city"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "data.state",
+    "sourceKeys": [
+      "traits.state",
+      "context.traits.state",
+      "traits.address.state",
+      "context.traits.address.state"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "data.country",
+    "sourceKeys": [
+      "traits.country",
+      "context.traits.country",
+      "traits.address.country",
+      "context.traits.address.country"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "data.postal_code",
+    "sourceKeys": "zipcode",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "data.designation",
+    "sourceKeys": ["traits.designation", "context.traits.designation"],
+    "required": false
+  },
+  {
+    "destKey": "data.company",
+    "sourceKeys": ["traits.company", "context.traits.company"],
+    "required": false
+  },
+  {
+    "destKey": "data.industry",
+    "sourceKeys": ["traits.industry", "context.traits.industry"],
+    "required": false
+  },
+  {
+    "destKey": "data.description",
+    "sourceKeys": ["traits.description", "context.traits.description"],
+    "required": false
+  },
+  {
+    "destKey": "data.anniversary_date",
+    "sourceKeys": [
+      "traits.anniversaryDate",
+      "context.traits.anniversaryDate",
+      "traits.anniversary_date",
+      "context.traits.anniversary_date"
+    ],
+    "required": false
+  }
+]

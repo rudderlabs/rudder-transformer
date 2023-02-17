@@ -1,0 +1,77 @@
+[
+  {
+    "destKey": "email",
+    "sourceKeys": "email",
+    "required": true,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "phone_number",
+    "sourceKeys": "phone",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "first_name",
+    "sourceKeys": "firstName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "last_name",
+    "sourceKeys": "lastName",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "city",
+    "sourceKeys": "city",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "state_province_region",
+    "sourceKeys": "region",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "country",
+    "sourceKeys": "country",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "custom_fields",
+    "sourceKeys": ["traits.customFields", "context.traits.customFields"],
+    "required": false
+  },
+  {
+    "destKey": "postal_code",
+    "sourceKeys": "zipcode",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "address_line_1",
+    "sourceKeys": "address",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "whatsapp",
+    "sourceKeys": ["traits.whatsappNumber", "context.traits.whatsappNumber"],
+    "required": false
+  },
+  {
+    "destKey": "facebook",
+    "sourceKeys": ["traits.facebookUrl", "context.traits.facebookUrl"],
+    "required": false
+  },
+  {
+    "destKey": "unique_name",
+    "sourceKeys": "name",
+    "sourceFromGenericMap": true,
+    "required": false
+  }
+]

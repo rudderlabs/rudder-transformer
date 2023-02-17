@@ -1,0 +1,36 @@
+[
+  {
+    "destKey": "eventUniqueId",
+    "sourceKeys": [
+      "userId",
+      "traits.userId",
+      "traits.id",
+      "context.traits.userId",
+      "context.traits.id",
+      "anonymousId"
+    ],
+    "required": true
+  },
+  {
+    "destKey": "eventName",
+    "sourceKeys": ["name", "properties.name"],
+    "required": false,
+    "metadata": {
+      "defaultValue": "Screen View",
+      "template": "Screen View {{value}}"
+    }
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "required": false
+  },
+  {
+    "destKey": "eventTime",
+    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "required": true,
+    "metadata": {
+      "type": "timestamp"
+    }
+  }
+]

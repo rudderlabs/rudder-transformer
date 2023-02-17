@@ -1,4 +1,5 @@
-FROM node:14.19.0-alpine3.15
+# syntax=docker/dockerfile:1.4
+FROM node:14.21.1-alpine3.15
 
 RUN apk update
 RUN apk upgrade
@@ -20,13 +21,19 @@ WORKDIR /home/node/app
 USER node
 
 ARG version
+ARG GIT_COMMIT_SHA
 ENV transformer_build_version=$version
+ENV git_commit_sha=$GIT_COMMIT_SHA
 COPY package*.json ./
 RUN npm install
 
 COPY --chown=node:node . .
 
 ENTRYPOINT ["/sbin/tini", "--"]
+
+HEALTHCHECK --interval=1s --timeout=30s --retries=30 \
+    CMD  wget --no-verbose --tries=5 --spider http://localhost:9090/health || exit 1
+
 CMD [ "npm", "start" ]
 
 

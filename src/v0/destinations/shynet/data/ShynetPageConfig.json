@@ -1,0 +1,17 @@
+[
+  {
+    "destKey": "loadTime",
+    "sourceKeys": "properties.loadTime",
+    "required": false
+  },
+  {
+    "destKey": "referrer",
+    "sourceKeys": "context.page.referrer",
+    "required": false
+  },
+  {
+    "destKey": "location",
+    "sourceKeys": "context.page.url",
+    "required": true
+  }
+]

@@ -1,0 +1,65 @@
+[
+  {
+    "destKey": "anonymous_id",
+    "sourceKeys": "anonymousId",
+    "required": false
+  },
+  {
+    "destKey": "id",
+    "sourceKeys": "messageId",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "received_at",
+    "sourceKeys": "receivedAt",
+    "required": false
+  },
+  {
+    "destKey": "sent_at",
+    "sourceKeys": "sentAt",
+    "required": false
+  },
+  {
+    "destKey": "original_timestamp",
+    "sourceKeys": "originalTimestamp",
+    "required": false
+  },
+  {
+    "destKey": "timestamp",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "context_ip",
+    "sourceKeys": ["context.ip", "request_ip"],
+    "required": false
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": ["name", "properties.name"],
+    "required": false
+  },
+  {
+    "destKey": "category",
+    "sourceKeys": "properties.category",
+    "required": false
+  },
+  {
+    "destKey": "path",
+    "sourceKeys": "properties.path",
+    "required": false
+  },
+  {
+    "destKey": "url",
+    "sourceKeys": "pageUrl",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "title",
+    "sourceKeys": "properties.title",
+    "required": false
+  }
+]

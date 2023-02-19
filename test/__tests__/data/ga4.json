@@ -273,7 +273,7 @@
     }
   },
   {
-    "description": "(gtag) check all property mappings for 'promotion_viewed' event",
+    "description": "(gtag) check all property mappings for 'promotion viewed' event",
     "input": {
       "message": {
         "channel": "web",
@@ -323,7 +323,7 @@
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
         },
         "type": "track",
-        "event": "promotion_viewed",
+        "event": "promotion viewed",
         "properties": {
           "creative_name": "Summer Banner",
           "creative_slot": "featured_app_1",

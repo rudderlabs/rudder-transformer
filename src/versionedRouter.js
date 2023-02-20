@@ -596,13 +596,27 @@ if (startDestTransformer) {
   if (functionsEnabled()) {
     router.post('/extractLibs', async (ctx) => {
       try {
-        const { code, versionId, validateImports = false, additionalLibraries = [], language = "javascript" } = ctx.request.body;
+        const {
+          code,
+          versionId,
+          validateImports = false,
+          additionalLibraries = [],
+          language = "javascript",
+          testMode = false
+        } = ctx.request.body;
 
         if (!code) {
           throw new Error('Invalid request. Code is missing');
         }
 
-        const obj = await extractLibraries(code, versionId, validateImports, additionalLibraries, language);
+        const obj = await extractLibraries(
+          code,
+          versionId,
+          validateImports,
+          additionalLibraries,
+          language,
+          testMode || versionId === 'testVersionId'
+        );
         ctx.body = obj;
       } catch (err) {
         ctx.status = 400;

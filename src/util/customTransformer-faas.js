@@ -8,7 +8,7 @@ const { getLibraryCodeV1 } = require('./customTransforrmationsStore-v1');
 
 const libVersionIdsCache = new NodeCache();
 
-function generateFunctionName(userTransformation, testMode) {
+function generateFunctionName(userTransformation, libraryVersionIds, testMode) {
   if (userTransformation.versionId === FAAS_AST_VID) return FAAS_AST_FN_NAME;
 
   if (testMode) {
@@ -16,8 +16,7 @@ function generateFunctionName(userTransformation, testMode) {
     return funcName.substring(0, 63).toLowerCase();
   }
 
-  userTransformation.libraryVersionIds = userTransformation.libraryVersionIds || [];
-  const ids = [userTransformation.workspaceId, userTransformation.versionId].concat(userTransformation.libraryVersionIds.sort());
+  const ids = [userTransformation.workspaceId, userTransformation.versionId].concat((libraryVersionIds || []).sort());
   const hash = crypto.createHash('md5').update(`${ids}`).digest('hex');
 
   return `fn-${userTransformation.workspaceId}-${hash}`
@@ -25,7 +24,7 @@ function generateFunctionName(userTransformation, testMode) {
     .toLowerCase();
 }
 
-async function extractRelevantLibraryVersionIdsForVersionId(functionName, code, versionId, libraryVersionIds, prepopulatedImports) {
+async function extractRelevantLibraryVersionIdsForVersionId(functionName, code, versionId, libraryVersionIds, prepopulatedImports, testMode) {
   if (functionName === FAAS_AST_FN_NAME || versionId == FAAS_AST_VID) return [];
 
   const cachedLvids = libVersionIdsCache.get(functionName);
@@ -38,24 +37,10 @@ async function extractRelevantLibraryVersionIdsForVersionId(functionName, code, 
 
   const relevantLvids = [];
 
-  if (libraries) {
-    let extractedLibraries;
-
-    if (Array.isArray(prepopulatedImports)) {
-      extractedLibraries = prepopulatedImports
-    } else {
-      extractedLibraries = Object.keys(await require('./customTransformer').extractLibraries(
-        code,
-        versionId,
-        true,
-        libraries.map((library) => library?.handleName || _.camelCase(library?.name)),
-        "pythonfaas"
-      ));
-    }
-
+  if (libraries && prepopulatedImports) {
     libraries.forEach((library) => {
       const libHandleName = library.handleName || _.camelCase(library.name);
-      if (extractedLibraries.includes(libHandleName)) {
+      if (prepopulatedImports.includes(libHandleName)) {
         relevantLvids.push(library.versionId);
       }
     });
@@ -69,6 +54,7 @@ async function extractRelevantLibraryVersionIdsForVersionId(functionName, code, 
 
 async function setOpenFaasUserTransform(
   userTransformation,
+  libraryVersionIds,
   testWithPublish,
   pregeneratedFnName,
   testMode = false,
@@ -84,7 +70,7 @@ async function setOpenFaasUserTransform(
     publish: testWithPublish,
     testMode,
   };
-  const functionName = pregeneratedFnName || generateFunctionName(userTransformation, testMode);
+  const functionName = pregeneratedFnName || generateFunctionName(userTransformation, libraryVersionIds, testMode);
   const setupTime = new Date();
 
   await setupFaasFunction(
@@ -95,8 +81,9 @@ async function setOpenFaasUserTransform(
       functionName,
       userTransformation.code,
       userTransformation.versionId,
-      userTransformation.libraryVersionIds,
-      userTransformation.imports
+      libraryVersionIds,
+      userTransformation.imports,
+      testMode
     ),
     testMode,
   );
@@ -110,7 +97,7 @@ async function setOpenFaasUserTransform(
  * In production mode, the function is executed directly
  * if function is not found, it is deployed and returns retryable error
  */
-async function runOpenFaasUserTransform(events, userTransformation, testMode = false) {
+async function runOpenFaasUserTransform(events, userTransformation, libraryVersionIds, testMode = false) {
   if (events.length === 0) {
     throw new Error('Invalid payload. No events');
   }
@@ -124,9 +111,9 @@ async function runOpenFaasUserTransform(events, userTransformation, testMode = f
   };
 
   // check and deploy faas function if not exists
-  const functionName = generateFunctionName(userTransformation, testMode);
+  const functionName = generateFunctionName(userTransformation, libraryVersionIds, testMode);
   if (testMode) {
-    await setOpenFaasUserTransform(userTransformation, true, functionName, testMode);
+    await setOpenFaasUserTransform(userTransformation, libraryVersionIds, true, functionName, testMode);
   }
 
   const invokeTime = new Date();
@@ -139,8 +126,9 @@ async function runOpenFaasUserTransform(events, userTransformation, testMode = f
       functionName,
       userTransformation.code,
       userTransformation.versionId,
-      userTransformation.libraryVersionIds,
-      userTransformation.imports
+      libraryVersionIds,
+      userTransformation.imports,
+      testMode
     ),
     testMode,
   );

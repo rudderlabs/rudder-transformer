@@ -61,6 +61,7 @@ beforeAll(async () => {
       language: "pythonfaas",
       versionId: FAAS_AST_VID
     },
+    [],
     true,
     FAAS_AST_FN_NAME
   ));
@@ -78,7 +79,7 @@ describe("Function Creation Tests", () => {
   });
 
   const trRevCode = contructTrRevCode(versionId);
-  const funcName = generateFunctionName({ workspaceId, versionId }, false);
+  const funcName = generateFunctionName({ workspaceId, versionId }, [], false);
 
   const expectedData = { success: true, publishedVersion: funcName };
 
@@ -160,7 +161,7 @@ describe("Function invocation & creation tests", () => {
     const inputEvents = require(`./data/user_transformation_input.json`);
 
     const respBody = contructTrRevCode("1234");
-    const funcName = generateFunctionName(respBody, false);
+    const funcName = generateFunctionName(respBody, [], false);
 
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${respBody.versionId}`;
     when(fetch)
@@ -183,7 +184,7 @@ describe("Function invocation & creation tests", () => {
 describe("Auxiliary tests", () => {
   it("Should be able to extract libraries from code", async () => {
     for(const testObj of faasCodeParsedForLibs) {
-      const response = await extractLibraries(testObj.code, null, testObj.validateImports || false, [], testObj.language);
+      const response = await extractLibraries(testObj.code, null, testObj.validateImports || false, [], testObj.language, true);
       expect(response).toEqual(testObj.response);
     }
   });

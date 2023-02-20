@@ -265,7 +265,7 @@ async function setupUserTransformHandler(
   libraryVersionIDs,
   testWithPublish = false,
 ) {
-  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(testWithPublish);
+  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(libraryVersionIDs, testWithPublish);
   return resp;
 }
 
@@ -280,12 +280,12 @@ async function validateCode(code, language) {
   throw Error('Unsupported language');
 }
 
-async function extractLibraries(code, versionId, validateImports, additionalLibs, language = "javascript") {
+async function extractLibraries(code, versionId, validateImports, additionalLibs, language = "javascript", testMode = false) {
   if (language === "javascript") return parserForImport(code);
 
   let transformation;
 
-  if (versionId && versionId !== "testVersionId") {
+  if (versionId && !testMode) {
     transformation = await getTransformationCodeV1(versionId);
   }
 

@@ -30,3 +30,6 @@ The structure looks like below
   - Indicates if the request should sleep for sometime before sending a response
   - Type: Object{ timeoutInMs: Number }
   - Not sent from `httpSend` but useful for mocking some delay in response
+
+**NOTES**:
+- This folder is to be used during `development`

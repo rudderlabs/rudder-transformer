@@ -1142,7 +1142,7 @@ describe("Rudder library tests", () => {
     export default self;
     `;
 
-    const rudderLibraryUrl = `https://api.rudderlabs.com/rudderstackTransformationLibraries/importName?importName=${rudderLibraryImportName}`;
+    const rudderLibraryUrl = `https://api.rudderlabs.com/rudderstackTransformationLibraries/name?importName=${rudderLibraryImportName}`;
     when(fetch)
       .calledWith(rudderLibraryUrl)
       .mockResolvedValue({

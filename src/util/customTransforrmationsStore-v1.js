@@ -75,7 +75,7 @@ async function getRudderLibraryCode(importName) {
     type: 'rudderlibrary',
   };
   try {
-    const url = `${getRudderLibrariesUrl}/importName?importName=${importName}`;
+    const url = `${getRudderLibrariesUrl}/name?importName=${importName}`;
     const startTime = new Date();
     const response = await fetchWithProxy(url);
 

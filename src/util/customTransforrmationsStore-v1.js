@@ -66,7 +66,7 @@ async function getLibraryCodeV1(versionId) {
   }
 }
 
-async function getRudderLibraryCode(importName) {
+async function getRudderLibByImportName(importName) {
   const rudderLibrary = rudderLibraryCache[importName];
   if (rudderLibrary) return rudderLibrary;
   const tags = {
@@ -75,7 +75,8 @@ async function getRudderLibraryCode(importName) {
     type: 'rudderlibrary',
   };
   try {
-    const url = `${getRudderLibrariesUrl}/name?importName=${importName}`;
+    const [name, version] = importName.split('/').slice(-2);
+    const url = `${getRudderLibrariesUrl}/${name}?version=${version}`;
     const startTime = new Date();
     const response = await fetchWithProxy(url);
 
@@ -92,4 +93,4 @@ async function getRudderLibraryCode(importName) {
   }
 }
 
-module.exports = { getTransformationCodeV1, getLibraryCodeV1, getRudderLibraryCode };
+module.exports = { getTransformationCodeV1, getLibraryCodeV1, getRudderLibByImportName };

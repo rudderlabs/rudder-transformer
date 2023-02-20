@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 const _ = require('lodash');
 
 const stats = require('./stats');
-const { getLibraryCodeV1, getRudderLibraryCode } = require('./customTransforrmationsStore-v1');
+const { getLibraryCodeV1, getRudderLibByImportName } = require('./customTransforrmationsStore-v1');
 const { parserForImport } = require('./parser');
 const logger = require('../logger');
 
@@ -45,7 +45,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
       RUDDER_LIBRARY_REGEX.test(name),
     );
     const rudderLibraries = await Promise.all(
-      rudderLibImportNames.map(async (name) => await getRudderLibraryCode(name)),
+      rudderLibImportNames.map(async (importName) => await getRudderLibByImportName(importName)),
     );
     rudderLibraries.forEach((library) => {
       librariesMap[library.importName] = library.code;

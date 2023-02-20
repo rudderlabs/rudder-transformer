@@ -1102,9 +1102,10 @@ describe("Timeout tests", () => {
 
 describe("Rudder library tests", () => {
   beforeEach(() => {});
-  it(`Simple ${name} async test for V1 transformation - with rudder library rsUrlParser `, async () => {
+  it(`Simple ${name} async test for V1 transformation - with rudder library urlParser `, async () => {
     const versionId = randomID();
     const rudderLibraryImportName = '@rs/urlParser/v1';
+    const [name, version] = rudderLibraryImportName.split('/').slice(-2);
     const inputData = require(`./data/${integration}_input_large.json`);
     const expectedData = require(`./data/${integration}_async_output_large.json`);
 
@@ -1142,7 +1143,7 @@ describe("Rudder library tests", () => {
     export default self;
     `;
 
-    const rudderLibraryUrl = `https://api.rudderlabs.com/rudderstackTransformationLibraries/name?importName=${rudderLibraryImportName}`;
+    const rudderLibraryUrl = `https://api.rudderlabs.com/rudderstackTransformationLibraries/${name}?version=${version}`;
     when(fetch)
       .calledWith(rudderLibraryUrl)
       .mockResolvedValue({

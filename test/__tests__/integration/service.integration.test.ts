@@ -5,6 +5,7 @@ import { createHttpTerminator } from 'http-terminator';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import { applicationRoutes } from '../../../src/routes';
+import setValue from 'set-value';
 
 let server: any;
 beforeAll(async () => {
@@ -239,6 +240,41 @@ describe('CDK V2 api tests', () => {
     const data = getDataFromPath('./data_scenarios/cdk_v2/failure.json');
     const response = await request(server)
       .post('/v0/destinations/pinterest_tag')
+      .set('Accept', 'application/json')
+      .send(data.input);
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual(data.output);
+  });
+});
+
+jest.setTimeout(100000);
+describe('Comparsion service tests', () => {
+  test('compare cdk v2 and native', async () => {
+    const data = getDataFromPath('./data_scenarios/cdk_v2/success.json');
+    data.input.forEach((input) => {
+      setValue(input, 'destination.DestinationDefinition.Config.camparisonTestEnabeld', true);
+      setValue(input, 'destination.DestinationDefinition.Config.camparisonService', 'native_dest');
+    });
+    const response = await request(server)
+      .post('/v0/destinations/pinterest_tag')
+      .set('Accept', 'application/json')
+      .send(data.input);
+    expect(response.status).toEqual(200);
+    expect(JSON.parse(response.text)).toEqual(data.output);
+  });
+
+  test('compare native and cdk v2', async () => {
+    const data = getDataFromPath('./data_scenarios/destination/router/successful_test.json');
+    data.input.input.forEach((input) => {
+      setValue(input, 'destination.DestinationDefinition.Config.camparisonTestEnabeld', true);
+      setValue(input, 'destination.DestinationDefinition.Config.camparisonService', 'cdkv2_dest');
+    });
+    data.output.output.forEach((output) => {
+      setValue(output, 'destination.DestinationDefinition.Config.camparisonTestEnabeld', true);
+      setValue(output, 'destination.DestinationDefinition.Config.camparisonService', 'cdkv2_dest');
+    });
+    const response = await request(server)
+      .post('/routerTransform')
       .set('Accept', 'application/json')
       .send(data.input);
     expect(response.status).toEqual(200);

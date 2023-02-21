@@ -16,6 +16,7 @@ steps:
       $.assert(.message.type === {{$.EventType.TRACK}}, 
         "message type " + .message.type + " not supported")
       $.assert(.message.event, "event is required for track call")
+      $.assert(typeof .message.event === "string", "event name should be a string")
 
   - name: preparePayload
     template: |

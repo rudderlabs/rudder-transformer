@@ -6,9 +6,9 @@ const {
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
   extractEmailFromPayload,
-  setAnonymousId,
-  postToDB
+  setAnonymousIdorUserId
 } = require('./util');
+const { redisConnector } = require('../../../util/redisConnector');
 const { removeUndefinedAndNullValues } = require('../../util');
 const Message = require('../message');
 const { EventType } = require('../../../constants');
@@ -145,7 +145,7 @@ const processEvent = (inputEvent) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
-    setAnonymousId(message);
+    setAnonymousIdorUserId(message);
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
   message.setProperty('context.library', {
@@ -179,7 +179,7 @@ const isIdentifierEvent = (event) => {
   return false;
 };
 const processIdentifierEvent = (event) => {
-  postToDB(event.cart_token, event.anonymousId);
+  redisConnector.postToDB(event.cart_token, event.anonymousId);
   const result = {
     outputToSource: {
       body: Buffer.from('OK').toString('base64'),

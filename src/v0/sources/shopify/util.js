@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
-const { constructPayload, extractCustomFields, flattenJson, generateUUID } = require('../../util');
+const { constructPayload, extractCustomFields, flattenJson } = require('../../util');
+const { redisConnector } = require('../../../util/redisConnector');
 const logger = require('../../../logger');
 const {
   lineItemsMappingJSON,
@@ -13,17 +14,7 @@ const {
 const Cache = require('../../util/cache');
 
 const orderIdCache = new Cache(ORDER_CACHE_TTL); // 1 hr
-
 const { TransformationError } = require('../../util/errorTypes');
-
-/** update Database with key Val pair */
-const postToDB = (key, val) => {
-  console.log(key, val);
-};
-const getFromDB = (key) => {
-  console.log(key);
-  return 1;
-};
 
 /**
  * query_parameters : { topic: ['<shopify_topic>'], ...}
@@ -91,20 +82,40 @@ const extractEmailFromPayload = (event) => {
 };
 
 // Hash the id and use it as anonymousId (limiting 256 -> 36 chars)
-const setAnonymousId = (message) => {
+/**
+ * This function sets the anonymousId based on cart_token or id from the properties of message. 
+ * If it's null then we set userId as "ADMIN".
+ * @param {*} message 
+ * @returns 
+ */
+const setAnonymousIdorUserId = async (message) => {
   let sessionKey;
   switch (message.event) {
     /**
      * Following events will contain cart_token and we will map it in sessionKey
      */
+    case RUDDER_ECOM_MAP.checkouts_create:
+    case RUDDER_ECOM_MAP.checkouts_update:
     case SHOPIFY_TRACK_MAP.orders_edited:
     case SHOPIFY_TRACK_MAP.orders_cancelled:
     case SHOPIFY_TRACK_MAP.orders_fulfilled:
     case SHOPIFY_TRACK_MAP.orders_paid:
     case SHOPIFY_TRACK_MAP.orders_partially_fullfilled:
-    case RUDDER_ECOM_MAP.checkouts_create:
-    case RUDDER_ECOM_MAP.checkouts_update:
     case RUDDER_ECOM_MAP.orders_create:
+      if (message?.properties?.cart_token === null) {
+        /**
+         * This case will rise when we will be using Shopify Admin Dashboard to create, update, delete orders etc.
+         * Since it is done by admin we will set "userId" to be "admin"
+         */
+        message.setProperty('userId', 'admin');
+        return;
+      }
+      sessionKey = message?.properties?.cart_token;
+      break;
+    /** 
+     * orders_updated event is kept different from other orders events 
+     * as we will be storing id vs cart_token map in cache from its payload
+     */
     case RUDDER_ECOM_MAP.orders_updated:
       // cache the orderID to cart_token to help the fullfillments events to get anonymousID
       orderIdCache.get(message?.properties?.id, async () => message?.properties?.cart_token);
@@ -118,6 +129,7 @@ const setAnonymousId = (message) => {
       }
       sessionKey = message?.properties?.cart_token;
       break;
+
     /*
      * we dont have cart_token for carts_create and update events but have id and token field
      * which later on for orders become cart_token so we are fethcing sesionKey from id
@@ -142,14 +154,13 @@ const setAnonymousId = (message) => {
       sessionKey = orderIdCache.get(message.properties?.order_id, async () => null);
       break;
     default:
-      message.setProperty('anonymousId', generateUUID());
-      break;
+      throw new Error(`${message.event} missed`);
   }
   if (!sessionKey) {
-    throw new Error('Impossible');
+    throw new Error(`Impossible for ${message.event}`);
   }
-  const anonymousIDfromDB =  getFromDB(sessionKey)
-  message.setProperty('anonymousId', anonymousIDfromDB || "Not Found" );
+  const anonymousIDfromDB = await redisConnector.getFromDB(sessionKey);
+  message.setProperty('anonymousId', anonymousIDfromDB || "Not Found");
 };
 
 module.exports = {
@@ -157,7 +168,5 @@ module.exports = {
   getProductsListFromLineItems,
   createPropertiesForEcomEvent,
   extractEmailFromPayload,
-  setAnonymousId,
-  postToDB,
-  getFromDB,
+  setAnonymousIdorUserId
 };

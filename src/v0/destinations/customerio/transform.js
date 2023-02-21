@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const get = require('get-value');
 const set = require('set-value');
 const btoa = require('btoa');
@@ -27,7 +26,6 @@ const {
 } = require('../../util');
 
 const {
-  MAX_BATCH_SIZE,
   MAPPING_CONFIG,
   OBJECT_ACTIONS,
   CONFIG_CATEGORIES,
@@ -41,6 +39,7 @@ const {
   DEVICE_REGISTER_ENDPOINT,
 } = require('./config');
 const logger = require('../../../logger');
+const { getEventChunks } = require('./util');
 const { InstrumentationError } = require('../../util/errorTypes');
 
 const deviceRelatedEventNames = [
@@ -331,36 +330,30 @@ const batchEvents = (successRespList) => {
   });
 
   if (groupEvents.length > 0) {
-    const batchedData = [];
     // Extracting metadata, destination and message from the first event in a batch
-    const { metadata, destination, message } = groupEvents[0];
+    const { destination, message } = groupEvents[0];
     const { headers, endpoint } = message;
 
-    groupEvents.forEach((events) => {
-      batchedData.push(events.message.body.JSON);
-    });
-
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-    const eventChunks = _.chunk(batchedData, MAX_BATCH_SIZE);
+    const eventChunks = getEventChunks(groupEvents);
 
-    /** 
+    /**
      * Ref : https://www.customer.io/docs/api/track/#operation/batch
-     * Creating a requests of batch size 1000
      */
     eventChunks.forEach((chunk) => {
-      const request = defaultRequestConfig();
-      request.endpoint = endpoint;
-      request.headers = { ...headers, 'Content-Type': 'application/json' };
+       const request = defaultRequestConfig();
+       request.endpoint = endpoint;
+       request.headers = { ...headers, 'Content-Type': 'application/json' };
       // Setting the request body to an object with a single property called "batch" containing the batched data
-      request.body.JSON = { batch: chunk };
+      request.body.JSON = { batch: chunk.data };
 
-      batchedResponseList.push(getSuccessRespEvents(request, [metadata], destination));
+      batchedResponseList.push(getSuccessRespEvents(request, chunk.metadata, destination));
     });
   }
   return batchedResponseList;
 };
 
-const processRouterDest = (inputs, reqMetadata) => {
+const processRouterDest =  (inputs, reqMetadata) => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
     return [respEvents];
@@ -369,29 +362,29 @@ const processRouterDest = (inputs, reqMetadata) => {
   const batchErrorRespList = [];
   const successRespList = [];
   const { destination } = inputs[0];
-  inputs.forEach((event) => {
-    try {
-      if (event.message.statusCode) {
-        // already transformed event
-        successRespList.push({
-          message: event.message,
-          metadata: event.metadata,
-          destination,
-        });
-      } else {
-        // if not transformed
-        const transformedPayload = {
-          message: process(event),
-          metadata: event.metadata,
-          destination,
-        };
-        successRespList.push(transformedPayload);
+    inputs.forEach((event) => {
+      try {
+        if (event.message.statusCode) {
+          // already transformed event
+          successRespList.push({
+            message: event.message,
+            metadata: event.metadata,
+            destination,
+          });
+        } else {
+          // if not transformed
+          const transformedPayload = {
+            message: process(event),
+            metadata: event.metadata,
+            destination,
+          };
+          successRespList.push(transformedPayload);
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+        batchErrorRespList.push(errRespEvent);
       }
-    } catch (error) {
-      const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
-      batchErrorRespList.push(errRespEvent);
-    }
-  });
+    });
 
   if (successRespList.length > 0) {
     batchResponseList = batchEvents(successRespList);

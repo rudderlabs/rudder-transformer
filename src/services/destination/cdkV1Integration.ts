@@ -18,11 +18,16 @@ import tags from '../../v0/util/tags';
 import path from 'path';
 
 export default class CDKV1DestinationService implements IntegrationDestinationService {
+
   public init() {
     ConfigFactory.init({
       basePath: path.resolve(__dirname, '../../cdk/v1'),
       loggingMode: 'production',
     });
+  }
+
+  public getName(): string {
+      return "CDK_V1"
   }
 
   public getTags(

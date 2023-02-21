@@ -11,6 +11,9 @@ import {
 } from '../types/index';
 
 export default interface DestinationService {
+
+  getName():string
+
   init(): void;
 
   getTags(

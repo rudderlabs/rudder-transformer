@@ -6,6 +6,14 @@
         "required": true
     },
     {
+        "destKey": "object_type_id",
+        "sourceKeys": "traits.objectTypeId",
+        "metadata": {
+            "defaultValue": "1"
+        },
+        "required": false
+    },
+    {
         "destKey": "userId",
         "sourceKeys": "userIdOnly",
         "sourceFromGenericMap": true,

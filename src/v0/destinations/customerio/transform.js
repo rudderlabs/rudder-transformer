@@ -163,7 +163,10 @@ function responseBuilder(message, evType, evName, destination, messageType) {
   } else if (evType === EventType.GROUP) {
     endpoint = OBJECT_EVENT_ENDPOINT;
     const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.OBJECT_EVENTS.name]);
-    rawPayload.identifiers = { object_id: payload.object_id, object_type_id: '1' };
+    rawPayload.identifiers = {
+      object_id: payload.object_id,
+      object_type_id: payload.object_type_id,
+    };
     rawPayload.type = 'object';
     rawPayload.action =
       payload.action && OBJECT_ACTIONS.includes(payload.action)
@@ -173,8 +176,7 @@ function responseBuilder(message, evType, evName, destination, messageType) {
     rawPayload.cio_relationships = [];
     if (payload.userId) {
       rawPayload.cio_relationships.push({ identifiers: { id: payload.userId } });
-    }
-    if (payload.email) {
+    } else if (payload.email) {
       rawPayload.cio_relationships.push({ identifiers: { email: payload.email } });
     }
   } else {
@@ -341,9 +343,9 @@ const batchEvents = (successRespList) => {
      * Ref : https://www.customer.io/docs/api/track/#operation/batch
      */
     eventChunks.forEach((chunk) => {
-       const request = defaultRequestConfig();
-       request.endpoint = endpoint;
-       request.headers = { ...headers, 'Content-Type': 'application/json' };
+      const request = defaultRequestConfig();
+      request.endpoint = endpoint;
+      request.headers = { ...headers, 'Content-Type': 'application/json' };
       // Setting the request body to an object with a single property called "batch" containing the batched data
       request.body.JSON = { batch: chunk.data };
 
@@ -353,7 +355,7 @@ const batchEvents = (successRespList) => {
   return batchedResponseList;
 };
 
-const processRouterDest =  (inputs, reqMetadata) => {
+const processRouterDest = (inputs, reqMetadata) => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
     const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
     return [respEvents];
@@ -362,29 +364,29 @@ const processRouterDest =  (inputs, reqMetadata) => {
   const batchErrorRespList = [];
   const successRespList = [];
   const { destination } = inputs[0];
-    inputs.forEach((event) => {
-      try {
-        if (event.message.statusCode) {
-          // already transformed event
-          successRespList.push({
-            message: event.message,
-            metadata: event.metadata,
-            destination,
-          });
-        } else {
-          // if not transformed
-          const transformedPayload = {
-            message: process(event),
-            metadata: event.metadata,
-            destination,
-          };
-          successRespList.push(transformedPayload);
-        }
-      } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
-        batchErrorRespList.push(errRespEvent);
+  inputs.forEach((event) => {
+    try {
+      if (event.message.statusCode) {
+        // already transformed event
+        successRespList.push({
+          message: event.message,
+          metadata: event.metadata,
+          destination,
+        });
+      } else {
+        // if not transformed
+        const transformedPayload = {
+          message: process(event),
+          metadata: event.metadata,
+          destination,
+        };
+        successRespList.push(transformedPayload);
       }
-    });
+    } catch (error) {
+      const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+      batchErrorRespList.push(errRespEvent);
+    }
+  });
 
   if (successRespList.length > 0) {
     batchResponseList = batchEvents(successRespList);

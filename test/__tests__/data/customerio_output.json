@@ -1247,11 +1247,6 @@
             "identifiers": {
               "id": "user@1"
             }
-          },
-          {
-            "identifiers": {
-              "email": "test@rudderlabs.com"
-            }
           }
         ]
       },
@@ -1289,11 +1284,6 @@
           {
             "identifiers": {
               "id": "user@1"
-            }
-          },
-          {
-            "identifiers": {
-              "email": "test@rudderlabs.com"
             }
           }
         ]

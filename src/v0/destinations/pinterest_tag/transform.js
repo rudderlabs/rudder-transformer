@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const { get } = require('lodash');
 const { defaultPostRequestConfig, handleRtTfSingleEventError } = require('../../util');
 const { EventType } = require('../../../constants');
@@ -125,47 +124,49 @@ const process = (event) => {
 };
 
 const generateBatchedPaylaodForArray = (events) => {
-  let batchEventResponse = defaultBatchRequestConfig();
-  const batchResponseList = [];
-  const metadata = [];
-  // extracting destination from the first event in a batch
-  const { destination } = events[0];
-  // Batch event into dest batch structure
-  events.forEach((event) => {
-    batchResponseList.push(event.message.body.JSON);
-    metadata.push(event.metadata);
-  });
+  const batchEventResponse = defaultBatchRequestConfig();
+  const batchResponseList = events.map(event => event.body.JSON);
 
   batchEventResponse.batchedRequest.body.JSON = {
     data: batchResponseList,
   };
-
   batchEventResponse.batchedRequest.endpoint = 'https://ct.pinterest.com/events/v3';
-
   batchEventResponse.batchedRequest.headers = {
     'Content-Type': 'application/json',
-  };
-
-  batchEventResponse = {
-    ...batchEventResponse,
-    metadata,
-    destination,
   };
   return batchEventResponse;
 };
 
 const batchEvents = (successRespList) => {
   const batchedResponseList = [];
+  const eventChunks = [];
 
-  // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  const eventChunks = _.chunk(successRespList, MAX_BATCH_SIZE);
+  successRespList.forEach(transformedInput => {
+    const transformedEventArray = transformedInput.message;
+    const eventsNotBatched = eventChunks.every(chunk => {
+      if (chunk.events.length + transformedEventArray.length <= MAX_BATCH_SIZE) {
+        chunk.events.push(...transformedEventArray);
+        chunk.metadata.push(transformedInput.metadata);
+        return false;
+      }
+      return true;
+    });
+    if (eventChunks.length === 0 || eventsNotBatched) {
+      eventChunks.push({
+        events: transformedInput.message,
+        metadata: [transformedInput.metadata],
+        destination: transformedInput.destination
+      });
+    }
+  })
+
   eventChunks.forEach((chunk) => {
-    const batchEventResponse = generateBatchedPaylaodForArray(chunk);
+    const batchEventResponse = generateBatchedPaylaodForArray(chunk.events);
     batchedResponseList.push(
       getSuccessRespEvents(
         batchEventResponse.batchedRequest,
-        batchEventResponse.metadata,
-        batchEventResponse.destination,
+        chunk.metadata,
+        chunk.destination,
         true,
       ),
     );
@@ -178,48 +179,24 @@ const processRouterDest = (inputs, reqMetadata) => {
     const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
     return [respEvents];
   }
-  const { destination } = inputs[0];
 
-  const processedEvents = inputs.map((event) => {
+  const successRespList = [];
+  const batchErrorRespList = [];
+  inputs.forEach(input => {
     try {
-      if (event.message.statusCode) {
-        // already transformed event
-        return {
-          output: [
-            {
-              message: event.message,
-              metadata: event.metadata,
-              destination,
-            },
-          ],
-        };
+      let resp = input.message;
+      // transform if not already done
+      if (!input.message.statusCode) {
+        resp = process(input);
       }
-      // if not transformed
-      const transformedMessageArray = process(event);
-      const transformedEvents = transformedMessageArray.map((singleResponse) => ({
-        message: singleResponse,
-        metadata: event.metadata,
-        destination,
-      }));
-      return {
-        output: transformedEvents,
-      };
-    } catch (error) {
-      const resp = handleRtTfSingleEventError(event, error, reqMetadata);
 
-      return {
-        error: resp,
-      };
+      successRespList.push({message: Array.isArray(resp) ? resp : [resp], metadata: input.metadata, destination: input.destination});
+    } catch (error) {
+      batchErrorRespList.push(handleRtTfSingleEventError(input, error, reqMetadata));
     }
   });
 
   let batchResponseList = [];
-  const successRespList = processedEvents
-    .filter((resp) => resp.output)
-    .flatMap((resp) => resp.output);
-  const batchErrorRespList = processedEvents
-    .filter((resp) => resp.error)
-    .flatMap((resp) => resp.error);
   if (successRespList.length > 0) {
     batchResponseList = batchEvents(successRespList);
   }

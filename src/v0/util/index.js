@@ -1720,9 +1720,34 @@ const getAccessToken = (metadata, accessTokenKey) => {
   const { secret } = metadata;
   // we would need to verify if secret is present and also if the access token field is present in secret
   if (!secret || !secret[accessTokenKey]) {
-    throw new OAuthSecretError("Empty/Invalid access token");
+    throw new OAuthSecretError('Empty/Invalid access token');
   }
   return secret[accessTokenKey];
+};
+
+const batchMultiplexedEvents = (successRespList, maxBatchSize) => {
+  const batchedEvents = [];
+
+  successRespList.forEach((transformedInput) => {
+    const transformedEventArray = transformedInput.message;
+    const eventsNotBatched = batchedEvents.every((batch) => {
+      if (batch.events.length + transformedEventArray.length <= maxBatchSize) {
+        batch.events.push(...transformedEventArray);
+        batch.metadata.push(transformedInput.metadata);
+        return false;
+      }
+      return true;
+    });
+    if (batchedEvents.length === 0 || eventsNotBatched) {
+      batchedEvents.push({
+        events: transformedInput.message,
+        metadata: [transformedInput.metadata],
+        destination: transformedInput.destination,
+      });
+    }
+  });
+
+  return batchedEvents;
 };
 
 // ========================================================================
@@ -1734,6 +1759,7 @@ module.exports = {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   base64Convertor,
+  batchMultiplexedEvents,
   checkEmptyStringInarray,
   checkSubsetOfArray,
   constructPayload,
@@ -1820,5 +1846,5 @@ module.exports = {
   isHybridModeEnabled,
   getEventType,
   checkAndCorrectUserId,
-  getAccessToken
+  getAccessToken,
 };

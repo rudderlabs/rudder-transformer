@@ -8,6 +8,7 @@ const {
   constructPayload,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
+  batchMultiplexedEvents,
 } = require('../../util');
 const {
   processUserPayload,
@@ -123,55 +124,18 @@ const process = (event) => {
   return respList;
 };
 
-const generateBatchedPaylaodForArray = (events) => {
-  const batchEventResponse = defaultBatchRequestConfig();
-  const batchResponseList = events.map(event => event.body.JSON);
+const generateBatchedPayloadForArray = (events) => {
+  const { batchedRequest } = defaultBatchRequestConfig();
+  const batchResponseList = events.map((event) => event.body.JSON);
 
-  batchEventResponse.batchedRequest.body.JSON = {
+  batchedRequest.body.JSON = {
     data: batchResponseList,
   };
-  batchEventResponse.batchedRequest.endpoint = 'https://ct.pinterest.com/events/v3';
-  batchEventResponse.batchedRequest.headers = {
+  batchedRequest.endpoint = ENDPOINT;
+  batchedRequest.headers = {
     'Content-Type': 'application/json',
   };
-  return batchEventResponse;
-};
-
-const batchEvents = (successRespList) => {
-  const batchedResponseList = [];
-  const eventChunks = [];
-
-  successRespList.forEach(transformedInput => {
-    const transformedEventArray = transformedInput.message;
-    const eventsNotBatched = eventChunks.every(chunk => {
-      if (chunk.events.length + transformedEventArray.length <= MAX_BATCH_SIZE) {
-        chunk.events.push(...transformedEventArray);
-        chunk.metadata.push(transformedInput.metadata);
-        return false;
-      }
-      return true;
-    });
-    if (eventChunks.length === 0 || eventsNotBatched) {
-      eventChunks.push({
-        events: transformedInput.message,
-        metadata: [transformedInput.metadata],
-        destination: transformedInput.destination
-      });
-    }
-  })
-
-  eventChunks.forEach((chunk) => {
-    const batchEventResponse = generateBatchedPaylaodForArray(chunk.events);
-    batchedResponseList.push(
-      getSuccessRespEvents(
-        batchEventResponse.batchedRequest,
-        chunk.metadata,
-        chunk.destination,
-        true,
-      ),
-    );
-  });
-  return batchedResponseList;
+  return batchedRequest;
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
@@ -182,7 +146,7 @@ const processRouterDest = (inputs, reqMetadata) => {
 
   const successRespList = [];
   const batchErrorRespList = [];
-  inputs.forEach(input => {
+  inputs.forEach((input) => {
     try {
       let resp = input.message;
       // transform if not already done
@@ -190,15 +154,25 @@ const processRouterDest = (inputs, reqMetadata) => {
         resp = process(input);
       }
 
-      successRespList.push({message: Array.isArray(resp) ? resp : [resp], metadata: input.metadata, destination: input.destination});
+      successRespList.push({
+        message: Array.isArray(resp) ? resp : [resp],
+        metadata: input.metadata,
+        destination: input.destination,
+      });
     } catch (error) {
       batchErrorRespList.push(handleRtTfSingleEventError(input, error, reqMetadata));
     }
   });
 
-  let batchResponseList = [];
+  const batchResponseList = [];
   if (successRespList.length > 0) {
-    batchResponseList = batchEvents(successRespList);
+    const batchedEvents = batchMultiplexedEvents(successRespList, MAX_BATCH_SIZE);
+    batchedEvents.forEach((batch) => {
+      const batchedRequest = generateBatchedPayloadForArray(batch.events);
+      batchResponseList.push(
+        getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
+      );
+    });
   }
 
   return [...batchResponseList, ...batchErrorRespList];

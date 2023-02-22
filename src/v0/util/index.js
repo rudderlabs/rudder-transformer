@@ -1725,27 +1725,75 @@ const getAccessToken = (metadata, accessTokenKey) => {
   return secret[accessTokenKey];
 };
 
-const batchMultiplexedEvents = (successRespList, maxBatchSize) => {
+/**
+ * This function takes an array of transformed events and groups them into batches based on the maximum batch size provided.
+ *
+ * @param { Array<{ message: *[], metadata: *, destination: * }> } transformedEventsList
+ *  - An array of objects representing transformed events to be batched.
+ * @param { Number } maxBatchSize An integer representing the maximum size of each batch of events.
+ *
+ * @returns { Array<{ events: *[], metadata: *[], destination: * }> }
+ *  - A list of objects where each object contains a batch of events, its corresponding metadata, and destination.
+ *
+ * @example
+ *  const transformedEventsList = [
+ *    {
+ *      message: [{ userId: 1 }, { userId: 2 }],
+ *      metadata: { jobId: 1 },
+ *      destination: { name: 'dest' }
+ *    },
+ *    {
+ *      message: [{ userId: 3 }, { userId: 4 }],
+ *      metadata: { jobId: 2 },
+ *      destination: { name: 'dest' }
+ *    },
+ *    {
+ *      message: [{ userId: 5 }],
+ *      metadata: { jobId: 3 },
+ *      destination: { name: 'dest' }
+ *    }
+ *  ];
+ *  const maxBatchSize = 3;
+ *
+ *  batchMultiplexedEvents(transformedEventsList, maxBatchSize)
+ *  returns [
+ *    {
+ *      events: [{ userId: 1 }, { userId: 2 }, { userId: 5 }],
+ *      metadata: [{ jobId: 1 }, { jobId: 3 }],
+ *      destination: { name: 'dest' },
+ *    },
+ *    {
+ *      events: [{ userId: 3 }, { userId: 4 }],
+ *      metadata: [{ jobId: 2 }],
+ *      destination: { name: 'dest' },
+ *    }
+ *  ]
+ */
+const batchMultiplexedEvents = (transformedEventsList, maxBatchSize) => {
   const batchedEvents = [];
 
-  successRespList.forEach((transformedInput) => {
-    const transformedEventArray = transformedInput.message;
-    const eventsNotBatched = batchedEvents.every((batch) => {
-      if (batch.events.length + transformedEventArray.length <= maxBatchSize) {
-        batch.events.push(...transformedEventArray);
-        batch.metadata.push(transformedInput.metadata);
-        return false;
-      }
-      return true;
-    });
-    if (batchedEvents.length === 0 || eventsNotBatched) {
-      batchedEvents.push({
-        events: transformedInput.message,
-        metadata: [transformedInput.metadata],
-        destination: transformedInput.destination,
+  if (Array.isArray(transformedEventsList)) {
+    transformedEventsList.forEach((transformedInput) => {
+      const transformedMessage = Array.isArray(transformedInput.message)
+        ? transformedInput.message
+        : [transformedInput.message];
+      const eventsNotBatched = batchedEvents.every((batch) => {
+        if (batch.events.length + transformedMessage.length <= maxBatchSize) {
+          batch.events.push(...transformedMessage);
+          batch.metadata.push(transformedInput.metadata);
+          return false;
+        }
+        return true;
       });
-    }
-  });
+      if (batchedEvents.length === 0 || eventsNotBatched) {
+        batchedEvents.push({
+          events: transformedMessage,
+          metadata: [transformedInput.metadata],
+          destination: transformedInput.destination,
+        });
+      }
+    });
+  }
 
   return batchedEvents;
 };

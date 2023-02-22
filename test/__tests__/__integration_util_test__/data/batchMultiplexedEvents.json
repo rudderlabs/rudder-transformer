@@ -1,8 +1,8 @@
 [
   {
     "description": "Batching the below multiplexed events with maxBatchSize as 3",
-    "input": {
-      "successRespList": [
+    "input": [
+      [
         {
           "message": [
             {
@@ -148,8 +148,8 @@
           }
         }
       ],
-      "maxBatchSize": 3
-    },
+      3
+    ],
     "output": [
       {
         "events": [
@@ -278,8 +278,8 @@
   },
   {
     "description": "Batching the below multiplexed events with large maxBatchSize",
-    "input": {
-      "successRespList": [
+    "input": [
+      [
         {
           "message": [
             {
@@ -405,8 +405,8 @@
           }
         }
       ],
-      "maxBatchSize": 10
-    },
+      10
+    ],
     "output": [
       {
         "events": [

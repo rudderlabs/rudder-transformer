@@ -9,13 +9,13 @@ const functionNames = [
   'handleSourceKeysOperation',
   'getValueFromPropertiesOrTraits',
   'getErrorStatusCode',
-  'extractCustomFields'
+  'extractCustomFields',
+  'batchMultiplexedEvents'
 ];
 
 // Names of the utility functions to test which expects multiple arguments as values and not objects
 const functionNamesExpectingMultipleArguments = [
-  'checkAndCorrectUserId',
-  'batchMultiplexedEvents'
+  'checkAndCorrectUserId'
 ]
 
 describe('Utility Functions Tests', () => {

@@ -15,7 +15,7 @@
         },
         "destination": {
           "Config": {
-            "sdkKey": "test-api-key"
+            "apiKey": "test-api-key"
           }
         },
         "metadata": {
@@ -44,7 +44,7 @@
           }
         },
         "metadata": {
-          "jobId": 3
+          "jobId": 2
         }
       }
     ],
@@ -52,26 +52,32 @@
       {
         "batched": false,
         "batchedRequest": {
-          "body": {
-            "FORM": {},
-            "JSON": {
-              "userId": "test123",
-              "userAttributes": { "firstName": "John", "age": 27 },
-              "eventTags": { "price": 999, "quantity": 1 }
-            },
-            "JSON_ARRAY": {},
-            "XML": {}
-          },
-          "endpoint": "https://api.courier.com/inbound/rudderstack",
-          "files": {},
-          "headers": {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer test-api-key"
-          },
-          "method": "POST",
-          "params": {},
+          "version": "1",
           "type": "REST",
-          "version": "1"
+          "method": "POST",
+          "endpoint": "https://api.courier.com/inbound/rudderstack",
+          "headers": {
+            "Authorization": "Bearer test-api-key",
+            "Content-Type": "application/json"
+          },
+          "params": {},
+          "body": {
+            "JSON": {
+              "type": "track",
+              "channel": "web",
+              "event": "Product Added",
+              "userId": "test123",
+              "properties": { "price": 999, "quantity": 1 },
+              "context": { "traits": { "firstName": "John", "age": 27 } },
+              "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+              "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+              "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+            },
+            "XML": {},
+            "JSON_ARRAY": {},
+            "FORM": {}
+          },
+          "files": {}
         },
         "destination": {
           "Config": {
@@ -100,7 +106,12 @@
         "statusCode": 400,
         "destination": {
           "Config": {
-
+            "sdkKey": "test-sdk-key",
+            "trackKnownUsers": false,
+            "nonInteraction": false,
+            "listen": false,
+            "trackCategorizedPages": true,
+            "trackNamedPages": true
           }
         }
       }

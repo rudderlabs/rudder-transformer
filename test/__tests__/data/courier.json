@@ -13,9 +13,7 @@
         "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
       },
       "destination": {
-        "Config": {
-
-        }
+        "Config": {}
       }
     },
     "output": {
@@ -50,16 +48,19 @@
       "body": {
         "FORM": {},
         "JSON": {
-          "type": "identify",
-          "traits": {
-            "age": 27,
-            "name": "Joe Doe",
-            "plan": "basic",
-            "email": "joe@example.com"
+          "context": {
+            "ip": "8.8.8.8"
           },
+          "traits": {
+            "name": "Joe Doe",
+            "email": "joe@example.com",
+            "plan": "basic",
+            "age": 27
+          },
+          "type": "identify",
           "userId": "userIdTest",
-          "messageId": "8d04cc30-fc15-49bd-901f-c5c3f72a7d82",
-          "timestamp": "2022-10-17T15:53:10.566+05:30"
+          "originalTimestamp": "2022-10-17T15:53:10.566+05:30",
+          "messageId": "8d04cc30-fc15-49bd-901f-c5c3f72a7d82"
         },
         "JSON_ARRAY": {},
         "XML": {}
@@ -68,7 +69,7 @@
       "files": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer test-sdk-key"
+        "Authorization": "Bearer test-api-key"
       },
       "method": "POST",
       "params": {},
@@ -102,17 +103,17 @@
       "body": {
         "FORM": {},
         "JSON": {
-          "type": "track",
-          "event": "trackTest",
           "context": {
             "ip": "8.8.8.8"
           },
-          "messageId": "3c0abc14-96a2-4aed-9dfc-ee463832cc24",
-          "timestamp": "2022-10-17T15:32:44.202+05:30",
+          "event": "trackTest",
           "properties": {
             "activity": "checkout"
           },
-          "userId": "userIdTest"
+          "userId": "userIdTest",
+          "type": "track",
+          "messageId": "3c0abc14-96a2-4aed-9dfc-ee463832cc24",
+          "originalTimestamp": "2022-10-17T15:32:44.202+05:30"
         },
         "JSON_ARRAY": {},
         "XML": {}
@@ -121,7 +122,7 @@
       "files": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer test-sdk-key"
+        "Authorization": "Bearer test-api-key"
       },
       "method": "POST",
       "params": {},

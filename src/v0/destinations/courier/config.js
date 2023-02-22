@@ -1,4 +1,3 @@
-
 const API_URL = 'https://api.courier.com/inbound/rudderstack';
 
 module.exports = {

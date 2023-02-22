@@ -1,4 +1,15 @@
 const { EventType } = require('../../../constants');
+const {
+  defaultRequestConfig,
+  defaultPostRequestConfig,
+  removeUndefinedAndNullValues,
+  simpleProcessRouterDest,
+} = require('../../util');
+const {
+  TransformationError,
+  InstrumentationError,
+  ConfigurationError,
+} = require('../../util/errorTypes');
 const { API_URL } = require('./config');
 
 const responseBuilder = (payload, endpoint, destination) => {
@@ -8,7 +19,7 @@ const responseBuilder = (payload, endpoint, destination) => {
     response.endpoint = endpoint;
     response.headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
+      Authorization: `Bearer ${apiKey}`,
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.body.JSON = removeUndefinedAndNullValues(payload);

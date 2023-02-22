@@ -5,7 +5,14 @@ const stats = require('./stats');
 const { UserTransformHandlerFactory } = require('./customTransformerFactory');
 const { parserForImport } = require('./parser');
 
-async function runUserTransform(events, code, eventsMetadata, versionId, testMode = false) {
+async function runUserTransform(
+  events,
+  code,
+  secrets,
+  eventsMetadata,
+  versionId,
+  testMode = false,
+) {
   const tags = {
     transformerVersionId: versionId,
     version: 0,
@@ -67,6 +74,11 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
     }),
   );
 
+  await jail.set('_rsSecrets', function (...args) {
+    if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
+    return secrets[args[0]];
+  });
+
   jail.setSync('log', function (...args) {
     if (testMode) {
       let logString = 'Log:';
@@ -119,6 +131,14 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
             ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           ]);
         });
+      };
+
+      let rsSecrets = _rsSecrets;
+      delete _rsSecrets;
+      global.rsSecrets = function(...args) {
+        return rsSecrets([
+          ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+        ]);
       };
 
         return new ivm.Reference(function forwardMainPromise(
@@ -240,6 +260,7 @@ async function userTransformHandler(
         result = await runUserTransform(
           eventMessages,
           res.code,
+          res.secrets || {},
           eventsMetadata,
           versionId,
           testMode,
@@ -268,12 +289,12 @@ async function setupUserTransformHandler(
 }
 
 // param 'validateImports' supported for python/pythonfaas.
-async function extractLibraries(code, validateImports, language = "javascript") {
+async function extractLibraries(code, validateImports, language = 'javascript') {
   return parserForImport(code, validateImports, language);
 }
 
 module.exports = {
   userTransformHandler,
   setupUserTransformHandler,
-  extractLibraries
+  extractLibraries,
 };

@@ -178,8 +178,8 @@ const isIdentifierEvent = (event) => {
   }
   return false;
 };
-const processIdentifierEvent = (event) => {
-  redisConnector.postToDB(event.cart_token, event.anonymousId);
+const processIdentifierEvent = async (event) => {
+  await redisConnector.postToDB(event.cartToken, event.anonymousId);
   const result = {
     outputToSource: {
       body: Buffer.from('OK').toString('base64'),

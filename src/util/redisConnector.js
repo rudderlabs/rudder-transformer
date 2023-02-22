@@ -5,6 +5,7 @@ class DBConnector {
         this.hostname = hostname;
         this.port = port;
         this.password = password;
+        this.connect();
     };
 
     async connect() {
@@ -12,19 +13,26 @@ class DBConnector {
             socket: {
                 host: this.hostname,
                 port: this.port
-            },
-            password: this.password
+            }
         });
+        this.client
+            .connect()
+            .then(async (res) => {
+                console.log('connected');
+            })
+            .catch((err) => {
+                console.log('err happened' + err);
+            });
     }
 
     async postToDB(key, val) {
-        await this.client.set(key, val);
+        await this.client.set(`${key}`, `${val}`);
         console.log("Inserted Key: ", key, " Val: ", val);
     };
 
     async getFromDB(key) {
         try {
-            const value = await this.client.get(key);
+            const value = await this.client.get(`${key}`);
             if (value === null) {
                 console.log(" Val: ", value);
                 return 1;
@@ -39,6 +47,6 @@ class DBConnector {
     };
 };
 
-const redisConnector = new DBConnector('localhost', 6379, 'abcd');
-redisConnector.connect();
+const redisConnector = new DBConnector('localhost', 6379, 'abcd')
+
 module.exports = { redisConnector }

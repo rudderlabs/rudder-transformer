@@ -643,7 +643,7 @@ function processWarehouseMessage(message, options) {
       });
       break;
     }
-    case "track": {
+    case 'track': {
       // set properties common to both tracks and event table
       const commonProps = {};
       const commonColumnTypes = {};

@@ -527,6 +527,11 @@ async function routerHandleDest(ctx) {
       statTags: errObj.statTags,
     };
 
+    // Add support to perform refreshToken action for OAuth destinations
+    if (error?.authErrorCategory) {
+      resp.authErrorCategory = error.authErrorCategory;
+    }
+
     errNotificationClient.notify(error, 'Router Transformation', {
       ...resp,
       ...getCommonMetadata(ctx),

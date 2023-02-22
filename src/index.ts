@@ -22,9 +22,11 @@ app.use(
 );
 
 if (useUpdatedRoutes) {
+  logger.info('Using new routes');
   applicationRoutes(app);
 } else {
   // To be depricated
+  logger.info('Using old routes');
   app.use(router.routes()).use(router.allowedMethods());
   app.use(testRouter.routes()).use(testRouter.allowedMethods());
 }

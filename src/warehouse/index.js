@@ -67,9 +67,7 @@ const rudderReservedColums = {
   screen: { ...whDefaultColumnMappingRules, ...whScreenColumnMappingRules },
   group: { ...whDefaultColumnMappingRules, ...whGroupColumnMappingRules },
   alias: { ...whDefaultColumnMappingRules, ...whAliasColumnMappingRules },
-  extract: {
-    ...whTrackEventTableColumnMappingRules
-  }
+  extract: { ...whTrackEventTableColumnMappingRules }
 };
 
 function excludeRudderCreatedTableNames(name, skipReservedKeywordsEscaping = false) {
@@ -571,7 +569,7 @@ function processWarehouseMessage(message, options) {
 
   // store columnTypes as each column is set, so as not to call getDataType again
   switch (eventType) {
-    case "extract": {
+    case 'extract': {
       // set properties common to both tracks and event table
       const commonProps = {};
       const commonColumnTypes = {};
@@ -583,21 +581,21 @@ function processWarehouseMessage(message, options) {
         message.context,
         commonColumnTypes,
         options,
-        "context_"
+        'context_',
       );
 
       // set event column based on event_text in the tracks table
-      const eventColName = utils.safeColumnName(options, "event");
+      const eventColName = utils.safeColumnName(options, 'event');
       commonProps[eventColName] = utils.transformTableName(
         options,
-        message[utils.safeColumnName(options, "event")]
+        message[utils.safeColumnName(options, 'event')],
       );
-      commonColumnTypes[eventColName] = "string";
+      commonColumnTypes[eventColName] = 'string';
 
       // -----start: event table------
 
       // do not create event table in case of empty event name (after utils.transformColumnName)
-      if (_.toString(commonProps[eventColName]).trim() === "") {
+      if (_.toString(commonProps[eventColName]).trim() === '') {
         break;
       }
       const extractProps = {};
@@ -609,7 +607,7 @@ function processWarehouseMessage(message, options) {
         extractProps,
         message.properties,
         eventTableColumnTypes,
-        options
+        options,
       );
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
@@ -617,27 +615,27 @@ function processWarehouseMessage(message, options) {
         message,
         whExtractEventTableColumnMappingRules,
         commonColumnTypes,
-        options
+        options,
       );
 
       // always set commonProps last so that they are not overwritten
       const eventTableEvent = {
         ...extractProps,
-        ...commonProps
+        ...commonProps,
       };
       const eventTableMetadata = {
         table: excludeRudderCreatedTableNames(
           utils.safeTableName(
             options,
-            utils.transformColumnName(options, eventTableEvent[eventColName])
+            utils.transformColumnName(options, eventTableEvent[eventColName]),
           ),
-          skipReservedKeywordsEscaping
+          skipReservedKeywordsEscaping,
         ),
         columns: getColumns(options, eventTableEvent, {
           ...eventTableColumnTypes,
-          ...commonColumnTypes
+          ...commonColumnTypes,
         }), // override tracksColumnTypes with columnTypes from commonColumnTypes
-        receivedAt: message.receivedAt
+        receivedAt: message.receivedAt,
       };
       responses.push({
         metadata: eventTableMetadata,

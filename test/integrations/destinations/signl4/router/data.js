@@ -255,6 +255,10 @@ const data = [
               ],
               "statTags": {
                 "errorCategory": "dataValidation",
+                "destType": "SIGNL4",
+                "feature": "router",
+                "implementation": "native",
+                "module": "destination",
                 "errorType": "instrumentation"
               },
               "batched": false,

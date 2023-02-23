@@ -12,9 +12,6 @@ env:
   REPO_NAME_OLD: rudderlabs/develop-rudder-transformer
   REPO_NAME: rudderstack/develop-rudder-transformer
   DOCKERHUB_USERNAME: rudderlabs
-  GITHUB_TOKEN: build-deploy-pkey
-  MAIL: mail-id
-  USER_NAME: user-name
 
 jobs:
   transformer-build:
@@ -120,6 +117,7 @@ jobs:
             COMMIT_HASH=${{ github.sha }}
 
   createPullRequest:
+    name: Create Pull Request for rudder-deveops
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -127,8 +125,8 @@ jobs:
         id: cpr
         run: |
           git clone https://${{secrets.GITHUB_TOKEN}}@github.com/rudderlabs/rudder-devops.git
-          git config --global user.email \"${{env.MAIL}}\"
-          git config --global user.name \"${{env.USER_NAME}}\"
+          git config user.name "GitHub Actions"
+          git config user.email noreply@github.com
           cd rudder-devops/helm-charts/shared-services/per-az
           git checkout -b shared-transformer-$VERSION
           yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml

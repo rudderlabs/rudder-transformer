@@ -124,7 +124,7 @@ jobs:
       - name: Create Pull Request
         id: cpr
         run: |
-          git clone https://${{secrets.GITHUB_TOKEN}}@github.com/rudderlabs/rudder-devops.git
+          git clone https://github.com/rudderlabs/rudder-devops.git
           git config user.name "GitHub Actions"
           git config user.email noreply@github.com
           cd rudder-devops/helm-charts/shared-services/per-az

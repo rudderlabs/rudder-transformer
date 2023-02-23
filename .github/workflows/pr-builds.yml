@@ -12,6 +12,7 @@ env:
   REPO_NAME_OLD: rudderlabs/develop-rudder-transformer
   REPO_NAME: rudderstack/develop-rudder-transformer
   DOCKERHUB_USERNAME: rudderlabs
+  GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   transformer-build:
@@ -124,7 +125,7 @@ jobs:
       - name: Create Pull Request
         id: cpr
         run: |
-          git clone https://github.com/rudderlabs/rudder-devops.git
+          git clone https://${{env.GIT_TOKEN}}@github.com/rudderlabs/rudder-devops.git
           git config user.name "GitHub Actions"
           git config user.email noreply@github.com
           cd rudder-devops/helm-charts/shared-services/per-az

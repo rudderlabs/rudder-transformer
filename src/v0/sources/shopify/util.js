@@ -118,7 +118,7 @@ const setAnonymousIdorUserId = async (message) => {
      */
     case RUDDER_ECOM_MAP.orders_updated:
       // cache the orderID to cart_token to help the fullfillments events to get anonymousID
-      orderIdCache.get(message?.properties?.id, async () => message?.properties?.cart_token);
+      orderIdCache.get(message?.properties?.order_id, async () => message?.properties?.cart_token);
       if (message?.properties?.cart_token === null) {
         /**
          * This case will rise when we will be using Shopify Admin Dashboard to create, update, delete orders etc.
@@ -160,6 +160,10 @@ const setAnonymousIdorUserId = async (message) => {
     throw new Error(`Impossible for ${message.event}`);
   }
   const anonymousIDfromDB = await redisConnector.getFromDB(sessionKey);
+  if (anonymousIDfromDB === 1) {
+    console.log(" Val: ", anonymousIDfromDB);
+
+}
   message.setProperty('anonymousId', anonymousIDfromDB || "Not Found");
 };
 

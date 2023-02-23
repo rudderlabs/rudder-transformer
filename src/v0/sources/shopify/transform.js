@@ -74,6 +74,9 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.TRACK);
   message.setEventName(SHOPIFY_TRACK_MAP[shopifyTopic]);
+  if(shopifyTopic ==='carts_update'){
+    console.log("Event", event.line_items);
+  }
   Object.keys(event)
     .filter(
       (key) =>

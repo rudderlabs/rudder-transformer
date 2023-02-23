@@ -1,0 +1,49 @@
+[
+    {
+        "destKey": "object_id",
+        "sourceKeys": "groupId",
+        "sourceFromGenericMap": true,
+        "required": true
+    },
+    {
+        "destKey": "object_type_id",
+        "sourceKeys": "traits.objectTypeId",
+        "metadata": {
+            "defaultValue": "1"
+        },
+        "required": false
+    },
+    {
+        "destKey": "userId",
+        "sourceKeys": "userIdOnly",
+        "sourceFromGenericMap": true,
+        "required": false
+    },
+    {
+        "destKey": "email",
+        "sourceKeys": [
+            "context.traits.email",
+            "properties.email",
+            "context.externalId.0.id"
+        ],
+        "required": false
+    },
+    {
+        "destKey": "action",
+        "sourceKeys": [
+            "traits.action",
+            "properties.action"
+        ],
+        "required": false
+    },
+    {
+        "destKey": "attributes",
+        "sourceKeys": "traits",
+        "required": false,
+        "metadata": {
+            "excludes": [
+               "action"
+            ]
+        }
+    }
+]

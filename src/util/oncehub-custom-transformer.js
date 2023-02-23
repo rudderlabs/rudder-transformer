@@ -14,23 +14,16 @@ const getPIIDestinationList = () => {
     return event && event.message && event.message.context  && event.message.context.traits;
   };
 
-  const handleFirstLoginGA4Property = (
-    destination,
-    event,
-    eventTraitsPresent,
-    contextTraitsPresent,
-  ) => {
-    if (destination === 'ga4' && event.message.type === EventType.IDENTIFY) {
-      if (eventTraitsPresent && !('firstLoginGA4' in event.message.traits)) {
-        event.message.traits['firstLoginGA4'] = false;
+const handleFirstLoginGA4Property = (destination, event, traits) => {
+  // delete firstLoginGA4 property from traits when destination is not GA4
+  if (destination !== 'ga4') {
+    delete traits.firstLoginGA4;
+    return;
       }
 
-      if (contextTraitsPresent && !('firstLoginGA4' in event.message.context.traits)) {
-        event.message.context.traits['firstLoginGA4'] = false;
-      }
-    } else if (destination !== 'ga4') {
-      if (contextTraitsPresent) delete event.message.context.traits.firstLoginGA4;
-      if (eventTraitsPresent) delete event.message.traits.firstLoginGA4;
+  // add firstLoginGA4 property in traits when Identify call is for GA4 destination
+  if (event.message.type === EventType.IDENTIFY) {
+    traits.firstLoginGA4 = !!traits.firstLoginGA4;
     }
   };
 
@@ -56,7 +49,13 @@ const getPIIDestinationList = () => {
     }
 
   // Adding check for firstLoginGA4 property
-  handleFirstLoginGA4Property(destination, event, eventTraitsPresent, contextTraitsPresent);
+  if (eventTraitsPresent) {
+    handleFirstLoginGA4Property(destination, event, event.message.traits);
+  }
+
+  if (contextTraitsPresent) {
+    handleFirstLoginGA4Property(destination, event, event.message.context.traits);
+  }
 
     // eslint-disable-next-line no-console
     // if(doesEventContainsTraits(event)) console.log("event log=>destination : ", JSON.stringify(destination), " , ==> event traits : ", JSON.stringify(event.message.traits), " , ==> event here : ",JSON.stringify(event));

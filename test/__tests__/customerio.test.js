@@ -31,7 +31,7 @@ for (let index = 0; index < inputData.length; index++) {
     let output, expected;
     try {
       output = transformer.process(inputData[index]);
-      expected = [expectedData[index]];
+      expected = expectedData[index];
     } catch (error) {
       output = error.message;
       expected = expectedData[index].message;

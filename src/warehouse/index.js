@@ -67,7 +67,7 @@ const rudderReservedColums = {
   screen: { ...whDefaultColumnMappingRules, ...whScreenColumnMappingRules },
   group: { ...whDefaultColumnMappingRules, ...whGroupColumnMappingRules },
   alias: { ...whDefaultColumnMappingRules, ...whAliasColumnMappingRules },
-  extract: { ...whTrackEventTableColumnMappingRules }
+  extract: { ...whExtractEventTableColumnMappingRules }
 };
 
 function excludeRudderCreatedTableNames(name, skipReservedKeywordsEscaping = false) {

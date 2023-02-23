@@ -126,11 +126,10 @@ jobs:
         env:
           GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: cpr
+        with:
+          repository: https://github.com/rudderlabs/rudder-devops.git
+          ref: rudder-devops/helm-charts/shared-services/per-az
         run: |
-          git clone https://${{env.GIT_TOKEN}}:@github.com/rudderlabs/rudder-devops.git
-          git config user.name aashishmalik
-          git config user.email imashishmalik.45@gmail.com
-          cd rudder-devops/helm-charts/shared-services/per-az
           git checkout -b shared-transformer-$VERSION
           yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml
           yq eval -i ".user-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml

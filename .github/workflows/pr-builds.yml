@@ -125,8 +125,8 @@ jobs:
       - name: Clone GuillaumeFalourd/formulas-training PRIVATE repository
         uses: GuillaumeFalourd/clone-github-repo-action@v2
         with:
-          owner: 'aashishmalik'
-          repository: 'rudderlabs/rudder-devops'
+          owner: 'rudderlabs'
+          repository: 'rudder-devops'
           access-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Run script to create pr
         run: |

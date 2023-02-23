@@ -122,14 +122,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Create Pull Request
-        env:
-          GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        id: cpr
+      - name: Clone GuillaumeFalourd/formulas-training PRIVATE repository
+        uses: GuillaumeFalourd/clone-github-repo-action@v2
         with:
-          repository: https://github.com/rudderlabs/rudder-devops.git
-          ref: rudder-devops/helm-charts/shared-services/per-az
+          owner: 'aashishmalik'
+          repository: 'rudderlabs/rudder-devops'
+          access-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run script to create pr
         run: |
+          cd rudder-devops/helm-charts/shared-services/per-az
           git checkout -b shared-transformer-$VERSION
           yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml
           yq eval -i ".user-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml

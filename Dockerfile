@@ -25,7 +25,7 @@ ARG GIT_COMMIT_SHA
 ENV transformer_build_version=$version
 ENV git_commit_sha=$GIT_COMMIT_SHA
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 
 COPY --chown=node:node . .
 

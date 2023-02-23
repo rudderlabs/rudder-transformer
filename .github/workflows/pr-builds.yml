@@ -123,9 +123,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Create Pull Request
+        env:
+          GIT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         id: cpr
         run: |
-          git clone https://${{env.GIT_TOKEN}}@github.com/rudderlabs/rudder-devops.git
+          git clone https://${{env.GIT_TOKEN}}:@github.com/rudderlabs/rudder-devops.git
           git config user.name "GitHub Actions"
           git config user.email noreply@github.com
           cd rudder-devops/helm-charts/shared-services/per-az

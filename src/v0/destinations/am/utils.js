@@ -55,11 +55,7 @@ function getDeviceManufacturer(payload, sourceKey) {
 }
 
 function getPlatform(payload, sourceKey) {
-  let payloadVal = get(payload, sourceKey);
-  if (!payloadVal) {
-    payloadVal = 'Server';
-  }
-
+  const payloadVal = get(payload, sourceKey);
   switch (payload.channel) {
     case 'web':
       return 'Web';

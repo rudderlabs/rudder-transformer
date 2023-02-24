@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-const { constructPayload, extractCustomFields, flattenJson } = require('../../util');
+const { constructPayload, extractCustomFields, flattenJson, generateUUID } = require('../../util');
 const { redisConnector } = require('../../../util/redisConnector');
 const logger = require('../../../logger');
 const {
@@ -95,8 +95,7 @@ const setAnonymousIdorUserId = async (message) => {
      * Following events will contain cart_token and we will map it in sessionKey
      */
     case RUDDER_ECOM_MAP.checkouts_create:
-    case RUDDER_ECOM_MAP.checkouts_update:
-    case SHOPIFY_TRACK_MAP.orders_edited:
+    case RUDDER_ECOM_MAP.checkouts_update: // check for order_id at this point
     case SHOPIFY_TRACK_MAP.orders_cancelled:
     case SHOPIFY_TRACK_MAP.orders_fulfilled:
     case SHOPIFY_TRACK_MAP.orders_paid:
@@ -143,28 +142,69 @@ const setAnonymousIdorUserId = async (message) => {
        * "delete" event dont have "cart_token" but an "id" which is "order_id" in other order events using which
        * we will be fetching the "cart_token" through cache
        */
-      sessionKey = orderIdCache.get(message?.properties?.id, async () => null);
+      sessionKey = await orderIdCache.get(message?.properties?.id, async () => null);
       break;
 
     case SHOPIFY_TRACK_MAP.fulfillments_create:
     case SHOPIFY_TRACK_MAP.fulfillments_update:
+    case SHOPIFY_TRACK_MAP.orders_edited:
       /** "fulfillments" event dont have "cart_token" but an "order_id" same as in order events using which
        * we will be fetching the "cart_token" through cache
+       * for orders_edited we have many kinds of payloads but one common thing between all is order_id from which we can get the session Key
        */
-      sessionKey = orderIdCache.get(message.properties?.order_id, async () => null);
+      sessionKey = await orderIdCache.get(message.properties?.order_id, async () => null);
       break;
     default:
       throw new Error(`${message.event} missed`);
   }
   if (!sessionKey) {
-    throw new Error(`Impossible for ${message.event}`);
+    message.setProperty('anonymousId', generateUUID());
+    return
   }
-  const anonymousIDfromDB = await redisConnector.getFromDB(sessionKey);
-  if (anonymousIDfromDB === 1) {
-    console.log(" Val: ", anonymousIDfromDB);
-
-}
+  let anonymousIDfromDB = await redisConnector.getFromDB(sessionKey);
+  if (anonymousIDfromDB === null) {
+    // this is for backward compatability when we don't have the redis mapping for older events
+    // we will get anonymousIDFromDb as null so we will set UUID using the session Key
+    anonymousIDfromDB = generateUUID(sessionKey);
+  }
   message.setProperty('anonymousId', anonymousIDfromDB || "Not Found");
+};
+
+/**
+ * This Function returns the actual event happened for the order edited event of the shopify
+ * these can be order-updated, Order Refunded, Order Cancelled
+ * @param event 
+ * @returns 
+ */
+const getEventNameForOrderEdit = event => {
+  console.log(event);
+  return "deleted";
+};
+/**
+ * This function returns true if payloads are same otherwise false
+ * @param {*} prevPayload 
+ * @param {*} newPayload 
+ */
+const compareCartPayloadandTimestamp = (prevPayload, newPayload) => {
+
+  return false;
+};
+
+/**
+ * This Function will check for cart duplication events 
+ * @param {*} event 
+ */
+const checkForValidRecord = event => {
+  if (event.line_items.length === 0) {
+    return false;
+  }
+  const sesionKey = event.cart_token
+  const redisVal = redisConnector.getFromDB(sesionKey);
+  if (redisVal?.cartPayload && compareCartPayloadandTimestamp(redisVal.cartPayload, event)) {
+    return false;
+  }
+  redisConnector.postToDB(sesionKey, { ...redisVal, cartPayload: event });
+  return true;
 };
 
 module.exports = {
@@ -172,5 +212,7 @@ module.exports = {
   getProductsListFromLineItems,
   createPropertiesForEcomEvent,
   extractEmailFromPayload,
-  setAnonymousIdorUserId
+  setAnonymousIdorUserId,
+  getEventNameForOrderEdit,
+  checkForValidRecord
 };

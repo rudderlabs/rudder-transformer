@@ -6,7 +6,9 @@ const {
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
   extractEmailFromPayload,
-  setAnonymousIdorUserId
+  setAnonymousIdorUserId,
+  getEventNameForOrderEdit,
+  checkForValidRecord
 } = require('./util');
 const { redisConnector } = require('../../../util/redisConnector');
 const { removeUndefinedAndNullValues } = require('../../util');
@@ -73,10 +75,11 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
 const trackPayloadBuilder = (event, shopifyTopic) => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.TRACK);
-  message.setEventName(SHOPIFY_TRACK_MAP[shopifyTopic]);
-  if(shopifyTopic ==='carts_update'){
-    console.log("Event", event.line_items);
+  if (shopifyTopic === "orders_edited") {
+    message.setEventName(getEventNameForOrderEdit(message));
   }
+  message.setEventName(SHOPIFY_TRACK_MAP[shopifyTopic]);
+
   Object.keys(event)
     .filter(
       (key) =>
@@ -114,7 +117,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   return message;
 };
 
-const processEvent = (inputEvent) => {
+const processEvent = async (inputEvent) => {
   let message;
   const event = _.cloneDeep(inputEvent);
   const shopifyTopic = getShopifyTopic(event);
@@ -130,6 +133,22 @@ const processEvent = (inputEvent) => {
     case ECOM_TOPICS.CHECKOUTS_UPDATE:
       message = ecomPayloadBuilder(event, shopifyTopic);
       break;
+    case 'carts_create':
+    case 'carts_update':
+      if(checkForValidRecord(inputEvent)){
+        message = trackPayloadBuilder(event, shopifyTopic);
+      }else{ // This Scenario handles the case when empty cart events are passed
+        const result = {
+          outputToSource: {
+            body: Buffer.from('OK').toString('base64'),
+            contentType: 'text/plain',
+          },
+          statusCode: 200,
+        };
+        return result;
+      }
+      break;
+
     default:
       if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
         throw new TransformationError(`event type ${shopifyTopic} not supported`);
@@ -148,7 +167,7 @@ const processEvent = (inputEvent) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
-    setAnonymousIdorUserId(message);
+    await setAnonymousIdorUserId(message);
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
   message.setProperty('context.library', {
@@ -156,7 +175,6 @@ const processEvent = (inputEvent) => {
     version: '1.0.0',
   });
   message.setProperty('context.topic', shopifyTopic);
-
   // attaching cart, checkout and order tokens in context object
   message.setProperty(`context.cart_token`, event.cart_token);
   message.setProperty(`context.checkout_token`, event.checkout_token);
@@ -182,7 +200,7 @@ const isIdentifierEvent = (event) => {
   return false;
 };
 const processIdentifierEvent = async (event) => {
-  await redisConnector.postToDB(event.cartToken, event.anonymousId);
+  await redisConnector.postToDB(event.cartToken, { anonymousId: event.anonymousId });
   const result = {
     outputToSource: {
       body: Buffer.from('OK').toString('base64'),

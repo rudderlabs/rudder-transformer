@@ -54,5 +54,6 @@
     "TIKTOK_ADS_OFFLINE_EVENTS": true,
     "CRITEO_AUDIENCE": true,
     "COURIER": true
+    "CUSTOMERIO": true
   }
 }

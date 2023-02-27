@@ -25,7 +25,7 @@ jobs:
       - name: Get image version
         id: get_version
         run: |
-          VERSION="ut-$(jq -r .version package.json)"
+          VERSION="$(jq -r .version package.json)"
           echo $VERSION
           echo "::set-output name=version::$VERSION"
 

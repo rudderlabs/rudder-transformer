@@ -104,6 +104,11 @@ const DestCanonicalNames = {
     'Optimizely_Fullstack',
     'optimizely_fullstack',
   ],
+  courier: [
+    'Courier',
+    'courier',
+    'COURIER',
+  ],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

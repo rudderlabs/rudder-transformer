@@ -289,7 +289,7 @@ async function extractLibraries(code, versionId, validateImports, additionalLibs
     transformation = await getTransformationCodeV1(versionId);
   }
 
-  if (transformation?.imports == null) {
+  if (!transformation?.imports) {
       return parserForImport(code || transformation?.code, validateImports, additionalLibs, language);
   }
 

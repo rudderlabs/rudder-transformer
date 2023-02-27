@@ -24,7 +24,7 @@ function generateFunctionName(userTransformation, libraryVersionIds, testMode) {
     .toLowerCase();
 }
 
-async function extractRelevantLibraryVersionIdsForVersionId(functionName, code, versionId, libraryVersionIds, prepopulatedImports, testMode) {
+async function extractRelevantLibraryVersionIdsForVersionId(functionName, versionId, libraryVersionIds, prepopulatedImports) {
   if (functionName === FAAS_AST_FN_NAME || versionId == FAAS_AST_VID) return [];
 
   const cachedLvids = libVersionIdsCache.get(functionName);
@@ -79,11 +79,9 @@ async function setOpenFaasUserTransform(
     userTransformation.versionId,
     await extractRelevantLibraryVersionIdsForVersionId(
       functionName,
-      userTransformation.code,
       userTransformation.versionId,
       libraryVersionIds,
-      userTransformation.imports,
-      testMode
+      userTransformation.imports
     ),
     testMode,
   );
@@ -124,11 +122,9 @@ async function runOpenFaasUserTransform(events, userTransformation, libraryVersi
     userTransformation.versionId,
     await extractRelevantLibraryVersionIdsForVersionId(
       functionName,
-      userTransformation.code,
       userTransformation.versionId,
       libraryVersionIds,
-      userTransformation.imports,
-      testMode
+      userTransformation.imports
     ),
     testMode,
   );

@@ -148,9 +148,8 @@ async function setupFaasFunction(functionName, code, versionId, libraryVersionID
     // deploy faas function
     await deployFaasFunction(functionName, code, versionId, libraryVersionIDs, testMode);
 
-    // This api call is only used to check if function is spinned eventually
-    // TODO: call health endpoint instead of get function to get correct status
-    await callWithRetry(getFunction, 0, DEFAULT_RETRY_DELAY_MS, DEFAULT_RETRY_THRESHOLD, functionName);
+    // This api call is only used to check if function is spinned correctly
+    await awaitFunctionReadiness(functionName);
 
     setFunctionInCache(functionName);
     logger.debug(`[Faas] Finished deploying faas function ${functionName}`);

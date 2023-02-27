@@ -1100,6 +1100,67 @@ describe("Timeout tests", () => {
   });
 });
 
+describe("Rudder library tests", () => {
+  beforeEach(() => {});
+  it(`Simple ${name} async test for V1 transformation - with rudder library urlParser `, async () => {
+    const versionId = randomID();
+    const rudderLibraryImportName = '@rs/urlParser/v1';
+    const [name, version] = rudderLibraryImportName.split('/').slice(-2);
+    const inputData = require(`./data/${integration}_input_large.json`);
+    const expectedData = require(`./data/${integration}_async_output_large.json`);
+
+    const respBody = {
+      code: `
+      import url from '@rs/urlParser/v1';
+      async function foo() {
+        return 'resolved';
+      }
+      export async function transformEvent(event, metadata) {
+          const pr = await foo();
+          if(event.properties && event.properties.url){
+            const x = new url.URLSearchParams(event.properties.url).get("client");
+          }
+          event.promise = pr;
+          return event;
+        }
+        `,
+      name: "urlParser",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const urlCode = `${fs.readFileSync(
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
+      "utf8"
+    )};
+    export default self;
+    `;
+
+    const rudderLibraryUrl = `https://api.rudderlabs.com/rudderstackTransformationLibraries/${name}?version=${version}`;
+    when(fetch)
+      .calledWith(rudderLibraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: urlCode, name: "urlParser", importName: rudderLibraryImportName })
+      });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+
+    expect(output).toEqual(expectedData);
+  });
+});
+
 // Running tests for python transformations with openfaas mocks
 describe("Python transformations", () => {
   beforeEach(() => {

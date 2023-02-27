@@ -7,7 +7,7 @@ const {
   getProductsListFromLineItems,
   extractEmailFromPayload,
   setAnonymousIdorUserId,
-  getEventNameForOrderEdit,
+  // getEventNameForOrderEdit,
   checkForValidRecord
 } = require('./util');
 const { redisConnector } = require('../../../util/redisConnector');
@@ -75,9 +75,9 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
 const trackPayloadBuilder = (event, shopifyTopic) => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.TRACK);
-  if (shopifyTopic === "orders_edited") {
-    message.setEventName(getEventNameForOrderEdit(message));
-  }
+  // if (shopifyTopic === "orders_edited") {
+  //   message.setEventName(getEventNameForOrderEdit(message));
+  // }
   message.setEventName(SHOPIFY_TRACK_MAP[shopifyTopic]);
 
   Object.keys(event)
@@ -135,9 +135,13 @@ const processEvent = async (inputEvent) => {
       break;
     case 'carts_create':
     case 'carts_update':
-      if(checkForValidRecord(inputEvent)){
+      if (checkForValidRecord(inputEvent)) {
         message = trackPayloadBuilder(event, shopifyTopic);
-      }else{ // This Scenario handles the case when empty cart events are passed
+      } else {
+        /**
+         *  This Scenario handles the case when empty cart events are passed
+         * or same cart_Events are passed or cart events are passed within 
+         */
         const result = {
           outputToSource: {
             body: Buffer.from('OK').toString('base64'),
@@ -148,7 +152,6 @@ const processEvent = async (inputEvent) => {
         return result;
       }
       break;
-
     default:
       if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
         throw new TransformationError(`event type ${shopifyTopic} not supported`);
@@ -187,7 +190,8 @@ const processEvent = async (inputEvent) => {
     writeKey: inputEvent.query_parameters?.writeKey?.[0],
     timestamp: Date.now(),
   });
-  return message;
+  const response = message
+  return Promise.resolve(response);
 };
 const isIdentifierEvent = (event) => {
   if (event?.event === 'rudderIdentifier') {
@@ -200,7 +204,7 @@ const isIdentifierEvent = (event) => {
   return false;
 };
 const processIdentifierEvent = async (event) => {
-  await redisConnector.postToDB(event.cartToken, { anonymousId: event.anonymousId });
+  await redisConnector.postToDB(event.cartToken, JSON.stringify({ anonymousId: event.anonymousId, cartPayload: event }));
   const result = {
     outputToSource: {
       body: Buffer.from('OK').toString('base64'),
@@ -210,7 +214,15 @@ const processIdentifierEvent = async (event) => {
   };
   return result;
 };
-const process = (event) =>
-  isIdentifierEvent(event) ? processIdentifierEvent(event) : processEvent(event);
+const process = async event => {
+  if (isIdentifierEvent(event)) {
+    return processIdentifierEvent(event);
+  }
+  const response = await processEvent(event);
+  console.log(response);
+  return response;
+
+
+}
 
 exports.process = process;

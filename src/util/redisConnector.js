@@ -33,10 +33,6 @@ class DBConnector {
     async getFromDB(key) {
         try {
             const value = await this.client.get(`${key}`);
-            if (value === null) {
-                console.log(" Val: ", value);
-                return 1;
-            }
             console.log("Got Val: ", value);
             return value;
         }

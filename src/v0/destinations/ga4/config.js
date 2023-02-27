@@ -159,7 +159,6 @@ const ConfigCategory = {
   },
 };
 
-const USER_IDENTIFIERS_EVENTS = ['login', 'sign_up', 'generate_lead'];
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 module.exports = {
@@ -167,6 +166,5 @@ module.exports = {
   DEBUG_ENDPOINT,
   ConfigCategory,
   mappingConfig,
-  USER_IDENTIFIERS_EVENTS,
   trackCommonConfig: mappingConfig[ConfigCategory.COMMON.name],
 };

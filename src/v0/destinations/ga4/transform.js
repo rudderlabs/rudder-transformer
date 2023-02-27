@@ -23,7 +23,6 @@ const {
   trackCommonConfig,
   mappingConfig,
   ConfigCategory,
-  USER_IDENTIFIERS_EVENTS,
 } = require('./config');
 const {
   isReservedEventName,
@@ -109,7 +108,6 @@ const responseBuilder = (message, { Config }) => {
     payload.name = evConfigEvent;
     payload.params = constructPayload(message, mappingConfig[name]);
 
-    if (!USER_IDENTIFIERS_EVENTS.includes(payload.name)) {
       if (item) {
         // item
         payload.params.items = getItem(message, item === 'YES');
@@ -151,7 +149,6 @@ const responseBuilder = (message, { Config }) => {
           mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name],
         ),
       };
-    }
   } else if (message.type === 'page') {
     // page event
     payload.name = event;

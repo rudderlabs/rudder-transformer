@@ -11,6 +11,9 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 
+const { createJob, addUserToJob } = require('./util');
+
+const { isHttpStatusSuccess } = require('../../util/index');
 const {
   InstrumentationError,
   ConfigurationError,
@@ -222,6 +225,34 @@ const processEvent = async (metadata, message, destination) => {
     Object.values(createdPayload).forEach((data) => {
       response.push(responseBuilder(metadata, data, destination));
     });
+    const { body, method, params, endpoint, headers } = response[0];
+    // const { headers } = request;
+    const { customerId, listId } = params;
+
+    // step1: offlineUserDataJobs creation
+
+    const firstResponse = await createJob(endpoint, customerId, listId, headers, method);
+    if (!firstResponse.success && !isHttpStatusSuccess(firstResponse?.response?.response?.status)) {
+      response[0].params.failedResponse = firstResponse;
+      return response;
+    }
+
+    // step2: putting users into the job
+    let jobId;
+    if (firstResponse?.response?.data?.resourceName)
+      // eslint-disable-next-line prefer-destructuring
+      jobId = firstResponse.response.data.resourceName.split('/')[3];
+    const secondResponse = await addUserToJob(endpoint, headers, method, jobId, body);
+    // console.log(JSON.stringify(secondResponse.response.response));
+    if (
+      !secondResponse.success &&
+      !isHttpStatusSuccess(secondResponse?.response?.response?.status)
+    ) {
+      return secondResponse;
+    }
+
+    params.jobId = jobId;
+
     return response;
   }
 

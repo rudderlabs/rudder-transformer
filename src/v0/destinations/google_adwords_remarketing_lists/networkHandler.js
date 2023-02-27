@@ -82,28 +82,31 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
  * @returns
  */
 const gaAudienceProxyRequest = async (request) => {
-  const { body, method, params, endpoint } = request;
+  const { method, params, endpoint } = request;
   const { headers } = request;
-  const { customerId, listId } = params;
+  const { jobId } = params;
 
   // step1: offlineUserDataJobs creation
 
-  const firstResponse = await createJob(endpoint, customerId, listId, headers, method);
-  if (!firstResponse.success && !isHttpStatusSuccess(firstResponse?.response?.response?.status)) {
-    return firstResponse;
-  }
+  // const firstResponse = await createJob(endpoint, customerId, listId, headers, method);
+  // if (!firstResponse.success && !isHttpStatusSuccess(firstResponse?.response?.response?.status)) {
+  //   return firstResponse;
+  // }
 
   // step2: putting users into the job
-  let jobId;
-  if (firstResponse?.response?.data?.resourceName)
-    // eslint-disable-next-line prefer-destructuring
-    jobId = firstResponse.response.data.resourceName.split('/')[3];
-  const secondResponse = await addUserToJob(endpoint, headers, method, jobId, body);
-  // console.log(JSON.stringify(secondResponse.response.response));
-  if (!secondResponse.success && !isHttpStatusSuccess(secondResponse?.response?.response?.status)) {
-    return secondResponse;
-  }
+  // let jobId;
+  // if (firstResponse?.response?.data?.resourceName)
+  //   // eslint-disable-next-line prefer-destructuring
+  //   jobId = firstResponse.response.data.resourceName.split('/')[3];
+  // const secondResponse = await addUserToJob(endpoint, headers, method, jobId, body);
+  // // console.log(JSON.stringify(secondResponse.response.response));
+  // if (!secondResponse.success && !isHttpStatusSuccess(secondResponse?.response?.response?.status)) {
+  //   return secondResponse;
+  // }
 
+  // if(failedResponse){
+  //   return failedResponse;
+  // }
   // step3: running the job
   const thirdResponse = await runTheJob(endpoint, headers, method, jobId);
   return thirdResponse;

@@ -105,5 +105,24 @@
       }
     ],
     "status": 200
+  },
+  "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs/12345678:run": {
+    "status": 200
+  },
+  "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs/123456789:run": {
+    "status": 200
+  },
+  "https://googleads.googleapis.com/v10/customers/7693729834/offlineUserDataJobs/123456780:run": {
+    "code": "ERR_BAD_REQUEST",
+    "response": {
+      "data": {
+        "error": {
+          "code": 401,
+          "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+          "status": "UNAUTHENTICATED"
+        }
+      },
+      "status": 401
+    }
   }
 }

@@ -8,43 +8,23 @@
   },
   {
     "output": {
-      "status": 400,
-      "message": "Request contains an invalid argument. during ga_audience response transformation",
+      "status": 401,
+      "authErrorCategory": "REFRESH_TOKEN",
       "destinationResponse": {
         "error": {
-          "code": 400,
-          "details": [
-            {
-              "@type": "type.googleapis.com/google.ads.googleads.v9.errors.GoogleAdsFailure",
-              "errors": [
-                {
-                  "errorCode": {
-                    "offlineUserDataJobError": "INVALID_SHA256_FORMAT"
-                  },
-                  "message": "The SHA256 encoded value is malformed.",
-                  "location": {
-                    "fieldPathElements": [
-                      { "fieldName": "operations", "index": 0 },
-                      { "fieldName": "remove" },
-                      { "fieldName": "user_identifiers", "index": 0 },
-                      { "fieldName": "hashed_email" }
-                    ]
-                  }
-                }
-              ]
-            }
-          ],
-          "message": "Request contains an invalid argument.",
-          "status": "INVALID_ARGUMENT"
+          "code": 401,
+          "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+          "status": "UNAUTHENTICATED"
         }
       },
+      "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during ga_audience response transformation",
       "statTags": {
-        "destType": "GOOGLE_ADWORDS_REMARKETING_LISTS",
         "errorCategory": "network",
         "errorType": "aborted",
-        "feature": "dataDelivery",
+        "destType": "GOOGLE_ADWORDS_REMARKETING_LISTS",
+        "module": "destination",
         "implementation": "native",
-        "module": "destination"
+        "feature": "dataDelivery"
       }
     }
   },

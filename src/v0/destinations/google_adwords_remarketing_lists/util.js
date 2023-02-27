@@ -1,5 +1,5 @@
 const { httpSend } = require('../../../adapters/network');
-
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 /**
  * This function helps to create a offlineUserDataJobs
  * @param endpoint
@@ -49,7 +49,26 @@ const addUserToJob = async (endpoint, headers, method, jobId, body) => {
   return response;
 };
 
+/**
+ * This function helps to detarmine type of error occured. According to the response
+ * we set authErrorCategory to take decision if we need to refresh the access_token
+ * or need to disable the destination.
+ * @param {*} code
+ * @param {*} response
+ * @returns
+ */
+const getAuthErrCategory = (code, response) => {
+  switch (code) {
+    case 401:
+      if (!response.error.details) return REFRESH_TOKEN;
+      return '';
+    default:
+      return '';
+  }
+};
+
 module.exports = {
   createJob,
   addUserToJob,
+  getAuthErrCategory,
 };

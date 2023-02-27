@@ -13,7 +13,8 @@
         },
         "params": {
           "listId": "709078448",
-          "customerId": "7693729833"
+          "customerId": "7693729833",
+          "jobId": "12345678"
         },
         "body": {
           "JSON": {
@@ -66,7 +67,8 @@
         },
         "params": {
           "listId": "709078448",
-          "customerId": "7693729833"
+          "customerId": "7693729833",
+          "jobId": "123456780"
         },
         "body": {
           "JSON": {
@@ -105,7 +107,8 @@
         },
         "params": {
           "listId": "709078448",
-          "customerId": "7693729833"
+          "customerId": "7693729833",
+          "jobId": "123456789"
         },
         "body": {
           "JSON": {

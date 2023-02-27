@@ -5,7 +5,7 @@ on:
     types:
       - closed
     branches:
-      - master
+      - main
 
 jobs:
   release:
@@ -50,16 +50,16 @@ jobs:
         run: |
           git tag -a ${{ steps.extract-version.outputs.release_version }} -m "chore: release v${{ steps.extract-version.outputs.release_version }}"
           git push origin refs/tags/${{ steps.extract-version.outputs.release_version }}
-          npm run release:github
+          npm run release
           echo "DATE=$(date)" >> $GITHUB_ENV
 
       - name: Pull Changes Into develop Branch
         uses: repo-sync/pull-request@v2
         with:
-          source_branch: 'master'
+          source_branch: 'main'
           destination_branch: 'develop'
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_title: 'chore(release): pull master into develop post release v${{ steps.extract-version.outputs.release_version }}'
+          pr_title: 'chore(release): pull main into develop post release v${{ steps.extract-version.outputs.release_version }}'
           pr_body: ':crown: *An automated PR*'
 
       - name: Delete Hotfix Release Branch

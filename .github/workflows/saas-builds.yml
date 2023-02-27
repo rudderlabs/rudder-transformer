@@ -137,7 +137,7 @@ jobs:
           echo "ut-version is $UT_VERSION"
       - name: Clone repository and raise pull request
         run: |
-          git clone https://${{env.PAT}}@github.com/rudderlabs/rudder-devops.git
+          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
           git config --global user.email "noreply@github.com"
           git config --global user.name "GitHub Actions"
           git checkout -b "shared-transformer-$VERSION"

@@ -31,14 +31,12 @@ jobs:
       # Calculate the next release version based on conventional semantic release
       - name: Create Release Branch
         id: create-release
-        env:
-          HUSKY: 0
         run: |
           source_branch_name=${GITHUB_REF##*/}
           release_type=release
           grep -q "hotfix/" <<< "${GITHUB_REF}" && release_type=hotfix-release
-          git fetch origin master --depth=1
-          git merge origin/master
+          git fetch origin main --depth=1
+          git merge origin/main
           current_version=$(jq -r .version package.json)
 
           npm run release -- --skip.commit --skip.tag --skip.changelog
@@ -63,8 +61,6 @@ jobs:
 
       - name: Update Changelog & Bump Version
         id: finish-release
-        env:
-          HUSKY: 0
         run: |
           echo "Current version: $CURRENT_VERSION_VALUE"
           echo "New version: $NEW_VERSION_VALUE"
@@ -75,9 +71,9 @@ jobs:
         uses: repo-sync/pull-request@v2
         with:
           source_branch: ${{ steps.create-release.outputs.branch_name }}
-          destination_branch: 'master'
+          destination_branch: 'main'
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          pr_title: 'chore(release): pull ${{ steps.create-release.outputs.branch_name }} into master'
+          pr_title: 'chore(release): pull ${{ steps.create-release.outputs.branch_name }} into main'
           pr_body: ':crown: *An automated PR*'
 
       - name: Delete Hotfix Base Branch

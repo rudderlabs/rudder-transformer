@@ -1,4 +1,4 @@
-name: Build transformer develop image
+name: Build transformer image for development env
 on:
   push:
     branches:
@@ -7,9 +7,6 @@ env:
   REPO_NAME_OLD: rudderlabs/develop-rudder-transformer
   REPO_NAME: rudderstack/develop-rudder-transformer
   DOCKERHUB_USERNAME: rudderlabs
-  GITHUB_TOKEN: build-deploy-pkey
-  MAIL: mail-id
-  USER_NAME: user-name
 
 jobs:
   transformer-build:

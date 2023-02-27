@@ -1,17 +1,16 @@
-name: Build transformer release image
+name: Build transformer image for development env
 on:
   push:
     branches:
-      - 'rudder-saas'
+      - 'develop'
 env:
-  REPO_NAME_OLD: rudderlabs/rudder-transformer
-  REPO_NAME: rudderstack/rudder-transformer
+  REPO_NAME_OLD: rudderlabs/develop-rudder-transformer
+  REPO_NAME: rudderstack/develop-rudder-transformer
   DOCKERHUB_USERNAME: rudderlabs
 
 jobs:
   transformer-build:
-    name: Build transformer image
-    environment: production
+    name: Build transformer develop image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -20,7 +19,7 @@ jobs:
       - name: Get image version
         id: get_version
         run: |
-          VERSION="$(date '+%d%m%Y.%H%M%S')"
+          VERSION="develop"
           echo $VERSION
           echo "::set-output name=version::$VERSION"
 
@@ -36,7 +35,8 @@ jobs:
           context: .
           file: Dockerfile
           load: true
-          tags: ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }}
+          tags: |
+            ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }}
 
       - name: Run Tests
         run: |
@@ -54,7 +54,6 @@ jobs:
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ steps.get_version.outputs.version }}
             ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }}
-            ${{ env.REPO_NAME }}:latest
           platforms: |
             linux/amd64
             linux/arm64
@@ -63,8 +62,7 @@ jobs:
             COMMIT_HASH=${{ github.sha }}
 
   user-transformer-build:
-    name: Build user transformer image
-    environment: production
+    name: Build user transformer develop image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -73,7 +71,7 @@ jobs:
       - name: Get image version
         id: get_version
         run: |
-          VERSION="ut-$(date '+%d%m%Y.%H%M%S')"
+          VERSION="ut-develop"
           echo $VERSION
           echo "::set-output name=version::$VERSION"
 
@@ -89,7 +87,8 @@ jobs:
           context: .
           file: Dockerfile-ut-func
           load: true
-          tags: ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }}
+          tags: |
+            ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }}
 
       - name: Run Tests
         run: |
@@ -113,3 +112,4 @@ jobs:
           build-args: |
             VERSION=${{ steps.get_version.outputs.version }}
             COMMIT_HASH=${{ github.sha }}
+

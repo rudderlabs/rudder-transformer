@@ -1,16 +1,22 @@
-name: Build transformer main image
+name: Build transformer image for staging env
+
 on:
-  push:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
     branches:
-      - 'main'
+      - main
+
 env:
-  REPO_NAME_OLD: rudderlabs/develop-rudder-transformer
-  REPO_NAME: rudderstack/develop-rudder-transformer
+  REPO_NAME_OLD: rudderlabs/staging-rudder-transformer
+  REPO_NAME: rudderstack/staging-rudder-transformer
   DOCKERHUB_USERNAME: rudderlabs
 
 jobs:
   transformer-build:
-    name: Build transformer main image
+    name: Build transformer staging image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -19,7 +25,7 @@ jobs:
       - name: Get image version
         id: get_version
         run: |
-          VERSION="main"
+          VERSION="ut-$(jq -r .version package.json)"
           echo $VERSION
           echo "::set-output name=version::$VERSION"
 
@@ -54,16 +60,15 @@ jobs:
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ steps.get_version.outputs.version }}
             ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }}
-            ${{ env.REPO_NAME }}:latest
           platforms: |
             linux/amd64
             linux/arm64
           build-args: |
             VERSION=${{ steps.get_version.outputs.version }}
             COMMIT_HASH=${{ github.sha }}
-  
+
   user-transformer-build:
-    name: Build user transformer main image
+    name: Build user transformer staging image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -72,7 +77,7 @@ jobs:
       - name: Get image version
         id: get_version
         run: |
-          VERSION="ut-main"
+          VERSION="ut-$(jq -r .version package.json)"
           echo $VERSION
           echo "::set-output name=version::$VERSION"
 

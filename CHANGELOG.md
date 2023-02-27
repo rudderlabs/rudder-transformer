@@ -1,9 +1,23 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## [1.14.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.13.0...v1.14.0) (2023-02-27)
+
+
+### Features
+
+* added customerio group call support ([#1869](https://github.com/rudderlabs/rudder-transformer/issues/1869)) ([5e692ea](https://github.com/rudderlabs/rudder-transformer/commit/5e692ead3c43819edd47f8cf244a3f78ce510359))
+* include latest image of transformer ([#1879](https://github.com/rudderlabs/rudder-transformer/issues/1879)) ([b179fef](https://github.com/rudderlabs/rudder-transformer/commit/b179fef031fe06aa8d4e3b258c4740b45f4387bb))
+* onboard courier destination ([#1844](https://github.com/rudderlabs/rudder-transformer/issues/1844)) ([#1883](https://github.com/rudderlabs/rudder-transformer/issues/1883)) ([18bcdf8](https://github.com/rudderlabs/rudder-transformer/commit/18bcdf8b4b1f0b63cbe3f839df38f4b6b6875e98))
+* **transformation:** adding rudder libraries support ([#1817](https://github.com/rudderlabs/rudder-transformer/issues/1817)) ([1c91d22](https://github.com/rudderlabs/rudder-transformer/commit/1c91d22795b142a90011e35cf85d1a4ac8eaa545))
+
+
+### Bug Fixes
+
+* **integration:** Algolia  in CDK v2 now errors out for non string event names ([#1867](https://github.com/rudderlabs/rudder-transformer/issues/1867)) ([5be8891](https://github.com/rudderlabs/rudder-transformer/commit/5be88917270a9fb1c28fdd7f547e9a017aacf56d))
+* logger import ([#1874](https://github.com/rudderlabs/rudder-transformer/issues/1874)) ([7ff1b4a](https://github.com/rudderlabs/rudder-transformer/commit/7ff1b4a11fe530de45dacce1da7bf0d58d4b38fd))
+* package.json & package-lock.json to reduce vulnerabilities ([#1885](https://github.com/rudderlabs/rudder-transformer/issues/1885)) ([11b4a4b](https://github.com/rudderlabs/rudder-transformer/commit/11b4a4b523b00dffb0c9d0017a6ed3279fc596d2))
 
 ## [1.13.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.12.0...v1.13.0) (2023-02-15)
 

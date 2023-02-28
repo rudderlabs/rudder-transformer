@@ -35,5 +35,5 @@ jobs:
           date: '6 months ago'
           dry_run: false
           delete_tags: false
-          extra_protected_branch_regex: ^(main|master|release.*|rudder-saas)$
+          extra_protected_branch_regex: ^(main|release.*|rudder-saas)$
           exclude_open_pr_branches: true

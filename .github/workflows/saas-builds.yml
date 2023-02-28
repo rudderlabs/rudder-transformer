@@ -54,6 +54,7 @@ jobs:
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ steps.get_version.outputs.version }}
             ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }}
+            ${{ env.REPO_NAME }}:latest
           platforms: |
             linux/amd64
             linux/arm64

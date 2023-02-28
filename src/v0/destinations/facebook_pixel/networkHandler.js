@@ -125,4 +125,5 @@ const networkHandler = function () {
 
 module.exports = {
   networkHandler,
+  errorResponseHandler,
 };

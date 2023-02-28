@@ -24,7 +24,7 @@ function generateFunctionName(userTransformation, libraryVersionIds, testMode) {
     .toLowerCase();
 }
 
-async function extractRelevantLibraryVersionIdsForVersionId(functionName, versionId, libraryVersionIds, prepopulatedImports) {
+async function extractRelevantLibraryVersionIdsForVersionId(functionName, code, versionId, libraryVersionIds, prepopulatedImports, testMode) {
   if (functionName === FAAS_AST_FN_NAME || versionId == FAAS_AST_VID) return [];
 
   const cachedLvids = libVersionIdsCache.get(functionName);
@@ -35,12 +35,22 @@ async function extractRelevantLibraryVersionIdsForVersionId(functionName, versio
     (libraryVersionIds || []).map(async (libraryVersionId) => getLibraryCodeV1(libraryVersionId)),
   );
 
+  const codeImports = prepopulatedImports || Object.keys(await require('./customTransformer').extractLibraries(
+    code,
+    versionId,
+    false,
+    [],
+    "pythonfaas",
+    testMode
+    )
+  );
+
   const relevantLvids = [];
 
-  if (libraries && prepopulatedImports) {
+  if (libraries && codeImports) {
     libraries.forEach((library) => {
       const libHandleName = library.handleName || _.camelCase(library.name);
-      if (prepopulatedImports.includes(libHandleName)) {
+      if (codeImports.includes(libHandleName)) {
         relevantLvids.push(library.versionId);
       }
     });
@@ -79,9 +89,11 @@ async function setOpenFaasUserTransform(
     userTransformation.versionId,
     await extractRelevantLibraryVersionIdsForVersionId(
       functionName,
+      userTransformation.code,
       userTransformation.versionId,
       libraryVersionIds,
-      userTransformation.imports
+      userTransformation.imports,
+      testMode
     ),
     testMode,
   );
@@ -122,9 +134,11 @@ async function runOpenFaasUserTransform(events, userTransformation, libraryVersi
     userTransformation.versionId,
     await extractRelevantLibraryVersionIdsForVersionId(
       functionName,
+      userTransformation.code,
       userTransformation.versionId,
       libraryVersionIds,
-      userTransformation.imports
+      userTransformation.imports,
+      testMode
     ),
     testMode,
   );

@@ -28,9 +28,8 @@ const profilingRouter = require('./routes/profiling');
 const destProxyRoutes = require('./routes/destinationProxy');
 const eventValidator = require('./util/eventValidation');
 const { prometheusRegistry } = require('./middleware');
-const { compileUserLibrary } = require('./util/ivmFactory');
 const { getIntegrations } = require('./routes/utils');
-const { setupUserTransformHandler } = require('./util/customTransformer');
+const { setupUserTransformHandler, validateCode } = require('./util/customTransformer');
 const { CommonUtils } = require('./util/common');
 const { RespStatusError, RetryRequestError, sendViolationMetrics } = require('./util/utils');
 const { isCdkV2Destination, getCdkV2TestThreshold } = require('./cdk/v2/utils');
@@ -603,13 +602,27 @@ if (startDestTransformer) {
   if (functionsEnabled()) {
     router.post('/extractLibs', async (ctx) => {
       try {
-        const { code, validateImports = false, language = "javascript" } = ctx.request.body;
+        const {
+          code,
+          versionId,
+          validateImports = false,
+          additionalLibraries = [],
+          language = "javascript",
+          testMode = false
+        } = ctx.request.body;
 
         if (!code) {
           throw new Error('Invalid request. Code is missing');
         }
 
-        const obj = await extractLibraries(code, validateImports, language);
+        const obj = await extractLibraries(
+          code,
+          versionId,
+          validateImports,
+          additionalLibraries,
+          language,
+          testMode || versionId === 'testVersionId'
+        );
         ctx.body = obj;
       } catch (err) {
         ctx.status = 400;
@@ -796,12 +809,13 @@ if (transformerTestModeEnabled) {
 
   router.post('/transformationLibrary/test', async (ctx) => {
     try {
-      const { code } = ctx.request.body;
+      const { code, language = "javascript" } = ctx.request.body;
+
       if (!code) {
         throw new Error('Invalid request. Missing code');
       }
 
-      const res = await compileUserLibrary(code);
+      const res = await validateCode(code, language);
       ctx.body = res;
     } catch (error) {
       ctx.body = { error: error.message };
@@ -817,8 +831,8 @@ if (transformerTestModeEnabled) {
   router.post('/transformation/sethandle', async (ctx) => {
     try {
       const { trRevCode, libraryVersionIDs = [] } = ctx.request.body;
-      const { code, language, testName, testWithPublish = false } = trRevCode || {};
-      if (!code || !language || !testName) {
+      const { code, versionId, language, testName, testWithPublish = false } = trRevCode || {};
+      if (!code || !language || !testName || (language === 'pythonfaas' && !versionId)) {
         throw new Error('Invalid Request. Missing parameters in transformation code block');
       }
 

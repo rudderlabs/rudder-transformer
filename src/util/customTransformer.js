@@ -226,6 +226,10 @@ async function userTransformHandler(
           libraryVersionIDs,
         );
 
+        if (result.error) {
+          throw Error(result.error);
+        }
+
         userTransformedEvents = result.transformedEvents;
         if (testMode) {
           userTransformedEvents = {

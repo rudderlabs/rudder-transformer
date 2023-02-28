@@ -503,11 +503,13 @@ const trackRequestHandler = async (message, category, destination) => {
     );
   }
 
-  const storedEventsArr = res.response.data.eventTrackingEvents;
+  const storedEventsArr = res.response?.data?.eventTrackingEvents;
   const storedEvents = [];
-  storedEventsArr.map((ev) => {
-    storedEvents.push(ev.name);
-  });
+  if (Array.isArray(storedEventsArr)) {
+    storedEventsArr.map((ev) => {
+      storedEvents.push(ev.name);
+    });
+  }
   // Check if the source event is already present if not we make a create request
   // Ref - https://developers.activecampaign.com/reference/create-a-new-event-name-only
   if (!storedEvents.includes(message.event)) {

@@ -227,7 +227,7 @@ async function userTransformHandler(
         );
 
         if (result.error) {
-          throw Error(result.error);
+          throw new Error(result.error);
         }
 
         userTransformedEvents = result.transformedEvents;
@@ -281,7 +281,7 @@ async function validateCode(code, language) {
     return parserForImport(code, true, [], language);
   }
 
-  throw Error('Unsupported language');
+  throw new Error('Unsupported language');
 }
 
 async function extractLibraries(code, versionId, validateImports, additionalLibs, language = "javascript", testMode = false) {

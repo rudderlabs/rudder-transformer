@@ -17,7 +17,10 @@ destinations.forEach((dest) => {
 
 const sleep = async (sleepInMs) => new Promise((resolve) => { setTimeout(resolve, sleepInMs) });
 /**
- * Mock network handler for a destination
+ * Mock network handler for a destination.
+ *
+ * When `/proxy` call is made, the responses from `mocks/<dest_type>/response.json` is randomly selected
+ * returned when `networkHandler.proxy` method is called(this is being done in `versionedRouter.js`'s  `handleProxyRequest`)
  * 
  * **Notes**:
  * - This is only applied to the `/proxy` endpoint

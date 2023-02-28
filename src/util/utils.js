@@ -1,5 +1,4 @@
 /* eslint-disable max-classes-per-file */
-const { violationTypes } = require("./eventValidation");
 const stats = require('./stats');
 
 class RespStatusError extends Error {

@@ -426,13 +426,10 @@ const screenRequestHandler = async (message, category, destination) => {
   }
 
   const storedEventsArr = res.response.data.eventTrackingEvents;
-  const storedEvents = [];
-  storedEventsArr.map((ev) => {
-    storedEvents.push(ev.name);
-  });
+  const events = Array.isArray(storedEventsArr) ? storedEventsArr.map((ev) => ev.name) : [];
   // Check if the source event is already present if not we make a create request
   // Ref - https://developers.activecampaign.com/reference/create-a-new-event-name-only
-  if (!storedEvents.includes(message.event)) {
+  if (!events.includes(message.event)) {
     // Create the event
     endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint}`;
     const requestData = {
@@ -504,15 +501,10 @@ const trackRequestHandler = async (message, category, destination) => {
   }
 
   const storedEventsArr = res.response?.data?.eventTrackingEvents;
-  const storedEvents = [];
-  if (Array.isArray(storedEventsArr)) {
-    storedEventsArr.map((ev) => {
-      storedEvents.push(ev.name);
-    });
-  }
+  const events = Array.isArray(storedEventsArr) ? storedEventsArr.map((ev) => ev.name) : [];
   // Check if the source event is already present if not we make a create request
   // Ref - https://developers.activecampaign.com/reference/create-a-new-event-name-only
-  if (!storedEvents.includes(message.event)) {
+  if (!events.includes(message.event)) {
     // Create the event
     endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint}`;
     const requestData = {

@@ -206,7 +206,6 @@ const createPayload = (message, destination) => {
 };
 
 const processEvent = async (metadata, message, destination) => {
-  const responses = [];
   if (!message.type) {
     throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
@@ -225,69 +224,71 @@ const processEvent = async (metadata, message, destination) => {
       );
     }
 
-    Object.values(createdPayload).forEach((data) => {
-      responses.push(responseBuilder(metadata, data, destination));
-    });
+    const responses = Object.values(createdPayload).map((data) =>
+      responseBuilder(metadata, data, destination),
+    );
 
-    // eslint-disable-next-line no-restricted-syntax
-    for (const { body, method, params, endpoint, headers } of responses) {
-      // const { headers } = request;
-      const { customerId, listId } = params;
+    await Promise.all(
+      responses.map(async (response) => {
+        const { body, method, params, endpoint, headers } = response;
+        const { customerId, listId } = params;
 
-      // step1: offlineUserDataJobs creation
+        // step1: offlineUserDataJobs creation
 
-      const firstResponse = await createJob(endpoint, customerId, listId, headers, method);
-      if (
-        !firstResponse.success &&
-        !isHttpStatusSuccess(firstResponse?.response?.response?.status)
-      ) {
-        const processedResponse = processAxiosResponse(firstResponse);
-        const authErrorCategory = getAuthErrCategory(
-          processedResponse.status,
-          processedResponse.response,
-        );
-        throw new InvalidAuthTokenError(
-          `${processedResponse?.response?.error?.message} during offlineUserDataJobs creation`,
-          firstResponse?.response?.response?.status,
-          firstResponse,
-          authErrorCategory,
-        );
-      }
+        const firstResponse = await createJob(endpoint, customerId, listId, headers, method);
+        if (
+          !firstResponse.success &&
+          !isHttpStatusSuccess(firstResponse?.response?.response?.status)
+        ) {
+          const processedResponse = processAxiosResponse(firstResponse);
+          const authErrorCategory = getAuthErrCategory(
+            processedResponse.status,
+            processedResponse.response,
+          );
+          throw new InvalidAuthTokenError(
+            `${processedResponse?.response?.error?.message} during offlineUserDataJobs creation`,
+            firstResponse?.response?.response?.status,
+            firstResponse,
+            authErrorCategory,
+          );
+        }
 
-      // step2: putting users into the job
-      let jobId;
-      if (firstResponse?.response?.data?.resourceName) {
-        // eslint-disable-next-line prefer-destructuring
-        jobId = firstResponse.response.data.resourceName.split('/')[3];
-      }
-      const secondResponse = await addUserToJob(endpoint, headers, method, jobId, body);
-      if (
-        !secondResponse.success &&
-        !isHttpStatusSuccess(secondResponse?.response?.response?.status)
-      ) {
-        const processedResponse = processAxiosResponse(firstResponse);
-        const authErrorCategory = getAuthErrCategory(
-          processedResponse.status,
-          processedResponse.response,
-        );
-        throw new InvalidAuthTokenError(
-          `${processedResponse?.response?.error?.message} during adding or removing users to offlineUserDataJobs creation`,
-          firstResponse?.response?.response?.status,
-          firstResponse,
-          authErrorCategory,
-        );
-      }
-
-      params.jobId = jobId;
-    }
-
+        // step2: putting users into the job
+        let jobId;
+        if (firstResponse?.response?.data?.resourceName) {
+          // eslint-disable-next-line prefer-destructuring
+          jobId = firstResponse.response.data.resourceName.split('/')[3];
+        }
+        const secondResponse = await addUserToJob(endpoint, headers, method, jobId, body);
+        if (
+          !secondResponse.success &&
+          !isHttpStatusSuccess(secondResponse?.response?.response?.status)
+        ) {
+          const processedResponse = processAxiosResponse(secondResponse);
+          const authErrorCategory = getAuthErrCategory(
+            processedResponse.status,
+            processedResponse.response,
+          );
+          throw new InvalidAuthTokenError(
+            `${processedResponse?.response?.error?.message} during adding or removing users to offlineUserDataJobs creation`,
+            secondResponse?.response?.response?.status,
+            secondResponse,
+            authErrorCategory,
+          );
+        }
+        params.jobId = jobId;
+      }),
+    );
     return responses;
   }
 
   throw new InstrumentationError(`Message Type ${message.type} not supported.`);
 };
 
-const process = async (event) => processEvent(event.metadata, event.message, event.destination);
+const process = async (event) => {
+  const response = await processEvent(event.metadata, event.message, event.destination);
+  return response;
+};
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);

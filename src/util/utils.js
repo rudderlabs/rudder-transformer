@@ -34,30 +34,12 @@ const sendViolationMetrics = (validationErrors, dropped, metaTags) => {
   };
   
   validationErrors.forEach(error => {
-    switch (error.type) {
-      case violationTypes.UnplannedEvent:
-        vTags[violationTypes.UnplannedEvent] += 1;
-        break;
-      case violationTypes.AdditionalProperties:
-        vTags[violationTypes.AdditionalProperties] += 1;
-        break;
-      case violationTypes.DatatypeMismatch:
-        vTags[violationTypes.DatatypeMismatch] += 1;
-        break;
-      case violationTypes.RequiredMissing:
-        vTags[violationTypes.RequiredMissing] += 1;
-        break;
-      case violationTypes.UnknownViolation:
-        vTags[violationTypes.UnknownViolation] += 1;
-        break;
-      default:
-        break;
-    }
+    vTags[error.type] += 1;
   });
   
   Object.entries(vTags).forEach(([key, value]) => {
     if (value > 0) {
-      stats.gauge('hv_metrics', value, { ...metaTags, dropped, violationType: key });
+      stats.counter('hv_metrics', value, { ...metaTags, dropped, violationType: key });
     }
   });
 }

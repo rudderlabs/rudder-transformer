@@ -32,7 +32,7 @@ const { compileUserLibrary } = require('./util/ivmFactory');
 const { getIntegrations } = require('./routes/utils');
 const { setupUserTransformHandler } = require('./util/customTransformer');
 const { CommonUtils } = require('./util/common');
-const { RespStatusError, RetryRequestError } = require('./util/utils');
+const { RespStatusError, RetryRequestError, sendViolationMetrics } = require('./util/utils');
 const { isCdkV2Destination, getCdkV2TestThreshold } = require('./cdk/v2/utils');
 const { PlatformError } = require('./v0/util/errorTypes');
 const { getCachedWorkflowEngine, processCdkV2Workflow } = require('./cdk/v2/handler');
@@ -350,6 +350,7 @@ async function handleValidation(ctx) {
       parsedEvent.request = { query: reqParams };
       // eslint-disable-next-line no-await-in-loop
       const hv = await eventValidator.handleValidation(parsedEvent);
+      sendViolationMetrics(hv.validationErrors, hv.dropEvent, metaTags);
       if (hv.dropEvent) {
         const errMessage = `Error occurred while validating because : ${hv.violationType}`;
         respList.push({

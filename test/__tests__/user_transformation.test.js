@@ -1217,7 +1217,8 @@ describe("Python transformations", () => {
     );
     expect(axios.get).toHaveBeenCalledTimes(1);
     expect(axios.get).toHaveBeenCalledWith(
-      `${OPENFAAS_GATEWAY_URL}/system/function/${funcName}`
+      `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
+      {"headers": {"X-REQUEST-TYPE": "HEALTH-CHECK"}}
     );
   });
 
@@ -1439,7 +1440,7 @@ describe("Python transformations", () => {
         response: { status: 404, data: `error finding function ${funcName}` } // invoke function not found
       })
       .mockResolvedValueOnce({}); // create function
-    axios.get.mockResolvedValue({}); // get function
+    axios.get.mockResolvedValue({}); // awaitFunctionReadiness()
 
     await expect(async () => {
       await userTransformHandler(inputData, versionId, []);
@@ -1457,7 +1458,8 @@ describe("Python transformations", () => {
 
     expect(axios.get).toHaveBeenCalledTimes(1);
     expect(axios.get).toHaveBeenCalledWith(
-      `${OPENFAAS_GATEWAY_URL}/system/function/${funcName}`
+      `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
+      {"headers": {"X-REQUEST-TYPE": "HEALTH-CHECK"}}
     );
   });
 

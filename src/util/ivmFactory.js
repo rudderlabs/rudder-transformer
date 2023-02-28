@@ -43,13 +43,13 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
     // TODO: Check if this should this be &&
     libraries.forEach((library) => {
       const libHandleName = _.camelCase(library.name);
-      if (extractedLibImportNames.includes(libHandleName)) {
+      if (extractedLibraries.includes(libHandleName)) {
         librariesMap[libHandleName] = library.code;
       }
     });
 
     // Extract ruddder libraries from import names
-    const rudderLibImportNames = extractedLibImportNames.filter((name) =>
+    const rudderLibImportNames = extractedLibraries.filter((name) =>
       RUDDER_LIBRARY_REGEX.test(name),
     );
     const rudderLibraries = await Promise.all(

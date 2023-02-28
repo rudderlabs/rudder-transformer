@@ -12,7 +12,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "abc123"
+        "apiKeyVitally": "abc123"
       },
       "DestinationDefinition": {
         "Config": {
@@ -33,7 +33,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "abc123"
+        "apiKeyVitally": "abc123"
       },
       "DestinationDefinition": {
         "Config": {
@@ -52,7 +52,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "abc123"
+        "apiKeyVitally": "abc123"
       },
       "DestinationDefinition": {
         "Config": {
@@ -69,7 +69,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "abc123"
+        "apiKeyVitally": "abc123"
       },
       "DestinationDefinition": {
         "Config": {

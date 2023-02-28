@@ -1,7 +1,7 @@
 message:
   supportedMessageTypes:
-    - identify
     - track
+    - identify
     - group
   default:
     transformation:

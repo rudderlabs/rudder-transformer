@@ -135,7 +135,7 @@ const setAnonymousIdorUserId = async (message) => {
       throw new Error(`${message.event} missed`);
   }
 
-  const valFromDB = await JSON.parse(redisConnector.getFromDB(cartToken));
+  const valFromDB = JSON.parse(await redisConnector.getFromDB(cartToken));
   let anonymousIDfromDB = valFromDB.anonymousId;
   if (anonymousIDfromDB === null) {
     // this is for backward compatability when we don't have the redis mapping for older events
@@ -145,7 +145,7 @@ const setAnonymousIdorUserId = async (message) => {
   message.setProperty('anonymousId', anonymousIDfromDB || "Not Found");
 };
 
-/**
+/** TODO:
  * This Function returns the actual event happened for the order edited event of the shopify
  * these can be order-updated, Order Refunded, Order Cancelled
  * @param event 
@@ -171,16 +171,16 @@ const compareCartPayloadandTimestamp = (prevPayload, newPayload) => {
  * This Function will check for cart duplication events 
  * @param {*} event 
  */
-const checkForValidRecord = event => {
-  if (event.line_items.length === 0) {
+const checkForValidRecord = async event => {
+  // if (event.line_items.length === 0) {
+  //   return false;
+  // }
+  const sesionKey = event.cart_token || event.token;
+  const redisVal = JSON.parse(await redisConnector.getFromDB(sesionKey));
+  if (redisVal && compareCartPayloadandTimestamp(redisVal, event)) {
     return false;
   }
-  const sesionKey = event.cart_token
-  const redisVal = JSON.parse(redisConnector.getFromDB(sesionKey));
-  if (redisVal?.cartPayload && compareCartPayloadandTimestamp(redisVal.cartPayload, event)) {
-    return false;
-  }
-  redisConnector.postToDB(sesionKey, JSON.stringify({ ...redisVal, cartPayload: event }));
+  redisConnector.postToDB(sesionKey, JSON.stringify({ ...redisVal, ...event }));
   return true;
 };
 

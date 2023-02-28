@@ -16,9 +16,9 @@ describe(`${name} Tests`, () => {
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);
   inputData.forEach(async (input, index) => {
-    it(`Payload: ${index}`, () => {
+    it(`Payload: ${index}`, async() => {
       try {
-        const output = transformer.process(input);
+        const output = await transformer.process(input);
         // anonId is being set dynamically by the transformer.
         // so removing it before json comparison.
         // Note: the anonymousId field is removed from the output json as well.

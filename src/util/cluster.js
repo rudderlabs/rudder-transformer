@@ -2,6 +2,7 @@ const cluster = require('cluster');
 const gracefulShutdown = require('http-graceful-shutdown');
 const util = require('util');
 const logger = require('../logger');
+const { redisConnector } = require('./redisConnector');
 
 const numWorkers = parseInt(process.env.NUM_PROCS || '1', 10);
 

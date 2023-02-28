@@ -1519,6 +1519,11 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
 
   const resp = getErrorRespEvents([input.metadata], errObj.status, errObj.message, errObj.statTags);
 
+  // Add support for refreshing for OAuth destinations
+  if (error?.authErrorCategory) {
+    resp.authErrorCategory = error.authErrorCategory;
+  }
+
   errNotificationClient.notify(error, 'Router Transformation (event level)', {
     ...resp,
     ...reqMetadata,

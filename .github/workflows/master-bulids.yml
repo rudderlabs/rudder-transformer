@@ -1,8 +1,8 @@
-name: Build transformer master image
+name: Build transformer main image
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
 env:
   REPO_NAME_OLD: rudderlabs/develop-rudder-transformer
   REPO_NAME: rudderstack/develop-rudder-transformer
@@ -10,7 +10,7 @@ env:
 
 jobs:
   transformer-build:
-    name: Build transformer master image
+    name: Build transformer main image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -19,7 +19,7 @@ jobs:
       - name: Get image version
         id: get_version
         run: |
-          VERSION="master"
+          VERSION="main"
           echo $VERSION
           echo "::set-output name=version::$VERSION"
 
@@ -63,7 +63,7 @@ jobs:
             COMMIT_HASH=${{ github.sha }}
   
   user-transformer-build:
-    name: Build user transformer master image
+    name: Build user transformer main image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -72,7 +72,7 @@ jobs:
       - name: Get image version
         id: get_version
         run: |
-          VERSION="ut-master"
+          VERSION="ut-main"
           echo $VERSION
           echo "::set-output name=version::$VERSION"
 

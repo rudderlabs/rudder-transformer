@@ -425,7 +425,7 @@ const screenRequestHandler = async (message, category, destination) => {
     );
   }
 
-  const storedEventsArr = res.response.data.eventTrackingEvents;
+  const storedEventsArr = res.response?.data?.eventTrackingEvents;
   const events = Array.isArray(storedEventsArr) ? storedEventsArr.map((ev) => ev.name) : [];
   // Check if the source event is already present if not we make a create request
   // Ref - https://developers.activecampaign.com/reference/create-a-new-event-name-only

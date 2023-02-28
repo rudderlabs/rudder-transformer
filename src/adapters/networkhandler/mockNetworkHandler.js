@@ -16,7 +16,22 @@ destinations.forEach((dest) => {
 
 
 const sleep = async (sleepInMs) => new Promise((resolve) => { setTimeout(resolve, sleepInMs) });
-
+/**
+ * Mock network handler for a destination
+ * 
+ * **Notes**:
+ * - This is only applied to the `/proxy` endpoint
+ * 
+ * **Instructions**:
+ * To make use of the mock network handler, we need to make sure that we add the following
+ * - Add the destination folder in mocks folder
+ *   - Inside this we need to create a file `response.json` as mentioned in `../mocks/README.md`
+ * - Set the env variable `MOCK_PROXY` to `true`
+ * 
+ * @param {*} type - destination for which mocking needs to be done
+ * @param {*} originalNetworkHandler
+ * @returns mocked network handler
+ */
 function mockNetworkHandler (type, originalNetworkHandler) {
   const destMockResponses = mockResponses[type];
 

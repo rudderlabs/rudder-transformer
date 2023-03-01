@@ -116,7 +116,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   }
   return message;
 };
-
+// Doc: https://help.shopify.com/en/manual/orders/fulfillment/setting-up-fulfillment
 const processEvent = async (inputEvent) => {
   let message;
   const event = _.cloneDeep(inputEvent);
@@ -190,8 +190,7 @@ const processEvent = async (inputEvent) => {
     writeKey: inputEvent.query_parameters?.writeKey?.[0],
     timestamp: Date.now(),
   });
-  const response = message
-  return Promise.resolve(response);
+  return message;
 };
 const isIdentifierEvent = (event) => {
   if (event?.event === 'rudderIdentifier') {
@@ -219,7 +218,6 @@ const process = async event => {
     return processIdentifierEvent(event);
   }
   const response = await processEvent(event);
-  console.log(response);
   return response;
 
 

@@ -1,10 +1,11 @@
 const fs = require("fs");
 const path = require("path");
+const {mockedAxiosClient} = require("../__mocks__/network")
 
 const integration = "google_adwords_remarketing_lists";
 const name = "google_adwords_remarketing_lists";
 const version = "v0";
-
+jest.mock("axios", () => jest.fn(mockedAxiosClient));
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
 
 const inputDataFile = fs.readFileSync(

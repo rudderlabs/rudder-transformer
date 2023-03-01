@@ -57,7 +57,6 @@ const httpSend = async (options) => {
   };
   try {
     const response = await axios(requestOptions);
-    // console.log(JSON.stringify(response));
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };

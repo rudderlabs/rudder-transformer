@@ -76,7 +76,6 @@ const responseBuilder = (metadata, body, { Config }) => {
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/offlineUserDataJobs`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   const accessToken = getAccessToken(metadata);
-  response.params = { listId: Config.listId, customerId: filteredCustomerId };
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': 'application/json',
@@ -230,12 +229,17 @@ const processEvent = async (metadata, message, destination) => {
 
     await Promise.all(
       responses.map(async (response) => {
-        const { body, method, params, endpoint, headers } = response;
-        const { customerId, listId } = params;
+        const { body, method, endpoint, headers } = response;
 
         // step1: offlineUserDataJobs creation
 
-        const firstResponse = await createJob(endpoint, customerId, listId, headers, method);
+        const firstResponse = await createJob(
+          endpoint,
+          removeHyphens(destination.Config.customerId),
+          destination.Config.listId,
+          headers,
+          method,
+        );
         if (
           !firstResponse.success &&
           !isHttpStatusSuccess(firstResponse?.response?.response?.status)
@@ -276,7 +280,7 @@ const processEvent = async (metadata, message, destination) => {
             authErrorCategory,
           );
         }
-        params.jobId = jobId;
+        response.endpoint = `${endpoint}/${jobId}:run`;
       }),
     );
     return responses;

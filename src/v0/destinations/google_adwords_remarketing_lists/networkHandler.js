@@ -17,10 +17,9 @@ const tags = require('../../util/tags');
  * @param method
  * @param jobId
  */
-const runTheJob = async (endpoint, headers, method, jobId) => {
-  const jobRunningUrl = `${endpoint}/${jobId}:run`;
+const runTheJob = async (endpoint, headers, method) => {
   const thirdRequest = {
-    url: jobRunningUrl,
+    url: endpoint,
     headers,
     method,
   };
@@ -35,12 +34,10 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
  * @returns
  */
 const gaAudienceProxyRequest = async (request) => {
-  const { method, params, endpoint } = request;
+  const { method, endpoint } = request;
   const { headers } = request;
-  const { jobId } = params;
-
   // step3: running the job
-  const thirdResponse = await runTheJob(endpoint, headers, method, jobId);
+  const thirdResponse = await runTheJob(endpoint, headers, method);
   return thirdResponse;
 };
 

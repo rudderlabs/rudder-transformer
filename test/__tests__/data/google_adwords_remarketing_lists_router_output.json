@@ -5,13 +5,13 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs/18025019461:run",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
           "developer-token": "ijkl9101"
         },
-        "params": { "listId": "7090784486", "customerId": "7693729833" },
+        "params": {},
         "body": {
           "JSON": {
             "enablePartialFailure": true,
@@ -75,13 +75,13 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs/18025019461:run",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
           "developer-token": "ijkl9101"
         },
-        "params": { "listId": "7090784486", "customerId": "7693729833" },
+        "params": {},
         "body": {
           "JSON": {
             "enablePartialFailure": true,
@@ -134,13 +134,13 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs/18025019461:run",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
           "developer-token": "ijkl9101"
         },
-        "params": { "listId": "7090784486", "customerId": "7693729833" },
+        "params": {},
         "body": {
           "JSON": {
             "enablePartialFailure": true,
@@ -204,13 +204,13 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs/18025019461:run",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
           "developer-token": "ijkl9101"
         },
-        "params": { "listId": "7090784486", "customerId": "7693729833" },
+        "params": {},
         "body": {
           "JSON": {
             "enablePartialFailure": true,
@@ -247,13 +247,13 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs/18025019461:run",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
           "developer-token": "ijkl9101"
         },
-        "params": { "listId": "7090784486", "customerId": "7693729833" },
+        "params": {},
         "body": {
           "JSON": {
             "enablePartialFailure": true,

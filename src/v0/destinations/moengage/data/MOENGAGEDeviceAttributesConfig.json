@@ -1,7 +1,7 @@
 [
   {
     "destKey": "platform",
-    "sourceKeys": "context.device.type",
+    "sourceKeys": ["context.device.type", "channel"],
     "required": true
   },
   {

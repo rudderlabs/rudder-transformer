@@ -108,7 +108,8 @@
             },
             "app_version": "1.1.6",
             "current_time": "2020-10-16T13:40:12.791+05:30",
-            "user_timezone_offset": 32400
+            "user_timezone_offset": 32400,
+            "platform": "web"
           }
         ]
       },
@@ -431,7 +432,8 @@
             },
             "app_version": "1.1.6",
             "current_time": "2020-10-16T13:40:12.791+05:30",
-            "user_timezone_offset": 19800
+            "user_timezone_offset": 19800,
+            "platform": "web"
           }
         ]
       },
@@ -513,7 +515,8 @@
               "value": 31.98
             },
             "app_version": "1.1.6",
-            "current_time": "2020-10-16T13:40:12.791+05:30"
+            "current_time": "2020-10-16T13:40:12.791+05:30",
+            "platform": "web"
           }
         ]
       },

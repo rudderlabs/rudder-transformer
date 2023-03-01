@@ -21,8 +21,10 @@ const urlDirectoryMap = {
   "adsapi.snapchat.com": "snapchat_custom_audience",
   "api.clevertap.com": "clevertap",
   "marketo_acct_id_success.mktorest.com": "marketo_static_list",
-  "api.criteo.com": "criteo_audience"
+  "api.criteo.com": "criteo_audience",
+  "business-api.tiktok.com": "tiktok_ads"
 };
+let counterMap = Object.values(urlDirectoryMap).reduce((agg, currKey) => ({ ...agg, [currKey]: 0 }), {})
 
 function getData(url) {
   let directory = "";
@@ -36,6 +38,11 @@ function getData(url) {
       path.resolve(__dirname, `./data/${directory}/proxy_response.json`)
     );
     const data = JSON.parse(dataFile);
+    if (Array.isArray(data[url])) {
+      const count = counterMap[directory];
+      counterMap[directory] += 1;
+      return data[url][count];
+    }
     return data[url];
   }
   return {};
@@ -52,6 +59,17 @@ const mockedAxiosClient = arg => {
   });
 };
 
+const flushCounter = (type) => {
+  if (type) {
+    // update for specific destType
+    counterMap[type] = 0
+    return;
+  }
+  // Update all the counter keys
+  counterMap = Object.values(urlDirectoryMap).reduce((agg, currKey) => ({ ...agg, [currKey]: 0 }), {})
+};
+
 module.exports = {
-  mockedAxiosClient
+  mockedAxiosClient,
+  flushCounter
 };

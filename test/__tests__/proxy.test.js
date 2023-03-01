@@ -1,7 +1,7 @@
 const name = "Proxy";
 const fs = require("fs");
 const path = require("path");
-const { mockedAxiosClient } = require("../__mocks__/network");
+const { mockedAxiosClient, flushCounter } = require("../__mocks__/network");
 
 const destinations = [
   "marketo",
@@ -14,7 +14,8 @@ const destinations = [
   "clevertap",
   "salesforce",
   "marketo_static_list",
-  "criteo_audience"
+  "criteo_audience",
+  "tiktok_ads"
 ];
 const service = require("../../src/versionedRouter").handleProxyRequest;
 
@@ -49,11 +50,16 @@ destinations.forEach(destination => {
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);
 
-  inputData.forEach((input, index) => {
-    it(`${name} Tests: ${destination} - Payload ${index}`, async () => {
-      const output = await service(destination, input);
-      expect(output).toEqual(expectedData[index]);
+  describe(`Proxy Test for ${destination}`, () => {
+    inputData.forEach((input, index) => {
+      it(`${name} Tests: ${destination} - Payload ${index}`, async () => {
+        const output = await service(destination, input);
+        expect(output).toEqual(expectedData[index]);
+          });
+        });
+      });
+    afterAll(() => {
+      flushCounter(destination);
     });
-  });
-});
+  })
 // destination tests end

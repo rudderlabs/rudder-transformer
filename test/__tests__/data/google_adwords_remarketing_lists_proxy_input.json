@@ -5,17 +5,13 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs/12345678:run",
         "headers": {
           "Authorization": "Bearer ya29.A0ARrdaM-55_tpJe4QQUsdpea0pwko0O1N8akM3yxMg6PogqyW1XiC4F1nlTIvqHuBqkGlkj8ITc7y0gSGJBIe_fWrv5KV4w_wDho_9VdYqIWeJo63T5-3RHaABf5dySFwThQ1sJyZiXwdgB4Y9lN5u2C7Nfl0",
           "Content-Type": "application/json",
           "developer-token": "3FdS-r4RLKMEeOAbxSn8IQ"
         },
-        "params": {
-          "listId": "709078448",
-          "customerId": "7693729833",
-          "jobId": "12345678"
-        },
+        "params": {},
         "body": {
           "JSON": {
             "enablePartialFailure": true,
@@ -59,17 +55,13 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729834/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs/123456780:run",
         "headers": {
           "Authorization": "Bearer ya29.A0ARrdaM-55_tpJe4QQUsdpea0pwko0O1N8akM3yxMg6PogqyW1XiC4F1nlTIvqHuBqkGlkj8ITc7y0gSGJBIe_fWrv5KV4w_wDho_9VdYqIWeJo63T5-3RHaABf5dySFwThQ1sJyZiXwdgB4Y9lN5u2C7Nfl0",
           "Content-Type": "application/json",
           "developer-token": "3FdS-r4RLKMEeOAbxSn8IQ"
         },
-        "params": {
-          "listId": "709078448",
-          "customerId": "7693729833",
-          "jobId": "123456780"
-        },
+        "params": {},
         "body": {
           "JSON": {
             "enablePartialFailure": true,
@@ -99,17 +91,13 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs/123456789:run",
         "headers": {
           "Authorization": "Bearer ya29.A0ARrdaM-55_tpJe4QQUsdpea0pwko0O1N8akM3yxMg6PogqyW1XiC4F1nlTIvqHuBqkGlkj8ITc7y0gSGJBIe_fWrv5KV4w_wDho_9VdYqIWeJo63T5-3RHaABf5dySFwThQ1sJyZiXwdgB4Y9lN5u2C7Nfl0",
           "Content-Type": "application/json",
           "developer-token": "3FdS-r4RLKMEeOAbxSn8IQ"
         },
-        "params": {
-          "listId": "709078448",
-          "customerId": "7693729833",
-          "jobId": "123456789"
-        },
+        "params": {},
         "body": {
           "JSON": {
             "enablePartialFailure": true,

@@ -82,15 +82,17 @@ const invalidateFnCache = () => {
   functionListCache.set(FUNC_LIST_KEY, []);
 };
 
-const deployFaasFunction = async (functionName, code, versionId, testMode) => {
+const deployFaasFunction = async (functionName, code, versionId, libraryVersionIDs, testMode) => {
   try {
     logger.debug('[Faas] Deploying a faas function');
     let envProcess = 'python index.py';
 
+    const lvidsString = libraryVersionIDs.join(",");
+
     if (!testMode) {
-      envProcess = `${envProcess} --vid ${versionId} --config-backend-url ${CONFIG_BACKEND_URL}`;
+      envProcess = `${envProcess} --vid ${versionId} --config-backend-url ${CONFIG_BACKEND_URL} --lvids "${lvidsString}"`;
     } else {
-      envProcess = `${envProcess} --code "${code}"`;
+      envProcess = `${envProcess} --code "${code}" --config-backend-url ${CONFIG_BACKEND_URL} --lvids "${lvidsString}"`;
     }
 
     const envVars = {};
@@ -137,18 +139,17 @@ const deployFaasFunction = async (functionName, code, versionId, testMode) => {
   }
 };
 
-async function setupFaasFunction(functionName, code, versionId, testMode) {
+async function setupFaasFunction(functionName, code, versionId, libraryVersionIDs, testMode) {
   try {
     if (!testMode && isFunctionDeployed(functionName)) {
       logger.debug(`[Faas] Function ${functionName} already deployed`);
       return;
     }
     // deploy faas function
-    await deployFaasFunction(functionName, code, versionId, testMode);
+    await deployFaasFunction(functionName, code, versionId, libraryVersionIDs, testMode);
 
-    // This api call is only used to check if function is spinned eventually
-    // TODO: call health endpoint instead of get function to get correct status
-    await callWithRetry(getFunction, 0, 2000, 2, functionName);
+    // This api call is only used to check if function is spinned correctly
+    await awaitFunctionReadiness(functionName);
 
     setFunctionInCache(functionName);
     logger.debug(`[Faas] Finished deploying faas function ${functionName}`);
@@ -158,7 +159,7 @@ async function setupFaasFunction(functionName, code, versionId, testMode) {
   }
 }
 
-const executeFaasFunction = async (functionName, events, versionId, testMode) => {
+const executeFaasFunction = async (functionName, events, versionId, libraryVersionIDs, testMode) => {
   try {
     logger.debug('[Faas] Invoking faas function');
 
@@ -173,7 +174,7 @@ const executeFaasFunction = async (functionName, events, versionId, testMode) =>
       error.statusCode === 404 &&
       error.message.includes(`error finding function ${functionName}`)
     ) {
-      await setupFaasFunction(functionName, null, versionId, testMode);
+      await setupFaasFunction(functionName, null, versionId, libraryVersionIDs, testMode);
       throw new RetryRequestError(`${functionName} not found`);
     }
 

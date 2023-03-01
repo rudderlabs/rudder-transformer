@@ -18,6 +18,9 @@ jobs:
   transformer-build:
     name: Build transformer staging image
     runs-on: ubuntu-latest
+
+    # Only pull requests from release candidate branches must trigger
+    if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -70,6 +73,9 @@ jobs:
   user-transformer-build:
     name: Build user transformer staging image
     runs-on: ubuntu-latest
+
+    # Only pull requests from release candidate branches must trigger
+    if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2

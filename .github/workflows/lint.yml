@@ -1,4 +1,4 @@
-name: Linting Checks
+name: Test Checks
 
 on:
   pull_request:
@@ -34,3 +34,7 @@ jobs:
           eslint: true
           prettier: true
           continue_on_error: true
+
+      - name: Run Tests
+        run: npm run test:silent
+

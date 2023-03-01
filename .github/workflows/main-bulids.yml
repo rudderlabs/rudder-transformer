@@ -23,12 +23,9 @@ jobs:
         id: get_version
         run: |
           VERSION=$(jq -r .version package.json)
-          DATEVERSION="$(date '+%d%m%Y.%H%M%S')"
           echo $VERSION
-          echo $DATEVERSION
           echo "::set-output name=version::$VERSION"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "date-version=$DATEVERSION" >> "$GITHUB_OUTPUT"
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2
@@ -61,7 +58,7 @@ jobs:
             ${{ env.REPO_NAME_OLD }}:${{ steps.get_version.outputs.version }}
             ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }}
             ${{ env.REPO_NAME }}:latest
-            ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.date-version }}
+            ${{ env.REPO_NAME_OLD }}:latest
           platforms: |
             linux/amd64
             linux/arm64
@@ -82,11 +79,8 @@ jobs:
       - name: Get image version
         id: get_version
         run: |
-          UTVERSION="ut-$(date '+%d%m%Y.%H%M%S')"
           VERSION="ut-$(jq -r .version package.json)"
-          echo $UTVERSION
-          echo "::set-output name=version::$UTVERSION"
-          echo "ut-version=$UTVERSION" >> "$GITHUB_OUTPUT"
+          echo "::set-output name=version::$VERSION"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Login to Docker Hub
@@ -119,7 +113,6 @@ jobs:
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ steps.get_version.outputs.version }}
             ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }}
-            ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.ut-version }}
           platforms: |
             linux/amd64
             linux/arm64

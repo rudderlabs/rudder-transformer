@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.14.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.13.0...v1.14.0) (2023-02-28)
+
+
+### Features
+
+* added customerio group call support ([#1869](https://github.com/rudderlabs/rudder-transformer/issues/1869)) ([5e692ea](https://github.com/rudderlabs/rudder-transformer/commit/5e692ead3c43819edd47f8cf244a3f78ce510359))
+* added new destination vitally ([#1892](https://github.com/rudderlabs/rudder-transformer/issues/1892)) ([8638ee7](https://github.com/rudderlabs/rudder-transformer/commit/8638ee7765b4e3ecf215ec90056d03cffb42f5f6))
+* include latest image of transformer ([#1879](https://github.com/rudderlabs/rudder-transformer/issues/1879)) ([b179fef](https://github.com/rudderlabs/rudder-transformer/commit/b179fef031fe06aa8d4e3b258c4740b45f4387bb))
+* onboard courier destination ([#1844](https://github.com/rudderlabs/rudder-transformer/issues/1844)) ([#1883](https://github.com/rudderlabs/rudder-transformer/issues/1883)) ([18bcdf8](https://github.com/rudderlabs/rudder-transformer/commit/18bcdf8b4b1f0b63cbe3f839df38f4b6b6875e98))
+* python libraries ([#1855](https://github.com/rudderlabs/rudder-transformer/issues/1855)) ([01f3df5](https://github.com/rudderlabs/rudder-transformer/commit/01f3df5ad5868a3604715c26f7ea9d8dea82860b))
+* **transformation:** adding rudder libraries support ([#1817](https://github.com/rudderlabs/rudder-transformer/issues/1817)) ([1c91d22](https://github.com/rudderlabs/rudder-transformer/commit/1c91d22795b142a90011e35cf85d1a4ac8eaa545))
+
+
+### Bug Fixes
+
+* **active-campaign:** add check before iterating stored event array ([#1902](https://github.com/rudderlabs/rudder-transformer/issues/1902)) ([9666e85](https://github.com/rudderlabs/rudder-transformer/commit/9666e851751101efc99f1d48018a9ae1ed6a9b8e))
+* **integration:** Algolia  in CDK v2 now errors out for non string event names ([#1867](https://github.com/rudderlabs/rudder-transformer/issues/1867)) ([5be8891](https://github.com/rudderlabs/rudder-transformer/commit/5be88917270a9fb1c28fdd7f547e9a017aacf56d))
+* logger import ([#1874](https://github.com/rudderlabs/rudder-transformer/issues/1874)) ([7ff1b4a](https://github.com/rudderlabs/rudder-transformer/commit/7ff1b4a11fe530de45dacce1da7bf0d58d4b38fd))
+* package.json & package-lock.json to reduce vulnerabilities ([#1885](https://github.com/rudderlabs/rudder-transformer/issues/1885)) ([11b4a4b](https://github.com/rudderlabs/rudder-transformer/commit/11b4a4b523b00dffb0c9d0017a6ed3279fc596d2))
+
+
+### Miscellaneous
+
+* **ci:** improve build time with npm ci ([#1886](https://github.com/rudderlabs/rudder-transformer/issues/1886)) ([5d5c1d3](https://github.com/rudderlabs/rudder-transformer/commit/5d5c1d3cf3143504de1fe4244c64f5dec365ed90))
+* replace references of master with main ([#1889](https://github.com/rudderlabs/rudder-transformer/issues/1889)) ([3417109](https://github.com/rudderlabs/rudder-transformer/commit/341710960405757d8e9791b5a6cd884f44ecfc97))
+* support for refreshing token during transformation ([#1882](https://github.com/rudderlabs/rudder-transformer/issues/1882)) ([db59d10](https://github.com/rudderlabs/rudder-transformer/commit/db59d10d3659ea2acec46155deda9333f84a97ee))
+* **trackingplan:** collecting violation metrics for tracking plan ([#1896](https://github.com/rudderlabs/rudder-transformer/issues/1896)) ([f7bb8b6](https://github.com/rudderlabs/rudder-transformer/commit/f7bb8b6d9b5cd2d79a5a7b6c980399378d7e1a77))
+
 ## [1.13.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.12.0...v1.13.0) (2023-02-15)
 
 

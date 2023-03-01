@@ -48,7 +48,7 @@ const errorTypesDenyList = [
 
 const pathsDenyList = [
   '/src/warehouse/',
-  '/src/util/custom' // User-transformation files
+  '/src/util/custom', // User-transformation files
 ];
 
 let bugsnagClient;
@@ -78,7 +78,9 @@ function notify(err, context, metadata) {
 
     if (isDeniedErrType) return;
 
-    const isDeniedErrPath = pathsDenyList.some((denyPath) => stackTraceParser.parse(err.stack)?.[0]?.file?.includes(denyPath));
+    const isDeniedErrPath = pathsDenyList.some((denyPath) =>
+      stackTraceParser.parse(err.stack)?.[0]?.file?.includes(denyPath),
+    );
 
     if (isDeniedErrPath) return;
 

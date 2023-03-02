@@ -153,7 +153,7 @@ const identifyResponseBuilder = async (message, Config, endpoint) => {
 
 const process = async (event) => {
   const { message, destination } = event;
-  const { password, subDomainName, domainName } = destination.Config;
+  const { password, subDomainName, domainName, domainMethod } = destination.Config;
   if (!password) {
     throw new ConfigurationError(
       'Invalid password value specified in the destination configuration',
@@ -165,10 +165,17 @@ const process = async (event) => {
       'Please Provide either subDomain or Domain Name',
     );
   }
-  if (subDomainName) {
+  // if both are present we will be taking endpoint after checking the domainMethod selected
+  if (subDomainName && domainName) {
+    if (domainMethod === 'subDomainNameOption') {
+      endpoint = `${BASE_URL.replace('subDomainName', subDomainName)}`;
+    } else {
+      endpoint = `${domainName}/api`;
+    }
+  } else if (subDomainName) {
     endpoint = `${BASE_URL.replace('subDomainName', subDomainName)}`;
   } else {
-    endpoint = domainName;
+    endpoint = `${domainName}/api`;
   }
 
   // Validating if message type is even given or not

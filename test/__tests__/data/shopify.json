@@ -19,7 +19,7 @@
         }
     },
     {
-        "description": "Identofy Call for customers create event",
+        "description": "Identify Call for customers create event",
         "input": {
             "query_parameters": {
                 "topic": [

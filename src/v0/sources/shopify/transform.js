@@ -7,7 +7,6 @@ const {
   getProductsListFromLineItems,
   extractEmailFromPayload,
   setAnonymousIdorUserId,
-  // getEventNameForOrderEdit,
   checkForValidRecord
 } = require('./util');
 const { redisConnector } = require('../../../util/redisConnector');
@@ -75,9 +74,6 @@ const ecomPayloadBuilder = (event, shopifyTopic) => {
 const trackPayloadBuilder = (event, shopifyTopic) => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.TRACK);
-  // if (shopifyTopic === "orders_edited") {
-  //   message.setEventName(getEventNameForOrderEdit(message));
-  // }
   message.setEventName(SHOPIFY_TRACK_MAP[shopifyTopic]);
 
   Object.keys(event)

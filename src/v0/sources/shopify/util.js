@@ -79,7 +79,6 @@ const extractEmailFromPayload = (event) => {
   return email;
 };
 
-// Hash the id and use it as anonymousId (limiting 256 -> 36 chars)
 /**
  * This function sets the anonymousId based on cart_token or id from the properties of message. 
  * If it's null then we set userId as "ADMIN".
@@ -145,16 +144,6 @@ const setAnonymousIdorUserId = async (message) => {
   message.setProperty('anonymousId', anonymousIDfromDB || "Not Found");
 };
 
-/** TODO:
- * This Function returns the actual event happened for the order edited event of the shopify
- * these can be order-updated, Order Refunded, Order Cancelled
- * @param event 
- * @returns 
- */
-// const getEventNameForOrderEdit = event => {
-//   console.log(event);
-//   return "deleted";
-// };
 /**
  * This function returns true if payloads are same or Timestamp difference is less 10 seconds otherwise false
  * @param {*} prevPayload 
@@ -172,9 +161,6 @@ const compareCartPayloadandTimestamp = (prevPayload, newPayload) => {
  * @param {*} event 
  */
 const checkForValidRecord = async event => {
-  // if (event.line_items.length === 0) {
-  //   return false;
-  // }
   const sesionKey = event.cart_token || event.token;
   const redisVal = JSON.parse(await redisConnector.getFromDB(sesionKey));
   if (redisVal && compareCartPayloadandTimestamp(redisVal, event)) {
@@ -190,6 +176,5 @@ module.exports = {
   createPropertiesForEcomEvent,
   extractEmailFromPayload,
   setAnonymousIdorUserId,
-  // getEventNameForOrderEdit,
   checkForValidRecord
 };

@@ -9,7 +9,6 @@ const {
 } = require('../../util');
 
 const {
-  validateEmail,
   deduceAddressFields,
   deduceStateField,
   validatePayload,
@@ -154,20 +153,22 @@ const identifyResponseBuilder = async (message, Config, endpoint) => {
 
 const process = async (event) => {
   const { message, destination } = event;
-  const { password, subDomainName, userName } = destination.Config;
-  const endpoint = `${BASE_URL.replace('subDomainName', subDomainName)}`;
+  const { password, subDomainName, domainName } = destination.Config;
   if (!password) {
     throw new ConfigurationError(
       'Invalid password value specified in the destination configuration',
     );
   }
-  if (!subDomainName) {
+  let endpoint;
+  if (!subDomainName && !domainName) {
     throw new ConfigurationError(
-      'Invalid sub-domain value specified in the destination configuration',
+      'Please Provide either subDomain or Domain Name',
     );
   }
-  if (!validateEmail(userName)) {
-    throw new ConfigurationError('Invalid user name provided in the destination configuration');
+  if (subDomainName) {
+    endpoint = `${BASE_URL.replace('subDomainName', subDomainName)}`;
+  } else {
+    endpoint = domainName;
   }
 
   // Validating if message type is even given or not

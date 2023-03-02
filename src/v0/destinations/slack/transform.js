@@ -211,7 +211,7 @@ const processTrack = (message, destination) => {
   try {
     resultText = eventTemplate(templateInput);
   } catch (err) {
-    throw new ConfigurationError(`Something is wrong with the event template: ${template}`);
+    throw new ConfigurationError(`Something is wrong with the event template: '${template}'`);
   }
 
   if (channelListArray && channelListArray.length > 0) {

@@ -88,13 +88,13 @@ const DestCanonicalNames = {
   pipedream: ['Pipedream', 'PipeDream', 'pipedream', 'PIPEDREAM'],
   pagerduty: ['pagerduty', 'PAGERDUTY', 'PagerDuty', 'Pagerduty', 'pagerDuty'],
   criteo_audience: [
-    "criteo audience",
-    "criteoAudience",
-    "Criteo Audience",
-    "criteoaudience",
-    "CRITEO AUDIENCE",
-    "CRITEO_AUDIENCE",
-    "CRITEOAUDIENCE"
+    'criteo audience',
+    'criteoAudience',
+    'Criteo Audience',
+    'criteoaudience',
+    'CRITEO AUDIENCE',
+    'CRITEO_AUDIENCE',
+    'CRITEOAUDIENCE',
   ],
   optimizely_fullstack: [
     'Optimizely Fullstack',
@@ -104,11 +104,8 @@ const DestCanonicalNames = {
     'Optimizely_Fullstack',
     'optimizely_fullstack',
   ],
-  courier: [
-    'Courier',
-    'courier',
-    'COURIER',
-  ],
+  vitally: ['vitally', 'Vitally', 'VITALLY'],
+  courier: ['Courier', 'courier', 'COURIER'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

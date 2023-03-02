@@ -28,11 +28,10 @@ const profilingRouter = require('./routes/profiling');
 const destProxyRoutes = require('./routes/destinationProxy');
 const eventValidator = require('./util/eventValidation');
 const { prometheusRegistry } = require('./middleware');
-const { compileUserLibrary } = require('./util/ivmFactory');
 const { getIntegrations } = require('./routes/utils');
-const { setupUserTransformHandler } = require('./util/customTransformer');
+const { setupUserTransformHandler, validateCode } = require('./util/customTransformer');
 const { CommonUtils } = require('./util/common');
-const { RespStatusError, RetryRequestError } = require('./util/utils');
+const { RespStatusError, RetryRequestError, sendViolationMetrics } = require('./util/utils');
 const { isCdkV2Destination, getCdkV2TestThreshold } = require('./cdk/v2/utils');
 const { PlatformError } = require('./v0/util/errorTypes');
 const { getCachedWorkflowEngine, processCdkV2Workflow } = require('./cdk/v2/handler');
@@ -142,8 +141,8 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
       stats.counter('cdk_live_compare_test_failed', 1, { destType, feature });
       logger.error(
         `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff_keys=${JSON.stringify(
-          Object.keys(objectDiff)
-        )}`
+          Object.keys(objectDiff),
+        )}`,
       );
       // logger.error(
       //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff=${JSON.stringify(
@@ -172,13 +171,14 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
 /**
  * Enriches the transformed event with more information
  * - userId stringification
- * 
+ *
  * @param {Object} transformedEvent - single transformed event
  * @returns transformedEvent after enrichment
  */
-const enrichTransformedEvent = (transformedEvent) => (
-  { ...transformedEvent, userId: checkAndCorrectUserId(transformedEvent.statusCode, transformedEvent?.userId) }
-);
+const enrichTransformedEvent = (transformedEvent) => ({
+  ...transformedEvent,
+  userId: checkAndCorrectUserId(transformedEvent.statusCode, transformedEvent?.userId),
+});
 
 async function handleV0Destination(destHandler, destType, inputArr, feature) {
   const v0Result = {};
@@ -272,10 +272,10 @@ async function handleDest(ctx, version, destination) {
             output: enrichTransformedEvent(ev),
             metadata: destHandler?.processMetadata
               ? destHandler.processMetadata({
-                metadata: event.metadata,
-                inputEvent: parsedEvent,
-                outputEvent: ev,
-              })
+                  metadata: event.metadata,
+                  inputEvent: parsedEvent,
+                  outputEvent: ev,
+                })
               : event.metadata,
             statusCode: 200,
           }));
@@ -350,6 +350,7 @@ async function handleValidation(ctx) {
       parsedEvent.request = { query: reqParams };
       // eslint-disable-next-line no-await-in-loop
       const hv = await eventValidator.handleValidation(parsedEvent);
+      sendViolationMetrics(hv.validationErrors, hv.dropEvent, metaTags);
       if (hv.dropEvent) {
         const errMessage = `Error occurred while validating because : ${hv.violationType}`;
         respList.push({
@@ -486,11 +487,11 @@ async function routerHandleDest(ctx) {
         }
         const hasProcMetadataForRouter = routerDestHandler.processMetadataForRouter;
         // enriching transformed event
-        listOutput.forEach(listOut => {
+        listOutput.forEach((listOut) => {
           const { batchedRequest } = listOut;
           if (Array.isArray(batchedRequest)) {
             // eslint-disable-next-line no-param-reassign
-            listOut.batchedRequest = batchedRequest.map(batReq => enrichTransformedEvent(batReq));
+            listOut.batchedRequest = batchedRequest.map((batReq) => enrichTransformedEvent(batReq));
           } else if (batchedRequest && typeof batchedRequest === 'object') {
             // eslint-disable-next-line no-param-reassign
             listOut.batchedRequest = enrichTransformedEvent(batchedRequest);
@@ -526,6 +527,11 @@ async function routerHandleDest(ctx) {
       error: errObj.message,
       statTags: errObj.statTags,
     };
+
+    // Add support to perform refreshToken action for OAuth destinations
+    if (error?.authErrorCategory) {
+      resp.authErrorCategory = error.authErrorCategory;
+    }
 
     errNotificationClient.notify(error, 'Router Transformation', {
       ...resp,
@@ -597,17 +603,31 @@ if (startDestTransformer) {
   if (functionsEnabled()) {
     router.post('/extractLibs', async (ctx) => {
       try {
-        const { code, validateImports = false, language = "javascript" } = ctx.request.body;
+        const {
+          code,
+          versionId,
+          validateImports = false,
+          additionalLibraries = [],
+          language = 'javascript',
+          testMode = false,
+        } = ctx.request.body;
 
         if (!code) {
           throw new Error('Invalid request. Code is missing');
         }
 
-        const obj = await extractLibraries(code, validateImports, language);
+        const obj = await extractLibraries(
+          code,
+          versionId,
+          validateImports,
+          additionalLibraries,
+          language,
+          testMode || versionId === 'testVersionId',
+        );
         ctx.body = obj;
       } catch (err) {
         ctx.status = 400;
-        ctx.body = { "error": err.error || err.message };
+        ctx.body = { error: err.error || err.message };
       }
     });
 
@@ -790,12 +810,13 @@ if (transformerTestModeEnabled) {
 
   router.post('/transformationLibrary/test', async (ctx) => {
     try {
-      const { code } = ctx.request.body;
+      const { code, language = 'javascript' } = ctx.request.body;
+
       if (!code) {
         throw new Error('Invalid request. Missing code');
       }
 
-      const res = await compileUserLibrary(code);
+      const res = await validateCode(code, language);
       ctx.body = res;
     } catch (error) {
       ctx.body = { error: error.message };
@@ -811,8 +832,8 @@ if (transformerTestModeEnabled) {
   router.post('/transformation/sethandle', async (ctx) => {
     try {
       const { trRevCode, libraryVersionIDs = [] } = ctx.request.body;
-      const { code, language, testName, testWithPublish = false } = trRevCode || {};
-      if (!code || !language || !testName) {
+      const { code, versionId, language, testName, testWithPublish = false } = trRevCode || {};
+      if (!code || !language || !testName || (language === 'pythonfaas' && !versionId)) {
         throw new Error('Invalid Request. Missing parameters in transformation code block');
       }
 

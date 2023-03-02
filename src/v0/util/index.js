@@ -1519,6 +1519,11 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
 
   const resp = getErrorRespEvents([input.metadata], errObj.status, errObj.message, errObj.statTags);
 
+  // Add support for refreshing for OAuth destinations
+  if (error?.authErrorCategory) {
+    resp.authErrorCategory = error.authErrorCategory;
+  }
+
   errNotificationClient.notify(error, 'Router Transformation (event level)', {
     ...resp,
     ...reqMetadata,
@@ -1720,7 +1725,7 @@ const getAccessToken = (metadata, accessTokenKey) => {
   const { secret } = metadata;
   // we would need to verify if secret is present and also if the access token field is present in secret
   if (!secret || !secret[accessTokenKey]) {
-    throw new OAuthSecretError("Empty/Invalid access token");
+    throw new OAuthSecretError('Empty/Invalid access token');
   }
   return secret[accessTokenKey];
 };
@@ -1820,5 +1825,5 @@ module.exports = {
   isHybridModeEnabled,
   getEventType,
   checkAndCorrectUserId,
-  getAccessToken
+  getAccessToken,
 };

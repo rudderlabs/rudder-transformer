@@ -64,6 +64,7 @@
             "eventCustomProperties": ""
           }
         ],
+        "removeExternalId":true,
         "valueFieldIdentifier": "",
         "advancedMapping": false,
         "whitelistPiiProperties": [
@@ -1288,6 +1289,7 @@
             "to": "product"
           }
         ],
+        "removeExternalId":true,
         "accessToken": "09876",
         "pixelId": "dfgdfgdgd",
         "eventsToEvents": [

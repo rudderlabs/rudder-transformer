@@ -154,5 +154,5 @@ jobs:
           git add values.prod.yaml
           git commit -m "changing version for shared transformer"
           git push -u origin "shared-transformer-$VERSION"
-          hub pull-request -m "rudder-transformer version change-$VERSION
+          hub pull-request -m "rudder-transformer version change-$VERSION"
 

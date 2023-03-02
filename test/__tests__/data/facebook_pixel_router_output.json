@@ -35,6 +35,7 @@
             "blacklistPiiHash": false
           }
         ],
+        "removeExternalId":true,
         "accessToken": "09876",
         "pixelId": "dfgdfgdgd",
         "eventsToEvents": [

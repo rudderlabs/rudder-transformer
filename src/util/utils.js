@@ -25,23 +25,23 @@ const responseStatusHandler = (status, entity, id, url) => {
 
 const sendViolationMetrics = (validationErrors, dropped, metaTags) => {
   const vTags = {
-    'Unplanned-Event': 0,
-    'Additional-Properties': 0,
-    'Datatype-Mismatch': 0,
-    'Required-Missing': 0,
-    'Unknown-Violation': 0,
+    "Unplanned-Event": 0,
+    "Additional-Properties": 0,
+    "Datatype-Mismatch": 0,
+    "Required-Missing": 0,
+    "Unknown-Violation": 0,
   };
-
-  validationErrors.forEach((error) => {
+  
+  validationErrors.forEach(error => {
     vTags[error.type] += 1;
   });
-
+  
   Object.entries(vTags).forEach(([key, value]) => {
     if (value > 0) {
       stats.counter('hv_metrics', value, { ...metaTags, dropped, violationType: key });
     }
   });
-};
+}
 
 module.exports = {
   RespStatusError,

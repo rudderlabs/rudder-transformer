@@ -105,7 +105,11 @@ const DestCanonicalNames = {
     'optimizely_fullstack',
   ],
   vitally: ['vitally', 'Vitally', 'VITALLY'],
-  courier: ['Courier', 'courier', 'COURIER'],
+  courier: [
+    'Courier',
+    'courier',
+    'COURIER',
+  ],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

@@ -1,11 +1,5 @@
 const NodeCache = require('node-cache');
-const {
-  getFunction,
-  deleteFunction,
-  deployFunction,
-  invokeFunction,
-  checkFunctionHealth,
-} = require('./faasApi');
+const { getFunction, deleteFunction, deployFunction, invokeFunction, checkFunctionHealth } = require('./faasApi');
 const logger = require('../../logger');
 const { RetryRequestError, RespStatusError } = require('../utils');
 
@@ -19,8 +13,8 @@ const FAAS_MAX_INFLIGHT = process.env.FAAS_MAX_INFLIGHT || '4';
 const FAAS_EXEC_TIMEOUT = process.env.FAAS_EXEC_TIMEOUT || '4s';
 const FAAS_ENABLE_WATCHDOG_ENV_VARS = process.env.FAAS_ENABLE_WATCHDOG_ENV_VARS || 'true';
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
-const FAAS_AST_VID = 'ast';
-const FAAS_AST_FN_NAME = 'fn-ast';
+const FAAS_AST_VID = "ast";
+const FAAS_AST_FN_NAME = "fn-ast";
 
 // Initialise node cache
 const functionListCache = new NodeCache();
@@ -32,13 +26,7 @@ const DEFAULT_RETRY_THRESHOLD = 2;
 
 const delayInMs = async (ms = 2000) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const callWithRetry = async (
-  fn,
-  count = 0,
-  delay = DEFAULT_RETRY_DELAY_MS,
-  retryThreshold = DEFAULT_RETRY_THRESHOLD,
-  ...args
-) => {
+const callWithRetry = async (fn, count = 0, delay = DEFAULT_RETRY_DELAY_MS, retryThreshold = DEFAULT_RETRY_THRESHOLD, ...args) => {
   try {
     return await fn(...args);
   } catch (err) {
@@ -50,19 +38,15 @@ const callWithRetry = async (
   }
 };
 
-const awaitFunctionReadiness = async (
-  functionName,
-  maxWaitInMs = 22000,
-  waitBetweenIntervalsInMs = 250,
-) => {
+const awaitFunctionReadiness = async (functionName, maxWaitInMs = 22000, waitBetweenIntervalsInMs = 250) => {
   const executionPromise = new Promise(async (resolve) => {
     try {
       await callWithRetry(
         checkFunctionHealth,
         0,
         waitBetweenIntervalsInMs,
-        Math.floor(maxWaitInMs / waitBetweenIntervalsInMs),
-        functionName,
+        Math.floor(maxWaitInMs/waitBetweenIntervalsInMs),
+        functionName
       );
 
       resolve(true);
@@ -79,10 +63,9 @@ const awaitFunctionReadiness = async (
     }, maxWaitInMs);
   });
 
-  return Promise.race([executionPromise, timeoutPromise]).finally(() =>
-    clearTimeout(setTimeoutHandle),
-  );
-};
+  return Promise.race([executionPromise, timeoutPromise])
+    .finally(() => clearTimeout(setTimeoutHandle));
+}
 
 const isFunctionDeployed = (functionName) => {
   const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
@@ -104,7 +87,7 @@ const deployFaasFunction = async (functionName, code, versionId, libraryVersionI
     logger.debug('[Faas] Deploying a faas function');
     let envProcess = 'python index.py';
 
-    const lvidsString = libraryVersionIDs.join(',');
+    const lvidsString = libraryVersionIDs.join(",");
 
     if (!testMode) {
       envProcess = `${envProcess} --vid ${versionId} --config-backend-url ${CONFIG_BACKEND_URL} --lvids "${lvidsString}"`;
@@ -176,13 +159,7 @@ async function setupFaasFunction(functionName, code, versionId, libraryVersionID
   }
 }
 
-const executeFaasFunction = async (
-  functionName,
-  events,
-  versionId,
-  libraryVersionIDs,
-  testMode,
-) => {
+const executeFaasFunction = async (functionName, events, versionId, libraryVersionIDs, testMode) => {
   try {
     logger.debug('[Faas] Invoking faas function');
 
@@ -229,5 +206,5 @@ module.exports = {
   setupFaasFunction,
   invalidateFnCache,
   FAAS_AST_VID,
-  FAAS_AST_FN_NAME,
+  FAAS_AST_FN_NAME
 };

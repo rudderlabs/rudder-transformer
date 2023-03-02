@@ -1774,18 +1774,22 @@ const batchMultiplexedEvents = (transformedEventsList, maxBatchSize) => {
 
   if (Array.isArray(transformedEventsList)) {
     transformedEventsList.forEach((transformedInput) => {
-      const transformedMessage = Array.isArray(transformedInput.message)
+      let transformedMessage = Array.isArray(transformedInput.message)
         ? transformedInput.message
         : [transformedInput.message];
-      const eventsNotBatched = batchedEvents.every((batch) => {
+      let eventsNotBatched = true;
+      if (batchedEvents.length > 0) {
+        const batch = batchedEvents[batchedEvents.length - 1];
         if (batch.events.length + transformedMessage.length <= maxBatchSize) {
           batch.events.push(...transformedMessage);
           batch.metadata.push(transformedInput.metadata);
-          return false;
+          eventsNotBatched = false;
         }
-        return true;
-      });
+      }
       if (batchedEvents.length === 0 || eventsNotBatched) {
+        if (transformedMessage.length > maxBatchSize) {
+          transformedMessage = _.chunk(transformedMessage, maxBatchSize);
+        }
         batchedEvents.push({
           events: transformedMessage,
           metadata: [transformedInput.metadata],

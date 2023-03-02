@@ -170,23 +170,11 @@
               "email": "random2@gmail.com",
               "appId": "testAppId"
             }
-          },
-          {
-            "anonymousId": "random5",
-            "channel": "web",
-            "traits": {
-              "anonymousId": "random5",
-              "email": "random5@gmail.com",
-              "appId": "testAppId"
-            }
           }
         ],
         "metadata": [
           {
             "jobId": 1
-          },
-          {
-            "jobId": 3
           }
         ],
         "destination": {
@@ -216,11 +204,11 @@
             }
           },
           {
-            "anonymousId": "random6",
+            "anonymousId": "random5",
             "channel": "web",
             "traits": {
-              "anonymousId": "random6",
-              "email": "random6@gmail.com",
+              "anonymousId": "random5",
+              "email": "random5@gmail.com",
               "appId": "testAppId"
             }
           }
@@ -230,7 +218,7 @@
             "jobId": 2
           },
           {
-            "jobId": 4
+            "jobId": 3
           }
         ],
         "destination": {
@@ -241,6 +229,15 @@
       },
       {
         "events": [
+          {
+            "anonymousId": "random6",
+            "channel": "web",
+            "traits": {
+              "anonymousId": "random6",
+              "email": "random6@gmail.com",
+              "appId": "testAppId"
+            }
+          },
           {
             "anonymousId": "random7",
             "channel": "web",
@@ -261,6 +258,9 @@
           }
         ],
         "metadata": [
+          {
+            "jobId": 4
+          },
           {
             "jobId": 5
           },

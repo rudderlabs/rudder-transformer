@@ -185,14 +185,13 @@ const processTrack = (message, destination) => {
 
   // track event default handlebar expression
   const defaultTemplate = '{{name}} did {{event}}';
+  const template = templateListArray
+    ? templateListArray.length > 0
+      ? templateListArray[0]
+      : defaultTemplate
+    : defaultTemplate;
 
-  const eventTemplate = Handlebars.compile(
-    templateListArray
-      ? templateListArray.length > 0
-        ? templateListArray[0]
-        : defaultTemplate
-      : defaultTemplate,
-  );
+  const eventTemplate = Handlebars.compile(template);
 
   // provide flattened properties as well as propertie sobject
   const identityTraits = getFieldValueFromMessage(message, 'traits') || {};
@@ -212,7 +211,7 @@ const processTrack = (message, destination) => {
   try {
     resultText = eventTemplate(templateInput);
   } catch (err) {
-    throw new ConfigurationError('Something is wrong with the event template');
+    throw new ConfigurationError(`Something is wrong with the event template: ${template}`);
   }
 
   if (channelListArray && channelListArray.length > 0) {

@@ -1014,7 +1014,7 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
 };
 
 const getDestinationExternalIDObjectForRetl = (message, destination) => {
-  const { externalId } = message.context;
+  const { externalId } = message.context || {};
   let externalIdArray = [];
   if (externalId) {
     if (Array.isArray(externalId)) {

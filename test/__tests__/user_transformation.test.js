@@ -101,7 +101,7 @@ const getfetchResponse = (resp, url) =>
 
 let importNameLibraryVersionIdsMap;
 
-describe.skip("User transformation", () => {
+describe("User transformation", () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
@@ -1092,7 +1092,7 @@ describe.skip("User transformation", () => {
 });
 
 // Running timeout tests
-describe.skip("Timeout tests", () => {
+describe("Timeout tests", () => {
   beforeEach(() => {});
   it(`Test for timeout for v0 transformation`, async () => {
     const versionId = randomID();
@@ -1189,7 +1189,7 @@ describe.skip("Timeout tests", () => {
   });
 });
 
-describe.skip("Rudder library tests", () => {
+describe("Rudder library tests", () => {
   beforeEach(() => {});
   it(`Simple ${name} async test for V1 transformation - with rudder library urlParser `, async () => {
     const versionId = randomID();

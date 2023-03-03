@@ -1014,12 +1014,17 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
 };
 
 const getDestinationExternalIDObjectForRetl = (message, destination) => {
+  const { externalId } = message.context;
   let externalIdArray = [];
-  if (message.context && message.context.externalId) {
-    externalIdArray = message.context.externalId;
+  if (externalId) {
+    if (Array.isArray(externalId)) {
+      externalIdArray = externalId;
+    } else {
+      externalIdArray.push(externalId);
+    }
   }
   let obj;
-  if (externalIdArray && Array.isArray(externalIdArray)) {
+  if (externalIdArray) {
     // some stops the execution when the element is found
     externalIdArray.some((extIdObj) => {
       const { type } = extIdObj;

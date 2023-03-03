@@ -14,6 +14,7 @@ const {
   getValidDynamicFormConfig,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
+  batchMultiplexedEvents,
 } = require('../../util');
 const {
   ENDPOINT,
@@ -324,35 +325,56 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const errorRespList = [];
   inputs.forEach((event) => {
     try {
-      if (event.message.statusCode) {
+      let resp = event.message;
+      if (!event.message.statusCode) {
         // already transformed event
-        getEventChunks(event, eventsChunk);
-      } else {
-        // if not transformed
-        let response = process(event);
-        response = Array.isArray(response) ? response : [response];
-        response.forEach((res) => {
-          getEventChunks(
-            {
-              message: res,
-              metadata: event.metadata,
-              destination: event.destination,
-            },
-            eventsChunk,
-          );
-        });
+        resp = process(event);
+        // getEventChunks(event, eventsChunk);
       }
+      eventsChunk.push({
+        message: Array.isArray(resp) ? resp : [resp],
+        metadata: event.metadata,
+        destination: event.destination,
+      });
+
+      // else {
+      //   // if not transformed
+      //   let response = process(event);
+      //   response = Array.isArray(response) ? response : [response];
+      //   response.forEach((res) => {
+      //     getEventChunks(
+      //       {
+      //         message: res,
+      //         metadata: event.metadata,
+      //         destination: event.destination,
+      //       },
+      //       eventsChunk,
+      //     );
+      //   });
+      // }
     } catch (error) {
       const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
       errorRespList.push(errRespEvent);
     }
   });
 
-  let batchedResponseList = [];
+  // let batchedResponseList = [];
+  // if (eventsChunk.length > 0) {
+  //   batchedResponseList = batchEvents(eventsChunk);
+  // }
+
+  const batchResponseList = [];
   if (eventsChunk.length > 0) {
-    batchedResponseList = batchEvents(eventsChunk);
+    const batchedEvents = batchMultiplexedEvents(eventsChunk, MAX_BATCH_SIZE);
+    batchedEvents.forEach((batch) => {
+      const batchedRequest = generateBatchedPayloadForArray(batch.events, batch.destination);
+      batchResponseList.push(
+        getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
+      );
+    });
   }
-  return [...batchedResponseList, ...errorRespList];
+
+  return [...batchResponseList, ...errorRespList];
 };
 
 module.exports = { process, processRouterDest };

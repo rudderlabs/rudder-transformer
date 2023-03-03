@@ -6,6 +6,8 @@ const { redisConnector } = require('./redisConnector');
 
 const numWorkers = parseInt(process.env.NUM_PROCS || '1', 10);
 
+const redisInstance = redisConnector();
+
 function processInfo() {
   return {
     pid: process.pid,
@@ -75,4 +77,5 @@ function start(port, app) {
 module.exports = {
   start,
   processInfo,
+  redisInstance
 };

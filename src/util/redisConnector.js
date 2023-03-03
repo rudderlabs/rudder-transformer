@@ -1,48 +1,48 @@
 const redis = require('redis');
+const log =  require('../logger');
 
 class DBConnector {
     constructor(hostname, port, password) {
         this.hostname = hostname;
         this.port = port;
         this.password = password;
-        this.connect();
+        this.connect()
     };
 
     async connect() {
-        this.client = await redis.createClient({
-            socket: {
-                host: this.hostname,
-                port: this.port
-            }
-        });
+        this.client = await redis.createClient();
         this.client
             .connect()
-            .then(async (res) => {
-                console.log('connected');
+            .then( (res) => {
+                log.info('Redis Connected');
             })
             .catch((err) => {
-                console.log('err happened' + err);
+                log.info(`err happened${  err}`);
             });
     }
 
     async postToDB(key, val) {
         await this.client.set(`${key}`, `${val}`);
-        console.log("Inserted Key: ", key, " Val: ", val);
     };
 
     async getFromDB(key) {
         try {
             const value = await this.client.get(`${key}`);
-            console.log("Got Val: ", value);
             return value;
         }
         catch (e) {
-            console.error(e);
+            log.error(`get ${e}`);
             return "error";
         }
     };
 };
 
-const redisConnector = new DBConnector('localhost', 6379, 'abcd')
+const redisConnector = () =>{
+    const host = process.env.REDIS_HOST || 'localhost';
+    const port = process.env.REDIS_PORT || 6379;
+    const password = process.env.REDIS_PASSWORD || "";
+    const redisInstance = new DBConnector(host, port, password)
+    return redisInstance;
+}
 
 module.exports = { redisConnector }

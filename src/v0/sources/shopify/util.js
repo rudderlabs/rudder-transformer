@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 const { constructPayload, extractCustomFields, flattenJson } = require('../../util');
-const { redisConnector } = require('../../../util/redisConnector');
+const { redisInstance } = require('../../../util/cluster');
 const logger = require('../../../logger');
 const {
   lineItemsMappingJSON,
@@ -20,7 +20,7 @@ const { TransformationError } = require('../../util/errorTypes');
  * @param {*} event
  * @returns
  */
-function getShopifyTopic(event) {
+const getShopifyTopic = event => {
   const { query_parameters: qParams } = event;
   logger.info(`[Shopify] Input event: query_params: ${JSON.stringify(qParams)}`);
   if (!qParams) {
@@ -35,7 +35,7 @@ function getShopifyTopic(event) {
     throw new TransformationError('Topic not found');
   }
   return topic[0];
-}
+};
 
 const getVariantString = (lineItem) => {
   const { variant_id, variant_price, variant_title } = lineItem;
@@ -133,15 +133,20 @@ const setAnonymousIdorUserId = async (message) => {
     default:
       throw new Error(`${message.event} missed`);
   }
-
-  const valFromDB = JSON.parse(await redisConnector.getFromDB(cartToken));
-  let anonymousIDfromDB = valFromDB.anonymousId;
-  if (anonymousIDfromDB === null) {
-    // this is for backward compatability when we don't have the redis mapping for older events
-    // we will get anonymousIDFromDb as null so we will set UUID using the session Key
-    anonymousIDfromDB = cartToken;
+  try {
+    const valFromDB = JSON.parse(await redisInstance.getFromDB(cartToken));
+    let anonymousIDfromDB = valFromDB.anonymousId;
+    if (anonymousIDfromDB === null) {
+      // this is for backward compatability when we don't have the redis mapping for older events
+      // we will get anonymousIDFromDb as null so we will set UUID using the session Key
+      anonymousIDfromDB = cartToken;
+    }
+    message.setProperty('anonymousId', anonymousIDfromDB || "Not Found");
   }
-  message.setProperty('anonymousId', anonymousIDfromDB || "Not Found");
+  catch (e) {
+    logger.error(`get ${e}`);
+  }
+
 };
 
 /**
@@ -162,11 +167,16 @@ const compareCartPayloadandTimestamp = (prevPayload, newPayload) => {
  */
 const checkForValidRecord = async event => {
   const sesionKey = event.cart_token || event.token;
-  const redisVal = JSON.parse(await redisConnector.getFromDB(sesionKey));
-  if (redisVal && compareCartPayloadandTimestamp(redisVal, event)) {
-    return false;
+  try {
+    const redisVal = JSON.parse(await redisInstance.getFromDB(sesionKey));
+    if (redisVal && compareCartPayloadandTimestamp(redisVal, event)) {
+      return false;
+    }
+    redisInstance.postToDB(sesionKey, JSON.stringify({ ...redisVal, ...event }));
   }
-  redisConnector.postToDB(sesionKey, JSON.stringify({ ...redisVal, ...event }));
+  catch (e) {
+    logger.error(`get ${e}`);
+  }
   return true;
 };
 

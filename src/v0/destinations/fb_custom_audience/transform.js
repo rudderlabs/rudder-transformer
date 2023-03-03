@@ -378,10 +378,7 @@ const processRouterDest = (inputs, reqMetadata) => {
         return getSuccessRespEvents(input.message, [input.metadata], input.destination);
       }
       const transformedList = process(input);
-      const responseList = transformedList.map((transformedPayload) =>
-        getSuccessRespEvents(transformedPayload, [input.metadata], input.destination),
-      );
-      return responseList;
+      return getSuccessRespEvents(transformedList, [input.metadata], input.destination);
     } catch (error) {
       return handleRtTfSingleEventError(input, error, reqMetadata);
     }

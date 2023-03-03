@@ -289,32 +289,6 @@ function process(event) {
   return response;
 }
 
-function batchEvents(eventsChunk) {
-  const batchedResponseList = [];
-
-  // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  const arrayChunks = _.chunk(eventsChunk, MAX_BATCH_SIZE);
-
-  arrayChunks.forEach((chunk) => {
-    const batchEventResponse = generateBatchedPayloadForArray(chunk);
-    batchedResponseList.push(
-      getSuccessRespEvents(
-        batchEventResponse.batchedRequest,
-        batchEventResponse.metadata,
-        batchEventResponse.destination,
-        true,
-      ),
-    );
-  });
-
-  return batchedResponseList;
-}
-
-function getEventChunks(event, eventsChunk) {
-  // build eventsChunk of MAX_BATCH_SIZE
-  eventsChunk.push(event);
-}
-
 const processRouterDest = async (inputs, reqMetadata) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
@@ -329,39 +303,17 @@ const processRouterDest = async (inputs, reqMetadata) => {
       if (!event.message.statusCode) {
         // already transformed event
         resp = process(event);
-        // getEventChunks(event, eventsChunk);
       }
       eventsChunk.push({
         message: Array.isArray(resp) ? resp : [resp],
         metadata: event.metadata,
         destination: event.destination,
       });
-
-      // else {
-      //   // if not transformed
-      //   let response = process(event);
-      //   response = Array.isArray(response) ? response : [response];
-      //   response.forEach((res) => {
-      //     getEventChunks(
-      //       {
-      //         message: res,
-      //         metadata: event.metadata,
-      //         destination: event.destination,
-      //       },
-      //       eventsChunk,
-      //     );
-      //   });
-      // }
     } catch (error) {
       const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
       errorRespList.push(errRespEvent);
     }
   });
-
-  // let batchedResponseList = [];
-  // if (eventsChunk.length > 0) {
-  //   batchedResponseList = batchEvents(eventsChunk);
-  // }
 
   const batchResponseList = [];
   if (eventsChunk.length > 0) {

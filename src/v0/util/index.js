@@ -1019,7 +1019,7 @@ const getDestinationExternalIDObjectForRetl = (message, destination) => {
     externalIdArray = message.context.externalId;
   }
   let obj;
-  if (externalIdArray) {
+  if (externalIdArray && Array.isArray(externalIdArray)) {
     // some stops the execution when the element is found
     externalIdArray.some((extIdObj) => {
       const { type } = extIdObj;
@@ -1725,7 +1725,7 @@ const getAccessToken = (metadata, accessTokenKey) => {
   const { secret } = metadata;
   // we would need to verify if secret is present and also if the access token field is present in secret
   if (!secret || !secret[accessTokenKey]) {
-    throw new OAuthSecretError("Empty/Invalid access token");
+    throw new OAuthSecretError('Empty/Invalid access token');
   }
   return secret[accessTokenKey];
 };
@@ -1825,5 +1825,5 @@ module.exports = {
   isHybridModeEnabled,
   getEventType,
   checkAndCorrectUserId,
-  getAccessToken
+  getAccessToken,
 };

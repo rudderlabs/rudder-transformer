@@ -94,6 +94,11 @@ function isEmpty(input) {
   return _.isEmpty(_.toString(input).trim());
 }
 
+const isObject = (value) => {
+  const type = typeof value;
+  return value != null && (type === 'object' || type === 'function') && !Array.isArray(value);
+};
+
 /**
  * Returns true for empty object {}
  * @param {*} obj
@@ -1019,12 +1024,12 @@ const getDestinationExternalIDObjectForRetl = (message, destination) => {
   if (externalId) {
     if (Array.isArray(externalId)) {
       externalIdArray = externalId;
-    } else {
+    } else if (isObject(externalId) && !isEmptyObject(externalId)) {
       externalIdArray.push(externalId);
     }
   }
   let obj;
-  if (externalIdArray) {
+  if (externalIdArray && externalIdArray.length > 0) {
     // some stops the execution when the element is found
     externalIdArray.some((extIdObj) => {
       const { type } = extIdObj;
@@ -1036,11 +1041,6 @@ const getDestinationExternalIDObjectForRetl = (message, destination) => {
     });
   }
   return obj;
-};
-
-const isObject = (value) => {
-  const type = typeof value;
-  return value != null && (type === 'object' || type === 'function') && !Array.isArray(value);
 };
 
 const isNonFuncObject = (value) => {

@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 const { constructPayload, extractCustomFields, flattenJson } = require('../../util');
-const { redisInstance } = require('../../../util/cluster');
+const { DBConnector } = require('../../../util/redisConnector');
 const logger = require('../../../logger');
 const {
   lineItemsMappingJSON,
@@ -20,7 +20,7 @@ const { TransformationError } = require('../../util/errorTypes');
  * @param {*} event
  * @returns
  */
-const getShopifyTopic = event => {
+const getShopifyTopic = (event) => {
   const { query_parameters: qParams } = event;
   logger.info(`[Shopify] Input event: query_params: ${JSON.stringify(qParams)}`);
   if (!qParams) {
@@ -80,10 +80,10 @@ const extractEmailFromPayload = (event) => {
 };
 
 /**
- * This function sets the anonymousId based on cart_token or id from the properties of message. 
+ * This function sets the anonymousId based on cart_token or id from the properties of message.
  * If it's null then we set userId as "ADMIN".
- * @param {*} message 
- * @returns 
+ * @param {*} message
+ * @returns
  */
 const setAnonymousIdorUserId = async (message) => {
   let cartToken;
@@ -115,7 +115,7 @@ const setAnonymousIdorUserId = async (message) => {
     /*
      * we dont have cart_token for carts_create and update events but have id and token field
      * which later on for orders become cart_token so we are fethcing sesionKey from id
-    */
+     */
     case SHOPIFY_TRACK_MAP.carts_create:
     case SHOPIFY_TRACK_MAP.carts_update:
       cartToken = message?.properties?.id;
@@ -134,47 +134,50 @@ const setAnonymousIdorUserId = async (message) => {
       throw new Error(`${message.event} missed`);
   }
   try {
-    const valFromDB = JSON.parse(await redisInstance.getFromDB(cartToken));
+    const redisInstance = await DBConnector.getRedisInstance();
+    const valFromDB = JSON.parse(await redisInstance.get(`${cartToken}`));
     let anonymousIDfromDB = valFromDB.anonymousId;
     if (anonymousIDfromDB === null) {
       // this is for backward compatability when we don't have the redis mapping for older events
       // we will get anonymousIDFromDb as null so we will set UUID using the session Key
       anonymousIDfromDB = cartToken;
     }
-    message.setProperty('anonymousId', anonymousIDfromDB || "Not Found");
-  }
-  catch (e) {
+    message.setProperty('anonymousId', anonymousIDfromDB || 'Not Found');
+  } catch (e) {
     logger.error(`get ${e}`);
   }
-
 };
 
 /**
  * This function returns true if payloads are same or Timestamp difference is less 10 seconds otherwise false
- * @param {*} prevPayload 
- * @param {*} newPayload 
+ * @param {*} prevPayload
+ * @param {*} newPayload
  */
 const compareCartPayloadandTimestamp = (prevPayload, newPayload) => {
-  if (Date.parse(newPayload.updated_at) - Date.parse(prevPayload.updated_at) < timeDifferenceForCartEvents || JSON.stringify(prevPayload.line_items) === JSON.stringify(newPayload.line_items)) {
+  if (
+    Date.parse(newPayload.updated_at) - Date.parse(prevPayload.updated_at) <
+      timeDifferenceForCartEvents ||
+    JSON.stringify(prevPayload.line_items) === JSON.stringify(newPayload.line_items)
+  ) {
     return true;
   }
   return false;
 };
 
 /**
- * This Function will check for cart duplication events 
- * @param {*} event 
+ * This Function will check for cart duplication events
+ * @param {*} event
  */
-const checkForValidRecord = async event => {
-  const sesionKey = event.cart_token || event.token;
+const checkForValidRecord = async (event) => {
+  const cartToken = event.cart_token || event.token;
+  const redisInstance = await DBConnector.getRedisInstance();
   try {
-    const redisVal = JSON.parse(await redisInstance.getFromDB(sesionKey));
+    const redisVal = JSON.parse(await redisInstance.get(`${cartToken}`));
     if (redisVal && compareCartPayloadandTimestamp(redisVal, event)) {
       return false;
     }
-    redisInstance.postToDB(sesionKey, JSON.stringify({ ...redisVal, ...event }));
-  }
-  catch (e) {
+    await redisInstance.set(`${cartToken}`, JSON.stringify({ ...redisVal, ...event }));
+  } catch (e) {
     logger.error(`get ${e}`);
   }
   return true;
@@ -186,5 +189,5 @@ module.exports = {
   createPropertiesForEcomEvent,
   extractEmailFromPayload,
   setAnonymousIdorUserId,
-  checkForValidRecord
+  checkForValidRecord,
 };

@@ -1,16 +1,16 @@
 const _ = require('lodash');
 const get = require('get-value');
 const stats = require('../../../util/stats');
-const log = require("../../../logger");
+const log = require('../../../logger');
 const {
   getShopifyTopic,
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
   extractEmailFromPayload,
   setAnonymousIdorUserId,
-  checkForValidRecord
+  checkForValidRecord,
 } = require('./util');
-const { redisInstance } = require('../../../util/cluster');
+const { DBConnector } = require('../../../util/redisConnector');
 const { removeUndefinedAndNullValues } = require('../../util');
 const Message = require('../message');
 const { EventType } = require('../../../constants');
@@ -136,7 +136,7 @@ const processEvent = async (inputEvent) => {
         message = trackPayloadBuilder(event, shopifyTopic);
       } else {
         /**
-         *  This Scenario handles the case same cart_Events are passed or 
+         *  This Scenario handles the case same cart_Events are passed or
          * cart events are passed within a specified time period
          */
         const result = {
@@ -201,9 +201,9 @@ const isIdentifierEvent = (event) => {
 };
 const processIdentifierEvent = async (event) => {
   try {
-    await redisInstance.postToDB(event.cartToken, JSON.stringify(event));
-  }
-  catch (e) {
+    const redisInstance = await DBConnector.getRedisInstance();
+    await redisInstance.set(`${event.cartToken}`, JSON.stringify(event));
+  } catch (e) {
     log.error(e);
   }
   const result = {
@@ -215,12 +215,12 @@ const processIdentifierEvent = async (event) => {
   };
   return result;
 };
-const process = async event => {
+const process = async (event) => {
   if (isIdentifierEvent(event)) {
     return processIdentifierEvent(event);
   }
   const response = await processEvent(event);
   return response;
-}
+};
 
 exports.process = process;

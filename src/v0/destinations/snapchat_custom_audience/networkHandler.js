@@ -47,8 +47,8 @@ const getAuthErrCategory = (code, response) => {
   }
 };
 
-const scAudienceProxyRequest = async (request) => {
-  const { endpoint, data, method, params, headers } = prepareProxyReq(request);
+const scAudienceProxyRequest = async (preparedRequest) => {
+  const { endpoint, data, method, params, headers } = preparedRequest;
 
   const requestOptions = {
     url: endpoint,
@@ -98,7 +98,7 @@ const responseHandler = (destinationResponse) => {
 function networkHandler() {
   // this.proxy = scAudienceProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
-  this.prepareProxy = prepareProxyRequest;
+  this.prepareProxy = prepareProxyReq;
   this.responseHandler = responseHandler;
 }
 // This makes it more easily testable

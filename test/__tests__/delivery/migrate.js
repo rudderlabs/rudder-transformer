@@ -1,14 +1,14 @@
 // This script is used to migrate existing test-cases for proxy to the new format
 // NOTE: Multiplexing kind of scenarios are not supported currently
 const fs = require('fs');
-const { prepareProxyRequest } = require('../../../src/adapters/network');
+const { getNetworkHandler } = require('../../../src/adapters/networkHandlerFactory');
 const mockHttpClientForProxy = require('../../__mocks__/network')
 
 function getMockResponseData(url) {
   return mockHttpClientForProxy.getData(url);
 }
 
-['any', 'braze', 'snapchat_custom_audience'].forEach(destType => {
+['snapchat_custom_audience'].forEach(destType => {
   const getJsonPath = (destType, type='in') => {
     let path = '../../__tests__/data/';
     if (destType !== 'any') {
@@ -16,6 +16,8 @@ function getMockResponseData(url) {
     }
     return `${path}proxy_${type}put.json`;
   }
+
+  const nwHandler = getNetworkHandler(destType)
   const proxyInputJson = require(getJsonPath(destType));
   const proxyOutputJson = require(getJsonPath(destType, 'out'));
   let newProxyCases = [];
@@ -24,7 +26,7 @@ function getMockResponseData(url) {
       let newProxyCase = {};
       newProxyCase.input = proxyInputJson[ind];
       newProxyCase.expectedOutput = proxyOutputJson[ind];
-      newProxyCase.expectedProxyMethodParams = prepareProxyRequest(proxyInputJson[ind].request.body);
+      newProxyCase.expectedProxyMethodParams = nwHandler.prepareProxy(proxyInputJson[ind].request.body);
       newProxyCase.mockResult = getMockResponseData(newProxyCase.expectedProxyMethodParams.endpoint);
       return newProxyCase;
     });

@@ -252,7 +252,7 @@ const prepareProxyRequest = (request) => {
  * @returns
  */
 const proxyRequest = async (request) => {
-  const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
+  const { endpoint, data, method, params, headers } = request;
   const requestOptions = {
     url: endpoint,
     data,

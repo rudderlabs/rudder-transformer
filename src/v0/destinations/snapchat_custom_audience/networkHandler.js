@@ -96,9 +96,13 @@ const responseHandler = (destinationResponse) => {
 };
 
 function networkHandler() {
-  this.proxy = scAudienceProxyRequest;
+  // this.proxy = scAudienceProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
   this.prepareProxy = prepareProxyRequest;
   this.responseHandler = responseHandler;
 }
+// This makes it more easily testable
+// Basically this will be instance method
+networkHandler.prototype.proxy = scAudienceProxyRequest;
+
 module.exports = { networkHandler };

@@ -48,10 +48,13 @@ const responseHandler = (destinationResponse, _dest) => {
 
 const networkHandler = function () {
   this.responseHandler = responseHandler;
-  this.proxy = proxyRequest;
+  // this.proxy = proxyRequest;
   this.prepareProxy = prepareProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
 };
+// This will make it more easily testable
+// Basically this will be instance method
+networkHandler.prototype.proxy = proxyRequest;
 
 module.exports = {
   networkHandler,

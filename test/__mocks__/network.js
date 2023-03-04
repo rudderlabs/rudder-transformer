@@ -53,5 +53,6 @@ const mockedAxiosClient = arg => {
 };
 
 module.exports = {
-  mockedAxiosClient
+  mockedAxiosClient,
+  getData
 };

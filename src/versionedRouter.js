@@ -954,8 +954,9 @@ async function handleProxyRequest(destination, ctx) {
     stats.counter('tf_proxy_dest_req_count', 1, {
       destination,
     });
+    const preparedRequest = destNetworkHandler.prepareProxy(destinationRequest);
     const startTime = new Date();
-    const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest);
+    const rawProxyResponse = await destNetworkHandler.proxy(preparedRequest);
     stats.timing('transformer_proxy_time', startTime, {
       destination,
     });

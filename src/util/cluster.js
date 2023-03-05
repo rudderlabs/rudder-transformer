@@ -59,6 +59,13 @@ function start(port, app) {
       isShuttingDown = true;
       shutdownWorkers();
     });
+
+    process.on('SIGSEGV', () => {
+      logger.error('SIGSEGV - JavaScript memory error occurred. Closing workers...');
+      isShuttingDown = true;
+      shutdownWorkers();
+    });
+    
   } else {
     const server = app.listen(port);
     gracefulShutdown(server, {

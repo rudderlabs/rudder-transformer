@@ -131,7 +131,7 @@ const setAnonymousIdorUserId = async (message) => {
       cartToken = message?.properties?.order_id;
       break;
     default:
-      throw new Error(`${message.event} missed`);
+      throw new Error(`${message.event} is not supported`);
   }
   try {
     const redisInstance = await DBConnector.getRedisInstance();

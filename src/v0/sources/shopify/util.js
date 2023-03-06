@@ -137,7 +137,7 @@ const setAnonymousIdorUserId = async (message) => {
     const redisInstance = await DBConnector.getRedisInstance();
     const valFromDB = JSON.parse(await redisInstance.get(`${cartToken}`));
     let anonymousIDfromDB = valFromDB.anonymousId;
-    if (anonymousIDfromDB === null) {
+    if (!anonymousIDfromDB || anonymousIDfromDB === null) {
       // this is for backward compatability when we don't have the redis mapping for older events
       // we will get anonymousIDFromDb as null so we will set UUID using the session Key
       anonymousIDfromDB = cartToken;

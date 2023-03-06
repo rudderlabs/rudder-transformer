@@ -4,17 +4,20 @@ const directoryMap ={
     "shopify_test" : "shopify"
 }
 const getData = redisKey => {
-    const directory = Object.keys(directoryMap).find(key => {
-      return redisKey.includes(key);
+    let directory = "";
+    Object.keys(directoryMap).forEach(key => {
+      if (redisKey.includes(key)) {
+        directory = directoryMap[key];
+      }
     });
     if (directory) {
-      const dataFile = fs.readFileSync(
-        path.resolve(__dirname, `./data/sources/${directory}/response.json`)
-      );
-      const data = JSON.parse(dataFile);
-      response =  data[redisKey];
-      return response;
-    }
+        const dataFile = fs.readFileSync(
+          path.resolve(__dirname, `./data/sources/${directory}/response.json`)
+        );
+        const data = JSON.parse(dataFile);
+        response =  data[redisKey];
+        return response;
+      }
   }
 module.exports = {
     createClient( data) {

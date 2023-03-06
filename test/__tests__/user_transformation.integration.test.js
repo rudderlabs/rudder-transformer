@@ -7,17 +7,18 @@ const {
   setupUserTransformHandler
 } = require("../../src/util/customTransformer");
 const {
-  generateFunctionName
+  generateFunctionName, setOpenFaasUserTransform
 } = require("../../src/util/customTransformer-faas");
 const {
   deleteFunction,
   getFunctionList,
   getFunction
 } = require("../../src/util/openfaas/faasApi");
-const { invalidateFnCache } = require("../../src/util/openfaas/index");
+const { invalidateFnCache, awaitFunctionReadiness, FAAS_AST_FN_NAME, FAAS_AST_VID } = require("../../src/util/openfaas/index");
+const { extractLibraries } = require('../../src/util/customTransformer');
 const { RetryRequestError } = require("../../src/util/utils");
 
-jest.setTimeout(15000);
+jest.setTimeout(25000);
 jest.mock("axios", () => ({
   ...jest.requireActual("axios")
 }));
@@ -31,19 +32,54 @@ const contructTrRevCode = vid => {
     testName: "pytest",
     code: "def transformEvent(event, metadata):\n    return event\n",
     workspaceId,
-    versionId: vid
+    versionId: vid,
+    imports: []
   };
 };
+
+const faasCodeParsedForLibs = [
+  {
+    code: "import uuid\nimport requests\ndef transformEvent(event, metadata):\n    return event\n",
+    language: "pythonfaas",
+    response: {
+      uuid: [],
+      requests: []
+    },
+  },
+  {
+    code: "from time import sleep\ndef transformBatch(events, metadata):\n    return events\n",
+    language: "pythonfaas",
+    response: {
+      time: []
+    },
+  }
+]
+
+beforeAll(async () => {
+  (await setOpenFaasUserTransform(
+    {
+      language: "pythonfaas",
+      versionId: FAAS_AST_VID
+    },
+    [],
+    true,
+    FAAS_AST_FN_NAME
+  ));
+
+  await awaitFunctionReadiness(FAAS_AST_FN_NAME);
+});
 
 describe("Function Creation Tests", () => {
   afterAll(async () => {
     (await getFunctionList()).forEach(fn => {
-      deleteFunction(fn.name).catch(() => {});
+      if ((fn.name) !== FAAS_AST_FN_NAME) {
+        deleteFunction(fn.name).catch(() => {});
+      }
     });
   });
 
   const trRevCode = contructTrRevCode(versionId);
-  const funcName = generateFunctionName({ workspaceId, versionId }, false);
+  const funcName = generateFunctionName({ workspaceId, versionId }, [], false);
 
   const expectedData = { success: true, publishedVersion: funcName };
 
@@ -55,20 +91,35 @@ describe("Function Creation Tests", () => {
     const deployedFns = await getFunctionList();
     const fnNames = deployedFns.map(fn => fn.name);
 
-    expect(fnNames).toEqual([funcName]);
+    expect(fnNames.sort()).toEqual([funcName, FAAS_AST_FN_NAME].sort());
   });
 
   it("Setting up already existing function with testWithPublish as true - return from cache", async () => {
-    const fnCreatedAt = (await getFunctionList())[0].createdAt;
+    let fnCreatedAt;
+    
+    for(const fn of (await getFunctionList())) {
+      if (fn.name === FAAS_AST_FN_NAME) continue;
+
+      fnCreatedAt = fn.createdAt;
+      break;
+    }
+
     const outputData = await setupUserTransformHandler(trRevCode, [], true);
 
     expect(outputData).toEqual(expectedData);
 
     const deployedFns = await getFunctionList();
     const fnNames = deployedFns.map(fn => fn.name);
-    const currentCreatedAt = deployedFns[0].createdAt;
+    let currentCreatedAt;
+    
+    for(const fn of deployedFns) {
+      if (fn.name === FAAS_AST_FN_NAME) continue;
 
-    expect(fnNames).toEqual([funcName]);
+      currentCreatedAt = fn.createdAt;
+      break;
+    }
+
+    expect(fnNames.sort()).toEqual([funcName, FAAS_AST_FN_NAME].sort());
     expect(fnCreatedAt).toEqual(currentCreatedAt);
   });
 
@@ -83,7 +134,9 @@ describe("Function Creation Tests", () => {
 describe("Function invocation & creation tests", () => {
   afterAll(async () => {
     (await getFunctionList()).forEach(fn => {
-      deleteFunction(fn.name).catch(() => {});
+      if ((fn.name) !== FAAS_AST_FN_NAME) {
+        deleteFunction(fn.name).catch(() => {});
+      }
     });
   });
 
@@ -108,7 +161,7 @@ describe("Function invocation & creation tests", () => {
     const inputEvents = require(`./data/user_transformation_input.json`);
 
     const respBody = contructTrRevCode("1234");
-    const funcName = generateFunctionName(respBody, false);
+    const funcName = generateFunctionName(respBody, [], false);
 
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${respBody.versionId}`;
     when(fetch)
@@ -125,5 +178,14 @@ describe("Function invocation & creation tests", () => {
     // If function is not found, it will be created
     const deployedFn = await getFunction(funcName);
     expect(deployedFn.name).toEqual(funcName);
+  });
+});
+
+describe("Auxiliary tests", () => {
+  it("Should be able to extract libraries from code", async () => {
+    for(const testObj of faasCodeParsedForLibs) {
+      const response = await extractLibraries(testObj.code, null, testObj.validateImports || false, [], testObj.language, true);
+      expect(response).toEqual(testObj.response);
+    }
   });
 });

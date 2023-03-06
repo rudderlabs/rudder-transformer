@@ -160,9 +160,10 @@ const responseHandler = (destinationResponse) => {
 };
 
 function networkHandler() {
-  this.proxy = gaAudienceProxyRequest;
+  // this.proxy = gaAudienceProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
-  this.prepareProxy = prepareProxyRequest;
+  this.prepareProxy = (req) => req;
   this.responseHandler = responseHandler;
 }
+networkHandler.prototype.proxy = gaAudienceProxyRequest;
 module.exports = { networkHandler };

@@ -132,10 +132,15 @@ const responseHandler = (destinationResponse) => {
 // eslint-disable-next-line func-names
 class networkHandler {
   constructor() {
-    this.proxy = ProxyRequest;
+    // this.proxy = ProxyRequest;
     this.responseHandler = responseHandler;
     this.processAxiosResponse = processAxiosResponse;
-    this.prepareProxy = prepareProxyRequest;
+    // As there is some logic with which the data-delivery is happening, we are not doing much in the preparation phase
+    this.prepareProxy = (req) => req;
+  }
+
+  async proxy (preparedRequest) {
+    return ProxyRequest.call(this, preparedRequest);
   }
 }
 module.exports = { networkHandler };

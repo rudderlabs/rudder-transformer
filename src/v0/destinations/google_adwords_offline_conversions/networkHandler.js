@@ -191,11 +191,12 @@ const responseHandler = (destinationResponse) => {
 };
 
 const networkHandler = function () {
-  this.prepareProxy = prepareProxyRequest;
-  this.proxy = ProxyRequest;
+  this.prepareProxy = (req) => req;
+  // this.proxy = ProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
   this.responseHandler = responseHandler;
 };
+networkHandler.prototype.proxy = ProxyRequest;
 
 module.exports = {
   networkHandler,

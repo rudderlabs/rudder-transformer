@@ -106,7 +106,7 @@ const prepareProxyReq = (request) => {
  * @returns
  */
 const pardotProxyRequest = async (request) => {
-  const { endpoint, data, method, params, headers } = prepareProxyReq(request);
+  const { endpoint, data, method, params, headers } = request;
 
   const requestOptions = {
     url: endpoint,

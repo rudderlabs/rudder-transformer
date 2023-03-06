@@ -8,7 +8,7 @@ function getMockResponseData(url) {
   return mockHttpClientForProxy.getData(url);
 }
 
-['snapchat_custom_audience'].forEach(destType => {
+['snapchat_custom_audience', 'clevertap'].forEach(destType => {
   const getJsonPath = (destType, type='in') => {
     let path = '../../__tests__/data/';
     if (destType !== 'any') {

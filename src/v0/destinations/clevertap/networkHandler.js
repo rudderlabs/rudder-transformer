@@ -46,9 +46,13 @@ const responseHandler = (destinationResponse) => {
 class networkHandler {
   constructor() {
     this.responseHandler = responseHandler;
-    this.proxy = proxyRequest;
+    // this.proxy = proxyRequest.bind(this);
     this.prepareProxy = prepareProxyRequest;
     this.processAxiosResponse = processAxiosResponse;
+  }
+
+  async proxy(preparedRequest) {
+    return proxyRequest.call(this, preparedRequest)
   }
 }
 

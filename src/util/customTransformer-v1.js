@@ -80,7 +80,8 @@ async function userTransformHandlerV1(
     stats.gauge('events_to_process', events.length, tags);
     const isolateStartWallTime = calculateMsFromIvmTime(isolatevm.isolateStartWallTime);
     const isolateStartCPUTime = calculateMsFromIvmTime(isolatevm.isolateStartCPUTime);
-
+    
+    const invokeTime = new Date();
     let transformedEvents;
     // Destroy isolatevm in case of execution errors
     try {
@@ -91,6 +92,7 @@ async function userTransformHandlerV1(
       throw err;
     }
     const { logs } = isolatevm;
+    stats.timing('run_time', invokeTime, tags);
     const isolateEndWallTime = calculateMsFromIvmTime(isolatevm.isolate.wallTime);
     const isolateEndCPUTime = calculateMsFromIvmTime(isolatevm.isolate.cpuTime);
     stats.timing('isolate_wall_time', isolateEndWallTime - isolateStartWallTime, tags);

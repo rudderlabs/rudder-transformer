@@ -171,6 +171,7 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
     }
   });
   let result;
+  const invokeTime = new Date();
   try {
     const timeoutPromise = new Promise((resolve) => {
       const wait = setTimeout(() => {
@@ -182,6 +183,7 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
     if (result === 'Timedout') {
       throw new Error('Timed out');
     }
+    stats.timing('run_time', invokeTime, tags);
   } catch (error) {
     throw error;
   } finally {

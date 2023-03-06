@@ -141,6 +141,7 @@ const transformedPayloadData = (
     'phone',
     'state',
     'zip',
+    'postalCode',
     'birthday',
   ];
   blacklistPiiProperties = blacklistPiiProperties || [];

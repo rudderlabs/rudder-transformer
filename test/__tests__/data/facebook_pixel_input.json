@@ -27,6 +27,9 @@
         },
         "traits": {
           "email": "    aBc@gmail.com   ",
+          "address": {
+            "zip": 1234
+          },
           "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
         }
       },
@@ -64,6 +67,7 @@
             "eventCustomProperties": ""
           }
         ],
+        "removeExternalId": true,
         "valueFieldIdentifier": "",
         "advancedMapping": false,
         "whitelistPiiProperties": [
@@ -312,6 +316,9 @@
           "name": "Ruchira Moitra",
           "email": "abc@gmail.com",
           "phone": 9000000000,
+          "address": {
+            "postalCode": 1234
+          },
           "gender": "female"
         },
         "app": {
@@ -1206,6 +1213,7 @@
         ],
         "accessToken": "09876",
         "pixelId": "dfgdfgdgd",
+        "removeExternalId": false,
         "eventsToEvents": [
           {
             "from": "My product list",
@@ -1288,6 +1296,7 @@
             "to": "product"
           }
         ],
+        "removeExternalId": true,
         "accessToken": "09876",
         "pixelId": "dfgdfgdgd",
         "eventsToEvents": [
@@ -1367,6 +1376,7 @@
         ],
         "accessToken": "09876",
         "pixelId": "dfgdfgdgd",
+        "removeExternalId": false,
         "eventsToEvents": [
           {
             "from": "",
@@ -1594,7 +1604,13 @@
         }
       },
       "context": {
-        "dataProcessingOptions": [["LDU"], 1, 1000],
+        "dataProcessingOptions": [
+          [
+            "LDU"
+          ],
+          1,
+          1000
+        ],
         "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
         "fbp": "fb.1.1554763741205.234567890",
         "fb_login_id": "fb_id",
@@ -1675,7 +1691,13 @@
         }
       },
       "context": {
-        "dataProcessingOptions": [["LDU"], 1, 1000],
+        "dataProcessingOptions": [
+          [
+            "LDU"
+          ],
+          1,
+          1000
+        ],
         "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
         "fbp": "fb.1.1554763741205.234567890",
         "fb_login_id": "fb_id",
@@ -2504,7 +2526,10 @@
       "userId": "12345",
       "event": "order completed",
       "properties": {
-        "category": ["clothing", "fishing"],
+        "category": [
+          "clothing",
+          "fishing"
+        ],
         "order_id": "ruchiraorder1",
         "total": 99.99,
         "revenue": 12.24,
@@ -3310,7 +3335,9 @@
       "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
       "anonymousId": "00000000000000000000000000",
       "userId": "12345",
-      "event": { "name": "checkout started" },
+      "event": {
+        "name": "checkout started"
+      },
       "properties": {
         "currency": "CAD",
         "category": "clothing",

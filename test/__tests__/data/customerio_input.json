@@ -2043,11 +2043,21 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU"],
-            "web": ["useNativeSDK"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU"
+            ],
+            "web": [
+              "useNativeSDK"
+            ]
           },
           "excludeKeys": [],
-          "includeKeys": ["apiKey", "siteID", "datacenterEU"],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU"
+          ],
           "saveDestinationResponse": true,
           "secretKeys": [],
           "supportedSourceTypes": [
@@ -2124,11 +2134,21 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU"],
-            "web": ["useNativeSDK"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU"
+            ],
+            "web": [
+              "useNativeSDK"
+            ]
           },
           "excludeKeys": [],
-          "includeKeys": ["apiKey", "siteID", "datacenterEU"],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU"
+          ],
           "saveDestinationResponse": true,
           "secretKeys": [],
           "supportedSourceTypes": [
@@ -2245,8 +2265,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2258,7 +2287,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2372,8 +2406,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2385,7 +2428,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2499,8 +2547,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2512,7 +2569,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2626,8 +2688,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2639,7 +2710,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2750,8 +2826,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2763,7 +2848,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -2878,8 +2968,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -2891,7 +2990,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3005,8 +3109,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3018,7 +3131,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3132,8 +3250,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3145,7 +3272,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3259,8 +3391,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3272,7 +3413,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3383,8 +3529,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3396,7 +3551,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3511,8 +3671,17 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
-            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -3524,7 +3693,12 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -3548,6 +3722,432 @@
         "datacenterEU": false,
         "deviceTokenEventName": "device_token_registered",
         "siteID": "DESU SAI"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "description": "successful group call with identify action",
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.0-beta.2"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.0-beta.2"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+      },
+      "groupId": "group@1",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "domainNames": "rudderstack.com",
+        "email": "help@rudderstack.com",
+        "name": "rudderstack",
+        "action": "identify"
+      },
+      "type": "group",
+      "userId": "user@1"
+    },
+    "destination": {
+      "ID": "23Mi76khsFhY7bh9ZyRcvR3pHDt",
+      "Name": "Customer IO Dev",
+      "DestinationDefinition": {
+        "ID": "23MgSlHXsPLsiH7SbW7IzCP32fn",
+        "Name": "CUSTOMERIO",
+        "DisplayName": "Customer IO",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU",
+            "blackListedEvents",
+            "whiteListedEvents"
+          ],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "apiKey": "ef32c3f60fb98f39ef35",
+        "datacenterEU": false,
+        "deviceTokenEventName": "device_token_registered",
+        "siteID": "c0efdbd20b9fbe24a7e2"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "description": "successful group call with delete action",
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.0-beta.2"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.0-beta.2"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+      },
+      "groupId": "group@1",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "domainNames": "rudderstack.com",
+        "email": "help@rudderstack.com",
+        "name": "rudderstack",
+        "action": "delete"
+      },
+      "type": "group",
+      "userId": "user@1"
+    },
+    "destination": {
+      "ID": "23Mi76khsFhY7bh9ZyRcvR3pHDt",
+      "Name": "Customer IO Dev",
+      "DestinationDefinition": {
+        "ID": "23MgSlHXsPLsiH7SbW7IzCP32fn",
+        "Name": "CUSTOMERIO",
+        "DisplayName": "Customer IO",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU",
+            "blackListedEvents",
+            "whiteListedEvents"
+          ],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "apiKey": "ef32c3f60fb98f39ef35",
+        "datacenterEU": false,
+        "deviceTokenEventName": "device_token_registered",
+        "siteID": "c0efdbd20b9fbe24a7e2"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "description": "successful group call with add_relationships action",
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.0-beta.2"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.0-beta.2"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "email": "test@rudderlabs.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+      },
+      "groupId": "group@1",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "domainNames": "rudderstack.com",
+        "email": "help@rudderstack.com",
+        "name": "rudderstack",
+        "action": "add_relationships"
+      },
+      "type": "group",
+      "userId": "user@1"
+    },
+    "destination": {
+      "ID": "23Mi76khsFhY7bh9ZyRcvR3pHDt",
+      "Name": "Customer IO Dev",
+      "DestinationDefinition": {
+        "ID": "23MgSlHXsPLsiH7SbW7IzCP32fn",
+        "Name": "CUSTOMERIO",
+        "DisplayName": "Customer IO",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU",
+            "blackListedEvents",
+            "whiteListedEvents"
+          ],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "apiKey": "ef32c3f60fb98f39ef35",
+        "datacenterEU": false,
+        "deviceTokenEventName": "device_token_registered",
+        "siteID": "c0efdbd20b9fbe24a7e2"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "description": "successful group call with delete_relationships action",
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.0-beta.2"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.0-beta.2"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "email": "test@rudderlabs.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
+      },
+      "groupId": "group@1",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "domainNames": "rudderstack.com",
+        "email": "help@rudderstack.com",
+        "name": "rudderstack",
+        "action": "delete_relationships"
+      },
+      "type": "group",
+      "userId": "user@1"
+    },
+    "destination": {
+      "ID": "23Mi76khsFhY7bh9ZyRcvR3pHDt",
+      "Name": "Customer IO Dev",
+      "DestinationDefinition": {
+        "ID": "23MgSlHXsPLsiH7SbW7IzCP32fn",
+        "Name": "CUSTOMERIO",
+        "DisplayName": "Customer IO",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": [
+              "apiKey",
+              "siteID",
+              "datacenterEU",
+              "deviceTokenEventName"
+            ],
+            "web": [
+              "useNativeSDK",
+              "blackListedEvents",
+              "whiteListedEvents"
+            ]
+          },
+          "excludeKeys": [],
+          "includeKeys": [
+            "apiKey",
+            "siteID",
+            "datacenterEU",
+            "blackListedEvents",
+            "whiteListedEvents"
+          ],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": [
+            "identify",
+            "page",
+            "screen",
+            "track"
+          ],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": {}
+      },
+      "Config": {
+        "apiKey": "ef32c3f60fb98f39ef35",
+        "datacenterEU": false,
+        "deviceTokenEventName": "device_token_registered",
+        "siteID": "c0efdbd20b9fbe24a7e2"
       },
       "Enabled": true,
       "Transformations": [],

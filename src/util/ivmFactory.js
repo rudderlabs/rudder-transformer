@@ -4,7 +4,6 @@ const _ = require('lodash');
 
 const stats = require('./stats');
 const { getLibraryCodeV1, getRudderLibByImportName } = require('./customTransforrmationsStore-v1');
-const { parserForImport } = require('./parser');
 const logger = require('../logger');
 
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
@@ -31,17 +30,26 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   );
   const librariesMap = {};
   if (code && libraries) {
-    const extractedLibImportNames = Object.keys(await parserForImport(code));
+    const extractedLibraries = Object.keys(await require('./customTransformer').extractLibraries(
+      code,
+      null,
+      false,
+      [],
+      "javascript",
+      testMode
+      )
+    );
 
+    // TODO: Check if this should this be &&
     libraries.forEach((library) => {
       const libHandleName = _.camelCase(library.name);
-      if (extractedLibImportNames.includes(libHandleName)) {
+      if (extractedLibraries.includes(libHandleName)) {
         librariesMap[libHandleName] = library.code;
       }
     });
 
     // Extract ruddder libraries from import names
-    const rudderLibImportNames = extractedLibImportNames.filter((name) =>
+    const rudderLibImportNames = extractedLibraries.filter((name) =>
       RUDDER_LIBRARY_REGEX.test(name),
     );
     const rudderLibraries = await Promise.all(

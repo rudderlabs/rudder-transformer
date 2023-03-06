@@ -4,11 +4,8 @@ const directoryMap ={
     "shopify_test" : "shopify"
 }
 const getData = redisKey => {
-    let directory = "";
-    Object.keys(directoryMap).forEach(key => {
-      if (redisKey.includes(key)) {
-        directory = directoryMap[key];
-      }
+    const directory = Object.keys(directoryMap).find(key => {
+      return redisKey.includes(key);
     });
     if (directory) {
       const dataFile = fs.readFileSync(

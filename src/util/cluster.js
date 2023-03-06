@@ -76,7 +76,6 @@ function start(port, app) {
 
     process.on('SIGSEGV', () => {
       logger.error(`SIGSEGV - JavaScript memory error occurred in the worker`);
-      logProcessInfo();
     });
 
     logger.info(`Worker (pid: ${process.pid}) has started`);

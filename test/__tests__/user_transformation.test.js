@@ -27,6 +27,7 @@ const name = "User Transformations";
 
 const util = require("util");
 const fs = require("fs");
+const crypto = require('crypto');
 const path = require("path");
 const {
   userTransformHandler,
@@ -54,7 +55,7 @@ const responseInit = url => {
   };
 };
 
-const pyTrRevCode = versionId => {
+const pyTrRevCode = (versionId, imports=[]) => {
   return {
     codeVersion: "1",
     language: "pythonfaas",
@@ -64,12 +65,32 @@ const pyTrRevCode = versionId => {
         return event
     `,
     workspaceId: "workspaceId",
-    versionId
+    versionId,
+    imports
   };
 };
 
-const pyfaasFuncName = (workspaceId, versionId) => {
-  return `fn-${workspaceId}-${versionId}`.toLowerCase().substring(0, 63);
+const pyLibCode = (name, versionId) => {
+  return {
+    code: `
+      def add(a, b):
+        return a + b
+    `,
+    language: "pythonfaas",
+    name,
+    handleName: _.camelCase(name),
+    workspaceId: "workspaceId",
+    versionId
+  }
+}
+
+const pyfaasFuncName = (workspaceId, versionId, libraryVersionIds=[]) => {
+  const ids = [workspaceId, versionId].concat(libraryVersionIds.sort());
+  const hash = crypto.createHash('md5').update(`${ids}`).digest('hex');
+
+  return `fn-${workspaceId}-${hash}`
+    .substring(0, 63)
+    .toLowerCase();
 };
 
 const getfetchResponse = (resp, url) =>
@@ -77,6 +98,8 @@ const getfetchResponse = (resp, url) =>
     typeof resp === "object" ? JSON.stringify(resp) : resp,
     responseInit(url)
   );
+
+let importNameLibraryVersionIdsMap;
 
 describe("User transformation", () => {
   beforeEach(() => {
@@ -842,7 +865,7 @@ describe("User transformation", () => {
     expect(output).toEqual(expectedData);
   });
 
-  it(`Simple ${name} Test for library parser`, () => {
+  it(`Simple ${name} Test for library parser`, async () => {
     const outputImport = {
       "@angular2/core": ["Component"],
       "module-name1": ["defaultMember"],
@@ -864,7 +887,7 @@ describe("User transformation", () => {
       import { member1 , member2 as alias2 , member3 as alias3 } from "module-name6"; 
       import defaultMember, { member, member } from "module-name7";
     `;
-    const output = parserForImport(code);
+    const output = await parserForImport(code);
 
     expect(output).toEqual(outputImport);
   });
@@ -1100,6 +1123,67 @@ describe("Timeout tests", () => {
   });
 });
 
+describe("Rudder library tests", () => {
+  beforeEach(() => {});
+  it(`Simple ${name} async test for V1 transformation - with rudder library urlParser `, async () => {
+    const versionId = randomID();
+    const rudderLibraryImportName = '@rs/urlParser/v1';
+    const [name, version] = rudderLibraryImportName.split('/').slice(-2);
+    const inputData = require(`./data/${integration}_input_large.json`);
+    const expectedData = require(`./data/${integration}_async_output_large.json`);
+
+    const respBody = {
+      code: `
+      import url from '@rs/urlParser/v1';
+      async function foo() {
+        return 'resolved';
+      }
+      export async function transformEvent(event, metadata) {
+          const pr = await foo();
+          if(event.properties && event.properties.url){
+            const x = new url.URLSearchParams(event.properties.url).get("client");
+          }
+          event.promise = pr;
+          return event;
+        }
+        `,
+      name: "urlParser",
+      codeVersion: "1"
+    };
+    respBody.versionId = versionId;
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(respBody)
+      });
+
+    const urlCode = `${fs.readFileSync(
+      path.resolve(__dirname, "../../src/util/url-search-params.min.js"),
+      "utf8"
+    )};
+    export default self;
+    `;
+
+    const rudderLibraryUrl = `https://api.rudderlabs.com/rudderstackTransformationLibraries/${name}?version=${version}`;
+    when(fetch)
+      .calledWith(rudderLibraryUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ code: urlCode, name: "urlParser", importName: rudderLibraryImportName })
+      });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+
+    expect(output).toEqual(expectedData);
+  });
+});
+
 // Running tests for python transformations with openfaas mocks
 describe("Python transformations", () => {
   beforeEach(() => {
@@ -1133,7 +1217,8 @@ describe("Python transformations", () => {
     );
     expect(axios.get).toHaveBeenCalledTimes(1);
     expect(axios.get).toHaveBeenCalledWith(
-      `${OPENFAAS_GATEWAY_URL}/system/function/${funcName}`
+      `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
+      {"headers": {"X-REQUEST-TYPE": "HEALTH-CHECK"}}
     );
   });
 
@@ -1216,7 +1301,94 @@ describe("Python transformations", () => {
     expect(output).toEqual(outputData);
 
     expect(axios.post).toHaveBeenCalledTimes(2);
-    expect(axios.get).toHaveBeenCalledTimes(1);
+    expect(axios.get).toHaveBeenCalledTimes(2);
+    expect(axios.delete).toHaveBeenCalledTimes(1);
+  });
+
+  it("Test transformation with user library imports - create, invoke & delete faas function", async () => {
+    importNameLibraryVersionIdsMap = {
+      mathlib: randomID(),
+      constants: randomID(),
+      strlib: randomID()
+    }
+    const trRevCode = pyTrRevCode(randomID(), Object.keys(importNameLibraryVersionIdsMap));
+    const inputData = require(`./data/${integration}_input.json`);
+    const respData = require(`./data/${integration}_output.json`);
+    const outputData = require(`./data/${integration}_pycode_test_output.json`);
+
+    for(const pyImport of Object.keys(importNameLibraryVersionIdsMap)) {
+      const versionId = importNameLibraryVersionIdsMap[pyImport];
+      const respBody = pyLibCode(pyImport, versionId);
+      const libUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${versionId}`;
+      when(fetch)
+        .calledWith(libUrl)
+        .mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue(respBody)
+        });
+    }
+
+    axios.get.mockResolvedValue({}); // get function
+    axios.post
+      .mockResolvedValueOnce({}) // create function
+      .mockResolvedValueOnce({
+        data: { transformedEvents: respData, logs: [] } // invoke function
+      });
+    axios.delete.mockResolvedValue({}); // delete function
+
+    const output = await userTransformHandler(
+      inputData,
+      trRevCode.versionId,
+      Object.values(importNameLibraryVersionIdsMap),
+      trRevCode,
+      true
+    );
+    expect(output).toEqual(outputData);
+    
+    expect(fetch).toHaveBeenCalledTimes(3);
+    expect(axios.post).toHaveBeenCalledTimes(2);
+    expect(axios.get).toHaveBeenCalledTimes(2);
+    expect(axios.delete).toHaveBeenCalledTimes(1);
+  });
+
+  it("Test transformation with cached user library imports - create, invoke & delete faas function", async () => {
+    const trRevCode = pyTrRevCode(randomID(), Object.keys(importNameLibraryVersionIdsMap));
+    const inputData = require(`./data/${integration}_input.json`);
+    const respData = require(`./data/${integration}_output.json`);
+    const outputData = require(`./data/${integration}_pycode_test_output.json`);
+
+    for(const pyImport of Object.keys(importNameLibraryVersionIdsMap)) {
+      const versionId = importNameLibraryVersionIdsMap[pyImport];
+      const respBody = pyLibCode(pyImport, versionId);
+      const libUrl = `https://api.rudderlabs.com/transformationLibrary/getByVersionId?versionId=${versionId}`;
+      when(fetch)
+        .calledWith(libUrl)
+        .mockResolvedValue({
+          status: 200,
+          json: jest.fn().mockResolvedValue(respBody)
+        });
+    }
+
+    axios.get.mockResolvedValue({}); // get function
+    axios.post
+      .mockResolvedValueOnce({}) // create function
+      .mockResolvedValueOnce({
+        data: { transformedEvents: respData, logs: [] } // invoke function
+      });
+    axios.delete.mockResolvedValue({}); // delete function
+
+    const output = await userTransformHandler(
+      inputData,
+      trRevCode.versionId,
+      Object.values(importNameLibraryVersionIdsMap),
+      trRevCode,
+      true
+    );
+    expect(output).toEqual(outputData);
+    
+    expect(fetch).toHaveBeenCalledTimes(0);
+    expect(axios.post).toHaveBeenCalledTimes(2);
+    expect(axios.get).toHaveBeenCalledTimes(2);
     expect(axios.delete).toHaveBeenCalledTimes(1);
   });
 
@@ -1268,7 +1440,7 @@ describe("Python transformations", () => {
         response: { status: 404, data: `error finding function ${funcName}` } // invoke function not found
       })
       .mockResolvedValueOnce({}); // create function
-    axios.get.mockResolvedValue({}); // get function
+    axios.get.mockResolvedValue({}); // awaitFunctionReadiness()
 
     await expect(async () => {
       await userTransformHandler(inputData, versionId, []);
@@ -1286,7 +1458,8 @@ describe("Python transformations", () => {
 
     expect(axios.get).toHaveBeenCalledTimes(1);
     expect(axios.get).toHaveBeenCalledWith(
-      `${OPENFAAS_GATEWAY_URL}/system/function/${funcName}`
+      `${OPENFAAS_GATEWAY_URL}/function/${funcName}`,
+      {"headers": {"X-REQUEST-TYPE": "HEALTH-CHECK"}}
     );
   });
 

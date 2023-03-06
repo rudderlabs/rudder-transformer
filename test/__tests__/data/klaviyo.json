@@ -1,6 +1,6 @@
 [
   {
-    "description": "Profile updation call and list and subcribe user",
+    "description": "Profile updation call and subcribe user",
     "input": {
       "destination": {
         "Config": {
@@ -93,33 +93,6 @@
         },
         "body": {
           "JSON": {},
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/members",
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "params": {
-          "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
-        },
-        "body": {
-          "JSON": {
-            "profiles": [
-              {
-                "id": "utsabc",
-                "email": "utsab@rudderstack.com",
-                "phone_number": "+12 345 578 900"
-              }
-            ]
-          },
           "JSON_ARRAY": {},
           "XML": {},
           "FORM": {}
@@ -405,64 +378,70 @@
         "timestamp": "2020-01-21T00:21:34.208Z"
       }
     },
-    "output": [
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/members",
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "params": {
-          "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
-        },
-        "body": {
-          "JSON": {
-            "profiles": [
-              {
-                "email": "utsab@rudderstack.com",
-                "phone_number": "+12 345 678 900",
-                "$id": "user123"
-              }
-            ]
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/subscribe",
+      "headers": {
+        "Content-Type": "application/json"
       },
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/subscribe",
-        "headers": {
-          "Content-Type": "application/json"
+      "params": {
+        "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
+      },
+      "body": {
+        "JSON": {
+          "profiles": [
+            {
+              "email": "utsab@rudderstack.com",
+              "phone_number": "+12 345 678 900",
+              "$id": "user123",
+              "sms_consent": true,
+              "$consent": "email"
+            }
+          ]
         },
-        "params": {
-          "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "group call without groupId",
+    "input": {
+      "destination": {
+        "Config": {
+          "publicApiKey": "WJqij9",
+          "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+        }
+      },
+      "message": {
+        "userId": "user123",
+        "type": "group",
+        "groupId": "",
+        "traits": {
+          "subscribe": true
         },
-        "body": {
-          "JSON": {
-            "profiles": [
-              {
-                "email": "utsab@rudderstack.com",
-                "phone_number": "+12 345 678 900",
-                "$id": "user123",
-                "sms_consent": true,
-                "$consent": "email"
-              }
-            ]
+        "context": {
+          "traits": {
+            "email": "utsab@rudderstack.com",
+            "phone": "+12 345 678 900",
+            "consent": "email",
+            "smsConsent": true
           },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
         },
-        "files": {}
+        "timestamp": "2020-01-21T00:21:34.208Z"
       }
-    ]
+    },
+    "output": {
+      "error": "groupId is a required field for group events"
+    }
   },
   {
     "description": "[Error]: Check for unsupported message type",
@@ -588,33 +567,6 @@
               "Flagged": false,
               "Residence": "Shibuya"
             }
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://a.klaviyo.com/api/v2/list/XUepkK/members",
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "params": {
-          "api_key": "pk_a68c7b5163d98807fcb57e6f921216629d"
-        },
-        "body": {
-          "JSON": {
-            "profiles": [
-              {
-                "id": "batsu",
-                "email": "batsu@rudderstack.com",
-                "phone_number": "+12 345 578 900"
-              }
-            ]
           },
           "JSON_ARRAY": {},
           "XML": {},
@@ -1158,7 +1110,7 @@
     }
   },
   {
-    "description": "Throwing error if list Id is not in the payload",
+    "description": "Identify call for existing profile details when channel === 'sources'",
     "input": {
       "destination": {
         "Config": {
@@ -1170,9 +1122,8 @@
         "type": "identify",
         "sentAt": "2021-01-03T17:02:53.195Z",
         "userId": "utsabc",
-        "channel": "web",
+        "channel": "sources",
         "context": {
-          "mappedToDestination": true,
           "externalId": [
             {
               "identifierType": "$email",
@@ -1211,21 +1162,24 @@
       {
         "version": "1",
         "type": "REST",
-        "method": "PUT",
-        "endpoint": "https://a.klaviyo.com/api/v1/person/01G79MV4XVPABNP8G5FSK40QES",
+        "method": "POST",
+        "endpoint": "https://a.klaviyo.com/api/identify",
         "headers": {
-          "Accept": "application/json"
+          "Content-Type": "application/json",
+          "Accept": "text/html"
         },
-        "params": {
-          "$id": "utsab@rudderstack.com",
-          "$email": "utsab@rudderstack.com",
-          "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d",
-          "$first_name": "Utsab",
-          "$last_name": "Chowdhury",
-          "omega": "omegashenron"
-        },
+        "params": {},
         "body": {
-          "JSON": {},
+          "JSON": {
+            "token": "WJqij9",
+            "properties": {
+              "$email": "utsab@rudderstack.com",
+              "omega": "omegashenron",
+              "$last_name": "Chowdhury",
+              "$first_name": "Utsab",
+              "$id": "utsabc"
+            }
+          },
           "JSON_ARRAY": {},
           "XML": {},
           "FORM": {}

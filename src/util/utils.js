@@ -41,6 +41,7 @@ const sendViolationMetrics = (validationErrors, dropped, metaTags) => {
       stats.counter('hv_metrics', value, { ...metaTags, dropped, violationType: key });
     }
   });
+  stats.counter('hv_metrics', validationErrors.length, { ...metaTags, dropped, violationType: 'Total' });
 }
 
 module.exports = {

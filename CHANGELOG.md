@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.15.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.14.0...v1.15.0) (2023-03-06)
+
+
+### Features
+
+* log process memory errors ([#1920](https://github.com/rudderlabs/rudder-transformer/issues/1920)) ([076d7b5](https://github.com/rudderlabs/rudder-transformer/commit/076d7b58831b035102a0544985d9a1ff67ef1791))
+
+
+### Bug Fixes
+
+* correcting method name for prepareProxy ([#1923](https://github.com/rudderlabs/rudder-transformer/issues/1923)) ([cfed522](https://github.com/rudderlabs/rudder-transformer/commit/cfed5228be21bd8d7f5a2ea8bc4b97c973a112be))
+* **fb pixel:** zp mapping and external_id ([#1908](https://github.com/rudderlabs/rudder-transformer/issues/1908)) ([c8665d4](https://github.com/rudderlabs/rudder-transformer/commit/c8665d4475fe06d45d3b4fdd26b46247be0188f6))
+* updated batching logic for pinterest_tag ([#1878](https://github.com/rudderlabs/rudder-transformer/issues/1878)) ([e38d772](https://github.com/rudderlabs/rudder-transformer/commit/e38d7721451d4c43d8c1fe67d28566302dced440))
+
+
+### Miscellaneous
+
+* add stat to collect violations per event ([#1913](https://github.com/rudderlabs/rudder-transformer/issues/1913)) ([9351e57](https://github.com/rudderlabs/rudder-transformer/commit/9351e57788749ecadb1fb6d54e9325190fff91cf))
+* update unit tests in new format (awin, persistIq, discord, factorsai, s3) ([#1849](https://github.com/rudderlabs/rudder-transformer/issues/1849)) ([a0cfbc1](https://github.com/rudderlabs/rudder-transformer/commit/a0cfbc1dfa3eb76ba54573da0da22fe1909b495b))
+
 ## [1.14.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.13.0...v1.14.0) (2023-02-28)
 
 

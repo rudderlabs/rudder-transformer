@@ -144,7 +144,7 @@ const setAnonymousIdorUserId = async (message) => {
     }
     message.setProperty('anonymousId', anonymousIDfromDB || 'Not Found');
   } catch (e) {
-    logger.error(`get ${e}`);
+    logger.error(`Couldn't fetch data for cartToken ${cartToken} due error: ${e}`);
   }
 };
 

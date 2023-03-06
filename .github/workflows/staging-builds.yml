@@ -1,0 +1,174 @@
+name: Build transformer image for staging env
+
+on:
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+    branches:
+      - main
+
+env:
+  REPO_NAME_OLD: rudderlabs/staging-rudder-transformer
+  REPO_NAME: rudderstack/staging-rudder-transformer
+  DOCKERHUB_USERNAME: rudderlabs
+
+jobs:
+  transformer-build:
+    name: Build transformer staging image
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get_version.outputs.version }}
+
+    # Only pull requests from release candidate branches must trigger
+    if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Get image version
+        id: get_version
+        run: |
+          VERSION="$(jq -r .version package.json)"
+          echo $VERSION
+          echo "::set-output name=version::$VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"          
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
+
+      - name: Build image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          load: true
+          tags: |
+            ${{ env.REPO_NAME_OLD }}:${{ steps.get_version.outputs.version }}
+            ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }}
+            ${{ env.REPO_NAME }}:latest
+            ${{ env.REPO_NAME_OLD }}:latest
+
+      - name: Run Tests
+        run: |
+          docker run ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }} npm run test
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push multi-platform images
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile
+          push: true
+          tags: |
+            ${{ env.REPO_NAME_OLD }}:${{ steps.get_version.outputs.version }}
+            ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }}
+          platforms: |
+            linux/amd64
+            linux/arm64
+          build-args: |
+            VERSION=${{ steps.get_version.outputs.version }}
+            COMMIT_HASH=${{ github.sha }}
+
+  user-transformer-build:
+    name: Build user transformer staging image
+    runs-on: ubuntu-latest
+    outputs:
+      ut-version: ${{ steps.get_version.outputs.version }}
+
+    # Only pull requests from release candidate branches must trigger
+    if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Get image version
+        id: get_version
+        run: |
+          VERSION="ut-$(jq -r .version package.json)"
+          echo $VERSION
+          echo "::set-output name=version::$VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
+
+      - name: Build image
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile-ut-func
+          load: true
+          tags: |
+            ${{ env.REPO_NAME_OLD }}:${{ steps.get_version.outputs.version }}
+            ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }}
+
+      - name: Run Tests
+        run: |
+          docker run ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }} npm run test
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Build and push multi-platform images
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          file: Dockerfile-ut-func
+          push: true
+          tags: |
+            ${{ env.REPO_NAME_OLD }}:${{ steps.get_version.outputs.version }}
+            ${{ env.REPO_NAME }}:${{ steps.get_version.outputs.version }}
+          platforms: |
+            linux/amd64
+            linux/arm64
+          build-args: |
+            VERSION=${{ steps.get_version.outputs.version }}
+            COMMIT_HASH=${{ github.sha }}
+
+  createPullRequest:
+    name: Create Pull Request for rudder-devops repository
+    runs-on: ubuntu-latest
+    needs: [ user-transformer-build, transformer-build ]
+    env:
+      VERSION: ${{ needs.transformer-build.outputs.version }}
+      UT_VERSION: ${{ needs.user-transformer-build.outputs.ut-version }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Print versions
+        run: |
+          echo "version is $VERSION"
+          echo "ut-version is $UT_VERSION"
+      - name: Clone repository and raise pull request
+        run: |
+          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
+          git config --global user.email "noreply@github.com"
+          git config --global user.name "GitHub Actions"
+          git config remote.origin.fetch '+refs/heads/*:refs/remotes/origin/*'
+          git fetch --all
+          branch_name=shared-transformer-$VERSION
+          git checkout -b $branch_name
+          cd rudder-devops/helm-charts/shared-services/per-az
+          yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.staging.yaml
+          yq eval -i ".user-transformer.image.tag=\"$UT_VERSION\"" values.staging.yaml
+          git diff
+          git add values.staging.yaml
+          cd ../../config-be-rudder-transformer
+          yq eval -i ".config-be-rudder-transformer.image.tag=\"$VERSION\"" values.staging.yaml
+          yq eval -i ".config-be-user-transformer.image.tag=\"$UT_VERSION\"" values.staging.yaml
+          git diff
+          git add values.staging.yaml
+          git commit -m "changing version for shared transformer"
+          git push -u origin $branch_name
+          hub pull-request -m "rudder-transformer version change-$VERSION"

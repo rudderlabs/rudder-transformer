@@ -1,8 +1,11 @@
 const ivm = require('isolated-vm');
+const { compileUserLibrary } = require('../util/ivmFactory');
 const fetch = require('node-fetch');
 const { getTransformationCode } = require('./customTransforrmationsStore');
+const { getTransformationCodeV1 } = require('./customTransforrmationsStore-v1');
 const stats = require('./stats');
 const { UserTransformHandlerFactory } = require('./customTransformerFactory');
+const { parserForImport } = require('./parser');
 
 async function runUserTransform(events, code, eventsMetadata, versionId, testMode = false) {
   const tags = {
@@ -223,6 +226,10 @@ async function userTransformHandler(
           libraryVersionIDs,
         );
 
+        if (result.error) {
+          throw new Error(result.error);
+        }
+
         userTransformedEvents = result.transformedEvents;
         if (testMode) {
           userTransformedEvents = {
@@ -262,10 +269,40 @@ async function setupUserTransformHandler(
   libraryVersionIDs,
   testWithPublish = false,
 ) {
-  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(testWithPublish);
+  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(libraryVersionIDs, testWithPublish);
   return resp;
 }
+
+async function validateCode(code, language) {
+  if (language === "javascript") {
+    return compileUserLibrary(code);
+  }
+  if (language === "python" || language === "pythonfaas") {
+    return parserForImport(code, true, [], language);
+  }
+
+  throw new Error('Unsupported language');
+}
+
+async function extractLibraries(code, versionId, validateImports, additionalLibs, language = "javascript", testMode = false) {
+  if (language === "javascript") return parserForImport(code);
+
+  let transformation;
+
+  if (versionId && !testMode) {
+    transformation = await getTransformationCodeV1(versionId);
+  }
+
+  if (!transformation?.imports) {
+      return parserForImport(code || transformation?.code, validateImports, additionalLibs, language);
+  }
+
+  return transformation.imports;
+}
+
 module.exports = {
   userTransformHandler,
   setupUserTransformHandler,
+  validateCode,
+  extractLibraries
 };

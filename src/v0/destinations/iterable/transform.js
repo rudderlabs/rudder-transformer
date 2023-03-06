@@ -422,30 +422,33 @@ function getEventChunks(event, identifyEventChunks, trackEventChunks, eventRespo
     event.message.operation === 'catalogs'
   ) {
     identifyEventChunks.push(event);
-  } else if (event.message.endpoint.includes('api/events/track')) {
+  } else if (event.message?.endpoint?.includes('api/events/track')) {
     // Checking if it is track type of event
     trackEventChunks.push(event);
   } else {
     // any other type of event
     const { message, metadata, destination } = event;
     const endpoint = get(message, 'endpoint');
+    if (Array.isArray(message)) {
+      eventResponseList.push(getSuccessRespEvents(message, metadata, destination));
+    } else {
+      const batchedResponse = defaultBatchRequestConfig();
+      batchedResponse.batchedRequest.headers = message.headers;
+      batchedResponse.batchedRequest.endpoint = endpoint;
+      batchedResponse.batchedRequest.body = message.body;
+      batchedResponse.batchedRequest.params = message.params;
+      batchedResponse.batchedRequest.method = defaultPostRequestConfig.requestMethod;
+      batchedResponse.metadata = [metadata];
+      batchedResponse.destination = destination;
 
-    const batchedResponse = defaultBatchRequestConfig();
-    batchedResponse.batchedRequest.headers = message.headers;
-    batchedResponse.batchedRequest.endpoint = endpoint;
-    batchedResponse.batchedRequest.body = message.body;
-    batchedResponse.batchedRequest.params = message.params;
-    batchedResponse.batchedRequest.method = defaultPostRequestConfig.requestMethod;
-    batchedResponse.metadata = [metadata];
-    batchedResponse.destination = destination;
-
-    eventResponseList.push(
-      getSuccessRespEvents(
-        batchedResponse.batchedRequest,
-        batchedResponse.metadata,
-        batchedResponse.destination,
-      ),
-    );
+      eventResponseList.push(
+        getSuccessRespEvents(
+          batchedResponse.batchedRequest,
+          batchedResponse.metadata,
+          batchedResponse.destination,
+        ),
+      );
+    }
   }
 }
 

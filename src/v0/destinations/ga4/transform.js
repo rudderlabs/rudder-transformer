@@ -253,7 +253,7 @@ const responseBuilder = (message, { Config }) => {
   userProperties = extractCustomFields(
     message,
     userProperties,
-    ['properties.user_properties'],
+    ['context.traits', 'properties.user_properties'],
     GA4_RESERVED_USER_PROPERTY_EXCLUSION,
   );
   if (!isEmptyObject(userProperties)) {

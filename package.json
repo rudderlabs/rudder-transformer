@@ -32,7 +32,8 @@
     "test:integration": "jest -c jest.config.integration.js",
     "pre-commit": "npm run test:silent && npx lint-staged",
     "commit-msg": "commitlint --edit",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "release": "npx standard-version"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",

@@ -7,13 +7,15 @@ const DEBUG_ENDPOINT = 'https://www.google-analytics.com/debug/mp/collect';
  * config for GA4 events
  *
  * For Item list these are the convention that is being followed
- * "YES" - Item list is present and is a required field
- * "NO" - Item list is present and is not a required field
+ * Here, Item list is basically means `products` array parameter in the input and it will be mapped to GA4 `Items` array parameter
+ * "YES" - Item list is present and is a required field in the input
+ * "NO" - Item list is present and is not a required field in the input
  *
  * Item parameters present in properties {}
+ * Here, Item is basically means root-level `properties` present in the input and these will be mapped to GA4 `Items` array parameter
  * following are the convention
- * "YES" - Item is present and is a required field
- * "NO" - Item is present and is not a required field
+ * "YES" - Item is present and is a required field in the input
+ * "NO" - Item is present and is not a required field in the input
  */
 const ConfigCategory = {
   COMMON: { name: 'GA4CommonConfig' },
@@ -70,12 +72,14 @@ const ConfigCategory = {
   PRODUCT_ADDED: {
     name: 'GA4ProductAddedConfig',
     event: 'add_to_cart',
-    itemList: 'YES',
+    itemList: 'NO',
+    item: 'YES',
   },
   PRODUCT_REMOVED: {
     name: 'GA4ProductRemovedConfig',
     event: 'remove_from_cart',
-    itemList: 'YES',
+    itemList: 'NO',
+    item: 'YES',
   },
   CART_VIEWED: {
     name: 'GA4CartViewedConfig',
@@ -112,7 +116,8 @@ const ConfigCategory = {
   PRODUCT_ADDED_TO_WISHLIST: {
     name: 'GA4ProductAddedToWishlistConfig',
     event: 'add_to_wishlist',
-    itemList: 'YES',
+    itemList: 'NO',
+    item: 'YES',
   },
 
   /* Sharing Section */
@@ -147,10 +152,19 @@ const ConfigCategory = {
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
+const VALID_ITEM_OR_PRODUCT_PROPERTIES = [
+  ConfigCategory.PRODUCT_CLICKED.event,
+  ConfigCategory.PRODUCT_VIEWED.event,
+  ConfigCategory.PRODUCT_ADDED.event,
+  ConfigCategory.PRODUCT_REMOVED.event,
+  ConfigCategory.PRODUCT_ADDED_TO_WISHLIST.event,
+];
+
 module.exports = {
   ENDPOINT,
   DEBUG_ENDPOINT,
   ConfigCategory,
   mappingConfig,
   trackCommonConfig: mappingConfig[ConfigCategory.COMMON.name],
+  VALID_ITEM_OR_PRODUCT_PROPERTIES,
 };

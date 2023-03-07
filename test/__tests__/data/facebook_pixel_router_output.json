@@ -13,7 +13,7 @@
         "JSON_ARRAY": {},
         "FORM": {
           "data": [
-            "{\"user_data\":{\"external_id\":\"6dc8118ec743f5f3b758939714193f547f4a674c68757fa80d7c9564dc093b0a\",\"em\":\"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08\"},\"event_name\":\"spin_result\",\"event_time\":1567333011,\"custom_data\":{\"additional_bet_index\":0,\"value\":400}}"
+            "{\"user_data\":{\"em\":\"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08\"},\"event_name\":\"spin_result\",\"event_time\":1567333011,\"custom_data\":{\"additional_bet_index\":0,\"value\":400}}"
           ]
         }
       },
@@ -35,6 +35,7 @@
             "blacklistPiiHash": false
           }
         ],
+        "removeExternalId":true,
         "accessToken": "09876",
         "pixelId": "dfgdfgdgd",
         "eventsToEvents": [

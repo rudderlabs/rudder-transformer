@@ -103,6 +103,7 @@ const SUPPORTED_TRACK_EVENTS = [
   'orders_partially_fullfilled',
 ];
 const timeDifferenceForCartEvents = 10000; // in micro seconds as we will be compairing it in timestamp 
+const useRedisDatabase = process.env.USE_REDIS_DB || true;
 module.exports = {
   ECOM_TOPICS,
   IDENTIFY_TOPICS,
@@ -115,5 +116,6 @@ module.exports = {
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
-  timeDifferenceForCartEvents
+  timeDifferenceForCartEvents,
+  useRedisDatabase
 };

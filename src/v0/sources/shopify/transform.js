@@ -7,7 +7,8 @@ const {
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
   extractEmailFromPayload,
-  setAnonymousIdorUserId,
+  setAnonymousIdorUserIdAndStore,
+  setAnonymousId,
   checkForValidRecord,
 } = require('./util');
 const { DBConnector } = require('../../../util/redisConnector');
@@ -22,6 +23,7 @@ const {
   RUDDER_ECOM_MAP,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
+  useRedisDatabase,
 } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 
@@ -132,13 +134,11 @@ const processEvent = async (inputEvent) => {
       break;
     case 'carts_create':
     case 'carts_update':
-      if (checkForValidRecord(inputEvent)) {
-        message = trackPayloadBuilder(event, shopifyTopic);
-      } else {
-        /**
-         *  This Scenario handles the case same cart_Events are passed or
-         * cart events are passed within a specified time period
-         */
+      /**
+       *  This Scenario handles the case same cart_Events are passed or
+       * cart events are passed within a specified time period for when useRedisDatabase is set to true
+       */
+      if (useRedisDatabase && !checkForValidRecord(inputEvent)) {
         const result = {
           outputToSource: {
             body: Buffer.from('OK').toString('base64'),
@@ -148,6 +148,7 @@ const processEvent = async (inputEvent) => {
         };
         return result;
       }
+      message = trackPayloadBuilder(event, shopifyTopic);
       break;
     default:
       if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
@@ -167,7 +168,11 @@ const processEvent = async (inputEvent) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
-    await setAnonymousIdorUserId(message);
+    if (useRedisDatabase) {
+      await setAnonymousIdorUserIdAndStore(message);
+    } else {
+      await setAnonymousId(message);
+    }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
   message.setProperty('context.library', {
@@ -200,11 +205,13 @@ const isIdentifierEvent = (event) => {
   return false;
 };
 const processIdentifierEvent = async (event) => {
-  try {
-    const redisInstance = await DBConnector.getRedisInstance();
-    await redisInstance.set(`${event.cartToken}`, JSON.stringify(event));
-  } catch (e) {
-    log.error(e);
+  if (useRedisDatabase) {
+    try {
+      const redisInstance = await DBConnector.getRedisInstance();
+      await redisInstance.set(`${event.cartToken}`, JSON.stringify(event));
+    } catch (e) {
+      log.error(e);
+    }
   }
   const result = {
     outputToSource: {

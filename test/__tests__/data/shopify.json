@@ -1,5 +1,46 @@
 [
     {
+        "description": "No Query Parameters",
+        "input": {},
+        "output": {
+            "error": "Query_parameters is missing"
+        }
+    },
+    {
+        "description": "Invalid topic",
+        "input": {
+            "query_parameters": {
+                "signature": [
+                    "rudderstack"
+                ],
+                "writeKey": [
+                    "sample-write-key"
+                ]
+            }
+        },
+        "output": {
+            "error": "Invalid topic in query_parameters"
+        }
+    },
+    {
+        "description": "Topic Not found",
+        "input": {
+            "query_parameters": {
+                "topic": [
+                ],
+                "signature": [
+                    "rudderstack"
+                ],
+                "writeKey": [
+                    "sample-write-key"
+                ]
+            }
+        },
+        "output": {
+            "error": "Topic not found"
+        }
+    },
+    {
         "description": "Unsupported Event Type",
         "input": {
             "query_parameters": {

@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
-const { constructPayload, extractCustomFields, flattenJson } = require('../../util');
+const sha256 = require('sha256');
+const { constructPayload, extractCustomFields, flattenJson, generateUUID } = require('../../util');
 const { DBConnector } = require('../../../util/redisConnector');
 const logger = require('../../../logger');
 const {
@@ -78,14 +79,47 @@ const extractEmailFromPayload = (event) => {
   });
   return email;
 };
-
+// Hash the id and use it as anonymousId (limiting 256 -> 36 chars)
+const setAnonymousId = (message) => {
+  switch (message.event) {
+    case SHOPIFY_TRACK_MAP.carts_create:
+    case SHOPIFY_TRACK_MAP.carts_update:
+      message.setProperty(
+        'anonymousId',
+        message.properties?.id
+          ? sha256(message.properties.id).toString().substring(0, 36)
+          : generateUUID(),
+      );
+      break;
+    case SHOPIFY_TRACK_MAP.orders_delete:
+    case SHOPIFY_TRACK_MAP.orders_edited:
+    case SHOPIFY_TRACK_MAP.orders_cancelled:
+    case SHOPIFY_TRACK_MAP.orders_fulfilled:
+    case SHOPIFY_TRACK_MAP.orders_paid:
+    case SHOPIFY_TRACK_MAP.orders_partially_fullfilled:
+    case RUDDER_ECOM_MAP.checkouts_create:
+    case RUDDER_ECOM_MAP.checkouts_update:
+    case RUDDER_ECOM_MAP.orders_create:
+    case RUDDER_ECOM_MAP.orders_updated:
+      message.setProperty(
+        'anonymousId',
+        message.properties?.cart_token
+          ? sha256(message.properties.cart_token).toString().substring(0, 36)
+          : generateUUID(),
+      );
+      break;
+    default:
+      message.setProperty('anonymousId', generateUUID());
+      break;
+  }
+};
 /**
  * This function sets the anonymousId based on cart_token or id from the properties of message.
  * If it's null then we set userId as "ADMIN".
  * @param {*} message
  * @returns
  */
-const setAnonymousIdorUserId = async (message) => {
+const setAnonymousIdorUserIdAndStore = async (message) => {
   let cartToken;
   switch (message.event) {
     /**
@@ -134,10 +168,14 @@ const setAnonymousIdorUserId = async (message) => {
       throw new Error(`${message.event} is not supported`);
   }
   try {
+    let anonymousIDfromDB;
     const redisInstance = await DBConnector.getRedisInstance();
-    const valFromDB = JSON.parse(await redisInstance.get(`${cartToken}`));
-    let anonymousIDfromDB = valFromDB.anonymousId;
-    if (!anonymousIDfromDB || anonymousIDfromDB === null) {
+    const valFromDB = redisInstance.get(`${cartToken}`);
+    if (valFromDB !== 'Not Found') {
+      const parsedVal = JSON.parse(valFromDB);
+      anonymousIDfromDB = parsedVal.anonymousId;
+    }
+    if (!valFromDB || !anonymousIDfromDB || anonymousIDfromDB === null) {
       // this is for backward compatability when we don't have the redis mapping for older events
       // we will get anonymousIDFromDb as null so we will set UUID using the session Key
       anonymousIDfromDB = cartToken;
@@ -188,6 +226,7 @@ module.exports = {
   getProductsListFromLineItems,
   createPropertiesForEcomEvent,
   extractEmailFromPayload,
-  setAnonymousIdorUserId,
+  setAnonymousIdorUserIdAndStore,
   checkForValidRecord,
+  setAnonymousId,
 };

@@ -24,6 +24,7 @@ jobs:
           cache: 'npm'
 
       # In order to make a commit, we need to initialize a user.
+      # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
       - name: Initialize Mandatory Git Config
         run: |
           git config user.name "GitHub Actions"
@@ -38,7 +39,7 @@ jobs:
           new_version=$(jq -r .version package.json)
           git reset --hard
           branch_name="hotfix/${new_version}"
-          echo "::set-output name=branch_name::$branch_name"
+          echo "{branch_name}={$branch_name}" >> $GITHUB_OUTPUT
 
       - name: Create Hotfix Branch
         uses: peterjgrainger/action-create-branch@v2

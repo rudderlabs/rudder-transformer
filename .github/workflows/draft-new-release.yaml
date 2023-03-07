@@ -31,6 +31,8 @@ jobs:
       # Calculate the next release version based on conventional semantic release
       - name: Create Release Branch
         id: create-release
+        env:
+          HUSKY: 0
         run: |
           source_branch_name=${GITHUB_REF##*/}
           release_type=release
@@ -53,11 +55,11 @@ jobs:
           git checkout -b "$branch_name"
           git push --set-upstream origin "$branch_name"
 
-          echo "source_branch_name=$source_branch_name" >> $GITHUB_OUTPUT
-          echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
-          echo "new_version=$new_version" >> $GITHUB_OUTPUT
-          echo "CURRENT_VERSION_VALUE=$current_version" >> $GITHUB_ENV
-          echo "NEW_VERSION_VALUE=$new_version" >> $GITHUB_ENV
+          echo "{source_branch_name}={$source_branch_name}" >> $GITHUB_OUTPUT
+          echo "{branch_name}={$branch_name}" >> $GITHUB_OUTPUT
+          echo "{new_version}={$new_version}" >> $GITHUB_OUTPUT
+          echo "{CURRENT_VERSION_VALUE}={$current_version}" >> $GITHUB_ENV
+          echo "{NEW_VERSION_VALUE}={$new_version}" >> $GITHUB_ENV
 
       - name: Update Changelog & Bump Version
         id: finish-release

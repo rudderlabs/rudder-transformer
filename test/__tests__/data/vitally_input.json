@@ -1,0 +1,81 @@
+[
+  {
+    "message": {
+      "userId": "0220c056-934e-11ed-a1eb-0242ac120002",
+      "event": "this is a track event",
+      "type": "track",
+      "properties": {
+        "thing": "amazing!"
+      },
+      "originalTimestamp": "2023-01-13T09:03:17.562Z",
+      "sentAt": "2023-01-13T09:03:17.562Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKeyVitally": "abc123"
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    }
+  },
+  {
+    "message": {
+      "userId": "0220c056-934e-11ed-a1eb-0242ac120002",
+      "type": "identify",
+      "traits": {
+        "name": "Johnny Appleseed"
+      },
+      "originalTimestamp": "2023-01-13T09:03:17.562Z",
+      "sentAt": "2023-01-13T09:03:17.562Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKeyVitally": "abc123"
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    }
+  },
+  {
+    "message": {
+      "userId": "0220c056-934e-11ed-a1eb-0242ac120002",
+      "type": "group",
+      "groupId": "5de17322-934e-11ed-a1eb-0242ac120002",
+      "originalTimestamp": "2023-01-13T09:03:17.562Z",
+      "sentAt": "2023-01-13T09:03:17.562Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKeyVitally": "abc123"
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    }
+  },
+  {
+    "message": {
+      "type": "page",
+      "originalTimestamp": "2023-01-13T09:03:17.562Z",
+      "sentAt": "2023-01-13T09:03:17.562Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKeyVitally": "abc123"
+      },
+      "DestinationDefinition": {
+        "Config": {
+          "cdkEnabled": true
+        }
+      }
+    }
+  }
+]

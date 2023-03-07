@@ -1,5 +1,7 @@
 bindings:
   - path: ../../../../v0/destinations/pinterest_tag/config
+  - name: batchMultiplexedEvents
+    path: ../../../../v0/util/index
 steps:
   - name: validateInput
     template: |
@@ -14,10 +16,10 @@ steps:
     loopOverInput: true
   - name: successfulEvents
     template: |
-      $.outputs.transform#idx.output.({
-        "output": .,
-        "destination": ^[idx].destination,
-        "metadata": ^[idx].metadata
+      $.outputs.transform#idx{ "output" in .}.({
+        "message": .output[],
+        "destination": ^ [idx].destination,
+        "metadata": ^ [idx].metadata
       })[]
   - name: failedEvents
     template: |
@@ -32,11 +34,11 @@ steps:
   - name: batchSuccessfulEvents
     description: Batches the successfulEvents
     template: |
-      let batches = $.chunk($.outputs.successfulEvents, $.MAX_BATCH_SIZE);
+      let batches = $.batchMultiplexedEvents($.outputs.successfulEvents, $.MAX_BATCH_SIZE);
       batches@batch.({
         "batchedRequest": {
           "body": {
-            "JSON": {"data": ~r batch.output[]},
+            "JSON": {"data": ~r batch.events},
             "JSON_ARRAY": {},
             "XML": {},
             "FORM": {}
@@ -51,10 +53,10 @@ steps:
           "params": {},
           "files": {}
         },
-        "metadata": ~r batch.metadata[],
+        "metadata": ~r batch.metadata,
         "batched": true,
         "statusCode": 200,
-        "destination": batch[0].destination
+        "destination": ~r batch.destination
       })[];
   - name: finalPayload
     template: |

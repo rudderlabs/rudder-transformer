@@ -10,11 +10,6 @@
     "required": false
   },
   {
-    "destKey": "location_id",
-    "sourceKeys": "properties.location_id",
-    "required": false
-  },
-  {
     "destKey": "promotion_id",
     "sourceKeys": "properties.promotion_id",
     "required": false

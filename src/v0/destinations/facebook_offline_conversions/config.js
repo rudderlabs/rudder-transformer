@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const ENDPOINT = 'https://graph.facebook.com/v15.0/OFFLINE_EVENT_SET_ID/events';
+const ENDPOINT = 'https://graph.facebook.com/v16.0/OFFLINE_EVENT_SET_ID/events';
 
 const CONFIG_CATEGORIES = {
   OFFLINE_EVENTS: {

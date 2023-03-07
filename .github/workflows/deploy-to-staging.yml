@@ -1,22 +1,28 @@
-name: Build Artifacts for PRs
+name: Build Artifacts for Staging Environment
+
 on:
   pull_request:
     types:
       - opened
       - reopened
       - synchronize
+    branches:
+      - main
+
 env:
-  REPO_NAME_OLD: rudderlabs/develop-rudder-transformer
-  REPO_NAME: rudderstack/develop-rudder-transformer
+  REPO_NAME_OLD: rudderlabs/staging-rudder-transformer
+  REPO_NAME: rudderstack/staging-rudder-transformer
   DOCKERHUB_USERNAME: rudderlabs
 
 jobs:
   build-transformer-image:
-    name: Build Transformer Docker Image - PR
+    name: Build Transformer Docker Image - Staging
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.gen_img_version.outputs.version }}
 
-    # Skip for the release pull requests
-    if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true
+    # Only pull requests from release candidate branches must trigger
+    if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -25,9 +31,10 @@ jobs:
 
       - name: Generate Image Version
         id: gen_img_version
-        shell: bash
         run: |
-          echo "##version=$(echo ${{ github.head_ref }} | tr "/" .)"
+          VERSION=$(jq -r .version package.json)
+          echo $VERSION
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -60,19 +67,23 @@ jobs:
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ steps.gen_img_version.outputs.version }}
             ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }}
+            ${{ env.REPO_NAME }}:latest
+            ${{ env.REPO_NAME_OLD }}:latest
           platforms: |
             linux/amd64
             linux/arm64
           build-args: |
             VERSION=${{ steps.gen_img_version.outputs.version }}
             COMMIT_HASH=${{ github.sha }}
-  
+
   build-user-transformer-image:
-    name: Build User Transformer Docker Image - PR
+    name: Build User Transformer Docker Image - Staging
     runs-on: ubuntu-latest
+    outputs:
+      ut-version: ${{ steps.gen_img_version.outputs.version }}
 
-    # Skip for the release pull requests
-    if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true
+    # Only pull requests from release candidate branches must trigger
+    if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -81,9 +92,10 @@ jobs:
 
       - name: Generate Image Version
         id: gen_img_version
-        shell: bash
         run: |
-          echo "##version=ut-$(echo ${{ github.head_ref }} | tr "/" .)"
+          VERSION="ut-$(jq -r .version package.json)"
+          echo $VERSION
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -122,3 +134,45 @@ jobs:
           build-args: |
             VERSION=${{ steps.gen_img_version.outputs.version }}
             COMMIT_HASH=${{ github.sha }}
+
+  create-pull-request:
+    name: Update Helm Charts For Production and Create Pull Request
+    runs-on: ubuntu-latest
+    needs: [ build-transformer-image, build-user-transformer-image ]
+    env:
+      VERSION: ${{ needs.build-transformer-image.outputs.version }}
+      UT_VERSION: ${{ needs.build-user-transformer-image.outputs.version }}
+    steps:
+      - name: Print Docker Image Versions
+        run: |
+          echo "Transformer: $VERSION"
+          echo "User Transformer: $UT_VERSION"
+
+      # In order to make a commit, we need to initialize a user.
+      # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
+      - name: Initialize Mandatory Git Config
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "noreply@github.com"
+
+      - name: Clone rudder-devops
+        run: |
+          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
+          cd rudder-devops
+
+      - name: Update Helm Charts
+        run: |
+          cd helm-charts/shared-services/per-az
+          yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.staging.yaml
+          yq eval -i ".user-transformer.image.tag=\"$UT_VERSION\"" values.staging.yaml
+          git add values.staging.yaml
+
+          cd ../../config-be-rudder-transformer
+          yq eval -i ".config-be-rudder-transformer.image.tag=\"$VERSION\"" values.staging.yaml
+          yq eval -i ".config-be-user-transformer.image.tag=\"$UT_VERSION\"" values.staging.yaml
+          git add values.staging.yaml
+
+      - name: Create Pull Request
+        run: |
+          git commit -m "upgrade staging env shared transformers to $VERSION"
+          git push

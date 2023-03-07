@@ -1,28 +1,21 @@
-name: Build Artifacts for Staging Environment
+name: Build Artifacts for Production Environment
 
 on:
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
+  push:
     branches:
-      - develop
+      - 'main'
 
 env:
-  REPO_NAME_OLD: rudderlabs/staging-rudder-transformer
-  REPO_NAME: rudderstack/staging-rudder-transformer
+  REPO_NAME_OLD: rudderlabs/rudder-transformer
+  REPO_NAME: rudderstack/rudder-transformer
   DOCKERHUB_USERNAME: rudderlabs
 
 jobs:
   build-transformer-image:
-    name: Build Transformer Docker Image - Staging
+    name: Build Transformer Docker Image - Prod
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.gen_img_version.outputs.version }}
-
-    # Only pull requests from release candidate branches must trigger
-    if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -77,13 +70,10 @@ jobs:
             COMMIT_HASH=${{ github.sha }}
 
   build-user-transformer-image:
-    name: Build User Transformer Docker Image - Staging
+    name: Build User Transformer Docker Image - Prod
     runs-on: ubuntu-latest
     outputs:
-      ut-version: ${{ steps.gen_img_version.outputs.version }}
-
-    # Only pull requests from release candidate branches must trigger
-    if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
+      version: ${{ steps.gen_img_version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -109,8 +99,7 @@ jobs:
           context: .
           file: Dockerfile-ut-func
           load: true
-          tags: |
-            ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }}
+          tags: ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }}
 
       - name: Run Tests
         run: |
@@ -159,21 +148,31 @@ jobs:
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
           cd rudder-devops
-          git checkout -b shared-transformer-staging-$VERSION
+          git checkout -b shared-transformer-$VERSION
 
       - name: Update Helm Charts
         run: |
           cd helm-charts/shared-services/per-az
-          yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.staging.yaml
-          yq eval -i ".user-transformer.image.tag=\"$UT_VERSION\"" values.staging.yaml
+          yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml
+          yq eval -i ".user-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml
+          git add values.blue-release.yaml
+
+          yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.enterprise.yaml
+          yq eval -i ".user-transformer.image.tag=\"$VERSION\"" values.enterprise.yaml
+          git add values.enterprise.yaml
+
+          yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.multi-tenant.yaml
+          yq eval -i ".user-transformer.image.tag=\"$VERSION\"" values.enterprise.yaml
+          git add values.enterprise.yaml
 
           cd ../../config-be-rudder-transformer
-          yq eval -i ".config-be-rudder-transformer.image.tag=\"$VERSION\"" values.staging.yaml
-          yq eval -i ".config-be-user-transformer.image.tag=\"$UT_VERSION\"" values.staging.yaml
+          yq eval -i ".config-be-rudder-transformer.image.tag=\"$VERSION\"" values.prod.yaml
+          yq eval -i ".config-be-user-transformer.image.tag=\"$VERSION\"" values.prod.yaml
           git add values.prod.yaml
 
       - name: Create Pull Request
         run: |
-          git commit -m "upgrade the version of shared transformers to $VERSION"
+          git commit -m "upgrade shared transformers to $VERSION"
           git push -u origin shared-transformer-$VERSION
-          hub pull-request -m "chore: upgrade the version of shared transformers to $VERSION"
+          hub pull-request -m "chore: upgrade shared transformers to $VERSION"
+

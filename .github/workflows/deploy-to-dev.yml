@@ -1,18 +1,18 @@
-name: Build Artifacts for Production Environment
+name: Build Artifacts for Dev Environment
 
 on:
   push:
     branches:
-      - 'main'
+      - 'develop'
 
 env:
-  REPO_NAME_OLD: rudderlabs/rudder-transformer
-  REPO_NAME: rudderstack/rudder-transformer
+  REPO_NAME_OLD: rudderlabs/develop-rudder-transformer
+  REPO_NAME: rudderstack/develop-rudder-transformer
   DOCKERHUB_USERNAME: rudderlabs
 
 jobs:
   build-transformer-image:
-    name: Build Transformer Docker Image - Prod
+    name: Build Transformer Docker Image - Dev
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.gen_img_version.outputs.version }}
@@ -25,7 +25,7 @@ jobs:
       - name: Generate Image Version
         id: gen_img_version
         run: |
-          VERSION=$(jq -r .version package.json)
+          VERSION="develop"
           echo $VERSION
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
@@ -46,7 +46,7 @@ jobs:
 
       - name: Run Tests
         run: |
-          docker run ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }} npm run test
+          docker run ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }} npm run test:ci
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -60,8 +60,6 @@ jobs:
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ steps.gen_img_version.outputs.version }}
             ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }}
-            ${{ env.REPO_NAME }}:latest
-            ${{ env.REPO_NAME_OLD }}:latest
           platforms: |
             linux/amd64
             linux/arm64
@@ -70,10 +68,10 @@ jobs:
             COMMIT_HASH=${{ github.sha }}
 
   build-user-transformer-image:
-    name: Build User Transformer Docker Image - Prod
+    name: Build User Transformer Docker Image - Dev
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.gen_img_version.outputs.version }}
+      ut-version: ${{ steps.gen_img_version.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -83,11 +81,11 @@ jobs:
       - name: Generate Image Version
         id: gen_img_version
         run: |
-          VERSION="ut-$(jq -r .version package.json)"
+          VERSION="ut-develop"
           echo $VERSION
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Login to DockerHub
+      - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
@@ -99,11 +97,12 @@ jobs:
           context: .
           file: Dockerfile-ut-func
           load: true
-          tags: ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }}
+          tags: |
+            ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }}
 
       - name: Run Tests
         run: |
-          docker run ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }} npm run test
+          docker run ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }} npm run test:ci
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -144,35 +143,25 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "noreply@github.com"
 
-      - name: Clone rudder-devops and Create Branch
+      - name: Clone rudder-devops
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
           cd rudder-devops
-          git checkout -b shared-transformer-$VERSION
 
       - name: Update Helm Charts
         run: |
           cd helm-charts/shared-services/per-az
-          yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml
-          yq eval -i ".user-transformer.image.tag=\"$VERSION\"" values.blue-release.yaml
-          git add values.blue-release.yaml
-
-          yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.enterprise.yaml
-          yq eval -i ".user-transformer.image.tag=\"$VERSION\"" values.enterprise.yaml
-          git add values.enterprise.yaml
-
-          yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.multi-tenant.yaml
-          yq eval -i ".user-transformer.image.tag=\"$VERSION\"" values.enterprise.yaml
-          git add values.enterprise.yaml
+          yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.dev.yaml
+          yq eval -i ".user-transformer.image.tag=\"$UT_VERSION\"" values.dev.yaml
+          git add values.dev.yaml
 
           cd ../../config-be-rudder-transformer
-          yq eval -i ".config-be-rudder-transformer.image.tag=\"$VERSION\"" values.prod.yaml
-          yq eval -i ".config-be-user-transformer.image.tag=\"$VERSION\"" values.prod.yaml
-          git add values.prod.yaml
+          yq eval -i ".config-be-rudder-transformer.image.tag=\"$VERSION\"" values.dev.yaml
+          yq eval -i ".config-be-user-transformer.image.tag=\"$UT_VERSION\"" values.dev.yaml
+          git add values.dev.yaml
 
-      - name: Create Pull Request
+      - name: Push Changes
         run: |
-          git commit -m "upgrade the version of shared transformers to $VERSION"
-          git push -u origin shared-transformer-$VERSION
-          hub pull-request -m "chore: upgrade the version of shared transformers to $VERSION"
+          git commit -m "upgrade development env shared transformers"
+          git push
 

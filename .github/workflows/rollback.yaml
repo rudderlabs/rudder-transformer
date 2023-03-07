@@ -56,5 +56,5 @@ jobs:
       - name: Create Pull Request
         run: |
           git commit -m "rollback the version of shared transformers to $VERSION"
-          git push -u origin shared-transformer-$VERSION
+          git push -u origin shared-transformer-rollback-$VERSION
           hub pull-request -m "chore: rollback the version of shared transformers to $VERSION"

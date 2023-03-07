@@ -26,5 +26,5 @@ jobs:
       - name: Coverage Report
         uses: ArtiomTr/jest-coverage-report-action@v2
         with:
-          test-script: npm run test:ci
+          test-script: npm run test:ci -- --changedSince=${{ github.base_ref }}
           skip-step: install

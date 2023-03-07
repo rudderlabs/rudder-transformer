@@ -108,6 +108,10 @@ function rudderPropToDestMap(destVarMapping, message, payload, destVarStrPrefix)
 function handleEvar(payload, destination, message) {
   // pass the Rudder Property mapped in the ui whose evar you want to map
   const { eVarMapping } = destination;
+  const { properties } = message;
+  if (properties.overrideEvars) {
+    return rudderPropToDestMap(properties.overrideEvars, message, payload, 'eVar');
+  }
   return rudderPropToDestMap(eVarMapping, message, payload, 'eVar');
 }
 
@@ -116,14 +120,22 @@ function handleEvar(payload, destination, message) {
 function handleHier(payload, destination, message) {
   // pass the Rudder Property mapped in the ui whose hier you want to map
   const { hierMapping } = destination;
+  const { properties } = message;
+  if (properties.overrideHiers) {
+    return rudderPropToDestMap(properties.overrideHiers, message, payload, 'eVar');
+  }
   return rudderPropToDestMap(hierMapping, message, payload, 'hier');
 }
 
 // list reference: https://experienceleague.adobe.com/docs/analytics/implementation/vars/page-vars/list.html?lang=en
 
 function handleList(payload, destination, message, properties) {
-  const { listMapping, listDelimiter } = destination;
+  let { listMapping } = destination;
+  const { listDelimiter } = destination;
   const list = {};
+  if (properties.overrideLists) {
+    listMapping = properties.overrideLists;
+  }
   Object.keys(properties).forEach((key) => {
     // TODO check dependency of delimiter
     if (listMapping[key] && listDelimiter[key]) {
@@ -152,9 +164,13 @@ function handleList(payload, destination, message, properties) {
 // prop reference: https://experienceleague.adobe.com/docs/analytics/implementation/vars/page-vars/prop.html?lang=en
 
 function handleCustomProperties(payload, destination, message, properties) {
-  const { customPropsMapping, propsDelimiter } = destination;
+  let { customPropsMapping } = destination;
+  const { propsDelimiter } = destination;
   const props = {};
   if (properties) {
+    if (properties.overrideCustomProperties) {
+      customPropsMapping = properties.overrideCustomProperties;
+    }
     Object.keys(properties).forEach((key) => {
       if (customPropsMapping[key]) {
         let val = get(message, `properties.${key}`);

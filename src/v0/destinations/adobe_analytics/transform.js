@@ -290,7 +290,7 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
 };
 
 const handleTrack = (message, destinationConfig) => {
-  const { event: rawEvent } = message;
+  const { event: rawEvent, properties } = message;
   let payload = null;
   // handle ecommerce events separately
   // generic events should go to the default
@@ -335,7 +335,13 @@ const handleTrack = (message, destinationConfig) => {
       payload = processTrackEvent(message, 'scOpen', destinationConfig);
       break;
     default:
-      if (destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()]) {
+      if (properties.overrideCustomEvents) {
+        payload = processTrackEvent(
+          message,
+          properties.overrideCustomEvents[event.toLowerCase()].trim(),
+          destinationConfig,
+        );
+      } else if (destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()]) {
         payload = processTrackEvent(
           message,
           destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()].trim(),

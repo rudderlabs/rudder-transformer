@@ -1,4 +1,4 @@
-name: 'Semantic pull requests'
+name: Check Semantic PR
 
 on:
   pull_request:
@@ -7,16 +7,14 @@ on:
       - edited
       - labeled
       - unlabeled
-      - converted_to_draft
-      - ready_for_review
       - synchronize
 
 jobs:
   main:
-    name: Validate PR title
+    name: Validate PR Title
     runs-on: ubuntu-latest
     steps:
-      - uses: amannn/action-semantic-pull-request@v4
+      - uses: amannn/action-semantic-pull-request@v5
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

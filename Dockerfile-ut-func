@@ -12,6 +12,20 @@ RUN apt-get update \
   && apt-get clean \
   && apt-get autoclean
 
+#######
+# These commands are needed for installing 
+# NPM packages with Git URLs (isolated-vm)
+USER root
+
+RUN mkdir /root/.ssh/
+RUN touch /root/.ssh/known_hosts
+
+ARG ssh_key
+RUN echo $ssh_key
+RUN echo "$ssh_key" > /root/.ssh/id_rsa &&  chmod 600 /root/.ssh/id_rsa
+RUN ssh-keyscan github.com >> ~/.ssh/known_hosts
+########
+
 RUN adduser --disabled-password --gecos "" --uid 1000 node
 
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app && mkdir -p /home/node/.npm &&  chown -R node:node /home/node/.npm

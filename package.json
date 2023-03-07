@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.14.0",
+  "version": "1.15.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -32,7 +32,8 @@
     "test:integration": "jest -c jest.config.integration.js",
     "pre-commit": "npm run test:silent && npx lint-staged",
     "commit-msg": "commitlint --edit",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "release": "npx standard-version"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",
@@ -83,6 +84,7 @@
     "rudder-workflow-engine": "0.4.0",
     "set-value": "^4.1.0",
     "sha256": "^0.2.0",
+    "stacktrace-parser": "^0.1.10",
     "statsd-client": "^0.4.7",
     "truncate-utf8-bytes": "^1.0.2",
     "ua-parser-js": "^1.0.33",

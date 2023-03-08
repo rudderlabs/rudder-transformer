@@ -1,0 +1,86 @@
+name: Draft New Release
+
+on: workflow_dispatch
+
+jobs:
+  draft-new-release:
+    name: Draft New Release
+    runs-on: ubuntu-latest
+
+    # Only allow release stakeholders to initiate releases
+    if: (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/hotfix/')) && (github.actor == 'ItsSudip' || github.actor == 'krishna2020' || github.actor == 'saikumarrs' ) &&  (github.triggering_actor == 'ItsSudip' || github.triggering_actor == 'krishna2020' || github.triggering_actor == 'saikumarrs')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      # In order to make a commit, we need to initialize a user.
+      # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
+      - name: Initialize Mandatory Git Config
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email noreply@github.com
+
+      # Calculate the next release version based on conventional semantic release
+      - name: Create Release Branch
+        id: create-release
+        run: |
+          source_branch_name=${GITHUB_REF##*/}
+          release_type=release
+          grep -q "hotfix/" <<< "${GITHUB_REF}" && release_type=hotfix-release
+          git fetch origin main --depth=1
+          git merge origin/main
+          current_version=$(jq -r .version package.json)
+
+          npm run release -- --skip.commit --skip.tag --skip.changelog
+          new_version=$(jq -r .version package.json)
+          git reset --hard
+
+          branch_name="${release_type}/${new_version}"
+
+          echo "Source branch for new release is $source_branch_name"
+          echo "Current version is $current_version"
+          echo "Release type is $release_type"
+          echo "New version is $new_version"
+          echo "New release branch name is $branch_name"
+          git checkout -b "$branch_name"
+          git push --set-upstream origin "$branch_name"
+
+          echo "source_branch_name=$source_branch_name" >> $GITHUB_OUTPUT
+          echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
+          echo "new_version=$new_version" >> $GITHUB_OUTPUT
+          echo "CURRENT_VERSION_VALUE=$current_version" >> $GITHUB_ENV
+          echo "NEW_VERSION_VALUE=$new_version" >> $GITHUB_ENV
+
+      - name: Update Changelog & Bump Version
+        id: finish-release
+        run: |
+          echo "Current version: $CURRENT_VERSION_VALUE"
+          echo "New version: $NEW_VERSION_VALUE"
+          npm run release -- -a -t "" --skip.tag
+          git push
+
+      - name: Create Pull Request
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: ${{ steps.create-release.outputs.branch_name }}
+          destination_branch: 'main'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_title: 'chore(release): pull ${{ steps.create-release.outputs.branch_name }} into main'
+          pr_body: ':crown: *An automated PR*'
+
+      - name: Delete Hotfix Base Branch
+        uses: dawidd6/action-delete-branch@v3
+        if: startsWith(github.ref, 'refs/heads/hotfix/')
+        with:
+          branches: '${{ steps.create-release.outputs.new_version }}'
+          prefix: 'hotfix/'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,4 +1,4 @@
-name: Build transformer image
+name: Build transformer image for pr
 on:
   pull_request:
     types:

@@ -16,7 +16,7 @@ phases:
       - docker login --username rudderlabs --password $DOCKERHUB_PASSWORD
   build:
     commands:
-      - VERSION=master
+      - VERSION=main
       - ls
       - echo build Docker image on `date`
       - >

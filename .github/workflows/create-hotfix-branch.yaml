@@ -1,0 +1,51 @@
+name: Create New Hotfix Branch
+
+on:
+  workflow_dispatch:
+
+jobs:
+  create-branch:
+    name: Create New Branch
+    runs-on: ubuntu-latest
+
+    # Only allow these users to initiate release
+    if: github.ref == 'refs/heads/main' && (github.actor == 'ItsSudip' || github.actor == 'krishna2020' || github.actor == 'saikumarrs') &&  (github.triggering_actor == 'ItsSudip' || github.triggering_actor == 'krishna2020' ||  github.triggering_actor == 'saikumarrs')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      # In order to make a commit, we need to initialize a user.
+      - name: Initialize Mandatory Git Config
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email noreply@github.com
+
+      - name: Create hotfix Branch
+        id: create-hotfix-branch
+        env:
+          HUSKY: 0
+        run: |
+          source_branch_name=${GITHUB_REF##*/}
+          git fetch origin main --depth=1
+          git merge origin/main
+          current_version=$(jq -r .version package.json)
+
+          npm version patch --no-git-tag-version
+          new_version=$(jq -r .version package.json)
+          git reset --hard
+
+          branch_name="hotfix/${new_version}"
+
+          echo "New hotfix branch name is $branch_name"
+          git checkout -b "$branch_name"
+          git push --set-upstream origin "$branch_name"
+          echo "::set-output name=source_branch_name::$source_branch_name"
+          echo "::set-output name=branch_name::$branch_name"

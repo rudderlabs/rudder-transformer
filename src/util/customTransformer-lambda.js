@@ -15,7 +15,7 @@ async function runLambdaUserTransform(events, userTransformation, testMode = fal
     ...metaTags,
   };
   if (!testMode && !userTransformation.handleId) {
-    stats.gaugeq('missing_handle', 1, tags);
+    stats.gauge('missing_handle', 1, tags);
     throw new Error('Handle id is not connected to transformation');
   }
 

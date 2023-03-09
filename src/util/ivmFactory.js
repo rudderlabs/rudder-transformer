@@ -6,9 +6,10 @@ const stats = require('./stats');
 const { getLibraryCodeV1, getRudderLibByImportName } = require('./customTransforrmationsStore-v1');
 const logger = require('../logger');
 
+const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
 
-const isolateVmMem = 128;
+const isolateVmMem = ISOLATE_VM_MEMORY;
 async function evaluateModule(isolate, context, moduleCode) {
   const module = await isolate.compileModule(moduleCode);
   await module.instantiate(context, (specifier, referrer) => referrer);
@@ -132,7 +133,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
       return outputEvents
     }
   `;
-  const isolate = new ivm.Isolate({ memoryLimit: isolateVmMem });
+  const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
   const isolateStartWallTime = isolate.wallTime;
   const isolateStartCPUTime = isolate.cpuTime;
   const context = await isolate.createContext();
@@ -336,7 +337,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
 }
 
 async function compileUserLibrary(code) {
-  const isolate = new ivm.Isolate({ memoryLimit: 128 });
+  const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
   const context = await isolate.createContext();
   return evaluateModule(isolate, context, code);
 }

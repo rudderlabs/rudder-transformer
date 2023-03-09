@@ -50,7 +50,7 @@ const getGA4ClientId = (message) => {
   const clientId =
     getDestinationExternalID(message, 'ga4ClientId') ||
     get(message, 'anonymousId') ||
-    get(message, 'messageId');
+    get(message, 'rudderId');
   return clientId;
 };
 
@@ -86,9 +86,7 @@ const responseBuilder = (message, { Config }) => {
       // GA4 uses it as an identifier to distinguish site visitors.
       rawPayload.client_id = getGA4ClientId(message);
       if (!isDefinedAndNotNull(rawPayload.client_id)) {
-        throw new ConfigurationError(
-          `${Config.clientIdFieldIdentifier}, ga4ClientId, anonymousId or messageId must be provided`,
-        );
+        throw new ConfigurationError('ga4ClientId, anonymousId or messageId must be provided');
       }
       break;
     case 'firebase':
@@ -367,7 +365,7 @@ const responseBuilder = (message, { Config }) => {
 const process = (event) => {
   const { message, destination } = event;
   const { Config } = destination;
-
+  
   if (!Config.typesOfClient) {
     throw new ConfigurationError('Client type not found. Aborting ');
   }

@@ -116,7 +116,7 @@
     "input": {
       "message": {
         "channel": "web",
-        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "rudderId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
         "originalTimestamp": "2022-04-26T05:17:09Z",
         "context": {
           "app": {
@@ -9295,7 +9295,7 @@
     "input": {
       "message": {
         "channel": "web",
-        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "rudderId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
         "originalTimestamp": "2022-04-26T05:17:09Z",
         "context": {
           "app": {
@@ -9404,7 +9404,7 @@
     "input": {
       "message": {
         "channel": "web",
-        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "rudderId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
         "originalTimestamp": "2022-04-26T05:17:09Z",
         "context": {
           "app": {
@@ -10947,7 +10947,7 @@
     "input": {
       "message": {
         "channel": "web",
-        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "rudderId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
         "originalTimestamp": "2022-04-26T05:17:09Z",
         "context": {
           "app": {
@@ -11312,7 +11312,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "properties.client_id, ga4ClientId, anonymousId or messageId must be provided",
+      "error": "ga4ClientId, anonymousId or messageId must be provided",
       "statTags": {
         "destination": "ga4",
         "stage": "transform",

@@ -792,6 +792,7 @@
     "type": "REST",
     "files": {},
     "method": "POST",
+    "userId": "12345",
     "params": {},
     "headers": {
       "Content-Type": "application/json",

@@ -90,7 +90,6 @@ function responseBuilderSimple(message, category, destination) {
         break;
       case EventType.ALIAS:
         // clean as per merge user call in moengage
-        delete response.userId;
         delete response.headers['MOE-APPKEY'];
         break;
       default:

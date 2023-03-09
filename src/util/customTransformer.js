@@ -7,13 +7,15 @@ const stats = require('./stats');
 const { UserTransformHandlerFactory } = require('./customTransformerFactory');
 const { parserForImport } = require('./parser');
 
+const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
+
 async function runUserTransform(events, code, eventsMetadata, versionId, testMode = false) {
   const tags = {
     transformerVersionId: versionId,
     identifier: 'v0',
   };
   // TODO: Decide on the right value for memory limit
-  const isolate = new ivm.Isolate({ memoryLimit: 128 });
+  const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
   const context = await isolate.createContext();
   const logs = [];
   const jail = context.global;

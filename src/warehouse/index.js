@@ -594,9 +594,9 @@ function processWarehouseMessage(message, options) {
 
       // -----start: event table------
 
-      // do not create event table in case of empty event name (after utils.transformColumnName)
+      // return error if event name is missing
       if (_.toString(commonProps[eventColName]).trim() === '') {
-        break;
+        throw InstrumentationError("cannot create event table with empty event name, event name is missing in the payload")
       }
       const extractProps = {};
       const eventTableColumnTypes = {};

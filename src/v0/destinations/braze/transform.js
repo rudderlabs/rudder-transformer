@@ -1,6 +1,8 @@
 /* eslint-disable no-nested-ternary,no-param-reassign */
+const _ = require('lodash');
 const get = require('get-value');
-
+const { BrazeDedupUtility } = require('./util');
+const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   adduserIdFromExternalId,
@@ -11,10 +13,9 @@ const {
   removeUndefinedValues,
   isDefinedAndNotNull,
   simpleProcessRouterDest,
+  isHttpStatusSuccess,
 } = require('../../util');
-
-const { InstrumentationError } = require('../../util/errorTypes');
-
+const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const {
   ConfigCategory,
   mappingConfig,
@@ -29,6 +30,12 @@ const {
 } = require('./config');
 
 const logger = require('../../../logger');
+const { getEndpointFromConfig } = require('./util');
+const { httpPOST } = require('../../../adapters/network');
+const {
+  processAxiosResponse,
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
 
 function formatGender(gender) {
   // few possible cases of woman
@@ -153,30 +160,47 @@ function getUserAttributesObject(message, mappingJson) {
   return data;
 }
 
-function processIdentify(message, destination) {
+async function processIdentify(message, destination) {
   // override userId with externalId in context(if present) and event is mapped to destination
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (mappedToDestination) {
     adduserIdFromExternalId(message);
   }
 
-  return buildResponse(
-    message,
-    destination,
-    getIdentifyPayload(message),
-    getIdentifyEndpoint(destination.Config.endPoint),
-  );
+  const indetifyPayload = getIdentifyPayload(message);
+  const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
+
+  const brazeIdentifyResp = await httpPOST(identifyEndpoint, indetifyPayload, {
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${destination.Config.restApiKey}`,
+    },
+  });
+
+  const processedBrazeIdentifyResp = processAxiosResponse(brazeIdentifyResp);
+  if (!isHttpStatusSuccess(processedBrazeIdentifyResp.status)) {
+    throw new NetworkError(
+      'Braze identify failed',
+      processedBrazeIdentifyResp.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedBrazeIdentifyResp.status),
+      },
+      processedBrazeIdentifyResp.response,
+    );
+  }
 }
 
-function processTrackWithUserAttributes(message, destination, mappingJson) {
+function processTrackWithUserAttributes(message, destination, mappingJson, deduplicationStore) {
   let payload = getUserAttributesObject(message, mappingJson);
   if (payload && Object.keys(payload).length > 0) {
     payload = setExternalIdOrAliasObject(payload, message);
+    payload = BrazeDedupUtility.deduplicate(payload, deduplicationStore);
     return buildResponse(
       message,
       destination,
       { attributes: [payload] },
-      getTrackEndPoint(destination.Config.endPoint),
+      getTrackEndPoint(getEndpointFromConfig(destination)),
     );
   }
   return null;
@@ -245,7 +269,7 @@ function getPurchaseObjs(message) {
   return purchaseObjs.length === 0 ? null : purchaseObjs;
 }
 
-function processTrackEvent(messageType, message, destination, mappingJson) {
+function processTrackEvent(messageType, message, destination, mappingJson, deduplicationStore) {
   const eventName = message.event;
 
   if (!message.properties) {
@@ -260,6 +284,13 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   if (attributePayload && Object.keys(attributePayload).length > 0) {
     attributePayload = setExternalIdOrAliasObject(attributePayload, message);
     requestJson.attributes = [attributePayload];
+    const dedupedAttributePayload = BrazeDedupUtility.deduplicate(
+      attributePayload,
+      deduplicationStore,
+    );
+    if (destination.Config.deduplicationEnabled && dedupedAttributePayload) {
+      requestJson.attributes = [dedupedAttributePayload];
+    }
   }
 
   if (
@@ -286,7 +317,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
           purchases: purchaseObjs,
           partner: BRAZE_PARTNER_NAME,
         },
-        getTrackEndPoint(destination.Config.endPoint),
+        getTrackEndPoint(getEndpointFromConfig(destination)),
       );
     }
     throw new InstrumentationError('Invalid Order Completed event');
@@ -367,7 +398,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
     message,
     destination,
     requestJson,
-    getTrackEndPoint(destination.Config.endPoint),
+    getTrackEndPoint(getEndpointFromConfig(destination)),
   );
 }
 
@@ -398,7 +429,7 @@ function processGroup(message, destination) {
       );
     }
     subscriptionGroup.subscription_state = message.traits.subscriptionState;
-    subscriptionGroup.external_id = [message.userId || message.anonymousId];
+    subscriptionGroup.external_id = [message.userId];
     const phone = getFieldValueFromMessage(message, 'phone');
     const email = getFieldValueFromMessage(message, 'email');
     if (phone) {
@@ -407,7 +438,7 @@ function processGroup(message, destination) {
       subscriptionGroup.email = email;
     }
     const response = defaultRequestConfig();
-    response.endpoint = getSubscriptionGroupEndPoint(destination.Config.endPoint);
+    response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
     response.body.JSON = removeUndefinedValues(subscriptionGroup);
     return {
       ...response,
@@ -428,67 +459,62 @@ function processGroup(message, destination) {
       attributes: [groupAttribute],
       partner: BRAZE_PARTNER_NAME,
     },
-    getTrackEndPoint(destination.Config.endPoint),
+    getTrackEndPoint(getEndpointFromConfig(destination)),
   );
 }
 
-function process(event) {
-  const respList = [];
+async function process(event, deduplicationStore) {
   let response;
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
 
-  // Init -- mostly for test cases
-  destination.Config.endPoint = 'https://rest.fra-01.braze.eu';
-
-  // Ref: https://www.braze.com/docs/user_guide/administrative/access_braze/braze_instances
-  if (destination.Config.dataCenter) {
-    const dataCenterArr = destination.Config.dataCenter.trim().split('-');
-    if (dataCenterArr[0].toLowerCase() === 'eu') {
-      destination.Config.endPoint = `https://rest.fra-${dataCenterArr[1]}.braze.eu`;
-    } else {
-      destination.Config.endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com`;
-    }
-  }
-
   let category = ConfigCategory.DEFAULT;
   switch (messageType) {
     case EventType.TRACK:
-      response = processTrackEvent(messageType, message, destination, mappingConfig[category.name]);
-      respList.push(response);
+      response = processTrackEvent(
+        messageType,
+        message,
+        destination,
+        mappingConfig[category.name],
+        deduplicationStore,
+      );
       break;
     case EventType.PAGE:
       message.event = message.name || get(message, 'properties.name') || 'Page Viewed';
-      response = processTrackEvent(messageType, message, destination, mappingConfig[category.name]);
-      respList.push(response);
+      response = processTrackEvent(
+        messageType,
+        message,
+        destination,
+        mappingConfig[category.name],
+        deduplicationStore,
+      );
       break;
     case EventType.SCREEN:
       message.event = message.name || get(message, 'properties.name') || 'Screen Viewed';
-      response = processTrackEvent(messageType, message, destination, mappingConfig[category.name]);
-      respList.push(response);
+      response = processTrackEvent(
+        messageType,
+        message,
+        destination,
+        mappingConfig[category.name],
+        deduplicationStore,
+      );
       break;
     case EventType.IDENTIFY:
       category = ConfigCategory.IDENTIFY;
       if (message.anonymousId) {
-        response = processIdentify(message, destination);
-        respList.push(response);
+        await processIdentify(message, destination);
       }
-
       response = processTrackWithUserAttributes(message, destination, mappingConfig[category.name]);
-
-      if (response) {
-        respList.push(response);
-      }
       break;
     case EventType.GROUP:
       response = processGroup(message, destination);
-      respList.push(response);
+
       break;
     default:
       throw new InstrumentationError('Message type is not supported');
   }
 
-  return respList;
+  return response;
 }
 
 /*
@@ -686,8 +712,27 @@ function batch(destEvents) {
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+  const userStore = new Map();
+  const lookedUpUsers = BrazeDedupUtility.doLookup(inputs);
+  BrazeDedupUtility.enrichUserStore(lookedUpUsers, userStore);
+
+  // group events by userId or anonymousId and then call process
+  const groupedInputs = _.groupBy(
+    inputs,
+    (input) => input.message.userId || input.message.anonymousId,
+  );
+
+  // process each group of events for userId or anonymousId
+  const allResps = groupedInputs.map(async (groupedInput) => {
+    const respList = await simpleProcessRouterDest(groupedInput, process, reqMetadata, {
+      userStore,
+    });
+    return respList;
+  });
+
+  await Promise.all(allResps);
+
+  return _.flatMap(allResps);
 };
 
 module.exports = { process, processRouterDest, batch };

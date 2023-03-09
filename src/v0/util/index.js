@@ -1545,7 +1545,7 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
  * @param {Function} singleTfFunc - single event transformation function, we'd recommend this to be an async function(always)
  * @returns
  */
-const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata) => {
+const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, processParams) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
@@ -1557,7 +1557,7 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata) => {
         let resp = input.message;
         // transform if not already done
         if (!input.message.statusCode) {
-          resp = await singleTfFunc(input);
+          resp = await singleTfFunc(input, processParams);
         }
 
         return getSuccessRespEvents(resp, [input.metadata], input.destination);

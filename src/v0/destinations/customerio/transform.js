@@ -3,32 +3,43 @@ const set = require('set-value');
 const btoa = require('btoa');
 const truncate = require('truncate-utf8-bytes');
 const { isAppleFamily } = require('rudder-transformer-cdk/build/utils');
+
 const {
   EventType,
   SpecedTraits,
   TraitsMapping,
   MappedToDestinationKey,
 } = require('../../../constants');
+
 const {
-  adduserIdFromExternalId,
-  removeUndefinedValues,
-  defaultPostRequestConfig,
-  defaultPutRequestConfig,
+  constructPayload,
+  getErrorRespEvents,
+  getSuccessRespEvents,
   defaultRequestConfig,
-  getFieldValueFromMessage,
   addExternalIdToTraits,
-  simpleProcessRouterDest,
+  removeUndefinedValues,
+  adduserIdFromExternalId,
+  defaultPutRequestConfig,
+  defaultPostRequestConfig,
+  getFieldValueFromMessage,
+  handleRtTfSingleEventError,
 } = require('../../util');
 
 const {
+  MAPPING_CONFIG,
+  OBJECT_ACTIONS,
+  CONFIG_CATEGORIES,
   IDENTITY_ENDPOINT,
+  MERGE_USER_ENDPOINT,
   USER_EVENT_ENDPOINT,
   ANON_EVENT_ENDPOINT,
-  DEVICE_REGISTER_ENDPOINT,
+  OBJECT_EVENT_ENDPOINT,
+  DEFAULT_OBJECT_ACTION,
   DEVICE_DELETE_ENDPOINT,
-  MERGE_USER_ENDPOINT,
+  DEVICE_REGISTER_ENDPOINT,
 } = require('./config');
 const logger = require('../../../logger');
+const { getEventChunks } = require('./util');
 const { InstrumentationError } = require('../../util/errorTypes');
 
 const deviceRelatedEventNames = [
@@ -149,6 +160,25 @@ function responseBuilder(message, evType, evName, destination, messageType) {
     rawPayload.primary.id = userId;
     rawPayload.secondary = {};
     rawPayload.secondary.id = message.previousId;
+  } else if (evType === EventType.GROUP) {
+    endpoint = OBJECT_EVENT_ENDPOINT;
+    const payload = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.OBJECT_EVENTS.name]);
+    rawPayload.identifiers = {
+      object_id: payload.object_id,
+      object_type_id: payload.object_type_id,
+    };
+    rawPayload.type = 'object';
+    rawPayload.action =
+      payload.action && OBJECT_ACTIONS.includes(payload.action)
+        ? payload.action
+        : DEFAULT_OBJECT_ACTION;
+    rawPayload.attributes = payload.attributes || {};
+    rawPayload.cio_relationships = [];
+    if (payload.userId) {
+      rawPayload.cio_relationships.push({ identifiers: { id: payload.userId } });
+    } else if (payload.email) {
+      rawPayload.cio_relationships.push({ identifiers: { email: payload.email } });
+    }
   } else {
     // any other event type except identify
     const token = get(message, 'context.device.token');
@@ -261,6 +291,9 @@ function processSingleMessage(message, destination) {
     case EventType.ALIAS:
       evType = 'alias';
       break;
+    case EventType.GROUP:
+      evType = 'group';
+      break;
     default:
       logger.error(`could not determine type ${messageType}`);
       throw new InstrumentationError(`could not determine type ${messageType}`);
@@ -276,20 +309,90 @@ function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  const respList = [];
   const { message, destination } = event;
   const result = processSingleMessage(message, destination);
   if (!result.statusCode) {
     result.statusCode = 200;
   }
-  respList.push(result);
-
-  return respList;
+  return result;
 }
 
-const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+const batchEvents = (successRespList) => {
+  const batchedResponseList = [];
+  const groupEvents = [];
+  // Filtering out group calls to process batching
+  successRespList.forEach((resp) => {
+    if (resp.message.endpoint !== OBJECT_EVENT_ENDPOINT) {
+      batchedResponseList.push(
+        getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
+      );
+    } else {
+      groupEvents.push(resp);
+    }
+  });
+
+  if (groupEvents.length > 0) {
+    // Extracting metadata, destination and message from the first event in a batch
+    const { destination, message } = groupEvents[0];
+    const { headers, endpoint } = message;
+
+    // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+    const eventChunks = getEventChunks(groupEvents);
+
+    /**
+     * Ref : https://www.customer.io/docs/api/track/#operation/batch
+     */
+    eventChunks.forEach((chunk) => {
+      const request = defaultRequestConfig();
+      request.endpoint = endpoint;
+      request.headers = { ...headers, 'Content-Type': 'application/json' };
+      // Setting the request body to an object with a single property called "batch" containing the batched data
+      request.body.JSON = { batch: chunk.data };
+
+      batchedResponseList.push(getSuccessRespEvents(request, chunk.metadata, destination));
+    });
+  }
+  return batchedResponseList;
+};
+
+const processRouterDest = (inputs, reqMetadata) => {
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
+    return [respEvents];
+  }
+  let batchResponseList = [];
+  const batchErrorRespList = [];
+  const successRespList = [];
+  const { destination } = inputs[0];
+  inputs.forEach((event) => {
+    try {
+      if (event.message.statusCode) {
+        // already transformed event
+        successRespList.push({
+          message: event.message,
+          metadata: event.metadata,
+          destination,
+        });
+      } else {
+        // if not transformed
+        const transformedPayload = {
+          message: process(event),
+          metadata: event.metadata,
+          destination,
+        };
+        successRespList.push(transformedPayload);
+      }
+    } catch (error) {
+      const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+      batchErrorRespList.push(errRespEvent);
+    }
+  });
+
+  if (successRespList.length > 0) {
+    batchResponseList = batchEvents(successRespList);
+  }
+
+  return [...batchResponseList, ...batchErrorRespList];
 };
 
 module.exports = { process, processRouterDest };

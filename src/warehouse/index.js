@@ -593,11 +593,6 @@ function processWarehouseMessage(message, options) {
       commonColumnTypes[eventColName] = 'string';
 
       // -----start: event table------
-
-      // return error if event name is missing
-      if (_.toString(commonProps[eventColName]).trim() === '') {
-        throw InstrumentationError("cannot create event table with empty event name, event name is missing in the payload")
-      }
       const extractProps = {};
       const eventTableColumnTypes = {};
 
@@ -618,6 +613,10 @@ function processWarehouseMessage(message, options) {
         options,
       );
 
+      // return error if event name is missing
+      if (_.toString(commonProps[eventColName]).trim() === '') {
+        throw new InstrumentationError("cannot create event table with empty event name, event name is missing in the payload")
+      }
       // always set commonProps last so that they are not overwritten
       const eventTableEvent = {
         ...extractProps,

@@ -127,7 +127,7 @@ async function runOpenFaasUserTransform(events, userTransformation, libraryVersi
   }
 
   const invokeTime = new Date();
-
+  stats.gauge('events_to_process', events.length, tags);
   const result = await executeFaasFunction(
     functionName,
     events,

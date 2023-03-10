@@ -1981,7 +1981,168 @@ const sampleEvents = {
         }
       ]
     }
-  }
+  },
+  extract: {
+    input: {
+      destination: {
+        Config: {
+          restApiKey: "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          prefixProperties: true,
+          useNativeSDK: false
+        },
+        DestinationDefinition: {
+          DisplayName: "Braze",
+          ID: "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          Name: "BRAZE"
+        },
+        Enabled: true,
+        ID: "1WhcOCGgj9asZu850HvugU2C3Aq",
+        Name: "Braze",
+        Transformations: []
+      },
+      message: {
+        channel: "sources",
+        context: {
+          sources: {
+            job_id: "2JABSy1nq89H7xeJimBL2pCtOOp",
+            job_run_id: "cfd6705nsevh5p2l77ag",
+            task_run_id: "cfd6705nsevh5p2l77b0",
+            version: "version"
+          }
+        },
+        properties: {
+          string_property: "value1",
+          date_property: "2023-02-01T07:53:31.430Z",
+          boolean_property: true,
+          date_property2: "2023-01-31T07:39:10.002Z",
+          userId: "dummy-user-id-inside-properties"
+        },
+        event: "extract_event",
+        recordId: "some-uuid",
+        originalTimestamp: "2020-01-24T06:29:02.364Z",
+        receivedAt: "2020-01-24T11:59:02.403+05:30",
+        request_ip: "[::1]:53708",
+        sentAt: "2020-01-24T06:29:02.364Z",
+        timestamp: "2020-01-24T11:59:02.403+05:30",
+        type: "extract",
+        userId: "dummy-user-id-outside-properties"
+      },
+      request: {
+        query: {
+          whSchemaVersion: "v1"
+        }
+      },
+      metadata: {
+        sourceCategory: "singer-protocol",
+      }
+    },
+    output: {
+      default: [
+        {
+          metadata: {
+            table: "extract_event",
+            columns: {
+              date_property: "datetime",
+              date_property_2: "datetime",
+              boolean_property: "boolean",
+              context_sources_job_id: "string",
+              context_sources_job_run_id: "string",
+              context_sources_task_run_id: "string",
+              context_sources_version: "string",
+              event: "string",
+              id: "string",
+              user_id: "string",
+              received_at: "datetime",
+              event: "string"
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            date_property: "2023-02-01T07:53:31.430Z",
+            date_property_2: "2023-01-31T07:39:10.002Z",
+            context_sources_job_id: "2JABSy1nq89H7xeJimBL2pCtOOp",
+            context_sources_job_run_id: "cfd6705nsevh5p2l77ag",
+            context_sources_task_run_id: "cfd6705nsevh5p2l77b0",
+            context_sources_version: "version",
+            id: "some-uuid",
+            user_id: "dummy-user-id-inside-properties",
+            received_at: "2020-01-24T06:29:02.403Z",
+            event: "extract_event",
+            boolean_property: true
+          }
+        }
+      ],
+      snowflake: [
+        {
+          metadata: {
+            table: "EXTRACT_EVENT",
+            columns: {
+              DATE_PROPERTY: "datetime",
+              DATE_PROPERTY_2: "datetime",
+              CONTEXT_SOURCES_JOB_ID: "string",
+              CONTEXT_SOURCES_JOB_RUN_ID: "string",
+              CONTEXT_SOURCES_TASK_RUN_ID: "string",
+              CONTEXT_SOURCES_VERSION: "string",
+              EVENT: "string",
+              ID: "string",
+              USER_ID: "string",
+              RECEIVED_AT: "datetime",
+              BOOLEAN_PROPERTY: "boolean",
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            DATE_PROPERTY: "2023-02-01T07:53:31.430Z",
+            DATE_PROPERTY_2: "2023-01-31T07:39:10.002Z",
+            CONTEXT_SOURCES_JOB_ID: "2JABSy1nq89H7xeJimBL2pCtOOp",
+            CONTEXT_SOURCES_JOB_RUN_ID: "cfd6705nsevh5p2l77ag",
+            CONTEXT_SOURCES_TASK_RUN_ID: "cfd6705nsevh5p2l77b0",
+            CONTEXT_SOURCES_VERSION: "version",
+            ID: "some-uuid",
+            USER_ID: "dummy-user-id-inside-properties",
+            RECEIVED_AT: "2020-01-24T06:29:02.403Z",
+            EVENT: "extract_event",
+            BOOLEAN_PROPERTY: true,
+          }
+        }
+      ],
+      s3_datalake: [
+        {
+          metadata: {
+            table: "extract_event",
+            columns: {
+              date_property: "datetime",
+              date_property_2: "datetime",
+              context_sources_job_id: "string",
+              context_sources_job_run_id: "string",
+              context_sources_task_run_id: "string",
+              context_sources_version: "string",
+              event: "string",
+              id: "string",
+              user_id: "string",
+              received_at: "datetime",
+              event: "string",
+              boolean_property: "boolean",
+            },
+            receivedAt: "2020-01-24T11:59:02.403+05:30"
+          },
+          data: {
+            date_property: "2023-02-01T07:53:31.430Z",
+            date_property_2: "2023-01-31T07:39:10.002Z",
+            context_sources_job_id: "2JABSy1nq89H7xeJimBL2pCtOOp",
+            context_sources_job_run_id: "cfd6705nsevh5p2l77ag",
+            context_sources_task_run_id: "cfd6705nsevh5p2l77b0",
+            context_sources_version: "version",
+            id: "some-uuid",
+            event: "extract_event",
+            boolean_property: true,
+            received_at: "2020-01-24T06:29:02.403Z",
+            user_id: "dummy-user-id-inside-properties",
+          }
+        }
+      ]
+    }
+  },
 };
 
 function input(eventType) {

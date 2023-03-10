@@ -1031,7 +1031,7 @@ const getDestinationExternalIDObjectForRetl = (message, destination) => {
   }
 
   let obj;
-  if (externalIdArray && externalIdArray.length > 0) {
+  if (externalIdArray.length > 0) {
     // some stops the execution when the element is found
     externalIdArray.some((extIdObj) => {
       const { type } = extIdObj;

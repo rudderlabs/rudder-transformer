@@ -44,31 +44,13 @@ const {
 /**
  * returns client_id
  * @param {*} message
- * @param {*} clientIdFieldIdentifier
  * @returns
  */
-const getGA4ClientId = (message, Config) => {
-  let clientId;
-
-  // if hybrid mode enabled, take client_id from integrationsObj
-  if (isHybridModeEnabled(Config)) {
-    const integrationsObj = getIntegrationsObj(message, 'ga4');
-    if (integrationsObj && integrationsObj.clientId) {
-      return integrationsObj.clientId;
-    }
-  }
-
-  // for cloud mode first we will search from webapp
-  if (Config.clientIdFieldIdentifier) {
-    clientId = get(message, Config.clientIdFieldIdentifier);
-  }
-  // if we don't find it from the config then we will fall back to the default search
-  if (!clientId) {
-    clientId =
-      getDestinationExternalID(message, 'ga4ClientId') ||
-      get(message, 'anonymousId') ||
-      get(message, 'messageId');
-  }
+const getGA4ClientId = (message) => {
+  const clientId =
+    getDestinationExternalID(message, 'ga4ClientId') ||
+    get(message, 'anonymousId') ||
+    get(message, 'rudderId');
   return clientId;
 };
 
@@ -102,11 +84,9 @@ const responseBuilder = (message, { Config }) => {
     case 'gtag':
       // gtag.js uses client_id
       // GA4 uses it as an identifier to distinguish site visitors.
-      rawPayload.client_id = getGA4ClientId(message, Config);
+      rawPayload.client_id = getGA4ClientId(message);
       if (!isDefinedAndNotNull(rawPayload.client_id)) {
-        throw new ConfigurationError(
-          `${Config.clientIdFieldIdentifier}, ga4ClientId, anonymousId or messageId must be provided`,
-        );
+        throw new ConfigurationError('ga4ClientId, anonymousId or messageId must be provided');
       }
       break;
     case 'firebase':
@@ -385,7 +365,7 @@ const responseBuilder = (message, { Config }) => {
 const process = (event) => {
   const { message, destination } = event;
   const { Config } = destination;
-
+  
   if (!Config.typesOfClient) {
     throw new ConfigurationError('Client type not found. Aborting ');
   }

@@ -23,8 +23,10 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
-      - name: Coverage Report
-        uses: ArtiomTr/jest-coverage-report-action@v2
+      - name: Run Tests
+        run: npm run test:ci
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
         with:
-          test-script: npm run test:ci
-          skip-step: install
+          directory: ./reports/coverage

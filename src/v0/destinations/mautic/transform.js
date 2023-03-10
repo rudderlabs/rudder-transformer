@@ -154,10 +154,15 @@ const identifyResponseBuilder = async (message, Config, endpoint) => {
 
 const process = async (event) => {
   const { message, destination } = event;
-  const { password } = destination.Config;
+  const { password, userName } = destination.Config;
   if (!password) {
     throw new ConfigurationError(
       'Invalid password value specified in the destination configuration',
+    );
+  }
+  if (!userName) {
+    throw new ConfigurationError(
+      'Invalid userName value specified in the destination configuration',
     );
   }
 

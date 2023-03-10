@@ -88,6 +88,10 @@ function responseBuilderSimple(message, category, destination) {
           payload.actions[0].platform = 'iOS';
         }
         break;
+      case EventType.ALIAS:
+        // clean as per merge user call in moengage
+        delete response.headers['MOE-APPKEY'];
+        break;
       default:
         throw new InstrumentationError(`Event type ${category.type} is not supported`);
     }
@@ -126,6 +130,11 @@ const processEvent = (message, destination) => {
       break;
     case EventType.TRACK:
       category = CONFIG_CATEGORIES.TRACK;
+      // build the response
+      response = responseBuilderSimple(message, category, destination);
+      break;
+    case EventType.ALIAS:
+      category = CONFIG_CATEGORIES.ALIAS;
       // build the response
       response = responseBuilderSimple(message, category, destination);
       break;

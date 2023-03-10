@@ -204,12 +204,6 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
   };
 };
 
-/**
- *
- * @param {*} message Rudder Payload
- * @param {*} categoryToContent [ { from: 'clothing', to: 'product' } ]
- * @param {*} valueFieldIdentifier it can be either value or price which will be matched from properties and assigned to value for fb payload
- */
 const handleSearch = (message) => {
   const query = message?.properties?.query;
   /**

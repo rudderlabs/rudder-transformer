@@ -1,6 +1,6 @@
 [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
 [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
-[![codecov](https://codecov.io/gh/rudderlabs/rudder-transformer/branch/main/graph/badge.svg)](https://codecov.io/gh/rudderlabs/rudder-transformer)
+[![codecov](https://codecov.io/gh/rudderlabs/rudder-transformer/branch/develop/graph/badge.svg?token=G24OON85SB)](https://codecov.io/gh/rudderlabs/rudder-transformer)
 
 # RudderStack Transformer
 

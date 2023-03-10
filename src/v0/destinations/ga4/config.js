@@ -32,6 +32,20 @@ const ConfigCategory = {
   },
   TrackPageCommonParamsConfig: { name: 'GA4TrackPageCommonParamsConfig' },
 
+  /* User Identifier Events */
+  LOGIN: {
+    name: 'GA4LoginSignupConfig',
+    event: 'login',
+  },
+  SIGN_UP: {
+    name: 'GA4LoginSignupConfig',
+    event: 'sign_up',
+  },
+  GENERATE_LEAD: {
+    name: 'GA4GenerateLeadConfig',
+    event: 'generate_lead',
+  },
+
   /* E-Commerce Events */
   // Ref - https://www.rudderstack.com/docs/rudderstack-api/api-specification/rudderstack-ecommerce-events-specification/
 

@@ -7,20 +7,15 @@ const stats = require('./stats');
 const { UserTransformHandlerFactory } = require('./customTransformerFactory');
 const { parserForImport } = require('./parser');
 
-async function runUserTransform(
-  events,
-  code,
-  secrets,
-  eventsMetadata,
-  versionId,
-  testMode = false,
-) {
+const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
+
+async function runUserTransform(events, code, secrets, eventsMetadata, versionId, testMode = false) {
   const tags = {
     transformerVersionId: versionId,
-    version: 0,
+    identifier: 'v0',
   };
   // TODO: Decide on the right value for memory limit
-  const isolate = new ivm.Isolate({ memoryLimit: 128 });
+  const isolate = new ivm.Isolate({ memoryLimit: ISOLATE_VM_MEMORY });
   const context = await isolate.createContext();
   const logs = [];
   const jail = context.global;
@@ -173,7 +168,7 @@ async function runUserTransform(
   await customScript.run(context);
   const fnRef = await jail.get('transform', { reference: true });
   // stat
-  stats.counter('events_into_vm', events.length, tags);
+  stats.gauge('events_to_process', events.length, tags);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
   const executionPromise = new Promise(async (resolve, reject) => {
@@ -191,6 +186,7 @@ async function runUserTransform(
     }
   });
   let result;
+  const invokeTime = new Date();
   try {
     const timeoutPromise = new Promise((resolve) => {
       const wait = setTimeout(() => {
@@ -202,6 +198,7 @@ async function runUserTransform(
     if (result === 'Timedout') {
       throw new Error('Timed out');
     }
+    stats.timing('run_time', invokeTime, tags);
   } catch (error) {
     throw error;
   } finally {

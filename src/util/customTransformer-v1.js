@@ -71,6 +71,7 @@ async function userTransformHandlerV1(
       userTransformation.code,
       libraryVersionIds,
       userTransformation.versionId,
+      userTransformation.secrets || {},
       testMode,
     );
     const isolatevm = await isolatevmFactory.create();

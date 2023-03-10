@@ -9,7 +9,7 @@ const { parserForImport } = require('./parser');
 
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 
-async function runUserTransform(events, code, eventsMetadata, versionId, testMode = false) {
+async function runUserTransform(events, code, secrets, eventsMetadata, versionId, testMode = false) {
   const tags = {
     transformerVersionId: versionId,
     identifier: 'v0',
@@ -71,6 +71,11 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
     }),
   );
 
+  await jail.set('_rsSecrets', function (...args) {
+    if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
+    return secrets[args[0]];
+  });
+
   jail.setSync('log', function (...args) {
     if (testMode) {
       let logString = 'Log:';
@@ -123,6 +128,14 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
             ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           ]);
         });
+      };
+
+      let rsSecrets = _rsSecrets;
+      delete _rsSecrets;
+      global.rsSecrets = function(...args) {
+        return rsSecrets([
+          ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+        ]);
       };
 
         return new ivm.Reference(function forwardMainPromise(
@@ -250,6 +263,7 @@ async function userTransformHandler(
         result = await runUserTransform(
           eventMessages,
           res.code,
+          res.secrets || {},
           eventsMetadata,
           versionId,
           testMode,
@@ -273,23 +287,33 @@ async function setupUserTransformHandler(
   libraryVersionIDs,
   testWithPublish = false,
 ) {
-  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(libraryVersionIDs, testWithPublish);
+  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(
+    libraryVersionIDs,
+    testWithPublish,
+  );
   return resp;
 }
 
 async function validateCode(code, language) {
-  if (language === "javascript") {
+  if (language === 'javascript') {
     return compileUserLibrary(code);
   }
-  if (language === "python" || language === "pythonfaas") {
+  if (language === 'python' || language === 'pythonfaas') {
     return parserForImport(code, true, [], language);
   }
 
   throw new Error('Unsupported language');
 }
 
-async function extractLibraries(code, versionId, validateImports, additionalLibs, language = "javascript", testMode = false) {
-  if (language === "javascript") return parserForImport(code);
+async function extractLibraries(
+  code,
+  versionId,
+  validateImports,
+  additionalLibs,
+  language = 'javascript',
+  testMode = false,
+) {
+  if (language === 'javascript') return parserForImport(code);
 
   let transformation;
 
@@ -298,7 +322,7 @@ async function extractLibraries(code, versionId, validateImports, additionalLibs
   }
 
   if (!transformation?.imports) {
-      return parserForImport(code || transformation?.code, validateImports, additionalLibs, language);
+    return parserForImport(code || transformation?.code, validateImports, additionalLibs, language);
   }
 
   return transformation.imports;
@@ -308,5 +332,5 @@ module.exports = {
   userTransformHandler,
   setupUserTransformHandler,
   validateCode,
-  extractLibraries
+  extractLibraries,
 };

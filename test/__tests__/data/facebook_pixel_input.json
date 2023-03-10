@@ -1060,6 +1060,8 @@
         "quantity": 2,
         "category": "cat 1",
         "list_id": "1234",
+        "contentName": "nutrition",
+        "value": 18.9,
         "filters": [
           {
             "type": "department",
@@ -1439,6 +1441,7 @@
         "shipping": 13.99,
         "tax": 20.99,
         "currency": "INR",
+        "contentName": "all about nutrition",
         "products": [
           {
             "quantity": 1,
@@ -1533,6 +1536,7 @@
       "properties": {
         "currency": "CAD",
         "category": "clothing",
+        "contentName": "abc",
         "products": [
           {
             "quantity": 1,
@@ -1581,7 +1585,7 @@
         ],
         "eventCustomProperties": [
           {
-            "eventCustomProperties": ""
+            "eventCustomProperties": "contentName"
           }
         ],
         "valueFieldIdentifier": "properties.price",
@@ -1604,13 +1608,7 @@
         }
       },
       "context": {
-        "dataProcessingOptions": [
-          [
-            "LDU"
-          ],
-          1,
-          1000
-        ],
+        "dataProcessingOptions": [["LDU"], 1, 1000],
         "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
         "fbp": "fb.1.1554763741205.234567890",
         "fb_login_id": "fb_id",
@@ -1691,13 +1689,7 @@
         }
       },
       "context": {
-        "dataProcessingOptions": [
-          [
-            "LDU"
-          ],
-          1,
-          1000
-        ],
+        "dataProcessingOptions": [["LDU"], 1, 1000],
         "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
         "fbp": "fb.1.1554763741205.234567890",
         "fb_login_id": "fb_id",
@@ -1803,6 +1795,11 @@
       "userId": "12345",
       "event": "products searched",
       "properties": {
+        "product_id": "p-298",
+        "quantity": 2,
+        "price": 18.9,
+        "category": "health",
+        "value": 18.9,
         "query": "HDMI cable"
       },
       "integrations": {
@@ -2526,10 +2523,7 @@
       "userId": "12345",
       "event": "order completed",
       "properties": {
-        "category": [
-          "clothing",
-          "fishing"
-        ],
+        "category": ["clothing", "fishing"],
         "order_id": "ruchiraorder1",
         "total": 99.99,
         "revenue": 12.24,

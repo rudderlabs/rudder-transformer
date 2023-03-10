@@ -123,7 +123,7 @@ jobs:
   createPullRequest:
     name: Create Pull Request for rudder-devops repository
     runs-on: ubuntu-latest
-    needs: [ user-transformer-build, transformer-build ]
+    needs: [user-transformer-build, transformer-build]
     env:
       VERSION: ${{ needs.transformer-build.outputs.version }}
       UT_VERSION: ${{ needs.user-transformer-build.outputs.ut-version }}
@@ -152,7 +152,10 @@ jobs:
           yq eval -i ".config-be-rudder-transformer.image.tag=\"$VERSION\"" values.prod.yaml
           yq eval -i ".config-be-user-transformer.image.tag=\"$UT_VERSION\"" values.prod.yaml
           git add values.prod.yaml
+          cd ../../customer-objects/customer-objects/multi-tenant-us
+          yq eval -i ".transformer.image.tag=\"$VERSION\"" hostedmtedmt.yaml
+          yq eval -i ".user-transformer.image.tag=\"$VERSION\"" hostedmtedmt.yaml
+          git add hostedmtedmt.yaml
           git commit -m "changing version for shared transformer"
           git push -u origin "shared-transformer-$VERSION"
           hub pull-request -m "rudder-transformer version change-$VERSION"
-

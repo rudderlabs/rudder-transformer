@@ -11,8 +11,10 @@
         "destKey": "engagement_time_msec",
         "sourceKeys": [
             "traits.engagementTimeMsec",
+            "properties.engagementTimeMsec",
             "context.traits.engagementTimeMsec",
             "traits.engagement_time_msec",
+            "properties.engagement_time_msec",
             "context.traits.engagement_time_msec"
         ],
         "metadata": {

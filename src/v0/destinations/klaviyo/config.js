@@ -2,6 +2,8 @@ const { getMappingConfig } = require('../../util');
 
 const BASE_ENDPOINT = 'https://a.klaviyo.com';
 
+const MAX_BATCH_SIZE = 100;
+
 // TRACK and IDENTIFY DOCS: https://www.klaviyo.com/docs/http-api
 // LIST API [MEMBERSHIP/SUBSCRIBE] DOCS:https://www.klaviyo.com/docs/http-api
 
@@ -64,4 +66,5 @@ module.exports = {
   ecomEvents,
   eventNameMapping,
   jsonNameMapping,
+  MAX_BATCH_SIZE,
 };

@@ -11,6 +11,7 @@ const {
   defaultPostRequestConfig,
   extractCustomFields,
   removeUndefinedAndNullValues,
+  defaultBatchRequestConfig,
 } = require('../../util');
 
 const { BASE_ENDPOINT, LIST_CONF, MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
@@ -166,9 +167,43 @@ const createCustomerProperties = (message) => {
   return customerProperties;
 };
 
+const generateBatchedPaylaodForArray = (listIdEndpoint, events) => {
+  let batchEventResponse = defaultBatchRequestConfig();
+  const batchResponseList = [];
+  const metadata = [];
+  // extracting destination from the first event in a batch
+  const { destination } = events[0];
+  // Batch event into dest batch structure
+  events.forEach((ev) => {
+    batchResponseList.push(...ev.message.body.JSON.profiles);
+    metadata.push(ev.metadata);
+  });
+
+  batchEventResponse.batchedRequest.body.JSON = {
+    profiles: batchResponseList,
+  };
+
+  const BATCH_ENDPOINT = listIdEndpoint;
+
+  batchEventResponse.batchedRequest.endpoint = BATCH_ENDPOINT;
+
+  batchEventResponse.batchedRequest.headers = {
+    'Content-Type': 'application/json',
+  };
+  batchEventResponse.batchedRequest.params = { api_key: destination.Config.privateApiKey };
+
+  batchEventResponse = {
+    ...batchEventResponse,
+    metadata,
+    destination,
+  };
+  return batchEventResponse;
+};
+
 module.exports = {
   isProfileExist,
   subscribeUserToList,
   checkForSubscribe,
   createCustomerProperties,
+  generateBatchedPaylaodForArray,
 };

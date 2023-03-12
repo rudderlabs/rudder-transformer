@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
+const _ = require('lodash');
 const get = require('get-value');
 const { EventType, WhiteListedTraits, MappedToDestinationKey } = require('../../../constants');
 const {
@@ -11,8 +12,14 @@ const {
   ecomEvents,
   eventNameMapping,
   jsonNameMapping,
+  MAX_BATCH_SIZE,
 } = require('./config');
-const { isProfileExist, createCustomerProperties, checkForSubscribe } = require('./util');
+const {
+  isProfileExist,
+  createCustomerProperties,
+  checkForSubscribe,
+  generateBatchedPaylaodForArray,
+} = require('./util');
 const {
   defaultRequestConfig,
   constructPayload,
@@ -25,7 +32,9 @@ const {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   defaultPutRequestConfig,
-  simpleProcessRouterDest,
+  getSuccessRespEvents,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError,
 } = require('../../util');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
@@ -274,9 +283,94 @@ const process = async (event) => {
   return result;
 };
 
+const batchEvents = (successRespList) => {
+  const batchedResponseList = [];
+  const subscribeEventGroups = _.groupBy(successRespList, (event) => event.message.endpoint);
+  Object.keys(subscribeEventGroups).forEach((listIdEndpoint) => {
+    // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+    const eventChunks = _.chunk(subscribeEventGroups[listIdEndpoint], MAX_BATCH_SIZE);
+    eventChunks.forEach((chunk) => {
+      const batchEventResponse = generateBatchedPaylaodForArray(listIdEndpoint, chunk);
+      batchedResponseList.push(
+        getSuccessRespEvents(
+          batchEventResponse.batchedRequest,
+          batchEventResponse.metadata,
+          batchEventResponse.destination,
+          true,
+        ),
+      );
+    });
+  });
+  return batchedResponseList;
+};
+
+// This function separates subscribe response and other responses in chunks
+const getEventChunks = (event, subscribeRespList, otherRespList) => {
+  if (Array.isArray(event.message)) {
+    const { destination, message, metadata } = event;
+    message.forEach((responseEvent) => {
+      if (responseEvent.endpoint.includes('subscribe')) {
+        subscribeRespList.push({ destination, message: responseEvent, metadata });
+      } else {
+        otherRespList.push({ destination, message: responseEvent, metadata });
+      }
+    });
+  } else if (event.message.endpoint.includes('subscribe')) {
+    subscribeRespList.push(event);
+  } else {
+    otherRespList.push(event);
+  }
+};
+
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+  let batchResponseList = [];
+  const batchErrorRespList = [];
+  const subscribeRespList = [];
+  const otherRespList = [];
+  const { destination } = inputs[0];
+  await Promise.all(
+    inputs.map(async (event) => {
+      try {
+        if (event.message.statusCode) {
+          // already transformed event
+          getEventChunks(
+            { message: event.message, metadata: event.metadata, destination },
+            subscribeRespList,
+            otherRespList,
+          );
+        } else {
+          // if not transformed
+          getEventChunks(
+            {
+              message: await process(event),
+              metadata: event.metadata,
+              destination,
+            },
+            subscribeRespList,
+            otherRespList,
+          );
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+        batchErrorRespList.push(errRespEvent);
+      }
+    }),
+  );
+  let batchedSubscribeResponseList = [];
+  if (subscribeRespList.length > 0) {
+    batchedSubscribeResponseList = batchEvents(subscribeRespList);
+  }
+  const otherResponseList = [];
+  otherRespList.forEach((resp) => {
+    otherResponseList.push(getSuccessRespEvents(resp.message, [resp.metadata], resp.destination));
+  });
+  batchResponseList = batchResponseList.concat(batchedSubscribeResponseList, otherResponseList);
+
+  return [...batchResponseList, ...batchErrorRespList];
 };
 
 module.exports = { process, processRouterDest };

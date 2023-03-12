@@ -152,7 +152,7 @@ jobs:
           yq eval -i ".config-be-rudder-transformer.image.tag=\"$VERSION\"" values.prod.yaml
           yq eval -i ".config-be-user-transformer.image.tag=\"$UT_VERSION\"" values.prod.yaml
           git add values.prod.yaml
-          cd ../../customer-objects/customer-objects/multi-tenant-us
+          cd ../../customer-objects/multi-tenant-us
           yq eval -i ".transformer.image.tag=\"$VERSION\"" hostedmtedmt.yaml
           yq eval -i ".user-transformer.image.tag=\"$VERSION\"" hostedmtedmt.yaml
           git add hostedmtedmt.yaml

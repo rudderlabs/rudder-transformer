@@ -6,6 +6,7 @@ const fs = require('fs');
 const path = require('path');
 const logger = require('./logger');
 const stats = require('./util/stats');
+const prometheus = require('./util/prometheus');
 const { SUPPORTED_VERSIONS, API_VERSION } = require('./routes/utils/constants');
 const { client: errNotificationClient } = require('./util/errorNotifier');
 const tags = require('./v0/util/tags');
@@ -27,7 +28,6 @@ const networkHandlerFactory = require('./adapters/networkHandlerFactory');
 const profilingRouter = require('./routes/profiling');
 const destProxyRoutes = require('./routes/destinationProxy');
 const eventValidator = require('./util/eventValidation');
-const { prometheusRegistry } = require('./middleware');
 const { getIntegrations } = require('./routes/utils');
 const { setupUserTransformHandler, validateCode } = require('./util/customTransformer');
 const { CommonUtils } = require('./util/common');
@@ -141,8 +141,8 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
       stats.counter('cdk_live_compare_test_failed', 1, { destType, feature });
       logger.error(
         `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff_keys=${JSON.stringify(
-          Object.keys(objectDiff)
-        )}`
+          Object.keys(objectDiff),
+        )}`,
       );
       // logger.error(
       //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff=${JSON.stringify(
@@ -171,13 +171,14 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
 /**
  * Enriches the transformed event with more information
  * - userId stringification
- * 
+ *
  * @param {Object} transformedEvent - single transformed event
  * @returns transformedEvent after enrichment
  */
-const enrichTransformedEvent = (transformedEvent) => (
-  { ...transformedEvent, userId: checkAndCorrectUserId(transformedEvent.statusCode, transformedEvent?.userId) }
-);
+const enrichTransformedEvent = (transformedEvent) => ({
+  ...transformedEvent,
+  userId: checkAndCorrectUserId(transformedEvent.statusCode, transformedEvent?.userId),
+});
 
 async function handleV0Destination(destHandler, destType, inputArr, feature) {
   const v0Result = {};
@@ -271,10 +272,10 @@ async function handleDest(ctx, version, destination) {
             output: enrichTransformedEvent(ev),
             metadata: destHandler?.processMetadata
               ? destHandler.processMetadata({
-                metadata: event.metadata,
-                inputEvent: parsedEvent,
-                outputEvent: ev,
-              })
+                  metadata: event.metadata,
+                  inputEvent: parsedEvent,
+                  outputEvent: ev,
+                })
               : event.metadata,
             statusCode: 200,
           }));
@@ -486,11 +487,11 @@ async function routerHandleDest(ctx) {
         }
         const hasProcMetadataForRouter = routerDestHandler.processMetadataForRouter;
         // enriching transformed event
-        listOutput.forEach(listOut => {
+        listOutput.forEach((listOut) => {
           const { batchedRequest } = listOut;
           if (Array.isArray(batchedRequest)) {
             // eslint-disable-next-line no-param-reassign
-            listOut.batchedRequest = batchedRequest.map(batReq => enrichTransformedEvent(batReq));
+            listOut.batchedRequest = batchedRequest.map((batReq) => enrichTransformedEvent(batReq));
           } else if (batchedRequest && typeof batchedRequest === 'object') {
             // eslint-disable-next-line no-param-reassign
             listOut.batchedRequest = enrichTransformedEvent(batchedRequest);
@@ -607,8 +608,8 @@ if (startDestTransformer) {
           versionId,
           validateImports = false,
           additionalLibraries = [],
-          language = "javascript",
-          testMode = false
+          language = 'javascript',
+          testMode = false,
         } = ctx.request.body;
 
         if (!code) {
@@ -621,12 +622,12 @@ if (startDestTransformer) {
           validateImports,
           additionalLibraries,
           language,
-          testMode || versionId === 'testVersionId'
+          testMode || versionId === 'testVersionId',
         );
         ctx.body = obj;
       } catch (err) {
         ctx.status = 400;
-        ctx.body = { "error": err.error || err.message };
+        ctx.body = { error: err.error || err.message };
       }
     });
 
@@ -809,7 +810,7 @@ if (transformerTestModeEnabled) {
 
   router.post('/transformationLibrary/test', async (ctx) => {
     try {
-      const { code, language = "javascript" } = ctx.request.body;
+      const { code, language = 'javascript' } = ctx.request.body;
 
       if (!code) {
         throw new Error('Invalid request. Missing code');
@@ -1341,8 +1342,8 @@ const handleDeletionOfUsers = async (ctx) => {
 };
 const metricsController = async (ctx) => {
   ctx.status = 200;
-  ctx.type = prometheusRegistry.contentType;
-  ctx.body = await prometheusRegistry.metrics();
+  ctx.type = prometheus.prometheusRegistry.contentType;
+  ctx.body = await prometheus.prometheusRegistry.metrics();
   return ctx.body;
 };
 

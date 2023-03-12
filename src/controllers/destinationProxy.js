@@ -3,9 +3,9 @@ const jsonDiff = require('json-diff');
 const networkHandlerFactory = require('../adapters/networkHandlerFactory');
 const { getPayloadData } = require('../adapters/network');
 const { generateErrorObject } = require('../v0/util');
-const stats = require('../util/stats');
 const logger = require('../logger');
 const tags = require('../v0/util/tags');
+const stats = require('../util/stats');
 
 const DestProxyController = {
   /**

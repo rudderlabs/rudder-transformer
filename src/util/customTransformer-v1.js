@@ -1,9 +1,9 @@
 const ivm = require('isolated-vm');
-const stats = require('./stats');
 
 const { getFactory } = require('./ivmFactory');
 const { getMetadata } = require('../v0/util');
 const logger = require('../logger');
+const stats = require('./stats');
 
 const userTransformTimeout = parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
 
@@ -96,6 +96,7 @@ async function userTransformHandlerV1(
     stats.timing('run_time', invokeTime, tags);
     const isolateEndWallTime = calculateMsFromIvmTime(isolatevm.isolate.wallTime);
     const isolateEndCPUTime = calculateMsFromIvmTime(isolatevm.isolate.cpuTime);
+
     stats.timing('isolate_wall_time', isolateEndWallTime - isolateStartWallTime, tags);
     stats.timing('isolate_cpu_time', isolateEndCPUTime - isolateStartCPUTime, tags);
 

@@ -14,6 +14,7 @@ import stats from '../util/stats';
 import logger from '../logger';
 import { getIntegrationVersion } from '../util/utils';
 import tags from '../v0/util/tags';
+import { DynamicConfigParser } from '../util/dynamicConfigParser';
 
 
 export default class DestinationController {
@@ -35,6 +36,7 @@ export default class DestinationController {
         events,
         ctx,
       ) as ProcessorTransformationRequest[];
+      events = DynamicConfigParser.process(events);
       resplist = await integrationService.doProcessorTransformation(
         events,
         destination,
@@ -91,6 +93,7 @@ export default class DestinationController {
         events,
         ctx,
       ) as RouterTransformationRequestData[];
+      events = DynamicConfigParser.process(events);
       const resplist = await integrationService.doRouterTransformation(
         events,
         destination,

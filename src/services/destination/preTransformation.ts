@@ -11,8 +11,7 @@ export default class PreTransformationDestinationService {
     events = events.map((event: ProcessorTransformationRequest | RouterTransformationRequestData) => {
       event.request = { query: reqParams };
       return event;
-    });
-    events = DynamicConfigParser.process(events);
+    }); 
     return events;
   }
 }

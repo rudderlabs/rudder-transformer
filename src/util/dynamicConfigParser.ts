@@ -42,18 +42,17 @@ export class DynamicConfigParser {
     event: ProcessorTransformationRequest | RouterTransformationRequestData,
   ) {
     if (value) {
-      return value;
-    }
-    if (Array.isArray(value)) {
-      value.forEach((key, index) => {
-        value[index] = this.configureVal(key, event);
-      });
-    } else if (typeof value === 'object') {
-      Object.keys(value).forEach((obj) => {
-        value[obj] = this.configureVal(value[obj], event);
-      });
-    } else if (typeof value === 'string') {
-      value = this.getDynamicConfigValue(event, value);
+      if (Array.isArray(value)) {
+        value.forEach((key, index) => {
+          value[index] = this.configureVal(key, event);
+        });
+      } else if (typeof value === 'object') {
+        Object.keys(value).forEach((obj) => {
+          value[obj] = this.configureVal(value[obj], event);
+        });
+      } else if (typeof value === 'string') {
+        value = this.getDynamicConfigValue(event, value);
+      }
     }
     return value;
   }

@@ -129,8 +129,8 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
     const diff = process.hrtime(startTime);
     const cdkTime = diff[0] * NS_PER_SEC + diff[1];
 
-    prometheus.getMetrics()?.v0TransformationTimeSummary.set({ destType, feature }, v0Time);
-    prometheus.getMetrics()?.cdkTransformationTimeSummary.set({ destType, feature }, cdkTime);
+    prometheus.getMetrics()?.v0TransformationTimeGauge.set({ destType, feature }, v0Time);
+    prometheus.getMetrics()?.cdkTransformationGauge.set({ destType, feature }, cdkTime);
     /* TODO remove
     stats.gauge('v0_transformation_time', v0Time, {
       destType,
@@ -142,7 +142,8 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
     }); */
     const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
     if (Object.keys(objectDiff).length > 0) {
-      stats.counter('cdk_live_compare_test_failed', 1, { destType, feature });
+      prometheus.getMetrics()?.cdkLiveCompareTestFailed.inc({ destType, feature });
+      // TODO REMOVE stats.counter('cdk_live_compare_test_failed', 1, { destType, feature });
       logger.error(
         `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff_keys=${JSON.stringify(
           Object.keys(objectDiff),
@@ -165,9 +166,11 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
       // );
       return;
     }
-    stats.counter('cdk_live_compare_test_success', 1, { destType, feature });
+    prometheus.getMetrics()?.cdkLiveCompareTestSuccess.inc({ destType, feature });
+    // TODO REMOVE stats.counter('cdk_live_compare_test_success', 1, { destType, feature });
   } catch (error) {
-    stats.counter('cdk_live_compare_test_errored', 1, { destType, feature });
+    prometheus.getMetrics()?.cdkLiveCompareTestErrored.inc({ destType, feature });
+    // TODO REMOVE stats.counter('cdk_live_compare_test_errored', 1, { destType, feature });
     logger.error(`[LIVE_COMPARE_TEST] errored for destType=${destType}, feature=${feature}`, error);
   }
 }
@@ -364,10 +367,14 @@ async function handleValidation(ctx) {
           validationErrors: hv.validationErrors,
           error: errMessage,
         });
-        stats.counter('hv_violation_type', 1, {
+        prometheus.getMetrics()?.hvViolationType.inc({
           violationType: hv.violationType,
           ...metaTags,
         });
+        /* TODO REMOVE stats.counter('hv_violation_type', 1, {
+          violationType: hv.violationType,
+          ...metaTags,
+        }); */
       } else {
         respList.push({
           output: event.message,
@@ -375,9 +382,16 @@ async function handleValidation(ctx) {
           statusCode: 200,
           validationErrors: hv.validationErrors,
         });
-        stats.counter('hv_propagated_events', 1, {
+        prometheus.getMetrics()?.hvViolationType.inc({
+          violationType: hv.violationType,
           ...metaTags,
         });
+        prometheus.getMetrics()?.hvPropagatedEvents.inc({
+          ...metaTags,
+        });
+        /* TODO REMOVE stats.counter('hv_propagated_events', 1, {
+          ...metaTags,
+        }); */
       }
     } catch (error) {
       const errMessage = `Error occurred while validating : ${error}`;
@@ -396,9 +410,13 @@ async function handleValidation(ctx) {
         validationErrors: [],
         error: errMessage,
       });
-      stats.counter('hv_errors', 1, {
+
+      prometheus.getMetrics()?.hvErrors.inc({
         ...metaTags,
       });
+      /* TODO REMOVE stats.counter('hv_errors', 1, {
+        ...metaTags,
+      }); */
     } finally {
       stats.timing('hv_event_latency', eventStartTime, {
         ...metaTags,
@@ -409,7 +427,28 @@ async function handleValidation(ctx) {
   ctx.status = ctxStatusCode;
   ctx.set('apiVersion', API_VERSION);
 
-  stats.counter('hv_events_count', events.length, {
+  prometheus.getMetrics()?.hvEventsCount.inc(
+    {
+      ...metaTags,
+    },
+    events.length,
+  );
+
+  // TODO change to histogram
+  prometheus.getMetrics()?.hvRequestSize.inc(
+    {
+      ...metaTags,
+    },
+    requestSize,
+  );
+
+  prometheus.getMetrics()?.hvRequestLatency.observe(
+    {
+      ...metaTags,
+    },
+    (new Date() - requestStartTime) / 1000,
+  );
+  /* TODO REMOVE stats.counter('hv_events_count', events.length, {
     ...metaTags,
   });
   stats.counter('hv_request_size', requestSize, {
@@ -417,7 +456,7 @@ async function handleValidation(ctx) {
   });
   stats.timing('hv_request_latency', requestStartTime, {
     ...metaTags,
-  });
+  }); */
 }
 
 async function isValidRouterDest(event, destType) {
@@ -658,9 +697,15 @@ if (startDestTransformer) {
           (event) => `${event.metadata.destinationId}_${event.metadata.sourceId}`,
         );
       }
-      stats.counter('user_transform_function_group_size', Object.entries(groupedEvents).length, {
+      prometheus
+        .getMetrics()
+        ?.userTransformFunctionGroupSize.inc(
+          { processSessions },
+          Object.entries(groupedEvents).length,
+        );
+      /* TODO REMOVE stats.counter('user_transform_function_group_size', Object.entries(groupedEvents).length, {
         processSessions,
-      });
+      }); */
 
       let ctxStatusCode = 200;
       const transformedEvents = [];
@@ -693,10 +738,16 @@ if (startDestTransformer) {
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
-              stats.counter('user_transform_function_input_events', destEvents.length, {
+              prometheus
+                .getMetrics()
+                ?.userTransformFunctionInputEvents.inc(
+                  { processSessions, ...metaTags },
+                  destEvents.length,
+                );
+              /* TODO REMOVE stats.counter('user_transform_function_input_events', destEvents.length, {
                 processSessions,
                 ...metaTags,
-              });
+              }); */
               destTransformedEvents = await userTransformHandler()(
                 destEvents,
                 transformationVersionId,
@@ -743,17 +794,33 @@ if (startDestTransformer) {
                 error: errorString,
               }));
               transformedEvents.push(...destTransformedEvents);
-              stats.counter('user_transform_errors', destEvents.length, {
+              prometheus.getMetrics()?.userTransformErrors.inc(
+                {
+                  transformationVersionId,
+                  processSessions,
+                  ...metaTags,
+                },
+                destEvents.length,
+              );
+              /* TODO REMOVE stats.counter('user_transform_errors', destEvents.length, {
                 transformationVersionId,
                 processSessions,
                 ...metaTags,
-              });
+              }); */
             } finally {
-              stats.timing('user_transform_function_latency', userFuncStartTime, {
+              prometheus.getMetrics()?.userTransformFunctionLatency.observe(
+                {
+                  transformationVersionId,
+                  processSessions,
+                  ...metaTags,
+                },
+                (new Date() - userFuncStartTime) / 1000,
+              );
+              /* TODO REMOVE stats.timing('user_transform_function_latency', userFuncStartTime, {
                 transformationVersionId,
                 processSessions,
                 ...metaTags,
-              });
+              }); */
             }
           } else {
             const errorMessage = 'Transformation VersionID not found';
@@ -763,11 +830,19 @@ if (startDestTransformer) {
               error: errorMessage,
               metadata: commonMetadata,
             });
-            stats.counter('user_transform_errors', destEvents.length, {
+            prometheus.getMetrics()?.userTransformErrors.inc(
+              {
+                transformationVersionId,
+                processSessions,
+                ...metaTags,
+              },
+              destEvents.length,
+            );
+            /* TODO REMOVE stats.counter('user_transform_errors', destEvents.length, {
               transformationVersionId,
               processSessions,
               ...metaTags,
-            });
+            }); */
           }
         }),
       );

@@ -2,7 +2,7 @@
 FROM ubuntu:20.04 AS base
 
 RUN apt-get update \
-  && apt-get install -y curl make g++ ssh \
+  && apt-get install -y curl make g++ ssh git \
   && apt-get install -y cpio \
   && curl -sL https://deb.nodesource.com/setup_18.x | bash \
   && apt-get install -y nodejs \

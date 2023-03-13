@@ -223,6 +223,7 @@ const processIdentifierEvent = async (event) => {
   return result;
 };
 const process = async (event) => {
+  console.log(JSON.stringify(event));
   if (isIdentifierEvent(event)) {
     return processIdentifierEvent(event);
   }

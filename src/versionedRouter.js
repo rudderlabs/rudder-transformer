@@ -128,6 +128,10 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
     const cdkResult = await getCdkV2Result(destType, inputArr[0], feature);
     const diff = process.hrtime(startTime);
     const cdkTime = diff[0] * NS_PER_SEC + diff[1];
+
+    prometheus.getMetrics()?.v0TransformationTimeSummary.set({ destType, feature }, v0Time);
+    prometheus.getMetrics()?.cdkTransformationTimeSummary.set({ destType, feature }, cdkTime);
+    /* TODO remove
     stats.gauge('v0_transformation_time', v0Time, {
       destType,
       feature,
@@ -135,7 +139,7 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
     stats.gauge('cdk_transformation_time', cdkTime, {
       destType,
       feature,
-    });
+    }); */
     const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
     if (Object.keys(objectDiff).length > 0) {
       stats.counter('cdk_live_compare_test_failed', 1, { destType, feature });
@@ -636,9 +640,11 @@ if (startDestTransformer) {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
+      prometheus.getMetrics()?.userTransformInputEvents.inc({ processSessions }, events.length);
+      /* TODO Remove
       stats.counter('user_transform_input_events', events.length, {
         processSessions,
-      });
+      }); */
       let groupedEvents;
       if (processSessions) {
         groupedEvents = _.groupBy(events, (event) => {

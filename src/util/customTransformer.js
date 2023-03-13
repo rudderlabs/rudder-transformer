@@ -269,23 +269,33 @@ async function setupUserTransformHandler(
   libraryVersionIDs,
   testWithPublish = false,
 ) {
-  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(libraryVersionIDs, testWithPublish);
+  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(
+    libraryVersionIDs,
+    testWithPublish,
+  );
   return resp;
 }
 
 async function validateCode(code, language) {
-  if (language === "javascript") {
+  if (language === 'javascript') {
     return compileUserLibrary(code);
   }
-  if (language === "python" || language === "pythonfaas") {
+  if (language === 'python' || language === 'pythonfaas') {
     return parserForImport(code, true, [], language);
   }
 
   throw new Error('Unsupported language');
 }
 
-async function extractLibraries(code, versionId, validateImports, additionalLibs, language = "javascript", testMode = false) {
-  if (language === "javascript") return parserForImport(code);
+async function extractLibraries(
+  code,
+  versionId,
+  validateImports,
+  additionalLibs,
+  language = 'javascript',
+  testMode = false,
+) {
+  if (language === 'javascript') return parserForImport(code);
 
   let transformation;
 
@@ -294,7 +304,7 @@ async function extractLibraries(code, versionId, validateImports, additionalLibs
   }
 
   if (!transformation?.imports) {
-      return parserForImport(code || transformation?.code, validateImports, additionalLibs, language);
+    return parserForImport(code || transformation?.code, validateImports, additionalLibs, language);
   }
 
   return transformation.imports;
@@ -304,5 +314,5 @@ module.exports = {
   userTransformHandler,
   setupUserTransformHandler,
   validateCode,
-  extractLibraries
+  extractLibraries,
 };

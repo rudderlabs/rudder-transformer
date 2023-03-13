@@ -3,6 +3,7 @@ const bodyParser = require('koa-bodyparser');
 require('dotenv').config();
 const gracefulShutdown = require('http-graceful-shutdown');
 const logger = require('./logger');
+const prometheus = require('./util/prometheus');
 
 const { router } = require('./versionedRouter');
 const { testRouter } = require('./testRouter');
@@ -13,8 +14,11 @@ const { logProcessInfo } = require('./util/utils');
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
 
 const port = parseInt(process.env.PORT || '9090', 10);
+
+prometheus.createMetrics();
+
 const app = new Koa();
-addPrometheusMiddleware(app);
+addPrometheusMiddleware(app, prometheus.getMetrics());
 
 app.use(
   bodyParser({

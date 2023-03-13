@@ -1,14 +1,6 @@
-const prometheus = require('./util/prometheus');
-
-function durationMiddleware() {
-  const httpRequestDurationSummary = prometheus.newHistogramStat(
-    'http_request_duration',
-    'Summary of HTTP requests duration in seconds',
-    ['method', 'route', 'code'],
-  );
-
+function durationMiddleware(metrics) {
   return async (ctx, next) => {
-    const end = httpRequestDurationSummary.startTimer();
+    const end = metrics?.httpRequestDurationSummary.startTimer();
     await next();
 
     const labels = {
@@ -21,8 +13,8 @@ function durationMiddleware() {
   };
 }
 
-function addPrometheusMiddleware(app) {
-  app.use(durationMiddleware());
+function addPrometheusMiddleware(app, metrics) {
+  app.use(durationMiddleware(metrics));
 }
 
 module.exports = {

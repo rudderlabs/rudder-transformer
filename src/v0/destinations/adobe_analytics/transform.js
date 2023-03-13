@@ -34,11 +34,16 @@ const {
 const responseBuilderSimple = async (message, destinationConfig, basicPayload) => {
   let payload = constructPayload(message, commonConfig);
   const { event, context, properties } = message;
+  const { overrideEvars, overrideHiers, overrideLists, overrideCustomProperties } = properties;
   // handle contextData
   payload = handleContextData(payload, destinationConfig, message);
 
   // handle eVar
-  payload = handleEvar(payload, destinationConfig, message);
+  if (overrideEvars) {
+    Object.assign(payload, overrideEvars);
+  } else {
+    payload = handleEvar(payload, destinationConfig, message);
+  }
 
   // handle fallbackVisitorId
   const { noFallbackVisitorId } = destinationConfig;
@@ -62,10 +67,18 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   payload.linkURL = adobeIntegrationsObject?.linkURL || context?.page?.url || 'No linkURL provided';
 
   // handle hier
-  payload = handleHier(payload, destinationConfig, message);
+  if (overrideHiers) {
+    Object.assign(payload, overrideHiers);
+  } else {
+    payload = handleHier(payload, destinationConfig, message);
+  }
 
   // handle list
-  payload = handleList(payload, destinationConfig, message, properties);
+  if (overrideLists) {
+    Object.assign(payload, overrideLists);
+  } else {
+    payload = handleList(payload, destinationConfig, message, properties);
+  }
 
   // handle pageName, pageUrl
   const contextPageUrl = context?.page?.url;
@@ -89,7 +102,11 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   }
 
   // handle custom properties
-  payload = handleCustomProperties(payload, destinationConfig, message, properties);
+  if (overrideCustomProperties) {
+    Object.assign(payload, overrideCustomProperties);
+  } else {
+    payload = handleCustomProperties(payload, destinationConfig, message, properties);
+  }
 
   // handle visitorID and timestamp
   const {
@@ -165,6 +182,7 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
     productMerchEvarsMap,
   } = destinationConfig;
   const { event: rawMessageEvent, properties } = message;
+  const { overrideEventString, overrideProductString, products } = properties;
   const event = rawMessageEvent.toLowerCase();
   const adobeEventArr = adobeEventName ? adobeEventName.split(',') : [];
   // adobeEventArr is an array of events which is defined as
@@ -202,8 +220,8 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
       adobeProdEvent === 'scAdd' ||
       adobeProdEvent === 'scRemove' ||
       (adobeProdEvent === 'prodView' && event.toLowerCase() !== 'product list viewed') ||
-      !Array.isArray(properties.products);
-    const productsArr = isSingleProdEvent ? [properties] : properties.products;
+      !Array.isArray(products);
+    const productsArr = isSingleProdEvent ? [properties] : products;
     let adobeProdEventArr = [];
     if (adobeProdEvent) {
       adobeProdEventArr = adobeProdEvent.split(',');
@@ -284,13 +302,13 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
 
   return {
     ...extras,
-    events: adobeEventArr.join(','),
-    products: prodString,
+    events: overrideEventString || adobeEventArr.join(','),
+    products: overrideProductString || prodString,
   };
 };
 
 const handleTrack = (message, destinationConfig) => {
-  const { event: rawEvent, properties } = message;
+  const { event: rawEvent } = message;
   let payload = null;
   // handle ecommerce events separately
   // generic events should go to the default
@@ -335,13 +353,7 @@ const handleTrack = (message, destinationConfig) => {
       payload = processTrackEvent(message, 'scOpen', destinationConfig);
       break;
     default:
-      if (properties.overrideCustomEvents) {
-        payload = processTrackEvent(
-          message,
-          properties.overrideCustomEvents[event.toLowerCase()].trim(),
-          destinationConfig,
-        );
-      } else if (destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()]) {
+      if (destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()]) {
         payload = processTrackEvent(
           message,
           destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()].trim(),

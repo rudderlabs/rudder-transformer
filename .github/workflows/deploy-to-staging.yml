@@ -188,7 +188,7 @@ jobs:
           git add values.staging.yaml
 
       - name: Create Pull Request
-        if: steps.check-branch-exists.outputs.BRANCH_EXISTS == "0"
+        if: steps.check-branch-exists.outputs.BRANCH_EXISTS == '0'
         run: |
           git commit -m "chore: upgrade staging env transformers to \"$VERSION\""
           git push -u origin $BRANCH_NAME"

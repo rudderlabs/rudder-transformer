@@ -25,6 +25,7 @@ const getShopifyTopic = (event) => {
   const { query_parameters: qParams } = event;
   logger.info(`[Shopify] Input event: query_params: ${JSON.stringify(qParams)}`);
   if (!qParams) {
+    logger.info(JSON.stringify(event));
     throw new TransformationError('Query_parameters is missing');
   }
   const { topic } = qParams;
@@ -170,8 +171,8 @@ const setAnonymousIdorUserIdAndStore = async (message) => {
   try {
     let anonymousIDfromDB;
     const redisInstance = await DBConnector.getRedisInstance();
-    const valFromDB = redisInstance.get(`${cartToken}`);
-    if (valFromDB !== 'Not Found') {
+    const valFromDB = await redisInstance.get(`${cartToken}`);
+    if (valFromDB ) {
       const parsedVal = JSON.parse(valFromDB);
       anonymousIDfromDB = parsedVal.anonymousId;
     }

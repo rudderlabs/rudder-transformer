@@ -42,7 +42,6 @@ function finalFunction() {
 if (clusterEnabled) {
   cluster.start(port, app);
 } else {
-  app.listen(port);
   const server = app.listen(port);
 
   process.on('SIGTERM', () => {

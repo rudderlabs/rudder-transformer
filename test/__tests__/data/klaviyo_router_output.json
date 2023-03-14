@@ -39,7 +39,7 @@
         "jobId": 1
       },
       {
-        "jobId": 1
+        "jobId": 2
       }
     ],
     "batched": true,
@@ -82,7 +82,7 @@
     },
     "metadata": [
       {
-        "jobId": 1
+        "jobId": 3
       }
     ],
     "batched": true,
@@ -121,6 +121,100 @@
             "age": "22"
           }
         },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 4
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "publicApiKey": "WJqij9",
+        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+      }
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "PUT",
+      "endpoint": "https://a.klaviyo.com/api/v1/person/01G79MV4XVPABNP8G5FSK40QES",
+      "headers": {
+        "Accept": "application/json"
+      },
+      "params": {
+        "$id": "utsabc",
+        "$email": "utsab@rudderstack.com",
+        "$first_name": "Utsab",
+        "$last_name": "Chowdhury",
+        "$phone_number": "+12 345 578 900",
+        "$title": "Developer",
+        "$organization": "Rudder",
+        "$city": "Tokyo",
+        "$region": "Kanto",
+        "$country": "JP",
+        "$zip": "100-0001",
+        "Flagged": false,
+        "Residence": "Shibuya",
+        "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 1
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "publicApiKey": "WJqij9",
+        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+      }
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "PUT",
+      "endpoint": "https://a.klaviyo.com/api/v1/person/01G79MV4XVPABNP8G5FSK40QES",
+      "headers": {
+        "Accept": "application/json"
+      },
+      "params": {
+        "$id": "utsabc",
+        "$email": "utsab@rudderstack.com",
+        "$first_name": "Utsab",
+        "$last_name": "Chowdhury",
+        "$phone_number": "+12 345 578 900",
+        "$title": "Developer",
+        "$organization": "Rudder",
+        "$city": "Tokyo",
+        "$region": "Kanto",
+        "$country": "JP",
+        "$zip": "100-0001",
+        "Flagged": false,
+        "Residence": "Shibuya",
+        "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
+      },
+      "body": {
+        "JSON": {},
         "JSON_ARRAY": {},
         "XML": {},
         "FORM": {}
@@ -176,101 +270,7 @@
     },
     "metadata": [
       {
-        "jobId": 1
-      }
-    ],
-    "batched": false,
-    "statusCode": 200,
-    "destination": {
-      "Config": {
-        "publicApiKey": "WJqij9",
-        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
-      }
-    }
-  },
-  {
-    "batchedRequest": {
-      "version": "1",
-      "type": "REST",
-      "method": "PUT",
-      "endpoint": "https://a.klaviyo.com/api/v1/person/01G79MV4XVPABNP8G5FSK40QES",
-      "headers": {
-        "Accept": "application/json"
-      },
-      "params": {
-        "$id": "utsabc",
-        "$email": "utsab@rudderstack.com",
-        "$first_name": "Utsab",
-        "$last_name": "Chowdhury",
-        "$phone_number": "+12 345 578 900",
-        "$title": "Developer",
-        "$organization": "Rudder",
-        "$city": "Tokyo",
-        "$region": "Kanto",
-        "$country": "JP",
-        "$zip": "100-0001",
-        "Flagged": false,
-        "Residence": "Shibuya",
-        "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
-      },
-      "body": {
-        "JSON": {},
-        "JSON_ARRAY": {},
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {}
-    },
-    "metadata": [
-      {
-        "jobId": 1
-      }
-    ],
-    "batched": false,
-    "statusCode": 200,
-    "destination": {
-      "Config": {
-        "publicApiKey": "WJqij9",
-        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
-      }
-    }
-  },
-  {
-    "batchedRequest": {
-      "version": "1",
-      "type": "REST",
-      "method": "PUT",
-      "endpoint": "https://a.klaviyo.com/api/v1/person/01G79MV4XVPABNP8G5FSK40QES",
-      "headers": {
-        "Accept": "application/json"
-      },
-      "params": {
-        "$id": "utsabc",
-        "$email": "utsab@rudderstack.com",
-        "$first_name": "Utsab",
-        "$last_name": "Chowdhury",
-        "$phone_number": "+12 345 578 900",
-        "$title": "Developer",
-        "$organization": "Rudder",
-        "$city": "Tokyo",
-        "$region": "Kanto",
-        "$country": "JP",
-        "$zip": "100-0001",
-        "Flagged": false,
-        "Residence": "Shibuya",
-        "api_key": "pk_b68c7b5163d98807fcb57e6f921216629d"
-      },
-      "body": {
-        "JSON": {},
-        "JSON_ARRAY": {},
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {}
-    },
-    "metadata": [
-      {
-        "jobId": 1
+        "jobId": 3
       }
     ],
     "batched": false,

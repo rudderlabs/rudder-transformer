@@ -99,7 +99,12 @@
   },
   {
     "destKey": "zp",
-    "sourceKeys": ["traits.address.zip", "context.traits.address.zip"],
+    "sourceKeys": [
+      "traits.address.zip",
+      "context.traits.address.zip",
+      "traits.address.postalCode",
+      "context.traits.address.postalCode"
+    ],
     "required": false,
     "metadata": {
       "type": ["toLower", "hashToSha256"]

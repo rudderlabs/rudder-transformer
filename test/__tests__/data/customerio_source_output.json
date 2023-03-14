@@ -175,6 +175,35 @@
       },
       "integration": {
         "name": "Customer.io"
+      },
+      "traits": {
+        "cioId": "7ef807109981",
+        "email": "test@example.com"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Email Delivered",
+    "properties": {
+      "eventId": "01ER4R5WB62QWCNREKFB4DYXGR",
+      "deliveryId": "REAC4wUAAYYJgQgkyRqwwEPeOA6Nfv==",
+      "emailSubject": "Thanks for signing up",
+      "transactionalMessageId": 2
+    },
+    "userId": "user-123",
+    "originalTimestamp": "2023-01-31T20:26:59.000Z",
+    "sentAt": "2023-01-31T20:26:59.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
       }
     },
     "integrations": {

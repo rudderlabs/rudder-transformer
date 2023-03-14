@@ -34,7 +34,9 @@ install-openfaas:
 		--set generateBasicAuth=false \
 		--set ceScaling=true \
 		--set async=false \
-		--set openfaasImagePullPolicy=IfNotPresent
+		--set openfaasImagePullPolicy=IfNotPresent \
+		--set gateway.image=ghcr.io/openfaas/gateway:0.23.2 \
+		--set faasnetes.image=ghcr.io/openfaas/faas-netes:0.15.2
 	kubectl rollout status deploy/gateway --timeout 120s -n openfaas
 	kubectl get events -n openfaas
 	kubectl get pods -n openfaas

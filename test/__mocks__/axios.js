@@ -38,6 +38,7 @@ const {
 } = require("./freshsales.mock");
 const { sendgridGetRequestHandler } = require("./sendgrid.mock");
 const { sendinblueGetRequestHandler } = require("./sendinblue.mock");
+const { courierGetRequestHandler } = require("./courier.mock");
 
 const urlDirectoryMap = {
   "api.hubapi.com": "hs",
@@ -50,7 +51,8 @@ const urlDirectoryMap = {
   "ruddertest2.mautic.net": "mautic",
   "api.sendgrid.com": "sendgrid",
   "api.sendinblue.com": "sendinblue",
-  "api.criteo.com": "criteo_audience"
+  "api.criteo.com": "criteo_audience",
+  "api.courier.com": "courier"
 };
 
 const fs = require("fs");
@@ -151,6 +153,9 @@ function get(url, options) {
   }
   if (url.includes("https://api.sendinblue.com/v3/contacts/")) {
     return Promise.resolve(sendinblueGetRequestHandler(url, mockData));
+  }
+  if (url.includes("https://api.courier.com")) {
+    return Promise.resolve(courierGetRequestHandler(url, mockData));
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

@@ -363,7 +363,7 @@ async function createOrganization(message, category, headers, destinationConfig,
   const payload = constructPayload(message, mappingJson);
   const sourceKeys = defaultFields[ConfigCategory.GROUP.organizationFieldsJson];
 
-  if (payload.organization.external_id) {
+  if (payload?.organization?.external_id) {
     set(payload, 'organization.organization_fields.id', payload.organization.external_id);
   }
   const traitKeys = Object.keys(message.traits);

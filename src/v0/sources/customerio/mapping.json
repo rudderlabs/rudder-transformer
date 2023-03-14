@@ -25,5 +25,6 @@
   "data.device_platform": "properties.devicePlatform",
   "data.recipients": "properties.recipients",
   "data.event_type": "properties.type",
-  "data.newsletter_id": "properties.newsletterId"
+  "data.newsletter_id": "properties.newsletterId",
+  "data.transactional_message_id": "properties.transactionalMessageId"
 }

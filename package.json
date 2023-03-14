@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.15.1",
+  "version": "1.16.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -22,18 +22,20 @@
     "lint:fix:json": "eslint --ext .json --fix .",
     "check:merge": "npm run verify || exit 1; codecov",
     "start": "node src/index.js",
-    "test:versionedRouter:all": "jest versionedRouter --type=all --detectOpenHandles --notify",
-    "test:versionedRouter": "jest versionedRouter --destName=heap --type=all --notify",
+    "test:versionedRouter:all": "jest versionedRouter --type=all --detectOpenHandles --coverage --notify --watchAll=false",
+    "test:versionedRouter": "jest versionedRouter --destName=heap --type=all --notify --detectOpenHandles --coverage --watchAll=false",
     "verify": "eslint . || exit 1; npm run test || exit 1",
-    "test:testRouter": "jest testRouter",
-    "test": "jest --runInBand --detectOpenHandles --coverage --notify",
+    "test:testRouter": "jest testRouter --detectOpenHandles --coverage --notify --watchAll=false",
+    "test": "jest --detectOpenHandles --coverage --notify --watchAll=false",
+    "test:ci": "jest --detectOpenHandles --coverage --notify --expand --silent --watchAll=false",
     "test:silent": "npm run test -- --silent",
     "test:benchmark": "node benchmark/index.js",
     "test:integration": "jest -c jest.config.integration.js",
     "pre-commit": "npm run test:silent && npx lint-staged",
     "commit-msg": "commitlint --edit",
     "prepare": "husky install",
-    "release": "npx standard-version"
+    "release": "npx standard-version",
+    "release:github": "DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",

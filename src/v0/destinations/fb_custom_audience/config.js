@@ -1,4 +1,4 @@
-const BASE_URL = 'https://graph.facebook.com/v15.0';
+const BASE_URL = 'https://graph.facebook.com/v16.0';
 
 function getEndPoint(audienceId) {
   return `${BASE_URL}/${audienceId}/users`;

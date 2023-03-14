@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file. See [standa
 * mautic: support self hosted instance ([#1909](https://github.com/rudderlabs/rudder-transformer/issues/1909)) ([7c0a724](https://github.com/rudderlabs/rudder-transformer/commit/7c0a7240d9fcef45e4066a4a7dee8234c7e782d3))
 * moenagae alias call support ([#1930](https://github.com/rudderlabs/rudder-transformer/issues/1930)) ([194bf8e](https://github.com/rudderlabs/rudder-transformer/commit/194bf8e3e2f47ca63ee273c9255468b41bc6ffcf))
 * transformation secrets ([#1912](https://github.com/rudderlabs/rudder-transformer/issues/1912)) ([a0b488a](https://github.com/rudderlabs/rudder-transformer/commit/a0b488a4514c9c868f39d000a4ae40aa3f7b5de6))
+* customerIo: allow for transactional message id in incoming messages ([#1837](https://github.com/rudderlabs/rudder-transformer/pull/1837)) ([834330](https://github.com/rudderlabs/rudder-transformer/commit/83433070a4ca94fd7fff47fbdb4b07a44f135a3c))
 
 
 ### Bug Fixes

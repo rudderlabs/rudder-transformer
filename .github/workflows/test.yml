@@ -63,7 +63,7 @@ jobs:
             --set async=false \
             --set openfaasImagePullPolicy=IfNotPresent \
             --set gateway.image=ghcr.io/openfaas/gateway:0.23.2 \
-		        --set faasnetes.image=ghcr.io/openfaas/faas-netes:0.15.2
+            --set faasnetes.image=ghcr.io/openfaas/faas-netes:0.15.2
       - name: Wait for deployment "gateway" rollout
         run: kubectl rollout status deploy/gateway --timeout 120s -n openfaas
 

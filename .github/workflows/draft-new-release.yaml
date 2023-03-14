@@ -26,11 +26,13 @@ jobs:
       - name: Initialize Mandatory Git Config
         run: |
           git config user.name "GitHub Actions"
-          git config user.email noreply@github.com
+          git config user.email "noreply@github.com"
 
       # Calculate the next release version based on conventional semantic release
       - name: Create Release Branch
         id: create-release
+        env:
+          HUSKY: 0
         run: |
           source_branch_name=${GITHUB_REF##*/}
           release_type=release
@@ -77,10 +79,9 @@ jobs:
           pr_body: ':crown: *An automated PR*'
 
       - name: Delete Hotfix Base Branch
-        uses: dawidd6/action-delete-branch@v3
+        uses: koj-co/delete-merged-action@master
         if: startsWith(github.ref, 'refs/heads/hotfix/')
         with:
-          branches: '${{ steps.create-release.outputs.new_version }}'
-          prefix: 'hotfix/'
+          branches: 'hotfix/*'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

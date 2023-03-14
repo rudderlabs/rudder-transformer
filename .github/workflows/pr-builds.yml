@@ -56,6 +56,7 @@ jobs:
         with:
           context: .
           file: Dockerfile
+          target: production
           push: true
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ steps.extract_branch.outputs.branch }}

@@ -222,6 +222,10 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
     MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name],
     'fb_pixel',
   );
+  const { removeExternalId } = Config;
+  if (removeExternalId) {
+    delete userData.external_id;
+  }
   if (userData) {
     const split = userData.name ? userData.name.split(' ') : null;
     if (split !== null && Array.isArray(split) && split.length === 2) {

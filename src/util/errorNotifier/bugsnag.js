@@ -4,8 +4,10 @@ const {
   CustomError: CDKCustomError,
   DataValidationError,
 } = require('rudder-transformer-cdk/build/error/index');
+const stackTraceParser = require('stacktrace-parser');
 const { logger } = require('../../logger');
 const pkg = require('../../../package.json');
+
 const {
   BaseError,
   TransformationError,
@@ -44,6 +46,11 @@ const errorTypesDenyList = [
   DataValidationError,
 ];
 
+const pathsDenyList = [
+  '/src/warehouse/',
+  '/src/util/custom', // User-transformation files
+];
+
 let bugsnagClient;
 
 function init() {
@@ -70,6 +77,12 @@ function notify(err, context, metadata) {
     const isDeniedErrType = errorTypesDenyList.some((errType) => err instanceof errType);
 
     if (isDeniedErrType) return;
+
+    const isDeniedErrPath = pathsDenyList.some((denyPath) =>
+      stackTraceParser.parse(err.stack)?.[0]?.file?.includes(denyPath),
+    );
+
+    if (isDeniedErrPath) return;
 
     bugsnagClient.notify(err, (event) => {
       event.addMetadata('metadata', { ...metadata, opContext: context });

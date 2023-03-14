@@ -1,0 +1,12 @@
+[
+  {
+    "destKey": "merge_data[0].retained_user",
+    "sourceKeys": "userId",
+    "required": true
+  },
+  {
+    "destKey": "merge_data[0].merged_user",
+    "sourceKeys": "previousId",
+    "required": true
+  }
+]

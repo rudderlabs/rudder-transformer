@@ -132,6 +132,18 @@ jobs:
       VERSION: ${{ needs.build-transformer-image.outputs.version }}
       UT_VERSION: ${{ needs.build-user-transformer-image.outputs.version }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      # In order to make a commit, we need to initialize a user.
+      # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
+      - name: Initialize Mandatory Git Config
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "noreply@github.com"
+
       - name: Print Docker Image Versions
         run: |
           echo "Transformer: $VERSION"
@@ -142,13 +154,6 @@ jobs:
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
           cd rudder-devops
           git checkout -b shared-transformer-$VERSION
-
-      # In order to make a commit, we need to initialize a user.
-      # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
-      - name: Initialize Mandatory Git Config
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "noreply@github.com"
 
       - name: Update Helm Charts
         run: |

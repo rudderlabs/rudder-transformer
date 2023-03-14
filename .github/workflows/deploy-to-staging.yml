@@ -168,14 +168,14 @@ jobs:
           fi
 
       - name: Clone rudder-devops
-        if: steps.check-branch-exists.outputs.BRANCH_EXISTS == "0"
+        if: steps.check-branch-exists.outputs.BRANCH_EXISTS == '0'
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
           cd rudder-devops
           git checkout -b $BRANCH_NAME
 
       - name: Update Helm Charts
-        if: steps.check-branch-exists.outputs.BRANCH_EXISTS == "0"
+        if: steps.check-branch-exists.outputs.BRANCH_EXISTS == '0'
         run: |
           cd helm-charts/shared-services/per-az
           yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.staging.yaml

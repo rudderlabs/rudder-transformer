@@ -172,7 +172,7 @@ const setAnonymousIdorUserIdAndStore = async (message) => {
     let anonymousIDfromDB;
     const redisInstance = await DBConnector.getRedisInstance();
     const valFromDB = await redisInstance.get(`${cartToken}`);
-    if (valFromDB ) {
+    if (valFromDB) {
       const parsedVal = JSON.parse(valFromDB);
       anonymousIDfromDB = parsedVal.anonymousId;
     }
@@ -210,16 +210,18 @@ const compareCartPayloadandTimestamp = (prevPayload, newPayload) => {
 const checkForValidRecord = async (event) => {
   const cartToken = event.cart_token || event.token;
   const redisInstance = await DBConnector.getRedisInstance();
+  let redisVal = {};
   try {
     const a = await redisInstance.get(`${cartToken}`);
-    logger.info("Redis value for cart event: ", a);
-    const redisVal = JSON.parse(a);
-    if (redisVal && compareCartPayloadandTimestamp(redisVal, event)) {
-      return false;
+    if (a) {
+      redisVal = JSON.parse(a);
+      if (redisVal && compareCartPayloadandTimestamp(redisVal, event)) {
+        return false;
+      }
     }
     await redisInstance.set(`${cartToken}`, JSON.stringify({ ...redisVal, ...event }));
   } catch (e) {
-    logger.error(`get ${e}`);
+    logger.error(`Could not get cart details due error: ${e}`);
   }
   return true;
 };

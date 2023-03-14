@@ -35,7 +35,7 @@ module.exports = {
                 if (mockData) {
                     return JSON.stringify(mockData);
                   } else {
-                    return "Not Found";
+                    return null;
                   }
             },
             set(key, value) {

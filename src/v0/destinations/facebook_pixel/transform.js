@@ -342,7 +342,7 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
         case 'products searched': {
           customData = {
             ...customData,
-            ...handleSearch(message, valueFieldIdentifier),
+            ...handleSearch(message),
           };
           commonData.event_name = 'Search';
           break;

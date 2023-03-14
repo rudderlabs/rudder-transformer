@@ -143,6 +143,11 @@ jobs:
       VERSION: ${{ needs.build-transformer-image.outputs.version }}
       UT_VERSION: ${{ needs.build-user-transformer-image.outputs.version }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
       - name: Print Docker Image Versions
         run: |
           echo "Transformer: $VERSION"

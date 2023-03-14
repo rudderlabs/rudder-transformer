@@ -2597,5 +2597,294 @@
       },
       "files": {}
     }
+  },
+  {
+    "description": "Override feature test",
+    "input": {
+      "message": {
+        "anonymousId": "73c53c25-42h1-4b65-adac-bec2d7bb8fab",
+        "channel": "web",
+        "context": {
+          "campaign": {
+            "name": "sales campaign",
+            "source": "google",
+            "medium": "medium",
+            "term": "event data",
+            "content": "Make sense of the modern data stack"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "2.9.1"
+          },
+          "locale": "en-US",
+          "page": {
+            "path": "/best-seller/1",
+            "initial_referrer": "https://www.google.com/search",
+            "initial_referring_domain": "google.com",
+            "referrer": "https://www.google.com/search?q=estore+bestseller",
+            "referring_domain": "google.com",
+            "search": "estore bestseller",
+            "title": "The best sellers offered by EStore",
+            "url": "https://www.estore.com/best-seller/1"
+          },
+          "screen": {
+            "density": 420,
+            "height": 1794,
+            "width": 1080,
+            "innerHeight": 200,
+            "innerWidth": 100
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
+        },
+        "event": "Product Viewed",
+        "integrations": {
+          "All": true
+        },
+        "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
+        "properties": {
+          "tsUrl": "footlocker.sc.omtrdc.net",
+          "overrideProductString": ";product1;;;event1=1",
+          "overrideEventString": "scAdd",
+          "overrideEvars": {
+            "evar1": "yash",
+            "evar2": "val2"
+          },
+          "overrideLists": {
+            "list1": "r15,faze90R"
+          },
+          "overrideCustomProperties": {
+            "prop1": "overrideVal1"
+          },
+          "product_id": "123",
+          "sku": "F15",
+          "category": "Games",
+          "name": "Game",
+          "brand": "Gamepro",
+          "variant": "111",
+          "price": 13.49,
+          "quantity": 11,
+          "coupon": "DISC21",
+          "currency": "USD",
+          "position": 1,
+          "url": "https://www.website.com/product/path",
+          "image_url": "https://www.website.com/product/path.png",
+          "currencyMerch": "INR",
+          "addressMerch": "Delhi",
+          "currencyProdMerch": "USD",
+          "addressProdMerch": "SF",
+          "city5": "Kolkata",
+          "phone4": "9935400932",
+          "bikelist": "r15,faze91R",
+          "carlist": "ciaz,hummer,thar",
+          "customprop1": "custompropval1",
+          "customprop2": "custompropval2"
+        },
+        "originalTimestamp": "2020-01-09T10:01:53.558Z",
+        "type": "track",
+        "sentAt": "2020-01-09T10:02:03.257Z"
+      },
+      "destination": {
+        "Config": {
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
+          "reportSuiteIds": "footlockerrudderstackpoc",
+          "sslHeartbeat": true,
+          "heartbeatTrackingServerUrl": "",
+          "useUtf8Charset": true,
+          "useSecureServerSide": true,
+          "proxyNormalUrl": "",
+          "proxyHeartbeatUrl": "",
+          "marketingCloudOrgId": "mktcloudid001",
+          "dropVisitorId": false,
+          "timestampOption": "enabled",
+          "timestampOptionalReporting": true,
+          "noFallbackVisitorId": false,
+          "preferVisitorId": false,
+          "trackPageName": true,
+          "contextDataPrefix": "",
+          "useLegacyLinkName": true,
+          "pageNameFallbackTostring": true,
+          "sendFalseValues": true,
+          "productIdentifier": "name",
+          "eventFilteringOption": "disable",
+          "eventsToTypes": [
+            {
+              "from": "init heartbeat",
+              "to": "initHeartbeat"
+            }
+          ],
+          "listDelimiter": [
+            {
+              "from": "bikelist",
+              "to": ","
+            },
+            {
+              "from": "carlist",
+              "to": ","
+            }
+          ],
+          "propsDelimiter": [
+            {
+              "from": "customprop1",
+              "to": ","
+            },
+            {
+              "from": "customprop2",
+              "to": ","
+            }
+          ],
+          "eventMerchProperties": [
+            {
+              "eventMerchProperties": "currencyMerch"
+            },
+            {
+              "eventMerchProperties": "addressMerch"
+            }
+          ],
+          "productMerchProperties": [
+            {
+              "productMerchProperties": "currencyProdMerch"
+            },
+            {
+              "productMerchProperties": "addressProdMerch"
+            },
+            {
+              "productMerchProperties": "products.prodLevelCurrency"
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "eVarMapping": [
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "to": "6",
+              "from": "context.library.name"
+            },
+            {
+              "from": "video",
+              "to": "2"
+            }
+          ],
+          "productMerchEvarsMap": [
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "from": "city5",
+              "to": "5"
+            }
+          ],
+          "rudderEventsToAdobeEvents": [
+            {
+              "from": "product viewed",
+              "to": "event1"
+            },
+            {
+              "from": "watched video",
+              "to": "event1"
+            },
+            {
+              "from": "Page View",
+              "to": "event2"
+            },
+            {
+              "from": "currency test event",
+              "to": "event6"
+            }
+          ],
+          "eventMerchEventToAdobeEvent": [
+            {
+              "from": "product not viewed",
+              "to": "event1"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "productMerchEventToAdobeEvent": [
+            {
+              "from": "product list viewed",
+              "to": "event2"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "listMapping": [
+            {
+              "from": "bikelist",
+              "to": "1"
+            },
+            {
+              "from": "carlist",
+              "to": "2"
+            }
+          ],
+          "customPropsMapping": [
+            {
+              "from": "customprop1",
+              "to": "1"
+            },
+            {
+              "from": "customprop2",
+              "to": "2"
+            },
+            {
+              "from": "plan",
+              "to": "2"
+            }
+          ],
+          "contextDataMapping": [
+            {
+              "from": "tt01",
+              "to": "tt01"
+            },
+            {
+              "from": "tt02",
+              "to": "tt02"
+            },
+            {
+              "from": "roott01",
+              "to": "roott01"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://flk.gc.gmtidc.net/b/ss//6",
+      "headers": { "Content-type": "application/xml" },
+      "params": {},
+      "body": {
+        "XML": {
+          "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><campaign>sales campaign</campaign><channel>web</channel><currencyCode>USD</currencyCode><language>en-US</language><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><referrer>https://www.google.com/search?q=estore+bestseller</referrer><evar1>yash</evar1><evar2>val2</evar2><linkType>o</linkType><linkName>Product Viewed</linkName><linkURL>https://www.estore.com/best-seller/1</linkURL><list1>r15,faze90R</list1><pageUrl>https://www.estore.com/best-seller/1</pageUrl><pageName>https://www.estore.com/best-seller/1</pageName><prop1>overrideVal1</prop1><timestamp>2020-01-09T10:01:53.558Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>scAdd</events><products>;product1;;;event1=1</products><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>"
+        },
+        "FORM": {},
+        "JSON": {},
+        "JSON_ARRAY": {}
+      },
+      "files": {}
+    }
   }
 ]

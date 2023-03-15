@@ -85,8 +85,9 @@
       "Config": {
         "lookUpField": "email",
         "password": "abcdefghij1234",
-        "subDomainName": "testapi3",
-        "userName": "abcdef"
+        "subDomainName": "",
+        "domainName": "",
+        "userName": "abcdef@gmail.com"
       }
     },
     "metadata": {

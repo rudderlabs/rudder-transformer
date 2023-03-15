@@ -28,11 +28,10 @@ const profilingRouter = require('./routes/profiling');
 const destProxyRoutes = require('./routes/destinationProxy');
 const eventValidator = require('./util/eventValidation');
 const { prometheusRegistry } = require('./middleware');
-const { compileUserLibrary } = require('./util/ivmFactory');
 const { getIntegrations } = require('./routes/utils');
-const { setupUserTransformHandler } = require('./util/customTransformer');
+const { setupUserTransformHandler, validateCode } = require('./util/customTransformer');
 const { CommonUtils } = require('./util/common');
-const { RespStatusError, RetryRequestError } = require('./util/utils');
+const { RespStatusError, RetryRequestError, sendViolationMetrics } = require('./util/utils');
 const { isCdkV2Destination, getCdkV2TestThreshold } = require('./cdk/v2/utils');
 const { PlatformError } = require('./v0/util/errorTypes');
 const { getCachedWorkflowEngine, processCdkV2Workflow } = require('./cdk/v2/handler');
@@ -350,6 +349,7 @@ async function handleValidation(ctx) {
       parsedEvent.request = { query: reqParams };
       // eslint-disable-next-line no-await-in-loop
       const hv = await eventValidator.handleValidation(parsedEvent);
+      sendViolationMetrics(hv.validationErrors, hv.dropEvent, metaTags);
       if (hv.dropEvent) {
         const errMessage = `Error occurred while validating because : ${hv.violationType}`;
         respList.push({
@@ -359,7 +359,7 @@ async function handleValidation(ctx) {
           validationErrors: hv.validationErrors,
           error: errMessage,
         });
-        stats.counter('hv_violation_type', 1, {
+        stats.gauge('hv_violation_type', 1, {
           violationType: hv.violationType,
           ...metaTags,
         });
@@ -370,7 +370,7 @@ async function handleValidation(ctx) {
           statusCode: 200,
           validationErrors: hv.validationErrors,
         });
-        stats.counter('hv_propagated_events', 1, {
+        stats.gauge('hv_propagated_events', 1, {
           ...metaTags,
         });
       }
@@ -391,7 +391,7 @@ async function handleValidation(ctx) {
         validationErrors: [],
         error: errMessage,
       });
-      stats.counter('hv_errors', 1, {
+      stats.gauge('hv_errors', 1, {
         ...metaTags,
       });
     } finally {
@@ -404,10 +404,10 @@ async function handleValidation(ctx) {
   ctx.status = ctxStatusCode;
   ctx.set('apiVersion', API_VERSION);
 
-  stats.counter('hv_events_count', events.length, {
+  stats.gauge('hv_events_count', events.length, {
     ...metaTags,
   });
-  stats.counter('hv_request_size', requestSize, {
+  stats.gauge('hv_request_size', requestSize, {
     ...metaTags,
   });
   stats.timing('hv_request_latency', requestStartTime, {
@@ -602,13 +602,27 @@ if (startDestTransformer) {
   if (functionsEnabled()) {
     router.post('/extractLibs', async (ctx) => {
       try {
-        const { code, validateImports = false, language = "javascript" } = ctx.request.body;
+        const {
+          code,
+          versionId,
+          validateImports = false,
+          additionalLibraries = [],
+          language = "javascript",
+          testMode = false
+        } = ctx.request.body;
 
         if (!code) {
           throw new Error('Invalid request. Code is missing');
         }
 
-        const obj = await extractLibraries(code, validateImports, language);
+        const obj = await extractLibraries(
+          code,
+          versionId,
+          validateImports,
+          additionalLibraries,
+          language,
+          testMode || versionId === 'testVersionId'
+        );
         ctx.body = obj;
       } catch (err) {
         ctx.status = 400;
@@ -621,7 +635,7 @@ if (startDestTransformer) {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
-      stats.counter('user_transform_input_events', events.length, {
+      stats.gauge('user_transform_input_events', events.length, {
         processSessions,
       });
       let groupedEvents;
@@ -637,7 +651,7 @@ if (startDestTransformer) {
           (event) => `${event.metadata.destinationId}_${event.metadata.sourceId}`,
         );
       }
-      stats.counter('user_transform_function_group_size', Object.entries(groupedEvents).length, {
+      stats.gauge('user_transform_function_group_size', Object.entries(groupedEvents).length, {
         processSessions,
       });
 
@@ -672,7 +686,7 @@ if (startDestTransformer) {
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
-              stats.counter('user_transform_function_input_events', destEvents.length, {
+              stats.gauge('user_transform_function_input_events', destEvents.length, {
                 processSessions,
                 ...metaTags,
               });
@@ -722,7 +736,7 @@ if (startDestTransformer) {
                 error: errorString,
               }));
               transformedEvents.push(...destTransformedEvents);
-              stats.counter('user_transform_errors', destEvents.length, {
+              stats.gauge('user_transform_errors', destEvents.length, {
                 transformationVersionId,
                 processSessions,
                 ...metaTags,
@@ -742,7 +756,7 @@ if (startDestTransformer) {
               error: errorMessage,
               metadata: commonMetadata,
             });
-            stats.counter('user_transform_errors', destEvents.length, {
+            stats.gauge('user_transform_errors', destEvents.length, {
               transformationVersionId,
               processSessions,
               ...metaTags,
@@ -757,8 +771,8 @@ if (startDestTransformer) {
       stats.timing('user_transform_request_latency', startTime, {
         processSessions,
       });
-      stats.increment('user_transform_requests', 1, { processSessions });
-      stats.counter('user_transform_output_events', transformedEvents.length, {
+      stats.gauge('user_transform_requests', 1, { processSessions });
+      stats.gauge('user_transform_output_events', transformedEvents.length, {
         processSessions,
       });
     });
@@ -795,12 +809,13 @@ if (transformerTestModeEnabled) {
 
   router.post('/transformationLibrary/test', async (ctx) => {
     try {
-      const { code } = ctx.request.body;
+      const { code, language = "javascript" } = ctx.request.body;
+
       if (!code) {
         throw new Error('Invalid request. Missing code');
       }
 
-      const res = await compileUserLibrary(code);
+      const res = await validateCode(code, language);
       ctx.body = res;
     } catch (error) {
       ctx.body = { error: error.message };
@@ -816,8 +831,8 @@ if (transformerTestModeEnabled) {
   router.post('/transformation/sethandle', async (ctx) => {
     try {
       const { trRevCode, libraryVersionIDs = [] } = ctx.request.body;
-      const { code, language, testName, testWithPublish = false } = trRevCode || {};
-      if (!code || !language || !testName) {
+      const { code, versionId, language, testName, testWithPublish = false } = trRevCode || {};
+      if (!code || !language || !testName || (language === 'pythonfaas' && !versionId)) {
         throw new Error('Invalid Request. Missing parameters in transformation code block');
       }
 

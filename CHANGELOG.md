@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### 1.16.1 (2023-03-15)
+
+
+### Bug Fixes
+
+* **fb pixel:** add default action source ([#1946](https://github.com/rudderlabs/rudder-transformer/issues/1946)) ([2e03f4d](https://github.com/rudderlabs/rudder-transformer/commit/2e03f4dcfbfb1c6d35aecf950e0f1e3828ceaaef))
+
 ## [1.16.0](https://github.com/rudderlabs/rudder-transformer/compare/1.15.1...1.16.0) (2023-03-14)
 
 

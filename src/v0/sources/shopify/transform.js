@@ -138,7 +138,10 @@ const processEvent = async (inputEvent) => {
        *  This Scenario handles the case same cart_Events are passed or
        * cart events are passed within a specified time period for when useRedisDatabase is set to true
        */
-      if (useRedisDatabase && !checkForValidRecord(inputEvent)) {
+      // eslint-disable-next-line no-case-declarations
+      const validRecord = await checkForValidRecord(inputEvent);
+
+      if (useRedisDatabase && !validRecord) {
         const result = {
           outputToSource: {
             body: Buffer.from('OK').toString('base64'),
@@ -171,7 +174,7 @@ const processEvent = async (inputEvent) => {
     if (useRedisDatabase) {
       await setAnonymousIdorUserIdAndStore(message);
     } else {
-      await setAnonymousId(message);
+      setAnonymousId(message);
     }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
@@ -223,7 +226,6 @@ const processIdentifierEvent = async (event) => {
   return result;
 };
 const process = async (event) => {
-  
   if (isIdentifierEvent(event)) {
     return processIdentifierEvent(event);
   }

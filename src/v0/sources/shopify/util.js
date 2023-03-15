@@ -149,7 +149,7 @@ const setAnonymousIdorUserIdAndStore = async (message) => {
       break;
     /*
      * we dont have cart_token for carts_create and update events but have id and token field
-     * which later on for orders become cart_token so we are fethcing sesionKey from id
+     * which later on for orders become cart_token so we are fethcing cartToken from id
      */
     case SHOPIFY_TRACK_MAP.carts_create:
     case SHOPIFY_TRACK_MAP.carts_update:
@@ -162,11 +162,10 @@ const setAnonymousIdorUserIdAndStore = async (message) => {
         message.setProperty('userId', 'admin');
       }
       return;
-    case SHOPIFY_TRACK_MAP.orders_edited:
+    case SHOPIFY_TRACK_MAP.orders_edited: // TODO:
       cartToken = message?.properties?.order_id;
       break;
     default:
-      throw new Error(`${message.event} is not supported`);
   }
   try {
     let anonymousIDfromDB;

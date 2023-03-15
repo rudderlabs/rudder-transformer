@@ -132,10 +132,10 @@ jobs:
       VERSION: ${{ needs.build-transformer-image.outputs.version }}
       UT_VERSION: ${{ needs.build-user-transformer-image.outputs.version }}
     steps:
-      - name: Print Docker Image Versions
-        run: |
-          echo "Transformer: $VERSION"
-          echo "User Transformer: $UT_VERSION"
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
 
       # In order to make a commit, we need to initialize a user.
       # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
@@ -143,6 +143,11 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "noreply@github.com"
+
+      - name: Print Docker Image Versions
+        run: |
+          echo "Transformer: $VERSION"
+          echo "User Transformer: $UT_VERSION"
 
       - name: Clone rudder-devops and Create Branch
         run: |

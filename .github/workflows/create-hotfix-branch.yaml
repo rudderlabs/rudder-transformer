@@ -12,21 +12,12 @@ jobs:
     # Only allow these users to create new hotfix branch
     if: github.ref == 'refs/heads/main' && (github.actor == 'ItsSudip' || github.actor == 'krishna2020' || github.actor == 'saikumarrs') &&  (github.triggering_actor == 'ItsSudip' || github.triggering_actor == 'krishna2020' ||  github.triggering_actor == 'saikumarrs')
     steps:
-      - name: Check Stale Release Branches
-        id: stale-release-branches
-        run: |
-          branches_list=$(git branch -a | grep -e "origin/hotfix/" -e "origin/hotfix-release/" -e "origin/release/")
-          echo "Stales release branches list: $branches_list"
-          echo "branches_list=$branches_list" >> $GITHUB_OUTPUT
-
       - name: Checkout
-        if: steps.stale-release-branches.outputs.branches_list == ''
         uses: actions/checkout@v3
         with:
           fetch-depth: 1
 
       - name: Setup Node
-        if: steps.stale-release-branches.outputs.branches_list == ''
         uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
@@ -35,13 +26,11 @@ jobs:
       # In order to make a commit, we need to initialize a user.
       # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
       - name: Initialize Mandatory Git Config
-        if: steps.stale-release-branches.outputs.branches_list == ''
         run: |
           git config user.name "GitHub Actions"
           git config user.email "noreply@github.com"
 
       - name: Generate Hotfix Branch Name
-        if: steps.stale-release-branches.outputs.branches_list == ''
         id: generate-hotfix-branch-name
         env:
           HUSKY: 0
@@ -53,8 +42,7 @@ jobs:
           echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
 
       - name: Create Hotfix Branch
-        if: steps.stale-release-branches.outputs.branches_list == ''
-        uses: peterjgrainger/action-create-branch@v2
+        uses: peterjgrainger/action-create-branch@v2.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:

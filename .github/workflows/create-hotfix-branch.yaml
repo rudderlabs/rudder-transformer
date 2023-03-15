@@ -12,18 +12,15 @@ jobs:
     # Only allow these users to create new hotfix branch
     if: github.ref == 'refs/heads/main' && (github.actor == 'ItsSudip' || github.actor == 'krishna2020' || github.actor == 'saikumarrs') &&  (github.triggering_actor == 'ItsSudip' || github.triggering_actor == 'krishna2020' ||  github.triggering_actor == 'saikumarrs')
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+    
       - name: Check Stale Release Branches
         id: stale-release-branches
         run: |
           branches_list=$(git branch -a | grep -e "origin/hotfix/" -e "origin/hotfix-release/" -e "origin/release/")
           echo "Stales release branches list: $branches_list"
           echo "branches_list=$branches_list" >> $GITHUB_OUTPUT
-
-      - name: Checkout
-        if: steps.stale-release-branches.outputs.branches_list == ''
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 1
 
       - name: Setup Node
         if: steps.stale-release-branches.outputs.branches_list == ''

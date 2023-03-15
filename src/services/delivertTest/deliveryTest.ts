@@ -77,7 +77,7 @@ export default class DeliveryTestService {
           destination,
         });
       }
-    } catch (err) {
+    } catch (err: any) {
       stats.counter('proxy_test_error', 1, {
         destination,
       });

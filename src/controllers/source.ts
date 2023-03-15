@@ -23,7 +23,7 @@ export default class SourceController {
         requestMetadata,
       );
       ctx.body = resplist;
-    } catch (err) {
+    } catch (err: any) {
       const metaTO = integrationService.getTags();
       const resp = PostTransformationServiceSource.handleFailureEventsSource(err, metaTO);
       ctx.body = [resp];

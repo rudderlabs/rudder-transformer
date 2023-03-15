@@ -35,7 +35,7 @@ export default class NativeIntegrationSourceService implements IntegrationSource
           const respEvents: RudderMessage | RudderMessage[] | SourceTransformationResponse =
             await sourceHandler.process(sourceEvent);
           return PostTransformationServiceSource.handleSuccessEventsSource(respEvents);
-        } catch (error) {
+        } catch (error: any) {
           const metaTO = this.getTags();
           return PostTransformationServiceSource.handleFailureEventsSource(error, metaTO);
         }

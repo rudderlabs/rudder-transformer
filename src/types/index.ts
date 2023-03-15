@@ -68,7 +68,7 @@ type Destination = {
   Config: Object;
   Enabled: boolean;
   WorkspaceID: string;
-  Transformations?: UserTransformationInput[];
+  Transformations: UserTransformationInput[];
   RevisionID?: string;
 };
 
@@ -97,7 +97,7 @@ type RouterTransformationRequest = {
 };
 
 type ProcessorTransformationResponse = {
-  output?: ProcessorTransformationOutput | RudderMessage | Object;
+  output?: ProcessorTransformationOutput | RudderMessage;
   metadata: Metadata;
   statusCode: number;
   error?: string;
@@ -105,7 +105,7 @@ type ProcessorTransformationResponse = {
 };
 
 type RouterTransformationResponse = {
-  batchedRequest?: ProcessorTransformationOutput | Object;
+  batchedRequest?: ProcessorTransformationOutput;
   metadata: Metadata[];
   destination: Destination;
   batched: boolean;

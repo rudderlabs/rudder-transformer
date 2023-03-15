@@ -21,8 +21,8 @@ export default class NativeIntegrationDestinationService implements IntegrationD
   public init() {}
 
   public getName(): string {
-    return "Native"
-}
+    return 'Native';
+  }
 
   public getTags(
     destType: string,
@@ -61,7 +61,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
             transformedPayloads,
             destHandler,
           );
-        } catch (error) {
+        } catch (error: any) {
           const metaTO = this.getTags(
             destinationType,
             event.metadata.destinationId,
@@ -70,7 +70,10 @@ export default class NativeIntegrationDestinationService implements IntegrationD
           );
           metaTO.metadata = event.metadata;
           const erroredResp =
-            DestinationPostTransformationService.handleProcessorTransformFailureEvents(error, metaTO);
+            DestinationPostTransformationService.handleProcessorTransformFailureEvents(
+              error,
+              metaTO,
+            );
           return [erroredResp];
         }
       }),
@@ -106,7 +109,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
             destHandler,
             metaTO,
           );
-        } catch (error) {
+        } catch (error: any) {
           metaTO.metadatas = destInputArray.map((input) => {
             return input.metadata;
           });
@@ -140,7 +143,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
       try {
         const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(destEvents);
         return destBatchedRequests;
-      } catch (error) {
+      } catch (error: any) {
         const metaTO = this.getTags(
           destinationType,
           destEvents[0].metadata.destinationId,
@@ -176,7 +179,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
         },
         destinationType,
       ) as DeliveryResponse;
-    } catch (err) {
+    } catch (err: any) {
       const metaTO = this.getTags(
         destinationType,
         destinationRequest.metadata?.destinationId || 'Non-determininable',
@@ -210,10 +213,8 @@ export default class NativeIntegrationDestinationService implements IntegrationD
             ...request,
             rudderDestInfo,
           });
-          if (result) {
-            return result;
-          }
-        } catch (error) {
+          return result;
+        } catch (error: any) {
           const metaTO = this.getTags(destType, 'unknown', 'unknown', tags.FEATURES.USER_DELETION);
           return DestinationPostTransformationService.handleUserDeletionFailureEvents(
             error,

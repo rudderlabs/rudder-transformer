@@ -39,7 +39,7 @@ export default class EventTesterService {
   }
 
   public static async testEvent(events: any, version: string, dest: any) {
-    const respList = [];
+    const respList: any[] = [];
     if (!events || !Array.isArray(events)) {
       throw new Error('events array is required in payload');
     }
@@ -80,7 +80,7 @@ export default class EventTesterService {
 
               response['user_transformed_payload'] = userTransformedEvent.transformedEvent;
               ev.message = userTransformedEvent.transformedEvent;
-            } catch (err) {
+            } catch (err: any) {
               errorFound = true;
               response['user_transformed_payload'] = {
                 error: err.message || JSON.stringify(err),
@@ -103,7 +103,7 @@ export default class EventTesterService {
               } else {
                 response['dest_transformed_payload'] = [transformedOutput];
               }
-            } catch (err) {
+            } catch (err: any) {
               errorFound = true;
               response['dest_transformed_payload'] = {
                 error: err.message || JSON.stringify(err),
@@ -119,8 +119,8 @@ export default class EventTesterService {
         if (stage.dest_transform && stage.send_to_destination) {
           // send event to destination only after transformation
           if (!errorFound) {
-            const destResponses = [];
-            const destResponseStatuses = [];
+            const destResponses: any[] = [];
+            const destResponseStatuses: any[] = [];
 
             const transformedPayloads = response['dest_transformed_payload'];
             // eslint-disable-next-line no-restricted-syntax

@@ -12,7 +12,7 @@ export default class RegulationController {
       'Native(Process-Transform):: Requst to transformer::',
       JSON.stringify(ctx.request.body),
     );
-    
+
     let rudderDestInfo: any;
     try {
       const rudderDestInfoHeader = ctx.get('x-rudder-dest-info');
@@ -33,7 +33,7 @@ export default class RegulationController {
       );
       ctx.body = resplist;
       ctx.status = resplist[0].statusCode;
-    } catch (error) {
+    } catch (error: any) {
       const metaTO = integrationService.getTags(
         userDeletionRequests[0].destType,
         'unknown',

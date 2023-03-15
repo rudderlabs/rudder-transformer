@@ -18,7 +18,6 @@ import tags from '../../v0/util/tags';
 import path from 'path';
 
 export default class CDKV1DestinationService implements IntegrationDestinationService {
-
   public init() {
     ConfigFactory.init({
       basePath: path.resolve(__dirname, '../../cdk/v1'),
@@ -27,7 +26,7 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
   }
 
   public getName(): string {
-      return "CDK_V1"
+    return 'CDK_V1';
   }
 
   public getTags(
@@ -67,7 +66,7 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
             transformedPayloads,
             undefined,
           );
-        } catch (error) {
+        } catch (error: any) {
           const metaTO = this.getTags(
             destinationType,
             event.metadata.destinationId,
@@ -76,7 +75,10 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
           );
           metaTO.metadata = event.metadata;
           const erroredResp =
-            DestinationPostTransformationService.handleProcessorTransformFailureEvents(error, metaTO);
+            DestinationPostTransformationService.handleProcessorTransformFailureEvents(
+              error,
+              metaTO,
+            );
           return [erroredResp];
         }
       }),

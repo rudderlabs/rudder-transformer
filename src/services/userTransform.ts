@@ -22,8 +22,8 @@ export default class UserTransformService {
       (event: ProcessorTransformationRequest) =>
         `${event.metadata.destinationId}_${event.metadata.sourceId}`,
     );
-    const transformedEvents = [];
-    let librariesVersionIDs = [];
+    const transformedEvents:any[] = [];
+    let librariesVersionIDs:any[] = [];
     if (events[0].libraries) {
       librariesVersionIDs = events[0].libraries.map(
         (library: UserTransformationLibrary) => library.VersionID,
@@ -94,7 +94,7 @@ export default class UserTransformService {
             }),
           );
           return transformedEvents;
-        } catch (error) {
+        } catch (error: any) {
           logger.error(error);
           let status = 400;
           const errorString = error.toString();
@@ -151,7 +151,7 @@ export default class UserTransformService {
       );
       logger.debug(`[CT] Test Output Events: ${JSON.stringify(response.body.transformedEvents)}`);
       response.status = 200;
-    } catch (error) {
+    } catch (error: any) {
       response.status = 400;
       response.body = { error: error.message };
     }

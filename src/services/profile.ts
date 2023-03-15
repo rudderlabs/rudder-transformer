@@ -24,7 +24,7 @@ export default class ProfileService {
   private static async promisifiedRead(readable: any) {
     new Promise((resolve, reject) => {
       // Instructions for reading data
-      const chunks = [];
+      const chunks: any[] = [];
       readable.on('readable', () => {
         let chunk;
         // Using while loop and calling
@@ -99,7 +99,7 @@ export default class ProfileService {
         logger.info('Before pipeline');
         try {
           await writeFileProm(fileName, snapshotReadableStream);
-        } catch (error) {
+        } catch (error: any) {
           logger.error('Error occurred:', error);
           throw new Error(error);
         }
@@ -125,7 +125,7 @@ export default class ProfileService {
           credBucketDetails.sendTo ? credBucketDetails.sendTo : 'locally'
         } with filename: ${fileName}`,
       };
-    } catch (error) {
+    } catch (error: any) {
       logger.error(error);
       return {
         success: false,

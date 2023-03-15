@@ -48,7 +48,7 @@ export const fileUpload = async (ctx) => {
   let response;
   try {
     response = await destFileUploadHandler.processFileData(ctx.request.body);
-  } catch (error) {
+  } catch (error: any) {
     response = {
       statusCode: error.response ? error.response.status : 400,
       error: error.message || 'Error occurred while processing payload.',
@@ -93,7 +93,7 @@ export const pollStatus = async (ctx) => {
   }
   try {
     response = await destFileUploadHandler.processPolling(ctx.request.body);
-  } catch (error) {
+  } catch (error: any) {
     response = {
       statusCode: error.response?.status || 400,
       error: error.message || 'Error occurred while processing payload.',
@@ -138,7 +138,7 @@ export const getWarnJobStatus = async (ctx) => {
   let response;
   try {
     response = await destFileUploadHandler.processJobStatus(ctx.request.body, 'warn');
-  } catch (error) {
+  } catch (error: any) {
     response = {
       statusCode: error.response ? error.response.status : 400,
       error: error.message || 'Error occurred while processing payload.',
@@ -183,7 +183,7 @@ export const getFailedJobStatus = async (ctx) => {
   let response;
   try {
     response = await destFileUploadHandler.processJobStatus(ctx.request.body, 'fail');
-  } catch (error) {
+  } catch (error: any) {
     response = {
       statusCode: error.response ? error.response.status : 400,
       error: error.message || 'Error occurred while processing payload.',

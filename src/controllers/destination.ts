@@ -16,7 +16,6 @@ import { getIntegrationVersion } from '../util/utils';
 import tags from '../v0/util/tags';
 import { DynamicConfigParser } from '../util/dynamicConfigParser';
 
-
 export default class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
     const startTime = new Date();
@@ -43,7 +42,7 @@ export default class DestinationController {
         version,
         requestMetadata,
       );
-    } catch (error) {
+    } catch (error: any) {
       resplist = events.map((ev) => {
         const metaTO = integrationService.getTags(
           destination,
@@ -101,7 +100,7 @@ export default class DestinationController {
         requestMetadata,
       );
       ctx.body = { output: resplist };
-    } catch (error) {
+    } catch (error: any) {
       const metaTO = integrationService.getTags(
         destination,
         events[0].metadata.destinationId,
@@ -147,7 +146,7 @@ export default class DestinationController {
         requestMetadata,
       );
       ctx.body = resplist;
-    } catch (error) {
+    } catch (error: any) {
       const metaTO = integrationService.getTags(
         destination,
         events[0].metadata.destinationId,

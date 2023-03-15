@@ -18,7 +18,7 @@ export default class DeliveryController {
     const integrationService = ServiceSelector.getNativeDestinationService();
     try {
       deliveryResponse = await integrationService.deliver(event, destination, requestMetadata);
-    } catch (error) {
+    } catch (error: any) {
       const metaTO = integrationService.getTags(
         destination,
         event.metadata?.destinationId || 'Non-determininable',

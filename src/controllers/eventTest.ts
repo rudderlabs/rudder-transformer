@@ -9,7 +9,7 @@ export default class EventTestController {
     try {
       const respList = EventTesterService.testEvent(events, version, destination);
       ctx.body = respList;
-    } catch (err) {
+    } catch (err: any) {
       // fail-safety error response
       ctx.body = {
         error: err.message || JSON.stringify(err),

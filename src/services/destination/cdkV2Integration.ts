@@ -21,8 +21,8 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
   public init() {}
 
   public getName(): string {
-    return "CDK_V2"
-}
+    return 'CDK_V2';
+  }
 
   public getTags(
     destType: string,
@@ -62,7 +62,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
             transformedPayloads,
             undefined,
           );
-        } catch (error) {
+        } catch (error: any) {
           const metaTO = this.getTags(
             destinationType,
             event.metadata.destinationId,
@@ -71,7 +71,10 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
           );
           metaTO.metadata = event.metadata;
           const erroredResp =
-            DestinationPostTransformationService.handleProcessorTransformFailureEvents(error, metaTO);
+            DestinationPostTransformationService.handleProcessorTransformFailureEvents(
+              error,
+              metaTO,
+            );
           return [erroredResp];
         }
       }),
@@ -90,35 +93,35 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
       (ev: RouterTransformationRequestData) => ev.destination?.ID,
     );
     const response: RouterTransformationResponse[][] = await Promise.all(
-      Object.values(allDestEvents).map(async (destInputArray: RouterTransformationRequestData[]) => {
-        const metaTO = this.getTags(
-          destinationType,
-          destInputArray[0].metadata.destinationId,
-          destInputArray[0].metadata.workspaceId,
-          tags.FEATURES.ROUTER,
-        );
-        try {
-          const doRouterTransformationResponse: RouterTransformationResponse[] = await processCdkV2Workflow(
+      Object.values(allDestEvents).map(
+        async (destInputArray: RouterTransformationRequestData[]) => {
+          const metaTO = this.getTags(
             destinationType,
-            destInputArray,
+            destInputArray[0].metadata.destinationId,
+            destInputArray[0].metadata.workspaceId,
             tags.FEATURES.ROUTER,
           );
-          return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
-            doRouterTransformationResponse,
-            undefined,
-            metaTO,
-          );
-        } catch (error) {
-          metaTO.metadatas = destInputArray.map((input) => {
-            return input.metadata;
-          });
-          const erroredResp = DestinationPostTransformationService.handleRouterTransformFailureEvents(
-            error,
-            metaTO,
-          );
-          return [erroredResp];
-        }
-      }),
+          try {
+            const doRouterTransformationResponse: RouterTransformationResponse[] =
+              await processCdkV2Workflow(destinationType, destInputArray, tags.FEATURES.ROUTER);
+            return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
+              doRouterTransformationResponse,
+              undefined,
+              metaTO,
+            );
+          } catch (error: any) {
+            metaTO.metadatas = destInputArray.map((input) => {
+              return input.metadata;
+            });
+            const erroredResp =
+              DestinationPostTransformationService.handleRouterTransformFailureEvents(
+                error,
+                metaTO,
+              );
+            return [erroredResp];
+          }
+        },
+      ),
     );
     return response.flat();
   }

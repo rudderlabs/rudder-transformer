@@ -7,7 +7,7 @@ import stats from '../util/stats';
 export default class TrackingPlanservice {
   public static async validateTrackingPlan(events, requestSize, reqParams) {
     const requestStartTime = new Date();
-    const respList = [];
+    const respList: any[] = [];
     const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};
     let ctxStatusCode = 200;
     for (let i = 0; i < events.length; i++) {

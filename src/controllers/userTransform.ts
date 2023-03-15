@@ -58,7 +58,7 @@ export default class UserTransformController {
       }
       const res = await compileUserLibrary(code);
       ctx.body = res;
-    } catch (error) {
+    } catch (error: any) {
       ctx.body = { error: error.message };
       ctx.status = 400;
     }
@@ -88,7 +88,7 @@ export default class UserTransformController {
       const res = await setupUserTransformHandler(trRevCode, libraryVersionIDs, testWithPublish);
       logger.debug(`[CT] Finished setting up transformation: ${testName}`);
       ctx.body = res;
-    } catch (error) {
+    } catch (error: any) {
       ctx.status = 400;
       ctx.body = { error: error.message };
     }

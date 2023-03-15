@@ -1,4 +1,4 @@
-name: Publish New Release
+name: Publish New GitHub Release
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
 
 jobs:
   release:
-    name: Publish New Release
+    name: Publish New GitHub Release
     runs-on: ubuntu-latest
 
     if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')) && github.event.pull_request.merged == true # only merged pull requests must trigger this job
@@ -36,10 +36,11 @@ jobs:
           cache: 'npm'
 
       # In order to make a commit, we need to initialize a user.
+      # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
       - name: Initialize Mandatory Git Config
         run: |
           git config user.name "GitHub Actions"
-          git config user.email noreply@github.com
+          git config user.email "noreply@github.com"
 
       - name: Tag & Create GitHub Release
         id: create_release
@@ -50,7 +51,7 @@ jobs:
         run: |
           git tag -a ${{ steps.extract-version.outputs.release_version }} -m "chore: release v${{ steps.extract-version.outputs.release_version }}"
           git push origin refs/tags/${{ steps.extract-version.outputs.release_version }}
-          npm run release
+          npm run release:github
           echo "DATE=$(date)" >> $GITHUB_ENV
 
       - name: Pull Changes Into develop Branch

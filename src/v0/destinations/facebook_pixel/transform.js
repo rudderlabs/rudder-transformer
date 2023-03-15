@@ -246,7 +246,10 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
     if (!isActionSourceValid) {
       throw new InstrumentationError('Invalid Action Source type');
     }
+  } else {
+    commonData.action_source = 'other';
   }
+
   if (category.type !== 'identify') {
     customData = flattenJson(
       extractCustomFields(message, customData, ['properties'], FB_PIXEL_DEFAULT_EXCLUSION),

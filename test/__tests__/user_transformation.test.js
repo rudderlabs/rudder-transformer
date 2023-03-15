@@ -173,6 +173,72 @@ describe("User transformation", () => {
     expect(output).toEqual(expectedData);
   });
 
+  it(`Simple ${name} Test with Secrets for codeVerion 0`, async () => {
+    const versionId = randomID();
+
+    const inputData = require(`./data/${integration}_input.json`);
+    const secrets = {
+      dummy_key: "value",
+    }
+
+    const respBody = {
+      codeVersion: "0",
+      name,
+      secrets: secrets,
+      code: `
+        function transform(events) {
+          const filteredEvents = events.map(event => {
+            event.dummy_key = rsSecrets("dummy_key");
+            return event;
+          });
+            return filteredEvents;
+          }
+          `
+    };
+    fetch.mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue(respBody)
+    });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+    expect(output[0].transformedEvent.dummy_key).toEqual(secrets.dummy_key);
+  });
+
+  it(`Simple ${name} Test with Secrets for codeVerion 1`, async () => {
+    const versionId = randomID();
+
+    const inputData = require(`./data/${integration}_input.json`);
+    const secrets = {
+      dummy_key: "value",
+    }
+
+    const respBody = {
+      versionId: versionId,
+      codeVersion: "1",
+      name,
+      secrets: secrets,
+      code: `
+        export function transformEvent(event, metadata) {
+            event.dummy_key = rsSecrets("dummy_key");
+            return event;
+          }
+          `
+    };
+    fetch.mockResolvedValue({
+      status: 200,
+      json: jest.fn().mockResolvedValue(respBody)
+    });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(fetch).toHaveBeenCalledWith(
+      `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`
+    );
+    expect(output[0].transformedEvent.dummy_key).toEqual(secrets.dummy_key);
+  });
+
   it(`Simple async ${name} FetchV2 Test for V0 transformation`, async () => {
     const versionId = randomID();
     const inputData = require(`./data/${integration}_input.json`);

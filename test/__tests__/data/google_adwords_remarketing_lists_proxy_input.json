@@ -5,7 +5,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer ya29.A0ARrdaM-55_tpJe4QQUsdpea0pwko0O1N8akM3yxMg6PogqyW1XiC4F1nlTIvqHuBqkGlkj8ITc7y0gSGJBIe_fWrv5KV4w_wDho_9VdYqIWeJo63T5-3RHaABf5dySFwThQ1sJyZiXwdgB4Y9lN5u2C7Nfl0",
           "Content-Type": "application/json",
@@ -58,7 +58,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729834/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/7693729834/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer ya29.A0ARrdaM-55_tpJe4QQUsdpea0pwko0O1N8akM3yxMg6PogqyW1XiC4F1nlTIvqHuBqkGlkj8ITc7y0gSGJBIe_fWrv5KV4w_wDho_9VdYqIWeJo63T5-3RHaABf5dySFwThQ1sJyZiXwdgB4Y9lN5u2C7Nfl0",
           "Content-Type": "application/json",
@@ -97,7 +97,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v10/customers/7693729833/offlineUserDataJobs",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
         "headers": {
           "Authorization": "Bearer ya29.A0ARrdaM-55_tpJe4QQUsdpea0pwko0O1N8akM3yxMg6PogqyW1XiC4F1nlTIvqHuBqkGlkj8ITc7y0gSGJBIe_fWrv5KV4w_wDho_9VdYqIWeJo63T5-3RHaABf5dySFwThQ1sJyZiXwdgB4Y9lN5u2C7Nfl0",
           "Content-Type": "application/json",

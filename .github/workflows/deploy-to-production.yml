@@ -176,8 +176,8 @@ jobs:
           git add values.prod.yaml
 
           cd ../../customer-objects/multi-tenant-us
-          yq eval -i ".transformer.image.tag=\"$VERSION\"" hostedmtedmt.yaml
-          yq eval -i ".user-transformer.image.tag=\"$VERSION\"" hostedmtedmt.yaml
+          yq eval -i ".spec.transformer.image.version=\"$VERSION\"" hostedmtedmt.yaml
+          yq eval -i ".spec.user_transformer.image.version=\"$VERSION\"" hostedmtedmt.yaml
           git add hostedmtedmt.yaml
 
       - name: Create Pull Request

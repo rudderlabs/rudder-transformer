@@ -120,6 +120,16 @@ describe("event types", () => {
       });
     });
   });
+
+  describe("extract", () => {
+    it("should generate one event for every extract call", () => {
+      const i = input("extract");
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received).toMatchObject(output("extract", integrations[index]));
+      });
+    });
+  });
 });
 
 describe("column & table names", () => {

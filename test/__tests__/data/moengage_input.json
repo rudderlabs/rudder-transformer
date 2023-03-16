@@ -1576,5 +1576,86 @@
       "Transformations": [],
       "IsProcessorEnabled": true
     }
+  },
+  {
+    "message": {
+      "messageId": "adc7c2d0-0ebf-4593-b878-a0eb75932820",
+      "originalTimestamp": "2023-03-09T00:09:53.235+05:30",
+      "previousId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
+      "receivedAt": "2023-03-09T00:09:51.292+05:30",
+      "request_ip": "[::1]",
+      "rudderId": "1703da0d-2472-459c-9bf0-4e7b66b4673a",
+      "sentAt": "2023-03-09T00:09:53.235+05:30",
+      "timestamp": "2023-03-09T00:09:51.291+05:30",
+      "type": "alias",
+      "userId": "12345"
+    },
+    "destination": {
+      "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
+      "Name": "MoEngage Testing",
+      "DestinationDefinition": {
+        "ID": "1iu4802Tx27kNC4KNYYou6D8jzL",
+        "Name": "MOENGAGE",
+        "DisplayName": "MoEngage",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": ["apiId", "apiKey", "region"]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
+        }
+      },
+      "Config": {
+        "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
+        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "eventDelivery": false,
+        "eventDeliveryTS": 1602757086384,
+        "region": "US"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
+  },
+  {
+    "message": {
+      "messageId": "adc7c2d0-0ebf-4593-b878-a0eb75932820",
+      "originalTimestamp": "2023-03-09T00:09:53.235+05:30",
+      "receivedAt": "2023-03-09T00:09:51.292+05:30",
+      "request_ip": "[::1]",
+      "rudderId": "1703da0d-2472-459c-9bf0-4e7b66b4673a",
+      "sentAt": "2023-03-09T00:09:53.235+05:30",
+      "timestamp": "2023-03-09T00:09:51.291+05:30",
+      "type": "alias",
+      "userId": "12345"
+    },
+    "destination": {
+      "ID": "1iuTZs6eEZVMm6GjRBe6bNShaL3",
+      "Name": "MoEngage Testing",
+      "DestinationDefinition": {
+        "ID": "1iu4802Tx27kNC4KNYYou6D8jzL",
+        "Name": "MOENGAGE",
+        "DisplayName": "MoEngage",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": ["apiId", "apiKey", "region"]
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
+        }
+      },
+      "Config": {
+        "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
+        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "eventDelivery": false,
+        "eventDeliveryTS": 1602757086384,
+        "region": "US"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    }
   }
 ]

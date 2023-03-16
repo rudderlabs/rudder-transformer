@@ -90,6 +90,11 @@ const formatValue = (value) => {
   return Math.round(value);
 };
 
+const isObject = (value) => {
+  const type = typeof value;
+  return value != null && (type === 'object' || type === 'function') && !Array.isArray(value);
+};
+
 function isEmpty(input) {
   return _.isEmpty(_.toString(input).trim());
 }
@@ -1014,12 +1019,19 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
 };
 
 const getDestinationExternalIDObjectForRetl = (message, destination) => {
+  const { externalId } = message.context || {};
   let externalIdArray = [];
-  if (message.context && message.context.externalId) {
-    externalIdArray = message.context.externalId;
+
+  if (externalId) {
+    if (Array.isArray(externalId)) {
+      externalIdArray = externalId;
+    } else if (isObject(externalId) && !isEmptyObject(externalId)) {
+      externalIdArray = [externalId];
+    }
   }
+
   let obj;
-  if (externalIdArray) {
+  if (externalIdArray.length > 0) {
     // some stops the execution when the element is found
     externalIdArray.some((extIdObj) => {
       const { type } = extIdObj;
@@ -1031,11 +1043,6 @@ const getDestinationExternalIDObjectForRetl = (message, destination) => {
     });
   }
   return obj;
-};
-
-const isObject = (value) => {
-  const type = typeof value;
-  return value != null && (type === 'object' || type === 'function') && !Array.isArray(value);
 };
 
 const isNonFuncObject = (value) => {

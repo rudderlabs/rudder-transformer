@@ -639,27 +639,76 @@
         "XML": {},
         "FORM": {},
         "JSON": {
+          "events": [
+            {
+              "name": "braze revenue test",
+              "time": "2023-03-14T02:06:22.432+05:30",
+              "properties": {
+                "revenue": 50,
+                "mergeObjectsUpdateOperation": false
+              },
+              "external_id": "finalUserTestCA"
+            }
+          ],
           "partner": "RudderStack",
           "attributes": [
             {
+              "city": "Disney",
               "pets": {
                 "$add": [
                   {
                     "id": 1,
-                    "name": "Gus",
-                    "type": "dog",
-                    "breed": "beagle"
+                    "age": 27,
+                    "name": "abc"
+                  }
+                ],
+                "$remove": [
+                  {
+                    "$identifier_key": "id",
+                    "$identifier_value": 3
                   },
                   {
-                    "id": 2,
-                    "name": "Gerald",
-                    "type": "cat",
-                    "breed": "calico"
+                    "$identifier_key": "id",
+                    "$identifier_value": 4
+                  }
+                ],
+                "$update": [
+                  {
+                    "$new_object": {
+                      "age": 27,
+                      "name": "abc"
+                    },
+                    "$identifier_key": "id",
+                    "$identifier_value": 2
                   }
                 ]
               },
-              "email": "manashi@gmaiol.com",
-              "external_id": "nestedArrray1"
+              "cars2": {
+                "$update": [
+                  {
+                    "$new_object": {
+                      "age": 30,
+                      "name": "abcd"
+                    },
+                    "$identifier_key": "id",
+                    "$identifier_value": 2
+                  },
+                  {
+                    "$new_object": {
+                      "age": 27,
+                      "name": "abcd"
+                    },
+                    "$identifier_key": "id",
+                    "$identifier_value": 1
+                  }
+                ]
+              },
+              "email": "mickey@disney.com",
+              "gender": "F",
+              "country": "USA",
+              "first_name": "Mickey",
+              "external_id": "finalUserTestCA",
+              "_merge_objects": false
             }
           ]
         },
@@ -669,7 +718,7 @@
       "files": {},
       "method": "POST",
       "params": {},
-      "userId": "nestedArrray1",
+      "userId": "finalUserTestCA",
       "headers": {
         "Accept": "application/json",
         "Content-Type": "application/json",
@@ -685,9 +734,48 @@
         "XML": {},
         "FORM": {},
         "JSON": {
+          "events": [
+            {
+              "name": "braze revenue test",
+              "time": "2023-03-14T02:13:10.518+05:30",
+              "properties": {
+                "revenue": 50,
+                "mergeObjectsUpdateOperation": false
+              },
+              "external_id": "finalUserTestCA"
+            }
+          ],
           "partner": "RudderStack",
           "attributes": [
             {
+              "cars": {
+                "$add": [
+                  {
+                    "id": 1,
+                    "age": 27,
+                    "name": "abc"
+                  }
+                ],
+                "$update": [
+                  {
+                    "$new_object": {
+                      "age": 30,
+                      "name": "abcd"
+                    },
+                    "$identifier_key": "id",
+                    "$identifier_value": 2
+                  },
+                  {
+                    "$new_object": {
+                      "age": 27,
+                      "name": "abcd"
+                    },
+                    "$identifier_key": "id",
+                    "$identifier_value": 1
+                  }
+                ]
+              },
+              "city": "Disney",
               "pets": [
                 {
                   "id": 1,
@@ -702,55 +790,11 @@
                   "breed": "calico"
                 }
               ],
-              "email": "manashi@gmaiol.com",
-              "external_id": "nestedArrray1"
-            }
-          ]
-        },
-        "JSON_ARRAY": {}
-      },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {},
-      "userId": "nestedArrray1",
-      "headers": {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      },
-      "version": "1",
-      "endpoint": "https://rest.fra-01.braze.eu/users/track"
-    }
-  ],
-  [
-    {
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON": {
-          "partner": "RudderStack",
-          "attributes": [
-            {
-              "pets": {
-                "$update": [
-                  {
-                    "$identifier_key": "id",
-                    "$identifier_value": 4,
-                    "$new_object": {
-                      "breed": "goldfish"
-                    }
-                  },
-                  {
-                    "$identifier_key": "id",
-                    "$identifier_value": 5,
-                    "$new_object": {
-                      "name": "Annette"
-                    }
-                  }
-                ]
-              },
-              "external_id": "nestedArrray1",
+              "email": "mickey@disney.com",
+              "gender": "F",
+              "country": "USA",
+              "first_name": "Mickey",
+              "external_id": "finalUserTestCA",
               "_merge_objects": false
             }
           ]
@@ -761,53 +805,7 @@
       "files": {},
       "method": "POST",
       "params": {},
-      "userId": "nestedArrray1",
-      "headers": {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      },
-      "version": "1",
-      "endpoint": "https://rest.fra-01.braze.eu/users/track"
-    }
-  ],
-  [
-    {
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON": {
-          "partner": "RudderStack",
-          "attributes": [
-            {
-              "pets": {
-                "$remove": [
-                  {
-                    "$identifier_key": "id",
-                    "$identifier_value": 1
-                  },
-                  {
-                    "$identifier_key": "id",
-                    "$identifier_value": 2
-                  },
-                  {
-                    "$identifier_key": "type",
-                    "$identifier_value": "dog"
-                  }
-                ]
-              },
-              "email": "manashi@gmaiol.com",
-              "external_id": "nestedArrray1"
-            }
-          ]
-        },
-        "JSON_ARRAY": {}
-      },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {},
-      "userId": "nestedArrray1",
+      "userId": "finalUserTestCA",
       "headers": {
         "Accept": "application/json",
         "Content-Type": "application/json",

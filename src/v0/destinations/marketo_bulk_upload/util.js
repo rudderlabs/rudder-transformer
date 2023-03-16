@@ -16,8 +16,6 @@ const MARKETO_FILE_SIZE = 10485760;
 const MARKETO_FILE_PATH = `${__dirname}/uploadFile/marketo_bulkupload.csv`;
 
 const POLL_ACTIVITY = 'marketo_bulk_upload_polling';
-const UPLOAD_FILE = 'marketo_bulk_upload_upload_file';
-const JOB_STATUS_ACTIVITY = 'marketo_bulk_upload_get_job_status';
 
 const getMarketoFilePath = () => MARKETO_FILE_PATH;
 // Fetch access token from client id and client secret
@@ -85,6 +83,4 @@ module.exports = {
   MARKETO_FILE_SIZE,
   getMarketoFilePath,
   POLL_ACTIVITY,
-  UPLOAD_FILE,
-  JOB_STATUS_ACTIVITY,
 };

@@ -1,7 +1,7 @@
 const { removeUndefinedValues } = require('../../util');
-const { getAccessToken, ABORTABLE_CODES, THROTTLED_CODES, POLL_ACTIVITY } = require('./util');
+const { getAccessToken, ABORTABLE_CODES, THROTTLED_CODES } = require('./util');
 const { httpGET } = require('../../../adapters/network');
-const stats = require('../../../util/stats');
+const prometheus = require('../../../util/prometheus');
 const { AbortedError, ThrottledError, RetryableError } = require('../../util/errorTypes');
 
 const getPollStatus = async (event) => {
@@ -17,18 +17,19 @@ const getPollStatus = async (event) => {
     },
   };
   const pollUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`;
-  const startTime = Date.now();
   const pollStatus = await httpGET(pollUrl, requestOptions);
-  const endTime = Date.now();
-  const requestTime = endTime - startTime;
   if (pollStatus.success) {
     if (pollStatus.response && pollStatus.response.data.success) {
-      stats.increment(POLL_ACTIVITY, 1, {
+      prometheus.getMetrics().marketoBulkUploadPolling.inc({
+        status: 200,
+        state: 'Success',
+      });
+      /* TODO REMOVE  stats.increment(POLL_ACTIVITY, 1, {
         integration: 'Marketo_bulk_upload',
         requestTime,
         status: 200,
         state: 'Success',
-      });
+      }); */
       return pollStatus.response;
     }
     // DOC: https://developers.marketo.com/rest-api/error-codes/
@@ -53,35 +54,47 @@ const getPollStatus = async (event) => {
           pollStatus.response.data.errors[0].code <= 1077) ||
           ABORTABLE_CODES.includes(pollStatus.response.data.errors[0].code))
       ) {
-        stats.increment(POLL_ACTIVITY, 1, {
+        prometheus.getMetrics().marketoBulkUploadPolling.inc({
+          status: 400,
+          state: 'Abortable',
+        });
+        /* TODO REMOVE  stats.increment(POLL_ACTIVITY, 1, {
           integration: 'Marketo_bulk_upload',
           requestTime,
           status: 400,
           state: 'Abortable',
-        });
+        }); */
         throw new AbortedError(
           pollStatus.response.data.errors[0].message || 'Could not poll status',
           400,
           pollStatus,
         );
       } else if (THROTTLED_CODES.includes(pollStatus.response.data.errors[0].code)) {
-        stats.increment(POLL_ACTIVITY, 1, {
+        prometheus.getMetrics().marketoBulkUploadPolling.inc({
+          status: 500,
+          state: 'Retryable',
+        });
+        /* TODO REMOVE stats.increment(POLL_ACTIVITY, 1, {
           integration: 'Marketo_bulk_upload',
           requestTime,
           status: 500,
           state: 'Retryable',
-        });
+        }); */
         throw new ThrottledError(
           pollStatus.response.data.errors[0].message || 'Could not poll status',
           pollStatus,
         );
       }
-      stats.increment(POLL_ACTIVITY, 1, {
+      prometheus.getMetrics().marketoBulkUploadPolling.inc({
+        status: 500,
+        state: 'Retryable',
+      });
+      /* TODO REMOVE stats.increment(POLL_ACTIVITY, 1, {
         integration: 'Marketo_bulk_upload',
         requestTime,
         status: 500,
         state: 'Retryable',
-      });
+      }); */
       throw new RetryableError(
         pollStatus.response.response.statusText || 'Error during polling status',
         500,
@@ -89,12 +102,16 @@ const getPollStatus = async (event) => {
       );
     }
   }
-  stats.increment(POLL_ACTIVITY, 1, {
+  prometheus.getMetrics().marketoBulkUploadPolling.inc({
+    status: 400,
+    state: 'Abortable',
+  });
+  /* TODO REMOVE stats.increment(POLL_ACTIVITY, 1, {
     integration: 'Marketo_bulk_upload',
     requestTime,
     status: 400,
     state: 'Abortable',
-  });
+  }); */
   throw new AbortedError('Could not poll status', 400, pollStatus);
 };
 
@@ -110,7 +127,7 @@ const responseHandler = async (event) => {
   let errorResponse;
   // Server expects :
   /**
-  * 
+  *
   * {
     "success": true,
     "statusCode": 200,
@@ -118,7 +135,7 @@ const responseHandler = async (event) => {
     "failedJobsURL": "<some-url>", // transformer URL
     "hasWarnings": false,
     "warningJobsURL": "<some-url>", // transformer URL
-    } // Succesful Upload     
+    } // Succesful Upload
     {
         "success": false,
         "statusCode": 400,

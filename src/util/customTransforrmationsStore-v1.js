@@ -1,7 +1,7 @@
 const { fetchWithProxy } = require('./fetch');
 const logger = require('../logger');
-const stats = require('./stats');
 const { responseStatusHandler } = require('./utils');
+const prometheus = require('./prometheus');
 
 const transformationCache = {};
 const libraryCache = {};
@@ -20,7 +20,7 @@ async function getTransformationCodeV1(versionId) {
   const transformation = transformationCache[versionId];
   if (transformation) return transformation;
   const tags = {
-    transformerVersionId: versionId,
+    versionId,
     version: 1,
   };
   try {
@@ -29,14 +29,19 @@ async function getTransformationCodeV1(versionId) {
     const response = await fetchWithProxy(url);
 
     responseStatusHandler(response.status, 'Transformation', versionId, url);
-    stats.increment('get_transformation_code.success', tags);
-    stats.timing('get_transformation_code', startTime, tags);
+    prometheus.getMetrics()?.getTransformationCode.inc({ success: 'true', ...tags });
+    prometheus
+      .getMetrics()
+      ?.getTransformationCodeTime.observe(tags, (new Date() - startTime) / 1000);
+    // TODO REMOVE stats.increment('get_transformation_code.success', tags);
+    // TODO REMOVE stats.timing('get_transformation_code', startTime, tags);
     const myJson = await response.json();
     transformationCache[versionId] = myJson;
     return myJson;
   } catch (error) {
     logger.error(error);
-    stats.increment('get_transformation_code.error', tags);
+    prometheus.getMetrics()?.getTransformationCode.inc({ success: 'false', ...tags });
+    // TODO REMOVE stats.increment('get_transformation_code.error', tags);
     throw error;
   }
 }
@@ -54,14 +59,17 @@ async function getLibraryCodeV1(versionId) {
     const response = await fetchWithProxy(url);
 
     responseStatusHandler(response.status, 'Transformation Library', versionId, url);
-    stats.increment('get_libraries_code.success', tags);
-    stats.timing('get_libraries_code', startTime, tags);
+    prometheus.getMetrics()?.getLibrariesCode.inc({ success: 'true', ...tags });
+    prometheus.getMetrics()?.getLibrariesCodeTime.observe(tags, (new Date() - startTime) / 1000);
+    // TODO REMOVE stats.increment('get_libraries_code.success', tags);
+    // TODO REMOVE stats.timing('get_libraries_code', startTime, tags);
     const myJson = await response.json();
     libraryCache[versionId] = myJson;
     return myJson;
   } catch (error) {
     logger.error(error);
-    stats.increment('get_libraries_code.error', tags);
+    prometheus.getMetrics()?.getLibrariesCode.inc({ success: 'false', ...tags });
+    // TODO REMOVE stats.increment('get_libraries_code.error', tags);
     throw error;
   }
 }
@@ -81,14 +89,17 @@ async function getRudderLibByImportName(importName) {
     const response = await fetchWithProxy(url);
 
     responseStatusHandler(response.status, 'Rudder Library', importName, url);
-    stats.increment('get_libraries_code.success', tags);
-    stats.timing('get_libraries_code', startTime, tags);
+    prometheus.getMetrics()?.getLibrariesCode.inc({ success: 'true', ...tags });
+    prometheus.getMetrics()?.getLibrariesCodeTime.observe(tags, (new Date() - startTime) / 1000);
+    // TODO REMOVE stats.increment('get_libraries_code.success', tags);
+    // TODO REMOVE stats.timing('get_libraries_code', startTime, tags);
     const myJson = await response.json();
     rudderLibraryCache[importName] = myJson;
     return myJson;
   } catch (error) {
     logger.error(error);
-    stats.increment('get_libraries_code.error', tags);
+    prometheus.getMetrics()?.getLibrariesCode.inc({ success: 'false', ...tags });
+    // TODO REMOVE stats.increment('get_libraries_code.error', tags);
     throw error;
   }
 }

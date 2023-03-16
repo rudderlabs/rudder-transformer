@@ -3,15 +3,9 @@
 /* eslint-disable no-use-before-define */
 const get = require('get-value');
 const cloneDeep = require('lodash/cloneDeep');
-const stats = require('../../../util/stats');
+const prometheus = require('../../../util/prometheus');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
-const {
-  identifyConfig,
-  formatConfig,
-  LEAD_LOOKUP_METRIC,
-  ACTIVITY_METRIC,
-  FETCH_TOKEN_METRIC,
-} = require('./config');
+const { identifyConfig, formatConfig } = require('./config');
 const {
   addExternalIdToTraits,
   getDestinationExternalIDInfoForRetl,
@@ -71,10 +65,16 @@ const getAuthToken = async (formattedDestination) =>
     );
     const data = marketoResponseHandler(clientResponse, 'During fetching auth token');
     if (data) {
-      stats.increment(FETCH_TOKEN_METRIC, 1, { status: 'success' });
+      prometheus.getMetrics().marketoFetchToken.inc({
+        status: 'success',
+      });
+      // TODO REMOVE stats.increment(FETCH_TOKEN_METRIC, 1, { status: 'success' });
       return { value: data.access_token, age: data.expires_in };
     }
-    stats.increment(FETCH_TOKEN_METRIC, 1, { status: 'failed' });
+    prometheus.getMetrics().marketoFetchToken.inc({
+      status: 'failed',
+    });
+    // TODO REMOVE stats.increment(FETCH_TOKEN_METRIC, 1, { status: 'failed' });
     return null;
   });
 
@@ -96,10 +96,14 @@ const getAuthToken = async (formattedDestination) =>
 const createOrUpdateLead = async (formattedDestination, token, userId, anonymousId) =>
   userIdLeadCache.get(userId || anonymousId, async () => {
     const attribute = userId ? { userId } : { anonymousId };
-    stats.increment(LEAD_LOOKUP_METRIC, 1, {
+    prometheus.getMetrics().marketoLeadLookup.inc({
       type: 'userid',
       action: 'create',
     });
+    /* TODO REMOVE stats.increment(LEAD_LOOKUP_METRIC, 1, {
+      type: 'userid',
+      action: 'create',
+    }); */
     const { accountId } = formattedDestination;
     const clientResponse = await sendPostRequest(
       `https://${accountId}.mktorest.com/rest/v1/leads.json`,
@@ -138,7 +142,11 @@ const createOrUpdateLead = async (formattedDestination, token, userId, anonymous
 // ------------------------
 const lookupLeadUsingEmail = async (formattedDestination, token, email) =>
   emailLeadCache.get(email, async () => {
-    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: 'email', action: 'fetch' });
+    prometheus.getMetrics().marketoLeadLookup.inc({
+      type: 'email',
+      action: 'fetch',
+    });
+    // TODO REMOVE stats.increment(LEAD_LOOKUP_METRIC, 1, { type: 'email', action: 'fetch' });
     const clientResponse = await sendGetRequest(
       `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
       // `https://httpstat.us/200`,
@@ -170,7 +178,11 @@ const lookupLeadUsingEmail = async (formattedDestination, token, email) =>
 // ------------------------
 const lookupLeadUsingId = async (formattedDestination, token, userId, anonymousId) =>
   userIdLeadCache.get(userId || anonymousId, async () => {
-    stats.increment(LEAD_LOOKUP_METRIC, 1, { type: 'userId', action: 'fetch' });
+    prometheus.getMetrics().marketoLeadLookup.inc({
+      type: 'userId',
+      action: 'fetch',
+    });
+    // TODO REMOVE stats.increment(LEAD_LOOKUP_METRIC, 1, { type: 'userId', action: 'fetch' });
     const clientResponse = await sendGetRequest(
       `https://${formattedDestination.accountId}.mktorest.com/rest/v1/leads.json`,
       {
@@ -400,7 +412,8 @@ const processTrack = async (message, formattedDestination, token) => {
   };
 
   // metric collection
-  stats.increment(ACTIVITY_METRIC, 1);
+  prometheus.getMetrics().marketoActivity.inc();
+  // TODO REMOVE stats.increment(ACTIVITY_METRIC, 1);
 
   return {
     endPoint: `https://${accountId}.mktorest.com/rest/v1/activities/external.json`,

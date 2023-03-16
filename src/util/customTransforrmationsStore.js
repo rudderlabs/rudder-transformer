@@ -1,8 +1,8 @@
 const NodeCache = require('node-cache');
 const { fetchWithProxy } = require('./fetch');
 const logger = require('../logger');
-const stats = require('./stats');
 const { responseStatusHandler } = require('./utils');
+const prometheus = require('./prometheus');
 
 const myCache = new NodeCache();
 
@@ -22,14 +22,20 @@ async function getTransformationCode(versionId) {
     const response = await fetchWithProxy(url);
 
     responseStatusHandler(response.status, 'Transformation', versionId, url);
-    stats.increment('get_transformation_code.success');
-    stats.timing('get_transformation_code', startTime, { versionId });
+    prometheus.getMetrics()?.getTransformationCode.inc({ versionId, success: 'true' });
+    prometheus
+      .getMetrics()
+      ?.getTransformationCodeTime.observe({ versionId }, (new Date() - startTime) / 1000);
+
+    // TODO REMOVE stats.increment('get_transformation_code.success');
+    // TODO REMOVE stats.timing('get_transformation_code', startTime, { versionId });
     const myJson = await response.json();
     myCache.set(versionId, myJson);
     return myJson;
   } catch (error) {
     logger.error(error);
-    stats.increment('get_transformation_code.error', 1, { versionId });
+    prometheus.getMetrics()?.getTransformationCode.inc({ versionId, success: 'false' });
+    // TODO REMOVE stats.increment('get_transformation_code.error', 1, { versionId });
     throw error;
   }
 }

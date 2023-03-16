@@ -16,7 +16,7 @@ const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
 const sha256 = require('sha256');
 const logger = require('../../logger');
-const stats = require('../../util/stats');
+const prometheus = require('../../util/prometheus');
 const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
 const {
   InstrumentationError,
@@ -1460,10 +1460,14 @@ function getValidDynamicFormConfig(
       (element[keyRight] || element[keyRight] === ''),
   );
   if (res.length < attributeArray.length) {
-    stats.increment('dest_transform_invalid_dynamicConfig_count', 1, {
+    prometheus.getMetrics().destTransformInvalidDynamicConfigCount.inc({
       destinationType,
       destinationId,
     });
+    /* TODO REMOVE stats.increment('dest_transform_invalid_dynamicConfig_count', 1, {
+      destinationType,
+      destinationId,
+    }); */
   }
   return res;
 }

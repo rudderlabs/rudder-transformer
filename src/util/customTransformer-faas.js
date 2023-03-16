@@ -1,9 +1,14 @@
 const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
 const NodeCache = require('node-cache');
-const stats = require('./stats');
 const { getMetadata } = require('../v0/util');
-const { setupFaasFunction, executeFaasFunction, FAAS_AST_FN_NAME, FAAS_AST_VID } = require('./openfaas');
+const prometheus = require('./prometheus');
+const {
+  setupFaasFunction,
+  executeFaasFunction,
+  FAAS_AST_FN_NAME,
+  FAAS_AST_VID,
+} = require('./openfaas');
 const { getLibraryCodeV1 } = require('./customTransforrmationsStore-v1');
 
 const libVersionIdsCache = new NodeCache();
@@ -16,15 +21,22 @@ function generateFunctionName(userTransformation, libraryVersionIds, testMode) {
     return funcName.substring(0, 63).toLowerCase();
   }
 
-  const ids = [userTransformation.workspaceId, userTransformation.versionId].concat((libraryVersionIds || []).sort());
+  const ids = [userTransformation.workspaceId, userTransformation.versionId].concat(
+    (libraryVersionIds || []).sort(),
+  );
   const hash = crypto.createHash('md5').update(`${ids}`).digest('hex');
 
-  return `fn-${userTransformation.workspaceId}-${hash}`
-    .substring(0, 63)
-    .toLowerCase();
+  return `fn-${userTransformation.workspaceId}-${hash}`.substring(0, 63).toLowerCase();
 }
 
-async function extractRelevantLibraryVersionIdsForVersionId(functionName, code, versionId, libraryVersionIds, prepopulatedImports, testMode) {
+async function extractRelevantLibraryVersionIdsForVersionId(
+  functionName,
+  code,
+  versionId,
+  libraryVersionIds,
+  prepopulatedImports,
+  testMode,
+) {
   if (functionName === FAAS_AST_FN_NAME || versionId == FAAS_AST_VID) return [];
 
   const cachedLvids = libVersionIdsCache.get(functionName);
@@ -35,15 +47,18 @@ async function extractRelevantLibraryVersionIdsForVersionId(functionName, code, 
     (libraryVersionIds || []).map(async (libraryVersionId) => getLibraryCodeV1(libraryVersionId)),
   );
 
-  const codeImports = prepopulatedImports || Object.keys(await require('./customTransformer').extractLibraries(
-    code,
-    versionId,
-    false,
-    [],
-    "pythonfaas",
-    testMode
-    )
-  );
+  const codeImports =
+    prepopulatedImports ||
+    Object.keys(
+      await require('./customTransformer').extractLibraries(
+        code,
+        versionId,
+        false,
+        [],
+        'pythonfaas',
+        testMode,
+      ),
+    );
 
   const relevantLvids = [];
 
@@ -80,7 +95,8 @@ async function setOpenFaasUserTransform(
     publish: testWithPublish,
     testMode,
   };
-  const functionName = pregeneratedFnName || generateFunctionName(userTransformation, libraryVersionIds, testMode);
+  const functionName =
+    pregeneratedFnName || generateFunctionName(userTransformation, libraryVersionIds, testMode);
   const setupTime = new Date();
 
   await setupFaasFunction(
@@ -93,12 +109,13 @@ async function setOpenFaasUserTransform(
       userTransformation.versionId,
       libraryVersionIds,
       userTransformation.imports,
-      testMode
+      testMode,
     ),
     testMode,
   );
 
-  stats.timing('creation_time', setupTime, tags);
+  prometheus.getMetrics()?.creationTime.observe(tags, (new Date() - setupTime) / 1000);
+  // TODO REMOVE stats.timing('creation_time', setupTime, tags);
   return { success: true, publishedVersion: functionName };
 }
 /**
@@ -107,7 +124,12 @@ async function setOpenFaasUserTransform(
  * In production mode, the function is executed directly
  * if function is not found, it is deployed and returns retryable error
  */
-async function runOpenFaasUserTransform(events, userTransformation, libraryVersionIds, testMode = false) {
+async function runOpenFaasUserTransform(
+  events,
+  userTransformation,
+  libraryVersionIds,
+  testMode = false,
+) {
   if (events.length === 0) {
     throw new Error('Invalid payload. No events');
   }
@@ -123,7 +145,13 @@ async function runOpenFaasUserTransform(events, userTransformation, libraryVersi
   // check and deploy faas function if not exists
   const functionName = generateFunctionName(userTransformation, libraryVersionIds, testMode);
   if (testMode) {
-    await setOpenFaasUserTransform(userTransformation, libraryVersionIds, true, functionName, testMode);
+    await setOpenFaasUserTransform(
+      userTransformation,
+      libraryVersionIds,
+      true,
+      functionName,
+      testMode,
+    );
   }
 
   const invokeTime = new Date();
@@ -138,11 +166,12 @@ async function runOpenFaasUserTransform(events, userTransformation, libraryVersi
       userTransformation.versionId,
       libraryVersionIds,
       userTransformation.imports,
-      testMode
+      testMode,
     ),
     testMode,
   );
-  stats.timing('run_time', invokeTime, tags);
+  prometheus.getMetrics()?.runTime.observe(tags, (new Date() - invokeTime) / 1000);
+  // TODO REMOVE stats.timing('run_time', invokeTime, tags);
   return result;
 }
 

@@ -1,6 +1,8 @@
-function durationMiddleware(metrics) {
+const prometheus = require('./util/prometheus');
+
+function durationMiddleware() {
   return async (ctx, next) => {
-    const end = metrics?.httpRequestDurationSummary.startTimer();
+    const end = prometheus.getMetrics().httpRequestDurationSummary.startTimer();
     await next();
 
     const labels = {
@@ -13,8 +15,8 @@ function durationMiddleware(metrics) {
   };
 }
 
-function addPrometheusMiddleware(app, metrics) {
-  app.use(durationMiddleware(metrics));
+function addPrometheusMiddleware(app) {
+  app.use(durationMiddleware());
 }
 
 module.exports = {

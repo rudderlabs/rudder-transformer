@@ -7,7 +7,6 @@ const {
   THROTTLED_CODES,
   MARKETO_FILE_SIZE,
   getMarketoFilePath,
-  UPLOAD_FILE,
 } = require('./util');
 const {
   getHashFromArray,
@@ -15,7 +14,6 @@ const {
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
 const { httpPOST, httpGET } = require('../../../adapters/network');
-const stats = require('../../../util/stats');
 const {
   RetryableError,
   AbortedError,
@@ -25,6 +23,7 @@ const {
 } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const prometheus = require('../../../util/prometheus');
 
 const fetchFieldSchema = async (config) => {
   let fieldArr = [];
@@ -150,9 +149,12 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   csv.push(headerArr.toString());
   endTime = Date.now();
   requestTime = endTime - startTime;
-  stats.gauge('marketo_bulk_upload_create_header_time', requestTime, {
+  prometheus
+    .getMetrics()
+    .marketoBulkUploadProcessTime.observe({ action: 'create_header' }, requestTime / 1000);
+  /* TODO REMOVE stats.gauge('marketo_bulk_upload_create_header_time', requestTime, {
     integration: 'Marketo_bulk_upload',
-  });
+  }); */
   const unsuccessfulJobs = [];
   const successfulJobs = [];
   const MARKETO_FILE_PATH = getMarketoFilePath();
@@ -172,9 +174,12 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   });
   endTime = Date.now();
   requestTime = endTime - startTime;
-  stats.gauge('marketo_bulk_upload_create_csvloop_time', requestTime, {
+  prometheus
+    .getMetrics()
+    .marketoBulkUploadProcessTime.observe({ action: 'create_csvloop' }, requestTime / 1000);
+  /* TODO REMOVE stats.gauge('marketo_bulk_upload_create_csvloop_time', requestTime, {
     integration: 'Marketo_bulk_upload',
-  });
+  }); */
   const fileSize = Buffer.from(csv.join('\n')).length;
   if (csv.length > 1) {
     startTime = Date.now();
@@ -183,12 +188,16 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
     fs.unlinkSync(MARKETO_FILE_PATH);
     endTime = Date.now();
     requestTime = endTime - startTime;
-    stats.gauge('marketo_bulk_upload_create_file_time', requestTime, {
+    prometheus
+      .getMetrics()
+      .marketoBulkUploadProcessTime.observe({ action: 'create_file' }, requestTime / 1000);
+    /* TODO REMOVE stats.gauge('marketo_bulk_upload_create_file_time', requestTime, {
       integration: 'Marketo_bulk_upload',
-    });
-    stats.gauge('marketo_bulk_upload_upload_file_size', fileSize, {
+    }); */
+    prometheus.getMetrics().marketoBulkUploadUploadFileSize.observe(fileSize);
+    /* TODO REMOVE stats.gauge('marketo_bulk_upload_upload_file_size', fileSize, {
       integration: 'Marketo_bulk_upload',
-    });
+    }); */
 
     return { readStream, successfulJobs, unsuccessfulJobs };
   }
@@ -229,15 +238,21 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
       );
       const endTime = Date.now();
       const requestTime = endTime - startTime;
-      stats.gauge('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length, {
+      prometheus
+        .getMetrics()
+        ?.marketoBulkUploadUploadFileJobs.inc({ success: 'true' }, successfulJobs.length);
+      prometheus
+        .getMetrics()
+        ?.marketoBulkUploadUploadFileJobs.inc({ success: 'false' }, unsuccessfulJobs.length);
+      /* TODO REMOVE stats.gauge('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length, {
         integration: 'Marketo_bulk_upload',
       });
-      stats.gauge('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length, {
+      TODO REMOVE stats.gauge('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length, {
         integration: 'Marketo_bulk_upload',
-      });
+      }); */
       if (resp.success) {
         /**
-         * 
+         *
           {
               "requestId": "d01f#15d672f8560",
               "result": [
@@ -258,14 +273,22 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
           resp.response.data.result[0].importId
         ) {
           const { importId } = await resp.response.data.result[0];
-          stats.gauge('marketo_bulk_upload_upload_file_time', requestTime, {
+          prometheus
+            .getMetrics()
+            .marketoBulkUploadProcessTime.observe({ action: 'upload_file' }, requestTime / 1000);
+          /* TODO REMOVE stats.gauge('marketo_bulk_upload_upload_file_time', requestTime, {
             integration: 'Marketo_bulk_upload',
-          });
-          stats.increment(UPLOAD_FILE, 1, {
-            integration: 'Marketo_bulk_upload',
+          }); */
+
+          prometheus.getMetrics().marketoBulkUploadUploadFile.inc({
             status: 200,
             state: 'Success',
           });
+          /* TODO REMOVE stats.increment(UPLOAD_FILE, 1, {
+            integration: 'Marketo_bulk_upload',
+            status: 200,
+            state: 'Success',
+          }); */
           return { importId, successfulJobs, unsuccessfulJobs };
         }
         if (resp.response && resp.response.data) {
@@ -274,11 +297,15 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
             resp.response.data.errors[0].message ===
               'There are 10 imports currently being processed. Please try again later'
           ) {
-            stats.increment(UPLOAD_FILE, 1, {
-              integration: 'Marketo_bulk_upload',
+            prometheus.getMetrics().marketoBulkUploadUploadFile.inc({
               status: 500,
               state: 'Retryable',
             });
+            /* TODO REMOVE stats.increment(UPLOAD_FILE, 1, {
+              integration: 'Marketo_bulk_upload',
+              status: 500,
+              state: 'Retryable',
+            }); */
             throw new RetryableError(
               resp.response.data.errors[0].message || 'Could not upload file',
               500,
@@ -292,43 +319,60 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
               ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code))
           ) {
             if (resp.response.data.errors[0].message === 'Empty file') {
-              stats.increment(UPLOAD_FILE, 1, {
-                integration: 'Marketo_bulk_upload',
+              prometheus.getMetrics().marketoBulkUploadUploadFile.inc({
                 status: 500,
                 state: 'Retryable',
               });
+              /* TODO REMOVE stats.increment(UPLOAD_FILE, 1, {
+                integration: 'Marketo_bulk_upload',
+                status: 500,
+                state: 'Retryable',
+              }); */
               throw new RetryableError(
                 resp.response.data.errors[0].message || 'Could not upload file',
                 500,
                 { successfulJobs, unsuccessfulJobs },
               );
             }
-            stats.increment(UPLOAD_FILE, 1, {
-              integration: 'Marketo_bulk_upload',
+
+            prometheus.getMetrics().marketoBulkUploadUploadFile.inc({
               status: 400,
               state: 'Abortable',
             });
+            /* TODO REMOVE stats.increment(UPLOAD_FILE, 1, {
+              integration: 'Marketo_bulk_upload',
+              status: 400,
+              state: 'Abortable',
+            }); */
             throw new AbortedError(
               resp.response.data.errors[0].message || 'Could not upload file',
               400,
               { successfulJobs, unsuccessfulJobs },
             );
           } else if (THROTTLED_CODES.indexOf(resp.response.data.errors[0].code)) {
-            stats.increment(UPLOAD_FILE, 1, {
-              integration: 'Marketo_bulk_upload',
+            prometheus.getMetrics().marketoBulkUploadUploadFile.inc({
               status: 500,
               state: 'Retryable',
             });
+            /* TODO REMOVE stats.increment(UPLOAD_FILE, 1, {
+              integration: 'Marketo_bulk_upload',
+              status: 500,
+              state: 'Retryable',
+            }); */
             throw new ThrottledError(resp.response.response.statusText || 'Could not upload file', {
               successfulJobs,
               unsuccessfulJobs,
             });
           }
-          stats.increment(UPLOAD_FILE, 1, {
-            integration: 'Marketo_bulk_upload',
+          prometheus.getMetrics().marketoBulkUploadUploadFile.inc({
             status: 500,
             state: 'Retryable',
           });
+          /* TODO REMOVE stats.increment(UPLOAD_FILE, 1, {
+            integration: 'Marketo_bulk_upload',
+            status: 500,
+            state: 'Retryable',
+          }); */
           throw new RetryableError(
             resp.response.response.statusText || 'Error during uploading file',
             500,
@@ -339,11 +383,16 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
     }
     return { successfulJobs, unsuccessfulJobs };
   } catch (err) {
-    stats.increment(UPLOAD_FILE, 1, {
+    // TODO check the tags
+    prometheus.getMetrics().marketoBulkUploadUploadFile.inc({
+      status: err.response?.status || 400,
+      state: err.message || 'Error during uploading file',
+    });
+    /* TODO REMOVE stats.increment(UPLOAD_FILE, 1, {
       integration: 'Marketo_bulk_upload',
       status: err.response?.status || 400,
       errorMessage: err.message || 'Error during uploading file',
-    });
+    }); */
     const status = err.response?.status || 400;
     throw new NetworkError(
       err.message || 'Error during uploading file',
@@ -379,11 +428,16 @@ const responseHandler = async (input, config) => {
     response.metadata = { successfulJobs, unsuccessfulJobs, csvHeader };
     return response;
   }
-  stats.increment(UPLOAD_FILE, 1, {
-    integration: 'Marketo_bulk_upload',
+
+  prometheus.getMetrics().marketoBulkUploadUploadFile.inc({
     status: 500,
     state: 'Retryable',
   });
+  /* TODO REMOVE stats.increment(UPLOAD_FILE, 1, {
+    integration: 'Marketo_bulk_upload',
+    status: 500,
+    state: 'Retryable',
+  }); */
   throw new RetryableError('No import id received', 500, {
     successfulJobs,
     unsuccessfulJobs,

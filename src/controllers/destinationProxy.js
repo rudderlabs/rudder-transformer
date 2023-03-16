@@ -3,9 +3,9 @@ const jsonDiff = require('json-diff');
 const networkHandlerFactory = require('../adapters/networkHandlerFactory');
 const { getPayloadData } = require('../adapters/network');
 const { generateErrorObject } = require('../v0/util');
-const stats = require('../util/stats');
 const logger = require('../logger');
 const tags = require('../v0/util/tags');
+const prometheus = require('../util/prometheus');
 
 const DestProxyController = {
   /**
@@ -48,9 +48,12 @@ const DestProxyController = {
 
       // Compare the destination request payloads from router and proxy
       if (!match(routerDestReqPayload, proxyDestReqPayload)) {
-        stats.counter('proxy_test_payload_mismatch', 1, {
+        prometheus.getMetrics()?.proxyTestPayloadMatch.inc({
           destination,
         });
+        /* TODO REMOVE stats.counter('proxy_test_payload_mismatch', 1, {
+          destination,
+        }); */
 
         logger.error(`[TransformerProxyTest] Destination request payload mismatch!`);
         logger.error(
@@ -79,14 +82,20 @@ const DestProxyController = {
           ...response,
         };
       } else {
-        stats.counter('proxy_test_payload_match', 1, {
+        prometheus.getMetrics()?.proxyTestPayloadMatch.inc({
           destination,
         });
+        /* TODO REMOVE stats.counter('proxy_test_payload_match', 1, {
+          destination,
+        }); */
       }
     } catch (err) {
-      stats.counter('proxy_test_error', 1, {
+      prometheus.getMetrics()?.proxyTestError.inc({
         destination,
       });
+      /* TODO REMOVE stats.counter('proxy_test_error', 1, {
+        destination,
+      }); */
 
       response = generateErrorObject(err, {
         [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),

@@ -1,6 +1,5 @@
 const _ = require('lodash');
 const get = require('get-value');
-const stats = require('../../../util/stats');
 const {
   getShopifyTopic,
   createPropertiesForEcomEvent,
@@ -11,6 +10,7 @@ const {
 const { removeUndefinedAndNullValues } = require('../../util');
 const Message = require('../message');
 const { EventType } = require('../../../constants');
+const prometheus = require('../../../util/prometheus');
 const {
   INTEGERATION,
   MAPPING_CATEGORIES,
@@ -161,18 +161,26 @@ const processEvent = (inputEvent) => {
   }
 
   message = removeUndefinedAndNullValues(message);
-  stats.increment('shopify_server_side_identifier_event', 1, {
+  prometheus.getMetrics().shopifyServerSideIdentifierEvent.inc({
     writeKey: inputEvent.query_parameters?.writeKey?.[0],
     timestamp: Date.now(),
   });
+  /* TODO REMOVE stats.increment('shopify_server_side_identifier_event', 1, {
+    writeKey: inputEvent.query_parameters?.writeKey?.[0],
+    timestamp: Date.now(),
+  }); */
   return message;
 };
 const isIdentifierEvent = (event) => {
   if (event?.event === 'rudderIdentifier') {
-    stats.increment('shopify_client_side_identifier_event', 1, {
+    prometheus.getMetrics().shopifyClientSideIdentifierEvent.inc({
       writeKey: event.query_parameters?.writeKey?.[0],
       timestamp: Date.now(),
     });
+    /* TODO REMOVE stats.increment('shopify_client_side_identifier_event', 1, {
+      writeKey: event.query_parameters?.writeKey?.[0],
+      timestamp: Date.now(),
+    }); */
     return true;
   }
   return false;

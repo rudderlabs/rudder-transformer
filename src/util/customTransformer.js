@@ -3,9 +3,9 @@ const { compileUserLibrary } = require('../util/ivmFactory');
 const fetch = require('node-fetch');
 const { getTransformationCode } = require('./customTransforrmationsStore');
 const { getTransformationCodeV1 } = require('./customTransforrmationsStore-v1');
-const stats = require('./stats');
 const { UserTransformHandlerFactory } = require('./customTransformerFactory');
 const { parserForImport } = require('./parser');
+const prometheus = require('./prometheus');
 
 async function runUserTransform(events, code, eventsMetadata, versionId, testMode = false) {
   const tags = {
@@ -31,7 +31,10 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
         const fetchStartTime = new Date();
         const res = await fetch(...args);
         const data = await res.json();
-        stats.timing('fetch_call_duration', fetchStartTime, { versionId });
+        prometheus
+          .getMetrics()
+          ?.fetchCallDuration.observe({ versionId }, (new Date() - fetchStartTime) / 1000);
+        // TODO REMOVE stats.timing('fetch_call_duration', fetchStartTime, { versionId });
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy('ERROR').copyInto()]);
@@ -60,7 +63,10 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
           data.body = JSON.parse(data.body);
         } catch (e) {}
 
-        stats.timing('fetchV2_call_duration', fetchStartTime, { versionId });
+        prometheus
+          .getMetrics()
+          ?.fetchV2CallDuration.observe({ versionId }, (new Date() - fetchStartTime) / 1000);
+        // TODO REMOVE stats.timing('fetchV2_call_duration', fetchStartTime, { versionId });
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
       } catch (error) {
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
@@ -153,7 +159,8 @@ async function runUserTransform(events, code, eventsMetadata, versionId, testMod
   await customScript.run(context);
   const fnRef = await jail.get('transform', { reference: true });
   // stat
-  stats.counter('events_into_vm', events.length, tags);
+  prometheus.getMetrics()?.eventsIntoVm.inc(tags, events.length);
+  //TODO REMOVE stats.counter('events_into_vm', events.length, tags);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
   const executionPromise = new Promise(async (resolve, reject) => {

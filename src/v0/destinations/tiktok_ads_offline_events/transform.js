@@ -56,7 +56,7 @@ const getTrackResponse = (message, category, Config, event) => {
     set(payload, 'properties.contents', contents);
   }
 
-  const email = message?.traits?.email || message?.context?.traits?.email;
+  const email = message.traits?.email || message.context?.traits?.email;
   if (isDefinedAndNotNullAndNotEmpty(email)) {
     const emails = hashUserProperties
       ? [SHA256(email.trim().toLowerCase()).toString()]
@@ -64,7 +64,7 @@ const getTrackResponse = (message, category, Config, event) => {
     set(payload, 'context.user.emails', emails);
   }
 
-  const phoneNumber = message?.traits?.phone || message?.context?.traits.phone;
+  const phoneNumber = message.traits?.phone || message.context?.traits?.phone;
   if (isDefinedAndNotNullAndNotEmpty(phoneNumber)) {
     const phoneNumbers = hashUserProperties
       ? [SHA256(phoneNumber.trim()).toString()]

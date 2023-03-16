@@ -1,8 +1,9 @@
-const prometheus = require('./util/prometheus');
+const stats = require('./util/stats');
 
 function durationMiddleware() {
   return async (ctx, next) => {
-    const end = prometheus.getMetrics().httpRequestDurationSummary.startTimer();
+    const startTime = new Date();
+
     await next();
 
     const labels = {
@@ -11,14 +12,14 @@ function durationMiddleware() {
       // eslint-disable-next-line no-underscore-dangle
       route: ctx._matchedRoute,
     };
-    end(labels);
+    stats.timing('get_transformation_code_time', startTime, labels);
   };
 }
 
-function addPrometheusMiddleware(app) {
+function addStatMiddleware(app) {
   app.use(durationMiddleware());
 }
 
 module.exports = {
-  addPrometheusMiddleware,
+  addStatMiddleware,
 };

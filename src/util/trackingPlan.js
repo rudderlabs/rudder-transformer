@@ -2,7 +2,7 @@ const NodeCache = require('node-cache');
 const { fetchWithProxy } = require('./fetch');
 const logger = require('../logger');
 const { responseStatusHandler } = require('./utils');
-const prometheus = require('./prometheus');
+const stats = require('./stats');
 
 const tpCache = new NodeCache();
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
@@ -29,15 +29,13 @@ async function getTrackingPlan(tpId, version, workspaceId) {
 
     responseStatusHandler(response.status, 'Tracking plan', tpId, url);
 
-    prometheus.getMetrics()?.getTrackingPlan.observe((new Date() - startTime) / 1000);
-    // TODO REMOVE stats.timing('get_tracking_plan', startTime);
+    stats.timing('get_tracking_plan', startTime);
     const myJson = await response.json();
     tpCache.set(`${tpId}::${version}`, myJson);
     return myJson;
   } catch (error) {
     logger.error(`Failed during trackingPlan fetch : ${error}`);
-    prometheus.getMetrics()?.getTrackingPlanError.inc();
-    //TODO REMOVE stats.increment('get_tracking_plan.error');
+    stats.increment('get_tracking_plan_error');
     throw error;
   }
 }
@@ -74,8 +72,7 @@ async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId
     return eventSchema;
   } catch (error) {
     logger.info(`Failed during eventSchema fetch : ${JSON.stringify(error)}`);
-    prometheus.getMetrics()?.getEventSchemaError.inc();
-    //TODO REMOVE stats.increment('get_eventSchema.error');
+    stats.increment('get_eventSchema_error');
     throw error;
   }
 }

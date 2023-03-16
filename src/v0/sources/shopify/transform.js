@@ -10,7 +10,7 @@ const {
 const { removeUndefinedAndNullValues } = require('../../util');
 const Message = require('../message');
 const { EventType } = require('../../../constants');
-const prometheus = require('../../../util/prometheus');
+const stats = require('../../../util/stats');
 const {
   INTEGERATION,
   MAPPING_CATEGORIES,
@@ -161,26 +161,18 @@ const processEvent = (inputEvent) => {
   }
 
   message = removeUndefinedAndNullValues(message);
-  prometheus.getMetrics().shopifyServerSideIdentifierEvent.inc({
+  stats.increment('shopify_server_side_identifier_event', 1, {
     writeKey: inputEvent.query_parameters?.writeKey?.[0],
     timestamp: Date.now(),
   });
-  /* TODO REMOVE stats.increment('shopify_server_side_identifier_event', 1, {
-    writeKey: inputEvent.query_parameters?.writeKey?.[0],
-    timestamp: Date.now(),
-  }); */
   return message;
 };
 const isIdentifierEvent = (event) => {
   if (event?.event === 'rudderIdentifier') {
-    prometheus.getMetrics().shopifyClientSideIdentifierEvent.inc({
+    stats.increment('shopify_client_side_identifier_event', 1, {
       writeKey: event.query_parameters?.writeKey?.[0],
       timestamp: Date.now(),
     });
-    /* TODO REMOVE stats.increment('shopify_client_side_identifier_event', 1, {
-      writeKey: event.query_parameters?.writeKey?.[0],
-      timestamp: Date.now(),
-    }); */
     return true;
   }
   return false;

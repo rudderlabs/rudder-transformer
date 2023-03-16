@@ -4,7 +4,7 @@ const _ = require('lodash');
 
 const { getLibraryCodeV1, getRudderLibByImportName } = require('./customTransforrmationsStore-v1');
 const logger = require('../logger');
-const prometheus = require('./prometheus');
+const stats = require('./stats');
 
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
 
@@ -323,8 +323,7 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
     reference: true,
   });
   const fName = availableFuncNames[0];
-  prometheus.getMetrics()?.createivmDuration.observe((new Date() - createIvmStartTime) / 1000);
-  // TODO REMOVE stats.timing('createivm_duration', createIvmStartTime);
+  stats.timing('createivm_duration', createIvmStartTime);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
 

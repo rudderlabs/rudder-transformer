@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 const util = require('util');
 const logger = require('../logger');
-const prometheus = require('./prometheus');
+const stats = require('./stats');
 
 class RespStatusError extends Error {
   constructor(message, statusCode) {
@@ -40,30 +40,14 @@ const sendViolationMetrics = (validationErrors, dropped, metaTags) => {
 
   Object.entries(vTags).forEach(([key, value]) => {
     if (value > 0) {
-      prometheus.getMetrics()?.hvMetrics.inc(
-        {
-          ...metaTags,
-          dropped,
-          violationType: key,
-        },
-        value,
-      );
-      // TODO REMOVE stats.counter('hv_metrics', value, { ...metaTags, dropped, violationType: key });
+      stats.counter('hv_metrics', value, { ...metaTags, dropped, violationType: key });
     }
   });
-  prometheus.getMetrics()?.hvMetrics.inc(
-    {
-      ...metaTags,
-      dropped,
-      violationType: 'Total',
-    },
-    validationErrors.length,
-  );
-  /* TODO REMOVE stats.counter('hv_metrics', validationErrors.length, {
+  stats.counter('hv_metrics', validationErrors.length, {
     ...metaTags,
     dropped,
     violationType: 'Total',
-  }); */
+  });
 };
 
 function processInfo() {

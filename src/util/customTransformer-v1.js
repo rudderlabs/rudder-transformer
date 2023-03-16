@@ -3,7 +3,7 @@ const ivm = require('isolated-vm');
 const { getFactory } = require('./ivmFactory');
 const { getMetadata } = require('../v0/util');
 const logger = require('../logger');
-const prometheus = require('./prometheus');
+const stats = require('./stats');
 
 const userTransformTimeout = parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
 
@@ -77,8 +77,7 @@ async function userTransformHandlerV1(
     logger.debug(`Isolate VM created... `);
 
     // Transform the event...
-    prometheus.getMetrics()?.eventsIntoVm.inc(tags, events.length);
-    // TODO REMOVE stats.counter('events_into_vm', events.length, tags);
+    stats.counter('events_into_vm', events.length, tags);
     const isolateStartWallTime = calculateMsFromIvmTime(isolatevm.isolateStartWallTime);
     const isolateStartCPUTime = calculateMsFromIvmTime(isolatevm.isolateStartCPUTime);
 
@@ -99,18 +98,8 @@ async function userTransformHandlerV1(
     console.log('Isolate VM cpu execution time isolateStartWallTime: ', isolateStartWallTime);
     console.log('Isolate VM wall execution time isolateEndWallTime: ', isolateEndWallTime);
 
-    if (isFinite(isolateEndWallTime - isolateStartWallTime)) {
-      prometheus
-        .getMetrics()
-        ?.isolateWallTime.observe(tags, (isolateEndWallTime - isolateStartWallTime) / 1000);
-    }
-    if (isFinite(isolateEndCPUTime - isolateStartCPUTime)) {
-      prometheus
-        .getMetrics()
-        ?.isolateCpuTime.observe(tags, (isolateEndCPUTime - isolateStartCPUTime) / 1000);
-    }
-    // TODO REMOVE stats.timing('isolate_wall_time', isolateEndWallTime - isolateStartWallTime, tags);
-    // TODO REMOVE stats.timing('isolate_cpu_time', isolateEndCPUTime - isolateStartCPUTime, tags);
+    stats.timing('isolate_wall_time', isolateEndWallTime - isolateStartWallTime, tags);
+    stats.timing('isolate_cpu_time', isolateEndCPUTime - isolateStartCPUTime, tags);
 
     // Destroy the isolated vm resources created
     logger.debug(`Isolate VM being destroyed... `);

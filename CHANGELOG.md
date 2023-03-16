@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.16.2](https://github.com/rudderlabs/rudder-transformer/compare/1.16.1...1.16.2) (2023-03-16)
+
+
+### Bug Fixes
+
+* add optional chaining for phone in tiktok_ads_offline_events ([37dc013](https://github.com/rudderlabs/rudder-transformer/commit/37dc0139a28fab113eac4b337f3475ac2ea29262))
+
 ### 1.16.1 (2023-03-15)
 
 

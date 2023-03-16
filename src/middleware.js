@@ -12,7 +12,7 @@ function durationMiddleware() {
       // eslint-disable-next-line no-underscore-dangle
       route: ctx._matchedRoute,
     };
-    stats.timing('get_transformation_code_time', startTime, labels);
+    stats.timing('http_request_duration', startTime, labels);
   };
 }
 

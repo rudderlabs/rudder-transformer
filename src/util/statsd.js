@@ -21,8 +21,8 @@ class Statsd {
     this.statsdClient.timing(name, start, tags);
   }
 
-  increment(name, delta = 1, tags = {}) {
-    this.statsdClient.increment(name, delta, tags);
+  increment(name, tags = {}) {
+    this.statsdClient.increment(name, 1, tags);
   }
 
   counter(name, delta, tags = {}) {

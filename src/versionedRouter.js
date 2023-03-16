@@ -231,7 +231,7 @@ async function handleDest(ctx, version, destination) {
 
   const metaTags =
     events && events.length > 0 && events[0].metadata ? getMetadata(events[0].metadata) : {};
-  stats.increment('dest_transform_input_events', events.length, {
+  stats.counter('dest_transform_input_events', events.length, {
     destination,
     version,
     ...metaTags,
@@ -325,7 +325,7 @@ async function handleDest(ctx, version, destination) {
     ...metaTags,
   });
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
-  stats.increment('dest_transform_output_events', respList.length, {
+  stats.counter('dest_transform_output_events', respList.length, {
     destination,
     version,
     ...metaTags,
@@ -569,7 +569,7 @@ if (startDestTransformer) {
           version,
           ...metaTags,
         });
-        stats.increment('dest_transform_requests', 1, {
+        stats.increment('dest_transform_requests', {
           destination,
           version,
           ...metaTags,
@@ -591,7 +591,7 @@ if (startDestTransformer) {
           destination,
           ...metaTags,
         });
-        stats.increment('dest_transform_requests', 1, {
+        stats.increment('dest_transform_requests', {
           destination,
           version,
           ...metaTags,
@@ -777,7 +777,7 @@ if (startDestTransformer) {
       stats.timing('user_transform_request_latency', startTime, {
         processSessions,
       });
-      stats.increment('user_transform_requests', 1, { processSessions });
+      stats.increment('user_transform_requests', { processSessions });
       stats.counter('user_transform_output_events', transformedEvents.length, {
         processSessions,
       });
@@ -872,7 +872,7 @@ async function handleSource(ctx, version, source) {
   const sourceHandler = getSourceHandler(version, source);
   const events = ctx.request.body;
   logger.debug(`[ST] Input source events: ${JSON.stringify(events)}`);
-  stats.increment('source_transform_input_events', events.length, {
+  stats.counter('source_transform_input_events', events.length, {
     source,
     version,
   });
@@ -954,7 +954,7 @@ if (startSourceTransformer) {
           source,
           version,
         });
-        stats.increment('source_transform_requests', 1, { source, version });
+        stats.increment('source_transform_requests', { source, version });
       });
     });
   });
@@ -1349,12 +1349,6 @@ const handleDeletionOfUsers = async (ctx) => {
   return ctx.body;
   // const { destType } = ctx.request.body;
 };
-const metricsController = async (ctx) => {
-  ctx.status = 200;
-  ctx.type = prometheus.prometheusRegistry.contentType;
-  ctx.body = await prometheus.prometheusRegistry.metrics();
-  return ctx.body;
-};
 
 router.post('/fileUpload', async (ctx) => {
   await fileUpload(ctx);
@@ -1397,7 +1391,7 @@ router.post(`/deleteUsers`, async (ctx) => {
 });
 
 router.get('/metrics', async (ctx) => {
-  await metricsController(ctx);
+  await stats.metricsController(ctx);
 });
 
 module.exports = {

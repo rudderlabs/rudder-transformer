@@ -1,16 +1,27 @@
 const prometheusClient = require('prom-client');
 const logger = require('../logger');
 
-// TODO handle this
-// const enableStats = process.env.ENABLE_STATS !== 'false';
-// const instanceID = process.env.INSTANCE_ID || 'localhost';
-// prefix: 'transformer',
+const instanceID = process.env.INSTANCE_ID || 'localhost';
+// TODO const prefix = 'transformer';
+const defaultLabels = { instanceName: instanceID };
 
 class Prometheus {
   constructor() {
     this.prometheusRegistry = new prometheusClient.Registry();
-    prometheusClient.collectDefaultMetrics({ register: this.prometheusRegistry });
+    prometheusClient.collectDefaultMetrics({
+      register: this.prometheusRegistry,
+      labels: defaultLabels,
+    });
+
+    this.prometheusRegistry.setDefaultLabels(defaultLabels);
     this.createMetrics();
+  }
+
+  async metricsController(ctx) {
+    ctx.status = 200;
+    ctx.type = this.prometheusRegistry.contentType;
+    ctx.body = await this.prometheusRegistry.metrics();
+    return ctx.body;
   }
 
   newCounterStat(name, help, labelNames) {
@@ -60,14 +71,14 @@ class Prometheus {
         logger.error(`Prometheus: Timing metric ${name} not found in the registry`);
         return;
       }
-      metric.inc(tags, (new Date() - start) / 1000);
+      metric.observe({ ...defaultLabels, ...tags }, (new Date() - start) / 1000);
     } catch (e) {
       logger.error(`Prometheus: Timing metric ${name} failed with error ${e}`);
     }
   }
 
-  increment(name, delta = 1, tags = {}) {
-    this.counter(name, delta, tags);
+  increment(name, tags = {}) {
+    this.counter(name, 1, tags);
   }
 
   counter(name, delta, tags = {}) {
@@ -77,9 +88,9 @@ class Prometheus {
         logger.error(`Prometheus: Counter metric ${name} not found in the registry`);
         return;
       }
-      metric.inc(tags, delta);
+      metric.inc({ ...defaultLabels, ...tags }, delta);
     } catch (e) {
-      logger.error(`Prometheus: Counter metric ${name} failed with error ${e}`);
+      logger.error(`Prometheus: Counter metric ${name} failed with error ${e}. Value: ${delta}`);
     }
   }
 
@@ -90,9 +101,9 @@ class Prometheus {
         logger.error(`Prometheus: Gauge metric ${name} not found in the registry`);
         return;
       }
-      metric.set(tags, value);
+      metric.set({ ...defaultLabels, ...tags }, value);
     } catch (e) {
-      logger.error(`Prometheus: Gauge metric ${name} failed with error ${e}`);
+      logger.error(`Prometheus: Gauge metric ${name} failed with error ${e}. Value: ${value}`);
     }
   }
 
@@ -487,7 +498,7 @@ class Prometheus {
       ]),
     );
 
-    // Summary stats
+    // Histogram stats
     this.metrics.set(
       'http_request_duration',
       this.newHistogramStat(
@@ -497,7 +508,6 @@ class Prometheus {
       ),
     );
 
-    // Histogram stats
     this.metrics.set(
       'hv_request_latency',
       this.newHistogramStat('hv_request_latency', 'hv_request_latency', [

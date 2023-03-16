@@ -161,7 +161,7 @@ const processEvent = (inputEvent) => {
   }
 
   message = removeUndefinedAndNullValues(message);
-  stats.increment('shopify_server_side_identifier_event', 1, {
+  stats.increment('shopify_server_side_identifier_event', {
     writeKey: inputEvent.query_parameters?.writeKey?.[0],
     timestamp: Date.now(),
   });
@@ -169,7 +169,7 @@ const processEvent = (inputEvent) => {
 };
 const isIdentifierEvent = (event) => {
   if (event?.event === 'rudderIdentifier') {
-    stats.increment('shopify_client_side_identifier_event', 1, {
+    stats.increment('shopify_client_side_identifier_event', {
       writeKey: event.query_parameters?.writeKey?.[0],
       timestamp: Date.now(),
     });

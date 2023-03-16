@@ -93,10 +93,6 @@ async function userTransformHandlerV1(
     const { logs } = isolatevm;
     const isolateEndWallTime = calculateMsFromIvmTime(isolatevm.isolate.wallTime);
     const isolateEndCPUTime = calculateMsFromIvmTime(isolatevm.isolate.cpuTime);
-    console.log('Isolate VM cpu execution time isolateStartCPUTime: ', isolateStartCPUTime);
-    console.log('Isolate VM cpu execution time isolateEndCPUTime: ', isolateEndCPUTime);
-    console.log('Isolate VM cpu execution time isolateStartWallTime: ', isolateStartWallTime);
-    console.log('Isolate VM wall execution time isolateEndWallTime: ', isolateEndWallTime);
 
     stats.timing('isolate_wall_time', isolateEndWallTime - isolateStartWallTime, tags);
     stats.timing('isolate_cpu_time', isolateEndCPUTime - isolateStartCPUTime, tags);

@@ -248,7 +248,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
           const { importId } = await resp.response.data.result[0];
           stats.gauge('marketo_bulk_upload_upload_file_time', requestTime);
 
-          stats.increment(UPLOAD_FILE, 1, {
+          stats.increment(UPLOAD_FILE, {
             status: 200,
             state: 'Success',
           });
@@ -260,7 +260,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
             resp.response.data.errors[0].message ===
               'There are 10 imports currently being processed. Please try again later'
           ) {
-            stats.increment(UPLOAD_FILE, 1, {
+            stats.increment(UPLOAD_FILE, {
               status: 500,
               state: 'Retryable',
             });
@@ -277,7 +277,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
               ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code))
           ) {
             if (resp.response.data.errors[0].message === 'Empty file') {
-              stats.increment(UPLOAD_FILE, 1, {
+              stats.increment(UPLOAD_FILE, {
                 status: 500,
                 state: 'Retryable',
               });
@@ -288,7 +288,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
               );
             }
 
-            stats.increment(UPLOAD_FILE, 1, {
+            stats.increment(UPLOAD_FILE, {
               status: 400,
               state: 'Abortable',
             });
@@ -298,7 +298,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
               { successfulJobs, unsuccessfulJobs },
             );
           } else if (THROTTLED_CODES.indexOf(resp.response.data.errors[0].code)) {
-            stats.increment(UPLOAD_FILE, 1, {
+            stats.increment(UPLOAD_FILE, {
               status: 500,
               state: 'Retryable',
             });
@@ -307,7 +307,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
               unsuccessfulJobs,
             });
           }
-          stats.increment(UPLOAD_FILE, 1, {
+          stats.increment(UPLOAD_FILE, {
             status: 500,
             state: 'Retryable',
           });
@@ -322,7 +322,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
     return { successfulJobs, unsuccessfulJobs };
   } catch (err) {
     // TODO check the tags
-    stats.increment(UPLOAD_FILE, 1, {
+    stats.increment(UPLOAD_FILE, {
       status: err.response?.status || 400,
       errorMessage: err.message || 'Error during uploading file',
     });
@@ -362,7 +362,7 @@ const responseHandler = async (input, config) => {
     return response;
   }
 
-  stats.increment(UPLOAD_FILE, 1, {
+  stats.increment(UPLOAD_FILE, {
     status: 500,
     state: 'Retryable',
   });

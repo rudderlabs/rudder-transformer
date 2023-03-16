@@ -30,12 +30,12 @@ const timing = (name, start, tags = {}) => {
   statsClient.timing(name, start, tags);
 };
 
-const increment = (name, delta = 1, tags = {}) => {
+const increment = (name, tags = {}) => {
   if (!enableStats || !statsClient) {
     return;
   }
 
-  statsClient.increment(name, delta, tags);
+  statsClient.increment(name, tags);
 };
 
 const counter = (name, delta, tags = {}) => {
@@ -54,4 +54,20 @@ const gauge = (name, value, tags = {}) => {
   statsClient.gauge(name, value, tags);
 };
 
-module.exports = { init, timing, increment, counter, gauge };
+async function metricsController(ctx) {
+  if (!enableStats || !statsClient) {
+    ctx.status = 404;
+    ctx.body = `Not supported`;
+    return;
+  }
+
+  if (statsClientType == 'prometheus') {
+    statsClient.metricsController(ctx);
+    return;
+  }
+
+  ctx.status = 404;
+  ctx.body = `Not supported`;
+}
+
+module.exports = { init, timing, increment, counter, gauge, metricsController };

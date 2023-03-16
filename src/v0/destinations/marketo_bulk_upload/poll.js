@@ -23,7 +23,7 @@ const getPollStatus = async (event) => {
   const requestTime = endTime - startTime;
   if (pollStatus.success) {
     if (pollStatus.response && pollStatus.response.data.success) {
-      stats.increment(POLL_ACTIVITY, 1, {
+      stats.increment(POLL_ACTIVITY, {
         requestTime,
         status: 200,
         state: 'Success',
@@ -52,7 +52,7 @@ const getPollStatus = async (event) => {
           pollStatus.response.data.errors[0].code <= 1077) ||
           ABORTABLE_CODES.includes(pollStatus.response.data.errors[0].code))
       ) {
-        stats.increment(POLL_ACTIVITY, 1, {
+        stats.increment(POLL_ACTIVITY, {
           requestTime,
           status: 400,
           state: 'Abortable',
@@ -63,7 +63,7 @@ const getPollStatus = async (event) => {
           pollStatus,
         );
       } else if (THROTTLED_CODES.includes(pollStatus.response.data.errors[0].code)) {
-        stats.increment(POLL_ACTIVITY, 1, {
+        stats.increment(POLL_ACTIVITY, {
           requestTime,
           status: 500,
           state: 'Retryable',
@@ -73,7 +73,7 @@ const getPollStatus = async (event) => {
           pollStatus,
         );
       }
-      stats.increment(POLL_ACTIVITY, 1, {
+      stats.increment(POLL_ACTIVITY, {
         requestTime,
         status: 500,
         state: 'Retryable',
@@ -85,7 +85,7 @@ const getPollStatus = async (event) => {
       );
     }
   }
-  stats.increment(POLL_ACTIVITY, 1, {
+  stats.increment(POLL_ACTIVITY, {
     requestTime,
     status: 400,
     state: 'Abortable',

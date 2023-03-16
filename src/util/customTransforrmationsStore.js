@@ -22,14 +22,14 @@ async function getTransformationCode(versionId) {
     const response = await fetchWithProxy(url);
 
     responseStatusHandler(response.status, 'Transformation', versionId, url);
-    stats.increment('get_transformation_code');
-    stats.timing('get_transformation_code_time', startTime, { versionId, success: 'true' });
+    stats.increment('get_transformation_code', { versionId, success: 'true' });
+    stats.timing('get_transformation_code_time', startTime, { versionId });
     const myJson = await response.json();
     myCache.set(versionId, myJson);
     return myJson;
   } catch (error) {
     logger.error(error);
-    stats.increment('get_transformation_code', 1, { versionId, success: 'true' });
+    stats.increment('get_transformation_code', { versionId, success: 'false' });
     throw error;
   }
 }

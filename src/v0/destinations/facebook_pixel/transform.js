@@ -177,7 +177,7 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
   const contents = [];
   const useValue = valueFieldIdentifier === 'properties.value';
   const contentId =
-    message.properties.product_id || message.properties.id || message.properties.sku;
+    message.properties?.product_id || message.properties?.sku || message.properties?.id;
   const contentType = getContentType(message, 'product', categoryToContent);
   const contentName = message.properties.product_name || message.properties.name || '';
   const contentCategory = message.properties.category || '';
@@ -220,7 +220,7 @@ const handleSearch = (message) => {
   const contentIds = [];
   const contents = [];
   const contentId =
-    message?.properties?.product_id || message?.properties?.id || message?.properties?.sku;
+    message.properties?.product_id || message.properties?.sku || message.properties?.id;
   const contentCategory = message?.properties?.category || '';
   const value = message?.properties?.value;
   if (contentId) {

@@ -5,7 +5,7 @@ const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 const logger = require('./logger');
-const prometheus = require('./util/prometheus');
+const stats = require('./util/stats');
 const { SUPPORTED_VERSIONS, API_VERSION } = require('./routes/utils/constants');
 const { client: errNotificationClient } = require('./util/errorNotifier');
 const tags = require('./v0/util/tags');
@@ -128,20 +128,17 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
     const diff = process.hrtime(startTime);
     const cdkTime = diff[0] * NS_PER_SEC + diff[1];
 
-    prometheus.getMetrics()?.v0TransformationTimeGauge.set({ destType, feature }, v0Time);
-    prometheus.getMetrics()?.cdkTransformationGauge.set({ destType, feature }, cdkTime);
-    /* TODO remove stats.gauge('v0_transformation_time', v0Time, {
+    stats.gauge('v0_transformation_time', v0Time, {
       destType,
       feature,
     });
-    TODO remove stats.gauge('cdk_transformation_time', cdkTime, {
+    stats.gauge('cdk_transformation_time', cdkTime, {
       destType,
       feature,
-    }); */
+    });
     const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
     if (Object.keys(objectDiff).length > 0) {
-      prometheus.getMetrics()?.cdkLiveCompareTestFailed.inc({ destType, feature });
-      // TODO REMOVE stats.counter('cdk_live_compare_test_failed', 1, { destType, feature });
+      stats.counter('cdk_live_compare_test_failed', 1, { destType, feature });
       logger.error(
         `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff_keys=${JSON.stringify(
           Object.keys(objectDiff),
@@ -164,11 +161,9 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
       // );
       return;
     }
-    prometheus.getMetrics()?.cdkLiveCompareTestSuccess.inc({ destType, feature });
-    // TODO REMOVE stats.counter('cdk_live_compare_test_success', 1, { destType, feature });
+    stats.counter('cdk_live_compare_test_success', 1, { destType, feature });
   } catch (error) {
-    prometheus.getMetrics()?.cdkLiveCompareTestErrored.inc({ destType, feature });
-    // TODO REMOVE stats.counter('cdk_live_compare_test_errored', 1, { destType, feature });
+    stats.counter('cdk_live_compare_test_errored', 1, { destType, feature });
     logger.error(`[LIVE_COMPARE_TEST] errored for destType=${destType}, feature=${feature}`, error);
   }
 }
@@ -236,18 +231,11 @@ async function handleDest(ctx, version, destination) {
 
   const metaTags =
     events && events.length > 0 && events[0].metadata ? getMetadata(events[0].metadata) : {};
-  prometheus.getMetrics()?.destTransformInputEvents.inc(
-    {
-      destination,
-      version,
-      ...metaTags,
-    },
-    events.length,
-  ); /* TODO REMOVE stats.increment('dest_transform_input_events', events.length, {
+  stats.counter('dest_transform_input_events', events.length, {
     destination,
     version,
     ...metaTags,
-  }); */
+  });
   const executeStartTime = new Date();
   let destHandler = null;
   const respList = await Promise.all(
@@ -332,30 +320,16 @@ async function handleDest(ctx, version, destination) {
       }
     }),
   );
-  prometheus.getMetrics()?.cdkEventsLatency.observe(
-    {
-      destination,
-      ...metaTags,
-    },
-    (new Date() - executeStartTime) / 1000,
-  );
-  /* TODO REMOVE stats.timing('cdk_events_latency', executeStartTime, {
+  stats.timing('cdk_events_latency', executeStartTime, {
     destination,
     ...metaTags,
-  }); */
+  });
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
-  prometheus.getMetrics()?.destTransformOutputEvents.inc(
-    {
-      destination,
-      version,
-      ...metaTags,
-    },
-    respList.length,
-  ); /* TODO REMOVE stats.increment('dest_transform_output_events', respList.length, {
+  stats.counter('dest_transform_output_events', respList.length, {
     destination,
     version,
     ...metaTags,
-  }); */
+  });
   ctx.body = respList.flat();
   return ctx.body;
 }
@@ -386,14 +360,10 @@ async function handleValidation(ctx) {
           validationErrors: hv.validationErrors,
           error: errMessage,
         });
-        prometheus.getMetrics()?.hvViolationType.inc({
+        stats.counter('hv_violation_type', 1, {
           violationType: hv.violationType,
           ...metaTags,
         });
-        /* TODO REMOVE stats.counter('hv_violation_type', 1, {
-          violationType: hv.violationType,
-          ...metaTags,
-        }); */
       } else {
         respList.push({
           output: event.message,
@@ -401,16 +371,9 @@ async function handleValidation(ctx) {
           statusCode: 200,
           validationErrors: hv.validationErrors,
         });
-        prometheus.getMetrics()?.hvViolationType.inc({
-          violationType: hv.violationType,
+        stats.counter('hv_propagated_events', 1, {
           ...metaTags,
         });
-        prometheus.getMetrics()?.hvPropagatedEvents.inc({
-          ...metaTags,
-        });
-        /* TODO REMOVE stats.counter('hv_propagated_events', 1, {
-          ...metaTags,
-        }); */
       }
     } catch (error) {
       const errMessage = `Error occurred while validating : ${error}`;
@@ -430,58 +393,29 @@ async function handleValidation(ctx) {
         error: errMessage,
       });
 
-      prometheus.getMetrics()?.hvErrors.inc({
+      stats.counter('hv_errors', 1, {
         ...metaTags,
       });
-      /* TODO REMOVE stats.counter('hv_errors', 1, {
-        ...metaTags,
-      }); */
     } finally {
-      prometheus.getMetrics()?.hvEventLatency.observe(
-        {
-          ...metaTags,
-        },
-        (new Date() - eventStartTime) / 1000,
-      );
-      /* TODO REMOVE stats.timing('hv_event_latency', eventStartTime, {
+      stats.timing('hv_event_latency', eventStartTime, {
         ...metaTags,
-      }); */
+      });
     }
   }
   ctx.body = respList;
   ctx.status = ctxStatusCode;
   ctx.set('apiVersion', API_VERSION);
 
-  prometheus.getMetrics()?.hvEventsCount.inc(
-    {
-      ...metaTags,
-    },
-    events.length,
-  );
-
   // TODO change to histogram
-  prometheus.getMetrics()?.hvRequestSize.inc(
-    {
-      ...metaTags,
-    },
-    requestSize,
-  );
-
-  prometheus.getMetrics()?.hvRequestLatency.observe(
-    {
-      ...metaTags,
-    },
-    (new Date() - requestStartTime) / 1000,
-  );
-  /* TODO REMOVE stats.counter('hv_events_count', events.length, {
+  stats.counter('hv_events_count', events.length, {
     ...metaTags,
   });
-  TODO REMOVE stats.counter('hv_request_size', requestSize, {
+  stats.counter('hv_request_size', requestSize, {
     ...metaTags,
   });
-  TODO REMOVE stats.timing('hv_request_latency', requestStartTime, {
+  stats.timing('hv_request_latency', requestStartTime, {
     ...metaTags,
-  }); */
+  });
 }
 
 async function isValidRouterDest(event, destType) {
@@ -630,30 +564,16 @@ if (startDestTransformer) {
             ? getMetadata(ctx.request.body[0].metadata)
             : {};
 
-        prometheus.getMetrics()?.destTransformRequestLatency.observe(
-          {
-            destination,
-            version,
-            ...metaTags,
-          },
-          (new Date() - startTime) / 1000,
-        );
-
-        prometheus.getMetrics()?.destTransformRequests.inc({
+        stats.timing('dest_transform_request_latency', startTime, {
           destination,
           version,
           ...metaTags,
         });
-        /* TODO REMOVE stats.timing('dest_transform_request_latency', startTime, {
+        stats.increment('dest_transform_requests', {
           destination,
           version,
           ...metaTags,
         });
-        TODO REMOVEstats.increment('dest_transform_requests', 1, {
-          destination,
-          version,
-          ...metaTags,
-        }); */
       });
       // eg. v0/ga. will be deprecated in favor of v0/destinations/ga format
       router.post(`/${version}/${destination}`, async (ctx) => {
@@ -667,28 +587,15 @@ if (startDestTransformer) {
             ? getMetadata(ctx.request.body[0].metadata)
             : {};
 
-        prometheus.getMetrics()?.destTransformRequestLatency.observe(
-          {
-            destination,
-            version,
-            ...metaTags,
-          },
-          (new Date() - startTime) / 1000,
-        );
-        prometheus.getMetrics()?.destTransformRequests.inc({
+        stats.timing('dest_transform_request_latency', startTime, {
+          destination,
+          ...metaTags,
+        });
+        stats.increment('dest_transform_requests', {
           destination,
           version,
           ...metaTags,
         });
-        /* TODO REMOVE stats.timing('dest_transform_request_latency', startTime, {
-          destination,
-          ...metaTags,
-        });
-        TODO REMOVE stats.increment('dest_transform_requests', 1, {
-          destination,
-          version,
-          ...metaTags,
-        }); */
       });
       router.post('/routerTransform', async (ctx) => {
         ctx.set('apiVersion', API_VERSION);
@@ -733,10 +640,9 @@ if (startDestTransformer) {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
-      prometheus.getMetrics()?.userTransformInputEvents.inc({ processSessions }, events.length);
-      /* TODO Remove stats.counter('user_transform_input_events', events.length, {
+      stats.counter('user_transform_input_events', events.length, {
         processSessions,
-      }); */
+      });
       let groupedEvents;
       if (processSessions) {
         groupedEvents = _.groupBy(events, (event) => {
@@ -750,15 +656,9 @@ if (startDestTransformer) {
           (event) => `${event.metadata.destinationId}_${event.metadata.sourceId}`,
         );
       }
-      prometheus
-        .getMetrics()
-        ?.userTransformFunctionGroupSize.inc(
-          { processSessions },
-          Object.entries(groupedEvents).length,
-        );
-      /* TODO REMOVE stats.counter('user_transform_function_group_size', Object.entries(groupedEvents).length, {
+      stats.counter('user_transform_function_group_size', Object.entries(groupedEvents).length, {
         processSessions,
-      }); */
+      });
 
       let ctxStatusCode = 200;
       const transformedEvents = [];
@@ -791,16 +691,10 @@ if (startDestTransformer) {
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
-              prometheus
-                .getMetrics()
-                ?.userTransformFunctionInputEvents.inc(
-                  { processSessions, ...metaTags },
-                  destEvents.length,
-                );
-              /* TODO REMOVE stats.counter('user_transform_function_input_events', destEvents.length, {
+              stats.counter('user_transform_function_input_events', destEvents.length, {
                 processSessions,
                 ...metaTags,
-              }); */
+              });
               destTransformedEvents = await userTransformHandler()(
                 destEvents,
                 transformationVersionId,
@@ -847,33 +741,17 @@ if (startDestTransformer) {
                 error: errorString,
               }));
               transformedEvents.push(...destTransformedEvents);
-              prometheus.getMetrics()?.userTransformErrors.inc(
-                {
-                  transformationVersionId,
-                  processSessions,
-                  ...metaTags,
-                },
-                destEvents.length,
-              );
-              /* TODO REMOVE stats.counter('user_transform_errors', destEvents.length, {
+              stats.counter('user_transform_errors', destEvents.length, {
                 transformationVersionId,
                 processSessions,
                 ...metaTags,
-              }); */
+              });
             } finally {
-              prometheus.getMetrics()?.userTransformFunctionLatency.observe(
-                {
-                  transformationVersionId,
-                  processSessions,
-                  ...metaTags,
-                },
-                (new Date() - userFuncStartTime) / 1000,
-              );
-              /* TODO REMOVE stats.timing('user_transform_function_latency', userFuncStartTime, {
+              stats.timing('user_transform_function_latency', userFuncStartTime, {
                 transformationVersionId,
                 processSessions,
                 ...metaTags,
-              }); */
+              });
             }
           } else {
             const errorMessage = 'Transformation VersionID not found';
@@ -883,19 +761,11 @@ if (startDestTransformer) {
               error: errorMessage,
               metadata: commonMetadata,
             });
-            prometheus.getMetrics()?.userTransformErrors.inc(
-              {
-                transformationVersionId,
-                processSessions,
-                ...metaTags,
-              },
-              destEvents.length,
-            );
-            /* TODO REMOVE stats.counter('user_transform_errors', destEvents.length, {
+            stats.counter('user_transform_errors', destEvents.length, {
               transformationVersionId,
               processSessions,
               ...metaTags,
-            }); */
+            });
           }
         }),
       );
@@ -904,28 +774,13 @@ if (startDestTransformer) {
       ctx.status = ctxStatusCode;
       ctx.set('apiVersion', API_VERSION);
 
-      prometheus.getMetrics()?.userTransformRequestLatency.observe(
-        {
-          processSessions,
-        },
-        (new Date() - startTime) / 1000,
-      );
-      prometheus.getMetrics()?.userTransformRequests.inc({
+      stats.timing('user_transform_request_latency', startTime, {
         processSessions,
       });
-      prometheus.getMetrics()?.userTransformOutputEvents.inc(
-        {
-          processSessions,
-        },
-        transformedEvents.length,
-      );
-      /* TODO REMOVE stats.timing('user_transform_request_latency', startTime, {
+      stats.increment('user_transform_requests', { processSessions });
+      stats.counter('user_transform_output_events', transformedEvents.length, {
         processSessions,
       });
-      TODO REMOVE stats.increment('user_transform_requests', 1, { processSessions });
-      TODO REMOVE stats.counter('user_transform_output_events', transformedEvents.length, {
-        processSessions,
-      }); */
     });
   }
 }
@@ -1017,17 +872,10 @@ async function handleSource(ctx, version, source) {
   const sourceHandler = getSourceHandler(version, source);
   const events = ctx.request.body;
   logger.debug(`[ST] Input source events: ${JSON.stringify(events)}`);
-  prometheus.getMetrics()?.sourceTransformInputEvents.inc(
-    {
-      source,
-      version,
-    },
-    events.length,
-  );
-  /* TODO REMOVE stats.increment('source_transform_input_events', events.length, {
+  stats.counter('source_transform_input_events', events.length, {
     source,
     version,
-  }); */
+  });
   const respList = [];
   await Promise.all(
     events.map(async (event) => {
@@ -1072,17 +920,10 @@ async function handleSource(ctx, version, source) {
 
         respList.push(resp);
 
-        prometheus.getMetrics()?.sourceTransformErrors.inc(
-          {
-            source,
-            version,
-          },
-          events.length,
-        );
-        /* TODO REMOVE stats.counter('source_transform_errors', events.length, {
+        stats.counter('source_transform_errors', events.length, {
           source,
           version,
-        }); */
+        });
         errNotificationClient.notify(error, 'Source Transformation', {
           ...resp,
           ...getCommonMetadata(ctx),
@@ -1092,17 +933,10 @@ async function handleSource(ctx, version, source) {
     }),
   );
   logger.debug(`[ST] Output source events: ${JSON.stringify(respList)}`);
-  prometheus.getMetrics()?.sourceTransformOutputEvents.inc(
-    {
-      source,
-      version,
-    },
-    respList.length,
-  );
-  /* TODO REMOVE stats.increment('source_transform_output_events', respList.length, {
+  stats.increment('source_transform_output_events', respList.length, {
     source,
     version,
-  }); */
+  });
   ctx.body = respList;
   ctx.set('apiVersion', API_VERSION);
 }
@@ -1116,22 +950,11 @@ if (startSourceTransformer) {
         const startTime = new Date();
         await handleSource(ctx, version, source);
 
-        prometheus.getMetrics()?.sourceTransformRequestLatency.observe(
-          {
-            source,
-            version,
-          },
-          (new Date() - startTime) / 1000,
-        );
-        prometheus.getMetrics()?.sourceTransformRequests.inc({
+        stats.timing('source_transform_request_latency', startTime, {
           source,
           version,
         });
-        /* TODO REMOVE stats.timing('source_transform_request_latency', startTime, {
-          source,
-          version,
-        });
-        TODO REMOVE stats.increment('source_transform_requests', 1, { source, version }); */
+        stats.increment('source_transform_requests', { source, version });
       });
     });
   });
@@ -1151,46 +974,31 @@ async function handleProxyRequest(destination, ctx) {
   const destNetworkHandler = networkHandlerFactory.getNetworkHandler(destination);
   let response;
   try {
-    prometheus.getMetrics()?.tfProxyDestReqCount.inc({
+    stats.counter('tf_proxy_dest_req_count', 1, {
       destination,
     });
-    /* TODO REMOVE stats.counter('tf_proxy_dest_req_count', 1, {
-      destination,
-    }); */
     const startTime = new Date();
     const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest);
 
-    prometheus.getMetrics()?.transformerProxyTime.observe(
-      {
-        destination,
-      },
-      (new Date() - startTime) / 1000,
-    );
-    prometheus.getMetrics()?.tfProxyDestRespCount.inc({
+    stats.timing('transformer_proxy_time', startTime, {
+      destination,
+    });
+    stats.counter('tf_proxy_dest_resp_count', 1, {
       destination,
       success: rawProxyResponse.success,
     });
-    /* TODO REMOVE stats.timing('transformer_proxy_time', startTime, {
-      destination,
-    });
-    TODO REMOVE stats.counter('tf_proxy_dest_resp_count', 1, {
-      destination,
-      success: rawProxyResponse.success,
-    }); */
 
     const processedProxyResponse = destNetworkHandler.processAxiosResponse(rawProxyResponse);
-    prometheus.getMetrics()?.tfProxyProcAxResponseCount.inc({ destination });
-    /* TODO REMOVE stats.counter('tf_proxy_proc_ax_response_count', 1, {
+    stats.counter('tf_proxy_proc_ax_response_count', 1, {
       destination,
-    }); */
+    });
     response = destNetworkHandler.responseHandler(
       { ...processedProxyResponse, rudderJobMetadata: metadata },
       destination,
     );
-    prometheus.getMetrics()?.tfProxyRespHandlerCount.inc({ destination });
-    /* TODO REMOVE stats.counter('tf_proxy_resp_handler_count', 1, {
+    stats.counter('tf_proxy_resp_handler_count', 1, {
       destination,
-    }); */
+    });
   } catch (err) {
     logger.error('Error occurred while completing proxy request:');
     logger.error(err);
@@ -1214,10 +1022,9 @@ async function handleProxyRequest(destination, ctx) {
       statTags: errObj.statTags,
     };
 
-    prometheus.getMetrics()?.tfProxyErrCount.inc({ destination });
-    /* TODO REMOVE stats.counter('tf_proxy_err_count', 1, {
+    stats.counter('tf_proxy_err_count', 1, {
       destination,
-    }); */
+    });
 
     errNotificationClient.notify(err, 'Data Delivery', {
       ...response,
@@ -1241,17 +1048,10 @@ if (transformerProxy) {
         ctx.set('apiVersion', API_VERSION);
         await handleProxyRequest(destination, ctx);
 
-        prometheus.getMetrics()?.transformerTotalProxyLatency.observe(
-          {
-            destination,
-            version,
-          },
-          (new Date() - startTime) / 1000,
-        );
-        /* TODO REMOVE stats.timing('transformer_total_proxy_latency', startTime, {
+        stats.timing('transformer_total_proxy_latency', startTime, {
           destination,
           version,
-        }); */
+        });
       });
     });
   });
@@ -1549,12 +1349,6 @@ const handleDeletionOfUsers = async (ctx) => {
   return ctx.body;
   // const { destType } = ctx.request.body;
 };
-const metricsController = async (ctx) => {
-  ctx.status = 200;
-  ctx.type = prometheus.prometheusRegistry.contentType;
-  ctx.body = await prometheus.prometheusRegistry.metrics();
-  return ctx.body;
-};
 
 router.post('/fileUpload', async (ctx) => {
   await fileUpload(ctx);
@@ -1594,10 +1388,6 @@ router.post(`/v0/validate`, async (ctx) => {
 // }
 router.post(`/deleteUsers`, async (ctx) => {
   await handleDeletionOfUsers(ctx);
-});
-
-router.get('/metrics', async (ctx) => {
-  await metricsController(ctx);
 });
 
 module.exports = {

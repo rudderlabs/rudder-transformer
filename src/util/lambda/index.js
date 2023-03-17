@@ -15,7 +15,7 @@ const {
 const { v4: uuidv4 } = require('uuid');
 const logger = require('../../logger');
 const { isABufferValue, bufferToString, TRANSFORM_WRAPPER_CODE } = require('./utils');
-const prometheus = require('../prometheus');
+const stats = require('../stats');
 
 const LAMBDA_MAX_WAIT_TIME = parseInt(process.env.MAX_WAIT_TIME || '30', 10);
 const LAMBDA_DELAY = parseInt(process.env.DELAY || '2', 10);
@@ -48,8 +48,7 @@ const createZip = async (userCode) =>
         resolve(fileName);
       })
       .on('error', (err) => {
-        prometheus.getMetrics()?.createZipError.inc({ fileName });
-        // TODO REMOVE stats.counter('create_zip_error', 1, { fileName });
+        stats.counter('create_zip_error', 1, { fileName });
         logger.error(`Error while creating zip file: ${err.message}`);
         reject(err);
       });
@@ -61,8 +60,7 @@ const createAndReadZip = async (functionName, code) => {
   fsNonPromise.unlink(zipFileName, (err) => {
     if (err) {
       logger.error(`Error occurred while deleting zip file: ${err.message}`);
-      prometheus.getMetrics()?.deleteZipError.inc({ functionName });
-      // TODO REMOVE stats.counter('delete_zip_error', 1, { functionName });
+      stats.counter('delete_zip_error', 1, { functionName });
       return;
     }
     logger.debug(`Zip file has been deleted: ${zipFileName}`);

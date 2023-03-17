@@ -1,7 +1,7 @@
 const { removeUndefinedValues } = require('../../util');
-const { getAccessToken, ABORTABLE_CODES, THROTTLED_CODES } = require('./util');
+const { getAccessToken, ABORTABLE_CODES, THROTTLED_CODES, POLL_ACTIVITY } = require('./util');
 const { httpGET } = require('../../../adapters/network');
-const prometheus = require('../../../util/prometheus');
+const stats = require('../../../util/stats');
 const { AbortedError, ThrottledError, RetryableError } = require('../../util/errorTypes');
 
 const getPollStatus = async (event) => {
@@ -17,19 +17,17 @@ const getPollStatus = async (event) => {
     },
   };
   const pollUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`;
+  const startTime = Date.now();
   const pollStatus = await httpGET(pollUrl, requestOptions);
+  const endTime = Date.now();
+  const requestTime = endTime - startTime;
   if (pollStatus.success) {
     if (pollStatus.response && pollStatus.response.data.success) {
-      prometheus.getMetrics().marketoBulkUploadPolling.inc({
-        status: 200,
-        state: 'Success',
-      });
-      /* TODO REMOVE  stats.increment(POLL_ACTIVITY, 1, {
-        integration: 'Marketo_bulk_upload',
+      stats.increment(POLL_ACTIVITY, {
         requestTime,
         status: 200,
         state: 'Success',
-      }); */
+      });
       return pollStatus.response;
     }
     // DOC: https://developers.marketo.com/rest-api/error-codes/
@@ -54,47 +52,32 @@ const getPollStatus = async (event) => {
           pollStatus.response.data.errors[0].code <= 1077) ||
           ABORTABLE_CODES.includes(pollStatus.response.data.errors[0].code))
       ) {
-        prometheus.getMetrics().marketoBulkUploadPolling.inc({
-          status: 400,
-          state: 'Abortable',
-        });
-        /* TODO REMOVE  stats.increment(POLL_ACTIVITY, 1, {
-          integration: 'Marketo_bulk_upload',
+        stats.increment(POLL_ACTIVITY, {
           requestTime,
           status: 400,
           state: 'Abortable',
-        }); */
+        });
         throw new AbortedError(
           pollStatus.response.data.errors[0].message || 'Could not poll status',
           400,
           pollStatus,
         );
       } else if (THROTTLED_CODES.includes(pollStatus.response.data.errors[0].code)) {
-        prometheus.getMetrics().marketoBulkUploadPolling.inc({
-          status: 500,
-          state: 'Retryable',
-        });
-        /* TODO REMOVE stats.increment(POLL_ACTIVITY, 1, {
-          integration: 'Marketo_bulk_upload',
+        stats.increment(POLL_ACTIVITY, {
           requestTime,
           status: 500,
           state: 'Retryable',
-        }); */
+        });
         throw new ThrottledError(
           pollStatus.response.data.errors[0].message || 'Could not poll status',
           pollStatus,
         );
       }
-      prometheus.getMetrics().marketoBulkUploadPolling.inc({
-        status: 500,
-        state: 'Retryable',
-      });
-      /* TODO REMOVE stats.increment(POLL_ACTIVITY, 1, {
-        integration: 'Marketo_bulk_upload',
+      stats.increment(POLL_ACTIVITY, {
         requestTime,
         status: 500,
         state: 'Retryable',
-      }); */
+      });
       throw new RetryableError(
         pollStatus.response.response.statusText || 'Error during polling status',
         500,
@@ -102,16 +85,11 @@ const getPollStatus = async (event) => {
       );
     }
   }
-  prometheus.getMetrics().marketoBulkUploadPolling.inc({
-    status: 400,
-    state: 'Abortable',
-  });
-  /* TODO REMOVE stats.increment(POLL_ACTIVITY, 1, {
-    integration: 'Marketo_bulk_upload',
+  stats.increment(POLL_ACTIVITY, {
     requestTime,
     status: 400,
     state: 'Abortable',
-  }); */
+  });
   throw new AbortedError('Could not poll status', 400, pollStatus);
 };
 

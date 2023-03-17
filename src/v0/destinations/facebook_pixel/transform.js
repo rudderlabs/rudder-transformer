@@ -2,7 +2,7 @@
 const sha256 = require('sha256');
 const get = require('get-value');
 const moment = require('moment');
-const prometheus = require('../../../util/prometheus');
+const stats = require('../../../util/stats');
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -410,12 +410,9 @@ const processEvent = (message, destination) => {
     const deltaMin = Math.ceil(moment.duration(start.diff(current)).asMinutes());
     if (deltaDay > 7 || deltaMin > 1) {
       // TODO: Remove after testing in mirror transformer
-      prometheus.getMetrics().fbPixelTimestampError.inc({
+      stats.increment('fb_pixel_timestamp_error', {
         destinationId: destination.ID,
       });
-      /* TODO REMOVE stats.increment('fb_pixel_timestamp_error', 1, {
-        destinationId: destination.ID,
-      }); */
       throw new InstrumentationError(
         'Events must be sent within seven days of their occurrence or up to one minute in the future.',
       );

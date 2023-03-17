@@ -3,19 +3,23 @@ const bodyParser = require('koa-bodyparser');
 require('dotenv').config();
 const gracefulShutdown = require('http-graceful-shutdown');
 const logger = require('./logger');
+const stats = require('./util/stats');
 
 const { router } = require('./versionedRouter');
 const { testRouter } = require('./testRouter');
+const { metricsRouter } = require('./metricsRouter');
 const cluster = require('./util/cluster');
-const { addPrometheusMiddleware } = require('./middleware');
+const { addStatMiddleware } = require('./middleware');
 const { logProcessInfo } = require('./util/utils');
 
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
 
 const port = parseInt(process.env.PORT || '9090', 10);
 
+stats.init();
+
 const app = new Koa();
-addPrometheusMiddleware(app);
+addStatMiddleware(app);
 
 app.use(
   bodyParser({
@@ -34,6 +38,8 @@ function finalFunction() {
 if (clusterEnabled) {
   cluster.start(port, app);
 } else {
+  app.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());
+
   const server = app.listen(port);
 
   process.on('SIGTERM', () => {

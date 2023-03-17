@@ -1,7 +1,7 @@
 const { getMetadata } = require('../v0/util');
 const { invokeLambda, setupLambda } = require('./lambda');
 const { LOG_DEF_CODE } = require('./lambda/utils');
-const prometheus = require('./prometheus');
+const stats = require('./stats');
 
 async function runLambdaUserTransform(events, userTransformation, testMode = false) {
   if (events.length === 0) {
@@ -14,8 +14,7 @@ async function runLambdaUserTransform(events, userTransformation, testMode = fal
     ...metaTags,
   };
   if (!testMode && !userTransformation.handleId) {
-    prometheus.getMetrics()?.missingHandle.inc(tags);
-    // TODO REMOVE stats.counter('missing_handle', 1, tags);
+    stats.counter('missing_handle', 1, tags);
     throw new Error('Handle id is not connected to transformation');
   }
 
@@ -25,8 +24,7 @@ async function runLambdaUserTransform(events, userTransformation, testMode = fal
   const qualifier = userTransformation.handleId;
   const invokeTime = new Date();
   const result = await invokeLambda(functionName, events, qualifier);
-  prometheus.getMetrics()?.lambdaInvokeTime.observe(tags, (new Date() - invokeTime) / 1000);
-  // TODO REMOVE stats.timing('lambda_invoke_time', invokeTime, tags);
+  stats.timing('lambda_invoke_time', invokeTime, tags);
 
   return result;
 }
@@ -42,8 +40,7 @@ async function setLambdaUserTransform(userTransformation, testWithPublish) {
 
   const setupTime = new Date();
   const result = await setupLambda(userTransformation.testName, lambdaCode, testWithPublish);
-  prometheus.getMetrics()?.lambdaTestTime.observe(tags, (new Date() - setupTime) / 1000);
-  // TODO REMOVE stats.timing('lambda_test_time', setupTime, tags);
+  stats.timing('lambda_test_time', setupTime, tags);
 
   return result;
 }

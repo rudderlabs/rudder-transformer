@@ -2,7 +2,7 @@ const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
 const NodeCache = require('node-cache');
 const { getMetadata } = require('../v0/util');
-const prometheus = require('./prometheus');
+const stats = require('./stats');
 const {
   setupFaasFunction,
   executeFaasFunction,
@@ -114,8 +114,7 @@ async function setOpenFaasUserTransform(
     testMode,
   );
 
-  prometheus.getMetrics()?.creationTime.observe(tags, (new Date() - setupTime) / 1000);
-  // TODO REMOVE stats.timing('creation_time', setupTime, tags);
+  stats.timing('creation_time', setupTime, tags);
   return { success: true, publishedVersion: functionName };
 }
 /**
@@ -170,8 +169,7 @@ async function runOpenFaasUserTransform(
     ),
     testMode,
   );
-  prometheus.getMetrics()?.runTime.observe(tags, (new Date() - invokeTime) / 1000);
-  // TODO REMOVE stats.timing('run_time', invokeTime, tags);
+  stats.timing('run_time', invokeTime, tags);
   return result;
 }
 

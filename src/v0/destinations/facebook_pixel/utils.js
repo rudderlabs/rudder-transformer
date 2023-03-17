@@ -1,5 +1,5 @@
 const sha256 = require('sha256');
-const { isObject, getFieldValueFromMessage, formatTimeStamp } = require('../../util');
+const { isObject, getFieldValueFromMessage, formatTimeStamp, getIntegrationsObj } = require('../../util');
 
 const { InstrumentationError } = require('../../util/errorTypes');
 
@@ -28,14 +28,11 @@ const formatRevenue = (revenue) => {
  * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
  */
 const getContentType = (message, defaultValue, categoryToContent) => {
-  const { integrations, properties } = message;
-  if (
-    integrations &&
-    integrations.FacebookPixel &&
-    isObject(integrations.FacebookPixel) &&
-    integrations.FacebookPixel.contentType
-  ) {
-    return integrations.FacebookPixel.contentType;
+  const { properties } = message;
+  const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
+
+  if(integrationsObj?.contentType){
+    return integrationsObj.contentType;
   }
 
   let { category } = properties;

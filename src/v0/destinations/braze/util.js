@@ -1,5 +1,9 @@
+/* eslint-disable camelcase */
+const _ = require('lodash');
+const get = require('get-value');
 const { httpPOST } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
+const { getDestinationExternalID, getFieldValueFromMessage } = require('../../util');
 
 const getEndpointFromConfig = (destination) => {
   // Init -- mostly for test cases
@@ -17,8 +21,8 @@ const getEndpointFromConfig = (destination) => {
   return endpoint;
 };
 
-class BrazeDedupUtility {
-  static doLookup(inputs) {
+const BrazeDedupUtility = {
+  doLookup(inputs) {
     const externalIds = [];
     const aliasIds = [];
     // eslint-disable-next-line no-restricted-syntax
@@ -55,9 +59,9 @@ class BrazeDedupUtility {
     const { users } = processedLookUpResponse;
 
     return users;
-  }
+  },
 
-  static enrichUserStore(users, store) {
+  enrichUserStore(users, store) {
     users.forEach((user) => {
       if (user.external_id) {
         store.set(user.external_id, user);
@@ -69,9 +73,9 @@ class BrazeDedupUtility {
         });
       }
     });
-  }
+  },
 
-  static getUserDataFromStore(inputUserData, store) {
+  getUserDataFromStore(inputUserData, store) {
     const { external_id, user_alias } = inputUserData;
     let storedUserData;
     if (external_id) {
@@ -81,17 +85,25 @@ class BrazeDedupUtility {
       storedUserData = store.get(rudderIdAlias.alias_name);
     }
     return storedUserData;
-  }
+  },
 
-  static deduplicate(userData, store) {
+  deduplicate(userData, store) {
     const storedUserData = this.getUserDataFromStore(userData, store);
     const { external_id, user_alias } = userData;
     let deduplicatedUserData = {};
     if (storedUserData) {
       Object.keys(userData)
         .filter((key) => key !== 'external_id' || key !== 'user_alias')
+        .filter(
+          (key) =>
+            !(
+              Object.keys(userData[key]).includes('$add') ||
+              Object.keys(userData[key]).includes('$update') ||
+              Object.keys(userData[key]).includes('$remove')
+            ),
+        )
         .forEach((key) => {
-          if (userData[key] !== storedUserData[key]) {
+          if (_.isEqual(userData[key], storedUserData[key])) {
             deduplicatedUserData[key] = userData[key];
           }
         });
@@ -108,11 +120,10 @@ class BrazeDedupUtility {
         external_id || user_alias.find((alias) => alias.alias_label === 'rudder_id').alias_name;
       store.set(identifier, { ...storedUserData, ...deduplicatedUserData });
       return deduplicatedUserData;
-    } else {
-      return userData;
     }
-  }
-}
+    return userData;
+  },
+};
 
 module.exports = {
   getEndpointFromConfig,

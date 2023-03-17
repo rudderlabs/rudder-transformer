@@ -215,13 +215,17 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
   } = Config;
   const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
 
-  const endpoint = `https://graph.facebook.com/v13.0/${pixelId}/events?access_token=${accessToken}`;
+  const endpoint = `https://graph.facebook.com/v16.0/${pixelId}/events?access_token=${accessToken}`;
 
   const userData = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name],
     'fb_pixel',
   );
+  const { removeExternalId } = Config;
+  if (removeExternalId) {
+    delete userData.external_id;
+  }
   if (userData) {
     const split = userData.name ? userData.name.split(' ') : null;
     if (split !== null && Array.isArray(split) && split.length === 2) {
@@ -242,7 +246,10 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
     if (!isActionSourceValid) {
       throw new InstrumentationError('Invalid Action Source type');
     }
+  } else {
+    commonData.action_source = 'other';
   }
+
   if (category.type !== 'identify') {
     customData = flattenJson(
       extractCustomFields(message, customData, ['properties'], FB_PIXEL_DEFAULT_EXCLUSION),

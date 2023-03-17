@@ -62,7 +62,7 @@ async function userTransformHandlerV1(
     const metaTags = events.length && events[0].metadata ? getMetadata(events[0].metadata) : {};
     const tags = {
       transformerVersionId: userTransformation.versionId,
-      version: 1,
+      identifier: 'v1',
       ...metaTags,
     };
 
@@ -71,16 +71,18 @@ async function userTransformHandlerV1(
       userTransformation.code,
       libraryVersionIds,
       userTransformation.versionId,
+      userTransformation.secrets || {},
       testMode,
     );
     const isolatevm = await isolatevmFactory.create();
     logger.debug(`Isolate VM created... `);
 
     // Transform the event...
-    stats.counter('events_into_vm', events.length, tags);
+    stats.gauge('events_to_process', events.length, tags);
     const isolateStartWallTime = calculateMsFromIvmTime(isolatevm.isolateStartWallTime);
     const isolateStartCPUTime = calculateMsFromIvmTime(isolatevm.isolateStartCPUTime);
-
+    
+    const invokeTime = new Date();
     let transformedEvents;
     // Destroy isolatevm in case of execution errors
     try {
@@ -91,6 +93,7 @@ async function userTransformHandlerV1(
       throw err;
     }
     const { logs } = isolatevm;
+    stats.timing('run_time', invokeTime, tags);
     const isolateEndWallTime = calculateMsFromIvmTime(isolatevm.isolate.wallTime);
     const isolateEndCPUTime = calculateMsFromIvmTime(isolatevm.isolate.cpuTime);
     stats.timing('isolate_wall_time', isolateEndWallTime - isolateStartWallTime, tags);

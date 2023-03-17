@@ -25,6 +25,7 @@ const whGroupColumnMappingRules = require('./config/WHGroupConfig.js');
 const whAliasColumnMappingRules = require('./config/WHAliasConfig.js');
 const { isDataLakeProvider } = require('./config/helpers');
 const { InstrumentationError } = require('../v0/util/errorTypes');
+const whExtractEventTableColumnMappingRules = require("./config/WHExtractEventTableConfig.js");
 
 const maxColumnsInEvent = parseInt(process.env.WH_MAX_COLUMNS_IN_EVENT || '200', 10);
 
@@ -66,6 +67,7 @@ const rudderReservedColums = {
   screen: { ...whDefaultColumnMappingRules, ...whScreenColumnMappingRules },
   group: { ...whDefaultColumnMappingRules, ...whGroupColumnMappingRules },
   alias: { ...whDefaultColumnMappingRules, ...whAliasColumnMappingRules },
+  extract: { ...whExtractEventTableColumnMappingRules }
 };
 
 function excludeRudderCreatedTableNames(name, skipReservedKeywordsEscaping = false) {
@@ -567,6 +569,79 @@ function processWarehouseMessage(message, options) {
 
   // store columnTypes as each column is set, so as not to call getDataType again
   switch (eventType) {
+    case 'extract': {
+      // set properties common to both tracks and event table
+      const commonProps = {};
+      const commonColumnTypes = {};
+
+      setDataFromInputAndComputeColumnTypes(
+        utils,
+        eventType,
+        commonProps,
+        message.context,
+        commonColumnTypes,
+        options,
+        'context_',
+      );
+
+      // set event column based on event_text in the tracks table
+      const eventColName = utils.safeColumnName(options, 'event');
+      commonProps[eventColName] = utils.transformTableName(
+        options,
+        message[utils.safeColumnName(options, 'event')],
+      );
+      commonColumnTypes[eventColName] = 'string';
+
+      // -----start: event table------
+      const extractProps = {};
+      const eventTableColumnTypes = {};
+
+      setDataFromInputAndComputeColumnTypes(
+        utils,
+        eventType,
+        extractProps,
+        message.properties,
+        eventTableColumnTypes,
+        options,
+      );
+      setDataFromColumnMappingAndComputeColumnTypes(
+        utils,
+        commonProps,
+        message,
+        whExtractEventTableColumnMappingRules,
+        commonColumnTypes,
+        options,
+      );
+
+      // return error if event name is missing
+      if (_.toString(commonProps[eventColName]).trim() === '') {
+        throw new InstrumentationError("cannot create event table with empty event name, event name is missing in the payload")
+      }
+      // always set commonProps last so that they are not overwritten
+      const eventTableEvent = {
+        ...extractProps,
+        ...commonProps,
+      };
+      const eventTableMetadata = {
+        table: excludeRudderCreatedTableNames(
+          utils.safeTableName(
+            options,
+            utils.transformColumnName(options, eventTableEvent[eventColName]),
+          ),
+          skipReservedKeywordsEscaping,
+        ),
+        columns: getColumns(options, eventTableEvent, {
+          ...eventTableColumnTypes,
+          ...commonColumnTypes,
+        }), // override tracksColumnTypes with columnTypes from commonColumnTypes
+        receivedAt: message.receivedAt,
+      };
+      responses.push({
+        metadata: eventTableMetadata,
+        data: eventTableEvent
+      });
+      break;
+    }
     case 'track': {
       // set properties common to both tracks and event table
       const commonProps = {};

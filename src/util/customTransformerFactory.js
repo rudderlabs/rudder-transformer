@@ -6,10 +6,10 @@ const { userTransformHandlerV1, setUserTransformHandlerV1 } = require('./customT
 
 const UserTransformHandlerFactory = (userTransformation) => {
   const transformHandler = {
-    setUserTransform: async (testWithPublish) => {
+    setUserTransform: async (libraryVersionIds, testWithPublish) => {
       switch (userTransformation.language) {
         case 'pythonfaas':
-          return setOpenFaasUserTransform(userTransformation, testWithPublish);
+          return setOpenFaasUserTransform(userTransformation, libraryVersionIds, testWithPublish);
         case 'python':
           return setLambdaUserTransform(userTransformation, testWithPublish);
         default:
@@ -17,14 +17,14 @@ const UserTransformHandlerFactory = (userTransformation) => {
       }
     },
 
-    runUserTransfrom: async (events, testMode, libraryVersionIDs) => {
+    runUserTransfrom: async (events, testMode, libraryVersionIds) => {
       switch (userTransformation.language) {
         case 'pythonfaas':
-          return runOpenFaasUserTransform(events, userTransformation, testMode);
+          return runOpenFaasUserTransform(events, userTransformation, libraryVersionIds, testMode);
         case 'python':
           return runLambdaUserTransform(events, userTransformation, testMode);
         default:
-          return userTransformHandlerV1(events, userTransformation, libraryVersionIDs, testMode);
+          return userTransformHandlerV1(events, userTransformation, libraryVersionIds, testMode);
       }
     },
   };

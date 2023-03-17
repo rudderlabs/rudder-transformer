@@ -1141,5 +1141,157 @@
     "files": {},
     "userId": "e91e0378-63fe-11ec-82ac-0a028ee659c3",
     "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v2/batch",
+    "headers": {
+      "Authorization": "Basic YzBlZmRiZDIwYjlmYmUyNGE3ZTI6ZWYzMmMzZjYwZmI5OGYzOWVmMzU="
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "type": "object",
+        "action": "identify",
+        "attributes": {
+          "name": "rudderstack",
+          "email": "help@rudderstack.com",
+          "domainNames": "rudderstack.com"
+        },
+        "identifiers": {
+          "object_id": "group@1",
+          "object_type_id": "1"
+        },
+        "cio_relationships": [
+          {
+            "identifiers": {
+              "id": "user@1"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {}
+    },
+    "files": {},
+    "userId": "user@1",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v2/batch",
+    "headers": {
+      "Authorization": "Basic YzBlZmRiZDIwYjlmYmUyNGE3ZTI6ZWYzMmMzZjYwZmI5OGYzOWVmMzU="
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "type": "object",
+        "action": "delete",
+        "attributes": {
+          "name": "rudderstack",
+          "email": "help@rudderstack.com",
+          "domainNames": "rudderstack.com"
+        },
+        "identifiers": {
+          "object_id": "group@1",
+          "object_type_id": "1"
+        },
+        "cio_relationships": [
+          {
+            "identifiers": {
+              "id": "user@1"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {}
+    },
+    "files": {},
+    "userId": "user@1",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v2/batch",
+    "headers": {
+      "Authorization": "Basic YzBlZmRiZDIwYjlmYmUyNGE3ZTI6ZWYzMmMzZjYwZmI5OGYzOWVmMzU="
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "type": "object",
+        "action": "add_relationships",
+        "attributes": {
+          "name": "rudderstack",
+          "email": "help@rudderstack.com",
+          "domainNames": "rudderstack.com"
+        },
+        "identifiers": {
+          "object_id": "group@1",
+          "object_type_id": "1"
+        },
+        "cio_relationships": [
+          {
+            "identifiers": {
+              "id": "user@1"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {}
+    },
+    "files": {},
+    "userId": "user@1",
+    "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v2/batch",
+    "headers": {
+      "Authorization": "Basic YzBlZmRiZDIwYjlmYmUyNGE3ZTI6ZWYzMmMzZjYwZmI5OGYzOWVmMzU="
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "type": "object",
+        "action": "delete_relationships",
+        "attributes": {
+          "name": "rudderstack",
+          "email": "help@rudderstack.com",
+          "domainNames": "rudderstack.com"
+        },
+        "identifiers": {
+          "object_id": "group@1",
+          "object_type_id": "1"
+        },
+        "cio_relationships": [
+          {
+            "identifiers": {
+              "id": "user@1"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {}
+    },
+    "files": {},
+    "userId": "user@1",
+    "statusCode": 200
   }
 ]

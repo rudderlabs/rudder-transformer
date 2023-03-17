@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+const _ = require('lodash');
 const sha256 = require('sha256');
 const { constructPayload, extractCustomFields, flattenJson, generateUUID } = require('../../util');
 const { DBConnector } = require('../../../util/redisConnector');
@@ -155,16 +156,15 @@ const setAnonymousIdorUserIdAndStore = async (message) => {
     case SHOPIFY_TRACK_MAP.carts_update:
       cartToken = message?.properties?.id;
       break;
-
+    // https://help.shopify.com/en/manual/orders/edit-orders -> order can be edited through admin only
+    // https://help.shopify.com/en/manual/orders/fulfillment/setting-up-fulfillment -> fullfillments wont include cartToken neither in manual or automatiic
+    case SHOPIFY_TRACK_MAP.orders_edited:
     case SHOPIFY_TRACK_MAP.fulfillments_create:
     case SHOPIFY_TRACK_MAP.fulfillments_update:
       if (!message?.userId) {
         message.setProperty('userId', 'admin');
       }
       return;
-    case SHOPIFY_TRACK_MAP.orders_edited: // TODO:
-      cartToken = message?.properties?.order_id;
-      break;
     default:
   }
   try {
@@ -187,15 +187,73 @@ const setAnonymousIdorUserIdAndStore = async (message) => {
 };
 
 /**
- * This function returns true if payloads are same or Timestamp difference is less 10 seconds otherwise false
+ * It compares the line items element wise and checks the properties parameter for every element
+ * as for duplicate ones it may be same.
+ * It returns true if every item matches.
+ * Example:
+ * Input :
+ * prevLineItems: [
+ * {...,
+ * properties:null,
+ * ...
+ * },
+ * {...,
+ * properties:null,
+ * ...
+ * }]
+ *
+ * newLineItems: [
+ * {...,
+ * properties:{},
+ * ...
+ * },
+ * {...,
+ * properties:{},
+ * ...
+ * }]
+ *
+ * This above example can shwo you the need of this function
+ * that is to check for properties parameter as
+ * in some cases it is {} and in others as null
+ * which makes it difficult to comapre the json
+ * @param {*} prevLineItems
+ * @param {*} newLineItems
+ * @returns
+ */
+// https://shopify.dev/docs/api/liquid/objects/line_item#line_item-properties
+const compareLineItems = (prevLineItems, newLineItems) => {
+  let noOfItems = prevLineItems.length;
+  while (noOfItems > 0) {
+    const modifiedPrev = _.cloneDeep(prevLineItems[noOfItems - 1]);
+    const modifiedNew = _.cloneDeep(newLineItems[noOfItems - 1]);
+    if (modifiedPrev?.properties === null) {
+      modifiedPrev.properties = {};
+    }
+    if (modifiedNew?.properties === null) {
+      modifiedNew.properties = {};
+    }
+    if (JSON.stringify(modifiedPrev) !== JSON.stringify(modifiedNew)) {
+      return false;
+    }
+    noOfItems -= 1;
+  }
+  return true;
+};
+
+/**
+ * This function returns true if payloads are same or Timestamp difference is less than `timeDifferenceForCartEvents` seconds otherwise false
  * @param {*} prevPayload
  * @param {*} newPayload
  */
 const compareCartPayloadandTimestamp = (prevPayload, newPayload) => {
+  if (prevPayload.line_items.length !== newPayload.line_items.length) {
+    return false;
+  }
   if (
     Date.parse(newPayload.updated_at) - Date.parse(prevPayload.updated_at) <
       timeDifferenceForCartEvents ||
-    JSON.stringify(prevPayload.line_items) === JSON.stringify(newPayload.line_items)
+    prevPayload.line_items.length === 0 ||
+    compareLineItems(prevPayload.line_items, newPayload.line_items)
   ) {
     return true;
   }
@@ -210,17 +268,22 @@ const checkForValidRecord = async (event) => {
   const cartToken = event.cart_token || event.token;
   const redisInstance = await DBConnector.getRedisInstance();
   let redisVal = {};
+  let a;
   try {
-    const a = await redisInstance.get(`${cartToken}`);
-    if (a) {
-      redisVal = JSON.parse(a);
-      if (redisVal && compareCartPayloadandTimestamp(redisVal, event)) {
-        return false;
-      }
-    }
-    await redisInstance.set(`${cartToken}`, JSON.stringify({ ...redisVal, ...event }));
+    a = await redisInstance.get(`${cartToken}`);
   } catch (e) {
     logger.error(`Could not get cart details due error: ${e}`);
+  }
+  if (a) {
+    redisVal = JSON.parse(a);
+    if (redisVal && compareCartPayloadandTimestamp(redisVal, event)) {
+      return false;
+    }
+  }
+  try {
+    await redisInstance.set(`${cartToken}`, JSON.stringify({ ...redisVal, ...event }));
+  } catch (e) {
+    logger.error(`Could not set cart details due error: ${e}`);
   }
   return true;
 };

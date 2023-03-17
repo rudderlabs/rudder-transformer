@@ -8,12 +8,11 @@ const defaultLabels = { instanceName: instanceID };
 class Prometheus {
   constructor() {
     this.prometheusRegistry = new prometheusClient.Registry();
+    this.prometheusRegistry.setDefaultLabels(defaultLabels);
     prometheusClient.collectDefaultMetrics({
       register: this.prometheusRegistry,
-      labels: defaultLabels,
     });
 
-    this.prometheusRegistry.setDefaultLabels(defaultLabels);
     this.createMetrics();
   }
 
@@ -71,7 +70,7 @@ class Prometheus {
         logger.error(`Prometheus: Timing metric ${name} not found in the registry`);
         return;
       }
-      metric.observe({ ...defaultLabels, ...tags }, (new Date() - start) / 1000);
+      metric.observe(tags, (new Date() - start) / 1000);
     } catch (e) {
       logger.error(`Prometheus: Timing metric ${name} failed with error ${e}`);
     }
@@ -88,7 +87,7 @@ class Prometheus {
         logger.error(`Prometheus: Counter metric ${name} not found in the registry`);
         return;
       }
-      metric.inc({ ...defaultLabels, ...tags }, delta);
+      metric.inc(tags, delta);
     } catch (e) {
       logger.error(`Prometheus: Counter metric ${name} failed with error ${e}. Value: ${delta}`);
     }
@@ -101,7 +100,7 @@ class Prometheus {
         logger.error(`Prometheus: Gauge metric ${name} not found in the registry`);
         return;
       }
-      metric.set({ ...defaultLabels, ...tags }, value);
+      metric.set(tags, value);
     } catch (e) {
       logger.error(`Prometheus: Gauge metric ${name} failed with error ${e}. Value: ${value}`);
     }

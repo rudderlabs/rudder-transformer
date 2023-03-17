@@ -1390,10 +1390,6 @@ router.post(`/deleteUsers`, async (ctx) => {
   await handleDeletionOfUsers(ctx);
 });
 
-router.get('/metrics', async (ctx) => {
-  await stats.metricsController(ctx);
-});
-
 module.exports = {
   router,
   handleDest,

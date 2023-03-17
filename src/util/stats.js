@@ -1,5 +1,6 @@
 const statsd = require('./statsd');
 const prometheus = require('./prometheus');
+const logger = require('../logger');
 
 const enableStats = process.env.ENABLE_STATS !== 'false';
 const statsClientType = process.env.STATS_CLIENT || 'prometheus';
@@ -12,12 +13,12 @@ function init() {
 
   if (statsClientType === 'statsd') {
     statsClient = new statsd.Statsd();
-    console.log('created statsd client');
+    logger.info('created statsd client');
   } else if (statsClientType === 'prometheus') {
     statsClient = new prometheus.Prometheus();
-    console.log('created prometheus client');
+    logger.info('created prometheus client');
   } else {
-    console.log("Invalid stats client type. Valid values are 'statsd' and 'prometheus'.");
+    logger.info("Invalid stats client type. Valid values are 'statsd' and 'prometheus'.");
   }
 }
 
@@ -61,7 +62,7 @@ async function metricsController(ctx) {
     return;
   }
 
-  if (statsClientType == 'prometheus') {
+  if (statsClientType === 'prometheus') {
     statsClient.metricsController(ctx);
     return;
   }

@@ -246,13 +246,15 @@ const compareLineItems = (prevLineItems, newLineItems) => {
  * @param {*} newPayload
  */
 const compareCartPayloadandTimestamp = (prevPayload, newPayload) => {
-  if (prevPayload.line_items.length !== newPayload.line_items.length) {
+  // The cart?.items.length param is in the case when rudder identifier is stored in the database
+  const prevPayloadLineItemslength = prevPayload?.line_items?.length || prevPayload.cart?.items.length
+  if (prevPayloadLineItemslength !== newPayload.line_items?.length) {
     return false;
   }
   if (
     Date.parse(newPayload.updated_at) - Date.parse(prevPayload.updated_at) <
       timeDifferenceForCartEvents ||
-    prevPayload.line_items.length === 0 ||
+      newPayload.line_items?.length === 0 ||
     compareLineItems(prevPayload.line_items, newPayload.line_items)
   ) {
     return true;

@@ -515,6 +515,13 @@
                     "orders_updated"
                 ]
             },
+            "shipping_address": "abc",
+            "billing_address": "abc",
+            "customer": {
+                "email": "test_person@email.com",
+                "first_name": "Test",
+                "last_name": "Person"
+            },
             "cart_token": null,
             "checkout_id": 36601802719507,
             "checkout_token": "checkout token",
@@ -561,6 +568,13 @@
                 "created_at": "2023-02-10T12:05:04.402Z",
                 "products": [],
                 "updated_at": "2023-02-10T12:16:07.251Z"
+            },
+            "traits": {
+                "shippingAddress": "abc",
+                "billingAddress": "abc",
+                "email": "test_person@email.com",
+                "firstName": "Test",
+                "lastName": "Person"
             },
             "timestamp": "2023-02-10T12:16:07.251Z"
         }

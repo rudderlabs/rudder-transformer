@@ -1,47 +1,45 @@
 [
   {
-    "batchedRequest": [
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.fra-01.braze.eu/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "partner": "RudderStack",
-            "events": [
-              {
-                "name": "Page Viewed",
-                "time": "2020-01-24T11:59:02.402+05:30",
-                "properties": {
-                  "path": "/tests/html/index2.html",
-                  "referrer": "",
-                  "search": "",
-                  "title": "",
-                  "url": "http://localhost/tests/html/index2.html"
-                },
-                "_update_existing_only": false,
-                "user_alias": {
-                  "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                  "alias_label": "rudder_id"
-                }
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rest.fra-01.braze.eu/users/track",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "partner": "RudderStack",
+          "events": [
+            {
+              "name": "Page Viewed",
+              "time": "2020-01-24T11:59:02.402+05:30",
+              "properties": {
+                "path": "/tests/html/index2.html",
+                "referrer": "",
+                "search": "",
+                "title": "",
+                "url": "http://localhost/tests/html/index2.html"
+              },
+              "_update_existing_only": false,
+              "user_alias": {
+                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+                "alias_label": "rudder_id"
               }
-            ]
-          },
-          "XML": {},
-          "JSON_ARRAY": {},
-          "FORM": {}
+            }
+          ]
         },
-        "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-      }
-    ],
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    },
     "metadata": [
       {
         "jobId": 2
@@ -54,8 +52,7 @@
         "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "dataCenter": "eu-01",
-        "endPoint": "https://rest.fra-01.braze.eu"
+        "dataCenter": "eu-01"
       },
       "DestinationDefinition": {
         "DisplayName": "Braze",
@@ -69,71 +66,40 @@
     }
   },
   {
-    "batchedRequest": [
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "headers": {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                  "alias_label": "rudder_id"
-                }
-              }
-            ]
-          },
-          "XML": {},
-          "JSON_ARRAY": {},
-          "FORM": {}
-        },
-        "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://rest.iad-01.braze.com/users/track",
+      "headers": {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
       },
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "email": "mickey@disney.com",
-                "city": "Disney",
-                "country": "USA",
-                "firstname": "Mickey",
-                "_update_existing_only": false,
-                "user_alias": {
-                  "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                  "alias_label": "rudder_id"
-                }
+      "params": {},
+      "body": {
+        "JSON": {
+          "attributes": [
+            {
+              "email": "mickey@disney.com",
+              "city": "Disney",
+              "country": "USA",
+              "firstname": "Mickey",
+              "_update_existing_only": false,
+              "user_alias": {
+                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+                "alias_label": "rudder_id"
               }
-            ]
-          },
-          "XML": {},
-          "JSON_ARRAY": {},
-          "FORM": {}
+            }
+          ]
         },
-        "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-      }
-    ],
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    },
     "metadata": [
       {
         "jobId": 2
@@ -146,8 +112,7 @@
         "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "dataCenter": "us-01",
-        "endPoint": "https://rest.iad-01.braze.com"
+        "dataCenter": "us-01"
       },
       "DestinationDefinition": {
         "DisplayName": "Braze",

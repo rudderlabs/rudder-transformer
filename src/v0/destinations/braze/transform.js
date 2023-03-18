@@ -230,7 +230,7 @@ function getUserAttributesObject(message, mappingJson, destination) {
       traits,
       data,
       message.properties?.mergeObjectsUpdateOperation,
-      destination.Config.enableNestedArrayOperations,
+      destination?.Config.enableNestedArrayOperations,
     );
   }
 
@@ -272,7 +272,13 @@ function processTrackWithUserAttributes(message, destination, mappingJson, dedup
   let payload = getUserAttributesObject(message, mappingJson);
   if (payload && Object.keys(payload).length > 0) {
     payload = setExternalIdOrAliasObject(payload, message);
-    payload = BrazeDedupUtility.deduplicate(payload, deduplicationStore);
+    const dedupedAttributePayload = BrazeDedupUtility.deduplicate(
+      payload,
+      deduplicationStore.userStore,
+    );
+    if (destination.Config.deduplicationEnabled && dedupedAttributePayload) {
+      payload = dedupedAttributePayload;
+    }
     return buildResponse(
       message,
       destination,
@@ -280,7 +286,9 @@ function processTrackWithUserAttributes(message, destination, mappingJson, dedup
       getTrackEndPoint(getEndpointFromConfig(destination)),
     );
   }
-  return null;
+  throw new InstrumentationError(
+    'No attributes found to update the user, the anonymous (alias only) user has been identified with proved userId',
+  );
 }
 
 function handleReservedProperties(props) {
@@ -363,7 +371,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, dedup
     requestJson.attributes = [attributePayload];
     const dedupedAttributePayload = BrazeDedupUtility.deduplicate(
       attributePayload,
-      deduplicationStore,
+      deduplicationStore.userStore,
     );
     if (destination.Config.deduplicationEnabled && dedupedAttributePayload) {
       requestJson.attributes = [dedupedAttributePayload];
@@ -480,7 +488,7 @@ function processGroup(message, destination) {
   );
 }
 
-async function process(event, deduplicationStore) {
+async function process(event, deduplicationStore = { userStore: new Map() }) {
   let response;
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
@@ -521,7 +529,12 @@ async function process(event, deduplicationStore) {
       if (message.anonymousId) {
         await processIdentify(message, destination);
       }
-      response = processTrackWithUserAttributes(message, destination, mappingConfig[category.name]);
+      response = processTrackWithUserAttributes(
+        message,
+        destination,
+        mappingConfig[category.name],
+        deduplicationStore,
+      );
       break;
     case EventType.GROUP:
       response = processGroup(message, destination);
@@ -730,7 +743,7 @@ function batch(destEvents) {
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const userStore = new Map();
-  const lookedUpUsers = BrazeDedupUtility.doLookup(inputs);
+  const lookedUpUsers = await BrazeDedupUtility.doLookup(inputs);
   BrazeDedupUtility.enrichUserStore(lookedUpUsers, userStore);
 
   // group events by userId or anonymousId and then call process
@@ -740,16 +753,16 @@ const processRouterDest = async (inputs, reqMetadata) => {
   );
 
   // process each group of events for userId or anonymousId
-  const allResps = groupedInputs.map(async (groupedInput) => {
-    const respList = await simpleProcessRouterDest(groupedInput, process, reqMetadata, {
+  const allResps = Object.keys(groupedInputs).map(async (id) => {
+    const respList = await simpleProcessRouterDest(groupedInputs[id], process, reqMetadata, {
       userStore,
     });
     return respList;
   });
 
-  await Promise.all(allResps);
+  const output = await Promise.all(allResps);
 
-  return _.flatMap(allResps);
+  return _.flatMap(output);
 };
 
 module.exports = { process, processRouterDest, batch };

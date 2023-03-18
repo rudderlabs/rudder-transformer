@@ -41,6 +41,14 @@ const CustomAttributeOperationTypes = {
   CREATE: 'create',
 };
 
+const BRAZE_NON_BILLABLE_ATTRIBUTES = [
+  'country',
+  'language',
+  'email_subscribe',
+  'push_subscribe',
+  'subscription_groups',
+];
+
 module.exports = {
   ConfigCategory,
   mappingConfig,
@@ -53,4 +61,5 @@ module.exports = {
   DESTINATION,
   CustomAttributeOperationTypes,
   DEL_MAX_BATCH_SIZE,
+  BRAZE_NON_BILLABLE_ATTRIBUTES,
 };

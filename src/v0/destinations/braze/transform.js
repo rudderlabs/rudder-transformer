@@ -6,7 +6,6 @@ const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   adduserIdFromExternalId,
-  defaultBatchRequestConfig,
   defaultRequestConfig,
   getDestinationExternalID,
   getFieldValueFromMessage,
@@ -23,8 +22,6 @@ const {
   getTrackEndPoint,
   getSubscriptionGroupEndPoint,
   BRAZE_PARTNER_NAME,
-  TRACK_BRAZE_MAX_REQ_COUNT,
-  IDENTIFY_BRAZE_MAX_REQ_COUNT,
   CustomAttributeOperationTypes,
 } = require('./config');
 
@@ -244,10 +241,10 @@ async function processIdentify(message, destination) {
     adduserIdFromExternalId(message);
   }
 
-  const indetifyPayload = getIdentifyPayload(message);
+  const identifyPayload = getIdentifyPayload(message);
   const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
 
-  const brazeIdentifyResp = await httpPOST(identifyEndpoint, indetifyPayload, {
+  const brazeIdentifyResp = await httpPOST(identifyEndpoint, identifyPayload, {
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
@@ -272,12 +269,18 @@ function processTrackWithUserAttributes(message, destination, mappingJson, dedup
   let payload = getUserAttributesObject(message, mappingJson);
   if (payload && Object.keys(payload).length > 0) {
     payload = setExternalIdOrAliasObject(payload, message);
-    const dedupedAttributePayload = BrazeDedupUtility.deduplicate(
-      payload,
-      deduplicationStore.userStore,
-    );
-    if (destination.Config.deduplicationEnabled && dedupedAttributePayload) {
-      payload = dedupedAttributePayload;
+
+    if (destination.Config.deduplicationEnabled) {
+      const dedupedAttributePayload = BrazeDedupUtility.deduplicate(
+        payload,
+        deduplicationStore.userStore,
+      );
+      payload =
+        Object.keys(dedupedAttributePayload).some(
+          (key) => !['external_id', 'user_alias'].includes(key),
+        ).length > 0
+          ? dedupedAttributePayload
+          : payload;
     }
     return buildResponse(
       message,
@@ -369,12 +372,16 @@ function processTrackEvent(messageType, message, destination, mappingJson, dedup
   if (attributePayload && Object.keys(attributePayload).length > 0) {
     attributePayload = setExternalIdOrAliasObject(attributePayload, message);
     requestJson.attributes = [attributePayload];
-    const dedupedAttributePayload = BrazeDedupUtility.deduplicate(
-      attributePayload,
-      deduplicationStore.userStore,
-    );
-    if (destination.Config.deduplicationEnabled && dedupedAttributePayload) {
-      requestJson.attributes = [dedupedAttributePayload];
+    if (destination.Config.deduplicationEnabled) {
+      const dedupedAttributePayload = BrazeDedupUtility.deduplicate(
+        attributePayload,
+        deduplicationStore.userStore,
+      );
+      requestJson.attributes = Object.keys(dedupedAttributePayload).some(
+        (key) => !['external_id', 'user_alias'].includes(key),
+      )
+        ? [dedupedAttributePayload]
+        : [attributePayload];
     }
   }
 
@@ -547,205 +554,13 @@ async function process(event, deduplicationStore = { userStore: new Map() }) {
   return response;
 }
 
-/*
- *
-  input: [
-   { "message": {"id": "m1"}, "metadata": {"job_id": 1}, "destination": {"ID": "a", "url": "a"} },
-   { "message": {"id": "m2"}, "metadata": {"job_id": 2}, "destination": {"ID": "a", "url": "a"} },
-   { "message": {"id": "m3"}, "metadata": {"job_id": 3}, "destination": {"ID": "a", "url": "a"} },
-   { "message": {"id": "m4"}, "metadata": {"job_id": 4}, "destination": {"ID": "a", "url": "a"} }
-  ]
-  output: [
-    { batchedRequest: {}, jobs: [1, 3]},
-    { batchedRequest: {}, jobs: [2, 4]},
-  ]
-  */
-
-function formatBatchResponse(batchPayload, metadataList, destination) {
-  const response = defaultBatchRequestConfig();
-  response.batchedRequest = batchPayload;
-  response.metadata = metadataList;
-  response.destination = destination;
-  return response;
-}
-
-function batch(destEvents) {
-  const respList = [];
-  let trackEndpoint;
-  let identifyEndpoint;
-  let jsonBody;
-  let endPoint;
-  let type;
-  let attributesBatch = [];
-  let eventsBatch = [];
-  let purchasesBatch = [];
-  let trackMetadataBatch = [];
-  let identifyMetadataBatch = [];
-  let aliasBatch = [];
-  let index = 0;
-
-  while (index < destEvents.length) {
-    // take out a single event
-    const ev = destEvents[index];
-    const { message, metadata, destination } = ev;
-
-    // get the JSON body
-    jsonBody = get(message, 'body.JSON');
-
-    // get the type
-    endPoint = get(message, 'endpoint');
-    type = endPoint && endPoint.includes('track') ? 'track' : 'identify';
-
-    index += 1;
-
-    // if it is a track keep on adding to the existing track list
-    // keep a count of event, attribute, purchases - 75 is the cap
-    if (type === 'track') {
-      // keep the trackEndpoint for reuse later
-      if (!trackEndpoint) {
-        trackEndpoint = endPoint;
-      }
-
-      // look for events, attributes, purchases
-      const { events, attributes, purchases } = jsonBody;
-
-      // if total count = 75 form a new batch
-      const maxCount = Math.max(
-        attributesBatch.length + (attributes ? attributes.length : 0),
-        eventsBatch.length + (events ? events.length : 0),
-        purchasesBatch.length + (purchases ? purchases.length : 0),
-      );
-
-      if (
-        maxCount > TRACK_BRAZE_MAX_REQ_COUNT &&
-        (attributesBatch.length > 0 || eventsBatch.length > 0 || purchasesBatch.length > 0)
-      ) {
-        const batchResponse = defaultRequestConfig();
-        batchResponse.headers = message.headers;
-        batchResponse.endpoint = trackEndpoint;
-        const responseBodyJson = {
-          partner: BRAZE_PARTNER_NAME,
-        };
-        if (attributesBatch.length > 0) {
-          responseBodyJson.attributes = attributesBatch;
-        }
-        if (eventsBatch.length > 0) {
-          responseBodyJson.events = eventsBatch;
-        }
-        if (purchasesBatch.length > 0) {
-          responseBodyJson.purchases = purchasesBatch;
-        }
-        batchResponse.body.JSON = responseBodyJson;
-        // modify the endpoint to track endpoint
-        batchResponse.endpoint = trackEndpoint;
-        respList.push(formatBatchResponse(batchResponse, trackMetadataBatch, destination));
-
-        // clear the arrays and reuse
-        attributesBatch = [];
-        eventsBatch = [];
-        purchasesBatch = [];
-        trackMetadataBatch = [];
-      }
-
-      // add only if present
-      if (attributes) {
-        attributesBatch.push(...attributes);
-      }
-
-      if (events) {
-        eventsBatch.push(...events);
-      }
-
-      if (purchases) {
-        purchasesBatch.push(...purchases);
-      }
-
-      // keep the original metadata object. needed later to form the batch
-      trackMetadataBatch.push(metadata);
-    } else {
-      // identify
-      if (!identifyEndpoint) {
-        identifyEndpoint = endPoint;
-      }
-      const aliasObjectArr = get(jsonBody, 'aliases_to_identify');
-      const aliasMaxCount = aliasBatch.length + (aliasObjectArr ? aliasObjectArr.length : 0);
-
-      if (aliasMaxCount > IDENTIFY_BRAZE_MAX_REQ_COUNT) {
-        // form an identify batch and start over
-        const batchResponse = defaultRequestConfig();
-        batchResponse.headers = message.headers;
-        batchResponse.endpoint = identifyEndpoint;
-        const responseBodyJson = {
-          partner: BRAZE_PARTNER_NAME,
-        };
-        if (aliasBatch.length > 0) {
-          responseBodyJson.aliases_to_identify = [...aliasBatch];
-        }
-        batchResponse.body.JSON = responseBodyJson;
-        respList.push(formatBatchResponse(batchResponse, identifyMetadataBatch, destination));
-
-        // clear the arrays and reuse
-        aliasBatch = [];
-        identifyMetadataBatch = [];
-      }
-
-      // separate out the identify request
-      // respList.push(formatBatchResponse(message, [metadata], destination));
-      if (aliasObjectArr.length > 0) {
-        aliasBatch.push(aliasObjectArr[0]);
-      }
-
-      identifyMetadataBatch.push(metadata);
-    }
-  }
-
-  // process identify events
-  const ev = destEvents[index - 1];
-  const { message, destination } = ev;
-  if (aliasBatch.length > 0) {
-    const identifyBatchResponse = defaultRequestConfig();
-    identifyBatchResponse.headers = message.headers;
-    const identifyResponseBodyJson = {
-      partner: BRAZE_PARTNER_NAME,
-    };
-    identifyResponseBodyJson.aliases_to_identify = aliasBatch;
-    identifyBatchResponse.body.JSON = identifyResponseBodyJson;
-    // modify the endpoint to identify endpoint
-    identifyBatchResponse.endpoint = identifyEndpoint;
-    respList.push(formatBatchResponse(identifyBatchResponse, identifyMetadataBatch, destination));
-  }
-
-  // process track events
-  if (attributesBatch.length > 0 || eventsBatch.length > 0 || purchasesBatch.length > 0) {
-    const trackBatchResponse = defaultRequestConfig();
-    trackBatchResponse.headers = message.headers;
-    trackBatchResponse.endpoint = trackEndpoint;
-    const trackResponseBodyJson = {
-      partner: BRAZE_PARTNER_NAME,
-    };
-    if (attributesBatch.length > 0) {
-      trackResponseBodyJson.attributes = attributesBatch;
-    }
-    if (eventsBatch.length > 0) {
-      trackResponseBodyJson.events = eventsBatch;
-    }
-    if (purchasesBatch.length > 0) {
-      trackResponseBodyJson.purchases = purchasesBatch;
-    }
-    trackBatchResponse.body.JSON = trackResponseBodyJson;
-    // modify the endpoint to track endpoint
-    trackBatchResponse.endpoint = trackEndpoint;
-    respList.push(formatBatchResponse(trackBatchResponse, trackMetadataBatch, destination));
-  }
-
-  return respList;
-}
-
 const processRouterDest = async (inputs, reqMetadata) => {
   const userStore = new Map();
-  const lookedUpUsers = await BrazeDedupUtility.doLookup(inputs);
-  BrazeDedupUtility.enrichUserStore(lookedUpUsers, userStore);
-
+  const { destination } = inputs[0];
+  if (destination.Config.deduplicationEnabled) {
+    const lookedUpUsers = await BrazeDedupUtility.doLookup(inputs);
+    BrazeDedupUtility.enrichUserStore(lookedUpUsers, userStore);
+  }
   // group events by userId or anonymousId and then call process
   const groupedInputs = _.groupBy(
     inputs,
@@ -765,4 +580,4 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return _.flatMap(output);
 };
 
-module.exports = { process, processRouterDest, batch };
+module.exports = { process, processRouterDest };

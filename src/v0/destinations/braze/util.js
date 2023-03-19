@@ -48,8 +48,8 @@ const BrazeDedupUtility = {
     const lookUpResponse = await httpPOST(
       `${getEndpointFromConfig(inputs[0].destination)}/users/export/ids`,
       {
-        external_ids: externalIds,
-        user_aliases: aliasIds.map((aliasId) => ({
+        external_ids: [...new Set(externalIds)],
+        user_aliases: [...new Set(aliasIds)].map((aliasId) => ({
           alias_name: aliasId,
           alias_label: 'rudder_id',
         })),
@@ -112,6 +112,10 @@ const BrazeDedupUtility = {
               Object.keys(userData[key]).includes('$remove')
             ),
         );
+
+      if (keys.length === 0) {
+        return null;
+      }
 
       keys.forEach((key) => {
         if (!_.isEqual(userData[key], storedUserData[key])) {

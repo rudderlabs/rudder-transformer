@@ -13,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.4.0
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3.6.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -30,7 +30,7 @@ jobs:
         run: npm run test:ci
 
       - name: Setup Go
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v4.0.0
         with:
           go-version: 1.17
 
@@ -64,6 +64,7 @@ jobs:
             --set openfaasImagePullPolicy=IfNotPresent \
             --set gateway.image=ghcr.io/openfaas/gateway:0.23.2 \
             --set faasnetes.image=ghcr.io/openfaas/faas-netes:0.15.2
+
       - name: Wait for deployment "gateway" rollout
         run: kubectl rollout status deploy/gateway --timeout 120s -n openfaas
 

@@ -6,6 +6,7 @@ const {
   isDefinedAndNotNull,
   isDefined,
   getHashFromArrayWithDuplicate,
+  removeUndefinedAndNullValues
 } = require('../../util');
 const { InstrumentationError } = require('../../util/errorTypes');
 const { COMMON_CONFIGS, CUSTOM_CONFIGS } = require('./config');
@@ -286,7 +287,9 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
     const { products, quantity } = properties;
     products.forEach((product) => {
       const prodParams = setIdPriceQuantity(product, message);
-      contentIds.push(prodParams.contentId);
+      if(prodParams.contentId) {
+        contentIds.push(prodParams.contentId);
+      }
       contentArray.push(prodParams.content);
       if (!product.quantity) {
         quantityInconsistent = true;
@@ -307,7 +310,9 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
     quantity are taken into consideration
     */
     const prodParams = setIdPriceQuantity(properties, message);
-    contentIds.push(prodParams.contentId);
+    if(prodParams.contentId) {
+      contentIds.push(prodParams.contentId);
+    }
     contentArray.push(prodParams.content);
     totalQuantity = properties.quantity ? totalQuantity + properties.quantity : totalQuantity;
   }
@@ -320,13 +325,13 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
   }
   customPayload = {
     ...customPayload,
-    content_ids: contentIds,
+    content_ids: contentIds.length > 0 ? contentIds : null,
     contents: contentArray,
   };
 
   return {
     ...mandatoryPayload,
-    custom_data: { ...customPayload },
+    custom_data: { ...removeUndefinedAndNullValues(customPayload)},
   };
 };
 

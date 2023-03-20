@@ -35,7 +35,7 @@
     "commit-msg": "commitlint --edit",
     "prepare": "husky install",
     "release": "npx standard-version",
-    "release:github": "DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js"
+    "release:github": "DEBUG=conventional-github-releaser npx conventional-github-releaser -r 0 -p angular --config github-release.config.js"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",

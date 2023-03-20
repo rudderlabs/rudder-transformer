@@ -34,18 +34,12 @@ const IDENTIFY_BRAZE_MAX_REQ_COUNT = 50;
 const DEL_MAX_BATCH_SIZE = 50;
 const DESTINATION = 'braze';
 
-const nestedOperationTypes = {
+const CustomAttributeOperationTypes = {
   REMOVE: 'remove',
   UPDATE: 'update',
   ADD: 'add',
   CREATE: 'create',
 };
-
-const supportedOperationTypes = [
-  nestedOperationTypes.ADD,
-  nestedOperationTypes.REMOVE,
-  nestedOperationTypes.UPDATE,
-];
 
 module.exports = {
   ConfigCategory,
@@ -57,7 +51,6 @@ module.exports = {
   TRACK_BRAZE_MAX_REQ_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,
   DESTINATION,
-  nestedOperationTypes,
-  supportedOperationTypes,
+  CustomAttributeOperationTypes,
   DEL_MAX_BATCH_SIZE,
 };

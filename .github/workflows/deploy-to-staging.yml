@@ -143,10 +143,10 @@ jobs:
       VERSION: ${{ needs.build-transformer-image.outputs.version }}
       UT_VERSION: ${{ needs.build-user-transformer-image.outputs.version }}
     steps:
-      - name: Print Docker Image Versions
-        run: |
-          echo "Transformer: $VERSION"
-          echo "User Transformer: $UT_VERSION"
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
 
       # In order to make a commit, we need to initialize a user.
       # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
@@ -154,6 +154,11 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "noreply@github.com"
+
+      - name: Print Docker Image Versions
+        run: |
+          echo "Transformer: $VERSION"
+          echo "User Transformer: $UT_VERSION"
 
       - name: Check Branch Exists
         id: check-branch-exists
@@ -168,14 +173,14 @@ jobs:
           fi
 
       - name: Clone rudder-devops
-        if: steps.check-branch-exists.outputs.BRANCH_EXISTS == "0"
+        if: steps.check-branch-exists.outputs.BRANCH_EXISTS == '0'
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
           cd rudder-devops
           git checkout -b $BRANCH_NAME
 
       - name: Update Helm Charts
-        if: steps.check-branch-exists.outputs.BRANCH_EXISTS == "0"
+        if: steps.check-branch-exists.outputs.BRANCH_EXISTS == '0'
         run: |
           cd helm-charts/shared-services/per-az
           yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.staging.yaml
@@ -188,7 +193,7 @@ jobs:
           git add values.staging.yaml
 
       - name: Create Pull Request
-        if: steps.check-branch-exists.outputs.BRANCH_EXISTS == "0"
+        if: steps.check-branch-exists.outputs.BRANCH_EXISTS == '0'
         run: |
           git commit -m "chore: upgrade staging env transformers to \"$VERSION\""
           git push -u origin $BRANCH_NAME"

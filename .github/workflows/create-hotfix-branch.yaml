@@ -3,7 +3,7 @@ name: Create New Hotfix Branch
 on:
   workflow_dispatch:
     inputs:
-      hotfix_branch_name:
+      hotfix_name:
         description: Hotfix branch name
         required: true
 

@@ -13,6 +13,7 @@ const {
   isDefinedAndNotNull,
   simpleProcessRouterDest,
   isHttpStatusSuccess,
+  isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
 const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const {
@@ -194,6 +195,9 @@ function getUserAttributesObject(message, mappingJson, destination) {
       if (destKey === 'gender') {
         value = formatGender(value);
       }
+      if (destKey === 'email') {
+        value = value.toLowerCase();
+      }
       data[destKey] = value;
     }
   });
@@ -269,23 +273,27 @@ function processTrackWithUserAttributes(message, destination, mappingJson, dedup
   let payload = getUserAttributesObject(message, mappingJson);
   if (payload && Object.keys(payload).length > 0) {
     payload = setExternalIdOrAliasObject(payload, message);
-
+    const requestJson = { attributes: [payload] };
     if (destination.Config.deduplicationEnabled) {
       const dedupedAttributePayload = BrazeDedupUtility.deduplicate(
         payload,
         deduplicationStore.userStore,
       );
-      payload =
+      if (
+        isDefinedAndNotNullAndNotEmpty(dedupedAttributePayload) &&
         Object.keys(dedupedAttributePayload).some(
           (key) => !['external_id', 'user_alias'].includes(key),
-        ).length > 0
-          ? dedupedAttributePayload
-          : payload;
+        )
+      ) {
+        requestJson.attributes = [dedupedAttributePayload];
+      } else {
+        delete requestJson.attributes;
+      }
     }
     return buildResponse(
       message,
       destination,
-      { attributes: [payload] },
+      requestJson,
       getTrackEndPoint(getEndpointFromConfig(destination)),
     );
   }
@@ -377,11 +385,16 @@ function processTrackEvent(messageType, message, destination, mappingJson, dedup
         attributePayload,
         deduplicationStore.userStore,
       );
-      requestJson.attributes = Object.keys(dedupedAttributePayload).some(
-        (key) => !['external_id', 'user_alias'].includes(key),
-      )
-        ? [dedupedAttributePayload]
-        : [attributePayload];
+      if (
+        isDefinedAndNotNullAndNotEmpty(dedupedAttributePayload) &&
+        Object.keys(dedupedAttributePayload).some(
+          (key) => !['external_id', 'user_alias'].includes(key),
+        )
+      ) {
+        requestJson.attributes = [dedupedAttributePayload];
+      } else {
+        delete requestJson.attributes;
+      }
     }
   }
 
@@ -558,7 +571,17 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const userStore = new Map();
   const { destination } = inputs[0];
   if (destination.Config.deduplicationEnabled) {
-    const lookedUpUsers = await BrazeDedupUtility.doLookup(inputs);
+    let lookedUpUsers;
+    try {
+      const startTime = Date.now();
+      lookedUpUsers = await BrazeDedupUtility.doLookup(inputs);
+      const endTime = Date.now();
+      // TODO: Remove this log
+      logger.info(`Time taken to do lookup: ${endTime - startTime} ms for ${inputs.length} users`);
+    } catch (error) {
+      logger.error('Error while fetching user store', error);
+    }
+
     BrazeDedupUtility.enrichUserStore(lookedUpUsers, userStore);
   }
   // group events by userId or anonymousId and then call process

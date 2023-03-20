@@ -7,6 +7,7 @@ const {
   getDestinationExternalID,
   getFieldValueFromMessage,
   removeUndefinedAndNullValues,
+  isDefinedAndNotNull,
 } = require('../../util');
 const { BRAZE_NON_BILLABLE_ATTRIBUTES } = require('./config');
 
@@ -44,40 +45,75 @@ const BrazeDedupUtility = {
         aliasIds.push(anonymousId);
       }
     }
+    const externalIdsToQuery = [...new Set(externalIds)];
+    const aliasIdsToQuery = [...new Set(aliasIds)];
 
-    const lookUpResponse = await httpPOST(
-      `${getEndpointFromConfig(inputs[0].destination)}/users/export/ids`,
-      {
-        external_ids: [...new Set(externalIds)],
-        user_aliases: [...new Set(aliasIds)].map((aliasId) => ({
+    const identifiers = [];
+    if (externalIdsToQuery.length > 0) {
+      externalIdsToQuery.forEach((externalId) => {
+        identifiers.push({
+          external_id: externalId,
+        });
+      });
+    }
+    if (aliasIdsToQuery.length > 0) {
+      aliasIdsToQuery.forEach((aliasId) => {
+        identifiers.push({
           alias_name: aliasId,
           alias_label: 'rudder_id',
-        })),
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${inputs[0].destination.Config.restApiKey}`,
-        },
-      },
-    );
-    const processedLookUpResponse = processAxiosResponse(lookUpResponse);
-    const { users } = processedLookUpResponse.response;
+        });
+      });
+    }
+    const identfierChunks = _.chunk(identifiers, 50);
 
-    return users;
+    const chunkedUserData = await Promise.all(
+      identfierChunks.map(async (ids) => {
+        const externalIdentifiers = ids.filter((id) => id.external_id !== undefined);
+        const aliasIdentifiers = ids.filter((id) => id.alias_name !== undefined);
+
+        const startTime = Date.now();
+        const lookUpResponse = await httpPOST(
+          `${getEndpointFromConfig(inputs[0].destination)}/users/export/ids`,
+          {
+            external_ids: externalIdentifiers.map((extId) => extId.external_id),
+            user_aliases: aliasIdentifiers,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${inputs[0].destination.Config.restApiKey}asd`,
+            },
+            timeout: 10 * 1000,
+          },
+        );
+        const endTime = Date.now();
+        // TODO: Remove this log
+        console.log(
+          `Time taken to fetch user store: ${endTime - startTime} ms for ${ids.length} users`,
+        );
+        const processedLookUpResponse = processAxiosResponse(lookUpResponse);
+        const { users } = processedLookUpResponse.response;
+
+        return users;
+      }),
+    );
+
+    return _.flatMap(chunkedUserData);
   },
 
   enrichUserStore(users, store) {
-    users?.forEach((user) => {
-      if (user.external_id) {
-        store.set(user.external_id, user);
-      } else if (user.user_aliases) {
-        user.user_aliases.forEach((alias) => {
-          if (alias.alias_label === 'rudder_id') {
-            store.set(alias.alias_name, user);
-          }
-        });
-      }
-    });
+    if (isDefinedAndNotNull(users) && Array.isArray(users)) {
+      users.forEach((user) => {
+        if (user?.external_id) {
+          store.set(user.external_id, user);
+        } else if (user?.user_aliases) {
+          user.user_aliases.forEach((alias) => {
+            if (alias.alias_label === 'rudder_id') {
+              store.set(alias.alias_name, user);
+            }
+          });
+        }
+      });
+    }
   },
 
   getUserDataFromStore(inputUserData, store) {
@@ -87,7 +123,7 @@ const BrazeDedupUtility = {
       storedUserData = store.get(external_id);
     } else if (user_alias) {
       const rudderIdAlias = user_alias.alias_name;
-      storedUserData = store.get(rudderIdAlias.alias_name);
+      storedUserData = store.get(rudderIdAlias);
     }
     return storedUserData;
   },

@@ -1,4 +1,4 @@
-name: Prepare for Production Environment
+name: Prepare for Production Environment Deployment
 
 on:
   pull_request:

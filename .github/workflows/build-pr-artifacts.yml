@@ -36,6 +36,11 @@ jobs:
     # Skip for the release pull requests
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3.4.0
+        with:
+          fetch-depth: 1
+
       - name: Login to DockerHub
         uses: docker/login-action@v2.1.0
         with:
@@ -87,6 +92,11 @@ jobs:
     # Skip for the release pull requests
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3.4.0
+        with:
+          fetch-depth: 1
+
       - name: Login to DockerHub
         uses: docker/login-action@v2.1.0
         with:

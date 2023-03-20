@@ -1,9 +1,7 @@
-# https://github.com/marketplace/actions/jest-coverage-report
-name: Generate Code Coverage
+name: Report Code Coverage
 on:
   pull_request:
-    branches:
-      - '*'
+    types: ['opened', 'reopened', 'synchronize']
 
 jobs:
   coverage:
@@ -14,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - name: Setup Node
         uses: actions/setup-node@v3
@@ -22,5 +20,13 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - name: Coverage Report
-        uses: ArtiomTr/jest-coverage-report-action@v2
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run Tests
+        run: npm run test:ci
+
+      - name: Upload Coverage Reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          directory: ./reports/coverage

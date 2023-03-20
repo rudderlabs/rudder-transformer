@@ -66,13 +66,14 @@
       "Config": {
         "lookUpField": "email",
         "password": "abcdefghij1234",
-        "subDomainName": "testapi3",
-        "userName": "abcdef"
+        "subDomainName": "",
+        "domainName": "",
+        "userName": "abcdef@gmail.com"
       }
     },
     "batched": false,
     "statusCode": 400,
-    "error": "Invalid user name provided in the destination configuration"
+    "error": "Please Provide either subDomain or Domain Name"
   },
   {
     "batchedRequest": {

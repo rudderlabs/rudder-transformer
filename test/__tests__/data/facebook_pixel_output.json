@@ -717,5 +717,21 @@
       }
     },
     "files": {}
+  },
+  {
+    "error": "'properties.products' is not sent as an Array<Object>",
+    "statusCode": 400,
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    }
+  },
+  {
+    "error": "'properties.products[1]' is not an object",
+    "statusCode": 400,
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    }
   }
 ]

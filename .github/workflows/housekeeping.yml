@@ -1,4 +1,4 @@
-name: Handle Stale PRs
+name: Handle Stale PRs, Issues and Branhes
 
 on:
   schedule:
@@ -6,28 +6,33 @@ on:
 
 jobs:
   prs:
-    name: Clean Up Stale PRs
+    name: Clean Up Stale PRs and Issues
     runs-on: ubuntu-latest
 
     permissions:
       pull-requests: write
 
     steps:
-      - uses: actions/stale@v7
+      - uses: actions/stale@v7.0.0
         with:
           repo-token: ${{ secrets.token }}
           operations-per-run: 200
-          stale-pr-message: 'This PR is considered to be stale. It has been open 20 days with no further activity thus it is going to be closed in 7 days. To avoid such a case please consider removing the stale label manually or add a comment to the PR.'
+          stale-pr-message: 'This PR is considered to be stale. It has been open for 20 days with no further activity thus it is going to be closed in 7 days. To avoid such a case please consider removing the stale label manually or add a comment to the PR.'
+          stale-issue-message: 'This issue is considered to be stale. It has been open for 30 days with no further activity thus it is going to be closed in 7 days. To avoid such a case please consider removing the stale label manually or add a comment to the issue.'
           days-before-pr-stale: 20
           days-before-pr-close: 7
+          days-before-issue-stale: 30
+          days-before-issue-close: 7
           stale-pr-label: 'Stale'
+          stale-issue-label: 'Stale'
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   branches:
-    name: Cleanup Old Branches
+    name: Cleanup Stale Branches
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.4.0
 
       - name: Delete Old Branches
         uses: beatlabs/delete-old-branches-action@v0.0.9

@@ -37,5 +37,45 @@ describe("Unit test cases for facebook_pixel handle search", () => {
         handleSearch(message)
       ).toEqual(expectedOutput);
     });
+
+    it("mapping 'product_id' with contentId", async () => {
+
+      message.properties.product_id = "prd-123";
+  
+      const expectedOutput = {
+        "content_ids": [
+          "prd-123"
+        ],
+        "content_category": "clothing",
+        "value": 30,
+        "search_string": "HDMI Cable",
+        "contents": [
+          {
+            "id": "prd-123",
+            "quantity": 1,
+            "item_price": 24.75
+          }
+        ]
+      };
+      await expect(
+        handleSearch(message)
+      ).toEqual(expectedOutput);
+    });
+
+    it("null/undefined 'properties'", async () => {
+
+      message.properties = null;
+
+      const expectedOutput = {
+        "content_category": "",
+        "content_ids":  [],
+        "contents":  [],
+        "search_string": undefined,
+        "value": 0,
+      };
+      await expect(
+        handleSearch(message)
+      ).toEqual(expectedOutput);
+    });
   
   });

@@ -2,6 +2,7 @@
   {
     "message": {
       "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "channel": "mobile",
       "destination_props": {
         "Fb": {
           "app_id": "RudderFbApp"
@@ -1604,13 +1605,7 @@
         }
       },
       "context": {
-        "dataProcessingOptions": [
-          [
-            "LDU"
-          ],
-          1,
-          1000
-        ],
+        "dataProcessingOptions": [["LDU"], 1, 1000],
         "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
         "fbp": "fb.1.1554763741205.234567890",
         "fb_login_id": "fb_id",
@@ -1691,13 +1686,7 @@
         }
       },
       "context": {
-        "dataProcessingOptions": [
-          [
-            "LDU"
-          ],
-          1,
-          1000
-        ],
+        "dataProcessingOptions": [["LDU"], 1, 1000],
         "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
         "fbp": "fb.1.1554763741205.234567890",
         "fb_login_id": "fb_id",
@@ -2526,10 +2515,7 @@
       "userId": "12345",
       "event": "order completed",
       "properties": {
-        "category": [
-          "clothing",
-          "fishing"
-        ],
+        "category": ["clothing", "fishing"],
         "order_id": "ruchiraorder1",
         "total": 99.99,
         "revenue": 12.24,

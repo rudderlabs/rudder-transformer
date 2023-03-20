@@ -74,7 +74,7 @@
         "JSON_ARRAY": {},
         "FORM": {
           "data": [
-            "{\"user_data\":{\"external_id\":\"8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92\",\"em\":\"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08\",\"ph\":\"593a6d58f34eb5c3de4f47e38d1faaa7d389fafe332a85400b1e54498391c579\",\"ge\":\"252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111\",\"ln\":\"6c535a187517963217c07cbdb552cb8991987d6c33cbaecbe2fc7bc4199e156e\",\"fn\":\"d5c853a578ee28b6152606785eb8e2eb10a369b2903e8f8ee1ce761eaf9acd0c\",\"client_ip_address\":\"0.0.0.0\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"identify\",\"event_time\":1567333011,\"event_id\":\"84e26acc-56a5-4835-8233-591137fca468\",\"action_source\":\"other\"}"
+            "{\"user_data\":{\"external_id\":\"8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92\",\"em\":\"48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08\",\"ph\":\"593a6d58f34eb5c3de4f47e38d1faaa7d389fafe332a85400b1e54498391c579\",\"ge\":\"252f10c83610ebca1a059c0bae8255eba2f95be4d1d7bcfa89d7248a82d9f111\",\"ln\":\"6c535a187517963217c07cbdb552cb8991987d6c33cbaecbe2fc7bc4199e156e\",\"fn\":\"d5c853a578ee28b6152606785eb8e2eb10a369b2903e8f8ee1ce761eaf9acd0c\",\"client_ip_address\":\"0.0.0.0\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"identify\",\"event_time\":1567333011,\"event_id\":\"84e26acc-56a5-4835-8233-591137fca468\",\"action_source\":\"website\"}"
           ]
         }
       },

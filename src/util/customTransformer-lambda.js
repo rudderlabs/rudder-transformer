@@ -15,7 +15,7 @@ async function runLambdaUserTransform(events, userTransformation, testMode = fal
     ...metaTags,
   };
   if (!testMode && !userTransformation.handleId) {
-    stats.gauge('missing_handle', 1, tags);
+    stats.counter('missing_handle', 1, tags);
     throw new Error('Handle id is not connected to transformation');
   }
 
@@ -24,7 +24,7 @@ async function runLambdaUserTransform(events, userTransformation, testMode = fal
     : `${userTransformation.workspaceId}_${userTransformation.id}`;
   const qualifier = userTransformation.handleId;
   const invokeTime = new Date();
-  stats.gauge('events_to_process', events.length, tags);
+  stats.counter('events_to_process', events.length, tags);
   const result = await invokeLambda(functionName, events, qualifier);
   stats.timing('run_time', invokeTime, tags);
 

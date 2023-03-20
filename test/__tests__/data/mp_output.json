@@ -761,6 +761,82 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$distinct_id": "hjikl",
+          "$set": {
+            "company": ["testComp", "testComp1"]
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/groups/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$group_key": "company",
+          "$group_id": "testComp",
+          "$set": {
+            "company": ["testComp", "testComp1"]
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/groups/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$group_key": "company",
+          "$group_id": "testComp1",
+          "$set": {
+            "company": ["testComp", "testComp1"]
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
       "endpoint": "https://api-eu.mixpanel.com/engage/",
       "headers": {},
       "params": {

@@ -77,11 +77,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           pr_title: 'chore(release): pull ${{ steps.create-release.outputs.branch_name }} into main'
           pr_body: ':crown: *An automated PR*'
-
-      - name: Delete Hotfix Base Branch
-        uses: koj-co/delete-merged-action@master
-        if: startsWith(github.ref, 'refs/heads/hotfix/')
-        with:
-          branches: 'hotfix/*'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

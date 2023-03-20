@@ -17,7 +17,13 @@
           "last_identify": "GOOGLE_SIGN_IN",
           "account_region": "ON",
           "is_pickup_selected": "false",
-          "has_tradein_attempt": false
+          "has_tradein_attempt": false,
+          "custom_obj_attr": {
+            "key1": "value1",
+            "key2": "value2",
+            "key3": "value3"
+          },
+          "custom_arr": [1, 2, "str1"]
         },
         "custom_events": [
           {

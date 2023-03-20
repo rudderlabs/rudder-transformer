@@ -178,7 +178,13 @@
             "last_identify": "GOOGLE_SIGN_IN",
             "account_region": "ON",
             "is_pickup_selected": "false",
-            "has_tradein_attempt": false
+            "has_tradein_attempt": false,
+            "custom_obj_attr": {
+              "key1": "value1",
+              "key2": "value2",
+              "key4": "value4"
+            },
+            "custom_arr": [1, 2, "str1"]
           },
           "library": {
             "name": "RudderLabs JavaScript SDK",
@@ -250,7 +256,13 @@
             "last_identify": "GOOGLE_SIGN_IN",
             "account_region": "ON",
             "is_pickup_selected": "true",
-            "has_tradein_attempt": false
+            "has_tradein_attempt": false,
+            "custom_obj_attr": {
+              "key1": "value1",
+              "key2": "value2",
+              "key4": "value4"
+            },
+            "custom_arr": ["1", "2", "str1"]
           },
           "library": {
             "name": "RudderLabs JavaScript SDK",

@@ -49,7 +49,7 @@ describe(`${name} Tests`, () => {
   describe("Dedupenabled Router Tests", () => {
     it("Payload", async () => {
       const routerOutput = await transformer.processRouterDest(inputRouterData.dedupEnabledRouterRequests);
-      expect(routerOutput).toEqual(expectedRouterData.dedupEnabledRouterRequests);
+      expect(routerOutput).toEqual(expectedRouterData.dedupEnabledRouterResponse);
     });
   });
 });

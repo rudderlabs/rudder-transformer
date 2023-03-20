@@ -127,7 +127,7 @@
       }
     }
   ],
-  "dedupEnabledRouterRequests": [
+  "dedupEnabledRouterResponse": [
     {
       "batchedRequest": {
         "version": "1",
@@ -148,7 +148,12 @@
                 "first_name": "Spencer",
                 "subscribe_once": true,
                 "pwa": true,
-                "external_id": "braze_test_user"
+                "external_id": "braze_test_user",
+                "custom_obj_attr": {
+                  "key1": "value1",
+                  "key2": "value2",
+                  "key4": "value4"
+                }
               }
             ],
             "events": [
@@ -225,7 +230,8 @@
               {
                 "last_name": "Miranda 2",
                 "is_pickup_selected": "true",
-                "external_id": "braze_test_user"
+                "external_id": "braze_test_user",
+                "custom_arr": ["1", "2", "str1"]
               }
             ],
             "events": [

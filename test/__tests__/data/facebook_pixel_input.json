@@ -3585,5 +3585,91 @@
       },
       "Enabled": true
     }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "product viewed",
+      "properties": {
+        "currency": "CAD",
+        "quantity": 1,
+        "price": 24.75,
+        "value": 18.9,
+        "name": "my product 1",
+        "category": "clothing",
+        "sku": "p-298",
+        "testDimension": true,
+        "testMetric": true,
+        "position": 4.5
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": true
+          }
+        ],
+        "categoryToContent": [
+          {
+            "from": "clothing",
+            "to": "product"
+          }
+        ],
+        "removeExternalId": true,
+        "accessToken": "09876",
+        "pixelId": "dfgdfgdgd",
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "eventCustomProperties": [
+          {
+            "eventCustomProperties": ""
+          }
+        ],
+        "valueFieldIdentifier": "properties.value",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
   }
 ]

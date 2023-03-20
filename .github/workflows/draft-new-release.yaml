@@ -66,7 +66,7 @@ jobs:
         run: |
           echo "Current version: $CURRENT_VERSION_VALUE"
           echo "New version: $NEW_VERSION_VALUE"
-          npm run release -- -a -t "" --skip.tag
+          npm run release -- -a --skip.tag
           git push
 
       - name: Create Pull Request

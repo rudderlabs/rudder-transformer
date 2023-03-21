@@ -59,6 +59,7 @@ const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 const ACTION_SOURCES_VALUES = [
   'email',
   'website',
+  'app',
   'phone_call',
   'chat',
   'physical_store',

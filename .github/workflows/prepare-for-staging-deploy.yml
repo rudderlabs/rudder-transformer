@@ -1,4 +1,4 @@
-name: Build Artifacts for Staging Environment
+name: Prepare for Staging Environment Deployment
 
 on:
   pull_request:
@@ -19,44 +19,48 @@ jobs:
     name: Build Transformer Docker Image - Staging
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.gen_img_version.outputs.version }}
+      tag_name: ${{ steps.gen_tag_name.outputs.tag_name }}
 
     # Only pull requests from release candidate branches must trigger
     if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.4.0
         with:
           fetch-depth: 1
 
-      - name: Generate Image Version
-        id: gen_img_version
+      - name: Generate Tag Name
+        id: gen_tag_name
         run: |
-          VERSION="staging-$(jq -r .version package.json)"
-          echo $VERSION
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          tag_name="staging-$(jq -r .version package.json)""
+          echo $tag_name
+          echo "tag_name=$tag_name" >> $GITHUB_OUTPUT
 
       - name: Login to DockerHub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v2.1.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
       - name: Build Docker Image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v4.0.0
         with:
           context: .
           file: Dockerfile
           load: true
           tags: |
-            ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }}
+            ${{ env.REPO_NAME }}:${{ steps.gen_tag_name.outputs.tag_name }}
 
       - name: Run Tests
         run: |
-          docker run ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }} npm run test:ci
+          docker run ${{ env.REPO_NAME }}:${{ steps.gen_tag_name.outputs.tag_name }} npm run test:ci
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v2.5.0
+        with:
+          platforms: |
+            linux/amd64
+            linux/arm64
 
       - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v4
@@ -65,74 +69,76 @@ jobs:
           file: Dockerfile
           push: true
           tags: |
-            ${{ env.REPO_NAME_OLD }}:${{ steps.gen_img_version.outputs.version }}
-            ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }}
-            ${{ env.REPO_NAME }}:latest
-            ${{ env.REPO_NAME_OLD }}:latest
+            ${{ env.REPO_NAME_OLD }}:${{ steps.gen_tag_name.outputs.tag_name }}
+            ${{ env.REPO_NAME }}:${{ steps.gen_tag_name.outputs.tag_name }}
           platforms: |
             linux/amd64
             linux/arm64
           build-args: |
-            VERSION=${{ steps.gen_img_version.outputs.version }}
+            VERSION=${{ steps.gen_tag_name.outputs.tag_name }}
             COMMIT_HASH=${{ github.sha }}
 
   build-user-transformer-image:
     name: Build User Transformer Docker Image - Staging
     runs-on: ubuntu-latest
     outputs:
-      ut-version: ${{ steps.gen_img_version.outputs.version }}
+      tag_name: ${{ steps.gen_tag_name.outputs.tag_name }}
 
     # Only pull requests from release candidate branches must trigger
     if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/'))
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.4.0
         with:
           fetch-depth: 1
 
-      - name: Generate Image Version
-        id: gen_img_version
+      - name: Generate Tag Name
+        id: gen_tag_name
         run: |
-          VERSION="staging-ut-$(jq -r .version package.json)"
-          echo $VERSION
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          tag_name="ut-staging-$(jq -r .version package.json)"
+          echo $tag_name
+          echo "tag_name=$tag_name" >> $GITHUB_OUTPUT
 
       - name: Login to DockerHub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v2.1.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
       - name: Build Docker Image
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v4.0.0
         with:
           context: .
           file: Dockerfile-ut-func
           load: true
           tags: |
-            ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }}
+            ${{ env.REPO_NAME }}:${{ steps.gen_tag_name.outputs.tag_name }}
 
       - name: Run Tests
         run: |
-          docker run ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }} npm run test:ci
+          docker run ${{ env.REPO_NAME }}:${{ steps.gen_tag_name.outputs.tag_name }} npm run test:ci
 
       - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v2.5.0
+        with:
+          platforms: |
+            linux/amd64
+            linux/arm64
 
       - name: Build and Push Multi-platform Images
-        uses: docker/build-push-action@v4
+        uses: docker/build-push-action@v4.0.0
         with:
           context: .
           file: Dockerfile-ut-func
           push: true
           tags: |
-            ${{ env.REPO_NAME_OLD }}:${{ steps.gen_img_version.outputs.version }}
-            ${{ env.REPO_NAME }}:${{ steps.gen_img_version.outputs.version }}
+            ${{ env.REPO_NAME_OLD }}:${{ steps.gen_tag_name.outputs.tag_name }}
+            ${{ env.REPO_NAME }}:${{ steps.gen_tag_name.outputs.tag_name }}
           platforms: |
             linux/amd64
             linux/arm64
           build-args: |
-            VERSION=${{ steps.gen_img_version.outputs.version }}
+            VERSION=${{ steps.gen_tag_name.outputs.tag_name }}
             COMMIT_HASH=${{ github.sha }}
 
   create-pull-request:
@@ -140,11 +146,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: [ build-transformer-image, build-user-transformer-image ]
     env:
-      VERSION: ${{ needs.build-transformer-image.outputs.version }}
-      UT_VERSION: ${{ needs.build-user-transformer-image.outputs.version }}
+      TAG_NAME: ${{ needs.build-transformer-image.outputs.tag_name }}
+      UT_TAG_NAME: ${{ needs.build-user-transformer-image.outputs.tag_name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.4.0
         with:
           fetch-depth: 1
 
@@ -155,15 +161,15 @@ jobs:
           git config user.name "GitHub Actions"
           git config user.email "noreply@github.com"
 
-      - name: Print Docker Image Versions
+      - name: Print Docker Image Tags
         run: |
-          echo "Transformer: $VERSION"
-          echo "User Transformer: $UT_VERSION"
+          echo "Transformer: $TAG_NAME"
+          echo "User Transformer: $UT_TAG_NAME"
 
       - name: Check Branch Exists
         id: check-branch-exists
         run: |
-          BRANCH_NAME="shared-transformer-$VERSION"
+          BRANCH_NAME="shared-transformer-$TAG_NAME"
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_OUTPUT
           if [ `git ls-remote --heads origin $BRANCH_NAME 2>/dev/null` ]
           then
@@ -172,29 +178,23 @@ jobs:
             echo "BRANCH_EXISTS=\"0\"" >> $GITHUB_OUTPUT
           fi
 
-      - name: Clone rudder-devops
+      - name: Update Helm Charts and Raise Pull Request
         if: steps.check-branch-exists.outputs.BRANCH_EXISTS == '0'
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
           cd rudder-devops
           git checkout -b $BRANCH_NAME
 
-      - name: Update Helm Charts
-        if: steps.check-branch-exists.outputs.BRANCH_EXISTS == '0'
-        run: |
           cd helm-charts/shared-services/per-az
-          yq eval -i ".rudder-transformer.image.tag=\"$VERSION\"" values.staging.yaml
-          yq eval -i ".user-transformer.image.tag=\"$UT_VERSION\"" values.staging.yaml
+          yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
+          yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
           git add values.staging.yaml
 
           cd ../../config-be-rudder-transformer
-          yq eval -i ".config-be-rudder-transformer.image.tag=\"$VERSION\"" values.staging.yaml
-          yq eval -i ".config-be-user-transformer.image.tag=\"$UT_VERSION\"" values.staging.yaml
+          yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
+          yq eval -i ".config-be-user-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
           git add values.staging.yaml
 
-      - name: Create Pull Request
-        if: steps.check-branch-exists.outputs.BRANCH_EXISTS == '0'
-        run: |
-          git commit -m "chore: upgrade staging env transformers to \"$VERSION\""
+          git commit -m "chore: upgrade staging env transformers to \"$TAG_NAME\""
           git push -u origin $BRANCH_NAME"
-          hub pull-request -m "chore: upgrade staging env transformers to \"$VERSION\""
+          hub pull-request -m "chore: upgrade staging env transformers to \"$TAG_NAME\""

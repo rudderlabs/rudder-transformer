@@ -268,39 +268,44 @@ const processGroupEvents = (message, type, destination) => {
         groupKey === 'groupId'
           ? getFieldValueFromMessage(message, 'groupId')
           : get(message.traits, groupKey);
+      if (groupKeyVal && !Array.isArray(groupKeyVal)) {
+        groupKeyVal = [groupKeyVal];
+      }
       if (groupKeyVal) {
         const parameters = {
           $token: destination.Config.token,
           $distinct_id: message.userId || message.anonymousId,
           $set: {
-            [groupKey]: [groupKeyVal],
+            [groupKey]: groupKeyVal,
           },
         };
         const response = responseBuilderSimple(parameters, message, type, destination.Config);
         returnValue.push(response);
 
-        const groupParameters = {
-          $token: destination.Config.token,
-          $group_key: groupKey,
-          $group_id: groupKeyVal,
-          $set: {
-            ...message.traits,
-          },
-        };
+        groupKeyVal.forEach((value) => {
+          const groupParameters = {
+            $token: destination.Config.token,
+            $group_key: groupKey,
+            $group_id: value,
+            $set: {
+              ...message.traits,
+            },
+          };
 
-        const groupResponse = responseBuilderSimple(
-          groupParameters,
-          message,
-          type,
-          destination.Config,
-        );
+          const groupResponse = responseBuilderSimple(
+            groupParameters,
+            message,
+            type,
+            destination.Config,
+          );
 
-        groupResponse.endpoint =
-          destination.Config.dataResidency === 'eu'
-            ? `${BASE_ENDPOINT_EU}/groups/`
-            : `${BASE_ENDPOINT}/groups/`;
+          groupResponse.endpoint =
+            destination.Config.dataResidency === 'eu'
+              ? `${BASE_ENDPOINT_EU}/groups/`
+              : `${BASE_ENDPOINT}/groups/`;
 
-        returnValue.push(groupResponse);
+          returnValue.push(groupResponse);
+        });
       }
     });
   } else {

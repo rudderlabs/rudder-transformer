@@ -4,10 +4,10 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07?skip_merge_validation=true&skip_duplicate_check=false",
+      "endpoint": "https://usXX.api.mailchimp.com/3.0/lists/aud111?skip_merge_validation=true&skip_duplicate_check=false",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
+        "Authorization": "Basic YXBpS2V5OmFwaWtleQ=="
       },
       "params": {},
       "body": {
@@ -57,9 +57,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX",
         "enableMergeFields": true
       },
       "Enabled": true,
@@ -71,10 +71,10 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab/events",
+      "endpoint": "https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab/events",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
+        "Authorization": "Basic YXBpS2V5OmFwaWtleQ=="
       },
       "params": {},
       "body": {
@@ -91,7 +91,7 @@
         "FORM": {}
       },
       "files": {},
-      "audienceId": "df42a82d07"
+      "audienceId": "aud111"
     },
     "metadata": [
       {
@@ -109,9 +109,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX",
         "enableMergeFields": true
       },
       "Enabled": true,
@@ -123,10 +123,10 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab/events",
+      "endpoint": "https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab/events",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic YXBpS2V5Ojk0ZjcxOTE3ZDg1MjI3NzBjOTc0NDliMGM5MGNhYTRjLXVzMjA="
+        "Authorization": "Basic YXBpS2V5OmFwaWtleQ=="
       },
       "params": {},
       "body": {
@@ -146,7 +146,7 @@
         "FORM": {}
       },
       "files": {},
-      "audienceId": "df42a82d07"
+      "audienceId": "aud111"
     },
     "metadata": [
       {
@@ -164,9 +164,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX",
         "enableMergeFields": true
       },
       "Enabled": true,
@@ -183,9 +183,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX",
         "enableMergeFields": true
       },
       "Enabled": true,
@@ -214,9 +214,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX",
         "enableMergeFields": true
       },
       "Enabled": true,

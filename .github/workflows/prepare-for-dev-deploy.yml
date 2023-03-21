@@ -1,6 +1,7 @@
 name: Prepare for Dev Environment Deployment
 
 on:
+  push:
   pull_request:
     types:
       - closed

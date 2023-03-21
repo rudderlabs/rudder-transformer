@@ -1,6 +1,7 @@
 name: Prepare for Production Environment Deployment
 
 on:
+  push:
   pull_request:
     types:
       - closed

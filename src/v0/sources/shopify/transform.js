@@ -1,13 +1,17 @@
 const _ = require('lodash');
 const get = require('get-value');
 const stats = require('../../../util/stats');
+const log = require('../../../logger');
 const {
   getShopifyTopic,
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
   extractEmailFromPayload,
+  setAnonymousIdorUserIdAndStore,
   setAnonymousId,
+  checkForValidRecord,
 } = require('./util');
+const { DBConnector } = require('../../../util/redisConnector');
 const { removeUndefinedAndNullValues } = require('../../util');
 const Message = require('../message');
 const { EventType } = require('../../../constants');
@@ -19,6 +23,7 @@ const {
   RUDDER_ECOM_MAP,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
+  useRedisDatabase,
 } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 
@@ -73,6 +78,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.TRACK);
   message.setEventName(SHOPIFY_TRACK_MAP[shopifyTopic]);
+
   Object.keys(event)
     .filter(
       (key) =>
@@ -109,8 +115,8 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   }
   return message;
 };
-
-const processEvent = (inputEvent) => {
+// Doc: https://help.shopify.com/en/manual/orders/fulfillment/setting-up-fulfillment
+const processEvent = async (inputEvent) => {
   let message;
   const event = _.cloneDeep(inputEvent);
   const shopifyTopic = getShopifyTopic(event);
@@ -125,6 +131,28 @@ const processEvent = (inputEvent) => {
     case ECOM_TOPICS.CHECKOUTS_CREATE:
     case ECOM_TOPICS.CHECKOUTS_UPDATE:
       message = ecomPayloadBuilder(event, shopifyTopic);
+      break;
+    case 'carts_create':
+    case 'carts_update':
+      /**
+       *  This Scenario handles the case same cart_Events are passed or
+       * cart events are passed within a specified time period for when useRedisDatabase is set to true
+       */
+      // eslint-disable-next-line no-case-declarations
+      if (useRedisDatabase) {
+        const validRecord = await checkForValidRecord(inputEvent);
+        if (!validRecord) {
+          const result = {
+            outputToSource: {
+              body: Buffer.from('OK').toString('base64'),
+              contentType: 'text/plain',
+            },
+            statusCode: 200,
+          };
+          return result;
+        }
+      }
+      message = trackPayloadBuilder(event, shopifyTopic);
       break;
     default:
       if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
@@ -144,7 +172,11 @@ const processEvent = (inputEvent) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
-    setAnonymousId(message);
+    if (useRedisDatabase) {
+      await setAnonymousIdorUserIdAndStore(message);
+    } else {
+      setAnonymousId(message);
+    }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
   message.setProperty('context.library', {
@@ -152,7 +184,6 @@ const processEvent = (inputEvent) => {
     version: '1.0.0',
   });
   message.setProperty('context.topic', shopifyTopic);
-
   // attaching cart, checkout and order tokens in context object
   message.setProperty(`context.cart_token`, event.cart_token);
   message.setProperty(`context.checkout_token`, event.checkout_token);
@@ -177,7 +208,15 @@ const isIdentifierEvent = (event) => {
   }
   return false;
 };
-const processIdentifierEvent = () => {
+const processIdentifierEvent = async (event) => {
+  if (useRedisDatabase) {
+    try {
+      const redisInstance = await DBConnector.getRedisInstance();
+      await redisInstance.set(`${event.cartToken}`, JSON.stringify(event));
+    } catch (e) {
+      log.error(e);
+    }
+  }
   const result = {
     outputToSource: {
       body: Buffer.from('OK').toString('base64'),
@@ -187,7 +226,12 @@ const processIdentifierEvent = () => {
   };
   return result;
 };
-const process = (event) =>
-  isIdentifierEvent(event) ? processIdentifierEvent() : processEvent(event);
+const process = async (event) => {
+  if (isIdentifierEvent(event)) {
+    return processIdentifierEvent(event);
+  }
+  const response = await processEvent(event);
+  return response;
+};
 
 exports.process = process;

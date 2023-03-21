@@ -1,0 +1,247 @@
+{
+  "shopify_test1": {
+    "anonymousId": "anon_shopify_test1",
+    "line_items":[
+        {
+          "id": 44323300999443,
+          "properties": null,
+          "quantity": 1,
+          "variant_id": 44323300999443,
+          "key": "44323300999443:70b21df78d403673a8b5dbafd62f0559",
+          "discounted_price": "30.00",
+          "discounts": [],
+          "gift_card": false,
+          "grams": 0,
+          "line_price": "30.00",
+          "original_line_price": "30.00",
+          "original_price": "30.00",
+          "price": "30.00",
+          "product_id": 8100575674643,
+          "sku": "",
+          "taxable": true,
+          "title": "Shirt 2 - LARGE",
+          "total_discount": "0.00",
+          "vendor": "testAnant",
+          "discounted_price_set": {
+            "shop_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            }
+          },
+          "line_price_set": {
+            "shop_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            }
+          },
+          "original_line_price_set": {
+            "shop_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            }
+          },
+          "price_set": {
+            "shop_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            }
+          },
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.0",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.0",
+              "currency_code": "GBP"
+            }
+          }
+        }
+      ]
+  },
+  
+  "shopify_test2": {
+    "anonymousId": "anon_shopify_test2"
+  },
+  "shopify_test_cart_update_duplicate": {
+    "anonymousId": "anon_cart_update_duplicate",
+    "token": "cart_update_duplicate",
+    "line_items": [
+      {
+        "id": 44323300999443,
+        "properties": null,
+        "quantity": 1,
+        "variant_id": 44323300999443,
+        "key": "44323300999443:70b21df78d403673a8b5dbafd62f0559",
+        "discounted_price": "30.00",
+        "discounts": [],
+        "gift_card": false,
+        "grams": 0,
+        "line_price": "30.00",
+        "original_line_price": "30.00",
+        "original_price": "30.00",
+        "price": "30.00",
+        "product_id": 8100575674643,
+        "sku": "",
+        "taxable": true,
+        "title": "Shirt 2 - LARGE",
+        "total_discount": "0.00",
+        "vendor": "testAnant",
+        "discounted_price_set": {
+          "shop_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          },
+          "presentment_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          }
+        },
+        "line_price_set": {
+          "shop_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          },
+          "presentment_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          }
+        },
+        "original_line_price_set": {
+          "shop_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          },
+          "presentment_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          }
+        },
+        "price_set": {
+          "shop_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          },
+          "presentment_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          }
+        },
+        "total_discount_set": {
+          "shop_money": {
+            "amount": "0.0",
+            "currency_code": "GBP"
+          },
+          "presentment_money": {
+            "amount": "0.0",
+            "currency_code": "GBP"
+          }
+        }
+      }
+    ],
+    "note": null,
+    "updated_at": "2023-02-10T12:15:07.251Z",
+    "created_at": "2023-02-10T12:05:04.402Z"
+  },
+  "shopify_test_cart_update_duplicate2": {
+    "anonymousId": "anon_cart_update_duplicate2",
+    "token": "cart_update_duplicate2",
+    "line_items": [
+      {
+        "id": 44323300999443,
+        "properties": null,
+        "quantity": 2,
+        "variant_id": 44323300999443,
+        "key": "44323300999443:70b21df78d403673a8b5dbafd62f0559",
+        "discounted_price": "30.00",
+        "discounts": [],
+        "gift_card": false,
+        "grams": 0,
+        "line_price": "30.00",
+        "original_line_price": "30.00",
+        "original_price": "30.00",
+        "price": "30.00",
+        "product_id": 8100575674643,
+        "sku": "",
+        "taxable": true,
+        "title": "Shirt 2 - LARGE",
+        "total_discount": "0.00",
+        "vendor": "testAnant",
+        "discounted_price_set": {
+          "shop_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          },
+          "presentment_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          }
+        },
+        "line_price_set": {
+          "shop_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          },
+          "presentment_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          }
+        },
+        "original_line_price_set": {
+          "shop_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          },
+          "presentment_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          }
+        },
+        "price_set": {
+          "shop_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          },
+          "presentment_money": {
+            "amount": "30.0",
+            "currency_code": "GBP"
+          }
+        },
+        "total_discount_set": {
+          "shop_money": {
+            "amount": "0.0",
+            "currency_code": "GBP"
+          },
+          "presentment_money": {
+            "amount": "0.0",
+            "currency_code": "GBP"
+          }
+        }
+      }
+    ],
+    "note": null,
+    "updated_at": "2023-02-10T12:15:07.251Z",
+    "created_at": "2023-02-10T12:05:04.402Z"
+  },
+  "shopify_test_cart1": {
+    "anonymousId": "anon_shopify_test1",
+    "line_items":[
+      ]
+  }
+}

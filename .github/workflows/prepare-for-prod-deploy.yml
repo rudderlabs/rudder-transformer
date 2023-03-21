@@ -2,6 +2,8 @@ name: Prepare for Production Environment Deployment
 
 on:
   push:
+    branches:
+      - main
   pull_request:
     types:
       - closed

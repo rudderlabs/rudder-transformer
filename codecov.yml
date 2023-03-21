@@ -1,3 +1,5 @@
 coverage:
   status:
-    patch: false
+    patch:
+      default:
+        informational: true

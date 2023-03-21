@@ -40,12 +40,10 @@ const sendViolationMetrics = (validationErrors, dropped, metaTags) => {
 
   Object.entries(vTags).forEach(([key, value]) => {
     if (value > 0) {
-      stats.counter('hv_metrics', value, { ...metaTags, dropped, violationType: key });
+      stats.gauge('hv_metrics', value, { ...metaTags, dropped, violationType: key });
     }
   });
-
-
-  stats.counter('hv_metrics', validationErrors.length, {
+  stats.gauge('hv_metrics', validationErrors.length, {
     ...metaTags,
     dropped,
     violationType: 'Total',

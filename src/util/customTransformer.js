@@ -168,7 +168,7 @@ async function runUserTransform(events, code, secrets, eventsMetadata, versionId
   await customScript.run(context);
   const fnRef = await jail.get('transform', { reference: true });
   // stat
-  stats.counter('events_to_process', events.length, tags);
+  stats.gauge('events_to_process', events.length, tags);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
   const executionPromise = new Promise(async (resolve, reject) => {

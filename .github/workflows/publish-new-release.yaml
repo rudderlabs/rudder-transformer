@@ -18,19 +18,19 @@ jobs:
       - name: Extract Version
         id: extract-version
         run: |
-          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
-          VERSION=${BRANCH_NAME#hotfix-}
-          VERSION=${VERSION#release/}
+          branch_name="${{ github.event.pull_request.head.ref }}"
+          version=${branch_name#hotfix-}
+          version=${version#release/}
 
-          echo "release_version=$VERSION" >> $GITHUB_OUTPUT
+          echo "release_version=$version" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v3.4.0
         with:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v3.6.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -55,7 +55,7 @@ jobs:
           echo "DATE=$(date)" >> $GITHUB_ENV
 
       - name: Pull Changes Into develop Branch
-        uses: repo-sync/pull-request@v2
+        uses: repo-sync/pull-request@v2.12.1
         with:
           source_branch: 'main'
           destination_branch: 'develop'

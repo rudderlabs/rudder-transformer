@@ -14,7 +14,7 @@ env:
 
 jobs:
   report-coverage:
-    uses: ./report-code-coverage.yml
+    uses: ./github/workflows/ report-code-coverage.yml
 
   build-transformer-image:
     name: Build Transformer Docker Image - Dev

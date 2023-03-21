@@ -199,7 +199,7 @@
       "JSON_ARRAY": {},
       "FORM": {
         "data": [
-          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"ViewContent\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"email\":\"abc@gmail.com\",\"phone\":\"593a6d58f34eb5c3de4f47e38d1faaa7d389fafe332a85400b1e54498391c579\",\"content_ids\":[\"cat 1\"],\"content_type\":\"product_group\",\"contents\":[{\"id\":\"cat 1\",\"quantity\":1}],\"currency\":\"USD\"}}"
+          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"ViewContent\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"email\":\"abc@gmail.com\",\"phone\":\"593a6d58f34eb5c3de4f47e38d1faaa7d389fafe332a85400b1e54498391c579\",\"content_ids\":[\"cat 1\"],\"content_type\":\"product_group\",\"contents\":[{\"id\":\"cat 1\",\"quantity\":1}],\"content_category\":\"cat 1\",\"value\":0,\"currency\":\"USD\"}}"
         ]
       }
     },
@@ -218,7 +218,7 @@
       "JSON_ARRAY": {},
       "FORM": {
         "data": [
-          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"ViewContent\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"content_ids\":[\"cat 1\"],\"content_type\":\"product_group\",\"contents\":[{\"id\":\"cat 1\",\"quantity\":1}],\"currency\":\"USD\"}}"
+          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"ViewContent\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"content_ids\":[\"cat 1\"],\"content_type\":\"product_group\",\"contents\":[{\"id\":\"cat 1\",\"quantity\":1}],\"content_category\":\"cat 1\",\"value\":0,\"currency\":\"USD\"}}"
         ]
       }
     },
@@ -237,7 +237,7 @@
       "JSON_ARRAY": {},
       "FORM": {
         "data": [
-          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"ViewContent\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"content_ids\":[\"507f1f77bcf86cd799439011\",\"507f1f77bcf86cdef799439011\"],\"content_type\":\"product\",\"contents\":[{\"id\":\"507f1f77bcf86cd799439011\",\"quantity\":2},{\"id\":\"507f1f77bcf86cdef799439011\",\"quantity\":2}],\"currency\":\"USD\"}}"
+          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"ViewContent\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"content_ids\":[\"507f1f77bcf86cd799439011\",\"507f1f77bcf86cdef799439011\"],\"content_type\":\"product\",\"contents\":[{\"id\":\"507f1f77bcf86cd799439011\",\"quantity\":2},{\"id\":\"507f1f77bcf86cdef799439011\",\"quantity\":2}],\"content_category\":\"cat 1\",\"content_name\":\"nutrition\",\"value\":18.9,\"currency\":\"USD\"}}"
         ]
       }
     },
@@ -256,7 +256,7 @@
       "JSON_ARRAY": {},
       "FORM": {
         "data": [
-          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"ViewContent\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"list_id\":\"1234\",\"content_ids\":[\"507f1f77bcf86cd799439011\",\"507f1f77bcf86cdef799439011\"],\"content_type\":\"product\",\"contents\":[{\"id\":\"507f1f77bcf86cd799439011\",\"quantity\":2},{\"id\":\"507f1f77bcf86cdef799439011\",\"quantity\":2}],\"currency\":\"USD\"}}"
+          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"ViewContent\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"list_id\":\"1234\",\"content_ids\":[\"507f1f77bcf86cd799439011\",\"507f1f77bcf86cdef799439011\"],\"content_type\":\"product\",\"contents\":[{\"id\":\"507f1f77bcf86cd799439011\",\"quantity\":2},{\"id\":\"507f1f77bcf86cdef799439011\",\"quantity\":2}],\"content_category\":\"cat 1\",\"value\":0,\"currency\":\"USD\"}}"
         ]
       }
     },
@@ -313,7 +313,7 @@
       "JSON_ARRAY": {},
       "FORM": {
         "data": [
-          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Purchase\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"content_ids\":[\"p-298\",\"p-299\"],\"content_type\":\"product\",\"currency\":\"INR\",\"value\":12.24,\"contents\":[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75},{\"id\":\"p-299\",\"quantity\":3,\"item_price\":24.75}],\"num_items\":2}}"
+          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Purchase\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"content_ids\":[\"p-298\",\"p-299\"],\"content_type\":\"product\",\"currency\":\"INR\",\"value\":12.24,\"contents\":[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75},{\"id\":\"p-299\",\"quantity\":3,\"item_price\":24.75}],\"num_items\":2,\"content_name\":\"all about nutrition\"}}"
         ]
       }
     },
@@ -332,7 +332,7 @@
       "XML": {},
       "FORM": {
         "data": [
-          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"InitiateCheckout\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"content_category\":\"clothing\",\"content_ids\":[\"p-298\",\"p-299\"],\"content_type\":\"product\",\"currency\":\"CAD\",\"value\":0,\"contents\":[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75},{\"id\":\"p-299\",\"quantity\":1,\"item_price\":24.75}],\"num_items\":2}}"
+          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"InitiateCheckout\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"contentName\":\"abc\",\"content_category\":\"clothing\",\"content_ids\":[\"p-298\",\"p-299\"],\"content_type\":\"product\",\"currency\":\"CAD\",\"value\":0,\"contents\":[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75},{\"id\":\"p-299\",\"quantity\":1,\"item_price\":24.75}],\"num_items\":2}}"
         ]
       }
     },
@@ -389,7 +389,7 @@
       "JSON_ARRAY": {},
       "FORM": {
         "data": [
-          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Search\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"search_string\":\"HDMI cable\",\"currency\":\"USD\"}}"
+          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Search\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"content_ids\":[\"p-298\"],\"content_category\":\"health\",\"value\":18.9,\"contents\":[{\"id\":\"p-298\",\"quantity\":2,\"item_price\":18.9}],\"search_string\":\"HDMI cable\",\"currency\":\"USD\"}}"
         ]
       }
     },
@@ -408,7 +408,7 @@
       "JSON_ARRAY": {},
       "FORM": {
         "data": [
-          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Search\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"search_string\":\"HDMI cable\",\"currency\":\"USD\"}}"
+          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Search\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"content_ids\":[],\"content_category\":\"\",\"value\":0,\"contents\":[],\"search_string\":\"HDMI cable\",\"currency\":\"USD\"}}"
         ],
         "test_event_code": "TEST1001"
       }
@@ -628,7 +628,7 @@
       "JSON_ARRAY": {},
       "FORM": {
         "data": [
-          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Search\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"search_string\":50,\"currency\":\"USD\"}}"
+          "{\"user_data\":{\"external_id\":\"5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5\",\"em\":\"4e59b5130b3a248457336e2fe5e40a3e8604f28d1804be14e6b227e2d88d7ce2\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"Search\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"content_ids\":[],\"content_category\":\"\",\"value\":0,\"contents\":[],\"search_string\":50,\"currency\":\"USD\"}}"
         ]
       }
     },
@@ -679,5 +679,59 @@
       }
     },
     "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v16.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"ViewContent\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"content_ids\":[\"p-298\"],\"content_type\":\"sending dedicated content type for this particular payload\",\"content_name\":\"my product 1\",\"content_category\":\"clothing\",\"currency\":\"CAD\",\"value\":24.75,\"contents\":[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75}]}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://graph.facebook.com/v16.0/dfgdfgdgd/events?access_token=09876",
+    "headers": {},
+    "params": {},
+    "body": {
+      "JSON": {},
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36\"},\"event_name\":\"ViewContent\",\"event_time\":1567333011,\"event_id\":\"ec5481b6-a926-4d2e-b293-0b3a77c4d3be\",\"action_source\":\"other\",\"custom_data\":{\"content_ids\":[\"p-298\"],\"content_type\":\"product\",\"content_name\":\"my product 1\",\"content_category\":\"clothing\",\"currency\":\"CAD\",\"value\":18.9,\"contents\":[{\"id\":\"p-298\",\"quantity\":1,\"item_price\":24.75}]}}"
+        ]
+      }
+    },
+    "files": {}
+  },
+  {
+    "error": "'properties.products' is not sent as an Array<Object>",
+    "statusCode": 400,
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    }
+  },
+  {
+    "error": "'properties.products[1]' is not an object",
+    "statusCode": 400,
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    }
   }
 ]

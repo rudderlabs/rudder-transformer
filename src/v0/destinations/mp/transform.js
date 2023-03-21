@@ -268,7 +268,7 @@ const processGroupEvents = (message, type, destination) => {
         groupKey === 'groupId'
           ? getFieldValueFromMessage(message, 'groupId')
           : get(message.traits, groupKey);
-      if (!Array.isArray(groupKeyVal)) {
+      if (groupKeyVal && !Array.isArray(groupKeyVal)) {
         groupKeyVal = [groupKeyVal];
       }
       if (groupKeyVal) {

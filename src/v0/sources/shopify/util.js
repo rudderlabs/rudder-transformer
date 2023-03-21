@@ -270,14 +270,14 @@ const checkForValidRecord = async (event) => {
   const cartToken = event.cart_token || event.token;
   const redisInstance = await DBConnector.getRedisInstance();
   let redisVal = {};
-  let a;
+  let cartDetails;
   try {
-    a = await redisInstance.get(`${cartToken}`);
+    cartDetails = await redisInstance.get(`${cartToken}`);
   } catch (e) {
     logger.error(`Could not get cart details due error: ${e}`);
   }
-  if (a) {
-    redisVal = JSON.parse(a);
+  if (cartDetails) {
+    redisVal = JSON.parse(cartDetails);
     if (redisVal && compareCartPayloadandTimestamp(redisVal, event)) {
       return false;
     }

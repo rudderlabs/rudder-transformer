@@ -139,17 +139,18 @@ const processEvent = async (inputEvent) => {
        * cart events are passed within a specified time period for when useRedisDatabase is set to true
        */
       // eslint-disable-next-line no-case-declarations
-      const validRecord = await checkForValidRecord(inputEvent);
-
-      if (useRedisDatabase && !validRecord) {
-        const result = {
-          outputToSource: {
-            body: Buffer.from('OK').toString('base64'),
-            contentType: 'text/plain',
-          },
-          statusCode: 200,
-        };
-        return result;
+      if (useRedisDatabase) {
+        const validRecord = await checkForValidRecord(inputEvent);
+        if (!validRecord) {
+          const result = {
+            outputToSource: {
+              body: Buffer.from('OK').toString('base64'),
+              contentType: 'text/plain',
+            },
+            statusCode: 200,
+          };
+          return result;
+        }
       }
       message = trackPayloadBuilder(event, shopifyTopic);
       break;

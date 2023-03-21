@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/stale@v7.0.0
         with:
-          repo-token: ${{ secrets.token }}
+          repo-token: ${{ github.token }}
           operations-per-run: 200
           stale-pr-message: 'This PR is considered to be stale. It has been open for 20 days with no further activity thus it is going to be closed in 7 days. To avoid such a case please consider removing the stale label manually or add a comment to the PR.'
           stale-issue-message: 'This issue is considered to be stale. It has been open for 30 days with no further activity thus it is going to be closed in 7 days. To avoid such a case please consider removing the stale label manually or add a comment to the issue.'
@@ -25,7 +25,6 @@ jobs:
           days-before-issue-close: 7
           stale-pr-label: 'Stale'
           stale-issue-label: 'Stale'
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   branches:
     name: Cleanup Stale Branches

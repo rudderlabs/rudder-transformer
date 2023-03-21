@@ -80,7 +80,7 @@ const BrazeDedupUtility = {
           },
           {
             headers: {
-              Authorization: `Bearer ${inputs[0].destination.Config.restApiKey}asd`,
+              Authorization: `Bearer ${inputs[0].destination.Config.restApiKey}`,
             },
             timeout: 10 * 1000,
           },

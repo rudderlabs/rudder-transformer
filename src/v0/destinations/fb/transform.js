@@ -234,7 +234,7 @@ function responseBuilderSimple(message, payload, destination) {
 
   // "https://graph.facebook.com/v13.0/644748472345539/activities"
 
-  const endpoint = `https://graph.facebook.com/v13.0/${appID}/activities`;
+  const endpoint = `https://graph.facebook.com/v16.0/${appID}/activities`;
 
   const response = defaultRequestConfig();
   response.endpoint = endpoint;

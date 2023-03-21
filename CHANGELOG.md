@@ -2,6 +2,44 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.17.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.14.0...v1.17.0) (2023-03-21)
+
+
+### Features
+
+* add default action source ([#1957](https://github.com/rudderlabs/rudder-transformer/issues/1957)) ([043cae2](https://github.com/rudderlabs/rudder-transformer/commit/043cae2802c81e7a1d25d266eaeca06a3000aeaa))
+* **braze:** refactor code custom attribute operations ([#1943](https://github.com/rudderlabs/rudder-transformer/issues/1943)) ([9c91bfc](https://github.com/rudderlabs/rudder-transformer/commit/9c91bfc4f7eeeaa1e97174a2c96c1902c6817c6a))
+* **facebook_app_events:** update api version ([#1921](https://github.com/rudderlabs/rudder-transformer/issues/1921)) ([793ebfb](https://github.com/rudderlabs/rudder-transformer/commit/793ebfb39e8667882cd40ff4add2ea6b5dfb9564))
+* log process memory errors ([#1920](https://github.com/rudderlabs/rudder-transformer/issues/1920)) ([076d7b5](https://github.com/rudderlabs/rudder-transformer/commit/076d7b58831b035102a0544985d9a1ff67ef1791))
+* mautic: support self hosted instance ([#1909](https://github.com/rudderlabs/rudder-transformer/issues/1909)) ([7c0a724](https://github.com/rudderlabs/rudder-transformer/commit/7c0a7240d9fcef45e4066a4a7dee8234c7e782d3))
+* **mix-panel:** add support for multiple group key value ([#1773](https://github.com/rudderlabs/rudder-transformer/issues/1773)) ([e7a8d48](https://github.com/rudderlabs/rudder-transformer/commit/e7a8d489cb3fda2718e106730d69506e6f56c9f3))
+* moenagae alias call support ([#1930](https://github.com/rudderlabs/rudder-transformer/issues/1930)) ([194bf8e](https://github.com/rudderlabs/rudder-transformer/commit/194bf8e3e2f47ca63ee273c9255468b41bc6ffcf))
+* revamp github actions for release management ([#1898](https://github.com/rudderlabs/rudder-transformer/issues/1898)) ([8847f58](https://github.com/rudderlabs/rudder-transformer/commit/8847f589dc2248d4210c82326022d9f459b2f888))
+* suppress errors from unwanted modules to bugsnag ([#1907](https://github.com/rudderlabs/rudder-transformer/issues/1907)) ([9e6a1c0](https://github.com/rudderlabs/rudder-transformer/commit/9e6a1c0bd3dfa79e2a470eefad7d4c9b34c842cb))
+* transformation secrets ([#1912](https://github.com/rudderlabs/rudder-transformer/issues/1912)) ([a0b488a](https://github.com/rudderlabs/rudder-transformer/commit/a0b488a4514c9c868f39d000a4ae40aa3f7b5de6))
+
+
+### Bug Fixes
+
+* added products array check for iterable destination ([#1949](https://github.com/rudderlabs/rudder-transformer/issues/1949)) ([87db73e](https://github.com/rudderlabs/rudder-transformer/commit/87db73e062dcac54fdb1906659a90d2df0f13648))
+* changelog ([ef13dd8](https://github.com/rudderlabs/rudder-transformer/commit/ef13dd8bef572c80ddb8511abb7d5be23cc5dd81))
+* client_id mapping for ga4 ([#1904](https://github.com/rudderlabs/rudder-transformer/issues/1904)) ([9aaf908](https://github.com/rudderlabs/rudder-transformer/commit/9aaf90864bd489fb463a56f62a673ead2bb83fe5))
+* correcting method name for prepareProxy ([#1923](https://github.com/rudderlabs/rudder-transformer/issues/1923)) ([cfed522](https://github.com/rudderlabs/rudder-transformer/commit/cfed5228be21bd8d7f5a2ea8bc4b97c973a112be))
+* create pull-request jobs in workflows ([36b2677](https://github.com/rudderlabs/rudder-transformer/commit/36b2677209b9b34a33375381dd74a74988e11dd2))
+* **destination:** add channel as platform ([#1906](https://github.com/rudderlabs/rudder-transformer/issues/1906)) ([4cfbbd0](https://github.com/rudderlabs/rudder-transformer/commit/4cfbbd02530d1cc02b1b04ab5c721f1b642d41bc))
+* **fb pixel:** add default action source ([#1946](https://github.com/rudderlabs/rudder-transformer/issues/1946)) ([2e03f4d](https://github.com/rudderlabs/rudder-transformer/commit/2e03f4dcfbfb1c6d35aecf950e0f1e3828ceaaef))
+* **fb pixel:** ecomm ([#1932](https://github.com/rudderlabs/rudder-transformer/issues/1932)) ([8d5e07a](https://github.com/rudderlabs/rudder-transformer/commit/8d5e07a2862ee757ecd3523b36e150f29a134b0f)), closes [#1964](https://github.com/rudderlabs/rudder-transformer/issues/1964)
+* **fb pixel:** zp mapping and external_id ([#1908](https://github.com/rudderlabs/rudder-transformer/issues/1908)) ([c8665d4](https://github.com/rudderlabs/rudder-transformer/commit/c8665d4475fe06d45d3b4fdd26b46247be0188f6))
+* **firehose:** handle undefined message type ([#1942](https://github.com/rudderlabs/rudder-transformer/issues/1942)) ([d3ea664](https://github.com/rudderlabs/rudder-transformer/commit/d3ea664c182cc1702ab0298cf79ecad2aae7ce6b))
+* **ga4:** product array issue ([#1845](https://github.com/rudderlabs/rudder-transformer/issues/1845)) ([3d24e93](https://github.com/rudderlabs/rudder-transformer/commit/3d24e93a6c00c3d2bd425012e4b315997b5e05b6))
+* **integration:** pinterest content_id field dropped when having null value to match with cdkv2 ([#1950](https://github.com/rudderlabs/rudder-transformer/issues/1950)) ([09995e9](https://github.com/rudderlabs/rudder-transformer/commit/09995e9cc9931827d8be5b1ede59be9ce77c0cd4))
+* remove ga4 identify call support for cloud mode and treat identify call event as track events (login, sign_up and generate_lead) ([#1903](https://github.com/rudderlabs/rudder-transformer/issues/1903)) ([fa8fd74](https://github.com/rudderlabs/rudder-transformer/commit/fa8fd74f14d0ac6707f83ed81897a541ae6191e6))
+* **slack:** handlebars error handling ([#1910](https://github.com/rudderlabs/rudder-transformer/issues/1910)) ([0c6bc2e](https://github.com/rudderlabs/rudder-transformer/commit/0c6bc2edb17986a1d99365a4468a67bd65e09e47))
+* syntax issue in workflow ([09d7659](https://github.com/rudderlabs/rudder-transformer/commit/09d765912ef07552729c1193e28c1bd149f68401))
+* syntax issue in workflow ([c84ef6e](https://github.com/rudderlabs/rudder-transformer/commit/c84ef6e1d1b4feefb208e10c316c4f5bd647efa3))
+* updated batching logic for pinterest_tag ([#1878](https://github.com/rudderlabs/rudder-transformer/issues/1878)) ([e38d772](https://github.com/rudderlabs/rudder-transformer/commit/e38d7721451d4c43d8c1fe67d28566302dced440))
+* **util:** getDestinationExternalIDObjectForRetl funciton ([#1919](https://github.com/rudderlabs/rudder-transformer/issues/1919)) ([235243d](https://github.com/rudderlabs/rudder-transformer/commit/235243de9afb1b52b56b7db9170e5eb3345b1de6))
+
 ### [1.16.2](https://github.com/rudderlabs/rudder-transformer/compare/1.16.1...1.16.2) (2023-03-16)
 
 

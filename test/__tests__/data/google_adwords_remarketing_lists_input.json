@@ -2,15 +2,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,
@@ -51,15 +51,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "769-372-9833",
         "loginCustomerId": "870-483-0944",
         "subAccount": true,
@@ -101,15 +101,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,
@@ -152,15 +152,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,
@@ -220,15 +220,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,
@@ -270,15 +270,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,
@@ -319,15 +319,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,
@@ -356,15 +356,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": true,
@@ -413,15 +413,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,
@@ -989,15 +989,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,
@@ -1064,15 +1064,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,
@@ -2177,15 +2177,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,
@@ -2234,15 +2234,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,
@@ -2291,15 +2291,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,
@@ -3404,15 +3404,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,
@@ -3479,15 +3479,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,
@@ -3554,15 +3554,15 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummy-access",
+        "refresh_token": "dummy-refresh",
+        "developer_token": "dummy-dev-token"
       }
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,
@@ -3606,8 +3606,8 @@
     },
     "destination": {
       "Config": {
-        "rudderAccountId": "258Yea7usSKNpbkIaesL9oJ9iYw",
-        "listId": "7090784486",
+        "rudderAccountId": "rudder-acc-id",
+        "listId": "list111",
         "customerId": "7693729833",
         "loginCustomerId": "",
         "subAccount": false,

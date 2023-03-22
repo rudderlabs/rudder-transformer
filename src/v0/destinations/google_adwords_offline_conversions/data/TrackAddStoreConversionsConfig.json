@@ -1,19 +1,62 @@
 [
     {
-        "destKey": "enable_match_rate_range_preview",
-        "sourceKeys": "properties.enable_match_rate_range_preview",
-        "required": false
-      },
-      {
-        "destKey": "job.loyaltyFraction",
-        "sourceKeys": "properties.loyaltyFraction",
+        "destKey": "operations.create.userIdentifiers[0].userIdentifierSource",
+        "sourceKeys": "properties.userIdentifierSource",
+        "required": false,
+        "metadata": {
+            "type": "toString",
+            "allowedKeyCheck": [
+                {
+                    "sourceVal": [
+                        "UNSPECIFIED",
+                        "UNKNOWN",
+                        "FIRST_PARTY",
+                        "THIRD_PARTY"
+                    ],
+                    "type": "toUpperCase"
+                }
+            ]
+        }
+    },
+    {
+        "destKey": "operations.create.transaction_attribute.store_attribute.store_code",
+        "sourceKeys": [
+            "properties.storeCode",
+            "properties.store_code"
+        ],
+        "required": false,
+        "metadata": {
+            "type": "toString"
+        }
+    },
+    {
+        "destKey": "operations.create.transaction_attribute.order_id",
+        "sourceKeys": [
+            "properties.order_id",
+            "properties.orderId"
+        ],
+        "required": false,
+        "metadata": {
+            "type": "toString"
+        }
+    },
+    {
+        "destKey": "operations.create.transaction_attribute.currency_code",
+        "sourceKeys": "properties.currency",
         "required": true,
-        "defaultValue":"1"
-      },
-      {
-        "destKey": "job.transaction_upload_fraction",
-        "sourceKeys": "properties.transaction_upload_fraction",
+        "metadata": {
+            "type": "toString"
+        }
+    },
+    {
+        "destKey": "operations.create.transaction_attribute.transaction_date_time",
+        "sourceKeys": [
+            "properties.transaction_date_time",
+            "originalTimestamp"
+        ],
         "required": true,
-        "defaultValue":"1"
-      }
+        "metadata": {
+            "type": "toString"
+        }
+    }
 ]

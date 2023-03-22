@@ -17,7 +17,7 @@
         "defaultValue":"1"
       },
       {
-        "destKey": "job.custom_key",
+        "destKey": "job.storeSalesMetadata.custom_key",
         "sourceKeys": "properties.custom_key",
         "required": false
       }

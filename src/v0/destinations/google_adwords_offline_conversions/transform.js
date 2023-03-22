@@ -44,10 +44,7 @@ const getConversions = async(message, metadata, { Config }, event, conversionTyp
     hashUserIdentifier,
     defaultUserIdentifier,
     UserIdentifierSource,
-    conversionEnvironment,
-    customVariables,
-    subAccount,
-    loginCustomerId,
+    conversionEnvironment
   } = Config;
   const { properties, originalTimestamp } = message;
 
@@ -121,7 +118,7 @@ const getConversions = async(message, metadata, { Config }, event, conversionTyp
   } else if (conversionType === 'store') {
     const offlineUserDataJobId = await getOfflineUserDataJobId(message, Config,
       metadata);
-    addConversionToTheJob(message, Config, offlineUserDataJobId, );
+    addConversionToTheJob(message, Config, offlineUserDataJobId, event);
   } else {
     // call conversions
 

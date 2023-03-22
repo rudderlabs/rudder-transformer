@@ -1,6 +1,9 @@
 name: Prepare for Dev Environment Deployment
 
 on:
+  push:
+    branches:
+      - develop
   pull_request:
     types:
       - closed
@@ -13,6 +16,10 @@ env:
   DOCKERHUB_USERNAME: rudderlabs
 
 jobs:
+  report-coverage:
+    if: github.event_name == 'push'
+    uses: ./.github/workflows/report-code-coverage.yml
+
   build-transformer-image:
     name: Build Transformer Docker Image - Dev
     runs-on: ubuntu-latest

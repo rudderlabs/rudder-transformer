@@ -28,7 +28,7 @@
       },
       "JSON": {}
     },
-    "endpoint": "https://graph.facebook.com/v13.0/RudderFbApp/activities",
+    "endpoint": "https://graph.facebook.com/v16.0/RudderFbApp/activities",
     "files": {},
     "headers": {
       "x-forwarded-for": "1.2.3.4"
@@ -44,7 +44,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v13.0/RudderFbApp/activities",
+    "endpoint": "https://graph.facebook.com/v16.0/RudderFbApp/activities",
     "headers": {},
     "params": {},
     "body": {
@@ -68,7 +68,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v13.0/RudderFbApp/activities",
+    "endpoint": "https://graph.facebook.com/v16.0/RudderFbApp/activities",
     "headers": {},
     "params": {},
     "body": {
@@ -95,7 +95,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v13.0/RudderFbApp/activities",
+    "endpoint": "https://graph.facebook.com/v16.0/RudderFbApp/activities",
     "headers": {},
     "params": {},
     "body": {
@@ -119,7 +119,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v13.0/RudderFbApp/activities",
+    "endpoint": "https://graph.facebook.com/v16.0/RudderFbApp/activities",
     "headers": {},
     "params": {},
     "body": {
@@ -143,7 +143,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v13.0/RudderFbApp/activities",
+    "endpoint": "https://graph.facebook.com/v16.0/RudderFbApp/activities",
     "headers": {},
     "params": {},
     "body": {
@@ -167,7 +167,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v13.0/RudderFbApp/activities",
+    "endpoint": "https://graph.facebook.com/v16.0/RudderFbApp/activities",
     "headers": {},
     "params": {},
     "body": {
@@ -197,7 +197,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v13.0/RudderFbApp/activities",
+    "endpoint": "https://graph.facebook.com/v16.0/RudderFbApp/activities",
     "headers": {},
     "params": {},
     "body": {
@@ -227,7 +227,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v13.0/RudderFbApp/activities",
+    "endpoint": "https://graph.facebook.com/v16.0/RudderFbApp/activities",
     "headers": {
       "x-forwarded-for": "2.3.4.5"
     },
@@ -256,7 +256,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v13.0/RudderFbApp/activities",
+    "endpoint": "https://graph.facebook.com/v16.0/RudderFbApp/activities",
     "headers": {},
     "params": {},
     "body": {

@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.16.2",
+  "version": "1.17.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -35,7 +35,7 @@
     "commit-msg": "commitlint --edit",
     "prepare": "husky install",
     "release": "npx standard-version",
-    "release:github": "DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js"
+    "release:github": "DEBUG=conventional-github-releaser npx conventional-github-releaser -r 0 -p angular --config github-release.config.js"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",
@@ -102,6 +102,7 @@
     "commander": "^9.5.0",
     "commitizen": "^4.2.6",
     "commitlint": "^17.4.1",
+    "conventional-github-releaser": "^3.1.5",
     "eslint": "^8.31.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",

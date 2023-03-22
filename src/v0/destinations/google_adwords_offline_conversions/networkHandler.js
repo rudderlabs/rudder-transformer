@@ -3,7 +3,11 @@ const get = require('get-value');
 const sha256 = require('sha256');
 const { prepareProxyRequest, httpSend, httpPOST } = require('../../../adapters/network');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
-const { isHttpStatusSuccess, getHashFromArray, isDefinedAndNotNullAndNotEmpty } = require('../../util');
+const {
+  isHttpStatusSuccess,
+  getHashFromArray,
+  isDefinedAndNotNullAndNotEmpty,
+} = require('../../util');
 const { getConversionActionId } = require('./utils');
 const Cache = require('../../util/cache');
 const { CONVERSION_CUSTOM_VARIABLE_CACHE_TTL, SEARCH_STREAM } = require('./config');
@@ -118,9 +122,10 @@ const ProxyRequest = async (request) => {
 
   // fetch conversionAction
   // httpPOST -> axios.post()
-  const conversionActionId = await getConversionActionId(headers, params);
-  set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
-
+  if (params?.event) {
+    const conversionActionId = await getConversionActionId(headers, params);
+    set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
+  }
   if (isDefinedAndNotNullAndNotEmpty(params.customVariables)) {
     // fetch all conversion custom variable in google ads
     let conversionCustomVariable = await getConversionCustomVariable(headers, params);

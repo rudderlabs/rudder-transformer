@@ -6,8 +6,6 @@ const {
   getHashFromArrayWithDuplicate,
   constructPayload,
   removeHyphens,
-  defaultRequestConfig,
-  defaultPostRequestConfig,
   simpleProcessRouterDest,
   getHashFromArray,
   getFieldValueFromMessage,
@@ -21,8 +19,10 @@ const {
 } = require('./config');
 const {
   validateDestinationConfig,
-  getAccessToken,
   removeHashToSha256TypeFromMappingJson,
+  getOfflineUserDataJobId,
+  addConversionToTheJob,
+  requestBuilder
 } = require('./utils');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
@@ -36,7 +36,7 @@ const { InstrumentationError, ConfigurationError } = require('../../util/errorTy
  * @param {*} conversionType
  * @returns
  */
-const getConversions = (message, metadata, { Config }, event, conversionType) => {
+const getConversions = async(message, metadata, { Config }, event, conversionType) => {
   let payload;
   let endpoint;
   const filteredCustomerId = removeHyphens(Config.customerId);
@@ -118,6 +118,10 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     if (!properties.conversionEnvironment && conversionEnvironment !== 'none') {
       set(payload, 'conversions[0].conversionEnvironment', conversionEnvironment);
     }
+  } else if (conversionType === 'store') {
+    const offlineUserDataJobId = await getOfflineUserDataJobId(message, Config,
+      metadata);
+    addConversionToTheJob(message, Config, offlineUserDataJobId, );
   } else {
     // call conversions
 
@@ -125,44 +129,19 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
   }
 
-  // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
-  // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
-  if (!properties.conversionDateTime && originalTimestamp) {
-    const timestamp = originalTimestamp;
-    const conversionDateTime = moment(timestamp)
-      .utcOffset(moment(timestamp).utcOffset())
-      .format('YYYY-MM-DD HH:mm:ssZ');
-    set(payload, 'conversions[0].conversionDateTime', conversionDateTime);
-  }
-
-  payload.partialFailure = true;
-
-  const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.endpoint = endpoint;
-  response.params = {
-    event,
-    customerId: filteredCustomerId,
-    customVariables,
-    properties,
-  };
-  response.body.JSON = payload;
-  response.headers = {
-    Authorization: `Bearer ${getAccessToken(metadata)}`,
-    'Content-Type': 'application/json',
-    'developer-token': get(metadata, 'secret.developer_token'),
-  };
-
-  if (subAccount) {
-    if (loginCustomerId) {
-      const filteredLoginCustomerId = removeHyphens(loginCustomerId);
-      response.headers['login-customer-id'] = filteredLoginCustomerId;
-    } else {
-      throw new ConfigurationError(`loginCustomerId is required as subAccount is enabled`);
+  if (conversionType !== 'store') {
+    // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
+    // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
+    if (!properties.conversionDateTime && originalTimestamp) {
+      const timestamp = originalTimestamp;
+      const conversionDateTime = moment(timestamp)
+        .utcOffset(moment(timestamp).utcOffset())
+        .format('YYYY-MM-DD HH:mm:ssZ');
+      set(payload, 'conversions[0].conversionDateTime', conversionDateTime);
     }
+    payload.partialFailure = true;
   }
-
-  return response;
+  return requestBuilder(payload, endpoint, Config, metadata, event, filteredCustomerId, properties);
 };
 
 /**
@@ -193,9 +172,9 @@ const trackResponseBuilder = (message, metadata, destination) => {
     throw new ConfigurationError(`Event name '${event}' is not valid`);
   }
 
-  eventsToOfflineConversionsTypeMapping[event].forEach((conversionType) => {
+  eventsToOfflineConversionsTypeMapping[event].forEach(async(conversionType) => {
     responseList.push(
-      getConversions(
+      await getConversions(
         message,
         metadata,
         destination,

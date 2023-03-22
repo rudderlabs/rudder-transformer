@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 const _ = require('lodash');
 const sha256 = require('sha256');
-const { constructPayload, extractCustomFields, flattenJson, generateUUID } = require('../../util');
+const { constructPayload, extractCustomFields, flattenJson, generateUUID, isDefinedAndNotNull } = require('../../util');
 const { DBConnector } = require('../../../util/redisConnector');
 const logger = require('../../../logger');
 const {
@@ -136,17 +136,17 @@ const setAnonymousIdorUserIdAndStore = async (message) => {
     case RUDDER_ECOM_MAP.orders_create:
     case RUDDER_ECOM_MAP.orders_updated:
     case SHOPIFY_TRACK_MAP.orders_delete:
-      if (!message.properties?.cart_token || message?.properties?.cart_token === null) {
+      if (!isDefinedAndNotNull(message.properties?.cart_token)) {
         /**
          * This case will rise when we will be using Shopify Admin Dashboard to create, update, delete orders etc.
-         * Since it is done by admin we will set "userId" to be "admin"
+         * Since it is done by shopify-admin we will set "userId" to be "shopify-admin"
          */
-        if (!message?.userId) {
-          message.setProperty('userId', 'admin');
+        if (!message.userId) {
+          message.setProperty('userId', 'shopify-admin');
         }
         return;
       }
-      cartToken = message?.properties?.cart_token;
+      cartToken = message.properties?.cart_token;
       break;
     /*
      * we dont have cart_token for carts_create and update events but have id and token field
@@ -154,15 +154,15 @@ const setAnonymousIdorUserIdAndStore = async (message) => {
      */
     case SHOPIFY_TRACK_MAP.carts_create:
     case SHOPIFY_TRACK_MAP.carts_update:
-      cartToken = message?.properties?.id;
+      cartToken = message.properties?.id;
       break;
-    // https://help.shopify.com/en/manual/orders/edit-orders -> order can be edited through admin only
+    // https://help.shopify.com/en/manual/orders/edit-orders -> order can be edited through shopify-admin only
     // https://help.shopify.com/en/manual/orders/fulfillment/setting-up-fulfillment -> fullfillments wont include cartToken neither in manual or automatiic
     case SHOPIFY_TRACK_MAP.orders_edited:
     case SHOPIFY_TRACK_MAP.fulfillments_create:
     case SHOPIFY_TRACK_MAP.fulfillments_update:
-      if (!message?.userId) {
-        message.setProperty('userId', 'admin');
+      if (!message.userId) {
+        message.setProperty('userId', 'shopify-admin');
       }
       return;
     default:
@@ -174,13 +174,12 @@ const setAnonymousIdorUserIdAndStore = async (message) => {
     if (valFromDB) {
       const parsedVal = JSON.parse(valFromDB);
       anonymousIDfromDB = parsedVal.anonymousId;
-    }
-    if (!valFromDB || !anonymousIDfromDB || anonymousIDfromDB === null) {
+    } else {
       // this is for backward compatability when we don't have the redis mapping for older events
       // we will get anonymousIDFromDb as null so we will set UUID using the session Key
       anonymousIDfromDB = cartToken;
     }
-    message.setProperty('anonymousId', anonymousIDfromDB || 'Not Found');
+    message.setProperty('anonymousId', anonymousIDfromDB);
   } catch (e) {
     logger.error(`Couldn't fetch data for cartToken ${cartToken} due error: ${e}`);
   }
@@ -221,7 +220,7 @@ const setAnonymousIdorUserIdAndStore = async (message) => {
  * @returns
  */
 // https://shopify.dev/docs/api/liquid/objects/line_item#line_item-properties
-const compareLineItems = (prevLineItems, newLineItems) => {
+const isContainingSameLineItems = (prevLineItems, newLineItems) => {
   let noOfItems = prevLineItems.length;
   while (noOfItems > 0) {
     const modifiedPrev = _.cloneDeep(prevLineItems[noOfItems - 1]);
@@ -245,17 +244,18 @@ const compareLineItems = (prevLineItems, newLineItems) => {
  * @param {*} prevPayload
  * @param {*} newPayload
  */
-const compareCartPayloadandTimestamp = (prevPayload, newPayload) => {
+const isDuplicateCartPayload = (prevPayload, newPayload) => {
   // The cart?.items.length param is in the case when rudder identifier is stored in the database
-  const prevPayloadLineItemslength = prevPayload?.line_items?.length || prevPayload.cart?.items.length
-  if (prevPayloadLineItemslength !== newPayload.line_items?.length) {
+  const prevPayloadLineItemsLength = prevPayload?.line_items?.length || prevPayload.cart?.items.length
+  const newPayloadLineItemsLength = newPayload.line_items?.length || newPayload.cart?.items.length
+  if (prevPayloadLineItemsLength !== newPayloadLineItemsLength) {
     return false;
   }
   if (
     Date.parse(newPayload.updated_at) - Date.parse(prevPayload.updated_at) <
-      timeDifferenceForCartEvents ||
-      newPayload.line_items?.length === 0 ||
-    compareLineItems(prevPayload.line_items, newPayload.line_items)
+    timeDifferenceForCartEvents ||
+    newPayloadLineItemsLength === 0 ||
+    isContainingSameLineItems(prevPayload.line_items, newPayload.line_items)
   ) {
     return true;
   }
@@ -268,17 +268,18 @@ const compareCartPayloadandTimestamp = (prevPayload, newPayload) => {
  */
 const checkForValidRecord = async (event) => {
   const cartToken = event.cart_token || event.token;
-  const redisInstance = await DBConnector.getRedisInstance();
   let redisVal = {};
   let cartDetails;
+  let redisInstance;
   try {
+    redisInstance = await DBConnector.getRedisInstance();
     cartDetails = await redisInstance.get(`${cartToken}`);
   } catch (e) {
     logger.error(`Could not get cart details due error: ${e}`);
   }
   if (cartDetails) {
     redisVal = JSON.parse(cartDetails);
-    if (redisVal && compareCartPayloadandTimestamp(redisVal, event)) {
+    if (isDefinedAndNotNull(redisVal) && isDuplicateCartPayload(redisVal, event)) {
       return false;
     }
   }

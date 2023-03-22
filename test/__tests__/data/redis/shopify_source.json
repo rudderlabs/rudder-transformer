@@ -537,7 +537,7 @@
             "created_at": "2023-02-10T12:05:04.402Z"
         },
         "output": {
-            "userId": "admin",
+            "userId": "shopify-admin",
             "context": {
                 "cart_token": null,
                 "checkout_token": "checkout token",
@@ -641,7 +641,7 @@
                     },
                     "discount_allocations": [],
                     "duties": [],
-                    "admin_graphql_api_id": "gid://shopify/LineItem/13729348059411",
+                    "shopify-admin_graphql_api_id": "gid://shopify/LineItem/13729348059411",
                     "tax_lines": []
                 }
             ],
@@ -651,10 +651,10 @@
             "tracking_urls": [],
             "receipt": {},
             "name": "#1001.1",
-            "admin_graphql_api_id": "gid://shopify/Fulfillment/4655820210451"
+            "shopify-admin_graphql_api_id": "gid://shopify/Fulfillment/4655820210451"
         },
         "output": {
-            "userId": "admin",
+            "userId": "shopify-admin",
             "context": {
                 "library": {
                     "name": "RudderStack Shopify Cloud",
@@ -671,7 +671,7 @@
             },
             "type": "track",
             "properties": {
-                "admin_graphql_api_id": "gid://shopify/Fulfillment/4655820210451",
+                "shopify-admin_graphql_api_id": "gid://shopify/Fulfillment/4655820210451",
                 "created_at": "2023-02-10T07:44:06-05:00",
                 "destination": null,
                 "location_id": 77735330067,
@@ -680,7 +680,7 @@
                 "origin_address": null,
                 "products": [
                     {
-                        "admin_graphql_api_id": "gid://shopify/LineItem/13729348059411",
+                        "shopify-admin_graphql_api_id": "gid://shopify/LineItem/13729348059411",
                         "quantity": 1,
                         "product_exists": true,
                         "title": "bitter cloud",
@@ -1014,7 +1014,7 @@
             "created_at": "2023-02-10T12:05:04.402Z"
         },
         "output": {
-            "userId": "admin",
+            "userId": "shopify-admin",
             "context": {
                 "cart_token": null,
                 "library": {

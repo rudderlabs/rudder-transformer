@@ -140,8 +140,8 @@ const processEvent = async (inputEvent) => {
        */
       // eslint-disable-next-line no-case-declarations
       if (useRedisDatabase) {
-        const validRecord = await checkForValidRecord(inputEvent);
-        if (!validRecord) {
+        const duplicateRecord = await checkForValidRecord(inputEvent);
+        if (!duplicateRecord) {
           const result = {
             outputToSource: {
               body: Buffer.from('OK').toString('base64'),

@@ -961,5 +961,40 @@
       "files": {},
       "userId": "test_user_id"
     }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.indicative.com/service/event",
+      "headers": {
+        "Indicative-Client": "RudderStack",
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "eventUniqueId": "sample_user_id",
+          "eventName": "Product Clicked",
+          "properties": {
+            "revenue": "30",
+            "currency": "USD",
+            "quantity": "5",
+            "test_key_2.test_child_key_1": "test_child_value_1",
+            "price": "58.0",
+            "device": "Android 9",
+            "os": "Android"
+          },
+          "eventTime": 1590431830917,
+          "apiKey": "abcde"
+        },
+        "XML": {},
+        "JSON_ARRAY": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "sample_user_id"
+    }
   ]
 ]

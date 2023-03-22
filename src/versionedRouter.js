@@ -1,6 +1,6 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
-const Router = require('koa-router');
+const Router = require('@koa/router');
 const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
@@ -141,8 +141,8 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
       stats.counter('cdk_live_compare_test_failed', 1, { destType, feature });
       logger.error(
         `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff_keys=${JSON.stringify(
-          Object.keys(objectDiff)
-        )}`
+          Object.keys(objectDiff),
+        )}`,
       );
       // logger.error(
       //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff=${JSON.stringify(
@@ -171,13 +171,14 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
 /**
  * Enriches the transformed event with more information
  * - userId stringification
- * 
+ *
  * @param {Object} transformedEvent - single transformed event
  * @returns transformedEvent after enrichment
  */
-const enrichTransformedEvent = (transformedEvent) => (
-  { ...transformedEvent, userId: checkAndCorrectUserId(transformedEvent.statusCode, transformedEvent?.userId) }
-);
+const enrichTransformedEvent = (transformedEvent) => ({
+  ...transformedEvent,
+  userId: checkAndCorrectUserId(transformedEvent.statusCode, transformedEvent?.userId),
+});
 
 async function handleV0Destination(destHandler, destType, inputArr, feature) {
   const v0Result = {};
@@ -271,10 +272,10 @@ async function handleDest(ctx, version, destination) {
             output: enrichTransformedEvent(ev),
             metadata: destHandler?.processMetadata
               ? destHandler.processMetadata({
-                metadata: event.metadata,
-                inputEvent: parsedEvent,
-                outputEvent: ev,
-              })
+                  metadata: event.metadata,
+                  inputEvent: parsedEvent,
+                  outputEvent: ev,
+                })
               : event.metadata,
             statusCode: 200,
           }));
@@ -359,7 +360,7 @@ async function handleValidation(ctx) {
           validationErrors: hv.validationErrors,
           error: errMessage,
         });
-        stats.counter('hv_violation_type', 1, {
+        stats.gauge('hv_violation_type', 1, {
           violationType: hv.violationType,
           ...metaTags,
         });
@@ -370,7 +371,7 @@ async function handleValidation(ctx) {
           statusCode: 200,
           validationErrors: hv.validationErrors,
         });
-        stats.counter('hv_propagated_events', 1, {
+        stats.gauge('hv_propagated_events', 1, {
           ...metaTags,
         });
       }
@@ -391,7 +392,7 @@ async function handleValidation(ctx) {
         validationErrors: [],
         error: errMessage,
       });
-      stats.counter('hv_errors', 1, {
+      stats.gauge('hv_errors', 1, {
         ...metaTags,
       });
     } finally {
@@ -404,10 +405,10 @@ async function handleValidation(ctx) {
   ctx.status = ctxStatusCode;
   ctx.set('apiVersion', API_VERSION);
 
-  stats.counter('hv_events_count', events.length, {
+  stats.gauge('hv_events_count', events.length, {
     ...metaTags,
   });
-  stats.counter('hv_request_size', requestSize, {
+  stats.gauge('hv_request_size', requestSize, {
     ...metaTags,
   });
   stats.timing('hv_request_latency', requestStartTime, {
@@ -486,11 +487,11 @@ async function routerHandleDest(ctx) {
         }
         const hasProcMetadataForRouter = routerDestHandler.processMetadataForRouter;
         // enriching transformed event
-        listOutput.forEach(listOut => {
+        listOutput.forEach((listOut) => {
           const { batchedRequest } = listOut;
           if (Array.isArray(batchedRequest)) {
             // eslint-disable-next-line no-param-reassign
-            listOut.batchedRequest = batchedRequest.map(batReq => enrichTransformedEvent(batReq));
+            listOut.batchedRequest = batchedRequest.map((batReq) => enrichTransformedEvent(batReq));
           } else if (batchedRequest && typeof batchedRequest === 'object') {
             // eslint-disable-next-line no-param-reassign
             listOut.batchedRequest = enrichTransformedEvent(batchedRequest);
@@ -607,8 +608,8 @@ if (startDestTransformer) {
           versionId,
           validateImports = false,
           additionalLibraries = [],
-          language = "javascript",
-          testMode = false
+          language = 'javascript',
+          testMode = false,
         } = ctx.request.body;
 
         if (!code) {
@@ -621,12 +622,12 @@ if (startDestTransformer) {
           validateImports,
           additionalLibraries,
           language,
-          testMode || versionId === 'testVersionId'
+          testMode || versionId === 'testVersionId',
         );
         ctx.body = obj;
       } catch (err) {
         ctx.status = 400;
-        ctx.body = { "error": err.error || err.message };
+        ctx.body = { error: err.error || err.message };
       }
     });
 
@@ -635,7 +636,7 @@ if (startDestTransformer) {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
-      stats.counter('user_transform_input_events', events.length, {
+      stats.gauge('user_transform_input_events', events.length, {
         processSessions,
       });
       let groupedEvents;
@@ -651,7 +652,7 @@ if (startDestTransformer) {
           (event) => `${event.metadata.destinationId}_${event.metadata.sourceId}`,
         );
       }
-      stats.counter('user_transform_function_group_size', Object.entries(groupedEvents).length, {
+      stats.gauge('user_transform_function_group_size', Object.entries(groupedEvents).length, {
         processSessions,
       });
 
@@ -686,7 +687,7 @@ if (startDestTransformer) {
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
-              stats.counter('user_transform_function_input_events', destEvents.length, {
+              stats.gauge('user_transform_function_input_events', destEvents.length, {
                 processSessions,
                 ...metaTags,
               });
@@ -736,7 +737,7 @@ if (startDestTransformer) {
                 error: errorString,
               }));
               transformedEvents.push(...destTransformedEvents);
-              stats.counter('user_transform_errors', destEvents.length, {
+              stats.gauge('user_transform_errors', destEvents.length, {
                 transformationVersionId,
                 processSessions,
                 ...metaTags,
@@ -756,7 +757,7 @@ if (startDestTransformer) {
               error: errorMessage,
               metadata: commonMetadata,
             });
-            stats.counter('user_transform_errors', destEvents.length, {
+            stats.gauge('user_transform_errors', destEvents.length, {
               transformationVersionId,
               processSessions,
               ...metaTags,
@@ -771,8 +772,8 @@ if (startDestTransformer) {
       stats.timing('user_transform_request_latency', startTime, {
         processSessions,
       });
-      stats.increment('user_transform_requests', 1, { processSessions });
-      stats.counter('user_transform_output_events', transformedEvents.length, {
+      stats.gauge('user_transform_requests', 1, { processSessions });
+      stats.gauge('user_transform_output_events', transformedEvents.length, {
         processSessions,
       });
     });
@@ -809,7 +810,7 @@ if (transformerTestModeEnabled) {
 
   router.post('/transformationLibrary/test', async (ctx) => {
     try {
-      const { code, language = "javascript" } = ctx.request.body;
+      const { code, language = 'javascript' } = ctx.request.body;
 
       if (!code) {
         throw new Error('Invalid request. Missing code');

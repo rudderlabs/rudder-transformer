@@ -17,7 +17,7 @@ const {
   getFieldValueFromMessage,
   simpleProcessRouterDest,
 } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 // build the response to be sent to backend, url encoded header is required as slack accepts payload in this format
 // add the username and image for Rudder
@@ -185,14 +185,13 @@ const processTrack = (message, destination) => {
 
   // track event default handlebar expression
   const defaultTemplate = '{{name}} did {{event}}';
+  const template = templateListArray
+    ? templateListArray.length > 0
+      ? templateListArray[0]
+      : defaultTemplate
+    : defaultTemplate;
 
-  const eventTemplate = Handlebars.compile(
-    templateListArray
-      ? templateListArray.length > 0
-        ? templateListArray[0]
-        : defaultTemplate
-      : defaultTemplate,
-  );
+  const eventTemplate = Handlebars.compile(template);
 
   // provide flattened properties as well as propertie sobject
   const identityTraits = getFieldValueFromMessage(message, 'traits') || {};
@@ -208,7 +207,13 @@ const processTrack = (message, destination) => {
 
   logger.debug('templateInputTrack: ', templateInput);
 
-  const resultText = eventTemplate(templateInput);
+  let resultText;
+  try {
+    resultText = eventTemplate(templateInput);
+  } catch (err) {
+    throw new ConfigurationError(`Something is wrong with the event template: '${template}'`);
+  }
+
   if (channelListArray && channelListArray.length > 0) {
     return buildResponse({ channel: channelListArray[0], text: resultText }, message, destination);
   }

@@ -177,7 +177,8 @@ const data = [
                   "Config": {
                     "lookUpField": "email",
                     "password": "abcdefghij1234",
-                    "subDomainName": "testapi3",
+                    "subDomainName": "",
+                    "domainName": "",
                     "userName": "abcdef"
                   }
                 },
@@ -212,15 +213,16 @@ const data = [
               },
               "destination": {
                 "Config": {
+                  "domainName": "",
                   "lookUpField": "email",
                   "password": "abcdefghij1234",
-                  "subDomainName": "testapi3",
+                  "subDomainName": "",
                   "userName": "abcdef"
                 }
               },
               "batched": false,
               "statusCode": 400,
-              "error": "Invalid user name provided in the destination configuration"
+              "error": "Please Provide either subDomain or Domain Name"
             }
           ]
         }

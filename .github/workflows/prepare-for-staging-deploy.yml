@@ -158,8 +158,8 @@ jobs:
       # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
       - name: Initialize Mandatory Git Config
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "noreply@github.com"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "noreply@github.com"
 
       - name: Print Docker Image Tags
         run: |

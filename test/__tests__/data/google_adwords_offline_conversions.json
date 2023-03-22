@@ -161,7 +161,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v11/customers/9625812972:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -421,7 +421,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v11/customers/9625812972:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -682,7 +682,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v11/customers/9625812972:uploadCallConversions",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadCallConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -1542,7 +1542,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v11/customers/9625812972:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -1642,7 +1642,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v11/customers/9625812972:uploadCallConversions",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadCallConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -1835,7 +1835,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v11/customers/9625812972:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -2002,7 +2002,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v11/customers/9625812972:uploadCallConversions",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadCallConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -2208,7 +2208,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v11/customers/9625812972:uploadCallConversions",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadCallConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -2399,7 +2399,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v11/customers/9625812972:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -2825,7 +2825,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v11/customers/9625812972:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",
@@ -3131,7 +3131,7 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v11/customers/9625812972:uploadClickConversions",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/9625812972:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",
           "Content-Type": "application/json",

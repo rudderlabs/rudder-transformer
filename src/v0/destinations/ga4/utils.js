@@ -214,7 +214,7 @@ const getItemList = (message, isItemsRequired = false) => {
     throw new InstrumentationError('Invalid type. Expected Array of products');
   }
 
-  if (products) {
+  if (Array.isArray(products)) {
     items = [];
     products.forEach((item, index) => {
       let element = constructPayload(item, mappingConfig[ConfigCategory.ITEM_LIST.name]);

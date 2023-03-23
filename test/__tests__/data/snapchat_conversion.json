@@ -699,7 +699,8 @@
             },
             {
               "product_id": "123",
-              "price": 14
+              "price": 14,
+              "quantity": 3
             }
           ]
         },
@@ -731,7 +732,7 @@
         "JSON": {
           "event_type": "VIEW_CONTENT",
           "item_ids": ["123", "123"],
-          "price": "28",
+          "price": "56",
           "hashed_email": "73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2",
           "hashed_phone_number": "bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492",
           "hashed_mobile_ad_id": "f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2",
@@ -807,7 +808,8 @@
             },
             {
               "product_id": "123",
-              "price": 14
+              "price": 14,
+              "quantity": 2
             }
           ]
         },
@@ -839,7 +841,7 @@
         "JSON": {
           "event_type": "START_CHECKOUT",
           "item_ids": ["123", "123"],
-          "price": "28",
+          "price": "42",
           "hashed_email": "73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2",
           "hashed_phone_number": "bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492",
           "hashed_mobile_ad_id": "f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2",
@@ -911,11 +913,13 @@
           "products": [
             {
               "product_id": "123",
-              "price": "14"
+              "price": "14",
+              "quantity": 1
             },
             {
               "product_id": "123",
-              "price": 14
+              "price": 14,
+              "quantity": 3
             }
           ]
         },
@@ -947,7 +951,7 @@
         "JSON": {
           "event_type": "PURCHASE",
           "item_ids": ["123", "123"],
-          "price": "28",
+          "price": "56",
           "hashed_email": "73062d872926c2a556f17b36f50e328ddf9bff9d403939bd14b6c3b7f5a33fc2",
           "hashed_phone_number": "bc77d64d7045fe44795ed926df37231a0cfb6ec6b74588c512790e9f143cc492",
           "hashed_mobile_ad_id": "f9779d734aaee50f16ee0011260bae7048f1d9a128c62b6a661077875701edd2",

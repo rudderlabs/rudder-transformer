@@ -16,6 +16,7 @@ const {
   CALL_CONVERSION,
   trackClickConversionsMapping,
   trackCallConversionsMapping,
+  STORE_CONVERSION_CONFIG_RUN_JOB
 } = require('./config');
 const {
   validateDestinationConfig,
@@ -36,15 +37,17 @@ const { InstrumentationError, ConfigurationError } = require('../../util/errorTy
  * @param {*} conversionType
  * @returns
  */
-const getConversions = async(message, metadata, { Config }, event, conversionType) => {
+const getConversions = async (message, metadata, { Config }, event, conversionType) => {
   let payload;
   let endpoint;
+  let isStoreConversion = false
   const filteredCustomerId = removeHyphens(Config.customerId);
   const {
     hashUserIdentifier,
     defaultUserIdentifier,
     UserIdentifierSource,
-    conversionEnvironment
+    conversionEnvironment,
+    validateOnly
   } = Config;
   const { properties, originalTimestamp } = message;
 
@@ -116,9 +119,17 @@ const getConversions = async(message, metadata, { Config }, event, conversionTyp
       set(payload, 'conversions[0].conversionEnvironment', conversionEnvironment);
     }
   } else if (conversionType === 'store') {
+    isStoreConversion = true;
     const offlineUserDataJobId = await getOfflineUserDataJobId(message, Config,
       metadata);
     addConversionToTheJob(message, Config, offlineUserDataJobId, event);
+
+    endpoint = STORE_CONVERSION_CONFIG_RUN_JOB.replace(
+      'customerAndJobId',
+      offlineUserDataJobId,
+    ).replace(':customerId', filteredCustomerId);
+
+    payload.validate_only = validateOnly;
   } else {
     // call conversions
 
@@ -127,6 +138,7 @@ const getConversions = async(message, metadata, { Config }, event, conversionTyp
   }
 
   if (conversionType !== 'store') {
+
     // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
     // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
     if (!properties.conversionDateTime && originalTimestamp) {
@@ -138,7 +150,8 @@ const getConversions = async(message, metadata, { Config }, event, conversionTyp
     }
     payload.partialFailure = true;
   }
-  return requestBuilder(payload, endpoint, Config, metadata, event, filteredCustomerId, properties);
+  const a = requestBuilder(payload, endpoint, Config, metadata, event, filteredCustomerId, properties, isStoreConversion);
+  return a;
 };
 
 /**
@@ -169,7 +182,7 @@ const trackResponseBuilder = (message, metadata, destination) => {
     throw new ConfigurationError(`Event name '${event}' is not valid`);
   }
 
-  eventsToOfflineConversionsTypeMapping[event].forEach(async(conversionType) => {
+  eventsToOfflineConversionsTypeMapping[event].forEach(async (conversionType) => {
     responseList.push(
       await getConversions(
         message,

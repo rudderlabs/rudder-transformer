@@ -78,8 +78,8 @@ jobs:
             linux/amd64
             linux/arm64
           build-args: |
-            VERSION=${{ steps.gen_tag_name.outputs.tag_name }}
-            COMMIT_HASH=${{ github.sha }}
+            version=${{ steps.gen_tag_name.outputs.tag_name }}
+            GIT_COMMIT_SHA=${{ github.sha }}
 
   build-user-transformer-image:
     name: Build User Transformer Docker Image - Dev
@@ -139,6 +139,6 @@ jobs:
             linux/amd64
             linux/arm64
           build-args: |
-            VERSION=${{ steps.gen_tag_name.outputs.tag_name }}
-            COMMIT_HASH=${{ github.sha }}
+            version=${{ steps.gen_tag_name.outputs.tag_name }}
+            GIT_COMMIT_SHA=${{ github.sha }}
 

@@ -79,8 +79,8 @@ jobs:
             linux/amd64
             linux/arm64
           build-args: |
-            VERSION=${{ env.TAG_NAME }}
-            COMMIT_HASH=${{ github.sha }}
+            version=${{ env.TAG_NAME }}
+            GIT_COMMIT_SHA=${{ github.sha }}
   
   build-user-transformer-image:
     name: Build User Transformer Docker Image - PR
@@ -136,5 +136,5 @@ jobs:
             linux/amd64
             linux/arm64
           build-args: |
-            VERSION=${{ env.TAG_NAME }}
-            COMMIT_HASH=${{ github.sha }}
+            version=${{ env.TAG_NAME }}
+            GIT_COMMIT_SHA=${{ github.sha }}

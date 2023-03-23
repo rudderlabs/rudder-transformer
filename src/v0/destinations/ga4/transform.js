@@ -248,6 +248,12 @@ const responseBuilder = (message, { Config }) => {
     ['context.traits', 'properties.user_properties'],
     GA4_RESERVED_USER_PROPERTY_EXCLUSION,
   );
+
+  const keys = Object.keys(userProperties);
+  keys.forEach((key) => {
+    userProperties[key] = {value: userProperties[key]};
+  })
+  
   if (!isEmptyObject(userProperties)) {
     rawPayload.user_properties = userProperties;
   }
@@ -294,7 +300,7 @@ const responseBuilder = (message, { Config }) => {
 const process = (event) => {
   const { message, destination } = event;
   const { Config } = destination;
-  
+
   if (!Config.typesOfClient) {
     throw new ConfigurationError('Client type not found. Aborting ');
   }

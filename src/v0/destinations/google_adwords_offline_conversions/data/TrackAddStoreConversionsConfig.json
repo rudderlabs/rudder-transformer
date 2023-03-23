@@ -1,0 +1,19 @@
+[
+    {
+        "destKey": "enable_match_rate_range_preview",
+        "sourceKeys": "properties.enable_match_rate_range_preview",
+        "required": false
+      },
+      {
+        "destKey": "job.loyaltyFraction",
+        "sourceKeys": "properties.loyaltyFraction",
+        "required": true,
+        "defaultValue":"1"
+      },
+      {
+        "destKey": "job.transaction_upload_fraction",
+        "sourceKeys": "properties.transaction_upload_fraction",
+        "required": true,
+        "defaultValue":"1"
+      }
+]

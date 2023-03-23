@@ -1,9 +1,22 @@
 const sha256 = require('sha256');
 const get = require('get-value');
 const { httpPOST } = require('../../../adapters/network');
-const { isHttpStatusSuccess } = require('../../util');
+const {
+  isHttpStatusSuccess,
+  constructPayload,
+  defaultRequestConfig,
+  defaultPostRequestConfig,
+  removeHyphens,
+} = require('../../util');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
-const { SEARCH_STREAM, CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
+const {
+  SEARCH_STREAM,
+  CONVERSION_ACTION_ID_CACHE_TTL,
+  trackCreateStoreConversionsMapping,
+  trackAddStoreConversionsMapping,
+  STORE_CONVERSION_CONFIG_ADD_CONVERSION,
+  STORE_CONVERSION_CONFIG_CREATE_JOB,
+} = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
 const { AbortedError, OAuthSecretError, ConfigurationError } = require('../../util/errorTypes');
@@ -106,10 +119,100 @@ const removeHashToSha256TypeFromMappingJson = (mapping) => {
   });
   return newMapping;
 };
+const requestBuilder = (
+  payload,
+  endpoint,
+  Config,
+  metadata,
+  event,
+  filteredCustomerId,
+  properties,
+) => {
+  const { customVariables, subAccount, loginCustomerId } = Config;
+  const response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.endpoint = endpoint;
+  response.params = {
+    event,
+    customerId: filteredCustomerId,
+    customVariables,
+    properties,
+  };
+  response.body.JSON = payload;
+  response.headers = {
+    Authorization: `Bearer ${getAccessToken(metadata)}`,
+    'Content-Type': 'application/json',
+    'developer-token': get(metadata, 'secret.developer_token'),
+  };
 
+  if (subAccount) {
+    if (loginCustomerId) {
+      const filteredLoginCustomerId = removeHyphens(loginCustomerId);
+      response.headers['login-customer-id'] = filteredLoginCustomerId;
+    } else {
+      throw new ConfigurationError(`loginCustomerId is required as subAccount is enabled`);
+    }
+  }
+  return response;
+};
+/**
+ * This function creates a offlineUserDataJob
+ * returns the respective id
+ */
+const getOfflineUserDataJobId = async (message, Config, metadata) => {
+  const payload = constructPayload(message, trackCreateStoreConversionsMapping);
+  payload.job.type = 'STORE_SALES_UPLOAD_FIRST_PARTY';
+  const filteredCustomerId = removeHyphens(Config.customerId);
+  const endpoint = STORE_CONVERSION_CONFIG_CREATE_JOB.replace(':customerId', filteredCustomerId);
+  const options = {
+    headers: {
+      Authorization: `Bearer ${getAccessToken(metadata)}`,
+      'Content-Type': 'application/json',
+      'developer-token': get(metadata, 'secret.developer_token'),
+    },
+  };
+  let createJobResponse = await httpPOST(endpoint, payload, options);
+  createJobResponse = processAxiosResponse(createJobResponse);
+  if (!isHttpStatusSuccess(createJobResponse.status)) {
+    throw new AbortedError(
+      `[Google Ads Offline Conversions]:: ${createJobResponse.response[0].error.message} during google_ads_offline_conversions response transformation`,
+      createJobResponse.status,
+      createJobResponse.response,
+      getAuthErrCategory(get(createJobResponse, 'status')),
+    );
+  }
+  return createJobResponse;
+};
+
+/**
+ * This Function adds the conversion to the Job and
+ * returns true if conversion is added succesfully to the job
+ */
+const addConversionToTheJob = async (message, Config, offlineUserDataJobId) => {
+  const payload = constructPayload(message, trackAddStoreConversionsMapping);
+  const filteredCustomerId = removeHyphens(Config.customerId);
+  const endpoint = STORE_CONVERSION_CONFIG_ADD_CONVERSION.replace(
+    'customerAndJobId',
+    offlineUserDataJobId,
+  ).replace(':customerId', filteredCustomerId);
+  let addConversionResponse = await httpPOST(endpoint, payload, options);
+  addConversionResponse = processAxiosResponse(addConversionResponse);
+  if (!isHttpStatusSuccess(addConversionResponse.status)) {
+    throw new AbortedError(
+      `[Google Ads Offline Conversions]:: ${addConversionResponse.response[0].error.message} during google_ads_offline_conversions response transformation`,
+      addConversionResponse.status,
+      addConversionResponse.response,
+      getAuthErrCategory(get(addConversionResponse, 'status')),
+    );
+  }
+  return true;
+};
 module.exports = {
   validateDestinationConfig,
   getAccessToken,
   getConversionActionId,
   removeHashToSha256TypeFromMappingJson,
+  getOfflineUserDataJobId,
+  addConversionToTheJob,
+  requestBuilder,
 };

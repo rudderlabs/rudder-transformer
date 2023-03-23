@@ -5,7 +5,7 @@
 /* eslint-disable no-restricted-syntax */
 const get = require('get-value');
 const { isDefinedAndNotNull, getValueFromMessage } = require('../../util');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 const SOURCE_KEYS = ['properties', 'traits', 'context.traits', 'context'];
 
@@ -54,8 +54,8 @@ const stringifyValue = (val) => {
 const stringifyValueAndJoinWithDelimitter = (valArr, delimitter = ';') =>
   valArr.map(stringifyValue).join(delimitter);
 
-function handleContextData(payload, destination, message) {
-  const { contextDataPrefix, contextDataMapping } = destination;
+function handleContextData(payload, destinationConfig, message) {
+  const { contextDataPrefix, contextDataMapping } = destinationConfig;
   const cDataPrefix = contextDataPrefix ? `${contextDataPrefix}` : '';
   const contextData = {};
   Object.keys(contextDataMapping).forEach((key) => {
@@ -75,6 +75,14 @@ function handleContextData(payload, destination, message) {
   return payload;
 }
 
+/**
+ * This function is used for populating the eVars and hVars in the payload
+ * @param {*} destVarMapping
+ * @param {*} message
+ * @param {*} payload
+ * @param {*} destVarStrPrefix
+ * @returns updated paylaod with eVars and hVars added
+ */
 function rudderPropToDestMap(destVarMapping, message, payload, destVarStrPrefix) {
   const mappedVar = {};
   // pass the Rudder Property mapped in the ui whose evar you want to map
@@ -106,75 +114,76 @@ function rudderPropToDestMap(destVarMapping, message, payload, destVarStrPrefix)
 
 // eVar reference: https://experienceleague.adobe.com/docs/analytics/implementation/vars/page-vars/evar.html?lang=en
 
-function handleEvar(payload, destination, message) {
+function handleEvar(payload, destinationConfig, message) {
   // pass the Rudder Property mapped in the ui whose evar you want to map
-  const { eVarMapping } = destination;
+  const { eVarMapping } = destinationConfig;
   return rudderPropToDestMap(eVarMapping, message, payload, 'eVar');
 }
 
 // hier reference: https://experienceleague.adobe.com/docs/analytics/implementation/vars/page-vars/hier.html?lang=en
 
-function handleHier(payload, destination, message) {
+function handleHier(payload, destinationConfig, message) {
   // pass the Rudder Property mapped in the ui whose hier you want to map
-  const { hierMapping } = destination;
+  const { hierMapping } = destinationConfig;
   return rudderPropToDestMap(hierMapping, message, payload, 'hier');
+}
+
+/**
+ * This function is used for populating the lVars and props in the payload
+ * @param {*} mapping
+ * @param {*} delimMapping
+ * @param {*} message
+ * @param {*} prefix
+ * @returns updated payload with list variables and/or prop variables added.
+ */
+function rudderPropToDestMapWithDelimitter(mapping, delimMapping, message, prefix) {
+  const propMap = {};
+  const { properties } = message;
+  Object.keys(properties).forEach((key) => {
+    if (mapping[key] && delimMapping[key]) {
+      let val = get(message, `properties.${key}`);
+      if (typeof val !== 'string' && !Array.isArray(val)) {
+        throw new InstrumentationError(
+          `${prefix} mapping properties variable is neither a string nor an array`,
+        );
+      }
+      if (typeof val === 'string') {
+        val = val.replace(/\s*,+\s*/g, delimMapping[key]);
+      } else {
+        val = val.join(delimMapping[key]);
+      }
+      propMap[`${prefix}${[mapping[key]]}`] = val.toString();
+    }
+  });
+  return propMap;
 }
 
 // list reference: https://experienceleague.adobe.com/docs/analytics/implementation/vars/page-vars/list.html?lang=en
 
-function handleList(payload, destination, message, properties) {
-  const { listMapping, listDelimiter } = destination;
-  const list = {};
-  Object.keys(properties).forEach((key) => {
-    if (listMapping[key] && listDelimiter[key]) {
-      let val = get(message, `properties.${key}`);
-      if (typeof val !== 'string' && !Array.isArray(val)) {
-        throw new ConfigurationError(
-          'List Mapping properties variable is neither a string nor an array',
-        );
-      }
-      if (typeof val === 'string') {
-        val = val.replace(/\s*,+\s*/g, listDelimiter[key]);
-      } else {
-        val = val.join(listDelimiter[key]);
-      }
-      list[`list${listMapping[key]}`] = val.toString();
-    }
-  });
-
+function handleList(payload, destinationConfig, message) {
+  const { listMapping, listDelimiter } = destinationConfig;
+  const listMap = rudderPropToDestMapWithDelimitter(listMapping, listDelimiter, message, 'list');
   // add to the payload
-  if (Object.keys(list).length > 0) {
-    Object.assign(payload, list);
+  if (Object.keys(listMap).length > 0) {
+    Object.assign(payload, listMap);
   }
   return payload;
 }
 
 // prop reference: https://experienceleague.adobe.com/docs/analytics/implementation/vars/page-vars/prop.html?lang=en
 
-function handleCustomProperties(payload, destination, message, properties) {
-  const { customPropsMapping, propsDelimiter } = destination;
-  const props = {};
-  if (properties) {
-    Object.keys(properties).forEach((key) => {
-      if (customPropsMapping[key]) {
-        let val = get(message, `properties.${key}`);
-        if (typeof val !== 'string' && !Array.isArray(val) && typeof val !== 'number') {
-          throw new InstrumentationError('prop variable is neither a string, number or an array');
-        }
-        const delimeter = propsDelimiter[key] || '|';
-        if (typeof val === 'string') {
-          val = val.replace(/\s*,+\s*/g, delimeter);
-        } else {
-          val = val.join(delimeter);
-        }
+function handleCustomProperties(payload, destinationConfig, message) {
+  const { customPropsMapping, propsDelimiter } = destinationConfig;
+  const propMap = rudderPropToDestMapWithDelimitter(
+    customPropsMapping,
+    propsDelimiter,
+    message,
+    'prop',
+  );
 
-        props[`prop${customPropsMapping[key]}`] = val.toString();
-      }
-    });
-  }
   // add to the payload
-  if (Object.keys(props).length > 0) {
-    Object.assign(payload, props);
+  if (Object.keys(propMap).length > 0) {
+    Object.assign(payload, propMap);
   }
   return payload;
 }

@@ -46,7 +46,6 @@ message.
 
 We look forward to your feedback on improving this project.
 
-
 <!----variable's---->
 
 [slack]: https://resources.rudderstack.com/join-rudderstack-slack

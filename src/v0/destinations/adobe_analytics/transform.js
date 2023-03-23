@@ -157,7 +157,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
 
   const { trackingServerSecureUrl } = destinationConfig;
   const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
+  response.method = defaultPostRequestConfig?.requestMethod;
   response.body.XML = { payload: xmlResponse };
   response.endpoint = trackingServerSecureUrl.startsWith('https')
     ? `${trackingServerSecureUrl}/b/ss//6`
@@ -194,8 +194,8 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
     eventMerchProperties.forEach((rudderProp) => {
       if (rudderProp.eventMerchProperties in properties) {
         adobeMerchEvent.forEach((value) => {
-          if (properties[rudderProp.eventMerchProperties]) {
-            const merchEventString = `${value}=${properties[rudderProp.eventMerchProperties]}`;
+          if (properties[rudderProp?.eventMerchProperties]) {
+            const merchEventString = `${value}=${properties[rudderProp?.eventMerchProperties]}`;
             adobeEventArr.push(merchEventString);
           }
         });
@@ -228,14 +228,12 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
     }
 
     productsArr.forEach((value) => {
-      const category = value.category || '';
-      const quantity = value.quantity || 1;
-      const total = value.price ? (value.price * quantity).toFixed(2) : 0;
-      let item;
+      const category = value?.category || '';
+      const quantity = value?.quantity || 1;
+      const total = value?.price ? (value.price * quantity).toFixed(2) : 0;
+      let item = value[productIdentifier];
       if (productIdentifier === 'id') {
-        item = value.product_id || value.id;
-      } else {
-        item = value[productIdentifier];
+        item = value?.product_id || value?.id;
       }
 
       const merchMap = [];
@@ -247,7 +245,7 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
             isSingleProdEvent === false
           ) {
             // take the keys after products. and find the value in properties
-            const key = rudderProp.productMerchProperties.split('.');
+            const key = rudderProp?.productMerchProperties.split('.');
             const v = get(value, key[1]);
             if (isDefinedAndNotNull(v)) {
               adobeProdEventArr.forEach((val) => {
@@ -257,7 +255,7 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
           } else if (rudderProp.productMerchProperties in properties) {
             // adding root level merchandise properties
             adobeProdEventArr.forEach((val) => {
-              merchMap.push(`${val}=${properties[rudderProp.productMerchProperties]}`);
+              merchMap.push(`${val}=${properties[rudderProp?.productMerchProperties]}`);
             });
           }
         });
@@ -270,7 +268,7 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
 
           if (prodKey.startsWith('products.')) {
             // take the keys after products. and find the value in properties
-            const productValue = get(properties, prodKey.split('.')[1]);
+            const productValue = get(properties, prodKey?.split('.')?.[1]);
             if (isDefinedAndNotNull(productValue)) {
               eVars.push(`eVar${prodVal}=${productValue}`);
             }
@@ -315,21 +313,16 @@ const handleTrack = (message, destinationConfig) => {
   const event = rawEvent?.toLowerCase();
   switch (event) {
     case 'product viewed':
-    case 'viewed product':
     case 'product list viewed':
-    case 'viewed product list':
       payload = processTrackEvent(message, 'prodView', destinationConfig);
       break;
     case 'product added':
-    case 'added product':
       payload = processTrackEvent(message, 'scAdd', destinationConfig);
       break;
     case 'product removed':
-    case 'removed product':
       payload = processTrackEvent(message, 'scRemove', destinationConfig);
       break;
     case 'order completed':
-    case 'completed order':
       payload = processTrackEvent(message, 'purchase', destinationConfig, {
         purchaseID: get(message, 'properties.purchaseId') || get(message, 'properties.order_id'),
         transactionID:
@@ -337,11 +330,9 @@ const handleTrack = (message, destinationConfig) => {
       });
       break;
     case 'cart viewed':
-    case 'viewed cart':
       payload = processTrackEvent(message, 'scView', destinationConfig);
       break;
     case 'checkout started':
-    case 'started checkout':
       payload = processTrackEvent(message, 'scCheckout', destinationConfig, {
         purchaseID: get(message, 'properties.purchaseId') || get(message, 'properties.order_id'),
         transactionID:
@@ -349,7 +340,6 @@ const handleTrack = (message, destinationConfig) => {
       });
       break;
     case 'cart opened':
-    case 'opened cart':
       payload = processTrackEvent(message, 'scOpen', destinationConfig);
       break;
     default:

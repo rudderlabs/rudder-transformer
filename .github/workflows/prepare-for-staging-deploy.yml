@@ -32,7 +32,7 @@ jobs:
       - name: Generate Tag Name
         id: gen_tag_name
         run: |
-          tag_name="staging-$(jq -r .version package.json)""
+          tag_name="staging-$(jq -r .version package.json)"
           echo $tag_name
           echo "tag_name=$tag_name" >> $GITHUB_OUTPUT
 

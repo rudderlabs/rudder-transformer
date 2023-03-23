@@ -126,6 +126,7 @@ const ProxyRequest = async (request) => {
     const conversionActionId = await getConversionActionId(headers, params);
     set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
   }
+  // customVariables would be undefined in case of Store Conversions
   if (isDefinedAndNotNullAndNotEmpty(params.customVariables)) {
     // fetch all conversion custom variable in google ads
     let conversionCustomVariable = await getConversionCustomVariable(headers, params);

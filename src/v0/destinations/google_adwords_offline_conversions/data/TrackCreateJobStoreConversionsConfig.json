@@ -7,13 +7,13 @@
       {
         "destKey": "job.storeSalesMetadata.loyaltyFraction",
         "sourceKeys": "properties.loyaltyFraction",
-        "required": true,
+        "required": false,
         "defaultValue":"1"
       },
       {
         "destKey": "job.storeSalesMetadata.transaction_upload_fraction",
         "sourceKeys": "properties.transaction_upload_fraction",
-        "required": true,
+        "required": false,
         "defaultValue":"1"
       },
       {

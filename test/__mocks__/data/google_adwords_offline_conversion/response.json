@@ -1,0 +1,10 @@
+{
+    "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs:create":
+        {
+            "resourceName": "customers/111-222-3333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID"
+        },
+        "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:addOperations":
+        {
+            
+        }
+}

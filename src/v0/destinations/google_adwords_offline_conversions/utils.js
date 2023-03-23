@@ -16,6 +16,7 @@ const {
   CONVERSION_ACTION_ID_CACHE_TTL,
   trackCreateStoreConversionsMapping,
   trackAddStoreConversionsMapping,
+  trackAddStoreAddressConversionsMapping,
   STORE_CONVERSION_CONFIG_ADD_CONVERSION,
   STORE_CONVERSION_CONFIG_CREATE_JOB,
 } = require('./config');
@@ -122,6 +123,15 @@ const removeHashToSha256TypeFromMappingJson = (mapping) => {
   return newMapping;
 };
 /**
+ * To construct the address object according to the google ads documentation
+ * @param {*} message 
+ */
+const getAddress = message => {
+  const address = constructPayload(message, trackAddStoreAddressConversionsMapping);
+  return Object.keys(address).length > 0 ? address : null;
+};
+
+/**
  * item Attribute -> https://developers.google.com/google-ads/api/docs/conversions/upload-store-sales-transactions#include_shopping_items_with_transactions
  * @param {*} context 
  * @param {*} properties 
@@ -210,6 +220,12 @@ const getOfflineUserDataJobId = async (message, Config, metadata) => {
       'developer-token': get(metadata, 'secret.developer_token'),
     },
   };
+  if(!payload.job?.storeSalesMetadata?.loyaltyFraction){
+    payload.job.storeSalesMetadata.loyaltyFraction =1
+  }
+  if(!payload.job?.storeSalesMetadata?.transaction_upload_fraction){
+    payload.job.storeSalesMetadata.transaction_upload_fraction =1
+  }
   let createJobResponse = await httpPOST(endpoint, payload, options);
   createJobResponse = processAxiosResponse(createJobResponse);
   if (!isHttpStatusSuccess(createJobResponse.status)) {
@@ -220,7 +236,7 @@ const getOfflineUserDataJobId = async (message, Config, metadata) => {
       getAuthErrCategory(get(createJobResponse, 'status')),
     );
   }
-  return createJobResponse;
+  return createJobResponse.response.resourceName.split('/')[3];
 };
 
 /**

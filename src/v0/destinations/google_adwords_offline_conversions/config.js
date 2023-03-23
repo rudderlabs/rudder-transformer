@@ -14,8 +14,8 @@ const CALL_CONVERSION = `${BASE_ENDPOINT}:uploadCallConversions`;
 const SEARCH_STREAM = `${BASE_ENDPOINT}/googleAds:searchStream`;
 
 const STORE_CONVERSION_CONFIG_CREATE_JOB = `${BASE_ENDPOINT}/offlineUserDataJobs:create`;
-const STORE_CONVERSION_CONFIG_ADD_CONVERSION = `https://googleads.googleapis.com/${API_VERSION}/customerAndJobId:addOperations`;
-const STORE_CONVERSION_CONFIG_RUN_JOB = `https://googleads.googleapis.com/${API_VERSION}/customerAndJobId:run`;
+const STORE_CONVERSION_CONFIG_ADD_CONVERSION = `${BASE_ENDPOINT}/offlineUserDataJobs/customerAndJobId:addOperations`;
+const STORE_CONVERSION_CONFIG_RUN_JOB = `${BASE_ENDPOINT}/offlineUserDataJobs/customerAndJobId:run`;
 const CONFIG_CATEGORIES = {
   TRACK_CLICK_CONVERSIONS_CONFIG: {
     name: 'TrackClickConversionsConfig',
@@ -29,6 +29,9 @@ const CONFIG_CATEGORIES = {
   TRACK_STORE_CONVERSION_CONFIG_ADD_CONVERSION: {
     name: 'TrackAddStoreConversionsConfig',
   },
+  TRACK_STORE_ADDRESS_IDENTIFIER: {
+    name: 'storeAddoperationAddressMap'
+  }
 };
 
 const CONVERSION_ACTION_ID_CACHE_TTL = process.env.CONVERSION_ACTION_ID_CACHE_TTL
@@ -55,6 +58,9 @@ module.exports = {
   STORE_CONVERSION_CONFIG_RUN_JOB,
   trackCreateStoreConversionsMapping:
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_CONVERSION_CONFIG_CREATE_JOB.name],
-    trackAddStoreConversionsMapping:
+  trackAddStoreConversionsMapping:
     MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_CONVERSION_CONFIG_ADD_CONVERSION.name],
+  trackAddStoreAddressConversionsMapping:
+    MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK_STORE_ADDRESS_IDENTIFIER.name],
+    
 };

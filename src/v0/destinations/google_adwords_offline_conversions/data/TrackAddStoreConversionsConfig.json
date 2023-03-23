@@ -21,8 +21,8 @@
     {
         "destKey": "operations.create.transaction_attribute.store_attribute.store_code",
         "sourceKeys": [
-            "properties.storeCode",
-            "properties.store_code"
+            "properties.store_code",
+            "properties.storeCode"
         ],
         "required": false,
         "metadata": {

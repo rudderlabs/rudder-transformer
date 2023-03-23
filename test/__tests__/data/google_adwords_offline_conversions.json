@@ -595,10 +595,8 @@
           "userIdentifierSource": "FIRST_PARTY",
           "conversionEnvironment": "WEB",
           "gclid": "gclid",
-
           "conversionCustomVariable": "conversionCustomVariable",
           "value": "value",
-
           "callerId": "callerId",
           "callStartDateTime": "2022-08-28 15:01:30+05:30",
           "conversionDateTime": "2022-01-01 12:32:45-08:00",
@@ -2122,10 +2120,8 @@
           "userIdentifierSource": "FIRST_PARTY",
           "conversionEnvironment": "WEB",
           "gclid": "gclid",
-
           "conversionCustomVariable": "conversionCustomVariable",
           "value": "value",
-
           "callerId": "callerId",
           "callStartDateTime": "2022-08-28 15:01:30+05:30",
           "conversionValue": "1",
@@ -3176,6 +3172,132 @@
               }
             ],
             "partialFailure": true
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "Store - using email as userIdentifier, source is 3rd party from properties and validateOnly as false ",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "traits": {
+            "firstName": "John"
+          }
+        },
+        "event": "Product Clicked",
+        "type": "track",
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "anonymousId": "00000000000000000000000000",
+        "userId": "12345",
+        "properties": {
+          "loyaltyFraction": 1,
+          "order_id": "order id",
+          "currency": "INR",
+          "store_code": "store code",
+          "userIdentifierSource": "FIRST_PARTY",
+          "email": "alex@example.com",
+          "gclid": "gclid",
+          "conversionDateTime": "2022-01-01 12:32:45-08:00",
+          "product_id": "123445",
+          "quantity": 123
+        },
+        "integrations": {
+          "All": true
+        },
+        "name": "ApplicationLoaded",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      },
+      "destination": {
+        "Config": {
+          "customerId": "111-222-3333",
+          "subAccount": true,
+          "loginCustomerId": "login-customer-id",
+          "eventsToOfflineConversionsTypeMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "click"
+            },
+            {
+              "from": "Download",
+              "to": "call"
+            },
+            {
+              "from": "Product Clicked",
+              "to": "store"
+            },
+            {
+              "from": "Product Searched",
+              "to": "call"
+            }
+          ],
+          "eventsToConversionsNamesMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Download",
+              "to": "Page view"
+            },
+            {
+              "from": "Product Clicked",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Product Searched",
+              "to": "search"
+            }
+          ],
+          "customVariables": [
+            {
+              "from": "value",
+              "to": "revenue"
+            },
+            {
+              "from": "total",
+              "to": "cost"
+            }
+          ],
+          "UserIdentifierSource": "phone",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": true,
+          "defaultUserIdentifier": "email",
+          "validateOnly": false,
+          "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
+        }
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:run",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json",
+          "developer-token": "ijkl91011",
+          "login-customer-id": "logincustomerid"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "validate_only": false
           },
           "JSON_ARRAY": {},
           "XML": {},

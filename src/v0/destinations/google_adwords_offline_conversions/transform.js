@@ -38,19 +38,20 @@ const { InstrumentationError, ConfigurationError } = require('../../util/errorTy
  * @returns
  */
 const getConversions = async (message, metadata, { Config }, event, conversionType) => {
-  let payload;
+  let payload={};
   let endpoint;
   let isStoreConversion = false
-  const filteredCustomerId = removeHyphens(Config.customerId);
   const {
     hashUserIdentifier,
     defaultUserIdentifier,
     UserIdentifierSource,
     conversionEnvironment,
-    validateOnly
+    validateOnly,
+    customerId
   } = Config;
   const { properties, originalTimestamp } = message;
 
+  const filteredCustomerId = removeHyphens(customerId);
   if (conversionType === 'click') {
     // click conversions
     let updatedClickMapping = cloneDeep(trackClickConversionsMapping);
@@ -122,7 +123,7 @@ const getConversions = async (message, metadata, { Config }, event, conversionTy
     isStoreConversion = true;
     const offlineUserDataJobId = await getOfflineUserDataJobId(message, Config,
       metadata);
-    addConversionToTheJob(message, Config, offlineUserDataJobId, event);
+    await addConversionToTheJob(message, Config, offlineUserDataJobId, event, metadata);
 
     endpoint = STORE_CONVERSION_CONFIG_RUN_JOB.replace(
       'customerAndJobId',
@@ -161,7 +162,7 @@ const getConversions = async (message, metadata, { Config }, event, conversionTy
  * @param {*} destination
  * @returns
  */
-const trackResponseBuilder = (message, metadata, destination) => {
+const trackResponseBuilder = async (message, metadata, destination) => {
   let { eventsToConversionsNamesMapping, eventsToOfflineConversionsTypeMapping } =
     destination.Config;
   let { event } = message;
@@ -181,19 +182,20 @@ const trackResponseBuilder = (message, metadata, destination) => {
   if (!eventsToConversionsNamesMapping[event] || !eventsToOfflineConversionsTypeMapping[event]) {
     throw new ConfigurationError(`Event name '${event}' is not valid`);
   }
-
-  eventsToOfflineConversionsTypeMapping[event].forEach(async (conversionType) => {
-    responseList.push(
-      await getConversions(
-        message,
-        metadata,
-        destination,
-        eventsToConversionsNamesMapping[event],
-        conversionType,
-      ),
-    );
-  });
-
+  const conversionTypes = Array.from(eventsToOfflineConversionsTypeMapping[event]);
+  await Promise.all(
+    conversionTypes.map(async (conversionType) => {
+      responseList.push(
+        await getConversions(
+          message,
+          metadata,
+          destination,
+          eventsToConversionsNamesMapping[event],
+          conversionType,
+        ),
+      );
+    }),
+  );
   return responseList;
 };
 
@@ -209,7 +211,7 @@ const process = async (event) => {
   const messageType = message.type.toLowerCase();
   let response;
   if (messageType === EventType.TRACK) {
-    response = trackResponseBuilder(message, metadata, destination);
+    response = await trackResponseBuilder(message, metadata, destination);
   } else {
     throw new InstrumentationError(`Message type ${messageType} not supported`);
   }

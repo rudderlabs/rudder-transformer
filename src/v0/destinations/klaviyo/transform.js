@@ -99,7 +99,7 @@ const identifyRequestHandler = async (message, category, destination) => {
     },
   };
   const resp = await httpPOST(endpoint, payload, requestOptions);
-  if (resp.success && resp.status === 201) {
+  if (resp.success) {
     profileId = resp.response.data.id;
   } else if (!resp.success) {
     const { response } = resp.response;
@@ -282,12 +282,20 @@ const process = async (event) => {
 
 const batchEvents = (successRespList) => {
   const batchedResponseList = [];
-  const subscribeEventGroups = _.groupBy(successRespList, (event) => event.message.endpoint);
-  Object.keys(subscribeEventGroups).forEach((listIdEndpoint) => {
+  const identifyResponseList = [];
+  successRespList.forEach((event) => {
+    identifyResponseList.push(event.message[0]);
+    event.message = event.message[1];
+  });
+  const subscribeEventGroups = _.groupBy(
+    successRespList,
+    (event) => event.message.body.JSON.data.attributes.list_id,
+  );
+  Object.keys(subscribeEventGroups).forEach((listId) => {
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-    const eventChunks = _.chunk(subscribeEventGroups[listIdEndpoint], MAX_BATCH_SIZE);
+    const eventChunks = _.chunk(subscribeEventGroups[listId], MAX_BATCH_SIZE);
     eventChunks.forEach((chunk) => {
-      const batchEventResponse = generateBatchedPaylaodForArray(listIdEndpoint, chunk);
+      const batchEventResponse = generateBatchedPaylaodForArray(chunk);
       batchedResponseList.push(
         getSuccessRespEvents(
           batchEventResponse.batchedRequest,
@@ -297,6 +305,9 @@ const batchEvents = (successRespList) => {
         ),
       );
     });
+  });
+  identifyResponseList.forEach((response) => {
+    batchedResponseList[0].batchedRequest.push(response);
   });
   return batchedResponseList;
 };

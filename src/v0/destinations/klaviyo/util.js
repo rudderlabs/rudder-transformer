@@ -73,7 +73,8 @@ const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config')
  */
 const subscribeUserToList = (message, traitsInfo, destination) => {
   // listId from message properties are preferred over Config listId
-  const { privateApiKey, listId, consent } = destination.Config;
+  const { privateApiKey, consent } = destination.Config;
+  let { listId } = destination.Config;
   const targetUrl = `${BASE_ENDPOINT}/api/profile-subscription-bulk-create-jobs`;
   const subscriptionObj = {
     email: getFieldValueFromMessage(message, 'email'),
@@ -99,6 +100,9 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
     subscriptionObj.channels = channels;
   }
   const subscriptions = [subscriptionObj];
+  if (traitsInfo.properties.listId) {
+    listId = traitsInfo.properties.listId;
+  }
   const attributes = {
     list_id: listId,
     subscriptions,
@@ -159,30 +163,39 @@ const createCustomerProperties = (message) => {
   return customerProperties;
 };
 
-const generateBatchedPaylaodForArray = (listIdEndpoint, events) => {
+const generateBatchedPaylaodForArray = (events) => {
   let batchEventResponse = defaultBatchRequestConfig();
   const batchResponseList = [];
   const metadata = [];
   // extracting destination from the first event in a batch
   const { destination } = events[0];
   // Batch event into dest batch structure
-  events.forEach((ev) => {
-    batchResponseList.push(...ev.message.body.JSON.profiles);
+  events.forEach((ev, index) => {
+    if (index === 0) {
+      batchResponseList.push(ev.message.body.JSON);
+    } else {
+      batchResponseList[0].data.attributes.subscriptions.push(
+        ...ev.message.body.JSON.data.attributes.subscriptions,
+      );
+    }
     metadata.push(ev.metadata);
   });
 
-  batchEventResponse.batchedRequest.body.JSON = {
-    profiles: batchResponseList,
+  batchEventResponse.batchedRequest = Object.values(batchEventResponse);
+  batchEventResponse.batchedRequest[0].body.JSON = {
+    data: batchResponseList[0].data,
   };
 
-  const BATCH_ENDPOINT = listIdEndpoint;
+  const BATCH_ENDPOINT = `${BASE_ENDPOINT}/api/profile-subscription-bulk-create-jobs/`;
 
-  batchEventResponse.batchedRequest.endpoint = BATCH_ENDPOINT;
+  batchEventResponse.batchedRequest[0].endpoint = BATCH_ENDPOINT;
 
-  batchEventResponse.batchedRequest.headers = {
+  batchEventResponse.batchedRequest[0].headers = {
+    Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
     'Content-Type': 'application/json',
+    Accept: 'application/json',
+    revision: '2023-02-22',
   };
-  batchEventResponse.batchedRequest.params = { api_key: destination.Config.privateApiKey };
 
   batchEventResponse = {
     ...batchEventResponse,

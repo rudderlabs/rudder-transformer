@@ -119,6 +119,7 @@ const removeHashToSha256TypeFromMappingJson = (mapping) => {
   });
   return newMapping;
 };
+// It builds request according to transformer server contract
 const requestBuilder = (
   payload,
   endpoint,
@@ -188,13 +189,83 @@ const getOfflineUserDataJobId = async (message, Config, metadata) => {
  * This Function adds the conversion to the Job and
  * returns true if conversion is added succesfully to the job
  */
-const addConversionToTheJob = async (message, Config, offlineUserDataJobId) => {
+const addConversionToTheJob = async (message, Config, offlineUserDataJobI, event) => {
+  const { context, properties } = message;
+  const { customerId, validateOnly, UserIdentifierSource, hashUserIdentifier,
+    defaultUserIdentifier, customerEligible } = Config;
   const payload = constructPayload(message, trackAddStoreConversionsMapping);
-  const filteredCustomerId = removeHyphens(Config.customerId);
+  payload.enable_partial_failure = false;
+  payload.enable_warnings = false;
+  payload.validate_only = validateOnly;
+  // mapping custom_key that should be predefined in google Ui and mentioned when new job is created
+  payload.operations.create.transaction_attribute[properties.custom_key] = properties[properties.custom_key];
+  const address = buildAddress(message);
+
+  const transactionCost = properties.transaction_amount_micros || properties.transactionAmountMicros || properties.conversionValue ||
+    properties.total ||
+    properties.value ||
+    properties.revenue;
+  // Converting transaction Cost to micro as mentioned here : https://developers.google.com/google-ads/api/reference/rpc/v13/TransactionAttribute#:~:text=30%2B03%3A00%22-,transaction_amount_micros,-double
+  payload.operations.create.transaction_attribute.transaction_amount_micros = `${Number(transactionCost) * 1000000}`;
+
+  // Mapping Conversion Action
+  payload.operations.create.transaction_attribute.conversion_action = await getConversionActionId({
+    Authorization: `Bearer ${getAccessToken(metadata)}`,
+    'Content-Type': 'application/json',
+    'developer-token': get(metadata, 'secret.developer_token'),
+  }, { event: event, customerId })
+
+  // userIdentifierSource
+  // if userIdentifierSource doesn't exist in properties
+  // then it is taken from the webapp config
+  if (!properties.userIdentifierSource && UserIdentifierSource !== 'none') {
+    set(payload, 'operations.create.userIdentifiers[0].userIdentifierSource', UserIdentifierSource);
+
+    // one of email or phone must be provided
+    if (!email && !phone && !Object.keys(address).length > 0) {
+      throw new InstrumentationError(`Either of email or phone or address attributes is required for user identifier`);
+    }
+  }
+
+  // Mapping userIdentifer
+  let email = getFieldValueFromMessage(message, 'email');;
+  let phone = getFieldValueFromMessage(message, 'phone');;
+  if (defaultUserIdentifier === 'email' && email) {
+    email = hashUserIdentifier ? sha256(email).toString() : email;
+    set(payload, 'operations.create.userIdentifiers[0].hashedEmail', email);
+  } else if (defaultUserIdentifier === 'phone' && phone) {
+    phone = hashUserIdentifier ? sha256(phone).toString() : phone;
+    set(payload, 'operations.create.userIdentifiers[0].hashedPhoneNumber', phone);
+  } else {
+    // case when default choosen value is not present
+    if (email) {
+      email = hashUserIdentifier ? sha256(email).toString() : email;
+      set(payload, 'operations.create.userIdentifiers[0].hashedEmail', email);
+    } else {
+      phone = hashUserIdentifier ? sha256(phone).toString() : phone;
+      set(payload, 'operations.create.userIdentifiers[0].hashedPhoneNumber', phone);
+    }
+  }
+
+  // Mapping item_attribute if customer is eligible
+  if (customerEligible) {
+    // item Attribute -> https://developers.google.com/google-ads/api/docs/conversions/upload-store-sales-transactions#include_shopping_items_with_transactions
+    const item_attribute = {
+      item_id: properties.product_id || properties.item_id,
+      country_code: context.traits.country_code || context.traits.countryCode || properties.country_code || properties.countryCode,
+      language_code: properties.language_code || properties.languageCode,
+      quantity: properties.quantity,
+      merchant_id: properties.merchant_id || properties.merchantId
+
+    }
+    payload.operations.create.transaction_attribute.item_attribute = item_attribute;
+  }
+  const filteredCustomerId = removeHyphens(customerId);
   const endpoint = STORE_CONVERSION_CONFIG_ADD_CONVERSION.replace(
     'customerAndJobId',
     offlineUserDataJobId,
   ).replace(':customerId', filteredCustomerId);
+
   let addConversionResponse = await httpPOST(endpoint, payload, options);
   addConversionResponse = processAxiosResponse(addConversionResponse);
   if (!isHttpStatusSuccess(addConversionResponse.status)) {

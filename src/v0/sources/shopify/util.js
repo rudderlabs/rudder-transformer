@@ -266,11 +266,12 @@ const isDuplicateCartPayload = (prevPayload, newPayload) => {
  * This Function will check for cart duplication events
  * @param {*} event
  */
-const checkForValidRecord = async (event) => {
-  const cartToken = event.cart_token || event.token;
+const checkForValidRecord = async (newCart) => {
+  const cartToken = newCart.cart_token || newCart.token;
   let redisVal = {};
   let cartDetails;
   let redisInstance;
+  let anonymousId;
   try {
     redisInstance = await DBConnector.getRedisInstance();
     cartDetails = await redisInstance.get(`${cartToken}`);
@@ -279,12 +280,13 @@ const checkForValidRecord = async (event) => {
   }
   if (cartDetails) {
     redisVal = JSON.parse(cartDetails);
-    if (isDefinedAndNotNull(redisVal) && isDuplicateCartPayload(redisVal, event)) {
+    anonymousId = redisVal.anonymousId;
+    if (isDefinedAndNotNull(redisVal) && isDuplicateCartPayload(redisVal, newCart)) {
       return false;
     }
   }
   try {
-    await redisInstance.set(`${cartToken}`, JSON.stringify({ ...redisVal, ...event }));
+    await redisInstance.set(`${cartToken}`, JSON.stringify({ anonymousId, ...newCart }));
   } catch (e) {
     logger.error(`Could not set cart details due error: ${e}`);
   }

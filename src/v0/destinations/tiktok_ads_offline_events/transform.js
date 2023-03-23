@@ -57,10 +57,19 @@ const getTrackResponse = (message, category, Config, event) => {
   }
 
   const email = message.traits?.email || message.context?.traits?.email;
+  let emails;
   if (isDefinedAndNotNullAndNotEmpty(email)) {
-    const emails = hashUserProperties
-      ? [SHA256(email.trim().toLowerCase()).toString()]
-      : [email.trim().toLowerCase()];
+    if (Array.isArray(email)) {
+      emails = email.map((em) =>
+        hashUserProperties
+          ? SHA256(em.trim().toLowerCase()).toString()
+          : em.trim().toLowerCase(),
+      );
+    } else {
+      emails = hashUserProperties
+        ? [SHA256(email.trim().toLowerCase()).toString()]
+        : [email.trim().toLowerCase()];
+    }
     set(payload, 'context.user.emails', emails);
   }
 

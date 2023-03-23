@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require('get-value');
+const _ = require('lodash');
 const { EventType, WhiteListedTraits, MappedToDestinationKey } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,
@@ -11,8 +12,13 @@ const {
   ecomEvents,
   eventNameMapping,
   jsonNameMapping,
+  MAX_BATCH_SIZE,
 } = require('./config');
-const { isProfileExist, createCustomerProperties, checkForSubscribe } = require('./util');
+const {
+  createCustomerProperties,
+  subscribeUserToList,
+  generateBatchedPaylaodForArray,
+} = require('./util');
 const {
   defaultRequestConfig,
   constructPayload,
@@ -24,10 +30,14 @@ const {
   isEmptyObject,
   addExternalIdToTraits,
   adduserIdFromExternalId,
-  defaultPutRequestConfig,
   simpleProcessRouterDest,
+  defaultPatchRequestConfig,
+  getSuccessRespEvents,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError,
 } = require('../../util');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { httpPOST } = require('../../../adapters/network');
 
 /**
  * Main Identify request handler func
@@ -42,12 +52,9 @@ const { ConfigurationError, InstrumentationError } = require('../../util/errorTy
  */
 const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
-  if (!destination.Config.publicApiKey || !destination.Config.privateApiKey) {
-    if (!destination.Config.publicApiKey) {
-      throw new ConfigurationError('Public API Key is a required field for identify events');
-    } else {
-      throw new ConfigurationError('Private API Key is a required field for identify events');
-    }
+  const { privateApiKey, enforceEmailAsPrimary } = destination.Config;
+  if (!privateApiKey) {
+    throw new ConfigurationError('Private API Key is a required field for identify events');
   }
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (mappedToDestination) {
@@ -55,48 +62,68 @@ const identifyRequestHandler = async (message, category, destination) => {
     adduserIdFromExternalId(message);
   }
   const traitsInfo = getFieldValueFromMessage(message, 'traits');
-  const response = defaultRequestConfig();
-  let personId;
-  if (message.channel !== 'sources') {
-    personId = await isProfileExist(message, destination);
-  }
+  let profileId;
+  //   if (message.channel !== 'sources') {
+  //     personId = await isProfileExist(message, destination);
+  //   }
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
-  propertyPayload = extractCustomFields(
+  let customPropertyPayload = {};
+  customPropertyPayload = extractCustomFields(
     message,
-    propertyPayload,
+    customPropertyPayload,
     ['traits', 'context.traits'],
     WhiteListedTraits,
   );
-  if (!personId) {
-    propertyPayload = removeUndefinedAndNullValues(propertyPayload);
-    if (destination.Config?.enforceEmailAsPrimary) {
-      delete propertyPayload.$id;
-      propertyPayload._id = getFieldValueFromMessage(message, 'userId');
-    }
-    const payload = {
-      token: destination.Config.publicApiKey,
-      properties: propertyPayload,
-    };
-    response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.headers = {
-      'Content-Type': 'application/json',
-      Accept: 'text/html',
-    };
-    response.body.JSON = removeUndefinedAndNullValues(payload);
-  } else {
-    response.endpoint = `${BASE_ENDPOINT}/api/v1/person/${personId}`;
-    response.method = defaultPutRequestConfig.requestMethod;
-    response.headers = {
-      Accept: 'application/json',
-    };
-    response.params = removeUndefinedAndNullValues(propertyPayload);
-    response.params.api_key = destination.Config.privateApiKey;
+
+  propertyPayload = removeUndefinedAndNullValues(propertyPayload);
+  if (enforceEmailAsPrimary) {
+    delete propertyPayload.external_id;
+    propertyPayload.properties._id = getFieldValueFromMessage(message, 'userId');
   }
-  const responseArray = [response];
-  responseArray.push(...checkForSubscribe(message, traitsInfo, destination));
-  return responseArray;
+  const data = {
+    type: 'profile',
+    attributes: propertyPayload,
+    properties: removeUndefinedAndNullValues(customPropertyPayload),
+  };
+  const payload = {
+    data: removeUndefinedAndNullValues(data),
+  };
+  const endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
+  const requestOptions = {
+    headers: {
+      Authorization: `Klaviyo-API-Key ${privateApiKey}`,
+      accept: 'application/json',
+      'content-type': 'application/json',
+      revision: '2023-02-22',
+    },
+  };
+  const resp = await httpPOST(endpoint, payload, requestOptions);
+  if (resp.success && resp.status === 201) {
+    profileId = resp.response.data.id;
+  } else if (!resp.success) {
+    const { response } = resp.response;
+    profileId = response.data.errors[0].meta.duplicate_profile_id;
+  }
+
+  // Update Profile
+  const identifyResponse = defaultRequestConfig();
+  payload.data.id = profileId;
+  identifyResponse.endpoint = `${BASE_ENDPOINT}${category.apiUrl}/${profileId}`;
+  identifyResponse.method = defaultPatchRequestConfig.requestMethod;
+  identifyResponse.headers = {
+    Authorization: `Klaviyo-API-Key ${privateApiKey}`,
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
+    revision: '2023-02-22',
+  };
+  identifyResponse.body.JSON = removeUndefinedAndNullValues(payload);
+  const responseArray = [identifyResponse];
+  if (traitsInfo.properties.subscribe) {
+    responseArray.push(subscribeUserToList(message, traitsInfo, destination));
+    return responseArray;
+  }
+  return responseArray[0];
 };
 
 // ----------------------
@@ -106,24 +133,24 @@ const identifyRequestHandler = async (message, category, destination) => {
 // ----------------------
 
 const trackRequestHandler = (message, category, destination) => {
-  let payload = {};
-  if (!destination.Config.publicApiKey) {
-    throw new ConfigurationError('Public API Key is a required field for track events');
+  const payload = {};
+  if (!destination.Config.privateApiKey) {
+    throw new ConfigurationError('Private API Key is a required field for track events');
   }
   let event = get(message, 'event');
   event = event ? event.trim().toLowerCase() : event;
+  const attributes = {};
   if (ecomEvents.includes(event) && message.properties) {
     const eventName = eventNameMapping[event];
-    payload.event = eventName;
-    payload.token = destination.Config.publicApiKey;
     const eventMap = jsonNameMapping[eventName];
+    attributes.metric.name = eventName;
     // using identify to create customer properties
-    payload.customer_properties = createCustomerProperties(message);
+    attributes.profile = createCustomerProperties(message);
     if (!payload.customer_properties.$email && !payload.customer_properties.$phone_number) {
-      throw new InstrumentationError('email or phone is required for customer_properties');
+      throw new InstrumentationError('email or phone is required for track call');
     }
     const categ = CONFIG_CATEGORIES[eventMap];
-    payload.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
+    attributes.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
 
     // products mapping using Items.json
     // mapping properties.items to payload.properties.items and using properties.products as a fallback to properties.items
@@ -140,11 +167,11 @@ const trackRequestHandler = (message, category, destination) => {
           }
         });
       }
-      if (!payload.properties) {
+      if (!attributes.properties) {
         payload.properties = {};
       }
       if (itemArr.length > 0) {
-        payload.properties.items = itemArr;
+        attributes.properties.items = itemArr;
       }
     }
 
@@ -152,43 +179,46 @@ const trackRequestHandler = (message, category, destination) => {
     let customProperties = {};
     customProperties = extractCustomFields(
       message,
-      customProperties,
+      attributes.customProperties,
       ['properties'],
       ecomExclusionKeys,
     );
     if (!isEmptyObject(customProperties)) {
-      payload.properties = {
-        ...payload.properties,
+      attributes.properties = {
+        ...attributes.properties,
         ...customProperties,
       };
     }
 
-    if (isEmptyObject(payload.properties)) {
+    if (isEmptyObject(attributes.properties)) {
       delete payload.properties;
     }
   } else {
-    payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-    payload.token = destination.Config.publicApiKey;
+    attributes.properties = constructPayload(message, MAPPING_CONFIG[category.name]);
+    // payload.token = destination.Config.publicApiKey;
     if (message.properties && message.properties.revenue) {
-      payload.properties.$value = message.properties.revenue;
+      attributes.value = message.properties.revenue;
       delete payload.properties.revenue;
     }
     const customerProperties = createCustomerProperties(message);
-    if (destination.Config.enforceEmailAsPrimary) {
-      delete customerProperties.$id;
-      customerProperties._id = getFieldValueFromMessage(message, 'userId');
-    }
-    payload.customer_properties = customerProperties;
+    // if (destination.Config.enforceEmailAsPrimary) {
+    //   delete customerProperties.external_id;
+    //   customerProperties._id = getFieldValueFromMessage(message, 'userId');
+    // }
+    attributes.profile = customerProperties;
   }
   if (message.timestamp) {
-    payload.time = toUnixTimestamp(message.timestamp);
+    attributes.time = toUnixTimestamp(message.timestamp);
   }
-  const response = defaultRequestConfig();
+  payload.data.type = 'event';
+  payload.data.attributes = attributes;
+  const response = defaultPostRequestConfig();
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
-  response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
+    Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
     'Content-Type': 'application/json',
-    Accept: 'text/html',
+    Accept: 'application/json',
+    revision: '2023-02-22',
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
@@ -208,36 +238,12 @@ const groupRequestHandler = (message, category, destination) => {
     throw new InstrumentationError('groupId is a required field for group events');
   }
   let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
-  // Extract other K-V property from traits about user custom properties
-  const groupWhitelistedTraits = [...WhiteListedTraits, 'consent', 'smsConsent', 'subscribe'];
-  profile = extractCustomFields(
-    message,
-    profile,
-    ['traits', 'context.traits'],
-    groupWhitelistedTraits,
-  );
   profile = removeUndefinedAndNullValues(profile);
-  if (destination.Config.enforceEmailAsPrimary) {
-    delete profile.$id;
-    profile._id = getFieldValueFromMessage(message, 'userId');
+  const response = subscribeUserToList(message, profile, destination);
+  if (!message.traits.subscribe) {
+    throw new InstrumentationError('Subscribe flag should be true for group call');
   }
-  if (message.traits.subscribe === true) {
-    profile.sms_consent = message.context?.traits.smsConsent || destination.Config.smsConsent;
-    profile.$consent = message.context?.traits.consent || destination.Config.consent;
-  }
-
-  const subscribePayload = {
-    profiles: [profile],
-  };
-  const subscribeResponse = defaultRequestConfig();
-  subscribeResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${message.groupId}/subscribe`;
-  subscribeResponse.headers = {
-    'Content-Type': 'application/json',
-  };
-  subscribeResponse.body.JSON = subscribePayload;
-  subscribeResponse.method = defaultPostRequestConfig.requestMethod;
-  subscribeResponse.params = { api_key: destination.Config.privateApiKey };
-  return subscribeResponse;
+  return response;
 };
 
 // Main event processor using specific handler funcs
@@ -274,9 +280,85 @@ const process = async (event) => {
   return result;
 };
 
+const batchEvents = (successRespList) => {
+  const batchedResponseList = [];
+  const subscribeEventGroups = _.groupBy(successRespList, (event) => event.message.endpoint);
+  Object.keys(subscribeEventGroups).forEach((listIdEndpoint) => {
+    // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+    const eventChunks = _.chunk(subscribeEventGroups[listIdEndpoint], MAX_BATCH_SIZE);
+    eventChunks.forEach((chunk) => {
+      const batchEventResponse = generateBatchedPaylaodForArray(listIdEndpoint, chunk);
+      batchedResponseList.push(
+        getSuccessRespEvents(
+          batchEventResponse.batchedRequest,
+          batchEventResponse.metadata,
+          batchEventResponse.destination,
+          true,
+        ),
+      );
+    });
+  });
+  return batchedResponseList;
+};
+
+// This function separates subscribe response and other responses in chunks
+const getEventChunks = (event, subscribeRespList, otherRespList) => {
+  if (Array.isArray(event.message)) {
+    subscribeRespList.push(event);
+  } else {
+    otherRespList.push(event);
+  }
+};
+
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+  let batchResponseList = [];
+  const batchErrorRespList = [];
+  const subscribeRespList = [];
+  const otherRespList = [];
+  const { destination } = inputs[0];
+  await Promise.all(
+    inputs.map(async (event) => {
+      try {
+        if (event.message.statusCode) {
+          // already transformed event
+          getEventChunks(
+            { message: event.message, metadata: event.metadata, destination },
+            subscribeRespList,
+            otherRespList,
+          );
+        } else {
+          // if not transformed
+          getEventChunks(
+            {
+              message: await process(event),
+              metadata: event.metadata,
+              destination,
+            },
+            subscribeRespList,
+            otherRespList,
+          );
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+        batchErrorRespList.push(errRespEvent);
+      }
+    }),
+  );
+  let batchedSubscribeResponseList = [];
+  if (subscribeRespList.length > 0) {
+    batchedSubscribeResponseList = batchEvents(subscribeRespList);
+  }
+  const otherResponseList = [];
+  otherRespList.forEach((resp) => {
+    otherResponseList.push(getSuccessRespEvents(resp.message, [resp.metadata], resp.destination));
+  });
+  batchResponseList = batchResponseList.concat(batchedSubscribeResponseList, otherResponseList);
+
+  return [...batchResponseList, ...batchErrorRespList];
 };
 
 module.exports = { process, processRouterDest };

@@ -9,7 +9,7 @@
         "Content-Type": "application/json"
       },
       "params": {
-        "hapikey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3"
+        "hapikey": "dummy-apikey"
       },
       "body": {
         "JSON": {},
@@ -36,8 +36,8 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
-        "hubID": "6405167"
+        "apiKey": "dummy-apikey",
+        "hubID": "dummy-hubId"
       },
       "secretConfig": {},
       "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",
@@ -69,7 +69,7 @@
         "Content-Type": "application/json"
       },
       "params": {
-        "_a": "6405167",
+        "_a": "dummy-hubId",
         "_n": "test track event HS",
         "email": "testhubspot2@email.com",
         "firstname": "Test Hubspot2"
@@ -91,8 +91,8 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
-        "hubID": "6405167"
+        "apiKey": "dummy-apikey",
+        "hubID": "dummy-hubId"
       },
       "secretConfig": {},
       "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",

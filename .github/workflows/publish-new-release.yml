@@ -39,8 +39,8 @@ jobs:
       # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
       - name: Initialize Mandatory Git Config
         run: |
-          git config user.name "GitHub Actions"
-          git config user.email "noreply@github.com"
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "noreply@github.com"
 
       - name: Tag & Create GitHub Release
         id: create_release
@@ -49,8 +49,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git tag -a ${{ steps.extract-version.outputs.release_version }} -m "chore: release v${{ steps.extract-version.outputs.release_version }}"
-          git push origin refs/tags/${{ steps.extract-version.outputs.release_version }}
+          git tag -a v${{ steps.extract-version.outputs.release_version }} -m "chore: release v${{ steps.extract-version.outputs.release_version }}"
+          git push origin refs/tags/v${{ steps.extract-version.outputs.release_version }}
           npm run release:github
           echo "DATE=$(date)" >> $GITHUB_ENV
 
@@ -63,19 +63,19 @@ jobs:
           pr_title: 'chore(release): pull main into develop post release v${{ steps.extract-version.outputs.release_version }}'
           pr_body: ':crown: *An automated PR*'
 
-      - name: Delete Hotfix Release Branch
-        uses: koj-co/delete-merged-action@master
-        if: startsWith(github.event.pull_request.head.ref, 'hotfix-release/')
-        with:
-          branches: 'hotfix-release/*'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Delete Release Branch
         uses: koj-co/delete-merged-action@master
         if: startsWith(github.event.pull_request.head.ref, 'release/')
         with:
           branches: 'release/*'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete Hotfix Release Branch
+        uses: koj-co/delete-merged-action@master
+        if: startsWith(github.event.pull_request.head.ref, 'hotfix-release/')
+        with:
+          branches: 'hotfix-release/*'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

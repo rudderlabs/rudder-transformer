@@ -126,7 +126,7 @@ const removeHashToSha256TypeFromMappingJson = (mapping) => {
  * To construct the address object according to the google ads documentation
  * @param {*} message 
  */
-const getAddress = message => {
+const buildAndGetAddress = message => {
   const address = constructPayload(message, trackAddStoreAddressConversionsMapping);
   return Object.keys(address).length > 0 ? address : null;
 };
@@ -220,11 +220,11 @@ const getOfflineUserDataJobId = async (message, Config, metadata) => {
       'developer-token': get(metadata, 'secret.developer_token'),
     },
   };
-  if(!payload.job?.storeSalesMetadata?.loyaltyFraction){
-    payload.job.storeSalesMetadata.loyaltyFraction =1
+  if (!payload.job?.storeSalesMetadata?.loyaltyFraction) {
+    payload.job.storeSalesMetadata.loyaltyFraction = 1
   }
-  if(!payload.job?.storeSalesMetadata?.transaction_upload_fraction){
-    payload.job.storeSalesMetadata.transaction_upload_fraction =1
+  if (!payload.job?.storeSalesMetadata?.transaction_upload_fraction) {
+    payload.job.storeSalesMetadata.transaction_upload_fraction = 1
   }
   let createJobResponse = await httpPOST(endpoint, payload, options);
   createJobResponse = processAxiosResponse(createJobResponse);
@@ -246,21 +246,18 @@ const getOfflineUserDataJobId = async (message, Config, metadata) => {
 const addConversionToTheJob = async (message, Config, offlineUserDataJobId, event, metadata) => {
   const { context, properties } = message;
   const { customerId, validateOnly, UserIdentifierSource, hashUserIdentifier,
-    defaultUserIdentifier, isCustomerEligible } = Config;
+    defaultUserIdentifier, isCustomerAllowed } = Config;
   const payload = constructPayload(message, trackAddStoreConversionsMapping);
   payload.enable_partial_failure = false;
   payload.enable_warnings = false;
-  payload.validate_only = validateOnly;
+  payload.validate_only = validateOnly || false;
   // mapping custom_key that should be predefined in google Ui and mentioned when new job is created
-  payload.operations.create.transaction_attribute[properties.custom_key] = properties[properties.custom_key];
-  // const address = buildAddress(message);
-
-  const transactionCost = properties.transaction_amount_micros || properties.transactionAmountMicros || properties.conversionValue ||
-    properties.total ||
-    properties.value ||
-    properties.revenue;
+  if (properties.custom_key) {
+    payload.operations.create.transaction_attribute[properties.custom_key] = properties[properties.custom_key];
+  }
+  const address = buildAndGetAddress(message);
   // Converting transaction Cost to micro as mentioned here : https://developers.google.com/google-ads/api/reference/rpc/v13/TransactionAttribute#:~:text=30%2B03%3A00%22-,transaction_amount_micros,-double
-  payload.operations.create.transaction_attribute.transaction_amount_micros = `${Number(transactionCost) * 1000000}`;
+  payload.operations.create.transaction_attribute.transaction_amount_micros = `${payload.operations.create.transaction_attribute.transaction_amount_micros * 1000000}`;
 
   // Mapping Conversion Action
   payload.operations.create.transaction_attribute.conversion_action = await getConversionActionId({
@@ -299,7 +296,7 @@ const addConversionToTheJob = async (message, Config, offlineUserDataJobId, even
   }
 
   // Mapping item_attribute if customer is eligible and itemAttribute can be build according to the input message and the rules by Google for itemAttributes
-  if (isCustomerEligible) {
+  if (isCustomerAllowed) {
     const itemAttribute = populateitemAttributes(context, properties);
     if (Object.keys(itemAttribute).length > 0) {
       payload.operations.create.transaction_attribute.item_attribute = itemAttribute;
@@ -339,4 +336,5 @@ module.exports = {
   getOfflineUserDataJobId,
   addConversionToTheJob,
   requestBuilder,
+  buildAndGetAddress
 };

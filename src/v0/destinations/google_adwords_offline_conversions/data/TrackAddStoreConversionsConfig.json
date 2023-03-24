@@ -30,6 +30,19 @@
         }
     },
     {
+        "destKey": "operations.create.transaction_attribute.transaction_amount_micros",
+        "sourceKeys": [
+            "properties.conversionValue",
+            "properties.total",
+            "properties.value",
+            "properties.revenue"
+        ],
+        "required": true,
+        "metadata": {
+            "type": "toNumber"
+        }
+    },
+    {
         "destKey": "operations.create.transaction_attribute.order_id",
         "sourceKeys": [
             "properties.order_id",

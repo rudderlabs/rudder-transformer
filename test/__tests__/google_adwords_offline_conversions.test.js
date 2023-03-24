@@ -5,7 +5,10 @@ const moment = require("moment");
 const fs = require("fs");
 const path = require("path");
 const version = "v0";
-const responseFile = fs.readFileSync("/Users/apple/Desktop/workspace/rudder-transformer/test/__mocks__/data/google_adwords_offline_conversion/response.json");
+const responseFile = fs.readFileSync(
+  path.resolve(__dirname, `../__mocks__/data/google_adwords_offline_conversion/response.json`)
+);
+// fs.readFileSync("/Users/apple/Desktop/workspace/rudder-transformer/test//data/google_adwords_offline_conversion/response.json");
 const axios = require("axios");
 const { handleProxyRequest } = require("../../src/versionedRouter");
 
@@ -71,7 +74,7 @@ axios.post = jest.fn(async (url, data, reqConfig) => {
   // This mocking is for calls that make use of httpPOST()
   if (
     url.includes(
-      "https://googleads.googleapis.com/v13/customers/1112223333/googleAds:searchStream"
+      "https://googleads.googleapis.com/v13/customers/1234567891/googleAds:searchStream"
     )
   ) {
     // this is for true case
@@ -218,21 +221,21 @@ describe(`${name} Tests`, () => {
     });
   });
 
-  // // router
-  // describe("Router Tests", () => {
-  //   it("Payload", async () => {
-  //     const routerOutput = await transformer.processRouterDest(inputRouterData);
-  //     expect(routerOutput).toEqual(expectedRouterData);
-  //   });
-  // });
+  // router
+  describe("Router Tests", () => {
+    it("Payload", async () => {
+      const routerOutput = await transformer.processRouterDest(inputRouterData);
+      expect(routerOutput).toEqual(expectedRouterData);
+    });
+  });
 
-  // // proxy
-  // describe("Proxy Request Tests", () => {
-  //   proxyInputJson.forEach((input, index) => {
-  //     it(`${name} Tests: payload - ${index}`, async () => {
-  //       const output = await handleProxyRequest(integration, input);
-  //       expect(output).toEqual(proxyOutputJson[index]);
-  //     });
-  //   });
-  // });
+  // proxy
+  describe("Proxy Request Tests", () => {
+    proxyInputJson.forEach((input, index) => {
+      it(`${name} Tests: payload - ${index}`, async () => {
+        const output = await handleProxyRequest(integration, input);
+        expect(output).toEqual(proxyOutputJson[index]);
+      });
+    });
+  });
 });

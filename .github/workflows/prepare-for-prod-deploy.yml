@@ -151,7 +151,7 @@ jobs:
   create-pull-request:
     name: Update Helm Charts For Production and Create Pull Request
     runs-on: ubuntu-latest
-    needs: [ build-transformer-image, build-user-transformer-image ]
+    needs: [build-transformer-image, build-user-transformer-image]
     env:
       TAG_NAME: ${{ needs.build-transformer-image.outputs.tag_name }}
       UT_TAG_NAME: ${{ needs.build-user-transformer-image.outputs.tag_name }}
@@ -197,8 +197,12 @@ jobs:
           yq eval -i ".config-be-user-transformer.image.tag=\"$TAG_NAME\"" values.prod.yaml
           git add values.prod.yaml
 
+          cd ../../customer-objects/multi-tenant-us
+          yq eval -i ".transformer.image.tag=\"$VERSION\"" hostedmtedmt.yaml
+          yq eval -i ".user-transformer.image.tag=\"$VERSION\"" hostedmtedmt.yaml
+          git add hostedmtedmt.yaml
+
           git commit -m "chore: upgrade shared transformers to $TAG_NAME"
           git push -u origin shared-transformer-$TAG_NAME
 
           hub pull-request -m "chore: upgrade shared transformers to $TAG_NAME"
-

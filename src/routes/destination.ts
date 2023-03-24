@@ -1,4 +1,4 @@
-import Router from 'koa-router';
+import Router from ' @koa/router';
 import DestinationController from '../controllers/destination';
 import RegulationController from '../controllers/regulation';
 import RouteActivationController from '../controllers/routeActivation';

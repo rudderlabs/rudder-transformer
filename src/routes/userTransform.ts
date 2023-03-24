@@ -1,4 +1,4 @@
-import Router from 'koa-router';
+import Router from ' @koa/router';
 import RouteActivationController from '../controllers/routeActivation';
 import UserTransformController from '../controllers/userTransform';
 

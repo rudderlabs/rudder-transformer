@@ -17,7 +17,10 @@ export default class ServiceSelector {
   }
 
   private static isCdkV2Destination(destinationDefinitionConfig: Object) {
-    return !!destinationDefinitionConfig?.['cdkV2Enabled'];
+    return (
+      process.env.CDK_V2_Enabled === 'true' &&
+      Boolean(destinationDefinitionConfig?.['cdkV2Enabled'])
+    );
   }
 
   private static isComparatorEnabled(destinationDefinitionConfig: Object): boolean {

@@ -103,6 +103,7 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^17.4.4",
     "@digitalroute/cz-conventional-changelog-for-jira": "^8.0.0",
+    "@types/jest": "^29.5.0",
     "acorn": "^8.8.2",
     "benchmark-suite": "^0.1.8",
     "commander": "^10.0.0",

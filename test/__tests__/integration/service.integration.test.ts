@@ -8,7 +8,10 @@ import { applicationRoutes } from '../../../src/routes';
 import setValue from 'set-value';
 
 let server: any;
+const OLD_ENV = process.env;
+
 beforeAll(async () => {
+  process.env = { ...OLD_ENV }; // Make a copy
   const app = new Koa();
   app.use(
     bodyParser({
@@ -20,6 +23,7 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
+  process.env = OLD_ENV; // Restore old environment
   const httpTerminator = createHttpTerminator({
     server,
   });
@@ -227,6 +231,7 @@ describe('CDK V1 api tests', () => {
 
 describe('CDK V2 api tests', () => {
   test('(pinterest_tag) successful transform', async () => {
+    process.env.CDK_V2_Enabled = 'true';
     const data = getDataFromPath('./data_scenarios/cdk_v2/success.json');
     const response = await request(server)
       .post('/v0/destinations/pinterest_tag')
@@ -237,6 +242,7 @@ describe('CDK V2 api tests', () => {
   });
 
   test('(pinterest_tag) partial failure scenario', async () => {
+    process.env.CDK_V2_Enabled = 'true';
     const data = getDataFromPath('./data_scenarios/cdk_v2/failure.json');
     const response = await request(server)
       .post('/v0/destinations/pinterest_tag')

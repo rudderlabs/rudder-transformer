@@ -28,7 +28,7 @@
           { "eventName": "", "eventRegex": false, "eventTemplate": "" }
         ],
         "identifyTemplate": "identified {{name}} with {{traits}}",
-        "webhookUrl": "https://hooks.slack.com/services/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",
+        "webhookUrl": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
         "whitelistedTraitsSettings": [{ "trait": "hiji" }, { "trait": "" }]
       },
       "Enabled": true,
@@ -122,7 +122,7 @@
           { "eventName": "", "eventRegex": false, "eventTemplate": "" }
         ],
         "identifyTemplate": "identified {{name}} with {{traits}}",
-        "webhookUrl": "https://hooks.slack.com/services/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",
+        "webhookUrl": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
         "whitelistedTraitsSettings": [{ "trait": "hiji" }, { "trait": "" }]
       },
       "Enabled": true,
@@ -215,7 +215,7 @@
           { "eventName": "", "eventRegex": false, "eventTemplate": "" }
         ],
         "identifyTemplate": "identified {{name}} with {{traits}}",
-        "webhookUrl": "https://hooks.slack.com/services/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",
+        "webhookUrl": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
         "whitelistedTraitsSettings": [{ "trait": "hiji" }, { "trait": "" }]
       },
       "Enabled": true,
@@ -311,7 +311,7 @@
           { "eventName": "", "eventRegex": false, "eventTemplate": "" }
         ],
         "identifyTemplate": "identified {{name}} with {{traits}}",
-        "webhookUrl": "https://hooks.slack.com/services/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",
+        "webhookUrl": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
         "whitelistedTraitsSettings": [{ "trait": "hiji" }, { "trait": "" }]
       },
       "Enabled": true,
@@ -422,7 +422,7 @@
           }
         ],
         "identifyTemplate": "identified {{name}} with {{traits}}",
-        "webhookUrl": "https://hooks.slack.com/services/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",
+        "webhookUrl": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
         "whitelistedTraitsSettings": [
           {
             "trait": "hiji"
@@ -531,7 +531,7 @@
           { "eventName": "", "eventRegex": false, "eventTemplate": "" }
         ],
         "identifyTemplate": "identified {{name}} with {{traits}}",
-        "webhookUrl": "https://hooks.slack.com/services/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",
+        "webhookUrl": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
         "whitelistedTraitsSettings": [{ "trait": "hiji" }, { "trait": "" }]
       },
       "Enabled": true,
@@ -626,7 +626,7 @@
           { "eventName": "", "eventRegex": false, "eventTemplate": "" }
         ],
         "identifyTemplate": "identified {{name}} with {{traits}}",
-        "webhookUrl": "https://hooks.slack.com/services/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",
+        "webhookUrl": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
         "whitelistedTraitsSettings": [{ "trait": "hiji" }, { "trait": "" }]
       },
       "Enabled": true,

@@ -30,7 +30,6 @@ const {
   isEmptyObject,
   addExternalIdToTraits,
   adduserIdFromExternalId,
-  simpleProcessRouterDest,
   defaultPatchRequestConfig,
   getSuccessRespEvents,
   checkInvalidRtTfEvents,
@@ -99,9 +98,9 @@ const identifyRequestHandler = async (message, category, destination) => {
     },
   };
   const resp = await httpPOST(endpoint, payload, requestOptions);
-  if (resp.success) {
+  if (resp.response?.status === 201) {
     profileId = resp.response.data.id;
-  } else if (!resp.success) {
+  } else if (resp.response?.response?.status === 409) {
     const { response } = resp.response;
     profileId = response.data.errors[0].meta.duplicate_profile_id;
   }
@@ -210,10 +209,11 @@ const trackRequestHandler = (message, category, destination) => {
   if (message.timestamp) {
     attributes.time = toUnixTimestamp(message.timestamp);
   }
-  payload.data.type = 'event';
+  payload.data = { type: 'event' };
   payload.data.attributes = attributes;
-  const response = defaultPostRequestConfig();
+  const response = defaultRequestConfig();
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
+  response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
     'Content-Type': 'application/json',

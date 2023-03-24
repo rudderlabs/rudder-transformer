@@ -1,4 +1,4 @@
-import Router from ' @koa/router';
+import Router from '@koa/router';
 import MetricsController from '../controllers/metrics';
 import ProfileController from '../controllers/profile';
 import MiscController from '../controllers/misc';

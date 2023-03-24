@@ -23,7 +23,8 @@ const {
   removeHashToSha256TypeFromMappingJson,
   getOfflineUserDataJobId,
   addConversionToTheJob,
-  requestBuilder
+  requestBuilder,
+  getClickConversionPayloadAndEndpoint
 } = require('./utils');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
@@ -38,14 +39,10 @@ const { InstrumentationError, ConfigurationError } = require('../../util/errorTy
  * @returns
  */
 const getConversions = async (message, metadata, { Config }, event, conversionType) => {
-  let payload={};
+  let payload = {};
   let endpoint;
   let isStoreConversion = false
   const {
-    hashUserIdentifier,
-    defaultUserIdentifier,
-    UserIdentifierSource,
-    conversionEnvironment,
     validateOnly,
     customerId
   } = Config;
@@ -53,72 +50,10 @@ const getConversions = async (message, metadata, { Config }, event, conversionTy
 
   const filteredCustomerId = removeHyphens(customerId);
   if (conversionType === 'click') {
-    // click conversions
-    let updatedClickMapping = cloneDeep(trackClickConversionsMapping);
-
-    if (hashUserIdentifier === false) {
-      updatedClickMapping = removeHashToSha256TypeFromMappingJson(updatedClickMapping);
-    }
-
-    payload = constructPayload(message, updatedClickMapping);
-
-    // either of email or phone should be passed
-    // defaultUserIdentifier depends on the webapp configuration
-    // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadClickConversions#ClickConversion
-
-    let email;
-    let phone;
-    if (defaultUserIdentifier === 'email') {
-      email = getFieldValueFromMessage(message, 'email');
-      if (email) {
-        email = hashUserIdentifier ? sha256(email).toString() : email;
-        set(payload, 'conversions[0].userIdentifiers[0].hashedEmail', email);
-      }
-    } else {
-      phone = getFieldValueFromMessage(message, 'phone');
-      if (phone) {
-        phone = hashUserIdentifier ? sha256(phone).toString() : phone;
-        set(payload, 'conversions[0].userIdentifiers[0].hashedPhoneNumber', phone);
-      }
-    }
-
-    endpoint = CLICK_CONVERSION.replace(':customerId', filteredCustomerId);
-
-    const products = get(message, 'properties.products');
-    const itemList = [];
-    if (products && products.length > 0 && Array.isArray(products)) {
-      // products is a list of items
-      products.forEach((product) => {
-        if (Object.keys(product).length > 0) {
-          itemList.push({
-            productId: product.product_id,
-            quantity: parseInt(product.quantity, 10),
-            unitPrice: Number(product.price),
-          });
-        }
-      });
-
-      set(payload, 'conversions[0].cartData.items', itemList);
-    }
-
-    // userIdentifierSource
-    // if userIdentifierSource doesn't exist in properties
-    // then it is taken from the webapp config
-    if (!properties.userIdentifierSource && UserIdentifierSource !== 'none') {
-      set(payload, 'conversions[0].userIdentifiers[0].userIdentifierSource', UserIdentifierSource);
-
-      // one of email or phone must be provided
-      if (!email && !phone) {
-        throw new InstrumentationError(`Either of email or phone is required for user identifier`);
-      }
-    }
-
-    // conversionEnvironment
-    // if conversionEnvironment doesn't exist in properties
-    // then it is taken from the webapp config
-    if (!properties.conversionEnvironment && conversionEnvironment !== 'none') {
-      set(payload, 'conversions[0].conversionEnvironment', conversionEnvironment);
-    }
+    // click conversion
+    const convertedPayload = getClickConversionPayloadAndEndpoint(message, Config, filteredCustomerId);
+    payload = convertedPayload.payload;
+    endpoint = convertedPayload.endpoint
   } else if (conversionType === 'store') {
     isStoreConversion = true;
     const offlineUserDataJobId = await getOfflineUserDataJobId(message, Config,
@@ -133,7 +68,6 @@ const getConversions = async (message, metadata, { Config }, event, conversionTy
     payload.validate_only = validateOnly;
   } else {
     // call conversions
-
     payload = constructPayload(message, trackCallConversionsMapping);
     endpoint = CALL_CONVERSION.replace(':customerId', filteredCustomerId);
   }

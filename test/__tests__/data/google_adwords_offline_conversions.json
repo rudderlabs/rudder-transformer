@@ -2289,8 +2289,7 @@
           },
           "device": {},
           "traits": {
-            "email": "alex@example.com",
-            "phone": "+1-202-555-0146"
+            "email": "alex@example.com"
           },
           "library": {
             "name": "RudderLabs JavaScript SDK",
@@ -2384,7 +2383,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": false,
-          "defaultUserIdentifier": "email",
+          "defaultUserIdentifier": "phone",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -2810,7 +2809,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
-          "defaultUserIdentifier": "email",
+          "defaultUserIdentifier": "phone",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -3116,7 +3115,8 @@
           "UserIdentifierSource": "none",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
-          "defaultUserIdentifier": "email",
+          "defaultUserIdentifier": "phone",
+          "defaultStoreUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -3208,6 +3208,8 @@
           "gclid": "gclid",
           "conversionDateTime": "2022-01-01 12:32:45-08:00",
           "product_id": "123445",
+          "custom_key": "CUSTOM_KEY",
+          "CUSTOM_KEY": "CUSTOM_VALUE",
           "quantity": 123
         },
         "integrations": {
@@ -3277,7 +3279,7 @@
           "UserIdentifierSource": "phone",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
-          "defaultUserIdentifier": "email",
+          "defaultStoreUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -3309,7 +3311,7 @@
     ]
   },
   {
-    "description": "Store - No traction amount field is presents ",
+    "description": "Store - No transaction amount field is present",
     "input": {
       "message": {
         "channel": "web",
@@ -3419,6 +3421,629 @@
       },
       "statusCode": 400,
       "error": "Missing required value from [\"properties.conversionValue\",\"properties.total\",\"properties.value\",\"properties.revenue\"]",
+      "statTags": {
+        "destination": "google_adwords_offline_conversions",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
+  },
+  {
+    "description": "Store - using address as userIdentifier, ",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "traits": {
+            "firstName": "John"
+          }
+        },
+        "event": "Product Clicked",
+        "type": "track",
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "anonymousId": "00000000000000000000000000",
+        "userId": "12345",
+        "properties": {
+          "loyaltyFraction": 1,
+          "item_id": "item id",
+          "merchant_id": "merchant id",
+          "currency": "INR",
+          "revenue": "100",
+          "store_code": "store code",
+          "userIdentifierSource": "FIRST_PARTY",
+          "email": "alex@example.com",
+          "gclid": "gclid",
+          "conversionDateTime": "2022-01-01 12:32:45-08:00",
+          "product_id": "123445",
+          "quantity": 123
+        },
+        "integrations": {
+          "All": true
+        },
+        "name": "ApplicationLoaded",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      },
+      "destination": {
+        "Config": {
+          "isCustomerAllowed": true,
+          "customerId": "111-222-3333",
+          "subAccount": true,
+          "loginCustomerId": "login-customer-id",
+          "defaultStoreUserIdentifier": "address",
+          "eventsToOfflineConversionsTypeMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "click"
+            },
+            {
+              "from": "Download",
+              "to": "call"
+            },
+            {
+              "from": "Product Clicked",
+              "to": "store"
+            },
+            {
+              "from": "Product Searched",
+              "to": "call"
+            }
+          ],
+          "eventsToConversionsNamesMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Download",
+              "to": "Page view"
+            },
+            {
+              "from": "Product Clicked",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Product Searched",
+              "to": "search"
+            }
+          ],
+          "customVariables": [
+            {
+              "from": "value",
+              "to": "revenue"
+            },
+            {
+              "from": "total",
+              "to": "cost"
+            }
+          ],
+          "UserIdentifierSource": "3rd party",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": true,
+          "defaultUserIdentifier": "address",
+          "validateOnly": false,
+          "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
+        }
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:run",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json",
+          "developer-token": "ijkl91011",
+          "login-customer-id": "logincustomerid"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "validate_only": false
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "Store - using email as userIdentifier but mapping address due to unavailability and isCustomerAllowed as false and loyaltyFraction not given",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "traits": {
+            "firstName": "John",
+            "lastName": "Gomes",
+            "streetAddress": "71 Cherry Court SOUTHAMPTON SO53 5PD UK",
+            "state": "England"
+          }
+        },
+        "event": "Product Clicked",
+        "type": "track",
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "anonymousId": "00000000000000000000000000",
+        "userId": "12345",
+        "properties": {
+          "item_id": "item id",
+          "merchant_id": "merchant id",
+          "currency": "INR",
+          "revenue": "100",
+          "store_code": "store code",
+          "gclid": "gclid",
+          "conversionDateTime": "2022-01-01 12:32:45-08:00Z",
+          "product_id": "123445",
+          "quantity": 123
+        },
+        "integrations": {
+          "All": true
+        },
+        "name": "ApplicationLoaded",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      },
+      "destination": {
+        "Config": {
+          "isCustomerAllowed": false,
+          "customerId": "111-222-3333",
+          "subAccount": true,
+          "loginCustomerId": "login-customer-id",
+          "defaultStoreUserIdentifier": "email",
+          "eventsToOfflineConversionsTypeMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "click"
+            },
+            {
+              "from": "Download",
+              "to": "call"
+            },
+            {
+              "from": "Product Clicked",
+              "to": "store"
+            },
+            {
+              "from": "Product Searched",
+              "to": "call"
+            }
+          ],
+          "eventsToConversionsNamesMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Download",
+              "to": "Page view"
+            },
+            {
+              "from": "Product Clicked",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Product Searched",
+              "to": "search"
+            }
+          ],
+          "customVariables": [
+            {
+              "from": "value",
+              "to": "revenue"
+            },
+            {
+              "from": "total",
+              "to": "cost"
+            }
+          ],
+          "UserIdentifierSource": "3rd party",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": true,
+          "defaultUserIdentifier": "email",
+          "validateOnly": false,
+          "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
+        }
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:run",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json",
+          "developer-token": "ijkl91011",
+          "login-customer-id": "logincustomerid"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "validate_only": false
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "Store - using Phone as userIdentifier isCustomerAllowed as false and loyaltyFraction not given",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "traits": {
+            "firstName": "John",
+            "lastName": "Gomes",
+            "streetAddress": "71 Cherry Court SOUTHAMPTON SO53 5PD UK",
+            "state": "England"
+          }
+        },
+        "event": "Product Clicked",
+        "type": "track",
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "anonymousId": "00000000000000000000000000",
+        "userId": "12345",
+        "properties": {
+          "item_id": "item id",
+          "merchant_id": "merchant id",
+          "currency": "INR",
+          "revenue": "100",
+          "store_code": "store code",
+          "phone": "+1-202-555-0146",
+          "gclid": "gclid",
+          "conversionDateTime": "2022-01-01 12:32:45-08:00Z",
+          "product_id": "123445",
+          "quantity": 123
+        },
+        "integrations": {
+          "All": true
+        },
+        "name": "ApplicationLoaded",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      },
+      "destination": {
+        "Config": {
+          "isCustomerAllowed": false,
+          "customerId": "111-222-3333",
+          "subAccount": true,
+          "loginCustomerId": "login-customer-id",
+          "defaultStoreUserIdentifier": "phone",
+          "eventsToOfflineConversionsTypeMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "click"
+            },
+            {
+              "from": "Download",
+              "to": "call"
+            },
+            {
+              "from": "Product Clicked",
+              "to": "store"
+            },
+            {
+              "from": "Product Searched",
+              "to": "call"
+            }
+          ],
+          "eventsToConversionsNamesMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Download",
+              "to": "Page view"
+            },
+            {
+              "from": "Product Clicked",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Product Searched",
+              "to": "search"
+            }
+          ],
+          "customVariables": [
+            {
+              "from": "value",
+              "to": "revenue"
+            },
+            {
+              "from": "total",
+              "to": "cost"
+            }
+          ],
+          "UserIdentifierSource": "3rd party",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": true,
+          "defaultUserIdentifier": "email",
+          "validateOnly": false,
+          "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
+        }
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:run",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json",
+          "developer-token": "ijkl91011",
+          "login-customer-id": "logincustomerid"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "validate_only": false
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
+    "description": "Store - No User Identifier is present",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          
+        },
+        "event": "Product Clicked",
+        "type": "track",
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "anonymousId": "00000000000000000000000000",
+        "userId": "12345",
+        "properties": {
+          "revenue": 1,
+          "order_id": "order id",
+          "currency": "INR",
+          "store_code": "store code",
+          "gclid": "gclid",
+          "conversionDateTime": "2022-01-01 12:32:45-08:00",
+          "product_id": "123445",
+          "quantity": 123
+        },
+        "integrations": {
+          "All": true
+        },
+        "name": "ApplicationLoaded",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      },
+      "destination": {
+        "Config": {
+          "customerId": "111-222-3333",
+          "subAccount": true,
+          "loginCustomerId": "login-customer-id",
+          "eventsToOfflineConversionsTypeMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "click"
+            },
+            {
+              "from": "Download",
+              "to": "call"
+            },
+            {
+              "from": "Product Clicked",
+              "to": "store"
+            },
+            {
+              "from": "Product Searched",
+              "to": "call"
+            }
+          ],
+          "eventsToConversionsNamesMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Download",
+              "to": "Page view"
+            },
+            {
+              "from": "Product Clicked",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Product Searched",
+              "to": "search"
+            }
+          ],
+          "customVariables": [
+            {
+              "from": "value",
+              "to": "revenue"
+            },
+            {
+              "from": "total",
+              "to": "cost"
+            }
+          ],
+          "UserIdentifierSource": "THIRD_PARTY",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": true,
+          "defaultUserIdentifier": "email",
+          "validateOnly": false,
+          "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
+        }
+      }
+    },
+    "output": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      },
+      "statusCode": 400,
+      "error": "Either of email or phone or address attributes is required for user identifier",
+      "statTags": {
+        "destination": "google_adwords_offline_conversions",
+        "stage": "transform",
+        "scope": "exception"
+      }
+    }
+  },
+  {
+    "description": "Store - Invalid Item Attributes construction",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "traits": {
+            "firstName": "John"
+          }
+        },
+        "event": "Product Clicked",
+        "type": "track",
+        "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "anonymousId": "00000000000000000000000000",
+        "userId": "12345",
+        "properties": {
+          "revenue": "101",
+          "order_id": "order id",
+          "currency": "INR",
+          "store_code": "store code",
+          "userIdentifierSource": "THIRD_PARTY",
+          "email": "alex@example.com",
+          "gclid": "gclid",
+          "product_id": "123445",
+          "quantity": 123
+        },
+        "integrations": {
+          "All": true
+        },
+        "name": "ApplicationLoaded",
+        "sentAt": "2019-10-14T11:15:53.296Z"
+      },
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      },
+      "destination": {
+        "Config": {
+          "customerId": "111-222-3333",
+          "subAccount": true,
+          "isCustomerAllowed": true,
+          "loginCustomerId": "login-customer-id",
+          "eventsToOfflineConversionsTypeMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "click"
+            },
+            {
+              "from": "Download",
+              "to": "call"
+            },
+            {
+              "from": "Product Clicked",
+              "to": "store"
+            },
+            {
+              "from": "Product Searched",
+              "to": "call"
+            }
+          ],
+          "eventsToConversionsNamesMapping": [
+            {
+              "from": "Sign up completed",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Download",
+              "to": "Page view"
+            },
+            {
+              "from": "Product Clicked",
+              "to": "Sign-up - click"
+            },
+            {
+              "from": "Product Searched",
+              "to": "search"
+            }
+          ],
+          "customVariables": [
+            {
+              "from": "value",
+              "to": "revenue"
+            },
+            {
+              "from": "total",
+              "to": "cost"
+            }
+          ],
+          "UserIdentifierSource": "phone",
+          "conversionEnvironment": "WEB",
+          "hashUserIdentifier": true,
+          "defaultUserIdentifier": "email",
+          "validateOnly": false,
+          "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
+        }
+      }
+    },
+    "output": {
+      "metadata": {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        }
+      },
+      "statusCode": 400,
+      "error": "Either merchant_id, country_code or language_code is required for setting quantity.",
       "statTags": {
         "destination": "google_adwords_offline_conversions",
         "stage": "transform",

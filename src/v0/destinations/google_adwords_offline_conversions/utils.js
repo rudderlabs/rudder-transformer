@@ -1,6 +1,5 @@
 const sha256 = require('sha256');
-const get = require('get-value');
-const set = require('set-value');
+const { get, set, cloneDeep } = require('lodash');
 const { httpPOST } = require('../../../adapters/network');
 const {
   isHttpStatusSuccess,
@@ -8,7 +7,8 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   removeHyphens,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  formatTimeStamp
 } = require('../../util');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const {
@@ -19,6 +19,8 @@ const {
   trackAddStoreAddressConversionsMapping,
   STORE_CONVERSION_CONFIG_ADD_CONVERSION,
   STORE_CONVERSION_CONFIG_CREATE_JOB,
+  trackClickConversionsMapping,
+  CLICK_CONVERSION
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
@@ -157,7 +159,7 @@ const populateitemAttributes = (context, properties) => {
     response.item_id = itemId;
   }
   if (quantity && !(merchantId || countryCode || languageCode)) {
-    throw InstrumentationError('Either merchant_id, country_code or language_code is required for setting quantity.')
+    throw new InstrumentationError('Either merchant_id, country_code or language_code is required for setting quantity.')
   }
   if (quantity) {
     response.quantity = quantity;
@@ -210,7 +212,7 @@ const requestBuilder = (
  */
 const getOfflineUserDataJobId = async (message, Config, metadata) => {
   const payload = constructPayload(message, trackCreateStoreConversionsMapping);
-  payload.job.type = 'STORE_SALES_UPLOAD_FIRST_PARTY';
+  set(payload, "job.type", 'STORE_SALES_UPLOAD_FIRST_PARTY');
   const filteredCustomerId = removeHyphens(Config.customerId);
   const endpoint = STORE_CONVERSION_CONFIG_CREATE_JOB.replace(':customerId', filteredCustomerId);
   const options = {
@@ -221,10 +223,10 @@ const getOfflineUserDataJobId = async (message, Config, metadata) => {
     },
   };
   if (!payload.job?.storeSalesMetadata?.loyaltyFraction) {
-    payload.job.storeSalesMetadata.loyaltyFraction = 1
+    set(payload, "job.storeSalesMetadata.loyaltyFraction", '1');
   }
   if (!payload.job?.storeSalesMetadata?.transaction_upload_fraction) {
-    payload.job.storeSalesMetadata.transaction_upload_fraction = 1
+    set(payload, "job.storeSalesMetadata.transaction_upload_fraction", '1');
   }
   let createJobResponse = await httpPOST(endpoint, payload, options);
   createJobResponse = processAxiosResponse(createJobResponse);
@@ -246,53 +248,61 @@ const getOfflineUserDataJobId = async (message, Config, metadata) => {
 const addConversionToTheJob = async (message, Config, offlineUserDataJobId, event, metadata) => {
   const { context, properties } = message;
   const { customerId, validateOnly, UserIdentifierSource, hashUserIdentifier,
-    defaultUserIdentifier, isCustomerAllowed } = Config;
+    defaultStoreUserIdentifier, isCustomerAllowed } = Config;
   const payload = constructPayload(message, trackAddStoreConversionsMapping);
   payload.enable_partial_failure = false;
   payload.enable_warnings = false;
   payload.validate_only = validateOnly || false;
+
+  // formatting timestamp in the required format
+  if (payload.operations.create.transaction_attribute.transaction_date_time.endsWith("Z")) {
+    payload.operations.create.transaction_attribute.transaction_date_time = formatTimeStamp(payload.operations.create.transaction_attribute.transaction_date_time, 'YYYY-MM-DD HH:MM:SS')
+  }
   // mapping custom_key that should be predefined in google Ui and mentioned when new job is created
-  if (properties.custom_key) {
+  if (properties.custom_key && properties[properties.custom_key] ) {
     payload.operations.create.transaction_attribute[properties.custom_key] = properties[properties.custom_key];
   }
-  const address = buildAndGetAddress(message);
   // Converting transaction Cost to micro as mentioned here : https://developers.google.com/google-ads/api/reference/rpc/v13/TransactionAttribute#:~:text=30%2B03%3A00%22-,transaction_amount_micros,-double
   payload.operations.create.transaction_attribute.transaction_amount_micros = `${payload.operations.create.transaction_attribute.transaction_amount_micros * 1000000}`;
-
   // Mapping Conversion Action
-  payload.operations.create.transaction_attribute.conversion_action = await getConversionActionId({
+  const conversionId = await getConversionActionId({
     Authorization: `Bearer ${getAccessToken(metadata)}`,
     'Content-Type': 'application/json',
     'developer-token': get(metadata, 'secret.developer_token'),
-  }, { event, customerId })
-
+  }, { event, customerId });
+  set(payload, 'operations.create.transaction_attribute.conversion_action', conversionId)
   // userIdentifierSource
   // if userIdentifierSource doesn't exist in properties
   // then it is taken from the webapp config
   let email = getFieldValueFromMessage(message, 'email');
   let phone = getFieldValueFromMessage(message, 'phone');
+  const address = buildAndGetAddress(message);
   if (!properties.userIdentifierSource && UserIdentifierSource !== 'none') {
     set(payload, 'operations.create.userIdentifiers[0].userIdentifierSource', UserIdentifierSource);
     // one of email or phone must be provided
-    if (!email && !phone) {
+    if (!email && !phone && !address) {
       throw new InstrumentationError(`Either of email or phone or address attributes is required for user identifier`);
     }
   }
 
   // Mapping userIdentifer
-  if (defaultUserIdentifier === 'email' && email) {
+  if (defaultStoreUserIdentifier === 'email' && email) {
     email = hashUserIdentifier ? sha256(email).toString() : email;
     set(payload, 'operations.create.userIdentifiers[0].hashedEmail', email);
-  } else if (defaultUserIdentifier === 'phone' && phone) {
+  } else if (defaultStoreUserIdentifier === 'phone' && phone) {
     phone = hashUserIdentifier ? sha256(phone).toString() : phone;
     set(payload, 'operations.create.userIdentifiers[0].hashedPhoneNumber', phone);
+  } else if (defaultStoreUserIdentifier === 'address' && address) {
+    set(payload, 'operations.create.userIdentifiers[0].address_info', address);
   } else if (email) {
     // case when default choosen value is not present
     email = hashUserIdentifier ? sha256(email).toString() : email;
     set(payload, 'operations.create.userIdentifiers[0].hashedEmail', email);
-  } else {
+  } else if (phone) {
     phone = hashUserIdentifier ? sha256(phone).toString() : phone;
     set(payload, 'operations.create.userIdentifiers[0].hashedPhoneNumber', phone);
+  } else if (address) {
+    set(payload, 'operations.create.userIdentifiers[0].address_info', address);
   }
 
   // Mapping item_attribute if customer is eligible and itemAttribute can be build according to the input message and the rules by Google for itemAttributes
@@ -328,6 +338,82 @@ const addConversionToTheJob = async (message, Config, offlineUserDataJobId, even
 };
 
 
+const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerId) => {
+  let email = getFieldValueFromMessage(message, 'email');
+  let phone = getFieldValueFromMessage(message, 'phone');
+  const {
+    hashUserIdentifier,
+    defaultUserIdentifier,
+    UserIdentifierSource,
+    conversionEnvironment
+  } = Config;
+  const { properties } = message;
+  // click conversions
+  let updatedClickMapping = cloneDeep(trackClickConversionsMapping);
+
+  if (hashUserIdentifier === false) {
+    updatedClickMapping = removeHashToSha256TypeFromMappingJson(updatedClickMapping);
+  }
+
+  const payload = constructPayload(message, updatedClickMapping);
+
+
+  const endpoint = CLICK_CONVERSION.replace(':customerId', filteredCustomerId);
+
+  const products = get(message, 'properties.products');
+  const itemList = [];
+  if (products && products.length > 0 && Array.isArray(products)) {
+    // products is a list of items
+    products.forEach((product) => {
+      if (Object.keys(product).length > 0) {
+        itemList.push({
+          productId: product.product_id,
+          quantity: parseInt(product.quantity, 10),
+          unitPrice: Number(product.price),
+        });
+      }
+    });
+
+    set(payload, 'conversions[0].cartData.items', itemList);
+  }
+
+  // userIdentifierSource
+  // if userIdentifierSource doesn't exist in properties
+  // then it is taken from the webapp config
+  if (!properties.userIdentifierSource && UserIdentifierSource !== 'none') {
+    set(payload, 'conversions[0].userIdentifiers[0].userIdentifierSource', UserIdentifierSource);
+
+    // one of email or phone must be provided
+    if (!email && !phone) {
+      throw new InstrumentationError(`Either of email or phone is required for user identifier`);
+    }
+  }
+  // either of email or phone should be passed
+  // defaultUserIdentifier depends on the webapp configuration
+  // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadClickConversions#ClickConversion
+  if (defaultUserIdentifier === 'email' && email) {
+    email = hashUserIdentifier ? sha256(email).toString() : email;
+    set(payload, 'conversions[0].userIdentifiers[0].hashedEmail', email);
+  } else if (defaultUserIdentifier === 'phone' && phone) {
+    phone = hashUserIdentifier ? sha256(phone).toString() : phone;
+    set(payload, 'conversions[0].userIdentifiers[0].hashedPhoneNumber', phone);
+  } else if (email) {
+    // case when default choosen value is not present
+    email = hashUserIdentifier ? sha256(email).toString() : email;
+    set(payload, 'conversions[0].userIdentifiers[0].hashedEmail', email);
+  } else if (phone) {
+    phone = hashUserIdentifier ? sha256(phone).toString() : phone;
+    set(payload, 'conversions[0].userIdentifiers[0].hashedPhoneNumber', phone);
+  }
+  // conversionEnvironment
+  // if conversionEnvironment doesn't exist in properties
+  // then it is taken from the webapp config
+  if (!properties.conversionEnvironment && conversionEnvironment !== 'none') {
+    set(payload, 'conversions[0].conversionEnvironment', conversionEnvironment);
+  }
+  return { payload, endpoint };
+}
+
 module.exports = {
   validateDestinationConfig,
   getAccessToken,
@@ -336,5 +422,6 @@ module.exports = {
   getOfflineUserDataJobId,
   addConversionToTheJob,
   requestBuilder,
-  buildAndGetAddress
+  buildAndGetAddress,
+  getClickConversionPayloadAndEndpoint
 };

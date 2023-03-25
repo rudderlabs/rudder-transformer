@@ -9,7 +9,7 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
 } = require('../../util');
-const { BRAZE_NON_BILLABLE_ATTRIBUTES } = require('./config');
+const { BRAZE_NON_BILLABLE_ATTRIBUTES, CustomAttributeOperationTypes } = require('./config');
 
 const getEndpointFromConfig = (destination) => {
   // Init -- mostly for test cases
@@ -25,6 +25,54 @@ const getEndpointFromConfig = (destination) => {
     }
   }
   return endpoint;
+};
+
+const CustomAttributeOperationUtil = {
+  customAttributeUpdateOperation(key, data, traits, mergeObjectsUpdateOperation) {
+    data[key] = {};
+    const opsResultArray = [];
+    for (let i = 0; i < traits[key][CustomAttributeOperationTypes.UPDATE].length; i += 1) {
+      const myObj = {};
+      myObj.$identifier_key = traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier;
+      myObj.$identifier_value =
+        traits[key][CustomAttributeOperationTypes.UPDATE][i][
+          traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
+        ];
+      delete traits[key][CustomAttributeOperationTypes.UPDATE][i][
+        traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
+      ];
+      delete traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier;
+      myObj.$new_object = {};
+      Object.keys(traits[key][CustomAttributeOperationTypes.UPDATE][i]).forEach((subKey) => {
+        myObj.$new_object[subKey] = traits[key][CustomAttributeOperationTypes.UPDATE][i][subKey];
+      });
+      opsResultArray.push(myObj);
+    }
+    // eslint-disable-next-line no-underscore-dangle
+    data._merge_objects = isDefinedAndNotNull(mergeObjectsUpdateOperation)
+      ? mergeObjectsUpdateOperation
+      : false;
+    data[key][`$${CustomAttributeOperationTypes.UPDATE}`] = opsResultArray;
+  },
+
+  customAttributeRemoveOperation(key, data, traits) {
+    const opsResultArray = [];
+    for (let i = 0; i < traits[key][CustomAttributeOperationTypes.REMOVE].length; i += 1) {
+      const myObj = {};
+      myObj.$identifier_key = traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier;
+      myObj.$identifier_value =
+        traits[key][CustomAttributeOperationTypes.REMOVE][i][
+          traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier
+        ];
+      opsResultArray.push(myObj);
+    }
+    data[key][`$${CustomAttributeOperationTypes.REMOVE}`] = opsResultArray;
+  },
+
+  customAttributeAddOperation(key, data, traits) {
+    data[key][`$${CustomAttributeOperationTypes.ADD}`] =
+      traits[key][CustomAttributeOperationTypes.ADD];
+  },
 };
 
 const BrazeDedupUtility = {
@@ -178,4 +226,5 @@ const BrazeDedupUtility = {
 module.exports = {
   getEndpointFromConfig,
   BrazeDedupUtility,
+  CustomAttributeOperationUtil
 };

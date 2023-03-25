@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary,no-param-reassign */
 const _ = require('lodash');
 const get = require('get-value');
-const { BrazeDedupUtility } = require('./util');
+const { BrazeDedupUtility, CustomAttributeOperationUtil } = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
@@ -117,56 +117,19 @@ function populateCustomAttributesWithOperation(
       Object.keys(traits)
         .filter((key) => typeof traits[key] === 'object' && !Array.isArray(traits[key]))
         .forEach((key) => {
-          data[key] = {};
-          let opsResultArray = [];
-
           if (traits[key][CustomAttributeOperationTypes.UPDATE]) {
-            for (let i = 0; i < traits[key][CustomAttributeOperationTypes.UPDATE].length; i += 1) {
-              const myObj = {};
-              myObj.$identifier_key =
-                traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier;
-              myObj.$identifier_value =
-                traits[key][CustomAttributeOperationTypes.UPDATE][i][
-                  traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
-                ];
-              delete traits[key][CustomAttributeOperationTypes.UPDATE][i][
-                traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
-              ];
-              delete traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier;
-              myObj.$new_object = {};
-              Object.keys(traits[key][CustomAttributeOperationTypes.UPDATE][i]).forEach(
-                (subKey) => {
-                  myObj.$new_object[subKey] =
-                    traits[key][CustomAttributeOperationTypes.UPDATE][i][subKey];
-                },
-              );
-              opsResultArray.push(myObj);
-            }
-            // eslint-disable-next-line no-underscore-dangle
-            data._merge_objects = isDefinedAndNotNull(mergeObjectsUpdateOperation)
-              ? mergeObjectsUpdateOperation
-              : false;
-            data[key][`$${CustomAttributeOperationTypes.UPDATE}`] = opsResultArray;
+            CustomAttributeOperationUtil.customAttributeUpdateOperation(
+              key,
+              data,
+              traits,
+              mergeObjectsUpdateOperation,
+            );
           }
-
-          opsResultArray = [];
           if (traits[key][CustomAttributeOperationTypes.REMOVE]) {
-            for (let i = 0; i < traits[key][CustomAttributeOperationTypes.REMOVE].length; i += 1) {
-              const myObj = {};
-              myObj.$identifier_key =
-                traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier;
-              myObj.$identifier_value =
-                traits[key][CustomAttributeOperationTypes.REMOVE][i][
-                  traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier
-                ];
-              opsResultArray.push(myObj);
-            }
-            data[key][`$${CustomAttributeOperationTypes.REMOVE}`] = opsResultArray;
+            CustomAttributeOperationUtil.customAttributeRemoveOperation(key, data, traits);
           }
-
           if (traits[key][CustomAttributeOperationTypes.ADD]) {
-            data[key][`$${CustomAttributeOperationTypes.ADD}`] =
-              traits[key][CustomAttributeOperationTypes.ADD];
+            CustomAttributeOperationUtil.customAttributeAddOperation(key, data, traits);
           }
         });
     }

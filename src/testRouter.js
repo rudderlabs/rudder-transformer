@@ -4,7 +4,7 @@
 /* eslint-disable no-shadow */
 const fs = require('fs');
 const path = require('path');
-const Router = require('koa-router');
+const Router = require('@koa/router');
 const { sendToDestination, userTransformHandler } = require('./routerUtils');
 
 const version = 'v0';

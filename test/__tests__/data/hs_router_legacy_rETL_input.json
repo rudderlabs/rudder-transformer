@@ -37,8 +37,8 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
-        "hubID": "6405167"
+        "apiKey": "dummy-apikey",
+        "hubID": "dummy-hubId"
       },
       "secretConfig": {},
       "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",
@@ -101,8 +101,8 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "e7a09623-7a0a-4529-9158-3a7c7c96ffe3",
-        "hubID": "6405167"
+        "apiKey": "dummy-apikey",
+        "hubID": "dummy-hubId"
       },
       "secretConfig": {},
       "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",

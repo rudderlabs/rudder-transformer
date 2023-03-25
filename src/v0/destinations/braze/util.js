@@ -8,6 +8,7 @@ const {
   getFieldValueFromMessage,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
+  isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
 const { BRAZE_NON_BILLABLE_ATTRIBUTES, CustomAttributeOperationTypes } = require('./config');
 
@@ -257,8 +258,29 @@ const BrazeDedupUtility = {
   },
 };
 
+/**
+ * Deduplicates the user object with the user object from the store
+ * returns original user object if the user object is not present in the store
+ * if user is duplicate, it returns null
+ *
+ * @param {*} userStore
+ * @param {*} payload
+ * @returns
+ */
+const processDeduplication = (userStore, payload) => {
+  const dedupedAttributePayload = BrazeDedupUtility.deduplicate(payload, userStore);
+  if (
+    isDefinedAndNotNullAndNotEmpty(dedupedAttributePayload) &&
+    Object.keys(dedupedAttributePayload).some((key) => !['external_id', 'user_alias'].includes(key))
+  ) {
+    return dedupedAttributePayload;
+  }
+  return null;
+};
+
 module.exports = {
-  getEndpointFromConfig,
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
+  getEndpointFromConfig,
+  processDeduplication,
 };

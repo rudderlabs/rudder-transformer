@@ -1,7 +1,7 @@
 /* eslint-disable no-nested-ternary,no-param-reassign */
 const _ = require('lodash');
 const get = require('get-value');
-const { BrazeDedupUtility, CustomAttributeOperationUtil } = require('./util');
+const { BrazeDedupUtility, CustomAttributeOperationUtil, processDeduplication } = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
@@ -13,7 +13,6 @@ const {
   isDefinedAndNotNull,
   simpleProcessRouterDest,
   isHttpStatusSuccess,
-  isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
 const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const {
@@ -240,22 +239,14 @@ async function processIdentify(message, destination) {
   }
 }
 
-function processTrackWithUserAttributes(message, destination, mappingJson, deduplicationStore) {
+function processTrackWithUserAttributes(message, destination, mappingJson, processParams) {
   let payload = getUserAttributesObject(message, mappingJson);
   if (payload && Object.keys(payload).length > 0) {
     payload = setExternalIdOrAliasObject(payload, message);
     const requestJson = { attributes: [payload] };
     if (destination.Config.deduplicationEnabled) {
-      const dedupedAttributePayload = BrazeDedupUtility.deduplicate(
-        payload,
-        deduplicationStore.userStore,
-      );
-      if (
-        isDefinedAndNotNullAndNotEmpty(dedupedAttributePayload) &&
-        Object.keys(dedupedAttributePayload).some(
-          (key) => !['external_id', 'user_alias'].includes(key),
-        )
-      ) {
+      const dedupedAttributePayload = processDeduplication(processParams.userStore, payload);
+      if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
       } else {
         throw new InstrumentationError(
@@ -338,7 +329,7 @@ function getPurchaseObjs(message) {
   return purchaseObjs.length === 0 ? null : purchaseObjs;
 }
 
-function processTrackEvent(messageType, message, destination, mappingJson, deduplicationStore) {
+function processTrackEvent(messageType, message, destination, mappingJson, processParams) {
   const eventName = message.event;
 
   if (!message.properties) {
@@ -354,16 +345,11 @@ function processTrackEvent(messageType, message, destination, mappingJson, dedup
     attributePayload = setExternalIdOrAliasObject(attributePayload, message);
     requestJson.attributes = [attributePayload];
     if (destination.Config.deduplicationEnabled) {
-      const dedupedAttributePayload = BrazeDedupUtility.deduplicate(
+      const dedupedAttributePayload = processDeduplication(
+        processParams.userStore,
         attributePayload,
-        deduplicationStore.userStore,
       );
-      if (
-        isDefinedAndNotNullAndNotEmpty(dedupedAttributePayload) &&
-        Object.keys(dedupedAttributePayload).some(
-          (key) => !['external_id', 'user_alias'].includes(key),
-        )
-      ) {
+      if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
       } else {
         delete requestJson.attributes;
@@ -481,7 +467,7 @@ function processGroup(message, destination) {
   );
 }
 
-async function process(event, deduplicationStore = { userStore: new Map() }) {
+async function process(event, processParams = { userStore: new Map() }) {
   let response;
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
@@ -494,7 +480,7 @@ async function process(event, deduplicationStore = { userStore: new Map() }) {
         message,
         destination,
         mappingConfig[category.name],
-        deduplicationStore,
+        processParams,
       );
       break;
     case EventType.PAGE:
@@ -504,7 +490,7 @@ async function process(event, deduplicationStore = { userStore: new Map() }) {
         message,
         destination,
         mappingConfig[category.name],
-        deduplicationStore,
+        processParams,
       );
       break;
     case EventType.SCREEN:
@@ -514,7 +500,7 @@ async function process(event, deduplicationStore = { userStore: new Map() }) {
         message,
         destination,
         mappingConfig[category.name],
-        deduplicationStore,
+        processParams,
       );
       break;
     case EventType.IDENTIFY:
@@ -526,7 +512,7 @@ async function process(event, deduplicationStore = { userStore: new Map() }) {
         message,
         destination,
         mappingConfig[category.name],
-        deduplicationStore,
+        processParams,
       );
       break;
     case EventType.GROUP:

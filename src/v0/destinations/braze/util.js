@@ -217,45 +217,43 @@ const BrazeDedupUtility = {
     if (!storedUserData) {
       return userData;
     }
-      const customAttributes = storedUserData?.custom_attributes;
-      storedUserData = { ...storedUserData, ...customAttributes };
-      delete storedUserData.custom_attributes;
-      let deduplicatedUserData = {};
-      const keys = Object.keys(userData)
-        .filter((key) => !excludeKeys.includes(key))
-        .filter((key) => !BRAZE_NON_BILLABLE_ATTRIBUTES.includes(key))
-        .filter(
-          (key) =>
-            !(
-              Object.keys(userData[key]).includes('$add') ||
-              Object.keys(userData[key]).includes('$update') ||
-              Object.keys(userData[key]).includes('$remove')
-            ),
-        );
+    const customAttributes = storedUserData?.custom_attributes;
+    storedUserData = { ...storedUserData, ...customAttributes };
+    delete storedUserData.custom_attributes;
+    let deduplicatedUserData = {};
+    const keys = Object.keys(userData)
+      .filter((key) => !excludeKeys.includes(key))
+      .filter((key) => !BRAZE_NON_BILLABLE_ATTRIBUTES.includes(key))
+      .filter(
+        (key) =>
+          !(
+            Object.keys(userData[key]).includes('$add') ||
+            Object.keys(userData[key]).includes('$update') ||
+            Object.keys(userData[key]).includes('$remove')
+          ),
+      );
 
-      if (keys.length === 0) {
-        return null;
+    if (keys.length === 0) {
+      return null;
+    }
+
+    keys.forEach((key) => {
+      if (!_.isEqual(userData[key], storedUserData[key])) {
+        deduplicatedUserData[key] = userData[key];
       }
+    });
 
-      keys.forEach((key) => {
-        if (!_.isEqual(userData[key], storedUserData[key])) {
-          deduplicatedUserData[key] = userData[key];
-        }
-      });
-
-      if (Object.keys(deduplicatedUserData).length === 0) {
-        return null;
-      }
-      deduplicatedUserData = {
-        ...deduplicatedUserData,
-        external_id,
-        user_alias,
-      };
-      const identifier = external_id || user_alias.alias_name;
-      store.set(identifier, { ...storedUserData, ...deduplicatedUserData });
-      return removeUndefinedAndNullValues(deduplicatedUserData);
-    
-    
+    if (Object.keys(deduplicatedUserData).length === 0) {
+      return null;
+    }
+    deduplicatedUserData = {
+      ...deduplicatedUserData,
+      external_id,
+      user_alias,
+    };
+    const identifier = external_id || user_alias.alias_name;
+    store.set(identifier, { ...storedUserData, ...deduplicatedUserData });
+    return removeUndefinedAndNullValues(deduplicatedUserData);
   },
 };
 

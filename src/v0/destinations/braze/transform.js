@@ -258,7 +258,9 @@ function processTrackWithUserAttributes(message, destination, mappingJson, dedup
       ) {
         requestJson.attributes = [dedupedAttributePayload];
       } else {
-        delete requestJson.attributes;
+        throw new InstrumentationError(
+          'No attributes found to update the user, parallely the anonymous (alias only) user has been identified with provided userId',
+        );
       }
     }
     return buildResponse(

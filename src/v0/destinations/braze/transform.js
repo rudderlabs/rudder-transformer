@@ -201,6 +201,14 @@ function getUserAttributesObject(message, mappingJson, destination) {
   return data;
 }
 
+/**
+ * makes a call to braze identify endpoint to merge the alias (anonymousId) user with the
+ * identified user with external_id (userId) [Identity resolution]
+ * https://www.braze.com/docs/api/endpoints/user_data/post_user_identify/
+ *
+ * @param {*} message
+ * @param {*} destination
+ */
 async function processIdentify(message, destination) {
   // override userId with externalId in context(if present) and event is mapped to destination
   const mappedToDestination = get(message, MappedToDestinationKey);
@@ -545,7 +553,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       logger.error('Error while fetching user store', error);
     }
 
-    BrazeDedupUtility.enrichUserStore(lookedUpUsers, userStore);
+    BrazeDedupUtility.updateUserStore(userStore, lookedUpUsers);
   }
   // group events by userId or anonymousId and then call process
   const groupedInputs = _.groupBy(

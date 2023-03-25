@@ -76,7 +76,7 @@ const CustomAttributeOperationUtil = {
 };
 
 const BrazeDedupUtility = {
-  async doLookup(inputs) {
+  prepareInputForDedup(inputs) {
     const externalIds = [];
     const aliasIds = [];
     // eslint-disable-next-line no-restricted-syntax
@@ -93,9 +93,12 @@ const BrazeDedupUtility = {
         aliasIds.push(anonymousId);
       }
     }
-    const externalIdsToQuery = [...new Set(externalIds)];
-    const aliasIdsToQuery = [...new Set(aliasIds)];
+    const externalIdsToQuery = Array.from(new Set(externalIds));
+    const aliasIdsToQuery = Array.from(new Set(aliasIds));
+    return { externalIdsToQuery, aliasIdsToQuery };
+  },
 
+  prepareChunksForDedup(externalIdsToQuery, aliasIdsToQuery) {
     const identifiers = [];
     if (externalIdsToQuery.length > 0) {
       externalIdsToQuery.forEach((externalId) => {
@@ -113,22 +116,25 @@ const BrazeDedupUtility = {
       });
     }
     const identfierChunks = _.chunk(identifiers, 50);
+    return identfierChunks;
+  },
 
-    const chunkedUserData = await Promise.all(
+  async doApiLookup(identfierChunks, destination) {
+    return Promise.all(
       identfierChunks.map(async (ids) => {
         const externalIdentifiers = ids.filter((id) => id.external_id !== undefined);
         const aliasIdentifiers = ids.filter((id) => id.alias_name !== undefined);
 
         const startTime = Date.now();
         const lookUpResponse = await httpPOST(
-          `${getEndpointFromConfig(inputs[0].destination)}/users/export/ids`,
+          `${getEndpointFromConfig(destination)}/users/export/ids`,
           {
             external_ids: externalIdentifiers.map((extId) => extId.external_id),
             user_aliases: aliasIdentifiers,
           },
           {
             headers: {
-              Authorization: `Bearer ${inputs[0].destination.Config.restApiKey}`,
+              Authorization: `Bearer ${destination.Config.restApiKey}`,
             },
             timeout: 10 * 1000,
           },
@@ -144,11 +150,30 @@ const BrazeDedupUtility = {
         return users;
       }),
     );
+  },
 
+  /**
+   * Looks up multiple users in Braze and returns the user objects
+   * uses the external_id field and the alias_name field to lookup users
+   *
+   * @param {*} inputs router transform input events array
+   * @returns {Array} array of braze user objects
+   */
+  async doLookup(inputs) {
+    const { destination } = inputs[0];
+    const { externalIdsToQuery, aliasIdsToQuery } = this.prepareInputForDedup(inputs);
+    const identfierChunks = this.prepareChunksForDedup(externalIdsToQuery, aliasIdsToQuery);
+    const chunkedUserData = await this.doApiLookup(identfierChunks, destination);
     return _.flatMap(chunkedUserData);
   },
 
-  enrichUserStore(users, store) {
+  /**
+   * Updates the user store with the user objects
+   *
+   * @param {*} store
+   * @param {*} users
+   */
+  updateUserStore(store, users) {
     if (isDefinedAndNotNull(users) && Array.isArray(users)) {
       users.forEach((user) => {
         if (user?.external_id) {
@@ -164,26 +189,37 @@ const BrazeDedupUtility = {
     }
   },
 
-  getUserDataFromStore(inputUserData, store) {
-    const { external_id, user_alias } = inputUserData;
-    let storedUserData;
-    if (external_id) {
-      storedUserData = store.get(external_id);
-    } else if (user_alias) {
-      const rudderIdAlias = user_alias.alias_name;
-      storedUserData = store.get(rudderIdAlias);
-    }
-    return storedUserData;
+  /**
+   * Returns the user object from the store
+   * if the user object is not present in the store, it returns undefined
+   *
+   * @param {*} store
+   * @param {*} identifier
+   * @returns {Object | undefined} user object from the store
+   */
+  getUserDataFromStore(store, identifier) {
+    return store.get(identifier);
   },
 
+  /**
+   * Deduplicates the user object with the user object from the store
+   * returns original user object if the user object is not present in the store
+   *
+   * @param {*} userData
+   * @param {*} store
+   * @returns {Object} user object with deduplicated custom attributes
+   */
   deduplicate(userData, store) {
     const excludeKeys = ['external_id', 'user_alias', 'appboy_id', 'braze_id', 'custom_events'];
-    let storedUserData = this.getUserDataFromStore(userData, store);
-    if (storedUserData) {
+    const { external_id, user_alias } = userData;
+    const identfier = external_id || user_alias?.alias_name;
+    let storedUserData = this.getUserDataFromStore(store, identfier);
+    if (!storedUserData) {
+      return userData;
+    }
       const customAttributes = storedUserData?.custom_attributes;
       storedUserData = { ...storedUserData, ...customAttributes };
       delete storedUserData.custom_attributes;
-      const { external_id, user_alias } = userData;
       let deduplicatedUserData = {};
       const keys = Object.keys(userData)
         .filter((key) => !excludeKeys.includes(key))
@@ -218,13 +254,13 @@ const BrazeDedupUtility = {
       const identifier = external_id || user_alias.alias_name;
       store.set(identifier, { ...storedUserData, ...deduplicatedUserData });
       return removeUndefinedAndNullValues(deduplicatedUserData);
-    }
-    return userData;
+    
+    
   },
 };
 
 module.exports = {
   getEndpointFromConfig,
   BrazeDedupUtility,
-  CustomAttributeOperationUtil
+  CustomAttributeOperationUtil,
 };

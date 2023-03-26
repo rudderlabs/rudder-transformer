@@ -33,7 +33,7 @@ jobs:
     env:
       TAG_NAME: ${{ needs.generate-tag-name.outputs.tag_name }}
 
-    # Skip for the release pull requests
+    # Skip for the release pull requests as staging artifacts will be generated
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true
     steps:
       - name: Checkout
@@ -89,7 +89,7 @@ jobs:
     env:
       TAG_NAME: ${{ needs.generate-tag-name.outputs.tag_name }}
 
-    # Skip for the release pull requests
+    # Skip for the release pull requests as staging artifacts will be generated
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true
     steps:
       - name: Checkout

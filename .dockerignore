@@ -2,8 +2,7 @@
 !src
 !features.json
 !Makefile
-!jest.config.js
-!jest.config.integration.js
+!jest*.js
 !benchmark
 !package*.json
 # to be removed later

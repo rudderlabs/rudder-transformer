@@ -32,6 +32,9 @@ jobs:
     needs: [generate-tag-name]
     env:
       TAG_NAME: ${{ needs.generate-tag-name.outputs.tag_name }}
+    strategy:
+      matrix:
+        shard: [1/3, 2/3, 3/3]
 
     # Skip for the release pull requests as staging artifacts will be generated
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true
@@ -50,7 +53,7 @@ jobs:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
-      - name: Cache Docker layers
+      - name: Cache Docker Layers
         uses: actions/cache@v3.2.1
         with:
           path: /tmp/.buildx-cache
@@ -71,7 +74,7 @@ jobs:
 
       - name: Run Tests
         run: |
-          docker run ${{ env.REPO_NAME }}:${{ env.TAG_NAME }} npm run test:ci
+          docker run ${{ env.REPO_NAME }}:${{ env.TAG_NAME }} npm run test:ci --shard=${{ matrix.shard }}
 
       - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v4.0.0
@@ -93,7 +96,7 @@ jobs:
         # Temp fix
         # https://github.com/docker/build-push-action/issues/252
         # https://github.com/moby/buildkit/issues/1896
-      - name: Move cache
+      - name: Move Cache
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache

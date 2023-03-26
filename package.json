@@ -27,7 +27,7 @@
     "verify": "eslint . || exit 1; npm run test || exit 1",
     "test:testRouter": "jest testRouter --detectOpenHandles --coverage --notify --watchAll=false",
     "test": "jest --detectOpenHandles --coverage --notify --watchAll=false",
-    "test:ci": "jest --detectOpenHandles --coverage --notify --expand --silent --watchAll=false",
+    "test:ci": "jest --detectOpenHandles --coverage --notify --expand --silent --watchAll=false --maxWorkers=2",
     "test:silent": "npm run test -- --silent",
     "test:benchmark": "node benchmark/index.js",
     "test:integration": "jest -c jest.config.integration.js",

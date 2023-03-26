@@ -34,7 +34,8 @@ jobs:
       TAG_NAME: ${{ needs.generate-tag-name.outputs.tag_name }}
 
     # Skip for the release pull requests as staging artifacts will be generated
-    if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true
+    # Skip main to develop sync pull requests
+    if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
     steps:
       - name: Checkout
         uses: actions/checkout@v3.4.0
@@ -106,7 +107,7 @@ jobs:
       TAG_NAME: ${{ needs.generate-tag-name.outputs.tag_name }}
 
     # Skip for the release pull requests as staging artifacts will be generated
-    if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true
+    if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
     steps:
       - name: Checkout
         uses: actions/checkout@v3.4.0

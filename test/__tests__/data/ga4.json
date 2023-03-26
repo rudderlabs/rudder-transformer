@@ -6656,9 +6656,7 @@
           "timestamp_micros": 1650950229000000,
           "non_personalized_ads": true,
           "user_properties": {
-            "price": {
-              "value": "19"
-            }
+            "price": "19"
           },
           "events": [
             {
@@ -7014,9 +7012,7 @@
           "timestamp_micros": 1650950229000000,
           "non_personalized_ads": true,
           "user_properties": {
-            "price": {
-              "value": "100"
-            }
+            "price": "100"
           },
           "events": [
             {
@@ -11510,11 +11506,6 @@
           ],
           "user_id": "user@1",
           "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-          "user_properties": {
-            "campaign": {
-              "value": "advertizing"
-            }
-          },
           "non_personalized_ads": true
         },
         "JSON_ARRAY": {}
@@ -11622,11 +11613,6 @@
           ],
           "user_id": "user@1",
           "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-          "user_properties": {
-            "campaign": {
-              "value": "advertizing"
-            }
-          },
           "non_personalized_ads": true
         },
         "JSON_ARRAY": {}
@@ -11737,11 +11723,6 @@
           ],
           "user_id": "user@1",
           "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-          "user_properties": {
-            "campaign": {
-              "value": "advertizing"
-            }
-          },
           "non_personalized_ads": true
         },
         "JSON_ARRAY": {}

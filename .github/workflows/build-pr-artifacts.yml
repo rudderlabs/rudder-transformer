@@ -32,9 +32,6 @@ jobs:
     needs: [generate-tag-name]
     env:
       TAG_NAME: ${{ needs.generate-tag-name.outputs.tag_name }}
-    strategy:
-      matrix:
-        shard: [1/3, 2/3, 3/3]
 
     # Skip for the release pull requests as staging artifacts will be generated
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true
@@ -74,7 +71,7 @@ jobs:
 
       - name: Run Tests
         run: |
-          docker run ${{ env.REPO_NAME }}:${{ env.TAG_NAME }} npm run test:ci --shard=${{ matrix.shard }}
+          docker run ${{ env.REPO_NAME }}:${{ env.TAG_NAME }} npm run test:ci
 
       - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v4.0.0

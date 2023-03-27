@@ -245,15 +245,10 @@ const responseBuilder = (message, { Config }) => {
   userProperties = extractCustomFields(
     message,
     userProperties,
-    ['context.traits', 'properties.user_properties'],
+    ['properties.user_properties'],
     GA4_RESERVED_USER_PROPERTY_EXCLUSION,
   );
 
-  const keys = Object.keys(userProperties);
-  keys.forEach((key) => {
-    userProperties[key] = {value: userProperties[key]};
-  })
-  
   if (!isEmptyObject(userProperties)) {
     rawPayload.user_properties = userProperties;
   }

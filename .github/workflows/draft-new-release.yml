@@ -45,7 +45,7 @@ jobs:
           new_version=$(jq -r .version package.json)
           git reset --hard
 
-          branch_name="${release_type}/${new_version}"
+          branch_name="${release_type}/v${new_version}"
 
           echo "Source branch for new release is $source_branch_name"
           echo "Current version is $current_version"

@@ -1575,6 +1575,38 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, proces
   );
   return respList;
 };
+/**
+ * This is the sync version of simpleProcessRouterDest
+ * 
+ * @param {*} inputs 
+ * @param {*} singleTfFunc 
+ * @param {*} reqMetadata 
+ * @param {*} processParams 
+ * @returns 
+ */
+const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, processParams) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+  const respList = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const input of inputs) {
+    try {
+      let resp = input.message;
+      // transform if not already done
+      if (!input.message.statusCode) {
+        // eslint-disable-next-line no-await-in-loop
+        resp = await singleTfFunc(input, processParams);
+      }
+      respList.push(getSuccessRespEvents(resp, [input.metadata], input.destination));
+    } catch (error) {
+      respList.push(handleRtTfSingleEventError(input, error, reqMetadata));
+    }
+  }
+
+  return respList;
+};
 
 /**
  * Flattens the input payload to a single level of payload
@@ -1900,6 +1932,7 @@ module.exports = {
   updatePayload,
   checkInvalidRtTfEvents,
   simpleProcessRouterDest,
+  simpleProcessRouterDestSync,
   handleRtTfSingleEventError,
   getErrorStatusCode,
   getDestAuthCacheInstance,

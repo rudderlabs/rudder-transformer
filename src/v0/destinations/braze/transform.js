@@ -11,8 +11,9 @@ const {
   getFieldValueFromMessage,
   removeUndefinedValues,
   isDefinedAndNotNull,
-  simpleProcessRouterDest,
   isHttpStatusSuccess,
+  simpleProcessRouterDestSync,
+  simpleProcessRouterDest,
 } = require('../../util');
 const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const {
@@ -550,10 +551,14 @@ const processRouterDest = async (inputs, reqMetadata) => {
   );
 
   // process each group of events for userId or anonymousId
+  // if deduplication is enabled process each group of events for a user (userId or anonymousId)
+  // synchronously (slower) else process asynchronously (faster)
   const allResps = Object.keys(groupedInputs).map(async (id) => {
-    const respList = await simpleProcessRouterDest(groupedInputs[id], process, reqMetadata, {
-      userStore,
-    });
+    const respList = destination.Config.deduplicationEnabled
+      ? await simpleProcessRouterDestSync(groupedInputs[id], process, reqMetadata, {
+          userStore,
+        })
+      : await simpleProcessRouterDest(groupedInputs[id], process, reqMetadata);
     return respList;
   });
 

@@ -2,12 +2,12 @@
   {
     "sourceKeys": "userIdOnly",
     "destKey": "customer_id",
-    "required": true,
+    "required": false,
     "sourceFromGenericMap": true
   },
   {
     "sourceKeys": "anonymousId",
-    "destKey": "anonymousId",
+    "destKey": "anonymous_id",
     "required": false,
     "sourceFromGenericMap": false
   },

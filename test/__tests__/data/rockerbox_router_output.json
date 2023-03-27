@@ -14,7 +14,7 @@
         "JSON": {
           "action": "conv.add_to_cart",
           "checkout_id": "12345",
-          "anonymousId": "5f093403-1457-4a2c-b4e4-c61ec3bacf56",
+          "anonymous_id": "5f093403-1457-4a2c-b4e4-c61ec3bacf56",
           "conversion_source": "RudderStack",
           "customer_id": "userSampleX138",
           "email": "userSampleX120@gmail.com",
@@ -95,7 +95,7 @@
           "conversion_source": "RudderStack",
           "customer_id": "userSampleX138",
           "email": "userSampleX120@gmail.com",
-          "anonymousId": "5f093403-1457-4a2c-b4e4-c61ec3bacf56",
+          "anonymous_id": "5f093403-1457-4a2c-b4e4-c61ec3bacf56",
           "phone": "9878764736",
           "product_name": "Red T-shirt",
           "product_url": "http://www.yourdomain.com/products/red-t-shirt",

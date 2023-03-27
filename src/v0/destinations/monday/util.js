@@ -154,7 +154,7 @@ const getColumnValue = (properties, columnName, key, board) => {
  */
 const mapColumnValues = (properties, columnToPropertyMapping, board) => {
   const columnValues = {};
-  if (isDefinedAndNotNull(columnToPropertyMapping)) {
+  if (isDefinedAndNotNull(columnToPropertyMapping) && Array.isArray(columnToPropertyMapping)) {
     columnToPropertyMapping.forEach((mapping) => {
       columnValues[getColumnId(mapping.from, board)] = getColumnValue(
         properties,

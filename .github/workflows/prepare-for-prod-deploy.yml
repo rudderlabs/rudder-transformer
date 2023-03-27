@@ -198,8 +198,8 @@ jobs:
           git add values.prod.yaml
 
           cd ../../customer-objects/multi-tenant-us
-          yq eval -i ".transformer.image.tag=\"$TAG_NAME\"" hostedmtedmt.yaml
-          yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" hostedmtedmt.yaml
+          yq eval -i ".spec.transformer.image.version=\"$TAG_NAME\"" hostedmtedmt.yaml
+          yq eval -i ".spec.user_transformer.image.version=\"$TAG_NAME\"" hostedmtedmt.yaml
           git add hostedmtedmt.yaml
 
           git commit -m "chore: upgrade shared transformers to $TAG_NAME"

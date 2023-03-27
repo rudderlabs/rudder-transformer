@@ -1,7 +1,7 @@
 const { isNumber } = require('lodash');
 const { httpPOST } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
-const { getDestinationExternalID } = require('../../util');
+const { getDestinationExternalID, isDefinedAndNotNull } = require('../../util');
 const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
@@ -154,14 +154,16 @@ const getColumnValue = (properties, columnName, key, board) => {
  */
 const mapColumnValues = (properties, columnToPropertyMapping, board) => {
   const columnValues = {};
-  columnToPropertyMapping.forEach((mapping) => {
-    columnValues[getColumnId(mapping.from, board)] = getColumnValue(
-      properties,
-      mapping.from,
-      mapping.to,
-      board,
-    );
-  });
+  if (isDefinedAndNotNull(columnToPropertyMapping) && Array.isArray(columnToPropertyMapping)) {
+    columnToPropertyMapping.forEach((mapping) => {
+      columnValues[getColumnId(mapping.from, board)] = getColumnValue(
+        properties,
+        mapping.from,
+        mapping.to,
+        board,
+      );
+    });
+  }
   return JSON.stringify(columnValues);
 };
 

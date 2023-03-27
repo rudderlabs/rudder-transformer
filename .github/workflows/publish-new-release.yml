@@ -20,7 +20,7 @@ jobs:
         run: |
           branch_name="${{ github.event.pull_request.head.ref }}"
           version=${branch_name#hotfix-}
-          version=${version#release/}
+          version=${version#release/v}
 
           echo "release_version=$version" >> $GITHUB_OUTPUT
 

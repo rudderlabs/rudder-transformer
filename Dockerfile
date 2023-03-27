@@ -36,5 +36,4 @@ HEALTHCHECK --interval=1s --timeout=30s --retries=30 \
 
 CMD [ "npm", "start" ]
 
-
 EXPOSE 9090/tcp

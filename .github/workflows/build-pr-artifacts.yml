@@ -52,7 +52,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
       - name: Cache Docker Layers
-        uses: actions/cache@v3.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -124,7 +124,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
       - name: Cache Docker Layers
-        uses: actions/cache@v3.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}

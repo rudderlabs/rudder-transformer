@@ -198,35 +198,33 @@ jobs:
           echo "Transformer: $TAG_NAME"
           echo "User Transformer: $UT_TAG_NAME"
 
-      - name: Check Branch Exists
-        id: check-branch-exists
-        run: |
-          BRANCH_NAME="shared-transformer-$TAG_NAME"
-          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_OUTPUT
-          if [ `git ls-remote --heads origin $BRANCH_NAME 2>/dev/null` ]
-          then
-            echo "BRANCH_EXISTS=\"1\"" >> $GITHUB_OUTPUT
-          else
-            echo "BRANCH_EXISTS=\"0\"" >> $GITHUB_OUTPUT
-          fi
-
       - name: Update Helm Charts and Raise Pull Request
-        if: steps.check-branch-exists.outputs.BRANCH_EXISTS == '0'
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
           cd rudder-devops
-          git checkout -b $BRANCH_NAME
+          BRANCH_NAME="shared-transformer-$TAG_NAME"
+          echo $BRANCH_NAME
+          if [ `git ls-remote --heads origin $BRANCH_NAME 2>/dev/null` ]
+          then
+            echo "Staging deployment branch already exists!"
+          else
+            git checkout -b $BRANCH_NAME
 
-          cd helm-charts/shared-services/per-az
-          yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
-          yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
-          git add values.staging.yaml
+            cd helm-charts/shared-services/per-az
+            yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
+            yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
+            git add values.staging.yaml
 
-          cd ../../config-be-rudder-transformer
-          yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
-          yq eval -i ".config-be-user-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
-          git add values.staging.yaml
+            cd ../../config-be-rudder-transformer
+            yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
+            yq eval -i ".config-be-user-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
+            git add values.staging.yaml
 
-          git commit -m "chore: upgrade staging env transformers to \"$TAG_NAME\""
-          git push -u origin $BRANCH_NAME"
-          hub pull-request -m "chore: upgrade staging env transformers to \"$TAG_NAME\""
+            git commit -m "chore: upgrade staging env transformers to \"$TAG_NAME\""
+            git push -u origin $BRANCH_NAME"
+            hub pull-request -m "chore: upgrade staging env transformers to \"$TAG_NAME\""
+          fi
+
+
+
+

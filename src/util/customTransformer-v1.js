@@ -78,7 +78,7 @@ async function userTransformHandlerV1(
     logger.debug(`Isolate VM created... `);
 
     // Transform the event...
-    stats.gauge('events_to_process', events.length, tags);
+    stats.counter('events_to_process', events.length, tags);
     const isolateStartWallTime = calculateMsFromIvmTime(isolatevm.isolateStartWallTime);
     const isolateStartCPUTime = calculateMsFromIvmTime(isolatevm.isolateStartCPUTime);
     

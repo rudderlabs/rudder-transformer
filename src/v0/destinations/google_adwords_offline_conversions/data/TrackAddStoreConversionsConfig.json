@@ -1,24 +1,5 @@
 [
     {
-        "destKey": "operations.create.userIdentifiers[0].userIdentifierSource",
-        "sourceKeys": "properties.userIdentifierSource",
-        "required": false,
-        "metadata": {
-            "type": "toString",
-            "allowedKeyCheck": [
-                {
-                    "sourceVal": [
-                        "UNSPECIFIED",
-                        "UNKNOWN",
-                        "FIRST_PARTY",
-                        "THIRD_PARTY"
-                    ],
-                    "type": "toUpperCase"
-                }
-            ]
-        }
-    },
-    {
         "destKey": "operations.create.transaction_attribute.store_attribute.store_code",
         "sourceKeys": [
             "properties.store_code",

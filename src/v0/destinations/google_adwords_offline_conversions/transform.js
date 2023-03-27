@@ -1,5 +1,4 @@
-const sha256 = require('sha256');
-const { get, set, cloneDeep } = require('lodash');
+const {  set } = require('lodash');
 const moment = require('moment');
 const { EventType } = require('../../../constants');
 const {
@@ -8,21 +7,15 @@ const {
   removeHyphens,
   simpleProcessRouterDest,
   getHashFromArray,
-  getFieldValueFromMessage,
 } = require('../../util');
-
 const {
-  CLICK_CONVERSION,
   CALL_CONVERSION,
-  trackClickConversionsMapping,
   trackCallConversionsMapping,
-  STORE_CONVERSION_CONFIG_RUN_JOB
+  STORE_CONVERSION_CONFIG
 } = require('./config');
 const {
   validateDestinationConfig,
-  removeHashToSha256TypeFromMappingJson,
-  getOfflineUserDataJobId,
-  addConversionToTheJob,
+  getStoreConversionPayload,
   requestBuilder,
   getClickConversionPayloadAndEndpoint
 } = require('./utils');
@@ -38,14 +31,10 @@ const { InstrumentationError, ConfigurationError } = require('../../util/errorTy
  * @param {*} conversionType
  * @returns
  */
-const getConversions = async (message, metadata, { Config }, event, conversionType) => {
+const getConversions = (message, metadata, { Config }, event, conversionType) => {
   let payload = {};
   let endpoint;
-  let isStoreConversion = false
-  const {
-    validateOnly,
-    customerId
-  } = Config;
+  const { customerId } = Config;
   const { properties, originalTimestamp } = message;
 
   const filteredCustomerId = removeHyphens(customerId);
@@ -55,17 +44,8 @@ const getConversions = async (message, metadata, { Config }, event, conversionTy
     payload = convertedPayload.payload;
     endpoint = convertedPayload.endpoint
   } else if (conversionType === 'store') {
-    isStoreConversion = true;
-    const offlineUserDataJobId = await getOfflineUserDataJobId(message, Config,
-      metadata);
-    await addConversionToTheJob(message, Config, offlineUserDataJobId, event, metadata);
-
-    endpoint = STORE_CONVERSION_CONFIG_RUN_JOB.replace(
-      'customerAndJobId',
-      offlineUserDataJobId,
-    ).replace(':customerId', filteredCustomerId);
-
-    payload.validate_only = validateOnly;
+    payload = getStoreConversionPayload(message, Config, filteredCustomerId);
+    endpoint = STORE_CONVERSION_CONFIG.replace(':customerId', filteredCustomerId);
   } else {
     // call conversions
     payload = constructPayload(message, trackCallConversionsMapping);
@@ -85,8 +65,8 @@ const getConversions = async (message, metadata, { Config }, event, conversionTy
     }
     payload.partialFailure = true;
   }
-  const a = requestBuilder(payload, endpoint, Config, metadata, event, filteredCustomerId, properties, isStoreConversion);
-  return a;
+  return requestBuilder(payload, endpoint, Config, metadata, event, filteredCustomerId, properties);
+
 };
 
 /**
@@ -96,7 +76,7 @@ const getConversions = async (message, metadata, { Config }, event, conversionTy
  * @param {*} destination
  * @returns
  */
-const trackResponseBuilder = async (message, metadata, destination) => {
+const trackResponseBuilder = (message, metadata, destination) => {
   let { eventsToConversionsNamesMapping, eventsToOfflineConversionsTypeMapping } =
     destination.Config;
   let { event } = message;
@@ -117,19 +97,17 @@ const trackResponseBuilder = async (message, metadata, destination) => {
     throw new ConfigurationError(`Event name '${event}' is not valid`);
   }
   const conversionTypes = Array.from(eventsToOfflineConversionsTypeMapping[event]);
-  await Promise.all(
-    conversionTypes.map(async (conversionType) => {
-      responseList.push(
-        await getConversions(
-          message,
-          metadata,
-          destination,
-          eventsToConversionsNamesMapping[event],
-          conversionType,
-        ),
-      );
-    }),
-  );
+  conversionTypes.forEach(conversionType => {
+    responseList.push(
+      getConversions(
+        message,
+        metadata,
+        destination,
+        eventsToConversionsNamesMapping[event],
+        conversionType,
+      ),
+    );
+  });
   return responseList;
 };
 
@@ -145,7 +123,7 @@ const process = async (event) => {
   const messageType = message.type.toLowerCase();
   let response;
   if (messageType === EventType.TRACK) {
-    response = await trackResponseBuilder(message, metadata, destination);
+    response = trackResponseBuilder(message, metadata, destination);
   } else {
     throw new InstrumentationError(`Message type ${messageType} not supported`);
   }

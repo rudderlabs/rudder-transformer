@@ -1,5 +1,6 @@
 const sha256 = require('sha256');
 const { get, set, cloneDeep } = require('lodash');
+const moment = require('moment');
 const { httpPOST } = require('../../../adapters/network');
 const {
   isHttpStatusSuccess,
@@ -7,8 +8,7 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   removeHyphens,
-  getFieldValueFromMessage,
-  formatTimeStamp
+  getFieldValueFromMessage
 } = require('../../util');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const {
@@ -17,8 +17,6 @@ const {
   trackCreateStoreConversionsMapping,
   trackAddStoreConversionsMapping,
   trackAddStoreAddressConversionsMapping,
-  STORE_CONVERSION_CONFIG_ADD_CONVERSION,
-  STORE_CONVERSION_CONFIG_CREATE_JOB,
   trackClickConversionsMapping,
   CLICK_CONVERSION
 } = require('./config');
@@ -133,39 +131,6 @@ const buildAndGetAddress = message => {
   return Object.keys(address).length > 0 ? address : null;
 };
 
-/**
- * item Attribute -> https://developers.google.com/google-ads/api/docs/conversions/upload-store-sales-transactions#include_shopping_items_with_transactions
- * @param {*} context 
- * @param {*} properties 
- */
-const populateitemAttributes = (context, properties) => {
-  const response = {};
-  const countryCode = context?.traits?.country_code || context?.traits?.countryCode || properties?.country_code || properties?.countryCode;
-  const languageCode = properties?.language_code || properties?.languageCode;
-  const merchantId = properties?.merchant_id || properties?.merchantId;
-  const itemId = properties?.product_id || properties?.item_id;
-  const { quantity } = properties;
-
-  if (merchantId) {
-    response.merchant_id = merchantId;
-  }
-  if (countryCode) {
-    response.country_code = countryCode;
-  }
-  if (languageCode) {
-    response.language_code = languageCode;
-  }
-  if ((merchantId || countryCode || languageCode) && itemId) {
-    response.item_id = itemId;
-  }
-  if (quantity && !(merchantId || countryCode || languageCode)) {
-    throw new InstrumentationError('Either merchant_id, country_code or language_code is required for setting quantity.')
-  }
-  if (quantity) {
-    response.quantity = quantity;
-  }
-  return response;
-}
 // It builds request according to transformer server contract
 const requestBuilder = (
   payload,
@@ -174,20 +139,19 @@ const requestBuilder = (
   metadata,
   event,
   filteredCustomerId,
-  properties,
-  isStoreConversion
+  properties
 ) => {
   const { customVariables, subAccount, loginCustomerId } = Config;
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = endpoint;
-  if (!isStoreConversion) {
-    response.params = {
-      event,
-      customerId: filteredCustomerId,
-      customVariables,
-      properties,
-    };
+  response.params = {
+    event,
+    customerId: filteredCustomerId
+  };
+  if (!payload?.isStoreConversion) {
+    response.params.customVariables = customVariables;
+    response.params.properties = properties;
   }
   response.body.JSON = payload;
   response.headers = {
@@ -207,85 +171,55 @@ const requestBuilder = (
   return response;
 };
 /**
- * This function creates a offlineUserDataJob
- * returns the respective id
+ * This function creates a offlineUserDataJob Payload
+ * and returns the payload
  */
-const getOfflineUserDataJobId = async (message, Config, metadata) => {
+const getCreateJobPayload = message => {
   const payload = constructPayload(message, trackCreateStoreConversionsMapping);
   set(payload, "job.type", 'STORE_SALES_UPLOAD_FIRST_PARTY');
-  const filteredCustomerId = removeHyphens(Config.customerId);
-  const endpoint = STORE_CONVERSION_CONFIG_CREATE_JOB.replace(':customerId', filteredCustomerId);
-  const options = {
-    headers: {
-      Authorization: `Bearer ${getAccessToken(metadata)}`,
-      'Content-Type': 'application/json',
-      'developer-token': get(metadata, 'secret.developer_token'),
-    },
-  };
   if (!payload.job?.storeSalesMetadata?.loyaltyFraction) {
     set(payload, "job.storeSalesMetadata.loyaltyFraction", '1');
   }
   if (!payload.job?.storeSalesMetadata?.transaction_upload_fraction) {
     set(payload, "job.storeSalesMetadata.transaction_upload_fraction", '1');
   }
-  let createJobResponse = await httpPOST(endpoint, payload, options);
-  createJobResponse = processAxiosResponse(createJobResponse);
-  if (!isHttpStatusSuccess(createJobResponse.status)) {
-    throw new AbortedError(
-      `[Google Ads Offline Conversions]:: ${createJobResponse.response[0].error.message} during google_ads_offline_conversions response transformation`,
-      createJobResponse.status,
-      createJobResponse.response,
-      getAuthErrCategory(get(createJobResponse, 'status')),
-    );
-  }
-  return createJobResponse.response.resourceName.split('/')[3];
+  return payload;
 };
 
 /**
- * This Function adds the conversion to the Job and
- * returns true if conversion is added succesfully to the job
+ * This Function create the add conversion payload 
+ * and returns the payload
  */
-const addConversionToTheJob = async (message, Config, offlineUserDataJobId, event, metadata) => {
-  const { context, properties } = message;
-  const { customerId, validateOnly, UserIdentifierSource, hashUserIdentifier,
-    defaultStoreUserIdentifier, isCustomerAllowed } = Config;
+const getAddConversionPayload = (message, Config) => {
+  const { properties } = message;
+  const { validateOnly, hashUserIdentifier,
+    defaultStoreUserIdentifier } = Config;
   const payload = constructPayload(message, trackAddStoreConversionsMapping);
   payload.enable_partial_failure = false;
   payload.enable_warnings = false;
   payload.validate_only = validateOnly || false;
 
-  // formatting timestamp in the required format
-  if (payload.operations.create.transaction_attribute.transaction_date_time.endsWith("Z")) {
-    payload.operations.create.transaction_attribute.transaction_date_time = formatTimeStamp(payload.operations.create.transaction_attribute.transaction_date_time, 'YYYY-MM-DD HH:MM:SS')
-  }
+  // transform originalTimestamp to format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
+  // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
+  const timestamp = payload.operations.create.transaction_attribute.transaction_date_time;
+  const convertedDateTime = moment(timestamp)
+    .utcOffset(moment(timestamp).utcOffset())
+    .format('YYYY-MM-DD HH:mm:ssZ');
+  payload.operations.create.transaction_attribute.transaction_date_time = convertedDateTime;
   // mapping custom_key that should be predefined in google Ui and mentioned when new job is created
-  if (properties.custom_key && properties[properties.custom_key] ) {
+  if (properties.custom_key && properties[properties.custom_key]) {
     payload.operations.create.transaction_attribute[properties.custom_key] = properties[properties.custom_key];
   }
   // Converting transaction Cost to micro as mentioned here : https://developers.google.com/google-ads/api/reference/rpc/v13/TransactionAttribute#:~:text=30%2B03%3A00%22-,transaction_amount_micros,-double
   payload.operations.create.transaction_attribute.transaction_amount_micros = `${payload.operations.create.transaction_attribute.transaction_amount_micros * 1000000}`;
-  // Mapping Conversion Action
-  const conversionId = await getConversionActionId({
-    Authorization: `Bearer ${getAccessToken(metadata)}`,
-    'Content-Type': 'application/json',
-    'developer-token': get(metadata, 'secret.developer_token'),
-  }, { event, customerId });
-  set(payload, 'operations.create.transaction_attribute.conversion_action', conversionId)
   // userIdentifierSource
   // if userIdentifierSource doesn't exist in properties
   // then it is taken from the webapp config
   let email = getFieldValueFromMessage(message, 'email');
   let phone = getFieldValueFromMessage(message, 'phone');
   const address = buildAndGetAddress(message);
-  if (!properties.userIdentifierSource && UserIdentifierSource !== 'none') {
-    set(payload, 'operations.create.userIdentifiers[0].userIdentifierSource', UserIdentifierSource);
-    // one of email or phone must be provided
-    if (!email && !phone && !address) {
-      throw new InstrumentationError(`Either of email or phone or address attributes is required for user identifier`);
-    }
-  }
-
   // Mapping userIdentifer
+  set(payload, "operations.create.userIdentifiers[0].userIdentifierSource", "UNSPECIFIED");
   if (defaultStoreUserIdentifier === 'email' && email) {
     email = hashUserIdentifier ? sha256(email).toString() : email;
     set(payload, 'operations.create.userIdentifiers[0].hashedEmail', email);
@@ -304,39 +238,19 @@ const addConversionToTheJob = async (message, Config, offlineUserDataJobId, even
   } else if (address) {
     set(payload, 'operations.create.userIdentifiers[0].address_info', address);
   }
-
-  // Mapping item_attribute if customer is eligible and itemAttribute can be build according to the input message and the rules by Google for itemAttributes
-  if (isCustomerAllowed) {
-    const itemAttribute = populateitemAttributes(context, properties);
-    if (Object.keys(itemAttribute).length > 0) {
-      payload.operations.create.transaction_attribute.item_attribute = itemAttribute;
-    }
-  }
-  const filteredCustomerId = removeHyphens(customerId);
-  const endpoint = STORE_CONVERSION_CONFIG_ADD_CONVERSION.replace(
-    'customerAndJobId',
-    offlineUserDataJobId,
-  ).replace(':customerId', filteredCustomerId);
-  const options = {
-    headers: {
-      Authorization: `Bearer ${getAccessToken(metadata)}`,
-      'Content-Type': 'application/json',
-      'developer-token': get(metadata, 'secret.developer_token'),
-    },
-  };
-  let addConversionResponse = await httpPOST(endpoint, payload, options);
-  addConversionResponse = processAxiosResponse(addConversionResponse);
-  if (!isHttpStatusSuccess(addConversionResponse.status)) {
-    throw new AbortedError(
-      `[Google Ads Offline Conversions]:: ${addConversionResponse.response[0].error.message} during google_ads_offline_conversions response transformation`,
-      addConversionResponse.status,
-      addConversionResponse.response,
-      getAuthErrCategory(get(addConversionResponse, 'status')),
-    );
-  }
-  return true;
+  return payload;
 };
 
+const getStoreConversionPayload = (message, Config, event) => {
+  const { validateOnly } = Config;
+  const payload = {};
+  payload.event = event;
+  payload.isStoreConversion = true;
+  payload.createJobPayload = getCreateJobPayload(message);
+  payload.addConversionPayload = getAddConversionPayload(message, Config);
+  payload.executeJobPayload = { validate_only: validateOnly }
+  return payload;
+}
 
 const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerId) => {
   let email = getFieldValueFromMessage(message, 'email');
@@ -419,8 +333,7 @@ module.exports = {
   getAccessToken,
   getConversionActionId,
   removeHashToSha256TypeFromMappingJson,
-  getOfflineUserDataJobId,
-  addConversionToTheJob,
+  getStoreConversionPayload,
   requestBuilder,
   buildAndGetAddress,
   getClickConversionPayloadAndEndpoint

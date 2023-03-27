@@ -87,6 +87,7 @@ const DestCanonicalNames = {
   ga4: ['GA4', 'ga4', 'Ga4', 'Google Analytics 4', 'googleAnalytics4'],
   pipedream: ['Pipedream', 'PipeDream', 'pipedream', 'PIPEDREAM'],
   pagerduty: ['pagerduty', 'PAGERDUTY', 'PagerDuty', 'Pagerduty', 'pagerDuty'],
+  adobe_analytics: ['adobe_analytics', 'ADOBE_ANALYTICS'],
   criteo_audience: [
     'criteo audience',
     'criteoAudience',

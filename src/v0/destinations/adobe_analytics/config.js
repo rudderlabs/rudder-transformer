@@ -4,6 +4,25 @@ const CONFIG_CATEGORIES = { COMMON: { name: 'AACommonConfig' } };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
+const ECOM_PRODUCT_EVENTS = [
+  'product viewed',
+  'viewed product',
+  'product list viewed',
+  'viewed product list',
+  'product added',
+  'added product',
+  'product removed',
+  'removed product',
+  'order completed',
+  'completed order',
+  'cart viewed',
+  'viewed cart',
+  'checkout started',
+  'started checkout',
+  'cart opened',
+  'opened cart',
+];
+
 const formatDestinationConfig = (config) => ({
   ...config,
   eventsToTypes: getHashFromArray(config.eventsToTypes),
@@ -22,6 +41,7 @@ const formatDestinationConfig = (config) => ({
 });
 
 module.exports = {
+  ECOM_PRODUCT_EVENTS,
   commonConfig: MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name],
   formatDestinationConfig,
 };

@@ -197,6 +197,11 @@ const getBoardDetails = async (url, boardID, apiToken) => {
       boardDetailsResponse.response,
     );
   }
+
+  if (!boardDetailsResponse.response?.data?.boards?.length) {
+    throw new ConfigurationError(`The board with boardId ${boardID} does not exist`);
+  }
+
   return boardDetailsResponse;
 };
 

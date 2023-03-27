@@ -220,6 +220,7 @@
           "email": "userSampleX120@gmail.com",
           "conversion_source": "RudderStack",
           "customer_id": "userSampleX138",
+          "anonymousId": "5f093403-1457-4a2c-b4e4-c61ec3bacf56",
           "phone": "9878764736",
           "product_name": "Red T-shirt",
           "product_url": "http://www.yourdomain.com/products/red-t-shirt",
@@ -342,6 +343,7 @@
       "body": {
         "JSON": {
           "customer_id": "userSampleX138",
+          "anonymousId": "5f093403-1457-4a2c-b4e4-c61ec3bacf56",
           "email": "userSampleX120@gmail.com",
           "externalId": "rbUid",
           "phone": "9878764736",
@@ -444,7 +446,7 @@
         "anonymousId": "anon_id",
         "type": "track",
         "traits": {
-          "anonymousId": "anon_id",
+          "userId": "anon_id",
           "email": "jamesDoe@gmail.com",
           "name": "James Doe",
           "phone": "92374162212",
@@ -494,6 +496,7 @@
           "email": "jamesDoe@gmail.com",
           "phone": "92374162212",
           "action": "conv.add_to_cart",
+          "anonymousId": "anon_id",
           "bounceiD": "fakefake",
           "merch_id": false,
           "timestamp": 1571043797,

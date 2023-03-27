@@ -1,9 +1,15 @@
 [
   {
-    "sourceKeys": "userId",
+    "sourceKeys": "userIdOnly",
     "destKey": "customer_id",
     "required": true,
     "sourceFromGenericMap": true
+  },
+  {
+    "sourceKeys": "anonymousId",
+    "destKey": "anonymousId",
+    "required": false,
+    "sourceFromGenericMap": false
   },
   {
     "sourceKeys": "email",

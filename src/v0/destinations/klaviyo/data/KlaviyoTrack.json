@@ -1,6 +1,6 @@
 [
   {
-    "destKey": "event",
+    "destKey": "metric.name",
     "sourceKeys": ["event", "properties.event", "properties.name"],
     "required": true
   },

@@ -41,8 +41,11 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
     subscriptionObj.channels = channels;
   }
   const subscriptions = [subscriptionObj];
-  if (traitsInfo.properties.listId) {
+  if (traitsInfo?.properties?.listId) {
     listId = traitsInfo.properties.listId;
+  }
+  if (message.type === 'group') {
+    listId = message.groupId;
   }
   const attributes = {
     list_id: listId,
@@ -93,15 +96,20 @@ const createCustomerProperties = (message) => {
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.PROFILE.name],
   );
+  customerProperties = removeUndefinedAndNullValues(customerProperties);
+  return customerProperties;
+};
+
+const populateCustomFieldsFromTraits = (message) => {
   // Extract other K-V property from traits about user custom properties
-  customerProperties = extractCustomFields(
+  let customProperties = {};
+  customProperties = extractCustomFields(
     message,
-    customerProperties,
+    customProperties,
     ['traits', 'context.traits'],
     WhiteListedTraits,
   );
-  customerProperties = removeUndefinedAndNullValues(customerProperties);
-  return customerProperties;
+  return customProperties;
 };
 
 const generateBatchedPaylaodForArray = (events) => {
@@ -150,5 +158,6 @@ module.exports = {
   subscribeUserToList,
   checkForSubscribe,
   createCustomerProperties,
+  populateCustomFieldsFromTraits,
   generateBatchedPaylaodForArray,
 };

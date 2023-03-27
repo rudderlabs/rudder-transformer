@@ -18,6 +18,7 @@ const {
   createCustomerProperties,
   subscribeUserToList,
   generateBatchedPaylaodForArray,
+  populateCustomFieldsFromTraits,
 } = require('./util');
 const {
   defaultRequestConfig,
@@ -138,7 +139,7 @@ const trackRequestHandler = (message, category, destination) => {
   }
   let event = get(message, 'event');
   event = event ? event.trim().toLowerCase() : event;
-  const attributes = {};
+  let attributes = {};
   if (ecomEvents.includes(event) && message.properties) {
     const eventName = eventNameMapping[event];
     const eventMap = jsonNameMapping[eventName];
@@ -150,6 +151,10 @@ const trackRequestHandler = (message, category, destination) => {
     }
     const categ = CONFIG_CATEGORIES[eventMap];
     attributes.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
+    attributes.properties = {
+      ...attributes.properties,
+      ...populateCustomFieldsFromTraits(message),
+    };
 
     // products mapping using Items.json
     // mapping properties.items to payload.properties.items and using properties.products as a fallback to properties.items
@@ -193,13 +198,17 @@ const trackRequestHandler = (message, category, destination) => {
       delete payload.properties;
     }
   } else {
-    attributes.properties = constructPayload(message, MAPPING_CONFIG[category.name]);
+    attributes = constructPayload(message, MAPPING_CONFIG[category.name]);
     // payload.token = destination.Config.publicApiKey;
     if (message.properties && message.properties.revenue) {
       attributes.value = message.properties.revenue;
-      delete payload.properties.revenue;
+      delete attributes.properties.revenue;
     }
     const customerProperties = createCustomerProperties(message);
+    attributes.properties = {
+      ...attributes.properties,
+      ...populateCustomFieldsFromTraits(message),
+    };
     // if (destination.Config.enforceEmailAsPrimary) {
     //   delete customerProperties.external_id;
     //   customerProperties._id = getFieldValueFromMessage(message, 'userId');
@@ -237,11 +246,15 @@ const groupRequestHandler = (message, category, destination) => {
   if (!message.groupId) {
     throw new InstrumentationError('groupId is a required field for group events');
   }
-  let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
-  profile = removeUndefinedAndNullValues(profile);
-  const response = subscribeUserToList(message, profile, destination);
   if (!message.traits.subscribe) {
     throw new InstrumentationError('Subscribe flag should be true for group call');
+  }
+  // let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
+  // profile = removeUndefinedAndNullValues(profile);
+  const traitsInfo = getFieldValueFromMessage(message, 'traits');
+  let response;
+  if (traitsInfo?.subscribe) {
+    response = subscribeUserToList(message, traitsInfo, destination);
   }
   return response;
 };

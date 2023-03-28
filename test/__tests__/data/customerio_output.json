@@ -1293,5 +1293,57 @@
     "files": {},
     "userId": "user@1",
     "statusCode": 200
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://track.customer.io/api/v2/batch",
+    "headers": {
+      "Authorization": "Basic YzBlZmRiZDIwYjlmYmUyNGE3ZTI6ZWYzMmMzZjYwZmI5OGYzOWVmMzU="
+    },
+    "params": {},
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "type": "object",
+        "action": "identify",
+        "attributes": {
+          "city": "Frankfurt",
+          "name": "rudder test",
+          "state": "Hessen",
+          "isFake": true,
+          "address": "Solmsstraße 83",
+          "country": "DE",
+          "website": "http://www.rudderstack.com",
+          "industry": "Waste and recycling",
+          "postcode": "60486",
+          "whiteLabel": "rudderlabs",
+          "maxNbJobBoards": 2,
+          "organisationId": 306,
+          "pricingPackage": "packageExpert",
+          "dateProTrialEnd": "2022-08-31T00:00:00+00:00",
+          "isProTrialActive": true,
+          "datetimeRegistration": "2020-07-01T10:23:41+00:00",
+          "isPersonnelServiceProvider": false
+        },
+        "identifiers": {
+         "object_id": "306",
+        "object_type_id": "1"
+        },
+        "cio_relationships": [
+          {
+            "identifiers": {
+              "id": "432"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {}
+    },
+    "files": {},
+    "userId": 432,
+    "statusCode": 200
   }
 ]

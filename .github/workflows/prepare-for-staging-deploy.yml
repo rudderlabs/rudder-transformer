@@ -199,6 +199,8 @@ jobs:
           echo "User Transformer: $UT_TAG_NAME"
 
       - name: Update Helm Charts and Raise Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
           cd rudder-devops

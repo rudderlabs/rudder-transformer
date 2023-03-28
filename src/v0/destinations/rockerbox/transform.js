@@ -13,6 +13,9 @@ const { ConfigurationError, InstrumentationError } = require('../../util/errorTy
 
 const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  if (!payload.customer_id && !payload.anonymous_id) {
+    throw new InstrumentationError('Anyone of userId or anonymousId is required to make the call');
+  }
   // conversion_source is explicitly set to RudderStack
   payload.conversion_source = 'RudderStack';
 

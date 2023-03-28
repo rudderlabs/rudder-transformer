@@ -82,7 +82,7 @@
       "destination": {
         "Config": {
           "trackingServerUrl": "flk.gc.gmtidc.net",
-          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "https://flk.gc.gmtidc.net",
           "reportSuiteIds": "footlockerrudderstackpoc",
           "sslHeartbeat": true,
           "heartbeatTrackingServerUrl": "",
@@ -983,6 +983,10 @@
             {
               "from": "city5",
               "to": "5"
+            },
+            {
+              "from": "products.mark6",
+              "to": "6"
             }
           ],
           "whitelistedEvents": [
@@ -2381,16 +2385,19 @@
               "currency": "USD",
               "position": 1,
               "url": "https://www.website.com/product/path",
-              "image_url": "https://www.website.com/product/path.png"
+              "image_url": "https://www.website.com/product/path.png",
+              "prodLevelCurrency": "EUR"
             }
           ],
+          "currencyProdMerch": 5,
           "currencyMerch": 21,
           "city5": "Kolkata",
           "phone4": "9935400932",
           "bikelist": "r15,faze90R",
           "carlist": "ciaz,hummer,thar",
           "customprop1": "custompropval1",
-          "customprop2": "custompropval2"
+          "customprop2": "custompropval2",
+          "mark6": "label number 6"
         },
         "timestamp": "2021-09-01T15:46:51.000Z"
       },
@@ -2499,6 +2506,10 @@
             {
               "from": "city5",
               "to": "5"
+            },
+            {
+              "from": "products.mark6",
+              "to": "6"
             }
           ],
           "rudderEventsToAdobeEvents": [
@@ -2591,7 +2602,7 @@
         "JSON": {},
         "JSON_ARRAY": {},
         "XML": {
-          "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><ipaddress>14.5.67.21</ipaddress><language>en-US</language><timezone>Asia/Mumbai</timezone><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><eVar5>Kolkata</eVar5><eVar4>9935400932</eVar4><eVar6>com.rudderstack.android.sdk.core</eVar6><linkType>o</linkType><linkName>Currency test event</linkName><linkURL>No linkURL provided</linkURL><list1>r15,faze90R</list1><list2>ciaz,hummer,thar</list2><pageName>undefined</pageName><prop1>custompropval1</prop1><prop2>custompropval2</prop2><timestamp>2021-09-01T15:46:51.000Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>event6,event6=21,event2,event6</events><products>Games;Game;11;148.39;;eVar4=9935400932|eVar5=Kolkata</products><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>"
+          "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><ipaddress>14.5.67.21</ipaddress><language>en-US</language><timezone>Asia/Mumbai</timezone><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><eVar5>Kolkata</eVar5><eVar4>9935400932</eVar4><eVar6>com.rudderstack.android.sdk.core</eVar6><linkType>o</linkType><linkName>Currency test event</linkName><linkURL>No linkURL provided</linkURL><list1>r15,faze90R</list1><list2>ciaz,hummer,thar</list2><pageName>undefined</pageName><prop1>custompropval1</prop1><prop2>custompropval2</prop2><timestamp>2021-09-01T15:46:51.000Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>event6,event6=21,event2,event6</events><products>Games;Game;11;148.39;event6=5|event6=EUR;eVar4=9935400932|eVar5=Kolkata|eVar6=label number 6</products><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>"
         },
         "FORM": {}
       },
@@ -2677,7 +2688,9 @@
           "bikelist": "r15,faze91R",
           "carlist": "ciaz,hummer,thar",
           "customprop1": "custompropval1",
-          "customprop2": "custompropval2"
+          "customprop2": "custompropval2",
+          "hier1": "h1",
+          "hier2": "h2"
         },
         "originalTimestamp": "2020-01-09T10:01:53.558Z",
         "type": "track",
@@ -2838,6 +2851,16 @@
               "to": "2"
             }
           ],
+          "hierMapping": [
+            {
+              "from": "hier1",
+              "to": "1"
+            },
+            {
+              "from": "hier2",
+              "to": "2"
+            }
+          ],
           "customPropsMapping": [
             {
               "from": "customprop1",
@@ -2878,13 +2901,1903 @@
       "params": {},
       "body": {
         "XML": {
-          "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><campaign>sales campaign</campaign><channel>web</channel><currencyCode>USD</currencyCode><language>en-US</language><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><referrer>https://www.google.com/search?q=estore+bestseller</referrer><evar1>yash</evar1><evar2>val2</evar2><linkType>o</linkType><linkName>Product Viewed</linkName><linkURL>https://www.estore.com/best-seller/1</linkURL><list1>r15,faze90R</list1><pageUrl>https://www.estore.com/best-seller/1</pageUrl><pageName>https://www.estore.com/best-seller/1</pageName><prop1>overrideVal1</prop1><timestamp>2020-01-09T10:01:53.558Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>scAdd</events><products>;product1;;;event1=1</products><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>"
+          "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><campaign>sales campaign</campaign><channel>web</channel><currencyCode>USD</currencyCode><language>en-US</language><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><referrer>https://www.google.com/search?q=estore+bestseller</referrer><evar1>yash</evar1><evar2>val2</evar2><linkType>o</linkType><linkName>Product Viewed</linkName><linkURL>https://www.estore.com/best-seller/1</linkURL><hier1>h1</hier1><hier2>h2</hier2><list1>r15,faze90R</list1><pageUrl>https://www.estore.com/best-seller/1</pageUrl><pageName>https://www.estore.com/best-seller/1</pageName><prop1>overrideVal1</prop1><timestamp>2020-01-09T10:01:53.558Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>scAdd</events><products>;product1;;;event1=1</products><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>"
         },
         "FORM": {},
         "JSON": {},
         "JSON_ARRAY": {}
       },
       "files": {}
+    }
+  },
+  {
+    "description": "Override hiers test",
+    "input": {
+      "message": {
+        "anonymousId": "73c53c25-42h1-4b65-adac-bec2d7bb8fab",
+        "channel": "web",
+        "context": {
+          "campaign": {
+            "name": "sales campaign",
+            "source": "google",
+            "medium": "medium",
+            "term": "event data",
+            "content": "Make sense of the modern data stack"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "2.9.1"
+          },
+          "locale": "en-US",
+          "page": {
+            "path": "/best-seller/1",
+            "initial_referrer": "https://www.google.com/search",
+            "initial_referring_domain": "google.com",
+            "referrer": "https://www.google.com/search?q=estore+bestseller",
+            "referring_domain": "google.com",
+            "search": "estore bestseller",
+            "title": "The best sellers offered by EStore",
+            "url": "https://www.estore.com/best-seller/1"
+          },
+          "screen": {
+            "density": 420,
+            "height": 1794,
+            "width": 1080,
+            "innerHeight": 200,
+            "innerWidth": 100
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
+        },
+        "event": "Product Viewed",
+        "integrations": {
+          "All": true
+        },
+        "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
+        "properties": {
+          "tsUrl": "footlocker.sc.omtrdc.net",
+          "overrideProductString": ";product1;;;event1=1",
+          "overrideEventString": "scAdd",
+          "overrideEvars": {
+            "evar1": "yash",
+            "evar2": "val2"
+          },
+          "overrideLists": {
+            "list1": "r15,faze90R"
+          },
+          "overrideCustomProperties": {
+            "prop1": "overrideVal1"
+          },
+          "overrideHiers": {
+            "hier1": "oh1",
+            "hier2": "oh2",
+            "hier3": "newh3"
+          },
+          "product_id": "123",
+          "sku": "F15",
+          "category": "Games",
+          "name": "Game",
+          "brand": "Gamepro",
+          "variant": "111",
+          "price": 13.49,
+          "quantity": 11,
+          "coupon": "DISC21",
+          "currency": "USD",
+          "position": 1,
+          "url": "https://www.website.com/product/path",
+          "image_url": "https://www.website.com/product/path.png",
+          "currencyMerch": "INR",
+          "addressMerch": "Delhi",
+          "currencyProdMerch": "USD",
+          "addressProdMerch": "SF",
+          "city5": "Kolkata",
+          "phone4": "9935400932",
+          "bikelist": "r15,faze91R",
+          "carlist": "ciaz,hummer,thar",
+          "customprop1": "custompropval1",
+          "customprop2": "custompropval2",
+          "hier1": "h1",
+          "hier2": "h2",
+          "pageName": "hierarchy test"
+        },
+        "originalTimestamp": "2020-01-09T10:01:53.558Z",
+        "type": "track",
+        "sentAt": "2020-01-09T10:02:03.257Z"
+      },
+      "destination": {
+        "Config": {
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
+          "reportSuiteIds": "footlockerrudderstackpoc",
+          "sslHeartbeat": true,
+          "heartbeatTrackingServerUrl": "",
+          "useUtf8Charset": true,
+          "useSecureServerSide": true,
+          "proxyNormalUrl": "",
+          "proxyHeartbeatUrl": "",
+          "marketingCloudOrgId": "mktcloudid001",
+          "dropVisitorId": false,
+          "timestampOption": "enabled",
+          "timestampOptionalReporting": true,
+          "noFallbackVisitorId": false,
+          "preferVisitorId": false,
+          "trackPageName": true,
+          "contextDataPrefix": "",
+          "useLegacyLinkName": true,
+          "pageNameFallbackTostring": true,
+          "sendFalseValues": true,
+          "productIdentifier": "name",
+          "eventFilteringOption": "disable",
+          "eventsToTypes": [
+            {
+              "from": "init heartbeat",
+              "to": "initHeartbeat"
+            }
+          ],
+          "listDelimiter": [
+            {
+              "from": "bikelist",
+              "to": ","
+            },
+            {
+              "from": "carlist",
+              "to": ","
+            }
+          ],
+          "propsDelimiter": [
+            {
+              "from": "customprop1",
+              "to": ","
+            },
+            {
+              "from": "customprop2",
+              "to": ","
+            }
+          ],
+          "eventMerchProperties": [
+            {
+              "eventMerchProperties": "currencyMerch"
+            },
+            {
+              "eventMerchProperties": "addressMerch"
+            }
+          ],
+          "productMerchProperties": [
+            {
+              "productMerchProperties": "currencyProdMerch"
+            },
+            {
+              "productMerchProperties": "addressProdMerch"
+            },
+            {
+              "productMerchProperties": "products.prodLevelCurrency"
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "eVarMapping": [
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "to": "6",
+              "from": "context.library.name"
+            },
+            {
+              "from": "video",
+              "to": "2"
+            }
+          ],
+          "productMerchEvarsMap": [
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "from": "city5",
+              "to": "5"
+            }
+          ],
+          "rudderEventsToAdobeEvents": [
+            {
+              "from": "product viewed",
+              "to": "event1"
+            },
+            {
+              "from": "watched video",
+              "to": "event1"
+            },
+            {
+              "from": "Page View",
+              "to": "event2"
+            },
+            {
+              "from": "currency test event",
+              "to": "event6"
+            }
+          ],
+          "eventMerchEventToAdobeEvent": [
+            {
+              "from": "product not viewed",
+              "to": "event1"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "productMerchEventToAdobeEvent": [
+            {
+              "from": "product list viewed",
+              "to": "event2"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "listMapping": [
+            {
+              "from": "bikelist",
+              "to": "1"
+            },
+            {
+              "from": "carlist",
+              "to": "2"
+            }
+          ],
+          "hierMapping": [
+            {
+              "from": "hier1",
+              "to": "1"
+            },
+            {
+              "from": "hier2",
+              "to": "2"
+            }
+          ],
+          "customPropsMapping": [
+            {
+              "from": "customprop1",
+              "to": "1"
+            },
+            {
+              "from": "customprop2",
+              "to": "2"
+            },
+            {
+              "from": "plan",
+              "to": "2"
+            }
+          ],
+          "contextDataMapping": [
+            {
+              "from": "tt01",
+              "to": "tt01"
+            },
+            {
+              "from": "tt02",
+              "to": "tt02"
+            },
+            {
+              "from": "roott01",
+              "to": "roott01"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://flk.gc.gmtidc.net/b/ss//6",
+      "headers": { "Content-type": "application/xml" },
+      "params": {},
+      "body": {
+        "XML": {
+          "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><campaign>sales campaign</campaign><channel>web</channel><currencyCode>USD</currencyCode><language>en-US</language><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><referrer>https://www.google.com/search?q=estore+bestseller</referrer><evar1>yash</evar1><evar2>val2</evar2><linkType>o</linkType><linkName>Product Viewed</linkName><linkURL>https://www.estore.com/best-seller/1</linkURL><hier1>oh1</hier1><hier2>oh2</hier2><hier3>newh3</hier3><list1>r15,faze90R</list1><pageUrl>https://www.estore.com/best-seller/1</pageUrl><pageName>hierarchy test</pageName><prop1>overrideVal1</prop1><timestamp>2020-01-09T10:01:53.558Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>scAdd</events><products>;product1;;;event1=1</products><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>"
+        },
+        "FORM": {},
+        "JSON": {},
+        "JSON_ARRAY": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "product level eVaR",
+    "input": {
+      "message": {
+        "anonymousId": "73c53c25-42h1-4b65-adac-bec2d7bb8fab",
+        "channel": "web",
+        "context": {
+          "campaign": {
+            "name": "sales campaign",
+            "source": "google",
+            "medium": "medium",
+            "term": "event data",
+            "content": "Make sense of the modern data stack"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "2.9.1"
+          },
+          "locale": "en-US",
+          "page": {
+            "path": "/best-seller/1",
+            "initial_referrer": "https://www.google.com/search",
+            "initial_referring_domain": "google.com",
+            "referrer": "https://www.google.com/search?q=estore+bestseller",
+            "referring_domain": "google.com",
+            "search": "estore bestseller",
+            "title": "The best sellers offered by EStore",
+            "url": "https://www.estore.com/best-seller/1"
+          },
+          "screen": {
+            "density": 420,
+            "height": 1794,
+            "width": 1080,
+            "innerHeight": 200,
+            "innerWidth": 100
+          },
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
+        },
+        "event": "Product Viewed",
+        "integrations": {
+          "All": true
+        },
+        "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
+        "properties": {
+          "tsUrl": "footlocker.sc.omtrdc.net",
+          "overrideProductString": ";product1;;;event1=1",
+          "overrideEventString": "scAdd",
+          "overrideEvars": {
+            "evar1": "yash",
+            "evar2": "val2"
+          },
+          "overrideLists": {
+            "list1": "r15,faze90R"
+          },
+          "overrideCustomProperties": {
+            "prop1": "overrideVal1"
+          },
+          "overrideHiers": {
+            "hier1": "oh1",
+            "hier2": "oh2",
+            "hier3": "newh3"
+          },
+          "product_id": "123",
+          "sku": "F15",
+          "category": "Games",
+          "name": "Game",
+          "brand": "Gamepro",
+          "variant": "111",
+          "price": 13.49,
+          "quantity": 11,
+          "coupon": "DISC21",
+          "currency": "USD",
+          "position": 1,
+          "url": "https://www.website.com/product/path",
+          "image_url": "https://www.website.com/product/path.png",
+          "currencyMerch": "INR",
+          "addressMerch": "Delhi",
+          "currencyProdMerch": "USD",
+          "addressProdMerch": "SF",
+          "city5": "Kolkata",
+          "phone4": "9935400932",
+          "bikelist": "r15,faze91R",
+          "carlist": "ciaz,hummer,thar",
+          "customprop1": "custompropval1",
+          "customprop2": "custompropval2",
+          "hier1": "h1",
+          "hier2": "h2",
+          "pageName": "hierarchy test",
+          "mark6": "label mark"
+        },
+        "originalTimestamp": "2020-01-09T10:01:53.558Z",
+        "type": "track",
+        "sentAt": "2020-01-09T10:02:03.257Z"
+      },
+      "destination": {
+        "Config": {
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
+          "reportSuiteIds": "footlockerrudderstackpoc",
+          "sslHeartbeat": true,
+          "heartbeatTrackingServerUrl": "",
+          "useUtf8Charset": true,
+          "useSecureServerSide": true,
+          "proxyNormalUrl": "",
+          "proxyHeartbeatUrl": "",
+          "marketingCloudOrgId": "mktcloudid001",
+          "dropVisitorId": false,
+          "timestampOption": "enabled",
+          "timestampOptionalReporting": true,
+          "noFallbackVisitorId": false,
+          "preferVisitorId": false,
+          "trackPageName": true,
+          "contextDataPrefix": "",
+          "useLegacyLinkName": true,
+          "pageNameFallbackTostring": true,
+          "sendFalseValues": true,
+          "productIdentifier": "name",
+          "eventFilteringOption": "disable",
+          "eventsToTypes": [
+            {
+              "from": "init heartbeat",
+              "to": "initHeartbeat"
+            }
+          ],
+          "listDelimiter": [
+            {
+              "from": "bikelist",
+              "to": ","
+            },
+            {
+              "from": "carlist",
+              "to": ","
+            }
+          ],
+          "propsDelimiter": [
+            {
+              "from": "customprop1",
+              "to": ","
+            },
+            {
+              "from": "customprop2",
+              "to": ","
+            }
+          ],
+          "eventMerchProperties": [
+            {
+              "eventMerchProperties": "currencyMerch"
+            },
+            {
+              "eventMerchProperties": "addressMerch"
+            }
+          ],
+          "productMerchProperties": [
+            {
+              "productMerchProperties": "currencyProdMerch"
+            },
+            {
+              "productMerchProperties": "addressProdMerch"
+            },
+            {
+              "productMerchProperties": "products.prodLevelCurrency"
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "eVarMapping": [
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "to": "6",
+              "from": "context.library.name"
+            },
+            {
+              "from": "video",
+              "to": "2"
+            }
+          ],
+          "productMerchEvarsMap": [
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "products.mark6",
+              "to": "6"
+            }
+          ],
+          "rudderEventsToAdobeEvents": [
+            {
+              "from": "product viewed",
+              "to": "event1"
+            },
+            {
+              "from": "watched video",
+              "to": "event1"
+            },
+            {
+              "from": "Page View",
+              "to": "event2"
+            },
+            {
+              "from": "currency test event",
+              "to": "event6"
+            }
+          ],
+          "eventMerchEventToAdobeEvent": [
+            {
+              "from": "product not viewed",
+              "to": "event1"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "productMerchEventToAdobeEvent": [
+            {
+              "from": "product list viewed",
+              "to": "event2"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "listMapping": [
+            {
+              "from": "bikelist",
+              "to": "1"
+            },
+            {
+              "from": "carlist",
+              "to": "2"
+            }
+          ],
+          "hierMapping": [
+            {
+              "from": "hier1",
+              "to": "1"
+            },
+            {
+              "from": "hier2",
+              "to": "2"
+            }
+          ],
+          "customPropsMapping": [
+            {
+              "from": "customprop1",
+              "to": "1"
+            },
+            {
+              "from": "customprop2",
+              "to": "2"
+            },
+            {
+              "from": "plan",
+              "to": "2"
+            }
+          ],
+          "contextDataMapping": [
+            {
+              "from": "tt01",
+              "to": "tt01"
+            },
+            {
+              "from": "tt02",
+              "to": "tt02"
+            },
+            {
+              "from": "roott01",
+              "to": "roott01"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://flk.gc.gmtidc.net/b/ss//6",
+      "headers": { "Content-type": "application/xml" },
+      "params": {},
+      "body": {
+        "XML": {
+          "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><campaign>sales campaign</campaign><channel>web</channel><currencyCode>USD</currencyCode><language>en-US</language><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><referrer>https://www.google.com/search?q=estore+bestseller</referrer><evar1>yash</evar1><evar2>val2</evar2><linkType>o</linkType><linkName>Product Viewed</linkName><linkURL>https://www.estore.com/best-seller/1</linkURL><hier1>oh1</hier1><hier2>oh2</hier2><hier3>newh3</hier3><list1>r15,faze90R</list1><pageUrl>https://www.estore.com/best-seller/1</pageUrl><pageName>hierarchy test</pageName><prop1>overrideVal1</prop1><timestamp>2020-01-09T10:01:53.558Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>scAdd</events><products>;product1;;;event1=1</products><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>"
+        },
+        "FORM": {},
+        "JSON": {},
+        "JSON_ARRAY": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "[ERROR]: Invalid message type: Identify",
+    "input": {
+      "message": {
+        "channel": "web",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "locale": "en-US",
+          "ip": "0.0.0.0",
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 2
+          }
+        },
+        "user_properties": {
+          "prop1": "val1",
+          "prop2": "val2"
+        },
+        "type": "identify",
+        "originalTimestamp": "2019-10-14T09:03:17.562Z",
+        "userId": "user001",
+        "anonymousId": "anony001",
+        "integrations": {
+          "All": true
+        },
+        "sentAt": "2019-10-14T09:03:22.563Z"
+      },
+      "destination": {
+        "Config": {
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
+          "reportSuiteIds": "footlockerrudderstackpoc",
+          "sslHeartbeat": true,
+          "heartbeatTrackingServerUrl": "",
+          "useUtf8Charset": true,
+          "useSecureServerSide": true,
+          "proxyNormalUrl": "",
+          "proxyHeartbeatUrl": "",
+          "marketingCloudOrgId": "mktcloudid001",
+          "dropVisitorId": false,
+          "timestampOption": "enabled",
+          "timestampOptionalReporting": true,
+          "noFallbackVisitorId": false,
+          "preferVisitorId": false,
+          "trackPageName": true,
+          "contextDataPrefix": "",
+          "useLegacyLinkName": true,
+          "pageNameFallbackTostring": true,
+          "sendFalseValues": true,
+          "productIdentifier": "name",
+          "eventFilteringOption": "disable",
+          "eventsToTypes": [
+            {
+              "from": "init heartbeat",
+              "to": "initHeartbeat"
+            }
+          ],
+          "rudderEventsToAdobeEvents": [
+            {
+              "from": "product viewed",
+              "to": "event1"
+            },
+            {
+              "from": "currency test event",
+              "to": "event6"
+            }
+          ],
+          "contextDataMapping": [
+            {
+              "from": "tt01",
+              "to": "tt01"
+            },
+            {
+              "from": "tt02",
+              "to": "tt02"
+            },
+            {
+              "from": "roott01",
+              "to": "roott01"
+            }
+          ],
+          "eVarMapping": [
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "to": "6",
+              "from": "context.library.name"
+            }
+          ],
+          "listMapping": [
+            {
+              "from": "bikelist",
+              "to": "1"
+            },
+            {
+              "from": "carlist",
+              "to": "2"
+            }
+          ],
+          "listDelimiter": [
+            {
+              "from": "bikelist",
+              "to": ","
+            },
+            {
+              "from": "carlist",
+              "to": ","
+            }
+          ],
+          "customPropsMapping": [
+            {
+              "from": "customprop1",
+              "to": "1"
+            },
+            {
+              "from": "customprop2",
+              "to": "2"
+            }
+          ],
+          "propsDelimiter": [
+            {
+              "from": "customprop1",
+              "to": ","
+            },
+            {
+              "from": "customprop2",
+              "to": ","
+            }
+          ],
+          "eventMerchEventToAdobeEvent": [
+            {
+              "from": "product not viewed",
+              "to": "event1"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "eventMerchProperties": [
+            {
+              "eventMerchProperties": "currencyMerch"
+            },
+            {
+              "eventMerchProperties": "addressMerch"
+            }
+          ],
+          "productMerchEventToAdobeEvent": [
+            {
+              "from": "product list viewed",
+              "to": "event2"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "productMerchProperties": [
+            {
+              "productMerchProperties": "currencyProdMerch"
+            },
+            {
+              "productMerchProperties": "addressProdMerch"
+            },
+            {
+              "productMerchProperties": "products.prodLevelCurrency"
+            }
+          ],
+          "productMerchEvarsMap": [
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "products.mark6",
+              "to": "6"
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "destination": {
+        "Config": {
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
+          "reportSuiteIds": "footlockerrudderstackpoc",
+          "sslHeartbeat": true,
+          "heartbeatTrackingServerUrl": "",
+          "useUtf8Charset": true,
+          "useSecureServerSide": true,
+          "proxyNormalUrl": "",
+          "proxyHeartbeatUrl": "",
+          "marketingCloudOrgId": "mktcloudid001",
+          "dropVisitorId": false,
+          "timestampOption": "enabled",
+          "timestampOptionalReporting": true,
+          "noFallbackVisitorId": false,
+          "preferVisitorId": false,
+          "trackPageName": true,
+          "contextDataPrefix": "",
+          "useLegacyLinkName": true,
+          "pageNameFallbackTostring": true,
+          "sendFalseValues": true,
+          "productIdentifier": "name",
+          "eventFilteringOption": "disable",
+          "eventsToTypes": [
+            {
+              "from": "init heartbeat",
+              "to": "initHeartbeat"
+            }
+          ],
+          "rudderEventsToAdobeEvents": [
+            {
+              "from": "product viewed",
+              "to": "event1"
+            },
+            {
+              "from": "currency test event",
+              "to": "event6"
+            }
+          ],
+          "contextDataMapping": [
+            {
+              "from": "tt01",
+              "to": "tt01"
+            },
+            {
+              "from": "tt02",
+              "to": "tt02"
+            },
+            {
+              "from": "roott01",
+              "to": "roott01"
+            }
+          ],
+          "eVarMapping": [
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "to": "6",
+              "from": "context.library.name"
+            }
+          ],
+          "listMapping": [
+            {
+              "from": "bikelist",
+              "to": "1"
+            },
+            {
+              "from": "carlist",
+              "to": "2"
+            }
+          ],
+          "listDelimiter": [
+            {
+              "from": "bikelist",
+              "to": ","
+            },
+            {
+              "from": "carlist",
+              "to": ","
+            }
+          ],
+          "customPropsMapping": [
+            {
+              "from": "customprop1",
+              "to": "1"
+            },
+            {
+              "from": "customprop2",
+              "to": "2"
+            }
+          ],
+          "propsDelimiter": [
+            {
+              "from": "customprop1",
+              "to": ","
+            },
+            {
+              "from": "customprop2",
+              "to": ","
+            }
+          ],
+          "eventMerchEventToAdobeEvent": [
+            {
+              "from": "product not viewed",
+              "to": "event1"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "eventMerchProperties": [
+            {
+              "eventMerchProperties": "currencyMerch"
+            },
+            {
+              "eventMerchProperties": "addressMerch"
+            }
+          ],
+          "productMerchEventToAdobeEvent": [
+            {
+              "from": "product list viewed",
+              "to": "event2"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "productMerchProperties": [
+            {
+              "productMerchProperties": "currencyProdMerch"
+            },
+            {
+              "productMerchProperties": "addressProdMerch"
+            },
+            {
+              "productMerchProperties": "products.prodLevelCurrency"
+            }
+          ],
+          "productMerchEvarsMap": [
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "products.mark6",
+              "to": "6"
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
+        }
+      },
+      "statusCode": 400,
+      "error": "Message type is not supported",
+      "statTags": {
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation",
+        "destType": "ADOBE_ANALYTICS",
+        "module": "destination",
+        "implementation": "native",
+        "feature": "processor"
+      }
+    }
+  },
+  {
+    "description": "[ERROR]: Message Type is not present.",
+    "input": {
+      "message": {
+        "anonymousId": "78c53c15-32a1-4b65-adac-bec2d7bb8fab",
+        "channel": "web",
+        "context": {
+          "ip": "127.0.0.1",
+          "campaign": {
+            "name": "sales campaign",
+            "source": "google",
+            "medium": "medium",
+            "term": "event data",
+            "content": "Make sense of the modern data stack"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "2.9.1"
+          },
+          "locale": "en-US",
+          "page": {
+            "path": "/best-seller/1",
+            "initial_referrer": "https://www.google.com/search",
+            "initial_referring_domain": "google.com",
+            "referrer": "https://www.google.com/search?q=estore+bestseller",
+            "referring_domain": "google.com",
+            "search": "estore bestseller",
+            "title": "The best sellers offered by EStore",
+            "url": "https://www.estore.com/best-seller/1"
+          },
+          "screen": {
+            "density": 420,
+            "height": 1794,
+            "width": 1080,
+            "innerHeight": 200,
+            "innerWidth": 100
+          },
+          "traits": {},
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
+        },
+        "traits": {
+          "roott01": "roottval001"
+        },
+        "event": "currency test event",
+        "integrations": {
+          "All": true
+        },
+        "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
+        "properties": {
+          "cart_id": "12345",
+          "mark6": "label number 6",
+          "products": [
+            {
+              "product_id": "123",
+              "sku": "G-14",
+              "name": "Cards",
+              "price": 14.99,
+              "position": 1,
+              "category": "Games",
+              "url": "https://www.website.com/product/path",
+              "image_url": "https://www.website.com/product/path.jpg"
+            },
+            {
+              "product_id": "345",
+              "sku": "G-32",
+              "name": "UNO",
+              "price": 3.99,
+              "position": 2,
+              "category": "Games"
+            }
+          ]
+        },
+        "originalTimestamp": "2020-01-09T10:01:53.558Z",
+        "sentAt": "2020-01-09T10:02:03.257Z"
+      },
+      "destination": {
+        "Config": {
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
+          "reportSuiteIds": "footlockerrudderstackpoc",
+          "sslHeartbeat": true,
+          "heartbeatTrackingServerUrl": "",
+          "useUtf8Charset": true,
+          "useSecureServerSide": true,
+          "proxyNormalUrl": "",
+          "proxyHeartbeatUrl": "",
+          "marketingCloudOrgId": "mktcloudid001",
+          "dropVisitorId": false,
+          "timestampOption": "enabled",
+          "timestampOptionalReporting": true,
+          "noFallbackVisitorId": false,
+          "preferVisitorId": false,
+          "trackPageName": true,
+          "contextDataPrefix": "",
+          "useLegacyLinkName": true,
+          "pageNameFallbackTostring": true,
+          "sendFalseValues": true,
+          "productIdentifier": "name",
+          "eventFilteringOption": "disable",
+          "eventsToTypes": [
+            {
+              "from": "init heartbeat",
+              "to": "initHeartbeat"
+            }
+          ],
+          "rudderEventsToAdobeEvents": [
+            {
+              "from": "product viewed",
+              "to": "event1"
+            },
+            {
+              "from": "currency test event",
+              "to": "event6"
+            }
+          ],
+          "contextDataMapping": [
+            {
+              "from": "tt01",
+              "to": "tt01"
+            },
+            {
+              "from": "tt02",
+              "to": "tt02"
+            },
+            {
+              "from": "roott01",
+              "to": "roott01"
+            }
+          ],
+          "eVarMapping": [
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "to": "6",
+              "from": "context.library.name"
+            }
+          ],
+          "listMapping": [
+            {
+              "from": "bikelist",
+              "to": "1"
+            },
+            {
+              "from": "carlist",
+              "to": "2"
+            }
+          ],
+          "listDelimiter": [
+            {
+              "from": "bikelist",
+              "to": ","
+            },
+            {
+              "from": "carlist",
+              "to": ","
+            }
+          ],
+          "customPropsMapping": [
+            {
+              "from": "customprop1",
+              "to": "1"
+            },
+            {
+              "from": "customprop2",
+              "to": "2"
+            }
+          ],
+          "propsDelimiter": [
+            {
+              "from": "customprop1",
+              "to": ","
+            },
+            {
+              "from": "customprop2",
+              "to": ","
+            }
+          ],
+          "eventMerchEventToAdobeEvent": [
+            {
+              "from": "product not viewed",
+              "to": "event1"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "eventMerchProperties": [
+            {
+              "eventMerchProperties": "currencyMerch"
+            },
+            {
+              "eventMerchProperties": "addressMerch"
+            }
+          ],
+          "productMerchEventToAdobeEvent": [
+            {
+              "from": "product list viewed",
+              "to": "event2"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "productMerchProperties": [
+            {
+              "productMerchProperties": "currencyProdMerch"
+            },
+            {
+              "productMerchProperties": "addressProdMerch"
+            },
+            {
+              "productMerchProperties": "products.prodLevelCurrency"
+            }
+          ],
+          "productMerchEvarsMap": [
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "products.mark6",
+              "to": "6"
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "destination": {
+        "Config": {
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
+          "reportSuiteIds": "footlockerrudderstackpoc",
+          "sslHeartbeat": true,
+          "heartbeatTrackingServerUrl": "",
+          "useUtf8Charset": true,
+          "useSecureServerSide": true,
+          "proxyNormalUrl": "",
+          "proxyHeartbeatUrl": "",
+          "marketingCloudOrgId": "mktcloudid001",
+          "dropVisitorId": false,
+          "timestampOption": "enabled",
+          "timestampOptionalReporting": true,
+          "noFallbackVisitorId": false,
+          "preferVisitorId": false,
+          "trackPageName": true,
+          "contextDataPrefix": "",
+          "useLegacyLinkName": true,
+          "pageNameFallbackTostring": true,
+          "sendFalseValues": true,
+          "productIdentifier": "name",
+          "eventFilteringOption": "disable",
+          "eventsToTypes": [
+            {
+              "from": "init heartbeat",
+              "to": "initHeartbeat"
+            }
+          ],
+          "rudderEventsToAdobeEvents": [
+            {
+              "from": "product viewed",
+              "to": "event1"
+            },
+            {
+              "from": "currency test event",
+              "to": "event6"
+            }
+          ],
+          "contextDataMapping": [
+            {
+              "from": "tt01",
+              "to": "tt01"
+            },
+            {
+              "from": "tt02",
+              "to": "tt02"
+            },
+            {
+              "from": "roott01",
+              "to": "roott01"
+            }
+          ],
+          "eVarMapping": [
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "to": "6",
+              "from": "context.library.name"
+            }
+          ],
+          "listMapping": [
+            {
+              "from": "bikelist",
+              "to": "1"
+            },
+            {
+              "from": "carlist",
+              "to": "2"
+            }
+          ],
+          "listDelimiter": [
+            {
+              "from": "bikelist",
+              "to": ","
+            },
+            {
+              "from": "carlist",
+              "to": ","
+            }
+          ],
+          "customPropsMapping": [
+            {
+              "from": "customprop1",
+              "to": "1"
+            },
+            {
+              "from": "customprop2",
+              "to": "2"
+            }
+          ],
+          "propsDelimiter": [
+            {
+              "from": "customprop1",
+              "to": ","
+            },
+            {
+              "from": "customprop2",
+              "to": ","
+            }
+          ],
+          "eventMerchEventToAdobeEvent": [
+            {
+              "from": "product not viewed",
+              "to": "event1"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "eventMerchProperties": [
+            {
+              "eventMerchProperties": "currencyMerch"
+            },
+            {
+              "eventMerchProperties": "addressMerch"
+            }
+          ],
+          "productMerchEventToAdobeEvent": [
+            {
+              "from": "product list viewed",
+              "to": "event2"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "productMerchProperties": [
+            {
+              "productMerchProperties": "currencyProdMerch"
+            },
+            {
+              "productMerchProperties": "addressProdMerch"
+            },
+            {
+              "productMerchProperties": "products.prodLevelCurrency"
+            }
+          ],
+          "productMerchEvarsMap": [
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "products.mark6",
+              "to": "6"
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
+        }
+      },
+      "statusCode": 400,
+      "error": "Message Type is not present. Aborting message.",
+      "statTags": {
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation",
+        "destType": "ADOBE_ANALYTICS",
+        "module": "destination",
+        "implementation": "native",
+        "feature": "processor"
+      }
+    }
+  },
+  {
+    "description": "[ERROR]: The event is not a supported ECOM event or a mapped custom event.",
+    "input": {
+      "message": {
+        "anonymousId": "78c53c15-32a1-4b65-adac-bec2d7bb8fab",
+        "channel": "web",
+        "context": {
+          "ip": "127.0.0.1",
+          "campaign": {
+            "name": "sales campaign",
+            "source": "google",
+            "medium": "medium",
+            "term": "event data",
+            "content": "Make sense of the modern data stack"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "2.9.1"
+          },
+          "locale": "en-US",
+          "page": {
+            "path": "/best-seller/1",
+            "initial_referrer": "https://www.google.com/search",
+            "initial_referring_domain": "google.com",
+            "referrer": "https://www.google.com/search?q=estore+bestseller",
+            "referring_domain": "google.com",
+            "search": "estore bestseller",
+            "title": "The best sellers offered by EStore",
+            "url": "https://www.estore.com/best-seller/1"
+          },
+          "screen": {
+            "density": 420,
+            "height": 1794,
+            "width": 1080,
+            "innerHeight": 200,
+            "innerWidth": 100
+          },
+          "traits": {},
+          "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)"
+        },
+        "traits": {
+          "roott01": "roottval001"
+        },
+        "event": "random unmapped event",
+        "integrations": {
+          "All": true
+        },
+        "messageId": "1578564113557-af022c68-429e-4af4-b99b-2b9174056383",
+        "properties": {
+          "cart_id": "12345",
+          "mark6": "label number 6",
+          "products": [
+            {
+              "product_id": "123",
+              "sku": "G-14",
+              "name": "Cards",
+              "price": 14.99,
+              "position": 1,
+              "category": "Games",
+              "url": "https://www.website.com/product/path",
+              "image_url": "https://www.website.com/product/path.jpg"
+            },
+            {
+              "product_id": "345",
+              "sku": "G-32",
+              "name": "UNO",
+              "price": 3.99,
+              "position": 2,
+              "category": "Games"
+            }
+          ]
+        },
+        "originalTimestamp": "2020-01-09T10:01:53.558Z",
+        "type": "track",
+        "sentAt": "2020-01-09T10:02:03.257Z"
+      },
+      "destination": {
+        "Config": {
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
+          "reportSuiteIds": "footlockerrudderstackpoc",
+          "sslHeartbeat": true,
+          "heartbeatTrackingServerUrl": "",
+          "useUtf8Charset": true,
+          "useSecureServerSide": true,
+          "proxyNormalUrl": "",
+          "proxyHeartbeatUrl": "",
+          "marketingCloudOrgId": "mktcloudid001",
+          "dropVisitorId": false,
+          "timestampOption": "enabled",
+          "timestampOptionalReporting": true,
+          "noFallbackVisitorId": false,
+          "preferVisitorId": false,
+          "trackPageName": true,
+          "contextDataPrefix": "",
+          "useLegacyLinkName": true,
+          "pageNameFallbackTostring": true,
+          "sendFalseValues": true,
+          "productIdentifier": "name",
+          "eventFilteringOption": "disable",
+          "eventsToTypes": [
+            {
+              "from": "init heartbeat",
+              "to": "initHeartbeat"
+            }
+          ],
+          "rudderEventsToAdobeEvents": [
+            {
+              "from": "product viewed",
+              "to": "event1"
+            },
+            {
+              "from": "currency test event",
+              "to": "event6"
+            }
+          ],
+          "contextDataMapping": [
+            {
+              "from": "tt01",
+              "to": "tt01"
+            },
+            {
+              "from": "tt02",
+              "to": "tt02"
+            },
+            {
+              "from": "roott01",
+              "to": "roott01"
+            }
+          ],
+          "eVarMapping": [
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "to": "6",
+              "from": "context.library.name"
+            }
+          ],
+          "listMapping": [
+            {
+              "from": "bikelist",
+              "to": "1"
+            },
+            {
+              "from": "carlist",
+              "to": "2"
+            }
+          ],
+          "listDelimiter": [
+            {
+              "from": "bikelist",
+              "to": ","
+            },
+            {
+              "from": "carlist",
+              "to": ","
+            }
+          ],
+          "customPropsMapping": [
+            {
+              "from": "customprop1",
+              "to": "1"
+            },
+            {
+              "from": "customprop2",
+              "to": "2"
+            }
+          ],
+          "propsDelimiter": [
+            {
+              "from": "customprop1",
+              "to": ","
+            },
+            {
+              "from": "customprop2",
+              "to": ","
+            }
+          ],
+          "eventMerchEventToAdobeEvent": [
+            {
+              "from": "product not viewed",
+              "to": "event1"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "eventMerchProperties": [
+            {
+              "eventMerchProperties": "currencyMerch"
+            },
+            {
+              "eventMerchProperties": "addressMerch"
+            }
+          ],
+          "productMerchEventToAdobeEvent": [
+            {
+              "from": "product list viewed",
+              "to": "event2"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "productMerchProperties": [
+            {
+              "productMerchProperties": "currencyProdMerch"
+            },
+            {
+              "productMerchProperties": "addressProdMerch"
+            },
+            {
+              "productMerchProperties": "products.prodLevelCurrency"
+            }
+          ],
+          "productMerchEvarsMap": [
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "products.mark6",
+              "to": "6"
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "destination": {
+        "Config": {
+          "trackingServerUrl": "flk.gc.gmtidc.net",
+          "trackingServerSecureUrl": "flk.gc.gmtidc.net",
+          "reportSuiteIds": "footlockerrudderstackpoc",
+          "sslHeartbeat": true,
+          "heartbeatTrackingServerUrl": "",
+          "useUtf8Charset": true,
+          "useSecureServerSide": true,
+          "proxyNormalUrl": "",
+          "proxyHeartbeatUrl": "",
+          "marketingCloudOrgId": "mktcloudid001",
+          "dropVisitorId": false,
+          "timestampOption": "enabled",
+          "timestampOptionalReporting": true,
+          "noFallbackVisitorId": false,
+          "preferVisitorId": false,
+          "trackPageName": true,
+          "contextDataPrefix": "",
+          "useLegacyLinkName": true,
+          "pageNameFallbackTostring": true,
+          "sendFalseValues": true,
+          "productIdentifier": "name",
+          "eventFilteringOption": "disable",
+          "eventsToTypes": [
+            {
+              "from": "init heartbeat",
+              "to": "initHeartbeat"
+            }
+          ],
+          "rudderEventsToAdobeEvents": [
+            {
+              "from": "product viewed",
+              "to": "event1"
+            },
+            {
+              "from": "currency test event",
+              "to": "event6"
+            }
+          ],
+          "contextDataMapping": [
+            {
+              "from": "tt01",
+              "to": "tt01"
+            },
+            {
+              "from": "tt02",
+              "to": "tt02"
+            },
+            {
+              "from": "roott01",
+              "to": "roott01"
+            }
+          ],
+          "eVarMapping": [
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "to": "6",
+              "from": "context.library.name"
+            }
+          ],
+          "listMapping": [
+            {
+              "from": "bikelist",
+              "to": "1"
+            },
+            {
+              "from": "carlist",
+              "to": "2"
+            }
+          ],
+          "listDelimiter": [
+            {
+              "from": "bikelist",
+              "to": ","
+            },
+            {
+              "from": "carlist",
+              "to": ","
+            }
+          ],
+          "customPropsMapping": [
+            {
+              "from": "customprop1",
+              "to": "1"
+            },
+            {
+              "from": "customprop2",
+              "to": "2"
+            }
+          ],
+          "propsDelimiter": [
+            {
+              "from": "customprop1",
+              "to": ","
+            },
+            {
+              "from": "customprop2",
+              "to": ","
+            }
+          ],
+          "eventMerchEventToAdobeEvent": [
+            {
+              "from": "product not viewed",
+              "to": "event1"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "eventMerchProperties": [
+            {
+              "eventMerchProperties": "currencyMerch"
+            },
+            {
+              "eventMerchProperties": "addressMerch"
+            }
+          ],
+          "productMerchEventToAdobeEvent": [
+            {
+              "from": "product list viewed",
+              "to": "event2"
+            },
+            {
+              "from": "Currency test event",
+              "to": "event6"
+            }
+          ],
+          "productMerchProperties": [
+            {
+              "productMerchProperties": "currencyProdMerch"
+            },
+            {
+              "productMerchProperties": "addressProdMerch"
+            },
+            {
+              "productMerchProperties": "products.prodLevelCurrency"
+            }
+          ],
+          "productMerchEvarsMap": [
+            {
+              "from": "phone4",
+              "to": "4"
+            },
+            {
+              "from": "city5",
+              "to": "5"
+            },
+            {
+              "from": "products.mark6",
+              "to": "6"
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
+        }
+      },
+      "statusCode": 400,
+      "error": "The event is not a supported ECOM event or a mapped custom event. Aborting.",
+      "statTags": {
+        "errorCategory": "dataValidation",
+        "errorType": "configuration",
+        "destType": "ADOBE_ANALYTICS",
+        "module": "destination",
+        "implementation": "native",
+        "feature": "processor"
+      }
     }
   }
 ]

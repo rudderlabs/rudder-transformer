@@ -279,6 +279,7 @@ const processEvent = (message, destination) => {
   const respList = [];
   const toSendEvents = [];
   let wrappedResponse = {};
+  console.log(destination.Config)
   let { userSchema } = destination.Config;
   const { isHashRequired, audienceId, maxUserCount } = destination.Config;
   if (!message.type) {

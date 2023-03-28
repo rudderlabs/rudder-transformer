@@ -67,7 +67,7 @@ const errorDetailsMap = {
   1: {
     // An unknown error occurred.
     // This error may occur if you set level to adset but the correct value should be campaign
-    99: new ErrorDetailsExtractor.Builder().setStatus(400).setMessage('An unknown error occurred').build(),
+    99: new ErrorDetailsExtractor.Builder().setStatus(500).setMessage('An unknown error occurred').build(),
   },
   190: {
     460: new ErrorDetailsExtractor.Builder().setStatus(400)

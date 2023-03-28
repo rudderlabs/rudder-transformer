@@ -95,9 +95,10 @@ function getPriceSum(message) {
   const products = get(message, 'properties.products');
   if (products && Array.isArray(products)) {
     products.forEach((element) => {
-      const pPrice = element.price;
-      if (pPrice && !Number.isNaN(parseFloat(pPrice))) {
-        priceSum += parseFloat(pPrice);
+      const { price } = element;
+      const { quantity = 1 } = element;
+      if (price && !Number.isNaN(parseFloat(price)) && !Number.isNaN(parseInt(quantity, 10))) {
+        priceSum += parseFloat(price) * parseInt(quantity, 10);
       }
     });
   } else {

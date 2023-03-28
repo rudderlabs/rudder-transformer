@@ -2,6 +2,7 @@
   {
     "message": {
       "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
+      "channel": "mobile",
       "destination_props": {
         "Fb": {
           "app_id": "RudderFbApp"

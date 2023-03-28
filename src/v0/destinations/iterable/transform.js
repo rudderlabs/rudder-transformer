@@ -139,7 +139,7 @@ function constructPayloadItem(message, category, destination) {
       rawPayload.user.preferUserId = true;
       rawPayload.user.mergeNestedObjects = true;
       rawPayload.items = message.properties.products;
-      if (rawPayload.items) {
+      if (rawPayload.items && Array.isArray(rawPayload.items)) {
         rawPayload.items.forEach((el) => {
           const element = constructPayload(el, mappingConfig[ConfigCategory.PRODUCT.name]);
           if (element.categories && typeof element.categories === 'string') {
@@ -183,7 +183,7 @@ function constructPayloadItem(message, category, destination) {
       rawPayload.user.preferUserId = true;
       rawPayload.user.mergeNestedObjects = true;
       rawPayload.items = message.properties.products;
-      if (rawPayload.items) {
+      if (rawPayload.items && Array.isArray(rawPayload.items)) {
         rawPayload.items.forEach((el) => {
           const element = constructPayload(el, mappingConfig[ConfigCategory.PRODUCT.name]);
           if (element.categories && typeof element.categories === 'string') {

@@ -1,4 +1,5 @@
 const { isEmpty } = require('lodash');
+const get = require('get-value');
 const {
   processAxiosResponse,
   getDynamicErrorType,
@@ -6,6 +7,7 @@ const {
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const ErrorDetailsExtractor = require('../../../util/error-extractor');
 
 /**
  * The actual API reference doc to which events from Rudderstack are being sent
@@ -35,7 +37,12 @@ const THROTTLED_ERROR_CODES = [4, 17];
     subCode1: {
       status: ,
       // Only tags that are unique to this error needs to be provided
-      statTags: 
+      statTags: {},
+      messageDetails: {
+        message: "",
+        field: 
+      },
+      
     }
   }
 }
@@ -43,23 +50,30 @@ const THROTTLED_ERROR_CODES = [4, 17];
 const errorDetailsMap = {
   100: {
     // This error talks about event being sent after seven days or so
-    2804003: {
-      status: 400,
-    },
+    2804003: new ErrorDetailsExtractor.Builder().setStatus(400).setMessageField('error_user_title').build(),
+    2804001: new ErrorDetailsExtractor.Builder().setStatus(400).setMessageField('error_user_title').build(),
+    2804007: new ErrorDetailsExtractor.Builder().setStatus(400).setMessageField('error_user_title').build(),
+    2804016: new ErrorDetailsExtractor.Builder().setStatus(400).setMessageField('error_user_title').build(),
+    2804017: new ErrorDetailsExtractor.Builder().setStatus(400).setMessageField('error_user_title').build(),
+    2804019: new ErrorDetailsExtractor.Builder().setStatus(400).setMessageField('error_user_title').build(),
+    2804048: new ErrorDetailsExtractor.Builder().setStatus(400).setMessageField('error_user_title').build(),
     // This error-subcode indicates that the business access token expired or is invalid or sufficient permissions are not provided
     // since there is involvement of changes required on dashboard to make event successful
     // for now, we are aborting this error-subCode combination
-    33: {
-      status: 400,
-    },
+    33: new ErrorDetailsExtractor.Builder().setStatus(400)
+      .setMessage('Unsupported post request. Object with ID \'PIXEL_ID\' does not exist, cannot be loaded due to missing permissions, or does not support this operation')
+      .build(),
   },
   1: {
     // An unknown error occurred.
     // This error may occur if you set level to adset but the correct value should be campaign
-    99: {
-      status: 400,
-    },
+    99: new ErrorDetailsExtractor.Builder().setStatus(400).setMessage('An unknown error occurred').build(),
   },
+  190: {
+    460: new ErrorDetailsExtractor.Builder().setStatus(400)
+      .setMessage('Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.')
+      .build(),
+  }
 };
 
 const getErrorDetailsFromErrorMap = (error) => {
@@ -85,7 +99,12 @@ const getStatus = (error) => {
     errorStatus = 429;
   }
 
-  return errorStatus;
+  let errorMessage = errorDetail?.messageDetails?.message;
+  if (errorDetail?.messageDetails?.field) {
+    errorMessage = get(error, errorDetail?.messageDetails?.field);
+  }
+
+  return { status: errorStatus, errorMessage };
 };
 
 const errorResponseHandler = (destResponse) => {
@@ -95,9 +114,9 @@ const errorResponseHandler = (destResponse) => {
     return;
   }
   const { error } = response;
-  const status = getStatus(error);
+  const { status, errorMessage } = getStatus(error);
   throw new NetworkError(
-    `Failed with ${error.message} during response transformation`,
+    `Failed with "${errorMessage || error.message}" during response transformation`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),

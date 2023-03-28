@@ -41,7 +41,9 @@ if (clusterEnabled) {
   cluster.start(port, app, metricsApp);
 } else {
   // HTTP server for exposing metrics
-  metricsApp.listen(metricsPort);
+  if (process.env.STATS_CLIENT === 'prometheus') {
+    metricsApp.listen(metricsPort);
+  }
 
   const server = app.listen(port);
 

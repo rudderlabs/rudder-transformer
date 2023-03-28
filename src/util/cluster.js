@@ -25,7 +25,9 @@ function start(port, app, metricsApp) {
     logger.info(`Master (pid: ${process.pid}) has started`);
 
     // HTTP server for exposing metrics
-    metricsApp.listen(metricsPort);
+    if (process.env.STATS_CLIENT === 'prometheus') {
+      metricsApp.listen(metricsPort);
+    }
 
     // Fork workers.
     for (let i = 0; i < numWorkers; i += 1) {

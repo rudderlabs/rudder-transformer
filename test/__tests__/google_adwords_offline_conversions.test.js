@@ -145,7 +145,12 @@ axios.post = jest.fn(async (url, data, reqConfig) => {
     };
   } else if (
     url.includes(
+      "https://googleads.googleapis.com/v13/customers/1112223333/googleAds:searchStream"
+    ) ||
+    url.includes(
       "https://googleads.googleapis.com/v13/customers/111-222-3333/googleAds:searchStream"
+    ) || url.includes(
+      "https://googleads.googleapis.com/v13/customers/customer-id/googleAds:searchStream"
     )
   ) {
     // this is for store case
@@ -195,10 +200,10 @@ axios.post = jest.fn(async (url, data, reqConfig) => {
         status: 200
       };
     }
-  }else {
+  } else {
     // These cases are taken from response.json
     const data = JSON.parse(responseFile);
-    axiosResponse = { data: data[url], status: 200 };
+    axiosResponse = data[url];
   }
 
   return axiosResponse;

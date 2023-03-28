@@ -11,17 +11,21 @@
     },
     {
         "sourceKeys": [
+            "context.traits.country_code",
             "properties.country_code",
-            "context.traits.country_code"
+            "context.traits.countryCode",
+            "properties.countryCode"
         ],
         "destKey": "country_code"
     },
     {
         "sourceKeys": [
-            "properties.postalCode",
+            "context.traits.postal_code",
+            "properties.postal_code",
             "context.traits.postalCode",
-            "properties.zipCode",
-            "context.traits.zipCode"
+            "properties.postalCode",
+            "context.traits.zipCode",
+            "properties.zipCode"
         ],
         "destKey": "postal_code"
     },

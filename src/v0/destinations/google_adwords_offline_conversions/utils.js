@@ -221,19 +221,19 @@ const getAddConversionPayload = (message, Config) => {
   // Mapping userIdentifer
   set(payload, "operations.create.userIdentifiers[0].userIdentifierSource", "UNSPECIFIED");
   if (defaultStoreUserIdentifier === 'email' && email) {
-    email = hashUserIdentifier ? sha256(email).toString() : email;
+    email = sha256(email).toString();
     set(payload, 'operations.create.userIdentifiers[0].hashedEmail', email);
   } else if (defaultStoreUserIdentifier === 'phone' && phone) {
-    phone = hashUserIdentifier ? sha256(phone).toString() : phone;
+    phone = sha256(phone).toString();
     set(payload, 'operations.create.userIdentifiers[0].hashedPhoneNumber', phone);
   } else if (defaultStoreUserIdentifier === 'address' && address) {
     set(payload, 'operations.create.userIdentifiers[0].address_info', address);
   } else if (email) {
     // case when default choosen value is not present
-    email = hashUserIdentifier ? sha256(email).toString() : email;
+    email = sha256(email).toString();
     set(payload, 'operations.create.userIdentifiers[0].hashedEmail', email);
   } else if (phone) {
-    phone = hashUserIdentifier ? sha256(phone).toString() : phone;
+    phone = sha256(phone).toString();
     set(payload, 'operations.create.userIdentifiers[0].hashedPhoneNumber', phone);
   } else if (address) {
     set(payload, 'operations.create.userIdentifiers[0].address_info', address);

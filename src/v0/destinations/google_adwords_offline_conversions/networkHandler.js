@@ -48,7 +48,7 @@ const createJob = async (endpoint, headers, payload) => {
   const { response, status } = createJobResponse;
   if (!isHttpStatusSuccess(status)) {
     throw new AbortedError(
-      `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_store_conversions createJob conversion`,
+      `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_store_conversions Job Creation`,
       status,
       response,
       getAuthErrCategory(status),
@@ -63,7 +63,7 @@ const addUserToJob = async (endpoint, headers, jobId, payload) => {
   addUserToJobResponse = processAxiosResponse(addUserToJobResponse);
   if (!isHttpStatusSuccess(addUserToJobResponse.status)) {
     throw new AbortedError(
-      `[Google Ads Offline Conversions]:: ${addUserToJobResponse.response?.error?.message} during google_ads_offline_store_conversions adding conversion`,
+      `[Google Ads Offline Conversions]:: ${addUserToJobResponse.response?.error?.message} during google_ads_offline_store_conversions Add Conversion`,
       addUserToJobResponse.status,
       addUserToJobResponse.response,
       getAuthErrCategory(get(addUserToJobResponse, 'status')),

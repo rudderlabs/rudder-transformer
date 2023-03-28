@@ -221,7 +221,7 @@ jobs:
             git add values.staging.yaml
 
             git commit -m "chore: upgrade staging env transformers to \"$TAG_NAME\""
-            git push -u origin $BRANCH_NAME"
+            git push -u origin $BRANCH_NAME
             hub pull-request -m "chore: upgrade staging env transformers to \"$TAG_NAME\""
           fi
 

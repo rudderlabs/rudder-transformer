@@ -2,13 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [1.20.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.19.0...v1.20.0) (2023-03-27)
+## [1.20.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.19.0...v1.20.0) (2023-03-28)
 
 
 ### Bug Fixes
 
+* **gainsignt_px:** undefined attributes issue ([#2010](https://github.com/rudderlabs/rudder-transformer/issues/2010)) ([bf56359](https://github.com/rudderlabs/rudder-transformer/commit/bf5635942a88a3afc25506ba6591bf6b844624f3))
+* **monday:**  axios call empty response issue ([#2001](https://github.com/rudderlabs/rudder-transformer/issues/2001)) ([196294f](https://github.com/rudderlabs/rudder-transformer/commit/196294f70bc967efea70aef084268db9c567417a))
+* **rockerbox:** make email as non-required field ([#1995](https://github.com/rudderlabs/rudder-transformer/issues/1995)) ([2f7ebff](https://github.com/rudderlabs/rudder-transformer/commit/2f7ebff62c8934165c1271a7c019c2b0b5b2a4b3))
 * **snapchat_conversion:** price calculation ([#1988](https://github.com/rudderlabs/rudder-transformer/issues/1988)) ([8240224](https://github.com/rudderlabs/rudder-transformer/commit/82402242a1ffe9ccc75671023cff1ebbbcb390e6))
 * **test-cases:** fix test cases to use template like secret keys ([#1973](https://github.com/rudderlabs/rudder-transformer/issues/1973)) ([f709d1f](https://github.com/rudderlabs/rudder-transformer/commit/f709d1fb9d1d22e306fc600872dd2b702436f961))
+* undefined columnToPropertyMapping config issue ([#1998](https://github.com/rudderlabs/rudder-transformer/issues/1998)) ([ef7a351](https://github.com/rudderlabs/rudder-transformer/commit/ef7a3511e26e652caa54fb600db01ebe6bd0cc3d))
 
 ## [1.18.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.17.0...v1.18.0) (2023-03-23)
 

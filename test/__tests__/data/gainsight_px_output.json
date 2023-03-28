@@ -47,6 +47,38 @@
       "JSON_ARRAY": {},
       "FORM": {},
       "JSON": {
+        "attributes": {},
+        "url": "http://127.0.0.1:8887/",
+        "propertyKey": "AP-XABC-123",
+        "userType": "USER",
+        "identifyId": "sample-user-id",
+        "referrer": "$direct",
+        "date": 1571043797562,
+        "sessionId": 1679967592314,
+        "eventName": "Marketing - Plan Change Events",
+        "globalContext": {
+          "projectId": "p-123",
+          "tag": "sample-category-tag"
+        }
+      }
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "X-APTRINSIC-API-KEY": "sample-api-key",
+      "Content-Type": "application/json"
+    },
+    "version": "1",
+    "endpoint": "https://api.aptrinsic.com/v1/events/custom"
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {},
+      "JSON": {
         "attributes": {
           "description": "Sample Track call"
         },
@@ -85,7 +117,9 @@
         "signUpDate": 1624431528295,
         "createDate": 1571043797562,
         "title": "engineer",
-        "propertyKeys": ["AP-XABC-123"],
+        "propertyKeys": [
+          "AP-XABC-123"
+        ],
         "location": {
           "countryName": "USA",
           "countryCode": "US",
@@ -219,7 +253,9 @@
         "signUpDate": 1624431528295,
         "createDate": 1571043797562,
         "title": "engineer",
-        "propertyKeys": ["AP-XABC-123"],
+        "propertyKeys": [
+          "AP-XABC-123"
+        ],
         "location": {
           "countryName": "USA",
           "countryCode": "US",
@@ -256,7 +292,9 @@
         "signUpDate": 1624431528295,
         "createDate": 1571043797562,
         "title": "engineer",
-        "propertyKeys": ["AP-XABC-123"],
+        "propertyKeys": [
+          "AP-XABC-123"
+        ],
         "accountId": "1234",
         "location": {
           "countryName": "USA",
@@ -288,7 +326,9 @@
     },
     "params": {},
     "body": {
-      "JSON": { "accountId": "ecorp-id" },
+      "JSON": {
+        "accountId": "ecorp-id"
+      },
       "JSON_ARRAY": {},
       "XML": {},
       "FORM": {}

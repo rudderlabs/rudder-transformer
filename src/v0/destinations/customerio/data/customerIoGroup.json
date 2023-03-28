@@ -3,13 +3,17 @@
         "destKey": "object_id",
         "sourceKeys": "groupId",
         "sourceFromGenericMap": true,
+        "metadata": {
+            "type": "toString"
+        },
         "required": true
     },
     {
         "destKey": "object_type_id",
         "sourceKeys": "traits.objectTypeId",
         "metadata": {
-            "defaultValue": "1"
+            "defaultValue": "1",
+            "type": "toString"
         },
         "required": false
     },
@@ -17,6 +21,9 @@
         "destKey": "userId",
         "sourceKeys": "userIdOnly",
         "sourceFromGenericMap": true,
+        "metadata": {
+            "type": "toString"
+        },
         "required": false
     },
     {

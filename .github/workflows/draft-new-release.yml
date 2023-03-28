@@ -11,7 +11,7 @@ jobs:
     if: (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/hotfix/')) && (github.actor == 'ItsSudip' || github.actor == 'krishna2020' || github.actor == 'saikumarrs' ) &&  (github.triggering_actor == 'ItsSudip' || github.triggering_actor == 'krishna2020' || github.triggering_actor == 'saikumarrs')
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.4.0
+        uses: actions/checkout@v3.5.0
         with:
           fetch-depth: 0
 

@@ -38,7 +38,7 @@ jobs:
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.4.0
+        uses: actions/checkout@v3.5.0
         with:
           fetch-depth: 1
 
@@ -52,7 +52,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
       - name: Cache Docker Layers
-        uses: actions/cache@v3.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -110,7 +110,7 @@ jobs:
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.4.0
+        uses: actions/checkout@v3.5.0
         with:
           fetch-depth: 1
 
@@ -124,7 +124,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
       - name: Cache Docker Layers
-        uses: actions/cache@v3.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}

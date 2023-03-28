@@ -38,7 +38,7 @@ jobs:
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.4.0
+        uses: actions/checkout@v3.5.0
         with:
           fetch-depth: 1
 
@@ -110,7 +110,7 @@ jobs:
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.4.0
+        uses: actions/checkout@v3.5.0
         with:
           fetch-depth: 1
 

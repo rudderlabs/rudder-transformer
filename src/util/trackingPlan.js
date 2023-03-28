@@ -1,8 +1,8 @@
 const NodeCache = require('node-cache');
 const { fetchWithProxy } = require('./fetch');
 const logger = require('../logger');
-const stats = require('./stats');
 const { responseStatusHandler } = require('./utils');
+const stats = require('./stats');
 
 const tpCache = new NodeCache();
 const CONFIG_BACKEND_URL = process.env.CONFIG_BACKEND_URL || 'https://api.rudderlabs.com';
@@ -28,13 +28,14 @@ async function getTrackingPlan(tpId, version, workspaceId) {
     const response = await fetchWithProxy(url);
 
     responseStatusHandler(response.status, 'Tracking plan', tpId, url);
+
     stats.timing('get_tracking_plan', startTime);
     const myJson = await response.json();
     tpCache.set(`${tpId}::${version}`, myJson);
     return myJson;
   } catch (error) {
     logger.error(`Failed during trackingPlan fetch : ${error}`);
-    stats.increment('get_tracking_plan.error');
+    stats.increment('get_tracking_plan_error');
     throw error;
   }
 }
@@ -71,7 +72,7 @@ async function getEventSchema(tpId, tpVersion, eventType, eventName, workspaceId
     return eventSchema;
   } catch (error) {
     logger.info(`Failed during eventSchema fetch : ${JSON.stringify(error)}`);
-    stats.increment('get_eventSchema.error');
+    stats.increment('get_eventSchema_error');
     throw error;
   }
 }

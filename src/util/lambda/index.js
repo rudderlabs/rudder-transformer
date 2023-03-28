@@ -14,8 +14,8 @@ const {
 } = require('@aws-sdk/client-lambda');
 const { v4: uuidv4 } = require('uuid');
 const logger = require('../../logger');
-const stats = require('../stats');
 const { isABufferValue, bufferToString, TRANSFORM_WRAPPER_CODE } = require('./utils');
+const stats = require('../stats');
 
 const LAMBDA_MAX_WAIT_TIME = parseInt(process.env.MAX_WAIT_TIME || '30', 10);
 const LAMBDA_DELAY = parseInt(process.env.DELAY || '2', 10);

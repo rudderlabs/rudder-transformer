@@ -2,9 +2,9 @@ const ivm = require('isolated-vm');
 const fetch = require('node-fetch');
 const _ = require('lodash');
 
-const stats = require('./stats');
 const { getLibraryCodeV1, getRudderLibByImportName } = require('./customTransforrmationsStore-v1');
 const logger = require('../logger');
+const stats = require('./stats');
 
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
@@ -121,7 +121,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
               }
               if (!isObject(transformedOutput)) {
                 return outputEvents.push({error: "returned event from transformEvent(event) is not an object", metadata: eventsMetadata[currMsgId] || {}});
-              } 
+              }
               outputEvents.push({transformedEvent: transformedOutput, metadata: eventsMetadata[currMsgId] || {}});
               return;
             } catch (error) {

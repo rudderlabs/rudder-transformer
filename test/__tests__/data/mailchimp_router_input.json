@@ -9,9 +9,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX",
         "enableMergeFields": true
       },
       "Enabled": true,
@@ -75,9 +75,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX",
         "enableMergeFields": true
       },
       "Enabled": true,
@@ -141,9 +141,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX",
         "enableMergeFields": true
       },
       "Enabled": true,
@@ -207,9 +207,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX",
         "enableMergeFields": true
       },
       "Enabled": true,
@@ -252,9 +252,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX",
         "enableMergeFields": true
       },
       "Enabled": true,
@@ -297,9 +297,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX",
         "enableMergeFields": true
       },
       "Enabled": true,

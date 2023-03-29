@@ -35,8 +35,7 @@
         "sourceFromGenericMap": true,
         "metadata": {
             "type": [
-                "toLower",
-                "hashToSha256"
+                "toLower"
             ]
         }
     },
@@ -50,8 +49,7 @@
         ],
         "metadata": {
             "type": [
-                "toLower",
-                "hashToSha256"
+                "toLower"
             ]
         }
     },

@@ -14,7 +14,7 @@
   "author": "",
   "main": "GATransform.js",
   "scripts": {
-    "setup": "npm i",
+    "setup": "npm ci",
     "format": "prettier --write .",
     "lint": "eslint . || exit 0",
     "lint:fix": "eslint . --fix",

@@ -4,11 +4,27 @@
       "Config": {
         "apiKey": "sample-api-key",
         "productTagKey": "AP-XABC-123",
-        "accountAttributeMap": [{ "from": "", "to": "" }],
-        "userAttributeMap": [{ "from": "", "to": "" }],
+        "accountAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "userAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
         "globalContextMap": [
-          { "from": "projectId", "to": "p-123" },
-          { "from": "tag", "to": "sample-category-tag" }
+          {
+            "from": "projectId",
+            "to": "p-123"
+          },
+          {
+            "from": "tag",
+            "to": "sample-category-tag"
+          }
         ]
       }
     },
@@ -21,12 +37,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "userId": "sample-user-id",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -49,7 +73,9 @@
         "url": "https://www.website.com/product/path",
         "image_url": "https://www.website.com/product/path.png"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
@@ -58,11 +84,113 @@
       "Config": {
         "apiKey": "sample-api-key",
         "productTagKey": "AP-XABC-123",
-        "accountAttributeMap": [{ "from": "", "to": "" }],
-        "userAttributeMap": [{ "from": "", "to": "" }],
+        "accountAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "userAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
         "globalContextMap": [
-          { "from": "projectId", "to": "p-123" },
-          { "from": "tag", "to": "sample-category-tag" }
+          {
+            "from": "projectId",
+            "to": "p-123"
+          },
+          {
+            "from": "tag",
+            "to": "sample-category-tag"
+          }
+        ]
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.27.0",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "http://127.0.0.1:8887/",
+          "path": "/",
+          "title": "RudderStack in 5",
+          "search": "",
+          "tab_url": "http://127.0.0.1:8887/",
+          "referrer": "$direct",
+          "initial_referrer": "$direct",
+          "referring_domain": "",
+          "initial_referring_domain": ""
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1512,
+          "height": 982,
+          "density": 2,
+          "innerWidth": 774,
+          "innerHeight": 774
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.27.0"
+        },
+        "campaign": {},
+        "sessionId": 1679967592314,
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
+        "properties": {
+          "email": "84@84.com",
+          "price": "56.0",
+          "quantity": "5"
+        }
+      },
+      "userId": "sample-user-id",
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "sample-anon-id",
+      "type": "track",
+      "event": "Marketing - Plan Change Events",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "sample-api-key",
+        "productTagKey": "AP-XABC-123",
+        "accountAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "userAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "globalContextMap": [
+          {
+            "from": "projectId",
+            "to": "p-123"
+          },
+          {
+            "from": "tag",
+            "to": "sample-category-tag"
+          }
         ]
       }
     },
@@ -75,12 +203,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "userId": "sample-user-id",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -95,7 +231,9 @@
           "testOverride": "some-value"
         }
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
@@ -104,8 +242,18 @@
       "Config": {
         "apiKey": "sample-api-key",
         "productTagKey": "AP-XABC-123",
-        "accountAttributeMap": [{ "from": "", "to": "" }],
-        "userAttributeMap": [{ "from": "hobbyCustomField", "to": "hobby" }],
+        "accountAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "userAttributeMap": [
+          {
+            "from": "hobbyCustomField",
+            "to": "hobby"
+          }
+        ],
         "globalContextMap": []
       }
     },
@@ -118,12 +266,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -144,7 +300,9 @@
         "city": "New York",
         "hobbyCustomField": "Sample Hobby"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
@@ -153,7 +311,12 @@
       "Config": {
         "apiKey": "sample-api-key",
         "productTagKey": "AP-XABC-123",
-        "accountAttributeMap": [{ "from": "", "to": "" }],
+        "accountAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
         "userAttributeMap": [],
         "globalContextMap": []
       }
@@ -167,12 +330,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 },
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
         "traits": {
           "type": "USER",
           "gender": "MALE",
@@ -195,7 +366,9 @@
         "website": "www.ecorp.com",
         "plan": "premium"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
@@ -204,8 +377,18 @@
       "Config": {
         "apiKey": "sample-api-key",
         "productTagKey": "AP-XABC-123",
-        "accountAttributeMap": [{ "from": "", "to": "" }],
-        "userAttributeMap": [{ "from": "hobbyCustomField", "to": "hobby" }],
+        "accountAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "userAttributeMap": [
+          {
+            "from": "hobbyCustomField",
+            "to": "hobby"
+          }
+        ],
         "globalContextMap": []
       }
     },
@@ -218,12 +401,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -242,7 +433,9 @@
         "city": "New York",
         "hobbyCustomField": "Sample Hobby"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
@@ -251,11 +444,27 @@
       "Config": {
         "apiKey": "sample-api-key",
         "productTagKey": "AP-XABC-123",
-        "accountAttributeMap": [{ "from": "", "to": "" }],
-        "userAttributeMap": [{ "from": "", "to": "" }],
+        "accountAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "userAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
         "globalContextMap": [
-          { "from": "projectId", "to": "p-123" },
-          { "from": "tag", "to": "sample-category-tag" }
+          {
+            "from": "projectId",
+            "to": "p-123"
+          },
+          {
+            "from": "tag",
+            "to": "sample-category-tag"
+          }
         ]
       }
     },
@@ -268,12 +477,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -294,7 +511,9 @@
         "url": "https://www.website.com/product/path",
         "image_url": "https://www.website.com/product/path.png"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
@@ -303,7 +522,12 @@
       "Config": {
         "apiKey": "sample-api-key",
         "productTagKey": "AP-XABC-123",
-        "accountAttributeMap": [{ "from": "", "to": "" }],
+        "accountAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
         "userAttributeMap": [],
         "globalContextMap": []
       }
@@ -317,12 +541,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 },
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
         "traits": {
           "type": "USER",
           "gender": "MALE",
@@ -344,7 +576,9 @@
         "website": "www.ecorp.com",
         "plan": "premium"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
@@ -353,11 +587,27 @@
       "Config": {
         "apiKey": "sample-api-key",
         "productTagKey": "AP-XABC-123",
-        "accountAttributeMap": [{ "from": "", "to": "" }],
-        "userAttributeMap": [{ "from": "", "to": "" }],
+        "accountAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "userAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
         "globalContextMap": [
-          { "from": "projectId", "to": "p-123" },
-          { "from": "tag", "to": "sample-category-tag" }
+          {
+            "from": "projectId",
+            "to": "p-123"
+          },
+          {
+            "from": "tag",
+            "to": "sample-category-tag"
+          }
         ]
       }
     },
@@ -370,12 +620,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "userId": "sample-user-id",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -387,14 +645,24 @@
       "properties": {
         "description": "Stringify test for object values",
         "nested": {
-          "a": [1, 2, 3],
+          "a": [
+            1,
+            2,
+            3
+          ],
           "b": {
             "c": 1
           }
         },
-        "arr": [1, 2, 3]
+        "arr": [
+          1,
+          2,
+          3
+        ]
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
@@ -403,11 +671,27 @@
       "Config": {
         "apiKey": "sample-api-key",
         "productTagKey": "AP-XABC-123",
-        "accountAttributeMap": [{ "from": "", "to": "" }],
-        "userAttributeMap": [{ "from": "", "to": "" }],
+        "accountAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "userAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
         "globalContextMap": [
-          { "from": "projectId", "to": "p-123" },
-          { "from": "tag", "to": "sample-category-tag" }
+          {
+            "from": "projectId",
+            "to": "p-123"
+          },
+          {
+            "from": "tag",
+            "to": "sample-category-tag"
+          }
         ]
       }
     },
@@ -420,12 +704,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "userId": "sample-user-id",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
@@ -437,17 +729,27 @@
       "properties": {
         "description": "Stringify test for object values",
         "nested": {
-          "a": [1, 2, 3],
+          "a": [
+            1,
+            2,
+            3
+          ],
           "b": {
             "c": 1
           }
         },
-        "arr": [1, 2, 3],
+        "arr": [
+          1,
+          2,
+          3
+        ],
         "globalContext": {
           "someKey": "someVal"
         }
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
@@ -456,7 +758,12 @@
       "Config": {
         "apiKey": "sample-api-key",
         "productTagKey": "AP-XABC-123",
-        "accountAttributeMap": [{ "from": "", "to": "" }],
+        "accountAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
         "userAttributeMap": [],
         "globalContextMap": []
       }
@@ -470,12 +777,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 },
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
         "traits": {
           "type": "USER",
           "gender": "MALE",
@@ -498,7 +813,9 @@
         "website": "www.ecorp.com",
         "plan": "premium"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
@@ -507,8 +824,18 @@
       "Config": {
         "apiKey": "sample-api-key",
         "productTagKey": "AP-XABC-123",
-        "accountAttributeMap": [{ "from": "", "to": "" }],
-        "userAttributeMap": [{ "from": "hobbyCustomField", "to": "hobby" }],
+        "accountAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "userAttributeMap": [
+          {
+            "from": "hobbyCustomField",
+            "to": "hobby"
+          }
+        ],
         "globalContextMap": []
       }
     },
@@ -521,12 +848,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -547,7 +882,9 @@
         "city": "New York",
         "hobbyCustomField": "Sample Hobby"
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
@@ -556,8 +893,18 @@
       "Config": {
         "apiKey": "sample-api-key",
         "productTagKey": "AP-XABC-123",
-        "accountAttributeMap": [{ "from": "", "to": "" }],
-        "userAttributeMap": [{ "from": "", "to": "" }],
+        "accountAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "userAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
         "globalContextMap": []
       }
     },
@@ -570,12 +917,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 }
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
       },
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -597,7 +952,9 @@
         "hobbyCustomField": "Sample Hobby",
         "accountId": 1234
       },
-      "integrations": { "All": true },
+      "integrations": {
+        "All": true
+      },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }
   },
@@ -606,7 +963,12 @@
       "Config": {
         "apiKey": "sample-api-key",
         "productTagKey": "AP-XABC-123",
-        "accountAttributeMap": [{ "from": "", "to": "" }],
+        "accountAttributeMap": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
         "userAttributeMap": [],
         "globalContextMap": []
       }
@@ -620,12 +982,20 @@
           "namespace": "com.rudderlabs.javascript",
           "version": "1.0.0"
         },
-        "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "ip": "0.0.0.0",
-        "os": { "name": "", "version": "" },
-        "screen": { "density": 2 },
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
         "traits": {
           "type": "USER",
           "gender": "MALE",
@@ -650,7 +1020,9 @@
       },
       "integrations": {
         "All": true,
-        "GAINSIGHT_PX": { "limitAPIForGroup": true }
+        "GAINSIGHT_PX": {
+          "limitAPIForGroup": true
+        }
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
     }

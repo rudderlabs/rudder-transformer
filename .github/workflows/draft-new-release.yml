@@ -11,7 +11,7 @@ jobs:
     if: (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/hotfix/')) && (github.actor == 'ItsSudip' || github.actor == 'krishna2020' || github.actor == 'saikumarrs' ) &&  (github.triggering_actor == 'ItsSudip' || github.triggering_actor == 'krishna2020' || github.triggering_actor == 'saikumarrs')
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.4.0
+        uses: actions/checkout@v3.5.0
         with:
           fetch-depth: 0
 
@@ -45,7 +45,7 @@ jobs:
           new_version=$(jq -r .version package.json)
           git reset --hard
 
-          branch_name="${release_type}/${new_version}"
+          branch_name="${release_type}/v${new_version}"
 
           echo "Source branch for new release is $source_branch_name"
           echo "Current version is $current_version"

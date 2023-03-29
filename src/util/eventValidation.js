@@ -3,7 +3,7 @@ const Ajv2019 = require('ajv/dist/2019');
 const Ajv = require('ajv-draft-04');
 const draft7MetaSchema = require('ajv/dist/refs/json-schema-draft-07.json');
 const draft6MetaSchema = require('ajv/dist/refs/json-schema-draft-06.json');
-const addFormats = require("ajv-formats");
+const addFormats = require('ajv-formats');
 
 const NodeCache = require('node-cache');
 const hash = require('object-hash');

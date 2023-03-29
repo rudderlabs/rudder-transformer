@@ -6,7 +6,7 @@ const {
   isDefinedAndNotNull,
   isDefined,
   getHashFromArrayWithDuplicate,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
 } = require('../../util');
 const { InstrumentationError } = require('../../util/errorTypes');
 const { COMMON_CONFIGS, CUSTOM_CONFIGS } = require('./config');
@@ -263,7 +263,9 @@ const processHashedUserPayload = (userPayload, message) => {
   });
   // multiKeyMap will works on only specific values like m, male, MALE, f, F, Female
   // if hashed data is sent from the user, it is directly set over here
-  processedHashedUserPayload.ge = [message.traits?.gender || message.context?.traits?.gender || null];
+  processedHashedUserPayload.ge = [
+    message.traits?.gender || message.context?.traits?.gender || null,
+  ];
   return processedHashedUserPayload;
 };
 
@@ -287,7 +289,7 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
     const { products, quantity } = properties;
     products.forEach((product) => {
       const prodParams = setIdPriceQuantity(product, message);
-      if(prodParams.contentId) {
+      if (prodParams.contentId) {
         contentIds.push(prodParams.contentId);
       }
       contentArray.push(prodParams.content);
@@ -310,7 +312,7 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
     quantity are taken into consideration
     */
     const prodParams = setIdPriceQuantity(properties, message);
-    if(prodParams.contentId) {
+    if (prodParams.contentId) {
       contentIds.push(prodParams.contentId);
     }
     contentArray.push(prodParams.content);
@@ -331,7 +333,7 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
 
   return {
     ...mandatoryPayload,
-    custom_data: { ...removeUndefinedAndNullValues(customPayload)},
+    custom_data: { ...removeUndefinedAndNullValues(customPayload) },
   };
 };
 

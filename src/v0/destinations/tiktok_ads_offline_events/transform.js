@@ -61,9 +61,7 @@ const getTrackResponse = (message, category, Config, event) => {
   if (isDefinedAndNotNullAndNotEmpty(email)) {
     if (Array.isArray(email)) {
       emails = email.map((em) =>
-        hashUserProperties
-          ? SHA256(em.trim().toLowerCase()).toString()
-          : em.trim().toLowerCase(),
+        hashUserProperties ? SHA256(em.trim().toLowerCase()).toString() : em.trim().toLowerCase(),
       );
     } else {
       emails = hashUserProperties

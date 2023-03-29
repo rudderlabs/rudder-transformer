@@ -10,7 +10,6 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
   getIntegrationsObj,
-  isHybridModeEnabled,
 } = require('../../util');
 const {
   InstrumentationError,
@@ -321,7 +320,7 @@ const process = (event) => {
       break;
     case EventType.PAGE:
       // GA4 custom event 'page_view' is fired for page
-      if (!isHybridModeEnabled(Config)) {
+      if (Config.connectionMode !== 'hybrid') {
         message.event = 'page_view';
         response = responseBuilder(message, destination);
       } else {

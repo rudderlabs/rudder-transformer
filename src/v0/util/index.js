@@ -1677,18 +1677,6 @@ const validatePhoneWithCountryCode = (phone) => {
 };
 
 /**
- * checks for hybrid mode
- * @param {*} Config
- * @returns
- */
-const isHybridModeEnabled = (Config) => {
-  if (isDefinedAndNotNull(Config.useNativeSDK) && isDefinedAndNotNull(Config.useNativeSDKToSend)) {
-    return Config.useNativeSDK && !Config.useNativeSDKToSend;
-  }
-  return false;
-};
-
-/**
  * Get event type from the Rudder message object
  * @param {RudderMessage} message Rudder message object
  * @returns lower case `type` field inside the Rudder message object
@@ -1907,7 +1895,6 @@ module.exports = {
   validateEmail,
   validatePhoneWithCountryCode,
   getEventReqMetadata,
-  isHybridModeEnabled,
   getEventType,
   checkAndCorrectUserId,
   getAccessToken,

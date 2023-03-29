@@ -5,7 +5,6 @@ const { getFuncTestData } = require('./testHelper');
 const functionNames = [
   'flattenJson',
   'getDestinationExternalID',
-  'isHybridModeEnabled',
   'handleSourceKeysOperation',
   'getValueFromPropertiesOrTraits',
   'getErrorStatusCode',

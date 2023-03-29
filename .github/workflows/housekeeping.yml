@@ -1,4 +1,4 @@
-name: Handle Stale PRs, Issues and Branhes
+name: Handle Stale PRs, Issues and Branches
 
 on:
   schedule:

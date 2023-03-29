@@ -20,4 +20,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          branch: 'hotfix/${{ github.event.inputs.hotfix_name }}'
+          branch: 'hotfix/${{ inputs.hotfix_name }}'

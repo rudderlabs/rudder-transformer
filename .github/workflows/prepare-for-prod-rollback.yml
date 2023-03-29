@@ -28,6 +28,8 @@ jobs:
           git config --global user.email "noreply@github.com"
 
       - name: Update Helm Charts and Raise Pull Request
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
           git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
           cd rudder-devops
@@ -43,8 +45,8 @@ jobs:
           git add values.enterprise.yaml
 
           yq eval -i ".rudder-transformer.image.tag=\"${{ steps.target-version.outputs.tag_name }}\"" values.multi-tenant.yaml
-          yq eval -i ".user-transformer.image.tag=\"${{ steps.target-version.outputs.tag_name }}\"" values.enterprise.yaml
-          git add values.enterprise.yaml
+          yq eval -i ".user-transformer.image.tag=\"${{ steps.target-version.outputs.tag_name }}\"" values.multi-tenant.yaml
+          git add values.multi-tenant.yaml
 
           cd ../../config-be-rudder-transformer
           yq eval -i ".config-be-rudder-transformer.image.tag=\"${{ steps.target-version.outputs.tag_name }}\"" values.prod.yaml

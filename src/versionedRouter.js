@@ -360,7 +360,7 @@ async function handleValidation(ctx) {
           validationErrors: hv.validationErrors,
           error: errMessage,
         });
-        stats.gauge('hv_violation_type', 1, {
+        stats.counter('hv_violation_type', 1, {
           violationType: hv.violationType,
           ...metaTags,
         });
@@ -371,7 +371,7 @@ async function handleValidation(ctx) {
           statusCode: 200,
           validationErrors: hv.validationErrors,
         });
-        stats.gauge('hv_propagated_events', 1, {
+        stats.counter('hv_propagated_events', 1, {
           ...metaTags,
         });
       }
@@ -392,7 +392,7 @@ async function handleValidation(ctx) {
         validationErrors: [],
         error: errMessage,
       });
-      stats.gauge('hv_errors', 1, {
+      stats.counter('hv_errors', 1, {
         ...metaTags,
       });
     } finally {
@@ -405,10 +405,10 @@ async function handleValidation(ctx) {
   ctx.status = ctxStatusCode;
   ctx.set('apiVersion', API_VERSION);
 
-  stats.gauge('hv_events_count', events.length, {
+  stats.counter('hv_events_count', events.length, {
     ...metaTags,
   });
-  stats.gauge('hv_request_size', requestSize, {
+  stats.counter('hv_request_size', requestSize, {
     ...metaTags,
   });
   stats.timing('hv_request_latency', requestStartTime, {
@@ -636,7 +636,7 @@ if (startDestTransformer) {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
-      stats.gauge('user_transform_input_events', events.length, {
+      stats.counter('user_transform_input_events', events.length, {
         processSessions,
       });
       let groupedEvents;
@@ -652,7 +652,7 @@ if (startDestTransformer) {
           (event) => `${event.metadata.destinationId}_${event.metadata.sourceId}`,
         );
       }
-      stats.gauge('user_transform_function_group_size', Object.entries(groupedEvents).length, {
+      stats.counter('user_transform_function_group_size', Object.entries(groupedEvents).length, {
         processSessions,
       });
 
@@ -687,7 +687,7 @@ if (startDestTransformer) {
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
-              stats.gauge('user_transform_function_input_events', destEvents.length, {
+              stats.counter('user_transform_function_input_events', destEvents.length, {
                 processSessions,
                 ...metaTags,
               });
@@ -737,7 +737,7 @@ if (startDestTransformer) {
                 error: errorString,
               }));
               transformedEvents.push(...destTransformedEvents);
-              stats.gauge('user_transform_errors', destEvents.length, {
+              stats.counter('user_transform_errors', destEvents.length, {
                 transformationVersionId,
                 processSessions,
                 ...metaTags,
@@ -757,7 +757,7 @@ if (startDestTransformer) {
               error: errorMessage,
               metadata: commonMetadata,
             });
-            stats.gauge('user_transform_errors', destEvents.length, {
+            stats.counter('user_transform_errors', destEvents.length, {
               transformationVersionId,
               processSessions,
               ...metaTags,
@@ -772,8 +772,8 @@ if (startDestTransformer) {
       stats.timing('user_transform_request_latency', startTime, {
         processSessions,
       });
-      stats.gauge('user_transform_requests', 1, { processSessions });
-      stats.gauge('user_transform_output_events', transformedEvents.length, {
+      stats.counter('user_transform_requests', 1, { processSessions });
+      stats.counter('user_transform_output_events', transformedEvents.length, {
         processSessions,
       });
     });

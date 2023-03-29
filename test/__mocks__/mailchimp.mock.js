@@ -27,12 +27,12 @@ const mailchimpGetRequestHandler = url => {
   if (mockData) {
     if (
       url ===
-      "https://us20.api.mailchimp.com/3.0/lists/df42a82d07/members/48cd6232dc124497369f59c33d3eb4ab"
+      "https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab"
     ) {
       return { data: mockData, status: 200 };
-    } else if (url === "https://us20.api.mailchimp.com/3.0/lists/ff21810eec") {
+    } else if (url === "https://usXX.api.mailchimp.com/3.0/lists/aud111") {
       return { data: mockData, status: 200 };
-    } else if (url === "https://us20.api.mailchimp.com/3.0/lists/1232yyqw22") {
+    } else if (url === "https://usXX.api.mailchimp.com/3.0/lists/aud112") {
       return { data: mockData, status: 200 };
     } else {
       return new Promise((resolve, reject) => {

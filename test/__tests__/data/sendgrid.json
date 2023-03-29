@@ -5,7 +5,7 @@
       "destination": {
         "Config": {
           "IPPoolName": "",
-          "apiKey": "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",
+          "apiKey": "apikey",
           "attachments": [
             {
               "content": "",
@@ -33,7 +33,7 @@
           "group": "",
           "groupsToDisplay": [{ "groupId": "" }],
           "html": "",
-          "listId": "737ae8d4-25b4-496e-adff-2fded15fd0c6",
+          "listId": "list111",
           "mailFromTraits": false,
           "openTracking": false,
           "openTrackingSubstitutionTag": "",
@@ -72,7 +72,7 @@
       "destination": {
         "Config": {
           "IPPoolName": "",
-          "apiKey": "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",
+          "apiKey": "apikey",
           "attachments": [
             {
               "content": "",
@@ -100,7 +100,7 @@
           "group": "",
           "groupsToDisplay": [{ "groupId": "" }],
           "html": "",
-          "listId": "737ae8d4-25b4-496e-adff-2fded15fd0c6",
+          "listId": "list111",
           "mailFromTraits": false,
           "openTracking": false,
           "openTrackingSubstitutionTag": "",
@@ -142,7 +142,7 @@
             "phone_number": "+91 9557645345",
             "custom_fields": {}
           },
-          "contactListIds": "737ae8d4-25b4-496e-adff-2fded15fd0c6"
+          "contactListIds": "list111"
         },
         "JSON_ARRAY": {}
       },
@@ -152,7 +152,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer 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"
+        "Authorization": "Bearer apikey"
       },
       "version": "1",
       "endpoint": "https://api.sendgrid.com/v3/marketing/contacts"
@@ -165,7 +165,7 @@
         "ID": "2HOQOO6wWKaKjeQrEABXgiH6cmU",
         "Config": {
           "IPPoolName": "",
-          "apiKey": "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",
+          "apiKey": "apikey",
           "attachments": [
             {
               "content": "",
@@ -249,7 +249,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer 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"
+        "Authorization": "Bearer apikey"
       },
       "version": "1",
       "endpoint": "https://api.sendgrid.com/v3/marketing/contacts"
@@ -260,7 +260,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "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",
+          "apiKey": "apikey",
           "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
           "subject": "A sample subject",
           "replyToEmail": "ankit@rudderstack.com",
@@ -334,7 +334,7 @@
       "method": "POST",
       "endpoint": "https://api.sendgrid.com/v3/mail/send",
       "headers": {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer apikey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -374,7 +374,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "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",
+          "apiKey": "apikey",
           "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
           "subject": "A sample subject",
           "replyToEmail": "ankit@rudderstack.com",
@@ -450,7 +450,7 @@
       "method": "POST",
       "endpoint": "https://api.sendgrid.com/v3/mail/send",
       "headers": {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer apikey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -490,7 +490,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "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",
+          "apiKey": "apikey",
           "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
           "subject": "A sample subject",
           "replyToEmail": "ankit@rudderstack.com",
@@ -568,7 +568,7 @@
       "method": "POST",
       "endpoint": "https://api.sendgrid.com/v3/mail/send",
       "headers": {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer apikey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -612,7 +612,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "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",
+          "apiKey": "apikey",
           "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
           "subject": "A sample subject",
           "replyToEmail": "ankit@rudderstack.com",
@@ -693,7 +693,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "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",
+          "apiKey": "apikey",
           "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
           "subject": "A sample subject",
           "replyToEmail": "ankit@rudderstack.com",
@@ -777,7 +777,7 @@
       "method": "POST",
       "endpoint": "https://api.sendgrid.com/v3/mail/send",
       "headers": {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer apikey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -827,7 +827,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "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",
+          "apiKey": "apikey",
           "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
           "subject": "A sample subject",
           "replyToEmail": "ankit@rudderstack.com",
@@ -914,7 +914,7 @@
       "method": "POST",
       "endpoint": "https://api.sendgrid.com/v3/mail/send",
       "headers": {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer apikey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -964,7 +964,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "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",
+          "apiKey": "apikey",
           "eventNamesSettings": [{ "event": "testing" }, { "event": "clicked" }],
           "subject": "A sample subject",
           "replyToEmail": "ankit@rudderstack.com",
@@ -1055,7 +1055,7 @@
       "method": "POST",
       "endpoint": "https://api.sendgrid.com/v3/mail/send",
       "headers": {
-        "Authorization": "Bearer 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",
+        "Authorization": "Bearer apikey",
         "Content-Type": "application/json"
       },
       "params": {},

@@ -23,5 +23,10 @@
     "destKey": "client_dedup_id",
     "sourceKeys": "properties.client_dedup_id",
     "required": false
+  },
+  {
+    "destKey": "price",
+    "sourceKeys": ["properties.price", "properties.value", "properties.revenue"],
+    "required": false
   }
 ]

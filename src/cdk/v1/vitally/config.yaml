@@ -9,7 +9,7 @@ message:
       response:
         format: JSON
         method: POST
-        endpoint: "https://api.vitally.io/rudderstack"
+        endpoint: 'https://api.vitally.io/rudderstack'
         headers:
-          authorization: "Basic {{ destConfig.apiKeyVitally }}"
-          content-type: "application/json"
+          authorization: 'Basic {{ destConfig.apiKeyVitally }}'
+          content-type: 'application/json'

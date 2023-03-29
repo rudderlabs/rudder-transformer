@@ -32,7 +32,7 @@ phases:
     commands:
       - echo build Docker image complete `date`
       - echo push latest Docker images to docker hub...
-      
+
       # creates a docker builder instance to build multi-platform docker images
       - docker buildx create --use
 

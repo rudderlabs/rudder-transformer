@@ -3,7 +3,14 @@ const DestHandlerMap = {
 };
 
 const DestCanonicalNames = {
-  fb_pixel: ['fb_pixel', 'fb pixel', 'FacebookPixel', 'Facebook Pixel', 'FB Pixel', "Facebook_Pixel"],
+  fb_pixel: [
+    'fb_pixel',
+    'fb pixel',
+    'FacebookPixel',
+    'Facebook Pixel',
+    'FB Pixel',
+    'Facebook_Pixel',
+  ],
   ometria: ['Ometria', 'ometria', 'OMETRIA'],
   sendgrid: ['sendgrid', 'Sendgrid', 'SENDGRID'],
   dcm_floodlight: [
@@ -106,11 +113,7 @@ const DestCanonicalNames = {
     'optimizely_fullstack',
   ],
   vitally: ['vitally', 'Vitally', 'VITALLY'],
-  courier: [
-    'Courier',
-    'courier',
-    'COURIER',
-  ],
+  courier: ['Courier', 'courier', 'COURIER'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

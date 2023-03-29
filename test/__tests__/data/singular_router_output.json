@@ -301,18 +301,10 @@
       "DestinationDefinition": {
         "config": {
           "destConfig": {
-            "ios": [
-              "useNativeSDK"
-            ],
-            "android": [
-              "useNativeSDK"
-            ],
-            "cordova": [
-              "useNativeSDK"
-            ],
-            "reactnative": [
-              "useNativeSDK"
-            ],
+            "ios": ["useNativeSDK"],
+            "android": ["useNativeSDK"],
+            "cordova": ["useNativeSDK"],
+            "reactnative": ["useNativeSDK"],
             "defaultConfig": [
               "apiKey",
               "apiSecret",

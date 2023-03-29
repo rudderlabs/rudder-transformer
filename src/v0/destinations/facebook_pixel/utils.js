@@ -1,5 +1,10 @@
 const sha256 = require('sha256');
-const { isObject, getFieldValueFromMessage, formatTimeStamp, getIntegrationsObj } = require('../../util');
+const {
+  isObject,
+  getFieldValueFromMessage,
+  formatTimeStamp,
+  getIntegrationsObj,
+} = require('../../util');
 const { ACTION_SOURCES_VALUES } = require('./config');
 const { InstrumentationError } = require('../../util/errorTypes');
 
@@ -31,7 +36,7 @@ const getContentType = (message, defaultValue, categoryToContent) => {
   const { properties } = message;
   const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
 
-  if(integrationsObj?.contentType){
+  if (integrationsObj?.contentType) {
     return integrationsObj.contentType;
   }
 

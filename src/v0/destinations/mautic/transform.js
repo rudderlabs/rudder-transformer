@@ -166,10 +166,8 @@ const process = async (event) => {
     );
   }
 
-  
   // if both are present we will be taking endpoint after checking the domainMethod selected
   const endpoint = getEndpoint(destination.Config);
-  
 
   // Validating if message type is even given or not
   if (!message.type) {

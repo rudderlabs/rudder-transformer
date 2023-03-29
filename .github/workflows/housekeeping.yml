@@ -2,7 +2,8 @@ name: Handle Stale PRs, Issues and Branches
 
 on:
   schedule:
-    - cron: '42 1 * * *'
+    # Run everyday at 1 AM
+    - cron: '0 1 * * *'
 
 jobs:
   prs:

@@ -79,11 +79,11 @@ const responseHandler = (destinationResponse) => {
   );
 };
 
-const networkHandler = function () {
+function networkHandler() {
   this.prepareProxy = prepareProxyRequest;
   this.proxy = proxyRequest;
   this.processAxiosResponse = processAxiosResponse;
   this.responseHandler = responseHandler;
-};
+}
 
 module.exports = { networkHandler };

@@ -119,12 +119,12 @@ const pardotProxyRequest = async (request) => {
   return response;
 };
 
-const networkHandler = function () {
+function networkHandler() {
   this.responseHandler = responseHandler;
   this.proxy = pardotProxyRequest;
   this.prepareProxy = prepareProxyReq;
   this.processAxiosResponse = processAxiosResponse;
-};
+}
 
 module.exports = {
   networkHandler,

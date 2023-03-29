@@ -3,7 +3,11 @@ const get = require('get-value');
 const sha256 = require('sha256');
 const { prepareProxyRequest, httpSend, httpPOST } = require('../../../adapters/network');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
-const { isHttpStatusSuccess, getHashFromArray, isDefinedAndNotNullAndNotEmpty } = require('../../util');
+const {
+  isHttpStatusSuccess,
+  getHashFromArray,
+  isDefinedAndNotNullAndNotEmpty,
+} = require('../../util');
 const { getConversionActionId } = require('./utils');
 const Cache = require('../../util/cache');
 const { CONVERSION_CUSTOM_VARIABLE_CACHE_TTL, SEARCH_STREAM } = require('./config');
@@ -190,12 +194,12 @@ const responseHandler = (destinationResponse) => {
   );
 };
 
-const networkHandler = function () {
+function networkHandler() {
   this.prepareProxy = prepareProxyRequest;
   this.proxy = ProxyRequest;
   this.processAxiosResponse = processAxiosResponse;
   this.responseHandler = responseHandler;
-};
+}
 
 module.exports = {
   networkHandler,

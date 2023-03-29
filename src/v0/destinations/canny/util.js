@@ -4,6 +4,7 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { getDestinationExternalID } = require('../../util');
 const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const logger = require('../../../logger');
 
 /**
  * Function to retrieve userId from canny using axios
@@ -37,11 +38,11 @@ const retrieveUserId = async (apiKey, message) => {
     requestBody.userID = `${userId}`;
   }
   const response = await httpPOST(url, qs.stringify(requestBody), header);
-  console.log(response);
+  logger.debug(response);
   // If the request fails, throwing error.
   if (response.success === false) {
     throw new NetworkError(
-      `[Canny]:: CannyUserID can't be gnerated due to ${response.data.error}`,
+      `[Canny]:: CannyUserID can't be generated due to ${response.data.error}`,
       response.data?.status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(response.data?.status),

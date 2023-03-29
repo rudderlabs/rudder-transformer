@@ -1,6 +1,6 @@
 import { Context, Next } from 'koa';
 import dotenv from 'dotenv';
-import { ProcessorTransformationRequest, RouterTransformationRequest } from '../types';
+import { RouterTransformationRequest } from '../types';
 
 dotenv.config();
 
@@ -18,88 +18,80 @@ const destinationFilterList = process.env.DESTINATION_FILTER_LIST?.toLocaleLower
 const sourceFilteList = process.env.SOURCE_FILTER_LIST?.toLocaleLowerCase();
 const deliveryFilterList = process.env.DESTINATION_DELIVERY_FILTER_LIST?.toLocaleLowerCase();
 
-export default class RouteActivationController {
-  private static executeActivationRule(ctx: Context, next: Next, condition: boolean) {
-    if (condition) {
-      ctx.status = 404;
-      ctx.body = 'RouteActivationController route is disabled';
-      return ctx;
-    } else {
+export default class RouteActivationMiddleware {
+  private static executeActivationRule(ctx: Context, next: Next, shouldActivate: boolean) {
+    if (shouldActivate) {
       return next();
+    } else {
+      ctx.status = 404;
+      ctx.body = 'RouteActivationMiddleware route is disabled';
+      return ctx;
     }
   }
   public static isDestinationRouteActive(ctx: Context, next: Next) {
-    return RouteActivationController.executeActivationRule(ctx, next, !startDestTransformer);
+    return RouteActivationMiddleware.executeActivationRule(ctx, next, startDestTransformer);
   }
 
   public static isSourceRouteActive(ctx: Context, next: Next) {
-    return RouteActivationController.executeActivationRule(ctx, next, !startSourceTransformer);
+    return RouteActivationMiddleware.executeActivationRule(ctx, next, startSourceTransformer);
   }
 
   public static isDeliveryRouteActive(ctx: Context, next: Next) {
-    return RouteActivationController.executeActivationRule(ctx, next, !transformerDelivery);
+    return RouteActivationMiddleware.executeActivationRule(ctx, next, !!transformerDelivery);
   }
 
   public static isDeliveryTestRouteActive(ctx: Context, next: Next) {
-    return RouteActivationController.executeActivationRule(ctx, next, !deliveryTestModeEnabled);
+    return RouteActivationMiddleware.executeActivationRule(ctx, next, deliveryTestModeEnabled);
   }
 
   public static isUserTransformRouteActive(ctx: Context, next: Next) {
-    return RouteActivationController.executeActivationRule(ctx, next, !areFunctionsEnabled);
+    return RouteActivationMiddleware.executeActivationRule(ctx, next, areFunctionsEnabled);
   }
 
   public static isUserTransformTestRouteActive(ctx: Context, next: Next) {
-    return RouteActivationController.executeActivationRule(ctx, next, !transformerTestModeEnabled);
+    return RouteActivationMiddleware.executeActivationRule(ctx, next, transformerTestModeEnabled);
   }
 
   public static destinationProcFilter(ctx: Context, next: Next) {
     const { destination }: { destination: string } = ctx.params;
-    return RouteActivationController.executeActivationRule(
-      ctx,
-      next,
-      Array.isArray(destinationFilterList) &&
-        !destinationFilterList.split(',').includes(destination.toLowerCase()),
-    );
+    const shouldActivate = destinationFilterList
+      ? !!destinationFilterList?.split(',').includes(destination.toLowerCase())
+      : true;
+    return RouteActivationMiddleware.executeActivationRule(ctx, next, shouldActivate);
   }
 
   public static destinationRtFilter(ctx: Context, next: Next) {
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
-    return RouteActivationController.executeActivationRule(
-      ctx,
-      next,
-      Array.isArray(destinationFilterList) &&
-        !destinationFilterList.split(',').includes(destination.toLowerCase()),
-    );
+    const shouldActivate = destinationFilterList
+      ? !!destinationFilterList?.split(',').includes(destination.toLowerCase())
+      : true;
+
+    return RouteActivationMiddleware.executeActivationRule(ctx, next, shouldActivate);
   }
 
   public static destinationBatchFilter(ctx: Context, next: Next) {
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
-    return RouteActivationController.executeActivationRule(
-      ctx,
-      next,
-      Array.isArray(destinationFilterList) &&
-        !destinationFilterList.split(',').includes(destination.toLowerCase()),
-    );
+    const shouldActivate = destinationFilterList
+      ? !!destinationFilterList?.split(',').includes(destination.toLowerCase())
+      : true;
+    return RouteActivationMiddleware.executeActivationRule(ctx, next, shouldActivate);
   }
 
   public static sourceFilter(ctx: Context, next: Next) {
     const { source }: { source: string } = ctx.params;
-    return RouteActivationController.executeActivationRule(
-      ctx,
-      next,
-      Array.isArray(sourceFilteList) && !sourceFilteList.split(',').includes(source.toLowerCase()),
-    );
+    const shouldActivate = sourceFilteList
+      ? !!sourceFilteList?.split(',').includes(source.toLowerCase())
+      : true;
+    return RouteActivationMiddleware.executeActivationRule(ctx, next, shouldActivate);
   }
 
   public static destinationDeliveryFilter(ctx: Context, next: Next) {
     const { destination }: { destination: string } = ctx.params;
-    return RouteActivationController.executeActivationRule(
-      ctx,
-      next,
-      Array.isArray(deliveryFilterList) &&
-        !deliveryFilterList.split(',').includes(destination.toLowerCase()),
-    );
+    const shouldActivate = deliveryFilterList
+      ? !!deliveryFilterList?.split(',').includes(destination.toLowerCase())
+      : true;
+    return RouteActivationMiddleware.executeActivationRule(ctx, next, shouldActivate);
   }
 }

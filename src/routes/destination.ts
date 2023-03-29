@@ -1,7 +1,7 @@
 import Router from '@koa/router';
 import DestinationController from '../controllers/destination';
 import RegulationController from '../controllers/regulation';
-import RouteActivationController from '../controllers/routeActivation';
+import RouteActivationController from '../middlewares/routeActivation';
 
 const router = new Router();
 

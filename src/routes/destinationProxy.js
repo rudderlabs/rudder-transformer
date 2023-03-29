@@ -1,4 +1,4 @@
-const KoaRouter = require('koa-router');
+const KoaRouter = require('@koa/router');
 const path = require('path');
 const { DestProxyController } = require('../controllers/destinationProxy');
 const { getIntegrations } = require('./utils');

@@ -1,9 +1,9 @@
-node_modules
-npm-debug.log
-Dockerfile
-.dockerignore
-.git
-.gitignore
-docker-compose.yml
-buildspec.yml
-appspec.yml
+*
+!src
+!features.json
+!Makefile
+!jest*.js
+!benchmark
+!package*.json
+# to be removed later
+!test

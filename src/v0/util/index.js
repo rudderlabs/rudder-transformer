@@ -90,6 +90,11 @@ const formatValue = (value) => {
   return Math.round(value);
 };
 
+const isObject = (value) => {
+  const type = typeof value;
+  return value != null && (type === 'object' || type === 'function') && !Array.isArray(value);
+};
+
 function isEmpty(input) {
   return _.isEmpty(_.toString(input).trim());
 }
@@ -1014,12 +1019,19 @@ const getDestinationExternalIDInfoForRetl = (message, destination) => {
 };
 
 const getDestinationExternalIDObjectForRetl = (message, destination) => {
+  const { externalId } = message.context || {};
   let externalIdArray = [];
-  if (message.context && message.context.externalId) {
-    externalIdArray = message.context.externalId;
+
+  if (externalId) {
+    if (Array.isArray(externalId)) {
+      externalIdArray = externalId;
+    } else if (isObject(externalId) && !isEmptyObject(externalId)) {
+      externalIdArray = [externalId];
+    }
   }
+
   let obj;
-  if (externalIdArray) {
+  if (externalIdArray.length > 0) {
     // some stops the execution when the element is found
     externalIdArray.some((extIdObj) => {
       const { type } = extIdObj;
@@ -1031,11 +1043,6 @@ const getDestinationExternalIDObjectForRetl = (message, destination) => {
     });
   }
   return obj;
-};
-
-const isObject = (value) => {
-  const type = typeof value;
-  return value != null && (type === 'object' || type === 'function') && !Array.isArray(value);
 };
 
 const isNonFuncObject = (value) => {
@@ -1460,7 +1467,7 @@ function getValidDynamicFormConfig(
       (element[keyRight] || element[keyRight] === ''),
   );
   if (res.length < attributeArray.length) {
-    stats.increment('dest_transform_invalid_dynamicConfig_count', 1, {
+    stats.increment('dest_transform_invalid_dynamicConfig_count', {
       destinationType,
       destinationId,
     });
@@ -1725,9 +1732,86 @@ const getAccessToken = (metadata, accessTokenKey) => {
   const { secret } = metadata;
   // we would need to verify if secret is present and also if the access token field is present in secret
   if (!secret || !secret[accessTokenKey]) {
-    throw new OAuthSecretError("Empty/Invalid access token");
+    throw new OAuthSecretError('Empty/Invalid access token');
   }
   return secret[accessTokenKey];
+};
+
+/**
+ * This function takes an array of transformed events and groups them into batches based on the maximum batch size provided.
+ *
+ * @param { Array<{ message: *[], metadata: *, destination: * }> } transformedEventsList
+ *  - An array of objects representing transformed events to be batched.
+ * @param { Number } maxBatchSize An integer representing the maximum size of each batch of events.
+ *
+ * @returns { Array<{ events: *[], metadata: *[], destination: * }> }
+ *  - A list of objects where each object contains a batch of events, its corresponding metadata, and destination.
+ *
+ * @example
+ *  const transformedEventsList = [
+ *    {
+ *      message: [{ userId: 1 }, { userId: 2 }],
+ *      metadata: { jobId: 1 },
+ *      destination: { name: 'dest' }
+ *    },
+ *    {
+ *      message: [{ userId: 3 }, { userId: 4 }],
+ *      metadata: { jobId: 2 },
+ *      destination: { name: 'dest' }
+ *    },
+ *    {
+ *      message: [{ userId: 5 }],
+ *      metadata: { jobId: 3 },
+ *      destination: { name: 'dest' }
+ *    }
+ *  ];
+ *  const maxBatchSize = 3;
+ *
+ *  batchMultiplexedEvents(transformedEventsList, maxBatchSize)
+ *  returns [
+ *    {
+ *      events: [{ userId: 1 }, { userId: 2 }, { userId: 5 }],
+ *      metadata: [{ jobId: 1 }, { jobId: 3 }],
+ *      destination: { name: 'dest' },
+ *    },
+ *    {
+ *      events: [{ userId: 3 }, { userId: 4 }],
+ *      metadata: [{ jobId: 2 }],
+ *      destination: { name: 'dest' },
+ *    }
+ *  ]
+ */
+const batchMultiplexedEvents = (transformedEventsList, maxBatchSize) => {
+  const batchedEvents = [];
+
+  if (Array.isArray(transformedEventsList)) {
+    transformedEventsList.forEach((transformedInput) => {
+      let transformedMessage = Array.isArray(transformedInput.message)
+        ? transformedInput.message
+        : [transformedInput.message];
+      let eventsNotBatched = true;
+      if (batchedEvents.length > 0) {
+        const batch = batchedEvents[batchedEvents.length - 1];
+        if (batch.events.length + transformedMessage.length <= maxBatchSize) {
+          batch.events.push(...transformedMessage);
+          batch.metadata.push(transformedInput.metadata);
+          eventsNotBatched = false;
+        }
+      }
+      if (batchedEvents.length === 0 || eventsNotBatched) {
+        if (transformedMessage.length > maxBatchSize) {
+          transformedMessage = _.chunk(transformedMessage, maxBatchSize);
+        }
+        batchedEvents.push({
+          events: transformedMessage,
+          metadata: [transformedInput.metadata],
+          destination: transformedInput.destination,
+        });
+      }
+    });
+  }
+
+  return batchedEvents;
 };
 
 // ========================================================================
@@ -1739,6 +1823,7 @@ module.exports = {
   addExternalIdToTraits,
   adduserIdFromExternalId,
   base64Convertor,
+  batchMultiplexedEvents,
   checkEmptyStringInarray,
   checkSubsetOfArray,
   constructPayload,
@@ -1825,5 +1910,5 @@ module.exports = {
   isHybridModeEnabled,
   getEventType,
   checkAndCorrectUserId,
-  getAccessToken
+  getAccessToken,
 };

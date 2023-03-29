@@ -1,0 +1,81 @@
+name: Publish New GitHub Release
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Publish New GitHub Release
+    runs-on: ubuntu-latest
+
+    if: (startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')) && github.event.pull_request.merged == true # only merged pull requests must trigger this job
+
+    steps:
+      - name: Extract Version
+        id: extract-version
+        run: |
+          branch_name="${{ github.event.pull_request.head.ref }}"
+          version=${branch_name#hotfix-}
+          version=${version#release/v}
+
+          echo "release_version=$version" >> $GITHUB_OUTPUT
+
+      - name: Checkout
+        uses: actions/checkout@v3.5.0
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v3.6.0
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'npm'
+
+      # In order to make a commit, we need to initialize a user.
+      # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
+      - name: Initialize Mandatory Git Config
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "noreply@github.com"
+
+      - name: Tag & Create GitHub Release
+        id: create_release
+        env:
+          HUSKY: 0
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git tag -a v${{ steps.extract-version.outputs.release_version }} -m "chore: release v${{ steps.extract-version.outputs.release_version }}"
+          git push origin refs/tags/v${{ steps.extract-version.outputs.release_version }}
+          npm run release:github
+          echo "DATE=$(date)" >> $GITHUB_ENV
+
+      - name: Pull Changes Into develop Branch
+        uses: repo-sync/pull-request@v2.12.1
+        with:
+          source_branch: 'main'
+          destination_branch: 'develop'
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_title: 'chore(release): pull main into develop post release v${{ steps.extract-version.outputs.release_version }}'
+          pr_body: ':crown: *An automated PR*'
+
+      - name: Delete Release Branch
+        uses: koj-co/delete-merged-action@master
+        if: startsWith(github.event.pull_request.head.ref, 'release/')
+        with:
+          branches: 'release/*'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Delete Hotfix Release Branch
+        uses: koj-co/delete-merged-action@master
+        if: startsWith(github.event.pull_request.head.ref, 'hotfix-release/')
+        with:
+          branches: 'hotfix-release/*'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

@@ -300,10 +300,7 @@ const processEvent = (message, destination) => {
   let operationAudienceId = audienceId;
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (!operationAudienceId && mappedToDestination) {
-    const { objectType } = getDestinationExternalIDInfoForRetl(
-      inputs[0].message,
-      'FB_CUSTOM_AUDIENCE',
-    );
+    const { objectType } = getDestinationExternalIDInfoForRetl(message, 'FB_CUSTOM_AUDIENCE');
     console.log(objectType);
     operationAudienceId = objectType;
   }

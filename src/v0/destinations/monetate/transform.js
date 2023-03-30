@@ -101,23 +101,25 @@ const formatValue = (value, format, required) => {
 };
 
 const customMetadataHandler = (payload, destKey, value, metadata) => {
+  const clonedPayload = { ...payload };
   // make sure payload.destKey exists and is of correct type
-  if (!get(payload, destKey) && metadata.targetType) {
-    payload[destKey] = createObject(metadata.targetType);
+  if (!get(clonedPayload, destKey) && metadata.targetType) {
+    clonedPayload[destKey] = createObject(metadata.targetType);
   }
   // populate payload
   if (metadata.isTargetTypePrimite) {
     // set value directly if it is primitive
     // TODO : call format value for here, we can use the function alredy defined in utils
-    set(payload, destKey, value);
+    set(clonedPayload, destKey, value);
   } else {
     // value is not a primitive type
     // TODO: add else or refactor for better code cov
     const targetValue = formatValue(value, metadata.targetFormat, metadata.targetFormatRequired);
-    if (metadata.action && payload[destKey][metadata.action] && targetValue) {
-      payload[destKey][metadata.action](targetValue);
+    if (metadata.action && clonedPayload[destKey][metadata.action] && targetValue) {
+      clonedPayload[destKey][metadata.action](targetValue);
     }
   }
+  return clonedPayload;
 };
 
 function responseBuilder(body, destination) {
@@ -125,10 +127,11 @@ function responseBuilder(body, destination) {
   const response = defaultRequestConfig();
 
   // adding monetate channel to body
-  body.channel = destinationConfig.monetateChannel;
+  const clonedBody = { ...body };
+  clonedBody.channel = destinationConfig.monetateChannel;
 
   response.endpoint = ENDPOINT + destinationConfig.retailerShortName;
-  response.body.JSON = body;
+  response.body.JSON = clonedBody;
   response.headers = {
     'Content-Type': 'application/json',
   };
@@ -139,7 +142,7 @@ function responseBuilder(body, destination) {
 const constructPayload = (message, mappingJson) => {
   // Mapping JSON should be an array
   if (Array.isArray(mappingJson) && mappingJson.length > 0) {
-    const payload = {};
+    let payload = {};
 
     mappingJson.forEach((mapping) => {
       const { sourceKeys, destKey, required, metadata } = mapping;
@@ -148,7 +151,7 @@ const constructPayload = (message, mappingJson) => {
       if (value) {
         // set the value only if correct
         if (metadata) {
-          customMetadataHandler(payload, destKey, value, metadata);
+          payload = customMetadataHandler(payload, destKey, value, metadata);
         } else {
           set(payload, destKey, value);
         }

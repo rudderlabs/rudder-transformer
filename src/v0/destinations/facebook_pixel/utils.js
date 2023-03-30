@@ -33,6 +33,7 @@ const formatRevenue = (revenue) => {
  * - https://developers.facebook.com/docs/facebook-pixel/reference/#object-properties
  */
 const getContentType = (message, defaultValue, categoryToContent) => {
+  let tempCategoryToContent = categoryToContent;
   const { properties } = message;
   const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
 
@@ -47,15 +48,16 @@ const getContentType = (message, defaultValue, categoryToContent) => {
       category = products[0].category;
     }
   } else {
-    if (categoryToContent === undefined) {
-      categoryToContent = [];
+    if (tempCategoryToContent === undefined) {
+      tempCategoryToContent = [];
     }
-    const mapped = categoryToContent;
+    const mapped = tempCategoryToContent;
     const mappedTo = mapped.reduce((filtered, map) => {
+      let filter = filtered;
       if (map.from === category) {
-        filtered = map.to;
+        filter = map.to;
       }
-      return filtered;
+      return filter;
     }, '');
     if (mappedTo.length > 0) {
       return mappedTo;
@@ -146,52 +148,53 @@ const transformedPayloadData = (
     'postalCode',
     'birthday',
   ];
-  blacklistPiiProperties = blacklistPiiProperties || [];
-  whitelistPiiProperties = whitelistPiiProperties || [];
-  eventCustomProperties = eventCustomProperties || [];
+  const clonedCustomData = { ...customData };
+  const finalBlacklistPiiProperties = blacklistPiiProperties || [];
+  const finalWhitelistPiiProperties = whitelistPiiProperties || [];
+  const finalEventCustomProperties = eventCustomProperties || [];
   const customBlackListedPiiProperties = {};
   const customWhiteListedProperties = {};
   const customEventProperties = {};
-  blacklistPiiProperties.forEach((property) => {
+  finalBlacklistPiiProperties.forEach((property) => {
     const singularConfigInstance = property;
     customBlackListedPiiProperties[singularConfigInstance.blacklistPiiProperties] =
       singularConfigInstance.blacklistPiiHash;
   });
 
-  whitelistPiiProperties.forEach((property) => {
+  finalWhitelistPiiProperties.forEach((property) => {
     const singularConfigInstance = property;
     customWhiteListedProperties[singularConfigInstance.whitelistPiiProperties] = true;
   });
 
-  eventCustomProperties.forEach((property) => {
+  finalEventCustomProperties.forEach((property) => {
     const singularConfigInstance = property;
     customEventProperties[singularConfigInstance.eventCustomProperties] = true;
   });
 
-  Object.keys(customData).forEach((eventProp) => {
+  Object.keys(clonedCustomData).forEach((eventProp) => {
     const isDefaultPiiProperty = defaultPiiProperties.includes(eventProp);
     const isProperyWhiteListed = customWhiteListedProperties[eventProp] || false;
     if (isDefaultPiiProperty && !isProperyWhiteListed) {
-      delete customData[eventProp];
+      delete clonedCustomData[eventProp];
     }
 
     if (Object.prototype.hasOwnProperty.call(customBlackListedPiiProperties, eventProp)) {
       if (customBlackListedPiiProperties[eventProp]) {
-        customData[eventProp] =
+        clonedCustomData[eventProp] =
           integrationsObj && integrationsObj.hashed
             ? String(message.properties[eventProp])
             : sha256(String(message.properties[eventProp]));
       } else {
-        delete customData[eventProp];
+        delete clonedCustomData[eventProp];
       }
     }
     const isCustomProperty = customEventProperties[eventProp] || false;
     if (isStandard && !isCustomProperty && !isDefaultPiiProperty) {
-      delete customData[eventProp];
+      delete clonedCustomData[eventProp];
     }
   });
 
-  return customData;
+  return clonedCustomData;
 };
 
 /**

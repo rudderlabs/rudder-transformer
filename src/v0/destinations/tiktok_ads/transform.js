@@ -53,6 +53,7 @@ const checkContentType = (contents, contentType) => {
   if (Array.isArray(contents)) {
     contents.forEach((content) => {
       if (!content.content_type) {
+        // eslint-disable-next-line no-param-reassign
         content.content_type = contentType || 'product_group';
       }
     });
@@ -220,13 +221,14 @@ function batchEvents(eventsChunk) {
 
     // Batch event into dest batch structure
     chunk.forEach((ev) => {
+      const clonedEv = { ...ev };
       // Pixel code must be added above "batch": [..]
-      delete ev.message.body.JSON.pixel_code;
+      delete clonedEv.message.body.JSON.pixel_code;
       // Partner name must be added above "batch": [..]
-      delete ev.message.body.JSON.partner_name;
-      ev.message.body.JSON.type = 'track';
-      batchResponseList.push(ev.message.body.JSON);
-      metadata.push(ev.metadata);
+      delete clonedEv.message.body.JSON.partner_name;
+      clonedEv.message.body.JSON.type = 'track';
+      batchResponseList.push(clonedEv.message.body.JSON);
+      metadata.push(clonedEv.metadata);
     });
 
     batchEventResponse.batchedRequest.body.JSON = {

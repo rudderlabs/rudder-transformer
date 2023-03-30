@@ -148,10 +148,11 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
 }
 
 function processNonTrackEvents(message, eventName) {
-  if (!isDefinedAndNotNull(message.event)) {
-    message.event = message.name || (message.properties && message.properties.name);
+  const clonedMessage = { ...message };
+  if (!isDefinedAndNotNull(clonedMessage.event)) {
+    clonedMessage.event = message.name || (message.properties && message.properties.name);
   }
-  const payload = getEventValueForUnIdentifiedTrackEvent(message);
+  const payload = getEventValueForUnIdentifiedTrackEvent(clonedMessage);
   payload.eventName = eventName;
   return payload;
 }

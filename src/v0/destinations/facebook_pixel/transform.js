@@ -437,7 +437,7 @@ const processEvent = (message, destination) => {
     const deltaMin = Math.ceil(moment.duration(start.diff(current)).asMinutes());
     if (deltaDay > 7 || deltaMin > 1) {
       // TODO: Remove after testing in mirror transformer
-      stats.increment('fb_pixel_timestamp_error', 1, {
+      stats.increment('fb_pixel_timestamp_error', {
         destinationId: destination.ID,
       });
       throw new InstrumentationError(

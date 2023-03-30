@@ -1218,9 +1218,11 @@ function deleteObjectProperty(object, pathToObject) {
     return;
   }
   if (typeof pathToObject === 'string') {
+    // eslint-disable-next-line no-param-reassign
     pathToObject = pathToObject.split('.');
   }
   for (i = 0; i < pathToObject.length - 1; i += 1) {
+    // eslint-disable-next-line no-param-reassign
     object = object[pathToObject[i]];
 
     if (typeof object === 'undefined') {
@@ -1228,6 +1230,7 @@ function deleteObjectProperty(object, pathToObject) {
     }
   }
 
+  // eslint-disable-next-line no-param-reassign
   delete object[pathToObject.pop()];
 }
 
@@ -1301,6 +1304,7 @@ function addExternalIdToTraits(message) {
 const adduserIdFromExternalId = (message) => {
   const externalId = get(message, 'context.externalId.0.id');
   if (externalId) {
+    // eslint-disable-next-line no-param-reassign
     message.userId = externalId;
   }
 };

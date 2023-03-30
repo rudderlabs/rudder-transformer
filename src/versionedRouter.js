@@ -510,6 +510,7 @@ async function routerHandleDest(ctx) {
     respEvents
       .filter((resp) => 'error' in resp && _.isObject(resp.statTags) && !_.isEmpty(resp.statTags))
       .forEach((resp) => {
+        // eslint-disable-next-line no-param-reassign
         resp.statTags = {
           ...resp.statTags,
           ...defTags,
@@ -1111,6 +1112,7 @@ const batchHandler = (ctx) => {
   Object.entries(allDestEvents).map(async ([, destEvents]) => {
     // TODO: check await needed?
     try {
+      // eslint-disable-next-line no-param-reassign
       destEvents = processDynamicConfig(destEvents, 'batch');
       const destBatchedRequests = destHandler.batch(destEvents);
       response.batchedRequests.push(...destBatchedRequests);

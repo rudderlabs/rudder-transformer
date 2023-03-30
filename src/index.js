@@ -6,15 +6,22 @@ const logger = require('./logger');
 
 const { router } = require('./versionedRouter');
 const { testRouter } = require('./testRouter');
+const { metricsRouter } = require('./metricsRouter');
 const cluster = require('./util/cluster');
-const { addPrometheusMiddleware } = require('./middleware');
+const { addStatMiddleware } = require('./middleware');
 const { logProcessInfo } = require('./util/utils');
 
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
 
 const port = parseInt(process.env.PORT || '9090', 10);
+const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
+
 const app = new Koa();
-addPrometheusMiddleware(app);
+addStatMiddleware(app);
+
+const metricsApp = new Koa();
+addStatMiddleware(metricsApp);
+metricsApp.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());
 
 app.use(
   bodyParser({
@@ -31,8 +38,13 @@ function finalFunction() {
 }
 
 if (clusterEnabled) {
-  cluster.start(port, app);
+  cluster.start(port, app, metricsApp);
 } else {
+  // HTTP server for exposing metrics
+  if (process.env.STATS_CLIENT === 'prometheus') {
+    metricsApp.listen(metricsPort);
+  }
+
   const server = app.listen(port);
 
   process.on('SIGTERM', () => {

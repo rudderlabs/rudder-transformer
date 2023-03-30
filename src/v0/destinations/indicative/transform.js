@@ -8,6 +8,7 @@ const {
   defaultPostRequestConfig,
   simpleProcessRouterDest,
 } = require('../../util');
+const { getUAInfo } = require('./utils');
 const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 
 const handleProperties = (properties) => {
@@ -101,6 +102,11 @@ const handleProperties = (properties) => {
 
 const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
+  // Passing user agent info for identify, track, screen and page calls
+  if (category.name !== CONFIG_CATEGORIES.ALIAS.name) {
+    payload.properties = { ...payload.properties, ...getUAInfo(message) };
+  }
+
   if (payload) {
     if (payload.properties) {
       // keeping this properties handling logic here

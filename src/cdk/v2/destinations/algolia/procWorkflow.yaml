@@ -53,7 +53,8 @@ steps:
           name: populateForOtherEvents
           template: |
             const products = .message.properties.products;
-            $.context.payload.objectIDs = ~r products.objectId.()[:20];
+            const objectIDs = ~r products.objectId;
+            $.context.payload.objectIDs = objectIDs[:20];
 
   - name: validateDestPayload
     template: |

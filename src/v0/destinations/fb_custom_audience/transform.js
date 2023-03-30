@@ -281,9 +281,6 @@ const processEvent = (message, destination) => {
   const toSendEvents = [];
   let wrappedResponse = {};
 
-  console.log('==============Checking fb custom audience Config=======================');
-  console.log(destination.Config);
-
   let { userSchema } = destination.Config;
   const { isHashRequired, audienceId, maxUserCount } = destination.Config;
   if (!message.type) {
@@ -301,10 +298,8 @@ const processEvent = (message, destination) => {
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (!operationAudienceId && mappedToDestination) {
     const { objectType } = getDestinationExternalIDInfoForRetl(message, 'FB_CUSTOM_AUDIENCE');
-    console.log(objectType);
     operationAudienceId = objectType;
   }
-  console.log(operationAudienceId);
   if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
     throw new ConfigurationError('Audience ID is a mandatory field');
   }

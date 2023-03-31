@@ -25,9 +25,22 @@ jobs:
         run: npm ci
 
       - name: Run Tests
-        run: npm run test:ci
+        run: |
+          npm run test:ci
+          npm run check:lint
 
       - name: Upload Coverage Reports to Codecov
         uses: codecov/codecov-action@v3.1.1
         with:
           directory: ./reports/coverage
+
+      - name: Fix filesystem paths in generated reports
+        run: |
+          sed -i 's+home/runner/work/rudder-transformer/rudder-transformer+/github/workspace+g' reports/coverage/lcov.info
+          sed -i 's+/home/runner/work/rudder-transformer/rudder-transformer+/github/workspace+g' reports/eslint.json
+
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v1.9
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

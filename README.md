@@ -1,4 +1,5 @@
 [![codecov](https://codecov.io/gh/rudderlabs/rudder-transformer/branch/develop/graph/badge.svg?token=G24OON85SB)](https://codecov.io/gh/rudderlabs/rudder-transformer)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rudderlabs_rudder-transformer&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=rudderlabs_rudder-transformer)
 
 
 # RudderStack Transformer

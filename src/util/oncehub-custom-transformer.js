@@ -3,6 +3,13 @@ const { EventType } = require('../constants');
 const getPIIDestinationList = () => {
   return (process.env.WHITELIST_PII_DESTINATION || 'customerio').trim().split(',');
 };
+const doesEventContainsTraits = event => {
+  return event && event.message && event.message.traits;
+};
+
+const doesEventContainContextTraits = event => {
+  return event && event.message && event.message.context  && event.message.context.traits;
+};
 
 const handleFirstLoginGA4Property = (destination, event, traits) => {
   // delete firstLoginGA4 property from traits when destination is not GA4

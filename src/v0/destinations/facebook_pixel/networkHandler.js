@@ -63,24 +63,66 @@ const errorDetailsMap = {
     33: new ErrorDetailsExtractor.Builder().setStatus(400)
       .setMessage('Unsupported post request. Object with ID \'PIXEL_ID\' does not exist, cannot be loaded due to missing permissions, or does not support this operation')
       .build(),
+    default: new ErrorDetailsExtractor.Builder().setStatus(400)
+      .setMessage('Invalid Parameter')
+      .build(),
   },
   1: {
     // An unknown error occurred.
     // This error may occur if you set level to adset but the correct value should be campaign
-    99: new ErrorDetailsExtractor.Builder().setStatus(500).setMessage('An unknown error occurred').build(),
+    99: new ErrorDetailsExtractor.Builder().setStatus(500).setMessage('This error may occur if you set level to adset but the correct value should be campaign').build(),
+    default: new ErrorDetailsExtractor.Builder().setStatus(500).setMessage('An unknown error occurred').build(),
   },
   190: {
     460: new ErrorDetailsExtractor.Builder().setStatus(400)
       .setMessage('Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.')
       .build(),
+    default: new ErrorDetailsExtractor.Builder().setStatus(400)
+      .setMessage('Invalid OAuth 2.0 access token')
+      .build(),
+  },
+  3: {
+    default: new ErrorDetailsExtractor.Builder().setStatus(400)
+      .setMessage('Capability or permissions issue.')
+      .build(), 
+  },
+  2: {
+    default: new ErrorDetailsExtractor.Builder().setStatus(500)
+      .setMessage('Temporary issue due to downtime.')
+      .build(), 
+  },
+  341: {
+    default: new ErrorDetailsExtractor.Builder().setStatus(500)
+      .setMessage('Application limit reached: Temporary issue due to downtime or throttling.')
+      .build(), 
+  },
+  368: {
+    default: new ErrorDetailsExtractor.Builder().setStatus(500)
+      .setMessage('Temporarily blocked for policies violations.')
+      .build(), 
+  },
+  5000: {
+    default: new ErrorDetailsExtractor.Builder().setStatus(500)
+      .setMessage('Unknown Error Code.')
+      .build(), 
+  },
+  4: {
+    default: new ErrorDetailsExtractor.Builder().setStatus(429)
+      .setMessage('API Too Many Calls: Temporary issue due to throttling.')
+      .build(), 
+  },
+  17: {
+    default: new ErrorDetailsExtractor.Builder().setStatus(429)
+      .setMessage('API User Too Many Calls: Temporary issue due to downtime.')
+      .build(), 
   }
 };
 
 const getErrorDetailsFromErrorMap = (error) => {
   const { code, error_subcode: subCode } = error;
   let errDetails;
-  if (!isEmpty(errorDetailsMap[code]) && subCode) {
-    errDetails = errorDetailsMap[code][subCode];
+  if (!isEmpty(errorDetailsMap[code])) {
+    errDetails = errorDetailsMap[code][subCode] || errorDetailsMap[code]?.default;
   }
   return errDetails;
 };
@@ -91,6 +133,7 @@ const getStatus = (error) => {
   if (!isEmpty(errorDetail)) {
     errorStatus = errorDetail.status;
   }
+  // TODO: Clean-up this logic
   if (RETRYABLE_ERROR_CODES.includes(error.code)) {
     errorStatus = 500;
   }

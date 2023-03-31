@@ -131,7 +131,7 @@
     "supertest": "^6.3.3"
   },
   "lint-staged": {
-    "*.{js,ts}": "eslint --fix",
+    "*.{js,ts}": "eslint --cache --fix",
     "*.{json,js,ts,md}": "prettier --write"
   },
   "config": {

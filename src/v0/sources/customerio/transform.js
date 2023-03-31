@@ -15,7 +15,7 @@ function process(event) {
   const eventType = 'track';
   message.setEventType(eventType);
 
-  const eventObjectType = (event.object_type || '').toLowerCase();
+  const eventObjectType = event.object_type?.toLowerCase() || '';
   let eventName = get(mappingConfig, `${eventObjectType}.${event.metric}`);
   if (!eventName) {
     // throw new TransformationError("Metric not supported");

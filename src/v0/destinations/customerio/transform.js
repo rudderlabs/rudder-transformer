@@ -36,6 +36,7 @@ const {
   OBJECT_EVENT_ENDPOINT,
   DEFAULT_OBJECT_ACTION,
   DEVICE_DELETE_ENDPOINT,
+  OBJECT_EVENT_ENDPOINTS,
   DEVICE_REGISTER_ENDPOINT,
 } = require('./config');
 const logger = require('../../../logger');
@@ -322,7 +323,7 @@ const batchEvents = (successRespList) => {
   const groupEvents = [];
   // Filtering out group calls to process batching
   successRespList.forEach((resp) => {
-    if (resp.message.endpoint !== OBJECT_EVENT_ENDPOINT) {
+    if (!OBJECT_EVENT_ENDPOINTS.includes(resp.message.endpoint)) {
       batchedResponseList.push(
         getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
       );

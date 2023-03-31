@@ -41,3 +41,27 @@ describe(`${name} Tests`, () => {
     });
   });
 });
+
+describe("Router Tests for rETL sources", () => {
+  it("should send events to dest", async () => {
+    const input = JSON.parse(
+      fs.readFileSync(
+        path.resolve(
+          __dirname,
+          `data/${integration}_router_rETL_input.json`
+        )
+      )
+    );
+    const output = JSON.parse(
+      fs.readFileSync(
+        path.resolve(
+          __dirname,
+          `data/${integration}_router_rETL_output.json`
+        )
+      )
+    );
+    const actualOutput = await transformer.processRouterDest(input);
+   console.log(JSON.stringify(actualOutput))
+    expect(actualOutput).toEqual(output);
+  });
+});

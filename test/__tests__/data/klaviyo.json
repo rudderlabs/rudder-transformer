@@ -410,38 +410,40 @@
         "timestamp": "2020-01-21T00:21:34.208Z"
       }
     },
-    "output": {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs",
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
-        "revision": "2023-02-22"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "data": {
-            "type": "profile-subscription-bulk-create-job",
-            "attributes": {
-              "list_id": "XUepkK",
-              "subscriptions": [
-                {
-                  "email": "utsab@rudderstack.com",
-                  "phone_number": "+12 345 678 900"
-                }
-              ]
-            }
-          }
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://a.klaviyo.com/api/profile-subscription-bulk-create-jobs",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Klaviyo-API-Key pk_b68c7b5163d98807fcb57e6f921216629d",
+          "revision": "2023-02-22"
         },
-        "JSON_ARRAY": {},
-        "XML": {},
-        "FORM": {}
-      },
-      "files": {}
-    }
+        "params": {},
+        "body": {
+          "JSON": {
+            "data": {
+              "type": "profile-subscription-bulk-create-job",
+              "attributes": {
+                "list_id": "XUepkK",
+                "subscriptions": [
+                  {
+                    "email": "utsab@rudderstack.com",
+                    "phone_number": "+12 345 678 900"
+                  }
+                ]
+              }
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
   }
 ]

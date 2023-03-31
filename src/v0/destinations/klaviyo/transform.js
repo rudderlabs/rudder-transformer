@@ -256,7 +256,7 @@ const groupRequestHandler = (message, category, destination) => {
   if (traitsInfo?.subscribe) {
     response = subscribeUserToList(message, traitsInfo, destination);
   }
-  return response;
+  return [response];
 };
 
 // Main event processor using specific handler funcs
@@ -297,8 +297,12 @@ const batchEvents = (successRespList) => {
   const batchedResponseList = [];
   const identifyResponseList = [];
   successRespList.forEach((event) => {
-    identifyResponseList.push(event.message[0]);
-    event.message = event.message[1];
+    if (event.message.length === 2) {
+      identifyResponseList.push(event.message[0]);
+      event.message = event.message[1];
+    } else {
+      event.message = event.message[0];
+    }
   });
   const subscribeEventGroups = _.groupBy(
     successRespList,

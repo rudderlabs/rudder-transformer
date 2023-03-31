@@ -18,7 +18,6 @@
     "format": "prettier --write .",
     "lint": "eslint . || exit 0",
     "lint:fix": "eslint . --fix",
-    "lint:check": "eslint --ext .js,.json . --fix; exit 0",
     "lint:fix:json": "eslint --ext .json --fix .",
     "check:merge": "npm run verify || exit 1; codecov",
     "start": "node src/index.js",
@@ -35,7 +34,8 @@
     "commit-msg": "commitlint --edit",
     "prepare": "husky install",
     "release": "npx standard-version",
-    "release:github": "DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js"
+    "release:github": "DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js",
+    "check:lint": "eslint . -f json -o reports/eslint.json || exit 0"
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",
@@ -118,6 +118,7 @@
     "husky": "^8.0.3",
     "jest": "^29.5.0",
     "jest-date-mock": "^1.0.8",
+    "jest-sonar": "^0.2.15",
     "jest-when": "^3.5.2",
     "lint-staged": "^13.2.0",
     "madge": "^6.0.0",

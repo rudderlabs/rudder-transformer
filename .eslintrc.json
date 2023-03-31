@@ -5,7 +5,7 @@
     "jest": true,
     "commonjs": true
   },
-  "extends": ["airbnb-base", "prettier", "plugin:json/recommended"],
+  "extends": ["airbnb-base", "plugin:sonarjs/recommended", "prettier", "plugin:json/recommended"],
   "plugins": ["unicorn"],
   "globals": {},
   "parserOptions": {
@@ -32,6 +32,11 @@
     "unicorn/no-useless-length-check": "error",
     "unicorn/prefer-export-from": "error",
     "import/no-dynamic-require": "warn",
-    "no-param-reassign": "warn"
+    "no-param-reassign": "warn",
+    "sonarjs/prefer-immediate-return": "off",
+    "sonarjs/no-nested-template-literals": "off",
+    "sonarjs/max-switch-cases": "off",
+    "sonarjs/cognitive-complexity": ["error", 40],
+    "compat/compat": "warn"
   }
 }

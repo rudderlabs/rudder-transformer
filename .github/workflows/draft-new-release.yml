@@ -21,6 +21,12 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
+      - name: Install Dependencies
+        env:
+          HUSKY: 0
+        run: |
+          npm ci
+
       # In order to make a commit, we need to initialize a user.
       # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
       - name: Initialize Mandatory Git Config

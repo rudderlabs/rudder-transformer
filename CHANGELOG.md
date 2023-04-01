@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.20.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.20.1...v1.20.2) (2023-04-01)
+
+
+### Bug Fixes
+
+* add the missing git commit sha of the source to bugsnag ([#2030](https://github.com/rudderlabs/rudder-transformer/issues/2030)) ([65ccbdd](https://github.com/rudderlabs/rudder-transformer/commit/65ccbdd693b68c331e500a50f0019ea0a7e2a27c))
+
 ## [1.20.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.19.0...v1.20.0) (2023-03-28)
 
 

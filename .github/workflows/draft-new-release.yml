@@ -11,7 +11,7 @@ jobs:
     if: (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/hotfix/')) && (github.actor == 'ItsSudip' || github.actor == 'krishna2020' || github.actor == 'saikumarrs' ) &&  (github.triggering_actor == 'ItsSudip' || github.triggering_actor == 'krishna2020' || github.triggering_actor == 'saikumarrs')
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.4.0
+        uses: actions/checkout@v3.5.0
         with:
           fetch-depth: 0
 
@@ -20,6 +20,12 @@ jobs:
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
+
+      - name: Install Dependencies
+        env:
+          HUSKY: 0
+        run: |
+          npm ci
 
       # In order to make a commit, we need to initialize a user.
       # You may choose to write something less generic here if you want, it doesn't matter functionality wise.

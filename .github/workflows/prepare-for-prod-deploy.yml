@@ -17,6 +17,7 @@ env:
 
 jobs:
   report-coverage:
+    name: Report Code Coverage
     if: github.event_name == 'push'
     uses: ./.github/workflows/report-code-coverage.yml
 
@@ -29,7 +30,7 @@ jobs:
       tag_name: ${{ steps.gen_tag_name.outputs.tag_name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.4.0
+        uses: actions/checkout@v3.5.0
         with:
           fetch-depth: 1
 
@@ -50,7 +51,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
       - name: Cache Docker Layers
-        uses: actions/cache@v3.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -109,7 +110,7 @@ jobs:
       tag_name: ${{ steps.gen_tag_name.outputs.tag_name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.4.0
+        uses: actions/checkout@v3.5.0
         with:
           fetch-depth: 1
 
@@ -130,7 +131,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
       - name: Cache Docker Layers
-        uses: actions/cache@v3.2.1
+        uses: actions/cache@v3.3.1
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -189,7 +190,7 @@ jobs:
       UT_TAG_NAME: ${{ needs.build-user-transformer-image.outputs.tag_name }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.4.0
+        uses: actions/checkout@v3.5.0
         with:
           fetch-depth: 1
 

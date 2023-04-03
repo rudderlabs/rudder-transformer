@@ -61,7 +61,6 @@ describe("Router Tests for rETL sources", () => {
       )
     );
     const actualOutput = await transformer.processRouterDest(input);
-   console.log(JSON.stringify(actualOutput))
     expect(actualOutput).toEqual(output);
   });
 });

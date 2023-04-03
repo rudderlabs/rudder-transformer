@@ -11,7 +11,7 @@ const {
   setAnonymousId,
   checkForValidRecord,
 } = require('./util');
-const { DBConnector } = require('../../../util/redisConnector');
+const { dbInstance } = require('../../../util/redisConnector');
 const { removeUndefinedAndNullValues } = require('../../util');
 const Message = require('../message');
 const { EventType } = require('../../../constants');
@@ -210,12 +210,7 @@ const isIdentifierEvent = (event) => {
 };
 const processIdentifierEvent = async (event) => {
   if (useRedisDatabase) {
-    try {
-      const redisInstance = await DBConnector.getRedisInstance();
-      await redisInstance.set(`${event.cartToken}`, JSON.stringify(event));
-    } catch (e) {
-      log.error(e);
-    }
+    await dbInstance.setVal(`${event.cartToken}`, { anonymousId: event.anonymousId, cart: event.cart });
   }
   const result = {
     outputToSource: {

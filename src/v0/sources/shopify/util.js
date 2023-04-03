@@ -2,7 +2,7 @@
 const _ = require('lodash');
 const sha256 = require('sha256');
 const { constructPayload, extractCustomFields, flattenJson, generateUUID, isDefinedAndNotNull } = require('../../util');
-const { DBConnector } = require('../../../util/redisConnector');
+const { dbInstance } = require('../../../util/redisConnector');
 const logger = require('../../../logger');
 const {
   lineItemsMappingJSON,
@@ -167,22 +167,14 @@ const setAnonymousIdorUserIdAndStore = async (message) => {
       return;
     default:
   }
-  try {
-    let anonymousIDfromDB;
-    const redisInstance = await DBConnector.getRedisInstance();
-    const valFromDB = await redisInstance.get(`${cartToken}`);
-    if (valFromDB) {
-      const parsedVal = JSON.parse(valFromDB);
-      anonymousIDfromDB = parsedVal.anonymousId;
-    } else {
-      // this is for backward compatability when we don't have the redis mapping for older events
-      // we will get anonymousIDFromDb as null so we will set UUID using the session Key
-      anonymousIDfromDB = cartToken;
-    }
-    message.setProperty('anonymousId', anonymousIDfromDB);
-  } catch (e) {
-    logger.error(`Couldn't fetch data for cartToken ${cartToken} due error: ${e}`);
+  let anonymousIDfromDB;
+  anonymousIDfromDB = await dbInstance.getVal(`${cartToken}`, 'anonymousId');
+  if (!isDefinedAndNotNull(anonymousIDfromDB)) {
+    /* this is for backward compatability when we don't have the redis mapping for older events
+    we will get anonymousIDFromDb as null so we will set UUID using the session Key */
+    anonymousIDfromDB = cartToken;
   }
+  message.setProperty('anonymousId', anonymousIDfromDB);
 };
 
 /**
@@ -246,7 +238,7 @@ const isContainingSameLineItems = (prevLineItems, newLineItems) => {
  */
 const isDuplicateCartPayload = (prevPayload, newPayload) => {
   // The cart?.items.length param is in the case when rudder identifier is stored in the database
-  const prevPayloadLineItemsLength = prevPayload?.line_items?.length || prevPayload.cart?.items.length
+  const prevPayloadLineItemsLength = prevPayload?.line_items?.length || prevPayload?.items.length
   const newPayloadLineItemsLength = newPayload.line_items?.length || newPayload.cart?.items.length
   if (prevPayloadLineItemsLength !== newPayloadLineItemsLength) {
     return false;
@@ -268,28 +260,11 @@ const isDuplicateCartPayload = (prevPayload, newPayload) => {
  */
 const checkForValidRecord = async (newCart) => {
   const cartToken = newCart.cart_token || newCart.token;
-  let redisVal = {};
-  let cartDetails;
-  let redisInstance;
-  let anonymousId;
-  try {
-    redisInstance = await DBConnector.getRedisInstance();
-    cartDetails = await redisInstance.get(`${cartToken}`);
-  } catch (e) {
-    logger.error(`Could not get cart details due error: ${e}`);
+  const oldCart = await dbInstance.getVal(`${cartToken}`, 'cart');
+  if (oldCart && isDefinedAndNotNull(oldCart) && isDuplicateCartPayload(oldCart, newCart)) {
+    return false;
   }
-  if (cartDetails) {
-    redisVal = JSON.parse(cartDetails);
-    anonymousId = redisVal.anonymousId;
-    if (isDefinedAndNotNull(redisVal) && isDuplicateCartPayload(redisVal, newCart)) {
-      return false;
-    }
-  }
-  try {
-    await redisInstance.set(`${cartToken}`, JSON.stringify({ anonymousId, ...newCart }));
-  } catch (e) {
-    logger.error(`Could not set cart details due error: ${e}`);
-  }
+  await dbInstance.setVal(`${cartToken}`, { cart: newCart });
   return true;
 };
 

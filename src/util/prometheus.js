@@ -66,12 +66,23 @@ class Prometheus {
     return summary;
   }
 
-  newHistogramStat(name, help, labelNames) {
-    const histogram = new prometheusClient.Histogram({
-      name,
-      help,
-      labelNames,
-    });
+  newHistogramStat(name, help, labelNames, buckets) {
+    let histogram;
+    if (buckets) {
+      histogram = new prometheusClient.Histogram({
+        name,
+        help,
+        labelNames,
+        buckets,
+      });
+    } else {
+      histogram = new prometheusClient.Histogram({
+        name,
+        help,
+        labelNames,
+      });
+    }
+
     this.prometheusRegistry.registerMetric(histogram);
     return histogram;
   }
@@ -136,12 +147,6 @@ class Prometheus {
     const metrics = [
       // Counters
       {
-        name: 'user_transform_input_events',
-        help: 'Number of input events to user transform',
-        type: 'counter',
-        labelNames: ['processSessions'],
-      },
-      {
         name: 'cdk_live_compare_test_failed',
         help: 'cdk_live_compare_test_failed',
         type: 'counter',
@@ -162,7 +167,7 @@ class Prometheus {
       {
         name: 'hv_violation_type',
         help: 'hv_violation_type',
-        type: 'histogram',
+        type: 'counter',
         labelNames: ['violationType', 'sourceType', 'destinationType', 'k8_namespace'],
       },
       {
@@ -220,26 +225,8 @@ class Prometheus {
         labelNames: ['destination', 'version', 'sourceType', 'destinationType', 'k8_namespace'],
       },
       {
-        name: 'dest_transform_input_events',
-        help: 'dest_transform_input_events',
-        type: 'counter',
-        labelNames: ['destination', 'version', 'sourceType', 'destinationType', 'k8_namespace'],
-      },
-      {
-        name: 'dest_transform_output_events',
-        help: 'dest_transform_output_events',
-        type: 'counter',
-        labelNames: ['destination', 'version', 'sourceType', 'destinationType', 'k8_namespace'],
-      },
-      {
         name: 'user_transform_requests',
         help: 'user_transform_requests',
-        type: 'counter',
-        labelNames: ['processSessions'],
-      },
-      {
-        name: 'user_transform_output_events',
-        help: 'user_transform_output_events',
         type: 'counter',
         labelNames: ['processSessions'],
       },
@@ -633,6 +620,56 @@ class Prometheus {
         type: 'histogram',
         labelNames: [],
       },
+      {
+        name: 'http_request_size',
+        help: 'http_request_size',
+        type: 'histogram',
+        labelNames: ['method', 'route', 'code'],
+        buckets: [
+          1000, 10000, 100000, 500000, 1000000, 1500000, 2000000, 2500000, 3000000, 3500000,
+          4000000, 4500000, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000,
+          40000000, 45000000, 50000000,
+        ],
+      },
+      {
+        name: 'http_response_size',
+        help: 'http_response_size',
+        type: 'histogram',
+        labelNames: ['method', 'route', 'code'],
+        buckets: [
+          1000, 10000, 100000, 500000, 1000000, 1500000, 2000000, 2500000, 3000000, 3500000,
+          4000000, 4500000, 5000000, 10000000, 15000000, 20000000, 25000000, 30000000, 35000000,
+          40000000, 45000000, 50000000,
+        ],
+      },
+      {
+        name: 'dest_transform_input_events',
+        help: 'dest_transform_input_events',
+        type: 'histogram',
+        labelNames: ['destination', 'version', 'sourceType', 'destinationType', 'k8_namespace'],
+        buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
+      },
+      {
+        name: 'dest_transform_output_events',
+        help: 'dest_transform_output_events',
+        type: 'histogram',
+        labelNames: ['destination', 'version', 'sourceType', 'destinationType', 'k8_namespace'],
+        buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
+      },
+      {
+        name: 'user_transform_input_events',
+        help: 'Number of input events to user transform',
+        type: 'histogram',
+        labelNames: ['processSessions'],
+        buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
+      },
+      {
+        name: 'user_transform_output_events',
+        help: 'user_transform_output_events',
+        type: 'histogram',
+        labelNames: ['processSessions'],
+        buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
+      },
     ];
 
     metrics.forEach((metric) => {
@@ -642,7 +679,12 @@ class Prometheus {
         } else if (metric.type === 'gauge') {
           this.newGaugeStat(appendPrefix(metric.name), metric.help, metric.labelNames);
         } else if (metric.type === 'histogram') {
-          this.newHistogramStat(appendPrefix(metric.name), metric.help, metric.labelNames);
+          this.newHistogramStat(
+            appendPrefix(metric.name),
+            metric.help,
+            metric.labelNames,
+            metric.buckets,
+          );
         } else {
           logger.error(
             `Prometheus: Metric creation failed. Name: ${metric.name}. Invalid type: ${metric.type}`,

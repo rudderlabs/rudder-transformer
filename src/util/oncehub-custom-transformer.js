@@ -24,15 +24,15 @@ const handleFirstLoginGA4Property = (destination, event, traits) => {
     }
   };
 
-  const changeDateFormatForCustomerio = (destination, event) => {
-    if (getPIIDestinationList().includes(destination)) {
-      if (doesEventContainContextTraits(event)) {
+  const changeDateFormatForCustomerio = (contextTraitsPresent, eventTraitsPresent,checkDestinationList, event) => {
+    if (checkDestinationList) {
+      if (contextTraitsPresent) {
         // eslint-disable-next-line no-param-reassign
         event.message.context.traits.accountCreatedDate = Math.floor(
           Date.parse(event.message.context.traits.accountCreatedDate) / 1000,
         );
       }
-      if (doesEventContainsTraits(event)) {
+      if (eventTraitsPresent) {
         // eslint-disable-next-line no-param-reassign
         event.message.traits.accountCreatedDate = Math.floor(
           Date.parse(event.message.traits.accountCreatedDate) / 1000,
@@ -42,10 +42,12 @@ const handleFirstLoginGA4Property = (destination, event, traits) => {
   };
   
   const oncehubTransformer = (destination, event) => {
-  changeDateFormatForCustomerio(destination, event);
   const contextTraitsPresent = doesEventContainContextTraits(event);
   const eventTraitsPresent = doesEventContainsTraits(event);
-  if (!getPIIDestinationList().includes(destination) && eventTraitsPresent) {
+  const checkDestinationList=getPIIDestinationList().includes(destination);
+  changeDateFormatForCustomerio(contextTraitsPresent, eventTraitsPresent,checkDestinationList,event);
+
+  if (!checkDestinationList && eventTraitsPresent) {
       // eslint-disable-next-line no-param-reassign
       delete event.message.traits.email;
       // eslint-disable-next-line no-param-reassign

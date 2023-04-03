@@ -215,8 +215,10 @@ const BrazeDedupUtility = {
   deduplicate(userData, store) {
     const excludeKeys = ['external_id', 'user_alias', 'appboy_id', 'braze_id', 'custom_events'];
     const { external_id, user_alias } = userData;
-    const identfier = external_id || user_alias?.alias_name;
-    let storedUserData = this.getUserDataFromStore(store, identfier);
+    let storedUserData =
+      this.getUserDataFromStore(store, external_id) ||
+      this.getUserDataFromStore(store, user_alias?.alias_name);
+
     if (!storedUserData) {
       return userData;
     }

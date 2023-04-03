@@ -88,9 +88,11 @@ const BrazeDedupUtility = {
       const anonymousId = get(message, 'anonymousId');
       if (brazeExternalId) {
         externalIds.push(brazeExternalId);
-      } else if (userId) {
+      }
+      if (userId) {
         externalIds.push(userId);
-      } else if (anonymousId) {
+      }
+      if (anonymousId) {
         aliasIds.push(anonymousId);
       }
     }

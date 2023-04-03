@@ -57,16 +57,16 @@ const createJob = async (endpoint, headers, payload) => {
   return response.resourceName.split('/')[3];
 };
 
-const addUserToJob = async (endpoint, headers, jobId, payload) => {
+const addConversionToJob = async (endpoint, headers, jobId, payload) => {
   const endPoint = `${endpoint}/${jobId}:addOperations`
-  let addUserToJobResponse = await httpPOST(endPoint, payload, { headers });
-  addUserToJobResponse = processAxiosResponse(addUserToJobResponse);
-  if (!isHttpStatusSuccess(addUserToJobResponse.status)) {
+  let addConversionToJobResponse = await httpPOST(endPoint, payload, { headers });
+  addConversionToJobResponse = processAxiosResponse(addConversionToJobResponse);
+  if (!isHttpStatusSuccess(addConversionToJobResponse.status)) {
     throw new AbortedError(
-      `[Google Ads Offline Conversions]:: ${addUserToJobResponse.response?.error?.message} during google_ads_offline_store_conversions Add Conversion`,
-      addUserToJobResponse.status,
-      addUserToJobResponse.response,
-      getAuthErrCategory(get(addUserToJobResponse, 'status')),
+      `[Google Ads Offline Conversions]:: ${addConversionToJobResponse.response?.error?.message} during google_ads_offline_store_conversions Add Conversion`,
+      addConversionToJobResponse.status,
+      addConversionToJobResponse.response,
+      getAuthErrCategory(get(addConversionToJobResponse, 'status')),
     );
   }
   return true;
@@ -163,7 +163,7 @@ const ProxyRequest = async (request) => {
     // Mapping Conversion Action
     const conversionId = await getConversionActionId(headers, params);
     set(addPayload, 'operations.create.transaction_attribute.conversion_action', conversionId)
-    await addUserToJob(endpoint, headers, firstResponse, addPayload);
+    await addConversionToJob(endpoint, headers, firstResponse, addPayload);
     // console.log(JSON.stringify(secondResponse.response.response));
     const thirdResponse = await runTheJob(endpoint, headers, body.JSON.executeJobPayload, firstResponse);
     return thirdResponse;

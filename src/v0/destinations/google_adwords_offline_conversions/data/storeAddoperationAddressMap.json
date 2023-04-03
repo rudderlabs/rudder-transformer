@@ -58,8 +58,7 @@
         "destKey": "hashed_last_name",
         "metadata": {
             "type": [
-                "toLower",
-                "hashToSha256"
+                "toLower"
             ]
         },
         "sourceFromGenericMap": true

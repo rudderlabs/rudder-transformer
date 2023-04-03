@@ -11,6 +11,7 @@ const {
   isDefinedAndNotNull,
   flattenMap,
   simpleProcessRouterDest,
+  getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 
 const {
@@ -277,6 +278,7 @@ const processEvent = (message, destination) => {
   const respList = [];
   const toSendEvents = [];
   let wrappedResponse = {};
+
   let { userSchema } = destination.Config;
   const { isHashRequired, audienceId, maxUserCount } = destination.Config;
   if (!message.type) {
@@ -290,13 +292,16 @@ const processEvent = (message, destination) => {
   if (message.type.toLowerCase() !== 'audiencelist') {
     throw new InstrumentationError(` ${message.type} call is not supported `);
   }
-  const operationAudienceId = audienceId;
-
+  let operationAudienceId = audienceId;
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (!operationAudienceId && mappedToDestination) {
+    const { objectType } = getDestinationExternalIDInfoForRetl(message, 'FB_CUSTOM_AUDIENCE');
+    operationAudienceId = objectType;
+  }
   if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
     throw new ConfigurationError('Audience ID is a mandatory field');
   }
 
-  const mappedToDestination = get(message, MappedToDestinationKey);
   // If mapped to destination, use the mapped fields instead of destination userschema
   if (mappedToDestination) {
     userSchema = getSchemaForEventMappedToDest(message);

@@ -1,15 +1,18 @@
 const { EventType } = require('../constants');
 
 const getPIIDestinationList = () => {
-  return (process.env.WHITELIST_PII_DESTINATION || 'customerio').trim().split(',');
-};
-const doesEventContainsTraits = event => {
-  return event && event.message && event.message.traits;
-};
-
-const doesEventContainContextTraits = event => {
-  return event && event.message && event.message.context  && event.message.context.traits;
-};
+    return (process.env.WHITELIST_PII_DESTINATION || "customerio")
+      .trim()
+      .split(",");
+  };
+  
+  const doesEventContainsTraits = event => {
+    return event && event.message && event.message.traits;
+  };
+  
+  const doesEventContainContextTraits = event => {
+    return event && event.message && event.message.context  && event.message.context.traits;
+  };
 
 const handleFirstLoginGA4Property = (destination, event, traits) => {
   // delete firstLoginGA4 property from traits when destination is not GA4
@@ -24,30 +27,10 @@ const handleFirstLoginGA4Property = (destination, event, traits) => {
     }
   };
 
-  const changeDateFormatForCustomerio = (contextTraitsPresent, eventTraitsPresent,checkDestinationList, event) => {
-    if (checkDestinationList) {
-      if (contextTraitsPresent) {
-        // eslint-disable-next-line no-param-reassign
-        event.message.context.traits.accountCreatedDate = Math.floor(
-          Date.parse(event.message.context.traits.accountCreatedDate) / 1000,
-        );
-      }
-      if (eventTraitsPresent) {
-        // eslint-disable-next-line no-param-reassign
-        event.message.traits.accountCreatedDate = Math.floor(
-          Date.parse(event.message.traits.accountCreatedDate) / 1000,
-        );
-      }
-    }
-  };
-  
   const oncehubTransformer = (destination, event) => {
   const contextTraitsPresent = doesEventContainContextTraits(event);
   const eventTraitsPresent = doesEventContainsTraits(event);
-  const checkDestinationList=getPIIDestinationList().includes(destination);
-  changeDateFormatForCustomerio(contextTraitsPresent, eventTraitsPresent,checkDestinationList,event);
-
-  if (!checkDestinationList && eventTraitsPresent) {
+  if (!getPIIDestinationList().includes(destination) && eventTraitsPresent) {
       // eslint-disable-next-line no-param-reassign
       delete event.message.traits.email;
       // eslint-disable-next-line no-param-reassign

@@ -13,13 +13,12 @@ const RedisDB = {
     this.client = new Redis({
       host: this.host,
       port: this.port,
-      // password: this.password,
+      password: this.password,
       enableReadyCheck: true,
       retryStrategy: (times) => {
         if (times <= this.maxRetries) {
           return 10 + times * this.timeAfterRetry;
         }
-        this.isRedisUp = false;
         log.error(`Redis is down at ${this.host}:${this.port}`);
         return false; // stop retrying
       },

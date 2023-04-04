@@ -34,7 +34,7 @@ describe(`Redis Class Get Tests`, () => {
   data.forEach((dataPoint, index) => {
     it(`${index}. Redis Get- ${dataPoint.description}`, async () => {
       try {
-        const output = await RedisDB.getVal(dataPoint.input.value);
+        const output = await RedisDB.getVal(dataPoint.input.value, false);
         expect(output).toEqual(dataPoint.output);
       } catch (error) {
         expect(error.message).toEqual(dataPoint.output.error);
@@ -46,7 +46,7 @@ describe(`Redis Class Get Tests`, () => {
 describe(`Redis Class Set Fail Test`, () => {
   it(`Redis Set Fail Case Test`, async () => {
     try {
-      await RedisDB.setVal("error");
+      await RedisDB.setVal("error", "test", false);
     } catch (error) {
       expect(error.message).toEqual("Error setting value in Redis due Error: Connection is Closed");
     }

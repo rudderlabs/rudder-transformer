@@ -29,7 +29,7 @@ const RedisDB = {
       },
     });
     this.client.on('ready', (res) => {
-      stats.increment('redis_ready',{
+      stats.increment('redis_ready', {
         timestamp: Date.now(),
       });
       this.connectingFirstTime = false;
@@ -44,19 +44,20 @@ const RedisDB = {
    * @returns value which can be json or string or number
    *
    */
-  async getVal(key, metricMetadata, isJsonExpected = true) {
+  async getVal(key, isJsonExpected = true) {
     try {
       if (!this.client) {
         this.init();
       }
       else if (this.client.status !== 'ready') {
         await this.client.connect(); // Might not wait for connection and throw error connection is closed
-       }
+      }
       if (isJsonExpected) {
         const value = await this.client.get(key);
         return JSON.parse(value);
       }
       const value = await this.client.get(key);
+
       return value;
     } catch (e) {
       throw new RedisError(`Error getting value from Redis: ${e}`);
@@ -75,9 +76,7 @@ const RedisDB = {
         this.init();
       }
       else if (this.client.status !== 'ready') {
-        await this.client.connect(); // not waiting for connecting and throwing error connection is closed
-        // eslint-disable-next-line no-promise-executor-return
-        await new Promise((resolve) => setTimeout(resolve, 10)); // waiting for connection to be established for max 10ms
+        await this.client.connect();
       }
       if (isValJson) {
         await this.client.set(key, JSON.stringify(value));
@@ -89,7 +88,7 @@ const RedisDB = {
     }
   },
   async disconnect() {
-    stats.increment('redis_graceful_shutdown',{
+    stats.increment('redis_graceful_shutdown', {
       timestamp: Date.now(),
     });
     this.client.quit();

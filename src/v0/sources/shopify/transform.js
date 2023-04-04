@@ -200,7 +200,11 @@ const isIdentifierEvent = (event) => {
 };
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
+    const setStartTime = Date.now();
     await RedisDB.setVal(`${event.cartToken}`, { anonymousId: event.anonymousId, cart: event.cart });
+    stats.timing('redis_set_latency', setStartTime, {
+      ...metricMetadata,
+    });
     stats.increment('shopify_redis_set_anonymousId', {
       ...metricMetadata,
       timestamp: Date.now(),

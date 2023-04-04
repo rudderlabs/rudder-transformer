@@ -168,7 +168,11 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
       return;
     default:
   }
+  const executeStartTime = Date.now();
   const redisVal = await RedisDB.getVal(`${cartToken}`);
+  stats.timing('redis_get_latency', executeStartTime, {
+    ...metricMetadata,
+  });
   stats.increment('shopify_redis_get_data', {
     ...metricMetadata,
     timestamp: Date.now(),
@@ -268,11 +272,16 @@ const isDuplicateCartPayload = (prevPayload, newPayload) => {
  */
 const checkForValidRecord = async (newCart, metricMetadata) => {
   const cartToken = newCart.cart_token || newCart.token;
+  const executeStartTime = Date.now();
   const redisVal = await RedisDB.getVal(`${cartToken}`);
+  stats.timing('redis_get_latency', executeStartTime, {
+    ...metricMetadata,
+  });
   stats.increment('shopify_redis_get_data', {
     ...metricMetadata,
     timestamp: Date.now(),
   });
+
   const oldCart = redisVal?.cart;
   if (!oldCart) {
     // this is the case for events for which we don't have the values store in redis but are valid events. 
@@ -283,7 +292,11 @@ const checkForValidRecord = async (newCart, metricMetadata) => {
   if (isDefinedAndNotNull(oldCart) && isDuplicateCartPayload(oldCart, newCart)) {
     return false;
   }
+  const setStartTime = Date.now();
   await RedisDB.setVal(`${cartToken}`, { anonymousId: redisVal?.anonymousId, cart: newCart });
+  stats.timing('redis_set_latency', setStartTime, {
+    ...metricMetadata,
+  });
   stats.increment('shopify_redis_update_cart', {
     ...metricMetadata,
     timestamp: Date.now(),

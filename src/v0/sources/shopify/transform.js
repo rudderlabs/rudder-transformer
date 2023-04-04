@@ -14,7 +14,6 @@ const { RedisDB } = require('../../../util/redisConnector');
 const { removeUndefinedAndNullValues } = require('../../util');
 const Message = require('../message');
 const { EventType } = require('../../../constants');
-const stats = require('../../../util/stats');
 const {
   INTEGERATION,
   MAPPING_CATEGORIES,
@@ -116,7 +115,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   return message;
 };
 // Doc: https://help.shopify.com/en/manual/orders/fulfillment/setting-up-fulfillment
-const processEvent = async (inputEvent) => {
+const processEvent = async (inputEvent, metricMetadata) => {
   let message;
   const event = _.cloneDeep(inputEvent);
   const shopifyTopic = getShopifyTopic(event);
@@ -140,7 +139,7 @@ const processEvent = async (inputEvent) => {
        */
       // eslint-disable-next-line no-case-declarations
       if (useRedisDatabase) {
-        const duplicateRecord = await checkForValidRecord(inputEvent);
+        const duplicateRecord = await checkForValidRecord(inputEvent, metricMetadata);
         if (!duplicateRecord) {
           const result = {
             outputToSource: {
@@ -173,7 +172,7 @@ const processEvent = async (inputEvent) => {
   }
   if (message.type !== EventType.IDENTIFY) {
     if (useRedisDatabase) {
-      await setAnonymousIdorUserIdFromDb(message);
+      await setAnonymousIdorUserIdFromDb(message, metricMetadata);
     } else {
       setAnonymousId(message);
     }
@@ -190,12 +189,7 @@ const processEvent = async (inputEvent) => {
   if (shopifyTopic === 'orders_updated') {
     message.setProperty(`context.order_token`, event.token);
   }
-
   message = removeUndefinedAndNullValues(message);
-  stats.increment('shopify_server_side_identifier_event', {
-    writeKey: inputEvent.query_parameters?.writeKey?.[0],
-    timestamp: Date.now(),
-  });
   return message;
 };
 const isIdentifierEvent = (event) => {
@@ -204,9 +198,13 @@ const isIdentifierEvent = (event) => {
   }
   return false;
 };
-const processIdentifierEvent = async (event) => {
+const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
     await RedisDB.setVal(`${event.cartToken}`, { anonymousId: event.anonymousId, cart: event.cart });
+    stats.increment('shopify_redis_set_anonymousId', {
+      ...metricMetadata,
+      timestamp: Date.now(),
+    });
   }
   const result = {
     outputToSource: {
@@ -218,10 +216,14 @@ const processIdentifierEvent = async (event) => {
   return result;
 };
 const process = async (event) => {
-  if (isIdentifierEvent(event)) {
-    return processIdentifierEvent(event);
+  const metricMetadata = {
+    writeKey: event.query_parameters?.writeKey?.[0],
+    source: "SHOPIFY"
   }
-  const response = await processEvent(event);
+  if (isIdentifierEvent(event)) {
+    return processIdentifierEvent(event, metricMetadata);
+  }
+  const response = await processEvent(event, metricMetadata);
   return response;
 };
 

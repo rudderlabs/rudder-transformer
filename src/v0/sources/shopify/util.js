@@ -2,7 +2,7 @@
 const _ = require('lodash');
 const sha256 = require('sha256');
 const { constructPayload, extractCustomFields, flattenJson, generateUUID, isDefinedAndNotNull } = require('../../util');
-const { dbInstance } = require('../../../util/redisConnector');
+const { RedisDB } = require('../../../util/redisConnector');
 const logger = require('../../../logger');
 const {
   lineItemsMappingJSON,
@@ -168,7 +168,7 @@ const setAnonymousIdorUserIdFromDb = async (message) => {
     default:
   }
 
-  const redisVal = await dbInstance.getVal(`${cartToken}`);
+  const redisVal = await RedisDB.getVal(`${cartToken}`);
   let anonymousIDfromDB;
   if (redisVal !== null) {
     anonymousIDfromDB = redisVal.anonymousId;
@@ -264,7 +264,7 @@ const isDuplicateCartPayload = (prevPayload, newPayload) => {
  */
 const checkForValidRecord = async (newCart) => {
   const cartToken = newCart.cart_token || newCart.token;
-  const redisVal = await dbInstance.getVal(`${cartToken}`);
+  const redisVal = await RedisDB.getVal(`${cartToken}`);
   const oldCart = redisVal?.cart;
   if (!oldCart) {
     // this is the case for events for which we don't have the values store in redis but are valid events. 
@@ -275,7 +275,7 @@ const checkForValidRecord = async (newCart) => {
   if (isDefinedAndNotNull(oldCart) && isDuplicateCartPayload(oldCart, newCart)) {
     return false;
   }
-  await dbInstance.setVal(`${cartToken}`, { anonymousId: redisVal?.anonymousId, cart: newCart });
+  await RedisDB.setVal(`${cartToken}`, { anonymousId: redisVal?.anonymousId, cart: newCart });
   return true;
 };
 

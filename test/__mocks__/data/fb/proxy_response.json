@@ -1,5 +1,5 @@
 {
-  "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=my_access_token": {
+  "https://graph.facebook.com/v16.0/RudderFbApp/activities?access_token=my_access_token": {
     "data": {
       "events_received": 1,
       "fbtrace_id": "facebook_trace_id"
@@ -7,7 +7,7 @@
     "status": 200,
     "statusText": "OK"
   },
-  "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=invalid_access_token": {
+  "https://graph.facebook.com/v16.0/RudderFbApp/activities?access_token=invalid_access_token": {
     "response": {
       "data": {
         "error": {
@@ -20,7 +20,7 @@
       "status": 500
     }
   },
-  "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=invalid_timestamp_correct_access_token": {
+  "https://graph.facebook.com/v16.0/RudderFbApp/activities?access_token=invalid_timestamp_correct_access_token": {
     "response": {
       "data": {
         "error": {
@@ -37,7 +37,7 @@
       "status": 400
     }
   },
-  "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=throttled_valid_access_token": {
+  "https://graph.facebook.com/v16.0/RudderFbApp/activities?access_token=throttled_valid_access_token": {
     "response": {
       "data": {
         "error": {
@@ -50,7 +50,7 @@
       "status": 500
     }
   },
-  "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=invalid_account_id_valid_access_token": {
+  "https://graph.facebook.com/v16.0/RudderFbApp/activities?access_token=invalid_account_id_valid_access_token": {
     "response": {
       "data": {
         "error": {

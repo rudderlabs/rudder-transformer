@@ -46,16 +46,6 @@ const RedisDB = {
       else if (this.client.status !== 'ready') {
         await this.client.connect(); // Might not wait for connection and throw error connection is closed
       }
-      if (isJsonExpected) {
-        const value = await this.client.get(key);
-        if (value) {
-          const bytes = Buffer.byteLength(value, "utf-8");
-          stats.gauge('redis_get_val_size', bytes, {
-            timestamp: Date.now()
-          });
-        }
-        return JSON.parse(value);
-      }
       const value = await this.client.get(key);
       if (value) {
         const bytes = Buffer.byteLength(value, "utf-8");
@@ -63,7 +53,7 @@ const RedisDB = {
           timestamp: Date.now()
         });
       }
-      return value;
+      return isJsonExpected ? JSON.parse(value) : value;
     } catch (e) {
       throw new RedisError(`Error getting value from Redis: ${e}`);
     }
@@ -83,22 +73,12 @@ const RedisDB = {
       else if (this.client.status !== 'ready') {
         await this.client.connect();
       }
-      if (isValJson) {
-        const valToBeStored = JSON.stringify(value);
-        if (valToBeStored) {
-          const bytes = Buffer.byteLength(valToBeStored, "utf-8");
-          await this.client.set(key, valToBeStored);
-          stats.gauge('redis_set_val_size', bytes, {
-            timestamp: Date.now()
-          });
-        }
-      } else if (value) {
-          const bytes = Buffer.byteLength(value, "utf-8");
-          await this.client.set(key, value);
-          stats.gauge('redis_set_val_size', bytes, {
-            timestamp: Date.now()
-          });
-        }
+      const valueToStore = isValJson ? JSON.stringify(value) : value;
+      const bytes = Buffer.byteLength(valueToStore, "utf-8");
+      await this.client.set(key, valueToStore);
+      stats.gauge('redis_set_val_size', bytes, {
+        timestamp: Date.now()
+      });
     } catch (e) {
       throw new RedisError(`Error setting value in Redis due ${e}`);
     }

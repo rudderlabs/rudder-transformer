@@ -12,6 +12,7 @@ const RedisDB = {
     this.password = process.env.REDIS_PASSWORD;
     this.maxRetries = parseInt(process.env.REDIS_MAX_RETRIES || 30, 10);
     this.timeAfterRetry = parseInt(process.env.REDIS_TIME_AFTER_RETRY_IN_MS || 10, 10);
+    this.id = 1;
     this.client = new Redis({
       host: this.host,
       port: this.port,
@@ -41,12 +42,13 @@ const RedisDB = {
    */
   async getVal(key, isJsonExpected = true) {
     try {
-      if (this.client?.status !== 'ready') {
-        if (!this.connectingFirstTime) {
-          await this.client.connect(); // not waiting for connecting and throwing error connection is closed
-        }
+      if (!this.client) {
+        this.init();
+      }
+      else if (this.client.status !== 'ready') {
+        await this.client.connect(); // not waiting for connecting and throwing error connection is closed
         // eslint-disable-next-line no-promise-executor-return
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // waiting for connection to be established for max 10ms
+        await new Promise((resolve) => setTimeout(resolve, 10)); // waiting for connection to be established for max 10ms
       }
       if (isJsonExpected) {
         const value = await this.client.get(key);
@@ -67,12 +69,13 @@ const RedisDB = {
    */
   async setVal(key, value, isValJson = true) {
     try {
-      if (this.client?.status !== 'ready') {
-        if (!this.connectingFirstTime) {
-          await this.client.connect(); // not waiting for connecting and throwing error connection is closed
-        }
+      if (!this.client) {
+        this.init();
+      }
+      else if (this.client.status !== 'ready') {
+        await this.client.connect(); // not waiting for connecting and throwing error connection is closed
         // eslint-disable-next-line no-promise-executor-return
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // waiting for connection to be established for max 10ms
+        await new Promise((resolve) => setTimeout(resolve, 10)); // waiting for connection to be established for max 10ms
       }
       if (isValJson) {
         await this.client.set(key, JSON.stringify(value));
@@ -83,16 +86,10 @@ const RedisDB = {
       throw new RedisError(`Error setting value in Redis due ${e}`);
     }
   },
-
-  getId() {
-    return this.id;
+  async disconnect() {
+    this.client.quit();
   },
-};
 
-// process.on('exit', async () => {
-//   log.info('Process exit event received');
-//   await dbInstance.client.disconnect();
-//   log.info('Redis client disconnected');
-// });
+};
 
 module.exports = { RedisDB };

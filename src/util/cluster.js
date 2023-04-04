@@ -2,10 +2,15 @@ const cluster = require('cluster');
 const gracefulShutdown = require('http-graceful-shutdown');
 const logger = require('../logger');
 const { logProcessInfo } = require('./utils');
+const { RedisDB } = require('./redisConnector');
 
 const numWorkers = parseInt(process.env.NUM_PROCS || '1', 10);
 
 function finalFunction() {
+  logger.info('Process exit event received');
+  RedisDB.disconnect();
+  logger.info('Redis client disconnected');
+
   logger.error(`Worker (pid: ${process.pid}) was gracefully shutdown`);
   logProcessInfo();
 }

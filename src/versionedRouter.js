@@ -9,6 +9,7 @@ const stats = require('./util/stats');
 const { SUPPORTED_VERSIONS, API_VERSION } = require('./routes/utils/constants');
 const { client: errNotificationClient } = require('./util/errorNotifier');
 const tags = require('./v0/util/tags');
+const { dbInstance } = require('./util/redisConnector');
 
 const {
   isNonFuncObject,
@@ -908,7 +909,7 @@ async function handleSource(ctx, version, source) {
         // };
 
         const resp = {
-          statusCode: 400,
+          statusCode: error.status || 400,
           error: error.message || 'Error occurred while processing payload.',
         };
 
@@ -1070,6 +1071,10 @@ router.get('/health', (ctx) => {
 
 router.get('/features', (ctx) => {
   const obj = JSON.parse(fs.readFileSync('features.json', 'utf8'));
+  ctx.body = JSON.stringify(obj);
+});
+router.get('/test', (ctx) => {
+  const obj = dbInstance.getId();
   ctx.body = JSON.stringify(obj);
 });
 

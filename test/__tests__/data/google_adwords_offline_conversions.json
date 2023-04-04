@@ -2082,8 +2082,8 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
-          "defaultUserIdentifier": "address",
-          "defaultClickUserIdentifier": "phone",
+          "defaultUserIdentifier": "phone",
+          "": "phone",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -2306,7 +2306,7 @@
     ]
   },
   {
-    "description": "call - take conversionDateTime from originalTimestamp and defaultClickUserIdentifier as email",
+    "description": "call - take conversionDateTime from originalTimestamp and  as email",
     "input": {
       "message": {
         "channel": "web",
@@ -2454,8 +2454,7 @@
           "UserIdentifierSource": "THIRD_PARTY",
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
-          "defaultUserIdentifier": "address",
-          "defaultClickUserIdentifier": "email",
+          "defaultUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -3729,7 +3728,7 @@
     }
   },
   {
-    "description": "Store - using address as userIdentifier, ",
+    "description": "Store - using address as userIdentifier when deafultUserIdentifier is not present ",
     "input": {
       "message": {
         "channel": "web",
@@ -3751,7 +3750,6 @@
           "currency": "INR",
           "revenue": "100",
           "store_code": "store code",
-          "email": "alex@example.com",
           "gclid": "gclid",
           "conversionDateTime": "2022-01-01 12:32:45-08:00",
           "product_id": "123445",
@@ -3824,7 +3822,7 @@
           ],
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
-          "defaultUserIdentifier": "address",
+          "defaultUserIdentifier": "email",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -4162,7 +4160,7 @@
           ],
           "conversionEnvironment": "WEB",
           "hashUserIdentifier": true,
-          "defaultUserIdentifier": "email",
+          "defaultUserIdentifier": "phone",
           "validateOnly": false,
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK"
         }
@@ -4370,10 +4368,6 @@
         "channel": "web",
         "context": {
           "traits": {
-            "firstName": "John",
-            "lastName": "Gomes",
-            "streetAddress": "71 Cherry Court SOUTHAMPTON SO53 5PD UK",
-            "state": "England",
             "email": "alex@example.com"
           }
         },
@@ -4501,8 +4495,7 @@
       "message": {
         "channel": "web",
         "context": {
-          "traits": {
-          }
+          "traits": {}
         },
         "event": "Product Clicked",
         "type": "track",

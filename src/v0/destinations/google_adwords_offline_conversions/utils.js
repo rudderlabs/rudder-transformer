@@ -233,7 +233,8 @@ const getAddConversionPayload = (message, Config) => {
   } else if (defaultUserIdentifier === 'phone' && phone) {
     phone = hashUserIdentifier ? sha256(phone).toString(): phone;
     set(payload, 'operations.create.userIdentifiers[0].hashedPhoneNumber', phone);
-  } else if (defaultUserIdentifier === 'address' && address) {
+  } else if (address) {
+    // priortizing address in case defaultUserIdentifier is not present
     set(payload, 'operations.create.userIdentifiers[0].address_info', address);
   } else if (email) {
     // case when default choosen value is not present
@@ -242,8 +243,6 @@ const getAddConversionPayload = (message, Config) => {
   } else if (phone) {
     phone = hashUserIdentifier ? sha256(phone).toString(): phone;
     set(payload, 'operations.create.userIdentifiers[0].hashedPhoneNumber', phone);
-  } else if (address) {
-    set(payload, 'operations.create.userIdentifiers[0].address_info', address);
   } else {
     set(payload, 'operations.create.userIdentifiers[0]', {}); // if no user identifier is present
   }
@@ -268,8 +267,7 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
     hashUserIdentifier,
     defaultUserIdentifier,
     UserIdentifierSource,
-    conversionEnvironment,
-    defaultClickUserIdentifier
+    conversionEnvironment
   } = Config;
   const { properties } = message;
   // click conversions
@@ -315,11 +313,10 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
   // either of email or phone should be passed
   // defaultUserIdentifier depends on the webapp configuration
   // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadClickConversions#ClickConversion
-  const clickDefaultUserIdentifier = defaultUserIdentifier === 'address' ? defaultClickUserIdentifier : defaultUserIdentifier;
-  if (clickDefaultUserIdentifier === 'email' && email) {
+  if (defaultUserIdentifier === 'email' && email) {
     email = hashUserIdentifier ? sha256(email).toString() : email;
     set(payload, 'conversions[0].userIdentifiers[0].hashedEmail', email);
-  } else if (clickDefaultUserIdentifier === 'phone' && phone) {
+  } else if (defaultUserIdentifier === 'phone' && phone) {
     phone = hashUserIdentifier ? sha256(phone).toString() : phone;
     set(payload, 'conversions[0].userIdentifiers[0].hashedPhoneNumber', phone);
   } else if (email) {

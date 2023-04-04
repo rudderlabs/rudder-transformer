@@ -119,7 +119,7 @@ const identifyRequestHandler = async (message, category, destination) => {
   };
   identifyResponse.body.JSON = removeUndefinedAndNullValues(payload);
   const responseArray = [identifyResponse];
-  if (traitsInfo.properties.subscribe) {
+  if (traitsInfo?.properties?.subscribe) {
     responseArray.push(subscribeUserToList(message, traitsInfo, destination));
     return responseArray;
   }

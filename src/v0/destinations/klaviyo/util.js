@@ -26,10 +26,7 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
     phone_number: getFieldValueFromMessage(message, 'phone'),
   };
 
-  if (
-    (traitsInfo?.properties?.consent || consent) &&
-    (Array.isArray(traitsInfo?.properties?.consent) || Array.isArray(consent))
-  ) {
+  if (traitsInfo?.properties?.consent || consent) {
     const subscribeConsent = traitsInfo.properties.consent || consent;
     const channels = {};
     if (Array.isArray(subscribeConsent)) {

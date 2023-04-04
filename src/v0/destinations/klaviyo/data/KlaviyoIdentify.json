@@ -76,10 +76,15 @@
     "destKey": "location.zip",
     "sourceKeys": [
       "traits.zip",
+      "traits.postalcode",
+      "traits.address.zip",
       "traits.address.postalcode",
       "context.traits.zip",
+      "context.traits.postalcode",
+      "context.traits.address.zip",
       "context.traits.address.postalcode",
-      "properties.zip"
+      "properties.zip",
+      "properties.postalcode"
     ],
     "required": false
   },

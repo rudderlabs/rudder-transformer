@@ -63,9 +63,6 @@ const identifyRequestHandler = async (message, category, destination) => {
   }
   const traitsInfo = getFieldValueFromMessage(message, 'traits');
   let profileId;
-  //   if (message.channel !== 'sources') {
-  //     personId = await isProfileExist(message, destination);
-  //   }
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
   let customPropertyPayload = {};
@@ -100,10 +97,10 @@ const identifyRequestHandler = async (message, category, destination) => {
   };
   const resp = await httpPOST(endpoint, payload, requestOptions);
   if (resp.response?.status === 201) {
-    profileId = resp.response.data.id;
+    profileId = resp.response?.data?.id;
   } else if (resp.response?.response?.status === 409) {
     const { response } = resp.response;
-    profileId = response.data.errors[0].meta.duplicate_profile_id;
+    profileId = response.data?.errors[0]?.meta?.duplicate_profile_id;
   }
 
   // Update Profile
@@ -199,12 +196,10 @@ const trackRequestHandler = (message, category, destination) => {
     }
   } else {
     attributes = constructPayload(message, MAPPING_CONFIG[category.name]);
-    // payload.token = destination.Config.publicApiKey;
     if (message.properties && message.properties.revenue) {
       attributes.value = message.properties.revenue;
       delete attributes.properties.revenue;
     }
-    const customerProperties = createCustomerProperties(message);
     attributes.properties = {
       ...attributes.properties,
       ...populateCustomFieldsFromTraits(message),
@@ -213,7 +208,7 @@ const trackRequestHandler = (message, category, destination) => {
     //   delete customerProperties.external_id;
     //   customerProperties._id = getFieldValueFromMessage(message, 'userId');
     // }
-    attributes.profile = customerProperties;
+    attributes.profile = createCustomerProperties(message);
   }
   if (message.timestamp) {
     attributes.time = toUnixTimestamp(message.timestamp);

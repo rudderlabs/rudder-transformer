@@ -134,7 +134,7 @@ const responseBuilderForInsertData = (
     response.endpoint = `https://${subdomain}.${ENDPOINTS.INSERT_CONTACTS}${externalKey}/rows/Contact Key:${contactKey}`;
     response.body.JSON = {
       values: {
-        CONTACT_KEY_KEY: contactKey,
+        [CONTACT_KEY_KEY]: contactKey,
         ...payload,
       },
     };

@@ -258,9 +258,10 @@ function responseBuilderSimple(message, payload, destination) {
 }
 
 function buildBaseEvent(message) {
-  const baseEvent = {};
-  baseEvent.extinfo = Array.from(extInfoArray);
-  baseEvent.custom_events = [{}];
+  const baseEvent = {
+    extinfo: Array.from(extInfoArray),
+    custom_events: [{}],
+  };
 
   let sourceSDK = get(message, 'context.device.type') || '';
   sourceSDK = sourceSDK.toLowerCase();
@@ -297,9 +298,9 @@ function buildBaseEvent(message) {
         baseEvent.extinfo[extInfoIdx] = outputVal || baseEvent.extinfo[extInfoIdx];
       } else if (splits.length === 3) {
         // custom event key
-        set(baseEvent.custom_events[0], splits[2], inputVal || '');
+        set(baseEvent.custom_events[0], splits[2], inputVal);
       } else {
-        set(baseEvent, destKey, inputVal || '');
+        set(baseEvent, destKey, inputVal);
       }
     }
   });

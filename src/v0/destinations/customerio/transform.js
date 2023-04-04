@@ -41,6 +41,7 @@ const {
 const logger = require('../../../logger');
 const { getEventChunks } = require('./util');
 const { InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const deviceRelatedEventNames = [
   'Application Installed',
@@ -345,7 +346,7 @@ const batchEvents = (successRespList) => {
     eventChunks.forEach((chunk) => {
       const request = defaultRequestConfig();
       request.endpoint = endpoint;
-      request.headers = { ...headers, 'Content-Type': 'application/json' };
+      request.headers = { ...headers, 'Content-Type': JSON_MIME_TYPE };
       // Setting the request body to an object with a single property called "batch" containing the batched data
       request.body.JSON = { batch: chunk.data };
 

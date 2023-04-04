@@ -10,6 +10,7 @@ const {
 const { InstrumentationError } = require('../../util/errorTypes');
 
 const { preparePayload } = require('./util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const prepareResponse = (payload, audienceId, accessToken) => {
   const response = defaultRequestConfig();
@@ -18,8 +19,8 @@ const prepareResponse = (payload, audienceId, accessToken) => {
   response.method = defaultPatchRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
+    Accept: JSON_MIME_TYPE,
   };
   return response;
 };

@@ -21,6 +21,7 @@ const {
 
 const { ENDPOINT, MAX_BATCH_SIZE, USER_CONFIGS } = require('./config');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilderSimple = (finalPayload) => {
   const response = defaultRequestConfig();
@@ -30,7 +31,7 @@ const responseBuilderSimple = (finalPayload) => {
   return {
     ...response,
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     },
   };
 };
@@ -133,7 +134,7 @@ const generateBatchedPayloadForArray = (events) => {
   };
   batchedRequest.endpoint = ENDPOINT;
   batchedRequest.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   return batchedRequest;
 };

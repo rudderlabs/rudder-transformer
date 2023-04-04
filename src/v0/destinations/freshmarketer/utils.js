@@ -19,6 +19,7 @@ const {
   NetworkError,
 } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /*
  * This functions is used for getting Account details.
@@ -32,7 +33,7 @@ const createUpdateAccount = async (payload, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     },
   };
   const payloadBody = {
@@ -72,7 +73,7 @@ const getUserAccountDetails = async (payload, userEmail, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     },
   };
   const userPayload = {
@@ -128,7 +129,7 @@ const createOrUpdateListDetails = async (listName, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     },
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrlList}`;
@@ -178,7 +179,7 @@ const updateAccountWOContact = (payload, Config) => {
   };
   response.headers = {
     Authorization: `Token token=${Config.apiKey}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   return response;
 };
@@ -197,7 +198,7 @@ const updateContactWithList = (userId, listId, Config) => {
   response.endpoint = `https://${Config.domain}.myfreshworks.com/crm/sales/api/lists/${listId}/add_contacts`;
   response.headers = {
     Authorization: `Token token=${Config.apiKey}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.body.JSON = {
     ids: [userId],
@@ -217,7 +218,7 @@ const getContactsDetails = async (userEmail, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     },
   };
   const userPayload = {
@@ -278,7 +279,7 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     },
   };
   const emails = getFieldValueFromMessage(message, 'email');
@@ -348,7 +349,7 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     },
   };
   if (!payload.sales_activity_name && !payload.sales_activity_type_id) {

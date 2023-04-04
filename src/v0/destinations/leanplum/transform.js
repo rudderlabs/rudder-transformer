@@ -8,6 +8,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function preparePayload(message, name, destination) {
   const mappingJson = mappingConfig[name];
@@ -45,7 +46,7 @@ function responseBuilderSimple(message, category, destination) {
   response.endpoint = ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.userId = message.anonymousId;
   response.body.JSON = preparePayload(message, category.name, destination);

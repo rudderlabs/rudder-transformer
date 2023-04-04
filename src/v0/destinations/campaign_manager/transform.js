@@ -18,6 +18,7 @@ const {
 } = require('./config');
 
 const { InstrumentationError, OAuthSecretError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getAccessToken = ({ secret }) => {
   if (!secret) {
@@ -36,7 +37,7 @@ function buildResponse(requestJson, metadata, endpointUrl, requestType, encrypti
   response.endpoint = endpointUrl;
   response.headers = {
     Authorization: `Bearer ${getAccessToken(metadata)}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON.kind =

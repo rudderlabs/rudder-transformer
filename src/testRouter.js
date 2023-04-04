@@ -6,13 +6,14 @@ const fs = require('fs');
 const path = require('path');
 const Router = require('@koa/router');
 const { sendToDestination, userTransformHandler } = require('./routerUtils');
+const { JSON_MIME_TYPE } = require('./v0/util/constant');
 
 const version = 'v0';
 const API_VERSION = '1';
 
 const isSupportedContentType = (contentType) => {
   let supported = false;
-  const SUPPORTED_CONTENT_TYPES = ['application/xml', 'application/json', 'text'];
+  const SUPPORTED_CONTENT_TYPES = ['application/xml', JSON_MIME_TYPE, 'text'];
   if (contentType) {
     SUPPORTED_CONTENT_TYPES.some((type) => {
       if (contentType.toLowerCase().includes(type)) {

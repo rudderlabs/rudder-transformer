@@ -21,6 +21,7 @@ const {
   PARTNER_NAME,
 } = require('./config');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getContents = (message) => {
   const contents = [];
@@ -82,7 +83,7 @@ const getTrackResponse = (message, category, Config, event) => {
   const response = defaultRequestConfig();
   response.headers = {
     'Access-Token': accessToken,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
 
   response.method = category.method;
@@ -167,7 +168,7 @@ const generateBatch = (eventSetId, events) => {
 
   batchRequestObject.batchedRequest.headers = {
     'Access-Token': accessToken,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
 
   return {

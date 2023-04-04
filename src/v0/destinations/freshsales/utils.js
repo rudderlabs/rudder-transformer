@@ -17,6 +17,7 @@ const {
 } = require('../../util/errorTypes');
 const { CONFIG_CATEGORIES, LIFECYCLE_STAGE_ENDPOINT } = require('./config');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /*
  * This functions is used for getting Account details.
@@ -30,7 +31,7 @@ const createUpdateAccount = async (payload, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     },
   };
   const payloadBody = {
@@ -69,7 +70,7 @@ const getUserAccountDetails = async (payload, userEmail, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     },
   };
   const userPayload = {
@@ -124,7 +125,7 @@ const getContactsDetails = async (userEmail, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     },
   };
   const userPayload = {
@@ -187,7 +188,7 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     },
   };
   if (!payload.sales_activity_name && !payload.sales_activity_type_id) {
@@ -281,7 +282,7 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     },
   };
   const emails = getFieldValueFromMessage(message, 'email');
@@ -358,7 +359,7 @@ const updateAccountWOContact = (payload, Config) => {
   };
   response.headers = {
     Authorization: `Token token=${Config.apiKey}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   return response;
 };

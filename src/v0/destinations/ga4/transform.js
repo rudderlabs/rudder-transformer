@@ -39,6 +39,7 @@ const {
   getGA4CustomParameters,
   GA4_PARAMETERS_EXCLUSION,
 } = require('./utils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * returns client_id
@@ -270,7 +271,7 @@ const responseBuilder = (message, { Config }) => {
   }
   response.headers = {
     HOST: 'www.google-analytics.com',
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.params = {
     api_secret: Config.apiSecret,

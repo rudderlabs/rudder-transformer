@@ -53,6 +53,8 @@ const NS_PER_SEC = 1e9;
 
 const router = new Router();
 
+const PAYLOAD_PROC_ERR_MSG = 'Error occurred while processing payload';
+
 // Router for assistance in profiling
 router.use(profilingRouter);
 
@@ -914,7 +916,7 @@ async function handleSource(ctx, version, source) {
 
         const resp = {
           statusCode: 400,
-          error: error.message || 'Error occurred while processing payload.',
+          error: error.message || PAYLOAD_PROC_ERR_MSG,
         };
 
         respList.push(resp);
@@ -1180,7 +1182,7 @@ const fileUpload = async (ctx) => {
   } catch (error) {
     response = {
       statusCode: error.response ? error.response.status : 400,
-      error: error.message || 'Error occurred while processing payload.',
+      error: error.message || PAYLOAD_PROC_ERR_MSG,
       metadata: error.response ? error.response.metadata : null,
     };
     errNotificationClient.notify(error, 'File Upload', {
@@ -1193,17 +1195,17 @@ const fileUpload = async (ctx) => {
   return ctx.body;
 };
 
-const pollStatus = async (ctx) => {
-  const getReqMetadata = () => {
-    try {
-      const reqBody = ctx.request.body;
-      return { destType: reqBody?.destType, importId: reqBody?.importId };
-    } catch (error) {
-      // Do nothing
-    }
-    return {};
-  };
+const jobAndPollStatusReqMetadata = (ctx) => {
+  try {
+    const reqBody = ctx.request.body;
+    return { destType: reqBody?.destType, importId: reqBody?.importId };
+  } catch (error) {
+    // Do nothing
+  }
+  return {};
+};
 
+const pollStatus = async (ctx) => {
   const { destType } = ctx.request.body;
   const destFileUploadHandler = getPollStatusHandler('v0', destType.toLowerCase());
   let response;
@@ -1217,12 +1219,12 @@ const pollStatus = async (ctx) => {
   } catch (error) {
     response = {
       statusCode: error.response ? error.response.status : 400,
-      error: error.message || 'Error occurred while processing payload.',
+      error: error.message || PAYLOAD_PROC_ERR_MSG,
     };
     errNotificationClient.notify(error, 'Poll Status', {
       ...response,
       ...getCommonMetadata(ctx),
-      ...getReqMetadata(),
+      ...jobAndPollStatusReqMetadata(ctx),
     });
   }
   ctx.body = response;
@@ -1230,16 +1232,6 @@ const pollStatus = async (ctx) => {
 };
 
 const getJobStatus = async (ctx, type) => {
-  const getReqMetadata = () => {
-    try {
-      const reqBody = ctx.request.body;
-      return { destType: reqBody?.destType, importId: reqBody?.importId };
-    } catch (error) {
-      // Do nothing
-    }
-    return {};
-  };
-
   const { destType } = ctx.request.body;
   const destFileUploadHandler = getJobStatusHandler('v0', destType.toLowerCase());
 
@@ -1254,12 +1246,12 @@ const getJobStatus = async (ctx, type) => {
   } catch (error) {
     response = {
       statusCode: error.response ? error.response.status : 400,
-      error: error.message || 'Error occurred while processing payload.',
+      error: error.message || PAYLOAD_PROC_ERR_MSG,
     };
     errNotificationClient.notify(error, 'Job Status', {
       ...response,
       ...getCommonMetadata(ctx),
-      ...getReqMetadata(),
+      ...jobAndPollStatusReqMetadata(ctx),
     });
   }
   ctx.body = response;

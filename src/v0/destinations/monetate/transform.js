@@ -11,6 +11,7 @@ const {
 const { EventType } = require('../../../constants');
 const { ENDPOINT, mappingConfig } = require('./config');
 const { InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const createObject = (type) => {
   if (!type) {
@@ -133,7 +134,7 @@ function responseBuilder(body, destination) {
   response.endpoint = ENDPOINT + destinationConfig.retailerShortName;
   response.body.JSON = clonedBody;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
 
   return response;

@@ -18,6 +18,7 @@ const {
   UpdateContactWithLifeCycleStage,
   updateAccountWOContact,
 } = require('./utils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /*
  * This functions is used for creating response config for identify call.
@@ -30,7 +31,7 @@ const identifyResponseConfig = (Config) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Token token=${Config.apiKey}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   return response;
 };
@@ -53,7 +54,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Token token=${Config.apiKey}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
   response.method = CONFIG_CATEGORIES.IDENTIFY.method;
@@ -99,7 +100,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   }
   response.headers = {
     Authorization: `Token token=${Config.apiKey}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   return response;
@@ -174,12 +175,12 @@ const processEvent = async (message, destination) => {
       const mappedEvents = eventMappingHandler(message, destination);
       if (mappedEvents.length > 0) {
         response = [];
-        mappedEvents.forEach(async (mappedEvent) => {
-          const res = await trackResponseBuilder(message, destination, mappedEvent);
+        mappedEvents.forEach(async () => {
+          const res = await trackResponseBuilder(message, destination);
           response.push(res);
         });
       } else {
-        response = await trackResponseBuilder(message, destination, get(message, 'event'));
+        response = await trackResponseBuilder(message, destination);
       }
       break;
     }

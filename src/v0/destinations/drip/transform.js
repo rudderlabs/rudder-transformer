@@ -36,6 +36,7 @@ const {
   ConfigurationError,
   NetworkInstrumentationError,
 } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const identifyResponseBuilder = async (message, { Config }) => {
   const id = getDestinationExternalID(message, 'dripId');
@@ -93,7 +94,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   const campaignId = getDestinationExternalID(message, 'dripCampaignId') || Config.campaignId;
@@ -171,7 +172,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     const response = defaultRequestConfig();
     response.headers = {
       Authorization: `Basic ${basicAuth}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.endpoint = `${ENDPOINT}/v3/${Config.accountId}/shopper_activity/order`;
@@ -211,7 +212,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `${ENDPOINT}/v2/${Config.accountId}/events`;

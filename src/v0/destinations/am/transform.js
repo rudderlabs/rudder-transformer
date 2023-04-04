@@ -41,9 +41,12 @@ const AMUtils = require('./utils');
 
 const logger = require('../../../logger');
 const { InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
 const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
+
+const EVENTS_KEY_PATH = 'body.JSON.events';
 
 const baseEndpoint = (destConfig) => {
   let retVal;
@@ -466,7 +469,7 @@ function responseBuilderSimple(
       response.endpoint = endpoint;
       response.method = defaultPostRequestConfig.requestMethod;
       response.headers = {
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
       };
       response.userId = message.anonymousId;
       response.body.JSON = {
@@ -510,6 +513,7 @@ function processSingleMessage(message, destination) {
   let category = ConfigCategory.DEFAULT;
 
   const messageType = message.type.toLowerCase();
+  const CATEGORY_KEY = 'properties.category';
   switch (messageType) {
     case EventType.IDENTIFY:
       payloadObjectName = 'events'; // identify same as events
@@ -517,20 +521,18 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.IDENTIFY;
       break;
     case EventType.PAGE:
-      evType = `Viewed ${message.name || get(message, 'properties.category') || ''} Page`;
+      evType = `Viewed ${message.name || get(message, CATEGORY_KEY) || ''} Page`;
       message.properties = {
         ...message.properties,
-        name: message.name || get(message, 'properties.category'),
+        name: message.name || get(message, CATEGORY_KEY),
       };
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      evType = `Viewed ${
-        message.name || message.event || get(message, 'properties.category') || ''
-      } Screen`;
+      evType = `Viewed ${message.name || message.event || get(message, CATEGORY_KEY) || ''} Screen`;
       message.properties = {
         ...message.properties,
-        name: message.name || message.event || get(message, 'properties.category'),
+        name: message.name || message.event || get(message, CATEGORY_KEY),
       };
       category = ConfigCategory.SCREEN;
       break;
@@ -719,7 +721,7 @@ function getBatchEvents(message, destination, metadata, batchEventResponse) {
   const batchEventJobs = get(batchEventResponse, 'metadata') || [];
   const batchPayloadJSON = get(batchEventResponse, 'batchedRequest.body.JSON') || {};
   const incomingMessageJSON = get(message, 'body.JSON');
-  let incomingMessageEvent = get(message, 'body.JSON.events');
+  let incomingMessageEvent = get(message, EVENTS_KEY_PATH);
   // check if the incoming singular event is an array or not
   // and set it back to array
   incomingMessageEvent = Array.isArray(incomingMessageEvent)
@@ -743,7 +745,7 @@ function getBatchEvents(message, destination, metadata, batchEventResponse) {
     delete incomingMessageEvent.user_id;
   }
 
-  set(message, 'body.JSON.events', [incomingMessageEvent]);
+  set(message, EVENTS_KEY_PATH, [incomingMessageEvent]);
   // if this is the first event, push to batch and return
   const BATCH_ENDPOINT = batchEndpoint(destination.Config);
   if (batchEventArray.length === 0) {
@@ -790,7 +792,7 @@ function batch(destEvents) {
     const { message, metadata, destination } = ev;
     destinationObject = { ...destination };
     jsonBody = get(message, 'body.JSON');
-    messageEvent = get(message, 'body.JSON.events');
+    messageEvent = get(message, EVENTS_KEY_PATH);
     userId =
       messageEvent && Array.isArray(messageEvent)
         ? messageEvent[0].user_id

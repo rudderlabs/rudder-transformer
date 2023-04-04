@@ -14,13 +14,14 @@ const {
   TransformationError,
   InstrumentationError,
 } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint, apiToken) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `${apiToken}`,
     };
     response.method = defaultPostRequestConfig.requestMethod;

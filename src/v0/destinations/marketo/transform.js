@@ -30,7 +30,7 @@ const {
   handleRtTfSingleEventError,
 } = require('../../util');
 const Cache = require('../../util/cache');
-const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL } = require('../../util/constant');
+const { USER_LEAD_CACHE_TTL, AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
 const {
   marketoResponseHandler,
   sendGetRequest,
@@ -112,7 +112,7 @@ const createOrUpdateLead = async (formattedDestination, token, userId, anonymous
       {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-type': 'application/json',
+          'Content-type': JSON_MIME_TYPE,
         },
       },
     );
@@ -413,7 +413,7 @@ const responseWrapper = (response) => {
   const resp = defaultRequestConfig();
   resp.endpoint = response.endPoint;
   resp.method = defaultPostRequestConfig.requestMethod;
-  resp.headers = { ...response.headers, 'Content-Type': 'application/json' };
+  resp.headers = { ...response.headers, 'Content-Type': JSON_MIME_TYPE };
   resp.body.JSON = response.payload;
   return resp;
 };

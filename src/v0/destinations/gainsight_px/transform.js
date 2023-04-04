@@ -30,6 +30,7 @@ const {
   identifyMapping,
 } = require('./config');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * Create/Update a User with user attributes
@@ -43,7 +44,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   const response = defaultRequestConfig();
   response.headers = {
     'X-APTRINSIC-API-KEY': Config.apiKey,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
 
   const { success: isPresent } = await objectExists(userId, Config, 'user');
@@ -143,7 +144,7 @@ const newGroupResponseBuilder = async (message, { Config }) => {
   response.method = defaultPutRequestConfig.requestMethod;
   response.headers = {
     'X-APTRINSIC-API-KEY': Config.apiKey,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.endpoint = `${ENDPOINTS.USERS_ENDPOINT}/${userId}`;
   response.body.JSON = {
@@ -211,7 +212,7 @@ const groupResponseBuilder = async (message, { Config }) => {
   response.method = defaultPutRequestConfig.requestMethod;
   response.headers = {
     'X-APTRINSIC-API-KEY': Config.apiKey,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.endpoint = `${ENDPOINTS.USERS_ENDPOINT}/${userId}`;
   response.body.JSON = {
@@ -252,7 +253,7 @@ const trackResponseBuilder = (message, { Config }) => {
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.headers = {
     'X-APTRINSIC-API-KEY': Config.apiKey,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.endpoint = ENDPOINTS.CUSTOM_EVENTS_ENDPOINT;
   return response;

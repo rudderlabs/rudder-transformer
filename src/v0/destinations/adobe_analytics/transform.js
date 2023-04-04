@@ -306,6 +306,7 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
 };
 
 const handleTrack = (message, destinationConfig) => {
+  const ORDER_ID_KEY = 'properties.order_id';
   const { event: rawEvent } = message;
   let payload = null;
   // handle ecommerce events separately
@@ -324,9 +325,8 @@ const handleTrack = (message, destinationConfig) => {
       break;
     case 'order completed':
       payload = processTrackEvent(message, 'purchase', destinationConfig, {
-        purchaseID: get(message, 'properties.purchaseId') || get(message, 'properties.order_id'),
-        transactionID:
-          get(message, 'properties.transactionId') || get(message, 'properties.order_id'),
+        purchaseID: get(message, 'properties.purchaseId') || get(message, ORDER_ID_KEY),
+        transactionID: get(message, 'properties.transactionId') || get(message, ORDER_ID_KEY),
       });
       break;
     case 'cart viewed':
@@ -334,9 +334,8 @@ const handleTrack = (message, destinationConfig) => {
       break;
     case 'checkout started':
       payload = processTrackEvent(message, 'scCheckout', destinationConfig, {
-        purchaseID: get(message, 'properties.purchaseId') || get(message, 'properties.order_id'),
-        transactionID:
-          get(message, 'properties.transactionId') || get(message, 'properties.order_id'),
+        purchaseID: get(message, 'properties.purchaseId') || get(message, ORDER_ID_KEY),
+        transactionID: get(message, 'properties.transactionId') || get(message, ORDER_ID_KEY),
       });
       break;
     case 'cart opened':

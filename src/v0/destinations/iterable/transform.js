@@ -25,6 +25,7 @@ const {
 } = require('../../util');
 const logger = require('../../../logger');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function validateMandatoryField(payload) {
   if (payload.email === undefined && payload.userId === undefined) {
@@ -234,7 +235,7 @@ function responseBuilderSimple(message, category, destination) {
     response.operation = 'catalogs';
   }
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     api_key: destination.Config.apiKey,
   };
   return response;
@@ -261,10 +262,26 @@ function responseBuilderSimpleForIdentify(message, category, destination) {
   }
 
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     api_key: destination.Config.apiKey,
   };
   return response;
+}
+
+function getCategoryUsingEventName(event) {
+  let category;
+  switch (event) {
+    case 'order completed':
+      category = ConfigCategory.TRACK_PURCHASE;
+      break;
+    case 'product added':
+    case 'product removed':
+      category = ConfigCategory.UPDATE_CART;
+      break;
+    default:
+      category = ConfigCategory.TRACK;
+  }
+  return category;
 }
 
 function processSingleMessage(message, destination) {
@@ -292,17 +309,7 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.TRACK:
       event = message.event.toLowerCase();
-      switch (event) {
-        case 'order completed':
-          category = ConfigCategory.TRACK_PURCHASE;
-          break;
-        case 'product added':
-        case 'product removed':
-          category = ConfigCategory.UPDATE_CART;
-          break;
-        default:
-          category = ConfigCategory.TRACK;
-      }
+      category = getCategoryUsingEventName(event);
       break;
     case EventType.ALIAS:
       category = ConfigCategory.ALIAS;
@@ -392,7 +399,7 @@ function batchEvents(arrayChunks) {
     }
 
     batchEventResponse.batchedRequest.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       api_key: apiKey,
     };
 

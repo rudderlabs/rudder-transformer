@@ -108,7 +108,8 @@
             },
             "app_version": "1.1.6",
             "current_time": "2020-10-16T13:40:12.791+05:30",
-            "user_timezone_offset": 32400
+            "user_timezone_offset": 32400,
+            "platform": "web"
           }
         ]
       },
@@ -431,7 +432,8 @@
             },
             "app_version": "1.1.6",
             "current_time": "2020-10-16T13:40:12.791+05:30",
-            "user_timezone_offset": 19800
+            "user_timezone_offset": 19800,
+            "platform": "web"
           }
         ]
       },
@@ -513,7 +515,8 @@
               "value": 31.98
             },
             "app_version": "1.1.6",
-            "current_time": "2020-10-16T13:40:12.791+05:30"
+            "current_time": "2020-10-16T13:40:12.791+05:30",
+            "platform": "web"
           }
         ]
       },
@@ -774,5 +777,34 @@
     },
     "files": {},
     "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "merge_data": [
+          {
+            "merged_user": "4eb021e9-a2af-4926-ae82-fe996d12f3c5",
+            "retained_user": "12345"
+          }
+        ]
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "userId": "12345",
+    "params": {},
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic VzBaSE5NUEkyTzRLSEo0OFpJTFpBQ1JBOnV1SE1uWDY2Y3RFZGpEX19iamxTQ08wTw=="
+    },
+    "version": "1",
+    "endpoint": "https://api-01.moengage.com/v1/customer/merge?app_id=W0ZHNMPI2O4KHJ48ZILZACRA"
+  },
+  {
+    "error": "Missing required value from \"previousId\""
   }
 ]

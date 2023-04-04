@@ -6,7 +6,6 @@ const stats = require('../../../util/stats');
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
-  ACTION_SOURCES_VALUES,
   FB_PIXEL_DEFAULT_EXCLUSION,
   STANDARD_ECOMM_EVENTS_TYPE,
 } = require('./config');
@@ -29,6 +28,7 @@ const {
   formatRevenue,
   getContentType,
   transformedPayloadData,
+  getActionSource,
 } = require('./utils');
 
 const {
@@ -80,7 +80,7 @@ const handleOrder = (message, categoryToContent) => {
   const contentType = getContentType(message, 'product', categoryToContent);
   const contentIds = [];
   const contents = [];
-  const { category, quantity, price, currency } = message.properties;
+  const { category, quantity, price, currency, contentName } = message.properties;
   if (products) {
     if (products.length > 0 && Array.isArray(products)) {
       products.forEach((singleProduct) => {
@@ -110,6 +110,7 @@ const handleOrder = (message, categoryToContent) => {
     value,
     contents,
     num_items: contentIds.length,
+    content_name: contentName,
   };
 };
 
@@ -124,7 +125,7 @@ const handleProductListViewed = (message, categoryToContent) => {
   let contentType;
   const contentIds = [];
   const contents = [];
-  const { products, category, quantity } = message.properties;
+  const { products, category, quantity, value, contentName } = message.properties;
   if (products && products.length > 0 && Array.isArray(products)) {
     products.forEach((product, index) => {
       if (isObject(product)) {
@@ -159,6 +160,9 @@ const handleProductListViewed = (message, categoryToContent) => {
     content_ids: contentIds,
     content_type: getContentType(message, contentType, categoryToContent),
     contents,
+    content_category: getContentCategory(category),
+    content_name: contentName,
+    value: formatRevenue(value),
   };
 };
 
@@ -173,7 +177,7 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
   const contents = [];
   const useValue = valueFieldIdentifier === 'properties.value';
   const contentId =
-    message.properties.product_id || message.properties.id || message.properties.sku;
+    message.properties?.product_id || message.properties?.sku || message.properties?.id;
   const contentType = getContentType(message, 'product', categoryToContent);
   const contentName = message.properties.product_name || message.properties.name || '';
   const contentCategory = message.properties.category || '';
@@ -200,6 +204,42 @@ const handleProduct = (message, categoryToContent, valueFieldIdentifier) => {
   };
 };
 
+const handleSearch = (message) => {
+  const query = message?.properties?.query;
+  /**
+   * Facebook Pixel states "search_string" a string type
+   * ref: https://developers.facebook.com/docs/meta-pixel/reference#:~:text=an%20exact%20value.-,search_string,-String
+   * But it accepts "number" and "boolean" types. So, we are also doing the same by accepting "number" and "boolean"
+   * and throwing an error if "Object" or other types are being sent.
+   */
+  const validQueryType = ['string', 'number', 'boolean'];
+  if (query && !validQueryType.includes(typeof query)) {
+    throw new InstrumentationError("'query' should be in string format only");
+  }
+
+  const contentIds = [];
+  const contents = [];
+  const contentId =
+    message.properties?.product_id || message.properties?.sku || message.properties?.id;
+  const contentCategory = message?.properties?.category || '';
+  const value = message?.properties?.value;
+  if (contentId) {
+    contentIds.push(contentId);
+    contents.push({
+      id: contentId,
+      quantity: message?.properties?.quantity || 1,
+      item_price: message?.properties?.price,
+    });
+  }
+  return {
+    content_ids: contentIds,
+    content_category: getContentCategory(contentCategory),
+    value: formatRevenue(value),
+    contents,
+    search_string: query,
+  };
+};
+
 const responseBuilderSimple = (message, category, destination, categoryToContent) => {
   const { Config } = destination;
   const { pixelId, accessToken } = Config;
@@ -215,13 +255,17 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
   } = Config;
   const integrationsObj = getIntegrationsObj(message, 'fb_pixel');
 
-  const endpoint = `https://graph.facebook.com/v13.0/${pixelId}/events?access_token=${accessToken}`;
+  const endpoint = `https://graph.facebook.com/v16.0/${pixelId}/events?access_token=${accessToken}`;
 
   const userData = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.USERDATA.name],
     'fb_pixel',
   );
+  const { removeExternalId } = Config;
+  if (removeExternalId) {
+    delete userData.external_id;
+  }
   if (userData) {
     const split = userData.name ? userData.name.split(' ') : null;
     if (split !== null && Array.isArray(split) && split.length === 2) {
@@ -236,13 +280,8 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
   let commonData = {};
 
   commonData = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name], 'fb_pixel');
+  commonData.action_source = getActionSource(commonData, message?.channel);
 
-  if (commonData.action_source) {
-    const isActionSourceValid = ACTION_SOURCES_VALUES.includes(commonData.action_source);
-    if (!isActionSourceValid) {
-      throw new InstrumentationError('Invalid Action Source type');
-    }
-  }
   if (category.type !== 'identify') {
     customData = flattenJson(
       extractCustomFields(message, customData, ['properties'], FB_PIXEL_DEFAULT_EXCLUSION),
@@ -296,31 +335,23 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
           commonData.event_name = 'Purchase';
           break;
         case 'products searched': {
-          const query = message.properties?.query;
-          /**
-           * Facebook Pixel states "search_string" a string type
-           * ref: https://developers.facebook.com/docs/meta-pixel/reference#:~:text=an%20exact%20value.-,search_string,-String
-           * But it accepts "number" and "boolean" types. So, we are also doing the same by accepting "number" and "boolean"
-           * and throwing an error if "Object" or other types are being sent.
-           */
-          const validQueryType = ['string', 'number', 'boolean'];
-          if (query && !validQueryType.includes(typeof query)) {
-            throw new InstrumentationError("'query' should be in string format only");
-          }
           customData = {
             ...customData,
-            search_string: message.properties.query,
+            ...handleSearch(message),
           };
           commonData.event_name = 'Search';
           break;
         }
-        case 'checkout started':
+        case 'checkout started': {
+          const orderPayload = handleOrder(message, categoryToContent);
+          delete orderPayload.content_name;
           customData = {
             ...customData,
-            ...handleOrder(message, categoryToContent),
+            ...orderPayload,
           };
           commonData.event_name = 'InitiateCheckout';
           break;
+        }
         case 'page_view': // executed when sending track calls but with standard type PageView
         case 'page': // executed when page call is done with standard PageView turned on
           customData = { ...customData };
@@ -406,7 +437,7 @@ const processEvent = (message, destination) => {
     const deltaMin = Math.ceil(moment.duration(start.diff(current)).asMinutes());
     if (deltaDay > 7 || deltaMin > 1) {
       // TODO: Remove after testing in mirror transformer
-      stats.increment('fb_pixel_timestamp_error', 1, {
+      stats.increment('fb_pixel_timestamp_error', {
         destinationId: destination.ID,
       });
       throw new InstrumentationError(
@@ -532,4 +563,4 @@ const processRouterDest = async (inputs, reqMetadata) => {
   return respList;
 };
 
-module.exports = { process, processRouterDest };
+module.exports = { process, processRouterDest, handleSearch };

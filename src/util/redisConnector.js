@@ -2,6 +2,7 @@ const Redis = require('ioredis');
 const { RedisError } = require('../v0/util/errorTypes');
 const log = require('../logger');
 const { generateUUID } = require('../v0/util');
+const stats = require('./stats');
 
 const RedisDB = {
   init() {
@@ -28,6 +29,9 @@ const RedisDB = {
       },
     });
     this.client.on('ready', (res) => {
+      stats.increment('redis_ready',{
+        timestamp: Date.now(),
+      });
       this.connectingFirstTime = false;
       log.info(`Connected to redis at ${this.host}:${this.port}`);
     });
@@ -40,16 +44,14 @@ const RedisDB = {
    * @returns value which can be json or string or number
    *
    */
-  async getVal(key, isJsonExpected = true) {
+  async getVal(key, metricMetadata, isJsonExpected = true) {
     try {
       if (!this.client) {
         this.init();
       }
       else if (this.client.status !== 'ready') {
-        await this.client.connect(); // not waiting for connecting and throwing error connection is closed
-        // eslint-disable-next-line no-promise-executor-return
-        await new Promise((resolve) => setTimeout(resolve, 10)); // waiting for connection to be established for max 10ms
-      }
+        await this.client.connect(); // Might not wait for connection and throw error connection is closed
+       }
       if (isJsonExpected) {
         const value = await this.client.get(key);
         return JSON.parse(value);
@@ -87,9 +89,11 @@ const RedisDB = {
     }
   },
   async disconnect() {
+    stats.increment('redis_graceful_shutdown',{
+      timestamp: Date.now(),
+    });
     this.client.quit();
-  },
-
+  }
 };
 
 module.exports = { RedisDB };

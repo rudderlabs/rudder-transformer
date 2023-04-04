@@ -8,7 +8,6 @@ const { router } = require('./versionedRouter');
 const { testRouter } = require('./testRouter');
 const { metricsRouter } = require('./metricsRouter');
 const cluster = require('./util/cluster');
-const { addStatMiddleware } = require('./middleware');
 const { logProcessInfo } = require('./util/utils');
 
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
@@ -17,10 +16,8 @@ const port = parseInt(process.env.PORT || '9090', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
 
 const app = new Koa();
-addStatMiddleware(app);
 
 const metricsApp = new Koa();
-addStatMiddleware(metricsApp);
 metricsApp.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());
 
 app.use(

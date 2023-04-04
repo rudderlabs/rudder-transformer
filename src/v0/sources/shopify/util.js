@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 const _ = require('lodash');
 const sha256 = require('sha256');
+const stats = require('../../../util/stats');
 const { constructPayload, extractCustomFields, flattenJson, generateUUID, isDefinedAndNotNull } = require('../../util');
 const { RedisDB } = require('../../../util/redisConnector');
 const logger = require('../../../logger');
@@ -121,7 +122,7 @@ const setAnonymousId = (message) => {
  * @param {*} message
  * @returns
  */
-const setAnonymousIdorUserIdFromDb = async (message) => {
+const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
   let cartToken;
   switch (message.event) {
     /**
@@ -167,8 +168,11 @@ const setAnonymousIdorUserIdFromDb = async (message) => {
       return;
     default:
   }
-
   const redisVal = await RedisDB.getVal(`${cartToken}`);
+  stats.increment('shopify_redis_get_data', {
+    ...metricMetadata,
+    timestamp: Date.now(),
+  });
   let anonymousIDfromDB;
   if (redisVal !== null) {
     anonymousIDfromDB = redisVal.anonymousId;
@@ -262,9 +266,13 @@ const isDuplicateCartPayload = (prevPayload, newPayload) => {
  * This Function will check for cart duplication events
  * @param {*} event
  */
-const checkForValidRecord = async (newCart) => {
+const checkForValidRecord = async (newCart, metricMetadata) => {
   const cartToken = newCart.cart_token || newCart.token;
   const redisVal = await RedisDB.getVal(`${cartToken}`);
+  stats.increment('shopify_redis_get_data', {
+    ...metricMetadata,
+    timestamp: Date.now(),
+  });
   const oldCart = redisVal?.cart;
   if (!oldCart) {
     // this is the case for events for which we don't have the values store in redis but are valid events. 
@@ -276,6 +284,10 @@ const checkForValidRecord = async (newCart) => {
     return false;
   }
   await RedisDB.setVal(`${cartToken}`, { anonymousId: redisVal?.anonymousId, cart: newCart });
+  stats.increment('shopify_redis_update_cart', {
+    ...metricMetadata,
+    timestamp: Date.now(),
+  });
   return true;
 };
 

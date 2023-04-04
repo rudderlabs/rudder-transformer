@@ -5,6 +5,7 @@ const { logProcessInfo } = require('./utils');
 const { RedisDB } = require('./redisConnector');
 
 const numWorkers = parseInt(process.env.NUM_PROCS || '1', 10);
+const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
 
 function finalFunction() {
   logger.info('Process exit event received');
@@ -24,9 +25,14 @@ function shutdownWorkers() {
   });
 }
 
-function start(port, app) {
+function start(port, app, metricsApp) {
   if (cluster.isMaster) {
     logger.info(`Master (pid: ${process.pid}) has started`);
+
+    // HTTP server for exposing metrics
+    if (process.env.STATS_CLIENT === 'prometheus') {
+      metricsApp.listen(metricsPort);
+    }
 
     // Fork workers.
     for (let i = 0; i < numWorkers; i += 1) {

@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const get = require('get-value');
 const stats = require('../../../util/stats');
+
 const log = require('../../../logger');
 const {
   getShopifyTopic,
@@ -15,6 +16,7 @@ const { RedisDB } = require('../../../util/redisConnector');
 const { removeUndefinedAndNullValues } = require('../../util');
 const Message = require('../message');
 const { EventType } = require('../../../constants');
+const stats = require('../../../util/stats');
 const {
   INTEGERATION,
   MAPPING_CATEGORIES,
@@ -192,7 +194,7 @@ const processEvent = async (inputEvent) => {
   }
 
   message = removeUndefinedAndNullValues(message);
-  stats.increment('shopify_server_side_identifier_event', 1, {
+  stats.increment('shopify_server_side_identifier_event', {
     writeKey: inputEvent.query_parameters?.writeKey?.[0],
     timestamp: Date.now(),
   });
@@ -200,7 +202,7 @@ const processEvent = async (inputEvent) => {
 };
 const isIdentifierEvent = (event) => {
   if (event?.event === 'rudderIdentifier') {
-    stats.increment('shopify_client_side_identifier_event', 1, {
+    stats.increment('shopify_client_side_identifier_event', {
       writeKey: event.query_parameters?.writeKey?.[0],
       timestamp: Date.now(),
     });

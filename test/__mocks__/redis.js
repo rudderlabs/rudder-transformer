@@ -1,7 +1,8 @@
 const fs = require("fs");
 const path = require("path");
 const directoryMap = {
-    "shopify_test": "shopify"
+    "shopify_test": "shopify",
+    "redis_test": "redis",
 }
 const getData = redisKey => {
     let directory = "";
@@ -22,11 +23,15 @@ const getData = redisKey => {
 
 class Redis {
     constructor(data) {
-        this.status = "ready",
+        this.status = "closed",
             this.data = data
+
     };
 
     get(key) {
+        if(key === "error"){
+            throw new Error("Connection is Closed");
+        }
         const mockData = getData(key);
         if (mockData) {
             return JSON.stringify(mockData);
@@ -36,16 +41,18 @@ class Redis {
     }
 
     set(key, value) {
+        if(key === "error"){
+            throw new Error("Connection is Closed");
+        }
         this.data[key] = value;
     }
 
     connect() {
-        this.connectionStatus = true
+        this.status = "ready"
         return new Promise((resolve, reject) => {
             resolve({ data: "OK", status: 200 });
         });
     }
-
     on() {
         return true;
     }

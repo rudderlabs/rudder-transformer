@@ -1,19 +1,15 @@
 const Redis = require('ioredis');
 const { RedisError } = require('../v0/util/errorTypes');
 const log = require('../logger');
-const { generateUUID } = require('../v0/util');
 const stats = require('./stats');
 
 const RedisDB = {
   init() {
-    this.id = generateUUID();
-    this.connectingFirstTime = true;
     this.host = process.env.REDIS_HOST || 'localhost';
     this.port = parseInt(process.env.REDIS_PORT, 10) || 6379;
     this.password = process.env.REDIS_PASSWORD;
     this.maxRetries = parseInt(process.env.REDIS_MAX_RETRIES || 30, 10);
     this.timeAfterRetry = parseInt(process.env.REDIS_TIME_AFTER_RETRY_IN_MS || 10, 10);
-    this.id = 1;
     this.client = new Redis({
       host: this.host,
       port: this.port,
@@ -32,7 +28,6 @@ const RedisDB = {
       stats.increment('redis_ready', {
         timestamp: Date.now(),
       });
-      this.connectingFirstTime = false;
       log.info(`Connected to redis at ${this.host}:${this.port}`);
     });
   },

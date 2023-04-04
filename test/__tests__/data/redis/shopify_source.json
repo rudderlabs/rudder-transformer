@@ -44,6 +44,7 @@
     {
         "description": "Track Call -> carts_update",
         "input": {
+            "user_id": "rudder01",
             "id": "shopify_test_cart1",
             "query_parameters": {
                 "topic": [
@@ -51,6 +52,7 @@
                 ]
             },
             "token": "shopify_test_cart1",
+            "email": "test@rudderstack.com",
             "line_items": [
                 {
                     "id": 44323300999443,
@@ -129,6 +131,7 @@
             "created_at": "2023-02-10T12:05:04.402Z"
         },
         "output": {
+            "userId": "rudder01",
             "anonymousId": "anon_shopify_test1",
             "context": {
                 "library": {
@@ -144,10 +147,14 @@
             "integrations": {
                 "SHOPIFY": true
             },
+            "traits": {
+                "email": "test@rudderstack.com"
+            },
             "type": "track",
             "properties": {
                 "note": null,
                 "created_at": "2023-02-10T12:05:04.402Z",
+                "email":"test@rudderstack.com",
                 "id": "shopify_test_cart1",
                 "products": [
                     {
@@ -221,6 +228,7 @@
                         }
                     }
                 ],
+                "user_id":"rudder01",
                 "token": "shopify_test_cart1",
                 "updated_at": "2023-02-10T12:16:07.251Z"
             }
@@ -518,7 +526,6 @@
             "shipping_address": "abc",
             "billing_address": "abc",
             "customer": {
-                "email": "test_person@email.com",
                 "first_name": "Test",
                 "last_name": "Person"
             },
@@ -572,7 +579,6 @@
             "traits": {
                 "shippingAddress": "abc",
                 "billingAddress": "abc",
-                "email": "test_person@email.com",
                 "firstName": "Test",
                 "lastName": "Person"
             },

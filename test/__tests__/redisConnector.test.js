@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const version = "v0";
-
+const { RedisDB } = require('../../src/util/redisConnector');
 jest.mock('ioredis', () => require('../__mocks__/redis'));
 const sourcesList = ['shopify']
 const destList = []
@@ -24,4 +24,31 @@ describe(`Source Tests`, () => {
       });
     });
   })
-})
+});
+
+describe(`Redis Class Get Tests`, () => {
+  const testDataFile = fs.readFileSync(
+    path.resolve(__dirname, `./data/redis/redisConnector.json`)
+  );
+  const data = JSON.parse(testDataFile);
+  data.forEach((dataPoint, index) => {
+    it(`${index}. Redis Get- ${dataPoint.description}`, async () => {
+      try {
+        const output = await RedisDB.getVal(dataPoint.input.value);
+        expect(output).toEqual(dataPoint.output);
+      } catch (error) {
+        expect(error.message).toEqual(dataPoint.output.error);
+      }
+    });
+  });
+});
+
+describe(`Redis Class Set Fail Test`, () => {
+  it(`Redis Set Fail Case Test`, async () => {
+    try {
+      await RedisDB.setVal("error");
+    } catch (error) {
+      expect(error.message).toEqual("Error setting value in Redis due Error: Connection is Closed");
+    }
+  });
+});

@@ -14,7 +14,7 @@ export default class DeliveryController {
     let deliveryResponse: DeliveryResponse;
     let requestMetadata = MiscService.getRequestMetadata(ctx);
     let event = ctx.request.body as ProcessorTransformationOutput;
-    const { version, destination }: { version: string; destination: string } = ctx.params;
+    const { destination }: { destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
     try {
       deliveryResponse = await integrationService.deliver(event, destination, requestMetadata);
@@ -42,7 +42,7 @@ export default class DeliveryController {
       'Native(Delivery-Test):: Request to transformer::',
       JSON.stringify(ctx.request.body),
     );
-    const { version, destination }: { version: string; destination: string } = ctx.params;
+    const { destination }: { destination: string } = ctx.params;
     const {
       deliveryPayload,
       destinationRequestPayload,

@@ -4,7 +4,6 @@ import PreTransformationDestinationService from '../services/destination/preTran
 import PostTransformationDestinationService from '../services/destination/postTransformation';
 import {
   ProcessorTransformationRequest,
-  RouterTransformationRequestData,
   RouterTransformationRequest,
   ProcessorTransformationResponse,
 } from '../types/index';
@@ -69,7 +68,7 @@ export default class DestinationController {
       version,
       ...metaTags,
     });
-    stats.increment('dest_transform_requests', 1, {
+    stats.increment('dest_transform_requests', {
       destination,
       version,
       ...metaTags,
@@ -88,10 +87,7 @@ export default class DestinationController {
     let events = routerRequest.input;
     const integrationService = ServiceSelector.getDestinationService(events);
     try {
-      events = PreTransformationDestinationService.preProcess(
-        events,
-        ctx,
-      ) as RouterTransformationRequestData[];
+      events = PreTransformationDestinationService.preProcess(events, ctx);
       events = DynamicConfigParser.process(events);
       const resplist = await integrationService.doRouterTransformation(
         events,
@@ -135,10 +131,7 @@ export default class DestinationController {
     let events = routerRequest.input;
     const integrationService = ServiceSelector.getDestinationService(events);
     try {
-      events = PreTransformationDestinationService.preProcess(
-        events,
-        ctx,
-      ) as RouterTransformationRequestData[];
+      events = PreTransformationDestinationService.preProcess(events, ctx);
       const resplist = integrationService.doBatchTransformation(
         events,
         destination,

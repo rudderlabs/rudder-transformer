@@ -7,7 +7,7 @@ export default class EventTestController {
     const { version, destination }: { version: string; destination: string } = ctx.params as any;
     const { events }: { events: any } = ctx.request.body as any;
     try {
-      const respList = EventTesterService.testEvent(events, version, destination);
+      const respList = await EventTesterService.testEvent(events, version, destination);
       ctx.body = respList;
     } catch (err: any) {
       // fail-safety error response

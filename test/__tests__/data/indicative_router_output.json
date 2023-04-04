@@ -97,7 +97,11 @@
               "address.country": "India",
               "address.postalCode": 712136,
               "address.state": "WB",
-              "address.street": ""
+              "address.street": "",
+              "browser": "Chrome",
+              "browser_version": "77.0.3865.90",
+              "device": "Macintosh",
+              "os": "Mac OS"
             },
             "apiKey": "abcde"
           },

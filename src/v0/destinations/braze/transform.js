@@ -24,8 +24,7 @@ const {
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,
-  supportedOperationTypes,
-  nestedOperationTypes,
+  CustomAttributeOperationTypes,
 } = require('./config');
 
 const logger = require('../../../logger');
@@ -101,8 +100,78 @@ function getIdentifyPayload(message) {
   return { aliases_to_identify: [payload] };
 }
 
+function populateCustomAttributesWithOperation(
+  traits,
+  data,
+  mergeObjectsUpdateOperation,
+  enableNestedArrayOperations,
+) {
+  try {
+    // add,update,remove on json attributes
+    if (enableNestedArrayOperations) {
+      Object.keys(traits)
+        .filter((key) => typeof traits[key] === 'object' && !Array.isArray(traits[key]))
+        .forEach((key) => {
+          data[key] = {};
+          let opsResultArray = [];
+
+          if (traits[key][CustomAttributeOperationTypes.UPDATE]) {
+            for (let i = 0; i < traits[key][CustomAttributeOperationTypes.UPDATE].length; i += 1) {
+              const myObj = {};
+              myObj.$identifier_key =
+                traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier;
+              myObj.$identifier_value =
+                traits[key][CustomAttributeOperationTypes.UPDATE][i][
+                  traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
+                ];
+              delete traits[key][CustomAttributeOperationTypes.UPDATE][i][
+                traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
+              ];
+              delete traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier;
+              myObj.$new_object = {};
+              Object.keys(traits[key][CustomAttributeOperationTypes.UPDATE][i]).forEach(
+                (subKey) => {
+                  myObj.$new_object[subKey] =
+                    traits[key][CustomAttributeOperationTypes.UPDATE][i][subKey];
+                },
+              );
+              opsResultArray.push(myObj);
+            }
+            // eslint-disable-next-line no-underscore-dangle
+            data._merge_objects = isDefinedAndNotNull(mergeObjectsUpdateOperation)
+              ? mergeObjectsUpdateOperation
+              : false;
+            data[key][`$${CustomAttributeOperationTypes.UPDATE}`] = opsResultArray;
+          }
+
+          opsResultArray = [];
+          if (traits[key][CustomAttributeOperationTypes.REMOVE]) {
+            for (let i = 0; i < traits[key][CustomAttributeOperationTypes.REMOVE].length; i += 1) {
+              const myObj = {};
+              myObj.$identifier_key =
+                traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier;
+              myObj.$identifier_value =
+                traits[key][CustomAttributeOperationTypes.REMOVE][i][
+                  traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier
+                ];
+              opsResultArray.push(myObj);
+            }
+            data[key][`$${CustomAttributeOperationTypes.REMOVE}`] = opsResultArray;
+          }
+
+          if (traits[key][CustomAttributeOperationTypes.ADD]) {
+            data[key][`$${CustomAttributeOperationTypes.ADD}`] =
+              traits[key][CustomAttributeOperationTypes.ADD];
+          }
+        });
+    }
+  } catch (exp) {
+    logger.info('Failure occured during custom attributes operations', exp);
+  }
+}
+
 // Ref: https://www.braze.com/docs/api/objects_filters/user_attributes_object/
-function getUserAttributesObject(message, mappingJson) {
+function getUserAttributesObject(message, mappingJson, destination) {
   // blank output object
   const data = {};
   // get traits from message
@@ -148,6 +217,14 @@ function getUserAttributesObject(message, mappingJson) {
         }
       }
     });
+
+    // populate data with custom attribute operations
+    populateCustomAttributesWithOperation(
+      traits,
+      data,
+      message.properties?.mergeObjectsUpdateOperation,
+      destination.Config.enableNestedArrayOperations,
+    );
   }
 
   return data;
@@ -169,7 +246,7 @@ function processIdentify(message, destination) {
 }
 
 function processTrackWithUserAttributes(message, destination, mappingJson) {
-  let payload = getUserAttributesObject(message, mappingJson);
+  let payload = getUserAttributesObject(message, mappingJson, destination);
   if (payload && Object.keys(payload).length > 0) {
     payload = setExternalIdOrAliasObject(payload, message);
     return buildResponse(
@@ -256,7 +333,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
     partner: BRAZE_PARTNER_NAME,
   };
 
-  let attributePayload = getUserAttributesObject(message, mappingJson);
+  let attributePayload = getUserAttributesObject(message, mappingJson, destination);
   if (attributePayload && Object.keys(attributePayload).length > 0) {
     attributePayload = setExternalIdOrAliasObject(attributePayload, message);
     requestJson.attributes = [attributePayload];
@@ -298,71 +375,11 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   payload = addMandatoryEventProperties(payload, message);
   payload.properties = properties;
 
-  try {
-    // add,update,remove
-    if (destination.Config.enableNestedArrayOperations) {
-      Object.keys(properties)
-        .filter((key) => Array.isArray(properties[`${key}`]))
-        .forEach((key) => {
-          // if not specified, send as create attribute
-          if (properties.nestedOperationType === nestedOperationTypes.CREATE) {
-            attributePayload[key] = properties[key];
-          } else if (supportedOperationTypes.includes(properties.nestedOperationType)) {
-            attributePayload[key] = {};
-            const opsResultArray = [];
-            if (properties.nestedOperationType === nestedOperationTypes.UPDATE) {
-              for (let i = 0; i < properties[key].length; i += 1) {
-                const myObj = {};
-                Object.keys(properties[key][i]).forEach((subKey) => {
-                  myObj[`$${subKey}`] = properties[key][i][subKey];
-                });
-                opsResultArray.push(myObj);
-              }
-
-              // eslint-disable-next-line no-underscore-dangle
-              attributePayload._merge_objects = isDefinedAndNotNull(
-                properties.mergeObjectsUpdateOperation,
-              )
-                ? properties.mergeObjectsUpdateOperation
-                : false;
-              attributePayload[key][`$${properties.nestedOperationType}`] = opsResultArray;
-            } else if (properties.nestedOperationType === nestedOperationTypes.REMOVE) {
-              for (let i = 0; i < properties[key].length; i += 1) {
-                const myObj = {};
-                Object.keys(properties[key][i]).forEach((subKey) => {
-                  myObj[`$${subKey}`] = properties[key][i][subKey];
-                });
-                opsResultArray.push(myObj);
-              }
-              attributePayload[key][`$${properties.nestedOperationType}`] = opsResultArray;
-            } else {
-              // add case
-              attributePayload[key][`$${properties.nestedOperationType}`] = properties[key];
-            }
-          }
-        });
-    }
-  } catch (exp) {
-    logger.info('Failure occured during nested array operations', exp);
-  }
-
   payload = setExternalIdOrAliasObject(payload, message);
   if (payload) {
     requestJson.events = [payload];
   }
 
-  // update payload as per https://www.braze.com/docs/user_guide/data_and_analytics/custom_data/custom_attributes/array_of_objects/#api-request-body
-  if (
-    destination.Config.enableNestedArrayOperations &&
-    isDefinedAndNotNull(properties.nestedOperationType)
-  ) {
-    delete requestJson.events;
-    delete properties.nestedOperationType;
-    attributePayload.external_id = payload.external_id;
-    if (!requestJson.attributes) {
-      requestJson.attributes = [attributePayload];
-    }
-  }
   return buildResponse(
     message,
     destination,
@@ -398,7 +415,7 @@ function processGroup(message, destination) {
       );
     }
     subscriptionGroup.subscription_state = message.traits.subscriptionState;
-    subscriptionGroup.external_id = [message.userId || message.anonymousId];
+    subscriptionGroup.external_id = [message.userId];
     const phone = getFieldValueFromMessage(message, 'phone');
     const email = getFieldValueFromMessage(message, 'email');
     if (phone) {

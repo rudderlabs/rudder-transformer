@@ -78,7 +78,7 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
         payload = constructPayload(message, mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]);
         payload.event_type = eventNameMapping[event.toLowerCase()];
         payload.item_ids = getItemIds(message);
-        payload.price = getPriceSum(message);
+        payload.price = payload.price || getPriceSum(message);
         break;
       /* Promotions Section */
       case 'promotion_viewed':
@@ -98,7 +98,7 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
         payload = constructPayload(message, mappingConfig[ConfigCategory.CHECKOUT_STARTED.name]);
         payload.event_type = eventNameMapping[event.toLowerCase()];
         payload.item_ids = getItemIds(message);
-        payload.price = getPriceSum(message);
+        payload.price = payload.price || getPriceSum(message);
         break;
       case 'payment_info_entered':
         payload = constructPayload(
@@ -111,7 +111,7 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
         payload = constructPayload(message, mappingConfig[ConfigCategory.ORDER_COMPLETED.name]);
         payload.event_type = eventNameMapping[event.toLowerCase()];
         payload.item_ids = getItemIds(message);
-        payload.price = getPriceSum(message);
+        payload.price = payload.price || getPriceSum(message);
         break;
       case 'product_added':
         payload = constructPayload(message, mappingConfig[ConfigCategory.PRODUCT_ADDED.name]);

@@ -1,7 +1,7 @@
 const jsonxml = require('jsontoxml');
 const get = require('get-value');
 const { EventType } = require('../../../constants');
-const { commonConfig, formatDestinationConfig } = require('./config');
+const { ECOM_PRODUCT_EVENTS, commonConfig, formatDestinationConfig } = require('./config');
 const {
   constructPayload,
   defaultPostRequestConfig,
@@ -10,7 +10,7 @@ const {
   getFieldValueFromMessage,
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
-
+  getIntegrationsObj,
   simpleProcessRouterDest,
 } = require('../../util');
 const {
@@ -19,44 +19,35 @@ const {
   ConfigurationError,
 } = require('../../util/errorTypes');
 
-const responseBuilderSimple = async (message, destination, basicPayload) => {
-  const payload = constructPayload(message, commonConfig);
-  const { context, properties } = message;
+const {
+  handleContextData,
+  handleEvar,
+  handleHier,
+  handleList,
+  handleCustomProperties,
+  stringifyValueAndJoinWithDelimitter,
+} = require('./utils');
+/*
+  Configuration variables documentation: https://experienceleague.adobe.com/docs/analytics/implementation/vars/config-vars/configuration-variables.html?lang=en
+  Page variables documentation: https://experienceleague.adobe.com/docs/analytics/implementation/vars/page-vars/page-variables.html?lang=en
+*/
+const responseBuilderSimple = async (message, destinationConfig, basicPayload) => {
+  let payload = constructPayload(message, commonConfig);
+  const { event, context, properties } = message;
+  const { overrideEvars, overrideHiers, overrideLists, overrideCustomProperties } = properties;
   // handle contextData
-  const { contextDataPrefix, contextDataMapping } = destination;
-  const cDataPrefix = contextDataPrefix ? `${contextDataPrefix}` : '';
-  const contextData = {};
-  Object.keys(contextDataMapping).forEach((key) => {
-    const val =
-      get(message, key) ||
-      get(message, `properties.${key}`) ||
-      get(message, `traits.${key}`) ||
-      get(message, `context.traits.${key}`);
-    if (isDefinedAndNotNull(val)) {
-      contextData[`${cDataPrefix}${contextDataMapping[key]}`] = val;
-    }
-  });
-  if (Object.keys(contextData).length > 0) {
-    // non-empty object
-    payload.contextData = contextData;
-  }
+  payload = handleContextData(payload, destinationConfig, message);
 
   // handle eVar
-  const { eVarMapping } = destination;
-  const eVar = {};
-  Object.keys(eVarMapping).forEach((key) => {
-    const val = get(message, `properties.${key}`);
-    if (isDefinedAndNotNull(val)) {
-      eVar[`eVar${eVarMapping[key]}`] = val;
-    }
-  });
-  if (Object.keys(eVar).length > 0) {
-    // non-empty object
-    Object.assign(payload, eVar);
+  if (overrideEvars) {
+    Object.assign(payload, overrideEvars);
+  } else {
+    payload = handleEvar(payload, destinationConfig, message);
   }
 
   // handle fallbackVisitorId
-  const { noFallbackVisitorId } = destination;
+  const { noFallbackVisitorId } = destinationConfig;
+  // 'AdobeFallbackVisitorId' should be the type of external id in the payload i.e "AdobeFallbackVisitorId": "value"
   if (!noFallbackVisitorId) {
     const fallbackVisitorId = getDestinationExternalID(message, 'AdobeFallbackVisitorId');
     if (isDefinedAndNotNull(fallbackVisitorId)) {
@@ -64,87 +55,57 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
     }
   }
 
+  // handle link values
+  // default linktype to 'o', linkName to event name, linkURL to ctx.page.url if not passed in integrations object
+  const adobeIntegrationsObject = getIntegrationsObj(message, 'adobe_analytics');
+  payload.linkType = adobeIntegrationsObject?.linkType || 'o';
+  payload.linkName = adobeIntegrationsObject?.linkName || event;
+  // setting linkname to page view for page calls
+  if (message.type === 'page') {
+    payload.linkName = 'page view';
+  }
+  payload.linkURL = adobeIntegrationsObject?.linkURL || context?.page?.url || 'No linkURL provided';
+
   // handle hier
-  const { hierMapping } = destination;
-  const hier = {};
-  Object.keys(hierMapping).forEach((key) => {
-    const val = get(message, `properties.${key}`);
-    if (isDefinedAndNotNull(val)) {
-      hier[`hier${hierMapping[key]}`] = val;
-    }
-  });
-  if (Object.keys(hier).length > 0) {
-    // non-empty object
-    Object.assign(payload, hier);
+  if (overrideHiers) {
+    Object.assign(payload, overrideHiers);
+  } else {
+    payload = handleHier(payload, destinationConfig, message);
   }
 
   // handle list
-  const { listMapping, listDelimiter, trackPageName } = destination;
-  const list = {};
-  if (properties) {
-    Object.keys(properties).forEach((key) => {
-      if (listMapping[key] && listDelimiter[key]) {
-        let val = get(message, `properties.${key}`);
-        if (typeof val !== 'string' && !Array.isArray(val)) {
-          throw new ConfigurationError(
-            'List Mapping properties variable is neither a string nor an array',
-          );
-        }
-        if (typeof val === 'string') {
-          val = val.replace(/\s*,+\s*/g, listDelimiter[key]);
-        } else {
-          val = val.join(listDelimiter[key]);
-        }
-
-        list[`list${listMapping[key]}`] = val.toString();
-      }
-    });
-  }
-  // add to the payload
-  if (Object.keys(list).length > 0) {
-    Object.assign(payload, list);
+  if (overrideLists) {
+    Object.assign(payload, overrideLists);
+  } else {
+    payload = handleList(payload, destinationConfig, message, properties);
   }
 
   // handle pageName, pageUrl
-  const contextPageUrl = context && context.page ? context.page.url : undefined;
-  const propertiesPageUrl = properties && properties.pageUrl;
+  const contextPageUrl = context?.page?.url;
+  const { trackPageName } = destinationConfig;
+  const propertiesPageUrl = properties?.pageUrl;
   const pageUrl = contextPageUrl || propertiesPageUrl;
   if (isDefinedAndNotNullAndNotEmpty(pageUrl)) {
     payload.pageUrl = pageUrl;
   }
   if (trackPageName) {
-    const contextPageName = context && context.page ? context.page.name : undefined;
-    const propertiesPageName = properties && properties.pageName;
+    // better handling possible here, both error and implementation wise
+    const contextPageName = context?.page?.name;
+    const propertiesPageName = properties?.pageName;
     const pageName = propertiesPageName || contextPageName;
     if (isDefinedAndNotNullAndNotEmpty(pageName)) {
       payload.pageName = pageName;
+    } else {
+      // pageName is defaulted to URL.
+      payload.pageName = pageUrl;
     }
   }
 
   // handle custom properties
-  const { customPropsMapping, propsDelimiter } = destination;
-  const props = {};
-  if (properties) {
-    Object.keys(properties).forEach((key) => {
-      if (customPropsMapping[key]) {
-        let val = get(message, `properties.${key}`);
-        if (typeof val !== 'string' && !Array.isArray(val)) {
-          throw new InstrumentationError('prop variable is neither a string nor an array');
-        }
-        const delimeter = propsDelimiter[key] || '|';
-        if (typeof val === 'string') {
-          val = val.replace(/\s*,+\s*/g, delimeter);
-        } else {
-          val = val.join(delimeter);
-        }
-
-        props[`prop${customPropsMapping[key]}`] = val.toString();
-      }
-    });
-  }
-  // add to the payload
-  if (Object.keys(props).length > 0) {
-    Object.assign(payload, props);
+  if (overrideCustomProperties) {
+    Object.assign(payload, overrideCustomProperties);
+  } else {
+    payload = handleCustomProperties(payload, destinationConfig, message, properties);
   }
 
   // handle visitorID and timestamp
@@ -154,7 +115,7 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
     preferVisitorId,
     timestampOptionalReporting,
     reportSuiteIds,
-  } = destination;
+  } = destinationConfig;
   if (!dropVisitorId) {
     const userId = getFieldValueFromMessage(message, 'userIdOnly');
     if (isDefinedAndNotNullAndNotEmpty(userId)) {
@@ -169,14 +130,16 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
   }
 
   if (timestampOptionalReporting) {
-    const timestamp = getFieldValueFromMessage(message, 'timestamp');
+    const timestamp =
+      getFieldValueFromMessage(message, 'timestamp') ||
+      getFieldValueFromMessage(message, 'originalTimestamp');
     if (timestampOption === 'enabled' || (timestampOption === 'hybrid' && !preferVisitorId)) {
       payload.timestamp = timestamp;
     }
   }
 
   // handle marketingcloudorgid
-  const { marketingCloudOrgId } = destination;
+  const { marketingCloudOrgId } = destinationConfig;
   if (isDefinedAndNotNull(marketingCloudOrgId)) {
     payload.marketingcloudorgid = marketingCloudOrgId;
   }
@@ -192,9 +155,9 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
     true, // add generic XML header
   );
 
-  const { trackingServerSecureUrl } = destination;
+  const { trackingServerSecureUrl } = destinationConfig;
   const response = defaultRequestConfig();
-  response.method = defaultPostRequestConfig.requestMethod;
+  response.method = defaultPostRequestConfig?.requestMethod;
   response.body.XML = { payload: xmlResponse };
   response.endpoint = trackingServerSecureUrl.startsWith('https')
     ? `${trackingServerSecureUrl}/b/ss//6`
@@ -206,7 +169,7 @@ const responseBuilderSimple = async (message, destination, basicPayload) => {
   return response;
 };
 
-const processTrackEvent = (message, adobeEventName, destination, extras = {}) => {
+const processTrackEvent = (message, adobeEventName, destinationConfig, extras = {}) => {
   // set event string and product string only
   // handle extra properties
   // rest of the properties are handled under common properties
@@ -217,18 +180,22 @@ const processTrackEvent = (message, adobeEventName, destination, extras = {}) =>
     productIdentifier,
     productMerchProperties,
     productMerchEvarsMap,
-  } = destination;
-  const { event, properties } = message;
+  } = destinationConfig;
+  const { event: rawMessageEvent, properties } = message;
+  const { overrideEventString, overrideProductString, products } = properties;
+  const event = rawMessageEvent.toLowerCase();
   const adobeEventArr = adobeEventName ? adobeEventName.split(',') : [];
+  // adobeEventArr is an array of events which is defined as
+  // ["eventName", "mapped Adobe Event=mapped merchproperty's value", "mapped Adobe Event=mapped merchproperty's value", . . .]
 
   // merch event section
-  if (eventMerchEventToAdobeEvent[event.toLowerCase()] && eventMerchProperties) {
-    const adobeMerchEvent = eventMerchEventToAdobeEvent[event.toLowerCase()].split(',');
+  if (eventMerchEventToAdobeEvent[event] && eventMerchProperties) {
+    const adobeMerchEvent = eventMerchEventToAdobeEvent[event].split(',');
     eventMerchProperties.forEach((rudderProp) => {
       if (rudderProp.eventMerchProperties in properties) {
         adobeMerchEvent.forEach((value) => {
-          if (properties[rudderProp.eventMerchProperties]) {
-            const merchEventString = `${value}=${properties[rudderProp.eventMerchProperties]}`;
+          if (properties[rudderProp?.eventMerchProperties]) {
+            const merchEventString = `${value}=${properties[rudderProp?.eventMerchProperties]}`;
             adobeEventArr.push(merchEventString);
           }
         });
@@ -236,44 +203,49 @@ const processTrackEvent = (message, adobeEventName, destination, extras = {}) =>
     });
   }
 
-  if (productMerchEventToAdobeEvent[event.toLowerCase()]) {
+  if (productMerchEventToAdobeEvent[event]) {
     Object.keys(productMerchEventToAdobeEvent).forEach((value) => {
       adobeEventArr.push(productMerchEventToAdobeEvent[value]);
     });
   }
 
   // product string section
-  const adobeProdEvent = productMerchEventToAdobeEvent[event.toLowerCase()];
+  const adobeProdEvent = productMerchEventToAdobeEvent[event];
   const prodString = [];
-  if (adobeProdEvent) {
+  let prodEventString = '';
+  let prodEVarsString = '';
+
+  if (adobeProdEvent || ECOM_PRODUCT_EVENTS.includes(event.toLowerCase())) {
     const isSingleProdEvent =
       adobeProdEvent === 'scAdd' ||
       adobeProdEvent === 'scRemove' ||
       (adobeProdEvent === 'prodView' && event.toLowerCase() !== 'product list viewed') ||
-      !Array.isArray(properties.products);
-    const productsArr = isSingleProdEvent ? [properties] : properties.products;
-    const adobeProdEventArr = adobeProdEvent.split(',');
+      !Array.isArray(products);
+    const productsArr = isSingleProdEvent ? [properties] : products;
+    let adobeProdEventArr = [];
+    if (adobeProdEvent) {
+      adobeProdEventArr = adobeProdEvent.split(',');
+    }
 
     productsArr.forEach((value) => {
-      const category = value.category || '';
-      const quantity = value.quantity || 1;
-      const total = value.price ? (value.price * quantity).toFixed(2) : 0;
-      let item;
+      const category = value?.category || '';
+      const quantity = value?.quantity || 1;
+      const total = value?.price ? (value.price * quantity).toFixed(2) : 0;
+      let item = value[productIdentifier];
       if (productIdentifier === 'id') {
-        item = value.product_id || value.id;
-      } else {
-        item = value[productIdentifier];
+        item = value?.product_id || value?.id;
       }
 
       const merchMap = [];
-      if (productMerchEventToAdobeEvent[event.toLowerCase()] && productMerchProperties) {
+      if (productMerchEventToAdobeEvent[event] && productMerchProperties) {
         productMerchProperties.forEach((rudderProp) => {
           // adding product level merchandise properties
           if (
             rudderProp.productMerchProperties.startsWith('products.') &&
             isSingleProdEvent === false
           ) {
-            const key = rudderProp.productMerchProperties.split('.');
+            // take the keys after products. and find the value in properties
+            const key = rudderProp?.productMerchProperties.split('.');
             const v = get(value, key[1]);
             if (isDefinedAndNotNull(v)) {
               adobeProdEventArr.forEach((val) => {
@@ -283,11 +255,12 @@ const processTrackEvent = (message, adobeEventName, destination, extras = {}) =>
           } else if (rudderProp.productMerchProperties in properties) {
             // adding root level merchandise properties
             adobeProdEventArr.forEach((val) => {
-              merchMap.push(`${val}=${properties[rudderProp.productMerchProperties]}`);
+              merchMap.push(`${val}=${properties[rudderProp?.productMerchProperties]}`);
             });
           }
         });
-        const prodEventString = merchMap.join('|');
+        // forming prodEventString from merchMap array delimited by |
+        prodEventString = merchMap.join('|');
 
         const eVars = [];
         Object.keys(productMerchEvarsMap).forEach((prodKey) => {
@@ -295,7 +268,7 @@ const processTrackEvent = (message, adobeEventName, destination, extras = {}) =>
 
           if (prodKey.startsWith('products.')) {
             // take the keys after products. and find the value in properties
-            const productValue = get(properties, prodKey.split('.')[1]);
+            const productValue = get(properties, prodKey?.split('.')?.[1]);
             if (isDefinedAndNotNull(productValue)) {
               eVars.push(`eVar${prodVal}=${productValue}`);
             }
@@ -303,90 +276,82 @@ const processTrackEvent = (message, adobeEventName, destination, extras = {}) =>
             eVars.push(`eVar${prodVal}=${properties[prodKey]}`);
           }
         });
-        const prodEVarsString = eVars.join('|');
-
-        if (prodEventString !== '' || prodEVarsString !== '') {
-          const test = [category, item, quantity, total, prodEventString, prodEVarsString].map(
-            (val) => {
-              if (val == null) {
-                return String(val);
-              }
-              return val;
-            },
-          );
-          prodString.push(test.join(';'));
-        } else {
-          const test = [category, item, quantity, total]
-            .map((val) => {
-              if (val === null) {
-                return String(val);
-              }
-              return val;
-            })
-            .join(';');
-          prodString.push(test);
-        }
+        prodEVarsString = eVars.join('|');
+      }
+      // preparing the product string for the final payload
+      // if prodEventString or prodEVarsString are missing or not
+      let prodArr = [category, item, quantity, total];
+      if (prodEventString || prodEVarsString) {
+        prodArr = [...prodArr, prodEventString, prodEVarsString];
+      }
+      const test = stringifyValueAndJoinWithDelimitter(prodArr);
+      if (isSingleProdEvent) {
+        prodString.push(test);
+      } else {
+        prodString.push(test);
+        prodString.push(',');
       }
     });
+    // we delimit multiple products by ',' removing the trailing here
+    if (prodString[prodString.length - 1] === ',') {
+      prodString.pop();
+    }
   }
 
   return {
     ...extras,
-    events: adobeEventArr.join(','),
-    products: prodString,
+    events: overrideEventString || adobeEventArr.join(','),
+    products: overrideProductString || prodString,
   };
 };
 
-const handleTrack = (message, destination) => {
-  const { event } = message;
+const handleTrack = (message, destinationConfig) => {
+  const { event: rawEvent } = message;
   let payload = null;
   // handle ecommerce events separately
   // generic events should go to the default
-  switch (event && event.toLowerCase()) {
+  const event = rawEvent?.toLowerCase();
+  switch (event) {
     case 'product viewed':
-    case 'viewed product':
     case 'product list viewed':
-    case 'viewed product list':
-      payload = processTrackEvent(message, 'prodView', destination);
+      payload = processTrackEvent(message, 'prodView', destinationConfig);
       break;
     case 'product added':
-    case 'added product':
-      payload = processTrackEvent(message, 'scAdd', destination);
+      payload = processTrackEvent(message, 'scAdd', destinationConfig);
       break;
     case 'product removed':
-    case 'removed product':
-      payload = processTrackEvent(message, 'scRemove', destination);
+      payload = processTrackEvent(message, 'scRemove', destinationConfig);
       break;
     case 'order completed':
-    case 'completed order':
-      payload = processTrackEvent(message, 'purchase', destination, {
+      payload = processTrackEvent(message, 'purchase', destinationConfig, {
         purchaseID: get(message, 'properties.purchaseId') || get(message, 'properties.order_id'),
         transactionID:
           get(message, 'properties.transactionId') || get(message, 'properties.order_id'),
       });
       break;
     case 'cart viewed':
-    case 'viewed cart':
-      payload = processTrackEvent(message, 'scView', destination);
+      payload = processTrackEvent(message, 'scView', destinationConfig);
       break;
     case 'checkout started':
-    case 'started checkout':
-      payload = processTrackEvent(message, 'scCheckout', destination, {
+      payload = processTrackEvent(message, 'scCheckout', destinationConfig, {
         purchaseID: get(message, 'properties.purchaseId') || get(message, 'properties.order_id'),
         transactionID:
           get(message, 'properties.transactionId') || get(message, 'properties.order_id'),
       });
       break;
     case 'cart opened':
-    case 'opened cart':
-      payload = processTrackEvent(message, 'scOpen', destination);
+      payload = processTrackEvent(message, 'scOpen', destinationConfig);
       break;
     default:
-      if (destination.rudderEventsToAdobeEvents[event.toLowerCase()]) {
+      if (destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()]) {
         payload = processTrackEvent(
           message,
-          destination.rudderEventsToAdobeEvents[event.toLowerCase()].trim(),
-          destination,
+          destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()].trim(),
+          destinationConfig,
+        );
+      } else {
+        throw new ConfigurationError(
+          'The event is not a supported ECOM event or a mapped custom event. Aborting.',
         );
       }
       break;
@@ -398,7 +363,7 @@ const handleTrack = (message, destination) => {
 const process = async (event) => {
   const { message, destination } = event;
   if (!message.type) {
-    throw InstrumentationError('Message Type is not present. Aborting message.');
+    throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
   const messageType = message.type.toLowerCase();
   const formattedDestination = formatDestinationConfig(destination.Config);

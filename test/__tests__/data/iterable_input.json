@@ -1281,12 +1281,7 @@
           "includeKeys": [],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -1377,12 +1372,7 @@
           "includeKeys": [],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",
@@ -1618,11 +1608,7 @@
             "name": "Monopoly: 3rd Edition",
             "price": "19",
             "position": "1",
-            "category": [
-              "bikes",
-              "cars",
-              "motors"
-            ],
+            "category": ["bikes", "cars", "motors"],
             "url": "https://www.example.com/product/path",
             "image_url": "https://www.example.com/product/path.jpg",
             "quantity": "2"
@@ -1634,11 +1620,7 @@
             "price": "192",
             "quantity": 22,
             "position": "12",
-            "category": [
-              "Bikes2",
-              "cars2",
-              "motors2"
-            ],
+            "category": ["Bikes2", "cars2", "motors2"],
             "url": "https://www.example.com/product/path2",
             "image_url": "https://www.example.com/product/path.jpg2"
           }
@@ -1806,6 +1788,65 @@
         "trackNamedPages": false
       },
       "Enabled": true
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "accountId": "476550467",
+        "trackAnonymous": true,
+        "enableObjectIdMapping": false
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {
+          "email": "sayan@gmail.com"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "event": "order completed",
+      "type": "track",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "product_id": 1234,
+        "name": "Shoes",
+        "price": 45,
+        "quantity": 1,
+        "orderId": 10000,
+        "total": "1000",
+        "campaignId": "123456",
+        "templateId": "1213458"
+      },
+      "integrations": {
+        "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
     }
   }
 ]

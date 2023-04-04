@@ -114,6 +114,7 @@ jobs:
         with:
           context: .
           file: Dockerfile-ut-func
+          target: development
           load: true
           tags: |
             ${{ env.REPO_NAME }}:${{ steps.gen_tag_name.outputs.tag_name }}
@@ -134,6 +135,7 @@ jobs:
         with:
           context: .
           file: Dockerfile-ut-func
+          target: development
           push: true
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ steps.gen_tag_name.outputs.tag_name }}

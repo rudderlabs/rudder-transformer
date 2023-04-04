@@ -912,7 +912,7 @@ async function handleSource(ctx, version, source) {
         // };
 
         const resp = {
-          statusCode: 400,
+          statusCode: error.status || 400,
           error: error.message || 'Error occurred while processing payload.',
         };
 

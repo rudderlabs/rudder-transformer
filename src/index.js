@@ -3,7 +3,7 @@ const bodyParser = require('koa-bodyparser');
 require('dotenv').config();
 const gracefulShutdown = require('http-graceful-shutdown');
 const logger = require('./logger');
-
+const { RedisDB } = require('./util/redisConnector');
 const { router } = require('./versionedRouter');
 const { testRouter } = require('./testRouter');
 const { metricsRouter } = require('./metricsRouter');
@@ -33,6 +33,8 @@ app.use(router.routes()).use(router.allowedMethods());
 app.use(testRouter.routes()).use(testRouter.allowedMethods());
 
 function finalFunction() {
+  RedisDB.disconnect();
+  logger.info('Redis client disconnected');
   logger.error(`Process (pid: ${process.pid}) was gracefully shutdown`);
   logProcessInfo();
 }

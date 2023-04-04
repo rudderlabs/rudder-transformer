@@ -1,5 +1,47 @@
 [
     {
+        "description": "Track Call -> carts_create with invalid cartToken",
+        "input": {
+            "id": "shopify_test3",
+            "query_parameters": {
+                "topic": [
+                    "carts_create"
+                ]
+            },
+            "token": "shopify_test3",
+            "line_items": [],
+            "note": null,
+            "updated_at": "2023-02-10T12:16:07.251Z",
+            "created_at": "2023-02-10T12:05:04.402Z"
+        },
+        "output": {
+            "anonymousId": "shopify_test3",
+            "context": {
+                "library": {
+                    "name": "RudderStack Shopify Cloud",
+                    "version": "1.0.0"
+                },
+                "integration": {
+                    "name": "SHOPIFY"
+                },
+                "topic": "carts_create"
+            },
+            "event": "Cart Create",
+            "integrations": {
+                "SHOPIFY": true
+            },
+            "type": "track",
+            "properties": {
+                "created_at": "2023-02-10T12:05:04.402Z",
+                "id": "shopify_test3",
+                "note": null,
+                "products": [],
+                "token": "shopify_test3",
+                "updated_at": "2023-02-10T12:16:07.251Z"
+            }
+        }
+    },
+    {
         "description": "Track Call -> carts_update",
         "input": {
             "id": "shopify_test_cart1",
@@ -460,48 +502,6 @@
                     }
                 ],
                 "token": "shopify_test_cart_update_duplicate2",
-                "updated_at": "2023-02-10T12:16:07.251Z"
-            }
-        }
-    },
-    {
-        "description": "Track Call -> carts_create with invalid cartToken",
-        "input": {
-            "id": "shopify_test3",
-            "query_parameters": {
-                "topic": [
-                    "carts_create"
-                ]
-            },
-            "token": "shopify_test3",
-            "line_items": [],
-            "note": null,
-            "updated_at": "2023-02-10T12:16:07.251Z",
-            "created_at": "2023-02-10T12:05:04.402Z"
-        },
-        "output": {
-            "anonymousId": "shopify_test3",
-            "context": {
-                "library": {
-                    "name": "RudderStack Shopify Cloud",
-                    "version": "1.0.0"
-                },
-                "integration": {
-                    "name": "SHOPIFY"
-                },
-                "topic": "carts_create"
-            },
-            "event": "Cart Create",
-            "integrations": {
-                "SHOPIFY": true
-            },
-            "type": "track",
-            "properties": {
-                "created_at": "2023-02-10T12:05:04.402Z",
-                "id": "shopify_test3",
-                "note": null,
-                "products": [],
-                "token": "shopify_test3",
                 "updated_at": "2023-02-10T12:16:07.251Z"
             }
         }
@@ -1306,6 +1306,12 @@
                 "writeKey": [
                     "Shopify Write Key"
                 ]
+            },
+            "cart": {
+                "token": "token",
+                "id": "id",
+                "updated_at": "2023-02-10T07:44:06-05:00",
+                "line_items": []
             }
         },
         "output": {

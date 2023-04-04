@@ -121,7 +121,7 @@ const setAnonymousId = (message) => {
  * @param {*} message
  * @returns
  */
-const setAnonymousIdorUserIdAndStore = async (message) => {
+const setAnonymousIdorUserIdFromDb = async (message) => {
   let cartToken;
   switch (message.event) {
     /**
@@ -167,8 +167,12 @@ const setAnonymousIdorUserIdAndStore = async (message) => {
       return;
     default:
   }
+
+  const redisVal = await dbInstance.getVal(`${cartToken}`);
   let anonymousIDfromDB;
-  anonymousIDfromDB = await dbInstance.getVal(`${cartToken}`, 'anonymousId');
+  if (redisVal !== null) {
+    anonymousIDfromDB = redisVal.anonymousId;
+  }
   if (!isDefinedAndNotNull(anonymousIDfromDB)) {
     /* this is for backward compatability when we don't have the redis mapping for older events
     we will get anonymousIDFromDb as null so we will set UUID using the session Key */
@@ -238,7 +242,7 @@ const isContainingSameLineItems = (prevLineItems, newLineItems) => {
  */
 const isDuplicateCartPayload = (prevPayload, newPayload) => {
   // The cart?.items.length param is in the case when rudder identifier is stored in the database
-  const prevPayloadLineItemsLength = prevPayload?.line_items?.length || prevPayload?.items.length
+  const prevPayloadLineItemsLength = prevPayload?.line_items ? prevPayload.line_items.length : prevPayload?.items.length
   const newPayloadLineItemsLength = newPayload.line_items?.length || newPayload.cart?.items.length
   if (prevPayloadLineItemsLength !== newPayloadLineItemsLength) {
     return false;
@@ -260,11 +264,18 @@ const isDuplicateCartPayload = (prevPayload, newPayload) => {
  */
 const checkForValidRecord = async (newCart) => {
   const cartToken = newCart.cart_token || newCart.token;
-  const oldCart = await dbInstance.getVal(`${cartToken}`, 'cart');
-  if (oldCart && isDefinedAndNotNull(oldCart) && isDuplicateCartPayload(oldCart, newCart)) {
+  const redisVal = await dbInstance.getVal(`${cartToken}`);
+  const oldCart = redisVal?.cart;
+  if (!oldCart) {
+    // this is the case for events for which we don't have the values store in redis but are valid events. 
+    // This can be removed afterwards as it is more on backward compatibility side
+
+    return true;
+  }
+  if (isDefinedAndNotNull(oldCart) && isDuplicateCartPayload(oldCart, newCart)) {
     return false;
   }
-  await dbInstance.setVal(`${cartToken}`, { cart: newCart });
+  await dbInstance.setVal(`${cartToken}`, { anonymousId: redisVal?.anonymousId, cart: newCart });
   return true;
 };
 
@@ -273,7 +284,7 @@ module.exports = {
   getProductsListFromLineItems,
   createPropertiesForEcomEvent,
   extractEmailFromPayload,
-  setAnonymousIdorUserIdAndStore,
+  setAnonymousIdorUserIdFromDb,
   checkForValidRecord,
   setAnonymousId,
 };

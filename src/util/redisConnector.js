@@ -24,9 +24,6 @@ class RedisDB {
         return false; // stop retrying
       }
     });
-    // this.client.on('error', (err) => {
-    //   log.error(`Error occurred on while connecting with redis ${err}`);
-    // });
     this.client.on('ready', (res) => {
       this.connectingFirstTime = false;
       log.info(`Connected to redis at ${this.host}:${this.port}`);
@@ -37,15 +34,10 @@ class RedisDB {
    * Used to get value from redis depending on the key and the expected value type
    * @param {*} key key for which value needs to be extracted
    * @param {*} isJsonExpected false if fetched value can not be json
-   * @param {*} specificInternalKey this is to retrieve [key][specificInternalKey]
    * @returns value which can be json or string or number 
    * 
-   * Ex:  
-   * if specificInternalKey is given
-   * 'key': {'internalKey': 'value1', internalKey2: value2}
-   * 1. getVal('key', 'internalKey') => value1
    */
-  async getVal(key, specificInternalKey = null, isJsonExpected = true) {
+  async getVal(key, isJsonExpected = true) {
     try {
       if ((this.client?.status !== 'ready')) {
         if (!this.connectingFirstTime) {
@@ -55,13 +47,8 @@ class RedisDB {
         await new Promise((resolve) => setTimeout(resolve, 1000)); // waiting for connection to be established for max 10ms
       }
       if (isJsonExpected) {
-        let value;
-        if (specificInternalKey) {
-          await this.hget(key, specificInternalKey);
-          return value[specificInternalKey];
-        }
-        value = await this.hgetall(key);
-        return value;
+        const value = await this.client.get(key);
+        return JSON.parse(value);
       }
       const value = await this.client.get(key);
       return value;
@@ -86,10 +73,7 @@ class RedisDB {
         await new Promise((resolve) => setTimeout(resolve, 1000)); // waiting for connection to be established for max 10ms
       }
       if (isValJson) {
-        Object.keys(value).forEach(async (internalKey) => {
-          await this.hmset(key, internalKey, value[internalKey]);
-        });
-
+        await this.client.set(key, JSON.stringify(value));
       } else {
         await this.client.set(key, value);
       }

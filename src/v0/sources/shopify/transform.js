@@ -7,7 +7,7 @@ const {
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
   extractEmailFromPayload,
-  setAnonymousIdorUserIdAndStore,
+  setAnonymousIdorUserIdFromDb,
   setAnonymousId,
   checkForValidRecord,
 } = require('./util');
@@ -173,7 +173,7 @@ const processEvent = async (inputEvent) => {
   }
   if (message.type !== EventType.IDENTIFY) {
     if (useRedisDatabase) {
-      await setAnonymousIdorUserIdAndStore(message);
+      await setAnonymousIdorUserIdFromDb(message);
     } else {
       setAnonymousId(message);
     }

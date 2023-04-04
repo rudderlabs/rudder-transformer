@@ -4073,17 +4073,8 @@
         "DisplayName": "Customer IO",
         "Config": {
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "siteID",
-              "datacenterEU",
-              "deviceTokenEventName"
-            ],
-            "web": [
-              "useNativeSDK",
-              "blackListedEvents",
-              "whiteListedEvents"
-            ]
+            "defaultConfig": ["apiKey", "siteID", "datacenterEU", "deviceTokenEventName"],
+            "web": ["useNativeSDK", "blackListedEvents", "whiteListedEvents"]
           },
           "excludeKeys": [],
           "includeKeys": [
@@ -4095,12 +4086,7 @@
           ],
           "saveDestinationResponse": true,
           "secretKeys": [],
-          "supportedMessageTypes": [
-            "identify",
-            "page",
-            "screen",
-            "track"
-          ],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
           "supportedSourceTypes": [
             "android",
             "ios",

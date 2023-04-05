@@ -84,7 +84,12 @@ const convertObjectAndArrayToString = (payload, event) => {
   if (payload) {
     Object.keys(payload).forEach((key) => {
       if (payload[key] && (Array.isArray(payload[key]) || typeof payload[key] === 'object')) {
-        if (event === 'Charged' && key === 'Items') {
+        if (
+          event === 'Charged' &&
+          key === 'Items' &&
+          Array.isArray(payload[key]) &&
+          typeof payload[key][0] === 'object'
+        ) {
           finalPayload[key] = payload[key];
         } else {
           finalPayload[key] = JSON.stringify(payload[key]);

@@ -17,6 +17,7 @@ env:
 
 jobs:
   report-coverage:
+    name: Report Code Coverage
     if: github.event_name == 'push'
     uses: ./.github/workflows/report-code-coverage.yml
 

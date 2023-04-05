@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
+const { get } = require('lodash');
 const Message = require('../message');
 const { mappingConfig } = require('./config');
 // const { TransformationError } = require("../../util/errorTypes");
@@ -14,7 +15,8 @@ function process(event) {
   const eventType = 'track';
   message.setEventType(eventType);
 
-  let eventName = mappingConfig[event.object_type.toLowerCase()][event.metric];
+  const eventObjectType = event.object_type?.toLowerCase() || '';
+  let eventName = get(mappingConfig, `${eventObjectType}.${event.metric}`);
   if (!eventName) {
     // throw new TransformationError("Metric not supported");
     eventName = 'Unknown Event';

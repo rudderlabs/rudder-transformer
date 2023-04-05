@@ -26,6 +26,7 @@ const {
   handleList,
   handleCustomProperties,
   stringifyValueAndJoinWithDelimitter,
+  orderIdVarPath
 } = require('./utils');
 /*
   Configuration variables documentation: https://experienceleague.adobe.com/docs/analytics/implementation/vars/config-vars/configuration-variables.html?lang=en
@@ -324,9 +325,9 @@ const handleTrack = (message, destinationConfig) => {
       break;
     case 'order completed':
       payload = processTrackEvent(message, 'purchase', destinationConfig, {
-        purchaseID: get(message, 'properties.purchaseId') || get(message, 'properties.order_id'),
+        purchaseID: get(message, 'properties.purchaseId') || get(message, orderIdVarPath),
         transactionID:
-          get(message, 'properties.transactionId') || get(message, 'properties.order_id'),
+          get(message, 'properties.transactionId') || get(message, orderIdVarPath),
       });
       break;
     case 'cart viewed':
@@ -334,9 +335,9 @@ const handleTrack = (message, destinationConfig) => {
       break;
     case 'checkout started':
       payload = processTrackEvent(message, 'scCheckout', destinationConfig, {
-        purchaseID: get(message, 'properties.purchaseId') || get(message, 'properties.order_id'),
+        purchaseID: get(message, 'properties.purchaseId') || get(message, orderIdVarPath),
         transactionID:
-          get(message, 'properties.transactionId') || get(message, 'properties.order_id'),
+          get(message, 'properties.transactionId') || get(message, orderIdVarPath),
       });
       break;
     case 'cart opened':

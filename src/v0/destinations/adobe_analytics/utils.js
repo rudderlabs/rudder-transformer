@@ -8,6 +8,7 @@ const { isDefinedAndNotNull, getValueFromMessage } = require('../../util');
 const { InstrumentationError } = require('../../util/errorTypes');
 
 const SOURCE_KEYS = ['properties', 'traits', 'context.traits', 'context'];
+const orderIdVarPath =  'properties.order_id';
 
 /**
  *
@@ -195,4 +196,5 @@ module.exports = {
   handleList,
   handleCustomProperties,
   stringifyValueAndJoinWithDelimitter,
+  orderIdVarPath
 };

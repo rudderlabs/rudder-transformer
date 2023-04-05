@@ -79,12 +79,16 @@ const responseWrapper = (payload, destination) => {
  * @returns
  * return the final payload after converting to the relevant data-types.
  */
-const convertObjectAndArrayToString = (payload) => {
+const convertObjectAndArrayToString = (payload, event) => {
   const finalPayload = {};
   if (payload) {
     Object.keys(payload).forEach((key) => {
       if (payload[key] && (Array.isArray(payload[key]) || typeof payload[key] === 'object')) {
-        finalPayload[key] = JSON.stringify(payload[key]);
+        if (event === 'Charged' && key === 'Items') {
+          finalPayload[key] = payload[key];
+        } else {
+          finalPayload[key] = JSON.stringify(payload[key]);
+        }
       } else {
         finalPayload[key] = payload[key];
       }
@@ -291,8 +295,11 @@ const responseBuilderSimple = (message, category, destination) => {
     }
     eventPayload.type = 'event';
     // stringify the evtData if it's an Object or array.
-    if (eventPayload.evtData && eventPayload.evtName !== 'Charged') {
-      eventPayload.evtData = convertObjectAndArrayToString(eventPayload.evtData);
+    if (eventPayload.evtData) {
+      eventPayload.evtData = convertObjectAndArrayToString(
+        eventPayload.evtData,
+        eventPayload.evtName,
+      );
     }
 
     // setting identification for tracking payload here based on destination config

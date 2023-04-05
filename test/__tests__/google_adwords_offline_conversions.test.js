@@ -42,7 +42,7 @@ axios.mockImplementation(async config => {
   // httpSend() -> inside ProxyRequest for google_adwords_offline
   if (
     config.url.includes(
-      "https://googleads.googleapis.com/v11/customers/1234567891:uploadClickConversions"
+      "https://googleads.googleapis.com/v13/customers/1234567891:uploadClickConversions"
     )
   ) {
     return {
@@ -71,7 +71,7 @@ axios.post = jest.fn(async (url, data, reqConfig) => {
   // This mocking is for calls that make use of httpPOST()
   if (
     url.includes(
-      "https://googleads.googleapis.com/v11/customers/1234567891/googleAds:searchStream"
+      "https://googleads.googleapis.com/v13/customers/1234567891/googleAds:searchStream"
     )
   ) {
     // this is for true case
@@ -123,7 +123,7 @@ axios.post = jest.fn(async (url, data, reqConfig) => {
     }
   } else if (
     url.includes(
-      "https://googleads.googleapis.com/v11/customers/1234567890/googleAds:searchStream"
+      "https://googleads.googleapis.com/v13/customers/1234567890/googleAds:searchStream"
     )
   ) {
     // this case is for refresh token expire

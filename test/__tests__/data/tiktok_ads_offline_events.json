@@ -328,7 +328,9 @@
                 "phone_numbers": [
                   "c775e7b757ede630cd0aa1113bd102661ab38829ca52a6422ab782862f268646"
                 ],
-                "emails": ["d9fcca64ec1b250da4261a3f89a8e0f7749c4e0f5a1a918e5397194c8b5a9f16"]
+                "emails": [
+                  "d9fcca64ec1b250da4261a3f89a8e0f7749c4e0f5a1a918e5397194c8b5a9f16"
+                ]
               }
             },
             "properties": {
@@ -359,6 +361,106 @@
         },
         "files": {},
         "event_set_id": "7181537436256731137"
+      }
+    ]
+  },
+  {
+    "description": "Track call with email parameter as array",
+    "input": {
+      "destination": {
+        "Config": {
+          "accessToken": "fuwheirujkvjnkrtgkf",
+          "hashUserProperties": true,
+          "eventsToStandard": [
+            {
+              "from": "CompletePayment",
+              "to": "Purchase"
+            }
+          ]
+        }
+      },
+      "message": {
+        "type": "track",
+        "event": "CompletePayment",
+        "sentAt": "2023-03-22T00:02:33.802Z",
+        "traits": {
+          "email": [
+            "efaaf5c8803af4fbf305d7a110c832673d89ed40983770329092fd04b0ba7900",
+            "078d6c8e19f24093368d1712d7801970467f59216f7ccc087bf81b91e0e1f68f"
+          ],
+          "phone": "c4994d14e724936f1169147dddf1673a09af69b55cc54bc695dbe246bd093b05"
+        },
+        "userId": "60241286212",
+        "channel": "sources",
+        "context": {
+          "sources": {
+            "job_id": "2N4WuoNQpGYmCPASUvnV86QyhY4/Syncher",
+            "version": "v1.20.0",
+            "job_run_id": "cgd4a063b2fn2e1j0q90",
+            "task_run_id": "cgd4a063b2fn2e1j0qa0"
+          }
+        },
+        "recordId": "16322",
+        "rudderId": "5b4ed73f-69aa-4198-88d1-3d4d509acbf1",
+        "messageId": "cgd4b663b2fn2e1j8th0",
+        "timestamp": "2023-03-22T00:02:33.170Z",
+        "properties": {
+          "phone": "c4994d14e724936f1169147dddf1673a09af69b55cc54bc695dbe246bd093b05",
+          "value": 32.839999999999996,
+          "emails": "[\"efaaf5c8803af4fbf305d7a110c832673d89ed40983770329092fd04b0ba7900\",\"078d6c8e19f24093368d1712d7801970467f59216f7ccc087bf81b91e0e1f68f\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"]",
+          "eventId": "8965fb56-090f-47a5-aa7f-bbab22d9ec90",
+          "currency": "USD",
+          "order_id": 60241286212,
+          "eventSetId": "7211223771099742210",
+          "event_name": "CompletePayment"
+        },
+        "receivedAt": "2023-03-22T00:02:33.171Z",
+        "request_ip": "10.7.78.187",
+        "anonymousId": "60241286212",
+        "originalTimestamp": "2023-03-22T00:02:33.802Z"
+      }
+    },
+    "output": [
+      {
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "context": {
+              "user": {
+                "emails": [
+                  "4dc75b075057df6f6b729e74a9feed1244dcf8ceb7903eaba13203f3268ae4b9",
+                  "77b639edeb3cd6c801ea05176b8acbfa38d5f38490b764cd0c80756d0cf9ec68"
+                ],
+                "phone_numbers": [
+                  "28b7b205c2936d2ded022d2587fb2677a76e560e921b3ad615b739b0238baa5d"
+                ]
+              }
+            },
+            "event": "Purchase",
+            "event_id": "8965fb56-090f-47a5-aa7f-bbab22d9ec90",
+            "event_set_id": "7211223771099742210",
+            "partner_name": "RudderStack",
+            "properties": {
+              "currency": "USD",
+              "order_id": 60241286212,
+              "value": 32.839999999999996
+            },
+            "timestamp": "2023-03-22T00:02:33.802Z"
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "endpoint": "https://business-api.tiktok.com/open_api/v1.3/offline/track/",
+        "event_set_id": "7211223771099742210",
+        "files": {},
+        "headers": {
+          "Access-Token": "fuwheirujkvjnkrtgkf",
+          "Content-Type": "application/json"
+        },
+        "method": "POST",
+        "params": {},
+        "type": "REST",
+        "version": "1"
       }
     ]
   }

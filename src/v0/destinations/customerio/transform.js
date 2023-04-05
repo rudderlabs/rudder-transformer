@@ -322,7 +322,7 @@ const batchEvents = (successRespList) => {
   const groupEvents = [];
   // Filtering out group calls to process batching
   successRespList.forEach((resp) => {
-    if (resp.message.endpoint !== OBJECT_EVENT_ENDPOINT) {
+    if (!resp.message.endpoint.includes("v2/batch")) {
       batchedResponseList.push(
         getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
       );

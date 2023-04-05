@@ -1,6 +1,6 @@
 const get = require('get-value');
 const sha256 = require('sha256');
-const { logger } = require('handlebars');
+const logger = require('../../../logger');
 
 const {
   isDefinedAndNotNull,

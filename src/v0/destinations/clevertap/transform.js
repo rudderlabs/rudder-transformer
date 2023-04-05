@@ -291,7 +291,7 @@ const responseBuilderSimple = (message, category, destination) => {
     }
     eventPayload.type = 'event';
     // stringify the evtData if it's an Object or array.
-    if (eventPayload.evtData) {
+    if (eventPayload.evtData && eventPayload.evtName !== 'Charged') {
       eventPayload.evtData = convertObjectAndArrayToString(eventPayload.evtData);
     }
 

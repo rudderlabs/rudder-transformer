@@ -17,6 +17,7 @@ const {
   UpdateContactWithSalesActivity,
   UpdateContactWithLifeCycleStage,
   updateAccountWOContact,
+  getHeaders,
 } = require('./utils');
 
 /*
@@ -28,10 +29,7 @@ const identifyResponseConfig = (Config) => {
   const response = defaultRequestConfig();
   response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
   response.method = defaultPostRequestConfig.requestMethod;
-  response.headers = {
-    Authorization: `Token token=${Config.apiKey}`,
-    'Content-Type': 'application/json',
-  };
+  response.headers = getHeaders(Config.apiKey);
   return response;
 };
 
@@ -51,10 +49,7 @@ const identifyResponseBuilder = (message, { Config }) => {
 
   if (payload.address) payload.address = flattenAddress(payload.address);
   const response = defaultRequestConfig();
-  response.headers = {
-    Authorization: `Token token=${Config.apiKey}`,
-    'Content-Type': 'application/json',
-  };
+  response.headers = getHeaders(Config.apiKey);
   response.endpoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
   response.method = CONFIG_CATEGORIES.IDENTIFY.method;
   response.body.JSON = {
@@ -97,10 +92,7 @@ const trackResponseBuilder = async (message, { Config }) => {
     default:
       throw new InstrumentationError(`event name ${event} is not supported. Aborting!`);
   }
-  response.headers = {
-    Authorization: `Token token=${Config.apiKey}`,
-    'Content-Type': 'application/json',
-  };
+  response.headers = getHeaders(Config.apiKey);
   response.method = defaultPostRequestConfig.requestMethod;
   return response;
 };

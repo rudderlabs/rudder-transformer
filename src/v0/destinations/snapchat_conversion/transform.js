@@ -35,7 +35,6 @@ const {
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
-
 function buildResponse(apiKey, payload) {
   const response = defaultRequestConfig();
   response.endpoint = ENDPOINT;
@@ -275,22 +274,19 @@ function process(event) {
 
   const messageType = message.type.toLowerCase();
   let response;
-  switch (messageType) {
-    case EventType.TRACK: {
-      const mappedEvents = eventMappingHandler(message, destination);
-      if (mappedEvents.length > 0) {
-        response = [];
-        mappedEvents.forEach((mappedEvent) => {
-          const res = trackResponseBuilder(message, destination, mappedEvent);
-          response.push(res);
-        });
-      } else {
-        response = trackResponseBuilder(message, destination, get(message, 'event'));
-      }
-      break;
+  if (messageType === EventType.TRACK) {
+    const mappedEvents = eventMappingHandler(message, destination);
+    if (mappedEvents.length > 0) {
+      response = [];
+      mappedEvents.forEach((mappedEvent) => {
+        const res = trackResponseBuilder(message, destination, mappedEvent);
+        response.push(res);
+      });
+    } else {
+      response = trackResponseBuilder(message, destination, get(message, 'event'));
     }
-    default:
-      throw new InstrumentationError(`Event type ${messageType} is not supported`);
+  } else {
+    throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
 }

@@ -25,12 +25,11 @@ const { NetworkError } = require('../../util/errorTypes');
  */
 
 const getAuthErrCategory = (code) => {
-  switch (code) {
-    case 184:
-      return REFRESH_TOKEN;
-    default:
-      return '';
-  }
+  if (code === 184) {
+    return REFRESH_TOKEN
+  } 
+    return '';
+  
 };
 const RETRYABLE_CODES = [85, 116, 120, 121, 183, 184, 214];
 

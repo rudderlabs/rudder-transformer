@@ -220,12 +220,10 @@ const process = async (event) => {
   const messageType = message.type.toLowerCase();
 
   let response;
-  switch (messageType) {
-    case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, destination);
-      break;
-    default:
-      throw new InstrumentationError(`message type ${messageType} not supported`);
+  if (messageType === EventType.IDENTIFY) {
+    response = await identifyResponseBuilder(message, destination);
+  } else {
+    throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
 };

@@ -73,12 +73,10 @@ const processEvent = async (message, destination) => {
   }
   const messageType = message.type.toLowerCase();
   let response;
-  switch (messageType) {
-    case EventType.TRACK:
-      response = await trackResponseBuilder(message, destination);
-      break;
-    default:
-      throw new InstrumentationError(`Event type ${messageType} is not supported`);
+  if (messageType === EventType.TRACK) {
+    response = await trackResponseBuilder(message, destination);
+  } else {
+    throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
 };

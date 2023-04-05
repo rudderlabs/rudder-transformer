@@ -52,12 +52,8 @@ function getSegmentConfig(destination, message) {
   const segmentConfig = {};
   const configKeys = Object.keys(destination.Config);
   configKeys.forEach((key) => {
-    switch (key) {
-      case destinationConfigKeys.writeKey:
-        segmentConfig.writeKey = `${destination.Config[key]}`;
-        break;
-      default:
-        break;
+    if (key === destinationConfigKeys.writeKey) {
+      segmentConfig.writeKey = `${destination.Config[key]}`;
     }
   });
 

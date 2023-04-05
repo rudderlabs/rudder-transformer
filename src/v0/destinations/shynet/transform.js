@@ -42,13 +42,11 @@ function process(event) {
   }
 
   const messageType = message.type.toLowerCase();
-
-  switch (messageType) {
-    case EventType.PAGE:
-      return processPage(message, shynetServiceUrl);
-    default:
-      throw new InstrumentationError(`Event type "${messageType}" is not supported`);
-  }
+  if (messageType === EventType.PAGE) {
+    return processPage(message, shynetServiceUrl);
+  } 
+    throw new InstrumentationError(`Event type ${messageType} is not supported`);
+  
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {

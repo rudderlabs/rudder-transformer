@@ -108,15 +108,13 @@ const process = (event) => {
     }
   }
   if (platform === 'diapi') {
-    switch (messageType) {
-      case EventType.TRACK:
-        category = DIAPI_CONFIG_CATEGORIES.TRACK;
-        response = responseBuilder(message, category, destination, platform);
-        break;
-      default:
-        throw new InstrumentationError(
-          `Event type ${messageType} is not supported in Server Cloud Mode`,
-        );
+    if (messageType === EventType.TRACK) {
+      category = DIAPI_CONFIG_CATEGORIES.TRACK;
+      response = responseBuilder(message, category, destination, platform);
+    } else {
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported in Server Cloud Mode`,
+      );
     }
   }
   return response;

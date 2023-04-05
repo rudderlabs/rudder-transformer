@@ -530,6 +530,51 @@ function formatBatchResponse(batchPayload, metadataList, destination) {
   return response;
 }
 
+const processIdentifyBatch = (ev, aliasBatch, identifyMetadataBatch, identifyEndpoint) => {
+  let resp;
+  if (aliasBatch.length > 0) {
+    const { message, destination } = ev;
+    const identifyBatchResponse = defaultRequestConfig();
+    identifyBatchResponse.headers = message.headers;
+    const identifyResponseBodyJson = {
+      partner: BRAZE_PARTNER_NAME,
+    };
+    identifyResponseBodyJson.aliases_to_identify = aliasBatch;
+    identifyBatchResponse.body.JSON = identifyResponseBodyJson;
+    // modify the endpoint to identify endpoint
+    identifyBatchResponse.endpoint = identifyEndpoint;
+    resp = formatBatchResponse(identifyBatchResponse, identifyMetadataBatch, destination);
+  }
+  return resp;
+};
+
+const processTrackBatch = (ev, attributesBatch, purchasesBatch, eventsBatch, trackMetadataBatch, trackEndpoint) => {
+  let resp;
+  if (attributesBatch.length > 0 || eventsBatch.length > 0 || purchasesBatch.length > 0) {
+  const { message, destination } = ev;
+  const trackBatchResponse = defaultRequestConfig();
+    trackBatchResponse.headers = message.headers;
+    trackBatchResponse.endpoint = trackEndpoint;
+    const trackResponseBodyJson = {
+      partner: BRAZE_PARTNER_NAME,
+    };
+    if (attributesBatch.length > 0) {
+      trackResponseBodyJson.attributes = attributesBatch;
+    }
+    if (eventsBatch.length > 0) {
+      trackResponseBodyJson.events = eventsBatch;
+    }
+    if (purchasesBatch.length > 0) {
+      trackResponseBodyJson.purchases = purchasesBatch;
+    }
+    trackBatchResponse.body.JSON = trackResponseBodyJson;
+    // modify the endpoint to track endpoint
+    trackBatchResponse.endpoint = trackEndpoint;
+    resp = formatBatchResponse(trackBatchResponse, trackMetadataBatch, destination);
+  }
+  return resp;
+}
+
 function batch(destEvents) {
   const respList = [];
   let trackEndpoint;
@@ -660,44 +705,15 @@ function batch(destEvents) {
     }
   }
 
-  // process identify events
   const ev = destEvents[index - 1];
-  const { message, destination } = ev;
-  if (aliasBatch.length > 0) {
-    const identifyBatchResponse = defaultRequestConfig();
-    identifyBatchResponse.headers = message.headers;
-    const identifyResponseBodyJson = {
-      partner: BRAZE_PARTNER_NAME,
-    };
-    identifyResponseBodyJson.aliases_to_identify = aliasBatch;
-    identifyBatchResponse.body.JSON = identifyResponseBodyJson;
-    // modify the endpoint to identify endpoint
-    identifyBatchResponse.endpoint = identifyEndpoint;
-    respList.push(formatBatchResponse(identifyBatchResponse, identifyMetadataBatch, destination));
-  }
+
+  // process identify events
+  const idResp = processIdentifyBatch(ev, aliasBatch, identifyMetadataBatch, identifyEndpoint);
+  if (idResp) respList.push(idResp);
 
   // process track events
-  if (attributesBatch.length > 0 || eventsBatch.length > 0 || purchasesBatch.length > 0) {
-    const trackBatchResponse = defaultRequestConfig();
-    trackBatchResponse.headers = message.headers;
-    trackBatchResponse.endpoint = trackEndpoint;
-    const trackResponseBodyJson = {
-      partner: BRAZE_PARTNER_NAME,
-    };
-    if (attributesBatch.length > 0) {
-      trackResponseBodyJson.attributes = attributesBatch;
-    }
-    if (eventsBatch.length > 0) {
-      trackResponseBodyJson.events = eventsBatch;
-    }
-    if (purchasesBatch.length > 0) {
-      trackResponseBodyJson.purchases = purchasesBatch;
-    }
-    trackBatchResponse.body.JSON = trackResponseBodyJson;
-    // modify the endpoint to track endpoint
-    trackBatchResponse.endpoint = trackEndpoint;
-    respList.push(formatBatchResponse(trackBatchResponse, trackMetadataBatch, destination));
-  }
+  const trackResp = processTrackBatch(ev, attributesBatch, purchasesBatch, eventsBatch, trackMetadataBatch, trackEndpoint);
+  if (trackResp) respList.push(trackResp);
 
   return respList;
 }

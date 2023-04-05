@@ -19,6 +19,7 @@ const {
   TransformationError,
   InstrumentationError,
 } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (message, category, destination, platform) => {
   let payload;
@@ -37,7 +38,7 @@ const responseBuilder = (message, category, destination, platform) => {
     };
     response.endpoint = pl;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     };
   } else {
     // diapi
@@ -60,7 +61,7 @@ const responseBuilder = (message, category, destination, platform) => {
     }
     response.endpoint = diapi;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       'x-api-passKey': passKey,
       'x-api-key': apiKey,
     };

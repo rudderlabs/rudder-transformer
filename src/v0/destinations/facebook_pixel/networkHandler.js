@@ -125,4 +125,5 @@ function networkHandler() {
 
 module.exports = {
   networkHandler,
+  errorResponseHandler,
 };

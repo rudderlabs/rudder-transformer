@@ -9,6 +9,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -28,8 +29,8 @@ function responseBuilderSimple(message, category, destination) {
     response.endpoint = category.endPoint;
     response.method = defaultPostRequestConfig.requestMethod;
     response.headers = {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
+      Accept: JSON_MIME_TYPE,
     };
     response.userId = message.anonymousId;
     response.body.JSON = removeUndefinedAndNullValues(responseBody);

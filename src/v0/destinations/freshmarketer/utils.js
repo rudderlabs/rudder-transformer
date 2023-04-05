@@ -19,6 +19,7 @@ const {
   NetworkError,
 } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getHeaders = (apiKey) => {
   const headers = {

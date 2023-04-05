@@ -19,6 +19,7 @@ const {
   validateTimestamp,
 } = require('./util');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, apiKey, endpoint) => {
   if (payload) {
@@ -26,7 +27,7 @@ const responseBuilder = (payload, apiKey, endpoint) => {
     response.endpoint = `${BASE_URL}${endpoint}`;
     response.headers = {
       Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.body.JSON = removeUndefinedAndNullValues(payload);

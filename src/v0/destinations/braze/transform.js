@@ -28,6 +28,7 @@ const {
 } = require('./config');
 
 const logger = require('../../../logger');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function formatGender(gender) {
   // few possible cases of woman
@@ -56,8 +57,8 @@ function buildResponse(message, destination, properties, endpoint) {
   return {
     ...response,
     headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
+      Accept: JSON_MIME_TYPE,
       Authorization: `Bearer ${destination.Config.restApiKey}`,
     },
     userId: message.userId || message.anonymousId,
@@ -117,13 +118,13 @@ function populateCustomAttributesWithOperation(
 
           if (traits[key][CustomAttributeOperationTypes.UPDATE]) {
             for (let i = 0; i < traits[key][CustomAttributeOperationTypes.UPDATE].length; i += 1) {
-              const myObj = {};
-              myObj.$identifier_key =
-                traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier;
-              myObj.$identifier_value =
-                traits[key][CustomAttributeOperationTypes.UPDATE][i][
-                  traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
-                ];
+              const myObj = {
+                $identifier_key: traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier,
+                $identifier_value:
+                  traits[key][CustomAttributeOperationTypes.UPDATE][i][
+                    traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
+                  ],
+              };
               delete traits[key][CustomAttributeOperationTypes.UPDATE][i][
                 traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
               ];
@@ -147,13 +148,13 @@ function populateCustomAttributesWithOperation(
           opsResultArray = [];
           if (traits[key][CustomAttributeOperationTypes.REMOVE]) {
             for (let i = 0; i < traits[key][CustomAttributeOperationTypes.REMOVE].length; i += 1) {
-              const myObj = {};
-              myObj.$identifier_key =
-                traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier;
-              myObj.$identifier_value =
-                traits[key][CustomAttributeOperationTypes.REMOVE][i][
-                  traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier
-                ];
+              const myObj = {
+                $identifier_key: traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier,
+                $identifier_value:
+                  traits[key][CustomAttributeOperationTypes.REMOVE][i][
+                    traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier
+                  ],
+              };
               opsResultArray.push(myObj);
             }
             data[key][`$${CustomAttributeOperationTypes.REMOVE}`] = opsResultArray;
@@ -166,7 +167,7 @@ function populateCustomAttributesWithOperation(
         });
     }
   } catch (exp) {
-    logger.info('Failure occured during custom attributes operations', exp);
+    logger.info('Failure occurred during custom attributes operations', exp);
   }
 }
 
@@ -351,10 +352,8 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
       delete properties.products;
       delete properties.currency;
 
-      let payload = {};
-      payload.properties = properties;
-
-      payload = setExternalIdOrAliasObject(payload, message);
+      const payload = { properties };
+      setExternalIdOrAliasObject(payload, message);
       return buildResponse(
         message,
         destination,
@@ -404,8 +403,9 @@ function processGroup(message, destination) {
         'Message should have traits with subscriptionState, email or phone',
       );
     }
-    const subscriptionGroup = {};
-    subscriptionGroup.subscription_group_id = groupId;
+    const subscriptionGroup = {
+      subscription_group_id: groupId,
+    };
     if (
       message.traits.subscriptionState !== 'subscribed' &&
       message.traits.subscriptionState !== 'unsubscribed'
@@ -429,8 +429,8 @@ function processGroup(message, destination) {
     return {
       ...response,
       headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
+        Accept: JSON_MIME_TYPE,
         Authorization: `Bearer ${destination.Config.restApiKey}`,
       },
     };
@@ -528,6 +528,51 @@ function formatBatchResponse(batchPayload, metadataList, destination) {
   response.metadata = metadataList;
   response.destination = destination;
   return response;
+}
+
+const processIdentifyBatch = (ev, aliasBatch, identifyMetadataBatch, identifyEndpoint) => {
+  let resp;
+  if (aliasBatch.length > 0) {
+    const { message, destination } = ev;
+    const identifyBatchResponse = defaultRequestConfig();
+    identifyBatchResponse.headers = message.headers;
+    const identifyResponseBodyJson = {
+      partner: BRAZE_PARTNER_NAME,
+    };
+    identifyResponseBodyJson.aliases_to_identify = aliasBatch;
+    identifyBatchResponse.body.JSON = identifyResponseBodyJson;
+    // modify the endpoint to identify endpoint
+    identifyBatchResponse.endpoint = identifyEndpoint;
+    resp = formatBatchResponse(identifyBatchResponse, identifyMetadataBatch, destination);
+  }
+  return resp;
+};
+
+const processTrackBatch = (ev, attributesBatch, purchasesBatch, eventsBatch, trackMetadataBatch, trackEndpoint) => {
+  let resp;
+  if (attributesBatch.length > 0 || eventsBatch.length > 0 || purchasesBatch.length > 0) {
+  const { message, destination } = ev;
+  const trackBatchResponse = defaultRequestConfig();
+    trackBatchResponse.headers = message.headers;
+    trackBatchResponse.endpoint = trackEndpoint;
+    const trackResponseBodyJson = {
+      partner: BRAZE_PARTNER_NAME,
+    };
+    if (attributesBatch.length > 0) {
+      trackResponseBodyJson.attributes = attributesBatch;
+    }
+    if (eventsBatch.length > 0) {
+      trackResponseBodyJson.events = eventsBatch;
+    }
+    if (purchasesBatch.length > 0) {
+      trackResponseBodyJson.purchases = purchasesBatch;
+    }
+    trackBatchResponse.body.JSON = trackResponseBodyJson;
+    // modify the endpoint to track endpoint
+    trackBatchResponse.endpoint = trackEndpoint;
+    resp = formatBatchResponse(trackBatchResponse, trackMetadataBatch, destination);
+  }
+  return resp;
 }
 
 function batch(destEvents) {
@@ -660,44 +705,15 @@ function batch(destEvents) {
     }
   }
 
-  // process identify events
   const ev = destEvents[index - 1];
-  const { message, destination } = ev;
-  if (aliasBatch.length > 0) {
-    const identifyBatchResponse = defaultRequestConfig();
-    identifyBatchResponse.headers = message.headers;
-    const identifyResponseBodyJson = {
-      partner: BRAZE_PARTNER_NAME,
-    };
-    identifyResponseBodyJson.aliases_to_identify = aliasBatch;
-    identifyBatchResponse.body.JSON = identifyResponseBodyJson;
-    // modify the endpoint to identify endpoint
-    identifyBatchResponse.endpoint = identifyEndpoint;
-    respList.push(formatBatchResponse(identifyBatchResponse, identifyMetadataBatch, destination));
-  }
+
+  // process identify events
+  const idResp = processIdentifyBatch(ev, aliasBatch, identifyMetadataBatch, identifyEndpoint);
+  if (idResp) respList.push(idResp);
 
   // process track events
-  if (attributesBatch.length > 0 || eventsBatch.length > 0 || purchasesBatch.length > 0) {
-    const trackBatchResponse = defaultRequestConfig();
-    trackBatchResponse.headers = message.headers;
-    trackBatchResponse.endpoint = trackEndpoint;
-    const trackResponseBodyJson = {
-      partner: BRAZE_PARTNER_NAME,
-    };
-    if (attributesBatch.length > 0) {
-      trackResponseBodyJson.attributes = attributesBatch;
-    }
-    if (eventsBatch.length > 0) {
-      trackResponseBodyJson.events = eventsBatch;
-    }
-    if (purchasesBatch.length > 0) {
-      trackResponseBodyJson.purchases = purchasesBatch;
-    }
-    trackBatchResponse.body.JSON = trackResponseBodyJson;
-    // modify the endpoint to track endpoint
-    trackBatchResponse.endpoint = trackEndpoint;
-    respList.push(formatBatchResponse(trackBatchResponse, trackMetadataBatch, destination));
-  }
+  const trackResp = processTrackBatch(ev, attributesBatch, purchasesBatch, eventsBatch, trackMetadataBatch, trackEndpoint);
+  if (trackResp) respList.push(trackResp);
 
   return respList;
 }

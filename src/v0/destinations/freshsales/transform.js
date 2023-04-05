@@ -19,6 +19,7 @@ const {
   updateAccountWOContact,
   getHeaders,
 } = require('./utils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /*
  * This functions is used for creating response config for identify call.
@@ -166,12 +167,12 @@ const processEvent = async (message, destination) => {
       const mappedEvents = eventMappingHandler(message, destination);
       if (mappedEvents.length > 0) {
         response = [];
-        mappedEvents.forEach(async (mappedEvent) => {
-          const res = await trackResponseBuilder(message, destination, mappedEvent);
+        mappedEvents.forEach(async () => {
+          const res = await trackResponseBuilder(message, destination);
           response.push(res);
         });
       } else {
-        response = await trackResponseBuilder(message, destination, get(message, 'event'));
+        response = await trackResponseBuilder(message, destination);
       }
       break;
     }

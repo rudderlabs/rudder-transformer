@@ -1,5 +1,3 @@
-[![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
-[![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 [![codecov](https://codecov.io/gh/rudderlabs/rudder-transformer/branch/develop/graph/badge.svg?token=G24OON85SB)](https://codecov.io/gh/rudderlabs/rudder-transformer)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=rudderlabs_rudder-transformer&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=rudderlabs_rudder-transformer)
 

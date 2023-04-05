@@ -422,6 +422,57 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
   throw new TransformationError('Payload could not be constructed');
 };
 
+function getCategoryFromEvent(checkEvent) {
+  let category;
+  switch (checkEvent) {
+    case CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.type:
+    case 'ViewContent':
+      category = CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED;
+      break;
+    case CONFIG_CATEGORIES.PRODUCT_VIEWED.type:
+      category = CONFIG_CATEGORIES.PRODUCT_VIEWED;
+      break;
+    case CONFIG_CATEGORIES.PRODUCT_ADDED.type:
+    case 'AddToCart':
+      category = CONFIG_CATEGORIES.PRODUCT_ADDED;
+      break;
+    case CONFIG_CATEGORIES.ORDER_COMPLETED.type:
+    case 'Purchase':
+      category = CONFIG_CATEGORIES.ORDER_COMPLETED;
+      break;
+    case CONFIG_CATEGORIES.PRODUCTS_SEARCHED.type:
+    case 'Search':
+      category = CONFIG_CATEGORIES.PRODUCTS_SEARCHED;
+      break;
+    case CONFIG_CATEGORIES.CHECKOUT_STARTED.type:
+    case 'InitiateCheckout':
+      category = CONFIG_CATEGORIES.CHECKOUT_STARTED;
+      break;
+    case 'AddToWishlist':
+    case 'AddPaymentInfo':
+    case 'Lead':
+    case 'CompleteRegistration':
+    case 'Contact':
+    case 'CustomizeProduct':
+    case 'Donate':
+    case 'FindLocation':
+    case 'Schedule':
+    case 'StartTrial':
+    case 'SubmitApplication':
+    case 'Subscribe':
+      category = CONFIG_CATEGORIES.OTHER_STANDARD;
+      category.event = checkEvent;
+      break;
+    case 'PageView':
+      category = CONFIG_CATEGORIES.PAGE_VIEW;
+      break;
+    default:
+      category = CONFIG_CATEGORIES.SIMPLE_TRACK;
+      break;
+  }
+  return category;
+}
+
 const processEvent = (message, destination) => {
   if (!message.type) {
     throw new InstrumentationError("'type' is missing");
@@ -502,52 +553,7 @@ const processEvent = (message, destination) => {
       }
       checkEvent = standardTo !== '' ? standardTo : message.event.toLowerCase();
 
-      switch (checkEvent) {
-        case CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED.type:
-        case 'ViewContent':
-          category = CONFIG_CATEGORIES.PRODUCT_LIST_VIEWED;
-          break;
-        case CONFIG_CATEGORIES.PRODUCT_VIEWED.type:
-          category = CONFIG_CATEGORIES.PRODUCT_VIEWED;
-          break;
-        case CONFIG_CATEGORIES.PRODUCT_ADDED.type:
-        case 'AddToCart':
-          category = CONFIG_CATEGORIES.PRODUCT_ADDED;
-          break;
-        case CONFIG_CATEGORIES.ORDER_COMPLETED.type:
-        case 'Purchase':
-          category = CONFIG_CATEGORIES.ORDER_COMPLETED;
-          break;
-        case CONFIG_CATEGORIES.PRODUCTS_SEARCHED.type:
-        case 'Search':
-          category = CONFIG_CATEGORIES.PRODUCTS_SEARCHED;
-          break;
-        case CONFIG_CATEGORIES.CHECKOUT_STARTED.type:
-        case 'InitiateCheckout':
-          category = CONFIG_CATEGORIES.CHECKOUT_STARTED;
-          break;
-        case 'AddToWishlist':
-        case 'AddPaymentInfo':
-        case 'Lead':
-        case 'CompleteRegistration':
-        case 'Contact':
-        case 'CustomizeProduct':
-        case 'Donate':
-        case 'FindLocation':
-        case 'Schedule':
-        case 'StartTrial':
-        case 'SubmitApplication':
-        case 'Subscribe':
-          category = CONFIG_CATEGORIES.OTHER_STANDARD;
-          category.event = checkEvent;
-          break;
-        case 'PageView':
-          category = CONFIG_CATEGORIES.PAGE_VIEW;
-          break;
-        default:
-          category = CONFIG_CATEGORIES.SIMPLE_TRACK;
-          break;
-      }
+      category = getCategoryFromEvent(checkEvent);
       break;
     default:
       throw new InstrumentationError(`Message type ${messageType} not supported`);

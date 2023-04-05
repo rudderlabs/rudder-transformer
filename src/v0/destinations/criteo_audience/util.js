@@ -24,10 +24,11 @@ const populateAttributes = (audienceList, operationType, Config) => {
   const attributesArray = [];
   const identifiers = populateIdentifiers(audienceList, audienceType);
   identifiers.forEach((identifier) => {
-    const attributes = {};
-    attributes.operation = operationType;
-    attributes.identifierType = audienceType;
-    attributes.internalIdentifiers = false;
+    const attributes = {
+      operation: operationType,
+      identifierType: audienceType,
+      internalIdentifiers: false,
+    };
     if (audienceType === 'gum') {
       if (!isDefinedAndNotNullAndNotEmpty(gumCallerId)) {
         throw new ConfigurationError(`gumCallerId is required for audience type ${audienceType}`);
@@ -45,9 +46,10 @@ const populateData = (audienceList, operationType, Config) => {
   const arrayData = [];
   const populatedAttributesArray = populateAttributes(audienceList, operationType, Config);
   populatedAttributesArray.forEach((populatedAttribute) => {
-    const data = {};
-    data.type = 'ContactlistAmendment';
-    data.attributes = populatedAttribute;
+    const data = {
+      type: 'ContactlistAmendment',
+      attributes: populatedAttribute,
+    };
     arrayData.push(data);
   });
   return arrayData;

@@ -15,6 +15,7 @@ const {
   validateEventMapping,
 } = require('./util');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (responseConfgs) => {
   const { payload, apiKey, endpoint, contentType, responseBody } = responseConfgs;
@@ -34,7 +35,7 @@ const responseBuilder = (responseConfgs) => {
 
 const identifyResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
-  const contentType = 'application/json';
+  const contentType = JSON_MIME_TYPE;
   const responseBody = 'JSON';
 
   const payload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
@@ -73,7 +74,7 @@ const getTrackResponse = async (apiKey, message, operationType) => {
     payload.voterID = voterID;
     endpoint = ConfigCategory.CREATE_VOTE.endpoint;
   } else if (operationType === 'createPost') {
-    contentType = 'application/json';
+    contentType = JSON_MIME_TYPE;
     responseBody = 'JSON';
 
     payload = constructPayload(message, mappingConfig[ConfigCategory.CREATE_POST.name]);

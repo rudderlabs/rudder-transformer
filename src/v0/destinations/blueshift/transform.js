@@ -9,6 +9,7 @@ const {
   extractCustomFields,
   simpleProcessRouterDest,
 } = require('../../util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 const {
   TransformationError,
   InstrumentationError,
@@ -25,8 +26,7 @@ const {
 } = require('./config');
 
 function checkValidEventName(str) {
-  if (str.includes('.') || /\d/.test(str) || str.length > 64) return true;
-  return false;
+  return str.includes('.') || /\d/.test(str) || str.length > 64;
 }
 
 const getBaseURL = (config) => {
@@ -77,7 +77,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
   const basicAuth = Buffer.from(Config.eventApiKey).toString('base64');
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.body.JSON = payload;
   return response;
@@ -108,7 +108,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
   const basicAuth = Buffer.from(Config.usersApiKey).toString('base64');
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.body.JSON = payload;
   return response;
@@ -136,7 +136,7 @@ const groupResponseBuilder = async (message, category, { Config }) => {
   const basicAuth = Buffer.from(Config.eventApiKey).toString('base64');
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.body.JSON = payload;
   return response;

@@ -12,13 +12,14 @@ const {
   TransformationError,
   InstrumentationError,
 } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.body.JSON = removeUndefinedAndNullAndEmptyValues(payload);

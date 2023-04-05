@@ -5,6 +5,7 @@ const { getDestinationExternalID } = require('../../util');
 const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const logger = require('../../../logger');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * Function to retrieve userId from canny using axios
@@ -26,7 +27,7 @@ const retrieveUserId = async (apiKey, message) => {
 
   const header = {
     'Content-Type': 'application/x-www-form-urlencoded',
-    Accept: 'application/json',
+    Accept: JSON_MIME_TYPE,
   };
 
   const requestBody = {

@@ -17,6 +17,7 @@ const {
 } = require('../../util/errorTypes');
 const { CONFIG_CATEGORIES, LIFECYCLE_STAGE_ENDPOINT } = require('./config');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getHeaders = (apiKey) => {
   const headers = {

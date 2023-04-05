@@ -20,6 +20,7 @@ const {
 } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const identifyResponseBuilder = async (message, { Config }) => {
   const userId = getDestinationExternalID(message, 'profitwellUserId');
@@ -50,23 +51,10 @@ const identifyResponseBuilder = async (message, { Config }) => {
   if (res.success) {
     let subscriptionFound = true;
     const valFound = res.response.data.some((element) => {
-      if (userId && userId === element.user_id) {
-        if (subscriptionId && subscriptionId === element.subscription_id) {
-          subscriptionId = element.subscription_id;
-          subscriptionFound = true;
-          return true;
-        }
-        if (
-          !subscriptionId &&
-          subscriptionAlias &&
-          subscriptionAlias === element.subscription_alias
-        ) {
-          subscriptionAlias = element.subscription_alias;
-          subscriptionFound = true;
-          return true;
-        }
-        subscriptionFound = false;
-      } else if (userAlias && userAlias === element.user_alias) {
+      if (
+        (userId && userId === element.user_id) ||
+        (userAlias && userAlias === element.user_alias)
+      ) {
         if (subscriptionId && subscriptionId === element.subscription_id) {
           subscriptionId = element.subscription_id;
           subscriptionFound = true;
@@ -124,7 +112,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
       response.method = defaultPostRequestConfig.requestMethod;
       response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/`;
       response.headers = {
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
         Authorization: Config.privateApiKey,
       };
       response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -158,7 +146,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
         subscriptionId || subscriptionAlias
       }/`;
       response.headers = {
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
         Authorization: Config.privateApiKey,
       };
       response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -212,7 +200,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/`;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: Config.privateApiKey,
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);

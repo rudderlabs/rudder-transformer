@@ -18,6 +18,7 @@ const {
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const { Event, ENDPOINT, ConfigCategory, mappingConfig, nameToEventMap } = require('./config');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(payload, message, destination) {
   const { androidAppId, appleAppId } = destination.Config;
@@ -92,7 +93,7 @@ function responseBuilderSimple(payload, message, destination) {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     authentication: devKey,
   };
   response.method = defaultPostRequestConfig.requestMethod;
@@ -193,7 +194,7 @@ function processSingleMessage(message, destination) {
   let payload;
   switch (messageType) {
     case EventType.TRACK: {
-      payload = processEventTypeTrack(message, destination);
+      payload = processEventTypeTrack(message);
       break;
     }
     case EventType.SCREEN: {

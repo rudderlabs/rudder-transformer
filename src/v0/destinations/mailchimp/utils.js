@@ -19,6 +19,7 @@ const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const { MERGE_CONFIG, MERGE_ADDRESS, SUBSCRIPTION_STATUS, VALID_STATUSES } = require('./config');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const ADDRESS_MANDATORY_FIELDS = ['addr1', 'city', 'state', 'zip'];
 
@@ -376,7 +377,7 @@ const generateBatchedPaylaodForArray = (audienceId, events) => {
   const basicAuth = Buffer.from(`apiKey:${destination.Config.apiKey}`).toString('base64');
 
   batchEventResponse.batchedRequest.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Basic ${basicAuth}`,
   };
 

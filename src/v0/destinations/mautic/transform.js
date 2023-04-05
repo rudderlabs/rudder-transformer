@@ -25,6 +25,7 @@ const {
   InstrumentationError,
   ConfigurationError,
 } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = async (payload, endpoint, method, messageType, Config) => {
   const { userName, password } = Config;
@@ -40,7 +41,7 @@ const responseBuilder = async (payload, endpoint, method, messageType, Config) =
     response.endpoint = endpoint;
     const basicAuth = Buffer.from(`${userName}:${password}`).toString('base64');
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Basic ${basicAuth}`,
     };
     response.method = method;

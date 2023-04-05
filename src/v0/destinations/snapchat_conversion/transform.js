@@ -33,6 +33,20 @@ const {
   generateBatchedPayloadForArray,
 } = require('./util');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+
+function buildResponse(apiKey, payload) {
+  const response = defaultRequestConfig();
+  response.endpoint = ENDPOINT;
+  response.headers = {
+    Authorization: `Bearer ${apiKey}`,
+    'Content-Type': JSON_MIME_TYPE,
+  };
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  return response;
+}
 
 // Returns the response for the track event after constructing the payload and setting necessary fields
 function trackResponseBuilder(message, { Config }, mappedEvent) {
@@ -218,14 +232,7 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
   payload = removeUndefinedAndNullValues(payload);
 
   // build response
-  const response = defaultRequestConfig();
-  response.endpoint = ENDPOINT;
-  response.headers = {
-    Authorization: `Bearer ${apiKey}`,
-    'Content-Type': 'application/json',
-  };
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
+  const response = buildResponse(apiKey, payload);
   return response;
 }
 

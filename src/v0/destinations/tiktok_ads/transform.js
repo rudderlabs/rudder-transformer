@@ -27,6 +27,10 @@ const {
   PARTNER_NAME,
 } = require('./config');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+const USER_EMAIL_KEY_PATH = 'context.user.email';
+const USER_PHONE_NUMBER_KEY_PATH = 'context.user.phone_number';
 
 const getContents = (message) => {
   const contents = [];
@@ -34,15 +38,16 @@ const getContents = (message) => {
   const { products, content_type, contentType } = properties;
   if (products && Array.isArray(products) && products.length > 0) {
     products.forEach((product) => {
-      const singleProduct = {};
-      singleProduct.content_type =
-        product.contentType || contentType || product.content_type || content_type || 'product';
-      singleProduct.content_id = product.product_id;
-      singleProduct.content_category = product.category;
-      singleProduct.content_name = product.name;
-      singleProduct.price = product.price;
-      singleProduct.quantity = product.quantity;
-      singleProduct.description = product.description;
+      const singleProduct = {
+        content_type:
+          product.contentType || contentType || product.content_type || content_type || 'product',
+        content_id: product.product_id,
+        content_category: product.category,
+        content_name: product.name,
+        price: product.price,
+        quantity: product.quantity,
+        description: product.description,
+      };
       contents.push(removeUndefinedAndNullValues(singleProduct));
     });
   }
@@ -93,14 +98,14 @@ const getTrackResponse = (message, Config, event) => {
   const traits = getFieldValueFromMessage(message, 'traits');
 
   // taking user properties like email and phone from traits
-  let email = get(payload, 'context.user.email');
+  let email = get(payload, USER_EMAIL_KEY_PATH);
   if (!isDefinedAndNotNullAndNotEmpty(email) && traits?.email) {
-    set(payload, 'context.user.email', traits.email);
+    set(payload, USER_EMAIL_KEY_PATH, traits.email);
   }
 
-  let phone_number = get(payload, 'context.user.phone_number');
+  let phone_number = get(payload, USER_PHONE_NUMBER_KEY_PATH);
   if (!isDefinedAndNotNullAndNotEmpty(phone_number) && traits?.phone) {
-    set(payload, 'context.user.phone_number', traits.phone);
+    set(payload, USER_PHONE_NUMBER_KEY_PATH, traits.phone);
   }
 
   payload = { pixel_code, event, ...payload };
@@ -115,12 +120,12 @@ const getTrackResponse = (message, Config, event) => {
       payload.context.user.external_id = SHA256(external_id.trim()).toString();
     }
 
-    email = get(payload, 'context.user.email');
+    email = get(payload, USER_EMAIL_KEY_PATH);
     if (isDefinedAndNotNullAndNotEmpty(email)) {
       payload.context.user.email = SHA256(email.trim().toLowerCase()).toString();
     }
 
-    phone_number = get(payload, 'context.user.phone_number');
+    phone_number = get(payload, USER_PHONE_NUMBER_KEY_PATH);
     if (isDefinedAndNotNullAndNotEmpty(phone_number)) {
       payload.context.user.phone_number = SHA256(phone_number.trim()).toString();
     }
@@ -128,7 +133,7 @@ const getTrackResponse = (message, Config, event) => {
   const response = defaultRequestConfig();
   response.headers = {
     'Access-Token': Config.accessToken,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
 
   response.method = defaultPostRequestConfig.requestMethod;
@@ -240,7 +245,7 @@ function batchEvents(eventsChunk) {
     batchEventResponse.batchedRequest.endpoint = BATCH_ENDPOINT;
     batchEventResponse.batchedRequest.headers = {
       'Access-Token': accessToken,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     };
     batchEventResponse = {
       ...batchEventResponse,

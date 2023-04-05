@@ -50,7 +50,7 @@
       "status": 500
     }
   },
-  "https://graph.facebook.com/v16.0/1234567891234569/events?access_token=invalid_account_id_valid_access_token": {
+  "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=invalid_account_id_valid_access_token": {
     "response": {
       "data": {
         "error": {

@@ -25,6 +25,7 @@ const {
   removeHashToSha256TypeFromMappingJson,
 } = require('./utils');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * get conversions depending on the type set from dashboard
@@ -149,7 +150,7 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
   response.body.JSON = payload;
   response.headers = {
     Authorization: `Bearer ${getAccessToken(metadata)}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     'developer-token': get(metadata, 'secret.developer_token'),
   };
 

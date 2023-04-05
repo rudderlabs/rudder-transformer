@@ -443,11 +443,10 @@ const offlineConversionResponseBuilder = (message, destination) => {
   eventToIdsArray.forEach((eventToIds) => {
     const { standardEvent, eventSetIds } = eventToIds;
     const obj = {
-      data : getData(data, standardEvent, message, destination),
+      data: getData(data, standardEvent, message, destination),
       eventSetIds,
       payload,
     };
-    
     offlineConversionsPayloads.push(obj);
   });
   return offlineConversionsPayloads;

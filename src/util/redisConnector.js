@@ -2,6 +2,14 @@ const Redis = require('ioredis');
 const { RedisError } = require('../v0/util/errorTypes');
 const log = require('../logger');
 const stats = require('./stats');
+const { resolve } = require('path');
+
+const timeoutPromise = new Promise((resolve, reject) => {
+  setTimeout(
+    () => resolve(),
+    50
+  );
+});
 
 const RedisDB = {
   init() {
@@ -44,7 +52,7 @@ const RedisDB = {
         this.init();
       }
       else if (this.client.status !== 'ready') {
-        await this.client.connect(); // Might not wait for connection and throw error connection is closed
+        await Promise.race([this.client.connect(), timeoutPromise])
       }
       const value = await this.client.get(key);
       if (value) {
@@ -65,13 +73,14 @@ const RedisDB = {
    * @param {*} value value to be stored in redis
    * @param {*} isValJson set to false if value is not a json object
    */
+
   async setVal(key, value, isValJson = true) {
     try {
       if (!this.client) {
         this.init();
       }
       else if (this.client.status !== 'ready') {
-        await this.client.connect();
+        await Promise.race([this.client.connect(), timeoutPromise])
       }
       const valueToStore = isValJson ? JSON.stringify(value) : value;
       const bytes = Buffer.byteLength(valueToStore, "utf-8");

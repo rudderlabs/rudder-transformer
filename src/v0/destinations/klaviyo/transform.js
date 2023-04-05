@@ -196,18 +196,24 @@ const trackRequestHandler = (message, category, destination) => {
     }
   } else {
     attributes = constructPayload(message, MAPPING_CONFIG[category.name]);
-    if (message.properties && message.properties.revenue) {
-      attributes.value = message.properties.revenue;
-      delete attributes.properties.revenue;
+    const value =
+      message.properties?.revenue || message.properties?.total || message.properties?.value;
+    if (value) {
+      attributes.value = value;
+      if (attributes.properties) {
+        if (attributes.properties.revenue) {
+          delete attributes.properties.revenue;
+        } else if (attributes.properties.total) {
+          delete attributes.properties.total;
+        } else if (attributes.properties.value) {
+          delete attributes.properties.value;
+        }
+      }
     }
     attributes.properties = {
       ...attributes.properties,
       ...populateCustomFieldsFromTraits(message),
     };
-    // if (destination.Config.enforceEmailAsPrimary) {
-    //   delete customerProperties.external_id;
-    //   customerProperties._id = getFieldValueFromMessage(message, 'userId');
-    // }
     attributes.profile = createCustomerProperties(message);
   }
   if (message.timestamp) {

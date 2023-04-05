@@ -55,6 +55,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT }}
           CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{ secrets.PAT }}
         run: |
+          git fetch --tags origin
           git tag -a v${{ steps.extract-version.outputs.release_version }} -m "chore: release v${{ steps.extract-version.outputs.release_version }}"
           git push origin refs/tags/v${{ steps.extract-version.outputs.release_version }}
           npm run release:github

@@ -28,6 +28,7 @@ jobs:
         run: |
           npm run test:ci
           npm run check:lint
+          npm run lint:fix
 
       - name: Upload Coverage Reports to Codecov
         uses: codecov/codecov-action@v3.1.1

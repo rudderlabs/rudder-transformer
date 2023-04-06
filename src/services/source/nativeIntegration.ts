@@ -17,8 +17,8 @@ export default class NativeIntegrationSourceService implements IntegrationSource
         implementation: tags.IMPLEMENTATIONS.NATIVE,
         destinationId: 'Non determinable',
         workspaceId: 'Non determinable',
-        context: '[Native Integration Service] Failure During Source Transform',
       } as ErrorDetailer,
+      errorContext: '[Native Integration Service] Failure During Source Transform',
     } as MetaTransferObject;
     return metaTO;
   }

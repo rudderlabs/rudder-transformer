@@ -55,7 +55,7 @@ export default class DestinationPostTransformationService {
       error: errObj.message || '[Processor Transform] Error occurred while processing the payload.',
       statTags: errObj.statTags,
     } as ProcessorTransformationResponse;
-    ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
+    ErrorReportingService.reportError(error, metaTO.errorContext, resp);
     return resp;
   }
 
@@ -99,7 +99,7 @@ export default class DestinationPostTransformationService {
       error: errObj.message || '[Router Transform] Error occurred while processing the payload.',
       statTags: errObj.statTags,
     } as RouterTransformationResponse;
-    ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
+    ErrorReportingService.reportError(error, metaTO.errorContext, resp);
     return resp;
   }
 
@@ -115,7 +115,7 @@ export default class DestinationPostTransformationService {
       error: errObj.message || '[Batch Transform] Error occurred while processing payload.',
       statTags: errObj.statTags,
     } as RouterTransformationResponse;
-    ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
+    ErrorReportingService.reportError(error, metaTO.errorContext, resp);
     return resp;
   }
 
@@ -133,7 +133,7 @@ export default class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as DeliveryResponse;
-    ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
+    ErrorReportingService.reportError(error, metaTO.errorContext, resp);
     return resp;
   }
 
@@ -150,7 +150,7 @@ export default class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as UserDeletionResponse;
-    ErrorReportingService.reportError(error, metaTO.errorDetails.context, resp);
+    ErrorReportingService.reportError(error, metaTO.errorContext, resp);
     return resp;
   }
 }

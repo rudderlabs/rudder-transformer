@@ -12,6 +12,13 @@ import ComparatorService from '../services/comparator';
 export default class ServiceSelector {
   private static serviceMap: Map<string, any> = new Map();
 
+  private static services = {
+    [INTEGRATION_SERVICE.CDK_V1_DEST]: CDKV1DestinationService,
+    [INTEGRATION_SERVICE.CDK_V2_DEST]: CDKV2DestinationService,
+    [INTEGRATION_SERVICE.NATIVE_DEST]: NativeIntegrationDestinationService,
+    [INTEGRATION_SERVICE.NATIVE_SOURCE]: NativeIntegrationSourceService,
+  };
+
   private static isCdkDestination(destinationDefinitionConfig: Object) {
     return !!destinationDefinitionConfig?.['cdkEnabled'];
   }
@@ -35,25 +42,11 @@ export default class ServiceSelector {
     if (this.serviceMap.has(serviceType)) {
       return this.serviceMap.get(serviceType);
     }
-    switch (serviceType) {
-      case INTEGRATION_SERVICE.CDK_V1_DEST:
-        this.serviceMap.set(INTEGRATION_SERVICE.CDK_V1_DEST, new CDKV1DestinationService());
-        break;
-      case INTEGRATION_SERVICE.CDK_V2_DEST:
-        this.serviceMap.set(INTEGRATION_SERVICE.CDK_V2_DEST, new CDKV2DestinationService());
-        break;
-      case INTEGRATION_SERVICE.NATIVE_DEST:
-        this.serviceMap.set(
-          INTEGRATION_SERVICE.NATIVE_DEST,
-          new NativeIntegrationDestinationService(),
-        );
-        break;
-      case INTEGRATION_SERVICE.NATIVE_SOURCE:
-        this.serviceMap.set(
-          INTEGRATION_SERVICE.NATIVE_SOURCE,
-          new NativeIntegrationSourceService(),
-        );
+    const Service = this.services[serviceType];
+    if (!Service) {
+      throw new PlatformError('Invalid Service');
     }
+    this.serviceMap.set(serviceType, new Service());
     return this.serviceMap.get(serviceType);
   }
 
@@ -66,16 +59,7 @@ export default class ServiceSelector {
   }
 
   private static getDestinationServiceByName(name: string): DestinationService {
-    switch (name) {
-      case INTEGRATION_SERVICE.CDK_V1_DEST:
-        return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
-      case INTEGRATION_SERVICE.CDK_V2_DEST:
-        return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V2_DEST);
-      case INTEGRATION_SERVICE.NATIVE_DEST:
-        return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
-      default:
-        throw new PlatformError('Invalid Service');
-    }
+    return this.fetchCachedService(name);
   }
 
   private static getPrimaryDestinationService(

@@ -17,8 +17,7 @@
         "module": "source",
         "implementation": "native",
         "destinationId": "Non determinable",
-        "workspaceId": "Non determinable",
-        "context": "[Native Integration Service] Failure During Source Transform"
+        "workspaceId": "Non determinable"
       }
     }
   ]

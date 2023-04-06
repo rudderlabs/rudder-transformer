@@ -53,8 +53,8 @@ export default class ComparatorService implements IntegrationDestinationService 
         feature,
         destinationId,
         workspaceId,
-        context: '[Native Integration Service] Failure During Processor Transform',
       } as ErrorDetailer,
+      errorContext: '[Native Integration Service] Comparator Service Failure',
     } as MetaTransferObject;
     return metaTO;
   }

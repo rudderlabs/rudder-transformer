@@ -165,8 +165,7 @@
         "implementation": "cdkV1",
         "feature": "processor",
         "destinationId": "2JVZ3owjdCdDajoiZwWgJbR9y0q",
-        "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
-        "context": "[CDKV1 Integration Service] Failure During Proc Transform"
+        "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
       }
     }
   ]

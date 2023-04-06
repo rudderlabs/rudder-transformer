@@ -38,8 +38,8 @@ export default class NativeIntegrationDestinationService implements IntegrationD
         feature,
         destinationId,
         workspaceId,
-        context: '[Native Integration Service] Failure During Processor Transform',
       } as ErrorDetailer,
+      errorContext: '[Native Integration Service] Failure During Processor Transform',
     } as MetaTransferObject;
     return metaTO;
   }

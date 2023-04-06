@@ -43,8 +43,8 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
         feature,
         destinationId,
         workspaceId,
-        context: '[CDKV1 Integration Service] Failure During Proc Transform',
       } as ErrorDetailer,
+      errorContext: '[CDKV1 Integration Service] Failure During Proc Transform',
     } as MetaTransferObject;
     return metaTO;
   }

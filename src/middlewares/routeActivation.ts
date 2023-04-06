@@ -28,6 +28,14 @@ export default class RouteActivationMiddleware {
       return ctx;
     }
   }
+
+  private static shouldActivateRoute(integration: string, filterList: string | undefined) {
+    if (!filterList) {
+      return true;
+    }
+    return filterList ? !!filterList?.split(',').includes(integration.toLowerCase()) : true;
+  }
+
   public static isDestinationRouteActive(ctx: Context, next: Next) {
     return RouteActivationMiddleware.executeActivationRule(ctx, next, startDestTransformer);
   }
@@ -54,44 +62,48 @@ export default class RouteActivationMiddleware {
 
   public static destinationProcFilter(ctx: Context, next: Next) {
     const { destination }: { destination: string } = ctx.params;
-    const shouldActivate = destinationFilterList
-      ? !!destinationFilterList?.split(',').includes(destination.toLowerCase())
-      : true;
-    return RouteActivationMiddleware.executeActivationRule(ctx, next, shouldActivate);
+    return RouteActivationMiddleware.executeActivationRule(
+      ctx,
+      next,
+      RouteActivationMiddleware.shouldActivateRoute(destination, destinationFilterList),
+    );
   }
 
   public static destinationRtFilter(ctx: Context, next: Next) {
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
-    const shouldActivate = destinationFilterList
-      ? !!destinationFilterList?.split(',').includes(destination.toLowerCase())
-      : true;
-
-    return RouteActivationMiddleware.executeActivationRule(ctx, next, shouldActivate);
+    return RouteActivationMiddleware.executeActivationRule(
+      ctx,
+      next,
+      RouteActivationMiddleware.shouldActivateRoute(destination, destinationFilterList),
+    );
   }
 
   public static destinationBatchFilter(ctx: Context, next: Next) {
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
-    const shouldActivate = destinationFilterList
-      ? !!destinationFilterList?.split(',').includes(destination.toLowerCase())
-      : true;
-    return RouteActivationMiddleware.executeActivationRule(ctx, next, shouldActivate);
+    return RouteActivationMiddleware.executeActivationRule(
+      ctx,
+      next,
+      RouteActivationMiddleware.shouldActivateRoute(destination, destinationFilterList),
+    );
   }
 
   public static sourceFilter(ctx: Context, next: Next) {
     const { source }: { source: string } = ctx.params;
-    const shouldActivate = sourceFilteList
-      ? !!sourceFilteList?.split(',').includes(source.toLowerCase())
-      : true;
-    return RouteActivationMiddleware.executeActivationRule(ctx, next, shouldActivate);
+    return RouteActivationMiddleware.executeActivationRule(
+      ctx,
+      next,
+      RouteActivationMiddleware.shouldActivateRoute(source, sourceFilteList),
+    );
   }
 
   public static destinationDeliveryFilter(ctx: Context, next: Next) {
     const { destination }: { destination: string } = ctx.params;
-    const shouldActivate = deliveryFilterList
-      ? !!deliveryFilterList?.split(',').includes(destination.toLowerCase())
-      : true;
-    return RouteActivationMiddleware.executeActivationRule(ctx, next, shouldActivate);
+    return RouteActivationMiddleware.executeActivationRule(
+      ctx,
+      next,
+      RouteActivationMiddleware.shouldActivateRoute(destination, deliveryFilterList),
+    );
   }
 }

@@ -152,6 +152,7 @@ type RudderMessage = {
   context: Object;
   originalTimestamp: Date;
   sentAt: Date;
+  timestamp: Date;
   event?: string;
   integrations?: Object;
   messageId: string;
@@ -173,13 +174,13 @@ type ErrorDetailer = {
   destinationId?: string;
   workspaceId?: string;
   sourceId?: string;
-  context: string;
 };
 
 type MetaTransferObject = {
   metadatas?: Metadata[];
   metadata?: Metadata;
   errorDetails: ErrorDetailer;
+  errorContext: string;
 };
 
 type UserTransformationResponse = {

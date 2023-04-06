@@ -13,7 +13,7 @@ export default class PostTransformationSourceService {
       error: errObj.message || '[Source Transform] Error occurred while processing payload.',
       statTags: errObj.statTags,
     } as SourceTransformationResponse;
-    ErrorReportingService.reportError(error, metaTO.errorDetails.context, response);
+    ErrorReportingService.reportError(error, metaTO.errorContext, response);
     return response;
   }
 

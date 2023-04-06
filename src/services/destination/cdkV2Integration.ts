@@ -38,8 +38,8 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
         feature,
         destinationId,
         workspaceId,
-        context: '[CDKV2 Integration Service] Failure During Router Transform',
       } as ErrorDetailer,
+      errorContext: '[CDKV2 Integration Service] Failure During Router Transform',
     } as MetaTransferObject;
     return metaTO;
   }
@@ -140,13 +140,13 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     _destinationType: string,
     _requestMetadata: Object,
   ): Promise<DeliveryResponse> {
-    throw new TransformationError('CDV2 Does not Implement Delivery Routine');
+    throw new TransformationError('CDKV2 Does not Implement Delivery Routine');
   }
 
   public processUserDeletion(
     requests: UserDeletionRequest[],
     rudderDestInfo: string,
   ): Promise<UserDeletionResponse[]> {
-    throw new TransformationError('CDV2 Does not Implement Deletion Routine');
+    throw new TransformationError('CDKV2 Does not Implement Deletion Routine');
   }
 }

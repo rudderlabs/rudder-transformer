@@ -149,8 +149,7 @@
         "implementation": "native",
         "feature": "processor",
         "destinationId": "2JH9GMQf2YFJFaTw7rz1pxHAJPx",
-        "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
-        "context": "[Native Integration Service] Failure During Processor Transform"
+        "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
       }
     }
   ]

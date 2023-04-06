@@ -36,8 +36,10 @@ const {
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
 } = require('../../util');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { ConfigurationError, InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const { httpPOST } = require('../../../adapters/network');
+const tags = require('../../util/tags');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 
 /**
  * Main Identify request handler func
@@ -101,6 +103,15 @@ const identifyRequestHandler = async (message, category, destination) => {
   } else if (resp.response?.response?.status === 409) {
     const { response } = resp.response;
     profileId = response.data?.errors[0]?.meta?.duplicate_profile_id;
+  } else {
+    throw new NetworkError(
+      `Failed to create user due to ${resp.response?.data}`,
+      resp.response?.response?.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.response?.response?.status),
+      },
+      resp.response?.data,
+    );
   }
 
   // Update Profile

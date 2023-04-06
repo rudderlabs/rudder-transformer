@@ -91,7 +91,10 @@ const convertObjectAndArrayToString = (payload, event) => {
     });
     if (event === 'Charged' && finalPayload.Items) {
       finalPayload.Items = JSON.parse(finalPayload.Items);
-      if (!Array.isArray(finalPayload.Items) && typeof finalPayload.Items[0] !== 'object') {
+      if (
+        !Array.isArray(finalPayload.Items) ||
+        (Array.isArray(finalPayload.Items) && typeof finalPayload.Items[0] !== 'object')
+      ) {
         throw new InstrumentationError('Products property value must be an array of objects');
       }
     }

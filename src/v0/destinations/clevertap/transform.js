@@ -84,20 +84,17 @@ const convertObjectAndArrayToString = (payload, event) => {
   if (payload) {
     Object.keys(payload).forEach((key) => {
       if (payload[key] && (Array.isArray(payload[key]) || typeof payload[key] === 'object')) {
-        if (
-          event === 'Charged' &&
-          key === 'Items' &&
-          Array.isArray(payload[key]) &&
-          typeof payload[key][0] === 'object'
-        ) {
-          finalPayload[key] = payload[key];
-        } else {
-          finalPayload[key] = JSON.stringify(payload[key]);
-        }
+        finalPayload[key] = JSON.stringify(payload[key]);
       } else {
         finalPayload[key] = payload[key];
       }
     });
+    if (event === 'Charged' && finalPayload.Items) {
+      finalPayload.Items = JSON.parse(finalPayload.Items);
+      if (!Array.isArray(finalPayload.Items) && typeof finalPayload.Items[0] !== 'object') {
+        throw new InstrumentationError('Products property value must be an array of objects');
+      }
+    }
   }
   return finalPayload;
 };

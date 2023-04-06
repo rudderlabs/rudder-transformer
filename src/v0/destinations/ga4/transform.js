@@ -245,9 +245,10 @@ const responseBuilder = (message, { Config }) => {
   userProperties = extractCustomFields(
     message,
     userProperties,
-    ['context.traits', 'properties.user_properties'],
+    ['properties.user_properties'],
     GA4_RESERVED_USER_PROPERTY_EXCLUSION,
   );
+
   if (!isEmptyObject(userProperties)) {
     rawPayload.user_properties = userProperties;
   }
@@ -294,7 +295,7 @@ const responseBuilder = (message, { Config }) => {
 const process = (event) => {
   const { message, destination } = event;
   const { Config } = destination;
-  
+
   if (!Config.typesOfClient) {
     throw new ConfigurationError('Client type not found. Aborting ');
   }

@@ -191,12 +191,10 @@ function process(event) {
   const messageType = message.type.toLowerCase();
   let response = {};
 
-  switch (messageType) {
-    case EventType.TRACK:
-      response = processTrack(message, metadata, destination);
-      break;
-    default:
-      throw new InstrumentationError(`Message type ${messageType} not supported`);
+  if (messageType === EventType.TRACK) {
+    response = processTrack(message, metadata, destination);
+  } else {
+    throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
   postValidateRequest(response);
   return response;

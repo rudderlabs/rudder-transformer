@@ -378,13 +378,10 @@ function processPaymentRelatedEvent(message, destination) {
   let { enhancedEcommerce } = destination.Config;
   enhancedEcommerce = enhancedEcommerce || false;
   let pa;
-  switch (message.event.toLowerCase()) {
-    case Event.CHECKOUT_STEP_COMPLETED.name:
-      pa = 'checkout_option';
-      break;
-    default:
-      pa = 'checkout';
-      break;
+  if (message.event.toLowerCase() === Event.CHECKOUT_STEP_COMPLETED.name) {
+    pa = 'checkout_option';
+  } else {
+    pa = 'checkout';
   }
   if (enhancedEcommerce) {
     return {

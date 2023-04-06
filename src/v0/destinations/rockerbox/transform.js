@@ -56,7 +56,7 @@ const process = (event) => {
   if (messageType === EventType.TRACK) {
     response = responseBuilderSimple(message, CONFIG_CATEGORIES.TRACK, destination);
   } else {
-    throw new InstrumentationError(`Event type ${messageType} is not supported`);
+    throw new InstrumentationError(`Message type ${messageType} is not supported`);
   }
   return response;
 };

@@ -24,13 +24,8 @@ const tags = require('../../util/tags');
  * @returns
  */
 const getAuthErrCategory = (code, response) => {
-  switch (code) {
-    case 401:
-      if (!get(response, 'error.details')) return REFRESH_TOKEN;
-      return '';
-    default:
-      return '';
-  }
+  if (code === 401 && !get(response, 'error.details')) return REFRESH_TOKEN;
+  return '';
 };
 
 /**

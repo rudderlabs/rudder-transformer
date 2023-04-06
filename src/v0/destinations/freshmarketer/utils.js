@@ -24,7 +24,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 const getHeaders = (apiKey) => {
   const headers = {
     Authorization: `Token token=${apiKey}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   return headers;
 }

@@ -19,7 +19,6 @@ const {
   updateAccountWOContact,
   getHeaders,
 } = require('./utils');
-const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /*
  * This functions is used for creating response config for identify call.

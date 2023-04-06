@@ -47,6 +47,43 @@ function buildResponse(apiKey, payload) {
   return response;
 }
 
+/**
+ * Seperate out hashing operations into one function
+ * @param {*} payload 
+ * @param {*} message 
+ * @returns updatedPayload
+ */
+function populateHashedValues(payload, message) {
+  const updatedPayload = payload;
+  const email = getFieldValueFromMessage(message, 'email');
+  const phone = getNormalizedPhoneNumber(message);
+  const ip = message.context?.ip || message.request_ip;
+
+  if (email) {
+    updatedPayload.hashed_email = getHashedValue(email.toString().toLowerCase().trim());
+  }
+  if (phone) {
+    updatedPayload.hashed_phone_number = getHashedValue(phone.toString().toLowerCase().trim());
+  }
+  if (ip) {
+    updatedPayload.hashed_ip_address = getHashedValue(ip.toString().toLowerCase().trim());
+  }
+  // only in case of ios platform this is required
+  if (
+    isAppleFamily(message.context?.device?.type) &&
+    (message.properties?.idfv || message.context?.device?.id)
+  ) {
+    updatedPayload.hashed_idfv = getHashedValue(message.properties?.idfv || message.context?.device?.id);
+  }
+
+  if (message.properties?.adId || message.context?.device?.advertisingId) {
+    updatedPayload.hashed_mobile_ad_id = getHashedValue(
+      message.properties?.adId || message.context?.device?.advertisingId,
+    );
+  }
+  return updatedPayload;
+}
+
 // Returns the response for the track event after constructing the payload and setting necessary fields
 function trackResponseBuilder(message, { Config }, mappedEvent) {
   let payload = {};
@@ -152,35 +189,8 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
     throw new InstrumentationError(`Event ${event} doesn't match with Snapchat Events!`);
   }
 
-  if (get(message, 'properties.event_tag')) {
-    payload.event_tag = message.properties.event_tag;
-  }
-
-  const email = getFieldValueFromMessage(message, 'email');
-  if (email) {
-    payload.hashed_email = getHashedValue(email.toString().toLowerCase().trim());
-  }
-  const phone = getNormalizedPhoneNumber(message);
-  if (phone) {
-    payload.hashed_phone_number = getHashedValue(phone.toString().toLowerCase().trim());
-  }
-  const ip = message.context?.ip || message.request_ip;
-  if (ip) {
-    payload.hashed_ip_address = getHashedValue(ip.toString().toLowerCase().trim());
-  }
-  // only in case of ios platform this is required
-  if (
-    isAppleFamily(message.context?.device?.type) &&
-    (message.properties?.idfv || message.context?.device?.id)
-  ) {
-    payload.hashed_idfv = getHashedValue(message.properties?.idfv || message.context?.device?.id);
-  }
-
-  if (message.properties?.adId || message.context?.device?.advertisingId) {
-    payload.hashed_mobile_ad_id = getHashedValue(
-      message.properties?.adId || message.context?.device?.advertisingId,
-    );
-  }
+  payload.event_tag = get(message, 'properties.event_tag');
+  payload = populateHashedValues(payload, message)
 
   payload.user_agent = message.context?.userAgent?.toString().toLowerCase();
 

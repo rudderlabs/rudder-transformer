@@ -95,25 +95,7 @@ const processIdentify = (message, destination) => {
   return buildResponse({ text: resultText }, message, destination);
 };
 
-const processTrack = (message, destination) => {
-  // logger.debug(JSON.stringify(destination));
-  const eventChannelConfig = destination.Config.eventChannelSettings;
-  const eventTemplateConfig = destination.Config.eventTemplateSettings;
-
-  if (!message.event) {
-    throw new InstrumentationError('Event name is required');
-  }
-  const eventName = message.event;
-  const channelListToSendThisEvent = new Set();
-  const templateListForThisEvent = new Set();
-  const traitsList = getWhiteListedTraits(destination);
-
-  // Add global context to regex always
-  // build the channel list and templatelist for the event, pick the first in case of multiple
-  // using set to filter out
-  // document this behaviour
-
-  // building channel list
+function buildChannelList(channelListToSendThisEvent, eventChannelConfig, eventName) {
   eventChannelConfig.forEach((channelConfig) => {
     const configEventName = channelConfig.eventName
       ? channelConfig.eventName.trim().length > 0
@@ -145,10 +127,9 @@ const processTrack = (message, destination) => {
       }
     }
   });
+}
 
-  const channelListArray = Array.from(channelListToSendThisEvent);
-
-  // building templatelist
+function buildtemplateList(templateListForThisEvent, eventTemplateConfig, eventName) {
   eventTemplateConfig.forEach((templateConfig) => {
     const configEventName = templateConfig.eventName
       ? templateConfig.eventName.trim().length > 0
@@ -173,7 +154,32 @@ const processTrack = (message, destination) => {
       }
     }
   });
+}
 
+const processTrack = (message, destination) => {
+  // logger.debug(JSON.stringify(destination));
+  const eventChannelConfig = destination.Config.eventChannelSettings;
+  const eventTemplateConfig = destination.Config.eventTemplateSettings;
+
+  if (!message.event) {
+    throw new InstrumentationError('Event name is required');
+  }
+  const eventName = message.event;
+  const channelListToSendThisEvent = new Set();
+  const templateListForThisEvent = new Set();
+  const traitsList = getWhiteListedTraits(destination);
+
+  // Add global context to regex always
+  // build the channel list and templatelist for the event, pick the first in case of multiple
+  // using set to filter out
+  // document this behaviour
+
+  // building channel list
+  buildChannelList(channelListToSendThisEvent, eventChannelConfig, eventName);
+  const channelListArray = Array.from(channelListToSendThisEvent);
+
+  // building templatelist
+  buildtemplateList(templateListForThisEvent, eventTemplateConfig, eventName);
   const templateListArray = Array.from(templateListForThisEvent);
 
   logger.debug(

@@ -100,12 +100,10 @@ const process = (event) => {
   const messageType = message.type.toLowerCase();
 
   let response;
-  switch (messageType) {
-    case EventType.TRACK:
-      response = trackResponseBuilder(message, destination);
-      break;
-    default:
-      throw new InstrumentationError(`message type ${messageType} not supported`);
+  if (messageType === EventType.TRACK) {
+    response = trackResponseBuilder(message, destination);
+  } else {
+    throw new InstrumentationError(`message type ${messageType} not supported`);
   }
   return response;
 };

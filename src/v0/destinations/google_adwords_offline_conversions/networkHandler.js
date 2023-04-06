@@ -32,13 +32,11 @@ const conversionCustomVariableCache = new Cache(CONVERSION_CUSTOM_VARIABLE_CACHE
  * @returns
  */
 const getAuthErrCategory = (status) => {
-  switch (status) {
-    case 401:
-      // UNAUTHORIZED
-      return REFRESH_TOKEN;
-    default:
-      return '';
+  if (status === 401) {
+    // UNAUTHORIZED
+    return REFRESH_TOKEN;
   }
+  return '';
 };
 
 /**

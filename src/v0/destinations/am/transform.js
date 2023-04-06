@@ -50,13 +50,11 @@ const EVENTS_KEY_PATH = 'body.JSON.events';
 
 const baseEndpoint = (destConfig) => {
   let retVal;
-  switch (destConfig.residencyServer) {
-    case 'EU':
-      retVal = BASE_URL_EU;
-      break;
-    default:
-      // "US" or when it is not specified
-      retVal = BASE_URL;
+  if (destConfig.residencyServer === 'EU') {
+    retVal = BASE_URL_EU
+  } else {
+    // "US" or when it is not specified
+    retVal = BASE_URL;
   }
   return retVal;
 };

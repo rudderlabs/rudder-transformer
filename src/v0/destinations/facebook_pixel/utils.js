@@ -1,6 +1,6 @@
 const sha256 = require('sha256');
 const { isObject, getFieldValueFromMessage, formatTimeStamp, getIntegrationsObj } = require('../../util');
-
+const { ACTION_SOURCES_VALUES } = require('./config');
 const { InstrumentationError } = require('../../util/errorTypes');
 
 /**  format revenue according to fb standards with max two decimal places.
@@ -225,9 +225,34 @@ const deduceFbcParam = (message) => {
   return `fb.1.${formatTimeStamp(creationTime)}.${fbclid}`;
 };
 
+/**
+ * Returns action source
+ * ref : https://developers.facebook.com/docs/marketing-api/conversions-api/parameters/server-event#action-source
+ * @param {*} payload
+ * @param {*} channel
+ * @returns
+ */
+const getActionSource = (payload, channel) => {
+  let actionSource = 'other';
+  if (payload.action_source) {
+    const isActionSourceValid = ACTION_SOURCES_VALUES.includes(payload.action_source);
+    if (!isActionSourceValid) {
+      throw new InstrumentationError('Invalid Action Source type');
+    }
+    actionSource = payload.action_source;
+  } else if (channel === 'web') {
+    actionSource = 'website';
+  } else if (channel === 'mobile') {
+    actionSource = 'app';
+  }
+
+  return actionSource;
+};
+
 module.exports = {
   deduceFbcParam,
   formatRevenue,
   getContentType,
   transformedPayloadData,
+  getActionSource,
 };

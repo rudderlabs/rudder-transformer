@@ -6,7 +6,6 @@ const stats = require('../../../util/stats');
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
-  ACTION_SOURCES_VALUES,
   FB_PIXEL_DEFAULT_EXCLUSION,
   STANDARD_ECOMM_EVENTS_TYPE,
 } = require('./config');
@@ -29,6 +28,7 @@ const {
   formatRevenue,
   getContentType,
   transformedPayloadData,
+  getActionSource,
 } = require('./utils');
 
 const {
@@ -280,15 +280,7 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
   let commonData = {};
 
   commonData = constructPayload(message, MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON.name], 'fb_pixel');
-
-  if (commonData.action_source) {
-    const isActionSourceValid = ACTION_SOURCES_VALUES.includes(commonData.action_source);
-    if (!isActionSourceValid) {
-      throw new InstrumentationError('Invalid Action Source type');
-    }
-  } else {
-    commonData.action_source = 'other';
-  }
+  commonData.action_source = getActionSource(commonData, message?.channel);
 
   if (category.type !== 'identify') {
     customData = flattenJson(
@@ -445,7 +437,7 @@ const processEvent = (message, destination) => {
     const deltaMin = Math.ceil(moment.duration(start.diff(current)).asMinutes());
     if (deltaDay > 7 || deltaMin > 1) {
       // TODO: Remove after testing in mirror transformer
-      stats.increment('fb_pixel_timestamp_error', 1, {
+      stats.increment('fb_pixel_timestamp_error', {
         destinationId: destination.ID,
       });
       throw new InstrumentationError(

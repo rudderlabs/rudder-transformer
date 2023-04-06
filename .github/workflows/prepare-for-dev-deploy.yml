@@ -1,6 +1,9 @@
 name: Prepare for Dev Environment Deployment
 
 on:
+  push:
+    branches:
+      - develop
   pull_request:
     types:
       - closed
@@ -13,6 +16,11 @@ env:
   DOCKERHUB_USERNAME: rudderlabs
 
 jobs:
+  report-coverage:
+    name: Report Code Coverage
+    if: github.event_name == 'push'
+    uses: ./.github/workflows/report-code-coverage.yml
+
   build-transformer-image:
     name: Build Transformer Docker Image - Dev
     runs-on: ubuntu-latest
@@ -28,7 +36,7 @@ jobs:
           echo "tag_name=$tag_name" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@v3.4.0
+        uses: actions/checkout@v3.5.0
         with:
           fetch-depth: 1
 
@@ -71,8 +79,8 @@ jobs:
             linux/amd64
             linux/arm64
           build-args: |
-            VERSION=${{ steps.gen_tag_name.outputs.tag_name }}
-            COMMIT_HASH=${{ github.sha }}
+            version=${{ steps.gen_tag_name.outputs.tag_name }}
+            GIT_COMMIT_SHA=${{ github.sha }}
 
   build-user-transformer-image:
     name: Build User Transformer Docker Image - Dev
@@ -89,7 +97,7 @@ jobs:
           echo "tag_name=$tag_name" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@v3.4.0
+        uses: actions/checkout@v3.5.0
         with:
           fetch-depth: 1
 
@@ -132,6 +140,6 @@ jobs:
             linux/amd64
             linux/arm64
           build-args: |
-            VERSION=${{ steps.gen_tag_name.outputs.tag_name }}
-            COMMIT_HASH=${{ github.sha }}
+            version=${{ steps.gen_tag_name.outputs.tag_name }}
+            GIT_COMMIT_SHA=${{ github.sha }}
 

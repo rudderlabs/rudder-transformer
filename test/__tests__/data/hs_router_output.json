@@ -7,7 +7,7 @@
       "endpoint": "https://api.hubapi.com/crm/v3/objects/contacts/batch/create",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer pat-na1-d19ac452-5fc6-465e-92b9-04b4949d3041"
+        "Authorization": "Bearer dummy-access-token"
       },
       "params": {},
       "body": {
@@ -40,15 +40,15 @@
     "destination": {
       "Config": {
         "authorizationType": "newPrivateAppApi",
-        "accessToken": "pat-na1-d19ac452-5fc6-465e-92b9-04b4949d3041",
-        "hubID": "22315509",
-        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "accessToken": "dummy-access-token",
+        "hubID": "dummy-hubId",
+        "apiKey": "dummy-apikey",
         "apiVersion": "newApi",
         "lookupField": "email",
         "hubspotEvents": [
           {
             "rsEventName": "Purchase",
-            "hubspotEventName": "pe22315509_rs_hub_test",
+            "hubspotEventName": "pedummy-hubId_rs_hub_test",
             "eventProperties": [
               {
                 "from": "Revenue",
@@ -62,7 +62,7 @@
           },
           {
             "rsEventName": "Order Complete",
-            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "hubspotEventName": "pedummy-hubId_rs_hub_chair",
             "eventProperties": [
               {
                 "from": "firstName",
@@ -115,7 +115,7 @@
       "endpoint": "https://api.hubapi.com/crm/v3/objects/contacts/batch/update",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer pat-na1-d19ac452-5fc6-465e-92b9-04b4949d3041"
+        "Authorization": "Bearer dummy-access-token"
       },
       "params": {},
       "body": {
@@ -149,15 +149,15 @@
     "destination": {
       "Config": {
         "authorizationType": "newPrivateAppApi",
-        "accessToken": "pat-na1-d19ac452-5fc6-465e-92b9-04b4949d3041",
-        "hubID": "22315509",
-        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "accessToken": "dummy-access-token",
+        "hubID": "dummy-hubId",
+        "apiKey": "dummy-apikey",
         "apiVersion": "newApi",
         "lookupField": "email",
         "hubspotEvents": [
           {
             "rsEventName": "Purchase",
-            "hubspotEventName": "pe22315509_rs_hub_test",
+            "hubspotEventName": "pedummy-hubId_rs_hub_test",
             "eventProperties": [
               {
                 "from": "Revenue",
@@ -171,7 +171,7 @@
           },
           {
             "rsEventName": "Order Complete",
-            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "hubspotEventName": "pedummy-hubId_rs_hub_chair",
             "eventProperties": [
               {
                 "from": "firstName",
@@ -224,13 +224,13 @@
       "endpoint": "https://api.hubapi.com/events/v3/send",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer pat-na1-d19ac452-5fc6-465e-92b9-04b4949d3041"
+        "Authorization": "Bearer dummy-access-token"
       },
       "params": {},
       "body": {
         "JSON": {
           "email": "osvaldocostaferreira98@gmail.com",
-          "eventName": "pe22315509_rs_hub_test",
+          "eventName": "pedummy-hubId_rs_hub_test",
           "properties": {
             "value": "name1"
           }
@@ -251,15 +251,15 @@
     "destination": {
       "Config": {
         "authorizationType": "newPrivateAppApi",
-        "accessToken": "pat-na1-d19ac452-5fc6-465e-92b9-04b4949d3041",
-        "hubID": "22315509",
-        "apiKey": "f6c355c9-0bbf-4a10-b5dc-7d68ffae4cc1",
+        "accessToken": "dummy-access-token",
+        "hubID": "dummy-hubId",
+        "apiKey": "dummy-apikey",
         "apiVersion": "newApi",
         "lookupField": "email",
         "hubspotEvents": [
           {
             "rsEventName": "Purchase",
-            "hubspotEventName": "pe22315509_rs_hub_test",
+            "hubspotEventName": "pedummy-hubId_rs_hub_test",
             "eventProperties": [
               {
                 "from": "Revenue",
@@ -273,7 +273,7 @@
           },
           {
             "rsEventName": "Order Complete",
-            "hubspotEventName": "pe22315509_rs_hub_chair",
+            "hubspotEventName": "pedummy-hubId_rs_hub_chair",
             "eventProperties": [
               {
                 "from": "firstName",

@@ -1,0 +1,110 @@
+[
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://graph.facebook.com/v16.0/23848494844100489/users",
+      "headers": {},
+      "params": {
+        "access_token": "ABC",
+        "payload": {
+          "schema": [
+            "EMAIL",
+            "FN"
+          ],
+          "data": [
+            [
+              "7625cab24612c37df6d2f724721bb38a25095d0295e29b807238ee188b8aca43",
+              "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            ],
+            [
+              "b2b4abadd72190af54305c0d3abf1977fec4935016bb13ff28040d5712318dfd",
+              "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            ],
+            [
+              "c4b007d1c3c9a5d31bd4082237a913e8e0db1767225c2a5ef33be2716df005fa",
+              "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            ],
+            [
+              "94639be1bd9f17c05820164e9d71ef78558f117a9e8bfab43cf8015e08aa0b27",
+              "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            ],
+            [
+              "39b456cfb4bb07f9e6bb18698aa173171ca49c731fccc4790e9ecea808d24ae6",
+              "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            ],
+            [
+              "769f73387add781a481ca08300008a08fb2f1816aaed196137efc2e05976d711",
+              "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            ],
+            [
+              "48ddb93f0b30c475423fe177832912c5bcdce3cc72872f8051627967ef278e08",
+              "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            ],
+            [
+              "da2d431121cd10578fd81f8f80344b06db59ea2d05a7b5d27536c8789ddae8f0",
+              "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            ],
+            [
+              "b100c2ec0718fe6b4805b623aeec6710719d042ceea55f5c8135b010ec1c7b36",
+              "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            ],
+            [
+              "0c1d1b0ba547a742013366d6fbc8f71dd77f566d94e41ed9f828a74b96928161",
+              "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            ]
+          ]
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "accessToken": "ABC",
+        "disableFormat": false,
+        "isHashRequired": true,
+        "isRaw": false,
+        "maxUserCount": "50",
+        "oneTrustCookieCategories": [],
+        "skipVerify": false,
+        "subType": "NA",
+        "type": "NA",
+        "userSchema": [
+          "EMAIL"
+        ]
+      },
+      "secretConfig": {},
+      "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",
+      "name": "FB_CUSTOM_AUDIENCE",
+      "enabled": true,
+      "workspaceId": "1TSN08muJTZwH8iCDmnnRt1pmLd",
+      "deleted": false,
+      "createdAt": "2020-12-30T08:39:32.005Z",
+      "updatedAt": "2021-02-03T16:22:31.374Z",
+      "destinationDefinition": {
+        "id": "1aIXqM806xAVm92nx07YwKbRrO9",
+        "name": "FB_CUSTOM_AUDIENCE",
+        "displayName": "FB_CUSTOM_AUDIENCE",
+        "createdAt": "2020-04-09T09:24:31.794Z",
+        "updatedAt": "2021-01-11T11:03:28.103Z"
+      },
+      "transformations": [],
+      "isConnectionEnabled": true,
+      "isProcessorEnabled": true
+    }
+  }
+]

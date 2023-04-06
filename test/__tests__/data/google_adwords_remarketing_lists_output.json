@@ -6,12 +6,12 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101"
+        "developer-token": "dummy-dev-token"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {
@@ -54,13 +54,13 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101",
+        "developer-token": "dummy-dev-token",
         "login-customer-id": "8704830944"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {
@@ -92,12 +92,12 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101"
+        "developer-token": "dummy-dev-token"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {
@@ -125,7 +125,7 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234"
+        "access_token": "dummy-access"
       }
     },
     "statusCode": 400,
@@ -139,7 +139,7 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234"
+        "access_token": "dummy-access"
       }
     },
     "statusCode": 400,
@@ -153,7 +153,7 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234"
+        "access_token": "dummy-access"
       }
     },
     "statusCode": 400,
@@ -167,7 +167,7 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234"
+        "access_token": "dummy-access"
       }
     },
     "statusCode": 400,
@@ -181,7 +181,7 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234"
+        "access_token": "dummy-access"
       }
     },
     "statusCode": 400,
@@ -199,12 +199,12 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101"
+        "developer-token": "dummy-dev-token"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {
@@ -1221,12 +1221,12 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101"
+        "developer-token": "dummy-dev-token"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {
@@ -1280,12 +1280,12 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101"
+        "developer-token": "dummy-dev-token"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {
@@ -1341,12 +1341,12 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101"
+        "developer-token": "dummy-dev-token"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {
@@ -2361,12 +2361,12 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101"
+        "developer-token": "dummy-dev-token"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {
@@ -3383,12 +3383,12 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101"
+        "developer-token": "dummy-dev-token"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {
@@ -3440,9 +3440,9 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
+        "access_token": "dummy-access",
         "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "developer_token": "dummy-dev-token"
       }
     },
     "statusCode": 400,
@@ -3460,12 +3460,12 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101"
+        "developer-token": "dummy-dev-token"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {
@@ -4480,12 +4480,12 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101"
+        "developer-token": "dummy-dev-token"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {
@@ -5502,12 +5502,12 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101"
+        "developer-token": "dummy-dev-token"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {
@@ -5561,12 +5561,12 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101"
+        "developer-token": "dummy-dev-token"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {
@@ -5622,12 +5622,12 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101"
+        "developer-token": "dummy-dev-token"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {
@@ -5680,12 +5680,12 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101"
+        "developer-token": "dummy-dev-token"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {
@@ -5737,12 +5737,12 @@
       "method": "POST",
       "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
       "headers": {
-        "Authorization": "Bearer abcd1234",
+        "Authorization": "Bearer dummy-access",
         "Content-Type": "application/json",
-        "developer-token": "ijkl9101"
+        "developer-token": "dummy-dev-token"
       },
       "params": {
-        "listId": "7090784486",
+        "listId": "list111",
         "customerId": "7693729833"
       },
       "body": {

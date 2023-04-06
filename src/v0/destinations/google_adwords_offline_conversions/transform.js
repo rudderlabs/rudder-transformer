@@ -21,6 +21,7 @@ const {
 } = require('./config');
 const {
   validateDestinationConfig,
+  generateItemListFromProducts,
   getAccessToken,
   removeHashToSha256TypeFromMappingJson,
 } = require('./utils');
@@ -85,19 +86,9 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
     endpoint = CLICK_CONVERSION.replace(':customerId', filteredCustomerId);
 
     const products = get(message, 'properties.products');
-    const itemList = [];
     if (products && products.length > 0 && Array.isArray(products)) {
       // products is a list of items
-      products.forEach((product) => {
-        if (Object.keys(product).length > 0) {
-          itemList.push({
-            productId: product.product_id,
-            quantity: parseInt(product.quantity, 10),
-            unitPrice: Number(product.price),
-          });
-        }
-      });
-
+      const itemList = generateItemListFromProducts(products);
       set(payload, 'conversions[0].cartData.items', itemList);
     }
 

@@ -41,13 +41,11 @@ const getAccessToken = ({ secret }) => {
  * @returns
  */
 const getAuthErrCategory = (status) => {
-  switch (status) {
-    case 401:
-      // UNAUTHORIZED
-      return REFRESH_TOKEN;
-    default:
-      return '';
+  if (status === 401) {
+    // UNAUTHORIZED
+    return REFRESH_TOKEN;
   }
+  return '';
 };
 
 /**
@@ -88,6 +86,20 @@ const getConversionActionId = async (headers, params) => {
   });
 };
 
+const generateItemListFromProducts = (products) => {
+  const itemList = [];
+  products.forEach((product) => {
+    if (Object.keys(product).length > 0) {
+      itemList.push({
+        productId: product.product_id,
+        quantity: parseInt(product.quantity, 10),
+        unitPrice: Number(product.price),
+      });
+    }
+  });
+  return itemList;
+};
+
 /**
  * update mapping Json config to remove 'hashToSha256'
  * operation from metadata.type and replace it with
@@ -109,6 +121,7 @@ const removeHashToSha256TypeFromMappingJson = (mapping) => {
 
 module.exports = {
   validateDestinationConfig,
+  generateItemListFromProducts,
   getAccessToken,
   getConversionActionId,
   removeHashToSha256TypeFromMappingJson,

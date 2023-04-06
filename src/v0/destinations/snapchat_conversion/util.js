@@ -112,39 +112,31 @@ function getPriceSum(message) {
  * @param {*} events
  * @returns
  */
-function generateBatchedPayloadForArray(events) {
+function generateBatchedPayloadForArray(events, destination) {
   const batchResponseList = [];
-  const metadata = [];
 
   // extracting destination
   // from the first event in a batch
-  const { destination } = events[0];
   const { apiKey } = destination.Config;
 
-  let batchEventResponse = defaultBatchRequestConfig();
+  const { batchedRequest } = defaultBatchRequestConfig();
 
   // Batch event into dest batch structure
   events.forEach((ev) => {
-    batchResponseList.push(ev.message.body.JSON);
-    metadata.push(ev.metadata);
+    batchResponseList.push(ev.body.JSON);
   });
 
-  batchEventResponse.batchedRequest.body.JSON_ARRAY = {
+  batchedRequest.body.JSON_ARRAY = {
     batch: JSON.stringify(batchResponseList),
   };
 
-  batchEventResponse.batchedRequest.endpoint = ENDPOINT;
-  batchEventResponse.batchedRequest.headers = {
+  batchedRequest.endpoint = ENDPOINT;
+  batchedRequest.headers = {
     'Content-Type': 'application/json',
     Authorization: `Bearer ${apiKey}`,
   };
-  batchEventResponse = {
-    ...batchEventResponse,
-    metadata,
-    destination,
-  };
 
-  return batchEventResponse;
+  return batchedRequest;
 }
 
 module.exports = {

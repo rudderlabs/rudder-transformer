@@ -104,6 +104,9 @@ const SUPPORTED_TRACK_EVENTS = [
 ];
 const timeDifferenceForCartEvents = 10000; // in micro seconds as we will be compairing it in timestamp 
 const useRedisDatabase = process.env.USE_REDIS_DB === 'true' || true;
+const ANONYMOUSID_CACHE_TTL = process.env.SHOPIFY_ANONYMOUSID_CACHE_TTL
+? parseInt(process.env.SHOPIFY_ANONYMOUSID_CACHE_TTL, 10)
+: 60 * 60;
 module.exports = {
   ECOM_TOPICS,
   IDENTIFY_TOPICS,
@@ -117,5 +120,6 @@ module.exports = {
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
   timeDifferenceForCartEvents,
-  useRedisDatabase
+  useRedisDatabase,
+  ANONYMOUSID_CACHE_TTL
 };

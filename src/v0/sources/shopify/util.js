@@ -5,6 +5,7 @@ const stats = require('../../../util/stats');
 const { constructPayload, extractCustomFields, flattenJson, generateUUID, isDefinedAndNotNull } = require('../../util');
 const { RedisDB } = require('../../../util/redisConnector');
 const logger = require('../../../logger');
+const Cache = require('../../util/cache');
 const {
   lineItemsMappingJSON,
   productMappingJSON,
@@ -13,8 +14,10 @@ const {
   RUDDER_ECOM_MAP,
   SHOPIFY_TRACK_MAP,
   timeDifferenceForCartEvents,
+  ANONYMOUSID_CACHE_TTL
 } = require('./config');
 
+const anonymousIdCache = new Cache(ANONYMOUSID_CACHE_TTL); // 30 mins
 const { TransformationError } = require('../../util/errorTypes');
 
 /**
@@ -168,23 +171,25 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
       return;
     default:
   }
-  const executeStartTime = Date.now();
-  const redisVal = await RedisDB.getVal(`${cartToken}`);
-  stats.timing('redis_get_latency', executeStartTime, {
-    ...metricMetadata,
-  });
-  stats.increment('shopify_redis_get_data', {
-    ...metricMetadata,
-    timestamp: Date.now(),
-  });
-  let anonymousIDfromDB;
-  if (redisVal !== null) {
-    anonymousIDfromDB = redisVal.anonymousId;
-  }
-  if (!isDefinedAndNotNull(anonymousIDfromDB)) {
-    /* this is for backward compatability when we don't have the redis mapping for older events
-    we will get anonymousIDFromDb as null so we will set UUID using the session Key */
-    anonymousIDfromDB = cartToken;
+  let anonymousIDfromDB = await anonymousIdCache.get(cartToken, () => null); // check if anonymousId is present in cachewith cartToken
+  if (anonymousIDfromDB === null) {
+    const executeStartTime = Date.now();
+    const redisVal = await RedisDB.getVal(`${cartToken}`);
+    stats.timing('redis_get_latency', executeStartTime, {
+      ...metricMetadata,
+    });
+    stats.increment('shopify_redis_get_data', {
+      ...metricMetadata,
+      timestamp: Date.now(),
+    });
+    if (redisVal !== null) {
+      anonymousIDfromDB = redisVal.anonymousId;
+    }
+    if (!isDefinedAndNotNull(anonymousIDfromDB)) {
+      /* this is for backward compatability when we don't have the redis mapping for older events
+      we will get anonymousIDFromDb as null so we will set UUID using the session Key */
+      anonymousIDfromDB = cartToken;
+    }
   }
   message.setProperty('anonymousId', anonymousIDfromDB);
 };
@@ -283,6 +288,8 @@ const checkForValidRecord = async (newCart, metricMetadata) => {
   });
 
   const oldCart = redisVal?.cart;
+  const anonymousId = redisVal?.anonymousId;
+  await anonymousIdCache.get(cartToken, () => anonymousId); // set anonymousId in cache with cartToken
   if (!oldCart) {
     // this is the case for events for which we don't have the values store in redis but are valid events. 
     // This can be removed afterwards as it is more on backward compatibility side
@@ -293,7 +300,7 @@ const checkForValidRecord = async (newCart, metricMetadata) => {
     return false;
   }
   const setStartTime = Date.now();
-  await RedisDB.setVal(`${cartToken}`, { anonymousId: redisVal?.anonymousId, cart: newCart });
+  await RedisDB.setVal(`${cartToken}`, { anonymousId, cart: newCart });
   stats.timing('redis_set_latency', setStartTime, {
     ...metricMetadata,
   });

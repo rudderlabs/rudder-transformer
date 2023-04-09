@@ -11,17 +11,22 @@ import {
 import { RespStatusError, RetryRequestError } from '../util/utils';
 import { getMetadata, isNonFuncObject } from '../v0/util';
 import logger from '../logger';
+import stats from '../util/stats';
 
 export default class UserTransformService {
   public static async transformRoutine(
     events: ProcessorTransformationRequest[],
   ): Promise<UserTransformationServiceResponse> {
+    const startTime = new Date();
     let retryStatus = 200;
     const groupedEvents: Object = groupBy(
       events,
       (event: ProcessorTransformationRequest) =>
         `${event.metadata.destinationId}_${event.metadata.sourceId}`,
     );
+    stats.counter('user_transform_function_group_size', Object.entries(groupedEvents).length, {});
+    stats.counter('user_transform_input_events', events.length, {});
+
     const transformedEvents:any[] = [];
     let librariesVersionIDs:any[] = [];
     if (events[0].libraries) {
@@ -59,10 +64,16 @@ export default class UserTransformService {
             error: errorMessage,
             metadata: commonMetadata,
           } as ProcessorTransformationResponse);
+          stats.counter('user_transform_errors', eventsToProcess.length, {
+            transformationVersionId,
+            type: "NoVersionId",
+            ...metaTags,
+          });
           return transformedEvents;
         }
-
+        const userFuncStartTime = new Date();
         try {
+          stats.counter('user_transform_function_input_events', eventsToProcess.length, { ...metaTags });
           const destTransformedEvents: UserTransformationResponse[] = await userTransformHandler()(
             eventsToProcess,
             transformationVersionId,
@@ -93,15 +104,12 @@ export default class UserTransformService {
               } as ProcessorTransformationResponse;
             }),
           );
-          return transformedEvents;
         } catch (error: any) {
           logger.error(error);
           let status = 400;
           const errorString = error.toString();
           if (error instanceof RetryRequestError) {
-            // entire request needs to be retried
-            // i.e the request to transformer needs
-            // be retried
+            // entire request needs to be retried i.e. request to transformer needs be retried
             retryStatus = error.statusCode;
           }
           if (error instanceof RespStatusError) {
@@ -116,11 +124,23 @@ export default class UserTransformService {
               } as ProcessorTransformationResponse;
             }),
           );
-          return transformedEvents;
+          stats.counter('user_transform_errors', eventsToProcess.length, {
+            transformationVersionId,
+            type: "UnknownError",
+            status,
+            ...metaTags,
+          });
         } finally {
-          //stats
+          stats.timing('user_transform_function_latency', userFuncStartTime, {
+            transformationVersionId,
+            ...metaTags,
+          });
         }
-      }),
+        stats.timing('user_transform_request_latency', startTime, {});
+        stats.counter('user_transform_requests', 1, {});
+        stats.counter('user_transform_output_events', transformedEvents.length, {});
+        return transformedEvents;
+      })
     );
 
     const flattenedResponses: ProcessorTransformationResponse[] = responses.flat();
@@ -131,7 +151,7 @@ export default class UserTransformService {
   }
 
   public static async testTransformRoutine(events, trRevCode, libraryVersionIDs) {
-    let response;
+    let response: any = {};
     try {
       if (!trRevCode || !trRevCode.code || !trRevCode.codeVersion) {
         throw new Error('Invalid Request. Missing parameters in transformation code block');

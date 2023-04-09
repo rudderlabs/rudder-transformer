@@ -24,5 +24,10 @@ router.post(
   RouteActivationController.isUserTransformTestRouteActive,
   UserTransformController.testTransformSethandle,
 );
+router.post(
+  '/extractLibs',
+  RouteActivationController.isUserTransformRouteActive,
+  UserTransformController.extractLibhandle,
+);
 
 export const userTransformRoutes = router.routes();

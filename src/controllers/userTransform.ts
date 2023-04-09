@@ -4,7 +4,7 @@ import { ProcessorTransformationRequest, UserTransformationServiceResponse } fro
 import { compileUserLibrary } from '../util/ivmFactory';
 import UserTransformService from '../services/userTransform';
 import logger from '../logger';
-import { setupUserTransformHandler } from '../util/customTransformer';
+import { setupUserTransformHandler, extractLibraries, validateCode } from '../util/customTransformer';
 import ControllerUtility from './util';
 
 export default class UserTransformController {
@@ -37,7 +37,7 @@ export default class UserTransformController {
       trRevCode,
       libraryVersionIDs,
     );
-    ctx.body = response.Body;
+    ctx.body = response.body;
     ControllerUtility.postProcess(ctx, response.status);
     logger.debug(
       '(User transform - router:/transformation/test ):: Response from transformer',
@@ -52,11 +52,11 @@ export default class UserTransformController {
       JSON.stringify(ctx.request.body),
     );
     try {
-      const { code } = ctx.request.body as any;
+      const { code, language = 'javascript' } = ctx.request.body as any;
       if (!code) {
         throw new Error('Invalid request. Missing code');
       }
-      const res = await compileUserLibrary(code);
+      const res = await validateCode(code, language);
       ctx.body = res;
     } catch (error: any) {
       ctx.body = { error: error.message };
@@ -94,6 +94,44 @@ export default class UserTransformController {
     }
     logger.debug(
       '(User transform - router:/transformation/sethandle ):: Response from transformer',
+      JSON.stringify(ctx.request.body),
+    );
+    return ctx;
+  }
+
+  public static async extractLibhandle(ctx: Context) {
+    logger.debug(
+      '(User transform - router:/extractLibs ):: Request to transformer',
+      JSON.stringify(ctx.request.body),
+    );
+    try {
+      const {
+        code,
+        versionId,
+        validateImports = false,
+        additionalLibraries = [],
+        language = 'javascript',
+        testMode = false,
+      } = ctx.request.body as any;
+      if (!code) {
+        throw new Error('Invalid request. Code is missing');
+      }
+
+      const obj = await extractLibraries(
+        code,
+        versionId,
+        validateImports,
+        additionalLibraries,
+        language,
+        testMode || versionId === 'testVersionId',
+      );
+      ctx.body = obj;
+    } catch (err: any) {
+      ctx.status = 400;
+      ctx.body = { error: err.error || err.message };
+    }
+    logger.debug(
+      '(User transform - router:/extractLibs ):: Response from transformer',
       JSON.stringify(ctx.request.body),
     );
     return ctx;

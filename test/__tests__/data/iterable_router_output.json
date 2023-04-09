@@ -53,61 +53,39 @@
   "others": [
     {
       "batchedRequest": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.iterable.com/api/users/bulkUpdate",
+        "headers": {
+          "Content-Type": "application/json",
+          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
+        },
+        "params": {},
         "body": {
-          "XML": {},
-          "JSON_ARRAY": {},
-          "FORM": {},
           "JSON": {
             "users": [
               {
                 "email": "manashi@website.com",
-                "userId": "abcdeeeeeeeexxxx102",
                 "dataFields": {
                   "city": "Bangalore",
                   "name": "manashi",
                   "email": "manashi@website.com",
                   "country": "India"
                 },
-                "preferUserId": true,
-                "mergeNestedObjects": true
-              },
-              {
-                "email": "lynnanderson@smith.net",
-                "dataFields": {
-                  "administrative_unit": "Minnesota",
-                  "am_pm": "AM",
-                  "boolean": true,
-                  "firstname": "Jacqueline",
-                  "pPower": "AM",
-                  "userId": "Jacqueline",
-                  "email": "lynnanderson@smith.net"
-                },
-                "userId": "lynnanderson@smith.net",
+                "userId": "abcdeeeeeeeexxxx102",
                 "preferUserId": true,
                 "mergeNestedObjects": true
               }
             ]
-          }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
         },
-        "type": "REST",
-        "files": {},
-        "method": "POST",
-        "params": {},
-        "headers": {
-          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60",
-          "Content-Type": "application/json"
-        },
-        "version": "1",
-        "endpoint": "https://api.iterable.com/api/users/bulkUpdate"
+        "files": {}
       },
-      "metadata": [
-        {
-          "jobId": 3
-        },
-        {
-          "jobId": 5
-        }
-      ],
+      "metadata": [{ "jobId": 3 }],
       "batched": true,
       "statusCode": 200,
       "destination": {
@@ -122,23 +100,28 @@
       }
     },
     {
-      "batched": true,
       "batchedRequest": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.iterable.com/api/events/trackBulk",
+        "headers": {
+          "Content-Type": "application/json",
+          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
+        },
+        "params": {},
         "body": {
-          "XML": {},
-          "JSON_ARRAY": {},
-          "FORM": {},
           "JSON": {
             "events": [
               {
-                "userId": "abcdeeeeeeeexxxx102",
-                "createdAt": 1598631966468,
-                "eventName": "Email Opened",
                 "dataFields": {
                   "subject": "resume validate",
                   "sendtime": "2020-01-01",
                   "sendlocation": "akashdeep@gmail.com"
-                }
+                },
+                "userId": "abcdeeeeeeeexxxx102",
+                "eventName": "Email Opened",
+                "createdAt": 1598631966468
               },
               {
                 "email": "sayan@gmail.com",
@@ -155,40 +138,25 @@
                 "createdAt": 1571051718299
               },
               {
-                "createdAt": 1598631966468,
                 "dataFields": {
-                  "referrer": "https://google.com",
+                  "url": "https://dominos.com",
                   "title": "Pizza",
-                  "url": "https://dominos.com"
+                  "referrer": "https://google.com"
                 },
-                "eventName": "undefined page",
-                "userId": "abcdeeeeeeeexxxx102"
+                "userId": "abcdeeeeeeeexxxx102",
+                "createdAt": 1598631966468,
+                "eventName": "undefined page"
               }
             ]
-          }
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
         },
-        "type": "REST",
-        "files": {},
-        "method": "POST",
-        "params": {},
-        "headers": {
-          "Content-Type": "application/json",
-          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
-        },
-        "version": "1",
-        "endpoint": "https://api.iterable.com/api/events/trackBulk"
+        "files": {}
       },
-      "metadata": [
-        {
-          "jobId": 2
-        },
-        {
-          "jobId": 4
-        },
-        {
-          "jobId": 7
-        }
-      ],
+      "metadata": [{ "jobId": 2 }, { "jobId": 4 }, { "jobId": 7 }],
+      "batched": true,
       "statusCode": 200,
       "destination": {
         "Config": {
@@ -199,6 +167,113 @@
           "trackNamedPages": false
         },
         "Enabled": true
+      }
+    },
+    {
+      "batchedRequest": [
+        {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://api.iterable.com/api/users/update",
+          "headers": { "Content-Type": "application/json", "api_key": "12345" },
+          "params": {},
+          "body": {
+            "JSON": {
+              "email": "lynnanderson@smith.net",
+              "dataFields": {
+                "administrative_unit": "Minnesota",
+                "am_pm": "AM",
+                "boolean": true,
+                "firstname": "Jacqueline",
+                "pPower": "AM",
+                "userId": "Jacqueline",
+                "email": "lynnanderson@smith.net"
+              },
+              "userId": "lynnanderson@smith.net",
+              "preferUserId": true,
+              "mergeNestedObjects": true
+            },
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "files": {}
+        },
+        {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://api.iterable.com/api/users/registerDeviceToken",
+          "headers": { "Content-Type": "application/json", "api_key": "12345" },
+          "params": {},
+          "body": {
+            "JSON": {
+              "email": "lynnanderson@smith.net",
+              "userId": "lynnanderson@smith.net",
+              "device": { "token": 54321, "platform": "GCM" },
+              "preferUserId": true
+            },
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "files": {}
+        }
+      ],
+      "metadata": { "jobId": 5 },
+      "batched": false,
+      "statusCode": 200,
+      "destination": {
+        "ID": "1zia9wKshXt80YksLmUdJnr7IHI",
+        "Name": "test_iterable",
+        "DestinationDefinition": {
+          "ID": "1iVQvTRMsPPyJzwol0ifH93QTQ6",
+          "Name": "ITERABLE",
+          "DisplayName": "Iterable",
+          "Config": {
+            "destConfig": {
+              "defaultConfig": [
+                "apiKey",
+                "mapToSingleEvent",
+                "trackAllPages",
+                "trackCategorisedPages",
+                "trackNamedPages"
+              ]
+            },
+            "excludeKeys": [],
+            "includeKeys": [],
+            "saveDestinationResponse": true,
+            "secretKeys": [],
+            "supportedMessageTypes": ["identify", "page", "screen", "track"],
+            "supportedSourceTypes": [
+              "android",
+              "ios",
+              "web",
+              "unity",
+              "amp",
+              "cloud",
+              "warehouse",
+              "reactnative",
+              "flutter",
+              "cordova"
+            ],
+            "supportsVisualMapper": true,
+            "transformAt": "processor",
+            "transformAtV1": "processor"
+          },
+          "ResponseRules": null
+        },
+        "Config": {
+          "apiKey": "12345",
+          "mapToSingleEvent": true,
+          "trackAllPages": false,
+          "trackCategorisedPages": true,
+          "trackNamedPages": true
+        },
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
       }
     },
     {
@@ -216,9 +291,7 @@
           "JSON": {
             "user": {
               "email": "sayan@gmail.com",
-              "dataFields": {
-                "email": "sayan@gmail.com"
-              },
+              "dataFields": { "email": "sayan@gmail.com" },
               "userId": "12345",
               "preferUserId": true,
               "mergeNestedObjects": true
@@ -246,17 +319,13 @@
               }
             ]
           },
-          "XML": {},
           "JSON_ARRAY": {},
+          "XML": {},
           "FORM": {}
         },
         "files": {}
       },
-      "metadata": [
-        {
-          "jobId": 6
-        }
-      ],
+      "metadata": [{ "jobId": 6 }],
       "batched": false,
       "statusCode": 200,
       "destination": {
@@ -282,21 +351,14 @@
         },
         "params": {},
         "body": {
-          "JSON": {
-            "currentEmail": "old@email.com",
-            "newEmail": "new@email.com"
-          },
+          "JSON": { "currentEmail": "old@email.com", "newEmail": "new@email.com" },
           "JSON_ARRAY": {},
           "XML": {},
           "FORM": {}
         },
         "files": {}
       },
-      "metadata": [
-        {
-          "jobId": 8
-        }
-      ],
+      "metadata": [{ "jobId": 8 }],
       "batched": false,
       "statusCode": 200,
       "destination": {

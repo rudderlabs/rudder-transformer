@@ -1,0 +1,24 @@
+[
+    {
+        "destKey": "enable_match_rate_range_preview",
+        "sourceKeys": "properties.enable_match_rate_range_preview",
+        "required": false
+      },
+      {
+        "destKey": "job.storeSalesMetadata.loyaltyFraction",
+        "sourceKeys": "properties.loyaltyFraction",
+        "required": false,
+        "defaultValue":"1"
+      },
+      {
+        "destKey": "job.storeSalesMetadata.transaction_upload_fraction",
+        "sourceKeys": "properties.transaction_upload_fraction",
+        "required": false,
+        "defaultValue":"1"
+      },
+      {
+        "destKey": "job.storeSalesMetadata.custom_key",
+        "sourceKeys": "properties.custom_key",
+        "required": false
+      }
+]

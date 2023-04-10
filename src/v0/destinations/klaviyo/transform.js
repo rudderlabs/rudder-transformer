@@ -151,10 +151,10 @@ const trackRequestHandler = (message, category, destination) => {
   if (ecomEvents.includes(event) && message.properties) {
     const eventName = eventNameMapping[event];
     const eventMap = jsonNameMapping[eventName];
-    attributes.metric.name = eventName;
+    attributes.metric = { name: eventName };
     // using identify to create customer properties
     attributes.profile = createCustomerProperties(message);
-    if (!payload.customer_properties.$email && !payload.customer_properties.$phone_number) {
+    if (!attributes.profile.$email && !attributes.profile.$phone_number) {
       throw new InstrumentationError('email or phone is required for track call');
     }
     const categ = CONFIG_CATEGORIES[eventMap];

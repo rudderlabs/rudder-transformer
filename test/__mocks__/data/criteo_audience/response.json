@@ -1,0 +1,33 @@
+{
+  "https://api.criteo.com/2022-10//audiences/34894/contactlist": {
+    "data": {
+      "request_status": "SUCCESS",
+      "request_id": "12345",
+      "users": [
+        {
+          "sub_request_status": "SUCCESS",
+          "user": {
+            "number_uploaded_users": 1
+          }
+        }
+      ]
+    },
+    "status": 200,
+    "statusText": "OK"
+  },
+  "https://api.criteo.com/2022-10/audiences/34895/contactlist": {
+    "data": "unauthorized",
+    "status": 401,
+    "response": {
+      "errors": [
+        {
+          "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
+          "type": "authorization",
+          "code": "authorization-token-invalid",
+          "instance": "/2022-10/audiences/123/contactlist",
+          "title": "The authorization header is invalid"
+        }
+        ]
+      }
+    }
+  }

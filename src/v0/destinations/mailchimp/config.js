@@ -13,6 +13,7 @@ const VALID_STATUSES = ['subscribed', 'unsubscribed', 'cleaned', 'pending', 'tra
 const CONFIG_CATEGORIES = {
   IDENTIFY: { name: 'mailchimpMergeFieldConfig' },
   MERGE_ADDRESS: { name: 'mailchimpMergeAddressConfig' },
+  TRACK: { name: 'mailchimpTrackEventConfig' },
 };
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
@@ -22,4 +23,5 @@ module.exports = {
   VALID_STATUSES,
   MERGE_CONFIG: MAPPING_CONFIG[CONFIG_CATEGORIES.IDENTIFY.name],
   MERGE_ADDRESS: MAPPING_CONFIG[CONFIG_CATEGORIES.MERGE_ADDRESS.name],
+  TRACK_CONFIG: MAPPING_CONFIG[CONFIG_CATEGORIES.TRACK.name],
 };

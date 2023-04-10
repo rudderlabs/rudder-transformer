@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const { getTransformationCode } = require('./customTransforrmationsStore');
 const stats = require('./stats');
 const { UserTransformHandlerFactory } = require('./customTransformerFactory');
+const { parserForImport } = require('./parser');
 
 async function runUserTransform(events, code, eventsMetadata, versionId, testMode = false) {
   const tags = {
@@ -265,7 +266,14 @@ async function setupUserTransformHandler(
   const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(testWithPublish);
   return resp;
 }
+
+// param 'validateImports' supported for python/pythonfaas.
+async function extractLibraries(code, validateImports, language = "javascript") {
+  return parserForImport(code, validateImports, language);
+}
+
 module.exports = {
   userTransformHandler,
   setupUserTransformHandler,
+  extractLibraries
 };

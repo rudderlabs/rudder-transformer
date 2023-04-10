@@ -257,6 +257,9 @@
             "task_id": "tt_10_rows_check",
             "task_run_id": "c5tar6cqgmgmcjvupdi0",
             "version": "release.v1.6.8"
+          },
+          "device": {
+            "token": 54321
           }
         },
         "messageId": "2f052f7c-f694-4849-a7ed-a432f7ffa0a4",

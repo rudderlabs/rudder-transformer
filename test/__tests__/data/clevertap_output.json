@@ -161,7 +161,26 @@
             "evtData": {
               "Charged ID": "12345",
               "Amount": 15,
-              "Items": "[{\"sku\":\"G-32\",\"url\":\"https://www.website.com/product/path\",\"name\":\"Monopoly\",\"price\":14,\"category\":\"Games\",\"quantity\":1,\"image_url\":\"https://www.website.com/product/path.jpg\",\"product_id\":\"123\"},{\"sku\":\"F-32\",\"name\":\"UNO\",\"price\":3.45,\"category\":\"Games\",\"quantity\":2,\"product_id\":\"345\"}]",
+              "Items": [
+                {
+                  "sku": "G-32",
+                  "url": "https://www.website.com/product/path",
+                  "name": "Monopoly",
+                  "price": 14,
+                  "category": "Games",
+                  "quantity": 1,
+                  "image_url": "https://www.website.com/product/path.jpg",
+                  "product_id": "123"
+                },
+                {
+                  "sku": "F-32",
+                  "name": "UNO",
+                  "price": 3.45,
+                  "category": "Games",
+                  "quantity": 2,
+                  "product_id": "345"
+                }
+              ],
               "tax": 1,
               "total": 20,
               "coupon": "ImagePro",
@@ -571,5 +590,8 @@
     },
     "version": "1",
     "endpoint": "https://api.clevertap.com/1/upload"
+  },
+  {
+    "error": "Products property value must be an array of objects"
   }
 ]

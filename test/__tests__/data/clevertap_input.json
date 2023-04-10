@@ -768,5 +768,90 @@
       "messageId": "46c1a69c-cc24-4a49-8079-3fcbabf15eb8",
       "previousId": "1122121"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "accountId": "476550467",
+        "trackAnonymous": true,
+        "enableObjectIdMapping": false
+      }
+    },
+    "message": {
+      "type": "track",
+      "event": "Order Completed",
+      "sentAt": "2021-03-10T11:59:57.815Z",
+      "userId": "riverjohn",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.13",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "http://127.0.0.1:5500/test.html",
+          "path": "/test.html",
+          "title": "sample source",
+          "search": "",
+          "referrer": "http://127.0.0.1:5500/",
+          "referring_domain": "127.0.0.1:5500"
+        },
+        "locale": "en-US",
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "email": "riverjohn@gmail.com",
+          "phone": "+12345678900",
+          "avatar": "https://homepages.cae.wisc.edu/~ece533/images/airplane.png",
+          "testIng": true,
+          "lastName": "John",
+          "firstname": "River"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.13"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:86.0) Gecko/20100101 Firefox/86.0"
+      },
+      "rudderId": "fd5d3d37-3ce6-471d-b416-2f351212a44f",
+      "messageId": "8ff6fd1b-b381-43fc-883c-92bf8eb0e725",
+      "properties": {
+        "tax": 1,
+        "total": 20,
+        "coupon": "ImagePro",
+        "revenue": 15,
+        "currency": "USD",
+        "discount": 1.5,
+        "order_id": "1234",
+        "ts": "2021-03-10T11:59:22.080Z",
+        "products": {
+          "sku": "G-32",
+          "url": "https://www.website.com/product/path",
+          "name": "Monopoly",
+          "price": 14,
+          "category": "Games",
+          "quantity": 1,
+          "image_url": "https://www.website.com/product/path.jpg",
+          "product_id": "123"
+        },
+        "shipping": 22,
+        "affiliation": "Apple Store",
+        "checkout_id": "12345"
+      },
+      "anonymousId": "b2e06708-dd2a-4aee-bb32-41855d2fbdab",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2021-03-10T11:59:22.080Z"
+    }
   }
 ]

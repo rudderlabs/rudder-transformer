@@ -211,7 +211,7 @@ const getClevertapProfile = (message, category) => {
 
   // Add additional properties being passed inside overrideFields in traits
   // to be added to the profile object, to be sent into Clevertap profileData
-  if (message?.traits?.overrideFields) {
+  if (message.traits?.overrideFields) {
     const { overrideFields } = message.traits;
     Object.assign(profile, overrideFields);
   }

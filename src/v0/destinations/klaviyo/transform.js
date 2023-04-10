@@ -55,9 +55,6 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
   const { privateApiKey, enforceEmailAsPrimary } = destination.Config;
-  if (!privateApiKey) {
-    throw new ConfigurationError('Private API Key is a required field for identify events');
-  }
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (mappedToDestination) {
     addExternalIdToTraits(message);
@@ -142,9 +139,6 @@ const identifyRequestHandler = async (message, category, destination) => {
 
 const trackRequestHandler = (message, category, destination) => {
   const payload = {};
-  if (!destination.Config.privateApiKey) {
-    throw new ConfigurationError('Private API Key is a required field for track events');
-  }
   let event = get(message, 'event');
   event = event ? event.trim().toLowerCase() : event;
   let attributes = {};
@@ -252,9 +246,6 @@ const trackRequestHandler = (message, category, destination) => {
 // DOCS: https://www.klaviyo.com/docs/api/v2/lists
 // ----------------------
 const groupRequestHandler = (message, category, destination) => {
-  if (!destination.Config.privateApiKey) {
-    throw new ConfigurationError('Private API Key is a required field for group events');
-  }
   if (!message.groupId) {
     throw new InstrumentationError('groupId is a required field for group events');
   }
@@ -275,6 +266,9 @@ const groupRequestHandler = (message, category, destination) => {
 const processEvent = async (message, destination) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
+  }
+  if (!destination.Config.privateApiKey) {
+    throw new ConfigurationError(`Private API Key is a required field for ${message.type} events`);
   }
   const messageType = message.type.toLowerCase();
 

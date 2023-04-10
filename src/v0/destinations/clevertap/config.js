@@ -40,6 +40,7 @@ const CLEVERTAP_DEFAULT_EXCLUSION = [
   'userId',
   'id',
   'ts',
+  'overrideFields',
 ];
 // ref : https://developer.clevertap.com/docs/disassociate-api
 const DEL_MAX_BATCH_SIZE = 100;

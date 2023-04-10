@@ -845,8 +845,9 @@
         "All": true
       },
       "sentAt": "2019-10-14T09:03:22.563Z"
-    },
-    {
+    }
+  },
+  {
     "destination": {
       "Config": {
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",

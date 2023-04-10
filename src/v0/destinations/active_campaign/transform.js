@@ -10,7 +10,7 @@ const {
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
 } = require('../../util');
-const { errorHandler, offsetLimitVarPath, eventDataVarPath } = require('./util');
+const { errorHandler } = require('./util');
 const { httpGET, httpPOST } = require('../../../adapters/network');
 const {
   InstrumentationError,

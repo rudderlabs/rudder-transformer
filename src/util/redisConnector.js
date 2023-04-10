@@ -2,7 +2,6 @@ const Redis = require('ioredis');
 const { RedisError } = require('../v0/util/errorTypes');
 const log = require('../logger');
 const stats = require('./stats');
-const { resolve } = require('path');
 
 const timeoutPromise = new Promise((resolve, reject) => {
   setTimeout(
@@ -31,14 +30,24 @@ const RedisDB = {
         return false; // stop retrying
       },
     });
-    this.client.on('ready', (res) => {
+    this.client.on('ready', () => {
       stats.increment('redis_ready', {
         timestamp: Date.now(),
       });
       log.info(`Connected to redis at ${this.host}:${this.port}`);
     });
   },
-
+  /**
+   * Checks connection with redis and if not connected, tries to connect and throws error if connection request fails
+   */
+  async checkAndConnectConnection() {
+    if (!this.client) {
+      this.init();
+    }
+    else if (this.client.status !== 'ready') {
+      await Promise.race([this.client.connect(), timeoutPromise])
+    }
+  },
   /**
    * Used to get value from redis depending on the key and the expected value type
    * @param {*} key key for which value needs to be extracted
@@ -47,13 +56,9 @@ const RedisDB = {
    *
    */
   async getVal(key, isJsonExpected = true) {
+    log.info(`Fetching value for key ${key}`);
     try {
-      if (!this.client) {
-        this.init();
-      }
-      else if (this.client.status !== 'ready') {
-        await Promise.race([this.client.connect(), timeoutPromise])
-      }
+      await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       const value = await this.client.get(key);
       if (value) {
         const bytes = Buffer.byteLength(value, "utf-8");
@@ -66,7 +71,6 @@ const RedisDB = {
       throw new RedisError(`Error getting value from Redis: ${e}`);
     }
   },
-
   /**
    * Used to set value in redis depending on the key and the value type
    * @param {*} key key for which value needs to be stored
@@ -76,12 +80,7 @@ const RedisDB = {
 
   async setVal(key, value, isValJson = true) {
     try {
-      if (!this.client) {
-        this.init();
-      }
-      else if (this.client.status !== 'ready') {
-        await Promise.race([this.client.connect(), timeoutPromise])
-      }
+      await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       const valueToStore = isValJson ? JSON.stringify(value) : value;
       const bytes = Buffer.byteLength(valueToStore, "utf-8");
       await this.client.set(key, valueToStore);

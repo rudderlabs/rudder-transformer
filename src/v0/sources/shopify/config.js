@@ -103,7 +103,7 @@ const SUPPORTED_TRACK_EVENTS = [
   'orders_partially_fullfilled',
 ];
 const timeDifferenceForCartEvents = 10000; // in micro seconds as we will be compairing it in timestamp 
-const useRedisDatabase = process.env.USE_REDIS_DB === 'true' || true;
+const useRedisDatabase = process.env.USE_REDIS_DB === 'true' || false;
 const ANONYMOUSID_CACHE_TTL = process.env.SHOPIFY_ANONYMOUSID_CACHE_TTL
 ? parseInt(process.env.SHOPIFY_ANONYMOUSID_CACHE_TTL, 10)
 : 60 * 60;

@@ -28,9 +28,8 @@ const { TransformationError } = require('../../util/errorTypes');
  */
 const getShopifyTopic = (event) => {
   const { query_parameters: qParams } = event;
-  logger.info(`[Shopify] Input event: query_params: ${JSON.stringify(qParams)}`);
+  logger.debug(`[Shopify] Input event: query_params: ${JSON.stringify(qParams)}`);
   if (!qParams) {
-    logger.info(JSON.stringify(event));
     throw new TransformationError('Query_parameters is missing');
   }
   const { topic } = qParams;

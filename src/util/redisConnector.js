@@ -10,6 +10,8 @@ const timeoutPromise = new Promise((resolve, reject) => {
   );
 });
 
+process.env.USE_REDIS_DB = 'true';
+
 const RedisDB = {
   init() {
     this.host = process.env.REDIS_HOST || 'localhost';

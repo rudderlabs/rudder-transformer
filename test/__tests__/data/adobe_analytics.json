@@ -1982,7 +1982,7 @@
               "to": "event1"
             },
             {
-              "from": "watched video",
+              "from": "Watched Video",
               "to": "event1"
             }
           ],
@@ -2526,7 +2526,7 @@
               "to": "event2"
             },
             {
-              "from": "currency test event",
+              "from": "Currency test event",
               "to": "event6"
             }
           ],

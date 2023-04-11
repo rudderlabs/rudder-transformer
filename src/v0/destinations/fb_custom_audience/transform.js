@@ -7,12 +7,10 @@ const {
   defaultDeleteRequestConfig,
   checkSubsetOfArray,
   isDefinedAndNotNullAndNotEmpty,
-  getSuccessRespEvents,
-  getErrorRespEvents,
   returnArrayOfSubarrays,
   isDefinedAndNotNull,
   flattenMap,
-  handleRtTfSingleEventError,
+  simpleProcessRouterDest,
   getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 
@@ -371,26 +369,8 @@ const processEvent = (message, destination) => {
 
 const process = (event) => processEvent(event.message, event.destination);
 
-const processRouterDest = (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
-  }
-  const respList = inputs.map((input) => {
-    try {
-      if (input.message.statusCode) {
-        // already transformed event
-        return getSuccessRespEvents(input.message, [input.metadata], input.destination);
-      }
-      const transformedList = process(input);
-      const responseList = transformedList.map((transformedPayload) =>
-        getSuccessRespEvents(transformedPayload, [input.metadata], input.destination),
-      );
-      return responseList;
-    } catch (error) {
-      return handleRtTfSingleEventError(input, error, reqMetadata);
-    }
-  });
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return flattenMap(respList);
 };
 

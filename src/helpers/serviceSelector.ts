@@ -31,11 +31,14 @@ export default class ServiceSelector {
   }
 
   private static isComparatorEnabled(destinationDefinitionConfig: Object): boolean {
-    return !!destinationDefinitionConfig['camparisonTestEnabeld'];
+    return (
+      process.env.COMPARATOR_ENABLED === 'true' &&
+      !!destinationDefinitionConfig['comparisonTestEnabeld']
+    );
   }
 
   private static getSecondaryServiceName(destinationDefinitionConfig: Object): string {
-    return destinationDefinitionConfig['camparisonService'];
+    return destinationDefinitionConfig['comparisonService'];
   }
 
   private static fetchCachedService(serviceType: string) {
@@ -65,7 +68,8 @@ export default class ServiceSelector {
   private static getPrimaryDestinationService(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
-    const destinationDefinitionConfig: Object = events[0].destination.DestinationDefinition.Config;
+    const destinationDefinitionConfig: Object =
+      events[0]?.destination?.DestinationDefinition?.Config;
     if (this.isCdkDestination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
     } else if (this.isCdkV2Destination(destinationDefinitionConfig)) {
@@ -82,20 +86,21 @@ export default class ServiceSelector {
   public static getDestinationService(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
-    const destinationDefinition = events[0].destination.DestinationDefinition;
+    const destinationDefinition = events[0]?.destination?.DestinationDefinition;
     const destinationDefinitionConfig = destinationDefinition.Config;
     const primaryService = this.getPrimaryDestinationService(events);
-    if (this.isComparatorEnabled(destinationDefinitionConfig)) {
-      if (this.serviceMap.has(INTEGRATION_SERVICE.COMPARATOR)) {
-        return this.serviceMap.get(INTEGRATION_SERVICE.COMPARATOR);
-      }
-      const secondaryServiceName = this.getSecondaryServiceName(destinationDefinitionConfig);
-      const secondaryService = this.getDestinationServiceByName(secondaryServiceName);
-      const comparatorService = new ComparatorService(primaryService, secondaryService);
-      const comparatorServiceStateKey = `${destinationDefinition.ID}#${INTEGRATION_SERVICE.COMPARATOR}`;
-      this.serviceMap.set(comparatorServiceStateKey, comparatorService);
-      return comparatorService;
+    if (!this.isComparatorEnabled(destinationDefinitionConfig)) {
+      return primaryService;
     }
-    return primaryService;
+    const comparatorServiceStateKey = `${destinationDefinition.ID}#${INTEGRATION_SERVICE.COMPARATOR}`;
+    if (this.serviceMap.has(comparatorServiceStateKey)) {
+      return this.serviceMap.get(comparatorServiceStateKey);
+    }
+    const secondaryServiceName = this.getSecondaryServiceName(destinationDefinitionConfig);
+    const secondaryService = this.getDestinationServiceByName(secondaryServiceName);
+    const comparatorService = new ComparatorService(primaryService, secondaryService);
+
+    this.serviceMap.set(comparatorServiceStateKey, comparatorService);
+    return comparatorService;
   }
 }

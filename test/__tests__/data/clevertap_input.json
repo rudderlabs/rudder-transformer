@@ -768,5 +768,168 @@
       "messageId": "46c1a69c-cc24-4a49-8079-3fcbabf15eb8",
       "previousId": "1122121"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "accountId": "476550467",
+        "trackAnonymous": true,
+        "enableObjectIdMapping": false
+      }
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "messageId": "84e26acc-56a5-4835-8233-591137fca468",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "anon_id",
+      "type": "identify",
+      "traits": {
+        "anonymousId": "anon_id",
+        "email": "johnDoe@gmail.com",
+        "first_name": "John",
+        "last_name": "Doe",
+        "overrideFields": {
+          "first_name": "John",
+          "last_name": "Doe"
+        },
+        "phone": "92374162212",
+        "gender": "M",
+        "employed": true,
+        "birthday": "1614775793",
+        "education": "Science",
+        "graduate": true,
+        "married": true,
+        "customerType": "Prime",
+        "msg_push": true,
+        "msgSms": true,
+        "msgemail": true,
+        "msgwhatsapp": false,
+        "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
+        "custom_mappings": {
+          "Office": "Trastkiv",
+          "Country": "Russia"
+        },
+        "address": {
+          "city": "kolkata",
+          "country": "India",
+          "postalCode": 789223,
+          "state": "WB",
+          "street": ""
+        }
+      },
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "accountId": "476550467",
+        "trackAnonymous": true,
+        "enableObjectIdMapping": false
+      }
+    },
+    "message": {
+      "type": "track",
+      "event": "Order Completed",
+      "sentAt": "2021-03-10T11:59:57.815Z",
+      "userId": "riverjohn",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.13",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "http://127.0.0.1:5500/test.html",
+          "path": "/test.html",
+          "title": "sample source",
+          "search": "",
+          "referrer": "http://127.0.0.1:5500/",
+          "referring_domain": "127.0.0.1:5500"
+        },
+        "locale": "en-US",
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "email": "riverjohn@gmail.com",
+          "phone": "+12345678900",
+          "avatar": "https://homepages.cae.wisc.edu/~ece533/images/airplane.png",
+          "testIng": true,
+          "lastName": "John",
+          "firstname": "River"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.13"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:86.0) Gecko/20100101 Firefox/86.0"
+      },
+      "rudderId": "fd5d3d37-3ce6-471d-b416-2f351212a44f",
+      "messageId": "8ff6fd1b-b381-43fc-883c-92bf8eb0e725",
+      "properties": {
+        "tax": 1,
+        "total": 20,
+        "coupon": "ImagePro",
+        "revenue": 15,
+        "currency": "USD",
+        "discount": 1.5,
+        "order_id": "1234",
+        "ts": "2021-03-10T11:59:22.080Z",
+        "products": {
+          "sku": "G-32",
+          "url": "https://www.website.com/product/path",
+          "name": "Monopoly",
+          "price": 14,
+          "category": "Games",
+          "quantity": 1,
+          "image_url": "https://www.website.com/product/path.jpg",
+          "product_id": "123"
+        },
+        "shipping": 22,
+        "affiliation": "Apple Store",
+        "checkout_id": "12345"
+      },
+      "anonymousId": "b2e06708-dd2a-4aee-bb32-41855d2fbdab",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2021-03-10T11:59:22.080Z"
+    }
   }
 ]

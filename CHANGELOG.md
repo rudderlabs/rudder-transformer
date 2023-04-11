@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.22.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.21.0...v1.22.0) (2023-04-10)
+
+
+### Features
+
+* add override support in clevertap ([#2043](https://github.com/rudderlabs/rudder-transformer/issues/2043)) ([addb9f9](https://github.com/rudderlabs/rudder-transformer/commit/addb9f90258233ed0c05583250b6d6e7ff56041c))
+* **clevertap:** ignore stringification for objects for Charged event ([#2041](https://github.com/rudderlabs/rudder-transformer/issues/2041)) ([fd3e4ea](https://github.com/rudderlabs/rudder-transformer/commit/fd3e4ea5297712011022ccaf4eb785b79c321b7d))
+* enhancement gaoc store conversion ([#1990](https://github.com/rudderlabs/rudder-transformer/issues/1990)) ([f90b16f](https://github.com/rudderlabs/rudder-transformer/commit/f90b16f8c827aa32fbe92e0fa053cc8212bad0a3))
+
+
+### Bug Fixes
+
+* batching with multiplexing ([#1926](https://github.com/rudderlabs/rudder-transformer/issues/1926)) ([e3fe5b5](https://github.com/rudderlabs/rudder-transformer/commit/e3fe5b520fa85849b0ef6148c2380afd8242eec6))
+
 ## [1.21.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.20.2...v1.21.0) (2023-04-04)
 
 

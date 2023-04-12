@@ -4,7 +4,6 @@ const get = require('get-value');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   adduserIdFromExternalId,
-  defaultBatchRequestConfig,
   defaultRequestConfig,
   getDestinationExternalID,
   getFieldValueFromMessage,
@@ -23,12 +22,17 @@ const {
   getSubscriptionGroupEndPoint,
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
-  IDENTIFY_BRAZE_MAX_REQ_COUNT,
   CustomAttributeOperationTypes,
 } = require('./config');
 
 const logger = require('../../../logger');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const {
+  createBatching,
+  formatBatchResponse,
+  handleIdentifyBatching,
+  createResponseBodyJSON,
+} = require('./utils');
 
 function formatGender(gender) {
   // few possible cases of woman
@@ -522,13 +526,13 @@ function process(event) {
   ]
   */
 
-function formatBatchResponse(batchPayload, metadataList, destination) {
-  const response = defaultBatchRequestConfig();
-  response.batchedRequest = batchPayload;
-  response.metadata = metadataList;
-  response.destination = destination;
-  return response;
-}
+// function formatBatchResponse(batchPayload, metadataList, destination) {
+//   const response = defaultBatchRequestConfig();
+//   response.batchedRequest = batchPayload;
+//   response.metadata = metadataList;
+//   response.destination = destination;
+//   return response;
+// }
 
 const processIdentifyBatch = (ev, aliasBatch, identifyMetadataBatch, identifyEndpoint) => {
   let resp;
@@ -548,11 +552,18 @@ const processIdentifyBatch = (ev, aliasBatch, identifyMetadataBatch, identifyEnd
   return resp;
 };
 
-const processTrackBatch = (ev, attributesBatch, purchasesBatch, eventsBatch, trackMetadataBatch, trackEndpoint) => {
+const processTrackBatch = (
+  ev,
+  attributesBatch,
+  purchasesBatch,
+  eventsBatch,
+  trackMetadataBatch,
+  trackEndpoint,
+) => {
   let resp;
   if (attributesBatch.length > 0 || eventsBatch.length > 0 || purchasesBatch.length > 0) {
-  const { message, destination } = ev;
-  const trackBatchResponse = defaultRequestConfig();
+    const { message, destination } = ev;
+    const trackBatchResponse = defaultRequestConfig();
     trackBatchResponse.headers = message.headers;
     trackBatchResponse.endpoint = trackEndpoint;
     const trackResponseBodyJson = {
@@ -573,7 +584,7 @@ const processTrackBatch = (ev, attributesBatch, purchasesBatch, eventsBatch, tra
     resp = formatBatchResponse(trackBatchResponse, trackMetadataBatch, destination);
   }
   return resp;
-}
+};
 
 function batch(destEvents) {
   const respList = [];
@@ -586,8 +597,8 @@ function batch(destEvents) {
   let eventsBatch = [];
   let purchasesBatch = [];
   let trackMetadataBatch = [];
-  let identifyMetadataBatch = [];
-  let aliasBatch = [];
+  const identifyMetadataBatch = [];
+  const aliasBatch = [];
   let index = 0;
 
   while (index < destEvents.length) {
@@ -629,19 +640,11 @@ function batch(destEvents) {
         const batchResponse = defaultRequestConfig();
         batchResponse.headers = message.headers;
         batchResponse.endpoint = trackEndpoint;
-        const responseBodyJson = {
-          partner: BRAZE_PARTNER_NAME,
-        };
-        if (attributesBatch.length > 0) {
-          responseBodyJson.attributes = attributesBatch;
-        }
-        if (eventsBatch.length > 0) {
-          responseBodyJson.events = eventsBatch;
-        }
-        if (purchasesBatch.length > 0) {
-          responseBodyJson.purchases = purchasesBatch;
-        }
-        batchResponse.body.JSON = responseBodyJson;
+        batchResponse.body.JSON = createResponseBodyJSON(
+          attributesBatch,
+          eventsBatch,
+          purchasesBatch,
+        );
         // modify the endpoint to track endpoint
         batchResponse.endpoint = trackEndpoint;
         respList.push(formatBatchResponse(batchResponse, trackMetadataBatch, destination));
@@ -652,56 +655,28 @@ function batch(destEvents) {
         purchasesBatch = [];
         trackMetadataBatch = [];
       }
-
-      // add only if present
-      if (attributes) {
-        attributesBatch.push(...attributes);
-      }
-
-      if (events) {
-        eventsBatch.push(...events);
-      }
-
-      if (purchases) {
-        purchasesBatch.push(...purchases);
-      }
-
-      // keep the original metadata object. needed later to form the batch
-      trackMetadataBatch.push(metadata);
+      createBatching(
+        attributesBatch,
+        eventsBatch,
+        purchasesBatch,
+        trackMetadataBatch,
+        jsonBody,
+        metadata,
+      );
     } else {
       // identify
       if (!identifyEndpoint) {
         identifyEndpoint = endPoint;
       }
-      const aliasObjectArr = get(jsonBody, 'aliases_to_identify');
-      const aliasMaxCount = aliasBatch.length + (aliasObjectArr ? aliasObjectArr.length : 0);
-
-      if (aliasMaxCount > IDENTIFY_BRAZE_MAX_REQ_COUNT) {
-        // form an identify batch and start over
-        const batchResponse = defaultRequestConfig();
-        batchResponse.headers = message.headers;
-        batchResponse.endpoint = identifyEndpoint;
-        const responseBodyJson = {
-          partner: BRAZE_PARTNER_NAME,
-        };
-        if (aliasBatch.length > 0) {
-          responseBodyJson.aliases_to_identify = [...aliasBatch];
-        }
-        batchResponse.body.JSON = responseBodyJson;
-        respList.push(formatBatchResponse(batchResponse, identifyMetadataBatch, destination));
-
-        // clear the arrays and reuse
-        aliasBatch = [];
-        identifyMetadataBatch = [];
-      }
-
-      // separate out the identify request
-      // respList.push(formatBatchResponse(message, [metadata], destination));
-      if (aliasObjectArr.length > 0) {
-        aliasBatch.push(aliasObjectArr[0]);
-      }
-
-      identifyMetadataBatch.push(metadata);
+      handleIdentifyBatching(
+        endPoint,
+        jsonBody,
+        aliasBatch,
+        identifyEndpoint,
+        ev,
+        respList,
+        identifyMetadataBatch,
+      );
     }
   }
 
@@ -712,7 +687,14 @@ function batch(destEvents) {
   if (idResp) respList.push(idResp);
 
   // process track events
-  const trackResp = processTrackBatch(ev, attributesBatch, purchasesBatch, eventsBatch, trackMetadataBatch, trackEndpoint);
+  const trackResp = processTrackBatch(
+    ev,
+    attributesBatch,
+    purchasesBatch,
+    eventsBatch,
+    trackMetadataBatch,
+    trackEndpoint,
+  );
   if (trackResp) respList.push(trackResp);
 
   return respList;

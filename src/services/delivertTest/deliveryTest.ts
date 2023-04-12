@@ -1,25 +1,19 @@
-const match = require('match-json');
-const jsonDiff = require('json-diff');
-const networkHandlerFactory = require('../adapters/networkHandlerFactory');
-const { getPayloadData } = require('../adapters/network');
-const { generateErrorObject } = require('../v0/util');
-const logger = require('../logger');
-const tags = require('../v0/util/tags');
-const stats = require('../util/stats');
+import match from 'match-json';
+import jsonDiff from 'json-diff';
+import networkHandlerFactory from '../../adapters/networkHandlerFactory';
+import { getPayloadData } from '../../adapters/network';
+import { generateErrorObject } from '../../v0/util';
+import stats from '../../util/stats';
+import logger from '../../logger';
+import tags from '../../v0/util/tags';
 
-const DestProxyController = {
-  /**
-   * Handler for testing the destination proxy
-   * @param {*} destination Destination name
-   * @param {*} ctx
-   * @returns
-   */
-  async handleProxyTestRequest(destination, ctx) {
-    const {
-      deliveryPayload: routerDeliveryPayload,
-      destinationRequestPayload: routerDestReqPayload,
-    } = ctx.request.body;
-    let response;
+export default class DeliveryTestService {
+  public static async doTestDelivery(
+    destination: string,
+    routerDestReqPayload: any,
+    routerDeliveryPayload: any,
+  ) {
+    let response: any;
     try {
       const destNetworkHandler = networkHandlerFactory.getNetworkHandler(destination);
 
@@ -38,7 +32,7 @@ const DestProxyController = {
         routerDestReqPayload.data = routerDataVal;
 
         const proxyDataVal = new URLSearchParams();
-        proxyDestReqPayload.data.forEach((value, key) => {
+        proxyDestReqPayload.data.forEach(function (value, key) {
           const encodeAsterisk = (x) => x.replace(/\*/g, '%2A');
           // Router encodes `*` as well
           proxyDataVal.append(encodeAsterisk(key), encodeAsterisk(value));
@@ -83,7 +77,7 @@ const DestProxyController = {
           destination,
         });
       }
-    } catch (err) {
+    } catch (err: any) {
       stats.counter('proxy_test_error', 1, {
         destination,
       });
@@ -107,12 +101,6 @@ const DestProxyController = {
         )}`,
       );
     }
-
-    // Always return success as router doesn't care
-    ctx.status = 200;
-    ctx.body = { output: response };
-    return ctx.body;
-  },
-};
-
-module.exports = { DestProxyController };
+    return response;
+  }
+}

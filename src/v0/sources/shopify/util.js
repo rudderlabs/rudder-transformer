@@ -85,6 +85,14 @@ const extractEmailFromPayload = (event) => {
 // Hash the id and use it as anonymousId (limiting 256 -> 36 chars)
 const setAnonymousId = (message) => {
   switch (message.event) {
+    // These events are fired from admin dashabord and hence we are setting userId as "ADMIN"
+    case SHOPIFY_TRACK_MAP.orders_delete:
+    case SHOPIFY_TRACK_MAP.fulfillments_create:
+    case SHOPIFY_TRACK_MAP.fulfillments_update:
+      if (!message.userId) {
+        message.setProperty('userId', 'shopify-admin');
+      }
+      return;
     case SHOPIFY_TRACK_MAP.carts_create:
     case SHOPIFY_TRACK_MAP.carts_update:
       message.setProperty(
@@ -94,7 +102,6 @@ const setAnonymousId = (message) => {
           : generateUUID(),
       );
       break;
-    case SHOPIFY_TRACK_MAP.orders_delete:
     case SHOPIFY_TRACK_MAP.orders_edited:
     case SHOPIFY_TRACK_MAP.orders_cancelled:
     case SHOPIFY_TRACK_MAP.orders_fulfilled:
@@ -136,7 +143,7 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
     case SHOPIFY_TRACK_MAP.orders_partially_fullfilled:
     case RUDDER_ECOM_MAP.orders_create:
     case RUDDER_ECOM_MAP.orders_updated:
-    case SHOPIFY_TRACK_MAP.orders_delete:
+
       if (!isDefinedAndNotNull(message.properties?.cart_token)) {
         /**
          * This case will rise when we will be using Shopify Admin Dashboard to create, update, delete orders etc.

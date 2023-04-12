@@ -11,7 +11,6 @@ const transformer = require(`../../src/v0/sources/${integration}/transform`);
 const testDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}.json`)
 );
-process.env.USE_REDIS_DB = "false";
 const testData = JSON.parse(testDataFile);
 describe(`${name} Tests`, () => {
   describe("Processor", () => {

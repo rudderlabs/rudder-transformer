@@ -10,34 +10,34 @@ const timeoutPromise = new Promise((resolve, reject) => {
   );
 });
 
-process.env.USE_REDIS_DB = 'true';
-
 const RedisDB = {
   init() {
-    this.host = process.env.REDIS_HOST || 'localhost';
-    this.port = parseInt(process.env.REDIS_PORT, 10) || 6379;
-    this.password = process.env.REDIS_PASSWORD;
-    this.maxRetries = parseInt(process.env.REDIS_MAX_RETRIES || 30, 10);
-    this.timeAfterRetry = parseInt(process.env.REDIS_TIME_AFTER_RETRY_IN_MS || 10, 10);
-    this.client = new Redis({
-      host: this.host,
-      port: this.port,
-      password: this.password,
-      enableReadyCheck: true,
-      retryStrategy: (times) => {
-        if (times <= this.maxRetries) {
-          return 10 + times * this.timeAfterRetry;
-        }
-        log.error(`Redis is down at ${this.host}:${this.port}`);
-        return false; // stop retrying
-      },
-    });
-    this.client.on('ready', () => {
-      stats.increment('redis_ready', {
-        timestamp: Date.now(),
+    if (process.env.USE_REDIS_DB !== 'false') {
+      this.host = process.env.REDIS_HOST || 'localhost';
+      this.port = parseInt(process.env.REDIS_PORT, 10) || 6379;
+      this.password = process.env.REDIS_PASSWORD;
+      this.maxRetries = parseInt(process.env.REDIS_MAX_RETRIES || 30, 10);
+      this.timeAfterRetry = parseInt(process.env.REDIS_TIME_AFTER_RETRY_IN_MS || 10, 10);
+      this.client = new Redis({
+        host: this.host,
+        port: this.port,
+        password: this.password,
+        enableReadyCheck: true,
+        retryStrategy: (times) => {
+          if (times <= this.maxRetries) {
+            return 10 + times * this.timeAfterRetry;
+          }
+          log.error(`Redis is down at ${this.host}:${this.port}`);
+          return false; // stop retrying
+        },
       });
-      log.info(`Connected to redis at ${this.host}:${this.port}`);
-    });
+      this.client.on('ready', () => {
+        stats.increment('redis_ready', {
+          timestamp: Date.now(),
+        });
+        log.info(`Connected to redis at ${this.host}:${this.port}`);
+      });
+    }
   },
   /**
    * Checks connection with redis and if not connected, tries to connect and throws error if connection request fails
@@ -58,7 +58,6 @@ const RedisDB = {
    *
    */
   async getVal(key, isJsonExpected = true) {
-    log.info(`Fetching value for key ${key}`);
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       const value = await this.client.get(key);
@@ -94,10 +93,12 @@ const RedisDB = {
     }
   },
   async disconnect() {
-    stats.increment('redis_graceful_shutdown', {
-      timestamp: Date.now(),
-    });
-    this.client.quit();
+    if (process.env.USE_REDIS_DB !== 'false') {
+      stats.increment('redis_graceful_shutdown', {
+        timestamp: Date.now(),
+      });
+      this.client.quit();
+    }
   }
 };
 

@@ -21,7 +21,7 @@ const getInsertIdColValue = (properties, insertIdCol) => {
   return null;
 };
 
-const process = event => {
+const process = (event) => {
   const { message } = event;
   const { properties, type } = message;
   // EventType validation
@@ -50,14 +50,14 @@ const process = event => {
   };
 };
 
-const batchEvents = eventsChunk => {
+const batchEvents = (eventsChunk) => {
   const batchedResponseList = [];
 
   // arrayChunks = [[e1,e2, ..batchSize], [e1,e2, ..batchSize], ...]
   const arrayChunks = _.chunk(eventsChunk, MAX_ROWS_PER_REQUEST);
 
   // list of chunks [ [..], [..] ]
-  arrayChunks.forEach(chunk => {
+  arrayChunks.forEach((chunk) => {
     const batchResponseList = [];
     const metadata = [];
 
@@ -65,7 +65,7 @@ const batchEvents = eventsChunk => {
     const { message, destination } = chunk[0];
 
     // Batch event into dest batch structure
-    chunk.forEach(ev => {
+    chunk.forEach((ev) => {
       // Pixel code must be added above "batch": [..]
       batchResponseList.push(ev.message.properties);
       metadata.push(ev.metadata);
@@ -97,7 +97,7 @@ const batchEvents = eventsChunk => {
   return batchedResponseList;
 };
 
-const processRouterDest = inputs => {
+const processRouterDest = (inputs) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
@@ -106,7 +106,7 @@ const processRouterDest = inputs => {
   const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];
   Promise.all(
-    inputs.map(event => {
+    inputs.map((event) => {
       try {
         if (event.message.statusCode) {
           // already transformed event
@@ -115,7 +115,7 @@ const processRouterDest = inputs => {
           // if not transformed
           let response = process(event);
           response = Array.isArray(response) ? response : [response];
-          response.forEach(res => {
+          response.forEach((res) => {
             eventsChunk.push({
               message: res,
               metadata: event.metadata,

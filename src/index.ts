@@ -1,18 +1,19 @@
-const Koa = require('koa');
-const bodyParser = require('koa-bodyparser');
-require('dotenv').config();
-const gracefulShutdown = require('http-graceful-shutdown');
-const logger = require('./logger');
+import Koa from 'koa';
+import bodyParser from 'koa-bodyparser';
+import gracefulShutdown from 'http-graceful-shutdown';
+import logger from './logger';
+import dotenv from 'dotenv';
+import cluster from './util/cluster';
+import { router } from './versionedRouter';
+import { testRouter } from './testRouter';
+import { metricsRouter } from './metricsRouter';
+import { addStatMiddleware } from './middleware';
+import { logProcessInfo } from './util/utils';
+import { applicationRoutes } from './routes';
 
-const { router } = require('./versionedRouter');
-const { testRouter } = require('./testRouter');
-const { metricsRouter } = require('./metricsRouter');
-const cluster = require('./util/cluster');
-const { addStatMiddleware } = require('./middleware');
-const { logProcessInfo } = require('./util/utils');
-
+dotenv.config();
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
-
+const useUpdatedRoutes = process.env.ENABLE_NEW_ROUTES !== 'false';
 const port = parseInt(process.env.PORT || '9090', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
 
@@ -29,8 +30,15 @@ app.use(
   }),
 );
 
-app.use(router.routes()).use(router.allowedMethods());
-app.use(testRouter.routes()).use(testRouter.allowedMethods());
+if (useUpdatedRoutes) {
+  logger.info('Using new routes');
+  applicationRoutes(app);
+} else {
+  // To be depricated
+  logger.info('Using old routes');
+  app.use(router.routes()).use(router.allowedMethods());
+  app.use(testRouter.routes()).use(testRouter.allowedMethods());
+}
 
 function finalFunction() {
   logger.error(`Process (pid: ${process.pid}) was gracefully shutdown`);
@@ -68,3 +76,5 @@ if (clusterEnabled) {
 
   logger.info(`App started. Listening on port: ${port}`);
 }
+
+export default app;

@@ -183,7 +183,7 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
   } = destinationConfig;
   const { event: rawMessageEvent, properties } = message;
   const { overrideEventString, overrideProductString, products } = properties;
-  const event = rawMessageEvent.toLowerCase();
+  const event = rawMessageEvent;
   const adobeEventArr = adobeEventName ? adobeEventName.split(',') : [];
   // adobeEventArr is an array of events which is defined as
   // ["eventName", "mapped Adobe Event=mapped merchproperty's value", "mapped Adobe Event=mapped merchproperty's value", . . .]
@@ -310,8 +310,8 @@ const handleTrack = (message, destinationConfig) => {
   let payload = null;
   // handle ecommerce events separately
   // generic events should go to the default
-  const event = rawEvent?.toLowerCase();
-  switch (event) {
+  const event = rawEvent;
+  switch (event.toLowerCase()) {
     case 'product viewed':
     case 'product list viewed':
       payload = processTrackEvent(message, 'prodView', destinationConfig);
@@ -343,10 +343,10 @@ const handleTrack = (message, destinationConfig) => {
       payload = processTrackEvent(message, 'scOpen', destinationConfig);
       break;
     default:
-      if (destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()]) {
+      if (destinationConfig.rudderEventsToAdobeEvents[event]) {
         payload = processTrackEvent(
           message,
-          destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()].trim(),
+          destinationConfig.rudderEventsToAdobeEvents[event].trim(),
           destinationConfig,
         );
       } else {

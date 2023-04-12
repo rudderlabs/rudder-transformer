@@ -3,6 +3,7 @@ const get = require('get-value');
 const md5 = require('md5');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const { Event, GA_ENDPOINT, ConfigCategory, mappingConfig, nameToEventMap } = require('./config');
+const { setContextualFields } = require('./utils');
 
 const {
   addExternalIdToTraits,
@@ -216,35 +217,8 @@ function responseBuilderSimple(parameters, message, hitType, mappingJson, destin
   const params = removeUndefinedAndNullValues(parameters);
 
   if (message.context) {
-    const { campaign, userAgent, locale, app, screen } = message.context;
-    rawPayload.ua = params.ua || userAgent;
-    rawPayload.ul = params.ul || locale;
-    if (app) {
-      rawPayload.an = params.an || app.name;
-      rawPayload.av = params.av || app.version;
-      rawPayload.aiid = params.aiid || app.namespace;
-    }
-    if (campaign) {
-      const { name, source, medium, content, term, campaignId } = campaign;
-      rawPayload.cn = params.cn || name;
-      rawPayload.cs = params.cs || source;
-      rawPayload.cm = params.cm || medium;
-      rawPayload.cc = params.cc || content;
-      rawPayload.ck = params.ck || term;
-      rawPayload.ci = campaignId;
-    }
-
-    if (screen) {
-      const { width, height } = screen;
-      if (width && height) {
-        rawPayload.sr = `${width}x${height}`;
-      }
-
-      const { innerWidth, innerHeight } = screen;
-      if (innerWidth && innerHeight) {
-        rawPayload.vp = `${innerWidth}x${innerHeight}`;
-      }
-    }
+    const addedContextualFields = setContextualFields(rawPayload, message, params);
+    Object.assign(rawPayload, addedContextualFields);
   }
 
   rawPayload.gclid = getDestinationExternalID(message, 'googleAdsId');

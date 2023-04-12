@@ -7,12 +7,11 @@ const {
   defaultDeleteRequestConfig,
   checkSubsetOfArray,
   isDefinedAndNotNullAndNotEmpty,
-  getSuccessRespEvents,
-  getErrorRespEvents,
   returnArrayOfSubarrays,
   isDefinedAndNotNull,
   flattenMap,
-  handleRtTfSingleEventError,
+  simpleProcessRouterDest,
+  getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 
 const {
@@ -279,6 +278,7 @@ const processEvent = (message, destination) => {
   const respList = [];
   const toSendEvents = [];
   let wrappedResponse = {};
+
   let { userSchema } = destination.Config;
   const { isHashRequired, audienceId, maxUserCount } = destination.Config;
   if (!message.type) {
@@ -292,13 +292,16 @@ const processEvent = (message, destination) => {
   if (message.type.toLowerCase() !== 'audiencelist') {
     throw new InstrumentationError(` ${message.type} call is not supported `);
   }
-  const operationAudienceId = audienceId;
-
+  let operationAudienceId = audienceId;
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (!operationAudienceId && mappedToDestination) {
+    const { objectType } = getDestinationExternalIDInfoForRetl(message, 'FB_CUSTOM_AUDIENCE');
+    operationAudienceId = objectType;
+  }
   if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
     throw new ConfigurationError('Audience ID is a mandatory field');
   }
 
-  const mappedToDestination = get(message, MappedToDestinationKey);
   // If mapped to destination, use the mapped fields instead of destination userschema
   if (mappedToDestination) {
     userSchema = getSchemaForEventMappedToDest(message);
@@ -366,26 +369,8 @@ const processEvent = (message, destination) => {
 
 const process = (event) => processEvent(event.message, event.destination);
 
-const processRouterDest = (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
-  }
-  const respList = inputs.map((input) => {
-    try {
-      if (input.message.statusCode) {
-        // already transformed event
-        return getSuccessRespEvents(input.message, [input.metadata], input.destination);
-      }
-      const transformedList = process(input);
-      const responseList = transformedList.map((transformedPayload) =>
-        getSuccessRespEvents(transformedPayload, [input.metadata], input.destination),
-      );
-      return responseList;
-    } catch (error) {
-      return handleRtTfSingleEventError(input, error, reqMetadata);
-    }
-  });
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return flattenMap(respList);
 };
 

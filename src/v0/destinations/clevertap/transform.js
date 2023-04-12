@@ -79,7 +79,7 @@ const responseWrapper = (payload, destination) => {
  * @returns
  * return the final payload after converting to the relevant data-types.
  */
-const convertObjectAndArrayToString = (payload) => {
+const convertObjectAndArrayToString = (payload, event) => {
   const finalPayload = {};
   if (payload) {
     Object.keys(payload).forEach((key) => {
@@ -89,6 +89,15 @@ const convertObjectAndArrayToString = (payload) => {
         finalPayload[key] = payload[key];
       }
     });
+    if (event === 'Charged' && finalPayload.Items) {
+      finalPayload.Items = JSON.parse(finalPayload.Items);
+      if (
+        !Array.isArray(finalPayload.Items) ||
+        (Array.isArray(finalPayload.Items) && typeof finalPayload.Items[0] !== 'object')
+      ) {
+        throw new InstrumentationError('Products property value must be an array of objects');
+      }
+    }
   }
   return finalPayload;
 };
@@ -208,6 +217,14 @@ const getClevertapProfile = (message, category) => {
     CLEVERTAP_DEFAULT_EXCLUSION,
   );
   profile = convertObjectAndArrayToString(profile);
+
+  // Add additional properties being passed inside overrideFields in traits
+  // to be added to the profile object, to be sent into Clevertap profileData
+  if (message.traits?.overrideFields) {
+    const { overrideFields } = message.traits;
+    Object.assign(profile, overrideFields);
+  }
+
   return removeUndefinedAndNullValues(profile);
 };
 
@@ -292,7 +309,10 @@ const responseBuilderSimple = (message, category, destination) => {
     eventPayload.type = 'event';
     // stringify the evtData if it's an Object or array.
     if (eventPayload.evtData) {
-      eventPayload.evtData = convertObjectAndArrayToString(eventPayload.evtData);
+      eventPayload.evtData = convertObjectAndArrayToString(
+        eventPayload.evtData,
+        eventPayload.evtName,
+      );
     }
 
     // setting identification for tracking payload here based on destination config

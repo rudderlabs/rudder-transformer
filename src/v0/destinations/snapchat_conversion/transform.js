@@ -14,6 +14,7 @@ const {
   getValidDynamicFormConfig,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
+  batchMultiplexedEvents,
 } = require('../../util');
 const {
   ENDPOINT,
@@ -288,32 +289,6 @@ function process(event) {
   return response;
 }
 
-function batchEvents(eventsChunk) {
-  const batchedResponseList = [];
-
-  // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-  const arrayChunks = _.chunk(eventsChunk, MAX_BATCH_SIZE);
-
-  arrayChunks.forEach((chunk) => {
-    const batchEventResponse = generateBatchedPayloadForArray(chunk);
-    batchedResponseList.push(
-      getSuccessRespEvents(
-        batchEventResponse.batchedRequest,
-        batchEventResponse.metadata,
-        batchEventResponse.destination,
-        true,
-      ),
-    );
-  });
-
-  return batchedResponseList;
-}
-
-function getEventChunks(event, eventsChunk) {
-  // build eventsChunk of MAX_BATCH_SIZE
-  eventsChunk.push(event);
-}
-
 const processRouterDest = async (inputs, reqMetadata) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
@@ -324,35 +299,34 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const errorRespList = [];
   inputs.forEach((event) => {
     try {
-      if (event.message.statusCode) {
+      let resp = event.message;
+      if (!event.message.statusCode) {
         // already transformed event
-        getEventChunks(event, eventsChunk);
-      } else {
-        // if not transformed
-        let response = process(event);
-        response = Array.isArray(response) ? response : [response];
-        response.forEach((res) => {
-          getEventChunks(
-            {
-              message: res,
-              metadata: event.metadata,
-              destination: event.destination,
-            },
-            eventsChunk,
-          );
-        });
+        resp = process(event);
       }
+      eventsChunk.push({
+        message: Array.isArray(resp) ? resp : [resp],
+        metadata: event.metadata,
+        destination: event.destination,
+      });
     } catch (error) {
       const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
       errorRespList.push(errRespEvent);
     }
   });
 
-  let batchedResponseList = [];
+  const batchResponseList = [];
   if (eventsChunk.length > 0) {
-    batchedResponseList = batchEvents(eventsChunk);
+    const batchedEvents = batchMultiplexedEvents(eventsChunk, MAX_BATCH_SIZE);
+    batchedEvents.forEach((batch) => {
+      const batchedRequest = generateBatchedPayloadForArray(batch.events, batch.destination);
+      batchResponseList.push(
+        getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
+      );
+    });
   }
-  return [...batchedResponseList, ...errorRespList];
+
+  return [...batchResponseList, ...errorRespList];
 };
 
 module.exports = { process, processRouterDest };

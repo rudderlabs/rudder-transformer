@@ -2,6 +2,66 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.22.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.21.0...v1.22.0) (2023-04-10)
+
+
+### Features
+
+* add override support in clevertap ([#2043](https://github.com/rudderlabs/rudder-transformer/issues/2043)) ([addb9f9](https://github.com/rudderlabs/rudder-transformer/commit/addb9f90258233ed0c05583250b6d6e7ff56041c))
+* **clevertap:** ignore stringification for objects for Charged event ([#2041](https://github.com/rudderlabs/rudder-transformer/issues/2041)) ([fd3e4ea](https://github.com/rudderlabs/rudder-transformer/commit/fd3e4ea5297712011022ccaf4eb785b79c321b7d))
+* enhancement gaoc store conversion ([#1990](https://github.com/rudderlabs/rudder-transformer/issues/1990)) ([f90b16f](https://github.com/rudderlabs/rudder-transformer/commit/f90b16f8c827aa32fbe92e0fa053cc8212bad0a3))
+
+
+### Bug Fixes
+
+* batching with multiplexing ([#1926](https://github.com/rudderlabs/rudder-transformer/issues/1926)) ([e3fe5b5](https://github.com/rudderlabs/rudder-transformer/commit/e3fe5b520fa85849b0ef6148c2380afd8242eec6))
+
+## [1.21.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.20.2...v1.21.0) (2023-04-04)
+
+
+### Bug Fixes
+
+* add canonicals for adobe analytics ([#2033](https://github.com/rudderlabs/rudder-transformer/issues/2033)) ([a5ce9f4](https://github.com/rudderlabs/rudder-transformer/commit/a5ce9f4564c4635420d9027f2229c4c098a3d6ca))
+* **customerio:** group call filter logic ([#2027](https://github.com/rudderlabs/rudder-transformer/issues/2027)) ([196e501](https://github.com/rudderlabs/rudder-transformer/commit/196e501006a93fa164f7207253a1b20ffce2342e))
+* removed console ([#2034](https://github.com/rudderlabs/rudder-transformer/issues/2034)) ([a03f5cd](https://github.com/rudderlabs/rudder-transformer/commit/a03f5cd2d54d2e04634733911f31d9fecfd4dd69))
+
+
+### [1.20.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.20.1...v1.20.2) (2023-04-01)
+
+
+### Bug Fixes
+
+* add the missing git commit sha of the source to bugsnag ([#2030](https://github.com/rudderlabs/rudder-transformer/issues/2030)) ([65ccbdd](https://github.com/rudderlabs/rudder-transformer/commit/65ccbdd693b68c331e500a50f0019ea0a7e2a27c))
+
+
+### [1.20.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.20.0...v1.20.1) (2023-04-01)
+
+
+### Features
+
+* add audience id for retl sources from context ([#2025](https://github.com/rudderlabs/rudder-transformer/issues/2025)) ([40481a8](https://github.com/rudderlabs/rudder-transformer/commit/40481a83100ac40316fb5b3eb999464c5b927b4d))
+* add fb to transformer proxy ([#1900](https://github.com/rudderlabs/rudder-transformer/issues/1900)) ([7e6341f](https://github.com/rudderlabs/rudder-transformer/commit/7e6341f3d065aecefe3abe634cd3720cf426583a))
+
+
+### Bug Fixes
+
+* **customerio:** added validations to convert integer to string ([#2017](https://github.com/rudderlabs/rudder-transformer/issues/2017)) ([f50b128](https://github.com/rudderlabs/rudder-transformer/commit/f50b12845008fb6b7bfdc410cf9b43a246dc4ca3))
+* **customerio:** update logic of getting event name ([#2028](https://github.com/rudderlabs/rudder-transformer/issues/2028)) ([18e4a83](https://github.com/rudderlabs/rudder-transformer/commit/18e4a83a8d2da1146dc1b1f78cf710a200c30b92))
+
+
+## [1.20.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.19.0...v1.20.0) (2023-03-28)
+
+
+### Bug Fixes
+
+* **gainsignt_px:** undefined attributes issue ([#2010](https://github.com/rudderlabs/rudder-transformer/issues/2010)) ([bf56359](https://github.com/rudderlabs/rudder-transformer/commit/bf5635942a88a3afc25506ba6591bf6b844624f3))
+* **monday:**  axios call empty response issue ([#2001](https://github.com/rudderlabs/rudder-transformer/issues/2001)) ([196294f](https://github.com/rudderlabs/rudder-transformer/commit/196294f70bc967efea70aef084268db9c567417a))
+* **rockerbox:** make email as non-required field ([#1995](https://github.com/rudderlabs/rudder-transformer/issues/1995)) ([2f7ebff](https://github.com/rudderlabs/rudder-transformer/commit/2f7ebff62c8934165c1271a7c019c2b0b5b2a4b3))
+* **snapchat_conversion:** price calculation ([#1988](https://github.com/rudderlabs/rudder-transformer/issues/1988)) ([8240224](https://github.com/rudderlabs/rudder-transformer/commit/82402242a1ffe9ccc75671023cff1ebbbcb390e6))
+* **test-cases:** fix test cases to use template like secret keys ([#1973](https://github.com/rudderlabs/rudder-transformer/issues/1973)) ([f709d1f](https://github.com/rudderlabs/rudder-transformer/commit/f709d1fb9d1d22e306fc600872dd2b702436f961))
+* undefined columnToPropertyMapping config issue ([#1998](https://github.com/rudderlabs/rudder-transformer/issues/1998)) ([ef7a351](https://github.com/rudderlabs/rudder-transformer/commit/ef7a3511e26e652caa54fb600db01ebe6bd0cc3d))
+
+
 ## [1.19.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.18.0...v1.19.0) (2023-03-23)
 
 
@@ -16,6 +76,20 @@ All notable changes to this project will be documented in this file. See [standa
 * ga4 user_properties structure ([#1982](https://github.com/rudderlabs/rudder-transformer/issues/1982)) ([3d81202](https://github.com/rudderlabs/rudder-transformer/commit/3d81202fcd88b8033504e9f5aa5d095e6863dc76))
 * **GA4:** revert context.traits support for user_properties ([#1991](https://github.com/rudderlabs/rudder-transformer/issues/1991)) ([ae001dc](https://github.com/rudderlabs/rudder-transformer/commit/ae001dc7aafe8b33be696acac9fad3416b51f8e8))
 * revert context.traits support for user_properties ([4f51403](https://github.com/rudderlabs/rudder-transformer/commit/4f51403facdadfc2928f13159918bede3a5c073c))
+* tik-tok ads offline events email array issue ([#1979](https://github.com/rudderlabs/rudder-transformer/issues/1979)) ([3c7f4ac](https://github.com/rudderlabs/rudder-transformer/commit/3c7f4ac60ec564198f0bf0524a0780dfc581140a))
+
+## [1.18.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.17.0...v1.18.0) (2023-03-23)
+
+
+### Features
+
+* **indicative:** parse user agent info ([#1971](https://github.com/rudderlabs/rudder-transformer/issues/1971)) ([1328b5a](https://github.com/rudderlabs/rudder-transformer/commit/1328b5ac38f9d21def89bacbbca4891dbd6e4450))
+
+
+### Bug Fixes
+
+* changelog ([d8d81a2](https://github.com/rudderlabs/rudder-transformer/commit/d8d81a2d4ad428be2936932f22e63fd9007d9799))
+* ga4 user_properties structure ([#1982](https://github.com/rudderlabs/rudder-transformer/issues/1982)) ([3d81202](https://github.com/rudderlabs/rudder-transformer/commit/3d81202fcd88b8033504e9f5aa5d095e6863dc76))
 * tik-tok ads offline events email array issue ([#1979](https://github.com/rudderlabs/rudder-transformer/issues/1979)) ([3c7f4ac](https://github.com/rudderlabs/rudder-transformer/commit/3c7f4ac60ec564198f0bf0524a0780dfc581140a))
 
 ## [1.17.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.16.2...v1.17.0) (2023-03-21)

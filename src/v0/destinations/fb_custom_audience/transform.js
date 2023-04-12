@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const get = require('get-value');
 const {
   defaultRequestConfig,
@@ -56,7 +57,7 @@ const preparePayload = (
   disableFormat,
   skipVerify,
 ) => {
-  const prepareFinalPayload = paramsPayload;
+  const prepareFinalPayload = _.cloneDeep(paramsPayload);
   if (Array.isArray(userSchema)) {
     prepareFinalPayload.schema = userSchema;
   } else {
@@ -123,11 +124,12 @@ const prepareResponse = (
     disableFormat,
     skipVerify,
   );
+  // paramsPayload.schema = userSchema;
   const respList = [];
   payloadBatches.forEach((payloadBatch) => {
     const response = {
       ...prepareParams,
-      payload: payloadBatch,
+      payload: payloadBatch ,
     };
     respList.push(response);
   });

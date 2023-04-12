@@ -36,13 +36,9 @@ const batchingWithPayloadSize = (payload) => {
         const noOfBatches = Math.ceil(payloadSize / maxPayloadSize);
         const revisedRecordsPerPayload = Math.floor(payload.data.length / noOfBatches);
         const revisedDataArray = returnArrayOfSubarrays(payload.data, revisedRecordsPerPayload);
-        const { schema } = payload;
+        // const { schema } = payload;
         revisedDataArray.forEach((data) => {
-            const revisedPayload = {
-                schema,
-                data
-            };
-            revisedPayloadArray.push({ ...payload, payload: revisedPayload });
+            revisedPayloadArray.push({ ...payload, data});
         });
         return revisedPayloadArray;
     }

@@ -131,28 +131,6 @@ const processEvent = async (inputEvent, metricMetadata) => {
     case ECOM_TOPICS.CHECKOUTS_UPDATE:
       message = ecomPayloadBuilder(event, shopifyTopic);
       break;
-    // case 'carts_create':
-    // case 'carts_update':
-    //   /**
-    //    *  This Scenario handles the case same cart_Events are passed or
-    //    * cart events are passed within a specified time period for when useRedisDatabase is set to true
-    //    */
-    //   // eslint-disable-next-line no-case-declarations
-    //   if (useRedisDatabase) {
-    //     const duplicateRecord = await checkForValidRecord(inputEvent, metricMetadata);
-    //     if (!duplicateRecord) {
-    //       const result = {
-    //         outputToSource: {
-    //           body: Buffer.from('OK').toString('base64'),
-    //           contentType: 'text/plain',
-    //         },
-    //         statusCode: 200,
-    //       };
-    //       return result;
-    //     }
-    //   }
-    //   message = trackPayloadBuilder(event, shopifyTopic);
-    //   break;
     default:
       if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
         throw new TransformationError(`event type ${shopifyTopic} not supported`);

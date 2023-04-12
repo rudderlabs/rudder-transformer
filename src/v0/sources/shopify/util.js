@@ -1,5 +1,4 @@
 /* eslint-disable camelcase */
-const _ = require('lodash');
 const sha256 = require('sha256');
 const stats = require('../../../util/stats');
 const { constructPayload, extractCustomFields, flattenJson, generateUUID, isDefinedAndNotNull } = require('../../util');
@@ -13,7 +12,6 @@ const {
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   RUDDER_ECOM_MAP,
   SHOPIFY_TRACK_MAP,
-  timeDifferenceForCartEvents,
   ANONYMOUSID_CACHE_TTL
 } = require('./config');
 
@@ -193,129 +191,11 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
   message.setProperty('anonymousId', anonymousIDfromDB);
 };
 
-/**
- * It compares the line items element wise and checks the properties parameter for every element
- * as for duplicate ones it may be same.
- * It returns true if every item matches.
- * Example:
- * Input :
- * prevLineItems: [
- * {...,
- * properties:null,
- * ...
- * },
- * {...,
- * properties:null,
- * ...
- * }]
- *
- * newLineItems: [
- * {...,
- * properties:{},
- * ...
- * },
- * {...,
- * properties:{},
- * ...
- * }]
- *
- * This above example can shwo you the need of this function
- * that is to check for properties parameter as
- * in some cases it is {} and in others as null
- * which makes it difficult to comapre the json
- * @param {*} prevLineItems
- * @param {*} newLineItems
- * @returns
- */
-// https://shopify.dev/docs/api/liquid/objects/line_item#line_item-properties
-const isContainingSameLineItems = (prevLineItems, newLineItems) => {
-  let noOfItems = prevLineItems.length;
-  while (noOfItems > 0) {
-    const modifiedPrev = _.cloneDeep(prevLineItems[noOfItems - 1]);
-    const modifiedNew = _.cloneDeep(newLineItems[noOfItems - 1]);
-    if (modifiedPrev?.properties === null) {
-      modifiedPrev.properties = {};
-    }
-    if (modifiedNew?.properties === null) {
-      modifiedNew.properties = {};
-    }
-    if (JSON.stringify(modifiedPrev) !== JSON.stringify(modifiedNew)) {
-      return false;
-    }
-    noOfItems -= 1;
-  }
-  return true;
-};
-
-/**
- * This function returns true if payloads are same or Timestamp difference is less than `timeDifferenceForCartEvents` seconds otherwise false
- * @param {*} prevPayload
- * @param {*} newPayload
- */
-const isDuplicateCartPayload = (prevPayload, newPayload) => {
-  // The cart?.items.length param is in the case when rudder identifier is stored in the database
-  const prevPayloadLineItemsLength = prevPayload?.line_items ? prevPayload.line_items.length : prevPayload?.items.length
-  const newPayloadLineItemsLength = newPayload.line_items?.length || newPayload.cart?.items.length
-  if (prevPayloadLineItemsLength !== newPayloadLineItemsLength) {
-    return false;
-  }
-  if (
-    Date.parse(newPayload.updated_at) - Date.parse(prevPayload.updated_at) <
-    timeDifferenceForCartEvents ||
-    newPayloadLineItemsLength === 0 ||
-    isContainingSameLineItems(prevPayload.line_items, newPayload.line_items)
-  ) {
-    return true;
-  }
-  return false;
-};
-
-/**
- * This Function will check for cart duplication events
- * @param {*} event
- */
-const checkForValidRecord = async (newCart, metricMetadata) => {
-  const cartToken = newCart.cart_token || newCart.token;
-  const executeStartTime = Date.now();
-  const redisVal = await RedisDB.getVal(`${cartToken}`);
-  stats.timing('redis_get_latency', executeStartTime, {
-    ...metricMetadata,
-  });
-  stats.increment('shopify_redis_get_data', {
-    ...metricMetadata,
-    timestamp: Date.now(),
-  });
-
-  const oldCart = redisVal?.cart;
-  const anonymousId = redisVal?.anonymousId;
-  await anonymousIdCache.get(cartToken, () => anonymousId); // set anonymousId in cache with cartToken
-  if (!oldCart) {
-    // this is the case for events for which we don't have the values store in redis but are valid events. 
-    // This can be removed afterwards as it is more on backward compatibility side
-
-    return true;
-  }
-  if (isDefinedAndNotNull(oldCart) && isDuplicateCartPayload(oldCart, newCart)) {
-    return false;
-  }
-  const setStartTime = Date.now();
-  await RedisDB.setVal(`${cartToken}`, { anonymousId, cart: newCart });
-  stats.timing('redis_set_latency', setStartTime, {
-    ...metricMetadata,
-  });
-  stats.increment('shopify_redis_update_cart', {
-    ...metricMetadata,
-    timestamp: Date.now(),
-  });
-  return true;
-};
-
 module.exports = {
   getShopifyTopic,
   getProductsListFromLineItems,
   createPropertiesForEcomEvent,
   extractEmailFromPayload,
   setAnonymousIdorUserIdFromDb,
-  checkForValidRecord,
   setAnonymousId,
 };

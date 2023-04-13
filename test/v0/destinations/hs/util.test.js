@@ -24,6 +24,13 @@ describe("Validate payload data types utility function test cases", () => {
         ).toEqual(expectedOutput);
     });
 
+    it("Should convert payload data type and return it", () => {
+        const expectedOutput = "45"
+        expect(
+            validatePayloadDataTypes(propertyMap,'city',45,'city')
+        ).toEqual(expectedOutput);
+    });
+
     it("Should throw an error as data type is not matching with hubspot data type", () => {
         const expectedOutput = "Property userAge data type string is not matching with Hubspot property data type number";
         try {

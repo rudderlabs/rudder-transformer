@@ -41,7 +41,7 @@ const responseBuilder = (message, destination, accessToken) => {
   let finalAudienceId = audienceId;
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (!finalAudienceId && mappedToDestination) {
-    const { objectType } = getDestinationExternalIDInfoForRetl(message, 'FB_CUSTOM_AUDIENCE');
+    const { objectType } = getDestinationExternalIDInfoForRetl(message, 'CRITEO_AUDIENCE');
     finalAudienceId = objectType;
   }
   operation.forEach((op) => {

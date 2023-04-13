@@ -365,7 +365,7 @@
     ]
   },
   {
-    "description": "Track call with email parameter as array",
+    "description": "Track call with email and phone number parameter as an array",
     "input": {
       "destination": {
         "Config": {
@@ -388,7 +388,10 @@
             "efaaf5c8803af4fbf305d7a110c832673d89ed40983770329092fd04b0ba7900",
             "078d6c8e19f24093368d1712d7801970467f59216f7ccc087bf81b91e0e1f68f"
           ],
-          "phone": "c4994d14e724936f1169147dddf1673a09af69b55cc54bc695dbe246bd093b05"
+          "phone": [
+            "c4994d14e724936f1169147dddf1673a09af69b55cc54bc695dbe246bd093b05",
+            "078d6c8e19f24093368d1712d7801970467f59216f7ccc087bf81b91e0e1f68f"
+          ]
         },
         "userId": "60241286212",
         "channel": "sources",
@@ -432,7 +435,8 @@
                   "77b639edeb3cd6c801ea05176b8acbfa38d5f38490b764cd0c80756d0cf9ec68"
                 ],
                 "phone_numbers": [
-                  "28b7b205c2936d2ded022d2587fb2677a76e560e921b3ad615b739b0238baa5d"
+                  "28b7b205c2936d2ded022d2587fb2677a76e560e921b3ad615b739b0238baa5d",
+                  "77b639edeb3cd6c801ea05176b8acbfa38d5f38490b764cd0c80756d0cf9ec68"
                 ]
               }
             },

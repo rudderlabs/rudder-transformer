@@ -1,0 +1,156 @@
+{
+  "input": [
+    {
+      "message": {
+        "anonymousId": "2073230",
+        "event": "Test",
+        "messageId": "e3a51e9a-6313-4389-ae73-07e487c8d9d0",
+        "originalTimestamp": "2022-12-23T00:29:12.117+05:30",
+        "properties": {
+          "customerId": 2564871,
+          "enquiryId": 8375119,
+          "floodlightActivityId": 13333100,
+          "floodlightConfigurationId": 11309106,
+          "gclid": "Cj0KCQjwuaiXBhCCARIsAKZLt3lZkwTjhxZZr55dAuDopMXmAvbVb0lNvZ-4wV5PMBdLO29e6CNx2zgaAo-XEALw_wcB",
+          "marketplaceEnquiryId": 2073230,
+          "ordinal": 1,
+          "requestType": "batchinsert",
+          "revenue": 225,
+          "surrogate_key": 77,
+          "timestampMicros": 1659543599775690,
+          "updatedDate": "2022-09-28",
+          "updatedTimestamp": "2022-09-28T15:05:01.816000000",
+          "vrm": "Y90SAN"
+        },
+        "receivedAt": "2022-12-23T00:29:10.189+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "c6bac0d9-5ed4-45d8-a937-bf9e62060b78",
+        "sentAt": "2022-12-23T00:29:12.117+05:30",
+        "timestamp": "2022-12-23T00:29:10.188+05:30",
+        "type": "track",
+        "userId": "2564871"
+      },
+      "metadata": {
+        "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+        "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+        "namespace": "",
+        "instanceId": "1",
+        "sourceType": "HTTP",
+        "sourceCategory": "",
+        "trackingPlanId": "",
+        "trackingPlanVersion": 0,
+        "sourceTpConfig": null,
+        "mergedTpConfig": null,
+        "destinationId": "2JH9GMQf2YFJFaTw7rz1pxHAJPx",
+        "jobRunId": "",
+        "jobId": 1,
+        "sourceBatchId": "",
+        "sourceJobId": "",
+        "sourceJobRunId": "",
+        "sourceTaskId": "",
+        "sourceTaskRunId": "",
+        "recordId": null,
+        "destinationType": "WEBHOOK",
+        "messageId": "e3a51e9a-6313-4389-ae73-07e487c8d9d0",
+        "oauthAccessToken": "",
+        "messageIds": null,
+        "rudderId": "<<>>2073230<<>>2564871",
+        "receivedAt": "2022-12-23T00:29:10.189+05:30",
+        "eventName": "Test",
+        "eventType": "track",
+        "sourceDefinitionId": "1b6gJdqOPOCadT3cddw8eidV591",
+        "destinationDefinitionId": ""
+      },
+      "destination": {
+        "ID": "2JH9GMQf2YFJFaTw7rz1pxHAJPx",
+        "Name": "webhook-test",
+        "DestinationDefinition": {
+          "ID": "1aIXpUrvpGno4gEuF2GvI3O9dOe",
+          "Name": "WEBHOOK",
+          "DisplayName": "Webhook",
+          "Config": {
+            "destConfig": {
+              "defaultConfig": ["webhookUrl", "webhookMethod", "headers"]
+            },
+            "excludeKeys": [],
+            "includeKeys": [],
+            "saveDestinationResponse": false,
+            "secretKeys": ["headers.to"],
+            "supportedSourceTypes": [
+              "android",
+              "ios",
+              "web",
+              "unity",
+              "amp",
+              "cloud",
+              "warehouse",
+              "reactnative",
+              "flutter",
+              "cordova"
+            ],
+            "transformAt": "processor",
+            "transformAtV1": "processor"
+          },
+          "ResponseRules": null
+        },
+        "Config": {
+          "webhookMethod": "POST",
+          "webhookUrl": null
+        },
+        "Enabled": true,
+        "WorkspaceID": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+        "Transformations": [],
+        "IsProcessorEnabled": true,
+        "RevisionID": "2JH9GPhsOmjedvAItklihnpBg6o"
+      },
+      "libraries": null
+    }
+  ],
+  "output": [
+    {
+      "metadata": {
+        "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+        "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+        "namespace": "",
+        "instanceId": "1",
+        "sourceType": "HTTP",
+        "sourceCategory": "",
+        "trackingPlanId": "",
+        "trackingPlanVersion": 0,
+        "sourceTpConfig": null,
+        "mergedTpConfig": null,
+        "destinationId": "2JH9GMQf2YFJFaTw7rz1pxHAJPx",
+        "jobRunId": "",
+        "jobId": 1,
+        "sourceBatchId": "",
+        "sourceJobId": "",
+        "sourceJobRunId": "",
+        "sourceTaskId": "",
+        "sourceTaskRunId": "",
+        "recordId": null,
+        "destinationType": "WEBHOOK",
+        "messageId": "e3a51e9a-6313-4389-ae73-07e487c8d9d0",
+        "oauthAccessToken": "",
+        "messageIds": null,
+        "rudderId": "<<>>2073230<<>>2564871",
+        "receivedAt": "2022-12-23T00:29:10.189+05:30",
+        "eventName": "Test",
+        "eventType": "track",
+        "sourceDefinitionId": "1b6gJdqOPOCadT3cddw8eidV591",
+        "destinationDefinitionId": ""
+      },
+      "statusCode": 400,
+      "error": "Invalid URL in destination config",
+      "statTags": {
+        "errorCategory": "dataValidation",
+        "errorType": "configuration",
+        "destType": "WEBHOOK",
+        "module": "destination",
+        "implementation": "native",
+        "feature": "processor",
+        "destinationId": "2JH9GMQf2YFJFaTw7rz1pxHAJPx",
+        "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
+      }
+    }
+  ]
+}

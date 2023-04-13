@@ -1,6 +1,14 @@
-const KoaRouter = require('@koa/router');
+/**
+ * --------------------------------------
+ * --------------------------------------
+ * ---------TO BE DEPRICIATED------------
+ * --------------------------------------
+ * --------------------------------------
+ */
+
 const path = require('path');
-const { DestProxyController } = require('../controllers/destinationProxy');
+const KoaRouter = require('@koa/router');
+const { DestProxyController } = require('../controllers/obs.delivery');
 const { getIntegrations } = require('./utils');
 const { SUPPORTED_VERSIONS, API_VERSION } = require('./utils/constants');
 

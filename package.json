@@ -14,6 +14,9 @@
   "author": "",
   "main": "GATransform.js",
   "scripts": {
+    "build-ts": "tsc -p tsconfig.json",
+    "copy": "find ./src -name '*.yaml' -o -name '*csv' | cpio -pdm ./dist  ",
+    "clean": "rm -rf ./dist",
     "setup": "npm ci",
     "format": "prettier --write .",
     "lint": "eslint . || exit 0",
@@ -21,7 +24,10 @@
     "lint:check": "eslint --ext .js,.json . --fix; exit 0",
     "lint:fix:json": "eslint --ext .json --fix .",
     "check:merge": "npm run verify || exit 1; codecov",
-    "start": "node src/index.js",
+    "start": "node ./dist/src/index.js",
+    "build:start": "npm run build && npm run start",
+    "build": "npm run build-ts && npm run copy",
+    "build:clean": "npm run clean && npm run build",
     "test:versionedRouter:all": "jest versionedRouter --type=all --detectOpenHandles --coverage --notify --watchAll=false",
     "test:versionedRouter": "jest versionedRouter --destName=heap --type=all --notify --detectOpenHandles --coverage --watchAll=false",
     "verify": "eslint . || exit 1; npm run test || exit 1",
@@ -30,7 +36,7 @@
     "test:ci": "jest --detectOpenHandles --coverage --notify --expand --silent --watchAll=false --maxWorkers=2",
     "test:silent": "npm run test -- --silent",
     "test:benchmark": "node benchmark/index.js",
-    "test:integration": "jest -c jest.config.integration.js",
+    "test:integration": "jest -c jest.config.integration.js --detectOpenHandles",
     "pre-commit": "npm run test:silent && npx lint-staged",
     "commit-msg": "commitlint --edit",
     "prepare": "husky install",
@@ -97,6 +103,7 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^17.4.4",
     "@digitalroute/cz-conventional-changelog-for-jira": "^8.0.0",
+    "@types/jest": "^29.5.0",
     "acorn": "^8.8.2",
     "benchmark-suite": "^0.1.8",
     "commander": "^10.0.0",
@@ -114,6 +121,7 @@
     "eslint-plugin-react": "^7.32.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-unicorn": "^46.0.0",
+    "http-terminator": "^3.2.0",
     "husky": "^8.0.3",
     "jest": "^29.5.0",
     "jest-date-mock": "^1.0.8",
@@ -125,7 +133,9 @@
     "pre-commit": "^1.2.2",
     "prettier": "^2.8.6",
     "standard-version": "^9.5.0",
-    "supertest": "^6.3.3"
+    "supertest": "^6.3.3",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.3"
   },
   "lint-staged": {
     "*.{js,ts}": "eslint --fix",

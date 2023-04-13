@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.22.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.22.1...v1.22.2) (2023-04-13)
+
+
+### Bug Fixes
+
+* update workflow file ([a3cccad](https://github.com/rudderlabs/rudder-transformer/commit/a3cccad7c1d0cdb5ea3dfb128bbade42d80039f8))
+
 ### [1.22.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.22.0...v1.22.1) (2023-04-12)
 
 

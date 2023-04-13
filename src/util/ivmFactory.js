@@ -17,6 +17,8 @@ async function evaluateModule(isolate, context, moduleCode) {
   return true;
 }
 
+const delayInMs = async (ms = 2000) => new Promise((resolve) => setTimeout(resolve, ms));
+
 async function loadModule(isolateInternal, contextInternal, moduleCode) {
   const module = await isolateInternal.compileModule(moduleCode);
   await module.instantiate(contextInternal, () => {});
@@ -220,6 +222,14 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
     }
   });
 
+  await jail.set(
+    '_sleep',
+    new ivm.Reference(async (resolve, ...args) => {
+      await delayInMs(...args);
+      resolve.applyIgnored(undefined, [new ivm.ExternalCopy('').copyInto()]);
+    }),
+  );
+
   const bootstrap = await isolate.compileScript(
     'new ' +
       `
@@ -266,6 +276,17 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
           ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
         ]);
       };
+
+      let sleep = _sleep;
+      delete _sleep;
+      global.sleep = function(...args) {
+        return new Promise((resolve) => {
+          sleep.applyIgnored(undefined, [
+            new ivm.Reference(resolve),
+            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+          ]);
+        });
+      }
 
       return new ivm.Reference(function forwardMainPromise(
         fnRef,

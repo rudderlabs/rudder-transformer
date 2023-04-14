@@ -29,7 +29,7 @@
           },
           "custom_data": {
             "currency": "USD",
-            "value": 27.5,
+            "value": "27.5",
             "order_id": "50314b8e9bcf000000000000",
             "num_items": 3,
             "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
@@ -78,7 +78,7 @@
           },
           "custom_data": {
             "currency": "USD",
-            "value": 27.5,
+            "value": "27.5",
             "order_id": "50314b8e9bcf000000000000",
             "num_items": 3,
             "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
@@ -127,7 +127,7 @@
           },
           "custom_data": {
             "currency": "USD",
-            "value": 27.5,
+            "value": "27.5",
             "order_id": "50314b8e9bcf000000000000",
             "num_items": 2,
             "content_ids": ["123"],
@@ -193,7 +193,7 @@
           },
           "custom_data": {
             "currency": "USD",
-            "value": 27.5,
+            "value": "27.5",
             "num_items": 2,
             "order_id": "50314b8e9bcf000000000000",
             "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
@@ -272,7 +272,7 @@
           },
           "custom_data": {
             "currency": "USD",
-            "value": 27.5,
+            "value": "27.5",
             "num_items": 2,
             "order_id": "50314b8e9bcf000000000000",
             "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],

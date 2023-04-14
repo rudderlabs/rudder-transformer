@@ -111,9 +111,9 @@ steps:
         template: |
           const customFields = .message.().({
             "currency": .properties.currency,
-            "value": .properties.value ?? 
+            "value": String(.properties.value ?? 
                      .properties.total ?? 
-                     .properties.revenue,
+                     .properties.revenue),
             "num_items": .properties.numOfItems && Number(.properties.numOfItems),
             "order_id": .properties.order_id,
             "search_string": .properties.query,

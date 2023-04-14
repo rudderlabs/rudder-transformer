@@ -70,7 +70,7 @@
     "ioredis": "^5.3.1",
     "is": "^3.3.0",
     "is-ip": "^3.1.0",
-    "isolated-vm": "4.4.2",
+    "isolated-vm": "4.5.0",
     "js-sha1": "^0.6.0",
     "json-diff": "^1.0.3",
     "json-query": "^2.2.2",

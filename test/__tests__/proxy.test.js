@@ -10,6 +10,7 @@ const destinations = [
   "google_adwords_remarketing_lists",
   "google_adwords_enhanced_conversions",
   "facebook_pixel",
+  "fb",
   "snapchat_custom_audience",
   "clevertap",
   "salesforce",

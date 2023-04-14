@@ -1,0 +1,117 @@
+{
+    "https://googleads.googleapis.com/v13/customers/11122233331/offlineUserDataJobs:create": {
+        "data": {
+            "resourceName": "customers/111-222-3333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID_FOR_ADD_FAILURE"
+        },
+        "status": 200
+    },
+    "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs:create": {
+        "data": {
+            "resourceName": "customers/111-222-3333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID"
+        },
+        "status": 200
+    },
+    "https://googleads.googleapis.com/v13/customers/customerid/offlineUserDataJobs:create": {
+        "status": 401,
+        "data": {
+            "error": {
+                "code": 401,
+                "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+                "status": "UNAUTHENTICATED"
+            }
+        }
+    },
+    "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:addOperations": {
+        "status": 200,
+        "data": {}
+    },
+    "https://googleads.googleapis.com/v13/customers/11122233331/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID_FOR_ADD_FAILURE:addOperations": {
+        "status": 400,
+        "data": {
+            "error": {
+                "code": 400,
+                "message": "Request contains an invalid argument.",
+                "status": "INVALID_ARGUMENT",
+                "details": [
+                    {
+                        "@type": "type.googleapis.com/google.ads.googleads.v13.errors.GoogleAdsFailure",
+                        "errors": [
+                            {
+                                "errorCode": {
+                                    "offlineUserDataJobError": "INVALID_SHA256_FORMAT"
+                                },
+                                "message": "The SHA256 encoded value is malformed.",
+                                "location": {
+                                    "fieldPathElements": [
+                                        {
+                                            "fieldName": "operations",
+                                            "index": 0
+                                        },
+                                        {
+                                            "fieldName": "create"
+                                        },
+                                        {
+                                            "fieldName": "user_identifiers",
+                                            "index": 0
+                                        },
+                                        {
+                                            "fieldName": "hashed_email"
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "requestId": "68697987"
+                    }
+                ]
+            }
+        }
+    },
+    "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID:run": {
+        "status": 200,
+        "data": {
+            "name": "customers/111-222-3333/operations/abcd="
+        }
+    },
+    "https://googleads.googleapis.com/v13/customers/customerid/offlineUserDataJobs/OFFLINE_USER_DATA_JOB_ID_ADD_FAILURE:addOperations": {
+        "status": 400,
+        "data": {
+            "error": {
+                "code": 400,
+                "message": "Request contains an invalid argument.",
+                "status": "INVALID_ARGUMENT",
+                "details": [
+                    {
+                        "@type": "type.googleapis.com/google.ads.googleads.v13.errors.GoogleAdsFailure",
+                        "errors": [
+                            {
+                                "errorCode": {
+                                    "dateError": "INVALID_STRING_DATE_TIME_SECONDS"
+                                },
+                                "message": "2023-02-01 14:34:30z",
+                                "location": {
+                                    "fieldPathElements": [
+                                        {
+                                            "fieldName": "operations",
+                                            "index": 0
+                                        },
+                                        {
+                                            "fieldName": "create"
+                                        },
+                                        {
+                                            "fieldName": "transaction_attribute"
+                                        },
+                                        {
+                                            "fieldName": "transaction_date_time"
+                                        }
+                                    ]
+                                }
+                            }
+                        ],
+                        "requestId": "u8e0bxqa8yeFHxzywdRQWA"
+                    }
+                ]
+            }
+        }
+    }
+}

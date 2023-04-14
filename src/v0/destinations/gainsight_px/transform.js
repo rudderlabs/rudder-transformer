@@ -235,13 +235,13 @@ const trackResponseBuilder = (message, { Config }) => {
     globalContext = getHashFromArray(Config.globalContextMap, 'from', 'to', false);
   }
 
-  if (payload.attributes && payload.attributes.globalContext) {
+  if (payload.attributes?.globalContext) {
     delete payload.attributes.globalContext;
   }
 
   payload = {
     ...payload,
-    attributes: formatEventProps(payload.attributes),
+    attributes: payload.attributes ? formatEventProps(payload.attributes) : {},
     propertyKey: Config.productTagKey,
     userType: 'USER',
     globalContext: !isEmptyObject(globalContext) ? globalContext : null,

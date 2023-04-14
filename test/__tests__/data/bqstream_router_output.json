@@ -31,7 +31,7 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "rudderAccountId": "1z8LpaSAuFR9TPWL6fECZfjmRa-",
+        "rudderAccountId": "rudder-acc-id",
         "projectId": "gc-project-id",
         "datasetId": "gc_dataset",
         "tableId": "gc_table",

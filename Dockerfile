@@ -19,11 +19,13 @@ ENV git_commit_sha=$GIT_COMMIT_SHA
 
 # Create app directory
 WORKDIR /home/node/app
-ADD . .
 RUN chown -R node:node /home/node/app
 USER node
 
-RUN npm ci
+COPY package*.json ./
+RUN npm set progress=false
+RUN npm ci --no-audit --cache .npm
+COPY --chown=node:node . .
 RUN npm run build:ci -- --sourceMap false
 RUN npm run copy
 

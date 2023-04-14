@@ -24,8 +24,8 @@ const { processDynamicConfig } = require('./util/dynamicConfig');
 const { DestHandlerMap } = require('./constants/destinationCanonicalNames');
 const { userTransformHandler } = require('./routerUtils');
 const networkHandlerFactory = require('./adapters/networkHandlerFactory');
-const profilingRouter = require('./routes/profiling');
-const destProxyRoutes = require('./routes/destinationProxy');
+const profilingRouter = require('./routes/obs.profiling');
+const destProxyRoutes = require('./routes/obs.delivery');
 const eventValidator = require('./util/eventValidation');
 const { getIntegrations } = require('./routes/utils');
 const { setupUserTransformHandler, validateCode } = require('./util/customTransformer');
@@ -636,6 +636,7 @@ if (startDestTransformer) {
       }
     });
 
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     router.post('/customTransform', async (ctx) => {
       const startTime = new Date();
       const events = ctx.request.body;
@@ -1080,7 +1081,7 @@ router.get('/health', (ctx) => {
 });
 
 router.get('/features', (ctx) => {
-  const obj = JSON.parse(fs.readFileSync('features.json', 'utf8'));
+  const obj = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../features.json'), 'utf8'));
   ctx.body = JSON.stringify(obj);
 });
 

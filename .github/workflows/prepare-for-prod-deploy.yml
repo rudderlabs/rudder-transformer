@@ -63,6 +63,7 @@ jobs:
         with:
           context: .
           file: Dockerfile
+          target: development
           load: true
           tags: |
             ${{ env.REPO_NAME }}:${{ steps.gen_tag_name.outputs.tag_name }}
@@ -72,6 +73,7 @@ jobs:
       - name: Run Tests
         run: |
           docker run ${{ env.REPO_NAME }}:${{ steps.gen_tag_name.outputs.tag_name }} npm run test:ci
+          docker run ${{ env.REPO_NAME }}:${{ steps.gen_tag_name.outputs.tag_name }} npm run test:development
 
       - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v4.0.0
@@ -143,6 +145,7 @@ jobs:
         with:
           context: .
           file: Dockerfile-ut-func
+          target: development
           load: true
           tags: |
             ${{ env.REPO_NAME }}:${{ steps.gen_tag_name.outputs.tag_name }}
@@ -158,6 +161,7 @@ jobs:
         with:
           context: .
           file: Dockerfile-ut-func
+          target: development
           push: true
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ steps.gen_tag_name.outputs.tag_name }}

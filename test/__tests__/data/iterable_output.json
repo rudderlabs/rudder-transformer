@@ -1018,5 +1018,55 @@
       "FORM": {}
     },
     "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.iterable.com/api/commerce/trackPurchase",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "dataFields": {
+          "product_id": 1234,
+          "name": "Shoes",
+          "price": 45,
+          "quantity": 1,
+          "orderId": 10000,
+          "total": "1000",
+          "campaignId": "123456",
+          "templateId": "1213458"
+        },
+        "id": "10000",
+        "createdAt": 1571051718299,
+        "campaignId": 123456,
+        "templateId": 1213458,
+        "total": 1000,
+        "user": {
+          "email": "sayan@gmail.com",
+          "dataFields": {
+            "email": "sayan@gmail.com"
+          },
+          "userId": "12345",
+          "preferUserId": true,
+          "mergeNestedObjects": true
+        },
+        "items": [
+          {
+            "id": 1234,
+            "name": "Shoes",
+            "price": 45,
+            "quantity": 1
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

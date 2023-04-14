@@ -39,6 +39,43 @@ const getAuthErrCategory = (status) => {
   return '';
 };
 
+const createJob = async (endpoint, headers, payload) => {
+  const endPoint = `${endpoint}:create`
+  let createJobResponse = await httpPOST(endPoint, payload, { headers });
+  createJobResponse = processAxiosResponse(createJobResponse);
+  const { response, status } = createJobResponse;
+  if (!isHttpStatusSuccess(status)) {
+    throw new AbortedError(
+      `[Google Ads Offline Conversions]:: ${response?.error?.message} during google_ads_offline_store_conversions Job Creation`,
+      status,
+      response,
+      getAuthErrCategory(status),
+    );
+  }
+  return response.resourceName.split('/')[3];
+};
+
+const addConversionToJob = async (endpoint, headers, jobId, payload) => {
+  const endPoint = `${endpoint}/${jobId}:addOperations`
+  let addConversionToJobResponse = await httpPOST(endPoint, payload, { headers });
+  addConversionToJobResponse = processAxiosResponse(addConversionToJobResponse);
+  if (!isHttpStatusSuccess(addConversionToJobResponse.status)) {
+    throw new AbortedError(
+      `[Google Ads Offline Conversions]:: ${addConversionToJobResponse.response?.error?.message} during google_ads_offline_store_conversions Add Conversion`,
+      addConversionToJobResponse.status,
+      addConversionToJobResponse.response,
+      getAuthErrCategory(get(addConversionToJobResponse, 'status')),
+    );
+  }
+  return true;
+}
+
+const runTheJob = async (endpoint, headers, payload, jobId) => {
+  const endPoint = `${endpoint}/${jobId}:run`;
+  const executeJobResponse = await httpPOST(endPoint, payload, { headers });
+  return executeJobResponse;
+}
+
 /**
  * get all the custom variable for a customerID i.e created
  * in Google Ads using searchStream endpoint
@@ -118,11 +155,24 @@ const getConversionCustomVariableHashMap = (arrays) => {
 const ProxyRequest = async (request) => {
   const { method, endpoint, headers, params, body } = request;
 
+  if (body.JSON?.isStoreConversion) {
+    const firstResponse = await createJob(endpoint, headers, body.JSON.createJobPayload);
+    const addPayload = body.JSON.addConversionPayload;
+    // Mapping Conversion Action
+    const conversionId = await getConversionActionId(headers, params);
+    set(addPayload, 'operations.create.transaction_attribute.conversion_action', conversionId)
+    await addConversionToJob(endpoint, headers, firstResponse, addPayload);
+    // console.log(JSON.stringify(secondResponse.response.response));
+    const thirdResponse = await runTheJob(endpoint, headers, body.JSON.executeJobPayload, firstResponse);
+    return thirdResponse;
+  }
   // fetch conversionAction
   // httpPOST -> axios.post()
-  const conversionActionId = await getConversionActionId(headers, params);
-  set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
-
+  if (params?.event) {
+    const conversionActionId = await getConversionActionId(headers, params);
+    set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
+  }
+  // customVariables would be undefined in case of Store Conversions
   if (isDefinedAndNotNullAndNotEmpty(params.customVariables)) {
     // fetch all conversion custom variable in google ads
     let conversionCustomVariable = await getConversionCustomVariable(headers, params);

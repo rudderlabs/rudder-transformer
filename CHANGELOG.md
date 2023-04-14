@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.22.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.22.1...v1.22.2) (2023-04-13)
+
+
+### Bug Fixes
+
+* update workflow file ([a3cccad](https://github.com/rudderlabs/rudder-transformer/commit/a3cccad7c1d0cdb5ea3dfb128bbade42d80039f8))
+
+### [1.22.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.22.0...v1.22.1) (2023-04-12)
+
+
+### Bug Fixes
+
+* allow event names without forced lowercasing, disable lowercasing ([#2050](https://github.com/rudderlabs/rudder-transformer/issues/2050)) ([02382c5](https://github.com/rudderlabs/rudder-transformer/commit/02382c5f6c02511928e25264ed6472ec3e2b0566))
+* **drip:** datatype and character limit check ([#2045](https://github.com/rudderlabs/rudder-transformer/issues/2045)) ([15889ce](https://github.com/rudderlabs/rudder-transformer/commit/15889ce0929c0369c639e877bca9a668ed153aae))
+
 ## [1.22.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.21.0...v1.22.0) (2023-04-10)
 
 

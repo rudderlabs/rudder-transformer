@@ -40,13 +40,24 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2.5.0
+
       - name: Login to DockerHub
         uses: docker/login-action@v2.1.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
-      - name: Build Docker Image
+      - name: Cache Docker Layers
+        uses: actions/cache@v3.3.1
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build Docker Image for Tests
         uses: docker/build-push-action@v4.0.0
         with:
           context: .
@@ -61,20 +72,13 @@ jobs:
           docker run ${{ env.REPO_NAME }}:${{ steps.gen_tag_name.outputs.tag_name }} npm run test:ci
           docker run ${{ env.REPO_NAME }}:${{ steps.gen_tag_name.outputs.tag_name }} npm run test:integration
 
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2.5.0
-        with:
-          platforms: |
-            linux/amd64
-            linux/arm64
-
       - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v4.0.0
         with:
           context: .
           file: Dockerfile
-          target: production
           push: true
+          target: production
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ steps.gen_tag_name.outputs.tag_name }}
             ${{ env.REPO_NAME }}:${{ steps.gen_tag_name.outputs.tag_name }}
@@ -84,6 +88,16 @@ jobs:
           build-args: |
             version=${{ steps.gen_tag_name.outputs.tag_name }}
             GIT_COMMIT_SHA=${{ github.sha }}
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+
+        # Temp fix
+        # https://github.com/docker/build-push-action/issues/252
+        # https://github.com/moby/buildkit/issues/1896
+      - name: Move Cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   build-user-transformer-image:
     name: Build User Transformer Docker Image - Dev
@@ -104,13 +118,24 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2.5.0
+
       - name: Login to DockerHub
         uses: docker/login-action@v2.1.0
         with:
           username: ${{ env.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
-      - name: Build Docker Image
+      - name: Cache Docker Layers
+        uses: actions/cache@v3.3.1
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+
+      - name: Build Docker Image for Tests
         uses: docker/build-push-action@v4.0.0
         with:
           context: .
@@ -124,19 +149,12 @@ jobs:
         run: |
           docker run ${{ env.REPO_NAME }}:${{ steps.gen_tag_name.outputs.tag_name }} npm run test:ci
 
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2.5.0
-        with:
-          platforms: |
-            linux/amd64
-            linux/arm64
-
       - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v4.0.0
         with:
           context: .
           file: Dockerfile-ut-func
-          target: development
+          target: production
           push: true
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ steps.gen_tag_name.outputs.tag_name }}
@@ -147,4 +165,13 @@ jobs:
           build-args: |
             version=${{ steps.gen_tag_name.outputs.tag_name }}
             GIT_COMMIT_SHA=${{ github.sha }}
-
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          
+        # Temp fix
+        # https://github.com/docker/build-push-action/issues/252
+        # https://github.com/moby/buildkit/issues/1896
+      - name: Move Cache
+        run: |
+          rm -rf /tmp/.buildx-cache
+          mv /tmp/.buildx-cache-new /tmp/.buildx-cache

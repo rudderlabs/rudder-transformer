@@ -81,7 +81,7 @@ jobs:
         with:
           context: .
           push: true
-          target: production
+          target: development
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ env.TAG_NAME }}
             ${{ env.REPO_NAME }}:${{ env.TAG_NAME }}

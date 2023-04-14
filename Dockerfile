@@ -36,6 +36,12 @@ CMD [ "npm", "start" ]
 EXPOSE 9090/tcp
 
 FROM base as production
+ENV HUSKY 0
+
+ARG version
+ARG GIT_COMMIT_SHA
+ENV transformer_build_version=$version
+ENV git_commit_sha=$GIT_COMMIT_SHA
 
 WORKDIR /home/node/app
 

@@ -51,7 +51,8 @@ WORKDIR /home/node/app
 USER node
 
 COPY package*.json ./
-RUN npm ci --omit=dev --ignore-scripts
+RUN npm set progress=false
+RUN npm ci --no-audit --cache .npm
 RUN npm run clean:node
 
 COPY --chown=node:node --from=development /home/node/app/dist/ ./dist

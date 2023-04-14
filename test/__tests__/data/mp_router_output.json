@@ -34,7 +34,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+      "userId": "hjikl"
     },
     "metadata": [
       {
@@ -120,6 +120,121 @@
       "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
       "Name": "Kiss Metrics",
       "Transformations": []
+    }
+  },
+  {
+    "batchedRequest": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$set": {
+            "$created": "2020-01-23T08:54:02.362Z",
+            "$email": "mickey@disney.com",
+            "$firstName": "Mickey",
+            "$lastName": "Mouse",
+            "$country_code": "USA",
+            "$city": "Disney",
+            "$initial_referrer": "https://docs.rudderstack.com",
+            "$initial_referring_domain": "docs.rudderstack.com",
+            "$name": "Mickey Mouse",
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          },
+          "$token": "apiToken123",
+          "$distinct_id": "$device:anonId01",
+          "$ip": "0.0.0.0",
+          "$time": 1579847342
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "anonId01"
+    },
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "apiKey123",
+        "token": "apiToken123",
+        "identityMergeApi": "simplified"
+      }
+    }
+  },
+  {
+    "batchedRequest": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.mixpanel.com/track/",
+        "headers": {},
+        "params": {
+          "data": {
+            "event": "Product Viewed",
+            "properties": {
+              "name": "T-Shirt",
+              "$user_id": "userId01",
+              "$device_id": "anonId01",
+              "$os": "iOS",
+              "$screen_height": 1794,
+              "$screen_width": 1080,
+              "$screen_dpi": 420,
+              "$carrier": "Android",
+              "$os_version": "8.1.0",
+              "$device": "generic_x86",
+              "$manufacturer": "Google",
+              "$model": "Android SDK built for x86",
+              "mp_device_model": "Android SDK built for x86",
+              "$wifi": true,
+              "$bluetooth_enabled": false,
+              "mp_lib": "com.rudderstack.android.sdk.core",
+              "$app_build_number": "1",
+              "$app_version_string": "1.0",
+              "$insert_id": "id2",
+              "token": "apiToken123",
+              "distinct_id": "userId01",
+              "time": 1579847342
+            }
+          }
+        },
+        "body": {
+          "JSON": {},
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {},
+        "userId": "userId01"
+      }
+    ],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
+    "batched": false,
+    "statusCode": 200,
+    "destination": {
+      "Config": {
+        "apiKey": "apiKey123",
+        "token": "apiToken123",
+        "prefixProperties": true,
+        "identityMergeApi": "simplified"
+      }
     }
   }
 ]

@@ -10,6 +10,7 @@ RUN apk add --no-cache tini make g++ python3
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app
 
 FROM base AS development
+ENV HUSKY 0
 
 ARG version
 ARG GIT_COMMIT_SHA
@@ -34,28 +35,16 @@ CMD [ "npm", "start" ]
 
 EXPOSE 9090/tcp
 
-FROM base AS prodbuilder
-
-WORKDIR /home/node/app
-USER node
-COPY --chown=node:node --from=development /home/node/app/package.json   ./
-
-RUN npm install --production
-
 FROM base as production
 
-ARG version
-ARG GIT_COMMIT_SHA
-ENV transformer_build_version=$version
-ENV git_commit_sha=$GIT_COMMIT_SHA
-
 WORKDIR /home/node/app
 
 USER node
 
-COPY --chown=node:node --from=development /home/node/app/dist/  ./dist
-COPY --chown=node:node --from=prodBuilder /home/node/app/package.json   ./
-COPY --chown=node:node --from=prodBuilder /home/node/app/node_modules   ./node_modules
+COPY package*.json ./
+RUN npm ci --omit=dev --ignore-scripts
+
+COPY --chown=node:node --from=development /home/node/app/dist/ ./dist
 
 ENTRYPOINT ["/sbin/tini", "--"]
 

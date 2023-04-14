@@ -39,4 +39,5 @@ module.exports = {
   PARTNER_NAME,
   trackMapping: mappingConfig[ConfigCategory.TRACK.name],
   eventNameMapping,
+  DESTINATION: 'TIKTOK_ADS',
 };

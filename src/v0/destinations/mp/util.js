@@ -106,6 +106,11 @@ const createIdentifyResponse = (message, type, destination, responseBuilderSimpl
     $ip: get(message, 'context.ip') || message.request_ip,
     $time: toUnixTimestamp(message.timestamp),
   };
+
+  if (destination?.Config.identityMergeApi === 'simplified') {
+    parameters.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+  }
+
   if (message.context?.active === false) {
     parameters.$ignore_time = true;
   }

@@ -1,7 +1,7 @@
 const name = "Proxy";
 const fs = require("fs");
 const path = require("path");
-const { mockedAxiosClient, flushCounter } = require("../__mocks__/network");
+const { mockedAxiosClient } = require("../__mocks__/network");
 
 const destinations = [
   "marketo",
@@ -55,11 +55,8 @@ destinations.forEach(destination => {
       it(`${name} Tests: ${destination} - Payload ${index}`, async () => {
         const output = await service(destination, input);
         expect(output).toEqual(expectedData[index]);
-          });
-        });
       });
-    afterAll(() => {
-      flushCounter(destination);
     });
-  })
+  });
+})
 // destination tests end

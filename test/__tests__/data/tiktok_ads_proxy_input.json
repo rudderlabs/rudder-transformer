@@ -8,7 +8,8 @@
         "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/batch/",
         "headers": {
           "Access-Token": "1234ac663758946dfep3520b394bbac511b371f7",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "test-dest-response-key": "successResponse"
         },
         "params": {},
         "body": {
@@ -70,7 +71,8 @@
         "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/batch/",
         "headers": {
           "Access-Token": "1234ac663758946dfexp3520b394bbac511b371f7",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "test-dest-response-key": "invalidDataTypeResponse"
         },
         "params": {},
         "body": {
@@ -132,7 +134,8 @@
         "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/batch/",
         "headers": {
           "Access-Token": "1234ac663758946dexp3520b394bbac511b371f7",
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "test-dest-response-key": "invalidPermissionsResponse"
         },
         "params": {},
         "body": {

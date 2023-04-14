@@ -24,9 +24,9 @@ const urlDirectoryMap = {
   "api.criteo.com": "criteo_audience",
   "business-api.tiktok.com": "tiktok_ads"
 };
-let counterMap = Object.values(urlDirectoryMap).reduce((agg, currKey) => ({ ...agg, [currKey]: 0 }), {})
 
-function getData(url) {
+function getData(arg) {
+  const { url } = arg;
   let directory = "";
   Object.keys(urlDirectoryMap).forEach(key => {
     if (url.includes(key)) {
@@ -38,10 +38,9 @@ function getData(url) {
       path.resolve(__dirname, `./data/${directory}/proxy_response.json`)
     );
     const data = JSON.parse(dataFile);
-    if (Array.isArray(data[url])) {
-      const count = counterMap[directory];
-      counterMap[directory] += 1;
-      return data[url][count];
+    if (data[url]) {
+      const axiosResponseKey = arg.headers?.['test-dest-response-key'];
+      return data[url]?.[axiosResponseKey] || data[url];
     }
     return data[url];
   }
@@ -49,7 +48,7 @@ function getData(url) {
 }
 
 const mockedAxiosClient = arg => {
-  const mockedResponse = getData(arg.url);
+  const mockedResponse = getData(arg);
   return new Promise((resolve, reject) => {
     if (isHttpStatusSuccess(mockedResponse.status)) {
       resolve(mockedResponse);
@@ -59,17 +58,7 @@ const mockedAxiosClient = arg => {
   });
 };
 
-const flushCounter = (type) => {
-  if (type) {
-    // update for specific destType
-    counterMap[type] = 0
-    return;
-  }
-  // Update all the counter keys
-  counterMap = Object.values(urlDirectoryMap).reduce((agg, currKey) => ({ ...agg, [currKey]: 0 }), {})
-};
 
 module.exports = {
-  mockedAxiosClient,
-  flushCounter
+  mockedAxiosClient
 };

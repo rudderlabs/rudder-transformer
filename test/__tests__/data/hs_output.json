@@ -757,5 +757,8 @@
   },
   {
     "error": "rETL - Error during searching object record. 404 not found"
+  },
+  {
+    "error": "Property days_to_close data type string is not matching with Hubspot property data type number"
   }
 ]

@@ -217,6 +217,14 @@ const getClevertapProfile = (message, category) => {
     CLEVERTAP_DEFAULT_EXCLUSION,
   );
   profile = convertObjectAndArrayToString(profile);
+
+  // Add additional properties being passed inside overrideFields in traits
+  // to be added to the profile object, to be sent into Clevertap profileData
+  if (message.traits?.overrideFields) {
+    const { overrideFields } = message.traits;
+    Object.assign(profile, overrideFields);
+  }
+
   return removeUndefinedAndNullValues(profile);
 };
 

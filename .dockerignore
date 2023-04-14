@@ -5,5 +5,5 @@
 !jest*.js
 !benchmark
 !package*.json
-# to be removed later
+!tsconfig.json
 !test

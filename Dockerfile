@@ -24,7 +24,8 @@ RUN chown -R node:node /home/node/app
 USER node
 
 RUN npm ci
-RUN npm run build
+RUN npm run build:ci -- --sourceMap false
+RUN npm run copy
 
 ENTRYPOINT ["/sbin/tini", "--"]
 
@@ -49,6 +50,7 @@ USER node
 
 COPY package*.json ./
 RUN npm ci --omit=dev --ignore-scripts
+RUN npm run clean:node
 
 COPY --chown=node:node --from=development /home/node/app/dist/ ./dist
 

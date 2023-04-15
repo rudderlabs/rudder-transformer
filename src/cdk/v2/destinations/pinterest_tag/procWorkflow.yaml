@@ -111,9 +111,9 @@ steps:
         template: |
           const customFields = .message.().({
             "currency": .properties.currency,
-            "value": String(.properties.value ?? 
-                     .properties.total ?? 
-                     .properties.revenue),
+              "value": .properties.value !== undefined ? String(.properties.value) :
+                       .properties.total !== undefined ? String(.properties.total) :
+                       .properties.revenue !== undefined ? String(.properties.revenue) : undefined,
             "num_items": .properties.numOfItems && Number(.properties.numOfItems),
             "order_id": .properties.order_id,
             "search_string": .properties.query,

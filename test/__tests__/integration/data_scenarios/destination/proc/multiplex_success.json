@@ -187,7 +187,7 @@
         "body": {
           "JSON": {
             "event_name": "AddToCart",
-            "event_time": 1671779871,
+            "event_time": 1671779869,
             "event_source_url": "https://www.website.com/product/path",
             "action_source": "offline",
             "event_id": "d175193c-198d-490f-96f2-9bccc88c2e45",
@@ -275,7 +275,7 @@
         "body": {
           "JSON": {
             "event_name": "Checkout",
-            "event_time": 1671779871,
+            "event_time": 1671779869,
             "event_source_url": "https://www.website.com/product/path",
             "action_source": "offline",
             "event_id": "d175193c-198d-490f-96f2-9bccc88c2e45",

@@ -125,6 +125,43 @@ const getProperties = async (destination) => {
 };
 
 /**
+ * Validates the Hubspot property and payload property data types
+ * @param {*} propertyMap
+ * @param {*} hsSupportedKey
+ * @param {*} value
+ * @param {*} traitsKey
+ */
+const validatePayloadDataTypes = (propertyMap, hsSupportedKey, value, traitsKey) => {
+  let propValue = value;
+  // Hub spot data type validations
+  if (propertyMap[hsSupportedKey] === 'string' && typeof propValue !== 'string') {
+    if (typeof propValue === 'object') {
+      propValue = JSON.stringify(propValue);
+    } else {
+      propValue = propValue.toString();
+    }
+  }
+
+  if (propertyMap[hsSupportedKey] === 'bool' && typeof propValue === 'object') {
+    throw new InstrumentationError(
+      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${
+        propertyMap[hsSupportedKey]
+      }`,
+    );
+  }
+
+  if (propertyMap[hsSupportedKey] === 'number' && typeof propValue !== 'number') {
+    throw new InstrumentationError(
+      `Property ${traitsKey} data type ${typeof propValue} is not matching with Hubspot property data type ${
+        propertyMap[hsSupportedKey]
+      }`,
+    );
+  }
+
+  return propValue;
+};
+
+/**
  * add addtional properties in the payload that is provided in traits
  * only when it matches with HS properties (pre-defined/created from dashboard)
  * @param {*} message
@@ -143,7 +180,6 @@ const getTransformedJSON = async (message, destination, propertyMap) => {
       // eslint-disable-next-line no-param-reassign
       propertyMap = await getProperties(destination);
     }
-
     rawPayload = constructPayload(message, hsCommonConfigJson);
 
     // if there is any extra/custom property in hubspot, that has not already
@@ -159,7 +195,13 @@ const getTransformedJSON = async (message, destination, propertyMap) => {
           date.setUTCHours(0, 0, 0, 0);
           propValue = date.getTime();
         }
-        rawPayload[hsSupportedKey] = propValue;
+
+        rawPayload[hsSupportedKey] = validatePayloadDataTypes(
+          propertyMap,
+          hsSupportedKey,
+          propValue,
+          traitsKey,
+        );
       }
     });
   }
@@ -561,4 +603,5 @@ module.exports = {
   searchContacts,
   splitEventsForCreateUpdate,
   getHsSearchId,
+  validatePayloadDataTypes,
 };

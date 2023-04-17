@@ -1,0 +1,25 @@
+{
+  "https://business-api.tiktok.com/open_api/v1.2/pixel/batch/": {
+    "successResponse": {
+      "data": {
+        "code": 0,
+        "message": "OK"
+      },
+      "status": 200
+    },
+    "invalidDataTypeResponse": {
+      "data": {
+        "code": 40002,
+        "message": "Batch.0.properties.contents.0.content_id: Not a valid string"
+      },
+      "status": 200
+    },
+    "invalidPermissionsResponse": {
+      "data": {
+        "code": 40001,
+        "message": "No permission to operate pixel code: BU35TSQHT2A1QT375OMG. You must be an admin or operator of this advertiser account."
+      },
+      "status": 200
+    }
+  }
+}

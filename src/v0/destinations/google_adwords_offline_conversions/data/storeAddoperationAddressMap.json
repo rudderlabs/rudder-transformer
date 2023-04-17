@@ -1,0 +1,66 @@
+[
+    {
+        "sourceKeys": "city",
+        "destKey": "city",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys": "state",
+        "destKey": "state",
+        "sourceFromGenericMap": true
+    },
+    {
+        "sourceKeys": [
+            "context.traits.country_code",
+            "properties.country_code",
+            "context.traits.countryCode",
+            "properties.countryCode"
+        ],
+        "destKey": "country_code"
+    },
+    {
+        "sourceKeys": [
+            "context.traits.postal_code",
+            "properties.postal_code",
+            "context.traits.postalCode",
+            "properties.postalCode",
+            "context.traits.zipCode",
+            "properties.zipCode"
+        ],
+        "destKey": "postal_code"
+    },
+    {
+        "sourceKeys": "firstName",
+        "destKey": "hashed_first_name",
+        "sourceFromGenericMap": true,
+        "metadata": {
+            "type": [
+                "toLower"
+            ]
+        }
+    },
+    {
+        "destKey": "hashed_street_address",
+        "sourceKeys": [
+            "properties.streetAddress",
+            "context.traits.streetAddress",
+            "traits.street",
+            "context.traits.street"
+        ],
+        "metadata": {
+            "type": [
+                "toLower"
+            ]
+        }
+    },
+    {
+        "sourceKeys": "lastName",
+        "destKey": "hashed_last_name",
+        "metadata": {
+            "type": [
+                "toLower"
+            ]
+        },
+        "sourceFromGenericMap": true
+    }
+]

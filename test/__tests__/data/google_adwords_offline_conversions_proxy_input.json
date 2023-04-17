@@ -5,6 +5,210 @@
         "version": "1",
         "type": "REST",
         "method": "POST",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/11122233331/offlineUserDataJobs",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json",
+          "developer-token": "ijkl91011",
+          "login-customer-id": "logincustomerid"
+        },
+        "params": {
+          "customerId": "1112223333",
+          "event": "Sign-up - click"
+        },
+        "body": {
+          "JSON": {
+            "addConversionPayload": {
+              "enable_partial_failure": false,
+              "enable_warnings": false,
+              "operations": {
+                "create": {
+                  "transaction_attribute": {
+                    "CUSTOM_KEY": "CUSTOM_VALUE",
+                    "currency_code": "INR",
+                    "order_id": "order id",
+                    "store_attribute": {
+                      "store_code": "store code"
+                    },
+                    "transaction_amount_micros": "100000000",
+                    "transaction_date_time": "2019-10-14 11:15:18+00:00"
+                  },
+                  "userIdentifiers": [
+                    {
+                      "hashedEmail": "6db61e6dcbcf2390e4a46af26f26a133a3bee45021422fc7ae86e9136f14110",
+                      "userIdentifierSource": "UNSPECIFIED"
+                    }
+                  ]
+                }
+              },
+              "validate_only": false
+            },
+            "createJobPayload": {
+              "job": {
+                "storeSalesMetadata": {
+                  "custom_key": "CUSTOM_KEY",
+                  "loyaltyFraction": 1,
+                  "transaction_upload_fraction": "1"
+                },
+                "type": "STORE_SALES_UPLOAD_FIRST_PARTY"
+              }
+            },
+            "event": "1112223333",
+            "executeJobPayload": {
+              "validate_only": false
+            },
+            "isStoreConversion": true
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/1112223333/offlineUserDataJobs",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json",
+          "developer-token": "ijkl91011",
+          "login-customer-id": "logincustomerid"
+        },
+        "params": {
+          "customerId": "1112223333",
+          "event": "Sign-up - click"
+        },
+        "body": {
+          "JSON": {
+            "addConversionPayload": {
+              "enable_partial_failure": false,
+              "enable_warnings": false,
+              "operations": {
+                "create": {
+                  "transaction_attribute": {
+                    "CUSTOM_KEY": "CUSTOM_VALUE",
+                    "currency_code": "INR",
+                    "order_id": "order id",
+                    "store_attribute": {
+                      "store_code": "store code"
+                    },
+                    "transaction_amount_micros": "100000000",
+                    "transaction_date_time": "2019-10-14 11:15:18+00:00"
+                  },
+                  "userIdentifiers": [
+                    {
+                      "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
+                      "userIdentifierSource": "UNSPECIFIED"
+                    }
+                  ]
+                }
+              },
+              "validate_only": false
+            },
+            "createJobPayload": {
+              "job": {
+                "storeSalesMetadata": {
+                  "custom_key": "CUSTOM_KEY",
+                  "loyaltyFraction": 1,
+                  "transaction_upload_fraction": "1"
+                },
+                "type": "STORE_SALES_UPLOAD_FIRST_PARTY"
+              }
+            },
+            "event": "1112223333",
+            "executeJobPayload": {
+              "validate_only": false
+            },
+            "isStoreConversion": true
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://googleads.googleapis.com/v13/customers/customerid/offlineUserDataJobs",
+        "headers": {
+          "Authorization": "Bearer abcd1234",
+          "Content-Type": "application/json",
+          "developer-token": "ijkl91011",
+          "login-customer-id": "logincustomerid"
+        },
+        "params": {
+          "customerId": "1112223333",
+          "event": "Sign-up - click"
+        },
+        "body": {
+          "JSON": {
+            "addConversionPayload": {
+              "enable_partial_failure": false,
+              "enable_warnings": false,
+              "operations": {
+                "create": {
+                  "transaction_attribute": {
+                    "CUSTOM_KEY": "CUSTOM_VALUE",
+                    "currency_code": "INR",
+                    "order_id": "order id",
+                    "store_attribute": {
+                      "store_code": "store code"
+                    },
+                    "transaction_amount_micros": "100000000",
+                    "transaction_date_time": "2019-10-14 11:15:18+00:00"
+                  },
+                  "userIdentifiers": [
+                    {
+                      "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
+                      "userIdentifierSource": "UNSPECIFIED"
+                    }
+                  ]
+                }
+              },
+              "validate_only": false
+            },
+            "createJobPayload": {
+              "job": {
+                "storeSalesMetadata": {
+                  "custom_key": "CUSTOM_KEY",
+                  "loyaltyFraction": 1,
+                  "transaction_upload_fraction": "1"
+                },
+                "type": "STORE_SALES_UPLOAD_FIRST_PARTY"
+              }
+            },
+            "event": "1112223333",
+            "executeJobPayload": {
+              "validate_only": false
+            },
+            "isStoreConversion": true
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    }
+  },
+  {
+    "request": {
+      "body": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
         "endpoint": "https://googleads.googleapis.com/v13/customers/1234567890:uploadClickConversions",
         "headers": {
           "Authorization": "Bearer abcd1234",

@@ -1,0 +1,216 @@
+{
+  "input": [
+    {
+      "message": {
+        "anonymousId": "2073230",
+        "channel": "web",
+        "context": {
+          "traits": {
+            "email": "utsab.c97@gmail.com",
+            "firstName": "utsab",
+            "gender": "Male",
+            "lastName": "chowdhury",
+            "phone": "+919830311522"
+          }
+        },
+        "event": "Product Added",
+        "messageId": "ace693c0-79c3-47b8-9e7f-6a894672597f",
+        "originalTimestamp": "2022-12-31T20:30:35.282+05:30",
+        "properties": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "receivedAt": "2022-12-31T20:30:34.567+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "c6bac0d9-5ed4-45d8-a937-bf9e62060b78",
+        "sentAt": "2022-12-31T20:30:35.282+05:30",
+        "timestamp": "2022-12-31T20:30:34.566+05:30",
+        "type": "track",
+        "userId": "2564871"
+      },
+      "metadata": {
+        "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+        "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+        "namespace": "",
+        "instanceId": "1",
+        "sourceType": "HTTP",
+        "sourceCategory": "",
+        "trackingPlanId": "",
+        "trackingPlanVersion": 0,
+        "sourceTpConfig": null,
+        "mergedTpConfig": null,
+        "destinationId": "2JVZ3owjdCdDajoiZwWgJbR9y0q",
+        "jobRunId": "",
+        "jobId": 1,
+        "sourceBatchId": "",
+        "sourceJobId": "",
+        "sourceJobRunId": "",
+        "sourceTaskId": "",
+        "sourceTaskRunId": "",
+        "recordId": null,
+        "destinationType": "ZAPIER",
+        "messageId": "ace693c0-79c3-47b8-9e7f-6a894672597f",
+        "oauthAccessToken": "",
+        "messageIds": null,
+        "rudderId": "<<>>2073230<<>>2564871",
+        "receivedAt": "2022-12-31T20:30:34.567+05:30",
+        "eventName": "Product Added",
+        "eventType": "track",
+        "sourceDefinitionId": "1b6gJdqOPOCadT3cddw8eidV591",
+        "destinationDefinitionId": ""
+      },
+      "destination": {
+        "ID": "2JVZ3owjdCdDajoiZwWgJbR9y0q",
+        "Name": "Zapier-dev",
+        "DestinationDefinition": {
+          "ID": "2EAFTAOU0JrG8tHwYB5ZlV7yzo6",
+          "Name": "ZAPIER",
+          "DisplayName": "Zapier",
+          "Config": {
+            "cdkEnabled": true,
+            "destConfig": {
+              "defaultConfig": [
+                "zapUrl",
+                "trackEventsToZap",
+                "pageScreenEventsToZap"
+              ]
+            },
+            "excludeKeys": [],
+            "includeKeys": [
+              "zapUrl",
+              "trackEventsToZap",
+              "pageScreenEventsToZap"
+            ],
+            "saveDestinationResponse": true,
+            "secretKeys": ["zapUrl"],
+            "supportedMessageTypes": ["track", "page", "screen"],
+            "supportedSourceTypes": [
+              "android",
+              "ios",
+              "web",
+              "unity",
+              "amp",
+              "cloud",
+              "reactnative",
+              "flutter",
+              "cordova",
+              "warehouse"
+            ],
+            "transformAt": "processor",
+            "transformAtV1": "processor"
+          },
+          "ResponseRules": {}
+        },
+        "Config": {
+          "zapUrl": "https://hooks.zapier.com/hooks/catch/test/abc/"
+        },
+        "Enabled": true,
+        "WorkspaceID": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+        "Transformations": [],
+        "IsProcessorEnabled": true,
+        "RevisionID": "2JdjA2o6s9AfokHcz6bX0SPCdJZ"
+      },
+      "libraries": null
+    }
+  ],
+  "output": [
+    {
+      "output": {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://hooks.zapier.com/hooks/catch/test/abc/",
+        "headers": {
+          "content-type": "application/json"
+        },
+        "params": {},
+        "body": {
+          "JSON": {
+            "anonymousId": "2073230",
+            "channel": "web",
+            "context": {
+              "traits": {
+                "email": "utsab.c97@gmail.com",
+                "firstName": "utsab",
+                "gender": "Male",
+                "lastName": "chowdhury",
+                "phone": "+919830311522"
+              }
+            },
+            "event": "Product Added",
+            "messageId": "ace693c0-79c3-47b8-9e7f-6a894672597f",
+            "originalTimestamp": "2022-12-31T20:30:35.282+05:30",
+            "properties": {
+              "brand": "Gamepro",
+              "category": "Games",
+              "coupon": "DISC21",
+              "image_url": "https://www.website.com/product/path.png",
+              "name": "Game",
+              "position": 1,
+              "price": 13.49,
+              "product_id": "123",
+              "quantity": 11,
+              "sku": "F15",
+              "url": "https://www.website.com/product/path",
+              "variant": "111"
+            },
+            "receivedAt": "2022-12-31T20:30:34.567+05:30",
+            "request_ip": "[::1]",
+            "rudderId": "c6bac0d9-5ed4-45d8-a937-bf9e62060b78",
+            "sentAt": "2022-12-31T20:30:35.282+05:30",
+            "timestamp": "2022-12-31T20:30:34.566+05:30",
+            "type": "track",
+            "userId": "2564871"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {},
+        "userId": ""
+      },
+      "metadata": {
+        "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+        "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+        "namespace": "",
+        "instanceId": "1",
+        "sourceType": "HTTP",
+        "sourceCategory": "",
+        "trackingPlanId": "",
+        "trackingPlanVersion": 0,
+        "sourceTpConfig": null,
+        "mergedTpConfig": null,
+        "destinationId": "2JVZ3owjdCdDajoiZwWgJbR9y0q",
+        "jobRunId": "",
+        "jobId": 1,
+        "sourceBatchId": "",
+        "sourceJobId": "",
+        "sourceJobRunId": "",
+        "sourceTaskId": "",
+        "sourceTaskRunId": "",
+        "recordId": null,
+        "destinationType": "ZAPIER",
+        "messageId": "ace693c0-79c3-47b8-9e7f-6a894672597f",
+        "oauthAccessToken": "",
+        "messageIds": null,
+        "rudderId": "<<>>2073230<<>>2564871",
+        "receivedAt": "2022-12-31T20:30:34.567+05:30",
+        "eventName": "Product Added",
+        "eventType": "track",
+        "sourceDefinitionId": "1b6gJdqOPOCadT3cddw8eidV591",
+        "destinationDefinitionId": ""
+      },
+      "statusCode": 200
+    }
+  ]
+}

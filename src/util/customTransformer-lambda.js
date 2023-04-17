@@ -1,7 +1,7 @@
-const stats = require('./stats');
 const { getMetadata } = require('../v0/util');
 const { invokeLambda, setupLambda } = require('./lambda');
 const { LOG_DEF_CODE } = require('./lambda/utils');
+const stats = require('./stats');
 
 async function runLambdaUserTransform(events, userTransformation, testMode = false) {
   if (events.length === 0) {

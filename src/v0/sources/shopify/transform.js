@@ -114,7 +114,6 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   }
   return message;
 };
-// Doc: https://help.shopify.com/en/manual/orders/fulfillment/setting-up-fulfillment
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
   const event = _.cloneDeep(inputEvent);

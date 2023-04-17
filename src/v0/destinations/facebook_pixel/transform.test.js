@@ -1,6 +1,6 @@
 const { handleSearch } = require('../../../../src/v0/destinations/facebook_pixel/transform');
 
-describe('Unit test cases for facebook_pixel handle search', () => {
+const getTestMessage = () => {
   let message = {
     properties: {
       currency: 'CAD',
@@ -16,7 +16,10 @@ describe('Unit test cases for facebook_pixel handle search', () => {
       query: 'HDMI Cable',
     },
   };
+  return message;
+};
 
+describe('Unit test cases for facebook_pixel handle search', () => {
   it('should return content with all fields not null', async () => {
     const expectedOutput = {
       content_ids: ['p-298'],
@@ -31,10 +34,11 @@ describe('Unit test cases for facebook_pixel handle search', () => {
         },
       ],
     };
-    await expect(handleSearch(message)).toEqual(expectedOutput);
+    expect(handleSearch(getTestMessage())).toEqual(expectedOutput);
   });
 
   it("mapping 'product_id' with contentId", async () => {
+    let message = getTestMessage();
     message.properties.product_id = 'prd-123';
 
     const expectedOutput = {
@@ -50,10 +54,11 @@ describe('Unit test cases for facebook_pixel handle search', () => {
         },
       ],
     };
-    await expect(handleSearch(message)).toEqual(expectedOutput);
+    expect(handleSearch(message)).toEqual(expectedOutput);
   });
 
   it("null/undefined 'properties'", async () => {
+    let message = getTestMessage();
     message.properties = null;
 
     const expectedOutput = {
@@ -63,6 +68,6 @@ describe('Unit test cases for facebook_pixel handle search', () => {
       search_string: undefined,
       value: 0,
     };
-    await expect(handleSearch(message)).toEqual(expectedOutput);
+    expect(handleSearch(message)).toEqual(expectedOutput);
   });
 });

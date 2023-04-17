@@ -188,7 +188,7 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
   if (!isDefinedAndNotNull(anonymousIDfromDB)) {
     /* this is for backward compatability when we don't have the redis mapping for older events
     we will get anonymousIDFromDb as null so we will set UUID using the session Key */
-    anonymousIDfromDB = cartToken;
+    anonymousIDfromDB = sha256(cartToken).toString().substring(0, 36);
   }
   message.setProperty('anonymousId', anonymousIDfromDB);
 };

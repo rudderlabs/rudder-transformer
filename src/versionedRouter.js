@@ -24,10 +24,9 @@ const { processDynamicConfig } = require('./util/dynamicConfig');
 const { DestHandlerMap } = require('./constants/destinationCanonicalNames');
 const { userTransformHandler } = require('./routerUtils');
 const networkHandlerFactory = require('./adapters/networkHandlerFactory');
-const profilingRouter = require('./routes/profiling');
-const destProxyRoutes = require('./routes/destinationProxy');
+const profilingRouter = require('./routes/obs.profiling');
+const destProxyRoutes = require('./routes/obs.delivery');
 const eventValidator = require('./util/eventValidation');
-const { prometheusRegistry } = require('./middleware');
 const { getIntegrations } = require('./routes/utils');
 const { setupUserTransformHandler, validateCode } = require('./util/customTransformer');
 const { CommonUtils } = require('./util/common');
@@ -128,6 +127,7 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
     const cdkResult = await getCdkV2Result(destType, inputArr[0], feature);
     const diff = process.hrtime(startTime);
     const cdkTime = diff[0] * NS_PER_SEC + diff[1];
+
     stats.gauge('v0_transformation_time', v0Time, {
       destType,
       feature,
@@ -231,7 +231,7 @@ async function handleDest(ctx, version, destination) {
 
   const metaTags =
     events && events.length > 0 && events[0].metadata ? getMetadata(events[0].metadata) : {};
-  stats.increment('dest_transform_input_events', events.length, {
+  stats.counter('dest_transform_input_events', events.length, {
     destination,
     version,
     ...metaTags,
@@ -325,7 +325,7 @@ async function handleDest(ctx, version, destination) {
     ...metaTags,
   });
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
-  stats.increment('dest_transform_output_events', respList.length, {
+  stats.counter('dest_transform_output_events', respList.length, {
     destination,
     version,
     ...metaTags,
@@ -360,7 +360,7 @@ async function handleValidation(ctx) {
           validationErrors: hv.validationErrors,
           error: errMessage,
         });
-        stats.gauge('hv_violation_type', 1, {
+        stats.counter('hv_violation_type', 1, {
           violationType: hv.violationType,
           ...metaTags,
         });
@@ -371,7 +371,7 @@ async function handleValidation(ctx) {
           statusCode: 200,
           validationErrors: hv.validationErrors,
         });
-        stats.gauge('hv_propagated_events', 1, {
+        stats.counter('hv_propagated_events', 1, {
           ...metaTags,
         });
       }
@@ -392,7 +392,7 @@ async function handleValidation(ctx) {
         validationErrors: [],
         error: errMessage,
       });
-      stats.gauge('hv_errors', 1, {
+      stats.counter('hv_errors', 1, {
         ...metaTags,
       });
     } finally {
@@ -405,10 +405,10 @@ async function handleValidation(ctx) {
   ctx.status = ctxStatusCode;
   ctx.set('apiVersion', API_VERSION);
 
-  stats.gauge('hv_events_count', events.length, {
+  stats.counter('hv_events_count', events.length, {
     ...metaTags,
   });
-  stats.gauge('hv_request_size', requestSize, {
+  stats.histogram('hv_request_size', requestSize, {
     ...metaTags,
   });
   stats.timing('hv_request_latency', requestStartTime, {
@@ -561,12 +561,13 @@ if (startDestTransformer) {
           ctx.request.body && ctx.request.body.length > 0 && ctx.request.body[0].metadata
             ? getMetadata(ctx.request.body[0].metadata)
             : {};
+
         stats.timing('dest_transform_request_latency', startTime, {
           destination,
           version,
           ...metaTags,
         });
-        stats.increment('dest_transform_requests', 1, {
+        stats.increment('dest_transform_requests', {
           destination,
           version,
           ...metaTags,
@@ -583,11 +584,12 @@ if (startDestTransformer) {
           ctx.request.body && ctx.request.body.length > 0 && ctx.request.body[0].metadata
             ? getMetadata(ctx.request.body[0].metadata)
             : {};
+
         stats.timing('dest_transform_request_latency', startTime, {
           destination,
           ...metaTags,
         });
-        stats.increment('dest_transform_requests', 1, {
+        stats.increment('dest_transform_requests', {
           destination,
           version,
           ...metaTags,
@@ -636,7 +638,7 @@ if (startDestTransformer) {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
-      stats.gauge('user_transform_input_events', events.length, {
+      stats.counter('user_transform_input_events', events.length, {
         processSessions,
       });
       let groupedEvents;
@@ -652,7 +654,7 @@ if (startDestTransformer) {
           (event) => `${event.metadata.destinationId}_${event.metadata.sourceId}`,
         );
       }
-      stats.gauge('user_transform_function_group_size', Object.entries(groupedEvents).length, {
+      stats.counter('user_transform_function_group_size', Object.entries(groupedEvents).length, {
         processSessions,
       });
 
@@ -687,7 +689,7 @@ if (startDestTransformer) {
           if (transformationVersionId) {
             let destTransformedEvents;
             try {
-              stats.gauge('user_transform_function_input_events', destEvents.length, {
+              stats.counter('user_transform_function_input_events', destEvents.length, {
                 processSessions,
                 ...metaTags,
               });
@@ -737,7 +739,7 @@ if (startDestTransformer) {
                 error: errorString,
               }));
               transformedEvents.push(...destTransformedEvents);
-              stats.gauge('user_transform_errors', destEvents.length, {
+              stats.counter('user_transform_errors', destEvents.length, {
                 transformationVersionId,
                 processSessions,
                 ...metaTags,
@@ -757,7 +759,7 @@ if (startDestTransformer) {
               error: errorMessage,
               metadata: commonMetadata,
             });
-            stats.gauge('user_transform_errors', destEvents.length, {
+            stats.counter('user_transform_errors', destEvents.length, {
               transformationVersionId,
               processSessions,
               ...metaTags,
@@ -769,11 +771,12 @@ if (startDestTransformer) {
       ctx.body = transformedEvents;
       ctx.status = ctxStatusCode;
       ctx.set('apiVersion', API_VERSION);
+
       stats.timing('user_transform_request_latency', startTime, {
         processSessions,
       });
-      stats.gauge('user_transform_requests', 1, { processSessions });
-      stats.gauge('user_transform_output_events', transformedEvents.length, {
+      stats.increment('user_transform_requests', { processSessions });
+      stats.counter('user_transform_output_events', transformedEvents.length, {
         processSessions,
       });
     });
@@ -867,7 +870,7 @@ async function handleSource(ctx, version, source) {
   const sourceHandler = getSourceHandler(version, source);
   const events = ctx.request.body;
   logger.debug(`[ST] Input source events: ${JSON.stringify(events)}`);
-  stats.increment('source_transform_input_events', events.length, {
+  stats.counter('source_transform_input_events', events.length, {
     source,
     version,
   });
@@ -914,6 +917,7 @@ async function handleSource(ctx, version, source) {
         };
 
         respList.push(resp);
+
         stats.counter('source_transform_errors', events.length, {
           source,
           version,
@@ -943,11 +947,12 @@ if (startSourceTransformer) {
       router.post(`/${version}/sources/${source}`, async (ctx) => {
         const startTime = new Date();
         await handleSource(ctx, version, source);
+
         stats.timing('source_transform_request_latency', startTime, {
           source,
           version,
         });
-        stats.increment('source_transform_requests', 1, { source, version });
+        stats.increment('source_transform_requests', { source, version });
       });
     });
   });
@@ -972,6 +977,7 @@ async function handleProxyRequest(destination, ctx) {
     });
     const startTime = new Date();
     const rawProxyResponse = await destNetworkHandler.proxy(destinationRequest);
+
     stats.timing('transformer_proxy_time', startTime, {
       destination,
     });
@@ -1039,6 +1045,7 @@ if (transformerProxy) {
         const startTime = new Date();
         ctx.set('apiVersion', API_VERSION);
         await handleProxyRequest(destination, ctx);
+
         stats.timing('transformer_total_proxy_latency', startTime, {
           destination,
           version,
@@ -1070,7 +1077,7 @@ router.get('/health', (ctx) => {
 });
 
 router.get('/features', (ctx) => {
-  const obj = JSON.parse(fs.readFileSync('features.json', 'utf8'));
+  const obj = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../features.json'), 'utf8'));
   ctx.body = JSON.stringify(obj);
 });
 
@@ -1340,12 +1347,6 @@ const handleDeletionOfUsers = async (ctx) => {
   return ctx.body;
   // const { destType } = ctx.request.body;
 };
-const metricsController = async (ctx) => {
-  ctx.status = 200;
-  ctx.type = prometheusRegistry.contentType;
-  ctx.body = await prometheusRegistry.metrics();
-  return ctx.body;
-};
 
 router.post('/fileUpload', async (ctx) => {
   await fileUpload(ctx);
@@ -1385,10 +1386,6 @@ router.post(`/v0/validate`, async (ctx) => {
 // }
 router.post(`/deleteUsers`, async (ctx) => {
   await handleDeletionOfUsers(ctx);
-});
-
-router.get('/metrics', async (ctx) => {
-  await metricsController(ctx);
 });
 
 module.exports = {

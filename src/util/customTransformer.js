@@ -3,9 +3,9 @@ const { compileUserLibrary } = require('../util/ivmFactory');
 const fetch = require('node-fetch');
 const { getTransformationCode } = require('./customTransforrmationsStore');
 const { getTransformationCodeV1 } = require('./customTransforrmationsStore-v1');
-const stats = require('./stats');
 const { UserTransformHandlerFactory } = require('./customTransformerFactory');
 const { parserForImport } = require('./parser');
+const stats = require('./stats');
 
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 
@@ -168,7 +168,7 @@ async function runUserTransform(events, code, secrets, eventsMetadata, versionId
   await customScript.run(context);
   const fnRef = await jail.get('transform', { reference: true });
   // stat
-  stats.gauge('events_to_process', events.length, tags);
+  stats.counter('events_to_process', events.length, tags);
   // TODO : check if we can resolve this
   // eslint-disable-next-line no-async-promise-executor
   const executionPromise = new Promise(async (resolve, reject) => {

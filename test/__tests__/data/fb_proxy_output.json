@@ -1,0 +1,109 @@
+[
+  {
+    "output": {
+      "status": 400,
+      "message": "Failed with The access token could not be decrypted during response transformation",
+      "destinationResponse": {
+        "error": {
+          "message": "The access token could not be decrypted",
+          "type": "OAuthException",
+          "code": 190,
+          "fbtrace_id": "fbpixel_trace_id"
+        },
+        "status": 500
+      },
+      "statTags": {
+        "destType": "FB",
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 200,
+      "message": "Request Processed Successfully",
+      "destinationResponse": {
+        "events_received": 1,
+        "fbtrace_id": "facebook_trace_id"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "Failed with Invalid parameter during response transformation",
+      "destinationResponse": {
+        "error": {
+          "message": "Invalid parameter",
+          "type": "OAuthException",
+          "code": 100,
+          "error_subcode": 2804003,
+          "is_transient": false,
+          "error_user_title": "Event Timestamp Too Old",
+          "error_user_msg": "The timestamp for this event is too far in the past. Events need to be sent from your server within 7 days of when they occurred. Enter a timestamp that has occurred within the last 7 days.",
+          "fbtrace_id": "A6UyEgg_HdoiRX9duxcBOjb"
+        },
+        "status": 400
+      },
+      "statTags": {
+        "destType": "FB",
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 429,
+      "message": "Failed with User request limit reached during response transformation",
+      "destinationResponse": {
+        "error": {
+          "message": "User request limit reached",
+          "type": "OAuthException",
+          "code": 17,
+          "fbtrace_id": "facebook_px_trace_id_4"
+        },
+        "status": 500
+      },
+      "statTags": {
+        "destType": "FB",
+        "errorCategory": "network",
+        "errorType": "throttled",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "Failed with Unsupported post request. Object with ID '1234567891234569' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api during response transformation",
+      "destinationResponse": {
+        "error": {
+          "message": "Unsupported post request. Object with ID '1234567891234569' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api",
+          "type": "GraphMethodException",
+          "code": 100,
+          "error_subcode": 33,
+          "fbtrace_id": "facebook_px_trace_id_5"
+        },
+        "status": 400
+      },
+      "statTags": {
+        "destType": "FB",
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  }
+]

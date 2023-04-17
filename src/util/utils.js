@@ -25,6 +25,7 @@ const responseStatusHandler = (status, entity, id, url) => {
   }
 };
 
+const getIntegrationVersion = () => 'v0';
 const sendViolationMetrics = (validationErrors, dropped, metaTags) => {
   const vTags = {
     'Unplanned-Event': 0,
@@ -40,10 +41,10 @@ const sendViolationMetrics = (validationErrors, dropped, metaTags) => {
 
   Object.entries(vTags).forEach(([key, value]) => {
     if (value > 0) {
-      stats.gauge('hv_metrics', value, { ...metaTags, dropped, violationType: key });
+      stats.counter('hv_metrics', value, { ...metaTags, dropped, violationType: key });
     }
   });
-  stats.gauge('hv_metrics', validationErrors.length, {
+  stats.counter('hv_metrics', validationErrors.length, {
     ...metaTags,
     dropped,
     violationType: 'Total',
@@ -68,6 +69,7 @@ module.exports = {
   RespStatusError,
   RetryRequestError,
   responseStatusHandler,
+  getIntegrationVersion,
   sendViolationMetrics,
   logProcessInfo,
 };

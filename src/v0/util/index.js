@@ -1467,7 +1467,7 @@ function getValidDynamicFormConfig(
       (element[keyRight] || element[keyRight] === ''),
   );
   if (res.length < attributeArray.length) {
-    stats.increment('dest_transform_invalid_dynamicConfig_count', 1, {
+    stats.increment('dest_transform_invalid_dynamicConfig_count', {
       destinationType,
       destinationId,
     });

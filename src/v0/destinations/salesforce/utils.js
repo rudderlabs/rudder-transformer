@@ -97,7 +97,11 @@ const getAccessToken = async (destination) => {
     const { httpResponse, processedResponse } = await handleHttpRequest('post', authUrl, {});
     // If the request fails, throwing error.
     if (!httpResponse.success) {
-      salesforceResponseHandler(processedResponse, `:- authentication failed during fetching access token.`, accessTokenKey);
+      salesforceResponseHandler(
+        processedResponse,
+        `:- authentication failed during fetching access token.`,
+        accessTokenKey,
+      );
     }
     const token = httpResponse.response.data;
     // If the httpResponse.success is true it will not come, It's an extra security for developer's.

@@ -8,7 +8,84 @@
           "boardId": "339283933",
           "groupTitle": "",
           "columnToPropertyMapping": [],
-          "whitelistedEvents": [{ "eventName": "create an item" }]
+          "whitelistedEvents": [
+            {
+              "eventName": "create an item"
+            }
+          ]
+        }
+      },
+      "message": {
+        "event": "create an item",
+        "type": "track",
+        "sentAt": "2021-01-03T17:02:53.195Z",
+        "userId": "ujjwal27",
+        "channel": "web",
+        "properties": {
+          "name": "Task 1"
+        },
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.1.11",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "locale": "en-US",
+          "screen": {
+            "density": 2
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.11"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+        },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "originalTimestamp": "2021-01-03T17:02:53.193Z"
+      }
+    },
+    "output": {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "query": "mutation { create_item (board_id: 339283933,  item_name: \"Task 1\", column_values: \"{}\") {id}}"
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://api.monday.com/v2",
+      "files": {},
+      "headers": {
+        "Authorization": "eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih",
+        "Content-Type": "application/json"
+      },
+      "method": "POST",
+      "params": {},
+      "type": "REST",
+      "version": "1"
+    }
+  },
+  {
+    "description": "Track call with undefined columnToPropertyMapping",
+    "input": {
+      "destination": {
+        "Config": {
+          "apiToken": "eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih",
+          "boardId": "339283933",
+          "groupTitle": "",
+          "whitelistedEvents": [
+            {
+              "eventName": "create an item"
+            }
+          ]
         }
       },
       "message": {
@@ -78,7 +155,11 @@
           "boardId": "339283933",
           "groupTitle": "",
           "columnToPropertyMapping": [],
-          "whitelistedEvents": [{ "eventName": "create an item" }]
+          "whitelistedEvents": [
+            {
+              "eventName": "create an item"
+            }
+          ]
         }
       },
       "message": {
@@ -131,7 +212,11 @@
           "boardId": "339283933",
           "groupTitle": "",
           "columnToPropertyMapping": [],
-          "whitelistedEvents": [{ "eventName": "create an item" }]
+          "whitelistedEvents": [
+            {
+              "eventName": "create an item"
+            }
+          ]
         }
       },
       "message": {
@@ -184,7 +269,11 @@
           "boardId": "339283933",
           "groupTitle": "",
           "columnToPropertyMapping": [],
-          "whitelistedEvents": [{ "eventName": "create an item" }]
+          "whitelistedEvents": [
+            {
+              "eventName": "create an item"
+            }
+          ]
         }
       },
       "message": {
@@ -237,7 +326,11 @@
           "boardId": "",
           "groupTitle": "",
           "columnToPropertyMapping": [],
-          "whitelistedEvents": [{ "eventName": "create an item" }]
+          "whitelistedEvents": [
+            {
+              "eventName": "create an item"
+            }
+          ]
         }
       },
       "message": {
@@ -290,7 +383,11 @@
           "boardId": "339283933",
           "groupTitle": "",
           "columnToPropertyMapping": [],
-          "whitelistedEvents": [{ "eventName": "create an item" }]
+          "whitelistedEvents": [
+            {
+              "eventName": "create an item"
+            }
+          ]
         }
       },
       "message": {
@@ -347,9 +444,16 @@
               "from": "Status",
               "to": "status"
             },
-            { "from": "Email", "to": "emailId" }
+            {
+              "from": "Email",
+              "to": "emailId"
+            }
           ],
-          "whitelistedEvents": [{ "eventName": "create an item" }]
+          "whitelistedEvents": [
+            {
+              "eventName": "create an item"
+            }
+          ]
         }
       },
       "message": {
@@ -426,9 +530,16 @@
               "from": "Status",
               "to": "status"
             },
-            { "from": "Email", "to": "emailId" }
+            {
+              "from": "Email",
+              "to": "emailId"
+            }
           ],
-          "whitelistedEvents": [{ "eventName": "create an item" }]
+          "whitelistedEvents": [
+            {
+              "eventName": "create an item"
+            }
+          ]
         }
       },
       "message": {
@@ -505,9 +616,16 @@
               "from": "Status",
               "to": "status"
             },
-            { "from": "Email", "to": "emailId" }
+            {
+              "from": "Email",
+              "to": "emailId"
+            }
           ],
-          "whitelistedEvents": [{ "eventName": "create an item" }]
+          "whitelistedEvents": [
+            {
+              "eventName": "create an item"
+            }
+          ]
         }
       },
       "message": {
@@ -567,9 +685,16 @@
               "from": "Status",
               "to": "status"
             },
-            { "from": "Email", "to": "emailId" }
+            {
+              "from": "Email",
+              "to": "emailId"
+            }
           ],
-          "whitelistedEvents": [{ "eventName": "create an item" }]
+          "whitelistedEvents": [
+            {
+              "eventName": "create an item"
+            }
+          ]
         }
       },
       "message": {
@@ -629,7 +754,10 @@
               "from": "Status",
               "to": "status"
             },
-            { "from": "Email", "to": "emailId" },
+            {
+              "from": "Email",
+              "to": "emailId"
+            },
             {
               "from": "Checkbox",
               "to": "checked"
@@ -671,7 +799,11 @@
               "to": "timezone"
             }
           ],
-          "whitelistedEvents": [{ "eventName": "create an item" }]
+          "whitelistedEvents": [
+            {
+              "eventName": "create an item"
+            }
+          ]
         }
       },
       "message": {
@@ -763,9 +895,16 @@
               "from": "Status",
               "to": "status"
             },
-            { "from": "Email", "to": "emailId" }
+            {
+              "from": "Email",
+              "to": "emailId"
+            }
           ],
-          "whitelistedEvents": [{ "eventName": "" }]
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
         }
       },
       "message": {
@@ -810,6 +949,75 @@
     },
     "output": {
       "error": "Event Discarded. To allow this event, add this in Allowlist"
+    }
+  },
+  {
+    "description": "check for deleted boards (configured boards are deleted)",
+    "input": {
+      "destination": {
+        "Config": {
+          "apiToken": "eywwakzdjiksjhriherniSFsjhnskdojsSDFhsdns.sSRSSREWdnfnsjshfjsjskshfiskskdS__Fskilhih",
+          "boardId": "339283934",
+          "groupTitle": "Next year",
+          "columnToPropertyMapping": [
+            {
+              "from": "Status",
+              "to": "status"
+            },
+            {
+              "from": "Email",
+              "to": "emailId"
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": "create an item"
+            }
+          ]
+        }
+      },
+      "message": {
+        "event": "create an item",
+        "type": "track",
+        "sentAt": "2021-01-03T17:02:53.195Z",
+        "userId": "ujjwal27",
+        "channel": "web",
+        "properties": {
+          "name": "Task 1",
+          "status": "Done",
+          "emailId": "abc@email.com",
+          "emailText": "emailId"
+        },
+        "context": {
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "app": {
+            "name": "RudderLabs JavaScript SDK",
+            "build": "1.0.0",
+            "version": "1.1.11",
+            "namespace": "com.rudderlabs.javascript"
+          },
+          "locale": "en-US",
+          "screen": {
+            "density": 2
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.1.11"
+          },
+          "campaign": {},
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+        },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "originalTimestamp": "2021-01-03T17:02:53.193Z"
+      }
+    },
+    "output": {
+      "error": "The board with boardId 339283934 does not exist"
     }
   }
 ]

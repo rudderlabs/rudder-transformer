@@ -47,6 +47,13 @@ class Redis {
         this.data[key] = value;
     }
 
+    setex(key,expiry, value) {
+        if(key === "error"){
+            throw new Error("Connection is Closed");
+        }
+        this.data[key] = value;
+    }
+
     connect() {
         this.status = "ready"
         return new Promise((resolve, reject) => {

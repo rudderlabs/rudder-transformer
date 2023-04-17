@@ -80,11 +80,12 @@ const RedisDB = {
    */
 
   async setVal(key, value, isValJson = true) {
+    const dataExpiry = 60*60; // 1 hour
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       const valueToStore = isValJson ? JSON.stringify(value) : value;
       const bytes = Buffer.byteLength(valueToStore, "utf-8");
-      await this.client.set(key, valueToStore);
+      await this.client.setex(key,dataExpiry, valueToStore);
       stats.gauge('redis_set_val_size', bytes, {
         timestamp: Date.now()
       });

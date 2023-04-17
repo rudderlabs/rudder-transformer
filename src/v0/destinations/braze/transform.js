@@ -245,7 +245,7 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
   if (payload && Object.keys(payload).length > 0) {
     payload = setExternalIdOrAliasObject(payload, message);
     const requestJson = { attributes: [payload] };
-    if (destination.Config.deduplicationEnabled) {
+    if (destination.Config.supportDedup) {
       const dedupedAttributePayload = processDeduplication(processParams.userStore, payload);
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
@@ -345,7 +345,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
   if (attributePayload && Object.keys(attributePayload).length > 0) {
     attributePayload = setExternalIdOrAliasObject(attributePayload, message);
     requestJson.attributes = [attributePayload];
-    if (destination.Config.deduplicationEnabled) {
+    if (destination.Config.supportDedup) {
       const dedupedAttributePayload = processDeduplication(
         processParams.userStore,
         attributePayload,
@@ -530,7 +530,7 @@ async function process(event, processParams = { userStore: new Map() }) {
 const processRouterDest = async (inputs, reqMetadata) => {
   const userStore = new Map();
   const { destination } = inputs[0];
-  if (destination.Config.deduplicationEnabled) {
+  if (destination.Config.supportDedup) {
     let lookedUpUsers;
     try {
       const startTime = Date.now();
@@ -554,7 +554,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   // if deduplication is enabled process each group of events for a user (userId or anonymousId)
   // synchronously (slower) else process asynchronously (faster)
   const allResps = Object.keys(groupedInputs).map(async (id) => {
-    const respList = destination.Config.deduplicationEnabled
+    const respList = destination.Config.supportDedup
       ? await simpleProcessRouterDestSync(groupedInputs[id], process, reqMetadata, {
           userStore,
         })

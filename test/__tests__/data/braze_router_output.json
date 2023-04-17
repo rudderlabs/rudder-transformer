@@ -200,7 +200,7 @@
           "eventFilteringOption": "disable",
           "oneTrustCookieCategories": [],
           "restApiKey": "0066a73e-d9b3-4d1f-b17d-8cf410505e36",
-          "deduplicationEnabled": true,
+          "supportDedup": true,
           "trackAnonymousUser": true,
           "whitelistedEvents": []
         },
@@ -278,7 +278,7 @@
           "eventFilteringOption": "disable",
           "oneTrustCookieCategories": [],
           "restApiKey": "0066a73e-d9b3-4d1f-b17d-8cf410505e36",
-          "deduplicationEnabled": true,
+          "supportDedup": true,
           "trackAnonymousUser": true,
           "whitelistedEvents": []
         },

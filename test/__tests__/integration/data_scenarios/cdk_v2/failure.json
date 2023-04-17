@@ -537,7 +537,7 @@
       "output": {
         "body": {
           "JSON": {
-            "event_time": 1672562745,
+            "event_time": 1672562741,
             "event_source_url": "https://www.website.com/product/path",
             "action_source": "offline",
             "event_id": "9a37b6d0-b156-4b90-b6e4-109f7a5568e2",
@@ -670,7 +670,7 @@
       "output": {
         "body": {
           "JSON": {
-            "event_time": 1672562745,
+            "event_time": 1672562741,
             "event_source_url": "https://www.website.com/product/path",
             "action_source": "offline",
             "event_id": "914a895e-5713-47e4-92e2-10d18a2f6774",

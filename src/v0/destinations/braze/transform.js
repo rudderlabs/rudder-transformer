@@ -533,11 +533,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   if (destination.Config.supportDedup) {
     let lookedUpUsers;
     try {
-      const startTime = Date.now();
       lookedUpUsers = await BrazeDedupUtility.doLookup(inputs);
-      const endTime = Date.now();
-      // TODO: Remove this log
-      logger.info(`Time taken to do lookup: ${endTime - startTime} ms for ${inputs.length} users`);
     } catch (error) {
       logger.error('Error while fetching user store', error);
     }

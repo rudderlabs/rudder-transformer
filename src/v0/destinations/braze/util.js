@@ -1,6 +1,7 @@
 /* eslint-disable camelcase */
 const _ = require('lodash');
 const get = require('get-value');
+const stats = require('../../../util/stats');
 const { httpPOST } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const {
@@ -163,10 +164,16 @@ const BrazeDedupUtility = {
    * @returns {Array} array of braze user objects
    */
   async doLookup(inputs) {
+    const lookupStartTime = Date.now();
     const { destination } = inputs[0];
     const { externalIdsToQuery, aliasIdsToQuery } = this.prepareInputForDedup(inputs);
     const identfierChunks = this.prepareChunksForDedup(externalIdsToQuery, aliasIdsToQuery);
     const chunkedUserData = await this.doApiLookup(identfierChunks, destination);
+    stats.timing('braze_lookup_time', lookupStartTime, {
+      user_count: externalIdsToQuery.length + aliasIdsToQuery.length,
+      lookup_api_hits: identfierChunks.length,
+      destination_id: destination.Config.destinationId,
+    });
     return _.flatMap(chunkedUserData);
   },
 

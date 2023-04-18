@@ -94,7 +94,7 @@ const RedisDB = {
     }
   },
   async disconnect() {
-    if (process.env.USE_REDIS_DB !== 'false') {
+    if (process.env.USE_REDIS_DB && process.env.USE_REDIS_DB !== 'false') {
       stats.increment('redis_graceful_shutdown', {
         timestamp: Date.now(),
       });

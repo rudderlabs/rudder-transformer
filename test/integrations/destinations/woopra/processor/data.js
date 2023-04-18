@@ -18,7 +18,7 @@ const data = [{
                     "status": 200,
                     "body": [{
           "output": 
-          {"body":{"XML":{},"FORM":{},"JSON":{},"JSON_ARRAY":{}},"type":"REST","files":{},"method":"GET","params":{"os":"Android","app":"RuddCDN","browser":"Chrome86.0.4240.111","cookie":"21e13f4bc7ceddad","Project":"abc.com","cv_email":"anant@r.com","cv_name":"Anant jain","cv_state":"Delhi","cv_title":"Mr","cv_hasPurchased":"yes","timestamp":"1601322811900","cv_address":"H.No. abc Street PQRS "},"headers":{},"version":"1","endpoint":"https://www.woopra.com/track/identify","userId":""}, 
+          {"body":{"XML":{},"FORM":{},"JSON":{},"JSON_ARRAY":{}},"type":"REST","files":{},"method":"GET","params":{"os":"Android","app":"RuddCDN","browser":"Chrome86.0.4240.111","cookie":"21e13f4bc7ceddad","Project":"abc.com","cv_email":"anant@r.com","cv_name":"Anant jain","cv_state":"Delhi","cv_title":"Mr","cv_hasPurchased":"yes","timestamp":"1601371229907","cv_address":"H.No. abc Street PQRS "},"headers":{},"version":"1","endpoint":"https://www.woopra.com/track/identify","userId":""}, 
           "statusCode": 200}]
                 }
             } 
@@ -42,7 +42,7 @@ const data = [{
                     "status": 200,
                     "body": [{
           "output": 
-          {"body":{"XML":{},"FORM":{},"JSON":{},"JSON_ARRAY":{}},"type":"REST","files":{},"method":"GET","params":{"os":"Android","event":"First Investment","cookie":"abcd123451","Project":"int.com","timestamp":"1601322811900","ce_currency":"EUR","ce_revenue":20.37566,"cv_customProp":"customValue","cv_anonymousId":"21e13f4bc7ceddad"},"headers":{},"version":"1","endpoint":"https://www.woopra.com/track/ce","userId":""}, 
+          {"body":{"XML":{},"FORM":{},"JSON":{},"JSON_ARRAY":{}},"type":"REST","files":{},"method":"GET","params":{"os":"Android","event":"First Investment","cookie":"abcd123451","Project":"int.com","timestamp":"1601371229907","ce_currency":"EUR","ce_revenue":20.37566,"cv_customProp":"customValue","cv_anonymousId":"21e13f4bc7ceddad"},"headers":{},"version":"1","endpoint":"https://www.woopra.com/track/ce","userId":""}, 
           "statusCode": 200}]
                 }
             } 
@@ -66,7 +66,7 @@ const data = [{
                     "status": 200,
                     "body": [{
           "output": 
-          {"body":{"XML":{},"FORM":{},"JSON":{},"JSON_ARRAY":{}},"type":"REST","files":{},"method":"GET","params":{"os":"Android","app":"RuddCDN","event":"Viewed Home Page","ce_url":"http://www.rudderstack.com","timestamp":"1601322811900","Project":"abc.com","ce_title":"Home | RudderStack","cv_customProp":"customValue","cookie":"21e13f4bc7ceddad","ce_referrer":"google.com"},"headers":{},"version":"1","endpoint":"https://www.woopra.com/track/ce","userId":""}, 
+          {"body":{"XML":{},"FORM":{},"JSON":{},"JSON_ARRAY":{}},"type":"REST","files":{},"method":"GET","params":{"os":"Android","app":"RuddCDN","event":"Viewed Home Page","ce_url":"http://www.rudderstack.com","timestamp":"1601371229907","Project":"abc.com","ce_title":"Home | RudderStack","cv_customProp":"customValue","cookie":"21e13f4bc7ceddad","ce_referrer":"google.com"},"headers":{},"version":"1","endpoint":"https://www.woopra.com/track/ce","userId":""}, 
           "statusCode": 200}]
                 }
             } 

@@ -29,7 +29,7 @@
               "title": "",
               "url": "http://localhost/tests/html/index4.html"
             },
-            "timeStamp": "2020-04-17T14:55:31.367Z"
+            "timeStamp": "2020-04-17T20:25:31.381+05:30"
           }
         ]
       },
@@ -63,7 +63,7 @@
               "email": "testmp@email.com",
               "firstname": "Test Transformer"
             },
-            "timeStamp": "2020-04-17T14:55:31.37Z"
+            "timeStamp": "2020-04-17T20:25:31.401+05:30"
           }
         ]
       },
@@ -99,7 +99,7 @@
               "firstname": "Test Transformer"
             },
             "properties": { "test_prop_1": "test prop", "test_prop_2": 1232 },
-            "timeStamp": "2020-04-17T14:55:31.372Z"
+            "timeStamp": "2020-04-17T20:25:31.401+05:30"
           }
         ]
       },
@@ -138,7 +138,7 @@
               "title": "",
               "url": "http://localhost/tests/html/index4.html"
             },
-            "timeStamp": "2020-04-17T14:55:31.367Z"
+            "timeStamp": "2020-04-17T20:25:31.381+05:30"
           }
         ]
       },
@@ -172,7 +172,7 @@
               "test_prop_1": "test prop",
               "test_prop_2": 1232
             },
-            "timeStamp": "2020-04-17T14:55:31.372Z"
+            "timeStamp": "2020-04-17T20:25:31.401+05:30"
           }
         ]
       },

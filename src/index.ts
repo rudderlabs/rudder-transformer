@@ -5,6 +5,7 @@ import logger from './logger';
 import dotenv from 'dotenv';
 import cluster from './util/cluster';
 import { router } from './versionedRouter';
+const { RedisDB } = require('./util/redisConnector');
 import { testRouter } from './testRouter';
 import { metricsRouter } from './metricsRouter';
 import { addStatMiddleware } from './middleware';
@@ -19,7 +20,6 @@ const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
 
 const app = new Koa();
 addStatMiddleware(app);
-
 const metricsApp = new Koa();
 addStatMiddleware(metricsApp);
 metricsApp.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());
@@ -41,6 +41,8 @@ if (useUpdatedRoutes) {
 }
 
 function finalFunction() {
+  RedisDB.disconnect();
+  logger.info('Redis client disconnected');
   logger.error(`Process (pid: ${process.pid}) was gracefully shutdown`);
   logProcessInfo();
 }

@@ -70,8 +70,7 @@ const identifyResponseBuilder = (message, { Config }) => {
  * @param {*} Config
  * @returns
  */
-const trackResponseBuilder = async (message, { Config }) => {
-  const { event } = message;
+const trackResponseBuilder = async (message, { Config }, event) => {
   if (!event) {
     throw new InstrumentationError('Event name is required for track call.');
   }
@@ -173,11 +172,11 @@ const processEvent = async (message, destination) => {
     case EventType.TRACK: {
       const mappedEvents = eventMappingHandler(message, destination);
       if (mappedEvents.length > 0) {
-        response = [];
-        mappedEvents.forEach(async (mappedEvent) => {
-          const res = await trackResponseBuilder(message, destination, mappedEvent);
-          response.push(res);
-        });
+        const respList = await Promise.all(
+          mappedEvents.map(async (mappedEvent) => trackResponseBuilder(message, destination, mappedEvent))
+        );
+
+        response = respList;
       } else {
         response = await trackResponseBuilder(message, destination, get(message, 'event'));
       }
@@ -191,7 +190,6 @@ const processEvent = async (message, destination) => {
   }
   return response;
 };
-
 const process = async (event) => processEvent(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {

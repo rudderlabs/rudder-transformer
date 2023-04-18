@@ -229,7 +229,7 @@
                     },
                     "event": "Visited Home",
                     "messageId": "1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb",
-                    "originalTimestamp": "2020-09-28T19:53:31.900Z",
+                    "originalTimestamp": "2020-09-29T14:50:29.907+05:30",
                     "properties": {
                         "title": "Home | RudderStack",
                         "url": "http://www.rudderstack.com"
@@ -441,7 +441,7 @@
                             "id": "anon-id-new",
                             "userId": "anon-id-new",
                             "messageId": "1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb",
-                            "originalTimestamp": "2020-09-28T19:53:31.900Z",
+                            "originalTimestamp": "2020-09-29T14:50:29.907+05:30",
                             "writeKey": "pl_writeKey"
                         },
                         "JSON_ARRAY": {},
@@ -589,7 +589,7 @@
                             "id": "anon-id-new",
                             "userId": "anon-id-new",
                             "messageId": "1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb",
-                            "originalTimestamp": "2020-09-28T19:53:31.900Z",
+                            "originalTimestamp": "2020-09-29T14:50:29.907+05:30",
                             "writeKey": "pl_writeKey"
                         },
                         "JSON_ARRAY": {},

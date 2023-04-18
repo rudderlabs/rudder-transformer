@@ -367,7 +367,7 @@
         "body": {
           "JSON": {
             "event_name": "AddToCart",
-            "event_time": 1671792302,
+            "event_time": 1671792298,
             "event_source_url": "https://www.website.com/product/path",
             "action_source": "offline",
             "event_id": "e4b03487-bd3d-4962-a06e-4aae203c9bf0",
@@ -455,7 +455,7 @@
         "body": {
           "JSON": {
             "event_name": "Checkout",
-            "event_time": 1671792302,
+            "event_time": 1671792298,
             "event_source_url": "https://www.website.com/product/path",
             "action_source": "offline",
             "event_id": "e4b03487-bd3d-4962-a06e-4aae203c9bf0",
@@ -543,7 +543,7 @@
         "body": {
           "JSON": {
             "event_name": "ViewCategory",
-            "event_time": 1671792302,
+            "event_time": 1671792298,
             "event_source_url": "https://www.website.com/product/path",
             "action_source": "offline",
             "event_id": "29ca1f35-64fc-4b28-b4e3-ebdfe7403e00",

@@ -1,5 +1,5 @@
-const utilities = require('../../../src/v0/util');
-const { getFuncTestData } = require('./testHelper');
+const utilities = require('.');
+const { getFuncTestData } = require('../../../test/testHelper');
 
 // Names of the utility functions to test
 const functionNames = [
@@ -10,17 +10,15 @@ const functionNames = [
   'getValueFromPropertiesOrTraits',
   'getErrorStatusCode',
   'extractCustomFields',
-  'batchMultiplexedEvents'
+  'batchMultiplexedEvents',
 ];
 
 // Names of the utility functions to test which expects multiple arguments as values and not objects
-const functionNamesExpectingMultipleArguments = [
-  'checkAndCorrectUserId'
-]
+const functionNamesExpectingMultipleArguments = ['checkAndCorrectUserId'];
 
 describe('Utility Functions Tests', () => {
   describe.each(functionNames)('%s Tests', (funcName) => {
-    const funcTestData = getFuncTestData(funcName);
+    const funcTestData = getFuncTestData(__dirname, `./testdata/${funcName}.json`);
     test.each(funcTestData)('$description', async ({ description, input, output }) => {
       try {
         let result;
@@ -49,7 +47,7 @@ describe('Utility Functions Tests', () => {
   * This order should be maintained in the input Object.
   */
   describe.each(functionNamesExpectingMultipleArguments)('%s Tests', (funcName) => {
-    const funcTestData = getFuncTestData(funcName);
+    const funcTestData = getFuncTestData(__dirname, `./testdata/${funcName}.json`);
     test.each(funcTestData)('$description', async ({ description, input, output }) => {
       try {
         let result;
@@ -64,4 +62,4 @@ describe('Utility Functions Tests', () => {
   });
 });
 
-
+//Test cases which can't be fit in above test suite, have individual function level test blocks

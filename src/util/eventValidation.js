@@ -35,8 +35,8 @@ const supportedEventTypes = {
   group: true,
   track: true,
   identify: true,
-  page: false,
-  screen: false,
+  page: true,
+  screen: true,
   alias: false,
 };
 

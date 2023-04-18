@@ -1,16 +1,19 @@
 const _ = require('lodash');
 const get = require('get-value');
+const stats = require('../../../util/stats');
 const {
   getShopifyTopic,
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
   extractEmailFromPayload,
+  setAnonymousIdorUserIdFromDb,
   setAnonymousId,
+  // checkForValidRecord,
 } = require('./util');
+const { RedisDB } = require('../../../util/redisConnector');
 const { removeUndefinedAndNullValues } = require('../../util');
 const Message = require('../message');
 const { EventType } = require('../../../constants');
-const stats = require('../../../util/stats');
 const {
   INTEGERATION,
   MAPPING_CATEGORIES,
@@ -19,6 +22,7 @@ const {
   RUDDER_ECOM_MAP,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
+  useRedisDatabase,
 } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 
@@ -73,6 +77,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.TRACK);
   message.setEventName(SHOPIFY_TRACK_MAP[shopifyTopic]);
+
   Object.keys(event)
     .filter(
       (key) =>
@@ -109,8 +114,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   }
   return message;
 };
-
-const processEvent = (inputEvent) => {
+const processEvent = async (inputEvent, metricMetadata) => {
   let message;
   const event = _.cloneDeep(inputEvent);
   const shopifyTopic = getShopifyTopic(event);
@@ -144,7 +148,11 @@ const processEvent = (inputEvent) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
-    setAnonymousId(message);
+    if (useRedisDatabase) {
+      await setAnonymousIdorUserIdFromDb(message, metricMetadata);
+    } else {
+      setAnonymousId(message);
+    }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
   message.setProperty('context.library', {
@@ -152,32 +160,33 @@ const processEvent = (inputEvent) => {
     version: '1.0.0',
   });
   message.setProperty('context.topic', shopifyTopic);
-
   // attaching cart, checkout and order tokens in context object
   message.setProperty(`context.cart_token`, event.cart_token);
   message.setProperty(`context.checkout_token`, event.checkout_token);
   if (shopifyTopic === 'orders_updated') {
     message.setProperty(`context.order_token`, event.token);
   }
-
   message = removeUndefinedAndNullValues(message);
-  stats.increment('shopify_server_side_identifier_event', {
-    writeKey: inputEvent.query_parameters?.writeKey?.[0],
-    timestamp: Date.now(),
-  });
   return message;
 };
 const isIdentifierEvent = (event) => {
   if (event?.event === 'rudderIdentifier') {
-    stats.increment('shopify_client_side_identifier_event', {
-      writeKey: event.query_parameters?.writeKey?.[0],
-      timestamp: Date.now(),
-    });
     return true;
   }
   return false;
 };
-const processIdentifierEvent = () => {
+const processIdentifierEvent = async (event, metricMetadata) => {
+  if (useRedisDatabase) {
+    const setStartTime = Date.now();
+    await RedisDB.setVal(`${event.cartToken}`, { anonymousId: event.anonymousId });
+    stats.timing('redis_set_latency', setStartTime, {
+      ...metricMetadata,
+    });
+    stats.increment('shopify_redis_set_anonymousId', {
+      ...metricMetadata,
+      timestamp: Date.now(),
+    });
+  }
   const result = {
     outputToSource: {
       body: Buffer.from('OK').toString('base64'),
@@ -187,7 +196,16 @@ const processIdentifierEvent = () => {
   };
   return result;
 };
-const process = (event) =>
-  isIdentifierEvent(event) ? processIdentifierEvent() : processEvent(event);
+const process = async (event) => {
+  const metricMetadata = {
+    writeKey: event.query_parameters?.writeKey?.[0],
+    source: "SHOPIFY"
+  }
+  if (isIdentifierEvent(event)) {
+    return processIdentifierEvent(event, metricMetadata);
+  }
+  const response = await processEvent(event, metricMetadata);
+  return response;
+};
 
 exports.process = process;

@@ -6,6 +6,7 @@ const PlatformError = require('./platformError');
 const OAuthSecretError = require('./oAuthSecretError');
 const NetworkError = require('./networkError');
 const ThrottledError = require('./throttledError');
+const RedisError = require('./redisError');
 const RetryableError = require('./retryableError');
 const InvalidAuthTokenError = require('./invalidAuthTokenError');
 const AbortedError = require('./abortedError');
@@ -30,4 +31,5 @@ module.exports = {
   UnauthorizedError,
   NetworkInstrumentationError,
   UnsupportedEventError,
+  RedisError
 };

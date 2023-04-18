@@ -65,7 +65,7 @@ const setImportCredentials = (destConfig) => {
 const responseBuilderSimple = (parameters, message, eventType, destConfig) => {
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
-  response.userId = message.anonymousId || message.userId;
+  response.userId = message.userId || message.anonymousId;
   const encodedData = Buffer.from(JSON.stringify(removeUndefinedValues(parameters))).toString(
     'base64',
   );
@@ -122,6 +122,10 @@ const processRevenueEvents = (message, destination, revenueValue) => {
     $distinct_id: message.userId || message.anonymousId,
   };
 
+  if (destination?.Config.identityMergeApi === 'simplified') {
+    parameters.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+  }
+
   return responseBuilderSimple(parameters, message, 'revenue', destination.Config);
 };
 
@@ -133,7 +137,7 @@ const getEventValueForTrackEvent = (message, destination) => {
     mappedProperties.$insert_id = mappedProperties.$insert_id.slice(-36);
   }
   const unixTimestamp = toUnixTimestamp(message.timestamp);
-  const properties = {
+  let properties = {
     ...message.properties,
     ...get(message, 'context.traits'),
     ...mappedProperties,
@@ -141,6 +145,15 @@ const getEventValueForTrackEvent = (message, destination) => {
     distinct_id: message.userId || message.anonymousId,
     time: unixTimestamp,
   };
+
+  if (destination.Config?.identityMergeApi === 'simplified') {
+    properties = {
+      ...properties,
+      distinct_id: message.userId || `$device:${message.anonymousId}`,
+      $device_id: message.anonymousId,
+      $user_id: message.userId,
+    };
+  }
 
   if (message.channel === 'web' && message.context?.userAgent) {
     const browser = getBrowserInfo(message.context.userAgent);
@@ -175,10 +188,15 @@ const processIdentifyEvents = async (message, type, destination) => {
   // https://developer.mixpanel.com/reference/profile-set
   returnValue = createIdentifyResponse(message, type, destination, responseBuilderSimple);
 
-  // If userId and anonymousId both are present and required credentials for /import
-  // endpoint are available we are creating the merging response below
-  // https://developer.mixpanel.com/reference/identity-merge
-  if (message.userId && message.anonymousId && isImportAuthCredentialsAvailable(destination)) {
+  if (
+    destination.Config?.identityMergeApi !== 'simplified' &&
+    message.userId &&
+    message.anonymousId &&
+    isImportAuthCredentialsAvailable(destination)
+  ) {
+    // If userId and anonymousId both are present and required credentials for /import
+    // endpoint are available we are creating the merging response below
+    // https://developer.mixpanel.com/reference/identity-merge
     const createUserResponse = await createUser(returnValue);
     const status = createUserResponse?.status || 400;
     if (!isHttpStatusSuccess(status)) {
@@ -212,7 +230,7 @@ const processIdentifyEvents = async (message, type, destination) => {
 
 const processPageOrScreenEvents = (message, type, destination) => {
   const mappedProperties = constructPayload(message, mPEventPropertiesConfigJson);
-  const properties = {
+  let properties = {
     ...get(message, 'context.traits'),
     ...message.properties,
     ...mappedProperties,
@@ -220,6 +238,15 @@ const processPageOrScreenEvents = (message, type, destination) => {
     distinct_id: message.userId || message.anonymousId,
     time: toUnixTimestamp(message.timestamp),
   };
+
+  if (destination.Config?.identityMergeApi === 'simplified') {
+    properties = {
+      ...properties,
+      distinct_id: message.userId || `$device:${message.anonymousId}`,
+      $device_id: message.anonymousId,
+      $user_id: message.userId,
+    };
+  }
 
   if (message.name) {
     properties.name = message.name;
@@ -279,6 +306,11 @@ const processGroupEvents = (message, type, destination) => {
             [groupKey]: groupKeyVal,
           },
         };
+
+        if (destination?.Config.identityMergeApi === 'simplified') {
+          parameters.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+        }
+
         const response = responseBuilderSimple(parameters, message, type, destination.Config);
         returnValue.push(response);
 
@@ -333,6 +365,11 @@ const processSingleMessage = async (message, destination) => {
     case EventType.IDENTIFY:
       return processIdentifyEvents(message, message.type, destination);
     case EventType.ALIAS:
+      if (destination.Config?.identityMergeApi === 'simplified') {
+        throw new InstrumentationError(
+          `Event type '${EventType.ALIAS}' is not supported when 'Simplified ID merge' api is selected in webapp`,
+        );
+      }
       return processAliasEvents(message, message.type, destination);
     case EventType.GROUP:
       return processGroupEvents(message, message.type, destination);

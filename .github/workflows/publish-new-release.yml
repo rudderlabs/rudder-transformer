@@ -55,6 +55,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT }}
           CONVENTIONAL_GITHUB_RELEASER_TOKEN: ${{ secrets.PAT }}
         run: |
+          git fetch --tags origin
           git tag -a v${{ steps.extract-version.outputs.release_version }} -m "chore: release v${{ steps.extract-version.outputs.release_version }}"
           git push origin refs/tags/v${{ steps.extract-version.outputs.release_version }}
           npm run release:github
@@ -88,6 +89,7 @@ jobs:
       - name: Notify Slack Channel
         id: slack
         uses: slackapi/slack-github-action@v1.23.0
+        continue-on-error: true
         env:
           SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
           PROJECT_NAME: 'Rudder Transformer'
@@ -96,6 +98,7 @@ jobs:
           channel-id: ${{ secrets.SLACK_RELEASE_CHANNEL_ID }}
           payload: |
             {
+              "text": "*<${{env.RELEASES_URL}}v${{ steps.extract-version.outputs.release_version }}|v${{ steps.extract-version.outputs.release_version }}>*\nCC: <@U03KG4BK1L1> <@U02AE5GMMHV> <@U01LVJ30QEB>"
               "blocks": [
                 {
                   "type": "header",

@@ -1,8 +1,9 @@
 # syntax=docker/dockerfile:1.4
-FROM ubuntu:20.04
+FROM ubuntu:20.04 AS base
 
 RUN apt-get update \
   && apt-get install -y curl make g++ \
+  && apt-get install -y cpio \
   && curl -sL https://deb.nodesource.com/setup_14.x | bash \
   && apt-get install -y nodejs \
   && rm -rf /var/lib/apt/lists/* \
@@ -15,16 +16,20 @@ RUN adduser --disabled-password --gecos "" --uid 1000 node
 
 RUN mkdir -p /home/node/app/node_modules && chown -R node:node /home/node/app && mkdir -p /home/node/.npm &&  chown -R node:node /home/node/.npm
 
-# Create app directory
-WORKDIR /home/node/app
-USER node
+FROM base AS development
 
 ARG version
 ENV transformer_build_version=$version
-COPY package*.json ./
-RUN npm ci
 
+WORKDIR /home/node/app
+USER node
 COPY --chown=node:node . .
+COPY package*.json ./
+
+USER node
+
+RUN npm ci
+RUN npm run build
 
 HEALTHCHECK --interval=1s --timeout=30s --retries=30 \
     CMD  wget --no-verbose --tries=5 --spider http://localhost:9090/health || exit 1
@@ -32,3 +37,5 @@ HEALTHCHECK --interval=1s --timeout=30s --retries=30 \
 CMD [ "npm", "start" ]
 
 EXPOSE 9090/tcp
+
+# TODO: Add prod builds

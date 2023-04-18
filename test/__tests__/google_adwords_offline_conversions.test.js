@@ -5,7 +5,10 @@ const moment = require("moment");
 const fs = require("fs");
 const path = require("path");
 const version = "v0";
-
+const responseFile = fs.readFileSync(
+  path.resolve(__dirname, `../__mocks__/data/google_adwords_offline_conversion/response.json`)
+);
+// fs.readFileSync("/Users/apple/Desktop/workspace/rudder-transformer/test//data/google_adwords_offline_conversion/response.json");
 const axios = require("axios");
 const { handleProxyRequest } = require("../../src/versionedRouter");
 
@@ -140,6 +143,67 @@ axios.post = jest.fn(async (url, data, reqConfig) => {
       ],
       status: 401
     };
+  } else if (
+    url.includes(
+      "https://googleads.googleapis.com/v13/customers/1112223333/googleAds:searchStream"
+    ) ||
+    url.includes(
+      "https://googleads.googleapis.com/v13/customers/111-222-3333/googleAds:searchStream"
+    ) || url.includes(
+      "https://googleads.googleapis.com/v13/customers/customer-id/googleAds:searchStream"
+    )
+  ) {
+    // this is for store case
+    if (data.query.includes("conversion_action")) {
+      // searchStream for conversion_action
+      axiosResponse = {
+        data: [
+          {
+            results: [
+              {
+                conversionAction: {
+                  resourceName:
+                    "customers/111-222-3333/offlineUserDataJobs/conversion_id",
+                  id: "848898416"
+                }
+              }
+            ],
+            fieldMask: "conversionAction.id",
+            requestId: "pNnCTCWGP9XOyy3Hmj7yGA"
+          }
+        ],
+        status: 200
+      };
+    } else if (data.query.includes("conversion_custom_variable")) {
+      // searchStream for conversion_custom_variable
+      axiosResponse = {
+        data: [
+          {
+            results: [
+              {
+                conversionCustomVariable: {
+                  resourceName:
+                    "customers/1234567891/conversionCustomVariables/19131634",
+                  name: "revenue"
+                }
+              },
+              {
+                conversionCustomVariable: {
+                  resourceName:
+                    "customers/1234567891/conversionCustomVariables/19134061",
+                  name: "page_value"
+                }
+              }
+            ]
+          }
+        ],
+        status: 200
+      };
+    }
+  } else {
+    // These cases are taken from response.json
+    const data = JSON.parse(responseFile);
+    axiosResponse = data[url];
   }
 
   return axiosResponse;

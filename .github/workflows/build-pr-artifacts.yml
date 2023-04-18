@@ -64,6 +64,7 @@ jobs:
         with:
           context: .
           file: Dockerfile
+          target: development
           load: true
           tags: |
             ${{ env.REPO_NAME }}:${{ env.TAG_NAME }}
@@ -73,12 +74,14 @@ jobs:
       - name: Run Tests
         run: |
           docker run ${{ env.REPO_NAME }}:${{ env.TAG_NAME }} npm run test:ci
+          docker run ${{ env.REPO_NAME }}:${{ env.TAG_NAME }} npm run test:integration
 
       - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v4.0.0
         with:
           context: .
           push: true
+          target: production
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ env.TAG_NAME }}
             ${{ env.REPO_NAME }}:${{ env.TAG_NAME }}
@@ -104,7 +107,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [generate-tag-name]
     env:
-      TAG_NAME: ${{ needs.generate-tag-name.outputs.tag_name }}
+      TAG_NAME: ut-${{ needs.generate-tag-name.outputs.tag_name }}
 
     # Skip for the release pull requests as staging artifacts will be generated
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
@@ -136,6 +139,7 @@ jobs:
         with:
           context: .
           file: Dockerfile-ut-func
+          target: development
           load: true
           tags: |
             ${{ env.REPO_NAME }}:${{ env.TAG_NAME }}
@@ -151,6 +155,7 @@ jobs:
         with:
           context: .
           file: Dockerfile-ut-func
+          target: development
           push: true
           tags: |
             ${{ env.REPO_NAME_OLD }}:${{ env.TAG_NAME }}

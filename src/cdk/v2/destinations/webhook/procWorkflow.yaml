@@ -20,7 +20,6 @@ steps:
   - name: validateInput
     template: |
       $.assertConfig(.destination.Config.webhookUrl, "Invalid URL in destination config");
-      $.assert(.message.type.toLowerCase(), "Message type is not present. Aborting message.");
   - name: deduceMethod
     template: |
        $.context.method = .destination.Config.webhookMethod ?? 'POST';

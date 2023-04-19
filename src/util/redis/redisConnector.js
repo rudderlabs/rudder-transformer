@@ -9,7 +9,7 @@ const timeoutPromise = new Promise((resolve) => {
 
 const RedisDB = {
   init() {
-    if (process.env.USE_REDIS_DB !== 'false') {
+    if (process.env.USE_REDIS_DB && process.env.USE_REDIS_DB !== 'false') {
       this.host = process.env.REDIS_HOST || 'localhost';
       this.port = parseInt(process.env.REDIS_PORT, 10) || 6379;
       this.password = process.env.REDIS_PASSWORD;
@@ -90,7 +90,7 @@ const RedisDB = {
     }
   },
   async disconnect() {
-    if (process.env.USE_REDIS_DB !== 'false') {
+    if (process.env.USE_REDIS_DB && process.env.USE_REDIS_DB !== 'false') {
       stats.increment('redis_graceful_shutdown', {
         timestamp: Date.now(),
       });

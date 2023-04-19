@@ -12,9 +12,9 @@
     "required": true
   },
   {
-    "destKey": "session.custom",
+    "destKey": "context.device.ip",
     "sourceKeys": "context.ip",
-    "sourceFromGenericMap": true,
+    "sourceFromGenericMap": false,
     "required": true
   }
 ]

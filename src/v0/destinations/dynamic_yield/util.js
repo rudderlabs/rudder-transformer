@@ -1,5 +1,5 @@
 const { constructPayload } = require('../../util');
-const { ConfigCategory } = require('./config');
+const { ConfigCategory, mappingConfig } = require('./config');
 
 const ecomEventsMapping = {
   product_added: 'Add to Cart',
@@ -34,16 +34,17 @@ const populateProperties = (messageProperties, event) => {
 };
 
 const preparePayload = (message, event) => {
-  const payload = constructPayload(message, ConfigCategory.TRACK);
+  const payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
   const eventsObj = {};
 
-  switch (event) {
+  const trimmedEvent = event.toLowerCase().trim().replace(/\s+/g, '_');
+  switch (trimmedEvent) {
     case 'product_added':
     case 'product_removed':
     case 'product_added_to_wishlist':
     case 'order_completed':
-      eventsObj.name = ecomEventsMapping[event] || event;
-      eventsObj.properties = populateProperties(message.properties, event);
+      eventsObj.name = ecomEventsMapping[trimmedEvent] || event;
+      eventsObj.properties = populateProperties(message.properties, trimmedEvent);
       break;
     default:
       eventsObj.name = event;

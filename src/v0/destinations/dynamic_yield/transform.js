@@ -1,6 +1,6 @@
 const sha256 = require('sha256');
 const { EventType } = require('../../../constants');
-const { BASE_URL, ConfigCategory } = require('./config');
+const { BASE_URL, ConfigCategory, mappingConfig } = require('./config');
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
@@ -33,7 +33,7 @@ const responseBuilder = (payload, apiKey, endpoint) => {
 const identifyResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
 
-  const payload = constructPayload(message, ConfigCategory.IDENTIFY);
+  const payload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
   payload.events = [];
   const eventsObj = {
     name: 'Identify User',
@@ -47,6 +47,7 @@ const identifyResponseBuilder = (message, { Config }) => {
     eventsObj.properties.cuidType = 'userId';
     eventsObj.properties.cuid = payload.user.id;
   }
+  payload.events.push(eventsObj);
   const endpoint = `${BASE_URL}/collect/user/event`;
   return responseBuilder(payload, apiKey, endpoint);
 };
@@ -65,7 +66,7 @@ const trackResponseBuilder = (message, { Config }) => {
     throw new InstrumentationError('Event is not present in the input payload');
   }
 
-  const payload = preparePayload(message, Config);
+  const payload = preparePayload(message, event);
   const endpoint = `${BASE_URL}/collect/user/event`;
 
   return responseBuilder(payload, apiKey, endpoint);

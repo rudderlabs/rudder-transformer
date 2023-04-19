@@ -13,7 +13,7 @@ function getDataTypeOverride(key, val, options, jsonKey = false) {
     return 'json';
   }
 
-  if (val) {
+  if (options.rsAlterStringToText === 'true' && val) {
     const stringifiedVal = Array.isArray(val) ? JSON.stringify(val) : val;
     if (stringifiedVal.length > RSStringLimit) {
       return 'text';
@@ -26,6 +26,7 @@ function process(event) {
   const whSchemaVersion = event.request.query.whSchemaVersion || 'v1';
   const whStoreEvent = event.destination.Config.storeFullEvent === true;
   const destJsonPaths = event.destination?.Config?.jsonPaths || '';
+  const rsAlterStringToText = event.request.query.rsAlterStringToText || 'false';
   const provider = redshift;
   return processSingleMessage(event.message, {
     metadata: event.metadata,
@@ -33,6 +34,7 @@ function process(event) {
     whStoreEvent,
     getDataTypeOverride,
     provider,
+    rsAlterStringToText,
     sourceCategory: event.metadata ? event.metadata.sourceCategory : null,
     destJsonPaths,
   });

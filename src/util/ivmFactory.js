@@ -3,11 +3,9 @@ const fetch = require('node-fetch');
 const _ = require('lodash');
 
 const stats = require('./stats');
-const { getLibraryCodeV1, getRudderLibByImportName } = require('./customTransforrmationsStore-v1');
+const { getLibraryCodeV1 } = require('./customTransforrmationsStore-v1');
 const { parserForImport } = require('./parser');
 const logger = require('../logger');
-
-const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
 
 const isolateVmMem = 128;
 async function evaluateModule(isolate, context, moduleCode) {
@@ -27,28 +25,17 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   const createIvmStartTime = new Date();
   const logs = [];
   const libraries = await Promise.all(
-    libraryVersionIds.map(async (libraryVersionId) => await getLibraryCodeV1(libraryVersionId)),
+    libraryVersionIds.map(async (libraryVersionId) => getLibraryCodeV1(libraryVersionId)),
   );
   const librariesMap = {};
   if (code && libraries) {
-    const extractedLibImportNames = Object.keys(await parserForImport(code));
-
+    const extractedLibraries = Object.keys(parserForImport(code));
+    // TODO: Check if this should this be &&
     libraries.forEach((library) => {
       const libHandleName = _.camelCase(library.name);
-      if (extractedLibImportNames.includes(libHandleName)) {
+      if (extractedLibraries.includes(libHandleName)) {
         librariesMap[libHandleName] = library.code;
       }
-    });
-
-    // Extract ruddder libraries from import names
-    const rudderLibImportNames = extractedLibImportNames.filter((name) =>
-      RUDDER_LIBRARY_REGEX.test(name),
-    );
-    const rudderLibraries = await Promise.all(
-      rudderLibImportNames.map(async (importName) => await getRudderLibByImportName(importName)),
-    );
-    rudderLibraries.forEach((library) => {
-      librariesMap[library.importName] = library.code;
     });
   }
 
@@ -272,12 +259,10 @@ async function createIvm(code, libraryVersionIds, versionId, testMode) {
   const bootstrapScriptResult = await bootstrap.run(context);
   // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
   const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`);
-  await customScriptModule.instantiate(context, async (spec) => {
+  await customScriptModule.instantiate(context, (spec) => {
     if (librariesMap[spec]) {
       return compiledModules[spec].module;
     }
-    // Release the isolate context before throwing an error
-    await context.release();
     console.log(`import from ${spec} failed. Module not found.`);
     throw new Error(`import from ${spec} failed. Module not found.`);
   });

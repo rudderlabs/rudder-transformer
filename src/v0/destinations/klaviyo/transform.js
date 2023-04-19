@@ -12,7 +12,7 @@ const {
   eventNameMapping,
   jsonNameMapping,
 } = require('./config');
-const { isProfileExist, createCustomerProperties, checkForSubscribe } = require('./util');
+const { isProfileExist, checkForMembersAndSubscribe, createCustomerProperties } = require('./util');
 const {
   defaultRequestConfig,
   constructPayload,
@@ -56,10 +56,7 @@ const identifyRequestHandler = async (message, category, destination) => {
   }
   const traitsInfo = getFieldValueFromMessage(message, 'traits');
   const response = defaultRequestConfig();
-  let personId;
-  if (message.channel !== 'sources') {
-    personId = await isProfileExist(message, destination);
-  }
+  const personId = await isProfileExist(message, destination);
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
   propertyPayload = extractCustomFields(
@@ -95,7 +92,7 @@ const identifyRequestHandler = async (message, category, destination) => {
     response.params.api_key = destination.Config.privateApiKey;
   }
   const responseArray = [response];
-  responseArray.push(...checkForSubscribe(message, traitsInfo, destination));
+  responseArray.push(...checkForMembersAndSubscribe(message, traitsInfo, destination));
   return responseArray;
 };
 
@@ -204,9 +201,6 @@ const groupRequestHandler = (message, category, destination) => {
   if (!destination.Config.privateApiKey) {
     throw new ConfigurationError('Private API Key is a required field for group events');
   }
-  if (!message.groupId) {
-    throw new InstrumentationError('groupId is a required field for group events');
-  }
   let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
   const groupWhitelistedTraits = [...WhiteListedTraits, 'consent', 'smsConsent', 'subscribe'];
@@ -221,23 +215,45 @@ const groupRequestHandler = (message, category, destination) => {
     delete profile.$id;
     profile._id = getFieldValueFromMessage(message, 'userId');
   }
-  if (message.traits.subscribe === true) {
-    profile.sms_consent = message.context?.traits.smsConsent || destination.Config.smsConsent;
-    profile.$consent = message.context?.traits.consent || destination.Config.consent;
-  }
+  const responseArray = [];
 
-  const subscribePayload = {
+  const payload = {
     profiles: [profile],
   };
-  const subscribeResponse = defaultRequestConfig();
-  subscribeResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${message.groupId}/subscribe`;
-  subscribeResponse.headers = {
+  const membersResponse = defaultRequestConfig();
+  membersResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${get(message, 'groupId')}/members`;
+  membersResponse.headers = {
     'Content-Type': 'application/json',
   };
-  subscribeResponse.body.JSON = subscribePayload;
-  subscribeResponse.method = defaultPostRequestConfig.requestMethod;
-  subscribeResponse.params = { api_key: destination.Config.privateApiKey };
-  return subscribeResponse;
+  membersResponse.body.JSON = payload;
+  membersResponse.method = defaultPostRequestConfig.requestMethod;
+  membersResponse.params = { api_key: destination.Config.privateApiKey };
+  responseArray.push(membersResponse);
+
+  if (get(message.traits, 'subscribe') === true) {
+    // Adding Consent Info to Profiles
+    const subscribeProfile = JSON.parse(JSON.stringify(profile));
+    subscribeProfile.sms_consent =
+      message.context?.traits.smsConsent || destination.Config.smsConsent;
+    subscribeProfile.$consent = message.context?.traits.consent || destination.Config.consent;
+
+    const subscribePayload = {
+      profiles: [subscribeProfile],
+    };
+    const subscribeResponse = defaultRequestConfig();
+    subscribeResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${get(
+      message,
+      'groupId',
+    )}/subscribe`;
+    subscribeResponse.headers = {
+      'Content-Type': 'application/json',
+    };
+    subscribeResponse.body.JSON = subscribePayload;
+    subscribeResponse.method = defaultPostRequestConfig.requestMethod;
+    subscribeResponse.params = { api_key: destination.Config.privateApiKey };
+    responseArray.push(subscribeResponse);
+  }
+  return responseArray;
 };
 
 // Main event processor using specific handler funcs

@@ -480,17 +480,15 @@ const getCustomFields = async (message, destination) => {
       return name;
     });
 
-    if (!isEmptyObject(payload)) {
-      fields.forEach((field) => {
-        if (payload[field]) {
-          const customFieldName = fieldsMapping[field];
-          if (customFieldNamesArray.includes(customFieldName)) {
-            const customFieldId = customFieldNameToIdMapping[customFieldName];
-            customFields[customFieldId] = payload[field];
-          }
+    fields.forEach((field) => {
+      if (payload[field]) {
+        const customFieldName = fieldsMapping[field];
+        if (customFieldNamesArray.includes(customFieldName)) {
+          const customFieldId = customFieldNameToIdMapping[customFieldName];
+          customFields[customFieldId] = payload[field];
         }
-      });
-    }
+      }
+    });
   }
   return customFields;
 };

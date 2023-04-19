@@ -8,8 +8,6 @@ bindings:
     path: ../../../../v0/destinations/pinterest_tag/config
   - name: removeUndefinedValues
     path: ../../../../v0/util
-  - name: removeUndefinedAndNullAndEmptyValues
-    path: ../../../../v0/util
 steps:
   - name: checkIfProcessed
     condition: .message.statusCode
@@ -94,7 +92,7 @@ steps:
         "client_ip_address": .context.ip ?? .request_ip,
         "client_user_agent": .context.userAgent
       });
-      userFields = $.removeUndefinedAndNullAndEmptyValues(userFields);
+      userFields = $.removeUndefinedValues(userFields);
       .destination.Config.sendingUnHashedData ? 
         $.processUserPayload(userFields) :
         $.processHashedUserPayload(userFields, .message)
@@ -127,7 +125,7 @@ steps:
         template: |
           let products = .message.properties.products;
           {
-            "num_items": $.sum(products.quantity.(Number(.))[]) || 0,
+            "num_items": $.sum(products.quantity.(Number(.))),
             "content_ids": products.(.product_id ?? .sku ?? .id)[],
             "contents": .message.properties@prop.products.({
               "quantity": Number(.quantity ?? prop.quantity ?? 1),
@@ -139,7 +137,7 @@ steps:
           template: |
             const props = .message.properties;
             const output = {
-              "num_items": Number(props.quantity) || 0,
+              "num_items": Number(props.quantity),
               "content_ids": (props.product_id ?? props.sku ?? props.id)[],
               "contents": {
                 "quantity": Number(props.quantity) || 1,

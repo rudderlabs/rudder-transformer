@@ -7,18 +7,17 @@ const {
   setupUserTransformHandler
 } = require("../../src/util/customTransformer");
 const {
-  generateFunctionName, setOpenFaasUserTransform
+  generateFunctionName
 } = require("../../src/util/customTransformer-faas");
 const {
   deleteFunction,
   getFunctionList,
   getFunction
 } = require("../../src/util/openfaas/faasApi");
-const { invalidateFnCache, awaitFunctionReadiness, FAAS_AST_FN_NAME, FAAS_AST_VID } = require("../../src/util/openfaas/index");
-const { extractLibraries } = require('../../src/util/customTransformer');
+const { invalidateFnCache } = require("../../src/util/openfaas/index");
 const { RetryRequestError } = require("../../src/util/utils");
 
-jest.setTimeout(25000);
+jest.setTimeout(15000);
 jest.mock("axios", () => ({
   ...jest.requireActual("axios")
 }));
@@ -35,24 +34,6 @@ const contructTrRevCode = vid => {
     versionId: vid
   };
 };
-
-const faasCodeParsedForLibs = [
-  {
-    code: "import uuid\nimport requests\ndef transformEvent(event, metadata):\n    return event\n",
-    language: "pythonfaas",
-    response: {
-      uuid: [],
-      requests: []
-    },
-  },
-  {
-    code: "from time import sleep\ndef transformBatch(events, metadata):\n    return events\n",
-    language: "pythonfaas",
-    response: {
-      time: []
-    },
-  }
-]
 
 describe("Function Creation Tests", () => {
   afterAll(async () => {
@@ -144,26 +125,5 @@ describe("Function invocation & creation tests", () => {
     // If function is not found, it will be created
     const deployedFn = await getFunction(funcName);
     expect(deployedFn.name).toEqual(funcName);
-  });
-});
-
-describe("Auxiliary tests", () => {
-  beforeAll(async () => {
-    (await setOpenFaasUserTransform(
-      {
-        language: "pythonfaas",
-        versionId: FAAS_AST_VID
-      },
-      true,
-      FAAS_AST_FN_NAME
-    ));
-
-    await awaitFunctionReadiness(FAAS_AST_FN_NAME);
-  });
-  it("Should be able to extract libraries from code", async () => {
-    for(const testObj of faasCodeParsedForLibs) {
-      const response = await extractLibraries(testObj.code, testObj.validateImports || false, testObj.language);
-      expect(response).toEqual(testObj.response);
-    }
   });
 });

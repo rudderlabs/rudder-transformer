@@ -39,7 +39,10 @@ const identifyResponseBuilder = (message, { Config }) => {
     name: 'Identify User',
     properties: {
       dyType: 'identify-v1',
-      hashedEmail: sha256(message.traits?.email || message.context?.traits?.email),
+      hashedEmail:
+        message.traits?.email || message.context?.traits?.email
+          ? sha256(message.traits?.email || message.context?.traits?.email)
+          : null,
     },
   };
   if (!eventsObj.properties.hashedEmail) {
@@ -77,7 +80,7 @@ const processEvent = (message, destination) => {
     throw new InstrumentationError('Event type is required');
   }
   if (!destination.Config.apiKey) {
-    throw new ConfigurationError('ApiKey is a required field');
+    throw new ConfigurationError('Api Key is a required field');
   }
   const messageType = message.type.toLowerCase();
   let response;

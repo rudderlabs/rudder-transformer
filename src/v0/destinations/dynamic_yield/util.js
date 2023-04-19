@@ -15,6 +15,7 @@ const populateProperties = (messageProperties, event) => {
   };
   if (event === 'order_completed') {
     properties.uniqeTransactionId = messageProperties.order_id;
+    properties.value = messageProperties.revenue;
   } else {
     properties.quantity = messageProperties.quantity;
     properties.productId = messageProperties.sku;

@@ -175,11 +175,11 @@ const getSubscriptionHistory = async (endpoint, options) => {
   return res;
 };
 
-const unixTimestampOrError = (timestamp, originalTimestamp) => {
-  if (!timestamp) {
-    return toUnixTimestamp(originalTimestamp);
+const unixTimestampOrError = (date, timestamp, originalTimestamp) => {
+  if (!date) {
+    return toUnixTimestamp(timestamp || originalTimestamp);
   }
-  const convertedTS = new Date(Number(timestamp)).getTime();
+  const convertedTS = new Date(Number(date)).getTime();
   if (convertedTS > 0) {
     return convertedTS;
   }

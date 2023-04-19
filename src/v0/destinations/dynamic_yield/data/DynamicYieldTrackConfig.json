@@ -1,0 +1,20 @@
+[
+  {
+    "destKey": "user.id",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "session.custom",
+    "sourceKeys": "sessionId",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "context",
+    "sourceKeys": "context.ip",
+    "sourceFromGenericMap": true,
+    "required": true
+  }
+]

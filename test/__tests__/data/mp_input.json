@@ -3837,5 +3837,205 @@
       "type": "alias",
       "userId": "1234abc"
     }
+  },
+  {
+    "description": "Track revenue event: set device id and user id when simplified id merge api is selected",
+    "destination": {
+      "Config": {
+        "apiKey": "apiKey123",
+        "token": "apiToken123",
+        "prefixProperties": true,
+        "identityMergeApi": "simplified"
+      }
+    },
+    "message": {
+      "anonymousId": "anonId01",
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "city": "Disney",
+          "country": "USA",
+          "email": "mickey@disney.com",
+          "firstName": "Mickey"
+        },
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "event": "test revenue MIXPANEL",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
+      "originalTimestamp": "2020-01-24T06:29:02.364Z",
+      "properties": {
+        "currency": "USD",
+        "revenue": 18.9
+      },
+      "receivedAt": "2020-01-24T11:59:02.403+05:30",
+      "request_ip": "[::1]:53710",
+      "sentAt": "2020-01-24T06:29:02.364Z",
+      "timestamp": "2020-01-24T11:59:02.403+05:30",
+      "type": "track",
+      "userId": "userId01"
+    }
+  },
+  {
+    "description": "Page with anonymous user when simplified api is selected",
+    "destination": {
+      "Config": {
+        "apiKey": "apiKey123",
+        "token": "apiToken123",
+        "identityMergeApi": "simplified"
+      }
+    },
+    "message": {
+      "anonymousId": "anonId01",
+      "channel": "web",
+      "name": "Contact Us",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {},
+        "page": {
+          "path": "/destinations/mixpanel",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+      "originalTimestamp": "2020-01-24T06:29:02.358Z",
+      "page": {
+        "path": "/destinations/mixpanel",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": "https://docs.rudderstack.com/destinations/mixpanel",
+        "category": "destination",
+        "initial_referrer": "https://docs.rudderstack.com",
+        "initial_referring_domain": "docs.rudderstack.com"
+      },
+      "receivedAt": "2020-01-24T11:59:02.403+05:30",
+      "request_ip": "[::1]:53708",
+      "sentAt": "2020-01-24T06:29:02.359Z",
+      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "type": "page"
+    }
+  },
+  {
+    "description": "Group call with anonymous user when simplified api is selected",
+    "destination": {
+      "Config": {
+        "apiKey": "apiKey123",
+        "token": "apiToken123",
+        "identityMergeApi": "simplified",
+        "groupKeySettings": [
+          {
+            "groupKey": "company"
+          }
+        ]
+      }
+    },
+    "message": {
+      "anonymousId": "anonId01",
+      "channel": "mobile",
+      "name": "Contact Us",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs Android SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "dd266c67-9199-4a52-ba32-f46ddde67312",
+      "originalTimestamp": "2020-01-24T06:29:02.358Z",
+      "properties": {
+        "path": "/tests/html/index2.html",
+        "referrer": "",
+        "search": "",
+        "title": "",
+        "url": "http://localhost/tests/html/index2.html"
+      },
+      "traits": {
+        "company": "testComp"
+      },
+      "receivedAt": "2020-01-24T11:59:02.403+05:30",
+      "request_ip": "[::1]:53708",
+      "sentAt": "2020-01-24T06:29:02.359Z",
+      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "type": "group"
+    }
   }
 ]

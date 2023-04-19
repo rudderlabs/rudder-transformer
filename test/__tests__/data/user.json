@@ -370,7 +370,7 @@
           },
           "name": "product viewed",
           "user_id": 44,
-          "timestamp": 1587134564
+          "timestamp": 1663080164
         },
         "JSON_ARRAY": {}
       },
@@ -465,7 +465,7 @@
         "FORM": {},
         "JSON": {
           "page_path": "/testing",
-          "timestamp": "2021-01-04T08:43:05.784Z",
+          "timestamp": "2021-01-04T14:13:05.801+05:30",
           "client_user": "rpl0vjwysmc0",
           "page_domain": "https://pagecall.com/testing"
         },

@@ -122,6 +122,10 @@ const processRevenueEvents = (message, destination, revenueValue) => {
     $distinct_id: message.userId || message.anonymousId,
   };
 
+  if (destination?.Config.identityMergeApi === 'simplified') {
+    parameters.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+  }
+
   return responseBuilderSimple(parameters, message, 'revenue', destination.Config);
 };
 
@@ -226,7 +230,7 @@ const processIdentifyEvents = async (message, type, destination) => {
 
 const processPageOrScreenEvents = (message, type, destination) => {
   const mappedProperties = constructPayload(message, mPEventPropertiesConfigJson);
-  const properties = {
+  let properties = {
     ...get(message, 'context.traits'),
     ...message.properties,
     ...mappedProperties,
@@ -234,6 +238,15 @@ const processPageOrScreenEvents = (message, type, destination) => {
     distinct_id: message.userId || message.anonymousId,
     time: toUnixTimestamp(message.timestamp),
   };
+
+  if (destination.Config?.identityMergeApi === 'simplified') {
+    properties = {
+      ...properties,
+      distinct_id: message.userId || `$device:${message.anonymousId}`,
+      $device_id: message.anonymousId,
+      $user_id: message.userId,
+    };
+  }
 
   if (message.name) {
     properties.name = message.name;
@@ -293,6 +306,11 @@ const processGroupEvents = (message, type, destination) => {
             [groupKey]: groupKeyVal,
           },
         };
+
+        if (destination?.Config.identityMergeApi === 'simplified') {
+          parameters.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+        }
+
         const response = responseBuilderSimple(parameters, message, type, destination.Config);
         returnValue.push(response);
 

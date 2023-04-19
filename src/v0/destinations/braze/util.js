@@ -2,7 +2,7 @@
 const _ = require('lodash');
 const get = require('get-value');
 const stats = require('../../../util/stats');
-const { httpPOST } = require('../../../adapters/network');
+const { httpPOST, handleHttpRequest } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const {
   getDestinationExternalID,
@@ -130,7 +130,8 @@ const BrazeDedupUtility = {
         const aliasIdentifiers = ids.filter((id) => id.alias_name !== undefined);
 
         const startTime = Date.now();
-        const lookUpResponse = await httpPOST(
+        const { processedResponse: lookUpResponse } = await handleHttpRequest(
+          'post',
           `${getEndpointFromConfig(destination)}/users/export/ids`,
           {
             external_ids: externalIdentifiers.map((extId) => extId.external_id),
@@ -148,8 +149,7 @@ const BrazeDedupUtility = {
         console.log(
           `Time taken to fetch user store: ${endTime - startTime} ms for ${ids.length} users`,
         );
-        const processedLookUpResponse = processAxiosResponse(lookUpResponse);
-        const { users } = processedLookUpResponse.response;
+        const { users } = lookUpResponse.response;
 
         return users;
       }),

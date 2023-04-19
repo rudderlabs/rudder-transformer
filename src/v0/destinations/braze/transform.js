@@ -215,8 +215,8 @@ async function processIdentify(message, destination) {
 
   const identifyPayload = getIdentifyPayload(message);
   const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
-
-  const { processedResponse: brazeIdentifyResp } = handleHttpRequest(
+  const { processedResponse: brazeIdentifyResp } = await handleHttpRequest(
+    'post',
     identifyEndpoint,
     identifyPayload,
     {

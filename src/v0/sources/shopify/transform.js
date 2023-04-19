@@ -10,7 +10,7 @@ const {
   setAnonymousId,
   // checkForValidRecord,
 } = require('./util');
-const { RedisDB } = require('../../../util/redisConnector');
+const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues } = require('../../util');
 const Message = require('../message');
 const { EventType } = require('../../../constants');
@@ -199,8 +199,8 @@ const processIdentifierEvent = async (event, metricMetadata) => {
 const process = async (event) => {
   const metricMetadata = {
     writeKey: event.query_parameters?.writeKey?.[0],
-    source: "SHOPIFY"
-  }
+    source: 'SHOPIFY',
+  };
   if (isIdentifierEvent(event)) {
     return processIdentifierEvent(event, metricMetadata);
   }

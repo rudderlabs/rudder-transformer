@@ -2,7 +2,7 @@ const cluster = require('cluster');
 const gracefulShutdown = require('http-graceful-shutdown');
 const logger = require('../logger');
 const { logProcessInfo } = require('./utils');
-const { RedisDB } = require('./redisConnector');
+const { RedisDB } = require('./redis/redisConnector');
 
 const numWorkers = parseInt(process.env.NUM_PROCS || '1', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);

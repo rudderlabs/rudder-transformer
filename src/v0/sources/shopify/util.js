@@ -1,8 +1,14 @@
 /* eslint-disable camelcase */
 const sha256 = require('sha256');
 const stats = require('../../../util/stats');
-const { constructPayload, extractCustomFields, flattenJson, generateUUID, isDefinedAndNotNull } = require('../../util');
-const { RedisDB } = require('../../../util/redisConnector');
+const {
+  constructPayload,
+  extractCustomFields,
+  flattenJson,
+  generateUUID,
+  isDefinedAndNotNull,
+} = require('../../util');
+const { RedisDB } = require('../../../util/redis/redisConnector');
 const logger = require('../../../logger');
 const {
   lineItemsMappingJSON,
@@ -10,7 +16,7 @@ const {
   LINE_ITEM_EXCLUSION_FIELDS,
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   RUDDER_ECOM_MAP,
-  SHOPIFY_TRACK_MAP
+  SHOPIFY_TRACK_MAP,
 } = require('./config');
 // 30 mins
 const { TransformationError } = require('../../util/errorTypes');
@@ -140,7 +146,6 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
     case SHOPIFY_TRACK_MAP.orders_partially_fullfilled:
     case RUDDER_ECOM_MAP.orders_create:
     case RUDDER_ECOM_MAP.orders_updated:
-
       if (!isDefinedAndNotNull(message.properties?.cart_token)) {
         /**
          * This case will rise when we will be using Shopify Admin Dashboard to create, update, delete orders etc.

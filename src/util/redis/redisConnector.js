@@ -1,13 +1,10 @@
 const Redis = require('ioredis');
-const { RedisError } = require('../v0/util/errorTypes');
-const log = require('../logger');
-const stats = require('./stats');
+const { RedisError } = require('../../v0/util/errorTypes');
+const log = require('../../logger');
+const stats = require('../stats');
 
-const timeoutPromise = new Promise((resolve, reject) => {
-  setTimeout(
-    () => resolve(),
-    50
-  );
+const timeoutPromise = new Promise((resolve) => {
+  setTimeout(() => resolve(), 50);
 });
 
 const RedisDB = {
@@ -45,9 +42,8 @@ const RedisDB = {
   async checkAndConnectConnection() {
     if (!this.client) {
       this.init();
-    }
-    else if (this.client.status !== 'ready') {
-      await Promise.race([this.client.connect(), timeoutPromise])
+    } else if (this.client.status !== 'ready') {
+      await Promise.race([this.client.connect(), timeoutPromise]);
     }
   },
   /**
@@ -62,9 +58,9 @@ const RedisDB = {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       const value = await this.client.get(key);
       if (value) {
-        const bytes = Buffer.byteLength(value, "utf-8");
+        const bytes = Buffer.byteLength(value, 'utf-8');
         stats.gauge('redis_get_val_size', bytes, {
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
       return isJsonExpected ? JSON.parse(value) : value;
@@ -80,14 +76,14 @@ const RedisDB = {
    */
 
   async setVal(key, value, isValJson = true) {
-    const dataExpiry = 60*60; // 1 hour
+    const dataExpiry = 60 * 60; // 1 hour
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       const valueToStore = isValJson ? JSON.stringify(value) : value;
-      const bytes = Buffer.byteLength(valueToStore, "utf-8");
-      await this.client.setex(key,dataExpiry, valueToStore);
+      const bytes = Buffer.byteLength(valueToStore, 'utf-8');
+      await this.client.setex(key, dataExpiry, valueToStore);
       stats.gauge('redis_set_val_size', bytes, {
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     } catch (e) {
       throw new RedisError(`Error setting value in Redis due ${e}`);
@@ -100,7 +96,7 @@ const RedisDB = {
       });
       this.client.quit();
     }
-  }
+  },
 };
 
 module.exports = { RedisDB };

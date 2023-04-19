@@ -151,7 +151,7 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
         }
         return;
       }
-      cartToken = message.properties?.cart_token;
+      cartToken = message.properties.cart_token;
       break;
     /*
      * we dont have cart_token for carts_create and update events but have id and token field
@@ -159,11 +159,12 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
      */
     case SHOPIFY_TRACK_MAP.carts_create:
     case SHOPIFY_TRACK_MAP.carts_update:
-      cartToken = message.properties?.id;
+      cartToken = message.properties?.id || message.properties?.token;
       break;
     // https://help.shopify.com/en/manual/orders/edit-orders -> order can be edited through shopify-admin only
     // https://help.shopify.com/en/manual/orders/fulfillment/setting-up-fulfillment -> fullfillments wont include cartToken neither in manual or automatiic
     case SHOPIFY_TRACK_MAP.orders_edited:
+    case SHOPIFY_TRACK_MAP.orders_delete:
     case SHOPIFY_TRACK_MAP.fulfillments_create:
     case SHOPIFY_TRACK_MAP.fulfillments_update:
       if (!message.userId) {
@@ -171,6 +172,11 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
       }
       return;
     default:
+      logger.error(`Event ${message.event} not supported`);
+  }
+  if(!isDefinedAndNotNull(cartToken)){
+    message.setProperty('anonymousId', 'shopify-admin');
+    return;
   }
   let anonymousIDfromDB;
   const executeStartTime = Date.now();

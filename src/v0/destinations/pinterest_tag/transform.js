@@ -10,8 +10,8 @@ const {
   checkUserPayloadValidity,
   processHashedUserPayload,
 } = require('./utils');
-const { responseBuilderSimple, batchEvents } = require('./pinterestTransformV1');
-const { responseBuilderSimpleNew, batchEventsNew } = require('./pinterestTransformV2');
+const { responseBuilderSimple, batchEvents } = require('./pinterestTransformV3');
+const { responseBuilderSimpleNew, batchEventsNew } = require('./pinterestTransformV5');
 
 const { USER_CONFIGS, getEventsEndpoint, API_VERSION } = require('./config');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');

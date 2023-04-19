@@ -126,7 +126,7 @@ const BrazeDedupUtility = {
   async doApiLookup(identfierChunks, destination) {
     return Promise.all(
       identfierChunks.map(async (ids) => {
-        const externalIdentifiers = ids.filter((id) => id.external_id !== undefined);
+        const externalIdentifiers = ids.filter((id) => id.external_id);
         const aliasIdentifiers = ids.filter((id) => id.alias_name !== undefined);
 
         const startTime = Date.now();
@@ -227,6 +227,7 @@ const BrazeDedupUtility = {
       this.getUserDataFromStore(store, user_alias?.alias_name);
 
     if (!storedUserData) {
+      store.set(external_id || user_alias, userData);
       return userData;
     }
     const customAttributes = storedUserData?.custom_attributes;

@@ -28,11 +28,8 @@ const {
 
 const logger = require('../../../logger');
 const { getEndpointFromConfig } = require('./util');
-const { httpPOST } = require('../../../adapters/network');
-const {
-  processAxiosResponse,
-  getDynamicErrorType,
-} = require('../../../adapters/utils/networkUtils');
+const { handleHttpRequest } = require('../../../adapters/network');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 
 function formatGender(gender) {
   // few possible cases of woman
@@ -219,23 +216,25 @@ async function processIdentify(message, destination) {
   const identifyPayload = getIdentifyPayload(message);
   const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
 
-  const brazeIdentifyResp = await httpPOST(identifyEndpoint, identifyPayload, {
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      Authorization: `Bearer ${destination.Config.restApiKey}`,
+  const { processedResponse: brazeIdentifyResp } = handleHttpRequest(
+    identifyEndpoint,
+    identifyPayload,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${destination.Config.restApiKey}`,
+      },
     },
-  });
-
-  const processedBrazeIdentifyResp = processAxiosResponse(brazeIdentifyResp);
-  if (!isHttpStatusSuccess(processedBrazeIdentifyResp.status)) {
+  );
+  if (!isHttpStatusSuccess(brazeIdentifyResp.status)) {
     throw new NetworkError(
       'Braze identify failed',
-      processedBrazeIdentifyResp.status,
+      brazeIdentifyResp.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(processedBrazeIdentifyResp.status),
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(brazeIdentifyResp.status),
       },
-      processedBrazeIdentifyResp.response,
+      brazeIdentifyResp.response,
     );
   }
 }

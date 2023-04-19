@@ -4,8 +4,7 @@ bindings:
   - path: ../../bindings/jsontemplate
     exportAll: true
   - path: ../../../../v0/destinations/pinterest_tag/utils
-  - name: ENDPOINT
-    path: ../../../../v0/destinations/pinterest_tag/config
+  - path: ../../../../v0/destinations/pinterest_tag/config
   - name: removeUndefinedValues
     path: ../../../../v0/util
   - name: removeUndefinedAndNullAndEmptyValues
@@ -19,10 +18,14 @@ steps:
   - name: messageType
     template: |
       .message.type.toLowerCase()
+  - name: apiVersion
+    template: |
+      .destination.Config.apiVersion ?? {{$.API_VERSION.v3}}
   - name: validateInput
     template: |
       let messageType = $.outputs.messageType;
-      $.assertConfig(.destination.Config.advertiserId, "Advertiser Id not found. Aborting");
+      $.outputs.apiVersion === {{$.API_VERSION.v3}} ? 
+      $.assertConfig(.destination.Config.advertiserId, "Advertiser Id not found. Aborting"): null;
       $.assert(messageType, "Message type is not present. Aborting message.");
       $.assert(messageType in {{$.EventType.([.TRACK, .PAGE, .SCREEN])}}, 
         "message type " + messageType + " is not supported")
@@ -61,6 +64,7 @@ steps:
         "app_id": ^.destination.Config.appId,
         "advertiser_id": ^.destination.Config.advertiserId
       });
+      $.outputs.apiVersion === {{$.API_VERSION.v5}} ?  commonFields = commonFields{~["advertiser_id"]} : null;
       $.removeUndefinedValues(commonFields)
 
   - name: validateCommonFields
@@ -92,8 +96,10 @@ steps:
         "country": (.traits.address.country ?? .context.traits.address.country).toLowerCase(),
         "hashed_maids": .context.device.advertisingId,
         "client_ip_address": .context.ip ?? .request_ip,
-        "client_user_agent": .context.userAgent
+        "client_user_agent": .context.userAgent,
+        "external_id": {{{{$.getGenericPaths("userId")}}}}
       });
+      !.destination.Config.sendExternalId ?  userFields = userFields{~["external_id"]} : null;
       userFields = $.removeUndefinedAndNullAndEmptyValues(userFields);
       .destination.Config.sendingUnHashedData ? 
         $.processUserPayload(userFields) :
@@ -175,13 +181,37 @@ steps:
     template: |
       $.outputs.eventNames.().({...$.outputs.basePayload, event_name: .})[]
 
-  - name: buildResponse
+  - name: buildResponseForBatchMode
     description: In batchMode we return payload directly
     condition: $.batchMode
     template: |
       $.outputs.payload
+    onComplete: return
+
+  - name: buildResponseForProcessTransformation
+    description: build response using V3 API
+    condition: $.outputs.apiVersion === {{$.API_VERSION.v3}}
+    template: |
+      $.outputs.payload.().({
+        "body": {
+          "JSON": .,
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": {{$.ENDPOINT}},
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "files": {}
+      })[]
     else:
-      name: buildResponseForProcessTransformation
+      name: buildResponseForProcessTransformationV5
+      description: build response using V5 API
       template: |
         $.outputs.payload.().({
           "body": {
@@ -193,9 +223,10 @@ steps:
           "version": "1",
           "type": "REST",
           "method": "POST",
-          "endpoint": {{$.ENDPOINT}},
+          "endpoint": $.getEventsEndpoint(^.destination.Config.adAccountId),
           "headers": {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+             Authorization: "Bearer " + ^.destination.Config.conversionToken,
           },
           "params": {},
           "files": {}

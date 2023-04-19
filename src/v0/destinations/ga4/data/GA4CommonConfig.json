@@ -3,10 +3,7 @@
     "destKey": "user_id",
     "sourceKeys": "userIdOnly",
     "sourceFromGenericMap": true,
-    "required": false,
-    "metadata": {
-      "type": "toString"
-    }
+    "required": false
   },
   {
     "destKey": "timestamp_micros",

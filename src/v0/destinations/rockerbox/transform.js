@@ -5,10 +5,9 @@ const {
   constructPayload,
   simpleProcessRouterDest,
   getHashFromArray,
-  extractCustomFields,
 } = require('../../util');
 const { EventType } = require('../../../constants');
-const { CONFIG_CATEGORIES, MAPPING_CONFIG, ROCKERBOX_DEFINED_PROPERTIES } = require('./config');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilderSimple = (message, category, destination) => {
@@ -26,7 +25,6 @@ const responseBuilderSimple = (message, category, destination) => {
   } else {
     payload.action = eventsHashMap[message.event.toLowerCase()];
   }
-  extractCustomFields(message, payload, ['properties'], ROCKERBOX_DEFINED_PROPERTIES);
   const response = defaultRequestConfig();
   response.endpoint = category.endpoint;
   // the endpoint has advertiser = ADVERTISER_ID in the query params

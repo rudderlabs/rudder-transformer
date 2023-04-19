@@ -18,7 +18,6 @@ const {
   getErrorRespEvents,
   isCdkDestination,
   getErrorStatusCode,
-  checkAndCorrectUserId,
 } = require('./v0/util');
 const { processDynamicConfig } = require('./util/dynamicConfig');
 const { DestHandlerMap } = require('./constants/destinationCanonicalNames');
@@ -38,7 +37,6 @@ const { PlatformError } = require('./v0/util/errorTypes');
 const { getCachedWorkflowEngine, processCdkV2Workflow } = require('./cdk/v2/handler');
 const { processCdkV1 } = require('./cdk/v1/handler');
 const {oncehubTransformer} = require("./util/oncehub-custom-transformer");
-const { extractLibraries } = require('./util/customTransformer');
 
 const CDK_V1_DEST_PATH = 'cdk/v1';
 
@@ -141,11 +139,6 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
     const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
     if (Object.keys(objectDiff).length > 0) {
       stats.counter('cdk_live_compare_test_failed', 1, { destType, feature });
-      logger.error(
-        `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff_keys=${JSON.stringify(
-          Object.keys(objectDiff)
-        )}`
-      );
       // logger.error(
       //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff=${JSON.stringify(
       //     objectDiff
@@ -169,17 +162,6 @@ async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
     logger.error(`[LIVE_COMPARE_TEST] errored for destType=${destType}, feature=${feature}`, error);
   }
 }
-
-/**
- * Enriches the transformed event with more information
- * - userId stringification
- * 
- * @param {Object} transformedEvent - single transformed event
- * @returns transformedEvent after enrichment
- */
-const enrichTransformedEvent = (transformedEvent) => (
-  { ...transformedEvent, userId: checkAndCorrectUserId(transformedEvent.statusCode, transformedEvent?.userId) }
-);
 
 async function handleV0Destination(destHandler, destType, inputArr, feature) {
   const v0Result = {};
@@ -271,24 +253,40 @@ async function handleDest(ctx, version, destination) {
           if (!Array.isArray(respEvents)) {
             respEvents = [respEvents];
           }
-          return respEvents.map((ev) => ({
-            output: enrichTransformedEvent(ev),
-            metadata: destHandler?.processMetadata
-              ? destHandler.processMetadata({
-                metadata: event.metadata,
-                inputEvent: parsedEvent,
-                outputEvent: ev,
-              })
-              : event.metadata,
-            statusCode: 200,
-          }));
+          return respEvents.map((ev) => {
+            let { userId } = ev;
+            const { statusCode } = ev;
+            // Set the user ID to an empty string for
+            // all the falsy values (including 0 and false)
+            // Otherwise, server panics while un-marshalling the response
+            // while expecting only strings.
+            if (!userId) {
+              userId = '';
+            }
+
+            if (statusCode !== 400 && userId) {
+              userId = `${userId}`;
+            }
+
+            return {
+              output: { ...ev, userId },
+              metadata: destHandler?.processMetadata
+                ? destHandler.processMetadata({
+                    metadata: event.metadata,
+                    inputEvent: parsedEvent,
+                    outputEvent: ev,
+                  })
+                : event.metadata,
+              statusCode: 200,
+            };
+          });
         }
         return undefined;
       } catch (error) {
         logger.error(error);
 
         let implementation = tags.IMPLEMENTATIONS.NATIVE;
-        let errCtx = 'Processor Transformation';
+        let errCtx = 'Destination Transformation';
         if (isCdkV2Destination(event)) {
           errCtx = `CDK V2 - ${errCtx}`;
           implementation = tags.IMPLEMENTATIONS.CDK_V2;
@@ -487,23 +485,11 @@ async function routerHandleDest(ctx) {
             tags.FEATURES.ROUTER,
           );
         }
-        const hasProcMetadataForRouter = routerDestHandler.processMetadataForRouter;
-        // enriching transformed event
-        listOutput.forEach(listOut => {
-          const { batchedRequest } = listOut;
-          if (Array.isArray(batchedRequest)) {
-            // eslint-disable-next-line no-param-reassign
-            listOut.batchedRequest = batchedRequest.map(batReq => enrichTransformedEvent(batReq));
-          } else if (batchedRequest && typeof batchedRequest === 'object') {
-            // eslint-disable-next-line no-param-reassign
-            listOut.batchedRequest = enrichTransformedEvent(batchedRequest);
-          }
-
-          if (hasProcMetadataForRouter) {
-            // eslint-disable-next-line no-param-reassign
-            listOut.metadata = routerDestHandler.processMetadataForRouter(listOut);
-          }
-        });
+        if (routerDestHandler.processMetadataForRouter) {
+          listOutput.forEach((output) => {
+            output.metadata = routerDestHandler.processMetadataForRouter(output);
+          });
+        }
         respEvents.push(...listOutput);
       }),
     );
@@ -598,22 +584,6 @@ if (startDestTransformer) {
   });
 
   if (functionsEnabled()) {
-    router.post('/extractLibs', async (ctx) => {
-      try {
-        const { code, validateImports = false, language = "javascript" } = ctx.request.body;
-
-        if (!code) {
-          throw new Error('Invalid request. Code is missing');
-        }
-
-        const obj = await extractLibraries(code, validateImports, language);
-        ctx.body = obj;
-      } catch (err) {
-        ctx.status = 400;
-        ctx.body = { "error": err.error || err.message };
-      }
-    });
-
     router.post('/customTransform', async (ctx) => {
       const startTime = new Date();
       const events = ctx.request.body;

@@ -20,8 +20,7 @@ const urlDirectoryMap = {
   "api.mautic.com": "mautic",
   "adsapi.snapchat.com": "snapchat_custom_audience",
   "api.clevertap.com": "clevertap",
-  "marketo_acct_id_success.mktorest.com": "marketo_static_list",
-  "api.criteo.com": "criteo_audience"
+  "marketo_acct_id_success.mktorest.com": "marketo_static_list"
 };
 
 function getData(url) {

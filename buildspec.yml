@@ -6,7 +6,7 @@ phases:
       nodejs: 14
   pre_build:
     commands:
-      - docker login --username rudderlabs --password ${{ secrets.DOCKERHUB_PROD_TOKEN }}
+      - docker login --username rudderlabs --password $DOCKERHUB_PASSWORD
   build:
     commands:
       - VERSION=$(head -1 .version)

@@ -92,10 +92,6 @@ const trackingPlan = {
                 },
                 revenue: {
                   type: ["number"]
-                },
-                dateString: {
-                  type: ["string"],
-                  format: "date-time"
                 }
               },
               type: "object",
@@ -138,10 +134,6 @@ const trackingPlan = {
                 },
                 revenue: {
                   type: ["integer"]
-                },
-                dateString: {
-                  type: ["string"],
-                  format: "date-time"
                 }
               },
               type: "object",
@@ -191,10 +183,6 @@ const trackingPlan = {
                     type: "number",
                     maximum: 4.0
                   }
-                },
-                dateString: {
-                  type: ["string"],
-                  format: "date-time"
                 }
               },
               type: "object",
@@ -239,10 +227,6 @@ const trackingPlan = {
                 },
                 revenue: {
                   type: ["number"]
-                },
-                dateString: {
-                  type: ["string"],
-                  format: "date-time"
                 }
               },
               type: "object",
@@ -266,8 +250,8 @@ const trackingPlan = {
   update_time: "2021-12-15T13:29:59.272Z"
 };
 
-const constructEventToValidate = (eventName, dateStr='2020-06-08T01:00:00') => {
-  const ev = {
+const constructEventToValidate = eventName => {
+  return {
     metadata: {
       trackingPlanId: "dummy_tracking_plan_id",
       trackingPlanVersion: "dummy_version",
@@ -286,8 +270,7 @@ const constructEventToValidate = (eventName, dateStr='2020-06-08T01:00:00') => {
         prop_integer: 2,
         prop_float: 2.3,
         email: "demo@rudderstack.com",
-        props: ["string", 1, 2, 3],
-        dateString: dateStr
+        props: ["string", 1, 2, 3]
       },
       context: {
         ip: "14.5.67.21"
@@ -295,7 +278,6 @@ const constructEventToValidate = (eventName, dateStr='2020-06-08T01:00:00') => {
       timestamp: "2020-02-02T00:23:09.544Z"
     }
   };
-  return ev;
 };
 
 const eventValidationTestCases = [
@@ -363,21 +345,6 @@ const eventValidationTestCases = [
           instacePath: "/properties/props",
           schemaPath: "#/properties/properties/properties/props/contains"
         }
-      }
-    ]
-  },
-  {
-    testCase: "draft 4 - wrong date-time",
-    event: constructEventToValidate("Product clicked draft 4", "2022-06-08"),
-    trackingPlan,
-    output: [
-      {
-        message: "must match format \"date-time\"",
-        meta: {
-          instacePath: "/properties/dateString",
-          schemaPath: "#/properties/properties/properties/dateString/format",
-        },
-        type: "Unknown-Violation",
       }
     ]
   }

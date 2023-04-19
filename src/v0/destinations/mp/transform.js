@@ -310,12 +310,6 @@ const processGroupEvents = (message, type, destination) => {
 };
 
 const processSingleMessage = async (message, destination) => {
-  if (message.userId) {
-    message.userId = String(message.userId);
-  }
-  if (message.anonymousId) {
-    message.anonymousId = String(message.anonymousId);
-  }
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }

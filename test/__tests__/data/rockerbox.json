@@ -216,13 +216,10 @@
         "FORM": {},
         "JSON": {
           "action": "conv.add_to_cart",
-          "checkout_id": "12345",
           "email": "userSampleX120@gmail.com",
           "conversion_source": "RudderStack",
           "customer_id": "userSampleX138",
           "phone": "9878764736",
-          "product_name": "Red T-shirt",
-          "product_url": "http://www.yourdomain.com/products/red-t-shirt",
           "timestamp": 1659902539
         },
         "JSON_ARRAY": {},
@@ -343,176 +340,18 @@
         "JSON": {
           "customer_id": "userSampleX138",
           "email": "userSampleX120@gmail.com",
-          "externalId": "rbUid",
           "phone": "9878764736",
-          "product_name": "Red T-shirt",
-          "product_url": "http://www.yourdomain.com/products/red-t-shirt",
           "timestamp": 1659902539,
           "country_code": "IN",
           "listing_id": "10101",
           "conversion_source": "RudderStack",
-          "action": "conv.add_to_cart",
-          "checkout_id": "12345"
+          "action": "conv.add_to_cart"
         },
         "JSON_ARRAY": {},
         "XML": {},
         "FORM": {}
       },
       "files": {}
-    }
-  },
-  {
-    "description": "Track call with all properties along-with custom properties",
-    "input": {
-      "destination": {
-        "Config": {
-          "advertiserId": "hdowhfiqhfwaiwhrdafshbfacicolsa",
-          "eventFilteringOption": "disable",
-          "whitelistedEvents": [
-            {
-              "eventName": ""
-            }
-          ],
-          "blacklistedEvents": [
-            {
-              "eventName": ""
-            }
-          ],
-          "eventsMap": [
-            {
-              "from": "Product Added",
-              "to": "conv.add_to_cart"
-            }
-          ],
-          "customPropsMapping": [
-            {
-              "from": "unit_id",
-              "to": "unitID"
-            },
-            {
-              "from": "merch_id",
-              "to": "merch_id"
-            },
-            {
-              "from": "bounce_id",
-              "to": "bounceID"
-            }
-          ],
-          "useNativeSDK": {
-            "web": false
-          },
-          "useNativeSDKToSend": {
-            "web": false
-          },
-          "clientAuthId": {
-            "web": ""
-          },
-          "oneTrustCookieCategories": {
-            "web": [
-              {
-                "oneTrustCookieCategory": ""
-              }
-            ]
-          },
-          "customDomain": {
-            "web": ""
-          },
-          "enableCookieSync": {
-            "web": false
-          }
-        }
-      },
-      "message": {
-        "channel": "web",
-        "context": {
-          "app": {
-            "build": "1.0.0",
-            "name": "RudderLabs JavaScript SDK",
-            "namespace": "com.rudderlabs.javascript",
-            "version": "1.0.0"
-          },
-          "library": { "name": "RudderLabs JavaScript SDK", "version": "1.0.0" },
-          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-          "locale": "en-US",
-          "ip": "0.0.0.0",
-          "os": { "name": "", "version": "" },
-          "screen": { "density": 2 }
-        },
-        "messageId": "84e26acc-56a5-4835-8233-591137fca468",
-        "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
-        "originalTimestamp": "2019-10-14T09:03:17.562Z",
-        "anonymousId": "anon_id",
-        "type": "track",
-        "traits": {
-          "anonymousId": "anon_id",
-          "email": "jamesDoe@gmail.com",
-          "name": "James Doe",
-          "phone": "92374162212",
-          "gender": "M",
-          "employed": true,
-          "birthday": "1614775793",
-          "education": "Science",
-          "graduate": true,
-          "married": true,
-          "customerType": "Prime",
-          "msg_push": true,
-          "msgSms": true,
-          "msgemail": true,
-          "msgwhatsapp": false,
-          "custom_tags": ["Test_User", "Interested_User", "DIY_Hobby"],
-          "custom_mappings": {
-            "Office": "Trastkiv",
-            "Country": "Russia"
-          },
-          "address": {
-            "city": "kolkata",
-            "country": "India",
-            "postalCode": 789223,
-            "state": "WB",
-            "street": ""
-          }
-        },
-        "properties": {
-          "unit_id": 123,
-          "merch_id": false,
-          "bounceiD": "fakefake",
-          "counce_id": ""
-        },
-        "event": "Product Added",
-        "integrations": { "All": true },
-        "sentAt": "2019-10-14T09:03:22.563Z"
-      },
-      "writeKey": "2D0yaayoBD7bp8uFomnBONdedcA",
-      "requestIP": "[::1]",
-      "receivedAt": "2022-08-08T01:32:19.369+05:30"
-    },
-    "output": {
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON": {
-          "email": "jamesDoe@gmail.com",
-          "phone": "92374162212",
-          "action": "conv.add_to_cart",
-          "bounceiD": "fakefake",
-          "merch_id": false,
-          "timestamp": 1571043797,
-          "unit_id": 123,
-          "customer_id": "anon_id",
-          "conversion_source": "RudderStack",
-          "counce_id": ""
-        },
-        "JSON_ARRAY": {}
-      },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {
-        "advertiser": "hdowhfiqhfwaiwhrdafshbfacicolsa"
-      },
-      "headers": {},
-      "version": "1",
-      "endpoint": "https://webhooks.getrockerbox.com/rudderstack"
     }
   }
 ]

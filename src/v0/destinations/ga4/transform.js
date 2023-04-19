@@ -13,11 +13,7 @@ const {
   getIntegrationsObj,
   isHybridModeEnabled,
 } = require('../../util');
-const {
-  InstrumentationError,
-  ConfigurationError,
-  UnsupportedEventError,
-} = require('../../util/errorTypes');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const {
   ENDPOINT,
   DEBUG_ENDPOINT,
@@ -432,14 +428,8 @@ const process = (event) => {
       break;
     case EventType.PAGE:
       // GA4 custom event 'page_view' is fired for page
-      if (!isHybridModeEnabled(Config)) {
-        message.event = 'page_view';
-        response = responseBuilder(message, destination);
-      } else {
-        throw new UnsupportedEventError(
-          'GA4 Hybrid mode is enabled, page calls will be sent through device mode',
-        );
-      }
+      message.event = 'page_view';
+      response = responseBuilder(message, destination);
       break;
     case EventType.GROUP:
       // GA4 standard event 'join_group' is fired for group

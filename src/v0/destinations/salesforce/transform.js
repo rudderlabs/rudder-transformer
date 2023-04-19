@@ -114,7 +114,7 @@ async function getSaleforceIdForRecord(
   if (processedsfSearchResponse.status !== 200) {
     salesforceResponseHandler(
       processedsfSearchResponse,
-      `:- SALESFORCE SEARCH BY ID`,
+      `SALESFORCE SEARCH BY ID: ${JSON.stringify(processedsfSearchResponse.response)}`,
       destination.ID,
     );
   }
@@ -212,7 +212,7 @@ async function getSalesforceIdFromPayload(message, authorizationData, destinatio
     if (processedLeadQueryResponse.status !== 200) {
       salesforceResponseHandler(
         processedLeadQueryResponse,
-        `:- during Lead Query`,
+        `During Lead Query: ${JSON.stringify(processedLeadQueryResponse.response)}`,
         destination.ID,
       );
     }

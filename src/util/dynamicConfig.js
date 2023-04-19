@@ -54,16 +54,16 @@ function getDynamicConfig(event) {
   return event;
 }
 
-function processDynamicConfig(events, type) {
+function processDynamicConfig(event, type) {
   if (type === 'router' || type === 'batch') {
     const eventRetArr = [];
-    events.forEach((e) => {
+    event.forEach((e) => {
       const newEvent = getDynamicConfig(e);
       eventRetArr.push(newEvent);
     });
     return eventRetArr;
   }
-  return getDynamicConfig(events);
+  return getDynamicConfig(event);
 }
 
 exports.processDynamicConfig = processDynamicConfig;

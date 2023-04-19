@@ -27,6 +27,11 @@ export default class DestinationController {
     let events = ctx.request.body as ProcessorTransformationRequest[];
     const metaTags = MiscService.getMetaTags(events[0].metadata);
     const { version, destination }: { version: string; destination: string } = ctx.params;
+    stats.counter('dest_transform_input_events', events.length, {
+      destination,
+      version,
+      ...metaTags,
+    });
     const integrationService = ServiceSelector.getDestinationService(events);
     try {
       integrationService.init();
@@ -63,6 +68,11 @@ export default class DestinationController {
       'Native(Process-Transform):: Response from transformer::',
       JSON.stringify(ctx.body),
     );
+    stats.counter('dest_transform_output_events', resplist.length, {
+      destination,
+      version,
+      ...metaTags,
+    });
     stats.timing('dest_transform_request_latency', startTime, {
       destination,
       version,
@@ -85,6 +95,12 @@ export default class DestinationController {
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
     let events = routerRequest.input;
+    const metaTags = MiscService.getMetaTags(events[0].metadata);
+    stats.counter('dest_transform_input_events', events.length, {
+      destination,
+      version: "v0",
+      ...metaTags,
+    });
     const integrationService = ServiceSelector.getDestinationService(events);
     try {
       events = PreTransformationDestinationService.preProcess(events, ctx);
@@ -113,6 +129,11 @@ export default class DestinationController {
       ctx.body = { output: [errResp] };
     }
     ControllerUtility.postProcess(ctx);
+    stats.counter('dest_transform_output_events', ctx.body?.output?.length, {
+      destination,
+      version: "v0",
+      ...metaTags,
+    });
     logger.debug(
       'Native(Router-Transform):: Response from transformer::',
       JSON.stringify(ctx.body),

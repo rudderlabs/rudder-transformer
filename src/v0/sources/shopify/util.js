@@ -175,7 +175,7 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
       logger.error(`Event ${message.event} not supported`);
   }
   if(!isDefinedAndNotNull(cartToken)){
-    message.setProperty('anonymousId', 'shopify-admin');
+    message.setProperty('userId', 'shopify-admin');
     return;
   }
   let anonymousIDfromDB;

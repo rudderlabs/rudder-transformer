@@ -2,8 +2,7 @@
 const _ = require('lodash');
 const get = require('get-value');
 const stats = require('../../../util/stats');
-const { httpPOST, handleHttpRequest } = require('../../../adapters/network');
-const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
+const { handleHttpRequest } = require('../../../adapters/network');
 const {
   getDestinationExternalID,
   getFieldValueFromMessage,

@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.23.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.23.0...v1.23.1) (2023-04-20)
+
+
+### Bug Fixes
+
+* anonymous id default value  ([#2081](https://github.com/rudderlabs/rudder-transformer/issues/2081)) ([6457c09](https://github.com/rudderlabs/rudder-transformer/commit/6457c09a0f0963179388ba8535fbcd9f872ba9fd))
+* Default Val for Anon Id ([4dd1df7](https://github.com/rudderlabs/rudder-transformer/commit/4dd1df7e25bd6fea7770e6c38c4c63bb1d81141c))
+
 ## [1.23.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.22.2...v1.23.0) (2023-04-17)
 
 

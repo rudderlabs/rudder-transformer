@@ -2,7 +2,7 @@ const { getMappingConfig } = require('../../util');
 
 const ENDPOINT = 'https://ct.pinterest.com/events/v3';
 // ref: https://developers.pinterest.com/docs/api/v5/#tag/conversion_events
-const getEventsEndpoint = (adAccountId) =>
+const getV5EventsEndpoint = (adAccountId) =>
   `https://api.pinterest.com/v5/ad_accounts/${adAccountId}/events`;
 
 const API_VERSION = {
@@ -26,6 +26,6 @@ module.exports = {
   USER_CONFIGS: MAPPING_CONFIG[CONFIG_CATEGORIES.USER_CONFIGS.name],
   COMMON_CONFIGS: MAPPING_CONFIG[CONFIG_CATEGORIES.COMMON_CONFIGS.name],
   CUSTOM_CONFIGS: MAPPING_CONFIG[CONFIG_CATEGORIES.CUSTOM_CONFIGS.name],
-  getEventsEndpoint,
+  getV5EventsEndpoint,
   API_VERSION,
 };

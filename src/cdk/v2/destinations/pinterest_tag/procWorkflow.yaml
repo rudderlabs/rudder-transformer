@@ -223,7 +223,7 @@ steps:
           "version": "1",
           "type": "REST",
           "method": "POST",
-          "endpoint": $.getEventsEndpoint(^.destination.Config.adAccountId),
+          "endpoint": $.getV5EventsEndpoint(^.destination.Config.adAccountId),
           "headers": {
             "Content-Type": "application/json",
              Authorization: "Bearer " + ^.destination.Config.conversionToken,

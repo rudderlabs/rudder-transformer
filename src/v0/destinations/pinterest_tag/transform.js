@@ -13,7 +13,7 @@ const {
 const { responseBuilderSimple, batchEvents } = require('./pinterestTransformV3');
 const { responseBuilderSimpleNew, batchEventsNew } = require('./pinterestTransformV5');
 
-const { USER_CONFIGS, getEventsEndpoint, API_VERSION } = require('./config');
+const { USER_CONFIGS, getV5EventsEndpoint, API_VERSION } = require('./config');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 /**
@@ -115,7 +115,7 @@ const process = (event) => {
       throw new InstrumentationError(`message type ${messageType} is not supported`);
   }
 
-  const endpoint = getEventsEndpoint(adAccountId);
+  const endpoint = getV5EventsEndpoint(adAccountId);
   toSendEvents.forEach((sendEvent) => {
     if (apiVersion === API_VERSION.v5) {
       respList.push(responseBuilderSimpleNew(sendEvent, endpoint, conversionToken));
@@ -155,7 +155,7 @@ const processRouterDest = (inputs, reqMetadata) => {
   // using the first destination config for transforming the batch
   const { destination } = inputs[0];
   const { apiVersion, adAccountId, conversionToken } = destination.Config;
-  const endpoint = getEventsEndpoint(adAccountId);
+  const endpoint = getV5EventsEndpoint(adAccountId);
   let batchResponseList = [];
   if (successRespList.length > 0) {
     if (apiVersion === API_VERSION.v5) {

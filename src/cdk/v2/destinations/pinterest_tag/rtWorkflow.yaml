@@ -78,7 +78,7 @@ steps:
           "version": "1",
           "type": "REST",
           "method": "POST",
-          "endpoint": $.getEventsEndpoint(batch.destination.Config.adAccountId),
+          "endpoint": $.getV5EventsEndpoint(batch.destination.Config.adAccountId),
           "headers": {
             "Content-Type": "application/json",
               Authorization: "Bearer " + batch.destination.Config.conversionToken,

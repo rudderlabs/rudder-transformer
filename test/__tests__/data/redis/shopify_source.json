@@ -1,5 +1,43 @@
 [
     {
+        "description": "Track Call -> carts_create with no cartToken",
+        "input": {
+            "query_parameters": {
+                "topic": [
+                    "carts_create"
+                ]
+            },
+            "line_items": [],
+            "note": null,
+            "updated_at": "2023-02-10T12:16:07.251Z",
+            "created_at": "2023-02-10T12:05:04.402Z"
+        },
+        "output": {
+            "userId": "shopify-admin",
+            "context": {
+                "library": {
+                    "name": "RudderStack Shopify Cloud",
+                    "version": "1.0.0"
+                },
+                "integration": {
+                    "name": "SHOPIFY"
+                },
+                "topic": "carts_create"
+            },
+            "event": "Cart Create",
+            "integrations": {
+                "SHOPIFY": true
+            },
+            "type": "track",
+            "properties": {
+                "created_at": "2023-02-10T12:05:04.402Z",
+                "note": null,
+                "products": [],
+                "updated_at": "2023-02-10T12:16:07.251Z"
+            }
+        }
+    },
+    {
         "description": "Track Call -> carts_create with invalid cartToken",
         "input": {
             "id": "shopify_test3",
@@ -37,6 +75,86 @@
                 "note": null,
                 "products": [],
                 "token": "shopify_test3",
+                "updated_at": "2023-02-10T12:16:07.251Z"
+            }
+        }
+    },
+    {
+        "description": "Track Call -> orders_delete with invalid cartToken",
+        "input": {
+            "id": "shopify_test3",
+            "query_parameters": {
+                "topic": [
+                    "orders_delete"
+                ]
+            },
+            "line_items": [],
+            "note": null,
+            "updated_at": "2023-02-10T12:16:07.251Z",
+            "created_at": "2023-02-10T12:05:04.402Z"
+        },
+        "output": {
+            "context": {
+                "library": {
+                    "name": "RudderStack Shopify Cloud",
+                    "version": "1.0.0"
+                },
+                "integration": {
+                    "name": "SHOPIFY"
+                },
+                "topic": "orders_delete"
+            },
+            "event": "Order Deleted",
+            "integrations": {
+                "SHOPIFY": true
+            },
+            "type": "track",
+            "userId":"shopify-admin",
+            "properties": {
+                "created_at": "2023-02-10T12:05:04.402Z",
+                "id": "shopify_test3",
+                "note": null,
+                "products": [],
+                "updated_at": "2023-02-10T12:16:07.251Z"
+            }
+        }
+    },
+    {
+        "description": "Track Call -> checkouts_delete with invalid cartToken",
+        "input": {
+            "id": "shopify_test3",
+            "query_parameters": {
+                "topic": [
+                    "checkouts_delete"
+                ]
+            },
+            "line_items": [],
+            "note": null,
+            "updated_at": "2023-02-10T12:16:07.251Z",
+            "created_at": "2023-02-10T12:05:04.402Z"
+        },
+        "output": {
+            "context": {
+                "library": {
+                    "name": "RudderStack Shopify Cloud",
+                    "version": "1.0.0"
+                },
+                "integration": {
+                    "name": "SHOPIFY"
+                },
+                "topic": "checkouts_delete"
+            },
+            "event": "Checkout Deleted",
+            "integrations": {
+                "SHOPIFY": true
+            },
+            "type": "track",
+            "userId":"shopify-admin",
+            "properties": {
+                "created_at": "2023-02-10T12:05:04.402Z",
+                "id": "shopify_test3",
+                "note": null,
+                "products": [],
                 "updated_at": "2023-02-10T12:16:07.251Z"
             }
         }

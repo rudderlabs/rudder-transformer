@@ -201,7 +201,7 @@ const deduceEventName = (message, Config) => {
   let eventName = [];
   switch (type) {
     case EventType.PAGE:
-      eventName = isDefinedAndNotNull(category) ? ['ViewCategory'] : ['PageVisit'];
+      eventName = isDefinedAndNotNull(category) ? ['view_category'] : ['page_visit'];
       break;
     case EventType.TRACK:
     case EventType.SCREEN:

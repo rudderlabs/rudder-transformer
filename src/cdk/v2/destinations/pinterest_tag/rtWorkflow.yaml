@@ -39,7 +39,6 @@ steps:
     description: Batches the successfulEvents using V3 API
     template: |
       let batches = $.batchMultiplexedEvents($.outputs.successfulEvents, $.MAX_BATCH_SIZE);
-      batches@batch.(console.log("old", batches.length));
       batches@batch.({
         "batchedRequest": {
           "body": {
@@ -68,7 +67,6 @@ steps:
     description: Batches the successfulEvents using V5 API
     template: |
       let batches = $.batchMultiplexedEvents($.outputs.successfulEvents, $.MAX_BATCH_SIZE);
-      batches@batch.(console.log("new", batches.length));
       batches@batch.({
         "batchedRequest": {
           "body": {

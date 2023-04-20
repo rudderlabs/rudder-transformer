@@ -25,7 +25,7 @@ steps:
     template: |
       let messageType = $.outputs.messageType;
       $.outputs.apiVersion === {{$.API_VERSION.v3}} ? 
-      $.assertConfig(.destination.Config.advertiserId, "Advertiser Id not found. Aborting"): null;
+      $.assertConfig(.destination.Config.advertiserId, "Advertiser Id not found. Aborting");
       $.assert(messageType, "Message type is not present. Aborting message.");
       $.assert(messageType in {{$.EventType.([.TRACK, .PAGE, .SCREEN])}}, 
         "message type " + messageType + " is not supported")
@@ -64,7 +64,7 @@ steps:
         "app_id": ^.destination.Config.appId,
         "advertiser_id": ^.destination.Config.advertiserId
       });
-      $.outputs.apiVersion === {{$.API_VERSION.v5}} ?  commonFields = commonFields{~["advertiser_id"]} : null;
+      $.outputs.apiVersion === {{$.API_VERSION.v5}} ?  commonFields = commonFields{~["advertiser_id"]};
       $.removeUndefinedValues(commonFields)
 
   - name: validateCommonFields
@@ -166,7 +166,7 @@ steps:
     description: Event names for page message type
     condition: $.outputs.messageType === {{$.EventType.PAGE}}
     template: |
-      .message.category ? [ "ViewCategory" ] : [ "PageVisit" ]
+      .message.category ? [ "view_category" ] : [ "page_visit" ]
     else:
       name: eventNamesForOthers
       template: |

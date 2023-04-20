@@ -33,7 +33,7 @@ steps:
       })[]
   - name: apiVersion
     template: |
-      $.outputs.successfulEvents[0].destination.Config.apiVersion ?? {{$.API_VERSION.v3}}
+      ^[0].destination.Config.apiVersion ?? {{$.API_VERSION.v3}}
   - name: batchSuccessfulEvents
     condition: $.outputs.apiVersion === {{$.API_VERSION.v3}}
     description: Batches the successfulEvents using V3 API

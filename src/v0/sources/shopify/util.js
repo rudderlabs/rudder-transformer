@@ -122,7 +122,7 @@ const setAnonymousId = (message) => {
 };
 /**
  * This function sets the anonymousId based on cart_token or id from the properties of message.
- * If it's null then we set userId as "ADMIN".
+ * If it's null then we set userId as "shopify-admin".
  * @param {*} message
  * @returns
  */
@@ -172,14 +172,12 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
       }
       return;
     default:
-      logger.error(`Event ${message.event} not supported`);
+      if (!message.userId) {
+        message.setProperty('userId', "shopify-admin");
+      }
+      return;
   }
-  if(!isDefinedAndNotNull(cartToken)){
-    if (!message.userId) {
-      message.setProperty('userId', "shopify-admin");
-    }
-    return;
-  }
+
   let anonymousIDfromDB;
   const executeStartTime = Date.now();
   const redisVal = await RedisDB.getVal(`${cartToken}`);

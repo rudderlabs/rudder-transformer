@@ -1,5 +1,43 @@
 [
     {
+        "description": "Track Call -> carts_create with no cartToken",
+        "input": {
+            "query_parameters": {
+                "topic": [
+                    "carts_create"
+                ]
+            },
+            "line_items": [],
+            "note": null,
+            "updated_at": "2023-02-10T12:16:07.251Z",
+            "created_at": "2023-02-10T12:05:04.402Z"
+        },
+        "output": {
+            "userId": "shopify-admin",
+            "context": {
+                "library": {
+                    "name": "RudderStack Shopify Cloud",
+                    "version": "1.0.0"
+                },
+                "integration": {
+                    "name": "SHOPIFY"
+                },
+                "topic": "carts_create"
+            },
+            "event": "Cart Create",
+            "integrations": {
+                "SHOPIFY": true
+            },
+            "type": "track",
+            "properties": {
+                "created_at": "2023-02-10T12:05:04.402Z",
+                "note": null,
+                "products": [],
+                "updated_at": "2023-02-10T12:16:07.251Z"
+            }
+        }
+    },
+    {
         "description": "Track Call -> carts_create with invalid cartToken",
         "input": {
             "id": "shopify_test3",

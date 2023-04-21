@@ -633,6 +633,12 @@ class Prometheus {
         type: 'histogram',
         labelNames: [],
       },
+      {
+        name: 'braze_lookup_time',
+        help: 'braze look-up time',
+        type: 'histogram',
+        labelNames: ['user_count', 'lookup_api_hits', 'destination_id']
+      }
     ];
 
     metrics.forEach((metric) => {

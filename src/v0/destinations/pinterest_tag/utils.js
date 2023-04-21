@@ -120,6 +120,20 @@ const processCommonPayload = (message) => {
 
 /**
  *
+ * @param {*} eventName // ["WatchVideo", "ViewCategory", "Custom"]
+ * @returns // ["watch_video", "view_category", "custom""]
+ * This function will return the snake case name of the destination config mapped event
+ */
+const convertToSnakeCase = (eventName) =>
+  eventName.map((str) =>
+    str
+      .replace(/([a-z])([A-Z])/g, '$1_$2')
+      .replace(/\s+/g, '_')
+      .toLowerCase(),
+  );
+
+/**
+ *
  * @param {*} message
  * @param {*} Config
  * @returns
@@ -158,7 +172,7 @@ const deduceTrackScreenEventName = (message, Config) => {
     eventName = keyMap[trackEventOrScreenName];
   }
   if (isDefined(eventName)) {
-    return [...eventName];
+    return convertToSnakeCase([...eventName]);
   }
 
   /*
@@ -348,4 +362,5 @@ module.exports = {
   VALID_ACTION_SOURCES,
   postProcessEcomFields,
   ecomEventMaps,
+  convertToSnakeCase,
 };

@@ -1,7 +1,16 @@
 const { get } = require('lodash');
-const { handleRtTfSingleEventError } = require('../../util');
 const { EventType } = require('../../../constants');
-const { getErrorRespEvents, constructPayload } = require('../../util');
+const {
+  defaultRequestConfig,
+  defaultPostRequestConfig,
+  getSuccessRespEvents,
+  getErrorRespEvents,
+  constructPayload,
+  defaultBatchRequestConfig,
+  removeUndefinedAndNullValues,
+  batchMultiplexedEvents,
+  handleRtTfSingleEventError,
+} = require('../../util');
 const {
   processUserPayload,
   processCommonPayload,
@@ -10,11 +19,34 @@ const {
   checkUserPayloadValidity,
   processHashedUserPayload,
 } = require('./utils');
-const { responseBuilderSimple, batchEvents } = require('./pinterestTransformV3');
-const { responseBuilderSimpleNew, batchEventsNew } = require('./pinterestTransformV5');
 
-const { USER_CONFIGS, getV5EventsEndpoint, API_VERSION } = require('./config');
+const {
+  ENDPOINT,
+  MAX_BATCH_SIZE,
+  USER_CONFIGS,
+  getV5EventsEndpoint,
+  API_VERSION,
+} = require('./config');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+
+const responseBuilderSimple = (finalPayload, apiVersion, { Config }) => {
+  const { adAccountId, conversionToken } = Config;
+  const response = defaultRequestConfig();
+  response.endpoint = ENDPOINT;
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.JSON = removeUndefinedAndNullValues(finalPayload);
+  response.headers = { 'Content-Type': 'application/json' };
+
+  if (apiVersion === API_VERSION.v5) {
+    response.endpoint = getV5EventsEndpoint(adAccountId);
+    response.headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${conversionToken}`,
+    };
+  }
+
+  return response;
+};
 
 /**
  *
@@ -86,12 +118,7 @@ const process = (event) => {
   const deducedEventNameArray = [];
   const { message, destination } = event;
   const messageType = message.type?.toLowerCase();
-  const {
-    apiVersion = API_VERSION.v3,
-    advertiserId,
-    adAccountId,
-    conversionToken,
-  } = destination.Config;
+  const { apiVersion = API_VERSION.v3, advertiserId } = destination.Config;
 
   if (apiVersion === API_VERSION.v3 && !advertiserId) {
     throw new ConfigurationError('Advertiser Id not found. Aborting');
@@ -115,15 +142,43 @@ const process = (event) => {
       throw new InstrumentationError(`message type ${messageType} is not supported`);
   }
 
-  const endpoint = getV5EventsEndpoint(adAccountId);
   toSendEvents.forEach((sendEvent) => {
-    if (apiVersion === API_VERSION.v5) {
-      respList.push(responseBuilderSimpleNew(sendEvent, endpoint, conversionToken));
-    } else {
-      respList.push(responseBuilderSimple(sendEvent));
-    }
+    respList.push(responseBuilderSimple(sendEvent, apiVersion, destination));
   });
   return respList;
+};
+
+const generateBatchedPayloadForArray = (events, { Config }) => {
+  const { apiVersion, adAccountId, conversionToken } = Config;
+  const endpoint = getV5EventsEndpoint(adAccountId);
+  const { batchedRequest } = defaultBatchRequestConfig();
+  const batchResponseList = events.map((event) => event.body.JSON);
+
+  batchedRequest.body.JSON = { data: batchResponseList };
+  batchedRequest.endpoint = ENDPOINT;
+  batchedRequest.headers = { 'Content-Type': 'application/json' };
+
+  if (apiVersion === API_VERSION.v5) {
+    batchedRequest.endpoint = endpoint;
+    batchedRequest.headers = {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${conversionToken}`,
+    };
+  }
+  return batchedRequest;
+};
+
+const batchEvents = (successRespList, destination) => {
+  const batchResponseList = [];
+  const batchedEvents = batchMultiplexedEvents(successRespList, MAX_BATCH_SIZE);
+  batchedEvents.forEach((batch) => {
+    const batchedRequest = generateBatchedPayloadForArray(batch.events, destination);
+    batchResponseList.push(
+      getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
+    );
+  });
+
+  return batchResponseList;
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
@@ -154,15 +209,9 @@ const processRouterDest = (inputs, reqMetadata) => {
 
   // using the first destination config for transforming the batch
   const { destination } = inputs[0];
-  const { apiVersion, adAccountId, conversionToken } = destination.Config;
-  const endpoint = getV5EventsEndpoint(adAccountId);
   let batchResponseList = [];
   if (successRespList.length > 0) {
-    if (apiVersion === API_VERSION.v5) {
-      batchResponseList = batchEventsNew(successRespList, endpoint, conversionToken);
-    } else {
-      batchResponseList = batchEvents(successRespList);
-    }
+    batchResponseList = batchEvents(successRespList, destination);
   }
 
   return [...batchResponseList, ...batchErrorRespList];

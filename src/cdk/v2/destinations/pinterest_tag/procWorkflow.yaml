@@ -173,9 +173,7 @@ steps:
         let event = .message.event ?? .message.name;
         let eventInLowerCase = event.toLowerCase();
         let eventNames = .destination.Config.eventsMapping.(){.from === event}.to[] ?? [];
-        console.log(eventNames);
         eventNames = $.convertToSnakeCase(eventNames);
-        console.log(eventNames);
         eventNames.length === 0 ? eventNames = $.ecomEventMaps.(){eventInLowerCase in .src}.dest[] ?? [];
         eventNames.length === 0 ? eventNames = [event];
         eventNames

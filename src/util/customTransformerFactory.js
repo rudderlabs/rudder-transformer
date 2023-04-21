@@ -10,8 +10,6 @@ const UserTransformHandlerFactory = (userTransformation) => {
       switch (userTransformation.language) {
         case 'pythonfaas':
           return setOpenFaasUserTransform(userTransformation, libraryVersionIds, testWithPublish);
-        case 'python':
-          return setLambdaUserTransform(userTransformation, testWithPublish);
         default:
           return setUserTransformHandlerV1();
       }
@@ -20,9 +18,8 @@ const UserTransformHandlerFactory = (userTransformation) => {
     runUserTransfrom: async (events, testMode, libraryVersionIds) => {
       switch (userTransformation.language) {
         case 'pythonfaas':
-          return runOpenFaasUserTransform(events, userTransformation, libraryVersionIds, testMode);
         case 'python':
-          return runLambdaUserTransform(events, userTransformation, testMode);
+          return runOpenFaasUserTransform(events, userTransformation, libraryVersionIds, testMode);
         default:
           return userTransformHandlerV1(events, userTransformation, libraryVersionIds, testMode);
       }

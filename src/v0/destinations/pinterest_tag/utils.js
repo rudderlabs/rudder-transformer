@@ -8,8 +8,8 @@ const {
   getHashFromArrayWithDuplicate,
   removeUndefinedAndNullValues,
 } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
-const { COMMON_CONFIGS, CUSTOM_CONFIGS } = require('./config');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { COMMON_CONFIGS, CUSTOM_CONFIGS, API_VERSION } = require('./config');
 
 const VALID_ACTION_SOURCES = ['app_android', 'app_ios', 'web', 'offline'];
 
@@ -194,10 +194,16 @@ const deduceTrackScreenEventName = (message, Config) => {
   }
 
   /*
-  Step 3: In case both of the above stated cases fail, will send the event name as it is.
-          This is going to be reflected as "unknown" event in conversion API dashboard.
- */
-  return [trackEventOrScreenName];
+  Step 3: In case both of the above stated cases fail, will check if sendAsCustomEvent toggle is enabled in UI. 
+          If yes, then we will send it as custom event
+    */
+  if (Config.sendAsCustomEvent) {
+    return ['custom'];
+  }
+
+  throw new ConfigurationError(
+    `${event} is not mapped in UI. Make sure to mapped the event in UI or enable the 'send as custom event' setting`,
+  );
 };
 
 /**
@@ -352,6 +358,27 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
   };
 };
 
+const validateInput = (message, { Config }) => {
+  const { apiVersion = API_VERSION.v3, advertiserId, adAccountId, conversionToken } = Config;
+  if (apiVersion === API_VERSION.v3 && !advertiserId) {
+    throw new ConfigurationError('Advertiser Id not found. Aborting');
+  }
+
+  if (apiVersion === API_VERSION.v5) {
+    if (!adAccountId) {
+      throw new ConfigurationError('Ad Account ID not found. Aborting');
+    }
+
+    if (!conversionToken) {
+      throw new ConfigurationError('Conversion Token not found. Aborting');
+    }
+  }
+
+  if (!message.type) {
+    throw new InstrumentationError('Event type is required');
+  }
+};
+
 module.exports = {
   processUserPayload,
   processCommonPayload,
@@ -363,4 +390,5 @@ module.exports = {
   postProcessEcomFields,
   ecomEventMaps,
   convertToSnakeCase,
+  validateInput,
 };

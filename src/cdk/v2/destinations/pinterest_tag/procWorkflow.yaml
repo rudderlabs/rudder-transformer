@@ -25,7 +25,9 @@ steps:
     template: |
       let messageType = $.outputs.messageType;
       $.outputs.apiVersion === {{$.API_VERSION.v3}} ? 
-      $.assertConfig(.destination.Config.advertiserId, "Advertiser Id not found. Aborting");
+      $.assertConfig(.destination.Config.advertiserId, "Advertiser Id not found. Aborting") : 
+      ($.assertConfig(.destination.Config.adAccountId, "Ad Account ID not found. Aborting");
+      $.assertConfig(.destination.Config.conversionToken, "Conversion Token not found. Aborting"));
       $.assert(messageType, "Message type is not present. Aborting message.");
       $.assert(messageType in {{$.EventType.([.TRACK, .PAGE, .SCREEN])}}, 
         "message type " + messageType + " is not supported")
@@ -175,7 +177,9 @@ steps:
         let eventNames = .destination.Config.eventsMapping.(){.from === event}.to[] ?? [];
         eventNames = $.convertToSnakeCase(eventNames);
         eventNames.length === 0 ? eventNames = $.ecomEventMaps.(){eventInLowerCase in .src}.dest[] ?? [];
-        eventNames.length === 0 ? eventNames = [event];
+        (eventNames.length === 0 && .destination.Config.sendAsCustomEvent) ? eventNames = ["custom"];
+        $.assertConfig(eventNames.length > 0, 
+              event + " is not mapped in UI. Make sure to mapped the event in UI or enable the 'send as custom event' setting")
         eventNames
 
   - name: payload

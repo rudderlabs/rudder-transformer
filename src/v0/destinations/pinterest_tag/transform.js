@@ -18,6 +18,7 @@ const {
   postProcessEcomFields,
   checkUserPayloadValidity,
   processHashedUserPayload,
+  validateInput,
 } = require('./utils');
 
 const {
@@ -27,10 +28,10 @@ const {
   getV5EventsEndpoint,
   API_VERSION,
 } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError } = require('../../util/errorTypes');
 
-const responseBuilderSimple = (finalPayload, apiVersion, { Config }) => {
-  const { adAccountId, conversionToken } = Config;
+const responseBuilderSimple = (finalPayload, { Config }) => {
+  const { apiVersion = API_VERSION.v3, adAccountId, conversionToken } = Config;
   const response = defaultRequestConfig();
   response.endpoint = ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
@@ -118,15 +119,8 @@ const process = (event) => {
   const deducedEventNameArray = [];
   const { message, destination } = event;
   const messageType = message.type?.toLowerCase();
-  const { apiVersion = API_VERSION.v3, advertiserId } = destination.Config;
 
-  if (apiVersion === API_VERSION.v3 && !advertiserId) {
-    throw new ConfigurationError('Advertiser Id not found. Aborting');
-  }
-
-  if (!message.type) {
-    throw new InstrumentationError('Event type is required');
-  }
+  validateInput(message, destination);
 
   switch (messageType) {
     case EventType.PAGE:
@@ -143,7 +137,7 @@ const process = (event) => {
   }
 
   toSendEvents.forEach((sendEvent) => {
-    respList.push(responseBuilderSimple(sendEvent, apiVersion, destination));
+    respList.push(responseBuilderSimple(sendEvent, destination));
   });
   return respList;
 };

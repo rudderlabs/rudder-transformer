@@ -25,22 +25,23 @@ function track(message, destination) {
   // Add Ecomm Events if applicable
   const evName = message.event;
   const properties = message.properties || {};
+  let updatedPayload = {};
   if (evName) {
     switch (evName) {
       case 'Product Viewed':
-        handleProductViewed(properties, rawPayload);
+        updatedPayload = {...handleProductViewed(properties, rawPayload)};
         break;
       case 'Product List Viewed':
-        handleProductListViewed(properties, rawPayload);
+        updatedPayload = {...handleProductListViewed(properties, rawPayload)};
         break;
       case 'Product Added':
-        handleProductAdded(properties, rawPayload);
+        updatedPayload = {...handleProductAdded(properties, rawPayload)};
         break;
       case 'Cart Viewed':
-        handleCartViewed(properties, rawPayload);
+        updatedPayload = {...handleCartViewed(properties, rawPayload)};
         break;
       case 'Order Completed':
-        handleOrderCompleted(properties, rawPayload);
+        updatedPayload = {...handleOrderCompleted(properties, rawPayload)};
         break;
       default:
         // The Engine API does not currently support custom events.
@@ -57,11 +58,12 @@ function track(message, destination) {
           }],
         });
       */
+        updatedPayload = {...rawPayload}
         break;
     }
   }
 
-  return responseBuilder(removeUndefinedValues(rawPayload), destination);
+  return responseBuilder(removeUndefinedValues(updatedPayload), destination);
 }
 
 function page(message, destination) {

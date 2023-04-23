@@ -173,6 +173,7 @@ const handleProductViewed = (properties, rawPayload) => {
   } else {
     throw new InstrumentationError("'product_id' is a required field for Product Viewed");
   }
+  return rawPayload;
 };
 
 const handleProductListViewed = (properties, rawPayload) => {
@@ -190,6 +191,7 @@ const handleProductListViewed = (properties, rawPayload) => {
   } else {
     throw new InstrumentationError("'products' missing or not array in Product List Viewed");
   }
+  return rawPayload;
 };
 
 const handleProductAdded = (properties, rawPayload) => {
@@ -218,6 +220,7 @@ const handleProductAdded = (properties, rawPayload) => {
       "'product_id', 'quantity', 'cart_value' are required fields and 'quantity' should be a number for Product Added",
     );
   }
+  return rawPayload;
 };
 
 const handleCartViewed = (properties, rawPayload) => {
@@ -251,6 +254,7 @@ const handleCartViewed = (properties, rawPayload) => {
       }),
     });
   }
+  return rawPayload;
 };
 
 const handleOrderCompleted = (properties, rawPayload) => {
@@ -287,6 +291,7 @@ const handleOrderCompleted = (properties, rawPayload) => {
       }),
     });
   }
+  return rawPayload;
 };
 
 module.exports = {

@@ -227,12 +227,7 @@ const UserIdentifierFieldNameMap = {
 };
 
 function getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier) {
-  let result = null;
-  Object.keys(userIdentifierInfo).forEach((key) => {
-    if (key !== defaultUserIdentifier && isDefinedAndNotNullAndNotEmpty(userIdentifierInfo[key])) {
-      result = key;
-    }
-  });
+  const result = Object.keys(userIdentifierInfo).find((key) => (key !== defaultUserIdentifier && isDefinedAndNotNullAndNotEmpty(userIdentifierInfo[key])));
   return result;
 }
 
@@ -310,7 +305,7 @@ const getStoreConversionPayload = (message, Config, event) => {
 };
 
 const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerId) => {
-  const email = getFieldValueFromMessage(message, 'email');
+  const email = getFieldValueFromMessage(message, 'emailOnly');
   const phone = getFieldValueFromMessage(message, 'phone');
   const { hashUserIdentifier, defaultUserIdentifier, UserIdentifierSource, conversionEnvironment } =
     Config;
@@ -398,4 +393,5 @@ module.exports = {
   requestBuilder,
   buildAndGetAddress,
   getClickConversionPayloadAndEndpoint,
+  getExisitingUserIdentifier
 };

@@ -1,7 +1,13 @@
 /* eslint-disable camelcase */
 const sha256 = require('sha256');
 const stats = require('../../../util/stats');
-const { constructPayload, extractCustomFields, flattenJson, generateUUID, isDefinedAndNotNull } = require('../../util');
+const {
+  constructPayload,
+  extractCustomFields,
+  flattenJson,
+  generateUUID,
+  isDefinedAndNotNull,
+} = require('../../util');
 const { RedisDB } = require('../../../util/redisConnector');
 const logger = require('../../../logger');
 const {
@@ -10,11 +16,12 @@ const {
   LINE_ITEM_EXCLUSION_FIELDS,
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   RUDDER_ECOM_MAP,
-  SHOPIFY_TRACK_MAP
+  SHOPIFY_TRACK_MAP,
 } = require('./config');
 // 30 mins
 const { TransformationError } = require('../../util/errorTypes');
 
+const USER_PROPERTY = 'shopify-admin';
 /**
  * query_parameters : { topic: ['<shopify_topic>'], ...}
  * Throws error otherwise
@@ -87,7 +94,7 @@ const setAnonymousId = (message) => {
     case SHOPIFY_TRACK_MAP.fulfillments_create:
     case SHOPIFY_TRACK_MAP.fulfillments_update:
       if (!message.userId) {
-        message.setProperty('userId', 'shopify-admin');
+        message.setProperty('userId', USER_PROPERTY);
       }
       return;
     case SHOPIFY_TRACK_MAP.carts_create:
@@ -140,14 +147,13 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
     case SHOPIFY_TRACK_MAP.orders_partially_fullfilled:
     case RUDDER_ECOM_MAP.orders_create:
     case RUDDER_ECOM_MAP.orders_updated:
-
       if (!isDefinedAndNotNull(message.properties?.cart_token)) {
         /**
          * This case will rise when we will be using Shopify Admin Dashboard to create, update, delete orders etc.
          * Since it is done by shopify-admin we will set "userId" to be "shopify-admin"
          */
         if (!message.userId) {
-          message.setProperty('userId', 'shopify-admin');
+          message.setProperty('userId', USER_PROPERTY);
         }
         return;
       }
@@ -168,15 +174,15 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
     case SHOPIFY_TRACK_MAP.fulfillments_create:
     case SHOPIFY_TRACK_MAP.fulfillments_update:
       if (!message.userId) {
-        message.setProperty('userId', 'shopify-admin');
+        message.setProperty('userId', USER_PROPERTY);
       }
       return;
     default:
       logger.error(`Event ${message.event} not supported`);
   }
-  if(!isDefinedAndNotNull(cartToken)){
+  if (!isDefinedAndNotNull(cartToken)) {
     if (!message.userId) {
-      message.setProperty('userId', "shopify-admin");
+      message.setProperty('userId', USER_PROPERTY);
     }
     return;
   }

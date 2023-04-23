@@ -4,3 +4,5 @@ node_modules
 npm-debug.log
 reports/*
 .eslintcache
+dist
+

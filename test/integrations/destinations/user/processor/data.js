@@ -198,7 +198,7 @@ const data = [{
                     "status": 200,
                     "body": [{
           "output": 
-          {"body":{"XML":{},"FORM":{},"JSON":{"data":{"test_prop_1":"test prop","test_prop_2":1232},"name":"product viewed","user_id":44,"timestamp":1587134564},"JSON_ARRAY":{}},"type":"REST","files":{},"method":"POST","params":{},"headers":{"Accept":"*/*;version=2","Content-Type":"application/json","Authorization":"Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf"},"version":"1","endpoint":"https://commander.user.com/api/public/events/","userId":""}, 
+          {"body":{"XML":{},"FORM":{},"JSON":{"data":{"test_prop_1":"test prop","test_prop_2":1232},"name":"product viewed","user_id":44,"timestamp":1663080164},"JSON_ARRAY":{}},"type":"REST","files":{},"method":"POST","params":{},"headers":{"Accept":"*/*;version=2","Content-Type":"application/json","Authorization":"Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf"},"version":"1","endpoint":"https://commander.user.com/api/public/events/","userId":""}, 
           "statusCode": 200}]
                 }
             } 
@@ -211,7 +211,7 @@ const data = [{
             "input": {
                 "request": {
                     "body": [
-                        {"message":{"category":"page category","channel":"web","context":{"app":{"build":"1.0.0","name":"RudderLabs JavaScript SDK","namespace":"com.rudderlabs.javascript","version":"1.1.9"},"campaign":{},"library":{"name":"RudderLabs JavaScript SDK","version":"1.1.9"},"locale":"en-GB","os":{"name":"","version":""},"page":{"path":"/testing","referrer":"","search":"","title":"","url":"https://pagecall.com/testing"},"screen":{"density":2},"traits":{},"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"},"integrations":{"All":true},"messageId":"397fdf96-daee-46c8-ac38-5d717cd8cabd","name":"page name","originalTimestamp":"2021-01-04T08:43:05.784Z","properties":{"category":"page category","name":"page name","path":"/testing","referrer":"","search":"","title":"","url":"https://pagecall.com/testing"},"request_ip":"[::1]","rudderId":"2d03081c-8053-4cce-9abf-bb024f747900","timestamp":"2021-01-04T14:13:05.801+05:30","type":"page","userId":"43"},"destination":{"Config":{"apiKey":"262fbbda-b85b-48b8-a719-c2fceaf8afaf","appSubdomain":"commander","userAttributesMapping":[{"from":"useroccupation","to":"occupation"}],"userEvents":[{"rsEventName":"login","userEventName":"product viewed","eventProperties":[{"from":"count","to":"productcount"}]}]}}},
+                        {"message":{"category":"page category","channel":"web","context":{"app":{"build":"1.0.0","name":"RudderLabs JavaScript SDK","namespace":"com.rudderlabs.javascript","version":"1.1.9"},"campaign":{},"library":{"name":"RudderLabs JavaScript SDK","version":"1.1.9"},"locale":"en-GB","os":{"name":"","version":""},"page":{"path":"/testing","referrer":"","search":"","title":"","url":"https://pagecall.com/testing"},"screen":{"density":2},"traits":{},"userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36"},"integrations":{"All":true},"messageId":"397fdf96-daee-46c8-ac38-5d717cd8cabd","name":"page name","originalTimestamp":"2021-01-04T14:13:05.801+05:30","properties":{"category":"page category","name":"page name","path":"/testing","referrer":"","search":"","title":"","url":"https://pagecall.com/testing"},"request_ip":"[::1]","rudderId":"2d03081c-8053-4cce-9abf-bb024f747900","timestamp":"2021-01-04T14:13:05.801+05:30","type":"page","userId":"43"},"destination":{"Config":{"apiKey":"262fbbda-b85b-48b8-a719-c2fceaf8afaf","appSubdomain":"commander","userAttributesMapping":[{"from":"useroccupation","to":"occupation"}],"userEvents":[{"rsEventName":"login","userEventName":"product viewed","eventProperties":[{"from":"count","to":"productcount"}]}]}}},
                     ],
                     "method": "POST",
                 },
@@ -222,7 +222,7 @@ const data = [{
                     "status": 200,
                     "body": [{
           "output": 
-          {"body":{"XML":{},"FORM":{},"JSON":{"page_path":"/testing","timestamp":"2021-01-04T08:43:05.784Z","client_user":"rpl0vjwysmc0","page_domain":"https://pagecall.com/testing"},"JSON_ARRAY":{}},"type":"REST","files":{},"method":"POST","params":{},"headers":{"Accept":"*/*;version=2","Content-Type":"application/json","Authorization":"Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf"},"version":"1","endpoint":"https://commander.user.com/api/public/site-views/","userId":""}, 
+          {"body":{"XML":{},"FORM":{},"JSON":{"page_path":"/testing","timestamp":"2021-01-04T14:13:05.801+05:30","client_user":"rpl0vjwysmc0","page_domain":"https://pagecall.com/testing"},"JSON_ARRAY":{}},"type":"REST","files":{},"method":"POST","params":{},"headers":{"Accept":"*/*;version=2","Content-Type":"application/json","Authorization":"Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf"},"version":"1","endpoint":"https://commander.user.com/api/public/site-views/","userId":""}, 
           "statusCode": 200}]
                 }
             } 

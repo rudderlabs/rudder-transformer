@@ -33,7 +33,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    "userId": "hjikl"
   },
   {
     "version": "1",
@@ -70,7 +70,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    "userId": "hjikl"
   },
   {
     "version": "1",
@@ -104,7 +104,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    "userId": "hjikl"
   },
   {
     "version": "1",
@@ -143,7 +143,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    "userId": "hjiklmk"
   },
   {
     "version": "1",
@@ -176,7 +176,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    "userId": "hjikl"
   },
   {
     "version": "1",
@@ -306,7 +306,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    "userId": "1234abc"
   },
   [
     {
@@ -728,7 +728,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+      "userId": "hjikl"
     },
     {
       "version": "1",
@@ -753,7 +753,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+      "userId": "hjikl"
     }
   ],
   [
@@ -779,7 +779,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+      "userId": "hjikl"
     },
     {
       "version": "1",
@@ -804,7 +804,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+      "userId": "hjikl"
     },
     {
       "version": "1",
@@ -829,7 +829,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+      "userId": "hjikl"
     }
   ],
   [
@@ -855,7 +855,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+      "userId": "hjikl"
     },
     {
       "version": "1",
@@ -880,7 +880,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+      "userId": "hjikl"
     }
   ],
   [
@@ -1045,7 +1045,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "5094f5704b9cf2b3"
+    "userId": "test_user_id"
   },
   {
     "version": "1",
@@ -1111,7 +1111,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    "userId": "1234abc"
   },
   {
     "version": "1",
@@ -1137,7 +1137,7 @@
       "FORM": {}
     },
     "files": {},
-    "userId": "5094f5704b9cf2b3"
+    "userId": "test_user_id"
   },
   {
     "version": "1",
@@ -1507,7 +1507,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "5094f5704b9cf2b3"
+      "userId": "test_user_id"
     }
   ],
   {
@@ -1720,7 +1720,7 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+      "userId": "hjikl"
     },
     {
       "version": "1",
@@ -1746,7 +1746,287 @@
         "FORM": {}
       },
       "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+      "userId": "hjikl"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/track/",
+      "headers": {},
+      "params": {
+        "data": {
+          "event": "Product Viewed",
+          "properties": {
+            "name": "T-Shirt",
+            "$user_id": "userId01",
+            "$device_id": "anonId01",
+            "$os": "iOS",
+            "$screen_height": 1794,
+            "$screen_width": 1080,
+            "$screen_dpi": 420,
+            "$carrier": "Android",
+            "$os_version": "8.1.0",
+            "$device": "generic_x86",
+            "$manufacturer": "Google",
+            "$model": "Android SDK built for x86",
+            "mp_device_model": "Android SDK built for x86",
+            "$wifi": true,
+            "$bluetooth_enabled": false,
+            "mp_lib": "com.rudderstack.android.sdk.core",
+            "$app_build_number": "1",
+            "$app_version_string": "1.0",
+            "$insert_id": "id2",
+            "token": "apiToken123",
+            "distinct_id": "userId01",
+            "time": 1579847342
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "userId01"
+    }
+  ],
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.mixpanel.com/engage/",
+    "headers": {},
+    "params": {
+      "data": {
+        "$set": {
+          "$created": "2020-01-23T08:54:02.362Z",
+          "$email": "mickey@disney.com",
+          "$firstName": "Mickey",
+          "$lastName": "Mouse",
+          "$country_code": "USA",
+          "$city": "Disney",
+          "$initial_referrer": "https://docs.rudderstack.com",
+          "$initial_referring_domain": "docs.rudderstack.com",
+          "$name": "Mickey Mouse",
+          "$browser": "Chrome",
+          "$browser_version": "79.0.3945.117"
+        },
+        "$token": "apiToken123",
+        "$distinct_id": "userId01",
+        "$ip": "0.0.0.0",
+        "$time": 1579847342
+      }
+    },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "userId01"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.mixpanel.com/engage/",
+    "headers": {},
+    "params": {
+      "data": {
+        "$set": {
+          "$created": "2020-01-23T08:54:02.362Z",
+          "$email": "mickey@disney.com",
+          "$firstName": "Mickey",
+          "$lastName": "Mouse",
+          "$country_code": "USA",
+          "$city": "Disney",
+          "$initial_referrer": "https://docs.rudderstack.com",
+          "$initial_referring_domain": "docs.rudderstack.com",
+          "$name": "Mickey Mouse",
+          "$browser": "Chrome",
+          "$browser_version": "79.0.3945.117"
+        },
+        "$token": "apiToken123",
+        "$distinct_id": "$device:anonId01",
+        "$ip": "0.0.0.0",
+        "$time": 1579847342
+      }
+    },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "anonId01"
+  },
+  {
+    "statusCode": 400,
+    "message": "Event type 'alias' is not supported when 'Simplified ID merge' api is selected in webapp"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$append": {
+            "$transactions": {
+              "$time": "2020-01-24T06:29:02.403Z",
+              "$amount": 18.9
+            }
+          },
+          "$token": "apiToken123",
+          "$distinct_id": "userId01"
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "userId01"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/track/",
+      "headers": {},
+      "params": {
+        "data": {
+          "event": "test revenue MIXPANEL",
+          "properties": {
+            "currency": "USD",
+            "revenue": 18.9,
+            "city": "Disney",
+            "country": "USA",
+            "email": "mickey@disney.com",
+            "firstName": "Mickey",
+            "ip": "0.0.0.0",
+            "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
+            "$screen_dpi": 2,
+            "mp_lib": "RudderLabs JavaScript SDK",
+            "$app_build_number": "1.0.0",
+            "$app_version_string": "1.0.5",
+            "$insert_id": "a6a0ad5a-bd26-4f19-8f75-38484e580fc7",
+            "token": "apiToken123",
+            "distinct_id": "userId01",
+            "$device_id": "anonId01",
+            "$user_id": "userId01",
+            "time": 1579847342,
+            "$browser": "Chrome",
+            "$browser_version": "79.0.3945.117"
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "userId01"
+    }
+  ],
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api.mixpanel.com/track/",
+    "headers": {},
+    "params": {
+      "data": {
+        "event": "Loaded a Page",
+        "properties": {
+          "ip": "0.0.0.0",
+          "$device_id": "anonId01",
+          "$current_url": "https://docs.rudderstack.com/destinations/mixpanel",
+          "$screen_dpi": 2,
+          "mp_lib": "RudderLabs JavaScript SDK",
+          "$app_build_number": "1.0.0",
+          "$app_version_string": "1.0.5",
+          "$insert_id": "dd266c67-9199-4a52-ba32-f46ddde67312",
+          "token": "apiToken123",
+          "distinct_id": "$device:anonId01",
+          "time": 1579847342,
+          "name": "Contact Us",
+          "$browser": "Chrome",
+          "$browser_version": "79.0.3945.117"
+        }
+      }
+    },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "anonId01"
+  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$token": "apiToken123",
+          "$distinct_id": "$device:anonId01",
+          "$set": {
+            "company": ["testComp"]
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "anonId01"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/groups/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$token": "apiToken123",
+          "$group_key": "company",
+          "$group_id": "testComp",
+          "$set": {
+            "company": "testComp"
+          }
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "anonId01"
     }
   ]
 ]

@@ -183,6 +183,10 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
   if (!isDefinedAndNotNull(anonymousIDfromDB)) {
     /* this is for backward compatability when we don't have the redis mapping for older events
     we will get anonymousIDFromDb as null so we will set UUID using the session Key */
+    if (event === SHOPIFY_TRACK_MAP.carts_create) { 
+      message.setProperty('anonymousId', "discard");
+      return
+    }
     stats.increment('shopify_no_anon_id_from_redis', {
       ...metricMetadata,
       event,

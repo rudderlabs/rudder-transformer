@@ -15,30 +15,34 @@
             "created_at": "2023-02-10T12:05:04.402Z"
         },
         "output": {
-            "anonymousId": "2cc03982fec47ef7ca76b4e028c375a51879",
-            "context": {
-                "library": {
-                    "name": "RudderStack Shopify Cloud",
-                    "version": "1.0.0"
-                },
-                "integration": {
-                    "name": "SHOPIFY"
-                },
-                "topic": "carts_create"
+            "outputToSource": {
+                "body": "T0s=",
+                "contentType": "text/plain"
             },
-            "event": "Cart Create",
-            "integrations": {
-                "SHOPIFY": true
+            "statusCode": 200
+        }
+    },
+    {
+        "description": "Track Call -> dupliate carts_update ",
+        "input": {
+            "id": "shopify_test3",
+            "query_parameters": {
+                "topic": [
+                    "carts_update"
+                ]
             },
-            "type": "track",
-            "properties": {
-                "created_at": "2023-02-10T12:05:04.402Z",
-                "id": "shopify_test3",
-                "note": null,
-                "products": [],
-                "token": "shopify_test3",
-                "updated_at": "2023-02-10T12:16:07.251Z"
-            }
+            "token": "shopify_test3",
+            "line_items": [],
+            "note": null,
+            "updated_at": "2023-02-10T12:16:07.251Z",
+            "created_at": "2023-02-10T12:16:04.402Z"
+        },
+        "output": {
+            "outputToSource": {
+                "body": "T0s=",
+                "contentType": "text/plain"
+            },
+            "statusCode": 200
         }
     },
     {
@@ -71,7 +75,7 @@
                 "SHOPIFY": true
             },
             "type": "track",
-            "userId":"shopify-admin",
+            "userId": "shopify-admin",
             "properties": {
                 "created_at": "2023-02-10T12:05:04.402Z",
                 "id": "shopify_test3",
@@ -111,7 +115,7 @@
                 "SHOPIFY": true
             },
             "type": "track",
-            "userId":"shopify-admin",
+            "userId": "shopify-admin",
             "properties": {
                 "created_at": "2023-02-10T12:05:04.402Z",
                 "id": "shopify_test3",
@@ -234,7 +238,7 @@
             "properties": {
                 "note": null,
                 "created_at": "2023-02-10T12:05:04.402Z",
-                "email":"test@rudderstack.com",
+                "email": "test@rudderstack.com",
                 "id": "shopify_test_cart",
                 "products": [
                     {
@@ -308,7 +312,7 @@
                         }
                     }
                 ],
-                "user_id":"rudder01",
+                "user_id": "rudder01",
                 "token": "shopify_test_cart",
                 "updated_at": "2023-02-10T12:16:07.251Z"
             }

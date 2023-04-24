@@ -202,7 +202,7 @@ const deduceTrackScreenEventName = (message, Config) => {
   }
 
   throw new ConfigurationError(
-    `${event} is not mapped in UI. Make sure to mapped the event in UI or enable the 'send as custom event' setting`,
+    `${event} is not mapped in UI. Make sure to map the event in UI or enable the 'send as custom event' setting`,
   );
 };
 

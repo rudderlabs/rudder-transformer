@@ -143,8 +143,7 @@ const process = (event) => {
 };
 
 const generateBatchedPayloadForArray = (events, { Config }) => {
-  const { apiVersion, adAccountId, conversionToken } = Config;
-  const endpoint = getV5EventsEndpoint(adAccountId);
+  const { apiVersion } = Config;
   const { batchedRequest } = defaultBatchRequestConfig();
   const batchResponseList = events.map((event) => event.body.JSON);
 
@@ -153,6 +152,8 @@ const generateBatchedPayloadForArray = (events, { Config }) => {
   batchedRequest.headers = { 'Content-Type': 'application/json' };
 
   if (apiVersion === API_VERSION.v5) {
+    const { adAccountId, conversionToken } = Config;
+    const endpoint = getV5EventsEndpoint(adAccountId);
     batchedRequest.endpoint = endpoint;
     batchedRequest.headers = {
       'Content-Type': 'application/json',

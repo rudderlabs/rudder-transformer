@@ -179,7 +179,7 @@ steps:
         eventNames.length === 0 ? eventNames = $.ecomEventMaps.(){eventInLowerCase in .src}.dest[] ?? [];
         (eventNames.length === 0 && .destination.Config.sendAsCustomEvent) ? eventNames = ["custom"];
         $.assertConfig(eventNames.length > 0, 
-              event + " is not mapped in UI. Make sure to mapped the event in UI or enable the 'send as custom event' setting")
+              event + " is not mapped in UI. Make sure to map the event in UI or enable the 'send as custom event' setting")
         eventNames
 
   - name: payload

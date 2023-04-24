@@ -622,7 +622,7 @@
   ],
   {
     "statusCode": 400,
-    "error": "custom event is not mapped in UI. Make sure to mapped the event in UI or enable the 'send as custom event' setting"
+    "error": "custom event is not mapped in UI. Make sure to map the event in UI or enable the 'send as custom event' setting"
   },
   [
     {

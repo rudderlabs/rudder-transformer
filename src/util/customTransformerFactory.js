@@ -1,5 +1,3 @@
-const { setLambdaUserTransform, runLambdaUserTransform } = require('./customTransformer-lambda');
-
 const { setOpenFaasUserTransform, runOpenFaasUserTransform } = require('./customTransformer-faas');
 
 const { userTransformHandlerV1, setUserTransformHandlerV1 } = require('./customTransformer-v1');

@@ -25,7 +25,7 @@ jest.mock("axios", () => ({
 
 const workspaceId = "workspaceId";
 const versionId = "versionId";
-const contructTrRevCode = vid => {
+const contructTrRevCode = (vid, language = 'pythonfaas') => {
   return {
     codeVersion: "1",
     language: "pythonfaas",
@@ -52,7 +52,16 @@ const faasCodeParsedForLibs = [
     response: {
       time: []
     },
-  }
+  },
+  {
+    code: "import uuid\nimport requests\nimport time\ndef transformEvent(event, metadata):\n    return event\n",
+    language: "python",
+    response: {
+      uuid: [],
+      requests: [],
+      time: []
+    },
+  },
 ]
 
 beforeAll(async () => {
@@ -144,16 +153,20 @@ describe("Function invocation & creation tests", () => {
     const inputEvents = require(`./data/user_transformation_input.json`);
     const outputEvents = require(`./data/user_transformation_pycode_test_output.json`);
 
-    const trRevCode = contructTrRevCode(versionId);
+    let trRevCode = contructTrRevCode(versionId);
 
-    const response = await userTransformHandler(
+    let response = await userTransformHandler(
       inputEvents,
       versionId,
       [],
       trRevCode,
       true
     );
+    expect(response).toEqual(outputEvents);
 
+    // Test with language python; should return same output
+    trRevCode = contructTrRevCode(versionId, 'python');
+    response = await userTransformHandler(inputEvents, versionId, [], trRevCode, true);
     expect(response).toEqual(outputEvents);
   });
 

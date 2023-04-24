@@ -21,7 +21,6 @@ const {
 // 30 mins
 const { TransformationError } = require('../../util/errorTypes');
 
-const USER_PROPERTY = 'shopify-admin';
 /**
  * query_parameters : { topic: ['<shopify_topic>'], ...}
  * Throws error otherwise
@@ -94,7 +93,7 @@ const setAnonymousId = (message) => {
     case SHOPIFY_TRACK_MAP.fulfillments_create:
     case SHOPIFY_TRACK_MAP.fulfillments_update:
       if (!message.userId) {
-        message.setProperty('userId', USER_PROPERTY);
+        message.setProperty('userId', 'shopify-admin');
       }
       return;
     case SHOPIFY_TRACK_MAP.carts_create:
@@ -161,14 +160,6 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
       break;
     // https://help.shopify.com/en/manual/orders/edit-orders -> order can be edited through shopify-admin only
     // https://help.shopify.com/en/manual/orders/fulfillment/setting-up-fulfillment -> fullfillments wont include cartToken neither in manual or automatiic
-    case SHOPIFY_TRACK_MAP.orders_edited:
-    case SHOPIFY_TRACK_MAP.orders_delete:
-    case SHOPIFY_TRACK_MAP.fulfillments_create:
-    case SHOPIFY_TRACK_MAP.fulfillments_update:
-      if (!userId) {
-        message.setProperty('userId', USER_PROPERTY);
-      }
-      return;
     default:
   }
   if (!isDefinedAndNotNull(cartToken)) {

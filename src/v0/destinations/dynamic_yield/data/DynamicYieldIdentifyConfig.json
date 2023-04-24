@@ -9,7 +9,10 @@
     "destKey": "session.custom",
     "sourceKeys": "sessionId",
     "sourceFromGenericMap": true,
-    "required": true
+    "required": true,
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "destKey": "context.device.ip",

@@ -549,6 +549,7 @@ const data = [
                         dyType: 'purchase-v1',
                         uniqeTransactionId: '1234',
                         value: 15,
+                        currency: 'USD',
                         cart: [
                           {
                             itemPrice: 14,

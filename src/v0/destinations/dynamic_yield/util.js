@@ -11,7 +11,8 @@ const ecomEventsMapping = {
 const populateProperties = (messageProperties, event) => {
   const properties = {
     dyType: `${ecomEventsMapping[event].toLowerCase().trim().replace(/\s+/g, '-')}-v1`,
-    value: messageProperties.price,
+    value: Number(parseFloat(messageProperties.price).toFixed(2)),
+    currency: messageProperties.currency,
   };
   if (event === 'order_completed') {
     properties.uniqeTransactionId = messageProperties.order_id;

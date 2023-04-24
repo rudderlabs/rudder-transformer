@@ -61,7 +61,7 @@ const errorDetailsMap = {
     // since there is involvement of changes required on dashboard to make event successful
     // for now, we are aborting this error-subCode combination
     33: new ErrorDetailsExtractor.Builder().setStatus(400)
-      .setMessage('Unsupported post request. Object with ID \'PIXEL_ID\' does not exist, cannot be loaded due to missing permissions, or does not support this operation')
+      .setMessage('Object with ID \'PIXEL_ID\' does not exist, cannot be loaded due to missing permissions, or does not support this operation')
       .build(),
     default: new ErrorDetailsExtractor.Builder().setStatus(400)
       .setMessage('Invalid Parameter')
@@ -75,7 +75,7 @@ const errorDetailsMap = {
   },
   190: {
     460: new ErrorDetailsExtractor.Builder().setStatus(400)
-      .setMessage('Error validating access token: The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons.')
+      .setMessage('The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons')
       .build(),
     default: new ErrorDetailsExtractor.Builder().setStatus(400)
       .setMessage('Invalid OAuth 2.0 access token')
@@ -93,7 +93,7 @@ const errorDetailsMap = {
   },
   341: {
     default: new ErrorDetailsExtractor.Builder().setStatus(500)
-      .setMessage('Application limit reached: Temporary issue due to downtime or throttling.')
+      .setMessage('Application limit reached: Temporary issue due to downtime or throttling')
       .build(), 
   },
   368: {
@@ -103,17 +103,17 @@ const errorDetailsMap = {
   },
   5000: {
     default: new ErrorDetailsExtractor.Builder().setStatus(500)
-      .setMessage('Unknown Error Code.')
+      .setMessage('Unknown Error Code')
       .build(), 
   },
   4: {
     default: new ErrorDetailsExtractor.Builder().setStatus(429)
-      .setMessage('API Too Many Calls: Temporary issue due to throttling.')
+      .setMessage('API Too Many Calls')
       .build(), 
   },
   17: {
     default: new ErrorDetailsExtractor.Builder().setStatus(429)
-      .setMessage('API User Too Many Calls: Temporary issue due to downtime.')
+      .setMessage('API User Too Many Calls')
       .build(), 
   }
 };
@@ -159,7 +159,7 @@ const errorResponseHandler = (destResponse) => {
   const { error } = response;
   const { status, errorMessage } = getStatus(error);
   throw new NetworkError(
-    `Failed with "${errorMessage || error.message}" during response transformation`,
+    `${errorMessage || error.message || "Unknown failure during response transformation"}`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),

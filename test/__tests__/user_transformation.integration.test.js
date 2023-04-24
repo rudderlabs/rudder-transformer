@@ -92,8 +92,8 @@ describe("Function Creation Tests", () => {
 
   const expectedData = { success: true, publishedVersion: funcName };
 
-  it("Setting up function with testWithPublish as true - creates faas function", async () => {
-    const outputData = await setupUserTransformHandler(trRevCode, [], true);
+  it("Setting up function - creates faas function", async () => {
+    const outputData = await setupUserTransformHandler(trRevCode, []);
 
     expect(outputData).toEqual(expectedData);
 
@@ -103,7 +103,7 @@ describe("Function Creation Tests", () => {
     expect(fnNames.sort()).toEqual([funcName, FAAS_AST_FN_NAME].sort());
   });
 
-  it("Setting up already existing function with testWithPublish as true - return from cache", async () => {
+  it("Setting up already existing function - return from cache", async () => {
     let fnCreatedAt;
     
     for(const fn of (await getFunctionList())) {
@@ -113,7 +113,7 @@ describe("Function Creation Tests", () => {
       break;
     }
 
-    const outputData = await setupUserTransformHandler(trRevCode, [], true);
+    const outputData = await setupUserTransformHandler(trRevCode, []);
 
     expect(outputData).toEqual(expectedData);
 
@@ -135,7 +135,7 @@ describe("Function Creation Tests", () => {
   it("Setting up already existing function with cache clearing - return retry request error", async () => {
     invalidateFnCache();
     await expect(async () => {
-      await setupUserTransformHandler(trRevCode, [], true);
+      await setupUserTransformHandler(trRevCode, []);
     }).rejects.toThrow(RetryRequestError);
   });
 });

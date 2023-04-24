@@ -285,11 +285,9 @@ async function userTransformHandler(
 async function setupUserTransformHandler(
   trRevCode = {},
   libraryVersionIDs,
-  testWithPublish = false,
 ) {
   const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(
-    libraryVersionIDs,
-    testWithPublish,
+    libraryVersionIDs
   );
   return resp;
 }

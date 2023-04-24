@@ -99,6 +99,9 @@ function validateAndBuildResponse(message, payload, category, destination) {
     case EventType.TRACK:
       response.body.JSON = removeUndefinedAndNullValues(validateTrack(message, payload));
       break;
+    case EventType.GROUP:
+      response.body.JSON = removeUndefinedAndNullValues(payload);
+      break;
     default:
       throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
@@ -130,9 +133,9 @@ function processSingleMessage(message, destination) {
     case EventType.TRACK:
       category = ConfigCategory.TRACK;
       break;
-    // case EventType.GROUP:
-    //   category = ConfigCategory.GROUP;
-    //   break;
+    case EventType.GROUP:
+      category = ConfigCategory.GROUP;
+      break;
     default:
       throw new InstrumentationError(`Message type ${messageType} not supported`);
   }

@@ -377,5 +377,67 @@
   {
     "statusCode": 400,
     "error": "Email or userId is mandatory"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "name": "rudderUpdate",
+        "size": 50,
+        "industry": "IT",
+        "company_id": "test_company_id",
+        "monthly_spend": 2131231,
+        "custom_attributes": {
+          "plan": "basic",
+          "employees": 450
+        }
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "userId": "12312312",
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer abcd=",
+      "Intercom-Version": "1.4"
+    },
+    "version": "1",
+    "endpoint": "https://api.intercom.io/companies"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "name": "rudderUpdate",
+        "size": 50,
+        "industry": "IT",
+        "company_id": "test_company_id",
+        "monthly_spend": 2131231,
+        "custom_attributes": {
+          "plan": "basic",
+          "employees": 450
+        }
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "userId": "12312312",
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer abcd=",
+      "Intercom-Version": "1.4"
+    },
+    "version": "1",
+    "endpoint": "https://api.intercom.io/companies"
   }
 ]

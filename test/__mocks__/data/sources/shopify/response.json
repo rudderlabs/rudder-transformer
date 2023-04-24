@@ -1,0 +1,11 @@
+{
+  "shopify_test1": {
+    "anonymousId": "anon_shopify_test1"
+  },
+  "shopify_test2": {
+    "anonymousId": "anon_shopify_test2"
+  },
+  "shopify_test_cart": {
+    "anonymousId": "anon_shopify_test1"
+  }
+}

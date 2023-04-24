@@ -1,0 +1,20 @@
+[
+    {
+        "description": "Get Value error",
+        "input": {
+            "value": "error"
+        },
+        "output": {
+            "error": "Error getting value from Redis: Error: Connection is Closed"
+        }
+
+    },
+    {
+        "description": "Get Value Successfull",
+        "input": {
+            "value": "redis_test_get"
+        },
+        "output": "\"redis_test_get_value\""
+
+    }
+]

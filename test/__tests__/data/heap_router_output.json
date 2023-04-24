@@ -68,7 +68,7 @@
             "variation": "A"
           },
           "app_id": "<app id>",
-          "timestamp": "2020-01-16T13:23:20.844Z"
+          "timestamp": "2020-01-16T18:53:20.866+05:30"
         },
         "XML": {},
         "JSON_ARRAY": {},
@@ -119,7 +119,7 @@
             "variation": "A"
           },
           "app_id": "<app id>",
-          "timestamp": "2020-01-16T13:23:20.844Z",
+          "timestamp": "2020-01-16T18:53:20.866+05:30",
           "idempotency_key": "1234"
         },
         "XML": {},

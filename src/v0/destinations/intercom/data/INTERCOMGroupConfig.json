@@ -1,0 +1,59 @@
+[
+  {
+    "destKey": "company_id",
+    "sourceKeys": "groupId",
+    "required": true
+  },
+  {
+    "destKey": "name",
+    "sourceKeys": "name",
+    "required": false
+  },
+  {
+    "destKey": "plan",
+    "sourceKeys": "plan",
+    "required": false
+  },
+  {
+    "destKey": "size",
+    "sourceKeys": "size",
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": false
+  },
+  {
+    "destKey": "website",
+    "sourceKeys": "website",
+    "required": false
+  },
+  {
+    "destKey": "industry",
+    "sourceKeys": "industry",
+    "required": false
+  },
+  {
+    "destKey": "monthly_spend",
+    "sourceKeys": "monthlySpend",
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": false
+  },
+  {
+    "destKey": "remote_created_at",
+    "sourceKeys": "remoteCreatedAt",
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": false
+  },
+  {
+    "destKey": "custom_attributes",
+    "sourceKeys": ["traits"],
+    "required": false,
+    "metadata": {
+      "excludes": ["groupId"]
+    }
+  }
+]

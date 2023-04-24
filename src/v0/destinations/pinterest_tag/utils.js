@@ -158,6 +158,7 @@ const convertToSnakeCase = (eventName) =>
 const deduceTrackScreenEventName = (message, Config) => {
   let eventName;
   const { event, name } = message;
+  const { apiVersion = API_VERSION.v3, eventsMapping, sendAsCustomEvent } = Config;
   const trackEventOrScreenName = event || name;
   if (!trackEventOrScreenName) {
     throw new InstrumentationError('event_name could not be mapped. Aborting');
@@ -167,8 +168,8 @@ const deduceTrackScreenEventName = (message, Config) => {
   Step 1: If the event is not amongst the above list of ecommerce events, will look for
           the event mapping in the UI. In case it is similar, will map to that.
    */
-  if (Config.eventsMapping.length > 0) {
-    const keyMap = getHashFromArrayWithDuplicate(Config.eventsMapping, 'from', 'to', false);
+  if (eventsMapping.length > 0) {
+    const keyMap = getHashFromArrayWithDuplicate(eventsMapping, 'from', 'to', false);
     eventName = keyMap[trackEventOrScreenName];
   }
   if (isDefined(eventName)) {
@@ -197,8 +198,16 @@ const deduceTrackScreenEventName = (message, Config) => {
   Step 3: In case both of the above stated cases fail, will check if sendAsCustomEvent toggle is enabled in UI. 
           If yes, then we will send it as custom event
     */
-  if (Config.sendAsCustomEvent) {
+  if (sendAsCustomEvent) {
     return ['custom'];
+  }
+
+  if (apiVersion === API_VERSION.v3) {
+    /* 
+    Step 4: In case both of the above stated cases fail, will send the event name as it is.
+            This is going to be reflected as "unknown" event in conversion API dashboard.
+    */
+    return [trackEventOrScreenName];
   }
 
   throw new ConfigurationError(

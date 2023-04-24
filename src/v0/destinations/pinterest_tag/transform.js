@@ -142,32 +142,22 @@ const process = (event) => {
   return respList;
 };
 
-const generateBatchedPayloadForArray = (events, { Config }) => {
-  const { apiVersion } = Config;
+const generateBatchedPayloadForArray = (events) => {
   const { batchedRequest } = defaultBatchRequestConfig();
   const batchResponseList = events.map((event) => event.body.JSON);
 
   batchedRequest.body.JSON = { data: batchResponseList };
-  batchedRequest.endpoint = ENDPOINT;
-  batchedRequest.headers = { 'Content-Type': 'application/json' };
+  batchedRequest.endpoint = events[0].endpoint;
+  batchedRequest.headers = events[0].headers;
 
-  if (apiVersion === API_VERSION.v5) {
-    const { adAccountId, conversionToken } = Config;
-    const endpoint = getV5EventsEndpoint(adAccountId);
-    batchedRequest.endpoint = endpoint;
-    batchedRequest.headers = {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${conversionToken}`,
-    };
-  }
   return batchedRequest;
 };
 
-const batchEvents = (successRespList, destination) => {
+const batchEvents = (successRespList) => {
   const batchResponseList = [];
   const batchedEvents = batchMultiplexedEvents(successRespList, MAX_BATCH_SIZE);
   batchedEvents.forEach((batch) => {
-    const batchedRequest = generateBatchedPayloadForArray(batch.events, destination);
+    const batchedRequest = generateBatchedPayloadForArray(batch.events);
     batchResponseList.push(
       getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
     );
@@ -202,11 +192,9 @@ const processRouterDest = (inputs, reqMetadata) => {
     }
   });
 
-  // using the first destination config for transforming the batch
-  const { destination } = inputs[0];
   let batchResponseList = [];
   if (successRespList.length > 0) {
-    batchResponseList = batchEvents(successRespList, destination);
+    batchResponseList = batchEvents(successRespList);
   }
 
   return [...batchResponseList, ...batchErrorRespList];

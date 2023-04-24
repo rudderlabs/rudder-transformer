@@ -135,6 +135,7 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
      */
     case RUDDER_ECOM_MAP.checkouts_create:
     case RUDDER_ECOM_MAP.checkouts_update:
+    case SHOPIFY_TRACK_MAP.checkouts_delete:
     case SHOPIFY_TRACK_MAP.orders_cancelled:
     case SHOPIFY_TRACK_MAP.orders_fulfilled:
     case SHOPIFY_TRACK_MAP.orders_paid:
@@ -153,10 +154,6 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
       break;
     // https://help.shopify.com/en/manual/orders/edit-orders -> order can be edited through shopify-admin only
     // https://help.shopify.com/en/manual/orders/fulfillment/setting-up-fulfillment -> fullfillments wont include cartToken neither in manual or automatiic
-    case SHOPIFY_TRACK_MAP.orders_edited:
-    case SHOPIFY_TRACK_MAP.orders_delete:
-    case SHOPIFY_TRACK_MAP.fulfillments_create:
-    case SHOPIFY_TRACK_MAP.fulfillments_update:
     default:
   }
   if (!isDefinedAndNotNull(cartToken)) {

@@ -1,10 +1,10 @@
+const _ = require('lodash');
 const sha256 = require('sha256');
 const get = require('get-value');
 const jsonSize = require('json-size');
 
 const {
     isDefinedAndNotNull,
-    returnArrayOfSubarrays
 } = require('../../util');
 const { maxPayloadSize } = require("./config");
 const {
@@ -35,10 +35,10 @@ const batchingWithPayloadSize = (payload) => {
         const revisedPayloadArray = [];
         const noOfBatches = Math.ceil(payloadSize / maxPayloadSize);
         const revisedRecordsPerPayload = Math.floor(payload.data.length / noOfBatches);
-        const revisedDataArray = returnArrayOfSubarrays(payload.data, revisedRecordsPerPayload);
+        const revisedDataArray = _.chunk(payload.data, revisedRecordsPerPayload);
         // const { schema } = payload;
         revisedDataArray.forEach((data) => {
-            revisedPayloadArray.push({ ...payload, data});
+            revisedPayloadArray.push({ ...payload, data });
         });
         return revisedPayloadArray;
     }

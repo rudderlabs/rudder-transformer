@@ -6,25 +6,25 @@ const {
   isDefinedAndNotNull,
   isDefined,
   getHashFromArrayWithDuplicate,
-  removeUndefinedAndNullValues
+  removeUndefinedAndNullValues,
 } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
-const { COMMON_CONFIGS, CUSTOM_CONFIGS } = require('./config');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { COMMON_CONFIGS, CUSTOM_CONFIGS, API_VERSION } = require('./config');
 
 const VALID_ACTION_SOURCES = ['app_android', 'app_ios', 'web', 'offline'];
 
 const ecomEventMaps = [
   {
     src: ['order completed'],
-    dest: 'Checkout',
+    dest: 'checkout',
   },
   {
     src: ['product added'],
-    dest: 'AddToCart',
+    dest: 'add_to_cart',
   },
   {
     src: ['products searched', 'product list filtered'],
-    dest: 'Search',
+    dest: 'search',
   },
 ];
 
@@ -63,6 +63,7 @@ const processUserPayload = (userPayload) => {
       case 'ln':
       case 'fn':
       case 'hashed_maids':
+      case 'external_id':
         userPayload[key] = [sha256(userPayload[key])];
         break;
       default:
@@ -119,6 +120,20 @@ const processCommonPayload = (message) => {
 
 /**
  *
+ * @param {*} eventName // ["WatchVideo", "ViewCategory", "Custom"]
+ * @returns // ["watch_video", "view_category", "custom""]
+ * This function will return the snake case name of the destination config mapped event
+ */
+const convertToSnakeCase = (eventName) =>
+  eventName.map((str) =>
+    str
+      .replace(/([a-z])([A-Z])/g, '$1_$2')
+      .replace(/\s+/g, '_')
+      .toLowerCase(),
+  );
+
+/**
+ *
  * @param {*} message
  * @param {*} Config
  * @returns
@@ -126,15 +141,15 @@ const processCommonPayload = (message) => {
  * const ecomEventMaps = [
     {
       src: ["order completed"],
-      dest: "Checkout",
+      dest: "checkout",
     },
     {
       src: ["product added"],
-      dest: "AddToCart",
+      dest: "add_to_cart",
     },
     {
       src: ["products searched", "product list filtered"],
-      dest: "Search",
+      dest: "search",
     },
   ];
  * For others, it depends on mapping from the UI. If any event, other than mapped events are sent,
@@ -157,7 +172,7 @@ const deduceTrackScreenEventName = (message, Config) => {
     eventName = keyMap[trackEventOrScreenName];
   }
   if (isDefined(eventName)) {
-    return [...eventName];
+    return convertToSnakeCase([...eventName]);
   }
 
   /*
@@ -179,10 +194,16 @@ const deduceTrackScreenEventName = (message, Config) => {
   }
 
   /*
-  Step 3: In case both of the above stated cases fail, will send the event name as it is.
-          This is going to be reflected as "unknown" event in conversion API dashboard.
- */
-  return [trackEventOrScreenName];
+  Step 3: In case both of the above stated cases fail, will check if sendAsCustomEvent toggle is enabled in UI. 
+          If yes, then we will send it as custom event
+    */
+  if (Config.sendAsCustomEvent) {
+    return ['custom'];
+  }
+
+  throw new ConfigurationError(
+    `${event} is not mapped in UI. Make sure to map the event in UI or enable the 'send as custom event' setting`,
+  );
 };
 
 /**
@@ -200,7 +221,7 @@ const deduceEventName = (message, Config) => {
   let eventName = [];
   switch (type) {
     case EventType.PAGE:
-      eventName = isDefinedAndNotNull(category) ? ['ViewCategory'] : ['PageVisit'];
+      eventName = isDefinedAndNotNull(category) ? ['view_category'] : ['page_visit'];
       break;
     case EventType.TRACK:
     case EventType.SCREEN:
@@ -263,7 +284,9 @@ const processHashedUserPayload = (userPayload, message) => {
   });
   // multiKeyMap will works on only specific values like m, male, MALE, f, F, Female
   // if hashed data is sent from the user, it is directly set over here
-  processedHashedUserPayload.ge = [message.traits?.gender || message.context?.traits?.gender || null];
+  processedHashedUserPayload.ge = [
+    message.traits?.gender || message.context?.traits?.gender || null,
+  ];
   return processedHashedUserPayload;
 };
 
@@ -287,7 +310,7 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
     const { products, quantity } = properties;
     products.forEach((product) => {
       const prodParams = setIdPriceQuantity(product, message);
-      if(prodParams.contentId) {
+      if (prodParams.contentId) {
         contentIds.push(prodParams.contentId);
       }
       contentArray.push(prodParams.content);
@@ -310,7 +333,7 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
     quantity are taken into consideration
     */
     const prodParams = setIdPriceQuantity(properties, message);
-    if(prodParams.contentId) {
+    if (prodParams.contentId) {
       contentIds.push(prodParams.contentId);
     }
     contentArray.push(prodParams.content);
@@ -331,8 +354,29 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
 
   return {
     ...mandatoryPayload,
-    custom_data: { ...removeUndefinedAndNullValues(customPayload)},
+    custom_data: { ...removeUndefinedAndNullValues(customPayload) },
   };
+};
+
+const validateInput = (message, { Config }) => {
+  const { apiVersion = API_VERSION.v3, advertiserId, adAccountId, conversionToken } = Config;
+  if (apiVersion === API_VERSION.v3 && !advertiserId) {
+    throw new ConfigurationError('Advertiser Id not found. Aborting');
+  }
+
+  if (apiVersion === API_VERSION.v5) {
+    if (!adAccountId) {
+      throw new ConfigurationError('Ad Account ID not found. Aborting');
+    }
+
+    if (!conversionToken) {
+      throw new ConfigurationError('Conversion Token not found. Aborting');
+    }
+  }
+
+  if (!message.type) {
+    throw new InstrumentationError('Event type is required');
+  }
 };
 
 module.exports = {
@@ -345,4 +389,6 @@ module.exports = {
   VALID_ACTION_SOURCES,
   postProcessEcomFields,
   ecomEventMaps,
+  convertToSnakeCase,
+  validateInput,
 };

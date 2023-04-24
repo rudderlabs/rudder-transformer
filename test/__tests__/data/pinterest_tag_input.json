@@ -97,7 +97,7 @@
         "eventsMapping": [
           {
             "from": "ABC Searched",
-            "to": "Watch Video"
+            "to": "WatchVideo"
           }
         ]
       },
@@ -202,7 +202,7 @@
         "eventsMapping": [
           {
             "from": "ABC Searched",
-            "to": "Watch Video"
+            "to": "WatchVideo"
           }
         ]
       },
@@ -288,7 +288,7 @@
         "eventsMapping": [
           {
             "from": "ABC Searched",
-            "to": "Watch Video"
+            "to": "WatchVideo"
           }
         ]
       },
@@ -392,7 +392,7 @@
         "eventsMapping": [
           {
             "from": "ABC Searched",
-            "to": "Watch Video"
+            "to": "WatchVideo"
           }
         ]
       },
@@ -493,7 +493,7 @@
         "eventsMapping": [
           {
             "from": "ABC Searched",
-            "to": "Watch Video"
+            "to": "WatchVideo"
           }
         ]
       },
@@ -599,7 +599,7 @@
         "eventsMapping": [
           {
             "from": "ABC Searched",
-            "to": "Watch Video"
+            "to": "WatchVideo"
           }
         ]
       },
@@ -705,7 +705,7 @@
         "eventsMapping": [
           {
             "from": "ABC Searched",
-            "to": "Watch Video"
+            "to": "WatchVideo"
           }
         ]
       },
@@ -810,7 +810,7 @@
         "eventsMapping": [
           {
             "from": "ABC Searched",
-            "to": "Watch Video"
+            "to": "WatchVideo"
           }
         ]
       },
@@ -916,7 +916,7 @@
         "eventsMapping": [
           {
             "from": "ABC Searched",
-            "to": "Watch Video"
+            "to": "WatchVideo"
           }
         ]
       },
@@ -1011,6 +1011,7 @@
         "enableDeduplication": true,
         "deduplicationKey": "messageId",
         "enhancedMatch": true,
+        "sendAsCustomEvent": true,
         "customProperties": [
           {
             "properties": "presentclass"
@@ -1022,7 +1023,7 @@
         "eventsMapping": [
           {
             "from": "ABC Searched",
-            "to": "Watch Video"
+            "to": "WatchVideo"
           }
         ]
       },
@@ -1098,7 +1099,7 @@
         "eventsMapping": [
           {
             "from": "ABC Searched",
-            "to": "Watch Video"
+            "to": "WatchVideo"
           }
         ]
       },
@@ -1175,7 +1176,7 @@
         "eventsMapping": [
           {
             "from": "ABC Searched",
-            "to": "Watch Video"
+            "to": "WatchVideo"
           }
         ]
       },
@@ -1253,7 +1254,7 @@
         "eventsMapping": [
           {
             "from": "ABC Searched",
-            "to": "Watch Video"
+            "to": "WatchVideo"
           }
         ]
       },
@@ -1330,7 +1331,7 @@
         "eventsMapping": [
           {
             "from": "ABC Searched",
-            "to": "Watch Video"
+            "to": "WatchVideo"
           }
         ]
       },
@@ -1403,7 +1404,7 @@
         "eventsMapping": [
           {
             "from": "ABC Searched",
-            "to": "Watch Video"
+            "to": "WatchVideo"
           }
         ]
       },
@@ -1413,403 +1414,768 @@
   },
   {
     "message": {
+      "name": "Test Tool",
+      "type": "page",
+      "sentAt": "2023-02-01T00:00:00.379Z",
+      "userId": "",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "2.22.3",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "https://www.abc.com/s598907",
+          "path": "/test-path/s598907",
+          "title": "Test Tool + Reviews | Rudderstack",
+          "search": "",
+          "tab_url": "https://www.abc.com/s598907",
+          "referrer": "$direct",
+          "initial_referrer": "$direct",
+          "referring_domain": "",
+          "initial_referring_domain": ""
+        },
+        "locale": "en-US",
+        "screen": {
+          "width": 1024,
+          "height": 1024,
+          "density": 1,
+          "innerWidth": 1024,
+          "innerHeight": 1024
+        },
+        "traits": {},
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "2.22.3"
+        },
+        "campaign": {},
+        "doNotSell": false,
+        "sessionId": 1675209600203,
+        "userAgent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/109.0.5414.101 Safari/537.36",
+        "gaClientId": {
+          "integrations": {
+            "Google Ads": {
+              "gclid": ""
+            },
+            "Google Analytics": {
+              "clientId": "1518934611.1234569600"
+            }
+          }
+        },
+        "sessionStart": true
+      },
+      "rudderId": "7291a10f-e7dd-49f9-94ce-0154f53897y6",
+      "messageId": "1c77a616-13a7-4a2e-a8e7-e1a0971897y6",
+      "timestamp": "2023-02-01T12:47:30.030Z",
+      "properties": {
+        "sku": "45790-32",
+        "url": "https://www.abc.com/23rty",
         "name": "Test Tool",
-        "type": "page",
-        "sentAt": "2023-02-01T00:00:00.379Z",
-        "userId": "",
-        "channel": "web",
-        "context": {
-            "os": {
-                "name": "",
-                "version": ""
-            },
-            "app": {
-                "name": "RudderLabs JavaScript SDK",
-                "version": "2.22.3",
-                "namespace": "com.rudderlabs.javascript"
-            },
-            "page": {
-                "url": "https://www.abc.com/s598907",
-                "path": "/test-path/s598907",
-                "title": "Test Tool + Reviews | Rudderstack",
-                "search": "",
-                "tab_url": "https://www.abc.com/s598907",
-                "referrer": "$direct",
-                "initial_referrer": "$direct",
-                "referring_domain": "",
-                "initial_referring_domain": ""
-            },
-            "locale": "en-US",
-            "screen": {
-                "width": 1024,
-                "height": 1024,
-                "density": 1,
-                "innerWidth": 1024,
-                "innerHeight": 1024
-            },
-            "traits": {},
-            "library": {
-                "name": "RudderLabs JavaScript SDK",
-                "version": "2.22.3"
-            },
-            "campaign": {},
-            "doNotSell": false,
-            "sessionId": 1675209600203,
-            "userAgent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/109.0.5414.101 Safari/537.36",
-            "gaClientId": {
-                "integrations": {
-                    "Google Ads": {
-                        "gclid": ""
-                    },
-                    "Google Analytics": {
-                        "clientId": "1518934611.1234569600"
-                    }
-                }
-            },
-            "sessionStart": true
+        "path": "/test-path/tool",
+        "email": "",
+        "title": "Test Tool + Reviews | Rudderstack",
+        "review": {
+          "reviewCount": 2,
+          "averageReview": 5,
+          "reviewContentID": ["238300132"]
         },
-        "rudderId": "7291a10f-e7dd-49f9-94ce-0154f53897y6",
-        "messageId": "1c77a616-13a7-4a2e-a8e7-e1a0971897y6",
-        "timestamp": "2023-02-01T12:47:30.030Z",
-        "properties": {
-            "sku": "45790-32",
-            "url": "https://www.abc.com/23rty",
-            "name": "Test Tool",
-            "path": "/test-path/tool",
-            "email": "",
-            "title": "Test Tool + Reviews | Rudderstack",
-            "review": {
-                "reviewCount": 2,
-                "averageReview": 5,
-                "reviewContentID": [
-                    "238300132"
-                ]
-            },
-            "search": "",
-            "tab_url": "https://www.abc/com",
-            "pageInfo": {
-                "pageId": "s592897",
-                "category": {
-                    "pageType": "product",
-                    "subCategory": "Dining & Kitchen Furniture",
-                    "pageTemplate": "product detail grouper",
-                    "primaryCategory": "Furniture"
-                },
-                "brandType": "new brand"
-            },
-            "referrer": "",
+        "search": "",
+        "tab_url": "https://www.abc/com",
+        "pageInfo": {
+          "pageId": "s592897",
+          "category": {
+            "pageType": "product",
             "subCategory": "Dining & Kitchen Furniture",
-            "primaryCategory": "Furniture",
-            "initial_referrer": "$direct",
-            "referring_domain": "",
-            "initial_referring_domain": ""
+            "pageTemplate": "product detail grouper",
+            "primaryCategory": "Furniture"
+          },
+          "brandType": "new brand"
         },
-        "receivedAt": "2023-02-01T12:47:30.038Z",
-        "request_ip": "66.249.72.218",
-        "anonymousId": "a61c77a6-1613-474a-aee8-e7e1a0971047",
-        "integrations": {
-            "All": true
-        },
-        "originalTimestamp": "2023-02-01T00:00:00.371Z"
+        "referrer": "",
+        "subCategory": "Dining & Kitchen Furniture",
+        "primaryCategory": "Furniture",
+        "initial_referrer": "$direct",
+        "referring_domain": "",
+        "initial_referring_domain": ""
+      },
+      "receivedAt": "2023-02-01T12:47:30.038Z",
+      "request_ip": "66.249.72.218",
+      "anonymousId": "a61c77a6-1613-474a-aee8-e7e1a0971047",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2023-02-01T00:00:00.371Z"
     },
     "destination": {
-        "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
-        "Name": "PINTEREST_TAG",
-        "Config": {
-            "tagId": "123456789",
-            "advertiserId": "123478671210",
-            "sendingUnHashedData": false,
-            "enableDeduplication": false,
-            "eventsMapping": [
-                {
-                    "from": "Product Added",
-                    "to": "AddToCart"
-                },
-                {
-                    "from": "Order Completed",
-                    "to": "Checkout"
-                },
-                {
-                    "from": "Product Viewed",
-                    "to": "PageVisit"
-                },
-                {
-                    "from": "Lead",
-                    "to": "Lead"
-                },
-                {
-                    "from": "Signup",
-                    "to": "Signup"
-                }
-            ],
-            "enhancedMatch": true
-        },
-        "Enabled": true,
-        "Transformations": []
+      "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
+      "Name": "PINTEREST_TAG",
+      "Config": {
+        "tagId": "123456789",
+        "advertiserId": "123478671210",
+        "sendingUnHashedData": false,
+        "enableDeduplication": false,
+        "eventsMapping": [
+          {
+            "from": "Product Added",
+            "to": "AddToCart"
+          },
+          {
+            "from": "Order Completed",
+            "to": "Checkout"
+          },
+          {
+            "from": "Product Viewed",
+            "to": "PageVisit"
+          },
+          {
+            "from": "Lead",
+            "to": "Lead"
+          },
+          {
+            "from": "Signup",
+            "to": "Signup"
+          }
+        ],
+        "enhancedMatch": true
+      },
+      "Enabled": true,
+      "Transformations": []
     }
-},
-{
-  "message": {
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "test",
+      "channel": "web",
+      "sentAt": "2020-08-14T05:30:30.118Z",
+      "context": {
+        "source": "test",
+        "userAgent": "chrome",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+          "email": "abc@gmail.com",
+          "phone": "+1234589947",
+          "ge": "male",
+          "db": "19950715",
+          "lastname": "Ganguly",
+          "firstName": "Shrouti",
+          "address": {
+            "city": "Kolkata",
+            "state": "WB",
+            "zip": "700114",
+            "country": "IN"
+          }
+        },
+        "device": {
+          "advertisingId": "abc123"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
+      },
+      "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {
+        "sku": "1234",
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "requestIP": "123.0.0.0",
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+      },
+      "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+      "integrations": {
+        "All": true
+      }
+    },
+    "destination": {
+      "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
+      "Name": "PINTEREST_TAG",
+      "Config": {
+        "tagId": "123456789",
+        "advertiserId": "123456",
+        "appId": "429047995",
+        "sendingUnHashedData": true,
+        "enableDeduplication": true,
+        "deduplicationKey": "messageId",
+        "enhancedMatch": true,
+        "sendAsCustomEvent": true,
+        "customProperties": [
+          {
+            "properties": "presentclass"
+          },
+          {
+            "properties": "presentgrade"
+          }
+        ],
+        "eventsMapping": [
+          {
+            "from": "ABC Searched",
+            "to": "WatchVideo"
+          }
+        ]
+      },
+      "Enabled": true,
+      "Transformations": []
+    }
+  },
+  {
+    "message": {
       "type": "track",
       "event": "custom event",
       "channel": "web",
       "sentAt": "2020-08-14T05:30:30.118Z",
       "context": {
-          "source": "test",
-          "userAgent": "chrome",
-          "traits": {
-              "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-              "email": "abc@gmail.com",
-              "phone": "+1234589947",
-              "ge": "male",
-              "db": "19950715",
-              "lastname": "Ganguly",
-              "firstName": "Shrouti",
-              "address": {
-                  "city": "Kolkata",
-                  "state": "WB",
-                  "zip": "700114",
-                  "country": "IN"
-              }
-          },
-          "device": {
-              "advertisingId": "abc123"
-          },
-          "library": {
-              "name": "rudder-sdk-ruby-sync",
-              "version": "1.0.6"
+        "source": "test",
+        "userAgent": "chrome",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+          "email": "abc@gmail.com",
+          "phone": "+1234589947",
+          "ge": "male",
+          "db": "19950715",
+          "lastname": "Ganguly",
+          "firstName": "Shrouti",
+          "address": {
+            "city": "Kolkata",
+            "state": "WB",
+            "zip": "700114",
+            "country": "IN"
           }
+        },
+        "device": {
+          "advertisingId": "abc123"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
       },
       "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
       "timestamp": "2020-08-14T05:30:30.118Z",
       "properties": {
-          "sku": "1234",
-          "tax": 2,
-          "total": 27.5,
-          "coupon": "hasbros",
-          "revenue": 48,
-          "currency": "USD",
-          "discount": 2.5,
-          "order_id": "50314b8e9bcf000000000000",
-          "requestIP": "123.0.0.0",
-          "shipping": 3,
-          "subtotal": 22.5,
-          "affiliation": "Google Store",
-          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+        "sku": "1234",
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "requestIP": "123.0.0.0",
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          }
+        ]
       },
       "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
       "integrations": {
-          "All": true
+        "All": true
       }
-  },
-  "destination": {
+    },
+    "destination": {
       "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
       "Name": "PINTEREST_TAG",
       "Config": {
-          "tagId": "123456789",
-          "advertiserId": "123456",
-          "appId": "429047995",
-          "sendingUnHashedData": true,
-          "enableDeduplication": true,
-          "deduplicationKey": "messageId",
-          "enhancedMatch": true,
-          "customProperties": [
-              {
-                  "properties": "presentclass"
-              },
-              {
-                  "properties": "presentgrade"
-              }
-          ],
-          "eventsMapping": [
-              {
-                  "from": "ABC Searched",
-                  "to": "Watch Video"
-              }
-          ]
+        "tagId": "123456789",
+        "advertiserId": "123456",
+        "appId": "429047995",
+        "sendingUnHashedData": true,
+        "enableDeduplication": true,
+        "deduplicationKey": "messageId",
+        "enhancedMatch": true,
+        "sendAsCustomEvent": true,
+        "customProperties": [
+          {
+            "properties": "presentclass"
+          },
+          {
+            "properties": "presentgrade"
+          }
+        ],
+        "eventsMapping": [
+          {
+            "from": "ABC Searched",
+            "to": "WatchVideo"
+          }
+        ]
       },
       "Enabled": true,
       "Transformations": []
-  }
-},
-{
-    "message": {
-        "type": "track",
-        "event": "custom event",
-        "channel": "web",
-        "sentAt": "2020-08-14T05:30:30.118Z",
-        "context": {
-            "source": "test",
-            "userAgent": "chrome",
-            "traits": {
-                "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-                "email": "abc@gmail.com",
-                "phone": "+1234589947",
-                "ge": "male",
-                "db": "19950715",
-                "lastname": "Ganguly",
-                "firstName": "Shrouti",
-                "address": {
-                    "city": "Kolkata",
-                    "state": "WB",
-                    "zip": "700114",
-                    "country": "IN"
-                }
-            },
-            "device": {
-                "advertisingId": "abc123"
-            },
-            "library": {
-                "name": "rudder-sdk-ruby-sync",
-                "version": "1.0.6"
-            }
-        },
-        "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-        "timestamp": "2020-08-14T05:30:30.118Z",
-        "properties": {
-            "sku": "1234",
-            "tax": 2,
-            "total": 27.5,
-            "coupon": "hasbros",
-            "revenue": 48,
-            "currency": "USD",
-            "discount": 2.5,
-            "order_id": "50314b8e9bcf000000000000",
-            "requestIP": "123.0.0.0",
-            "shipping": 3,
-            "subtotal": 22.5,
-            "affiliation": "Google Store",
-            "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
-            "products": [
-                {
-                    "sku": "45790-32",
-                    "url": "https://www.example.com/product/path",
-                    "name": "Monopoly: 3rd Edition",
-                    "price": 19,
-                    "category": "Games",
-                    "quantity": 1,
-                    "image_url": "https:///www.example.com/product/path.jpg",
-                    "product_id": "507f1f77bcf86cd799439011"
-                }
-            ]
-        },
-        "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-        "integrations": {
-            "All": true
-        }
-    },
-    "destination": {
-        "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
-        "Name": "PINTEREST_TAG",
-        "Config": {
-            "tagId": "123456789",
-            "advertiserId": "123456",
-            "appId": "429047995",
-            "sendingUnHashedData": true,
-            "enableDeduplication": true,
-            "deduplicationKey": "messageId",
-            "enhancedMatch": true,
-            "customProperties": [
-                {
-                    "properties": "presentclass"
-                },
-                {
-                    "properties": "presentgrade"
-                }
-            ],
-            "eventsMapping": [
-                {
-                    "from": "ABC Searched",
-                    "to": "Watch Video"
-                }
-            ]
-        },
-        "Enabled": true,
-        "Transformations": []
-    }
-},
-{
-  "message": {
-    "type": "track",
-    "event": "custom event",
-    "channel": "web",
-    "sentAt": "2020-08-14T05:30:30.118Z",
-    "context": {
-      "source": "test",
-      "userAgent": "chrome",
-      "traits": {
-        "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-        "email": "abc@gmail.com",
-        "phone": "+1234589947",
-        "ge": "male",
-        "db": "19950715",
-        "lastname": "Ganguly",
-        "firstName": "Shrouti",
-        "address": {
-          "city": "Kolkata",
-          "state": "WB",
-          "zip": "700114",
-          "country": "IN"
-        }
-      },
-      "device": {
-        "advertisingId": "abc123"
-      },
-      "library": {
-        "name": "rudder-sdk-ruby-sync",
-        "version": "1.0.6"
-      }
-    },
-    "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-    "timestamp": "2020-08-14T05:30:30.118Z",
-    "properties": {
-      "tax": 2,
-      "total": 27.5,
-      "coupon": "hasbros",
-      "revenue": 48,
-      "currency": "USD",
-      "discount": 2.5,
-      "order_id": "50314b8e9bcf000000000000",
-      "requestIP": "123.0.0.0",
-      "shipping": 3,
-      "subtotal": 22.5,
-      "affiliation": "Google Store",
-      "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
-    },
-    "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
-    "integrations": {
-      "All": true
     }
   },
-  "destination": {
-    "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
-    "Name": "PINTEREST_TAG",
-    "Config": {
-      "tagId": "123456789",
-      "advertiserId": "123456",
-      "appId": "429047995",
-      "sendingUnHashedData": true,
-      "enableDeduplication": true,
-      "deduplicationKey": "messageId",
-      "enhancedMatch": true,
-      "customProperties": [
-        {
-          "properties": "presentclass"
+  {
+    "message": {
+      "type": "track",
+      "event": "custom event",
+      "channel": "web",
+      "sentAt": "2020-08-14T05:30:30.118Z",
+      "context": {
+        "source": "test",
+        "userAgent": "chrome",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+          "email": "abc@gmail.com",
+          "phone": "+1234589947",
+          "ge": "male",
+          "db": "19950715",
+          "lastname": "Ganguly",
+          "firstName": "Shrouti",
+          "address": {
+            "city": "Kolkata",
+            "state": "WB",
+            "zip": "700114",
+            "country": "IN"
+          }
         },
-        {
-          "properties": "presentgrade"
+        "device": {
+          "advertisingId": "abc123"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
         }
-      ],
-      "eventsMapping": [
-        {
-          "from": "ABC Searched",
-          "to": "Watch Video"
-        }
-      ]
+      },
+      "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "requestIP": "123.0.0.0",
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+      },
+      "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+      "integrations": {
+        "All": true
+      }
     },
-    "Enabled": true,
-    "Transformations": []
+    "destination": {
+      "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
+      "Name": "PINTEREST_TAG",
+      "Config": {
+        "tagId": "123456789",
+        "advertiserId": "123456",
+        "appId": "429047995",
+        "sendingUnHashedData": true,
+        "enableDeduplication": true,
+        "deduplicationKey": "messageId",
+        "enhancedMatch": true,
+        "customProperties": [
+          {
+            "properties": "presentclass"
+          },
+          {
+            "properties": "presentgrade"
+          }
+        ],
+        "eventsMapping": [
+          {
+            "from": "ABC Searched",
+            "to": "WatchVideo"
+          }
+        ]
+      },
+      "Enabled": true,
+      "Transformations": []
+    }
+  },
+  {
+    "description": "Track call with v5 Api version and send external_id toggle enabled",
+    "message": {
+      "type": "track",
+      "event": "ABC Searched",
+      "sentAt": "2020-08-14T05:30:30.118Z",
+      "channel": "web",
+      "context": {
+        "source": "test",
+        "userAgent": "chrome",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+          "email": "abc@gmail.com",
+          "phone": "+1234589947",
+          "ge": "male",
+          "db": "19950715",
+          "lastname": "Ganguly",
+          "firstName": "Shrouti",
+          "address": {
+            "city": "Kolkata",
+            "state": "WB",
+            "zip": "700114",
+            "country": "IN"
+          }
+        },
+        "device": {
+          "advertisingId": "abc123"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
+      },
+      "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "price": 25,
+        "quantity": 2,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "requestIP": "123.0.0.0",
+        "optOutType": "LDP",
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ],
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+      },
+      "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+      "integrations": {
+        "All": true
+      }
+    },
+    "destination": {
+      "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
+      "Name": "PINTEREST_TAG",
+      "Config": {
+        "tagId": "123456789",
+        "apiVersion": "newApi",
+        "adAccountId": "accountId123",
+        "conversionToken": "conversionToken123",
+        "appId": "429047995",
+        "enhancedMatch": true,
+        "enableDeduplication": true,
+        "deduplicationKey": "messageId",
+        "sendingUnHashedData": true,
+        "sendExternalId": true,
+        "customProperties": [
+          {
+            "properties": "presentclass"
+          },
+          {
+            "properties": "presentgrade"
+          }
+        ],
+        "eventsMapping": [
+          {
+            "from": "ABC Searched",
+            "to": "WatchVideo"
+          }
+        ]
+      },
+      "Enabled": true,
+      "Transformations": []
+    }
+  },
+  {
+    "description": "Custom event with v5 Api version",
+    "message": {
+      "type": "track",
+      "event": "random",
+      "sentAt": "2020-08-14T05:30:30.118Z",
+      "channel": "web",
+      "context": {
+        "source": "test",
+        "userAgent": "chrome",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+          "email": "abc@gmail.com",
+          "phone": "+1234589947",
+          "ge": "male",
+          "db": "19950715",
+          "lastname": "Ganguly",
+          "firstName": "Shrouti",
+          "address": {
+            "city": "Kolkata",
+            "state": "WB",
+            "zip": "700114",
+            "country": "IN"
+          }
+        },
+        "device": {
+          "advertisingId": "abc123"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
+      },
+      "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "properties": {
+        "tax": 2,
+        "total": 27.5,
+        "coupon": "hasbros",
+        "revenue": 48,
+        "price": 25,
+        "quantity": 2,
+        "currency": "USD",
+        "discount": 2.5,
+        "order_id": "50314b8e9bcf000000000000",
+        "requestIP": "123.0.0.0",
+        "optOutType": "LDP",
+        "products": [
+          {
+            "sku": "45790-32",
+            "url": "https://www.example.com/product/path",
+            "name": "Monopoly: 3rd Edition",
+            "price": 19,
+            "category": "Games",
+            "quantity": 1,
+            "image_url": "https:///www.example.com/product/path.jpg",
+            "product_id": "507f1f77bcf86cd799439011"
+          },
+          {
+            "sku": "46493-32",
+            "name": "Uno Card Game",
+            "price": 3,
+            "category": "Games",
+            "quantity": 2,
+            "product_id": "505bd76785ebb509fc183733"
+          }
+        ],
+        "shipping": 3,
+        "subtotal": 22.5,
+        "affiliation": "Google Store",
+        "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
+      },
+      "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+      "integrations": {
+        "All": true
+      }
+    },
+    "destination": {
+      "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
+      "Name": "PINTEREST_TAG",
+      "Config": {
+        "tagId": "123456789",
+        "apiVersion": "newApi",
+        "adAccountId": "accountId123",
+        "conversionToken": "conversionToken123",
+        "appId": "429047995",
+        "enhancedMatch": true,
+        "enableDeduplication": true,
+        "deduplicationKey": "messageId",
+        "sendingUnHashedData": true,
+        "sendAsCustomEvent": true,
+        "customProperties": [
+          {
+            "properties": "presentclass"
+          },
+          {
+            "properties": "presentgrade"
+          }
+        ],
+        "eventsMapping": [
+          {
+            "from": "ABC Searched",
+            "to": "WatchVideo"
+          }
+        ]
+      },
+      "Enabled": true,
+      "Transformations": []
+    }
+  },
+  {
+    "description": "Ad Account Id check in V5",
+    "message": {
+      "type": "track",
+      "event": "random",
+      "sentAt": "2020-08-14T05:30:30.118Z",
+      "channel": "web",
+      "context": {
+        "source": "test",
+        "userAgent": "chrome",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+          "email": "abc@gmail.com",
+          "phone": "+1234589947",
+          "ge": "male",
+          "db": "19950715",
+          "lastname": "Ganguly",
+          "firstName": "Shrouti",
+          "address": {
+            "city": "Kolkata",
+            "state": "WB",
+            "zip": "700114",
+            "country": "IN"
+          }
+        },
+        "device": {
+          "advertisingId": "abc123"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
+      },
+      "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+      "integrations": {
+        "All": true
+      }
+    },
+    "destination": {
+      "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
+      "Name": "PINTEREST_TAG",
+      "Config": {
+        "tagId": "123456789",
+        "apiVersion": "newApi",
+        "adAccountId": "",
+        "conversionToken": "conversionToken123",
+        "appId": "429047995",
+        "enhancedMatch": true,
+        "enableDeduplication": true,
+        "deduplicationKey": "messageId",
+        "sendingUnHashedData": true,
+        "sendAsCustomEvent": true,
+        "customProperties": [
+          {
+            "properties": "presentclass"
+          },
+          {
+            "properties": "presentgrade"
+          }
+        ],
+        "eventsMapping": [
+          {
+            "from": "ABC Searched",
+            "to": "WatchVideo"
+          }
+        ]
+      },
+      "Enabled": true,
+      "Transformations": []
+    }
+  },
+  {
+    "description": "Conversion Token check in V5",
+    "message": {
+      "type": "track",
+      "event": "random",
+      "sentAt": "2020-08-14T05:30:30.118Z",
+      "channel": "web",
+      "context": {
+        "source": "test",
+        "userAgent": "chrome",
+        "traits": {
+          "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+          "email": "abc@gmail.com",
+          "phone": "+1234589947",
+          "ge": "male",
+          "db": "19950715",
+          "lastname": "Ganguly",
+          "firstName": "Shrouti",
+          "address": {
+            "city": "Kolkata",
+            "state": "WB",
+            "zip": "700114",
+            "country": "IN"
+          }
+        },
+        "device": {
+          "advertisingId": "abc123"
+        },
+        "library": {
+          "name": "rudder-sdk-ruby-sync",
+          "version": "1.0.6"
+        }
+      },
+      "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+      "timestamp": "2020-08-14T05:30:30.118Z",
+      "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+      "integrations": {
+        "All": true
+      }
+    },
+    "destination": {
+      "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
+      "Name": "PINTEREST_TAG",
+      "Config": {
+        "tagId": "123456789",
+        "apiVersion": "newApi",
+        "adAccountId": "accountId123",
+        "conversionToken": "",
+        "appId": "429047995",
+        "enhancedMatch": true,
+        "enableDeduplication": true,
+        "deduplicationKey": "messageId",
+        "sendingUnHashedData": true,
+        "sendAsCustomEvent": true,
+        "customProperties": [
+          {
+            "properties": "presentclass"
+          },
+          {
+            "properties": "presentgrade"
+          }
+        ],
+        "eventsMapping": [
+          {
+            "from": "ABC Searched",
+            "to": "WatchVideo"
+          }
+        ]
+      },
+      "Enabled": true,
+      "Transformations": []
+    }
   }
-}
 ]
-

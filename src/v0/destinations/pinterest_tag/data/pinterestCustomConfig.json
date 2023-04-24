@@ -7,7 +7,10 @@
   {
     "destKey": "value",
     "sourceKeys": ["properties.value", "properties.total", "properties.revenue"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "destKey": "num_items",

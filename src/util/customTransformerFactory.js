@@ -4,10 +4,10 @@ const { userTransformHandlerV1, setUserTransformHandlerV1 } = require('./customT
 
 const UserTransformHandlerFactory = (userTransformation) => {
   const transformHandler = {
-    setUserTransform: async (libraryVersionIds, testWithPublish) => {
+    setUserTransform: async (libraryVersionIds) => {
       switch (userTransformation.language) {
         case 'pythonfaas':
-          return setOpenFaasUserTransform(userTransformation, libraryVersionIds, testWithPublish);
+          return setOpenFaasUserTransform(userTransformation, libraryVersionIds);
         default:
           return setUserTransformHandlerV1();
       }

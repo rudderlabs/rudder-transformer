@@ -128,7 +128,8 @@ const setAnonymousId = (message) => {
  */
 const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
   let cartToken;
-  switch (message.event) {
+  const { event, properties, userId } = message;
+  switch (event) {
     /**
      * Following events will contain cart_token and we will map it in cartToken
      */
@@ -140,18 +141,7 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
     case SHOPIFY_TRACK_MAP.orders_partially_fullfilled:
     case RUDDER_ECOM_MAP.orders_create:
     case RUDDER_ECOM_MAP.orders_updated:
-
-      if (!isDefinedAndNotNull(message.properties?.cart_token)) {
-        /**
-         * This case will rise when we will be using Shopify Admin Dashboard to create, update, delete orders etc.
-         * Since it is done by shopify-admin we will set "userId" to be "shopify-admin"
-         */
-        if (!message.userId) {
-          message.setProperty('userId', 'shopify-admin');
-        }
-        return;
-      }
-      cartToken = message.properties.cart_token;
+      cartToken = properties?.cart_token;
       break;
     /*
      * we dont have cart_token for carts_create and update events but have id and token field
@@ -159,7 +149,7 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
      */
     case SHOPIFY_TRACK_MAP.carts_create:
     case SHOPIFY_TRACK_MAP.carts_update:
-      cartToken = message.properties?.id || message.properties?.token;
+      cartToken = properties?.id || properties?.token;
       break;
     // https://help.shopify.com/en/manual/orders/edit-orders -> order can be edited through shopify-admin only
     // https://help.shopify.com/en/manual/orders/fulfillment/setting-up-fulfillment -> fullfillments wont include cartToken neither in manual or automatiic
@@ -167,17 +157,19 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
     case SHOPIFY_TRACK_MAP.orders_delete:
     case SHOPIFY_TRACK_MAP.fulfillments_create:
     case SHOPIFY_TRACK_MAP.fulfillments_update:
-      if (!message.userId) {
-        message.setProperty('userId', 'shopify-admin');
-      }
-      return;
     default:
-      if (!message.userId) {
-        message.setProperty('userId', "shopify-admin");
-      }
-      return;
   }
-
+  if (!isDefinedAndNotNull(cartToken)) {
+    stats.increment('shopify_no_cartToken', {
+      ...metricMetadata,
+      event,
+      timestamp: Date.now(),
+    })
+    if (!userId) {
+      message.setProperty('userId', "shopify-admin");
+    }
+    return;
+  }
   let anonymousIDfromDB;
   const executeStartTime = Date.now();
   const redisVal = await RedisDB.getVal(`${cartToken}`);
@@ -194,6 +186,11 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
   if (!isDefinedAndNotNull(anonymousIDfromDB)) {
     /* this is for backward compatability when we don't have the redis mapping for older events
     we will get anonymousIDFromDb as null so we will set UUID using the session Key */
+    stats.increment('shopify_no_anon_id_from_redis', {
+      ...metricMetadata,
+      event,
+      timestamp: Date.now(),
+    })
     anonymousIDfromDB = sha256(cartToken).toString().substring(0, 36);
   }
   message.setProperty('anonymousId', anonymousIDfromDB);

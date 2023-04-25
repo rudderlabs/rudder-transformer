@@ -42,5 +42,10 @@
     "destKey": "custom_attributes",
     "sourceKeys": ["traits", "context.traits"],
     "required": false
+  },
+  {
+    "destKey": "companies",
+    "sourceKeys": "companies",
+    "required": false
   }
 ]

@@ -24,7 +24,7 @@ const RUDDER_ECOM_MAP = {
 
 const SHOPIFY_TRACK_MAP = {
   checkouts_delete: 'Checkout Deleted',
-  carts_create: 'Cart Create',
+  // carts_create: 'Cart Create',
   carts_update: 'Cart Update',
   customers_enable: 'Customer Enabled',
   customers_disable: 'Customer Disabled',
@@ -90,7 +90,7 @@ const SUPPORTED_TRACK_EVENTS = [
   'checkouts_update',
   'customers_disable',
   'customers_enable',
-  'carts_create',
+  // 'carts_create',
   'carts_update',
   'fulfillments_create',
   'fulfillments_update',

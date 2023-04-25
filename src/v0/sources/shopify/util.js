@@ -145,10 +145,9 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
       cartToken = properties?.cart_token;
       break;
     /*
-     * we dont have cart_token for carts_create and update events but have id and token field
+     * we dont have cart_token for carts_update events but have id and token field
      * which later on for orders become cart_token so we are fethcing cartToken from id
      */
-    case SHOPIFY_TRACK_MAP.carts_create:
     case SHOPIFY_TRACK_MAP.carts_update:
       cartToken = properties?.id || properties?.token;
       break;
@@ -183,10 +182,6 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
   if (!isDefinedAndNotNull(anonymousIDfromDB)) {
     /* this is for backward compatability when we don't have the redis mapping for older events
     we will get anonymousIDFromDb as null so we will set UUID using the session Key */
-    if (event === SHOPIFY_TRACK_MAP.carts_create) { 
-      message.setProperty('anonymousId', "discard");
-      return
-    }
     stats.increment('shopify_no_anon_id_from_redis', {
       ...metricMetadata,
       event,

@@ -6,7 +6,8 @@
   },
   {
     "destKey": "timestamp",
-    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {

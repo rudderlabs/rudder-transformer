@@ -141,7 +141,6 @@ async function runOpenFaasUserTransform(
     await setOpenFaasUserTransform(
       userTransformation,
       libraryVersionIds,
-      true,
       functionName,
       testMode,
     );

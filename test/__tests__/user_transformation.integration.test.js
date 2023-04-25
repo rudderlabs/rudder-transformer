@@ -71,7 +71,6 @@ beforeAll(async () => {
       versionId: FAAS_AST_VID
     },
     [],
-    true,
     FAAS_AST_FN_NAME
   ));
 

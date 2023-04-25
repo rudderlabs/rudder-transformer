@@ -73,6 +73,7 @@
     "js-sha1": "^0.6.0",
     "json-diff": "^1.0.3",
     "json-query": "^2.2.2",
+    "json-size": "^1.0.0",
     "jsontoxml": "^1.0.1",
     "koa": "^2.14.1",
     "koa-bodyparser": "^4.4.0",

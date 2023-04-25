@@ -25,6 +25,7 @@ const responseStatusHandler = (status, entity, id, url) => {
   }
 };
 
+const getIntegrationVersion = () => 'v0';
 const sendViolationMetrics = (validationErrors, dropped, metaTags) => {
   const vTags = {
     'Unplanned-Event': 0,
@@ -68,6 +69,7 @@ module.exports = {
   RespStatusError,
   RetryRequestError,
   responseStatusHandler,
+  getIntegrationVersion,
   sendViolationMetrics,
   logProcessInfo,
 };

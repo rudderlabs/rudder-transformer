@@ -62,9 +62,7 @@ const getTrackResponse = (message, category, Config, event) => {
   if (isDefinedAndNotNullAndNotEmpty(email)) {
     if (Array.isArray(email)) {
       emails = email.map((em) =>
-        hashUserProperties
-          ? SHA256(em.trim().toLowerCase()).toString()
-          : em.trim().toLowerCase(),
+        hashUserProperties ? SHA256(em.trim().toLowerCase()).toString() : em.trim().toLowerCase(),
       );
     } else {
       emails = hashUserProperties
@@ -75,10 +73,17 @@ const getTrackResponse = (message, category, Config, event) => {
   }
 
   const phoneNumber = message.traits?.phone || message.context?.traits?.phone;
+  let phoneNumbers;
   if (isDefinedAndNotNullAndNotEmpty(phoneNumber)) {
-    const phoneNumbers = hashUserProperties
-      ? [SHA256(phoneNumber.trim()).toString()]
-      : [phoneNumber.trim()];
+    if (Array.isArray(phoneNumber)) {
+      phoneNumbers = phoneNumber.map((pn) =>
+        hashUserProperties ? SHA256(pn.trim().toLowerCase()).toString() : pn.trim().toLowerCase(),
+      );
+    } else {
+      phoneNumbers = hashUserProperties
+        ? [SHA256(phoneNumber.trim()).toString()]
+        : [phoneNumber.trim()];
+    }
     set(payload, 'context.user.phone_numbers', phoneNumbers);
   }
 

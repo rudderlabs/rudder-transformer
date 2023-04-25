@@ -1,0 +1,24 @@
+{
+  "input": [
+    {
+      "query_parameters": {
+        "topic": ["random_event"],
+        "signature": ["rudderstack"],
+        "writeKey": ["sample-write-key"]
+      }
+    }
+  ],
+  "output": [
+    {
+      "statusCode": 400,
+      "error": "event type random_event not supported",
+      "statTags": {
+        "errorCategory": "transformation",
+        "module": "source",
+        "implementation": "native",
+        "destinationId": "Non determinable",
+        "workspaceId": "Non determinable"
+      }
+    }
+  ]
+}

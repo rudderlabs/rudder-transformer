@@ -31,8 +31,12 @@ steps:
         "error": .message,
         "statTags": .originalError ? .originalError.statTags ? .originalError.statTags : undefined : undefined
       })[]
+  - name: apiVersion
+    template: |
+      ^[0].destination.Config.apiVersion ?? {{$.API_VERSION.v3}}
   - name: batchSuccessfulEvents
-    description: Batches the successfulEvents
+    condition: $.outputs.apiVersion === {{$.API_VERSION.v3}}
+    description: Batches the successfulEvents using V3 API
     template: |
       let batches = $.batchMultiplexedEvents($.outputs.successfulEvents, $.MAX_BATCH_SIZE);
       batches@batch.({
@@ -46,9 +50,38 @@ steps:
           "version": "1",
           "type": "REST",
           "method": "POST",
-          "endpoint": $.ENDPOINT,
+          "endpoint": $.ENDPOINT, 
           "headers": {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+          },
+          "params": {},
+          "files": {}
+        },
+        "metadata": ~r batch.metadata,
+        "batched": true,
+        "statusCode": 200,
+        "destination": ~r batch.destination
+      })[];
+  - name: batchSuccessfulEventsV5
+    condition: $.outputs.apiVersion === {{$.API_VERSION.v5}}
+    description: Batches the successfulEvents using V5 API
+    template: |
+      let batches = $.batchMultiplexedEvents($.outputs.successfulEvents, $.MAX_BATCH_SIZE);
+      batches@batch.({
+        "batchedRequest": {
+          "body": {
+            "JSON": {"data": ~r batch.events},
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": $.getV5EventsEndpoint(batch.destination.Config.adAccountId),
+          "headers": {
+            "Content-Type": "application/json",
+              Authorization: "Bearer " + batch.destination.Config.conversionToken,
           },
           "params": {},
           "files": {}
@@ -59,5 +92,9 @@ steps:
         "destination": ~r batch.destination
       })[];
   - name: finalPayload
+    condition: $.outputs.apiVersion === {{$.API_VERSION.v3}}
     template: |
       [...$.outputs.batchSuccessfulEvents, ...$.outputs.failedEvents]
+    else:
+      template: |
+        [...$.outputs.batchSuccessfulEventsV5, ...$.outputs.failedEvents]

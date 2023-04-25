@@ -15,8 +15,15 @@ const {
   getFieldValueFromMessage,
   addExternalIdToTraits,
   simpleProcessRouterDest,
+  isHttpStatusSuccess,
 } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const { httpPOST } = require('../../../adapters/network');
+const {
+  processAxiosResponse,
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
+const tags = require('../../util/tags');
 
 function getCompanyAttribute(company) {
   const companiesList = [];
@@ -89,7 +96,46 @@ function validateTrack(message, payload) {
   throw new InstrumentationError('Email or userId is mandatory');
 }
 
-function validateAndBuildResponse(message, payload, category, destination) {
+const bindUserAndCompany = async (payload, userId, Config) => {
+  if (!userId) {
+    return;
+  }
+
+  const requestBody = {};
+  requestBody.id = userId;
+  requestBody.companies = [];
+  const companyObj = {};
+  companyObj.company_id = payload.company_id;
+  companyObj.name = payload.name;
+  requestBody.companies.push(companyObj);
+
+  const {endpoint} = ConfigCategory.IDENTIFY;
+  const requestData = requestBody;
+  const requestOptions = {
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${Config.apiKey}`,
+      Accept: 'application/json',
+    },
+  };
+  const companyResponse = await httpPOST(endpoint, requestData, requestOptions);
+
+  const processedCompanyResponse = processAxiosResponse(companyResponse);
+  if (!isHttpStatusSuccess(processedCompanyResponse.status)) {
+    const errMessage = JSON.stringify(processedCompanyResponse.response) || '';
+    const errorStatus = processedCompanyResponse.status || 500;
+    throw new NetworkError(
+      `[Group]: failed linking user to company ${errMessage}`,
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
+      },
+      companyResponse,
+    );
+  }
+};
+
+async function validateAndBuildResponse(message, payload, category, destination) {
   const messageType = message.type.toLowerCase();
   const response = defaultRequestConfig();
   switch (messageType) {
@@ -101,6 +147,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
       break;
     case EventType.GROUP:
       response.body.JSON = removeUndefinedAndNullValues(payload);
+      await bindUserAndCompany(payload, message.userId, destination.Config);
       break;
     default:
       throw new InstrumentationError(`Message type ${messageType} not supported`);

@@ -15,8 +15,8 @@
 
 - destKey: data.usertime
   sourceKeys:
-    - originalTimestamp
     - timestamp
+    - originalTimestamp
   metadata:
     type: timestamp
 

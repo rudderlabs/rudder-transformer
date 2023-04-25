@@ -6,7 +6,7 @@
   },
   {
     "destKey": "occurred_at",
-    "sourceKeys": ["properties.occurred_at", "originalTimestamp"],
+    "sourceKeys": ["properties.occurred_at", "timestamp", "originalTimestamp"],
     "required": false
   },
   {

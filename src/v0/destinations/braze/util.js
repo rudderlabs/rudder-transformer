@@ -163,7 +163,7 @@ const BrazeDedupUtility = {
    * @returns {Array} array of braze user objects
    */
   async doLookup(inputs) {
-    const lookupStartTime = Date.now();
+    const lookupStartTime = new Date();
     const { destination } = inputs[0];
     const { externalIdsToQuery, aliasIdsToQuery } = this.prepareInputForDedup(inputs);
     const identfierChunks = this.prepareChunksForDedup(externalIdsToQuery, aliasIdsToQuery);

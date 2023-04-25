@@ -119,6 +119,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
       }
       payload.effective_date = unixTimestampOrError(
         payload.effective_date,
+        message.timestamp,
         message.originalTimestamp,
       );
       response.method = defaultPostRequestConfig.requestMethod;
@@ -151,6 +152,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
       }
       payload.effective_date = unixTimestampOrError(
         payload.effective_date,
+        message.timestamp,
         message.originalTimestamp,
       );
       response.method = defaultPutRequestConfig.requestMethod;
@@ -208,7 +210,11 @@ const identifyResponseBuilder = async (message, { Config }) => {
   ) {
     payload.status = null;
   }
-  payload.effective_date = unixTimestampOrError(payload.effective_date, message.originalTimestamp);
+  payload.effective_date = unixTimestampOrError(
+    payload.effective_date,
+    message.timestamp,
+    message.originalTimestamp,
+  );
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/`;
   response.headers = {

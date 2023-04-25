@@ -11,7 +11,8 @@
   },
   {
     "destKey": "timestampMicros",
-    "sourceKeys": "originalTimestamp",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
     "required": true,
     "metadata": {
       "type": "microSecondTimestamp"

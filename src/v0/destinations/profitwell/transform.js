@@ -63,65 +63,23 @@ const identifyResponseBuilder = async (message, { Config }) => {
     });
 
     if (!subscriptionFound) {
-      // for a given userId, subscriptionId not found
-      // dropping event if profitwellSubscriptionId (externalId) did not
-      // match with any subscription_id at destination
-      if (subscriptionId) {
-        throw new NetworkInstrumentationError('Profitwell subscription_id not found');
-      }
-      payload = constructPayload(message, createPayloadMapping);
-      payload = {
-        ...payload,
-        user_id: userId,
-        user_alias: userAlias,
-      };
-      if (
-        payload.plan_interval &&
-        !(
-          payload.plan_interval.toLowerCase() === 'month' ||
-          payload.plan_interval.toLowerCase() === 'year'
-        )
-      ) {
-        throw new InstrumentationError('invalid format for planInterval. Aborting');
-      }
-      if (payload.plan_currency && !isValidPlanCurrency(payload.plan_currency)) {
-        payload.plan_currency = null;
-      }
-      if (
-        payload.status &&
-        !(payload.status.toLowerCase() === 'active' || payload.status.toLowerCase() === 'trialing')
-      ) {
-        payload.status = null;
-      }
-      payload.effective_date = unixTimestampOrError(
-        payload.effective_date,
-        message.timestamp,
-        message.originalTimestamp,
+      return createMissingSubscriptionResponse(
+        userId,
+        userAlias,
+        finalSubscriptionId,
+        finalSubscriptionAlias,
+        message,
+        Config,
       );
     }
 
     // for a given userId, subscription is found at dest.
     if (valFound) {
-      payload = constructPayload(message, updatePayloadMapping);
-      if (
-        payload.plan_interval &&
-        !(
-          payload.plan_interval.toLowerCase() === 'month' ||
-          payload.plan_interval.toLowerCase() === 'year'
-        )
-      ) {
-        throw new InstrumentationError('invalid format for planInterval. Aborting');
-      }
-      if (
-        payload.status &&
-        !(payload.status.toLowerCase() === 'active' || payload.status.toLowerCase() === 'trialing')
-      ) {
-        payload.status = null;
-      }
-      payload.effective_date = unixTimestampOrError(
-        payload.effective_date,
-        message.timestamp,
-        message.originalTimestamp,
+      return createResponseForSubscribedUser(
+        message,
+        finalSubscriptionId,
+        finalSubscriptionAlias,
+        Config,
       );
     }
   }
@@ -168,11 +126,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
   ) {
     payload.status = null;
   }
-  payload.effective_date = unixTimestampOrError(
-    payload.effective_date,
-    message.timestamp,
-    message.originalTimestamp,
-  );
+  payload.effective_date = unixTimestampOrError(payload.effective_date, message.originalTimestamp);
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/`;
   response.headers = {

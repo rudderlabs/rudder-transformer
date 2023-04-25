@@ -256,7 +256,11 @@ function createMissingSubscriptionResponse(
   ) {
     payload.status = null;
   }
-  payload.effective_date = unixTimestampOrError(payload.effective_date, message.originalTimestamp);
+  payload.effective_date = unixTimestampOrError(
+    payload.effective_date,
+    message.timestamp,
+    message.originalTimestamp,
+  );
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/`;
   response.headers = {
@@ -285,7 +289,11 @@ const createResponseForSubscribedUser = (message, subscriptionId, subscriptionAl
   ) {
     payload.status = null;
   }
-  payload.effective_date = unixTimestampOrError(payload.effective_date, message.originalTimestamp);
+  payload.effective_date = unixTimestampOrError(
+    payload.effective_date,
+    unixTimestampOrError,
+    message.originalTimestamp,
+  );
   response.method = defaultPutRequestConfig.requestMethod;
   response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/${subscriptionId || subscriptionAlias}/`;
   response.headers = {

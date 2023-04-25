@@ -148,6 +148,7 @@ const BrazeDedupUtility = {
         console.log(
           `Time taken to fetch user store: ${endTime - startTime} ms for ${ids.length} users`,
         );
+        stats.counter('braze_lookup_failure_count', 1, { http_status: lookUpResponse.status });
         const { users } = lookUpResponse.response;
 
         return users;
@@ -284,6 +285,9 @@ const processDeduplication = (userStore, payload) => {
     isDefinedAndNotNullAndNotEmpty(dedupedAttributePayload) &&
     Object.keys(dedupedAttributePayload).some((key) => !['external_id', 'user_alias'].includes(key))
   ) {
+    stats.increment('braze_deduped_users_count', {
+      destination_id: payload.destination.Config.destinationId,
+    });
     return dedupedAttributePayload;
   }
   return null;

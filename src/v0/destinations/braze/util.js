@@ -187,12 +187,18 @@ const BrazeDedupUtility = {
     if (isDefinedAndNotNull(users) && Array.isArray(users)) {
       users.forEach((user) => {
         if (user?.external_id) {
+          stats.counter('braze_user_store_update_count', 1, {
+            identifier_type: 'external_id',
+          });
           store.set(user.external_id, user);
         } else if (user?.user_aliases) {
           user.user_aliases.forEach((alias) => {
             if (alias.alias_label === 'rudder_id') {
               store.set(alias.alias_name, user);
             }
+            stats.counter('braze_user_store_update_count', 1, {
+              identifier_type: 'alias_name',
+            });
           });
         }
       });
@@ -285,9 +291,7 @@ const processDeduplication = (userStore, payload) => {
     isDefinedAndNotNullAndNotEmpty(dedupedAttributePayload) &&
     Object.keys(dedupedAttributePayload).some((key) => !['external_id', 'user_alias'].includes(key))
   ) {
-    stats.increment('braze_deduped_users_count', {
-      destination_id: payload.destination.Config.destinationId,
-    });
+    stats.increment('braze_deduped_users_count');
     return dedupedAttributePayload;
   }
   return null;

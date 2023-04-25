@@ -90,7 +90,6 @@ const SUPPORTED_TRACK_EVENTS = [
   'checkouts_update',
   'customers_disable',
   'customers_enable',
-  // 'carts_create',
   'carts_update',
   'fulfillments_create',
   'fulfillments_update',

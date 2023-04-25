@@ -80,25 +80,17 @@ const extractEmailFromPayload = (event) => {
   return email;
 };
 // Hash the id and use it as anonymousId (limiting 256 -> 36 chars)
-const setAnonymousId = (message) => {
+const getAnonymousId = (message) => {
   switch (message.event) {
     // These events are fired from admin dashabord and hence we are setting userId as "ADMIN"
     case SHOPIFY_TRACK_MAP.orders_delete:
     case SHOPIFY_TRACK_MAP.fulfillments_create:
     case SHOPIFY_TRACK_MAP.fulfillments_update:
-      if (!message.userId) {
-        message.setProperty('userId', 'shopify-admin');
-      }
-      return;
-    case SHOPIFY_TRACK_MAP.carts_create:
+      return null;
     case SHOPIFY_TRACK_MAP.carts_update:
-      message.setProperty(
-        'anonymousId',
-        message.properties?.id
+        return message.properties?.id
           ? sha256(message.properties.id).toString().substring(0, 36)
-          : generateUUID(),
-      );
-      break;
+          : generateUUID()
     case SHOPIFY_TRACK_MAP.orders_edited:
     case SHOPIFY_TRACK_MAP.orders_cancelled:
     case SHOPIFY_TRACK_MAP.orders_fulfilled:
@@ -108,16 +100,11 @@ const setAnonymousId = (message) => {
     case RUDDER_ECOM_MAP.checkouts_update:
     case RUDDER_ECOM_MAP.orders_create:
     case RUDDER_ECOM_MAP.orders_updated:
-      message.setProperty(
-        'anonymousId',
-        message.properties?.cart_token
+      return message.properties?.cart_token
           ? sha256(message.properties.cart_token).toString().substring(0, 36)
-          : generateUUID(),
-      );
-      break;
+          : generateUUID()
     default:
-      message.setProperty('anonymousId', generateUUID());
-      break;
+      return generateUUID();
   }
 };
 /**
@@ -126,9 +113,9 @@ const setAnonymousId = (message) => {
  * @param {*} message
  * @returns
  */
-const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
+const getAnonymousIdFromDb = async (message, metricMetadata) => {
   let cartToken;
-  const { event, properties, userId } = message;
+  const { event, properties } = message;
   switch (event) {
     /**
      * Following events will contain cart_token and we will map it in cartToken
@@ -160,11 +147,8 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
       ...metricMetadata,
       event,
       timestamp: Date.now(),
-    })
-    if (!userId) {
-      message.setProperty('userId', "shopify-admin");
-    }
-    return;
+    });
+    return null;
   }
   let anonymousIDfromDB;
   const executeStartTime = Date.now();
@@ -189,7 +173,7 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
     })
     anonymousIDfromDB = sha256(cartToken).toString().substring(0, 36);
   }
-  message.setProperty('anonymousId', anonymousIDfromDB);
+  return anonymousIDfromDB;
 };
 
 module.exports = {
@@ -197,6 +181,6 @@ module.exports = {
   getProductsListFromLineItems,
   createPropertiesForEcomEvent,
   extractEmailFromPayload,
-  setAnonymousIdorUserIdFromDb,
-  setAnonymousId,
+  getAnonymousIdFromDb,
+  getAnonymousId,
 };

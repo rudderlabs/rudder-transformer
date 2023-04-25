@@ -6,12 +6,12 @@ const {
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
   extractEmailFromPayload,
-  setAnonymousIdorUserIdFromDb,
-  setAnonymousId,
+  getAnonymousIdFromDb,
+  getAnonymousId,
   // checkForValidRecord,
 } = require('./util');
 const { RedisDB } = require('../../../util/redisConnector');
-const { removeUndefinedAndNullValues } = require('../../util');
+const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
 const Message = require('../message');
 const { EventType } = require('../../../constants');
 const {
@@ -161,11 +161,17 @@ const processEvent = async (inputEvent, metricMetadata) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
+    let anonymousId
     if (useRedisDatabase) {
-      await setAnonymousIdorUserIdFromDb(message, metricMetadata);
+      anonymousId = await getAnonymousIdFromDb(message, metricMetadata);
     } else {
-      setAnonymousId(message);
+      anonymousId = getAnonymousId(message);
     }
+    if (isDefinedAndNotNull(anonymousId)) {
+      message.setProperty('anonymousId', anonymousId);
+    } else if (!message.userId) {
+        message.setProperty('userId', 'shopify-admin');
+      }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
   message.setProperty('context.library', {

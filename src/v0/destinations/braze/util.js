@@ -298,6 +298,7 @@ const processDeduplication = (userStore, payload) => {
     stats.increment('braze_deduped_users_count');
     return dedupedAttributePayload;
   }
+  stats.increment('braze_dedup_and_drop_count');
   return null;
 };
 

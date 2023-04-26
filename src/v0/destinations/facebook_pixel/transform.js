@@ -427,7 +427,7 @@ const processEvent = (message, destination) => {
     throw new InstrumentationError("'type' is missing");
   }
 
-  const timeStamp = message.originalTimestamp || message.timestamp;
+  const timeStamp = message.timestamp || message.originalTimestamp;
   if (timeStamp) {
     const start = moment.unix(moment(timeStamp).format('X'));
     const current = moment.unix(moment().format('X'));

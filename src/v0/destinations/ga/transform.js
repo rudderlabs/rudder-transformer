@@ -318,9 +318,9 @@ function responseBuilderSimple(parameters, message, hitType, mappingJson, destin
   }
   finalPayload.uip = traits.uip || getParsedIP(message);
 
-  const timestamp = message.originalTimestamp
-    ? new Date(message.originalTimestamp)
-    : new Date(message.timestamp);
+  const timestamp = message.timestamp
+    ? new Date(message.timestamp)
+    : new Date(message.originalTimestamp);
   finalPayload.qt = Date.now() - timestamp.getTime();
 
   // payload must be no longer than 8192 bytes.

@@ -4,8 +4,7 @@ bindings:
   - path: ../../bindings/jsontemplate
     exportAll: true
   - path: ../../../../v0/destinations/pinterest_tag/utils
-  - name: ENDPOINT
-    path: ../../../../v0/destinations/pinterest_tag/config
+  - path: ../../../../v0/destinations/pinterest_tag/config
   - name: removeUndefinedValues
     path: ../../../../v0/util
   - name: removeUndefinedAndNullAndEmptyValues
@@ -19,10 +18,16 @@ steps:
   - name: messageType
     template: |
       .message.type.toLowerCase()
+  - name: apiVersion
+    template: |
+      .destination.Config.apiVersion ?? {{$.API_VERSION.v3}}
   - name: validateInput
     template: |
       let messageType = $.outputs.messageType;
-      $.assertConfig(.destination.Config.advertiserId, "Advertiser Id not found. Aborting");
+      $.outputs.apiVersion === {{$.API_VERSION.v3}} ? 
+      $.assertConfig(.destination.Config.advertiserId, "Advertiser Id not found. Aborting") : 
+      ($.assertConfig(.destination.Config.adAccountId, "Ad Account ID not found. Aborting");
+      $.assertConfig(.destination.Config.conversionToken, "Conversion Token not found. Aborting"));
       $.assert(messageType, "Message type is not present. Aborting message.");
       $.assert(messageType in {{$.EventType.([.TRACK, .PAGE, .SCREEN])}}, 
         "message type " + messageType + " is not supported")
@@ -61,6 +66,7 @@ steps:
         "app_id": ^.destination.Config.appId,
         "advertiser_id": ^.destination.Config.advertiserId
       });
+      $.outputs.apiVersion === {{$.API_VERSION.v5}} ?  commonFields = commonFields{~["advertiser_id"]};
       $.removeUndefinedValues(commonFields)
 
   - name: validateCommonFields
@@ -92,8 +98,10 @@ steps:
         "country": (.traits.address.country ?? .context.traits.address.country).toLowerCase(),
         "hashed_maids": .context.device.advertisingId,
         "client_ip_address": .context.ip ?? .request_ip,
-        "client_user_agent": .context.userAgent
+        "client_user_agent": .context.userAgent,
+        "external_id": {{{{$.getGenericPaths("userId")}}}}
       });
+      !.destination.Config.sendExternalId ?  userFields = userFields{~["external_id"]} : null;
       userFields = $.removeUndefinedAndNullAndEmptyValues(userFields);
       .destination.Config.sendingUnHashedData ? 
         $.processUserPayload(userFields) :
@@ -111,9 +119,9 @@ steps:
         template: |
           const customFields = .message.().({
             "currency": .properties.currency,
-            "value": .properties.value ?? 
-                     .properties.total ?? 
-                     .properties.revenue,
+              "value": .properties.value !== undefined ? String(.properties.value) :
+                       .properties.total !== undefined ? String(.properties.total) :
+                       .properties.revenue !== undefined ? String(.properties.revenue) : undefined,
             "num_items": .properties.numOfItems && Number(.properties.numOfItems),
             "order_id": .properties.order_id,
             "search_string": .properties.query,
@@ -160,28 +168,56 @@ steps:
     description: Event names for page message type
     condition: $.outputs.messageType === {{$.EventType.PAGE}}
     template: |
-      .message.category ? [ "ViewCategory" ] : [ "PageVisit" ]
+      .message.category ? [ "view_category" ] : [ "page_visit" ]
     else:
       name: eventNamesForOthers
       template: |
         let event = .message.event ?? .message.name;
         let eventInLowerCase = event.toLowerCase();
         let eventNames = .destination.Config.eventsMapping.(){.from === event}.to[] ?? [];
+        eventNames = $.convertToSnakeCase(eventNames);
         eventNames.length === 0 ? eventNames = $.ecomEventMaps.(){eventInLowerCase in .src}.dest[] ?? [];
-        eventNames.length === 0 ? eventNames = [event];
+        (eventNames.length === 0 && .destination.Config.sendAsCustomEvent) ? eventNames = ["custom"];
+        (eventNames.length === 0 && $.outputs.apiVersion === {{$.API_VERSION.v3}}) ? eventNames = [event];
+        $.assertConfig(eventNames.length > 0, 
+              event + " is not mapped in UI. Make sure to map the event in UI or enable the 'send as custom event' setting")
         eventNames
 
   - name: payload
     template: |
       $.outputs.eventNames.().({...$.outputs.basePayload, event_name: .})[]
 
-  - name: buildResponse
+  - name: buildResponseForBatchMode
     description: In batchMode we return payload directly
     condition: $.batchMode
     template: |
       $.outputs.payload
+    onComplete: return
+
+  - name: buildResponseForProcessTransformation
+    description: build response using V3 API
+    condition: $.outputs.apiVersion === {{$.API_VERSION.v3}}
+    template: |
+      $.outputs.payload.().({
+        "body": {
+          "JSON": .,
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": {{$.ENDPOINT}},
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "files": {}
+      })[]
     else:
-      name: buildResponseForProcessTransformation
+      name: buildResponseForProcessTransformationV5
+      description: build response using V5 API
       template: |
         $.outputs.payload.().({
           "body": {
@@ -193,9 +229,10 @@ steps:
           "version": "1",
           "type": "REST",
           "method": "POST",
-          "endpoint": {{$.ENDPOINT}},
+          "endpoint": $.getV5EventsEndpoint(^.destination.Config.adAccountId),
           "headers": {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+             Authorization: "Bearer " + ^.destination.Config.conversionToken,
           },
           "params": {},
           "files": {}

@@ -25,7 +25,7 @@ const getTestMessage = () => {
 };
 
 const getTestCategoryToContent = () => {
-  categoryToContent = [
+  let categoryToContent = [
     {
       from: 'spin_result',
       to: 'Schedule',

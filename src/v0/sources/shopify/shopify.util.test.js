@@ -2,6 +2,8 @@ const { getShopifyTopic,
     getAnonymousIdFromDb,
     getAnonymousId, } = require('./util');
 
+jest.mock('ioredis', () => require('../../../../test/__mocks__/redis'));
+process.env.USE_REDIS_DB = 'true';
 describe('Shopify Utils Test', () => {
     describe('Fetching Shopify Topic Test Cases', () => {
         it('Invalid Topic Test', () => {
@@ -105,10 +107,35 @@ describe('Shopify Utils Test', () => {
                     cart_token: '123',
                 }
             };
-            const expectedOutput = null; 
+            const expectedOutput = null;
             const output = getAnonymousId(input);
             expect(output).toEqual(expectedOutput);
         });
     });
-    
+    describe('set AnonymousId with Redis Test Cases', () => {
+        it('Properties containing cartToken', async () => {
+            const input = {
+                event: 'Order Paid',
+                properties: {
+                    cart_token: 'shopify_test2',
+                }
+            };
+            const expectedOutput = 'anon_shopify_test2'
+            const output = await getAnonymousIdFromDb(input);
+            expect(output).toEqual(expectedOutput);
+        });
+
+        it('Properties contain id for cart event', async () => {
+            const input = {
+                event: 'Cart Update',
+                properties: {
+                    id: 'shopify_test2',
+                }
+            };
+
+            const expectedOutput = 'anon_shopify_test2';
+            const output = await getAnonymousIdFromDb(input);
+            expect(output).toEqual(expectedOutput);
+        });
+    });
 });

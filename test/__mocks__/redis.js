@@ -29,7 +29,7 @@ class Redis {
     };
 
     get(key) {
-        if(key === "error"){
+        if (key === "error") {
             throw new Error("Connection is Closed");
         }
         const mockData = getData(key);
@@ -41,14 +41,14 @@ class Redis {
     }
 
     set(key, value) {
-        if(key === "error"){
+        if (key === "error") {
             throw new Error("Connection is Closed");
         }
         this.data[key] = value;
     }
 
-    setex(key,expiry, value) {
-        if(key === "error"){
+    setex(key, expiry, value) {
+        if (key === "error") {
             throw new Error("Connection is Closed");
         }
         this.data[key] = value;

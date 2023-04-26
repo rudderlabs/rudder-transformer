@@ -96,5 +96,6 @@ steps:
     template: |
       [...$.outputs.batchSuccessfulEvents, ...$.outputs.failedEvents]
     else:
+      name: finalPayloadV5
       template: |
         [...$.outputs.batchSuccessfulEventsV5, ...$.outputs.failedEvents]

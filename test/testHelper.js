@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const getFuncTestData = (funcName) => {
-  const fileData = fs.readFileSync(path.resolve(__dirname, `./data/${funcName}.json`));
+const getFuncTestData = (dirPath, filePath) => {
+  const fileData = fs.readFileSync(path.resolve(dirPath, filePath));
   const testData = JSON.parse(fileData);
   return testData;
 };

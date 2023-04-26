@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.23.1",
+  "version": "1.24.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -74,6 +74,7 @@
     "js-sha1": "^0.6.0",
     "json-diff": "^1.0.3",
     "json-query": "^2.2.2",
+    "json-size": "^1.0.0",
     "jsontoxml": "^1.0.1",
     "jszip": "^3.10.1",
     "koa": "^2.14.1",

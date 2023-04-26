@@ -124,7 +124,7 @@ async function createUserFields(url, config, newFields, fieldJson) {
   let fieldData;
   // removing trailing 's' from fieldJson
   const fieldJsonSliced = fieldJson.slice(0, -1);
-  newFields.forEach(async (field) => {
+  newFields.forEach((field) => {
     // create payload for each new user field
     fieldData = {
       [fieldJsonSliced]: {

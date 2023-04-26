@@ -99,7 +99,7 @@ const getTestEcommMessage = () => {
 describe('iterable utils test', () => {
   describe('Unit test cases for iterable identifyDeviceAction', () => {
     it('for no device type', async () => {
-      expectedOutput = {
+      let expectedOutput = {
         device: {
           dataFields: {
             campaignId: 5678,
@@ -120,7 +120,7 @@ describe('iterable utils test', () => {
     it('For apple family device type', async () => {
       const fittingPayload = { ...getTestMessage() };
       fittingPayload.context.device.type = 'ios';
-      expectedOutput = {
+      let expectedOutput = {
         device: {
           dataFields: {
             campaignId: 5678,
@@ -140,9 +140,9 @@ describe('iterable utils test', () => {
     });
 
     it('For non apple family device type', async () => {
-      const fittingPayload = { ...getTestMessage() };
+      let fittingPayload = { ...getTestMessage() };
       fittingPayload.context.device.type = 'android';
-      expectedOutput = {
+      let expectedOutput = {
         device: {
           dataFields: {
             campaignId: 5678,
@@ -163,13 +163,13 @@ describe('iterable utils test', () => {
   });
   describe('Unit test cases for iterable identifyBrowserAction', () => {
     it('flow check', async () => {
-      expectedOutput = { browserToken: 5678, email: 'abc@test.com', userId: 'anonId' };
+      let expectedOutput = { browserToken: 5678, email: 'abc@test.com', userId: 'anonId' };
       expect(identifyBrowserAction(getTestMessage())).toEqual(expectedOutput);
     });
   });
   describe('Unit test cases for iterable identifyAction', () => {
     it('flow check without externalId', async () => {
-      expectedOutput = {
+      let expectedOutput = {
         dataFields: {
           address: { city: 'kolkata', country: 'India' },
           createdAt: '2014-05-21T15:54:20Z',
@@ -188,7 +188,7 @@ describe('iterable utils test', () => {
     it('flow check with externalId', async () => {
       let fittingPayload = { ...getTestMessage() };
       fittingPayload.context.mappedToDestination = true;
-      expectedOutput = {
+      let expectedOutput = {
         dataFields: {
           address: { city: 'kolkata', country: 'India' },
           createdAt: '2014-05-21T15:54:20Z',
@@ -207,7 +207,7 @@ describe('iterable utils test', () => {
   });
   describe('Unit test cases for iterbale pageAction', () => {
     it('For trackAllPages', async () => {
-      destination = {
+      let destination = {
         Config: {
           apiKey: '12345',
           mapToSingleEvent: false,
@@ -217,7 +217,7 @@ describe('iterable utils test', () => {
         },
         Enabled: true,
       };
-      expectedOutput = {
+      let expectedOutput = {
         campaignId: 5678,
         createdAt: 1400687660000,
         dataFields: {
@@ -238,7 +238,7 @@ describe('iterable utils test', () => {
     });
 
     it('For trackCategorisedPages', async () => {
-      destination = {
+      let destination = {
         Config: {
           apiKey: '12345',
           mapToSingleEvent: false,
@@ -248,7 +248,7 @@ describe('iterable utils test', () => {
         },
         Enabled: true,
       };
-      expectedOutput = {
+      let expectedOutput = {
         campaignId: 5678,
         createdAt: 1400687660000,
         dataFields: {
@@ -269,7 +269,7 @@ describe('iterable utils test', () => {
     });
 
     it('For trackNamedPages', async () => {
-      destination = {
+      let destination = {
         Config: {
           apiKey: '12345',
           mapToSingleEvent: false,
@@ -279,7 +279,7 @@ describe('iterable utils test', () => {
         },
         Enabled: true,
       };
-      expectedOutput = {
+      let expectedOutput = {
         campaignId: 5678,
         createdAt: 1400687660000,
         dataFields: {
@@ -300,7 +300,7 @@ describe('iterable utils test', () => {
     });
 
     it('For mapToSingleEvent', async () => {
-      destination = {
+      let destination = {
         Config: {
           apiKey: '12345',
           mapToSingleEvent: false,
@@ -311,7 +311,7 @@ describe('iterable utils test', () => {
         },
         Enabled: true,
       };
-      expectedOutput = {
+      let expectedOutput = {
         campaignId: 5678,
         createdAt: 1400687660000,
         dataFields: {
@@ -332,7 +332,7 @@ describe('iterable utils test', () => {
     });
 
     it('For non-mapToSingleEvent', async () => {
-      destination = {
+      let destination = {
         Config: {
           apiKey: '12345',
           mapToSingleEvent: false,
@@ -343,7 +343,7 @@ describe('iterable utils test', () => {
         },
         Enabled: true,
       };
-      expectedOutput = {
+      let expectedOutput = {
         campaignId: 5678,
         createdAt: 1400687660000,
         dataFields: {
@@ -365,7 +365,7 @@ describe('iterable utils test', () => {
   });
   describe('Unit test cases for iterbale screenAction', () => {
     it('For trackAllPages', async () => {
-      destination = {
+      let destination = {
         Config: {
           apiKey: '12345',
           mapToSingleEvent: false,
@@ -375,7 +375,7 @@ describe('iterable utils test', () => {
         },
         Enabled: true,
       };
-      expectedOutput = {
+      let expectedOutput = {
         campaignId: 5678,
         createdAt: 1400687660000,
         dataFields: {
@@ -396,7 +396,7 @@ describe('iterable utils test', () => {
     });
 
     it('For trackCategorisedPages', async () => {
-      destination = {
+      let destination = {
         Config: {
           apiKey: '12345',
           mapToSingleEvent: false,
@@ -406,7 +406,7 @@ describe('iterable utils test', () => {
         },
         Enabled: true,
       };
-      expectedOutput = {
+      let expectedOutput = {
         campaignId: 5678,
         createdAt: 1400687660000,
         dataFields: {
@@ -427,7 +427,7 @@ describe('iterable utils test', () => {
     });
 
     it('For trackNamedPages', async () => {
-      destination = {
+      let destination = {
         Config: {
           apiKey: '12345',
           mapToSingleEvent: false,
@@ -437,7 +437,7 @@ describe('iterable utils test', () => {
         },
         Enabled: true,
       };
-      expectedOutput = {
+      let expectedOutput = {
         campaignId: 5678,
         createdAt: 1400687660000,
         dataFields: {
@@ -458,7 +458,7 @@ describe('iterable utils test', () => {
     });
 
     it('For mapToSingleEvent', async () => {
-      destination = {
+      let destination = {
         Config: {
           apiKey: '12345',
           mapToSingleEvent: false,
@@ -469,7 +469,7 @@ describe('iterable utils test', () => {
         },
         Enabled: true,
       };
-      expectedOutput = {
+      let expectedOutput = {
         campaignId: 5678,
         createdAt: 1400687660000,
         dataFields: {
@@ -490,7 +490,7 @@ describe('iterable utils test', () => {
     });
 
     it('For non-mapToSingleEvent', async () => {
-      destination = {
+      let destination = {
         Config: {
           apiKey: '12345',
           mapToSingleEvent: false,
@@ -501,7 +501,7 @@ describe('iterable utils test', () => {
         },
         Enabled: true,
       };
-      expectedOutput = {
+      let expectedOutput = {
         campaignId: 5678,
         createdAt: 1400687660000,
         dataFields: {
@@ -523,7 +523,7 @@ describe('iterable utils test', () => {
   });
   describe('Unit test cases for iterable trackAction', () => {
     it('flow check', async () => {
-      expectedOutput = {
+      let expectedOutput = {
         campaignId: 5678,
         createdAt: 1400687660000,
         dataFields: {
@@ -543,7 +543,7 @@ describe('iterable utils test', () => {
   });
   describe('Unit test cases for iterable trackPurchaseAction', () => {
     it('flow check without product array', async () => {
-      expectedOutput = {
+      let expectedOutput = {
         campaignId: 1111,
         createdAt: 1400687660000,
         dataFields: {
@@ -590,7 +590,7 @@ describe('iterable utils test', () => {
     });
 
     it('flow check with product array', async () => {
-      fittingPayload = { ...getTestEcommMessage() };
+      let fittingPayload = { ...getTestEcommMessage() };
       fittingPayload.properties.products = [
         {
           product_id: 1234,
@@ -602,7 +602,7 @@ describe('iterable utils test', () => {
           total: '20',
         },
       ];
-      expectedOutput = {
+      let expectedOutput = {
         campaignId: 1111,
         createdAt: 1400687660000,
         dataFields: {
@@ -661,7 +661,7 @@ describe('iterable utils test', () => {
   });
   describe('Unit test cases for iterable updateCartAction', () => {
     it('flow check without product array', async () => {
-      expectedOutput = {
+      let expectedOutput = {
         items: [
           {
             categories: ['categoryTest1', ' categoryTest2'],
@@ -693,7 +693,7 @@ describe('iterable utils test', () => {
     });
 
     it('flow check with product array', async () => {
-      fittingPayload = { ...getTestEcommMessage() };
+      let fittingPayload = { ...getTestEcommMessage() };
       fittingPayload.properties.products = [
         {
           product_id: 1234,
@@ -705,7 +705,7 @@ describe('iterable utils test', () => {
           total: '20',
         },
       ];
-      expectedOutput = {
+      let expectedOutput = {
         items: [
           {
             categories: ['categoryTest1', ' categoryTest2'],

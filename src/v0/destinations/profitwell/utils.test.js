@@ -51,7 +51,7 @@ const getTestMessage = () => {
 describe('profitwell utils test cases', () => {
   describe('createResponseForSubscribedUser', () => {
     it('correct flow', async () => {
-      expectedOutput = {
+      let expectedOutput = {
         body: {
           FORM: {},
           JSON: {
@@ -79,7 +79,7 @@ describe('profitwell utils test cases', () => {
     });
 
     it('erroneous flow', async () => {
-      fittingPayload = { ...getTestMessage() };
+      let fittingPayload = { ...getTestMessage() };
       fittingPayload.traits.effectiveDate = '2019-10-15T09:35:31.288Z';
       expect(() =>
         createResponseForSubscribedUser(fittingPayload, 'testId', 'testAlias', {
@@ -91,7 +91,7 @@ describe('profitwell utils test cases', () => {
 
   describe('createMissingSubscriptionResponse', () => {
     it('correct flow', async () => {
-      expectedOutput = {
+      let expectedOutput = {
         body: {
           FORM: {},
           JSON: {
@@ -122,7 +122,7 @@ describe('profitwell utils test cases', () => {
     });
 
     it('erroneous flow with wrong plan interval', async () => {
-      fittingPayload = { ...getTestMessage() };
+      let fittingPayload = { ...getTestMessage() };
       fittingPayload.traits.planInterval = 'test';
       expect(() =>
         createMissingSubscriptionResponse('testId', 'testAlias', null, null, fittingPayload, {
@@ -132,7 +132,7 @@ describe('profitwell utils test cases', () => {
     });
 
     it('erroneous flow with subscriptionId', async () => {
-      fittingPayload = { ...getTestMessage() };
+      let fittingPayload = { ...getTestMessage() };
       fittingPayload.traits.planInterval = 'test';
       expect(() =>
         createMissingSubscriptionResponse('testId', 'testAlias', 124, fittingPayload, {
@@ -144,9 +144,9 @@ describe('profitwell utils test cases', () => {
 
   describe('validatePayloadAndRetunImpIds', () => {
     it('should validate and return correct ids', () => {
-      fittingPayload = { ...getTestMessage() };
+      let fittingPayload = { ...getTestMessage() };
       fittingPayload.traits.subscriptionAlias = 'testAlias';
-      expectedOutput = {
+      let expectedOutput = {
         subscriptionAlias: 'testAlias',
         subscriptionId: null,
         userAlias: 'anonId',
@@ -162,7 +162,7 @@ describe('profitwell utils test cases', () => {
     });
 
     it('should error out if both userId and userAlias are absent', () => {
-      fittingPayload = { ...getTestMessage() };
+      let fittingPayload = { ...getTestMessage() };
       delete fittingPayload.anonymousId;
       expect(() => validatePayloadAndRetunImpIds(fittingPayload)).toThrow(
         'userId or userAlias is required for identify',

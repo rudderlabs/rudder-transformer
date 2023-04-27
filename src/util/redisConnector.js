@@ -3,10 +3,10 @@ const { RedisError } = require('../v0/util/errorTypes');
 const log = require('../logger');
 const stats = require('./stats');
 
-const timeoutPromise = new Promise((resolve, reject) => {
+const timeoutPromise = () => new Promise((_, reject) => {
   setTimeout(
-    () => resolve(),
-    50
+    () => reject(new Error("Timeout while connecting to redis")),
+    1000
   );
 });
 
@@ -49,7 +49,7 @@ const RedisDB = {
       this.init();
     }
     else if (this.client.status !== 'ready') {
-      await Promise.race([this.client.connect(), timeoutPromise])
+      await Promise.race([this.client.connect(), timeoutPromise()])
     }
   },
   /**

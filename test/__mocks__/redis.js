@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 const directoryMap = {
     "shopify_test": "shopify",
     "redis_test": "redis",
@@ -12,7 +13,8 @@ const getData = redisKey => {
     });
     if (directory) {
         const dataFile = fs.readFileSync(
-            `/Users/apple/Desktop/workspace/rudder-transformer/test/__mocks__/data/sources/${directory}/response.json`
+
+            path.resolve(__dirname, `../__mocks__/data/sources/${directory}/response.json`)
         );
         const data = JSON.parse(dataFile);
         const response = data[redisKey];

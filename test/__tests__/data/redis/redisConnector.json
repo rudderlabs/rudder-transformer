@@ -14,7 +14,7 @@
         "input": {
             "value": "redis_test_get"
         },
-        "output": "\"redis_test_get_value\""
+        "output": "redis_test_get_value"
 
     }
 ]

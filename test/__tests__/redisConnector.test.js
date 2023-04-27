@@ -42,6 +42,32 @@ describe(`Redis Class Get Tests`, () => {
       }
     });
   });
+  it(`Redis Get- Object Val Retrival `, async () => {
+    const dataPoint = {
+      input: {
+        value: "redis_test_Object",
+      },
+      output: {
+        value: {
+          "testVal": "testVal"
+        }
+      }
+    };
+    const output = await RedisDB.getVal(dataPoint.input.value, false);
+    expect(output).toEqual(dataPoint.output.value);
+  });
+  it(`Redis Get- Nothing Found in redis - return null`, async () => {
+    const dataPoint = {
+      input: {
+        value: "not_in_redis",
+      },
+      output: {
+        value: null
+      }
+    };
+    const output = await RedisDB.getVal(dataPoint.input.value);
+    expect(output).toEqual(dataPoint.output.value);
+  });
 });
 
 describe(`Redis Class Set Fail Test`, () => {

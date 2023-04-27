@@ -200,7 +200,7 @@ const isIdentifierEvent = (event) => {
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
     const setStartTime = Date.now();
-    const value = ["anonymousId", event.anonymousId, "itemsHash", event?.line_items.length !== 0 ? sha256(event
+    const value = ["anonymousId", event.anonymousId, "itemsHash", event.cart?.line_items.length !== 0 ? sha256(event
       .line_items) : "0"];
     await RedisDB.setVal(`${event.cartToken}`, value);
     stats.timing('redis_set_latency', setStartTime, {

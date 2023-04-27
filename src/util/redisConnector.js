@@ -2,6 +2,7 @@ const Redis = require('ioredis');
 const { RedisError } = require('../v0/util/errorTypes');
 const log = require('../logger');
 const stats = require('./stats');
+const { isDefinedAndNotNull } = require('../v0/util');
 
 const timeoutPromise = new Promise((resolve, reject) => {
   setTimeout(
@@ -59,17 +60,29 @@ const RedisDB = {
    * @returns value which can be json or string or number
    *
    */
-  async getVal(key, isJsonExpected = true) {
+  async getVal(key, isObjExpected = true) {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
-      const value = await this.client.get(key);
-      if (value) {
-        const bytes = Buffer.byteLength(value, "utf-8");
-        stats.gauge('redis_get_val_size', bytes, {
-          timestamp: Date.now()
-        });
+      let value;
+      if (isObjExpected === true) {
+        value = await this.client.hmget(key);
+        if (isDefinedAndNotNull(value)) {
+          Object.keys(value).forEach(Key => {
+            try {
+              value[Key] = JSON.parse(value[Key]);
+            } catch (e) {
+              // do nothing
+            }
+          });
+        }
+      } else {
+        value = await this.client.get(key);
       }
-      return isJsonExpected ? JSON.parse(value) : value;
+      const bytes = Buffer.byteLength(JSON.stringify(value), "utf-8");
+      stats.gauge('redis_get_val_size', bytes, {
+        timestamp: Date.now()
+      });
+      return value;
     } catch (e) {
       stats.increment('redis_get_val_error', {
         error: e,
@@ -81,25 +94,38 @@ const RedisDB = {
   /**
    * Used to set value in redis depending on the key and the value type
    * @param {*} key key for which value needs to be stored
-   * @param {*} value value to be stored in redis
-   * @param {*} isValJson set to false if value is not a json object
+   * @param {*} value value to be stored in redis send it in array format [field1, value1, field2, value2]
+   *                  if Value is an object
+   * @param {*} expiryTime expiry time of data in redis by default 1 hr
+   * @param {*} isValJson set to false if value is not a json object 
+   * 
    */
-
-  async setVal(key, value, isValJson = true) {
-    const dataExpiry = 60 * 60; // 1 hour
+  async setVal(key, value, expiryTime = 60 * 60) {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
-      const valueToStore = isValJson ? JSON.stringify(value) : value;
-      const bytes = Buffer.byteLength(valueToStore, "utf-8");
-      await this.client.setex(key, dataExpiry, valueToStore);
-      stats.gauge('redis_set_val_size', bytes, {
-        timestamp: Date.now()
-      });
+      if (typeof value === "object") {
+        const valueToStore = value.map(element => {
+          if (typeof element === "object") {
+            return JSON.stringify(element);
+          }
+          return element;
+        })
+        const bytes = Buffer.byteLength(JSON.stringify(value), "utf-8");
+        await this.client.multi()
+          .hmset(key, ...valueToStore)
+          .expire(key, expiryTime)
+          .exec();
+        stats.gauge('redis_set_val_size', bytes, {
+          timestamp: Date.now()
+        });
+      } else {
+        const bytes = Buffer.byteLength(value, "utf-8");
+        await this.client.setex(key, expiryTime, value);
+        stats.gauge('redis_set_val_size', bytes, {
+          timestamp: Date.now()
+        });
+      }
     } catch (e) {
-      stats.increment('redis_set_val_error', {
-        error: e,
-        timestamp: Date.now()
-      });
       throw new RedisError(`Error setting value in Redis due ${e}`);
     }
   },

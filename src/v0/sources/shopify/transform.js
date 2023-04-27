@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const sha256 = require('sha256');
 const get = require('get-value');
 const stats = require('../../../util/stats');
 const {
@@ -8,7 +9,7 @@ const {
   extractEmailFromPayload,
   getAnonymousIdFromDb,
   getAnonymousId,
-  // checkForValidRecord,
+  isValidCartEvent,
 } = require('./util');
 const { RedisDB } = require('../../../util/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
@@ -22,8 +23,7 @@ const {
   RUDDER_ECOM_MAP,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
-  useRedisDatabase,
-  timeDifferenceForCartEvents
+  useRedisDatabase
 } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 
@@ -132,13 +132,16 @@ const processEvent = async (inputEvent, metricMetadata) => {
       message = ecomPayloadBuilder(event, shopifyTopic);
       break;
     case "carts_update":
-      if (Date.parse(inputEvent.updated_at) - Date.parse(inputEvent.created_at) < timeDifferenceForCartEvents && inputEvent.line_items.length === 0) {
-        return {
-          outputToSource: {
-            body: Buffer.from('OK').toString('base64'),
-            contentType: 'text/plain',
-          },
-          statusCode: 200,
+      if (useRedisDatabase) {
+        const isValidEvent = await isValidCartEvent(inputEvent);
+        if (!isValidEvent) {
+          return {
+            outputToSource: {
+              body: Buffer.from('OK').toString('base64'),
+              contentType: 'text/plain',
+            },
+            statusCode: 200,
+          }
         }
       }
       message = trackPayloadBuilder(event, shopifyTopic);
@@ -170,8 +173,8 @@ const processEvent = async (inputEvent, metricMetadata) => {
     if (isDefinedAndNotNull(anonymousId)) {
       message.setProperty('anonymousId', anonymousId);
     } else if (!message.userId) {
-        message.setProperty('userId', 'shopify-admin');
-      }
+      message.setProperty('userId', 'shopify-admin');
+    }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
   message.setProperty('context.library', {
@@ -197,7 +200,9 @@ const isIdentifierEvent = (event) => {
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
     const setStartTime = Date.now();
-    await RedisDB.setVal(`${event.cartToken}`, { anonymousId: event.anonymousId });
+    const value = ["anonymousId", event.anonymousId, "itemsHash", event?.line_items.length !== 0 ? sha256(event
+      .line_items) : "0"];
+    await RedisDB.setVal(`${event.cartToken}`, value);
     stats.timing('redis_set_latency', setStartTime, {
       ...metricMetadata,
     });

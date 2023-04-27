@@ -2,6 +2,7 @@
 const sha256 = require('sha256');
 const stats = require('../../../util/stats');
 const { constructPayload, extractCustomFields, flattenJson, generateUUID, isDefinedAndNotNull } = require('../../util');
+const Cache = require('../../util/cache');
 const { RedisDB } = require('../../../util/redisConnector');
 const logger = require('../../../logger');
 const {
@@ -10,10 +11,13 @@ const {
   LINE_ITEM_EXCLUSION_FIELDS,
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   RUDDER_ECOM_MAP,
-  SHOPIFY_TRACK_MAP
+  SHOPIFY_TRACK_MAP,
+  ANONYMOUSID_CACHE_TTL,
 } = require('./config');
 // 30 mins
 const { TransformationError } = require('../../util/errorTypes');
+
+const anonymousIdCache = new Cache(ANONYMOUSID_CACHE_TTL);
 
 /**
  * query_parameters : { topic: ['<shopify_topic>'], ...}
@@ -88,9 +92,9 @@ const getAnonymousId = (message) => {
     case SHOPIFY_TRACK_MAP.fulfillments_update:
       return null;
     case SHOPIFY_TRACK_MAP.carts_update:
-        return message.properties?.id
-          ? sha256(message.properties.id).toString().substring(0, 36)
-          : generateUUID()
+      return message.properties?.id
+        ? sha256(message.properties.id).toString().substring(0, 36)
+        : generateUUID()
     case SHOPIFY_TRACK_MAP.orders_edited:
     case SHOPIFY_TRACK_MAP.orders_cancelled:
     case SHOPIFY_TRACK_MAP.orders_fulfilled:
@@ -101,8 +105,8 @@ const getAnonymousId = (message) => {
     case RUDDER_ECOM_MAP.orders_create:
     case RUDDER_ECOM_MAP.orders_updated:
       return message.properties?.cart_token
-          ? sha256(message.properties.cart_token).toString().substring(0, 36)
-          : generateUUID()
+        ? sha256(message.properties.cart_token).toString().substring(0, 36)
+        : generateUUID()
     default:
       return generateUUID();
   }
@@ -150,17 +154,23 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
     });
     return null;
   }
+  const anonymousIDfromCache = await anonymousIdCache.get(cartToken, () => null); // check if anonymousId is present in cachewith cartToken as key
   let anonymousIDfromDB;
-  const executeStartTime = Date.now();
-  const redisVal = await RedisDB.getVal(`${cartToken}`);
-  stats.timing('redis_get_latency', executeStartTime, {
-    ...metricMetadata,
-  });
-  stats.increment('shopify_redis_get_data', {
-    ...metricMetadata,
-    timestamp: Date.now(),
-  });
-  if (redisVal !== null) {
+  let redisVal;
+  if (!isDefinedAndNotNull(anonymousIDfromCache)) {
+    const executeStartTime = Date.now();
+    redisVal = await RedisDB.getVal(`${cartToken}`);
+    stats.timing('redis_get_latency', executeStartTime, {
+      ...metricMetadata,
+    });
+    stats.increment('shopify_redis_get_data', {
+      ...metricMetadata,
+      timestamp: Date.now(),
+    });
+  } else {
+    anonymousIDfromDB = anonymousIDfromCache;
+  }
+  if (isDefinedAndNotNull(redisVal)) {
     anonymousIDfromDB = redisVal.anonymousId;
   }
   if (!isDefinedAndNotNull(anonymousIDfromDB)) {
@@ -176,6 +186,28 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
   return anonymousIDfromDB;
 };
 
+/**
+ * It checks if the event is valid or not based on previous cartItems
+ * @param {*} inputEvent 
+ * @returns true if event is valid else false
+ */
+const isValidCartEvent = async (inputEvent) => {
+  const cartToken = inputEvent.token || inputEvent.id;
+  const redisVal = await RedisDB.getVal(cartToken);
+  const newCartItems = inputEvent?.line_items.length !== 0 ? sha256(inputEvent.line_items) : 0;
+  if (redisVal) {
+    const prevCartItems = redisVal.itemsHash;
+    if (prevCartItems === newCartItems) {
+      return false;
+    }
+    await anonymousIdCache.get(cartToken, () => redisVal.anonymousId);
+    const value = ["itemsHash", newCartItems];
+    await RedisDB.setVal(`${cartToken}`, value);
+    return true;
+  }
+  return false; // if redisVal is null then we will return false as we dont want to pollute the downstream destinations
+}
+
 module.exports = {
   getShopifyTopic,
   getProductsListFromLineItems,
@@ -183,4 +215,5 @@ module.exports = {
   extractEmailFromPayload,
   getAnonymousIdFromDb,
   getAnonymousId,
+  isValidCartEvent
 };

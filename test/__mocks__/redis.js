@@ -1,5 +1,4 @@
 const fs = require("fs");
-const path = require("path");
 const directoryMap = {
     "shopify_test": "shopify",
     "redis_test": "redis",
@@ -13,10 +12,10 @@ const getData = redisKey => {
     });
     if (directory) {
         const dataFile = fs.readFileSync(
-            path.resolve(__dirname, `./data/sources/${directory}/response.json`)
+            `/Users/apple/Desktop/workspace/rudder-transformer/test/__mocks__/data/sources/${directory}/response.json`
         );
         const data = JSON.parse(dataFile);
-        response = data[redisKey];
+        const response = data[redisKey];
         return response;
     }
 }
@@ -25,7 +24,6 @@ class Redis {
     constructor(data) {
         this.status = "closed",
             this.data = data
-
     };
 
     get(key) {
@@ -34,7 +32,7 @@ class Redis {
         }
         const mockData = getData(key);
         if (mockData) {
-            return JSON.stringify(mockData);
+            return mockData;
         } else {
             return null;
         }
@@ -52,6 +50,21 @@ class Redis {
             throw new Error("Connection is Closed");
         }
         this.data[key] = value;
+    }
+    hmget(key) {
+        return this.get(key);
+    }
+    multi() {
+        return { hmset: this.hmset }
+    };
+    hmset(key, value) {
+        return {
+            expire: (key, expiryTime) => {
+                return {
+                    exec: () => { }
+                }
+            }
+        }
     }
 
     connect() {

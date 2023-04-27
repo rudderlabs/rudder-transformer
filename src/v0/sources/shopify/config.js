@@ -24,7 +24,6 @@ const RUDDER_ECOM_MAP = {
 
 const SHOPIFY_TRACK_MAP = {
   checkouts_delete: 'Checkout Deleted',
-  // carts_create: 'Cart Create',
   carts_update: 'Cart Update',
   customers_enable: 'Customer Enabled',
   customers_disable: 'Customer Disabled',
@@ -101,7 +100,7 @@ const SUPPORTED_TRACK_EVENTS = [
   'orders_paid',
   'orders_partially_fullfilled',
 ];
-const timeDifferenceForCartEvents = 20000; 
+const ANONYMOUSID_CACHE_TTL = 60 * 60;
 const useRedisDatabase = process.env.USE_REDIS_DB === 'true' || false;
 module.exports = {
   ECOM_TOPICS,
@@ -115,6 +114,6 @@ module.exports = {
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
-  timeDifferenceForCartEvents,
+  ANONYMOUSID_CACHE_TTL,
   useRedisDatabase,
 };

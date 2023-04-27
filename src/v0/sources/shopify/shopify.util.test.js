@@ -1,6 +1,7 @@
 const { getShopifyTopic,
     getAnonymousIdFromDb,
-    getAnonymousId, } = require('./util');
+    getAnonymousId,
+    isValidCartEvent } = require('./util');
 
 jest.mock('ioredis', () => require('../../../../test/__mocks__/redis'));
 process.env.USE_REDIS_DB = 'true';
@@ -138,4 +139,53 @@ describe('Shopify Utils Test', () => {
             expect(output).toEqual(expectedOutput);
         });
     });
+    describe('Check for valid cart update event test cases', () => {
+        it('Event containing id and nothing is retreived from redis', async () => {
+            const input = {
+                token: "token_not_in_redis",
+                line_items: [
+                    {
+                        prod_id: "prod_1",
+                        quantity: 1,
+                    }
+                ]
+            };
+            const expectedOutput = false
+            const output = await isValidCartEvent(input);
+            expect(output).toEqual(expectedOutput);
+        });
+
+        it('Event contain id for cart_update event and isValid', async () => {
+            const input = {
+                id: "shopify_test2",
+                line_items: [
+                    {
+                        prod_id: "prod_1",
+                        quantity: 1,
+                    }
+                ]
+            };
+
+            const expectedOutput = true;
+            const output = await isValidCartEvent(input);
+            expect(output).toEqual(expectedOutput);
+        });
+
+        it('Event contain id for cart_update event and isInValid', async () => {
+            const input = {
+                id: "shopify_test_duplicate_cart",
+                line_items: [
+                    {
+                        prod_id: "prod_1",
+                        quantity: 1,
+                    }
+                ]
+            };
+
+            const expectedOutput = false;
+            const output = await isValidCartEvent(input);
+            expect(output).toEqual(expectedOutput);
+        });
+    });
+
 });

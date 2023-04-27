@@ -621,7 +621,6 @@ class Prometheus {
         labelNames: [],
       },
       {
-<<<<<<< HEAD
         name: 'braze_lookup_time',
         help: 'braze look-up time',
         type: 'histogram',
@@ -644,7 +643,7 @@ class Prometheus {
           500, 600, 700, 800, 900, 1000,
         ],
       },
-=======
+      {
         name: 'http_request_size',
         help: 'http_request_size',
         type: 'histogram',
@@ -694,7 +693,6 @@ class Prometheus {
         labelNames: ['processSessions'],
         buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
       },
->>>>>>> 041d4b6f2c6d4161fab6cc9092a1a228c5e28604
     ];
 
     metrics.forEach((metric) => {

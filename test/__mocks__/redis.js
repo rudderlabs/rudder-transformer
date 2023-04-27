@@ -13,8 +13,7 @@ const getData = redisKey => {
     });
     if (directory) {
         const dataFile = fs.readFileSync(
-
-            path.resolve(__dirname, `../__mocks__/data/sources/${directory}/response.json`)
+            path.resolve(__dirname, `./data/sources/${directory}/response.json`)
         );
         const data = JSON.parse(dataFile);
         const response = data[redisKey];

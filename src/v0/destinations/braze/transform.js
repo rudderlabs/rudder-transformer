@@ -250,7 +250,7 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
         requestJson.attributes = [dedupedAttributePayload];
       } else {
         throw new InstrumentationError(
-          'No attributes found to update the user, parallely the anonymous (alias only) user has been identified with provided userId',
+          '[Braze Deduplication]: Duplicate user detected, the user is dropped',
         );
       }
     }
@@ -262,7 +262,7 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
     );
   }
   throw new InstrumentationError(
-    'No attributes found to update the user, the anonymous (alias only) user has been identified with proved userId',
+    'No attributes found to update the user profile',
   );
 }
 

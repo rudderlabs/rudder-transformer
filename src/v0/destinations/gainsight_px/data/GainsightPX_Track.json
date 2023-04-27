@@ -17,7 +17,7 @@
   },
   {
     "destKey": "date",
-    "sourceKeys": ["properties.date", "originalTimestamp"],
+    "sourceKeys": ["properties.date", "timestamp", "originalTimestamp"],
     "required": false,
     "metadata": {
       "type": "timestamp"

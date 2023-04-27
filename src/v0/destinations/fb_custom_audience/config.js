@@ -93,7 +93,10 @@ const subTypeFields = [
 // const MAX_USER_COUNT = 500; (using from destination definition)
 const USER_ADD = 'add';
 const USER_DELETE = 'remove';
-
+/* No official Documentation is available for this but using trial 
+and error method we found that 65000 bytes is the maximum payload allowed size but we are 60000 just to be sure batching is done properly
+*/
+const maxPayloadSize = 60000; // bytes 
 module.exports = {
   getEndPoint,
   schemaFields,
@@ -101,4 +104,5 @@ module.exports = {
   USER_DELETE,
   typeFields,
   subTypeFields,
+  maxPayloadSize
 };

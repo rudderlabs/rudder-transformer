@@ -1,14 +1,15 @@
 const { get } = require('lodash');
-const { defaultPostRequestConfig, handleRtTfSingleEventError } = require('../../util');
 const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
+  defaultPostRequestConfig,
   getSuccessRespEvents,
   getErrorRespEvents,
   constructPayload,
   defaultBatchRequestConfig,
   removeUndefinedAndNullValues,
   batchMultiplexedEvents,
+  handleRtTfSingleEventError,
 } = require('../../util');
 const {
   processUserPayload,
@@ -17,22 +18,35 @@ const {
   postProcessEcomFields,
   checkUserPayloadValidity,
   processHashedUserPayload,
+  validateInput,
 } = require('./utils');
 
-const { ENDPOINT, MAX_BATCH_SIZE, USER_CONFIGS } = require('./config');
-const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const {
+  ENDPOINT,
+  MAX_BATCH_SIZE,
+  USER_CONFIGS,
+  getV5EventsEndpoint,
+  API_VERSION,
+} = require('./config');
+const { InstrumentationError } = require('../../util/errorTypes');
 
-const responseBuilderSimple = (finalPayload) => {
+const responseBuilderSimple = (finalPayload, { Config }) => {
+  const { apiVersion = API_VERSION.v3, adAccountId, conversionToken } = Config;
   const response = defaultRequestConfig();
   response.endpoint = ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(finalPayload);
-  return {
-    ...response,
-    headers: {
+  response.headers = { 'Content-Type': 'application/json' };
+
+  if (apiVersion === API_VERSION.v5) {
+    response.endpoint = getV5EventsEndpoint(adAccountId);
+    response.headers = {
       'Content-Type': 'application/json',
-    },
-  };
+      Authorization: `Bearer ${conversionToken}`,
+    };
+  }
+
+  return response;
 };
 
 /**
@@ -50,12 +64,18 @@ const responseBuilderSimple = (finalPayload) => {
  */
 const commonFieldResponseBuilder = (message, { Config }, messageType, eventName) => {
   let processedUserPayload;
-  const { appId, advertiserId, deduplicationKey, sendingUnHashedData } = Config;
+  const { appId, advertiserId, deduplicationKey, sendingUnHashedData, sendExternalId, apiVersion } =
+    Config;
   // ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
   const processedCommonPayload = processCommonPayload(message);
 
   processedCommonPayload.event_id = get(message, `${deduplicationKey}`) || message.messageId;
   const userPayload = constructPayload(message, USER_CONFIGS, 'pinterest');
+
+  if (!sendExternalId) {
+    delete userPayload.external_id;
+  }
+
   const isValidUserPayload = checkUserPayloadValidity(userPayload);
   if (isValidUserPayload === false) {
     throw new InstrumentationError(
@@ -82,10 +102,14 @@ const commonFieldResponseBuilder = (message, { Config }, messageType, eventName)
     user_data: processedUserPayload,
   };
 
+  if (apiVersion === API_VERSION.v5) {
+    delete response.advertiser_id;
+  }
+
   if (messageType === EventType.TRACK) {
     response = postProcessEcomFields(message, response);
   }
-  // return responseBuilderSimple(response);
+
   return response;
 };
 
@@ -96,13 +120,7 @@ const process = (event) => {
   const { message, destination } = event;
   const messageType = message.type?.toLowerCase();
 
-  if (!destination.Config?.advertiserId) {
-    throw new ConfigurationError('Advertiser Id not found. Aborting');
-  }
-
-  if (!message.type) {
-    throw new InstrumentationError('Event type is required');
-  }
+  validateInput(message, destination);
 
   switch (messageType) {
     case EventType.PAGE:
@@ -119,7 +137,7 @@ const process = (event) => {
   }
 
   toSendEvents.forEach((sendEvent) => {
-    respList.push(responseBuilderSimple(sendEvent));
+    respList.push(responseBuilderSimple(sendEvent, destination));
   });
   return respList;
 };
@@ -128,14 +146,24 @@ const generateBatchedPayloadForArray = (events) => {
   const { batchedRequest } = defaultBatchRequestConfig();
   const batchResponseList = events.map((event) => event.body.JSON);
 
-  batchedRequest.body.JSON = {
-    data: batchResponseList,
-  };
-  batchedRequest.endpoint = ENDPOINT;
-  batchedRequest.headers = {
-    'Content-Type': 'application/json',
-  };
+  batchedRequest.body.JSON = { data: batchResponseList };
+  batchedRequest.endpoint = events[0].endpoint;
+  batchedRequest.headers = events[0].headers;
+
   return batchedRequest;
+};
+
+const batchEvents = (successRespList) => {
+  const batchResponseList = [];
+  const batchedEvents = batchMultiplexedEvents(successRespList, MAX_BATCH_SIZE);
+  batchedEvents.forEach((batch) => {
+    const batchedRequest = generateBatchedPayloadForArray(batch.events);
+    batchResponseList.push(
+      getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
+    );
+  });
+
+  return batchResponseList;
 };
 
 const processRouterDest = (inputs, reqMetadata) => {
@@ -164,15 +192,9 @@ const processRouterDest = (inputs, reqMetadata) => {
     }
   });
 
-  const batchResponseList = [];
+  let batchResponseList = [];
   if (successRespList.length > 0) {
-    const batchedEvents = batchMultiplexedEvents(successRespList, MAX_BATCH_SIZE);
-    batchedEvents.forEach((batch) => {
-      const batchedRequest = generateBatchedPayloadForArray(batch.events);
-      batchResponseList.push(
-        getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
-      );
-    });
+    batchResponseList = batchEvents(successRespList);
   }
 
   return [...batchResponseList, ...batchErrorRespList];

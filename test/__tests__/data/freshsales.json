@@ -1061,6 +1061,7 @@
           "JSON": {
             "sales_activity": {
               "title": "new Contact",
+              "created_at": "2020-10-20T08:14:28.778Z",
               "end_date": "2022-06-04T17:30:00+05:30",
               "owner_id": "70054866612",
               "start_date": "2021-05-04T17:00:00+05:30",
@@ -1628,6 +1629,7 @@
         "JSON": {
           "sales_activity": {
             "title": "new Contact",
+            "created_at": "2020-10-20T08:14:28.778Z",
             "end_date": "2022-06-04T17:30:00+05:30",
             "owner_id": "70054866612",
             "start_date": "2021-05-04T17:00:00+05:30",
@@ -1737,6 +1739,7 @@
         "JSON": {
           "sales_activity": {
             "title": "new Contact",
+            "created_at": "2020-10-20T08:14:28.778Z",
             "end_date": "2022-06-04T17:30:00+05:30",
             "owner_id": "70054866612",
             "start_date": "2021-05-04T17:00:00+05:30",

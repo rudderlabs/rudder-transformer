@@ -55,12 +55,7 @@
           ],
           "supportedMessageTypes": ["identify", "track"],
           "destConfig": {
-            "defaultConfig": [
-              "apiKey",
-              "marketingOptin",
-              "allowMarketing",
-              "allowTransactional"
-            ]
+            "defaultConfig": ["apiKey", "marketingOptin", "allowMarketing", "allowTransactional"]
           },
           "secretKeys": ["apiKey"]
         },

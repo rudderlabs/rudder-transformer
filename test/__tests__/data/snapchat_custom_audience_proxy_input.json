@@ -16,11 +16,7 @@
             "users": [
               {
                 "schema": ["EMAIL_SHA256"],
-                "data": [
-                  [
-                    "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
-                  ]
-                ]
+                "data": [["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"]]
               }
             ]
           },
@@ -49,11 +45,7 @@
             "users": [
               {
                 "schema": ["EMAIL_SHA256"],
-                "data": [
-                  [
-                    "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
-                  ]
-                ]
+                "data": [["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"]]
               }
             ]
           },
@@ -83,11 +75,7 @@
               {
                 "id": "123456",
                 "schema": ["EMAIL_SHA256"],
-                "data": [
-                  [
-                    "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"
-                  ]
-                ]
+                "data": [["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"]]
               }
             ]
           },

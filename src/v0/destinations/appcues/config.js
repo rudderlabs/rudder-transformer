@@ -1,21 +1,21 @@
-const { getMappingConfig } = require("../../util");
+const { getMappingConfig } = require('../../util');
 
 const ConfigCategory = {
   IDENTIFY: {
-    name: "AppcuesIdentifyConfig"
+    name: 'AppcuesIdentifyConfig',
   },
   TRACK: {
-    name: "AppcuesTrackConfig"
+    name: 'AppcuesTrackConfig',
   },
   PAGETRACK: {
-    name: "AppcuesPageTrack"
+    name: 'AppcuesPageTrack',
   },
   PAGEPROFILE: {
-    name: "AppcuesPageProfile"
+    name: 'AppcuesPageProfile',
   },
   DEFAULT: {
-    name: "AppcuesDefaultConfig"
-  }
+    name: 'AppcuesDefaultConfig',
+  },
 };
 
 function getEndpoint(accountId, userId) {
@@ -27,5 +27,5 @@ const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 module.exports = {
   ConfigCategory,
   mappingConfig,
-  getEndpoint
+  getEndpoint,
 };

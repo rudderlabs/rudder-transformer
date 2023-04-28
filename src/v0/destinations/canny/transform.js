@@ -1,38 +1,30 @@
-const { EventType } = require("../../../constants");
-const { ConfigCategory, mappingConfig, BASE_URL } = require("./config");
+const { EventType } = require('../../../constants');
+const { ConfigCategory, mappingConfig, BASE_URL } = require('./config');
 const {
   defaultRequestConfig,
   constructPayload,
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
-  CustomError,
   getHashFromArrayWithDuplicate,
-  getSuccessRespEvents,
-  handleRtTfSingleEventError,
-  checkInvalidRtTfEvents
-} = require("../../util");
+  simpleProcessRouterDest,
+} = require('../../util');
 const {
   retrieveUserId,
   validateIdentifyFields,
   validateCreatePostFields,
-  validateEventMapping
-} = require("./util");
+  validateEventMapping,
+} = require('./util');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
-const responseBuilder = responseConfgs => {
-  const {
-    payload,
-    apiKey,
-    endpoint,
-    contentType,
-    responseBody
-  } = responseConfgs;
+const responseBuilder = (responseConfgs) => {
+  const { payload, apiKey, endpoint, contentType, responseBody } = responseConfgs;
 
   const response = defaultRequestConfig();
   if (payload) {
     response.endpoint = `${BASE_URL}${endpoint}`;
     response.headers = {
       Authorization: `Basic ${apiKey}`,
-      "Content-Type": contentType
+      'Content-Type': contentType,
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.body[`${responseBody}`] = removeUndefinedAndNullValues(payload);
@@ -42,13 +34,10 @@ const responseBuilder = responseConfgs => {
 
 const identifyResponseBuilder = (message, { Config }) => {
   const { apiKey } = Config;
-  const contentType = "application/json";
-  const responseBody = "JSON";
+  const contentType = 'application/json';
+  const responseBody = 'JSON';
 
-  const payload = constructPayload(
-    message,
-    mappingConfig[ConfigCategory.IDENTIFY.name]
-  );
+  const payload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
   payload.apiKey = apiKey;
 
   validateIdentifyFields(payload);
@@ -60,7 +49,7 @@ const identifyResponseBuilder = (message, { Config }) => {
     apiKey,
     endpoint,
     contentType,
-    responseBody
+    responseBody,
   };
   return responseBuilder(responseConfgs);
 };
@@ -70,30 +59,24 @@ const getTrackResponse = async (apiKey, message, operationType) => {
   let responseBody;
   let contentType;
   let payload;
-  if (operationType === "createVote") {
-    responseBody = "FORM";
-    contentType = "application/x-www-form-urlencoded";
+  if (operationType === 'createVote') {
+    responseBody = 'FORM';
+    contentType = 'application/x-www-form-urlencoded';
 
-    payload = constructPayload(
-      message,
-      mappingConfig[ConfigCategory.CREATE_VOTE.name]
-    );
+    payload = constructPayload(message, mappingConfig[ConfigCategory.CREATE_VOTE.name]);
     if (!payload.postID) {
-      throw new CustomError("PostID is not present. Aborting message.", 400);
+      throw new InstrumentationError('PostID is not present. Aborting message.');
     }
 
     payload.apiKey = apiKey;
     const voterID = await retrieveUserId(apiKey, message);
     payload.voterID = voterID;
     endpoint = ConfigCategory.CREATE_VOTE.endpoint;
-  } else if (operationType === "createPost") {
-    contentType = "application/json";
-    responseBody = "JSON";
+  } else if (operationType === 'createPost') {
+    contentType = 'application/json';
+    responseBody = 'JSON';
 
-    payload = constructPayload(
-      message,
-      mappingConfig[ConfigCategory.CREATE_POST.name]
-    );
+    payload = constructPayload(message, mappingConfig[ConfigCategory.CREATE_POST.name]);
 
     validateCreatePostFields(payload);
 
@@ -108,7 +91,7 @@ const getTrackResponse = async (apiKey, message, operationType) => {
     apiKey,
     endpoint,
     contentType,
-    responseBody
+    responseBody,
   };
   return responseBuilder(responseConfgs);
 };
@@ -122,15 +105,14 @@ const trackResponseBuilder = async (message, { Config }) => {
 
   const responseArray = [];
   const configuredSourceEvents = Object.keys(configuredEventsMap);
+  // eslint-disable-next-line no-restricted-syntax
   for (const configuredSourceEvent of configuredSourceEvents) {
     if (configuredSourceEvent === event) {
       const destinationEvents = configuredEventsMap[event];
+      // eslint-disable-next-line no-restricted-syntax
       for (const destinationEvent of destinationEvents) {
-        const response = await getTrackResponse(
-          apiKey,
-          message,
-          destinationEvent
-        );
+        // eslint-disable-next-line no-await-in-loop
+        const response = await getTrackResponse(apiKey, message, destinationEvent);
         responseArray.push(response);
       }
     }
@@ -141,13 +123,10 @@ const trackResponseBuilder = async (message, { Config }) => {
 
 const processEvent = (message, destination) => {
   if (!destination.Config.apiKey) {
-    throw new CustomError("API Key is not present. Aborting message.", 400);
+    throw new ConfigurationError('API Key is not present. Aborting message.');
   }
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
   const messageType = message.type.toLowerCase();
 
@@ -160,37 +139,15 @@ const processEvent = (message, destination) => {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError('Message type not supported');
   }
   return response;
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
-const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "CANNY");
-  if (errorRespEvents.length > 0) {
-    return errorRespEvents;
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        const message = input.message.statusCode
-          ? input.message
-          : process(input);
-        return getSuccessRespEvents(
-          message,
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return handleRtTfSingleEventError(input, error, "CANNY");
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

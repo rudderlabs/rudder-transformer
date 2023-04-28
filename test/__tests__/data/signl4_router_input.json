@@ -85,41 +85,41 @@
       "jobId": 2
     },
     "message": {
-        "event": "New Alert",
-        "type": "identify",
-        "sentAt": "2021-01-03T17:02:53.195Z",
-        "channel": "web",
-        "properties": {
-          "message": "Please check the alert",
-          "brand": "Zara",
-          "price": "12000"
+      "event": "New Alert",
+      "type": "identify",
+      "sentAt": "2021-01-03T17:02:53.195Z",
+      "channel": "web",
+      "properties": {
+        "message": "Please check the alert",
+        "brand": "Zara",
+        "price": "12000"
+      },
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
         },
-        "context": {
-          "os": {
-            "name": "",
-            "version": ""
-          },
-          "app": {
-            "name": "RudderLabs JavaScript SDK",
-            "build": "1.0.0",
-            "version": "1.1.11",
-            "namespace": "com.rudderlabs.javascript"
-          },
-          "locale": "en-US",
-          "screen": {
-            "density": 2
-          },
-          "library": {
-            "name": "RudderLabs JavaScript SDK",
-            "version": "1.1.11"
-          },
-          "campaign": {},
-          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "build": "1.0.0",
+          "version": "1.1.11",
+          "namespace": "com.rudderlabs.javascript"
         },
-        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
-        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
-        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
-        "originalTimestamp": "2021-01-03T17:02:53.193Z"
-      }
+        "locale": "en-US",
+        "screen": {
+          "density": 2
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.11"
+        },
+        "campaign": {},
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:84.0) Gecko/20100101 Firefox/84.0"
+      },
+      "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+      "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+      "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+      "originalTimestamp": "2021-01-03T17:02:53.193Z"
+    }
   }
 ]

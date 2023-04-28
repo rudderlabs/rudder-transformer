@@ -1,5 +1,5 @@
 const { even } = require("is");
-const { commonPostMapper } = require("../../../src/cdk/new_relic/transform");
+const { commonPostMapper } = require("../../../src/cdk/v1/new_relic/transform");
 
 describe("Unit test cases for new_relic common post mapper", () => {
   let payload, event, rudderContext, expectedOutput;

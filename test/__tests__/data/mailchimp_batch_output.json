@@ -68,6 +68,22 @@
     }
   },
   {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
+        "audienceId": "1232yyqw22",
+        "datacenterId": "us20"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
     "metadata": [
       {
         "jobId": 5
@@ -77,9 +93,8 @@
     "statusCode": 400,
     "error": "The status must be one of [subscribed, unsubscribed, cleaned, pending, transactional]",
     "statTags": {
-      "destType": "MAILCHIMP",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   }
 ]

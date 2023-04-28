@@ -1,9 +1,6 @@
 [
   {
-    "sourceKeys": [
-      "context.ip",
-      "request_ip"
-    ],
+    "sourceKeys": ["context.ip", "request_ip"],
     "destKey": "ip"
   },
   {
@@ -115,24 +112,15 @@
     "destKey": "mp_processing_time_ms"
   },
   {
-    "sourceKeys": [
-      "properties.appBuildNumber",
-      "context.app.build"
-    ],
+    "sourceKeys": ["properties.appBuildNumber", "context.app.build"],
     "destKey": "$app_build_number"
   },
   {
-    "sourceKeys": [
-      "properties.appVersionString",
-      "context.app.version"
-    ],
+    "sourceKeys": ["properties.appVersionString", "context.app.version"],
     "destKey": "$app_version_string"
   },
   {
-    "sourceKeys": [
-      "properties.brand",
-      "device.manufacturer"
-    ],
+    "sourceKeys": ["properties.brand", "device.manufacturer"],
     "destKey": "$brand"
   },
   {

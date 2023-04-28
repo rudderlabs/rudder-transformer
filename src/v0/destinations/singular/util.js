@@ -1,4 +1,4 @@
-const _ = require("lodash");
+const _ = require('lodash');
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
@@ -8,31 +8,26 @@ const {
   SINGULAR_EVENT_IOS_EXCLUSION,
   BASE_URL,
   SUPPORTED_PLATFORM,
-  SESSIONEVENTS
-} = require("./config");
+  SESSIONEVENTS,
+} = require('./config');
 const {
   constructPayload,
   defaultRequestConfig,
   defaultGetRequestConfig,
   removeUndefinedAndNullValues,
-  CustomError,
   extractCustomFields,
   getValueFromMessage,
   isDefinedAndNotNull,
-  isAppleFamily
-} = require("../../util");
+  isAppleFamily,
+} = require('../../util');
+const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 
 /*
   All the fields listed inside properties which are not directly mapped, will be sent to 'e' as custom event attributes
 */
 const extractExtraFields = (message, EXCLUSION_FIELDS) => {
   const eventAttributes = {};
-  extractCustomFields(
-    message,
-    eventAttributes,
-    ["properties"],
-    EXCLUSION_FIELDS
-  );
+  extractCustomFields(message, eventAttributes, ['properties'], EXCLUSION_FIELDS);
   return eventAttributes;
 };
 
@@ -44,17 +39,12 @@ const extractExtraFields = (message, EXCLUSION_FIELDS) => {
  * @param {*} eventAttributes custom attributes
  * @returns list of revenue event responses
  */
-const generateRevenuePayloadArray = (
-  products,
-  payload,
-  Config,
-  eventAttributes
-) => {
+const generateRevenuePayloadArray = (products, payload, Config, eventAttributes) => {
   const responseArray = [];
-  products.forEach(product => {
+  products.forEach((product) => {
     const productDetails = constructPayload(
       product,
-      MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT_PROPERTY.name]
+      MAPPING_CONFIG[CONFIG_CATEGORIES.PRODUCT_PROPERTY.name],
     );
     let finalpayload = { ...payload, ...productDetails };
     // is_revenue_event will be true as here payload for a REVENUE event is being generated
@@ -76,85 +66,69 @@ const exclusionList = {
   ANDROID_SESSION_EXCLUSION_LIST: SINGULAR_SESSION_ANDROID_EXCLUSION,
   IOS_SESSION_EXCLUSION_LIST: SINGULAR_SESSION_IOS_EXCLUSION,
   ANDROID_EVENT_EXCLUSION_LIST: SINGULAR_EVENT_ANDROID_EXCLUSION,
-  IOS_EVENT_EXCLUSION_LIST: SINGULAR_EVENT_IOS_EXCLUSION
+  IOS_EVENT_EXCLUSION_LIST: SINGULAR_EVENT_IOS_EXCLUSION,
 };
 
 /**
- * Determinse if the event is a session event or not
+ * Determines if the event is a session event or not
  * @param {*} Config
  * @param {*} eventName
  */
 const isSessionEvent = (Config, eventName) => {
-  const mappedSessionEvents = _.map(
-    Config.sessionEventList,
-    "sessionEventName"
-  );
-  return (
-    mappedSessionEvents.includes(eventName) ||
-    SESSIONEVENTS.includes(eventName.toLowerCase())
-  );
+  const mappedSessionEvents = _.map(Config.sessionEventList, 'sessionEventName');
+  return mappedSessionEvents.includes(eventName) || SESSIONEVENTS.includes(eventName.toLowerCase());
 };
 
 /**
  * Based on platform of device this function generates payload for singular API
  * @param {*} message
- * @param {*} isSessionEvent
+ * @param {*} sessionEvent
  * @returns
  */
-const platformWisePayloadGenerator = (message, isSessionEvent) => {
+const platformWisePayloadGenerator = (message, sessionEvent) => {
   let eventAttributes;
-  let platform = getValueFromMessage(message, "context.os.name");
-  const typeOfEvent = isSessionEvent ? "SESSION" : "EVENT";
+  let platform = getValueFromMessage(message, 'context.os.name');
+  const typeOfEvent = sessionEvent ? 'SESSION' : 'EVENT';
   if (!platform) {
-    throw new CustomError("[Singular] :: Platform name is missing", 400);
+    throw new InstrumentationError('Platform name is missing from context.os.name');
   }
   // checking if the os is one of ios, ipados, watchos, tvos
-  if (typeof platform === "string" && isAppleFamily(platform.toLowerCase())) {
-    message.context.os.name = "iOS";
-    platform = "iOS";
+  if (typeof platform === 'string' && isAppleFamily(platform.toLowerCase())) {
+    message.context.os.name = 'iOS';
+    platform = 'iOS';
   }
   platform = platform.toLowerCase();
   if (!SUPPORTED_PLATFORM[platform]) {
-    throw new CustomError("[Singular] :: Platform is not supported");
+    throw new InstrumentationError(`Platform ${platform} is not supported`);
   }
 
   const payload = constructPayload(
     message,
-    MAPPING_CONFIG[
-      CONFIG_CATEGORIES[`${typeOfEvent}_${SUPPORTED_PLATFORM[platform]}`].name
-    ]
+    MAPPING_CONFIG[CONFIG_CATEGORIES[`${typeOfEvent}_${SUPPORTED_PLATFORM[platform]}`].name],
   );
 
   if (!payload) {
-    throw new CustomError(
-      `Failed to Create ${platform} ${typeOfEvent} Payload`,
-      400
-    );
+    throw new TransformationError(`Failed to Create ${platform} ${typeOfEvent} Payload`);
   }
-  if (isSessionEvent) {
+  if (sessionEvent) {
     // context.device.adTrackingEnabled = true implies Singular's do not track (dnt)
     // to be 0 and vice-versa.
-    let adTrackingEnabled = getValueFromMessage(
-      message,
-      "context.device.adTrackingEnabled"
-    );
+    const adTrackingEnabled = getValueFromMessage(message, 'context.device.adTrackingEnabled');
     if (adTrackingEnabled === true) {
       payload.dnt = 0;
     } else {
       payload.dnt = 1;
     }
     // by default, the value of openuri and install_source should be "", i.e empty string if nothing is passed
-    payload.openuri = message.properties.url || "";
-    if (platform === "android" || platform === "Android") {
-      payload.install_source = message.properties.referring_application || "";
+    payload.openuri = message.properties.url || '';
+    if (platform === 'android' || platform === 'Android') {
+      payload.install_source = message.properties.referring_application || '';
     }
   } else {
     // Custom Attribues is not supported by session events
     eventAttributes = extractExtraFields(
       message,
-      exclusionList[
-        `${SUPPORTED_PLATFORM[platform]}_${typeOfEvent}_EXCLUSION_LIST`
-      ]
+      exclusionList[`${SUPPORTED_PLATFORM[platform]}_${typeOfEvent}_EXCLUSION_LIST`],
     );
     eventAttributes = removeUndefinedAndNullValues(eventAttributes);
 
@@ -167,9 +141,9 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
 
   // Singular maps Connection Type to either wifi or carrier
   if (message.context?.network?.wifi) {
-    payload.c = "wifi";
+    payload.c = 'wifi';
   } else {
-    payload.c = "carrier";
+    payload.c = 'carrier';
   }
   return { payload, eventAttributes };
 };
@@ -177,5 +151,5 @@ const platformWisePayloadGenerator = (message, isSessionEvent) => {
 module.exports = {
   generateRevenuePayloadArray,
   isSessionEvent,
-  platformWisePayloadGenerator
+  platformWisePayloadGenerator,
 };

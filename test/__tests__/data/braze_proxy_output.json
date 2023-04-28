@@ -2,7 +2,7 @@
   {
     "output": {
       "status": 201,
-      "message": "[Braze Response Handler] Request for braze Processed Successfully",
+      "message": "Request for braze Processed Successfully",
       "destinationResponse": {
         "response": { "aliases_processed": 1, "message": "success" },
         "status": 201
@@ -12,7 +12,7 @@
   {
     "output": {
       "status": 201,
-      "message": "[Braze Response Handler] Request for braze Processed Successfully",
+      "message": "Request for braze Processed Successfully",
       "destinationResponse": {
         "response": { "message": "success", "errors": ["minor error message"] },
         "status": 201
@@ -21,8 +21,8 @@
   },
   {
     "output": {
-      "status": 400,
-      "message": "[Braze Response Handler] Request failed for braze with status: 201",
+      "status": 201,
+      "message": "Request failed for braze with status: 201",
       "destinationResponse": {
         "response": {
           "message": "fatal error message",
@@ -32,62 +32,66 @@
       },
       "statTags": {
         "destType": "BRAZE",
-        "scope": "api",
-        "stage": "responseTransform",
-        "meta": "abortable",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
   {
     "output": {
       "status": 201,
-      "message": "[Braze Response Handler] Request for braze Processed Successfully",
+      "message": "Request for braze Processed Successfully",
       "destinationResponse": { "response": "", "status": 201 }
     }
   },
   {
     "output": {
       "status": 500,
-      "message": "[Braze Response Handler] Request failed for braze with status: 500",
+      "message": "Request failed for braze with status: 500",
       "destinationResponse": { "response": "", "status": 500 },
       "statTags": {
         "destType": "BRAZE",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "retryable",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
   {
     "output": {
       "status": 400,
-      "message": "[Braze Response Handler] Request failed for braze with status: 400",
+      "message": "Request failed for braze with status: 400",
       "destinationResponse": {
         "response": "[[ENOTFOUND] :: DNS lookup failed]",
         "status": 400
       },
       "statTags": {
         "destType": "BRAZE",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "abortable",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
   {
     "output": {
       "status": 500,
-      "message": "[Braze Response Handler] Request failed for braze with status: 500",
+      "message": "Request failed for braze with status: 500",
       "destinationResponse": { "response": "", "status": 500 },
       "statTags": {
         "destType": "BRAZE",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "retryable",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   }

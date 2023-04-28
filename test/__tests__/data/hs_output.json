@@ -92,7 +92,7 @@
   ],
   {
     "statusCode": 400,
-    "error": "[HS]:: Identify without email is not supported."
+    "error": "Identify without email is not supported."
   },
   {
     "version": "1",
@@ -530,7 +530,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[HS] Identify:: email i.e a default lookup field for contact lookup not found in traits",
+    "error": "Identify:: email i.e a default lookup field for contact lookup not found in traits",
     "statTags": {
       "destination": "hs",
       "stage": "transform",
@@ -590,7 +590,7 @@
   ],
   {
     "statusCode": 400,
-    "error": "[HS]:: rETL - external Id not found.",
+    "error": "rETL - external Id not found.",
     "statTags": {
       "destination": "hs",
       "stage": "transform",
@@ -624,7 +624,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[HS]:: Access Token not found. Aborting",
+    "error": "Access Token not found. Aborting",
     "statTags": {
       "destination": "hs",
       "stage": "transform",
@@ -633,7 +633,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[HS]:: Hub ID not found. Aborting",
+    "error": "Hub ID not found. Aborting",
     "statTags": {
       "destination": "hs",
       "stage": "transform",
@@ -668,7 +668,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[HS]:: either of email, utk or objectId is required for custom behavioral events",
+    "error": "Either of email, utk or objectId is required for custom behavioral events",
     "statTags": {
       "destination": "hs",
       "stage": "transform",
@@ -708,15 +708,15 @@
   },
   {
     "statusCode": 400,
-    "error": "[HS]:: API Key not found. Aborting"
+    "error": "API Key not found. Aborting"
   },
   {
     "statusCode": 400,
-    "error": "[HS]:: Identify - Invalid traits value for lookup field"
+    "error": "Identify - Invalid traits value for lookup field"
   },
   {
     "statusCode": 400,
-    "error": "[HS]:: 'temp event' event name not found"
+    "error": "'temp event' event name not found"
   },
   {
     "statusCode": 400,
@@ -724,7 +724,7 @@
   },
   {
     "statusCode": 400,
-    "error": "[HS]:: rETL - external Id not found.",
+    "error": "rETL - external Id not found.",
     "statTags": {
       "destination": "hs",
       "stage": "transform",
@@ -756,6 +756,6 @@
     "files": {}
   },
   {
-    "error": "[HS]:: rETL - Error during searching object record. 404 not found"
+    "error": "rETL - Error during searching object record. 404 not found"
   }
 ]

@@ -254,7 +254,7 @@
       }
     },
     "output": {
-      "error": "[ WOOPRA ]:: Message type group not supported."
+      "error": "Message type group is not supported"
     }
   },
   {
@@ -275,7 +275,7 @@
       }
     },
     "output": {
-      "error": "[ WOOPRA ]:: Event Name can not be empty."
+      "error": "Event Name can not be empty"
     }
   }
 ]

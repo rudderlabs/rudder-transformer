@@ -1,26 +1,22 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
-const getPath = file => path.resolve(__dirname, file);
+const getPath = (file) => path.resolve(__dirname, file);
 
-const baseMapping = JSON.parse(
-  fs.readFileSync(getPath("./data/FbAppBasicMapping.json"))
-);
+const baseMapping = JSON.parse(fs.readFileSync(getPath('./data/FbAppBasicMapping.json')));
 
-const eventNameMapping = JSON.parse(
-  fs.readFileSync(getPath("./data/FbAppEventNameMapping.json"))
-);
+const eventNameMapping = JSON.parse(fs.readFileSync(getPath('./data/FbAppEventNameMapping.json')));
 
 const eventPropsMapping = JSON.parse(
-  fs.readFileSync(getPath("./data/FbAppEventPropsMapping.json"))
+  fs.readFileSync(getPath('./data/FbAppEventPropsMapping.json')),
 );
 
 const eventPropsToPathMapping = JSON.parse(
-  fs.readFileSync(getPath("./data/FbAppEventPropPathMapping.json"))
+  fs.readFileSync(getPath('./data/FbAppEventPropPathMapping.json')),
 );
 
 const eventPropToTypeMapping = JSON.parse(
-  fs.readFileSync(getPath("./data/FbAppEventPropToTypeMapping.json"))
+  fs.readFileSync(getPath('./data/FbAppEventPropToTypeMapping.json')),
 );
 
 module.exports = {
@@ -28,5 +24,5 @@ module.exports = {
   eventNameMapping,
   eventPropsMapping,
   eventPropsToPathMapping,
-  eventPropToTypeMapping
+  eventPropToTypeMapping,
 };

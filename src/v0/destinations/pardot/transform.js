@@ -33,9 +33,9 @@
  *
  */
 
-const get = require("get-value");
-const { identifyConfig, DESTINATION } = require("./config");
-const logger = require("../../../logger");
+const get = require('get-value');
+const { identifyConfig, DESTINATION } = require('./config');
+const logger = require('../../../logger');
 const {
   defaultRequestConfig,
   constructPayload,
@@ -44,12 +44,14 @@ const {
   removeUndefinedValues,
   getSuccessRespEvents,
   checkInvalidRtTfEvents,
-  handleRtTfSingleEventError
-} = require("../../util");
-const ErrorBuilder = require("../../util/error");
-
-const { CONFIG_CATEGORIES } = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+  handleRtTfSingleEventError,
+} = require('../../util');
+const { CONFIG_CATEGORIES } = require('./config');
+const {
+  OAuthSecretError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('../../util/errorTypes');
 
 /**
  * Get access token to be bound to the event req headers
@@ -62,14 +64,11 @@ const { TRANSFORMER_METRIC } = require("../../util/constant");
  * @param {Object} metadata
  * @returns
  */
-const getAccessToken = metadata => {
+const getAccessToken = (metadata) => {
   // OAuth for this destination
   const { secret } = metadata;
   if (!secret) {
-    throw new ErrorBuilder()
-      .setMessage("Empty/Invalid access token")
-      .setStatus(500)
-      .build();
+    throw new OAuthSecretError('Empty/Invalid access token');
   }
   return secret.access_token;
 };
@@ -81,15 +80,14 @@ const buildResponse = (payload, url, destination, token) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Bearer ${token}`,
-    "Pardot-Business-Unit-Id": destination.Config.businessUnitId
+    'Pardot-Business-Unit-Id': destination.Config.businessUnitId,
   };
   response.body.FORM = responseBody;
   return response;
 };
 
-const isExtIdNotProperlyDefined = externalId => {
-  return !externalId || (externalId && (!externalId.type || !externalId.id));
-};
+const isExtIdNotProperlyDefined = (externalId) =>
+  !externalId || (externalId && (!externalId.type || !externalId.id));
 
 /**
  * This method provides the url that would be used to send the event to Pardot
@@ -100,27 +98,23 @@ const isExtIdNotProperlyDefined = externalId => {
  * @property {string} email - email sent in the payload
  * @returns {properUrl} - The complete url used for sending event to Pardot
  */
-const getUrl = urlParams => {
+const getUrl = (urlParams) => {
   const { externalId, category, email, nonProperExtId } = urlParams;
   let properUrl = `${category.endPointUpsert}/email/${email}`;
   if (nonProperExtId) {
-    logger.debug(
-      `${DESTINATION}: externalId doesn't exist/invalid datastructure`
-    );
+    logger.debug(`${DESTINATION}: externalId doesn't exist/invalid datastructure`);
     return properUrl;
   }
   // when there is a proper externalId object defined
   switch (externalId.type.toLowerCase()) {
-    case "pardotid":
+    case 'pardotid':
       properUrl = `${category.endPointUpsert}/id/${externalId.id}`;
       break;
-    case "crmfid":
+    case 'crmfid':
       properUrl = `${category.endPointUpsert}/fid/${externalId.id}`;
       break;
     default:
-      logger.debug(
-        `${DESTINATION}: externalId type is different from the ones supported`
-      );
+      logger.debug(`${DESTINATION}: externalId type is different from the ones supported`);
       break;
   }
   return properUrl;
@@ -130,30 +124,20 @@ const processIdentify = ({ message, metadata }, destination, category) => {
   const { campaignId } = destination.Config;
   const accessToken = getAccessToken(metadata);
 
-  let extId = get(message, "context.externalId");
+  let extId = get(message, 'context.externalId');
   extId = extId && extId.length > 0 ? extId[0] : null;
-  const email = getFieldValueFromMessage(message, "email");
+  const email = getFieldValueFromMessage(message, 'email');
 
   const prospectObject = constructPayload(message, identifyConfig);
   const nonProperExtId = isExtIdNotProperlyDefined(extId);
   if (nonProperExtId && !email) {
-    throw new ErrorBuilder()
-      .setStatus(400)
-      .setMessage("Without externalId, email is required")
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-      })
-      .build();
+    throw new InstrumentationError('Without externalId, email is required');
   }
   const url = getUrl({
     nonProperExtId,
     externalId: extId,
     category,
-    email
+    email,
   });
 
   if (!prospectObject.campaign_id) {
@@ -166,86 +150,42 @@ const processIdentify = ({ message, metadata }, destination, category) => {
 const processEvent = (metadata, message, destination) => {
   let response;
   if (!message.type) {
-    throw new ErrorBuilder()
-      .setMessage("Message Type is not present. Aborting message.")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      })
-      .build();
+    throw new InstrumentationError('Event type is required');
   }
   if (!destination.Config.campaignId) {
-    throw new ErrorBuilder()
-      .setMessage("Campaign Id is mandatory")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      })
-      .build();
+    throw new ConfigurationError('Campaign Id is mandatory');
   }
 
   if (!destination.Config.businessUnitId) {
-    throw new ErrorBuilder()
-      .setMessage("Business Unit Id is mandatory")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      })
-      .build();
+    throw new ConfigurationError('Business Unit Id is mandatory');
   }
 
-  if (message.type === "identify") {
+  if (message.type === 'identify') {
     const category = CONFIG_CATEGORIES.IDENTIFY;
 
     response = processIdentify({ message, metadata }, destination, category);
   } else {
-    throw new ErrorBuilder()
-      .setMessage(`${message.type} is not supported in Pardot`)
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      })
-      .build();
+    throw new InstrumentationError(`Event type ${message.type} is not supported`);
   }
   return response;
 };
 
-const process = event => {
-  return processEvent(event.metadata, event.message, event.destination);
-};
+const process = (event) => processEvent(event.metadata, event.message, event.destination);
 
-const processRouterDest = async events => {
-  const errorRespEvents = checkInvalidRtTfEvents(events, DESTINATION);
+const processRouterDest = async (events, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(events);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
 
   const responseList = Promise.all(
-    events.map(event => {
+    events.map((event) => {
       try {
-        return getSuccessRespEvents(
-          process(event),
-          [event.metadata],
-          event.destination
-        );
+        return getSuccessRespEvents(process(event), [event.metadata], event.destination);
       } catch (error) {
-        return handleRtTfSingleEventError(event, error, DESTINATION);
+        return handleRtTfSingleEventError(event, error, reqMetadata);
       }
-    })
+    }),
   );
   return responseList;
 };

@@ -51,7 +51,5 @@
   "https://api.amplitude.com/2/httpapi/test5": {
     "response": {}
   },
-  "https://api.amplitude.com/2/httpapi/test6": {
-    
-  }
+  "https://api.amplitude.com/2/httpapi/test6": {}
 }

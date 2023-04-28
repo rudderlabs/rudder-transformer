@@ -3,6 +3,7 @@
     "output": {
       "status": 401,
       "message": "[Google Ads Offline Conversions]:: Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project. during google_ads_offline_conversions response transformation",
+      "authErrorCategory": "REFRESH_TOKEN",
       "destinationResponse": [
         {
           "error": {
@@ -14,11 +15,12 @@
       ],
       "statTags": {
         "destType": "GOOGLE_ADWORDS_OFFLINE_CONVERSIONS",
-        "stage": "responseTransform",
-        "scope": "exception",
-        "errorAt": "proxy"
-      },
-      "authErrorCategory": "REFRESH_TOKEN"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
     }
   },
   {
@@ -40,6 +42,27 @@
         ],
         "status": 200
       }
+    }
+  },
+  {
+    "output": {
+      "destinationResponse": {
+        "response": [
+          {
+            "adjustmentDateTime": "2021-01-01 12:32:45-08:00",
+            "adjustmentType": "ENHANCEMENT",
+            "conversionAction": "customers/1234567891/conversionActions/874224905",
+            "gclidDateTimePair": {
+              "conversionDateTime": "2021-01-01 12:32:45-08:00",
+              "gclid": "1234"
+            },
+            "orderId": "12345"
+          }
+        ],
+        "status": 200
+      },
+      "message": "[Google Ads Offline Conversions Response Handler] - Request processed successfully",
+      "status": 200
     }
   }
 ]

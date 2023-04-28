@@ -50,10 +50,7 @@
           "userId": "testuserId1",
           "properties": {
             "index": "products",
-            "filters": [
-              "field1:hello",
-              "val1:val2"
-            ]
+            "filters": ["field1:hello", "val1:val2"]
           },
           "integrations": {
             "All": true

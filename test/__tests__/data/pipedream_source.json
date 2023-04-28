@@ -169,35 +169,34 @@
       "type": "identify"
     },
     "output": {
-        "userId": "1",
-        "originalTimestamp": "2020-09-28T19:53:31.900Z",
-        "traits": {
-          "firstName": "Anant",
-          "lastName": "jain",
-          "email": "anant@r.com",
-          "hasPurchased": "yes",
-          "address": {
-            "Home": {
-              "city": "iudcb"
-            },
-            "Office": {
-              "abc": "jbc"
-            }
+      "userId": "1",
+      "originalTimestamp": "2020-09-28T19:53:31.900Z",
+      "traits": {
+        "firstName": "Anant",
+        "lastName": "jain",
+        "email": "anant@r.com",
+        "hasPurchased": "yes",
+        "address": {
+          "Home": {
+            "city": "iudcb"
           },
-          "state": "Delhi",
-          "title": "Mr"
+          "Office": {
+            "abc": "jbc"
+          }
         },
-        "timestamp": "2020-09-29T14:50:29.907+05:30",
-        "type": "identify"
-      }
+        "state": "Delhi",
+        "title": "Mr"
+      },
+      "timestamp": "2020-09-29T14:50:29.907+05:30",
+      "type": "identify"
+    }
   },
   {
     "description": "Group type  -> type and userId is given",
-    "input":{
+    "input": {
       "userId": "user123",
       "groupId": "17",
-      "context": {
-      },
+      "context": {},
       "traits": {
         "operation": "add"
       },
@@ -206,8 +205,7 @@
     "output": {
       "userId": "user123",
       "groupId": "17",
-      "context": {
-      },
+      "context": {},
       "traits": {
         "operation": "add"
       },
@@ -216,7 +214,7 @@
   },
   {
     "description": "Page type  -> type and userId is given",
-    "input":{
+    "input": {
       "anonymousId": "21e13f4bc7ceddad",
       "channel": "mobile",
       "context": {

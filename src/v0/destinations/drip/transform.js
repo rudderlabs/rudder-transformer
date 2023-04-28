@@ -1,19 +1,18 @@
-const { EventType } = require("../../../constants");
+const { EventType } = require('../../../constants');
 const {
   getDestinationExternalID,
   getFieldValueFromMessage,
   constructPayload,
   extractCustomFields,
   isEmptyObject,
-  CustomError,
   removeUndefinedAndNullValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
   getValueFromMessage,
   isObject,
-  simpleProcessRouterDest
-} = require("../../util");
-const logger = require("../../../logger");
+  simpleProcessRouterDest,
+} = require('../../util');
+const logger = require('../../../logger');
 const {
   ENDPOINT,
   identifyMapping,
@@ -23,35 +22,39 @@ const {
   TRACKING_EXLCUSION_FIELDS,
   ecomEvents,
   ecomMapping,
-  eventNameMapping
-} = require("./config");
+  eventNameMapping,
+} = require('./config');
 const {
   userExists,
   isValidEmail,
   isValidTimestamp,
   createUpdateUser,
-  createList
-} = require("./util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+  createList,
+} = require('./util');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  NetworkInstrumentationError,
+} = require('../../util/errorTypes');
 
 const identifyResponseBuilder = async (message, { Config }) => {
-  const id = getDestinationExternalID(message, "dripId");
+  const id = getDestinationExternalID(message, 'dripId');
 
-  let email = getFieldValueFromMessage(message, "email");
+  let email = getFieldValueFromMessage(message, 'email');
   if (!isValidEmail(email)) {
     email = null;
-    logger.error("Email format is incorrect");
+    logger.error('Email format is incorrect');
   }
 
-  const userId = getFieldValueFromMessage(message, "userId");
+  const userId = getFieldValueFromMessage(message, 'userId');
   if (!(id || email)) {
-    throw new CustomError("dripId or email is required for the call", 400);
+    throw new InstrumentationError('dripId or email is required for the call');
   }
 
   let payload = constructPayload(message, identifyMapping);
   if (payload.address1 && isObject(payload.address1)) {
-    let addressString = "";
-    Object.keys(payload.address1).forEach(key => {
+    let addressString = '';
+    Object.keys(payload.address1).forEach((key) => {
       addressString = addressString.concat(` ${payload.address1[key]}`);
     });
     payload.address1 = addressString.trim();
@@ -62,9 +65,9 @@ const identifyResponseBuilder = async (message, { Config }) => {
   payload.user_id = userId;
 
   if (!payload.first_name && !payload.last_name) {
-    const name = getFieldValueFromMessage(message, "name");
-    if (name && typeof name === "string") {
-      const [fname, lname] = name.trim().split(" ");
+    const name = getFieldValueFromMessage(message, 'name');
+    if (name && typeof name === 'string') {
+      const [fname, lname] = name.trim().split(' ');
       payload.first_name = fname;
       payload.last_name = lname;
     }
@@ -74,8 +77,8 @@ const identifyResponseBuilder = async (message, { Config }) => {
     customFields = extractCustomFields(
       message,
       customFields,
-      ["traits", "context.traits"],
-      IDENTIFY_EXCLUSION_FIELDS
+      ['traits', 'context.traits'],
+      IDENTIFY_EXCLUSION_FIELDS,
     );
     if (!isEmptyObject(customFields)) {
       payload.custom_fields = customFields;
@@ -84,21 +87,20 @@ const identifyResponseBuilder = async (message, { Config }) => {
 
   payload = removeUndefinedAndNullValues(payload);
   const finalpayload = {
-    subscribers: [payload]
+    subscribers: [payload],
   };
-  const basicAuth = Buffer.from(Config.apiKey).toString("base64");
+  const basicAuth = Buffer.from(Config.apiKey).toString('base64');
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
   response.method = defaultPostRequestConfig.requestMethod;
-  const campaignId =
-    getDestinationExternalID(message, "dripCampaignId") || Config.campaignId;
+  const campaignId = getDestinationExternalID(message, 'dripCampaignId') || Config.campaignId;
   if (campaignId && email) {
     const check = await createUpdateUser(finalpayload, Config, basicAuth);
     if (!check) {
-      throw new CustomError("Unable to create/update user.", 400);
+      throw new NetworkInstrumentationError('Unable to create/update user.');
     }
 
     let campaignPayload = constructPayload(message, campaignMapping);
@@ -106,7 +108,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
 
     campaignPayload = removeUndefinedAndNullValues(campaignPayload);
     const finalCampaignPayload = {
-      subscribers: [campaignPayload]
+      subscribers: [campaignPayload],
     };
 
     response.endpoint = `${ENDPOINT}/v2/${Config.accountId}/campaigns/${campaignId}/subscribers`;
@@ -119,33 +121,32 @@ const identifyResponseBuilder = async (message, { Config }) => {
 };
 
 const trackResponseBuilder = async (message, { Config }) => {
-  const id = getDestinationExternalID(message, "dripId");
+  const id = getDestinationExternalID(message, 'dripId');
 
   let email = getValueFromMessage(message, [
-    "properties.email",
-    "traits.email",
-    "context.traits.email"
+    'properties.email',
+    'traits.email',
+    'context.traits.email',
   ]);
   if (!isValidEmail(email)) {
     email = null;
-    logger.error("Enter correct email format.");
+    logger.error('Enter correct email format.');
   }
   if (!id && !email) {
-    throw new CustomError("Drip Id or email is required.", 400);
+    throw new InstrumentationError('Drip Id or email is required.');
   }
 
-  let event = getValueFromMessage(message, "event");
+  let event = getValueFromMessage(message, 'event');
   if (!event) {
-    throw new CustomError("Event name is required", 400);
+    throw new InstrumentationError('Event name is required');
   }
   event = event.trim().toLowerCase();
 
   if (!Config.enableUserCreation && !id) {
     const check = await userExists(Config, email);
     if (!check) {
-      throw new CustomError(
-        "User creation mode is disabled and user does not exist. Track call aborted.",
-        400
+      throw new NetworkInstrumentationError(
+        'User creation mode is disabled and user does not exist. Track call aborted.',
       );
     }
   }
@@ -156,9 +157,9 @@ const trackResponseBuilder = async (message, { Config }) => {
 
     if (payload.occurred_at && !isValidTimestamp(payload.occurred_at)) {
       payload.occurred_at = null;
-      logger.error("Timestamp format must be ISO-8601.");
+      logger.error('Timestamp format must be ISO-8601.');
     }
-    const productList = getValueFromMessage(message, "properties.products");
+    const productList = getValueFromMessage(message, 'properties.products');
     if (productList) {
       const itemList = createList(productList);
       if (itemList && itemList.length > 0) {
@@ -166,11 +167,11 @@ const trackResponseBuilder = async (message, { Config }) => {
       }
     }
     payload.action = eventNameMapping[event];
-    const basicAuth = Buffer.from(Config.apiKey).toString("base64");
+    const basicAuth = Buffer.from(Config.apiKey).toString('base64');
     const response = defaultRequestConfig();
     response.headers = {
       Authorization: `Basic ${basicAuth}`,
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json',
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.endpoint = `${ENDPOINT}/v3/${Config.accountId}/shopper_activity/order`;
@@ -184,7 +185,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   payload.email = email;
   if (payload.occurred_at && !isValidTimestamp(payload.occurred_at)) {
     payload.occurred_at = null;
-    logger.error("Timestamp format must be ISO-8601.");
+    logger.error('Timestamp format must be ISO-8601.');
   }
 
   if (!payload.properties) {
@@ -192,25 +193,25 @@ const trackResponseBuilder = async (message, { Config }) => {
     properties = extractCustomFields(
       message,
       properties,
-      ["properties"],
-      TRACKING_EXLCUSION_FIELDS
+      ['properties'],
+      TRACKING_EXLCUSION_FIELDS,
     );
     if (!isEmptyObject(properties)) {
       payload = {
         ...payload,
-        properties
+        properties,
       };
     }
   }
   payload = removeUndefinedAndNullValues(payload);
   const finalpayload = {
-    events: [payload]
+    events: [payload],
   };
-  const basicAuth = Buffer.from(Config.apiKey).toString("base64");
+  const basicAuth = Buffer.from(Config.apiKey).toString('base64');
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `${ENDPOINT}/v2/${Config.accountId}/events`;
@@ -218,19 +219,16 @@ const trackResponseBuilder = async (message, { Config }) => {
   return response;
 };
 
-const process = async event => {
+const process = async (event) => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
   if (!destination.Config.accountId) {
-    throw new CustomError("Invalid Account Id. Aborting message.", 400);
+    throw new ConfigurationError('Invalid Account Id. Aborting message.');
   }
   if (!destination.Config.apiKey) {
-    throw new CustomError("Inavalid API Key. Aborting message.", 400);
+    throw new ConfigurationError('Inavalid API Key. Aborting message.');
   }
 
   const messageType = message.type.toLowerCase();
@@ -244,13 +242,13 @@ const process = async event => {
       response = await trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
   return response;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "DRIP", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

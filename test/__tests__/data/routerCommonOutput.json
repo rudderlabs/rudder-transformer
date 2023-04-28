@@ -1,9 +1,9 @@
 [
-    {
-        "metadata": null,
-        "batched": false,
-        "statusCode": 400,
-        "error": "Invalid event array",
-        "statTags": "undefined"
-    }
+  {
+    "metadata": null,
+    "batched": false,
+    "statusCode": 400,
+    "error": "Invalid event array",
+    "statTags": "undefined"
+  }
 ]

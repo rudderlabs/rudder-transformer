@@ -12,7 +12,7 @@
     "error": "Any 400 error"
   },
   {
-    "statusCode": 500,
+    "statusCode": 400,
     "error": "Any 500 error"
   }
 ]

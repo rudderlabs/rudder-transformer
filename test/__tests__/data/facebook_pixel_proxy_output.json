@@ -1,8 +1,8 @@
 [
   {
     "output": {
-      "status": 500,
-      "message": "Facebook Pixel: Failed with The access token could not be decrypted during response transformation",
+      "status": 400,
+      "message": "Failed with The access token could not be decrypted during response transformation",
       "destinationResponse": {
         "error": {
           "message": "The access token could not be decrypted",
@@ -13,18 +13,19 @@
         "status": 500
       },
       "statTags": {
-        "errorAt": "proxy",
         "destType": "FACEBOOK_PIXEL",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "retryable"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
   {
     "output": {
       "status": 200,
-      "message": "[Facebook_pixel Response Handler] - Request Processed Successfully",
+      "message": "Request Processed Successfully",
       "destinationResponse": {
         "events_received": 1,
         "fbtrace_id": "facebook_trace_id"
@@ -34,7 +35,7 @@
   {
     "output": {
       "status": 400,
-      "message": "Facebook Pixel: Failed with Invalid parameter during response transformation",
+      "message": "Failed with Invalid parameter during response transformation",
       "destinationResponse": {
         "error": {
           "message": "Invalid parameter",
@@ -49,18 +50,19 @@
         "status": 400
       },
       "statTags": {
-        "errorAt": "proxy",
         "destType": "FACEBOOK_PIXEL",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "abortable"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
   {
     "output": {
       "status": 429,
-      "message": "Facebook Pixel: Failed with User request limit reached during response transformation",
+      "message": "Failed with User request limit reached during response transformation",
       "destinationResponse": {
         "error": {
           "message": "User request limit reached",
@@ -71,18 +73,19 @@
         "status": 500
       },
       "statTags": {
-        "errorAt": "proxy",
         "destType": "FACEBOOK_PIXEL",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "throttled"
+        "errorCategory": "network",
+        "errorType": "throttled",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
   {
     "output": {
       "status": 400,
-      "message": "Facebook Pixel: Failed with Unsupported post request. Object with ID '1234567891234569' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api during response transformation",
+      "message": "Failed with Unsupported post request. Object with ID '1234567891234569' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api during response transformation",
       "destinationResponse": {
         "error": {
           "message": "Unsupported post request. Object with ID '1234567891234569' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api",
@@ -94,11 +97,12 @@
         "status": 400
       },
       "statTags": {
-        "errorAt": "proxy",
         "destType": "FACEBOOK_PIXEL",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "abortable"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   }

@@ -117,5 +117,38 @@
       "Name": "zendesk",
       "Transformations": []
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiToken": "yPJwcLTFSsvIkFhY23SzittHoYADJQ7eKDoxNu4x",
+        "createUsersAsVerified": true,
+        "domain": "rudderlabtest2",
+        "email": "rudderlabtest2@email.com",
+        "removeUsersFromOrganization": false,
+        "sendGroupCallsWithoutUserId": false
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Zendesk",
+        "ID": "1YknZ1ENqB8UurJQJE2VrEA61tr",
+        "Name": "ZENDESK"
+      },
+      "Enabled": true,
+      "ID": "1Z3zFXE6zwvNJBVOUzCuJxeO51P",
+      "Name": "zendesk",
+      "Transformations": []
+    },
+    "batched": false,
+    "error": "Failed to fetch user with email: testemail2@email due to Couldn't find user: John Wick",
+    "metadata": [
+      {
+        "jobId": 3
+      }
+    ],
+    "statTags": {
+      "errorCategory": "network",
+      "errorType": "aborted"
+    },
+    "statusCode": 400
   }
 ]

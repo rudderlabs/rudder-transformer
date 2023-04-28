@@ -1,7 +1,7 @@
 const {
   trackPostMapper,
   identifyPostMapper
-} = require("../../../src/cdk/autopilot/transform");
+} = require("../../../src/cdk/v1/autopilot/transform");
 
 describe("Unit Test for track postMapper", () => {
   it("should update the rudderContext with correct endpoint", () => {

@@ -129,7 +129,7 @@
       }
     },
     "statusCode": 400,
-    "error": "[Google_adwords_remarketing_list]:: Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message.",
+    "error": "Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message.",
     "statTags": {
       "destination": "google_adwords_remarketing_lists",
       "stage": "transform",
@@ -143,7 +143,7 @@
       }
     },
     "statusCode": 400,
-    "error": "[Google_adwords_remarketing_list]:: Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message.",
+    "error": "Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message.",
     "statTags": {
       "destination": "google_adwords_remarketing_lists",
       "stage": "transform",
@@ -157,7 +157,7 @@
       }
     },
     "statusCode": 400,
-    "error": "[Google_adwords_remarketing_list]::Message Type is not present. Aborting message.",
+    "error": "Message Type is not present. Aborting message.",
     "statTags": {
       "destination": "google_adwords_remarketing_lists",
       "stage": "transform",
@@ -171,7 +171,7 @@
       }
     },
     "statusCode": 400,
-    "error": "[Google_adwords_remarketing_list]::listData is not present inside properties. Aborting message.",
+    "error": "listData is not present inside properties. Aborting message.",
     "statTags": {
       "destination": "google_adwords_remarketing_lists",
       "stage": "transform",
@@ -185,7 +185,7 @@
       }
     },
     "statusCode": 400,
-    "error": "[Google_adwords_remarketing_list]:: loginCustomerId is required as subAccount is true.",
+    "error": "loginCustomerId is required as subAccount is true.",
     "statTags": {
       "destination": "google_adwords_remarketing_lists",
       "stage": "transform",
@@ -3446,7 +3446,7 @@
       }
     },
     "statusCode": 400,
-    "error": "[Google_adwords_remarketing_list]:: Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message.",
+    "error": "Neither 'add' nor 'remove' property is present inside 'listData' or there are no attributes inside 'add' or 'remove' properties matching with the schema fields. Aborting message.",
     "statTags": {
       "destination": "google_adwords_remarketing_lists",
       "stage": "transform",

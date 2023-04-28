@@ -1,184 +1,10 @@
 [
   {
-      "description": "No Message type",
-      "input": {
-        "message":{
-          "userId": "user 1",
-          "anonymousId": "anon-id-new",
-          "event": "event1",
-          "properties": {
-            "listData": {
-              "add": [
-                {
-                  "EMAIL": "shrouti@abc.com",
-                  "DOBM": "2",
-                  "DOBD": "13",
-                  "DOBY": "2013",
-                  "PHONE": "@09432457768",
-                  "GEN": "f",
-                  "FI": "Ms.",
-                  "MADID": "ABC",
-                  "ZIP": "ZIP ",
-                  "ST": "123abc ",
-                  "COUNTRY": "IN"
-                }
-              ],
-              "remove": [
-                {
-                  "EMAIL": "shrouti@abc.com",
-                  "DOBM": "2",
-                  "DOBD": "13",
-                  "DOBY": "2013",
-                  "PHONE": "@09432457768",
-                  "GEN": "f",
-                  "FI": "Ms.",
-                  "MADID": "ABC",
-                  "ZIP": "ZIP ",
-                  "ST": "123abc ",
-                  "COUNTRY": "IN"
-                }
-              ]
-            }
-          },
-          "context": {
-            "ip": "14.5.67.21",
-            "library": {
-              "name": "http"
-            }
-          },
-          "timestamp": "2020-02-02T00:23:09.544Z"
-        },
-        "destination": {
-          "Config": {
-            "accessToken": "ABC",
-            "userSchema": [
-              "EMAIL",
-              "DOBM",
-              "DOBD",
-              "DOBY",
-              "PHONE",
-              "GEN",
-              "FI",
-              "MADID",
-              "ZIP",
-              "ST",
-              "COUNTRY"
-            ],
-            "isHashRequired": false,
-            "disableFormat": false,
-            "audienceId": "aud1",
-            "isRaw": true,
-            "type": "UNKNOWN",
-            "subType": "ANYTHING",
-            "maxUserCount": "50"
-          },
-          "Enabled": true,
-          "Transformations": [],
-          "IsProcessorEnabled": true
-        },
-        "libraries": [],
-        "request": {
-          "query": {}
-        }
-      },
-      "output": {
-          "error": "Message Type is not present. Aborting message."
-        }
-  },
-  {
-      "description": "Unsupported Event type ",
-      "input": {
-        "message":{
-          "userId": "user 1",
-          "anonymousId": "anon-id-new",
-          "type":"Track",
-          "event": "event1",
-          "properties": {
-            "listData": {
-              "add": [
-                {
-                  "EMAIL": "shrouti@abc.com",
-                  "DOBM": "2",
-                  "DOBD": "13",
-                  "DOBY": "2013",
-                  "PHONE": "@09432457768",
-                  "GEN": "f",
-                  "FI": "Ms.",
-                  "MADID": "ABC",
-                  "ZIP": "ZIP ",
-                  "ST": "123abc ",
-                  "COUNTRY": "IN"
-                }
-              ],
-              "remove": [
-                {
-                  "EMAIL": "shrouti@abc.com",
-                  "DOBM": "2",
-                  "DOBD": "13",
-                  "DOBY": "2013",
-                  "PHONE": "@09432457768",
-                  "GEN": "f",
-                  "FI": "Ms.",
-                  "MADID": "ABC",
-                  "ZIP": "ZIP ",
-                  "ST": "123abc ",
-                  "COUNTRY": "IN"
-                }
-              ]
-            }
-          },
-          "context": {
-            "ip": "14.5.67.21",
-            "library": {
-              "name": "http"
-            }
-          },
-          "timestamp": "2020-02-02T00:23:09.544Z"
-        }, 
-        "destination": {
-          "Config": {
-            "accessToken": "ABC",
-            "userSchema": [
-              "EMAIL",
-              "DOBM",
-              "DOBD",
-              "DOBY",
-              "PHONE",
-              "GEN",
-              "FI",
-              "MADID",
-              "ZIP",
-              "ST",
-              "COUNTRY"
-            ],
-            "isHashRequired": false,
-            "disableFormat": false,
-            "audienceId": "aud1",
-            "isRaw": true,
-            "type": "UNKNOWN",
-            "subType": "ANYTHING",
-            "maxUserCount": "50"
-          },
-          "Enabled": true,
-          "Transformations": [],
-          "IsProcessorEnabled": true
-        },
-        "libraries": [],
-        "request": {
-          "query": {}
-        }
-      },
-      "output": {
-          "error": " Track call is not supported "
-        }
-  },
-  {
-    "description": "Non-Numerical Batch Size Event",
+    "description": "No Message type",
     "input": {
-      "message":{
+      "message": {
         "userId": "user 1",
         "anonymousId": "anon-id-new",
-        "type":"audiencelist",
         "event": "event1",
         "properties": {
           "listData": {
@@ -221,7 +47,181 @@
           }
         },
         "timestamp": "2020-02-02T00:23:09.544Z"
-      }, 
+      },
+      "destination": {
+        "Config": {
+          "accessToken": "ABC",
+          "userSchema": [
+            "EMAIL",
+            "DOBM",
+            "DOBD",
+            "DOBY",
+            "PHONE",
+            "GEN",
+            "FI",
+            "MADID",
+            "ZIP",
+            "ST",
+            "COUNTRY"
+          ],
+          "isHashRequired": false,
+          "disableFormat": false,
+          "audienceId": "aud1",
+          "isRaw": true,
+          "type": "UNKNOWN",
+          "subType": "ANYTHING",
+          "maxUserCount": "50"
+        },
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
+      },
+      "libraries": [],
+      "request": {
+        "query": {}
+      }
+    },
+    "output": {
+      "error": "Message Type is not present. Aborting message."
+    }
+  },
+  {
+    "description": "Unsupported Event type ",
+    "input": {
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "type": "Track",
+        "event": "event1",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "EMAIL": "shrouti@abc.com",
+                "DOBM": "2",
+                "DOBD": "13",
+                "DOBY": "2013",
+                "PHONE": "@09432457768",
+                "GEN": "f",
+                "FI": "Ms.",
+                "MADID": "ABC",
+                "ZIP": "ZIP ",
+                "ST": "123abc ",
+                "COUNTRY": "IN"
+              }
+            ],
+            "remove": [
+              {
+                "EMAIL": "shrouti@abc.com",
+                "DOBM": "2",
+                "DOBD": "13",
+                "DOBY": "2013",
+                "PHONE": "@09432457768",
+                "GEN": "f",
+                "FI": "Ms.",
+                "MADID": "ABC",
+                "ZIP": "ZIP ",
+                "ST": "123abc ",
+                "COUNTRY": "IN"
+              }
+            ]
+          }
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      },
+      "destination": {
+        "Config": {
+          "accessToken": "ABC",
+          "userSchema": [
+            "EMAIL",
+            "DOBM",
+            "DOBD",
+            "DOBY",
+            "PHONE",
+            "GEN",
+            "FI",
+            "MADID",
+            "ZIP",
+            "ST",
+            "COUNTRY"
+          ],
+          "isHashRequired": false,
+          "disableFormat": false,
+          "audienceId": "aud1",
+          "isRaw": true,
+          "type": "UNKNOWN",
+          "subType": "ANYTHING",
+          "maxUserCount": "50"
+        },
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
+      },
+      "libraries": [],
+      "request": {
+        "query": {}
+      }
+    },
+    "output": {
+      "error": " Track call is not supported "
+    }
+  },
+  {
+    "description": "Non-Numerical Batch Size Event",
+    "input": {
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "type": "audiencelist",
+        "event": "event1",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "EMAIL": "shrouti@abc.com",
+                "DOBM": "2",
+                "DOBD": "13",
+                "DOBY": "2013",
+                "PHONE": "@09432457768",
+                "GEN": "f",
+                "FI": "Ms.",
+                "MADID": "ABC",
+                "ZIP": "ZIP ",
+                "ST": "123abc ",
+                "COUNTRY": "IN"
+              }
+            ],
+            "remove": [
+              {
+                "EMAIL": "shrouti@abc.com",
+                "DOBM": "2",
+                "DOBD": "13",
+                "DOBY": "2013",
+                "PHONE": "@09432457768",
+                "GEN": "f",
+                "FI": "Ms.",
+                "MADID": "ABC",
+                "ZIP": "ZIP ",
+                "ST": "123abc ",
+                "COUNTRY": "IN"
+              }
+            ]
+          }
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      },
       "destination": {
         "Config": {
           "accessToken": "ABC",
@@ -256,16 +256,16 @@
       }
     },
     "output": {
-        "error": "Batch size must be an Integer."
-      }
-},
-{
+      "error": "Batch size must be an Integer."
+    }
+  },
+  {
     "description": "Audience ID Empty Event",
     "input": {
-      "message":{
+      "message": {
         "userId": "user 1",
         "anonymousId": "anon-id-new",
-        "type":"audiencelist",
+        "type": "audiencelist",
         "event": "event1",
         "properties": {
           "listData": {
@@ -343,10 +343,10 @@
       }
     },
     "output": {
-        "error": "Audience ID is a mandatory field"
-      }
-},
-{
+      "error": "Audience ID is a mandatory field"
+    }
+  },
+  {
     "description": "Type NA ",
     "input": {
       "message": {
@@ -534,7 +534,7 @@
       }
     ]
   },
-  
+
   {
     "description": "No Hashing and Format Disabled",
     "input": {
@@ -849,7 +849,7 @@
       }
     ]
   },
-{
+  {
     "description": "Hashing Disabaled and Type Unknown ",
     "input": {
       "message": {

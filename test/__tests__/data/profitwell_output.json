@@ -5,7 +5,7 @@
   },
   {
     "statusCode": 400,
-    "error": "no user found for profitwell user_id"
+    "error": "No user found for profitwell user_id"
   },
   {
     "version": "1",
@@ -41,7 +41,7 @@
   },
   {
     "statusCode": 400,
-    "error": "no user found for profitwell user_id"
+    "error": "No user found for profitwell user_id"
   },
   {
     "version": "1",
@@ -133,7 +133,7 @@
   },
   {
     "statusCode": 400,
-    "error": "profitwell subscription_id not found"
+    "error": "Profitwell subscription_id not found"
   },
   {
     "version": "1",

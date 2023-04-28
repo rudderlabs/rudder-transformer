@@ -1,6 +1,6 @@
-const { getMappingConfig } = require("../../util");
+const { getMappingConfig } = require('../../util');
 
-const BASE_ENDPOINT = "https://api.hubapi.com";
+const BASE_ENDPOINT = 'https://api.hubapi.com';
 
 // For fetching properties from HubSpot
 const CONTACT_PROPERTY_MAP_ENDPOINT = `${BASE_ENDPOINT}/properties/v1/contacts/properties`;
@@ -21,7 +21,7 @@ const MAX_BATCH_SIZE = 1000;
 
 // Track
 // Ref - https://legacydocs.hubspot.com/docs/methods/enterprise_events/http_api
-const TRACK_ENDPOINT = "https://track.hubspot.com/v1/event";
+const TRACK_ENDPOINT = 'https://track.hubspot.com/v1/event';
 
 /*
  * NEW API
@@ -60,24 +60,24 @@ const MAX_BATCH_SIZE_CRM_OBJECT = 100;
 const SEARCH_LIMIT_VALUE = 100;
 // API version (value) is taken from the webapp
 const API_VERSION = {
-  v1: "legacyApi",
-  v3: "newApi"
+  v1: 'legacyApi',
+  v3: 'newApi',
 };
 
 const ConfigCategory = {
   COMMON: {
-    name: "HSCommonConfig"
+    name: 'HSCommonConfig',
   },
   TRACK: {
-    name: "HSTrackConfig"
+    name: 'HSTrackConfig',
   },
   TRACK_PROPERTIES: {
-    name: "HSTrackPropertiesConfig"
-  }
+    name: 'HSTrackPropertiesConfig',
+  },
 };
 
-const RETL_CREATE_ASSOCIATION_OPERATION = "createAssociation";
-const RETL_SOURCE = "rETL";
+const RETL_CREATE_ASSOCIATION_OPERATION = 'createAssociation';
+const RETL_SOURCE = 'rETL';
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 const hsCommonConfigJson = mappingConfig[ConfigCategory.COMMON.name];
@@ -109,5 +109,5 @@ module.exports = {
   SEARCH_LIMIT_VALUE,
   RETL_SOURCE,
   RETL_CREATE_ASSOCIATION_OPERATION,
-  DESTINATION: "HS"
+  DESTINATION: 'HS',
 };

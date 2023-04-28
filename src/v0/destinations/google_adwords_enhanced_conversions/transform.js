@@ -1,17 +1,22 @@
 /* eslint-disable no-param-reassign */
 
-const get = require("get-value");
-const { cloneDeep } = require("lodash");
+const get = require('get-value');
+const { cloneDeep } = require('lodash');
 const {
   constructPayload,
   defaultRequestConfig,
   getValueFromMessage,
   removeHyphens,
-  simpleProcessRouterDest
-} = require("../../util");
-const ErrorBuilder = require("../../util/error");
+  simpleProcessRouterDest,
+} = require('../../util');
 
-const { trackMapping, BASE_ENDPOINT } = require("./config");
+const {
+  InstrumentationError,
+  ConfigurationError,
+  OAuthSecretError,
+} = require('../../util/errorTypes');
+
+const { trackMapping, BASE_ENDPOINT } = require('./config');
 
 /**
  * This function is helping to update the mappingJson.
@@ -19,13 +24,11 @@ const { trackMapping, BASE_ENDPOINT } = require("./config");
  * @param {} mapping -> it is the configMapping.json
  * @returns
  */
-const updateMappingJson = mapping => {
+const updateMappingJson = (mapping) => {
   const newMapping = [];
-  mapping.forEach(element => {
-    if (get(element, "metadata.type")) {
-      if (element.metadata.type === "hashToSha256") {
-        element.metadata.type = "toString";
-      }
+  mapping.forEach((element) => {
+    if (get(element, 'metadata.type') && element.metadata.type === 'hashToSha256') {
+      element.metadata.type = 'toString';
     }
     newMapping.push(element);
   });
@@ -43,15 +46,12 @@ const updateMappingJson = mapping => {
  * @param {Object} metadata
  * @returns
  */
-const getAccessToken = metadata => {
+const getAccessToken = (metadata) => {
   // OAuth for this destination
   const { secret } = metadata;
   // we would need to verify if secret is present and also if the access token field is present in secret
   if (!secret || !secret.access_token) {
-    throw new ErrorBuilder()
-      .setMessage("Empty/Invalid access token")
-      .setStatus(500)
-      .build();
+    throw new OAuthSecretError('Empty/Invalid access token');
   }
   return secret.access_token;
 };
@@ -65,21 +65,16 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   const accessToken = getAccessToken(metadata);
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
-    "Content-Type": "application/json",
-    "developer-token": getValueFromMessage(metadata, "secret.developer_token")
+    'Content-Type': 'application/json',
+    'developer-token': getValueFromMessage(metadata, 'secret.developer_token'),
   };
   response.params = { event, customerId: filteredCustomerId };
   if (Config.subAccount)
     if (Config.loginCustomerId) {
       const filteredLoginCustomerId = removeHyphens(Config.loginCustomerId);
-      response.headers["login-customer-id"] = filteredLoginCustomerId;
-    } else
-      throw new ErrorBuilder()
-        .setMessage(
-          `[Google_adwords_enhanced_conversions]:: loginCustomerId is required as subAccount is true.`
-        )
-        .setStatus(400)
-        .build();
+      response.headers['login-customer-id'] = filteredLoginCustomerId;
+    } else throw new ConfigurationError(`LoginCustomerId is required as subAccount is true.`);
+
   return response;
 };
 
@@ -88,49 +83,33 @@ const processTrackEvent = async (metadata, message, destination) => {
   const { Config } = destination;
   const { event } = message;
   const { listOfConversions } = Config;
-  if (listOfConversions.some(i => i.conversions === event)) {
+  if (listOfConversions.some((i) => i.conversions === event)) {
     flag = 1;
   }
-  if (event === undefined || event === "" || flag === 0) {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Google_adwords_enhanced_conversions]:: Conversion named ${event} is not exist in rudderstack dashboard`
-      )
-      .setStatus(400)
-      .build();
+  if (event === undefined || event === '' || flag === 0) {
+    throw new ConfigurationError(
+      `Conversion named "${event}" was not specified in the RudderStack destination configuration`,
+    );
   }
-  const { requireHash } = destination.Config;
+  const { requireHash } = Config;
   let updatedMapping = cloneDeep(trackMapping);
 
   if (requireHash === false) {
     updatedMapping = updateMappingJson(updatedMapping);
   }
 
-  let payload;
-  try {
-    payload = constructPayload(message, updatedMapping);
-  } catch (e) {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Google_adwords_enhanced_conversions]::${e.message} for ${event} event.`
-      )
-      .setStatus(400)
-      .build();
-  }
+  const payload = constructPayload(message, updatedMapping);
 
   payload.partialFailure = true;
-  if (!payload.conversionAdjustments[0].userIdentifiers) {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Google_adwords_enhanced_conversions]:: Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`
-      )
-      .setStatus(400)
-      .build();
+  if (!payload.conversionAdjustments[0]?.userIdentifiers) {
+    throw new InstrumentationError(
+      `Any of email, phone, firstName, lastName, city, street, countryCode, postalCode or streetAddress is required in traits.`,
+    );
   }
-  payload.conversionAdjustments[0].adjustmentType = "ENHANCEMENT";
+  payload.conversionAdjustments[0].adjustmentType = 'ENHANCEMENT';
   // Removing the null values from userIdentifier
   const arr = payload.conversionAdjustments[0].userIdentifiers;
-  payload.conversionAdjustments[0].userIdentifiers = arr.filter(item => {
+  payload.conversionAdjustments[0].userIdentifiers = arr.filter((item) => {
     if (item) return true;
     return false;
   });
@@ -140,34 +119,19 @@ const processTrackEvent = async (metadata, message, destination) => {
 const processEvent = async (metadata, message, destination) => {
   const { type } = message;
   if (!type) {
-    throw new ErrorBuilder()
-      .setMessage(
-        "[Google_adwords_enhanced_conversions]::Invalid payload. Message Type is not present"
-      )
-      .setStatus(400)
-      .build();
+    throw new InstrumentationError('Invalid payload. Message Type is not present');
   }
-  if (type.toLowerCase() !== "track") {
-    throw new ErrorBuilder()
-      .setMessage(
-        `[Google_adwords_enhanced_conversions]::Message Type ${type} is not supported. Aborting message.`
-      )
-      .setStatus(400)
-      .build();
+  if (type.toLowerCase() !== 'track') {
+    throw new InstrumentationError(`Message Type ${type} is not supported. Aborting message.`);
   } else {
     return processTrackEvent(metadata, message, destination);
   }
 };
 
-const process = async event => {
-  return processEvent(event.metadata, event.message, event.destination);
-};
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(
-    inputs,
-    "Google_adwords_enhanced_conversions",
-    process
-  );
+const process = async (event) => processEvent(event.metadata, event.message, event.destination);
+
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

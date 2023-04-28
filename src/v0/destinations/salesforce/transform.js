@@ -1,14 +1,13 @@
-const get = require("get-value");
-const cloneDeep = require("lodash/cloneDeep");
-const { EventType, MappedToDestinationKey } = require("../../../constants");
+const get = require('get-value');
+const cloneDeep = require('lodash/cloneDeep');
+const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   SF_API_VERSION,
   identifyLeadMappingJson,
   identifyContactMappingJson,
   ignoredLeadTraits,
   ignoredContactTraits,
-  DESTINATION
-} = require("./config");
+} = require('./config');
 const {
   removeUndefinedValues,
   defaultRequestConfig,
@@ -22,14 +21,14 @@ const {
   getDestinationExternalIDObjectForRetl,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
-  TransformationError
-} = require("../../util");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { getAccessToken, salesforceResponseHandler } = require("./utils");
-const { handleHttpRequest } = require("../../../adapters/network");
+  generateErrorObject,
+} = require('../../util');
+const { getAccessToken, salesforceResponseHandler } = require('./utils');
+const { handleHttpRequest } = require('../../../adapters/network');
+const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
 
 // Basic response builder
-// We pass the parameterMap with any processing-specific key-value prepopulated
+// We pass the parameterMap with any processing-specific key-value pre-populated
 // We also pass the incoming payload, the hit type to be generated and
 // the field mapping and credentials JSONs
 function responseBuilderSimple(
@@ -37,7 +36,7 @@ function responseBuilderSimple(
   salesforceMap,
   authorizationData,
   mapProperty,
-  mappedToDestination
+  mappedToDestination,
 ) {
   const { salesforceType, salesforceId } = salesforceMap;
 
@@ -53,30 +52,26 @@ function responseBuilderSimple(
   let rawPayload = traits;
   // map using the config only if the type is Lead
   // If message is already mapped to destination, Do not map it using config and send traits as-is
-  if (salesforceType === "Lead" && mapProperty && !mappedToDestination) {
+  if (salesforceType === 'Lead' && mapProperty && !mappedToDestination) {
     // adjust the payload only for new Leads. For update do incremental update
     // adjust for firstName and lastName
     // construct the payload using the mappingJson and add extra params
     rawPayload = constructPayload(
-      { ...traits, ...getFirstAndLastName(traits, "n/a") },
-      identifyLeadMappingJson
+      { ...traits, ...getFirstAndLastName(traits, 'n/a') },
+      identifyLeadMappingJson,
     );
-    Object.keys(traits).forEach(key => {
-      if (ignoredLeadTraits.indexOf(key) === -1 && traits[key]) {
+    Object.keys(traits).forEach((key) => {
+      if (!ignoredLeadTraits.includes(key) && traits[key]) {
         rawPayload[`${key}__c`] = traits[key];
       }
     });
-  } else if (
-    salesforceType === "Contact" &&
-    mapProperty &&
-    !mappedToDestination
-  ) {
+  } else if (salesforceType === 'Contact' && mapProperty && !mappedToDestination) {
     rawPayload = constructPayload(
-      { ...traits, ...getFirstAndLastName(traits, "n/a") },
-      identifyContactMappingJson
+      { ...traits, ...getFirstAndLastName(traits, 'n/a') },
+      identifyContactMappingJson,
     );
-    Object.keys(traits).forEach(key => {
-      if (ignoredContactTraits.indexOf(key) === -1 && traits[key]) {
+    Object.keys(traits).forEach((key) => {
+      if (!ignoredContactTraits.includes(key) && traits[key]) {
         rawPayload[`${key}__c`] = traits[key];
       }
     });
@@ -89,8 +84,8 @@ function responseBuilderSimple(
 
   const response = defaultRequestConfig();
   const header = {
-    "Content-Type": "application/json",
-    Authorization: authorizationData.token
+    'Content-Type': 'application/json',
+    Authorization: authorizationData.token,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = header;
@@ -106,25 +101,24 @@ async function getSaleforceIdForRecord(
   objectType,
   identifierType,
   identifierValue,
-  destination
+  destination,
 ) {
   const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id`;
-  const {
-    processedResponse: processedsfSearchResponse
-  } = await handleHttpRequest("get", objSearchUrl, {
-    headers: { Authorization: authorizationData.token }
-  });
+  const { processedResponse: processedsfSearchResponse } = await handleHttpRequest(
+    'get',
+    objSearchUrl,
+    {
+      headers: { Authorization: authorizationData.token },
+    },
+  );
   if (processedsfSearchResponse.status !== 200) {
     salesforceResponseHandler(
       processedsfSearchResponse,
-      `SALESFORCE SEARCH BY ID: ${JSON.stringify(
-        processedsfSearchResponse.response
-      )}`,
-      TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-      destination.ID
+      `:- SALESFORCE SEARCH BY ID`,
+      destination.ID,
     );
   }
-  return get(processedsfSearchResponse.response, "searchRecords.0.Id");
+  return get(processedsfSearchResponse.response, 'searchRecords.0.Id');
 }
 
 // Check for externalId field under context and look for probable Salesforce objects
@@ -143,26 +137,22 @@ async function getSaleforceIdForRecord(
 // We'll use the Salesforce Object names by removing "Salesforce-" string from the type field
 //
 // Default Object type will be "Lead" for backward compatibility
-async function getSalesforceIdFromPayload(
-  message,
-  authorizationData,
-  destination
-) {
+async function getSalesforceIdFromPayload(message, authorizationData, destination) {
   // define default map
   const salesforceMaps = [];
 
   // get externalId
-  const externalIds = get(message, "context.externalId");
+  const externalIds = get(message, 'context.externalId');
   const mappedToDestination = get(message, MappedToDestinationKey);
 
   // if externalIds are present look for type `Salesforce-`
   if (externalIds && Array.isArray(externalIds) && !mappedToDestination) {
-    externalIds.forEach(extIdMap => {
+    externalIds.forEach((extIdMap) => {
       const { type, id } = extIdMap;
-      if (type.includes("Salesforce")) {
+      if (type.includes('Salesforce')) {
         salesforceMaps.push({
-          salesforceType: type.replace("Salesforce-", ""),
-          salesforceId: id
+          salesforceType: type.replace('Salesforce-', ''),
+          salesforceId: id,
         });
       }
     });
@@ -170,44 +160,31 @@ async function getSalesforceIdFromPayload(
 
   // Support All salesforce objects, do not fallback to lead in case event is mapped to destination
   if (mappedToDestination) {
-    const { id, type, identifierType } = get(message, "context.externalId.0");
+    const { id, type, identifierType } = get(message, 'context.externalId.0');
 
-    if (
-      !id ||
-      !type ||
-      !identifierType ||
-      !type.toLowerCase().includes("salesforce")
-    ) {
-      throw new TransformationError(
-        "Invalid externalId. id, type, identifierType must be provided",
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-              .CONFIGURATION
-        },
-        DESTINATION
+    if (!id || !type || !identifierType || !type.toLowerCase().includes('salesforce')) {
+      throw new InstrumentationError(
+        'Invalid externalId. id, type, identifierType must be provided',
       );
     }
 
-    const objectType = type.toLowerCase().replace("salesforce-", "");
+    const objectType = type.toLowerCase().replace('salesforce-', '');
     let salesforceId = id;
 
     // Fetch the salesforce Id if the identifierType is not ID
-    if (identifierType.toUpperCase() !== "ID") {
+    if (identifierType.toUpperCase() !== 'ID') {
       salesforceId = await getSaleforceIdForRecord(
         authorizationData,
         objectType,
         identifierType,
         id,
-        destination
+        destination,
       );
     }
 
     salesforceMaps.push({
       salesforceType: objectType,
-      salesforceId
+      salesforceId,
     });
   }
 
@@ -217,37 +194,26 @@ async function getSalesforceIdFromPayload(
     // its a lead object. try to get lead object id using search query
     // check if the lead exists
     // need to perform a parameterized search for this using email
-    const email = getFieldValueFromMessage(message, "email");
+    const email = encodeURIComponent(getFieldValueFromMessage(message, 'email'));
 
     if (!email) {
-      throw new TransformationError(
-        "Invalid Email address for Lead Objet",
-        400,
-        {
-          scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-          meta:
-            TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-        },
-        DESTINATION
-      );
+      throw new InstrumentationError('Invalid Email address for Lead Objet');
     }
-
     const leadQueryUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${email}&sobject=Lead&Lead.fields=id,IsConverted,ConvertedContactId,IsDeleted`;
     // request configuration will be conditional
-    const {
-      processedResponse: processedLeadQueryResponse
-    } = await handleHttpRequest("get", leadQueryUrl, {
-      headers: { Authorization: authorizationData.token }
-    });
+    const { processedResponse: processedLeadQueryResponse } = await handleHttpRequest(
+      'get',
+      leadQueryUrl,
+      {
+        headers: { Authorization: authorizationData.token },
+      },
+    );
 
     if (processedLeadQueryResponse.status !== 200) {
       salesforceResponseHandler(
         processedLeadQueryResponse,
-        `During Lead Query: ${JSON.stringify(
-          processedLeadQueryResponse.response
-        )}`,
-        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        destination.ID
+        `:- during Lead Query`,
+        destination.ID,
       );
     }
 
@@ -257,46 +223,26 @@ async function getSalesforceIdFromPayload(
       const record = processedLeadQueryResponse.response.searchRecords[0];
       if (record.IsDeleted === true) {
         if (record.IsConverted) {
-          throw new TransformationError(
-            "The contact has been deleted.",
-            400,
-            {
-              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-              meta:
-                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-                  .CONFIGURATION
-            },
-            DESTINATION
-          );
+          throw new NetworkInstrumentationError('The contact has been deleted.');
         } else {
-          throw new TransformationError(
-            "The lead has been deleted.",
-            400,
-            {
-              scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-              meta:
-                TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META
-                  .CONFIGURATION
-            },
-            DESTINATION
-          );
+          throw new NetworkInstrumentationError('The lead has been deleted.');
         }
       }
       if (record.IsConverted && destination.Config.useContactId) {
         salesforceMaps.push({
-          salesforceType: "Contact",
-          salesforceId: record.ConvertedContactId
+          salesforceType: 'Contact',
+          salesforceId: record.ConvertedContactId,
         });
       } else {
         salesforceMaps.push({
-          salesforceType: "Lead",
-          salesforceId: record.Id
+          salesforceType: 'Lead',
+          salesforceId: record.Id,
         });
       }
     } else {
       salesforceMaps.push({
-        salesforceType: "Lead",
-        salesforceId: undefined
+        salesforceType: 'Lead',
+        salesforceId: undefined,
       });
     }
   }
@@ -306,35 +252,18 @@ async function getSalesforceIdFromPayload(
 // Function for handling identify events
 async function processIdentify(message, authorizationData, destination) {
   const mapProperty =
-    destination.Config.mapProperty === undefined
-      ? true
-      : destination.Config.mapProperty;
+    destination.Config.mapProperty === undefined ? true : destination.Config.mapProperty;
   // check the traits before hand
-  const traits = getFieldValueFromMessage(message, "traits");
+  const traits = getFieldValueFromMessage(message, 'traits');
   if (!traits) {
-    throw new TransformationError(
-      "PROCESS IDENTIFY: Invalid traits for Salesforce request",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError('PROCESS IDENTIFY: Invalid traits for Salesforce request');
   }
 
   // Append external ID to traits if event is mapped to destination and only if identifier type is not id
   // If identifier type is id, then it should not be added to traits, else saleforce will throw an error
   const mappedToDestination = get(message, MappedToDestinationKey);
-  const externalId = getDestinationExternalIDObjectForRetl(
-    message,
-    "SALESFORCE"
-  );
-  if (
-    mappedToDestination &&
-    externalId?.identifierType?.toLowerCase() !== "id"
-  ) {
+  const externalId = getDestinationExternalIDObjectForRetl(message, 'SALESFORCE');
+  if (mappedToDestination && externalId?.identifierType?.toLowerCase() !== 'id') {
     addExternalIdToTraits(message);
   }
 
@@ -342,14 +271,10 @@ async function processIdentify(message, authorizationData, destination) {
   const responseData = [];
 
   // get salesforce object map
-  const salesforceMaps = await getSalesforceIdFromPayload(
-    message,
-    authorizationData,
-    destination
-  );
+  const salesforceMaps = await getSalesforceIdFromPayload(message, authorizationData, destination);
 
   // iterate over the object types found
-  salesforceMaps.forEach(salesforceMap => {
+  salesforceMaps.forEach((salesforceMap) => {
     // finally build the response and push to the list
     responseData.push(
       responseBuilderSimple(
@@ -357,8 +282,8 @@ async function processIdentify(message, authorizationData, destination) {
         salesforceMap,
         authorizationData,
         mapProperty,
-        mappedToDestination
-      )
+        mappedToDestination,
+      ),
     );
   });
 
@@ -372,15 +297,7 @@ async function processSingleMessage(message, authorizationData, destination) {
   if (message.type === EventType.IDENTIFY) {
     response = await processIdentify(message, authorizationData, destination);
   } else {
-    throw new TransformationError(
-      `message type ${message.type} is not supported`,
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError(`message type ${message.type} is not supported`);
   }
   return response;
 }
@@ -388,16 +305,12 @@ async function processSingleMessage(message, authorizationData, destination) {
 async function process(event) {
   // Get the authorization header if not available
   const authorizationData = await getAccessToken(event.destination);
-  const response = await processSingleMessage(
-    event.message,
-    authorizationData,
-    event.destination
-  );
+  const response = await processSingleMessage(event.message, authorizationData, event.destination);
   return response;
 }
 
-const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, "SALESFORCE");
+const processRouterDest = async (inputs, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -406,45 +319,34 @@ const processRouterDest = async inputs => {
   try {
     authorizationData = await getAccessToken(inputs[0].destination);
   } catch (error) {
+    const errObj = generateErrorObject(error);
     const respEvents = getErrorRespEvents(
-      inputs.map(input => input.metadata),
-      400,
+      inputs.map((input) => input.metadata),
+      errObj.status,
       `Authorisation failed: ${error.message}`,
-      {
-        destType: "SALESFORCE",
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.AUTHENTICATION.SCOPE
-      }
+      errObj.statTags,
     );
-    return [respEvents];
+    return [{ ...respEvents, destination: inputs?.[0]?.destination }];
   }
 
   const respList = await Promise.all(
-    inputs.map(async input => {
+    inputs.map(async (input) => {
       try {
         if (input.message.statusCode) {
           // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
+          return getSuccessRespEvents(input.message, [input.metadata], input.destination);
         }
 
         // unprocessed payload
         return getSuccessRespEvents(
-          await processSingleMessage(
-            input.message,
-            authorizationData,
-            input.destination
-          ),
+          await processSingleMessage(input.message, authorizationData, input.destination),
           [input.metadata],
-          input.destination
+          input.destination,
         );
       } catch (error) {
-        return handleRtTfSingleEventError(input, error, "SALESFORCE");
+        return handleRtTfSingleEventError(input, error, reqMetadata);
       }
-    })
+    }),
   );
   return respList;
 };
@@ -454,10 +356,10 @@ const processRouterDest = async inputs => {
  * @param {*} output
  * @returns {*} metadata
  */
-const processMetadataForRouter = output => {
+const processMetadataForRouter = (output) => {
   const { metadata, destination } = output;
   const clonedMetadata = cloneDeep(metadata);
-  clonedMetadata.forEach(metadataElement => {
+  clonedMetadata.forEach((metadataElement) => {
     // eslint-disable-next-line no-param-reassign
     metadataElement.destInfo = { authKey: destination?.ID };
   });

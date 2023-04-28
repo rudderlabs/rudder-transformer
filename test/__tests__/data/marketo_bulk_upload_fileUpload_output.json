@@ -32,10 +32,7 @@
   {
     "statusCode": 400,
     "error": "The field Email is not present in Marketo Field Schema. Aborting",
-    "metadata": {
-      "successfulJobs": ["17"],
-      "unsuccessfulJobs": []
-    }
+    "metadata": null
   },
   {
     "statusCode": 200,
@@ -50,33 +47,21 @@
   {
     "statusCode": 400,
     "error": "Could not upload file",
-    "metadata": {
-      "successfulJobs": ["17"],
-      "unsuccessfulJobs": []
-    }
+    "metadata": null
   },
   {
-    "statusCode": 500,
+    "statusCode": 400,
     "error": "There are 10 imports currently being processed. Please try again later",
-    "metadata": {
-      "successfulJobs": ["17"],
-      "unsuccessfulJobs": []
-    }
+    "metadata": null
   },
   {
-    "statusCode": 500,
+    "statusCode": 400,
     "error": "Empty file",
-    "metadata": {
-      "successfulJobs": ["17"],
-      "unsuccessfulJobs": []
-    }
+    "metadata": null
   },
   {
     "statusCode": 400,
     "error": "Any other error",
-    "metadata": {
-      "successfulJobs": ["17"],
-      "unsuccessfulJobs": []
-    }
+    "metadata": null
   }
 ]

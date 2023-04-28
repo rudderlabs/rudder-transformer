@@ -1,26 +1,25 @@
 /* eslint-disable no-param-reassign */
-const { set, get } = require("lodash");
+const { set, get } = require('lodash');
 const {
   defaultRequestConfig,
-  CustomError,
   constructPayload,
   removeUndefinedAndNullValues,
-  getErrorRespEvents,
   getIntegrationsObj,
-  getSuccessRespEvents,
-  defaultGetRequestConfig
-} = require("../../util");
+  defaultGetRequestConfig,
+  simpleProcessRouterDest,
+} = require('../../util');
 
-const { EventType } = require("../../../constants");
-const { BASE_URL, mappingConfig, ConfigCategories } = require("./config");
-const { refinePayload, getEvent } = require("./utils");
+const { EventType } = require('../../../constants');
+const { BASE_URL, mappingConfig, ConfigCategories } = require('./config');
+const { refinePayload, getEvent } = require('./utils');
+const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilder = (payload, endpoint, method, projectName) => {
   if (!payload) {
-    throw new CustomError("[ WOOPRA ]:: Parameters could not be found", 400);
+    throw new TransformationError('Something went wrong while constructing the payload');
   }
-  set(payload, "timestamp", get(payload, "timestamp").toString());
-  set(payload, "Project", projectName);
+  set(payload, 'timestamp', get(payload, 'timestamp').toString());
+  set(payload, 'Project', projectName);
   const response = defaultRequestConfig();
   response.params = removeUndefinedAndNullValues(payload);
   response.endpoint = endpoint;
@@ -38,14 +37,10 @@ const responseBuilder = (payload, endpoint, method, projectName) => {
  * @returns method, payload, extractedProjectNamw which are common to all of the calls
  */
 const commonPayloadGenerator = (message, projectName, genericFields) => {
-  let payload = constructPayload(
-    message,
-    mappingConfig[ConfigCategories.IDENTIFY.name]
-  );
+  let payload = constructPayload(message, mappingConfig[ConfigCategories.IDENTIFY.name]);
   const refinedPayload = refinePayload(message, genericFields);
   payload = { ...payload, ...refinedPayload };
-  const extractedProjectName =
-    getIntegrationsObj(message, "woopra")?.projectName || projectName;
+  const extractedProjectName = getIntegrationsObj(message, 'woopra')?.projectName || projectName;
   const method = defaultGetRequestConfig.requestMethod;
   const response = { method, payload, extractedProjectName };
   return response;
@@ -55,19 +50,19 @@ const identifyResponseBuilder = (message, projectName) => {
   const { method, payload, extractedProjectName } = commonPayloadGenerator(
     message,
     projectName,
-    ConfigCategories.IDENTIFY.genericFields
+    ConfigCategories.IDENTIFY.genericFields,
   );
   return responseBuilder(payload, endpoint, method, extractedProjectName);
 };
 const trackResponseBuilder = (message, projectName) => {
   const endpoint = `${BASE_URL}/ce`;
   if (!message.event) {
-    throw new CustomError("[ WOOPRA ]:: Event Name can not be empty.", 400);
+    throw new InstrumentationError('Event Name can not be empty');
   }
   const { method, payload, extractedProjectName } = commonPayloadGenerator(
     message,
     projectName,
-    ConfigCategories.TRACK.genericFields
+    ConfigCategories.TRACK.genericFields,
   );
   payload.event = message.event;
   return responseBuilder(payload, endpoint, method, extractedProjectName);
@@ -77,32 +72,23 @@ const pageResponseBuilder = (message, projectName) => {
   const { method, payload, extractedProjectName } = commonPayloadGenerator(
     message,
     projectName,
-    ConfigCategories.PAGE.genericFields
+    ConfigCategories.PAGE.genericFields,
   );
   const commonPayload = payload;
-  const pagePayload = constructPayload(
-    message,
-    mappingConfig[ConfigCategories.PAGE.name]
-  );
+  const pagePayload = constructPayload(message, mappingConfig[ConfigCategories.PAGE.name]);
   const mergedPayload = { ...commonPayload, ...pagePayload };
 
   mergedPayload.event = getEvent(message);
   return responseBuilder(mergedPayload, endpoint, method, extractedProjectName);
 };
-const process = event => {
+const process = (event) => {
   const { message, destination } = event;
   const { projectName } = destination.Config;
   if (!projectName) {
-    throw new CustomError(
-      "[ WOOPRA ]:: Project Name field can not be empty.",
-      400
-    );
+    throw new InstrumentationError('Project Name field can not be empty');
   }
   if (!message.type) {
-    throw new CustomError(
-      "[ WOOPRA ]:: Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError('Event type is required');
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -117,45 +103,14 @@ const process = event => {
       response = pageResponseBuilder(message, projectName);
       break;
     default:
-      throw new CustomError(
-        `[ WOOPRA ]:: Message type ${messageType} not supported.`,
-        400
-      );
+      throw new InstrumentationError(`Message type ${messageType} is not supported`);
   }
   return response;
 };
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
 
-  return Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response ? error.response.status : error.code || 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  return respList;
 };
 
 module.exports = { process, processRouterDest };

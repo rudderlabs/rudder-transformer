@@ -1,6 +1,5 @@
-const { EventType } = require("../../../constants");
+const { EventType } = require('../../../constants');
 const {
-  CustomError,
   constructPayload,
   ErrorMessage,
   defaultRequestConfig,
@@ -8,9 +7,13 @@ const {
   getValueFromMessage,
   isDefinedAndNotNull,
   extractCustomFields,
-  getErrorRespEvents,
-  getSuccessRespEvents
-} = require("../../util");
+  simpleProcessRouterDest,
+} = require('../../util');
+const {
+  TransformationError,
+  InstrumentationError,
+  ConfigurationError,
+} = require('../../util/errorTypes');
 
 const {
   MAPPING_CONFIG,
@@ -18,19 +21,18 @@ const {
   BASE_URL_EU,
   BASE_URL,
   EVENT_NAME_MAPPING,
-  BLUESHIFT_IDENTIFY_EXCLUSION
-} = require("./config");
+  BLUESHIFT_IDENTIFY_EXCLUSION,
+} = require('./config');
 
 function checkValidEventName(str) {
-  if (str.indexOf(".") !== -1 || /[0-9]/.test(str) || str.length > 64)
-    return true;
+  if (str.includes('.') || /\d/.test(str) || str.length > 64) return true;
   return false;
 }
 
-const getBaseURL = config => {
+const getBaseURL = (config) => {
   let urlValue;
   switch (config.dataCenter) {
-    case "eu":
+    case 'eu':
       urlValue = BASE_URL_EU;
       break;
     default:
@@ -40,49 +42,42 @@ const getBaseURL = config => {
 };
 
 const trackResponseBuilder = async (message, category, { Config }) => {
-  let event = getValueFromMessage(message, "event");
+  let event = getValueFromMessage(message, 'event');
   if (!event) {
-    throw new CustomError(
-      "[Blueshift] property:: event is required for track call",
-      400
-    );
+    throw new InstrumentationError('[Blueshift] property:: event is required for track call');
   }
 
   if (!Config.eventApiKey) {
-    throw new CustomError(
-      "[BLUESHIFT] event Api Keys required for Authentication.",
-      400
-    );
+    throw new ConfigurationError('[BLUESHIFT] event Api Keys required for Authentication.');
   }
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
     // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+    throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
 
   event = event.trim();
   if (isDefinedAndNotNull(EVENT_NAME_MAPPING[event])) {
     payload.event = EVENT_NAME_MAPPING[event];
   }
-  payload.event = payload.event.replace(/\s+/g, "_");
+  payload.event = payload.event.replace(/\s+/g, '_');
   if (checkValidEventName(payload.event)) {
-    throw new CustomError(
+    throw new InstrumentationError(
       "[Blueshift] Event shouldn't contain period(.), numeric value and contains not more than 64 characters",
-      400
     );
   }
-  payload = extractCustomFields(message, payload, ["properties"], []);
+  payload = extractCustomFields(message, payload, ['properties'], []);
 
   const response = defaultRequestConfig();
   const baseURL = getBaseURL(Config);
   response.endpoint = `${baseURL}/api/v1/event`;
 
   response.method = defaultPostRequestConfig.requestMethod;
-  const basicAuth = Buffer.from(Config.eventApiKey).toString("base64");
+  const basicAuth = Buffer.from(Config.eventApiKey).toString('base64');
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
   response.body.JSON = payload;
   return response;
@@ -90,33 +85,30 @@ const trackResponseBuilder = async (message, category, { Config }) => {
 
 const identifyResponseBuilder = async (message, category, { Config }) => {
   if (!Config.usersApiKey) {
-    throw new CustomError(
-      "[BLUESHIFT] User API Key required for Authentication.",
-      400
-    );
+    throw new ConfigurationError('[BLUESHIFT] User API Key required for Authentication.');
   }
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
     // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+    throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
 
   payload = extractCustomFields(
     message,
     payload,
-    ["traits", "context.traits"],
-    BLUESHIFT_IDENTIFY_EXCLUSION
+    ['traits', 'context.traits'],
+    BLUESHIFT_IDENTIFY_EXCLUSION,
   );
   const response = defaultRequestConfig();
   const baseURL = getBaseURL(Config);
   response.endpoint = `${baseURL}/api/v1/customers`;
 
   response.method = defaultPostRequestConfig.requestMethod;
-  const basicAuth = Buffer.from(Config.usersApiKey).toString("base64");
+  const basicAuth = Buffer.from(Config.usersApiKey).toString('base64');
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
   response.body.JSON = payload;
   return response;
@@ -124,42 +116,36 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
 
 const groupResponseBuilder = async (message, category, { Config }) => {
   if (!Config.eventApiKey) {
-    throw new CustomError(
-      "[BLUESHIFT] event API Key required for Authentication.",
-      400
-    );
+    throw new ConfigurationError('[BLUESHIFT] event API Key required for Authentication.');
   }
 
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
 
   if (!payload) {
     // fail-safety for developer error
-    throw new CustomError(ErrorMessage.FailedToConstructPayload, 400);
+    throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
-  payload.event = "identify";
-  payload = extractCustomFields(message, payload, ["traits"], []);
+  payload.event = 'identify';
+  payload = extractCustomFields(message, payload, ['traits'], []);
 
   const baseURL = getBaseURL(Config);
   const response = defaultRequestConfig();
   response.endpoint = `${baseURL}/api/v1/event`;
 
   response.method = defaultPostRequestConfig.requestMethod;
-  const basicAuth = Buffer.from(Config.eventApiKey).toString("base64");
+  const basicAuth = Buffer.from(Config.eventApiKey).toString('base64');
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
   response.body.JSON = payload;
   return response;
 };
 
-const process = async event => {
+const process = async (event) => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
 
   const messageType = message.type.toLowerCase();
@@ -176,47 +162,13 @@ const process = async event => {
       response = await groupResponseBuilder(message, category, destination);
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
   return response;
 };
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

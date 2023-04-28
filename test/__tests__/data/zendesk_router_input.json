@@ -136,5 +136,54 @@
       "type": "group",
       "userId": "abcd-124"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiToken": "yPJwcLTFSsvIkFhY23SzittHoYADJQ7eKDoxNu4x",
+        "createUsersAsVerified": true,
+        "domain": "rudderlabtest2",
+        "email": "rudderlabtest2@email.com",
+        "removeUsersFromOrganization": false,
+        "sendGroupCallsWithoutUserId": false
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Zendesk",
+        "ID": "1YknZ1ENqB8UurJQJE2VrEA61tr",
+        "Name": "ZENDESK"
+      },
+      "Enabled": true,
+      "ID": "1Z3zFXE6zwvNJBVOUzCuJxeO51P",
+      "Name": "zendesk",
+      "Transformations": []
+    },
+    "metadata": {
+      "jobId": 3
+    },
+    "message": {
+      "anonymousId": "223b5f40-9543-4456-a7aa-945c43048185",
+      "channel": "web",
+      "context": {
+        "traits": {
+          "country": "UK",
+          "name": "John Wick",
+          "userId": "exId-123",
+          "email": "testemail2@email"
+        },
+        "userAgent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36"
+      },
+      "event": "Order completed",
+      "messageId": "017f5227-ead3-4b7d-9794-1465022327be",
+      "originalTimestamp": "2021-03-25T14:36:47.695Z",
+      "properties": {
+        "category": "category",
+        "label": "label",
+        "userId": "exId-123",
+        "value": "value"
+      },
+      "rudderId": "d1b1b23f-c855-4b86-bad7-091f7bbe99fe",
+      "type": "track",
+      "userId": "0000000000"
+    }
   }
 ]

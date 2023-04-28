@@ -2,7 +2,7 @@
   {
     "output": {
       "status": 200,
-      "message": "[Marketo Response Handler] - Request Processed Successfully",
+      "message": "Request Processed Successfully",
       "destinationResponse": {
         "response": {
           "requestId": "664#17dae8c3d48",
@@ -37,10 +37,11 @@
       },
       "statTags": {
         "destType": "MARKETO",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "retryable",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
@@ -63,17 +64,18 @@
       },
       "statTags": {
         "destType": "MARKETO",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "abortable",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
   {
     "output": {
       "status": 413,
-      "message": "[marketo Response Handler] - Request failed  with status: 413",
+      "message": "Request failed  with status: 413",
       "destinationResponse": {
         "response": {
           "code": 413,
@@ -84,88 +86,94 @@
       },
       "statTags": {
         "destType": "MARKETO",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "abortable",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
   {
     "output": {
       "status": 500,
-      "message": "[marketo Response Handler] - Request failed  with status: 500",
+      "message": "Request failed  with status: 500",
       "destinationResponse": {
         "response": "",
         "status": 500
       },
       "statTags": {
         "destType": "MARKETO",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "retryable",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
   {
     "output": {
       "status": 500,
-      "message": "[marketo Response Handler] - Request failed  with status: 500",
+      "message": "Request failed  with status: 500",
       "destinationResponse": {
         "response": "",
         "status": 500
       },
       "statTags": {
         "destType": "MARKETO",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "retryable",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
   {
     "output": {
       "status": 400,
-      "message": "[marketo Response Handler] - Request failed  with status: 400",
+      "message": "Request failed  with status: 400",
       "destinationResponse": {
         "response": "[[ENOTFOUND] :: DNS lookup failed]",
         "status": 400
       },
       "statTags": {
         "destType": "MARKETO",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "abortable",
-        "errorAt": "proxy"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
   {
-   "output": {
-     "status": 400,
-     "message": "Error occurred during Marketo Response Handling -> problem",
-     "destinationResponse": {
-       "response": {
-         "requestId": "142e4#1835b117b76",
-         "success": false,
-         "errors": [
-           {
-             "code": "random_marketo_code",
-             "message": "problem"
-           }
-         ]
-       },
-       "status": 200
-     },
-     "statTags": {
-       "destType": "MARKETO",
-       "stage": "responseTransform",
-       "scope": "api",
-       "meta": "unhandled",
-       "errorAt": "proxy"
-     }
-   }
+    "output": {
+      "status": 400,
+      "message": "Error occurred during Marketo Response Handling -> problem",
+      "destinationResponse": {
+        "response": {
+          "requestId": "142e4#1835b117b76",
+          "success": false,
+          "errors": [
+            {
+              "code": "random_marketo_code",
+              "message": "problem"
+            }
+          ]
+        },
+        "status": 200
+      },
+      "statTags": {
+        "destType": "MARKETO",
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "meta": "unhandledStatusCode",
+        "module": "destination"
+      }
+    }
   }
 ]

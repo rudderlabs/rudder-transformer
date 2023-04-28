@@ -1,4 +1,4 @@
-const prometheusClient = require("prom-client");
+const prometheusClient = require('prom-client');
 // const gcStats = require("prometheus-gc-stats");
 
 const prometheusRegistry = new prometheusClient.Registry();
@@ -9,10 +9,10 @@ prometheusClient.collectDefaultMetrics({ register: prometheusRegistry });
 
 function durationMiddleware() {
   const httpRequestDurationSummary = new prometheusClient.Summary({
-    name: "http_request_duration_summary_seconds",
-    help: "Summary of HTTP requests duration in seconds",
-    labelNames: ["method", "route", "code"],
-    percentiles: [0.01, 0.1, 0.9, 0.99]
+    name: 'http_request_duration_summary_seconds',
+    help: 'Summary of HTTP requests duration in seconds',
+    labelNames: ['method', 'route', 'code'],
+    percentiles: [0.01, 0.1, 0.9, 0.99],
   });
 
   prometheusRegistry.registerMetric(httpRequestDurationSummary);
@@ -24,7 +24,8 @@ function durationMiddleware() {
     const labels = {
       method: ctx.method,
       code: ctx.status,
-      route: ctx._matchedRoute
+      // eslint-disable-next-line no-underscore-dangle
+      route: ctx._matchedRoute,
     };
     end(labels);
   };
@@ -37,5 +38,5 @@ function addPrometheusMiddleware(app) {
 module.exports = {
   addPrometheusMiddleware,
   durationMiddleware,
-  prometheusRegistry
+  prometheusRegistry,
 };

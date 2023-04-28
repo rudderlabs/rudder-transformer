@@ -143,6 +143,13 @@
           "body": {
             "JSON": {
               "properties": {
+                "$set": {
+                  "address": {
+                    "city": "Dhaka",
+                    "country": "Bangladesh"
+                  },
+                  "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+                },
                 "$os": "android",
                 "$time": "2020-11-04T13:21:09.712Z",
                 "$device_id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",
@@ -202,6 +209,13 @@
               "event": "Product Brought",
               "messageId": "e4408cb8-16dd-41e9-a313-a7a9cdc4bac5",
               "properties": {
+                "$set": {
+                  "address": {
+                    "city": "Dhaka",
+                    "country": "Bangladesh"
+                  },
+                  "anonymousId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1"
+                },
                 "$os": "android",
                 "$time": "2020-11-04T13:21:09.712Z",
                 "$device_id": "df16bffa-5c3d-4fbb-9bce-3bab098129a7R",

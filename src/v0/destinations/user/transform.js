@@ -1,10 +1,8 @@
 const {
-  CustomError,
-  getErrorRespEvents,
-  getSuccessRespEvents,
   defaultRequestConfig,
-  removeUndefinedAndNullValues
-} = require("../../util");
+  simpleProcessRouterDest,
+  removeUndefinedAndNullValues,
+} = require('../../util');
 
 const {
   prepareUrl,
@@ -17,26 +15,31 @@ const {
   retrieveUserFromLookup,
   addUserToCompanyPayloadBuilder,
   createOrUpdateUserPayloadBuilder,
-  createEventOccurrencePayloadBuilder
-} = require("./utils");
+  createEventOccurrencePayloadBuilder,
+} = require('./utils');
+const {
+  TransformationError,
+  InstrumentationError,
+  NetworkInstrumentationError,
+} = require('../../util/errorTypes');
 
-const { EventType } = require("../../../constants");
+const { EventType } = require('../../../constants');
 
 const responseBuilder = async (payload, endpoint, method, apiKey) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.headers = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Token ${apiKey}`,
-      Accept: "*/*;version=2"
+      Accept: '*/*;version=2',
     };
     response.method = method;
     response.body.JSON = removeUndefinedAndNullValues(payload);
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError("[ User.com ]:: Payload could not be constructed", 400);
+  throw new TransformationError('Something went wrong while constructing the payload');
 };
 
 const identifyResponseBuilder = async (message, destination) => {
@@ -57,7 +60,7 @@ const identifyResponseBuilder = async (message, destination) => {
 
 const trackResponseBuilder = async (message, destination) => {
   if (!message.event) {
-    throw new CustomError("[ User.com ]:: parameter event is required", 400);
+    throw new InstrumentationError('Parameter event is required');
   }
 
   let payload;
@@ -76,9 +79,8 @@ const trackResponseBuilder = async (message, destination) => {
     return responseBuilder(payload, endpoint, method, apiKey);
   }
 
-  throw new CustomError(
-    "[ User.com ]:: No user found with given lookup field, Track event cannot be completed if there is no valid user",
-    400
+  throw new NetworkInstrumentationError(
+    'No user found with given lookup field, Track event cannot be completed if there is no valid user',
   );
 };
 
@@ -98,9 +100,8 @@ const pageResponseBuilder = async (message, destination) => {
     endpoint = prepareUrl(endpoint, appSubdomain);
     return responseBuilder(payload, endpoint, method, apiKey);
   }
-  throw new CustomError(
-    "[ User.com ]:: No user found with given lookup field. Page event cannot be completed if there is no valid user",
-    400
+  throw new NetworkInstrumentationError(
+    'No user found with given lookup field. Page event cannot be completed if there is no valid user',
   );
 };
 
@@ -129,22 +130,16 @@ const groupResponseBuilder = async (message, destination) => {
     payload = builder.payload;
     endpoint = builder.endpoint;
     method = builder.method;
-    endpoint = prepareUrl(endpoint, appSubdomain).replace(
-      "<company_id>",
-      builder.companyId
-    );
+    endpoint = prepareUrl(endpoint, appSubdomain).replace('<company_id>', builder.companyId);
     return responseBuilder(payload, endpoint, method, apiKey);
   }
-  throw new CustomError("[ User.com ] :: No user found with given userId", 400);
+  throw new NetworkInstrumentationError('No user found with given userId');
 };
 
 const processEvent = async (message, destination) => {
   // Validating if message type is even given or not
   if (!message.type) {
-    throw new CustomError(
-      "[ User.com ]:: Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError('Event type is required');
   }
   const messageType = message.type.toLowerCase();
   let response;
@@ -162,50 +157,16 @@ const processEvent = async (message, destination) => {
       response = await pageResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(
-        `[ User.com ]:: Message type ${messageType} not supported.`,
-        400
-      );
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
 };
 
-const process = async event => {
-  return processEvent(event.message, event.destination);
-};
+const process = async (event) => processEvent(event.message, event.destination);
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  return Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response ? error.response.status : error.code || 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  return respList;
 };
 
 module.exports = { process, processRouterDest };

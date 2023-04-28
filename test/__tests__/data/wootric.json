@@ -27,7 +27,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[Wootric]:: access token could not be generated due to {\"error\":\"Not found\",\"status\":404}"
+      "error": "Access token could not be generated due to {\"error\":\"Not found\",\"status\":404}"
     }
   },
   {

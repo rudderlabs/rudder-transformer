@@ -670,7 +670,7 @@
   ],
   {
     "statusCode": 400,
-    "message": "[MP] Group:: Group Key Settings is not configured"
+    "message": "Group Key Settings is not configured"
   },
   {
     "version": "1",
@@ -717,9 +717,7 @@
           "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
           "$distinct_id": "hjikl",
           "$set": {
-            "company": [
-              "testComp"
-            ]
+            "company": ["testComp"]
           }
         }
       },
@@ -769,9 +767,7 @@
         "data": {
           "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
           "$set": {
-            "company": [
-              "testComp"
-            ]
+            "company": ["testComp"]
           }
         }
       },
@@ -923,9 +919,7 @@
           "$screen_width": 1080,
           "$wifi": true,
           "anonymousId": "5094f5704b9cf2b3",
-          "$android_devices": [
-            "test_device_token"
-          ],
+          "$android_devices": ["test_device_token"],
           "$os": "Android",
           "$android_model": "Android SDK built for x86",
           "$android_os_version": "8.1.0",
@@ -960,10 +954,7 @@
       "data": {
         "event": "$merge",
         "properties": {
-          "$distinct_ids": [
-            "test_user_id",
-            "5094f5704b9cf2b3"
-          ],
+          "$distinct_ids": ["test_user_id", "5094f5704b9cf2b3"],
           "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
         }
       }
@@ -1055,10 +1046,7 @@
       "data": {
         "event": "$merge",
         "properties": {
-          "$distinct_ids": [
-            "test_user_id",
-            "5094f5704b9cf2b3"
-          ],
+          "$distinct_ids": ["test_user_id", "5094f5704b9cf2b3"],
           "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
         }
       }
@@ -1387,7 +1375,7 @@
   },
   {
     "statusCode": 400,
-    "message": "Event timestamp is older than 5 days and no apisecret or service account credentials (i.e. username, secret and projectId) is provided in destination config."
+    "message": "Event timestamp is older than 5 days and no apisecret or service account credentials (i.e. username, secret and projectId) is provided in destination config"
   },
   {
     "statusCode": 400,
@@ -1449,7 +1437,7 @@
   },
   {
     "statusCode": 400,
-    "message": "message type not supported"
+    "message": "Event type test is not supported"
   },
   {
     "version": "1",
@@ -1530,7 +1518,7 @@
   },
   {
     "statusCode": 400,
-    "message": "Unable to create the user."
+    "message": "Unable to create the user"
   },
   [
     {
@@ -1641,9 +1629,7 @@
         "data": {
           "$distinct_id": "hjikl",
           "$set": {
-            "groupId": [
-              "testGroupId"
-            ]
+            "groupId": ["testGroupId"]
           },
           "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
         }

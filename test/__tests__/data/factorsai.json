@@ -75,6 +75,48 @@
     }
   },
   {
+    "description": "Unsupported message type",
+    "input": {
+      "destination": {
+        "Config": {
+          "factorsAIApiKey": "sdgerghsdfhsdhsdh432141dfgdfsg"
+        }
+      },
+      "message": {
+        "type": "screen",
+        "messageId": "3c0abc14-96a2-4aed-9dfc-ee463832cc24",
+        "originalTimestamp": "2022-10-17T15:32:44.202+05:30",
+        "context": {
+          "page": {
+            "url": "myurl",
+            "path": "/workspace/index.html",
+            "title": "test track",
+            "search": "?s=ek8reb577tu65kfc2fv41fbm3j",
+            "referrer": "$direct",
+            "initial_referrer": "$direct",
+            "referring_domain": "",
+            "initial_referring_domain": ""
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.86 Safari/537.36",
+          "ip": "108.0.78.21"
+        },
+        "event": "finalPageTest",
+        "properties": {
+          "title": "Intro to Test final segemt context page added context last"
+        },
+        "anonymousId": "PageTestAnonymousUser"
+      }
+    },
+    "output": {
+      "error": "Message type screen is not supported",
+      "statusCode": 400,
+      "statTags": {
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation"
+      }
+    }
+  },
+  {
     "description": "Track Call without userId Mentioned",
     "input": {
       "destination": {

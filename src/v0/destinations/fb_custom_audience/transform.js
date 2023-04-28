@@ -1,5 +1,5 @@
-const sha256 = require("sha256");
-const get = require("get-value");
+const sha256 = require('sha256');
+const get = require('get-value');
 
 const {
   defaultRequestConfig,
@@ -10,11 +10,10 @@ const {
   getSuccessRespEvents,
   getErrorRespEvents,
   returnArrayOfSubarrays,
-  CustomError,
   isDefinedAndNotNull,
   flattenMap,
-  generateErrorObject
-} = require("../../util");
+  handleRtTfSingleEventError,
+} = require('../../util');
 
 const {
   getEndPoint,
@@ -22,25 +21,26 @@ const {
   USER_ADD,
   USER_DELETE,
   typeFields,
-  subTypeFields
-} = require("./config");
+  subTypeFields,
+} = require('./config');
 
-const { MappedToDestinationKey } = require("../../../constants");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+const { MappedToDestinationKey } = require('../../../constants');
+const {
+  InstrumentationError,
+  TransformationError,
+  ConfigurationError,
+} = require('../../util/errorTypes');
 
-const getSchemaForEventMappedToDest = message => {
-  const mappedSchema = get(message, "context.destinationFields");
+const getSchemaForEventMappedToDest = (message) => {
+  const mappedSchema = get(message, 'context.destinationFields');
   if (!mappedSchema) {
-    throw new CustomError(
-      "context.destinationFields is required property for events mapped to destination ",
-      400
+    throw new InstrumentationError(
+      'context.destinationFields is required property for events mapped to destination ',
     );
   }
   // context.destinationFields has 2 possible values. An Array of fields or Comma seperated string with field names
-  let userSchema = Array.isArray(mappedSchema)
-    ? mappedSchema
-    : mappedSchema.split(",");
-  userSchema = userSchema.map(field => field.trim());
+  let userSchema = Array.isArray(mappedSchema) ? mappedSchema : mappedSchema.split(',');
+  userSchema = userSchema.map((field) => field.trim());
   return userSchema;
 };
 
@@ -50,10 +50,10 @@ const responseBuilderSimple = (payload, audienceId) => {
     const response = defaultRequestConfig();
     response.endpoint = getEndPoint(audienceId);
 
-    if (payload.operationCategory === "add") {
+    if (payload.operationCategory === 'add') {
       response.method = defaultPostRequestConfig.requestMethod;
     }
-    if (payload.operationCategory === "remove") {
+    if (payload.operationCategory === 'remove') {
       response.method = defaultDeleteRequestConfig.requestMethod;
     }
 
@@ -61,7 +61,7 @@ const responseBuilderSimple = (payload, audienceId) => {
     return response;
   }
   // fail-safety for developer error
-  throw new CustomError(`Payload could not be constructed`, 400);
+  throw new TransformationError(`Payload could not be constructed`);
 };
 
 // function responsible to ensure the user inputs are passed according to the allowed format
@@ -71,79 +71,71 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
   let userInformationTrimmed;
   userInformation = userInformation.toString();
   switch (userProperty) {
-    case "EMAIL":
+    case 'EMAIL':
       updatedProperty = userInformation.trim().toLowerCase();
       break;
-    case "PHONE":
+    case 'PHONE':
       // remove all non-numerical characters
-      updatedProperty = userInformation.replace(/[^0-9]/g, "");
+      updatedProperty = userInformation.replace(/\D/g, '');
       // remove all leading zeros
-      updatedProperty = updatedProperty.replace(/^0+/g, "");
+      updatedProperty = updatedProperty.replace(/^0+/g, '');
       break;
-    case "GEN":
+    case 'GEN':
       updatedProperty =
-        userInformation.toLowerCase() === "f" ||
-        userInformation.toLowerCase() === "female"
-          ? "f"
-          : "m";
+        userInformation.toLowerCase() === 'f' || userInformation.toLowerCase() === 'female'
+          ? 'f'
+          : 'm';
       break;
-    case "DOBY":
-      updatedProperty = userInformation.trim().replace(/\./g, "");
+    case 'DOBY':
+      updatedProperty = userInformation.trim().replace(/\./g, '');
       break;
-    case "DOBM":
-      userInformationTrimmed = userInformation.replace(/\./g, "");
+    case 'DOBM':
+      userInformationTrimmed = userInformation.replace(/\./g, '');
       if (userInformationTrimmed.length < 2) {
         updatedProperty = `0${userInformationTrimmed}`;
       } else {
         updatedProperty = userInformationTrimmed;
       }
       break;
-    case "DOBD":
-      userInformationTrimmed = userInformation.replace(/\./g, "");
+    case 'DOBD':
+      userInformationTrimmed = userInformation.replace(/\./g, '');
       if (userInformationTrimmed.length < 2) {
         updatedProperty = `0${userInformationTrimmed}`;
       } else {
         updatedProperty = userInformationTrimmed;
       }
       break;
-    case "LN":
-    case "FN":
-    case "FI":
-      if (userProperty !== "FI") {
-        updatedProperty = userInformation
-          .toLowerCase()
-          .replace(/[^a-zA-Z@#$%&!]/g, "");
+    case 'LN':
+    case 'FN':
+    case 'FI':
+      if (userProperty !== 'FI') {
+        updatedProperty = userInformation.toLowerCase().replace(/[!#$%&@A-Za-z]/g, '');
       } else {
-        updatedProperty = userInformation
-          .toLowerCase()
-          .replace(/[^a-zA-Z@#$%&!,.?]/g, "");
+        updatedProperty = userInformation.toLowerCase().replace(/[^!#$%&,.?@A-Za-z]/g, '');
       }
       break;
-    case "MADID":
+    case 'MADID':
       updatedProperty = userInformation.toLowerCase();
       break;
-    case "COUNTRY":
+    case 'COUNTRY':
       updatedProperty = userInformation.toLowerCase();
       break;
-    case "ZIP":
-      userInformationTrimmed = userInformation.replace(/\s/g, "");
+    case 'ZIP':
+      userInformationTrimmed = userInformation.replace(/\s/g, '');
       updatedProperty = userInformationTrimmed.toLowerCase();
       break;
-    case "ST":
-    case "CT":
+    case 'ST':
+    case 'CT':
       updatedProperty = userInformation
-        .replace(/[^a-zA-Z ]/g, "")
-        .replace(/\s/g, "")
+        .replace(/[^ A-Za-z]/g, '')
+        .replace(/\s/g, '')
         .toLowerCase();
       break;
-    case "EXTERN_ID":
+    case 'EXTERN_ID':
       updatedProperty = userInformation;
       break;
     default:
-      throw new CustomError(
-        `The property ${userProperty} is not supported`,
-        400
-      );
+      throw new ConfigurationError(`The property ${userProperty} is not supported`);
   }
   return updatedProperty;
 };
@@ -156,27 +148,24 @@ const prepareDataField = (
   userUpdateList,
   isHashRequired,
   disableFormat,
-  skipVerify
+  skipVerify,
 ) => {
   const data = [];
   let updatedProperty;
   let dataElement;
-  userUpdateList.forEach(eachUser => {
+  userUpdateList.forEach((eachUser) => {
     dataElement = [];
-    userSchema.forEach(eachProperty => {
+    userSchema.forEach((eachProperty) => {
       // if skip verify is true we replace undefined/null user properties with empty string
       let userProperty = eachUser[eachProperty];
       if (skipVerify && !isDefinedAndNotNull(userProperty)) {
-        userProperty = "";
+        userProperty = '';
       }
       if (isDefinedAndNotNull(userProperty)) {
         if (isHashRequired) {
           if (!disableFormat) {
             // when user requires formatting
-            updatedProperty = ensureApplicableFormat(
-              eachProperty,
-              userProperty
-            );
+            updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
           } else {
             // when user requires hashing but does not require formatting
             updatedProperty = userProperty;
@@ -185,11 +174,7 @@ const prepareDataField = (
           // when hashing is not required
           updatedProperty = userProperty;
         }
-        if (
-          isHashRequired &&
-          eachProperty !== "MADID" &&
-          eachProperty !== "EXTERN_ID"
-        ) {
+        if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
           // for MOBILE_ADVERTISER_ID, MADID,EXTERN_ID hashing is not required ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
           updatedProperty = `${updatedProperty}`;
           dataElement.push(sha256(updatedProperty));
@@ -197,9 +182,8 @@ const prepareDataField = (
           dataElement.push(updatedProperty);
         }
       } else {
-        throw new CustomError(
+        throw new ConfigurationError(
           `Configured Schema field ${eachProperty} is missing in one or more user records`,
-          400
         );
       }
     });
@@ -217,7 +201,7 @@ const preparePayload = (
   paramsPayload,
   isHashRequired,
   disableFormat,
-  skipVerify
+  skipVerify,
 ) => {
   const prepareFinalPayload = paramsPayload;
   if (Array.isArray(userSchema)) {
@@ -231,7 +215,7 @@ const preparePayload = (
     userUpdateList,
     isHashRequired,
     disableFormat,
-    skipVerify
+    skipVerify,
   );
   return prepareFinalPayload;
 };
@@ -241,18 +225,11 @@ const preparePayload = (
 const prepareResponse = (
   message,
   destination,
-  isHashRequired = true,
   allowedAudienceArray,
-  userSchema
+  userSchema,
+  isHashRequired = true,
 ) => {
-  const {
-    accessToken,
-    disableFormat,
-    type,
-    subType,
-    isRaw,
-    skipVerify
-  } = destination.Config;
+  const { accessToken, disableFormat, type, subType, isRaw, skipVerify } = destination.Config;
 
   const mappedToDestination = get(message, MappedToDestinationKey);
 
@@ -275,11 +252,11 @@ const prepareResponse = (
   }
   // creating the data_source block
 
-  if (type && type !== "NA" && typeFields.includes(type)) {
+  if (type && type !== 'NA' && typeFields.includes(type)) {
     dataSource.type = type;
   }
 
-  if (subType && subType !== "NA" && subTypeFields.includes(subType)) {
+  if (subType && subType !== 'NA' && subTypeFields.includes(subType)) {
     dataSource.sub_type = subType;
   }
   if (Object.keys(dataSource).length > 0) {
@@ -291,7 +268,7 @@ const prepareResponse = (
     paramsPayload,
     isHashRequired,
     disableFormat,
-    skipVerify
+    skipVerify,
   );
 
   return prepareParams;
@@ -305,23 +282,20 @@ const processEvent = (message, destination) => {
   let { userSchema } = destination.Config;
   const { isHashRequired, audienceId, maxUserCount } = destination.Config;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
   const maxUserCountNumber = parseInt(maxUserCount, 10);
 
   if (Number.isNaN(maxUserCountNumber)) {
-    throw new CustomError("Batch size must be an Integer.", 400);
+    throw new ConfigurationError('Batch size must be an Integer.');
   }
-  if (message.type.toLowerCase() !== "audiencelist") {
-    throw new CustomError(` ${message.type} call is not supported `, 400);
+  if (message.type.toLowerCase() !== 'audiencelist') {
+    throw new InstrumentationError(` ${message.type} call is not supported `);
   }
   const operationAudienceId = audienceId;
 
   if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
-    throw new CustomError("Audience ID is a mandatory field", 400);
+    throw new ConfigurationError('Audience ID is a mandatory field');
   }
 
   const mappedToDestination = get(message, MappedToDestinationKey);
@@ -337,30 +311,24 @@ const processEvent = (message, destination) => {
 
   // when configured schema field is different from the allowed fields
   if (!checkSubsetOfArray(schemaFields, userSchema)) {
-    throw new CustomError(
-      "One or more of the schema fields are not supported",
-      400
-    );
+    throw new ConfigurationError('One or more of the schema fields are not supported');
   }
   const { listData } = message.properties;
 
   // when "remove" is present in the payload
   if (isDefinedAndNotNullAndNotEmpty(listData[USER_DELETE])) {
-    const audienceChunksArray = returnArrayOfSubarrays(
-      listData[USER_DELETE],
-      maxUserCountNumber
-    );
-    audienceChunksArray.forEach(allowedAudienceArray => {
+    const audienceChunksArray = returnArrayOfSubarrays(listData[USER_DELETE], maxUserCountNumber);
+    audienceChunksArray.forEach((allowedAudienceArray) => {
       response = prepareResponse(
         message,
         destination,
-        isHashRequired,
         allowedAudienceArray,
-        userSchema
+        userSchema,
+        isHashRequired,
       );
       wrappedResponse = {
         responseField: response,
-        operationCategory: USER_DELETE
+        operationCategory: USER_DELETE,
       };
       toSendEvents.push(wrappedResponse);
     });
@@ -368,78 +336,54 @@ const processEvent = (message, destination) => {
 
   // When "add" is present in the payload
   if (isDefinedAndNotNullAndNotEmpty(listData[USER_ADD])) {
-    const audienceChunksArray = returnArrayOfSubarrays(
-      listData[USER_ADD],
-      maxUserCountNumber
-    );
-    audienceChunksArray.forEach(allowedAudienceArray => {
+    const audienceChunksArray = returnArrayOfSubarrays(listData[USER_ADD], maxUserCountNumber);
+    audienceChunksArray.forEach((allowedAudienceArray) => {
       response = prepareResponse(
         message,
         destination,
-        isHashRequired,
         allowedAudienceArray,
-        userSchema
+        userSchema,
+        isHashRequired,
       );
       wrappedResponse = {
         responseField: response,
-        operationCategory: USER_ADD
+        operationCategory: USER_ADD,
       };
       toSendEvents.push(wrappedResponse);
     });
   }
-  toSendEvents.forEach(sendEvent => {
+  toSendEvents.forEach((sendEvent) => {
     respList.push(responseBuilderSimple(sendEvent, operationAudienceId));
   });
   // When userListAdd or userListDelete is absent or both passed as empty arrays
   if (respList.length === 0) {
-    throw new CustomError(
-      "missing valid parameters, unable to generate transformed payload",
-      400
+    throw new InstrumentationError(
+      'Missing valid parameters, unable to generate transformed payload',
     );
   }
   return respList;
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
-const processRouterDest = inputs => {
+const processRouterDest = (inputs, reqMetadata) => {
   if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
+    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
     return [respEvents];
   }
-  const respList = inputs.map(input => {
+  const respList = inputs.map((input) => {
     try {
       if (input.message.statusCode) {
         // already transformed event
-        return getSuccessRespEvents(
-          input.message,
-          [input.metadata],
-          input.destination
-        );
+        return getSuccessRespEvents(input.message, [input.metadata], input.destination);
       }
       const transformedList = process(input);
-      const responseList = transformedList.map(transformedPayload => {
-        return getSuccessRespEvents(
-          transformedPayload,
-          [input.metadata],
-          input.destination
-        );
-      });
+      const responseList = transformedList.map((transformedPayload) =>
+        getSuccessRespEvents(transformedPayload, [input.metadata], input.destination),
+      );
       return responseList;
     } catch (error) {
-      const errObj = generateErrorObject(
-        error,
-        "FB_CUSTOM_AUDIENCE", // Preference is destination definition name
-        TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM
-      );
-      return getErrorRespEvents(
-        [input.metadata],
-        400,
-        error.message || "Error occurred while processing the payload.",
-        errObj.statTags
-      );
+      return handleRtTfSingleEventError(input, error, reqMetadata);
     }
   });
   return flattenMap(respList);

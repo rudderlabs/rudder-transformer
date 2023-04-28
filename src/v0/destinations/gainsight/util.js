@@ -1,13 +1,9 @@
-const axios = require("axios");
-const logger = require("../../../logger");
-const { ENDPOINTS, getLookupPayload } = require("./config");
-
-class CustomError extends Error {
-  constructor(message, statusCode) {
-    super(message);
-    this.response = { status: statusCode };
-  }
-}
+const axios = require('axios');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const logger = require('../../../logger');
+const { ConfigurationError, RetryableError, NetworkError } = require('../../util/errorTypes');
+const { ENDPOINTS, getLookupPayload } = require('./config');
+const tags = require('../../util/tags');
 
 const searchGroup = async (groupName, Config) => {
   let resp;
@@ -18,22 +14,24 @@ const searchGroup = async (groupName, Config) => {
       {
         headers: {
           Accesskey: Config.accessKey,
-          "Content-Type": "application/json"
-        }
-      }
+          'Content-Type': 'application/json',
+        },
+      },
     );
   } catch (error) {
-    let errMessage = "";
+    let errMessage = '';
     let errorStatus = 500;
     if (error.response && error.response.data) {
       errMessage = error.response.data.errorDesc;
       errorStatus = error.response.status;
     }
-    throw new CustomError(`failed to search group ${errMessage}`, errorStatus);
+    throw new NetworkError(`failed to search group ${errMessage}`, errorStatus, {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
+    });
   }
 
   if (!resp || !resp.data || resp.status !== 200) {
-    throw new CustomError("failed to search group", 500);
+    throw new RetryableError('failed to search group');
   }
   return resp;
 };
@@ -44,27 +42,29 @@ const createGroup = async (payload, Config) => {
     resp = await axios.post(
       `${ENDPOINTS.groupCreateEndpoint(Config.domain)}`,
       {
-        records: [payload]
+        records: [payload],
       },
       {
         headers: {
           Accesskey: Config.accessKey,
-          "Content-Type": "application/json"
-        }
-      }
+          'Content-Type': 'application/json',
+        },
+      },
     );
   } catch (error) {
-    let errMessage = "";
+    let errMessage = '';
     let errorStatus = 500;
     if (error.response && error.response.data) {
       errMessage = error.response.data.errorDesc;
       errorStatus = error.response.status;
     }
-    throw new CustomError(`failed to create group ${errMessage}`, errorStatus);
+    throw new NetworkError(`failed to create group ${errMessage}`, errorStatus, {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
+    });
   }
 
   if (!resp || !resp.data || resp.status !== 200) {
-    throw new CustomError("failed to create group", 500);
+    throw new RetryableError('failed to create group');
   }
   return resp.data.data.records[0].Gsid;
 };
@@ -75,30 +75,32 @@ const updateGroup = async (payload, Config) => {
     resp = await axios.put(
       `${ENDPOINTS.groupUpdateEndpoint(Config.domain)}`,
       {
-        records: [payload]
+        records: [payload],
       },
       {
         headers: {
           Accesskey: Config.accessKey,
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
         params: {
-          keys: "Name"
-        }
-      }
+          keys: 'Name',
+        },
+      },
     );
   } catch (error) {
-    let errMessage = "";
+    let errMessage = '';
     let errorStatus = 500;
     if (error.response && error.response.data) {
       errMessage = error.response.data.errorDesc;
       errorStatus = error.response.status;
     }
-    throw new CustomError(`failed to update group ${errMessage}`, errorStatus);
+    throw new NetworkError(`failed to update group ${errMessage}`, errorStatus, {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
+    });
   }
 
   if (!resp || !resp.data || resp.status !== 200) {
-    throw new CustomError("failed to update group", 500);
+    throw new RetryableError('failed to update group');
   }
   return resp.data.data.records[0].Gsid;
 };
@@ -115,7 +117,7 @@ const renameCustomFieldsFromMap = (payload, fieldsMap, exlusionKeys) => {
   const mappedPayload = {};
 
   if (!fieldsMap || Object.keys(fieldsMap).length === 0) {
-    Object.keys(payload).forEach(key => {
+    Object.keys(payload).forEach((key) => {
       if (exlusionKeys.includes(key)) {
         mappedPayload[key] = payload[key];
       }
@@ -124,7 +126,7 @@ const renameCustomFieldsFromMap = (payload, fieldsMap, exlusionKeys) => {
   }
 
   const fieldMapKeys = Object.keys(fieldsMap);
-  Object.keys(payload).forEach(key => {
+  Object.keys(payload).forEach((key) => {
     if (exlusionKeys.includes(key)) {
       mappedPayload[key] = payload[key];
     } else if (fieldMapKeys.includes(key)) {
@@ -138,9 +140,9 @@ const renameCustomFieldsFromMap = (payload, fieldsMap, exlusionKeys) => {
 
 const getConfigOrThrowError = (Config, requiredKeys, methodName) => {
   const retObj = {};
-  requiredKeys.forEach(key => {
+  requiredKeys.forEach((key) => {
     if (!Config[key]) {
-      throw new CustomError(`${key} is required for ${methodName}`, 500);
+      throw new ConfigurationError(`${key} is required for ${methodName}`, 500);
     }
     retObj[key] = Config[key];
   });
@@ -153,5 +155,4 @@ module.exports = {
   updateGroup,
   renameCustomFieldsFromMap,
   getConfigOrThrowError,
-  CustomError
 };

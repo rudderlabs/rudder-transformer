@@ -1,39 +1,29 @@
-const get = require("get-value");
-const { EventType } = require("../../../constants");
+const get = require('get-value');
+const { EventType } = require('../../../constants');
 const {
-  CustomError,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
-  getDestinationExternalIDInfoForRetl
-} = require("../../util");
-const { API_VERSION, DESTINATION } = require("./config");
+  getDestinationExternalIDInfoForRetl,
+} = require('../../util');
+const { API_VERSION } = require('./config');
 const {
   processLegacyIdentify,
   processLegacyTrack,
-  legacyBatchEvents
-} = require("./HSTransform-v1");
-const {
-  MappedToDestinationKey,
-  GENERIC_TRUE_VALUES
-} = require("../../../constants");
-const {
-  processIdentify,
-  processTrack,
-  batchEvents
-} = require("./HSTransform-v2");
+  legacyBatchEvents,
+} = require('./HSTransform-v1');
+const { MappedToDestinationKey, GENERIC_TRUE_VALUES } = require('../../../constants');
+const { processIdentify, processTrack, batchEvents } = require('./HSTransform-v2');
 const {
   splitEventsForCreateUpdate,
   fetchFinalSetOfTraits,
   getProperties,
-  validateDestinationConfig
-} = require("./util");
+  validateDestinationConfig,
+} = require('./util');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 const processSingleMessage = async (message, destination, propertyMap) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError('Message type is not present. Aborting message.');
   }
 
   // Config Validation
@@ -47,9 +37,7 @@ const processSingleMessage = async (message, destination, propertyMap) => {
         response.push(await processIdentify(message, destination, propertyMap));
       } else {
         // Legacy API
-        response.push(
-          await processLegacyIdentify(message, destination, propertyMap)
-        );
+        response.push(await processLegacyIdentify(message, destination, propertyMap));
       }
       break;
     }
@@ -61,25 +49,19 @@ const processSingleMessage = async (message, destination, propertyMap) => {
       }
       break;
     default:
-      throw new CustomError(
-        `Message type ${message.type} is not supported`,
-        400
-      );
+      throw new InstrumentationError(`Message type ${message.type} is not supported`);
   }
 
   return response;
 };
 
 // has been deprecated - using routerTransform for both the versions
-const process = async event => {
-  const { destination } = event;
-  const mappedToDestination = get(event.message, MappedToDestinationKey);
+const process = async (event) => {
+  const { destination, message } = event;
+  const mappedToDestination = get(message, MappedToDestinationKey);
   let events = [];
   events = [event];
-  if (
-    mappedToDestination &&
-    GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
-  ) {
+  if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
     // get info about existing objects and splitting accordingly.
     events = await splitEventsForCreateUpdate([event], destination);
   }
@@ -87,8 +69,8 @@ const process = async event => {
 };
 
 // we are batching by default at routerTransform
-const processRouterDest = async inputs => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs, DESTINATION);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -99,53 +81,45 @@ const processRouterDest = async inputs => {
   const { destination } = inputs[0];
   let propertyMap;
   const mappedToDestination = get(inputs[0].message, MappedToDestinationKey);
-  const { objectType } = getDestinationExternalIDInfoForRetl(
-    inputs[0].message,
-    "HS"
-  );
+  const { objectType } = getDestinationExternalIDInfoForRetl(inputs[0].message, 'HS');
 
   try {
-    if (
-      mappedToDestination &&
-      GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())
-    ) {
+    if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
       // skip splitting the batches to inserts and updates if object it is an association
-      if (objectType.toLowerCase() !== "association") {
+      if (objectType.toLowerCase() !== 'association') {
         // get info about existing objects and splitting accordingly.
         inputs = await splitEventsForCreateUpdate(inputs, destination);
       }
     } else {
       // reduce the no. of calls for properties endpoint
-      const traitsFound = inputs.some(input => {
-        return fetchFinalSetOfTraits(input.message) !== undefined;
-      });
+      const traitsFound = inputs.some(
+        (input) => fetchFinalSetOfTraits(input.message) !== undefined,
+      );
       if (traitsFound) {
         propertyMap = await getProperties(destination);
       }
     }
   } catch (error) {
     // Any error thrown from the above try block applies to all the events
-    return inputs.map(input =>
-      handleRtTfSingleEventError(input, error, DESTINATION)
-    );
+    return inputs.map((input) => handleRtTfSingleEventError(input, error, reqMetadata));
   }
 
   await Promise.all(
-    inputs.map(async input => {
+    inputs.map(async (input) => {
       try {
         if (input.message.statusCode) {
           // already transformed event
           successRespList.push({
             message: input.message,
             metadata: input.metadata,
-            destination
+            destination,
           });
         } else {
           // event is not transformed
           let receivedResponse = await processSingleMessage(
             input.message,
             destination,
-            propertyMap
+            propertyMap,
           );
 
           receivedResponse = Array.isArray(receivedResponse)
@@ -154,28 +128,24 @@ const processRouterDest = async inputs => {
 
           // received response can be in array format [{}, {}, {}, ..., {}]
           // if multiple response is being returned
-          receivedResponse.forEach(element => {
+          receivedResponse.forEach((element) => {
             successRespList.push({
               message: element,
               metadata: input.metadata,
-              destination
+              destination,
             });
           });
         }
       } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(
-          input,
-          error,
-          DESTINATION
-        );
+        const errRespEvent = handleRtTfSingleEventError(input, error, reqMetadata);
         errorRespList.push(errRespEvent);
       }
-    })
+    }),
   );
 
   // batch implementation
   let batchedResponseList = [];
-  if (successRespList.length) {
+  if (successRespList.length > 0) {
     if (destination.Config.apiVersion === API_VERSION.v3) {
       batchedResponseList = batchEvents(successRespList);
     } else {

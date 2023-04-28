@@ -1,7 +1,6 @@
-const get = require("get-value");
-const { EventType } = require("../../../constants");
+const get = require('get-value');
+const { EventType } = require('../../../constants');
 const {
-  CustomError,
   defaultPostRequestConfig,
   constructPayload,
   defaultRequestConfig,
@@ -10,15 +9,22 @@ const {
   getDestinationExternalID,
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
-  getFieldValueFromMessage
-} = require("../../util");
+  getFieldValueFromMessage,
+  getIntegrationsObj,
+  isHybridModeEnabled,
+} = require('../../util');
+const {
+  InstrumentationError,
+  ConfigurationError,
+  UnsupportedEventError,
+} = require('../../util/errorTypes');
 const {
   ENDPOINT,
   DEBUG_ENDPOINT,
   trackCommonConfig,
   mappingConfig,
-  ConfigCategory
-} = require("./config");
+  ConfigCategory,
+} = require('./config');
 const {
   isReservedEventName,
   GA4_RESERVED_PARAMETER_EXCLUSION,
@@ -31,27 +37,36 @@ const {
   getGA4ExclusionList,
   getItem,
   getGA4CustomParameters,
-  GA4_PARAMETERS_EXCLUSION
-} = require("./utils");
+  GA4_PARAMETERS_EXCLUSION,
+} = require('./utils');
 
 /**
- * Returns GA4 client_id
+ * returns client_id
  * @param {*} message
  * @param {*} clientIdFieldIdentifier
  * @returns
  */
-const getGA4ClientId = (message, { clientIdFieldIdentifier }) => {
+const getGA4ClientId = (message, Config) => {
   let clientId;
-  // first we will search from webapp
-  if (clientIdFieldIdentifier) {
-    clientId = get(message, clientIdFieldIdentifier);
+
+  // if hybrid mode enabled, take client_id from integrationsObj
+  if (isHybridModeEnabled(Config)) {
+    const integrationsObj = getIntegrationsObj(message, 'ga4');
+    if (integrationsObj && integrationsObj.clientId) {
+      return integrationsObj.clientId;
+    }
+  }
+
+  // for cloud mode first we will search from webapp
+  if (Config.clientIdFieldIdentifier) {
+    clientId = get(message, Config.clientIdFieldIdentifier);
   }
   // if we don't find it from the config then we will fall back to the default search
   if (!clientId) {
     clientId =
-      getDestinationExternalID(message, "ga4ClientId") ||
-      get(message, "anonymousId") ||
-      get(message, "messageId");
+      getDestinationExternalID(message, 'ga4ClientId') ||
+      get(message, 'anonymousId') ||
+      get(message, 'messageId');
   }
   return clientId;
 };
@@ -63,115 +78,98 @@ const getGA4ClientId = (message, { clientIdFieldIdentifier }) => {
  * @returns
  */
 const responseBuilder = (message, { Config }) => {
-  let event = get(message, "event");
+  let event = get(message, 'event');
   if (!event) {
-    throw new CustomError("Event name is required", 400);
+    throw new InstrumentationError('Event name is required');
   }
 
   // trim and replace spaces with "_"
-  if (typeof event !== "string") {
-    throw new CustomError(
-      "[Google Analytics 4] track:: event name should be string"
-    );
+  if (typeof event !== 'string') {
+    throw new InstrumentationError('track:: event name should be string');
   }
-  event = event.trim().replace(/\s+/g, "_");
+  event = event.trim().replace(/\s+/g, '_');
 
   // reserved event names are not allowed
   if (isReservedEventName(event)) {
-    throw new CustomError(
-      "[Google Analytics 4] track:: Reserved event names are not allowed",
-      400
-    );
+    throw new InstrumentationError('track:: Reserved event names are not allowed');
   }
 
   // get common top level rawPayload
   let rawPayload = constructPayload(message, trackCommonConfig);
 
   switch (Config.typesOfClient) {
-    case "gtag":
+    case 'gtag':
       // gtag.js uses client_id
       // GA4 uses it as an identifier to distinguish site visitors.
       rawPayload.client_id = getGA4ClientId(message, Config);
       if (!isDefinedAndNotNull(rawPayload.client_id)) {
-        throw new CustomError(
-          `[Google Analytics 4]: ${Config.clientIdFieldIdentifier}, ga4ClientId, anonymousId or messageId must be provided`,
-          400
+        throw new ConfigurationError(
+          `${Config.clientIdFieldIdentifier}, ga4ClientId, anonymousId or messageId must be provided`,
         );
       }
       break;
-    case "firebase":
+    case 'firebase':
       // firebase uses app_instance_id
-      rawPayload.app_instance_id = getDestinationExternalID(
-        message,
-        "ga4AppInstanceId"
-      );
+      rawPayload.app_instance_id = getDestinationExternalID(message, 'ga4AppInstanceId');
       if (!isDefinedAndNotNull(rawPayload.app_instance_id)) {
-        throw new CustomError(
-          "ga4AppInstanceId must be provided under externalId",
-          400
-        );
+        throw new InstrumentationError('ga4AppInstanceId must be provided under externalId');
       }
       break;
     default:
-      throw CustomError("GA4: Invalid type of client", 400);
+      throw ConfigurationError('Invalid type of client');
   }
 
   let payload = {};
   const eventConfig = ConfigCategory[`${event.toUpperCase()}`];
-  if (message.type === "track" && eventConfig) {
+  if (message.type === 'track' && eventConfig) {
     // GA4 standard events
     // get event specific parameters
 
-    payload.name = eventConfig.event;
-    payload.params = constructPayload(message, mappingConfig[eventConfig.name]);
+    const { itemList, item, event: evConfigEvent, name } = eventConfig;
+    payload.name = evConfigEvent;
+    payload.params = constructPayload(message, mappingConfig[name]);
 
-    const { itemList, item } = eventConfig;
     if (item) {
       // item
-      payload.params.items = getItem(message, item === "YES");
+      payload.params.items = getItem(message, item === 'YES');
     } else if (itemList) {
       // itemList
-      payload.params.items = getItemList(message, itemList === "YES");
+      payload.params.items = getItemList(message, itemList === 'YES');
     }
 
     // for select_item and view_item event we take custom properties from properties
     // excluding items/product properties
-    if (payload.name === "select_item" || payload.name === "view_item") {
+    if (payload.name === 'select_item' || payload.name === 'view_item') {
       // exclude event properties
-      let ITEM_EXCLUSION_LIST = getGA4ExclusionList(
-        mappingConfig[eventConfig.name]
-      );
+      let ITEM_EXCLUSION_LIST = getGA4ExclusionList(mappingConfig[name]);
       // exclude items/product properties
       ITEM_EXCLUSION_LIST = ITEM_EXCLUSION_LIST.concat(
-        getGA4ExclusionList(mappingConfig[ConfigCategory.ITEM.name])
+        getGA4ExclusionList(mappingConfig[ConfigCategory.ITEM.name]),
       );
 
       payload.params = getGA4CustomParameters(
         message,
-        ["properties"],
+        ['properties'],
         ITEM_EXCLUSION_LIST,
-        payload
+        payload,
       );
     } else {
       payload.params = getGA4CustomParameters(
         message,
-        ["properties"],
-        getGA4ExclusionList(mappingConfig[eventConfig.name]),
-        payload
+        ['properties'],
+        getGA4ExclusionList(mappingConfig[name]),
+        payload,
       );
     }
 
     // take optional params parameters for track()
     payload.params = {
       ...payload.params,
-      ...constructPayload(
-        message,
-        mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]
-      )
+      ...constructPayload(message, mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]),
     };
-  } else if (message.type === "identify") {
+  } else if (message.type === 'identify') {
     payload.name = event;
-    const traits = getFieldValueFromMessage(message, "traits");
+    const traits = getFieldValueFromMessage(message, 'traits');
 
     // exclusion list for login/signup and generate_lead
     // identify has newOrExistingUserTrait, loginSignupMethod
@@ -180,12 +178,12 @@ const responseBuilder = (message, { Config }) => {
       `${Config.newOrExistingUserTrait}`,
       `${Config.loginSignupMethod}`,
       `${Config.generateLeadValueTrait}`,
-      `${Config.generateLeadCurrencyTrait}`
+      `${Config.generateLeadCurrencyTrait}`,
     ];
 
     switch (event) {
-      case "login":
-      case "sign_up": {
+      case 'login':
+      case 'sign_up': {
         // taking method property from traits
         // depending on loginSignupMethod key defined in Config
         const method = traits[`${Config.loginSignupMethod}`];
@@ -196,7 +194,7 @@ const responseBuilder = (message, { Config }) => {
         }
         break;
       }
-      case "generate_lead": {
+      case 'generate_lead': {
         let parameter = {};
         // taking value parameter
         // depending on generateLeadValueTrait key defined in Config
@@ -207,14 +205,13 @@ const responseBuilder = (message, { Config }) => {
         parameter = removeUndefinedAndNullValues(parameter);
 
         if (!isDefinedAndNotNull(parameter.value)) {
-          throw new CustomError(
+          throw new InstrumentationError(
             `[GA4] Identify:: '${Config.generateLeadValueTrait}' is a required field in traits for 'generate_lead' event`,
-            400
           );
         }
 
         if (!isDefinedAndNotNull(parameter.currency)) {
-          parameter.currency = "USD";
+          parameter.currency = 'USD';
         }
 
         parameter.value = parseFloat(parameter.value);
@@ -227,9 +224,9 @@ const responseBuilder = (message, { Config }) => {
 
     payload.params = getGA4CustomParameters(
       message,
-      ["traits", "context.traits"],
+      ['traits', 'context.traits'],
       GA4_IDENTIFY_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
-      payload
+      payload,
     );
 
     // take optional params parameters for identify()
@@ -237,45 +234,36 @@ const responseBuilder = (message, { Config }) => {
       ...payload.params,
       ...constructPayload(
         message,
-        mappingConfig[ConfigCategory.IdentifyGroupCommonParamsConfig.name]
-      )
+        mappingConfig[ConfigCategory.IdentifyGroupCommonParamsConfig.name],
+      ),
     };
-  } else if (message.type === "page") {
+  } else if (message.type === 'page') {
     // page event
     payload.name = event;
-    payload.params = constructPayload(
-      message,
-      mappingConfig[ConfigCategory.PAGE.name]
-    );
+    payload.params = constructPayload(message, mappingConfig[ConfigCategory.PAGE.name]);
 
     payload.params = getGA4CustomParameters(
       message,
-      ["properties"],
+      ['properties'],
       GA4_RESERVED_PARAMETER_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
-      payload
+      payload,
     );
 
     // take optional params parameters for page()
     payload.params = {
       ...payload.params,
-      ...constructPayload(
-        message,
-        mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]
-      )
+      ...constructPayload(message, mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]),
     };
-  } else if (message.type === "group") {
+  } else if (message.type === 'group') {
     // group event
     payload.name = event;
-    payload.params = constructPayload(
-      message,
-      mappingConfig[ConfigCategory.GROUP.name]
-    );
+    payload.params = constructPayload(message, mappingConfig[ConfigCategory.GROUP.name]);
 
     payload.params = getGA4CustomParameters(
       message,
-      ["traits", "context.traits"],
+      ['traits', 'context.traits'],
       getGA4ExclusionList(mappingConfig[ConfigCategory.GROUP.name]),
-      payload
+      payload,
     );
 
     // take optional params parameters for group()
@@ -283,24 +271,20 @@ const responseBuilder = (message, { Config }) => {
       ...payload.params,
       ...constructPayload(
         message,
-        mappingConfig[ConfigCategory.IdentifyGroupCommonParamsConfig.name]
-      )
+        mappingConfig[ConfigCategory.IdentifyGroupCommonParamsConfig.name],
+      ),
     };
   } else {
     // track
     // custom events category
     // Event names are case sensitive
     if (isReservedWebCustomEventName(event)) {
-      throw new CustomError(
-        "[Google Analytics 4] track:: Reserved custom event names are not allowed",
-        400
-      );
+      throw new InstrumentationError('track:: Reserved custom event names are not allowed');
     }
 
     if (isReservedWebCustomPrefixName(event)) {
-      throw new CustomError(
-        "[Google Analytics 4] track:: Reserved custom prefix names are not allowed",
-        400
+      throw new InstrumentationError(
+        '[Google Analytics 4] track:: Reserved custom prefix names are not allowed',
       );
     }
 
@@ -309,22 +293,23 @@ const responseBuilder = (message, { Config }) => {
     // all extra parameters passed is incorporated inside params
     payload.params = getGA4CustomParameters(
       message,
-      ["properties"],
+      ['properties'],
       GA4_RESERVED_PARAMETER_EXCLUSION.concat(GA4_PARAMETERS_EXCLUSION),
-      payload
+      payload,
     );
 
     // take optional params parameters for custom events
     payload.params = {
       ...payload.params,
-      ...constructPayload(
-        message,
-        mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]
-      )
+      ...constructPayload(message, mappingConfig[ConfigCategory.TrackPageCommonParamsConfig.name]),
     };
   }
 
   removeReservedParameterPrefixNames(payload.params);
+  const integrationsObj = getIntegrationsObj(message, 'ga4');
+  if (integrationsObj && integrationsObj.sessionId) {
+    payload.params.session_id = integrationsObj.sessionId;
+  }
 
   if (payload.params) {
     payload.params = removeUndefinedAndNullValues(payload.params);
@@ -339,8 +324,8 @@ const responseBuilder = (message, { Config }) => {
   userProperties = extractCustomFields(
     message,
     userProperties,
-    ["properties.user_properties"],
-    GA4_RESERVED_USER_PROPERTY_EXCLUSION
+    ['properties.user_properties'],
+    GA4_RESERVED_USER_PROPERTY_EXCLUSION,
   );
   if (!isEmptyObject(userProperties)) {
     rawPayload.user_properties = userProperties;
@@ -362,19 +347,19 @@ const responseBuilder = (message, { Config }) => {
     response.endpoint = ENDPOINT;
   }
   response.headers = {
-    HOST: "www.google-analytics.com",
-    "Content-Type": "application/json"
+    HOST: 'www.google-analytics.com',
+    'Content-Type': 'application/json',
   };
   response.params = {
-    api_secret: Config.apiSecret
+    api_secret: Config.apiSecret,
   };
 
   // setting response params as per client type
   switch (Config.typesOfClient) {
-    case "gtag":
+    case 'gtag':
       response.params.measurement_id = Config.measurementId;
       break;
-    case "firebase":
+    case 'firebase':
       response.params.firebase_app_id = Config.firebaseAppId;
       break;
     default:
@@ -385,28 +370,25 @@ const responseBuilder = (message, { Config }) => {
   return response;
 };
 
-const process = event => {
+const process = (event) => {
   const { message, destination } = event;
   const { Config } = destination;
 
   if (!Config.typesOfClient) {
-    throw new CustomError("Client type not found. Aborting ", 400);
+    throw new ConfigurationError('Client type not found. Aborting ');
   }
   if (!Config.apiSecret) {
-    throw new CustomError("API Secret not found. Aborting ", 400);
+    throw new ConfigurationError('API Secret not found. Aborting ');
   }
-  if (Config.typesOfClient === "gtag" && !Config.measurementId) {
-    throw new CustomError("measurementId must be provided. Aborting", 400);
+  if (Config.typesOfClient === 'gtag' && !Config.measurementId) {
+    throw new ConfigurationError('measurementId must be provided. Aborting');
   }
-  if (Config.typesOfClient === "firebase" && !Config.firebaseAppId) {
-    throw new CustomError("firebaseAppId must be provided. Aborting", 400);
+  if (Config.typesOfClient === 'firebase' && !Config.firebaseAppId) {
+    throw new ConfigurationError('firebaseAppId must be provided. Aborting');
   }
 
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
 
   const messageType = message.type.toLowerCase();
@@ -417,21 +399,20 @@ const process = event => {
         response = [];
         // 1. send login/signup event based on config
         // Convert identify event to Login or Signup event
-        const traits = getFieldValueFromMessage(message, "traits");
+        const traits = getFieldValueFromMessage(message, 'traits');
         // newOrExistingUserTrait can be 'firstLogin' keyword - true/false
         const firstLogin = traits[`${Config.newOrExistingUserTrait}`];
         if (!isDefinedAndNotNull(firstLogin)) {
-          throw new CustomError(
-            `[GA4] Identify:: traits should contain '${Config.newOrExistingUserTrait}' parameter with a boolean value to differentiate between the new or existing user`,
-            400
+          throw new InstrumentationError(
+            `Identify:: traits should contain '${Config.newOrExistingUserTrait}' parameter with a boolean value to differentiate between the new or existing user`,
           );
         }
 
         if (Config.sendLoginSignup) {
           if (firstLogin) {
-            message.event = "sign_up";
+            message.event = 'sign_up';
           } else {
-            message.event = "login";
+            message.event = 'login';
           }
 
           response.push(responseBuilder(message, destination));
@@ -439,14 +420,11 @@ const process = event => {
 
         // 2. send generate_lead based on config
         if (Config.generateLead && firstLogin === true) {
-          message.event = "generate_lead";
+          message.event = 'generate_lead';
           response.push(responseBuilder(message, destination));
         }
       } else {
-        throw new CustomError(
-          "[GA4] Identify:: Server side identify is not enabled",
-          400
-        );
+        throw new ConfigurationError('Identify:: Server side identify is not enabled');
       }
       break;
     case EventType.TRACK:
@@ -454,16 +432,22 @@ const process = event => {
       break;
     case EventType.PAGE:
       // GA4 custom event 'page_view' is fired for page
-      message.event = "page_view";
-      response = responseBuilder(message, destination);
+      if (!isHybridModeEnabled(Config)) {
+        message.event = 'page_view';
+        response = responseBuilder(message, destination);
+      } else {
+        throw new UnsupportedEventError(
+          'GA4 Hybrid mode is enabled, page calls will be sent through device mode',
+        );
+      }
       break;
     case EventType.GROUP:
       // GA4 standard event 'join_group' is fired for group
-      message.event = "join_group";
+      message.event = 'join_group';
       response = responseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`Message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
   return response;
 };

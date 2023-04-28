@@ -1,29 +1,28 @@
-const md5 = require("md5");
-const get = require("get-value");
-const { EventType, MappedToDestinationKey } = require("../../../constants");
+const md5 = require('md5');
+const get = require('get-value');
+const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   ConfigCategory,
   MappingConfig,
   ReservedTraitsProperties,
-  ReservedCompanyProperties
-} = require("./config");
+  ReservedCompanyProperties,
+} = require('./config');
 const {
   constructPayload,
   removeUndefinedAndNullValues,
   defaultRequestConfig,
   defaultPostRequestConfig,
   getFieldValueFromMessage,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError,
-  addExternalIdToTraits
-} = require("../../util");
+  addExternalIdToTraits,
+  simpleProcessRouterDest,
+} = require('../../util');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 function getCompanyAttribute(company) {
   const companiesList = [];
   if (company.name || company.id) {
     const customAttributes = {};
-    Object.keys(company).forEach(key => {
+    Object.keys(company).forEach((key) => {
       // the key is not in ReservedCompanyProperties
       if (!ReservedCompanyProperties.includes(key)) {
         const val = company[key];
@@ -37,7 +36,7 @@ function getCompanyAttribute(company) {
       company_id: company.id || md5(company.name),
       custom_attributes: customAttributes,
       name: company.name,
-      industry: company.industry
+      industry: company.industry,
     });
   }
   return companiesList;
@@ -48,9 +47,9 @@ function validateIdentify(message, payload) {
 
   finalPayload.update_last_request_at = true;
   if (payload.user_id || payload.email) {
-    if (payload.name === undefined || payload.name === "") {
-      const firstName = getFieldValueFromMessage(message, "firstName");
-      const lastName = getFieldValueFromMessage(message, "lastName");
+    if (payload.name === undefined || payload.name === '') {
+      const firstName = getFieldValueFromMessage(message, 'firstName');
+      const lastName = getFieldValueFromMessage(message, 'lastName');
       if (firstName && lastName) {
         finalPayload.name = `${firstName} ${lastName}`;
       } else {
@@ -58,21 +57,19 @@ function validateIdentify(message, payload) {
       }
     }
 
-    if (get(finalPayload, "custom_attributes.company")) {
-      finalPayload.companies = getCompanyAttribute(
-        finalPayload.custom_attributes.company
-      );
+    if (get(finalPayload, 'custom_attributes.company')) {
+      finalPayload.companies = getCompanyAttribute(finalPayload.custom_attributes.company);
     }
 
     if (finalPayload.custom_attributes) {
-      ReservedTraitsProperties.forEach(trait => {
+      ReservedTraitsProperties.forEach((trait) => {
         delete finalPayload.custom_attributes[trait];
       });
     }
 
     return finalPayload;
   }
-  throw new CustomError("Email or userId is mandatory", 400);
+  throw new InstrumentationError('Email or userId is mandatory');
 }
 
 function validateTrack(message, payload) {
@@ -80,16 +77,16 @@ function validateTrack(message, payload) {
   if (payload.user_id || payload.email) {
     const metadata = {};
     if (message.properties) {
-      Object.keys(message.properties).forEach(key => {
+      Object.keys(message.properties).forEach((key) => {
         const val = message.properties[key];
-        if (val && typeof val !== "object" && !Array.isArray(val)) {
+        if (val && typeof val !== 'object' && !Array.isArray(val)) {
           metadata[key] = val;
         }
       });
     }
     return { ...payload, metadata };
   }
-  throw new CustomError("Email or userId is mandatory", 400);
+  throw new InstrumentationError('Email or userId is mandatory');
 }
 
 function validateAndBuildResponse(message, payload, category, destination) {
@@ -97,26 +94,22 @@ function validateAndBuildResponse(message, payload, category, destination) {
   const response = defaultRequestConfig();
   switch (messageType) {
     case EventType.IDENTIFY:
-      response.body.JSON = removeUndefinedAndNullValues(
-        validateIdentify(message, payload)
-      );
+      response.body.JSON = removeUndefinedAndNullValues(validateIdentify(message, payload));
       break;
     case EventType.TRACK:
-      response.body.JSON = removeUndefinedAndNullValues(
-        validateTrack(message, payload)
-      );
+      response.body.JSON = removeUndefinedAndNullValues(validateTrack(message, payload));
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
 
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = category.endpoint;
   response.headers = {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
     Authorization: `Bearer ${destination.Config.apiKey}`,
-    Accept: "application/json",
-    "Intercom-Version": "1.4"
+    Accept: 'application/json',
+    'Intercom-Version': '1.4',
   };
   response.userId = message.anonymousId;
   return response;
@@ -124,10 +117,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
 
 function processSingleMessage(message, destination) {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
   const { sendAnonymousId } = destination.Config;
   const messageType = message.type.toLowerCase();
@@ -144,14 +134,14 @@ function processSingleMessage(message, destination) {
     //   category = ConfigCategory.GROUP;
     //   break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
 
   // build the response and return
   let payload;
   if (get(message, MappedToDestinationKey)) {
     addExternalIdToTraits(message);
-    payload = getFieldValueFromMessage(message, "traits");
+    payload = getFieldValueFromMessage(message, 'traits');
   } else {
     payload = constructPayload(message, MappingConfig[category.name]);
   }
@@ -162,54 +152,12 @@ function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  let response;
-  try {
-    response = processSingleMessage(event.message, event.destination);
-  } catch (error) {
-    throw new CustomError(
-      error.message || "Unknown error",
-      error.status || 400
-    );
-  }
+  const response = processSingleMessage(event.message, event.destination);
   return response;
 }
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

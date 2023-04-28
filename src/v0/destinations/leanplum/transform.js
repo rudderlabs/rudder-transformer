@@ -1,19 +1,13 @@
-const { EventType } = require("../../../constants");
-const {
-  ConfigCategory,
-  mappingConfig,
-  ENDPOINT,
-  API_VERSION
-} = require("./config");
+const { EventType } = require('../../../constants');
+const { ConfigCategory, mappingConfig, ENDPOINT, API_VERSION } = require('./config');
 const {
   removeUndefinedValues,
   defaultPostRequestConfig,
   defaultRequestConfig,
   constructPayload,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError
-} = require("../../util");
+  simpleProcessRouterDest,
+} = require('../../util');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 function preparePayload(message, name, destination) {
   const mappingJson = mappingConfig[name];
@@ -21,10 +15,10 @@ function preparePayload(message, name, destination) {
     appId: destination.Config.applicationId,
     clientKey: destination.Config.clientKey,
     apiVersion: API_VERSION,
-    ...constructPayload(message, mappingJson)
+    ...constructPayload(message, mappingJson),
   };
 
-  if (rawPayload.newUserId === "") {
+  if (rawPayload.newUserId === '') {
     delete rawPayload.newUserId;
   }
 
@@ -51,12 +45,12 @@ function responseBuilderSimple(message, category, destination) {
   response.endpoint = ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
   response.userId = message.anonymousId;
   response.body.JSON = preparePayload(message, category.name, destination);
   response.params = {
-    action: category.action
+    action: category.action,
   };
 
   return response;
@@ -68,10 +62,7 @@ function startSession(message, destination) {
 
 function processSingleMessage(message, destination) {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError('Event type is required');
   }
   const messageType = message.type.toLowerCase();
   let category;
@@ -90,7 +81,7 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.SCREEN;
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
 
   // build the response
@@ -105,54 +96,11 @@ function processSingleMessage(message, destination) {
 }
 
 function process(event) {
-  let response;
-  try {
-    response = processSingleMessage(event.message, event.destination);
-  } catch (error) {
-    throw new CustomError(
-      error.message || "Unknown error",
-      error.status || 400
-    );
-  }
-  return response;
+  return processSingleMessage(event.message, event.destination);
 }
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

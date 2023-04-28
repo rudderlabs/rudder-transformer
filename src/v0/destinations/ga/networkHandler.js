@@ -1,10 +1,11 @@
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const {
-  REFRESH_TOKEN
-} = require("../../../adapters/networkhandler/authConstants");
-const {
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
-const ErrorBuilder = require("../../util/error");
+  processAxiosResponse,
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
+
+const { NetworkError, InvalidAuthTokenError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 /**
  * The response handler to handle responses from Google Analytics(Universal Analytics)
@@ -14,7 +15,7 @@ const ErrorBuilder = require("../../util/error");
  * @param {{success: boolean, response: any}} gaResponse
  * @returns
  */
-const gaResponseHandler = gaResponse => {
+const gaResponseHandler = (gaResponse) => {
   /**
    * Reference doc to understand the Data-structure of the error response
    * https://developers.google.com/analytics/devguides/config/userdeletion/v3/errors
@@ -22,28 +23,24 @@ const gaResponseHandler = gaResponse => {
   const processedDeletionRequest = processAxiosResponse(gaResponse);
   const { response, status } = processedDeletionRequest;
   if (response.error) {
-    const isInvalidCredsError = response.error?.errors?.some(errObj => {
-      return errObj.reason && errObj.reason === "invalidCredentials";
-    });
-    if (isInvalidCredsError || response?.error?.status === "UNAUTHENTICATED") {
-      throw new ErrorBuilder()
-        .setMessage("[GA] invalid credentials")
-        .setStatus(500)
-        .setDestinationResponse(response)
-        .setAuthErrorCategory(REFRESH_TOKEN)
-        .build();
+    const isInvalidCredsError = response.error?.errors?.some(
+      (errObj) => errObj.reason && errObj.reason === 'invalidCredentials',
+    );
+    if (isInvalidCredsError || response?.error?.status === 'UNAUTHENTICATED') {
+      throw new InvalidAuthTokenError('invalid credentials', 500, response, REFRESH_TOKEN);
     }
-    throw new ErrorBuilder()
-      .setMessage(
-        `[GA] Error occurred while completing deletion request: ${response.error?.message}`
-      )
-      .setStatus(status)
-      .setDestinationResponse(response)
-      .build();
+    throw new NetworkError(
+      `Error occurred while completing deletion request: ${response.error?.message}`,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      },
+      response,
+    );
   }
   return { response, status };
 };
 
 module.exports = {
-  gaResponseHandler
+  gaResponseHandler,
 };

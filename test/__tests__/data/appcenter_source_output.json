@@ -1,5 +1,12 @@
 [
   {
+    "outputToSource": {
+      "body": "eyJ0ZXh0IjoiSGVsbG8gZnJvbSB5b3VyIEFuYW50LXRlc3QgYXBwIGluIEFwcCBDZW50ZXIhIiwic2VudF9hdCI6IjIwMjMtMDEtMDJUMDc6IDUzOiAyOC4zMTE3ODI0WiIsInVybCI6Imh0dHBzOiAvL2FwcGNlbnRlci5tcy91c2Vycy9hbmFudC1ydWRkZXJzdGFjay5jb20vYXBwcy9BbmFudC10ZXN0In0=",
+      "contentType": "application/json"
+    },
+    "statusCode": 200
+  },
+  {
     "context": {
       "library": {
         "name": "unknown",

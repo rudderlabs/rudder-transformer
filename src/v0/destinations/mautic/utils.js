@@ -1,14 +1,14 @@
 /* eslint-disable no-return-assign, no-param-reassign, no-restricted-syntax */
-const get = require("get-value");
-const { TransformationError, getFieldValueFromMessage } = require("../../util");
-const { lookupFieldMap, DESTINATION } = require("./config");
-const { httpGET } = require("../../../adapters/network");
+const get = require('get-value');
+const { getFieldValueFromMessage } = require('../../util');
+const { lookupFieldMap } = require('./config');
+const { httpGET } = require('../../../adapters/network');
 const {
   processAxiosResponse,
-  getDynamicMeta
-} = require("../../../adapters/utils/networkUtils");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const { ApiError } = require("../../util/errors");
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
+const { NetworkError, InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 /**
  * @param {*} propertyName
@@ -25,7 +25,7 @@ function createAxiosUrl(propertyName, value, baseUrl) {
  * for validating email match
  */
 function validateEmail(inputText) {
-  const mailformat = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
+  const mailformat = /^[\d%+._a-z-]+@[\d.a-z-]+\.[a-z]{2,3}$/;
   return mailformat.test(inputText);
 }
 /**
@@ -45,9 +45,9 @@ const getFieldForLookup = (message, lookUpField) => {
       return { field, fieldValue };
     }
   }
-  fieldValue = getFieldValueFromMessage(message, "email");
+  fieldValue = getFieldValueFromMessage(message, 'email');
   if (fieldValue) {
-    field = "email";
+    field = 'email';
   }
   return { field, fieldValue };
 };
@@ -68,28 +68,27 @@ function validatePhone(inputText) {
  * if address is given as string or object and throws error if address string
  * is greater than 128
  * */
-const deduceAddressFields = message => {
-  let extractedAddress = getFieldValueFromMessage(message, "address");
+const deduceAddressFields = (message) => {
+  let extractedAddress = getFieldValueFromMessage(message, 'address');
   let address1;
   let address2;
   if (extractedAddress) {
-    if (typeof extractedAddress === "object") {
+    if (typeof extractedAddress === 'object') {
       if (
-        Object.keys(extractedAddress).includes("addressLine1") &&
-        Object.keys(extractedAddress).includes("addressLine2")
+        Object.keys(extractedAddress).includes('addressLine1') &&
+        Object.keys(extractedAddress).includes('addressLine2')
       ) {
         address1 = extractedAddress.addressLine1;
         address2 = extractedAddress.addressLine2;
         return { address1, address2 };
       }
-      extractedAddress = Object.keys(extractedAddress).reduce((res, v) => {
-        return res.concat(extractedAddress[v], " ");
-      }, "");
+      extractedAddress = Object.keys(extractedAddress).reduce(
+        (res, v) => res.concat(extractedAddress[v], ' '),
+        '',
+      );
     }
     const validLengthAddress =
-      extractedAddress.length > 128
-        ? extractedAddress.substring(0, 127)
-        : extractedAddress;
+      extractedAddress.length > 128 ? extractedAddress.substring(0, 127) : extractedAddress;
     address1 = validLengthAddress.substring(0, 63);
     address2 = validLengthAddress.substring(64, validLengthAddress.length);
   }
@@ -101,7 +100,7 @@ const deduceAddressFields = message => {
  * @param {*} payload
  * Works on the state field of Payload for its Conversion to Valid Case
  */
-const deduceStateField = payload => {
+const deduceStateField = (payload) => {
   if (
     payload.state &&
     payload.state.length > 1 &&
@@ -117,29 +116,13 @@ const deduceStateField = payload => {
  * else, throws an error
  * Validates the generated payload for specific fields
  */
-const validatePayload = payload => {
+const validatePayload = (payload) => {
   if (payload.phone && !validatePhone(payload.phone)) {
-    throw new TransformationError(
-      "The provided phone number is invalid",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError('The provided phone number is invalid');
   }
 
   if (payload.email && !validateEmail(payload.email)) {
-    throw new TransformationError(
-      "The provided email is invalid",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError('The provided email is invalid');
   }
   return true;
 };
@@ -148,29 +131,13 @@ const validatePayload = payload => {
  * @param {*} message
  * checks if the mandatory fields for the group call are given or not
  */
-const validateGroupCall = message => {
-  const type = getFieldValueFromMessage(message, "traits")?.type;
+const validateGroupCall = (message) => {
+  const type = getFieldValueFromMessage(message, 'traits')?.type;
   if (!type) {
-    throw new TransformationError(
-      "`type` is missing in the traits",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError('`type` is missing in the traits');
   }
   if (!message?.groupId) {
-    throw new TransformationError(
-      "`groupId` is missing in the event",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError('`groupId` is missing in the event');
   }
 };
 
@@ -185,62 +152,42 @@ const validateGroupCall = message => {
 const searchContactIds = async (message, Config, baseUrl) => {
   const { lookUpField, userName, password } = Config;
 
-  const traits = getFieldValueFromMessage(message, "traits");
+  const traits = getFieldValueFromMessage(message, 'traits');
   if (!traits) {
-    throw new TransformationError(
-      "Traits are missing in the event",
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_EVENT
-      },
-      DESTINATION
-    );
+    throw new InstrumentationError('Traits are missing in the event');
   }
   if (lookUpField && !Object.keys(lookupFieldMap).includes(lookUpField)) {
-    throw new TransformationError(
+    throw new ConfigurationError(
       `Lookup field "${lookUpField}" specified in the destination configuration is not supported`,
-      400,
-      {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta:
-          TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.CONFIGURATION
-      },
-      DESTINATION
     );
   }
   const { field, fieldValue } = getFieldForLookup(message, lookUpField);
   if (!field) {
     return null;
   }
-  const basicAuth = Buffer.from(`${userName}:${password}`).toString("base64");
+  const basicAuth = Buffer.from(`${userName}:${password}`).toString('base64');
   const requestOptions = {
     headers: {
-      "Content-Type": "application/json",
-      Authorization: `Basic ${basicAuth}`
-    }
+      'Content-Type': 'application/json',
+      Authorization: `Basic ${basicAuth}`,
+    },
   };
   let searchContactsResponse = await httpGET(
     createAxiosUrl(field, fieldValue, baseUrl),
-    requestOptions
+    requestOptions,
   );
   searchContactsResponse = processAxiosResponse(searchContactsResponse);
   if (searchContactsResponse.status !== 200) {
-    throw new ApiError(
-      `Failed to fetch contacts: "${JSON.stringify(
-        searchContactsResponse.response
-      )}"`,
+    throw new NetworkError(
+      `Failed to fetch contacts: "${JSON.stringify(searchContactsResponse.response)}"`,
       searchContactsResponse.status,
       {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: getDynamicMeta(searchContactsResponse.statuss)
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(searchContactsResponse.status),
       },
       searchContactsResponse.response,
-      undefined,
-      DESTINATION
     );
   }
-  const { contacts } = searchContactsResponse?.response;
+  const { contacts } = searchContactsResponse.response;
   if (!contacts) {
     return null;
   }
@@ -254,5 +201,5 @@ module.exports = {
   deduceAddressFields,
   validateGroupCall,
   validatePayload,
-  searchContactIds
+  searchContactIds,
 };

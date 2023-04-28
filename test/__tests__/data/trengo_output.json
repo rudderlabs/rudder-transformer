@@ -23,7 +23,7 @@
     "files": {}
   },
   {
-    "error": "[Trengo] :: LookupContact failed for term:null update failed, aborting as dedup option is enabled"
+    "error": "LookupContact failed for term:null update failed, aborting as dedup option is enabled"
   },
   {
     "version": "1",
@@ -49,10 +49,10 @@
     "files": {}
   },
   {
-    "error": "[Trengo] :: LookupContact failed for term:99999666661 update failed, aborting as dedup option is enabled"
+    "error": "LookupContact failed for term:99999666661 update failed, aborting as dedup option is enabled"
   },
   {
-    "error": "[Trengo] :: Inside lookupContact, duplicates present for identifer : 98765432100"
+    "error": "Inside lookupContact, duplicates present for identifier : 98765432100"
   },
   {
     "version": "1",
@@ -124,7 +124,7 @@
     "files": {}
   },
   {
-    "error": "[Trengo] :: Inside lookupContact, duplicates present for identifer : 98765432100"
+    "error": "Inside lookupContact, duplicates present for identifier : 98765432100"
   },
   {
     "version": "1",
@@ -217,7 +217,7 @@
     "files": {}
   },
   {
-    "error": "[Trengo] :: Stress test4 is not present in Event-Map template keys, aborting event"
+    "error": "Stress test4 is not present in Event-Map template keys, aborting event"
   },
   {
     "version": "1",

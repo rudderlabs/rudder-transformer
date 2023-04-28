@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
-const get = require("get-value");
-const _ = require("lodash");
-const { v4: uuidv4 } = require("uuid");
+const get = require('get-value');
+const _ = require('lodash');
+const { v4: uuidv4 } = require('uuid');
 
 const {
   isObject,
@@ -10,25 +10,23 @@ const {
   getKeysFromJsonPaths,
   validTimestamp,
   getVersionedUtils,
-  isRudderSourcesEvent
-} = require("./util");
-const { getMergeRuleEvent } = require("./identity");
+  isRudderSourcesEvent,
+} = require('./util');
+const { getMergeRuleEvent } = require('./identity');
 
-const whDefaultColumnMappingRules = require("./config/WHDefaultConfig.js");
-const whTrackColumnMappingRules = require("./config/WHTrackConfig.js");
-const whTracksTableColumnMappingRules = require("./config/WHTracksTableConfig.js");
-const whTrackEventTableColumnMappingRules = require("./config/WHTrackEventTableConfig.js");
-const whUserColumnMappingRules = require("./config/WHUserConfig.js");
-const whPageColumnMappingRules = require("./config/WHPageConfig.js");
-const whScreenColumnMappingRules = require("./config/WHScreenConfig.js");
-const whGroupColumnMappingRules = require("./config/WHGroupConfig.js");
-const whAliasColumnMappingRules = require("./config/WHAliasConfig.js");
-const { isDataLakeProvider } = require("./config/helpers");
+const whDefaultColumnMappingRules = require('./config/WHDefaultConfig.js');
+const whTrackColumnMappingRules = require('./config/WHTrackConfig.js');
+const whTracksTableColumnMappingRules = require('./config/WHTracksTableConfig.js');
+const whTrackEventTableColumnMappingRules = require('./config/WHTrackEventTableConfig.js');
+const whUserColumnMappingRules = require('./config/WHUserConfig.js');
+const whPageColumnMappingRules = require('./config/WHPageConfig.js');
+const whScreenColumnMappingRules = require('./config/WHScreenConfig.js');
+const whGroupColumnMappingRules = require('./config/WHGroupConfig.js');
+const whAliasColumnMappingRules = require('./config/WHAliasConfig.js');
+const { isDataLakeProvider } = require('./config/helpers');
+const { InstrumentationError } = require('../v0/util/errorTypes');
 
-const maxColumnsInEvent = parseInt(
-  process.env.WH_MAX_COLUMNS_IN_EVENT || "200",
-  10
-);
+const maxColumnsInEvent = parseInt(process.env.WH_MAX_COLUMNS_IN_EVENT || '200', 10);
 
 const WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT =
   process.env.WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT || true;
@@ -36,58 +34,44 @@ const WH_POPULATE_SRC_DEST_INFO_IN_CONTEXT =
 const getDataType = (key, val, options, jsonKey = false) => {
   const type = typeof val;
   switch (type) {
-    case "number":
-      return Number.isInteger(val) ? "int" : "float";
-    case "boolean":
-      return "boolean";
+    case 'number':
+      return Number.isInteger(val) ? 'int' : 'float';
+    case 'boolean':
+      return 'boolean';
     default:
       break;
   }
   if (validTimestamp(val)) {
-    return "datetime";
+    return 'datetime';
   }
-  if (
-    options.getDataTypeOverride &&
-    typeof options.getDataTypeOverride === "function"
-  ) {
-    return options.getDataTypeOverride(key, val, options, jsonKey) || "string";
+  if (options.getDataTypeOverride && typeof options.getDataTypeOverride === 'function') {
+    return options.getDataTypeOverride(key, val, options, jsonKey) || 'string';
   }
-  return "string";
+  return 'string';
 };
 
-const rudderCreatedTables = [
-  "tracks",
-  "pages",
-  "screens",
-  "aliases",
-  "groups",
-  "accounts"
-];
+const rudderCreatedTables = ['tracks', 'pages', 'screens', 'aliases', 'groups', 'accounts'];
 
-const rudderIsolatedTables = ["users", "identifies"];
+const rudderIsolatedTables = ['users', 'identifies'];
 
 const rudderReservedColums = {
   track: {
     ...whDefaultColumnMappingRules,
     ...whTrackColumnMappingRules,
     ...whTracksTableColumnMappingRules,
-    ...whTrackEventTableColumnMappingRules
+    ...whTrackEventTableColumnMappingRules,
   },
   identify: { ...whDefaultColumnMappingRules, ...whUserColumnMappingRules },
   page: { ...whDefaultColumnMappingRules, ...whPageColumnMappingRules },
   screen: { ...whDefaultColumnMappingRules, ...whScreenColumnMappingRules },
   group: { ...whDefaultColumnMappingRules, ...whGroupColumnMappingRules },
-  alias: { ...whDefaultColumnMappingRules, ...whAliasColumnMappingRules }
+  alias: { ...whDefaultColumnMappingRules, ...whAliasColumnMappingRules },
 };
 
-function excludeRudderCreatedTableNames(
-  name,
-  skipReservedKeywordsEscaping = false
-) {
+function excludeRudderCreatedTableNames(name, skipReservedKeywordsEscaping = false) {
   if (
     rudderIsolatedTables.includes(name.toLowerCase()) ||
-    (rudderCreatedTables.includes(name.toLowerCase()) &&
-      !skipReservedKeywordsEscaping)
+    (rudderCreatedTables.includes(name.toLowerCase()) && !skipReservedKeywordsEscaping)
   ) {
     return `_${name}`;
   }
@@ -102,22 +86,19 @@ function appendColumnNameAndType(
   output,
   columnTypes,
   options,
-  jsonKey = false
+  jsonKey = false,
 ) {
   let datatype = getDataType(key, val, options, jsonKey);
 
-  if (datatype === "datetime") {
+  if (datatype === 'datetime') {
     val = new Date(val).toISOString();
   }
 
   let safeKey = utils.transformColumnName(options, key);
-  if (safeKey !== "") {
+  if (safeKey !== '') {
     safeKey = utils.safeColumnName(options, safeKey);
     // remove rudder reserved columns name if set by user
-    if (
-      rudderReservedColums[eventType] &&
-      rudderReservedColums[eventType][safeKey.toLowerCase()]
-    ) {
+    if (rudderReservedColums[eventType] && rudderReservedColums[eventType][safeKey.toLowerCase()]) {
       return;
     }
     // eslint-disable-next-line no-param-reassign
@@ -156,10 +137,10 @@ function setDataFromColumnMappingAndComputeColumnTypes(
   input,
   columnMapping,
   columnTypes,
-  options
+  options,
 ) {
   if (!isObject(columnMapping)) return;
-  Object.keys(columnMapping).forEach(key => {
+  Object.keys(columnMapping).forEach((key) => {
     const valInMap = columnMapping[key];
     let val;
     if (_.isFunction(valInMap)) {
@@ -170,7 +151,7 @@ function setDataFromColumnMappingAndComputeColumnTypes(
 
     const columnName = utils.safeColumnName(options, key);
     // do not set column if val is null/empty/object
-    if (typeof val === "object" || isBlank(val)) {
+    if (typeof val === 'object' || isBlank(val)) {
       // delete in output and columnTypes, so as to remove if we user
       // has set property with same name
       // eslint-disable-next-line no-param-reassign
@@ -180,7 +161,7 @@ function setDataFromColumnMappingAndComputeColumnTypes(
       return;
     }
     const datatype = getDataType(key, val, options);
-    if (datatype === "datetime") {
+    if (datatype === 'datetime') {
       val = new Date(val).toISOString();
     }
     // eslint-disable-next-line no-param-reassign
@@ -220,20 +201,12 @@ function setDataFromInputAndComputeColumnTypes(
   input,
   columnTypes,
   options,
-  prefix = "",
-  level = 0
+  prefix = '',
+  level = 0,
 ) {
   if (!input || !isObject(input)) return;
-  Object.keys(input).forEach(key => {
-    if (
-      isValidJsonPathKey(
-        eventType,
-        `${prefix + key}`,
-        input[key],
-        level,
-        options.jsonKeys
-      )
-    ) {
+  Object.keys(input).forEach((key) => {
+    if (isValidJsonPathKey(eventType, `${prefix + key}`, input[key], level, options.jsonKeys)) {
       if (isBlank(input[key])) {
         return;
       }
@@ -247,12 +220,9 @@ function setDataFromInputAndComputeColumnTypes(
         output,
         columnTypes,
         options,
-        true
+        true,
       );
-    } else if (
-      isObject(input[key]) &&
-      (options.sourceCategory !== "cloud" || level < 3)
-    ) {
+    } else if (isObject(input[key]) && (options.sourceCategory !== 'cloud' || level < 3)) {
       setDataFromInputAndComputeColumnTypes(
         utils,
         eventType,
@@ -261,7 +231,7 @@ function setDataFromInputAndComputeColumnTypes(
         columnTypes,
         options,
         `${prefix + key}_`,
-        level + 1
+        level + 1,
       );
     } else {
       let val = input[key];
@@ -269,11 +239,7 @@ function setDataFromInputAndComputeColumnTypes(
       if (isBlank(val)) {
         return;
       }
-      if (
-        options.sourceCategory === "cloud" &&
-        level >= 3 &&
-        isObject(input[key])
-      ) {
+      if (options.sourceCategory === 'cloud' && level >= 3 && isObject(input[key])) {
         val = JSON.stringify(val);
       }
       appendColumnNameAndType(
@@ -283,7 +249,7 @@ function setDataFromInputAndComputeColumnTypes(
         val,
         output,
         columnTypes,
-        options
+        options,
       );
     }
   });
@@ -295,14 +261,14 @@ function setDataFromInputAndComputeColumnTypes(
  */
 function getColumns(options, event, columnTypes) {
   const columns = {};
-  const uuidTS = options.provider === "snowflake" ? "UUID_TS" : "uuid_ts";
-  columns[uuidTS] = "datetime";
+  const uuidTS = options.provider === 'snowflake' ? 'UUID_TS' : 'uuid_ts';
+  columns[uuidTS] = 'datetime';
   // add loaded_at for bq to be segment compatible
-  if (options.provider === "bq") {
-    const loadedAt = "loaded_at";
-    columns[loadedAt] = "datetime";
+  if (options.provider === 'bq') {
+    const loadedAt = 'loaded_at';
+    columns[loadedAt] = 'datetime';
   }
-  Object.keys(event).forEach(key => {
+  Object.keys(event).forEach((key) => {
     columns[key] = columnTypes[key] || getDataType(key, event[key], options);
   });
   /*
@@ -314,30 +280,30 @@ function getColumns(options, event, columnTypes) {
     !isRudderSourcesEvent(event) &&
     !isDataLakeProvider(options.provider)
   ) {
-    throw new Error(
-      `${options.provider} transfomer: Too many columns outputted from the event`
+    throw new InstrumentationError(
+      `${options.provider} transformer: Too many columns outputted from the event`,
     );
   }
   return columns;
 }
 
 const fullEventColumnTypeByProvider = {
-  snowflake: "json",
-  rs: "text",
-  bq: "string",
-  postgres: "json",
-  mssql: "json",
-  azure_synapse: "json",
-  clickhouse: "string",
-  s3_datalake: "string",
-  deltalake: "string",
-  gcs_datalake: "string",
-  azure_datalake: "string"
+  snowflake: 'json',
+  rs: 'text',
+  bq: 'string',
+  postgres: 'json',
+  mssql: 'json',
+  azure_synapse: 'json',
+  clickhouse: 'string',
+  s3_datalake: 'string',
+  deltalake: 'string',
+  gcs_datalake: 'string',
+  azure_datalake: 'string',
 };
 
 function storeRudderEvent(utils, message, output, columnTypes, options) {
   if (options.whStoreEvent === true) {
-    const colName = utils.safeColumnName(options, "rudder_event");
+    const colName = utils.safeColumnName(options, 'rudder_event');
     // eslint-disable-next-line no-param-reassign
     output[colName] = JSON.stringify(message);
     // eslint-disable-next-line no-param-reassign
@@ -351,7 +317,7 @@ function addJsonKeysToOptions(options) {
     ? options.integrationOptions.jsonPaths
     : [];
   if (options.destJsonPaths) {
-    jsonPaths.push(...options.destJsonPaths.split(","));
+    jsonPaths.push(...options.destJsonPaths.split(','));
   }
   options.jsonKeys = getKeysFromJsonPaths(jsonPaths);
 }
@@ -601,7 +567,7 @@ function processWarehouseMessage(message, options) {
 
   // store columnTypes as each column is set, so as not to call getDataType again
   switch (eventType) {
-    case "track": {
+    case 'track': {
       // set properties common to both tracks and event table
       const commonProps = {};
       const commonColumnTypes = {};
@@ -613,7 +579,7 @@ function processWarehouseMessage(message, options) {
         message.context,
         commonColumnTypes,
         options,
-        "context_"
+        'context_',
       );
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
@@ -621,7 +587,7 @@ function processWarehouseMessage(message, options) {
         message,
         whTrackColumnMappingRules,
         commonColumnTypes,
-        options
+        options,
       );
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
@@ -629,16 +595,16 @@ function processWarehouseMessage(message, options) {
         message,
         whDefaultColumnMappingRules,
         commonColumnTypes,
-        options
+        options,
       );
 
       // set event column based on event_text in the tracks table
-      const eventColName = utils.safeColumnName(options, "event");
+      const eventColName = utils.safeColumnName(options, 'event');
       commonProps[eventColName] = utils.transformTableName(
         options,
-        commonProps[utils.safeColumnName(options, "event_text")]
+        commonProps[utils.safeColumnName(options, 'event_text')],
       );
-      commonColumnTypes[eventColName] = "string";
+      commonColumnTypes[eventColName] = 'string';
 
       // -----start: tracks table------
       if (!skipTracksTable) {
@@ -652,26 +618,20 @@ function processWarehouseMessage(message, options) {
           message,
           whTracksTableColumnMappingRules,
           tracksColumnTypes,
-          options
+          options,
         );
-        storeRudderEvent(
-          utils,
-          message,
-          tracksEvent,
-          tracksColumnTypes,
-          options
-        );
+        storeRudderEvent(utils, message, tracksEvent, tracksColumnTypes, options);
         const tracksMetadata = {
-          table: utils.safeTableName(options, "tracks"),
+          table: utils.safeTableName(options, 'tracks'),
           columns: getColumns(options, tracksEvent, {
             ...tracksColumnTypes,
-            ...commonColumnTypes
+            ...commonColumnTypes,
           }), // override tracksColumnTypes with columnTypes from commonColumnTypes
-          receivedAt: message.receivedAt
+          receivedAt: message.receivedAt,
         };
         responses.push({
           metadata: tracksMetadata,
-          data: tracksEvent
+          data: tracksEvent,
         });
       }
 
@@ -680,7 +640,7 @@ function processWarehouseMessage(message, options) {
       // -----start: event table------
 
       // do not create event table in case of empty event name (after utils.transformColumnName)
-      if (_.toString(commonProps[eventColName]).trim() === "") {
+      if (_.toString(commonProps[eventColName]).trim() === '') {
         break;
       }
       const trackProps = {};
@@ -692,7 +652,7 @@ function processWarehouseMessage(message, options) {
         trackProps,
         message.properties,
         eventTableColumnTypes,
-        options
+        options,
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
@@ -700,7 +660,7 @@ function processWarehouseMessage(message, options) {
         trackProps,
         message.userProperties,
         eventTableColumnTypes,
-        options
+        options,
       );
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
@@ -708,31 +668,31 @@ function processWarehouseMessage(message, options) {
         message,
         whTrackEventTableColumnMappingRules,
         commonColumnTypes,
-        options
+        options,
       );
 
       // always set commonProps last so that they are not overwritten
       const eventTableEvent = {
         ...trackProps,
-        ...commonProps
+        ...commonProps,
       };
       const eventTableMetadata = {
         table: excludeRudderCreatedTableNames(
           utils.safeTableName(
             options,
-            utils.transformColumnName(options, eventTableEvent[eventColName])
+            utils.transformColumnName(options, eventTableEvent[eventColName]),
           ),
-          skipReservedKeywordsEscaping
+          skipReservedKeywordsEscaping,
         ),
         columns: getColumns(options, eventTableEvent, {
           ...eventTableColumnTypes,
-          ...commonColumnTypes
+          ...commonColumnTypes,
         }), // override tracksColumnTypes with columnTypes from commonColumnTypes
-        receivedAt: message.receivedAt
+        receivedAt: message.receivedAt,
       };
       responses.push({
         metadata: eventTableMetadata,
-        data: eventTableEvent
+        data: eventTableEvent,
       });
 
       // -----start: identity_merge_rules table------
@@ -744,7 +704,7 @@ function processWarehouseMessage(message, options) {
 
       break;
     }
-    case "identify": {
+    case 'identify': {
       // set properties common to both identifies and users table
       const commonProps = {};
       const commonColumnTypes = {};
@@ -754,7 +714,7 @@ function processWarehouseMessage(message, options) {
         commonProps,
         message.userProperties,
         commonColumnTypes,
-        options
+        options,
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
@@ -762,7 +722,7 @@ function processWarehouseMessage(message, options) {
         commonProps,
         message.context ? message.context.traits : {},
         commonColumnTypes,
-        options
+        options,
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
@@ -771,7 +731,7 @@ function processWarehouseMessage(message, options) {
         message.traits,
         commonColumnTypes,
         options,
-        ""
+        '',
       );
 
       // set context props
@@ -782,11 +742,11 @@ function processWarehouseMessage(message, options) {
         message.context,
         commonColumnTypes,
         options,
-        "context_"
+        'context_',
       );
 
       // TODO: create a list of reserved keywords and append underscore for all in setDataFromInputAndComputeColumnTypes
-      const userIdColumn = utils.safeColumnName(options, "user_id");
+      const userIdColumn = utils.safeColumnName(options, 'user_id');
       if (_.has(commonProps, userIdColumn)) {
         const newUserIdColumn = `_${userIdColumn}`;
         commonProps[newUserIdColumn] = commonProps[userIdColumn];
@@ -804,26 +764,20 @@ function processWarehouseMessage(message, options) {
         message,
         whDefaultColumnMappingRules,
         identifiesColumnTypes,
-        options
+        options,
       );
-      storeRudderEvent(
-        utils,
-        message,
-        identifiesEvent,
-        identifiesColumnTypes,
-        options
-      );
+      storeRudderEvent(utils, message, identifiesEvent, identifiesColumnTypes, options);
       const identifiesMetadata = {
-        table: utils.safeTableName(options, "identifies"),
+        table: utils.safeTableName(options, 'identifies'),
         columns: getColumns(options, identifiesEvent, {
           ...commonColumnTypes,
-          ...identifiesColumnTypes
+          ...identifiesColumnTypes,
         }), // override commonColumnTypes with columnTypes from setDataFromColumnMappingAndComputeColumnTypes
-        receivedAt: message.receivedAt
+        receivedAt: message.receivedAt,
       };
       responses.push({
         metadata: identifiesMetadata,
-        data: identifiesEvent
+        data: identifiesEvent,
       });
       // -----end: identifies table------
 
@@ -836,7 +790,7 @@ function processWarehouseMessage(message, options) {
 
       // -----start: users table------
       // do not create a user record if userId is not present in payload
-      if (_.toString(message.userId).trim() === "") {
+      if (_.toString(message.userId).trim() === '') {
         break;
       }
       const usersEvent = { ...commonProps };
@@ -847,41 +801,38 @@ function processWarehouseMessage(message, options) {
         message,
         whUserColumnMappingRules,
         usersColumnTypes,
-        options
+        options,
       );
       // set id
-      usersEvent[utils.safeColumnName(options, "id")] = message.userId;
-      usersColumnTypes[utils.safeColumnName(options, "id")] = getDataType(
-        utils.safeColumnName(options, "id"),
+      usersEvent[utils.safeColumnName(options, 'id')] = message.userId;
+      usersColumnTypes[utils.safeColumnName(options, 'id')] = getDataType(
+        utils.safeColumnName(options, 'id'),
         message.userId,
-        options
+        options,
       );
       // set received_at
-      usersEvent[
-        utils.safeColumnName(options, "received_at")
-      ] = message.receivedAt
+      usersEvent[utils.safeColumnName(options, 'received_at')] = message.receivedAt
         ? new Date(message.receivedAt).toISOString()
         : new Date().toISOString();
-      usersColumnTypes[utils.safeColumnName(options, "received_at")] =
-        "datetime";
+      usersColumnTypes[utils.safeColumnName(options, 'received_at')] = 'datetime';
 
       const usersMetadata = {
-        table: utils.safeTableName(options, "users"),
+        table: utils.safeTableName(options, 'users'),
         columns: getColumns(options, usersEvent, {
           ...commonColumnTypes,
-          ...usersColumnTypes
+          ...usersColumnTypes,
         }), // override commonColumnTypes with columnTypes from setDataFromColumnMappingAndComputeColumnTypes
-        receivedAt: message.receivedAt
+        receivedAt: message.receivedAt,
       };
       responses.push({
         metadata: usersMetadata,
-        data: usersEvent
+        data: usersEvent,
       });
       // -----end: users table------
       break;
     }
-    case "page":
-    case "screen": {
+    case 'page':
+    case 'screen': {
       const event = {};
       const columnTypes = {};
       setDataFromInputAndComputeColumnTypes(
@@ -890,7 +841,7 @@ function processWarehouseMessage(message, options) {
         event,
         message.properties,
         columnTypes,
-        options
+        options,
       );
       // set rudder properties after user set properties to prevent overwriting
       setDataFromInputAndComputeColumnTypes(
@@ -900,7 +851,7 @@ function processWarehouseMessage(message, options) {
         message.context,
         columnTypes,
         options,
-        "context_"
+        'context_',
       );
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
@@ -908,34 +859,34 @@ function processWarehouseMessage(message, options) {
         message,
         whDefaultColumnMappingRules,
         columnTypes,
-        options
+        options,
       );
       storeRudderEvent(utils, message, event, columnTypes, options);
 
-      if (eventType === "page") {
+      if (eventType === 'page') {
         setDataFromColumnMappingAndComputeColumnTypes(
           utils,
           event,
           message,
           whPageColumnMappingRules,
           columnTypes,
-          options
+          options,
         );
-      } else if (eventType === "screen") {
+      } else if (eventType === 'screen') {
         setDataFromColumnMappingAndComputeColumnTypes(
           utils,
           event,
           message,
           whScreenColumnMappingRules,
           columnTypes,
-          options
+          options,
         );
       }
 
       const metadata = {
         table: utils.safeTableName(options, `${eventType}s`),
         columns: getColumns(options, event, columnTypes),
-        receivedAt: message.receivedAt
+        receivedAt: message.receivedAt,
       };
       responses.push({ metadata, data: event });
 
@@ -948,7 +899,7 @@ function processWarehouseMessage(message, options) {
 
       break;
     }
-    case "group": {
+    case 'group': {
       const event = {};
       const columnTypes = {};
       setDataFromInputAndComputeColumnTypes(
@@ -957,7 +908,7 @@ function processWarehouseMessage(message, options) {
         event,
         message.traits,
         columnTypes,
-        options
+        options,
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
@@ -966,7 +917,7 @@ function processWarehouseMessage(message, options) {
         message.context,
         columnTypes,
         options,
-        "context_"
+        'context_',
       );
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
@@ -974,7 +925,7 @@ function processWarehouseMessage(message, options) {
         message,
         whDefaultColumnMappingRules,
         columnTypes,
-        options
+        options,
       );
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
@@ -982,14 +933,14 @@ function processWarehouseMessage(message, options) {
         message,
         whGroupColumnMappingRules,
         columnTypes,
-        options
+        options,
       );
       storeRudderEvent(utils, message, event, columnTypes, options);
 
       const metadata = {
-        table: utils.safeTableName(options, "groups"),
+        table: utils.safeTableName(options, 'groups'),
         columns: getColumns(options, event, columnTypes),
-        receivedAt: message.receivedAt
+        receivedAt: message.receivedAt,
       };
       responses.push({ metadata, data: event });
 
@@ -1002,7 +953,7 @@ function processWarehouseMessage(message, options) {
 
       break;
     }
-    case "alias": {
+    case 'alias': {
       const event = {};
       const columnTypes = {};
       setDataFromInputAndComputeColumnTypes(
@@ -1011,7 +962,7 @@ function processWarehouseMessage(message, options) {
         event,
         message.traits,
         columnTypes,
-        options
+        options,
       );
       setDataFromInputAndComputeColumnTypes(
         utils,
@@ -1020,7 +971,7 @@ function processWarehouseMessage(message, options) {
         message.context,
         columnTypes,
         options,
-        "context_"
+        'context_',
       );
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
@@ -1028,7 +979,7 @@ function processWarehouseMessage(message, options) {
         message,
         whDefaultColumnMappingRules,
         columnTypes,
-        options
+        options,
       );
       setDataFromColumnMappingAndComputeColumnTypes(
         utils,
@@ -1036,14 +987,14 @@ function processWarehouseMessage(message, options) {
         message,
         whAliasColumnMappingRules,
         columnTypes,
-        options
+        options,
       );
       storeRudderEvent(utils, message, event, columnTypes, options);
 
       const metadata = {
-        table: utils.safeTableName(options, "aliases"),
+        table: utils.safeTableName(options, 'aliases'),
         columns: getColumns(options, event, columnTypes),
-        receivedAt: message.receivedAt
+        receivedAt: message.receivedAt,
       };
       responses.push({ metadata, data: event });
 
@@ -1056,7 +1007,7 @@ function processWarehouseMessage(message, options) {
 
       break;
     }
-    case "merge": {
+    case 'merge': {
       const mergeRuleEvent = getMergeRuleEvent(message, eventType, options);
       if (mergeRuleEvent) {
         responses.push(mergeRuleEvent);
@@ -1064,7 +1015,7 @@ function processWarehouseMessage(message, options) {
       break;
     }
     default:
-      throw new Error("Unknown event type", eventType);
+      throw new InstrumentationError(`Unknown event type: "${eventType}"`);
   }
   return responses;
 }
@@ -1073,5 +1024,5 @@ module.exports = {
   processWarehouseMessage,
   fullEventColumnTypeByProvider,
   getDataType,
-  setDataFromInputAndComputeColumnTypes
+  setDataFromInputAndComputeColumnTypes,
 };

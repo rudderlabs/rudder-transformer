@@ -1,12 +1,11 @@
 const {
   getHashFromArray,
   getFieldValueFromMessage,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError,
-  defaultRequestConfig
-} = require("../../util");
-const { EventType } = require("../../../constants");
+  simpleProcessRouterDest,
+  defaultRequestConfig,
+} = require('../../util');
+const { EventType } = require('../../../constants');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 function responseBuilderSimple(message, destination) {
   const payload = {};
@@ -25,15 +24,15 @@ function responseBuilderSimple(message, destination) {
 */
   const fieldHashmap = getHashFromArray(
     destination.Config.columnFieldsMapping,
-    "to",
-    "from",
-    false
+    'to',
+    'from',
+    false,
   );
 
-  const traits = getFieldValueFromMessage(message, "traits");
+  const traits = getFieldValueFromMessage(message, 'traits');
 
   // columnNames with trait's values from rudder payload
-  Object.keys(fieldHashmap).forEach(key => {
+  Object.keys(fieldHashmap).forEach((key) => {
     const val = traits[fieldHashmap[key]];
     if (val) {
       payload[key] = val;
@@ -41,16 +40,13 @@ function responseBuilderSimple(message, destination) {
   });
   const response = defaultRequestConfig();
   response.body.JSON = payload;
-  response.endpoint = "/fileUpload";
+  response.endpoint = '/fileUpload';
   return response;
 }
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError('Event type is required');
   }
 
   const messageType = message.type.toLowerCase();
@@ -61,51 +57,15 @@ const processEvent = (message, destination) => {
       response = responseBuilderSimple(message, destination);
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
 
   return response;
 };
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

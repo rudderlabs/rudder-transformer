@@ -1,18 +1,24 @@
 /* eslint-disable no-param-reassign */
-const get = require("get-value");
-const logger = require("../../../logger");
-const { httpPOST, httpGET } = require("../../../adapters/network");
+const get = require('get-value');
+const logger = require('../../../logger');
+const { httpPOST, httpGET } = require('../../../adapters/network');
 const {
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
+  processAxiosResponse,
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
 const {
-  CustomError,
   defaultPutRequestConfig,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  getFieldValueFromMessage
-} = require("../../util");
-const { CONFIG_CATEGORIES, LIFECYCLE_STAGE_ENDPOINT } = require("./config");
+  getFieldValueFromMessage,
+} = require('../../util');
+const { CONFIG_CATEGORIES, LIFECYCLE_STAGE_ENDPOINT } = require('./config');
+const {
+  InstrumentationError,
+  NetworkInstrumentationError,
+  NetworkError,
+} = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 /*
  * This functions is used for getting Account details.
@@ -26,27 +32,31 @@ const createUpdateAccount = async (payload, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      "Content-Type": "application/json"
-    }
+      'Content-Type': 'application/json',
+    },
   };
   const payloadBody = {
     unique_identifier: { name: payload.name },
-    sales_account: payload
+    sales_account: payload,
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrlAccount}`;
   let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions);
   accountResponse = processAxiosResponse(accountResponse);
   if (accountResponse.status !== 200 && accountResponse.status !== 201) {
-    const errMessage = accountResponse.response.errors?.message || "";
-    const errorStatus = accountResponse.response.errors?.code || "500";
-    throw new CustomError(
+    const errMessage = accountResponse.response.errors?.message || '';
+    const errorStatus = accountResponse.response.errors?.code || '500';
+    throw new NetworkError(
       `failed to create/update group ${errMessage}`,
-      errorStatus
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
+      },
+      accountResponse,
     );
   }
   const accountId = accountResponse.response?.sales_account?.id;
   if (!accountId) {
-    throw new CustomError("[Freshmarketer]: fails in fetching accountId.", 400);
+    throw new NetworkInstrumentationError('Fails in fetching accountId.');
   }
   return accountId;
 };
@@ -62,47 +72,40 @@ const getUserAccountDetails = async (payload, userEmail, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      "Content-Type": "application/json"
-    }
+      'Content-Type': 'application/json',
+    },
   };
   const userPayload = {
     unique_identifier: {
-      emails: userEmail
+      emails: userEmail,
     },
     contact: {
-      emails: userEmail
-    }
+      emails: userEmail,
+    },
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}?include=sales_accounts`;
-  let userSalesAccountResponse = await httpPOST(
-    endPoint,
-    userPayload,
-    requestOptions
-  );
+  let userSalesAccountResponse = await httpPOST(endPoint, userPayload, requestOptions);
   userSalesAccountResponse = processAxiosResponse(userSalesAccountResponse);
-  if (
-    userSalesAccountResponse.status !== 200 &&
-    userSalesAccountResponse.status !== 201
-  ) {
-    const errMessage = userSalesAccountResponse.response.errors?.message || "";
-    const errorStatus = userSalesAccountResponse.response.errors?.code || "500";
-    throw new CustomError(
+  if (userSalesAccountResponse.status !== 200 && userSalesAccountResponse.status !== 201) {
+    const errMessage = userSalesAccountResponse.response.errors?.message || '';
+    const errorStatus = userSalesAccountResponse.response.errors?.code || '500';
+    throw new NetworkError(
       `failed to fetch user accountDetails ${errMessage}`,
-      errorStatus
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
+      },
+      userSalesAccountResponse,
     );
   }
-  let accountDetails =
-    userSalesAccountResponse.response?.contact?.sales_accounts;
+  let accountDetails = userSalesAccountResponse.response?.contact?.sales_accounts;
   if (!accountDetails) {
-    throw new CustomError(
-      "[Freshmarketer]: Fails in fetching user accountDetails",
-      400
-    );
+    throw new NetworkInstrumentationError('Fails in fetching user accountDetails');
   }
   const accountId = await createUpdateAccount(payload, Config);
   const accountDetail = {
     id: accountId,
-    is_primary: false
+    is_primary: false,
   };
   if (accountDetails.length > 0) {
     accountDetails = [...accountDetails, accountDetail];
@@ -125,22 +128,22 @@ const createOrUpdateListDetails = async (listName, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      "Content-Type": "application/json"
-    }
+      'Content-Type': 'application/json',
+    },
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrlList}`;
   // fetch all lists
   let listResponse = await httpGET(endPoint, requestOptions);
   listResponse = processAxiosResponse(listResponse);
   if (listResponse.status !== 200) {
-    const errMessage = listResponse.response.errors?.message || "";
-    const errorStatus = listResponse.response.errors?.code || "500";
+    const errMessage = listResponse.response.errors?.message || '';
+    const errorStatus = listResponse.response.errors?.code || '500';
     logger.error(`failed to fetch list ${errMessage}`, errorStatus);
   }
   const listsDetails = listResponse.response?.lists;
 
   if (listsDetails && Array.isArray(listsDetails)) {
-    const listDetails = listsDetails.find(list => list.name === listName);
+    const listDetails = listsDetails.find((list) => list.name === listName);
     if (listDetails) {
       return listDetails.id;
     }
@@ -149,8 +152,8 @@ const createOrUpdateListDetails = async (listName, Config) => {
   listResponse = await httpPOST(endPoint, { name: listName }, requestOptions);
   listResponse = processAxiosResponse(listResponse);
   if (listResponse.status !== 200) {
-    const errMessage = listResponse.response.errors?.message || "";
-    const errorStatus = listResponse.response.errors?.code || "500";
+    const errMessage = listResponse.response.errors?.message || '';
+    const errorStatus = listResponse.response.errors?.code || '500';
     logger.error(`failed to create list ${errMessage}`, errorStatus);
   }
   const listId = listResponse.response?.list?.id;
@@ -171,11 +174,11 @@ const updateAccountWOContact = (payload, Config) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = {
     unique_identifier: { name: payload.name },
-    sales_account: payload
+    sales_account: payload,
   };
   response.headers = {
     Authorization: `Token token=${Config.apiKey}`,
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
   return response;
 };
@@ -194,10 +197,10 @@ const updateContactWithList = (userId, listId, Config) => {
   response.endpoint = `https://${Config.domain}.myfreshworks.com/crm/sales/api/lists/${listId}/add_contacts`;
   response.headers = {
     Authorization: `Token token=${Config.apiKey}`,
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
   response.body.JSON = {
-    ids: [userId]
+    ids: [userId],
   };
   response.method = defaultPutRequestConfig.requestMethod;
   return response;
@@ -214,26 +217,30 @@ const getContactsDetails = async (userEmail, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      "Content-Type": "application/json"
-    }
+      'Content-Type': 'application/json',
+    },
   };
   const userPayload = {
     unique_identifier: {
-      emails: userEmail
+      emails: userEmail,
     },
     contact: {
-      emails: userEmail
-    }
+      emails: userEmail,
+    },
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
   let userResponse = await httpPOST(endPoint, userPayload, requestOptions);
   userResponse = processAxiosResponse(userResponse);
   if (userResponse.status !== 200 && userResponse.status !== 201) {
-    const errMessage = userResponse.response.errors?.message || "";
-    const errorStatus = userResponse.response.errors?.code || "500";
-    throw new CustomError(
+    const errMessage = userResponse.response.errors?.message || '';
+    const errorStatus = userResponse.response.errors?.code || '500';
+    throw new NetworkError(
       `failed to fetch Contact details ${errMessage}`,
-      errorStatus
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
+      },
+      userResponse,
     );
   }
   return userResponse;
@@ -248,21 +255,16 @@ const getContactsDetails = async (userEmail, Config) => {
  * returns
  */
 
-const responseBuilderWithContactDetails = async (
-  email,
-  Config,
-  payload,
-  salesActivityTypeId
-) => {
+const responseBuilderWithContactDetails = async (email, Config, payload, salesActivityTypeId) => {
   const userDetails = await getContactsDetails(email, Config);
   const userId = userDetails.response?.contact?.id;
   if (!userId) {
-    throw new CustomError("Failed in fetching userId. Aborting!", 400);
+    throw new NetworkInstrumentationError('Failed in fetching userId. Aborting!');
   }
   const responseBody = {
     ...payload,
     targetable_id: userId,
-    sales_activity_type_id: salesActivityTypeId
+    sales_activity_type_id: salesActivityTypeId,
   };
   return responseBody;
 };
@@ -276,30 +278,26 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      "Content-Type": "application/json"
-    }
+      'Content-Type': 'application/json',
+    },
   };
-  const emails = getFieldValueFromMessage(message, "email");
+  const emails = getFieldValueFromMessage(message, 'email');
   if (!emails) {
-    throw new CustomError(
-      "email is required for updating life Cycle Stages. Aborting!",
-      400
-    );
+    throw new InstrumentationError('email is required for updating life Cycle Stages. Aborting!');
   }
-  const lifecycleStageId = get(message, "properties.lifecycleStageId");
-  const lifecycleStageName = get(message, "properties.lifecycleStageName");
+  const lifecycleStageId = get(message, 'properties.lifecycleStageId');
+  const lifecycleStageName = get(message, 'properties.lifecycleStageName');
   if (!lifecycleStageId && !lifecycleStageName) {
-    throw new CustomError(
-      `Either of lifecycleStageName or lifecycleStageId is required. Aborting!`,
-      400
+    throw new InstrumentationError(
+      'Either of lifecycleStageName or lifecycleStageId is required. Aborting!',
     );
   }
   if (lifecycleStageId) {
     const response = {
       contact: {
-        lifecycle_stage_id: lifecycleStageId
+        lifecycle_stage_id: lifecycleStageId,
       },
-      unique_identifier: { emails }
+      unique_identifier: { emails },
     };
     return response;
   }
@@ -307,36 +305,36 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
   let lifeCycleStagesResponse = await httpGET(endPoint, requestOptions);
   lifeCycleStagesResponse = processAxiosResponse(lifeCycleStagesResponse);
   if (lifeCycleStagesResponse.status !== 200) {
-    const errMessage = lifeCycleStagesResponse.response.errors?.message || "";
-    const errorStatus = lifeCycleStagesResponse.response.errors?.code || "500";
-    throw new CustomError(
+    const errMessage = lifeCycleStagesResponse.response.errors?.message || '';
+    const errorStatus = lifeCycleStagesResponse.response.errors?.code || '500';
+    throw new NetworkError(
       `failed to fetch lifecycle_stages details ${errMessage}`,
-      errorStatus
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
+      },
+      lifeCycleStagesResponse,
     );
   }
   const lifeCycleStages = lifeCycleStagesResponse.response?.lifecycle_stages;
   if (lifeCycleStages && Array.isArray(lifeCycleStages)) {
     const lifeCycleStageDetials = lifeCycleStages.find(
-      lifeCycleStage => lifeCycleStage.name === lifecycleStageName
+      (lifeCycleStage) => lifeCycleStage.name === lifecycleStageName,
     );
     if (!lifeCycleStageDetials) {
-      throw new CustomError(
+      throw new NetworkInstrumentationError(
         `failed to fetch lifeCycleStages with ${lifecycleStageName}`,
-        400
       );
     }
     const response = {
       contact: {
-        lifecycle_stage_id: lifeCycleStageDetials.id
+        lifecycle_stage_id: lifeCycleStageDetials.id,
       },
-      unique_identifier: { emails }
+      unique_identifier: { emails },
     };
     return response;
   }
-  throw new CustomError(
-    `Unable to fetch correct list of lifecycle stages`,
-    400
-  );
+  throw new NetworkInstrumentationError(`Unable to fetch correct list of lifecycle stages`);
 };
 
 /*
@@ -350,28 +348,23 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
   const requestOptions = {
     headers: {
       Authorization: `Token token=${Config.apiKey}`,
-      "Content-Type": "application/json"
-    }
+      'Content-Type': 'application/json',
+    },
   };
   if (!payload.sales_activity_name && !payload.sales_activity_type_id) {
-    throw new CustomError(
+    throw new InstrumentationError(
       `Either of sales activity name or sales activity type id is required. Aborting!`,
-      400
     );
   }
-  if (
-    !payload.targetable_id &&
-    payload.targetable_type.toLowerCase() !== "contact"
-  ) {
-    throw new CustomError(`targetable_id is required. Aborting!`, 400);
+  if (!payload.targetable_id && payload.targetable_type.toLowerCase() !== 'contact') {
+    throw new InstrumentationError(`targetable_id is required. Aborting!`);
   }
 
-  const email = getFieldValueFromMessage(message, "email");
+  const email = getFieldValueFromMessage(message, 'email');
 
   if (!payload.targetable_id && !email) {
-    throw new CustomError(
+    throw new InstrumentationError(
       `Either of email or targetable_id is required for creating sales activity. Aborting!`,
-      400
     );
   }
 
@@ -380,14 +373,14 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
     if (payload.targetable_id) {
       responseBody = {
         ...payload,
-        sales_activity_type_id: payload.sales_activity_type_id
+        sales_activity_type_id: payload.sales_activity_type_id,
       };
     } else {
       responseBody = responseBuilderWithContactDetails(
         email,
         Config,
         payload,
-        payload.sales_activity_type_id
+        payload.sales_activity_type_id,
       );
     }
     return responseBody;
@@ -397,24 +390,26 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
   let salesActivityResponse = await httpGET(endPoint, requestOptions);
   salesActivityResponse = processAxiosResponse(salesActivityResponse);
   if (salesActivityResponse.status !== 200) {
-    const errMessage = salesActivityResponse.response.errors?.message || "";
-    const errorStatus = salesActivityResponse.response.errors?.code || "500";
-    throw new CustomError(
+    const errMessage = salesActivityResponse.response.errors?.message || '';
+    const errorStatus = salesActivityResponse.response.errors?.code || '500';
+    throw new NetworkError(
       `failed to fetch sales activities details ${errMessage}`,
-      errorStatus
+      errorStatus,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
+      },
+      salesActivityResponse,
     );
   }
 
-  const salesActivityList =
-    salesActivityResponse.response?.sales_activity_types;
+  const salesActivityList = salesActivityResponse.response?.sales_activity_types;
   if (salesActivityList && Array.isArray(salesActivityList)) {
     const salesActivityDetails = salesActivityList.find(
-      salesActivity => salesActivity.name === payload.sales_activity_name
+      (salesActivity) => salesActivity.name === payload.sales_activity_name,
     );
     if (!salesActivityDetails) {
-      throw new CustomError(
+      throw new InstrumentationError(
         `sales Activity ${payload.sales_activity_name} doesn't exists. Aborting!`,
-        400
       );
     }
     let responseBody;
@@ -422,20 +417,20 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
       responseBody = {
         ...payload,
         targetable_id: payload.targetable_id,
-        sales_activity_type_id: salesActivityDetails.id
+        sales_activity_type_id: salesActivityDetails.id,
       };
     } else {
       responseBody = await responseBuilderWithContactDetails(
         email,
         Config,
         payload,
-        salesActivityDetails.id
+        salesActivityDetails.id,
       );
     }
 
     return responseBody;
   }
-  throw new CustomError(`Unable to fetch correct list of sales activity.`, 400);
+  throw new NetworkInstrumentationError(`Unable to fetch correct list of sales activity.`);
 };
 
 /*
@@ -444,24 +439,24 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
  * @param {*} payload
  * @returns
  */
-const checkNumberDataType = payload => {
+const checkNumberDataType = (payload) => {
   const numberAttributes = [
-    "territory_id",
-    "lead_source_id",
-    "owner_id",
-    "campaign_id",
-    "contact_status_id",
-    "lifecycle_stage_id",
-    "industry_type_id",
-    "business_type_id",
-    "number_of_employees",
-    "parent_sales_account_id"
+    'territory_id',
+    'lead_source_id',
+    'owner_id',
+    'campaign_id',
+    'contact_status_id',
+    'lifecycle_stage_id',
+    'industry_type_id',
+    'business_type_id',
+    'number_of_employees',
+    'parent_sales_account_id',
   ];
   const errorAttributes = [];
-  numberAttributes.forEach(element => {
+  numberAttributes.forEach((element) => {
     if (payload[element]) {
       const value = payload[element];
-      if (!isNaN(Number(value))) {
+      if (!Number.isNaN(Number(value))) {
         payload[element] = Number(value);
       } else {
         errorAttributes.push(element);
@@ -469,7 +464,7 @@ const checkNumberDataType = payload => {
     }
   });
   if (errorAttributes.length > 0) {
-    throw new CustomError(`${errorAttributes}: invalid number format`, 400);
+    throw new InstrumentationError(`${errorAttributes}: invalid number format`);
   }
 };
 
@@ -481,5 +476,5 @@ module.exports = {
   UpdateContactWithLifeCycleStage,
   UpdateContactWithSalesActivity,
   getContactsDetails,
-  updateAccountWOContact
+  updateAccountWOContact,
 };

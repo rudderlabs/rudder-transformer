@@ -136,6 +136,14 @@
     }
   },
   {
+    "destination": {
+      "Config": {
+        "username": "wootricfakeuser@example.com",
+        "password": "password@123",
+        "accountToken": "NPS-1234567"
+      },
+      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
+    },
     "metadata": [
       {
         "jobId": 5
@@ -145,12 +153,19 @@
     "statusCode": 400,
     "error": "email/phone number are missing. At least one parameter must be provided",
     "statTags": {
-      "destType": "WOOTRIC",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
+    "destination": {
+      "Config": {
+        "username": "wootricfakeuser@example.com",
+        "password": "password@123",
+        "accountToken": "NPS-1234567"
+      },
+      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
+    },
     "metadata": [
       {
         "jobId": 6
@@ -160,9 +175,8 @@
     "statusCode": 400,
     "error": "email/phone number are missing. At least one parameter must be provided",
     "statTags": {
-      "destType": "WOOTRIC",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
@@ -335,16 +349,31 @@
         "jobId": 11
       }
     ],
+    "destination": {
+      "Config": {
+        "username": "wootricfakeuser@example.com",
+        "password": "password@123",
+        "accountToken": "NPS-1234567"
+      },
+      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
+    },
     "batched": false,
     "statusCode": 400,
     "error": "No user found with userId : dummyId2",
     "statTags": {
-      "destType": "WOOTRIC",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
+    "destination": {
+      "Config": {
+        "username": "wootricfakeuser@example.com",
+        "password": "password@123",
+        "accountToken": "NPS-1234567"
+      },
+      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
+    },
     "metadata": [
       {
         "jobId": 12
@@ -354,9 +383,8 @@
     "statusCode": 400,
     "error": "Invalid Score",
     "statTags": {
-      "destType": "WOOTRIC",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
@@ -397,6 +425,14 @@
     }
   },
   {
+    "destination": {
+      "Config": {
+        "username": "wootricfakeuser@example.com",
+        "password": "password@123",
+        "accountToken": "NPS-1234567"
+      },
+      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
+    },
     "metadata": [
       {
         "jobId": 14
@@ -406,12 +442,19 @@
     "statusCode": 400,
     "error": "No user found with userId : dummyId2",
     "statTags": {
-      "destType": "WOOTRIC",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
+    "destination": {
+      "Config": {
+        "username": "wootricfakeuser@example.com",
+        "password": "password@123",
+        "accountToken": "NPS-1234567"
+      },
+      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
+    },
     "metadata": [
       {
         "jobId": 15
@@ -421,9 +464,8 @@
     "statusCode": 400,
     "error": "Event Type not supported",
     "statTags": {
-      "destType": "WOOTRIC",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   },
   {
@@ -432,13 +474,20 @@
         "jobId": 16
       }
     ],
+    "destination": {
+      "Config": {
+        "username": "wootricfakeuser@example.com",
+        "password": "password@123",
+        "accountToken": "NPS-1234567"
+      },
+      "ID": "2D7TqLto9tnkBuR1ciMrbiA4cbG"
+    },
     "batched": false,
     "statusCode": 400,
     "error": "Event Type is missing from Integration object",
     "statTags": {
-      "destType": "WOOTRIC",
-      "scope": "exception",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     }
   }
 ]

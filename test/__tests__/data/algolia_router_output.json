@@ -6,10 +6,20 @@
       "statusCode": 400,
       "error": "Missing required value from \"properties.index\"",
       "statTags": {
-        "destType": "ALGOLIA",
-        "stage": "transform",
-        "scope": "transformation",
-        "meta": "handled"
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "34d8efa09c5b048bbacc6af157f2e687",
+          "applicationId": "O2YARRI15I",
+          "eventTypeSettings": [
+            {
+              "from": "product clicked",
+              "to": "cLick "
+            }
+          ]
+        }
       }
     },
     {

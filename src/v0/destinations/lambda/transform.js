@@ -1,21 +1,26 @@
-const _ = require("lodash");
-const {
-  getErrorRespEvents,
-  getSuccessRespEvents,
-  CustomError
-} = require("../../util");
+const _ = require('lodash');
+const { getErrorRespEvents, getSuccessRespEvents } = require('../../util');
+const { ConfigurationError } = require('../../util/errorTypes');
 
-const DEFAULT_INVOCATION_TYPE = "Event"; // asynchronous invocation
+const DEFAULT_INVOCATION_TYPE = 'Event'; // asynchronous invocation
 const MAX_PAYLOAD_SIZE_IN_KB = 256; // only for asynchronous invocation
+
+function getFieldsForDelivery(destConfig) {
+  return {
+    invocationType: DEFAULT_INVOCATION_TYPE,
+    lambda: destConfig.lambda,
+    clientContext: destConfig.clientContext,
+  };
+}
 
 // Returns a transformed payload, after necessary property/field mappings.
 function process(event) {
   if (!event.destination.Config) {
-    throw new CustomError("destination.Config cannot be undefined", 400);
+    throw new ConfigurationError('destination.Config cannot be undefined');
   }
   return {
     payload: JSON.stringify(event.message),
-    destConfig: event.destination.Config
+    destConfig: getFieldsForDelivery(event.destination.Config),
   };
 }
 
@@ -31,7 +36,7 @@ function getBatchedPayloads(inputs, maxBatchSize, sizesInKB) {
   let payloadChunk = [];
   let payloadChunkSizeInKB = getSizeInKB(payloadChunk);
   let chunkMetadata = [];
-  inputs.forEach(input => {
+  inputs.forEach((input) => {
     const inputSizeInKB = sizesInKB.get(input.metadata.jobId);
     if (
       payloadChunk.length.toString() === maxBatchSize ||
@@ -57,10 +62,10 @@ function batchEvents(inputs, destConfig, sizesInKB) {
   const batchedResponseList = [];
   const { maxBatchSize } = destConfig;
   const batchedPayloads = getBatchedPayloads(inputs, maxBatchSize, sizesInKB);
-  batchedPayloads.forEach(data => {
+  batchedPayloads.forEach((data) => {
     const message = {
       payload: JSON.stringify(data.payloadChunk),
-      destConfig
+      destConfig: getFieldsForDelivery(destConfig),
     };
     batchedResponseList.push(getSuccessRespEvents(message, data.chunkMetadata));
   });
@@ -70,10 +75,10 @@ function batchEvents(inputs, destConfig, sizesInKB) {
 
 function responseBuilderSimple(inputs, destConfig) {
   const processedEventList = [];
-  inputs.forEach(input => {
+  inputs.forEach((input) => {
     const message = {
       payload: JSON.stringify(input.message),
-      destConfig
+      destConfig: getFieldsForDelivery(destConfig),
     };
     processedEventList.push(getSuccessRespEvents(message, [input.metadata]));
   });
@@ -81,29 +86,28 @@ function responseBuilderSimple(inputs, destConfig) {
 }
 
 // Router transform with batching by default
-const processRouterDest = inputs => {
+const processRouterDest = (inputs) => {
   const { destination } = inputs[0];
   if (!destination.Config) {
     const batchMetadata = [];
-    inputs.forEach(input => {
+    inputs.forEach((input) => {
       batchMetadata.push(input.metadata);
     });
     const respEvents = getErrorRespEvents(
       batchMetadata,
       400,
-      "destination.Config cannot be undefined"
+      'destination.Config cannot be undefined',
     );
     return [respEvents];
   }
-  const destConfig = _.cloneDeep(destination.Config);
-  destConfig.invocationType = DEFAULT_INVOCATION_TYPE;
+  const destConfig = destination.Config;
 
   const successEventsList = [];
   const errorMetadata = [];
   const errorResponseList = [];
   const sizesInKB = new Map();
 
-  inputs.forEach(input => {
+  inputs.forEach((input) => {
     const sizeInKB = getSizeInKB([input.message]);
     if (sizeInKB > MAX_PAYLOAD_SIZE_IN_KB) {
       errorMetadata.push(input.metadata);
@@ -114,9 +118,7 @@ const processRouterDest = inputs => {
   });
 
   if (errorMetadata.length > 0) {
-    errorResponseList.push(
-      getErrorRespEvents(errorMetadata, 400, "payload size limit exceeded")
-    );
+    errorResponseList.push(getErrorRespEvents(errorMetadata, 400, 'payload size limit exceeded'));
   }
 
   let successResponseList;

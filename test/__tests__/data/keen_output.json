@@ -1,5 +1,5 @@
 [
-  { "message": "message type not supported", "statusCode": 400 },
+  { "message": "Event type identify is not supported", "statusCode": 400 },
   {
     "body": {
       "XML": {},

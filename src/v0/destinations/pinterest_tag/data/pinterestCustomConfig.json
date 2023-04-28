@@ -6,11 +6,7 @@
   },
   {
     "destKey": "value",
-    "sourceKeys": [
-      "properties.value",
-      "properties.total",
-      "properties.revenue"
-    ],
+    "sourceKeys": ["properties.value", "properties.total", "properties.revenue"],
     "required": false
   },
   {
@@ -30,6 +26,10 @@
     "destKey": "search_string",
     "sourceKeys": "properties.query",
     "required": false
+  },
+  {
+    "destKey": "opt_out_type",
+    "sourceKeys": "properties.optOutType",
+    "required": false
   }
 ]
-

@@ -1,18 +1,13 @@
-const {
-  prepareProxyRequest,
-  proxyRequest
-} = require("../../../adapters/network");
-const { isHttpStatusSuccess } = require("../../util/index");
-const ErrorBuilder = require("../../util/error");
-const {
-  REFRESH_TOKEN
-} = require("../../../adapters/networkhandler/authConstants");
+const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
+const { isHttpStatusSuccess } = require('../../util/index');
+const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 
 const {
-  processAxiosResponse
-} = require("../../../adapters/utils/networkUtils");
-const { ApiError } = require("../../util/errors");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
+  processAxiosResponse,
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
+const { AbortedError, RetryableError, NetworkError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 /**
  * This function helps to detarmine type of error occured. According to the response
@@ -21,24 +16,21 @@ const { TRANSFORMER_METRIC } = require("../../util/constant");
  * @param {*} code
  * @returns
  */
-const getAuthErrCategory = code => {
+const getAuthErrCategory = (code) => {
   switch (code) {
     case 401:
       return REFRESH_TOKEN;
     default:
-      return "";
+      return '';
   }
 };
 
 function checkIfFailuresAreRetryable(response) {
   try {
-    if (
-      Array.isArray(response.status) &&
-      Array.isArray(response.status[0].errors)
-    ) {
+    if (Array.isArray(response.status) && Array.isArray(response.status[0].errors)) {
       return (
-        response.status[0].errors[0].code !== "PERMISSION_DENIED" &&
-        response.status[0].errors[0].code !== "INVALID_ARGUMENT"
+        response.status[0].errors[0].code !== 'PERMISSION_DENIED' &&
+        response.status[0].errors[0].code !== 'INVALID_ARGUMENT'
       );
     }
     return true;
@@ -47,36 +39,24 @@ function checkIfFailuresAreRetryable(response) {
   }
 }
 
-const responseHandler = destinationResponse => {
+const responseHandler = (destinationResponse) => {
   const message = `[CAMPAIGN_MANAGER Response Handler] - Request Processed Successfully`;
   const { response, status } = destinationResponse;
   if (isHttpStatusSuccess(status)) {
     // check for Failures
     if (response.hasFailures === true) {
       if (checkIfFailuresAreRetryable(response)) {
-        throw new ApiError(
+        throw new RetryableError(
           `Campaign Manager: Retrying during CAMPAIGN_MANAGER response transformation`,
           500,
-          {
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-            meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.RETRYABLE
-          },
           destinationResponse,
-          undefined,
-          "CAMPAIGN_MANAGER"
         );
       } else {
         // abort message
-        throw new ApiError(
+        throw new AbortedError(
           `Campaign Manager: Aborting during CAMPAIGN_MANAGER response transformation`,
           400,
-          {
-            scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-            meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-          },
           destinationResponse,
-          undefined,
-          "CAMPAIGN_MANAGER"
         );
       }
     }
@@ -84,21 +64,22 @@ const responseHandler = destinationResponse => {
     return {
       status,
       message,
-      destinationResponse
+      destinationResponse,
     };
   }
 
-  throw new ErrorBuilder()
-    .setStatus(status)
-    .setDestinationResponse(response)
-    .setMessage(
-      `Campaign Manager: ${response.error.message} during CAMPAIGN_MANAGER response transformation 3`
-    )
-    .setAuthErrorCategory(getAuthErrCategory(status))
-    .build();
+  throw new NetworkError(
+    `Campaign Manager: ${response.error.message} during CAMPAIGN_MANAGER response transformation 3`,
+    status,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+    },
+    destinationResponse,
+    getAuthErrCategory(status),
+  );
 };
 
-const networkHandler = function() {
+const networkHandler = function () {
   this.prepareProxy = prepareProxyRequest;
   this.proxy = proxyRequest;
   this.processAxiosResponse = processAxiosResponse;

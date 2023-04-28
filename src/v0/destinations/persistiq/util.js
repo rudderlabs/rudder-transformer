@@ -1,18 +1,12 @@
-const { get } = require("lodash");
+const { get } = require('lodash');
 const {
   getFieldValueFromMessage,
   getHashFromArray,
   constructPayload,
-  flattenMultilevelPayload
-} = require("../../util");
-const {
-  identifySourceKeys,
-  fileConfigCategories,
-  mappingConfig,
-  DESTINATION
-} = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const ErrorBuilder = require("../../util/error");
+  flattenMultilevelPayload,
+} = require('../../util');
+const { identifySourceKeys, fileConfigCategories, mappingConfig } = require('./config');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 /**
  * Returns the remaining keys from traits
@@ -20,9 +14,9 @@ const ErrorBuilder = require("../../util/error");
  * @param {*} sourceKeys
  * @returns
  */
-const getIdentifyTraits = message => {
-  const traits = getFieldValueFromMessage(message, "traits");
-  const contextTraits = get(message, "context.traits");
+const getIdentifyTraits = (message) => {
+  const traits = getFieldValueFromMessage(message, 'traits');
+  const contextTraits = get(message, 'context.traits');
   return { ...traits, ...contextTraits };
 };
 
@@ -36,7 +30,7 @@ const getIdentifyTraits = message => {
 const getRemainingAttributes = (traits, sourceKeys) => {
   const properties = {};
   const keys = Object.keys(traits);
-  keys.forEach(key => {
+  keys.forEach((key) => {
     if (!sourceKeys.includes(key)) {
       properties[key] = traits[key];
     }
@@ -57,7 +51,7 @@ const getAttributes = (attributesMap, properties, excludeKeys) => {
   const data = {};
   const attributesMapKeys = Object.keys(attributesMap);
 
-  attributesMapKeys.forEach(key => {
+  attributesMapKeys.forEach((key) => {
     if (properties[key]) {
       const destinationAttributeName = attributesMap[key];
       data[destinationAttributeName] = properties[key];
@@ -71,30 +65,16 @@ const getAttributes = (attributesMap, properties, excludeKeys) => {
 
 const buildLeadPayload = (message, traits, Config) => {
   if (!traits) {
-    throw new ErrorBuilder()
-      .setMessage("Traits not Provided")
-      .setStatus(400)
-      .setStatTags({
-        destType: DESTINATION,
-        stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.TRANSFORM,
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.TRANSFORMATION.META.BAD_PARAM
-      })
-      .build();
+    throw new InstrumentationError('Traits not Provided');
   }
   const configPayload = constructPayload(
     message,
-    mappingConfig[fileConfigCategories.IDENTIFY.name]
+    mappingConfig[fileConfigCategories.IDENTIFY.name],
   );
   const { persistIqAttributesMapping } = Config;
-  const persistIqAttributesMap = getHashFromArray(
-    persistIqAttributesMapping,
-    "from",
-    "to",
-    false
-  );
+  const persistIqAttributesMap = getHashFromArray(persistIqAttributesMapping, 'from', 'to', false);
   const customPersistIqAttributes = flattenMultilevelPayload(
-    getAttributes(persistIqAttributesMap, traits, identifySourceKeys)
+    getAttributes(persistIqAttributesMap, traits, identifySourceKeys),
   );
   return { ...configPayload, ...customPersistIqAttributes };
 };

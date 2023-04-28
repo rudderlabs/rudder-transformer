@@ -1885,7 +1885,7 @@
   },
   {
     "statusCode": 400,
-    "message": "message type not supported"
+    "message": "Message type newtype not supported"
   },
   {
     "version": "1",

@@ -1,16 +1,15 @@
-const get = require("get-value");
-const { EventType, MappedToDestinationKey } = require("../../../constants");
-const { ConfigCategory } = require("./config");
+const get = require('get-value');
+const { EventType, MappedToDestinationKey } = require('../../../constants');
+const { ConfigCategory } = require('./config');
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   getFieldValueFromMessage,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError,
-  addExternalIdToTraits
-} = require("../../util");
-const { processIdentify, processTrack, processGroup } = require("./util");
+  addExternalIdToTraits,
+  simpleProcessRouterDest,
+} = require('../../util');
+const { processIdentify, processTrack, processGroup } = require('./util');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 /**
  * This function validates the message and builds the response
@@ -38,20 +37,20 @@ const validateAndBuildResponse = async (message, destination) => {
       category = ConfigCategory.GROUP_USER;
       break;
     default:
-      throw new CustomError("Message type not supported", 400);
+      throw new InstrumentationError('Message type not supported');
   }
 
   if (get(message, MappedToDestinationKey)) {
     addExternalIdToTraits(message);
-    responseBody = getFieldValueFromMessage(message, "traits");
+    responseBody = getFieldValueFromMessage(message, 'traits');
   }
   response.body.JSON = responseBody;
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = category.endpoint;
   response.headers = {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
     Authorization: `Bearer ${destination.Config.apiKey}`,
-    Accept: "application/json"
+    Accept: 'application/json',
   };
   response.userId = responseBody.user_id;
   return response;
@@ -59,63 +58,15 @@ const validateAndBuildResponse = async (message, destination) => {
 
 const processSingleMessage = async (message, destination) => {
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Ignoring message.",
-      400
-    );
+    throw new InstrumentationError('Message Type is not present. Ignoring message.');
   }
   return validateAndBuildResponse(message, destination);
 };
 
-const process = event => {
-  let response;
-  try {
-    response = processSingleMessage(event.message, event.destination);
-  } catch (error) {
-    throw new CustomError(
-      error.message || "Unknown error",
-      error.status || 400
-    );
-  }
-  return response;
-};
+const process = (event) => processSingleMessage(event.message, event.destination);
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

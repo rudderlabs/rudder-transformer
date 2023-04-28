@@ -1,22 +1,12 @@
-const { isEmpty } = require("lodash");
+const { isEmpty } = require('lodash');
 const {
   processAxiosResponse,
-  getDynamicMeta
-} = require("../../../adapters/utils/networkUtils");
-const {
-  prepareProxyRequest,
-  proxyRequest
-} = require("../../../adapters/network");
-const { DESTINATION } = require("./config");
-const { TRANSFORMER_METRIC } = require("../../util/constant");
-const ErrorBuilder = require("../../util/error");
+  getDynamicErrorType,
+} = require('../../../adapters/utils/networkUtils');
+const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
+const { NetworkError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
-const defaultStatTags = {
-  destType: DESTINATION,
-  stage: TRANSFORMER_METRIC.TRANSFORMER_STAGE.RESPONSE_TRANSFORM,
-  scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-  meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-};
 /**
  * The actual API reference doc to which events from Rudderstack are being sent
  * https://developers.facebook.com/docs/marketing-api/reference/ads-pixel/events/v13.0
@@ -27,7 +17,7 @@ const defaultStatTags = {
  * 2. https://developers.facebook.com/docs/marketing-api/error-reference/
  *   - The doc seems to be more related to Marketing API
  */
-const RETRYABLE_ERROR_CODES = [1, 2, 3, 341, 368, 5000, 190];
+const RETRYABLE_ERROR_CODES = [1, 2, 3, 341, 368, 5000];
 
 /**
  * These error codes were chosen from the below reference:
@@ -55,36 +45,24 @@ const errorDetailsMap = {
     // This error talks about event being sent after seven days or so
     2804003: {
       status: 400,
-      statTags: {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-      }
     },
     // This error-subcode indicates that the business access token expired or is invalid or sufficient permissions are not provided
     // since there is involvement of changes required on dashboard to make event successful
     // for now, we are aborting this error-subCode combination
     33: {
       status: 400,
-      statTags: {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-      }
-    }
+    },
   },
   1: {
     // An unknown error occurred.
     // This error may occur if you set level to adset but the correct value should be campaign
     99: {
       status: 400,
-      statTags: {
-        scope: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.SCOPE,
-        meta: TRANSFORMER_METRIC.MEASUREMENT_TYPE.API.META.ABORTABLE
-      }
-    }
-  }
+    },
+  },
 };
 
-const getErrorDetailsFromErrorMap = error => {
+const getErrorDetailsFromErrorMap = (error) => {
   const { code, error_subcode: subCode } = error;
   let errDetails;
   if (!isEmpty(errorDetailsMap[code]) && subCode) {
@@ -93,67 +71,51 @@ const getErrorDetailsFromErrorMap = error => {
   return errDetails;
 };
 
-const getStatusAndStats = error => {
+const getStatus = (error) => {
   const errorDetail = getErrorDetailsFromErrorMap(error);
   let errorStatus = 400;
-  let statTags = { ...defaultStatTags };
   if (!isEmpty(errorDetail)) {
     errorStatus = errorDetail.status;
-    statTags = {
-      ...statTags,
-      ...errorDetail.statTags
-    };
   }
   if (RETRYABLE_ERROR_CODES.includes(error.code)) {
     errorStatus = 500;
-    statTags = {
-      ...statTags,
-      meta: getDynamicMeta(errorStatus)
-    };
   }
 
   if (THROTTLED_ERROR_CODES.includes(error.code)) {
     errorStatus = 429;
-    statTags = {
-      ...statTags,
-      meta: getDynamicMeta(errorStatus)
-    };
   }
 
-  return {
-    status: errorStatus,
-    statTags
-  };
+  return errorStatus;
 };
 
-const errorResponseHandler = destResponse => {
+const errorResponseHandler = (destResponse) => {
   const { response } = destResponse;
   if (!response.error) {
     // successful response from facebook pixel api
     return;
   }
   const { error } = response;
-  const statusAndStats = getStatusAndStats(error);
-  throw new ErrorBuilder()
-    .setStatus(statusAndStats.status)
-    .setDestinationResponse({ ...response, status: destResponse.status })
-    .setMessage(
-      `Facebook Pixel: Failed with ${error.message} during response transformation`
-    )
-    .setStatTags(statusAndStats.statTags)
-    .build();
+  const status = getStatus(error);
+  throw new NetworkError(
+    `Failed with ${error.message} during response transformation`,
+    status,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+    },
+    { ...response, status: destResponse.status },
+  );
 };
 
-const destResponseHandler = destinationResponse => {
+const destResponseHandler = (destinationResponse) => {
   errorResponseHandler(destinationResponse);
   return {
     destinationResponse: destinationResponse.response,
-    message: `[Facebook_pixel Response Handler] - Request Processed Successfully`,
-    status: destinationResponse.status
+    message: 'Request Processed Successfully',
+    status: destinationResponse.status,
   };
 };
 
-const networkHandler = function() {
+const networkHandler = function () {
   // The order of execution also happens in this way
   this.prepareProxyRequest = prepareProxyRequest;
   this.proxy = proxyRequest;
@@ -162,5 +124,5 @@ const networkHandler = function() {
 };
 
 module.exports = {
-  networkHandler
+  networkHandler,
 };

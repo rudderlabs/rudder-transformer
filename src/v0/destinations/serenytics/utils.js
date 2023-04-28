@@ -3,22 +3,20 @@ const {
   extractCustomFields,
   defaultRequestConfig,
   defaultPostRequestConfig,
-  CustomError
-} = require("../../util");
-const { MAPPING_CONFIG } = require("./config");
+} = require('../../util');
+const { ConfigurationError } = require('../../util/errorTypes');
+const { MAPPING_CONFIG } = require('./config');
 
 const checkStorageUrl = (STORAGE_URL, messageType) => {
   if (!STORAGE_URL) {
-    throw new CustomError(
+    throw new ConfigurationError(
       `Storage url for "${messageType.toUpperCase()}" is missing. Aborting!`,
-      400
     );
   }
-  const regexExp = /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{1,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/;
+  const regexExp = /[\w#%()+./:=?@~]{2,256}\.[a-z]{1,6}\b([\w#%&+./:=?@~-]*)/;
   if (!regexExp.test(STORAGE_URL)) {
-    throw new CustomError(
+    throw new ConfigurationError(
       `Invalid storage url for "${messageType.toUpperCase()}". Aborting!`,
-      400
     );
   }
 };
@@ -31,10 +29,10 @@ const responseBuilder = (STORAGE_URL, payload) => {
   return response;
 };
 
-const storageUrlResponseBuilder = (storageUrlEventList, payload, event) => {
+const storageUrlResponseBuilder = (storageUrlEventList, payload) => {
   const responseList = [];
   if (storageUrlEventList) {
-    storageUrlEventList.forEach(eventUrl => {
+    storageUrlEventList.forEach((eventUrl) => {
       const response = responseBuilder(eventUrl, payload);
       responseList.push(response);
     });
@@ -42,22 +40,17 @@ const storageUrlResponseBuilder = (storageUrlEventList, payload, event) => {
   return responseList;
 };
 
-const payloadBuilder = (
-  message,
-  typeName,
-  extractionList,
-  SERENYTICS_EXCLUSION_LIST
-) => {
+const payloadBuilder = (message, typeName, extractionList, SERENYTICS_EXCLUSION_LIST) => {
   const payload = constructPayload(message, MAPPING_CONFIG[typeName]);
   let customPayload = {};
   customPayload = extractCustomFields(
     message,
     customPayload,
     extractionList,
-    SERENYTICS_EXCLUSION_LIST
+    SERENYTICS_EXCLUSION_LIST,
   );
   if (customPayload) {
-    if (extractionList.includes("properties")) {
+    if (extractionList.includes('properties')) {
       Object.entries(customPayload).forEach(([key, value]) => {
         payload[`property_${key}`] = value;
       });
@@ -74,5 +67,5 @@ module.exports = {
   payloadBuilder,
   storageUrlResponseBuilder,
   responseBuilder,
-  checkStorageUrl
+  checkStorageUrl,
 };

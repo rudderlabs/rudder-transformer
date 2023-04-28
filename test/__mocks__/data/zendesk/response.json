@@ -286,5 +286,64 @@
     "next_page": null,
     "previous_page": null,
     "count": 1
+  },
+  "https://rudderlabtest1.zendesk.com/api/v2/users/search.json?query=testemail1@email": {
+    "users": [],
+    "next_page": null,
+    "previous_page": null,
+    "count": 0
+  },
+  "https://rudderlabtest2.zendesk.com/api/v2/users/search.json?query=testemail2@email": {
+    "users": [],
+    "next_page": null,
+    "previous_page": null,
+    "count": 0
+  },
+  "https://rudderlabtest1.zendesk.com/api/v2/users/create_or_update.json": {
+    "user": {
+      "id": 900113780483,
+      "url": "https://rudderlabtest1.zendesk.com/api/v2/users/900113780483.json",
+      "name": "John Wick",
+      "email": "testemail1@email",
+      "created_at": "2020-03-17T10:21:15Z",
+      "updated_at": "2020-03-23T15:56:56Z",
+      "time_zone": "Eastern Time (US & Canada)",
+      "iana_time_zone": "America/New_York",
+      "phone": null,
+      "shared_phone_number": null,
+      "photo": null,
+      "locale_id": 1,
+      "locale": "en-US",
+      "organization_id": 900001329943,
+      "role": "end-user",
+      "verified": true,
+      "external_id": "exId-123",
+      "tags": [],
+      "alias": null,
+      "active": true,
+      "shared": false,
+      "shared_agent": false,
+      "last_login_at": null,
+      "two_factor_auth_enabled": false,
+      "signature": null,
+      "details": null,
+      "notes": null,
+      "role_type": null,
+      "custom_role_id": null,
+      "moderator": false,
+      "ticket_restriction": "requested",
+      "only_private_comments": false,
+      "restricted_agent": true,
+      "suspended": false,
+      "chat_only": false,
+      "default_group_id": null,
+      "report_csv": false,
+      "user_fields": {
+        "birthday": null
+      }
+    }
+  },
+  "https://rudderlabtest2.zendesk.com/api/v2/users/create_or_update.json": {
+    "user": {}
   }
 }

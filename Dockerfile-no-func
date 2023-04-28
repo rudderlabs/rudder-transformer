@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-FROM node:14.20-alpine3.15
+FROM node:14.21.1-alpine3.15
 
 RUN apk update
 RUN apk upgrade

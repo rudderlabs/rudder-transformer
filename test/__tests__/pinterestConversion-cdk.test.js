@@ -1,11 +1,11 @@
 const fs = require("fs");
 const path = require("path");
-const { TRANSFORMER_METRIC } = require("../../src/v0/util/constant");
 const {
   processCdkV2Workflow,
   getWorkflowEngine,
   process
 } = require("../../src/cdk/v2/handler");
+const tags = require("../../src/v0/util/tags");
 
 const integration = "pinterest_tag";
 const name = "Pinterest Conversion API";
@@ -27,7 +27,7 @@ describe(`${name} Tests`, () => {
           const output = await processCdkV2Workflow(
             integration,
             input,
-            TRANSFORMER_METRIC.ERROR_AT.PROC
+            tags.FEATURES.PROCESSOR
           );
           expect(output).toEqual(expected);
         } catch (error) {
@@ -67,7 +67,7 @@ describe(`${name} Tests`, () => {
       const output = await processCdkV2Workflow(
         integration,
         inputRouterErrorData,
-        TRANSFORMER_METRIC.ERROR_AT.RT
+        tags.FEATURES.ROUTER
       );
       expect(output).toEqual(expectedRouterErrorData);
     });
@@ -78,7 +78,7 @@ describe(`${name} Tests`, () => {
           const output = await processCdkV2Workflow(
             integration,
             input,
-            TRANSFORMER_METRIC.ERROR_AT.RT
+            tags.FEATURES.ROUTER
           );
           expect(output).toEqual(expectedRouterData[index]);
         });
@@ -89,7 +89,7 @@ describe(`${name} Tests`, () => {
         it(`Payload: ${index}`, async () => {
           const workflowEngine = await getWorkflowEngine(
             integration,
-            TRANSFORMER_METRIC.ERROR_AT.RT,
+            tags.FEATURES.ROUTER,
             {
               MAX_BATCH_SIZE: 3
             }

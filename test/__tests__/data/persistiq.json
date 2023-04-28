@@ -101,7 +101,7 @@
             "Snippet": "extra value",
             "extra": "extraVal",
             "creator_id": "mVEv91Y3oW5o3PnBOyKw",
-            "company":"abc1234"
+            "company": "abc1234"
           }
         },
         "traits": {
@@ -138,7 +138,7 @@
               "last_name": "rudderstack",
               "linkedin": "www.google.com",
               "phone": "9225467887",
-              "company_name":"abc1234",
+              "company_name": "abc1234",
               "cityName": "Delhi",
               "country": "India"
             }
@@ -178,7 +178,7 @@
       }
     },
     "output": {
-      "error": "Message Type is not present. Aborting message."
+      "error": "Event type is required"
     }
   },
   {
@@ -197,9 +197,7 @@
             "status": "user",
             "city": "Kalkata",
             "country": "india",
-            "tags": [
-              "productuser"
-            ],
+            "tags": ["productuser"],
             "phone": "9225467887"
           }
         },
@@ -214,7 +212,7 @@
       }
     },
     "output": {
-      "error": "Message type trackuser not supported."
+      "error": "Event type trackuser is not supported"
     }
   },
   {
@@ -241,7 +239,7 @@
       }
     },
     "output": {
-      "error": "Group Id can not be empty."
+      "error": "Group Id can not be empty"
     }
   },
   {
@@ -384,7 +382,7 @@
       }
     },
     "output": {
-      "error": "Email is required for new lead."
+      "error": "Email is required for new lead"
     }
   }
 ]

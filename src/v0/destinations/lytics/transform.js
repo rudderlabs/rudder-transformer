@@ -1,21 +1,20 @@
-const { EventType } = require("../../../constants");
+const { EventType } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   ENDPOINT,
   forFirstName,
-  forLastName
-} = require("./config");
+  forLastName,
+} = require('./config');
 const {
   constructPayload,
   defaultPostRequestConfig,
   removeUndefinedAndNullValues,
   defaultRequestConfig,
   flattenJson,
-  getSuccessRespEvents,
-  getErrorRespEvents,
-  CustomError
-} = require("../../util");
+  simpleProcessRouterDest,
+} = require('../../util');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilderSimple = (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -24,13 +23,13 @@ const responseBuilderSimple = (message, category, destination) => {
   response.endpoint = `${ENDPOINT}/${stream}?access_token=${apiKey}`;
   response.method = defaultPostRequestConfig.requestMethod;
   const flattenedPayload = removeUndefinedAndNullValues(flattenJson(payload));
-  forFirstName.forEach(key => {
+  forFirstName.forEach((key) => {
     if (flattenedPayload[key]) {
       flattenedPayload.first_name = flattenedPayload[key];
       delete flattenedPayload[key];
     }
   });
-  forLastName.forEach(key => {
+  forLastName.forEach((key) => {
     if (flattenedPayload[key]) {
       flattenedPayload.last_name = flattenedPayload[key];
       delete flattenedPayload[key];
@@ -38,14 +37,14 @@ const responseBuilderSimple = (message, category, destination) => {
   });
   response.body.JSON = flattenedPayload;
   response.headers = {
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
   return response;
 };
 
 const processEvent = (message, destination) => {
   if (!message.type) {
-    throw new CustomError("invalid message type for lytics", 400);
+    throw new InstrumentationError('Event type is required');
   }
   const messageType = message.type;
   let category;
@@ -61,55 +60,16 @@ const processEvent = (message, destination) => {
       category = CONFIG_CATEGORIES.TRACK;
       break;
     default:
-      throw new CustomError(
-        `message type ${messageType} not supported for lytics`,
-        400
-      );
+      throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   // build the response
   return responseBuilderSimple(message, category, destination);
 };
 
-const process = event => {
-  return processEvent(event.message, event.destination);
-};
+const process = (event) => processEvent(event.message, event.destination);
 
-const processRouterDest = async inputs => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, "Invalid event array");
-    return [respEvents];
-  }
-
-  const respList = await Promise.all(
-    inputs.map(async input => {
-      try {
-        if (input.message.statusCode) {
-          // already transformed event
-          return getSuccessRespEvents(
-            input.message,
-            [input.metadata],
-            input.destination
-          );
-        }
-        // if not transformed
-        return getSuccessRespEvents(
-          await process(input),
-          [input.metadata],
-          input.destination
-        );
-      } catch (error) {
-        return getErrorRespEvents(
-          [input.metadata],
-          error.response
-            ? error.response.status
-            : error.code
-            ? error.code
-            : 400,
-          error.message || "Error occurred while processing payload."
-        );
-      }
-    })
-  );
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

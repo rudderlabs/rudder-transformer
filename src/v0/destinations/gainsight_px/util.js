@@ -1,14 +1,11 @@
-const axios = require("axios");
-const { ENDPOINTS } = require("./config");
-const { CustomError } = require("../../util");
+const axios = require('axios');
+const { ENDPOINTS } = require('./config');
+const { NetworkError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 
-const handleErrorResponse = (
-  error,
-  customErrMessage,
-  expectedErrStatus,
-  defaultStatus = 400
-) => {
-  let errMessage = "";
+const handleErrorResponse = (error, customErrMessage, expectedErrStatus, defaultStatus = 400) => {
+  let errMessage = '';
   let errorStatus = defaultStatus;
 
   if (error.response && error.response.data) {
@@ -22,7 +19,14 @@ const handleErrorResponse = (
       return { success: false, err: errMessage };
     }
   }
-  throw new CustomError(`${customErrMessage}: ${errMessage}`, errorStatus);
+  throw new NetworkError(
+    `${customErrMessage}: ${errMessage}`,
+    errorStatus,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
+    },
+    error,
+  );
 };
 
 /**
@@ -34,31 +38,36 @@ const handleErrorResponse = (
  */
 const objectExists = async (id, Config, objectType) => {
   let url = `${ENDPOINTS.USERS_ENDPOINT}/${id}`;
-  let err = "invalid response while searching user";
+  let err = 'invalid response while searching user';
 
-  if (objectType === "account") {
+  if (objectType === 'account') {
     url = `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${id}`;
-    err = "invalid response while searching account";
+    err = 'invalid response while searching account';
   }
 
   let response;
   try {
     response = await axios.get(url, {
       headers: {
-        "X-APTRINSIC-API-KEY": Config.apiKey,
-        "Content-Type": "application/json"
-      }
+        'X-APTRINSIC-API-KEY': Config.apiKey,
+        'Content-Type': 'application/json',
+      },
     });
     if (response && response.status === 200) {
       return { success: true, err: null };
     }
-    throw new CustomError(err);
-  } catch (error) {
-    return handleErrorResponse(
-      error,
-      `error while fetching ${objectType}`,
-      404
+    const defStatus = 400;
+    const status = response ? response.status || defStatus : defStatus;
+    throw new NetworkError(
+      err,
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      },
+      response,
     );
+  } catch (error) {
+    return handleErrorResponse(error, `error while fetching ${objectType}`, 404);
   }
 };
 
@@ -67,45 +76,60 @@ const createAccount = async (payload, Config) => {
   try {
     response = await axios.post(ENDPOINTS.ACCOUNTS_ENDPOINT, payload, {
       headers: {
-        "X-APTRINSIC-API-KEY": Config.apiKey,
-        "Content-Type": "application/json"
-      }
+        'X-APTRINSIC-API-KEY': Config.apiKey,
+        'Content-Type': 'application/json',
+      },
     });
     if (response && response.status === 201) {
       return { success: true, err: null };
     }
-    throw new CustomError("invalid response while creating account");
+
+    const defStatus = 400;
+    const status = response ? response.status || defStatus : defStatus;
+    throw new NetworkError(
+      'invalid response while creating account',
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      },
+      response,
+    );
   } catch (error) {
-    return handleErrorResponse(error, "error while creating account", 400);
+    return handleErrorResponse(error, 'error while creating account', 400);
   }
 };
 
 const updateAccount = async (accountId, payload, Config) => {
   let response;
   try {
-    response = await axios.put(
-      `${ENDPOINTS.ACCOUNTS_ENDPOINT}/${accountId}`,
-      payload,
-      {
-        headers: {
-          "X-APTRINSIC-API-KEY": Config.apiKey,
-          "Content-Type": "application/json"
-        }
-      }
-    );
+    response = await axios.put(`${ENDPOINTS.ACCOUNTS_ENDPOINT}/${accountId}`, payload, {
+      headers: {
+        'X-APTRINSIC-API-KEY': Config.apiKey,
+        'Content-Type': 'application/json',
+      },
+    });
     if (response && response.status === 204) {
       return { success: true, err: null };
     }
-    throw new CustomError("invalid response while updating account");
+    const defStatus = 400;
+    const status = response ? response.status || defStatus : defStatus;
+    throw new NetworkError(
+      'invalid response while updating account',
+      status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+      },
+      response,
+    );
   } catch (error) {
     // it will only occur if the user does not exist
     if (
       error.response?.status === 404 &&
-      error.response?.data?.externalapierror?.status === "NOT_FOUND"
+      error.response?.data?.externalapierror?.status === 'NOT_FOUND'
     ) {
       return { success: false, err: null };
     }
-    return handleErrorResponse(error, "error while updating account", 400);
+    return handleErrorResponse(error, 'error while updating account', 400);
   }
 };
 
@@ -119,7 +143,7 @@ const updateAccount = async (accountId, payload, Config) => {
 const renameCustomFields = (payload, userCustomFieldsMap) => {
   const renamedPayload = {};
   const mapKeys = Object.keys(userCustomFieldsMap);
-  Object.keys(payload).forEach(key => {
+  Object.keys(payload).forEach((key) => {
     if (mapKeys.includes(key)) {
       renamedPayload[userCustomFieldsMap[key]] = payload[key];
     }
@@ -133,10 +157,10 @@ const renameCustomFields = (payload, userCustomFieldsMap) => {
  * @param {*} props
  * @returns
  */
-const formatEventProps = props => {
+const formatEventProps = (props) => {
   const formattedObj = {};
-  Object.keys(props).forEach(key => {
-    if (typeof props[key] === "object") {
+  Object.keys(props).forEach((key) => {
+    if (typeof props[key] === 'object') {
       formattedObj[key] = JSON.stringify(props[key]);
     } else {
       formattedObj[key] = props[key];
@@ -146,10 +170,9 @@ const formatEventProps = props => {
 };
 
 module.exports = {
-  CustomError,
   renameCustomFields,
   createAccount,
   updateAccount,
   objectExists,
-  formatEventProps
+  formatEventProps,
 };

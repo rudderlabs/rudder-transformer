@@ -1,7 +1,7 @@
 [
   {
     "output": {
-      "message": "[Pardot Response Handler] - Request Processed Successfully",
+      "message": "Request Processed Successfully",
       "status": 200,
       "destinationResponse": {
         "response": {
@@ -118,7 +118,7 @@
   },
   {
     "output": {
-      "message": "[Pardot Response Handler] - Request Processed Successfully",
+      "message": "Request Processed Successfully",
       "status": 201,
       "destinationResponse": {
         "response": {
@@ -235,7 +235,7 @@
   },
   {
     "output": {
-      "message": "[Pardot Response Handler] - Request Processed Successfully",
+      "message": "Request Processed Successfully",
       "status": 200,
       "destinationResponse": {
         "response": {
@@ -352,8 +352,9 @@
   },
   {
     "output": {
-      "message": "Pardot: access_token is invalid, unknown, or malformed: Inactive token during Pardot response transformation",
+      "message": "access_token is invalid, unknown, or malformed: Inactive token during Pardot response transformation",
       "status": 500,
+      "authErrorCategory": "REFRESH_TOKEN",
       "destinationResponse": {
         "@attributes": {
           "stat": "fail",
@@ -364,12 +365,12 @@
       },
       "statTags": {
         "destType": "PARDOT",
-        "meta": "retryable",
-        "scope": "api",
-        "stage": "responseTransform",
-        "errorAt": "proxy"
-      },
-      "authErrorCategory": "REFRESH_TOKEN"
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
     }
   }
 ]

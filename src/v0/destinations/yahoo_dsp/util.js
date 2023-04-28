@@ -1,21 +1,17 @@
-const qs = require("qs");
-const sha256 = require("sha256");
-const { generateJWTToken } = require("../../../util/jwtTokenGenerator");
-const { httpPOST } = require("../../../adapters/network");
-const { CustomError, isDefinedAndNotNullAndNotEmpty } = require("../../util");
-
-const {
-  ACCESS_TOKEN_CACHE_TTL,
-  AUDIENCE_ATTRIBUTE,
-  DSP_SUPPORTED_OPERATION
-} = require("./config.js");
-const Cache = require("../../util/cache");
+const qs = require('qs');
+const sha256 = require('sha256');
+const { generateJWTToken } = require('../../../util/jwtTokenGenerator');
+const { httpPOST } = require('../../../adapters/network');
+const { isDefinedAndNotNullAndNotEmpty } = require('../../util');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { ACCESS_TOKEN_CACHE_TTL, AUDIENCE_ATTRIBUTE, DSP_SUPPORTED_OPERATION } = require('./config');
+const Cache = require('../../util/cache');
+const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
+const tags = require('../../util/tags');
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
-const getUnixTimestamp = () => {
-  return Math.floor(Date.now() / 1000);
-};
+const getUnixTimestamp = () => Math.floor(Date.now() / 1000);
 
 /**
  *
@@ -42,15 +38,14 @@ const populateIdentifiers = (audienceList, Config) => {
 
   if (isDefinedAndNotNullAndNotEmpty(audienceList)) {
     // traversing through every userTraits in the add array for the traits to be added.
-    audienceList.forEach(userTraits => {
+    audienceList.forEach((userTraits) => {
       // storing keys of an object inside the add array.
       const traits = Object.keys(userTraits);
       // checking for the audience type the user wants to add is present in the input or not.
       if (!traits.includes(audienceAttribute)) {
         // throwing error if the audience type the user wants to add is not present in the input.
-        throw new CustomError(
-          `[Yahoo_DSP]:: Required property for ${audienceAttribute} type audience is not available in an object`,
-          400
+        throw new InstrumentationError(
+          `Required property for ${audienceAttribute} type audience is not available in an object`,
         );
       }
       // here, hashing the data if is not hashed and pushing in the seedList array.
@@ -84,9 +79,8 @@ const createPayload = (audienceList, Config) => {
   seedList = populateIdentifiers(audienceList, Config);
   // throwing the error if nothing is present in the seedList
   if (seedList.length === 0) {
-    throw new CustomError(
-      `[Yahoo_DSP]:: No attributes are present in the '${DSP_SUPPORTED_OPERATION}' property.`,
-      400
+    throw new InstrumentationError(
+      `No attributes are present in the '${DSP_SUPPORTED_OPERATION}' property`,
     );
   }
   // Creating dspListPayload
@@ -100,7 +94,7 @@ const createPayload = (audienceList, Config) => {
  * @param {*} destination
  * @returns
  */
-const getAccessToken = async destination => {
+const getAccessToken = async (destination) => {
   const { clientId, clientSecret } = destination.Config;
   const accessTokenKey = destination.ID;
 
@@ -111,45 +105,45 @@ const getAccessToken = async destination => {
    */
   return ACCESS_TOKEN_CACHE.get(accessTokenKey, async () => {
     const header = {
-      alg: "HS256",
-      typ: "JWT"
+      alg: 'HS256',
+      typ: 'JWT',
     };
 
     const data = {
-      aud: "https://id.b2b.yahooinc.com/identity/oauth2/access_token?realm=dsp",
+      aud: 'https://id.b2b.yahooinc.com/identity/oauth2/access_token?realm=dsp',
       sub: clientId,
       iss: clientId,
       exp: getUnixTimestamp() + 3600,
-      iat: getUnixTimestamp()
+      iat: getUnixTimestamp(),
     };
 
     const request = {
       header: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Accept: "application/json"
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Accept: 'application/json',
       },
-      url: "https://id.b2b.yahooinc.com/identity/oauth2/access_token",
+      url: 'https://id.b2b.yahooinc.com/identity/oauth2/access_token',
       data: qs.stringify({
-        grant_type: "client_credentials",
-        scope: "dsp-api-access",
-        realm: "dsp",
-        client_assertion_type:
-          "urn:ietf:params:oauth:client-assertion-type:jwt-bearer",
+        grant_type: 'client_credentials',
+        scope: 'dsp-api-access',
+        realm: 'dsp',
+        client_assertion_type: 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer',
         // Here, generateJWTToken is used to get JWT required for genrating access token.
-        client_assertion: generateJWTToken(header, data, clientSecret)
+        client_assertion: generateJWTToken(header, data, clientSecret),
       }),
-      method: "POST"
+      method: 'POST',
     };
-    const dspAuthorisationData = await httpPOST(
-      request.url,
-      request.data,
-      request.header
-    );
+    const dspAuthorisationData = await httpPOST(request.url, request.data, request.header);
     // If the request fails, throwing error.
     if (dspAuthorisationData.success === false) {
-      throw new CustomError(
-        `[Yahoo_DSP]:: access token could not be gnerated due to ${dspAuthorisationData.response.data.error}`,
-        400
+      const status = dspAuthorisationData?.response?.status || 400;
+      throw new NetworkError(
+        `Access token could not be gnerated due to ${dspAuthorisationData.response.data.error}`,
+        status,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
+        },
+        dspAuthorisationData,
       );
     }
     return dspAuthorisationData.response?.data?.access_token;
@@ -158,5 +152,5 @@ const getAccessToken = async destination => {
 
 module.exports = {
   getAccessToken,
-  createPayload
+  createPayload,
 };

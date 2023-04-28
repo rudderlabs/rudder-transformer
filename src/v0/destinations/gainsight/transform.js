@@ -1,14 +1,14 @@
 /* eslint-disable no-nested-ternary */
-const set = require("set-value");
-const get = require("get-value");
-const { EventType } = require("../../../constants");
+const set = require('set-value');
+const get = require('get-value');
+const { EventType } = require('../../../constants');
 const {
   identifyMapping,
   groupMapping,
   IDENTIFY_EXCLUSION_KEYS,
   GROUP_EXCLUSION_KEYS,
-  ENDPOINTS
-} = require("./config");
+  ENDPOINTS,
+} = require('./config');
 const {
   constructPayload,
   defaultRequestConfig,
@@ -19,29 +19,25 @@ const {
   defaultPostRequestConfig,
   getHashFromArray,
   getDestinationExternalID,
-  simpleProcessRouterDest
-} = require("../../util/index");
+  simpleProcessRouterDest,
+} = require('../../util/index');
 const {
   searchGroup,
   createGroup,
   updateGroup,
   renameCustomFieldsFromMap,
   getConfigOrThrowError,
-  CustomError
-} = require("./util");
+} = require('./util');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 /**
  * Person Object is created or updated. Upsert API makes PUT request for both cases
  * https://support.gainsight.com/Gainsight_NXT/API_and_Developer_Docs/Person_API/Person_API_Documentation
  */
 const identifyResponseBuilder = (message, { Config }) => {
-  const { accessKey } = getConfigOrThrowError(
-    Config,
-    ["accessKey"],
-    "identify"
-  );
-  if (!getValueFromMessage(message, ["traits.email", "context.traits.email"])) {
-    throw new CustomError("email is required for identify", 400);
+  const { accessKey } = getConfigOrThrowError(Config, ['accessKey'], 'identify');
+  if (!getValueFromMessage(message, ['traits.email', 'context.traits.email'])) {
+    throw new InstrumentationError('email is required for identify');
   }
 
   let payload = constructPayload(message, identifyMapping);
@@ -50,22 +46,20 @@ const identifyResponseBuilder = (message, { Config }) => {
   payload = extractCustomFields(
     message,
     payload,
-    ["traits", "context.traits"],
-    IDENTIFY_EXCLUSION_KEYS
+    ['traits', 'context.traits'],
+    IDENTIFY_EXCLUSION_KEYS,
   );
 
-  const personMap = getHashFromArray(Config.personMap, "from", "to", false);
+  const personMap = getHashFromArray(Config.personMap, 'from', 'to', false);
   payload = renameCustomFieldsFromMap(payload, personMap, defaultKeys);
 
   if (!payload.Name) {
     const fName = payload.FirstName;
     const lName = payload.LastName;
     const mName = payload.MiddleName;
-    const name = mName
-      ? `${fName || ""} ${mName} ${lName || ""}`
-      : `${fName || ""} ${lName || ""}`;
+    const name = mName ? `${fName || ''} ${mName} ${lName || ''}` : `${fName || ''} ${lName || ''}`;
 
-    set(payload, "Name", name.trim());
+    set(payload, 'Name', name.trim());
   }
 
   const response = defaultRequestConfig();
@@ -73,7 +67,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.headers = {
     Accesskey: accessKey,
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
   response.endpoint = ENDPOINTS.identifyEndpoint(Config.domain);
   return response;
@@ -85,15 +79,15 @@ const identifyResponseBuilder = (message, { Config }) => {
  * https://support.gainsight.com/Gainsight_NXT/API_and_Developer_Docs/Company_API/Company_API_Documentation
  */
 const groupResponseBuilder = async (message, { Config }) => {
-  const { accessKey } = getConfigOrThrowError(Config, ["accessKey"], "group");
-  const groupName = getValueFromMessage(message, "traits.name");
+  const { accessKey } = getConfigOrThrowError(Config, ['accessKey'], 'group');
+  const groupName = getValueFromMessage(message, 'traits.name');
   if (!groupName) {
-    throw new CustomError("company name is required for group", 400);
+    throw new InstrumentationError('company name is required for group');
   }
 
-  const email = getValueFromMessage(message, "context.traits.email");
+  const email = getValueFromMessage(message, 'context.traits.email');
   if (!email) {
-    throw new CustomError("user email is required for group", 400);
+    throw new InstrumentationError('user email is required for group');
   }
 
   const resp = await searchGroup(groupName, Config);
@@ -101,14 +95,9 @@ const groupResponseBuilder = async (message, { Config }) => {
   let payload = constructPayload(message, groupMapping);
   const defaultKeys = Object.keys(payload);
 
-  payload = extractCustomFields(
-    message,
-    payload,
-    ["traits"],
-    GROUP_EXCLUSION_KEYS
-  );
+  payload = extractCustomFields(message, payload, ['traits'], GROUP_EXCLUSION_KEYS);
 
-  const companyMap = getHashFromArray(Config.companyMap, "from", "to", false);
+  const companyMap = getHashFromArray(Config.companyMap, 'from', 'to', false);
   payload = renameCustomFieldsFromMap(payload, companyMap, defaultKeys);
   payload = removeUndefinedAndNullValues(payload);
 
@@ -121,7 +110,7 @@ const groupResponseBuilder = async (message, { Config }) => {
 
   const responsePayload = {
     Email: email,
-    companies: [{ Company_ID: groupGsid }]
+    companies: [{ Company_ID: groupGsid }],
   };
 
   // update person with the group (company)
@@ -130,7 +119,7 @@ const groupResponseBuilder = async (message, { Config }) => {
   response.endpoint = ENDPOINTS.identifyEndpoint(Config.domain);
   response.headers = {
     Accesskey: accessKey,
-    "Content-Type": "application/json"
+    'Content-Type': 'application/json',
   };
   response.body.JSON = responsePayload;
   return response;
@@ -145,49 +134,29 @@ const groupResponseBuilder = async (message, { Config }) => {
 const trackResponseBuilder = (message, { Config }) => {
   // TODO: extract contractId (optional field)
 
-  const event = getValueFromMessage(message, "event");
+  const event = getValueFromMessage(message, 'event');
   if (!event) {
-    throw new CustomError("event name is required for track", 400);
+    throw new InstrumentationError('event name is required for track');
   }
 
-  const config = getConfigOrThrowError(
-    Config,
-    ["sharedSecret", "topicName", "tenantId"],
-    "track"
-  );
+  const config = getConfigOrThrowError(Config, ['sharedSecret', 'topicName', 'tenantId'], 'track');
 
-  const eventNameMap = getHashFromArray(
-    Config.eventNameMap,
-    "from",
-    "to",
-    false
-  );
+  const eventNameMap = getHashFromArray(Config.eventNameMap, 'from', 'to', false);
   if (!eventNameMap || !get(eventNameMap, event)) {
-    throw new CustomError(`Event name mapping not provided for ${event}`, 400);
+    throw new ConfigurationError(`Event name mapping not provided for ${event}`);
   }
-  const eventVersionMap = getHashFromArray(
-    Config.eventVersionMap,
-    "from",
-    "to",
-    false
-  );
+  const eventVersionMap = getHashFromArray(Config.eventVersionMap, 'from', 'to', false);
   if (!eventVersionMap || !get(eventVersionMap, event)) {
-    throw new CustomError(
-      `event version mapping not provided for ${event}`,
-      400
-    );
+    throw new ConfigurationError(`event version mapping not provided for ${event}`);
   }
 
-  let contractId = getDestinationExternalID(
-    message,
-    "gainsightEventContractId"
-  );
+  let contractId = getDestinationExternalID(message, 'gainsightEventContractId');
   if (!contractId) {
     contractId = Config.contractId;
   }
 
   let payload = {};
-  payload = extractCustomFields(message, payload, ["properties"], []);
+  payload = extractCustomFields(message, payload, ['properties'], []);
 
   const response = defaultRequestConfig();
   response.body.JSON = payload;
@@ -195,17 +164,17 @@ const trackResponseBuilder = (message, { Config }) => {
   response.endpoint = ENDPOINTS.trackEndpoint(Config.domain);
   response.headers = {
     ...config,
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
     eventName: get(eventNameMap, event),
-    eventVersion: get(eventVersionMap, event)
+    eventVersion: get(eventVersionMap, event),
   };
 
   if (contractId) {
-    set(response.headers, "contractId", contractId);
+    set(response.headers, 'contractId', contractId);
   }
   // can work without setting this as well
   if (Config.accessKey) {
-    set(response.headers, "Accesskey", Config.accessKey);
+    set(response.headers, 'Accesskey', Config.accessKey);
   }
   return response;
 };
@@ -213,13 +182,10 @@ const trackResponseBuilder = (message, { Config }) => {
 /**
  * Processing Single event
  */
-const process = async event => {
+const process = async (event) => {
   const { message, destination } = event;
   if (!message.type) {
-    throw new CustomError(
-      "Message Type is not present. Aborting message.",
-      400
-    );
+    throw new InstrumentationError('Message Type is not present. Aborting message.');
   }
   const messageType = message.type.toLowerCase();
 
@@ -235,13 +201,13 @@ const process = async event => {
       response = trackResponseBuilder(message, destination);
       break;
     default:
-      throw new CustomError(`message type ${messageType} not supported`, 400);
+      throw new InstrumentationError(`message type ${messageType} not supported`);
   }
   return response;
 };
 
-const processRouterDest = async inputs => {
-  const respList = await simpleProcessRouterDest(inputs, "GAINSIGHT", process);
+const processRouterDest = async (inputs, reqMetadata) => {
+  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   return respList;
 };
 

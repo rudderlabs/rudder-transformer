@@ -1,11 +1,11 @@
-const get = require("get-value");
+const get = require('get-value');
 const {
   constructPayload,
   getHashFromArray,
   getIntegrationsObj,
-  getDestinationExternalID
-} = require("../../util");
-const { MAPPING_CONFIG, CONFIG_CATEGORIES, ACTIONS } = require("./config");
+  getDestinationExternalID,
+} = require('../../util');
+const { MAPPING_CONFIG, CONFIG_CATEGORIES, ACTIONS } = require('./config');
 
 /**
  * Returns the contact properties object
@@ -15,18 +15,13 @@ const { MAPPING_CONFIG, CONFIG_CATEGORIES, ACTIONS } = require("./config");
  */
 const getProperties = (contactPropertiesMapping, message) => {
   const properties = {};
-  const contactProperties = getHashFromArray(
-    contactPropertiesMapping,
-    "from",
-    "to",
-    false
-  );
+  const contactProperties = getHashFromArray(contactPropertiesMapping, 'from', 'to', false);
   const keys = Object.keys(contactProperties);
   const traits = {
-    ...get(message, "traits"),
-    ...get(message, "context.traits")
+    ...get(message, 'traits'),
+    ...get(message, 'context.traits'),
   };
-  keys.forEach(key => {
+  keys.forEach((key) => {
     const value = traits[key];
     if (value) {
       const destinationKey = contactProperties[key];
@@ -41,16 +36,12 @@ const getProperties = (contactPropertiesMapping, message) => {
  * @param {*} integrationsObj
  * @returns
  */
-const getAction = integrationsObj => {
-  if (
-    integrationsObj &&
-    integrationsObj.Action &&
-    ACTIONS.includes(integrationsObj.Action)
-  ) {
+const getAction = (integrationsObj) => {
+  if (integrationsObj && integrationsObj.Action && ACTIONS.includes(integrationsObj.Action)) {
     return integrationsObj.Action;
   }
 
-  return "addnoforce";
+  return 'addnoforce';
 };
 
 /**
@@ -63,21 +54,18 @@ const getAction = integrationsObj => {
 const createOrUpdateContactResponseBuilder = (message, destination) => {
   const createOrUpdateContactPayload = constructPayload(
     message,
-    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_OR_UPDATE_CONTACT.name]
+    MAPPING_CONFIG[CONFIG_CATEGORIES.CREATE_OR_UPDATE_CONTACT.name],
   );
 
   const { contactPropertiesMapping, listId } = destination.Config;
-  const contactListId = getDestinationExternalID(message, "listId") || listId;
+  const contactListId = getDestinationExternalID(message, 'listId') || listId;
 
-  const integrationsObj = getIntegrationsObj(message, "mailjet");
+  const integrationsObj = getIntegrationsObj(message, 'mailjet');
   const action = getAction(integrationsObj);
 
   createOrUpdateContactPayload.listId = contactListId;
   createOrUpdateContactPayload.action = action;
-  createOrUpdateContactPayload.properties = getProperties(
-    contactPropertiesMapping,
-    message
-  );
+  createOrUpdateContactPayload.properties = getProperties(contactPropertiesMapping, message);
   return createOrUpdateContactPayload;
 };
 

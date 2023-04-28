@@ -61,8 +61,7 @@
   },
   {
     "destKey": "user_time",
-    "sourceKeys": "originalTimestamp",
-
+    "sourceKeys": "originalTimestamp"
   },
   {
     "destKey": "locale",

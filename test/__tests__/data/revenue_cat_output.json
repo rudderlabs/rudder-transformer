@@ -149,7 +149,7 @@
   ],
   {
     "statusCode": 400,
-    "error": "[REVENUE CAT] Public API Key required for Authentication.",
+    "error": "Public API Key required for Authentication",
     "statTags": {
       "destination": "revenue_cat",
       "stage": "transform",
@@ -214,7 +214,7 @@
   ],
   {
     "statusCode": 400,
-    "error": "[REVENUE CAT] X-Platform is required field.",
+    "error": "X-Platform is required field",
     "statTags": {
       "destination": "revenue_cat",
       "stage": "transform",

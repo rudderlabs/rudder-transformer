@@ -2270,6 +2270,7 @@
             "name": "Monopoly",
             "price": 14,
             "quantity": 1,
+            "contentType": "product_group",
             "category": "Games",
             "url": "https://www.website.com/product/path",
             "image_url": "https://www.website.com/product/path.jpg"
@@ -2279,6 +2280,7 @@
             "sku": "F-32",
             "name": "UNO",
             "price": 3.45,
+            "contentType": "product_group",
             "quantity": 2
           }
         ],
@@ -2353,6 +2355,7 @@
         "eventId": "1616318632825_357",
         "products": [
           {
+            "contentType": "product_group",
             "product_id": "123",
             "sku": "G-32",
             "name": "Monopoly",
@@ -2363,6 +2366,7 @@
             "image_url": "https://www.website.com/product/path.jpg"
           },
           {
+            "contentType": "product_group",
             "product_id": "345",
             "sku": "F-32",
             "name": "UNO",

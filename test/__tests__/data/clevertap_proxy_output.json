@@ -2,7 +2,7 @@
   {
     "output": {
       "status": 200,
-      "message": "[CleverTap Response Handler] - Request Processed Successfully",
+      "message": "Request Processed Successfully",
       "destinationResponse": {
         "response": {
           "status": "success",
@@ -16,7 +16,7 @@
   {
     "output": {
       "status": 401,
-      "message": "[CleverTap Response Handler] - Request failed  with status: 401",
+      "message": "Request failed  with status: 401",
       "destinationResponse": {
         "response": {
           "status": "fail",
@@ -27,17 +27,18 @@
       },
       "statTags": {
         "destType": "CLEVERTAP",
-        "errorAt": "proxy",
-        "stage": "responseTransform",
-        "scope": "api",
-        "meta": "abortable"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   },
   {
     "output": {
       "status": 400,
-      "message": "[CleverTap Response Handler] - Request failed  with status: 200",
+      "message": "Request failed  with status: 200",
       "destinationResponse": {
         "response": {
           "status": "fail",
@@ -48,10 +49,11 @@
       },
       "statTags": {
         "destType": "CLEVERTAP",
-        "errorAt": "proxy",
-        "meta": "abortable",
-        "scope": "api",
-        "stage": "responseTransform"
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
       }
     }
   }

@@ -41,6 +41,12 @@
     "statusCode": 200
   },
   {
+    "destination": {
+      "Config": {
+        "apiKey": "93EMyDLvfpbRxxYn"
+      },
+      "ID": "june123"
+    },
     "batched": false,
     "error": "Missing required value from \"userIdOnly\"",
     "metadata": [
@@ -49,10 +55,8 @@
       }
     ],
     "statTags": {
-      "destType": "JUNE",
-      "scope": "transformation",
-      "meta": "handled",
-      "stage": "transform"
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
     },
     "statusCode": 400
   }

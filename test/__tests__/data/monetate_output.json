@@ -292,7 +292,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Message type identify not supported"
+    "error": "Event type identify is not supported"
   },
   {
     "statusCode": 400,
@@ -639,10 +639,10 @@
   },
   {
     "statusCode": 400,
-    "error": "Message type identify not supported"
+    "error": "Event type identify is not supported"
   },
   {
-    "error": "Message type missing from event"
+    "error": "Event type is required"
   },
   {
     "version": "1",

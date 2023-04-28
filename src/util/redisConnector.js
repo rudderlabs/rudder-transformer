@@ -98,7 +98,7 @@ const RedisDB = {
   /**
    * Used to set value in redis depending on the key and the value type
    * @param {*} key key for which value needs to be stored
-   * @param {*} value value to be stored in redis send it in array format [field1, value1, field2, value2]
+   * @param {*} value to be stored in redis send it in array format [field1, value1, field2, value2]
    *                  if Value is an object
    * @param {*} expiryTime expiry time of data in redis by default 1 hr
    * @param {*} isValJson set to false if value is not a json object 

@@ -1,6 +1,5 @@
 [![codecov](https://codecov.io/gh/rudderlabs/rudder-transformer/branch/develop/graph/badge.svg?token=G24OON85SB)](https://codecov.io/gh/rudderlabs/rudder-transformer)
 
-
 # RudderStack Transformer
 
 RudderStack Transformer is a service which transforms the RudderStack events to destination-specific singular events. This feature is released under
@@ -23,7 +22,8 @@ On Linux, install the required dependencies `python`, `make` and `g++` and follo
 
 1. Clone this repository
 2. Run `npm run setup`
-3. Start the server with `npm start`
+3. Build by running `npm run build:clean`
+4. Start the server with `npm start`
 
 ## Transformer without User Functions
 
@@ -44,7 +44,8 @@ On Linux, install the required dependencies `python`, `make` and `g++` and follo
 
 1. Clone this repository
 2. Run `npm run setup`
-3. Start the server with `ENABLE_FUNCTIONS=false npm start`
+3. Build by running `npm run build:clean`
+4. Start the server with `ENABLE_FUNCTIONS=false npm start`
 
 ### How to run the E2E tests locally
 

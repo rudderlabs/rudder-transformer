@@ -22,7 +22,7 @@ On Linux, install the required dependencies `python`, `make` and `g++` and follo
 
 1. Clone this repository
 2. Run `npm run setup`
-3. Build by running `npm run build:clean`
+3. Build the service with `npm run build:clean`
 4. Start the server with `npm start`
 
 ## Transformer without User Functions

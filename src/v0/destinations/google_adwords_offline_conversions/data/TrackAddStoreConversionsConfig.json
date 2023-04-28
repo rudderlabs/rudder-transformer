@@ -1,7 +1,10 @@
 [
   {
     "destKey": "operations.create.transaction_attribute.store_attribute.store_code",
-    "sourceKeys": ["properties.store_code", "properties.storeCode"],
+    "sourceKeys": [
+      "properties.store_code",
+      "properties.storeCode"
+    ],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -22,7 +25,10 @@
   },
   {
     "destKey": "operations.create.transaction_attribute.order_id",
-    "sourceKeys": ["properties.order_id", "properties.orderId"],
+    "sourceKeys": [
+      "properties.order_id",
+      "properties.orderId"
+    ],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -38,10 +44,16 @@
   },
   {
     "destKey": "operations.create.transaction_attribute.transaction_date_time",
-    "sourceKeys": ["properties.transaction_date_time", "timestamp", "originalTimestamp"],
+    "sourceKeys": [
+      "properties.conversionDateTime",
+      "properties.transaction_date_time",
+      "timestamp",
+      "originalTimestamp"
+    ],
     "required": true,
     "metadata": {
       "type": "toString"
     }
   }
 ]
+

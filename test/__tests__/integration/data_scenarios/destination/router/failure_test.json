@@ -731,7 +731,7 @@
             "JSON": {
               "data": [
                 {
-                  "event_name": "AddToCart",
+                  "event_name": "add_to_cart",
                   "event_time": 1672064125,
                   "event_source_url": "https://www.website.com/product/path",
                   "action_source": "offline",
@@ -739,21 +739,11 @@
                   "app_id": "",
                   "advertiser_id": "549764492980",
                   "user_data": {
-                    "em": [
-                      "7e4f504f2f6ec2d363365ec866894c6e2c4c1609889f33535bbfeeec3c33a617"
-                    ],
-                    "ph": [
-                      "6bd20b059b192cded172dfd75d49bd91d6a4ad09b56ace298db8a067cbef310a"
-                    ],
-                    "ge": [
-                      "62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a"
-                    ],
-                    "ln": [
-                      "b0e6036f293e37324425377b579507ee4455a3bdf74447e5fd0ba1b512e739c2"
-                    ],
-                    "fn": [
-                      "a4371f70c2cc620598bdd98dca42c1cfb2d57da40886fc19c10491cd7f666cd7"
-                    ],
+                    "em": ["7e4f504f2f6ec2d363365ec866894c6e2c4c1609889f33535bbfeeec3c33a617"],
+                    "ph": ["6bd20b059b192cded172dfd75d49bd91d6a4ad09b56ace298db8a067cbef310a"],
+                    "ge": ["62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a"],
+                    "ln": ["b0e6036f293e37324425377b579507ee4455a3bdf74447e5fd0ba1b512e739c2"],
+                    "fn": ["a4371f70c2cc620598bdd98dca42c1cfb2d57da40886fc19c10491cd7f666cd7"],
                     "client_ip_address": "[::1]"
                   },
                   "custom_data": {
@@ -768,7 +758,7 @@
                   }
                 },
                 {
-                  "event_name": "PageVisit",
+                  "event_name": "page_visit",
                   "event_time": 1672064125,
                   "event_source_url": "https://www.website.com/product/path",
                   "action_source": "offline",
@@ -776,21 +766,11 @@
                   "app_id": "",
                   "advertiser_id": "549764492980",
                   "user_data": {
-                    "em": [
-                      "7e4f504f2f6ec2d363365ec866894c6e2c4c1609889f33535bbfeeec3c33a617"
-                    ],
-                    "ph": [
-                      "6bd20b059b192cded172dfd75d49bd91d6a4ad09b56ace298db8a067cbef310a"
-                    ],
-                    "ge": [
-                      "62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a"
-                    ],
-                    "ln": [
-                      "b0e6036f293e37324425377b579507ee4455a3bdf74447e5fd0ba1b512e739c2"
-                    ],
-                    "fn": [
-                      "a4371f70c2cc620598bdd98dca42c1cfb2d57da40886fc19c10491cd7f666cd7"
-                    ],
+                    "em": ["7e4f504f2f6ec2d363365ec866894c6e2c4c1609889f33535bbfeeec3c33a617"],
+                    "ph": ["6bd20b059b192cded172dfd75d49bd91d6a4ad09b56ace298db8a067cbef310a"],
+                    "ge": ["62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a"],
+                    "ln": ["b0e6036f293e37324425377b579507ee4455a3bdf74447e5fd0ba1b512e739c2"],
+                    "fn": ["a4371f70c2cc620598bdd98dca42c1cfb2d57da40886fc19c10491cd7f666cd7"],
                     "client_ip_address": "[::1]"
                   },
                   "custom_data": {
@@ -1241,14 +1221,9 @@
                   "whitelistedEvents",
                   "eventFilteringOption"
                 ],
-                "web": [
-                  "useNativeSDK",
-                  "oneTrustCookieCategories"
-                ]
+                "web": ["useNativeSDK", "oneTrustCookieCategories"]
               },
-              "excludeKeys": [
-      
-              ],
+              "excludeKeys": [],
               "includeKeys": [
                 "tagId",
                 "advertiserId",
@@ -1264,9 +1239,7 @@
                 "eventFilteringOption"
               ],
               "saveDestinationResponse": false,
-              "secretKeys": [
-      
-              ],
+              "secretKeys": [],
               "supportedSourceTypes": [
                 "android",
                 "ios",
@@ -1282,9 +1255,7 @@
               "transformAt": "router",
               "transformAtV1": "router"
             },
-            "ResponseRules": {
-      
-            }
+            "ResponseRules": {}
           },
           "Config": {
             "advertiserId": "549764492980",
@@ -1327,9 +1298,7 @@
           },
           "Enabled": true,
           "WorkspaceID": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
-          "Transformations": [
-      
-          ],
+          "Transformations": [],
           "IsProcessorEnabled": true,
           "RevisionID": "2JMx40BCnDdWUqaz5Qu2bKro3Ih"
         }

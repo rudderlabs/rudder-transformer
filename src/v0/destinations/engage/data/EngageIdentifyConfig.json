@@ -19,7 +19,8 @@
     "sourceFromGenericMap": true
   },
   {
-    "sourceKeys": "originalTimestamp",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
     "destKey": "created_at"
   }
 ]

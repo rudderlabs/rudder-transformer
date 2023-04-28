@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.23.0",
+  "version": "1.24.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -74,6 +74,7 @@
     "js-sha1": "^0.6.0",
     "json-diff": "^1.0.3",
     "json-query": "^2.2.2",
+    "json-size": "^1.0.0",
     "jsontoxml": "^1.0.1",
     "jszip": "^3.10.1",
     "koa": "^2.14.1",
@@ -90,7 +91,7 @@
     "pprof": "^3.2.0",
     "prom-client": "^14.2.0",
     "rudder-transformer-cdk": "^1.4.5",
-    "rudder-workflow-engine": "^0.4.4",
+    "rudder-workflow-engine": "^0.4.5",
     "set-value": "^4.1.0",
     "sha256": "^0.2.0",
     "stacktrace-parser": "^0.1.10",

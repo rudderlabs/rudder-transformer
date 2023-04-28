@@ -27,7 +27,7 @@ export default class DestinationController {
     let events = ctx.request.body as ProcessorTransformationRequest[];
     const metaTags = MiscService.getMetaTags(events[0].metadata);
     const { version, destination }: { version: string; destination: string } = ctx.params;
-    stats.counter('dest_transform_input_events', events.length, {
+    stats.histogram('dest_transform_input_events', events.length, {
       destination,
       version,
       ...metaTags,
@@ -68,7 +68,7 @@ export default class DestinationController {
       'Native(Process-Transform):: Response from transformer::',
       JSON.stringify(ctx.body),
     );
-    stats.counter('dest_transform_output_events', resplist.length, {
+    stats.histogram('dest_transform_output_events', resplist.length, {
       destination,
       version,
       ...metaTags,
@@ -96,7 +96,7 @@ export default class DestinationController {
     const destination = routerRequest.destType;
     let events = routerRequest.input;
     const metaTags = MiscService.getMetaTags(events[0].metadata);
-    stats.counter('dest_transform_input_events', events.length, {
+    stats.histogram('dest_transform_input_events', events.length, {
       destination,
       version: "v0",
       ...metaTags,
@@ -129,7 +129,7 @@ export default class DestinationController {
       ctx.body = { output: [errResp] };
     }
     ControllerUtility.postProcess(ctx);
-    stats.counter('dest_transform_output_events', ctx.body?.output?.length, {
+    stats.histogram('dest_transform_output_events', ctx.body?.output?.length, {
       destination,
       version: "v0",
       ...metaTags,

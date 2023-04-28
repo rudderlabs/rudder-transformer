@@ -266,7 +266,7 @@
         "user_id": "test_user_id_1",
         "email": "test_1@test.com",
         "event_name": "Test Event 2",
-        "created": 1601493060,
+        "created": 1601493061,
         "metadata": {
           "property1": 1,
           "property2": "test",
@@ -297,7 +297,7 @@
       "JSON": {
         "email": "test_1@test.com",
         "event_name": "Test Event 2",
-        "created": 1601493060,
+        "created": 1601493061,
         "metadata": {}
       },
       "XML": {},

@@ -1681,12 +1681,7 @@ const validatePhoneWithCountryCode = (phone) => {
  * @param {*} Config
  * @returns
  */
-const isHybridModeEnabled = (Config) => {
-  if (isDefinedAndNotNull(Config.useNativeSDK) && isDefinedAndNotNull(Config.useNativeSDKToSend)) {
-    return Config.useNativeSDK && !Config.useNativeSDKToSend;
-  }
-  return false;
-};
+const isHybridModeEnabled = (Config) => Config.connectionMode === 'hybrid';
 
 /**
  * Get event type from the Rudder message object

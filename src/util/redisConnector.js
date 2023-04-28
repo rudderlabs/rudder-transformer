@@ -30,6 +30,10 @@ const RedisDB = {
           if (times <= this.maxRetries) {
             return 10 + times * this.timeAfterRetry;
           }
+          stats.increment('redis_down', {
+            errorType: "Redis",
+            timestamp: Date.now()
+          });
           log.error(`Redis is down at ${this.host}:${this.port}`);
           return false; // stop retrying
         },
@@ -85,7 +89,7 @@ const RedisDB = {
       return value;
     } catch (e) {
       stats.increment('redis_get_val_error', {
-        error: e,
+        errorType: "Redis",
         timestamp: Date.now()
       });
       throw new RedisError(`Error getting value from Redis: ${e}`);
@@ -103,6 +107,7 @@ const RedisDB = {
   async setVal(key, value, expiryTime = 60 * 60) {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
+      let bytes;
       if (typeof value === "object") {
         const valueToStore = value.map(element => {
           if (typeof element === "object") {
@@ -110,22 +115,23 @@ const RedisDB = {
           }
           return element;
         })
-        const bytes = Buffer.byteLength(JSON.stringify(value), "utf-8");
+        bytes = Buffer.byteLength(JSON.stringify(value), "utf-8");
         await this.client.multi()
           .hmset(key, ...valueToStore)
           .expire(key, expiryTime)
           .exec();
-        stats.gauge('redis_set_val_size', bytes, {
-          timestamp: Date.now()
-        });
       } else {
-        const bytes = Buffer.byteLength(value, "utf-8");
+        bytes = Buffer.byteLength(value, "utf-8");
         await this.client.setex(key, expiryTime, value);
-        stats.gauge('redis_set_val_size', bytes, {
-          timestamp: Date.now()
-        });
       }
+      stats.gauge('redis_set_val_size', bytes, {
+        timestamp: Date.now()
+      });
     } catch (e) {
+      stats.increment('redis_set_val_error', {
+        errorType: "Redis",
+        timestamp: Date.now()
+      });
       throw new RedisError(`Error setting value in Redis due ${e}`);
     }
   },

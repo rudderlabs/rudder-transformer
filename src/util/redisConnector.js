@@ -44,16 +44,15 @@ const RedisDB = {
 
 
   async checkRedisConnectionReadyState() {
-    while (this.client.status !== 'ready') {
-      // eslint-disable-next-line no-await-in-loop
-      await new Promise((resolve) => {
-        setTimeout(
-          () => resolve(),
-          10
-        );
+    try {
+      await this.client.connect();
+    } catch (error) {
+      return new Promise((resolve) => {
+        this.client.on('ready', () => {
+          resolve();
+        });
       });
     }
-    return Promise.resolve(true);
   },
 
   /**
@@ -64,16 +63,9 @@ const RedisDB = {
       this.init();
       console.log("Redis client", this.client.status);
     }
-    // Available Redis Client Statuses "wait", "reconnecting","connecting","connect","ready","close","end";
-    if (this.client.status === 'wait' || this.client.status === 'reconnecting' || this.client.status === 'connecting') {
-      console.log("Redis client3", this.client.status);
+    if (this.client.status !== 'ready') {
       await Promise.race([this.checkRedisConnectionReadyState(), timeoutPromise()]);
     }
-    if (this.client.status === 'close' || this.client.status === 'end') {
-      console.log("Redis client4", this.client.status);
-      await Promise.race([this.client.connect(), timeoutPromise()]);
-    }
-
   },
   /**
    * Used to get value from redis depending on the key and the expected value type

@@ -169,7 +169,12 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
   }
   let anonymousIDfromDB;
   const executeStartTime = Date.now();
-  const redisVal = await RedisDB.getVal(`${cartToken}`);
+  let redisVal;
+  try {
+    redisVal = await RedisDB.getVal(`${cartToken}`);
+  } catch (e) {
+    redisVal = null;
+  }
   stats.timing('redis_get_latency', executeStartTime, {
     ...metricMetadata,
   });

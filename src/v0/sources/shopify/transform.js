@@ -26,6 +26,9 @@ const {
 } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 
+console.log("useRedisDatabase", useRedisDatabase);
+console.log("Env Redis Var", process.env.USE_REDIS_DB);
+
 const identifyPayloadBuilder = (event) => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.IDENTIFY);
@@ -149,6 +152,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
   }
   if (message.type !== EventType.IDENTIFY) {
     if (useRedisDatabase) {
+
       await setAnonymousIdorUserIdFromDb(message, metricMetadata);
     } else {
       setAnonymousId(message);
@@ -178,7 +182,12 @@ const isIdentifierEvent = (event) => {
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
     const setStartTime = Date.now();
-    await RedisDB.setVal(`${event.cartToken}`, { anonymousId: event.anonymousId });
+    try {
+      await RedisDB.setVal(`${event.cartToken}`, { anonymousId: event.anonymousId }
+      );
+    } catch (e) {
+      // This is a client side event
+    }
     stats.timing('redis_set_latency', setStartTime, {
       ...metricMetadata,
     });
@@ -196,7 +205,8 @@ const processIdentifierEvent = async (event, metricMetadata) => {
   };
   return result;
 };
-const process = async (event) => {
+const process1 = async (event) => {
+
   const metricMetadata = {
     writeKey: event.query_parameters?.writeKey?.[0],
     source: "SHOPIFY"
@@ -208,4 +218,4 @@ const process = async (event) => {
   return response;
 };
 
-exports.process = process;
+exports.process = process1;

@@ -53,6 +53,7 @@ const RedisDB = {
         });
       });
     }
+    return Promise.resolve();
   },
 
   /**
@@ -61,7 +62,6 @@ const RedisDB = {
   async checkAndConnectConnection() {
     if (!this.client) {
       this.init();
-      console.log("Redis client", this.client.status);
     }
     if (this.client.status !== 'ready') {
       await Promise.race([this.checkRedisConnectionReadyState(), timeoutPromise()]);

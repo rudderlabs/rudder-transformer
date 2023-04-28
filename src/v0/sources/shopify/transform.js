@@ -26,9 +26,6 @@ const {
 } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 
-console.log("useRedisDatabase", useRedisDatabase);
-console.log("Env Redis Var", process.env.USE_REDIS_DB);
-
 const identifyPayloadBuilder = (event) => {
   const message = new Message(INTEGERATION);
   message.setEventType(EventType.IDENTIFY);

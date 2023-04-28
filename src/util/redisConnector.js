@@ -29,6 +29,10 @@ const RedisDB = {
           if (times <= this.maxRetries) {
             return (1 + times) * this.timeAfterRetry; // reconnect after 
           }
+          stats.increment('redis_down', {
+            errorType: "Redis",
+            timestamp: Date.now()
+          });
           log.error(`Redis is down at ${this.host}:${this.port}`);
           return false; // stop retrying
         },
@@ -60,7 +64,7 @@ const RedisDB = {
    * Checks connection with redis and if not connected, tries to connect and throws error if connection request fails
    */
   async checkAndConnectConnection() {
-    if (!this.client) {
+    if (!this.client || this.client.status === "end") {
       this.init();
     }
     if (this.client.status !== 'ready') {
@@ -87,7 +91,7 @@ const RedisDB = {
       return isJsonExpected ? JSON.parse(value) : value;
     } catch (e) {
       stats.increment('redis_get_val_error', {
-        error: e,
+        errorType: "Redis",
         timestamp: Date.now()
       });
       throw new RedisError(`Error getting value from Redis: ${e}`);
@@ -112,7 +116,7 @@ const RedisDB = {
       });
     } catch (e) {
       stats.increment('redis_set_val_error', {
-        error: e,
+        errorType: "Redis",
         timestamp: Date.now()
       });
       throw new RedisError(`Error setting value in Redis due ${e}`);

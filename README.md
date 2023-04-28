@@ -21,7 +21,7 @@ On Mac, if you don't have `make` and `g++`, you would have to install `Xcode Com
 On Linux, install the required dependencies `python`, `make` and `g++` and follow these steps:
 
 1. Clone this repository
-2. Run `npm run setup`
+2. Setup the repository with `npm run setup`
 3. Build the service with `npm run build:clean`
 4. Start the server with `npm start`
 

@@ -102,7 +102,7 @@ const bindUserAndCompany = async (payload, userId, Config) => {
   }
 
   const requestBody = {};
-  requestBody.id = userId;
+  requestBody.user_id = userId;
   requestBody.companies = [];
   const companyObj = {};
   companyObj.company_id = payload.company_id;
@@ -116,6 +116,7 @@ const bindUserAndCompany = async (payload, userId, Config) => {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${Config.apiKey}`,
       Accept: 'application/json',
+      'Intercom-Version': '1.4'
     },
   };
   const companyResponse = await httpPOST(endpoint, requestData, requestOptions);

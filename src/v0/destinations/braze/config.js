@@ -4,6 +4,9 @@ const ConfigCategory = {
   IDENTIFY: {
     name: 'BrazeUserAttributesConfig',
   },
+  ALIAS: {
+    name: 'BrazeAliasConfig',
+  },
   DEFAULT: {
     name: 'BrazeUserAttributesConfig',
   },
@@ -19,6 +22,10 @@ function getTrackEndPoint(endPoint) {
 
 function getSubscriptionGroupEndPoint(endPoint) {
   return `${endPoint}/subscription/status/set`;
+}
+
+function getAliasUpdateEndPoint(endPoint) {
+  return `${endPoint}/users/alias/update`;
 }
 
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
@@ -47,6 +54,7 @@ module.exports = {
   getIdentifyEndpoint,
   getTrackEndPoint,
   getSubscriptionGroupEndPoint,
+  getAliasUpdateEndPoint,
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,

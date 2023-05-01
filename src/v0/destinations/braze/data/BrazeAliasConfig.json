@@ -1,0 +1,11 @@
+[
+  {
+    "destKey": "aliasUpdates",
+    "sourceKeys": [
+      "context.aliasUpdates",
+      "context.traits.aliasUpdates",
+      "aliasUpdates"
+    ],
+    "required": true
+  }
+]

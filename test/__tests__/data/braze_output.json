@@ -814,5 +814,85 @@
       "version": "1",
       "endpoint": "https://rest.fra-01.braze.eu/users/track"
     }
+  ],
+  [
+    {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "alias_updates": [
+          {
+            "alias_label": "rudder_id",
+            "new_alias_name": "example_new_alias_name",
+            "old_alias_name": "example_name"
+          },
+          {
+            "alias_label": "testaliallabel",
+            "new_alias_name": "example_new_alias_name",
+            "old_alias_name": "example_name"
+          },
+          {
+            "alias_label": "rudder_id",
+            "new_alias_name": "example_new_alias_name",
+            "old_alias_name": "example_name"
+          }
+        ]
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "userId": "finaltTest",
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "version": "1",
+    "endpoint": "https://rest.fra-01.braze.eu/users/alias/update"
+  }
+  ],
+  [
+    {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "alias_updates": [
+            {
+              "alias_label": "rudder_id",
+              "new_alias_name": "example_new_alias_name",
+              "old_alias_name": "example_name"
+            },
+            {
+              "alias_label": "rudder_id",
+              "new_alias_name": "example_new_alias_name",
+              "old_alias_name": "example_name"
+            },
+            {
+              "alias_label": "rudder_id",
+              "new_alias_name": "example_new_alias_name",
+              "old_alias_name": "example_name"
+            }
+          ]
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "userId": "finaltTest",
+      "headers": {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      },
+      "version": "1",
+      "endpoint": "https://rest.fra-01.braze.eu/users/alias/update"
+    }
   ]
 ]

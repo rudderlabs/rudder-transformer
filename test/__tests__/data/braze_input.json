@@ -1164,5 +1164,132 @@
       "type": "track",
       "userId": "finalUserTestCA"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false,
+        "aliasLabel" : "rudder_id"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Braze",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "BRAZE"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Braze",
+      "Transformations": []
+    },
+    "message": {
+      "context": {
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "2.32.0"
+        },
+        "traits": {
+          "aliasUpdates": [
+            {
+              "oldAliasName": "example_name",
+              "newAliasName": "example_new_alias_name"
+            },
+            {
+              "aliasLabel": "testaliallabel",
+              "oldAliasName": "example_name",
+              "newAliasName": "example_new_alias_name"
+            },
+            {
+              "oldAliasName": "example_name",
+              "newAliasName": "example_new_alias_name"
+            }
+          ]
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "2.32.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2,
+          "width": 1728,
+          "height": 1117,
+          "innerWidth": 730,
+          "innerHeight": 885
+        }
+      },
+      "type": "alias",
+      "userId": "finaltTest"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false,
+        "aliasLabel" : "rudder_id"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Braze",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "BRAZE"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Braze",
+      "Transformations": []
+    },
+    "message": {
+      "context": {
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "2.32.0"
+        },
+        "traits": {
+          "aliasUpdates": [
+            {
+              "oldAliasName": "example_name",
+              "newAliasName": "example_new_alias_name"
+            },
+            {
+              "oldAliasName": "example_name",
+              "newAliasName": "example_new_alias_name"
+            },
+            {
+              "oldAliasName": "example_name",
+              "newAliasName": "example_new_alias_name"
+            }
+          ]
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "2.32.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "locale": "en-GB",
+        "screen": {
+          "density": 2,
+          "width": 1728,
+          "height": 1117,
+          "innerWidth": 730,
+          "innerHeight": 885
+        }
+      },
+      "type": "alias",
+      "userId": "finaltTest"
+    }
   }
 ]

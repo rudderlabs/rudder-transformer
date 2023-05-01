@@ -11,6 +11,7 @@ const {
   removeUndefinedValues,
   isDefinedAndNotNull,
   simpleProcessRouterDest,
+  constructPayload,
 } = require('../../util');
 
 const { InstrumentationError } = require('../../util/errorTypes');
@@ -21,6 +22,7 @@ const {
   getIdentifyEndpoint,
   getTrackEndPoint,
   getSubscriptionGroupEndPoint,
+  getAliasUpdateEndPoint,
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,
@@ -449,8 +451,46 @@ function processGroup(message, destination) {
   );
 }
 
-function process(event) {
+function processAlias(message, destination) {
   const respList = [];
+  const { aliasUpdates } =  constructPayload(message, mappingConfig[ConfigCategory.ALIAS.name]);
+  if (!aliasUpdates) {
+    throw new InstrumentationError('aliasUpdates key is required for alias call');
+  }
+
+  const aliasLabel = destination.Config.aliasLabel;
+
+  const perRequestMaxSize = 50;
+  for (let i = 0; i < aliasUpdates.length; i += perRequestMaxSize) {
+    const properChunk = aliasUpdates.slice(i, i + perRequestMaxSize);
+    const aliasUpdatesArray = [];
+
+    for (let obj of properChunk) {
+      let aliasObj = {};
+      // since both are required if not present ... skip them from final request
+      if (obj.oldAliasName && obj.newAliasName) {
+        aliasObj.old_alias_name = obj.oldAliasName;
+        aliasObj.new_alias_name = obj.newAliasName;
+        aliasObj.alias_label = obj.aliasLabel || aliasLabel;
+      }
+      aliasUpdatesArray.push(aliasObj);
+    }
+    const response = buildResponse(
+        message,
+        destination,
+        {
+          alias_updates: aliasUpdatesArray,
+        },
+        getAliasUpdateEndPoint(destination.Config.endPoint),
+    );
+    respList.push(response)
+  }
+
+  return respList;
+}
+
+function process(event) {
+  let respList = [];
   let response;
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
@@ -500,6 +540,10 @@ function process(event) {
     case EventType.GROUP:
       response = processGroup(message, destination);
       respList.push(response);
+      break;
+    case EventType.ALIAS:
+      // to limit to 50 updates per API call as per braze doc
+      respList = processAlias(message, destination);
       break;
     default:
       throw new InstrumentationError('Message type is not supported');

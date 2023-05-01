@@ -1,3 +1,5 @@
+
+const get = require('get-value');
 const { BASE_ENDPOINT, operation } = require('./config');
 const {
   defaultRequestConfig,
@@ -6,11 +8,12 @@ const {
   defaultPatchRequestConfig,
   getAccessToken,
   getEventType,
+  getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 const { InstrumentationError } = require('../../util/errorTypes');
-
-const { preparePayload } = require('./util');
+const { MappedToDestinationKey } = require('../../../constants');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { preparePayload } = require('./util');
 
 const prepareResponse = (payload, audienceId, accessToken) => {
   const response = defaultRequestConfig();
@@ -19,8 +22,8 @@ const prepareResponse = (payload, audienceId, accessToken) => {
   response.method = defaultPatchRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
-    'Content-Type': JSON_MIME_TYPE,
-    Accept: JSON_MIME_TYPE,
+    'Content-Type': 'application/json',
+    Accept: 'application/json',
   };
   return response;
 };
@@ -35,11 +38,18 @@ const responseBuilder = (message, destination, accessToken) => {
   const { Config } = destination;
   const { audienceId } = Config;
   const { listData } = message.properties;
+
+  let finalAudienceId = audienceId;
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (!finalAudienceId && mappedToDestination) {
+    const { objectType } = getDestinationExternalIDInfoForRetl(message, 'CRITEO_AUDIENCE');
+    finalAudienceId = objectType;
+  }
   operation.forEach((op) => {
     if (listData[op]) {
       const criteoPayloadArray = preparePayload(listData[op], op, Config);
       criteoPayloadArray.forEach((criteoPayload) => {
-        responseArray.push(prepareResponse(criteoPayload, audienceId, accessToken));
+        responseArray.push(prepareResponse(criteoPayload, finalAudienceId, accessToken));
       });
     }
   });

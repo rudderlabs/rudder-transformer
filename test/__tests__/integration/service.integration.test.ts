@@ -231,7 +231,6 @@ describe('CDK V1 api tests', () => {
 
 describe('CDK V2 api tests', () => {
   test('(pinterest_tag) successful transform', async () => {
-    process.env.CDK_V2_Enabled = 'true';
     const data = getDataFromPath('./data_scenarios/cdk_v2/success.json');
     const response = await request(server)
       .post('/v0/destinations/pinterest_tag')
@@ -242,7 +241,6 @@ describe('CDK V2 api tests', () => {
   });
 
   test('(pinterest_tag) partial failure scenario', async () => {
-    process.env.CDK_V2_Enabled = 'true';
     const data = getDataFromPath('./data_scenarios/cdk_v2/failure.json');
     const response = await request(server)
       .post('/v0/destinations/pinterest_tag')

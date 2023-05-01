@@ -3442,7 +3442,7 @@
     ]
   },
   {
-    "description": "Store - using email as userIdentifier and validateOnly as false ",
+    "description": "Store - using email as userIdentifier and validateOnly as false with originalTimestamp",
     "input": {
       "message": {
         "channel": "web",
@@ -3465,7 +3465,6 @@
           "store_code": "store code",
           "email": "alex@example.com",
           "gclid": "gclid",
-          "conversionDateTime": "2022-01-01 12:32:45-08:00",
           "product_id": "123445",
           "custom_key": "CUSTOM_KEY",
           "CUSTOM_KEY": "CUSTOM_VALUE",
@@ -3751,7 +3750,6 @@
           "revenue": "100",
           "store_code": "store code",
           "gclid": "gclid",
-          "conversionDateTime": "2022-01-01 12:32:45-08:00",
           "product_id": "123445",
           "quantity": 123
         },
@@ -3908,7 +3906,6 @@
         "event": "Product Clicked",
         "type": "track",
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
-        "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
         "userId": "12345",
         "properties": {
@@ -3918,7 +3915,7 @@
           "revenue": "100",
           "store_code": "store code",
           "gclid": "gclid",
-          "conversionDateTime": "2022-01-01 12:32:45-08:00Z",
+          "conversionDateTime": "2019-10-14T11:15:18.299Z",
           "product_id": "123445",
           "quantity": 123
         },
@@ -4089,7 +4086,6 @@
           "store_code": "store code",
           "phone": "+1-202-555-0146",
           "gclid": "gclid",
-          "conversionDateTime": "2022-01-01 12:32:45-08:00Z",
           "product_id": "123445",
           "quantity": 123
         },
@@ -4256,7 +4252,6 @@
           "store_code": "store code",
           "phone": "+1-202-555-0146",
           "gclid": "gclid",
-          "conversionDateTime": "2022-01-01 12:32:45-08:00Z",
           "product_id": "123445",
           "quantity": 123
         },
@@ -4362,7 +4357,7 @@
     ]
   },
   {
-    "description": "Store - using email as userIdentifier when phone is defaultUserIdentifer",
+    "description": "Store - using email as userIdentifier when phone is defaultUserIdentifer with transaction_date_time",
     "input": {
       "message": {
         "channel": "web",
@@ -4374,7 +4369,6 @@
         "event": "Product Clicked",
         "type": "track",
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
-        "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
         "userId": "12345",
         "properties": {
@@ -4384,7 +4378,7 @@
           "revenue": "100",
           "store_code": "store code",
           "gclid": "gclid",
-          "conversionDateTime": "2022-01-01 12:32:45-08:00Z",
+          "transaction_date_time": "2022-01-01 12:32:45-08:00Z",
           "product_id": "123445",
           "quantity": 123
         },
@@ -4455,7 +4449,7 @@
                       "store_code": "store code"
                     },
                     "transaction_amount_micros": "100000000",
-                    "transaction_date_time": "2019-10-14 11:15:18+00:00"
+                    "transaction_date_time": "2022-01-01 12:32:45+00:00"
                   },
                   "userIdentifiers": [
                     {
@@ -4490,7 +4484,7 @@
     ]
   },
   {
-    "description": "Store - No userIdentifier is given in payload and phone is defaultUserIdentifer",
+    "description": "Store - No userIdentifier is given in payload and phone is defaultUserIdentifer with conversionDateTime",
     "input": {
       "message": {
         "channel": "web",
@@ -4500,7 +4494,6 @@
         "event": "Product Clicked",
         "type": "track",
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
-        "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
         "userId": "12345",
         "properties": {
@@ -4510,7 +4503,7 @@
           "revenue": "100",
           "store_code": "store code",
           "gclid": "gclid",
-          "conversionDateTime": "2022-01-01 12:32:45-08:00Z",
+          "conversionDateTime": "2019-10-14T11:15:18.299Z",
           "product_id": "123445",
           "quantity": 123
         },

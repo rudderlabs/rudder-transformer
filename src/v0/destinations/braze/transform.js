@@ -170,6 +170,21 @@ function populateCustomAttributesWithOperation(
   }
 }
 
+function hasKey(obj, key) {
+  if (Object.hasOwnProperty.call(obj, key)) {
+    return true;
+  }
+
+  // eslint-disable-next-line no-restricted-syntax
+  for (const prop in obj) {
+    if (Object.hasOwnProperty.call(obj, prop) && typeof obj[prop] === 'object' && hasKey(obj[prop], key)) {
+        return true;
+      }
+  }
+
+  return false;
+}
+
 // Ref: https://www.braze.com/docs/api/objects_filters/user_attributes_object/
 function getUserAttributesObject(message, mappingJson, destination) {
   // blank output object
@@ -185,12 +200,14 @@ function getUserAttributesObject(message, mappingJson, destination) {
   // iterate over the destKeys and set the value if present
   Object.keys(mappingJson).forEach((destKey) => {
     let value = get(traits, mappingJson[destKey]);
-    if (value) {
+    if (traits && hasKey(traits, mappingJson[destKey])) {
       // handle gender special case
       if (destKey === 'gender') {
         value = formatGender(value);
       }
-      data[destKey] = value;
+      if (value || value === null) {
+        data[destKey] = value;
+      }
     }
   });
 

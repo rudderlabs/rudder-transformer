@@ -378,7 +378,7 @@
     "statusCode": 400,
     "error": "Email or userId is mandatory"
   },
-  {
+  [{
     "body": {
       "XML": {},
       "FORM": {},
@@ -414,6 +414,34 @@
       "XML": {},
       "FORM": {},
       "JSON": {
+        "email": "test@test.com",
+        "companies": [
+          {
+            "name": "rudderUpdate",
+            "company_id": "test_company_id"
+          }
+        ]
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer abcd=",
+      "Intercom-Version": "1.4"
+    },
+    "version": "1",
+    "endpoint": "https://api.intercom.io/users"
+  }],
+  [{
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
         "name": "rudderUpdate",
         "size": 50,
         "industry": "IT",
@@ -439,5 +467,5 @@
     },
     "version": "1",
     "endpoint": "https://api.intercom.io/companies"
-  }
+  }]
 ]

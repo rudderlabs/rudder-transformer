@@ -1025,6 +1025,7 @@
         "employees": 450,
         "plan": "basic"
       },
+      "email": "test@test.com",
       "name": "rudderUpdate",
       "size": "50",
       "industry": "IT",

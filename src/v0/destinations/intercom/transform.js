@@ -14,16 +14,10 @@ const {
   defaultPostRequestConfig,
   getFieldValueFromMessage,
   addExternalIdToTraits,
-  simpleProcessRouterDest,
-  isHttpStatusSuccess,
+  simpleProcessRouterDest
 } = require('../../util');
-const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
-const { httpPOST } = require('../../../adapters/network');
-const {
-  processAxiosResponse,
-  getDynamicErrorType,
-} = require('../../../adapters/utils/networkUtils');
-const tags = require('../../util/tags');
+const { InstrumentationError } = require('../../util/errorTypes');
+const logger = require('../../../logger');
 
 function getCompanyAttribute(company) {
   const companiesList = [];
@@ -96,64 +90,37 @@ function validateTrack(message, payload) {
   throw new InstrumentationError('Email or userId is mandatory');
 }
 
-const bindUserAndCompany = async (payload, userId, Config) => {
-  if (!userId) {
+function attachUserAndCompany(message, Config) {
+  if (!message.userId && !message.email) {
     return;
   }
-
   const requestBody = {};
-  requestBody.user_id = userId;
-  requestBody.companies = [];
-  const companyObj = {};
-  companyObj.company_id = payload.company_id;
-  companyObj.name = payload.name;
-  requestBody.companies.push(companyObj);
-
-  const {endpoint} = ConfigCategory.IDENTIFY;
-  const requestData = requestBody;
-  const requestOptions = {
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${Config.apiKey}`,
-      Accept: 'application/json',
-      'Intercom-Version': '1.4'
-    },
-  };
-  const companyResponse = await httpPOST(endpoint, requestData, requestOptions);
-
-  const processedCompanyResponse = processAxiosResponse(companyResponse);
-  if (!isHttpStatusSuccess(processedCompanyResponse.status)) {
-    const errMessage = JSON.stringify(processedCompanyResponse.response) || '';
-    const errorStatus = processedCompanyResponse.status || 500;
-    throw new NetworkError(
-      `[Group]: failed linking user to company ${errMessage}`,
-      errorStatus,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(errorStatus),
-      },
-      companyResponse,
-    );
+  if (message.userId) {
+    requestBody.user_id = message.userId;
   }
+  if (message.email) {
+    requestBody.email = message.email;
+  }
+  const companyObj = {};
+  companyObj.company_id = message.groupId;
+  companyObj.name = message.name;
+  requestBody.companies = [companyObj];
+  let response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.endpoint = ConfigCategory.IDENTIFY.endpoint;
+  response.headers = {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${Config.apiKey}`,
+    Accept: 'application/json',
+    'Intercom-Version': '1.4',
+  };
+  response.body.JSON = requestBody;
+  return response;
 };
 
-async function validateAndBuildResponse(message, payload, category, destination) {
-  const messageType = message.type.toLowerCase();
-  const response = defaultRequestConfig();
-  switch (messageType) {
-    case EventType.IDENTIFY:
-      response.body.JSON = removeUndefinedAndNullValues(validateIdentify(message, payload));
-      break;
-    case EventType.TRACK:
-      response.body.JSON = removeUndefinedAndNullValues(validateTrack(message, payload));
-      break;
-    case EventType.GROUP:
-      response.body.JSON = removeUndefinedAndNullValues(payload);
-      await bindUserAndCompany(payload, message.userId, destination.Config);
-      break;
-    default:
-      throw new InstrumentationError(`Message type ${messageType} not supported`);
-  }
-
+function validateAndBuildResponse(message, payload, category, destination) {
+  const respList = [];
+  let response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = category.endpoint;
   response.headers = {
@@ -163,7 +130,31 @@ async function validateAndBuildResponse(message, payload, category, destination)
     'Intercom-Version': '1.4',
   };
   response.userId = message.anonymousId;
-  return response;
+  const messageType = message.type.toLowerCase();
+  switch (messageType) {
+    case EventType.IDENTIFY:
+      response.body.JSON = removeUndefinedAndNullValues(validateIdentify(message, payload));
+      break;
+    case EventType.TRACK:
+      response.body.JSON = removeUndefinedAndNullValues(validateTrack(message, payload));
+      break;
+    case EventType.GROUP:
+      response.body.JSON = removeUndefinedAndNullValues(payload);
+      respList.push(response);
+      try {
+        response = attachUserAndCompany(message, destination.Config);
+        if (response) {
+          respList.push(response);
+        }
+      } catch (exp) {
+        logger.info("failed to send /users call in group event", exp);
+      }
+      break;
+    default:
+      throw new InstrumentationError(`Message type ${messageType} not supported`);
+  }
+
+  return respList.length > 0 ? respList : response;
 }
 
 function processSingleMessage(message, destination) {

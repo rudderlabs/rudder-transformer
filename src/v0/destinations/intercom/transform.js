@@ -14,7 +14,7 @@ const {
   defaultPostRequestConfig,
   getFieldValueFromMessage,
   addExternalIdToTraits,
-  simpleProcessRouterDest
+  simpleProcessRouterDest,
 } = require('../../util');
 const { InstrumentationError } = require('../../util/errorTypes');
 const logger = require('../../../logger');
@@ -144,6 +144,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
       try {
         response = attachUserAndCompany(message, destination.Config);
         if (response) {
+          response.userId = message.anonymousId;
           respList.push(response);
         }
       } catch (exp) {

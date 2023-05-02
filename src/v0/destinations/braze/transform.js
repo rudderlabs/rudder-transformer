@@ -31,17 +31,17 @@ const logger = require('../../../logger');
 
 function formatGender(gender) {
   // few possible cases of woman
-  if (['woman', 'female', 'w', 'f'].includes(gender.toLowerCase())) {
+  if (['woman', 'female', 'w', 'f'].includes(gender?.toLowerCase())) {
     return 'F';
   }
 
   // few possible cases of man
-  if (['man', 'male', 'm'].includes(gender.toLowerCase())) {
+  if (['man', 'male', 'm'].includes(gender?.toLowerCase())) {
     return 'M';
   }
 
   // few possible cases of other
-  if (['other', 'o'].includes(gender.toLowerCase())) {
+  if (['other', 'o'].includes(gender?.toLowerCase())) {
     return 'O';
   }
 
@@ -170,21 +170,6 @@ function populateCustomAttributesWithOperation(
   }
 }
 
-function hasKey(obj, key) {
-  if (Object.hasOwnProperty.call(obj, key)) {
-    return true;
-  }
-
-  // eslint-disable-next-line no-restricted-syntax
-  for (const prop in obj) {
-    if (Object.hasOwnProperty.call(obj, prop) && typeof obj[prop] === 'object' && hasKey(obj[prop], key)) {
-        return true;
-      }
-  }
-
-  return false;
-}
-
 // Ref: https://www.braze.com/docs/api/objects_filters/user_attributes_object/
 function getUserAttributesObject(message, mappingJson, destination) {
   // blank output object
@@ -196,20 +181,6 @@ function getUserAttributesObject(message, mappingJson, destination) {
   if (get(message, MappedToDestinationKey)) {
     return traits;
   }
-
-  // iterate over the destKeys and set the value if present
-  Object.keys(mappingJson).forEach((destKey) => {
-    let value = get(traits, mappingJson[destKey]);
-    if (traits && hasKey(traits, mappingJson[destKey])) {
-      // handle gender special case
-      if (destKey === 'gender') {
-        value = formatGender(value);
-      }
-      if (value || value === null) {
-        data[destKey] = value;
-      }
-    }
-  });
 
   // reserved keys : already mapped through mappingJson
   const reservedKeys = [
@@ -223,7 +194,19 @@ function getUserAttributesObject(message, mappingJson, destination) {
     'phone',
   ];
 
+  // iterate over the destKeys and set the value if present
   if (traits) {
+    Object.keys(mappingJson).forEach((destKey) => {
+      let value = get(traits, mappingJson[destKey]);
+      if (value || (value === null && reservedKeys.includes(destKey))) {
+        // handle gender special case
+        if (destKey === 'gender') {
+          value = formatGender(value);
+        }
+        data[destKey] = value;
+      }
+    });
+
     // iterate over rest of the traits properties
     Object.keys(traits).forEach((traitKey) => {
       // if traitKey is not reserved add the value to final output

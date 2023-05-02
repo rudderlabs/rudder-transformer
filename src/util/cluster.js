@@ -31,7 +31,13 @@ function start(port, app, metricsApp) {
 
     // HTTP server for exposing metrics
     if (process.env.STATS_CLIENT === 'prometheus') {
-      metricsApp.listen(metricsPort);
+      const metricsServer = metricsApp.listen(metricsPort);
+
+      gracefulShutdown(metricsServer, {
+        signals: 'SIGINT SIGTERM SIGSEGV',
+        timeout: 30000, // timeout: 30 secs
+        forceExit: false, // triggers process.exit() at the end of shutdown process
+      });
     }
 
     // Fork workers.
@@ -57,6 +63,13 @@ function start(port, app, metricsApp) {
 
     process.on('SIGTERM', () => {
       logger.error('SIGTERM signal received. Closing workers...');
+      logProcessInfo();
+      isShuttingDown = true;
+      shutdownWorkers();
+    });
+
+    process.on('SIGINT', () => {
+      logger.error('SIGINT signal received. Closing workers...');
       logProcessInfo();
       isShuttingDown = true;
       shutdownWorkers();

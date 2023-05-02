@@ -1,20 +1,21 @@
 /* eslint-disable no-nested-ternary,no-param-reassign */
+const _ = require('lodash');
 const get = require('get-value');
-
+const { BrazeDedupUtility, CustomAttributeOperationUtil, processDeduplication } = require('./util');
+const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   adduserIdFromExternalId,
-  defaultBatchRequestConfig,
   defaultRequestConfig,
   getDestinationExternalID,
   getFieldValueFromMessage,
   removeUndefinedValues,
   isDefinedAndNotNull,
+  isHttpStatusSuccess,
+  simpleProcessRouterDestSync,
   simpleProcessRouterDest,
 } = require('../../util');
-
-const { InstrumentationError } = require('../../util/errorTypes');
-
+const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const {
   ConfigCategory,
   mappingConfig,
@@ -22,12 +23,13 @@ const {
   getTrackEndPoint,
   getSubscriptionGroupEndPoint,
   BRAZE_PARTNER_NAME,
-  TRACK_BRAZE_MAX_REQ_COUNT,
-  IDENTIFY_BRAZE_MAX_REQ_COUNT,
   CustomAttributeOperationTypes,
 } = require('./config');
 
 const logger = require('../../../logger');
+const { getEndpointFromConfig } = require('./util');
+const { handleHttpRequest } = require('../../../adapters/network');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 
 function formatGender(gender) {
   // few possible cases of woman
@@ -112,56 +114,19 @@ function populateCustomAttributesWithOperation(
       Object.keys(traits)
         .filter((key) => typeof traits[key] === 'object' && !Array.isArray(traits[key]))
         .forEach((key) => {
-          data[key] = {};
-          let opsResultArray = [];
-
           if (traits[key][CustomAttributeOperationTypes.UPDATE]) {
-            for (let i = 0; i < traits[key][CustomAttributeOperationTypes.UPDATE].length; i += 1) {
-              const myObj = {};
-              myObj.$identifier_key =
-                traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier;
-              myObj.$identifier_value =
-                traits[key][CustomAttributeOperationTypes.UPDATE][i][
-                  traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
-                ];
-              delete traits[key][CustomAttributeOperationTypes.UPDATE][i][
-                traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
-              ];
-              delete traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier;
-              myObj.$new_object = {};
-              Object.keys(traits[key][CustomAttributeOperationTypes.UPDATE][i]).forEach(
-                (subKey) => {
-                  myObj.$new_object[subKey] =
-                    traits[key][CustomAttributeOperationTypes.UPDATE][i][subKey];
-                },
-              );
-              opsResultArray.push(myObj);
-            }
-            // eslint-disable-next-line no-underscore-dangle
-            data._merge_objects = isDefinedAndNotNull(mergeObjectsUpdateOperation)
-              ? mergeObjectsUpdateOperation
-              : false;
-            data[key][`$${CustomAttributeOperationTypes.UPDATE}`] = opsResultArray;
+            CustomAttributeOperationUtil.customAttributeUpdateOperation(
+              key,
+              data,
+              traits,
+              mergeObjectsUpdateOperation,
+            );
           }
-
-          opsResultArray = [];
           if (traits[key][CustomAttributeOperationTypes.REMOVE]) {
-            for (let i = 0; i < traits[key][CustomAttributeOperationTypes.REMOVE].length; i += 1) {
-              const myObj = {};
-              myObj.$identifier_key =
-                traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier;
-              myObj.$identifier_value =
-                traits[key][CustomAttributeOperationTypes.REMOVE][i][
-                  traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier
-                ];
-              opsResultArray.push(myObj);
-            }
-            data[key][`$${CustomAttributeOperationTypes.REMOVE}`] = opsResultArray;
+            CustomAttributeOperationUtil.customAttributeRemoveOperation(key, data, traits);
           }
-
           if (traits[key][CustomAttributeOperationTypes.ADD]) {
-            data[key][`$${CustomAttributeOperationTypes.ADD}`] =
-              traits[key][CustomAttributeOperationTypes.ADD];
+            CustomAttributeOperationUtil.customAttributeAddOperation(key, data, traits);
           }
         });
     }
@@ -189,6 +154,9 @@ function getUserAttributesObject(message, mappingJson, destination) {
       // handle gender special case
       if (destKey === 'gender') {
         value = formatGender(value);
+      }
+      if (destKey === 'email') {
+        value = value.toLowerCase();
       }
       data[destKey] = value;
     }
@@ -223,40 +191,79 @@ function getUserAttributesObject(message, mappingJson, destination) {
       traits,
       data,
       message.properties?.mergeObjectsUpdateOperation,
-      destination.Config.enableNestedArrayOperations,
+      destination?.Config.enableNestedArrayOperations,
     );
   }
 
   return data;
 }
 
-function processIdentify(message, destination) {
+/**
+ * makes a call to braze identify endpoint to merge the alias (anonymousId) user with the
+ * identified user with external_id (userId) [Identity resolution]
+ * https://www.braze.com/docs/api/endpoints/user_data/post_user_identify/
+ *
+ * @param {*} message
+ * @param {*} destination
+ */
+async function processIdentify(message, destination) {
   // override userId with externalId in context(if present) and event is mapped to destination
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (mappedToDestination) {
     adduserIdFromExternalId(message);
   }
 
-  return buildResponse(
-    message,
-    destination,
-    getIdentifyPayload(message),
-    getIdentifyEndpoint(destination.Config.endPoint),
+  const identifyPayload = getIdentifyPayload(message);
+  const identifyEndpoint = getIdentifyEndpoint(getEndpointFromConfig(destination));
+  const { processedResponse: brazeIdentifyResp } = await handleHttpRequest(
+    'post',
+    identifyEndpoint,
+    identifyPayload,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${destination.Config.restApiKey}`,
+      },
+    },
   );
+  if (!isHttpStatusSuccess(brazeIdentifyResp.status)) {
+    throw new NetworkError(
+      'Braze identify failed',
+      brazeIdentifyResp.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(brazeIdentifyResp.status),
+      },
+      brazeIdentifyResp.response,
+    );
+  }
 }
 
-function processTrackWithUserAttributes(message, destination, mappingJson) {
-  let payload = getUserAttributesObject(message, mappingJson, destination);
+function processTrackWithUserAttributes(message, destination, mappingJson, processParams) {
+  let payload = getUserAttributesObject(message, mappingJson);
   if (payload && Object.keys(payload).length > 0) {
     payload = setExternalIdOrAliasObject(payload, message);
+    const requestJson = { attributes: [payload] };
+    if (destination.Config.supportDedup) {
+      const dedupedAttributePayload = processDeduplication(processParams.userStore, payload);
+      if (dedupedAttributePayload) {
+        requestJson.attributes = [dedupedAttributePayload];
+      } else {
+        throw new InstrumentationError(
+          '[Braze Deduplication]: Duplicate user detected, the user is dropped',
+        );
+      }
+    }
     return buildResponse(
       message,
       destination,
-      { attributes: [payload] },
-      getTrackEndPoint(destination.Config.endPoint),
+      requestJson,
+      getTrackEndPoint(getEndpointFromConfig(destination)),
     );
   }
-  return null;
+  throw new InstrumentationError(
+    'No attributes found to update the user profile',
+  );
 }
 
 function handleReservedProperties(props) {
@@ -322,7 +329,7 @@ function getPurchaseObjs(message) {
   return purchaseObjs.length === 0 ? null : purchaseObjs;
 }
 
-function processTrackEvent(messageType, message, destination, mappingJson) {
+function processTrackEvent(messageType, message, destination, mappingJson, processParams) {
   const eventName = message.event;
 
   if (!message.properties) {
@@ -337,6 +344,17 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
   if (attributePayload && Object.keys(attributePayload).length > 0) {
     attributePayload = setExternalIdOrAliasObject(attributePayload, message);
     requestJson.attributes = [attributePayload];
+    if (destination.Config.supportDedup) {
+      const dedupedAttributePayload = processDeduplication(
+        processParams.userStore,
+        attributePayload,
+      );
+      if (dedupedAttributePayload) {
+        requestJson.attributes = [dedupedAttributePayload];
+      } else {
+        delete requestJson.attributes;
+      }
+    }
   }
 
   if (
@@ -363,7 +381,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
           purchases: purchaseObjs,
           partner: BRAZE_PARTNER_NAME,
         },
-        getTrackEndPoint(destination.Config.endPoint),
+        getTrackEndPoint(getEndpointFromConfig(destination)),
       );
     }
     throw new InstrumentationError('Invalid Order Completed event');
@@ -384,7 +402,7 @@ function processTrackEvent(messageType, message, destination, mappingJson) {
     message,
     destination,
     requestJson,
-    getTrackEndPoint(destination.Config.endPoint),
+    getTrackEndPoint(getEndpointFromConfig(destination)),
   );
 }
 
@@ -424,7 +442,7 @@ function processGroup(message, destination) {
       subscriptionGroup.email = email;
     }
     const response = defaultRequestConfig();
-    response.endpoint = getSubscriptionGroupEndPoint(destination.Config.endPoint);
+    response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
     response.body.JSON = removeUndefinedValues(subscriptionGroup);
     return {
       ...response,
@@ -445,266 +463,103 @@ function processGroup(message, destination) {
       attributes: [groupAttribute],
       partner: BRAZE_PARTNER_NAME,
     },
-    getTrackEndPoint(destination.Config.endPoint),
+    getTrackEndPoint(getEndpointFromConfig(destination)),
   );
 }
 
-function process(event) {
-  const respList = [];
+async function process(event, processParams = { userStore: new Map() }) {
   let response;
   const { message, destination } = event;
   const messageType = message.type.toLowerCase();
 
-  // Init -- mostly for test cases
-  destination.Config.endPoint = 'https://rest.fra-01.braze.eu';
-
-  // Ref: https://www.braze.com/docs/user_guide/administrative/access_braze/braze_instances
-  if (destination.Config.dataCenter) {
-    const dataCenterArr = destination.Config.dataCenter.trim().split('-');
-    if (dataCenterArr[0].toLowerCase() === 'eu') {
-      destination.Config.endPoint = `https://rest.fra-${dataCenterArr[1]}.braze.eu`;
-    } else {
-      destination.Config.endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com`;
-    }
-  }
-
   let category = ConfigCategory.DEFAULT;
   switch (messageType) {
     case EventType.TRACK:
-      response = processTrackEvent(messageType, message, destination, mappingConfig[category.name]);
-      respList.push(response);
+      response = processTrackEvent(
+        messageType,
+        message,
+        destination,
+        mappingConfig[category.name],
+        processParams,
+      );
       break;
     case EventType.PAGE:
       message.event = message.name || get(message, 'properties.name') || 'Page Viewed';
-      response = processTrackEvent(messageType, message, destination, mappingConfig[category.name]);
-      respList.push(response);
+      response = processTrackEvent(
+        messageType,
+        message,
+        destination,
+        mappingConfig[category.name],
+        processParams,
+      );
       break;
     case EventType.SCREEN:
       message.event = message.name || get(message, 'properties.name') || 'Screen Viewed';
-      response = processTrackEvent(messageType, message, destination, mappingConfig[category.name]);
-      respList.push(response);
+      response = processTrackEvent(
+        messageType,
+        message,
+        destination,
+        mappingConfig[category.name],
+        processParams,
+      );
       break;
     case EventType.IDENTIFY:
       category = ConfigCategory.IDENTIFY;
       if (message.anonymousId) {
-        response = processIdentify(message, destination);
-        respList.push(response);
+        await processIdentify(message, destination);
       }
-
-      response = processTrackWithUserAttributes(message, destination, mappingConfig[category.name]);
-
-      if (response) {
-        respList.push(response);
-      }
+      response = processTrackWithUserAttributes(
+        message,
+        destination,
+        mappingConfig[category.name],
+        processParams,
+      );
       break;
     case EventType.GROUP:
       response = processGroup(message, destination);
-      respList.push(response);
+
       break;
     default:
       throw new InstrumentationError('Message type is not supported');
   }
 
-  return respList;
-}
-
-/*
- *
-  input: [
-   { "message": {"id": "m1"}, "metadata": {"job_id": 1}, "destination": {"ID": "a", "url": "a"} },
-   { "message": {"id": "m2"}, "metadata": {"job_id": 2}, "destination": {"ID": "a", "url": "a"} },
-   { "message": {"id": "m3"}, "metadata": {"job_id": 3}, "destination": {"ID": "a", "url": "a"} },
-   { "message": {"id": "m4"}, "metadata": {"job_id": 4}, "destination": {"ID": "a", "url": "a"} }
-  ]
-  output: [
-    { batchedRequest: {}, jobs: [1, 3]},
-    { batchedRequest: {}, jobs: [2, 4]},
-  ]
-  */
-
-function formatBatchResponse(batchPayload, metadataList, destination) {
-  const response = defaultBatchRequestConfig();
-  response.batchedRequest = batchPayload;
-  response.metadata = metadataList;
-  response.destination = destination;
   return response;
 }
 
-function batch(destEvents) {
-  const respList = [];
-  let trackEndpoint;
-  let identifyEndpoint;
-  let jsonBody;
-  let endPoint;
-  let type;
-  let attributesBatch = [];
-  let eventsBatch = [];
-  let purchasesBatch = [];
-  let trackMetadataBatch = [];
-  let identifyMetadataBatch = [];
-  let aliasBatch = [];
-  let index = 0;
-
-  while (index < destEvents.length) {
-    // take out a single event
-    const ev = destEvents[index];
-    const { message, metadata, destination } = ev;
-
-    // get the JSON body
-    jsonBody = get(message, 'body.JSON');
-
-    // get the type
-    endPoint = get(message, 'endpoint');
-    type = endPoint && endPoint.includes('track') ? 'track' : 'identify';
-
-    index += 1;
-
-    // if it is a track keep on adding to the existing track list
-    // keep a count of event, attribute, purchases - 75 is the cap
-    if (type === 'track') {
-      // keep the trackEndpoint for reuse later
-      if (!trackEndpoint) {
-        trackEndpoint = endPoint;
-      }
-
-      // look for events, attributes, purchases
-      const { events, attributes, purchases } = jsonBody;
-
-      // if total count = 75 form a new batch
-      const maxCount = Math.max(
-        attributesBatch.length + (attributes ? attributes.length : 0),
-        eventsBatch.length + (events ? events.length : 0),
-        purchasesBatch.length + (purchases ? purchases.length : 0),
-      );
-
-      if (
-        maxCount > TRACK_BRAZE_MAX_REQ_COUNT &&
-        (attributesBatch.length > 0 || eventsBatch.length > 0 || purchasesBatch.length > 0)
-      ) {
-        const batchResponse = defaultRequestConfig();
-        batchResponse.headers = message.headers;
-        batchResponse.endpoint = trackEndpoint;
-        const responseBodyJson = {
-          partner: BRAZE_PARTNER_NAME,
-        };
-        if (attributesBatch.length > 0) {
-          responseBodyJson.attributes = attributesBatch;
-        }
-        if (eventsBatch.length > 0) {
-          responseBodyJson.events = eventsBatch;
-        }
-        if (purchasesBatch.length > 0) {
-          responseBodyJson.purchases = purchasesBatch;
-        }
-        batchResponse.body.JSON = responseBodyJson;
-        // modify the endpoint to track endpoint
-        batchResponse.endpoint = trackEndpoint;
-        respList.push(formatBatchResponse(batchResponse, trackMetadataBatch, destination));
-
-        // clear the arrays and reuse
-        attributesBatch = [];
-        eventsBatch = [];
-        purchasesBatch = [];
-        trackMetadataBatch = [];
-      }
-
-      // add only if present
-      if (attributes) {
-        attributesBatch.push(...attributes);
-      }
-
-      if (events) {
-        eventsBatch.push(...events);
-      }
-
-      if (purchases) {
-        purchasesBatch.push(...purchases);
-      }
-
-      // keep the original metadata object. needed later to form the batch
-      trackMetadataBatch.push(metadata);
-    } else {
-      // identify
-      if (!identifyEndpoint) {
-        identifyEndpoint = endPoint;
-      }
-      const aliasObjectArr = get(jsonBody, 'aliases_to_identify');
-      const aliasMaxCount = aliasBatch.length + (aliasObjectArr ? aliasObjectArr.length : 0);
-
-      if (aliasMaxCount > IDENTIFY_BRAZE_MAX_REQ_COUNT) {
-        // form an identify batch and start over
-        const batchResponse = defaultRequestConfig();
-        batchResponse.headers = message.headers;
-        batchResponse.endpoint = identifyEndpoint;
-        const responseBodyJson = {
-          partner: BRAZE_PARTNER_NAME,
-        };
-        if (aliasBatch.length > 0) {
-          responseBodyJson.aliases_to_identify = [...aliasBatch];
-        }
-        batchResponse.body.JSON = responseBodyJson;
-        respList.push(formatBatchResponse(batchResponse, identifyMetadataBatch, destination));
-
-        // clear the arrays and reuse
-        aliasBatch = [];
-        identifyMetadataBatch = [];
-      }
-
-      // separate out the identify request
-      // respList.push(formatBatchResponse(message, [metadata], destination));
-      if (aliasObjectArr.length > 0) {
-        aliasBatch.push(aliasObjectArr[0]);
-      }
-
-      identifyMetadataBatch.push(metadata);
-    }
-  }
-
-  // process identify events
-  const ev = destEvents[index - 1];
-  const { message, destination } = ev;
-  if (aliasBatch.length > 0) {
-    const identifyBatchResponse = defaultRequestConfig();
-    identifyBatchResponse.headers = message.headers;
-    const identifyResponseBodyJson = {
-      partner: BRAZE_PARTNER_NAME,
-    };
-    identifyResponseBodyJson.aliases_to_identify = aliasBatch;
-    identifyBatchResponse.body.JSON = identifyResponseBodyJson;
-    // modify the endpoint to identify endpoint
-    identifyBatchResponse.endpoint = identifyEndpoint;
-    respList.push(formatBatchResponse(identifyBatchResponse, identifyMetadataBatch, destination));
-  }
-
-  // process track events
-  if (attributesBatch.length > 0 || eventsBatch.length > 0 || purchasesBatch.length > 0) {
-    const trackBatchResponse = defaultRequestConfig();
-    trackBatchResponse.headers = message.headers;
-    trackBatchResponse.endpoint = trackEndpoint;
-    const trackResponseBodyJson = {
-      partner: BRAZE_PARTNER_NAME,
-    };
-    if (attributesBatch.length > 0) {
-      trackResponseBodyJson.attributes = attributesBatch;
-    }
-    if (eventsBatch.length > 0) {
-      trackResponseBodyJson.events = eventsBatch;
-    }
-    if (purchasesBatch.length > 0) {
-      trackResponseBodyJson.purchases = purchasesBatch;
-    }
-    trackBatchResponse.body.JSON = trackResponseBodyJson;
-    // modify the endpoint to track endpoint
-    trackBatchResponse.endpoint = trackEndpoint;
-    respList.push(formatBatchResponse(trackBatchResponse, trackMetadataBatch, destination));
-  }
-
-  return respList;
-}
-
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+  const userStore = new Map();
+  const { destination } = inputs[0];
+  if (destination.Config.supportDedup) {
+    let lookedUpUsers;
+    try {
+      lookedUpUsers = await BrazeDedupUtility.doLookup(inputs);
+    } catch (error) {
+      logger.error('Error while fetching user store', error);
+    }
+
+    BrazeDedupUtility.updateUserStore(userStore, lookedUpUsers);
+  }
+  // group events by userId or anonymousId and then call process
+  const groupedInputs = _.groupBy(
+    inputs,
+    (input) => input.message.userId || input.message.anonymousId,
+  );
+
+  // process each group of events for userId or anonymousId
+  // if deduplication is enabled process each group of events for a user (userId or anonymousId)
+  // synchronously (slower) else process asynchronously (faster)
+  const allResps = Object.keys(groupedInputs).map(async (id) => {
+    const respList = destination.Config.supportDedup
+      ? await simpleProcessRouterDestSync(groupedInputs[id], process, reqMetadata, {
+          userStore,
+        })
+      : await simpleProcessRouterDest(groupedInputs[id], process, reqMetadata);
+    return respList;
+  });
+
+  const output = await Promise.all(allResps);
+
+  return _.flatMap(output);
 };
 
-module.exports = { process, processRouterDest, batch };
+module.exports = { process, processRouterDest };

@@ -6,17 +6,17 @@
   },
   {
     "destKey": "name",
-    "sourceKeys": "name",
+    "sourceKeys": ["traits.name","context.traits.name"],
     "required": false
   },
   {
     "destKey": "plan",
-    "sourceKeys": "plan",
+    "sourceKeys": ["traits.plan","context.traits.plan"],
     "required": false
   },
   {
     "destKey": "size",
-    "sourceKeys": "size",
+    "sourceKeys": ["traits.size","context.traits.size"],
     "metadata": {
       "type": "toNumber"
     },
@@ -24,17 +24,17 @@
   },
   {
     "destKey": "website",
-    "sourceKeys": "website",
+    "sourceKeys": ["traits.website","context.traits.website"],
     "required": false
   },
   {
     "destKey": "industry",
-    "sourceKeys": "industry",
+    "sourceKeys": ["traits.industry","context.traits.industry"],
     "required": false
   },
   {
     "destKey": "monthly_spend",
-    "sourceKeys": "monthlySpend",
+    "sourceKeys": ["traits.monthlySpend","context.traits.monthlySpend"],
     "metadata": {
       "type": "toNumber"
     },
@@ -42,7 +42,7 @@
   },
   {
     "destKey": "remote_created_at",
-    "sourceKeys": "remoteCreatedAt",
+    "sourceKeys": ["traits.remoteCreatedAt","context.traits.remoteCreatedAt"],
     "metadata": {
       "type": "toNumber"
     },
@@ -50,7 +50,7 @@
   },
   {
     "destKey": "custom_attributes",
-    "sourceKeys": ["traits"],
+    "sourceKeys": ["traits.customAttributes","context.traits.customAttributes"],
     "required": false,
     "metadata": {
       "excludes": ["groupId"]

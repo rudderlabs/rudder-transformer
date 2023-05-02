@@ -91,19 +91,24 @@ function validateTrack(message, payload) {
 }
 
 function attachUserAndCompany(message, Config) {
-  if (!message.userId && !message.email) {
+  const email = message.traits?.email;
+  const userId = message.traits?.userId || message.userId;
+
+  if (!userId && !email) {
     return;
   }
   const requestBody = {};
-  if (message.userId) {
-    requestBody.user_id = message.userId;
+  if (userId) {
+    requestBody.user_id = userId;
   }
-  if (message.email) {
-    requestBody.email = message.email;
+  if (email) {
+    requestBody.email = email;
   }
   const companyObj = {};
   companyObj.company_id = message.groupId;
-  companyObj.name = message.name;
+  if (message.traits?.name) {
+    companyObj.name = message.traits.name;
+  }
   requestBody.companies = [companyObj];
   let response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
@@ -141,14 +146,10 @@ function validateAndBuildResponse(message, payload, category, destination) {
     case EventType.GROUP:
       response.body.JSON = removeUndefinedAndNullValues(payload);
       respList.push(response);
-      try {
-        response = attachUserAndCompany(message, destination.Config);
-        if (response) {
-          response.userId = message.anonymousId;
-          respList.push(response);
-        }
-      } catch (exp) {
-        logger.info("failed to send /users call in group event", exp);
+      const attachUserAndCompanyResponse = attachUserAndCompany(message, destination.Config);
+      if (attachUserAndCompanyResponse) {
+        attachUserAndCompanyResponse.userId = message.anonymousId;
+        respList.push(attachUserAndCompanyResponse);
       }
       break;
     default:

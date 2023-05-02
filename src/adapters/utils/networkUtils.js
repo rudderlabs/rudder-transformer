@@ -78,9 +78,9 @@ const getDynamicErrorType = (statusCode) => {
     return tags.ERROR_TYPES.RETRYABLE;
   }
   if (statusCode === 429) {
-    return tags.ERROR_TYPES.THROTTLED
+    return tags.ERROR_TYPES.THROTTLED;
   }
-  return tags.ERROR_TYPES.ABORTED
+  return tags.ERROR_TYPES.ABORTED;
 };
 
 const parseDestResponse = (destResponse, destination = '') => {

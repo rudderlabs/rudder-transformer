@@ -4,7 +4,11 @@ import { ProcessorTransformationRequest, UserTransformationServiceResponse } fro
 import { compileUserLibrary } from '../util/ivmFactory';
 import UserTransformService from '../services/userTransform';
 import logger from '../logger';
-import { setupUserTransformHandler, extractLibraries, validateCode } from '../util/customTransformer';
+import {
+  setupUserTransformHandler,
+  extractLibraries,
+  validateCode,
+} from '../util/customTransformer';
 import ControllerUtility from './util';
 
 export default class UserTransformController {

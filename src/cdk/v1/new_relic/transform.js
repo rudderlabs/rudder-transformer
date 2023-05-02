@@ -85,8 +85,10 @@ function commonPostMapper(event, mappedPayload, rudderContext) {
   }
 
   // Upon users choice for data center, we are updating the endpoint accordingly
-  rudderContext.endpoint = destConfig.dataCenter === 'eu' ? `https://insights-collector.eu01.nr-data.net/v1/accounts/${destConfig.accountId}/events`
-                                                          : `https://insights-collector.newrelic.com/v1/accounts/${destConfig.accountId}/events`
+  rudderContext.endpoint =
+    destConfig.dataCenter === 'eu'
+      ? `https://insights-collector.eu01.nr-data.net/v1/accounts/${destConfig.accountId}/events`
+      : `https://insights-collector.newrelic.com/v1/accounts/${destConfig.accountId}/events`;
 
   rudderContext.insertKey = destConfig.insertKey;
 

@@ -1,4 +1,3 @@
-
 const get = require('get-value');
 const { BASE_ENDPOINT, operation } = require('./config');
 const {

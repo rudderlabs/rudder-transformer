@@ -1604,12 +1604,12 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, proces
 };
 /**
  * This is the sync version of simpleProcessRouterDest
- * 
- * @param {*} inputs 
- * @param {*} singleTfFunc 
- * @param {*} reqMetadata 
- * @param {*} processParams 
- * @returns 
+ *
+ * @param {*} inputs
+ * @param {*} singleTfFunc
+ * @param {*} reqMetadata
+ * @param {*} processParams
+ * @returns
  */
 const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, processParams) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs);

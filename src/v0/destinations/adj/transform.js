@@ -98,7 +98,7 @@ const processEvent = (message, destination) => {
   } else {
     throw new InstrumentationError('Message type not supported');
   }
-  
+
   // build the response
   return responseBuilderSimple(message, category, destination);
 };

@@ -51,7 +51,7 @@ const EVENTS_KEY_PATH = 'body.JSON.events';
 const baseEndpoint = (destConfig) => {
   let retVal;
   if (destConfig.residencyServer === 'EU') {
-    retVal = BASE_URL_EU
+    retVal = BASE_URL_EU;
   } else {
     // "US" or when it is not specified
     retVal = BASE_URL;
@@ -177,7 +177,14 @@ function handleTraits(messageTrait, destination) {
   return traitsObject;
 }
 
-function handleMappingJsonObject(mappingJson, sourceKey, validatePayload, payload, message, Config) {
+function handleMappingJsonObject(
+  mappingJson,
+  sourceKey,
+  validatePayload,
+  payload,
+  message,
+  Config,
+) {
   const { isFunc, funcName, outKey } = mappingJson[sourceKey];
   if (isFunc) {
     if (validatePayload) {
@@ -239,7 +246,7 @@ function updateConfigProperty(message, payload, mappingJson, validatePayload, Co
 }
 
 function getResponseData(evType, destination, rawPayload, message, groupInfo) {
-  let endpoint = defaultEndpoint(destination.Config);;
+  let endpoint = defaultEndpoint(destination.Config);
   let traits;
   let groups;
 
@@ -280,12 +287,13 @@ function getResponseData(evType, destination, rawPayload, message, groupInfo) {
         }
       }
 
-      if (evType === EventType.GROUP && // for Rudder group call, update the user_properties with group info
-
+      if (
+        evType === EventType.GROUP && // for Rudder group call, update the user_properties with group info
         // Refer (1.)
         groupInfo &&
         groupInfo.group_type &&
-        groupInfo.group_value) {
+        groupInfo.group_value
+      ) {
         groups = {};
         groups[groupInfo.group_type] = groupInfo.group_value;
         set(rawPayload, `user_properties.${[groupInfo.group_type]}`, groupInfo.group_value);

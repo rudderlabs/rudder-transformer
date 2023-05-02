@@ -211,7 +211,7 @@ const handleTestEvent = async (ctx, dest) => {
         if (stage.dest_transform && stage.send_to_destination) {
           response = await sendEventToDestination(response, dest, errorFound);
         }
-        
+
         respList.push(response);
       }),
     );

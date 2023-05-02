@@ -92,8 +92,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     keys.forEach((key) => {
       if (
         !regex.test(key) ||
-        (typeof customFields[key] === 'object' &&
-          JSON.stringify(customFields[key]).length > 910) ||
+        (typeof customFields[key] === 'object' && JSON.stringify(customFields[key]).length > 910) ||
         customFields[key].toString().length > 1000
       ) {
         delete customFields[key];

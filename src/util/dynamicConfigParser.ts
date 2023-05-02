@@ -57,7 +57,9 @@ export class DynamicConfigParser {
     return value;
   }
 
-  private static getDynamicConfig(event: ProcessorTransformationRequest | RouterTransformationRequestData) {
+  private static getDynamicConfig(
+    event: ProcessorTransformationRequest | RouterTransformationRequestData,
+  ) {
     const resultantEvent = cloneDeep(event);
     const { Config } = event.destination;
     resultantEvent.destination.Config = this.configureVal(Config, event);
@@ -67,9 +69,11 @@ export class DynamicConfigParser {
   public static process(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ) {
-    const eventRespArr = events.map((e: ProcessorTransformationRequest | RouterTransformationRequestData) => {
-      return this.getDynamicConfig(e);
-    });
+    const eventRespArr = events.map(
+      (e: ProcessorTransformationRequest | RouterTransformationRequestData) => {
+        return this.getDynamicConfig(e);
+      },
+    );
     return eventRespArr;
   }
 }

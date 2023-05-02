@@ -262,9 +262,7 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
       getTrackEndPoint(getEndpointFromConfig(destination)),
     );
   }
-  throw new InstrumentationError(
-    'No attributes found to update the user profile',
-  );
+  throw new InstrumentationError('No attributes found to update the user profile');
 }
 
 function handleReservedProperties(props) {

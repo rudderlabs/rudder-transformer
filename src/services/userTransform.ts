@@ -27,8 +27,8 @@ export default class UserTransformService {
     stats.counter('user_transform_function_group_size', Object.entries(groupedEvents).length, {});
     stats.counter('user_transform_input_events', events.length, {});
 
-    const transformedEvents:any[] = [];
-    let librariesVersionIDs:any[] = [];
+    const transformedEvents: any[] = [];
+    let librariesVersionIDs: any[] = [];
     if (events[0].libraries) {
       librariesVersionIDs = events[0].libraries.map(
         (library: UserTransformationLibrary) => library.VersionID,
@@ -66,14 +66,16 @@ export default class UserTransformService {
           } as ProcessorTransformationResponse);
           stats.counter('user_transform_errors', eventsToProcess.length, {
             transformationVersionId,
-            type: "NoVersionId",
+            type: 'NoVersionId',
             ...metaTags,
           });
           return transformedEvents;
         }
         const userFuncStartTime = new Date();
         try {
-          stats.counter('user_transform_function_input_events', eventsToProcess.length, { ...metaTags });
+          stats.counter('user_transform_function_input_events', eventsToProcess.length, {
+            ...metaTags,
+          });
           const destTransformedEvents: UserTransformationResponse[] = await userTransformHandler()(
             eventsToProcess,
             transformationVersionId,
@@ -126,7 +128,7 @@ export default class UserTransformService {
           );
           stats.counter('user_transform_errors', eventsToProcess.length, {
             transformationVersionId,
-            type: "UnknownError",
+            type: 'UnknownError',
             status,
             ...metaTags,
           });
@@ -140,7 +142,7 @@ export default class UserTransformService {
         stats.counter('user_transform_requests', 1, {});
         stats.counter('user_transform_output_events', transformedEvents.length, {});
         return transformedEvents;
-      })
+      }),
     );
 
     const flattenedResponses: ProcessorTransformationResponse[] = responses.flat();

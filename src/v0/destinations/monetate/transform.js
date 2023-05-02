@@ -29,19 +29,19 @@ function track(message, destination) {
   if (evName) {
     switch (evName) {
       case 'Product Viewed':
-        updatedPayload = {...handleProductViewed(properties, rawPayload)};
+        updatedPayload = { ...handleProductViewed(properties, rawPayload) };
         break;
       case 'Product List Viewed':
-        updatedPayload = {...handleProductListViewed(properties, rawPayload)};
+        updatedPayload = { ...handleProductListViewed(properties, rawPayload) };
         break;
       case 'Product Added':
-        updatedPayload = {...handleProductAdded(properties, rawPayload)};
+        updatedPayload = { ...handleProductAdded(properties, rawPayload) };
         break;
       case 'Cart Viewed':
-        updatedPayload = {...handleCartViewed(properties, rawPayload)};
+        updatedPayload = { ...handleCartViewed(properties, rawPayload) };
         break;
       case 'Order Completed':
-        updatedPayload = {...handleOrderCompleted(properties, rawPayload)};
+        updatedPayload = { ...handleOrderCompleted(properties, rawPayload) };
         break;
       default:
         // The Engine API does not currently support custom events.
@@ -58,7 +58,7 @@ function track(message, destination) {
           }],
         });
       */
-        updatedPayload = {...rawPayload}
+        updatedPayload = { ...rawPayload };
         break;
     }
   }

@@ -349,7 +349,12 @@ async function handleValidation(event) {
       };
     }
 
-    ({ dropEvent, violationType } = handleValidationErrors(validationErrors, mergedTpConfig, dropEvent, violationType));
+    ({ dropEvent, violationType } = handleValidationErrors(
+      validationErrors,
+      mergedTpConfig,
+      dropEvent,
+      violationType,
+    ));
 
     return {
       dropEvent,

@@ -227,7 +227,10 @@ const UserIdentifierFieldNameMap = {
 };
 
 function getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier) {
-  const result = Object.keys(userIdentifierInfo).find((key) => (key !== defaultUserIdentifier && isDefinedAndNotNullAndNotEmpty(userIdentifierInfo[key])));
+  const result = Object.keys(userIdentifierInfo).find(
+    (key) =>
+      key !== defaultUserIdentifier && isDefinedAndNotNullAndNotEmpty(userIdentifierInfo[key]),
+  );
   return result;
 }
 
@@ -393,5 +396,5 @@ module.exports = {
   requestBuilder,
   buildAndGetAddress,
   getClickConversionPayloadAndEndpoint,
-  getExisitingUserIdentifier
+  getExisitingUserIdentifier,
 };

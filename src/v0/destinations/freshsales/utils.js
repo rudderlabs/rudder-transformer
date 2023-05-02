@@ -25,7 +25,7 @@ const getHeaders = (apiKey) => {
     'Content-Type': JSON_MIME_TYPE,
   };
   return headers;
-}
+};
 
 /*
  * This functions is used for getting Account details.
@@ -370,5 +370,5 @@ module.exports = {
   UpdateContactWithSalesActivity,
   UpdateContactWithLifeCycleStage,
   updateAccountWOContact,
-  getHeaders
+  getHeaders,
 };

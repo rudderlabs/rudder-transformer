@@ -165,7 +165,9 @@ const processEvent = async (message, destination) => {
       const mappedEvents = eventMappingHandler(message, destination);
       if (mappedEvents.length > 0) {
         const respList = await Promise.all(
-          mappedEvents.map(async (mappedEvent) => trackResponseBuilder(message, destination, mappedEvent))
+          mappedEvents.map(async (mappedEvent) =>
+            trackResponseBuilder(message, destination, mappedEvent),
+          ),
         );
 
         response = respList;

@@ -29,10 +29,10 @@ export default class FetchHandler {
 
   public static getDeletionHandler(dest: string, version: string) {
     let deletionHandler: any;
-    if(this.deletionHandlerMap.has(dest)) {
+    if (this.deletionHandlerMap.has(dest)) {
       deletionHandler = this.deletionHandlerMap.get(dest);
     } else {
-      deletionHandler = MiscService.getDeletionHandler(dest,version);
+      deletionHandler = MiscService.getDeletionHandler(dest, version);
       this.deletionHandlerMap.set(dest, deletionHandler);
     }
     return deletionHandler;

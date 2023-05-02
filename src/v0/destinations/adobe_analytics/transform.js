@@ -169,12 +169,16 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   return response;
 };
 
-function handleProducts(message, destinationConfig, event, adobeProdEventArr, isSingleProdEvent, prod) {
-  const {
-    productMerchEventToAdobeEvent,
-    productMerchProperties,
-    productMerchEvarsMap,
-  } = destinationConfig;
+function handleProducts(
+  message,
+  destinationConfig,
+  event,
+  adobeProdEventArr,
+  isSingleProdEvent,
+  prod,
+) {
+  const { productMerchEventToAdobeEvent, productMerchProperties, productMerchEvarsMap } =
+    destinationConfig;
   const { properties } = message;
   let prodEventString = '';
   let prodEVarsString = '';
@@ -182,8 +186,10 @@ function handleProducts(message, destinationConfig, event, adobeProdEventArr, is
     const merchMap = [];
     productMerchProperties.forEach((rudderProp) => {
       // adding product level merchandise properties
-      if (rudderProp.productMerchProperties.startsWith('products.') &&
-        isSingleProdEvent === false) {
+      if (
+        rudderProp.productMerchProperties.startsWith('products.') &&
+        isSingleProdEvent === false
+      ) {
         // take the keys after products. and find the value in properties
         const key = rudderProp?.productMerchProperties.split('.');
         const v = get(prod, key[1]);
@@ -222,17 +228,15 @@ function handleProducts(message, destinationConfig, event, adobeProdEventArr, is
 }
 
 function handleProductStringSection(message, destinationConfig, event) {
-  const {
-    productMerchEventToAdobeEvent,
-    productIdentifier,
-  } = destinationConfig;
+  const { productMerchEventToAdobeEvent, productIdentifier } = destinationConfig;
   const { properties } = message;
   const { products } = properties;
   const adobeProdEvent = productMerchEventToAdobeEvent[event];
   const prodString = [];
 
   if (adobeProdEvent || ECOM_PRODUCT_EVENTS.includes(event.toLowerCase())) {
-    const isSingleProdEvent = adobeProdEvent === 'scAdd' ||
+    const isSingleProdEvent =
+      adobeProdEvent === 'scAdd' ||
       adobeProdEvent === 'scRemove' ||
       (adobeProdEvent === 'prodView' && event.toLowerCase() !== 'product list viewed') ||
       !Array.isArray(products);
@@ -251,7 +255,14 @@ function handleProductStringSection(message, destinationConfig, event) {
         item = prod?.product_id || prod?.id;
       }
 
-      const { prodEventString, prodEVarsString } = handleProducts(message, destinationConfig, event, adobeProdEventArr, isSingleProdEvent, prod);
+      const { prodEventString, prodEVarsString } = handleProducts(
+        message,
+        destinationConfig,
+        event,
+        adobeProdEventArr,
+        isSingleProdEvent,
+        prod,
+      );
 
       // preparing the product string for the final payload
       // if prodEventString or prodEVarsString are missing or not
@@ -279,11 +290,8 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
   // set event string and product string only
   // handle extra properties
   // rest of the properties are handled under common properties
-  const {
-    eventMerchEventToAdobeEvent,
-    eventMerchProperties,
-    productMerchEventToAdobeEvent,
-  } = destinationConfig;
+  const { eventMerchEventToAdobeEvent, eventMerchProperties, productMerchEventToAdobeEvent } =
+    destinationConfig;
   const { event: rawMessageEvent, properties } = message;
   const { overrideEventString, overrideProductString } = properties;
   const event = rawMessageEvent.toLowerCase();
@@ -412,4 +420,3 @@ const processRouterDest = async (inputs, reqMetadata) => {
 };
 
 module.exports = { process, processRouterDest };
-

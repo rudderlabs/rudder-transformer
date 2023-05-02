@@ -98,7 +98,7 @@ export default class DestinationController {
     const metaTags = MiscService.getMetaTags(events[0].metadata);
     stats.histogram('dest_transform_input_events', events.length, {
       destination,
-      version: "v0",
+      version: 'v0',
       ...metaTags,
     });
     const integrationService = ServiceSelector.getDestinationService(events);
@@ -131,7 +131,7 @@ export default class DestinationController {
     ControllerUtility.postProcess(ctx);
     stats.histogram('dest_transform_output_events', ctx.body?.output?.length, {
       destination,
-      version: "v0",
+      version: 'v0',
       ...metaTags,
     });
     logger.debug(

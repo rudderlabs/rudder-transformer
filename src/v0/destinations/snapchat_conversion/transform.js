@@ -49,8 +49,8 @@ function buildResponse(apiKey, payload) {
 
 /**
  * Seperate out hashing operations into one function
- * @param {*} payload 
- * @param {*} message 
+ * @param {*} payload
+ * @param {*} message
  * @returns updatedPayload
  */
 function populateHashedValues(payload, message) {
@@ -73,7 +73,9 @@ function populateHashedValues(payload, message) {
     isAppleFamily(message.context?.device?.type) &&
     (message.properties?.idfv || message.context?.device?.id)
   ) {
-    updatedPayload.hashed_idfv = getHashedValue(message.properties?.idfv || message.context?.device?.id);
+    updatedPayload.hashed_idfv = getHashedValue(
+      message.properties?.idfv || message.context?.device?.id,
+    );
   }
 
   if (message.properties?.adId || message.context?.device?.advertisingId) {
@@ -190,7 +192,7 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
   }
 
   payload.event_tag = get(message, 'properties.event_tag');
-  payload = populateHashedValues(payload, message)
+  payload = populateHashedValues(payload, message);
 
   payload.user_agent = message.context?.userAgent?.toString().toLowerCase();
 

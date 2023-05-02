@@ -79,18 +79,10 @@
           "Config": {
             "cdkEnabled": true,
             "destConfig": {
-              "defaultConfig": [
-                "zapUrl",
-                "trackEventsToZap",
-                "pageScreenEventsToZap"
-              ]
+              "defaultConfig": ["zapUrl", "trackEventsToZap", "pageScreenEventsToZap"]
             },
             "excludeKeys": [],
-            "includeKeys": [
-              "zapUrl",
-              "trackEventsToZap",
-              "pageScreenEventsToZap"
-            ],
+            "includeKeys": ["zapUrl", "trackEventsToZap", "pageScreenEventsToZap"],
             "saveDestinationResponse": true,
             "secretKeys": ["zapUrl"],
             "supportedMessageTypes": ["track", "page", "screen"],

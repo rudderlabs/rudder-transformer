@@ -29,9 +29,8 @@ const RedisDB = {
           if (times <= this.maxRetries) {
             return (1 + times) * this.timeAfterRetry; // reconnect after 
           }
-          stats.increment('redis_down', {
-            errorType: "Redis",
-            timestamp: Date.now()
+          stats.redisError({
+            operation: 'redis_down',
           });
           log.error(`Redis is down at ${this.host}:${this.port}`);
           return false; // stop retrying
@@ -39,7 +38,6 @@ const RedisDB = {
       });
       this.client.on('ready', () => {
         stats.increment('redis_ready', {
-          timestamp: Date.now(),
         });
         log.info(`Connected to redis at ${this.host}:${this.port}`);
       });
@@ -85,14 +83,13 @@ const RedisDB = {
       if (value) {
         const bytes = Buffer.byteLength(value, "utf-8");
         stats.gauge('redis_get_val_size', bytes, {
-          timestamp: Date.now()
         });
       }
       return isJsonExpected ? JSON.parse(value) : value;
     } catch (e) {
-      stats.increment('redis_get_val_error', {
-        errorType: "Redis",
-        timestamp: Date.now()
+      stats.redisError({
+        operation: "get",
+        key: `${key}`
       });
       throw new RedisError(`Error getting value from Redis: ${e}`);
     }
@@ -112,12 +109,11 @@ const RedisDB = {
       const bytes = Buffer.byteLength(valueToStore, "utf-8");
       await this.client.setex(key, dataExpiry, valueToStore);
       stats.gauge('redis_set_val_size', bytes, {
-        timestamp: Date.now()
       });
     } catch (e) {
-      stats.increment('redis_set_val_error', {
-        errorType: "Redis",
-        timestamp: Date.now()
+      stats.redisError({
+        operation: "set",
+        key: `${key}`
       });
       throw new RedisError(`Error setting value in Redis due ${e}`);
     }
@@ -125,7 +121,6 @@ const RedisDB = {
   async disconnect() {
     if (process.env.USE_REDIS_DB && process.env.USE_REDIS_DB !== 'false') {
       stats.increment('redis_graceful_shutdown', {
-        timestamp: Date.now(),
       });
       this.client.quit();
     }

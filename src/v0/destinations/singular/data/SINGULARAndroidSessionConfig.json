@@ -109,7 +109,7 @@
   },
   {
     "destKey": "install_time",
-    "sourceKeys": ["properties.install_time", "originalTimestamp", "timestamp"],
+    "sourceKeys": ["properties.install_time", "timestamp", "originalTimestamp"],
     "required": true,
     "metadata": {
       "type": "secondTimestamp"
@@ -117,7 +117,7 @@
   },
   {
     "destKey": "update_time",
-    "sourceKeys": ["properties.update_time", "originalTimestamp", "timestamp"],
+    "sourceKeys": ["properties.update_time", "timestamp", "originalTimestamp"],
     "required": true,
     "metadata": {
       "type": "secondTimestamp"

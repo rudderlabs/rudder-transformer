@@ -17,7 +17,6 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { InstrumentationError } = require('../../util/errorTypes');
-const logger = require('../../../logger');
 
 function getCompanyAttribute(company) {
   const companiesList = [];
@@ -123,6 +122,32 @@ function attachUserAndCompany(message, Config) {
   return response;
 };
 
+function buildCustomAttributes(message, payload) {
+  const traits = message.traits;
+  const customAttributes = {};
+  const companyReservedKeys = [
+      "remoteCreatedAt",
+      "monthlySpend",
+      "industry",
+      "website",
+      "size",
+      "plan",
+      "name"
+  ];
+
+  if (traits) {
+    Object.keys(traits).forEach((key) => {
+      if (!companyReservedKeys.includes(key) && key !== "userId") {
+        customAttributes[key] = traits[key];
+      }
+    })
+  }
+
+  if (Object.keys(customAttributes).length > 0) {
+    payload.custom_attributes = customAttributes;
+  }
+}
+
 function validateAndBuildResponse(message, payload, category, destination) {
   const respList = [];
   let response = defaultRequestConfig();
@@ -144,6 +169,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
       response.body.JSON = removeUndefinedAndNullValues(validateTrack(message, payload));
       break;
     case EventType.GROUP:
+      buildCustomAttributes(message, payload);
       response.body.JSON = removeUndefinedAndNullValues(payload);
       respList.push(response);
       const attachUserAndCompanyResponse = attachUserAndCompany(message, destination.Config);
@@ -156,7 +182,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
       throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
 
-  return respList.length > 0 ? respList : response;
+  return (messageType == EventType.GROUP) ? respList : response;
 }
 
 function processSingleMessage(message, destination) {

@@ -47,13 +47,5 @@
       "type": "toNumber"
     },
     "required": false
-  },
-  {
-    "destKey": "custom_attributes",
-    "sourceKeys": ["traits.customAttributes","context.traits.customAttributes"],
-    "required": false,
-    "metadata": {
-      "excludes": ["groupId"]
-    }
   }
 ]

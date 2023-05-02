@@ -1024,11 +1024,14 @@
       "traits": {
         "employees": 450,
         "plan": "basic",
+        "userId": "sdfrsdfsdfsf",
         "email": "test@test.com",
         "name": "rudderUpdate",
         "size": "50",
         "industry": "IT",
-        "monthlySpend": "2131231"
+        "monthlySpend": "2131231",
+        "remoteCreatedAt": "1683017572",
+        "key1": "val1"
       },
       "anonymousId": "sdfrsdfsdfsf",
       "integrations": {
@@ -1048,7 +1051,6 @@
     "message": {
       "groupId": "test_company_id",
       "traits": {
-        "employees": 450,
         "plan": "basic",
         "name": "rudderUpdate",
         "size": 50,

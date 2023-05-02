@@ -53,6 +53,7 @@
     "MP": true,
     "TIKTOK_ADS_OFFLINE_EVENTS": true,
     "CRITEO_AUDIENCE": true,
-    "CUSTOMERIO": true
+    "CUSTOMERIO": true,
+    "BRAZE": true
   }
 }

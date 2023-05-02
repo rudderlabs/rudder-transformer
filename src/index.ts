@@ -7,7 +7,7 @@ import cluster from './util/cluster';
 import { router } from './versionedRouter';
 const { RedisDB } = require('./util/redisConnector');
 import { testRouter } from './testRouter';
-import { metricsRouter } from './metricsRouter';
+import { metricsRouter } from './routes/metricsRouter';
 import { addStatMiddleware, addRequestSizeMiddleware } from './middleware';
 import { logProcessInfo } from './util/utils';
 import { applicationRoutes } from './routes';
@@ -55,7 +55,13 @@ if (clusterEnabled) {
 } else {
   // HTTP server for exposing metrics
   if (process.env.STATS_CLIENT === 'prometheus') {
-    metricsApp.listen(metricsPort);
+    const metricsServer = metricsApp.listen(metricsPort);
+
+    gracefulShutdown(metricsServer, {
+      signals: 'SIGINT SIGTERM SIGSEGV',
+      timeout: 30000, // timeout: 30 secs
+      forceExit: false, // Don't force exit. Let graceful shutdown of server handle it.
+    });
   }
 
   const server = app.listen(port);

@@ -20,16 +20,20 @@ const getData = redisKey => {
         return response;
     }
 }
-
+let connectionRequestCount = 0;
 class Redis {
     constructor(data) {
-        this.status = "closed",
-            this.data = data
-
+        this.host = data.host,
+            this.port = data.port,
+            this.password = data.password,
+            this.username = data.username,
+            this.enableReadyCheck = data.enableReadyCheck,
+            this.retryStrategy = data.retryStrategy;
+        this.status = "connecting";
     };
 
     get(key) {
-        if(key === "error"){
+        if (key === "error") {
             throw new Error("Connection is Closed");
         }
         const mockData = getData(key);
@@ -41,27 +45,41 @@ class Redis {
     }
 
     set(key, value) {
-        if(key === "error"){
+        if (key === "error") {
             throw new Error("Connection is Closed");
         }
         this.data[key] = value;
     }
 
-    setex(key,expiry, value) {
-        if(key === "error"){
+    setex(key, expiry, value) {
+        if (key === "error") {
             throw new Error("Connection is Closed");
         }
         this.data[key] = value;
     }
-
+    changeEventToReadyStatus() {
+        setTimeout(() => {
+            this.status = "ready"
+        },
+            100);
+    }
     connect() {
-        this.status = "ready"
-        return new Promise((resolve, reject) => {
-            resolve({ data: "OK", status: 200 });
-        });
+        if (connectionRequestCount > 0) {
+            this.status = "ready"
+            return new Promise((resolve, reject) => {
+                resolve({ data: "OK", status: 200 });
+            });
+        } else {
+            connectionRequestCount += 1;
+            this.changeEventToReadyStatus();
+            throw new Error("Connection is Closed");
+        }
+
     }
-    on() {
-        return true;
+    on() { jest.fn() }
+    end(times) {
+        this.retryStrategy(times);
+        this.status = "end"
     }
 };
 

@@ -173,6 +173,10 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
   try {
     redisVal = await RedisDB.getVal(`${cartToken}`);
   } catch (e) {
+    stats.increment('shopify_events_lost_due_redis', {
+      ...metricMetadata,
+      timestamp: Date.now(),
+    });
     redisVal = null;
   }
   stats.timing('redis_get_latency', executeStartTime, {

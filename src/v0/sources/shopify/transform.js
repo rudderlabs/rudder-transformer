@@ -180,9 +180,12 @@ const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
     const setStartTime = Date.now();
     try {
-      await RedisDB.setVal(`${event.cartToken}`, { anonymousId: event.anonymousId }
-      );
+      await RedisDB.setVal(`${event.cartToken}`, { anonymousId: event.anonymousId });
     } catch (e) {
+      stats.increment('shopify_identifier_events_lost_due_redis', {
+        ...metricMetadata,
+        timestamp: Date.now(),
+      });
       // This is a client side event
     }
     stats.timing('redis_set_latency', setStartTime, {
@@ -202,7 +205,7 @@ const processIdentifierEvent = async (event, metricMetadata) => {
   };
   return result;
 };
-const process1 = async (event) => {
+const process = async (event) => {
 
   const metricMetadata = {
     writeKey: event.query_parameters?.writeKey?.[0],
@@ -215,4 +218,4 @@ const process1 = async (event) => {
   return response;
 };
 
-exports.process = process1;
+exports.process = process;

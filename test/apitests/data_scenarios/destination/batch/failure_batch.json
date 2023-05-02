@@ -10,10 +10,10 @@
               "events": [
                 {
                   "ip": "[::1]",
-                  "time": 1671869005652,
+                  "time": 1671883143047,
                   "library": "rudderstack",
                   "user_id": "testUser",
-                  "insert_id": "428f20b3-ef76-4463-8720-366b02102dff",
+                  "insert_id": "4ce7b3c4-af4a-4f17-bced-f4cb574e0124",
                   "event_type": "$identify",
                   "session_id": -1,
                   "user_properties": {
@@ -28,7 +28,7 @@
                   }
                 }
               ],
-              "api_key": "a99702eb473e89c1352300172c142c77",
+              "api_key": "Techno@2020",
               "options": {
                 "min_id_length": 1
               }
@@ -50,20 +50,20 @@
           "userId": "<<>>testUser<<>>testUser",
           "jobId": 1,
           "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
-          "destinationId": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+          "destinationId": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
           "attemptNum": 0,
-          "receivedAt": "2022-12-24T13:33:23.178+05:30",
-          "createdAt": "2022-12-24T08:03:25.699Z",
+          "receivedAt": "2022-12-24T17:29:00.699+05:30",
+          "createdAt": "2022-12-24T11:59:03.125Z",
           "firstAttemptedAt": "",
           "transformAt": "processor",
           "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
           "secret": null,
           "jobsT": {
-            "UUID": "627426f8-de29-47bd-963a-40fdb795f863",
+            "UUID": "604077dc-2fc6-4004-b895-4123893cab91",
             "JobID": 1,
             "UserID": "<<>>testUser<<>>testUser",
-            "CreatedAt": "2022-12-24T08:03:25.699375Z",
-            "ExpireAt": "2022-12-24T08:03:25.699375Z",
+            "CreatedAt": "2022-12-24T11:59:03.125515Z",
+            "ExpireAt": "2022-12-24T11:59:03.125515Z",
             "CustomVal": "AM",
             "EventCount": 1,
             "EventPayload": {
@@ -74,10 +74,10 @@
                   "events": [
                     {
                       "ip": "[::1]",
-                      "time": 1671869005652,
+                      "time": 1671883143047,
                       "library": "rudderstack",
                       "user_id": "testUser",
-                      "insert_id": "428f20b3-ef76-4463-8720-366b02102dff",
+                      "insert_id": "4ce7b3c4-af4a-4f17-bced-f4cb574e0124",
                       "event_type": "$identify",
                       "session_id": -1,
                       "user_properties": {
@@ -92,7 +92,7 @@
                       }
                     }
                   ],
-                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "api_key": "Techno@2020",
                   "options": {
                     "min_id_length": 1
                   }
@@ -110,7 +110,7 @@
               "version": "1",
               "endpoint": "https://api2.amplitude.com/2/httpapi"
             },
-            "PayloadSize": 837,
+            "PayloadSize": 813,
             "LastJobStatus": {
               "JobID": 0,
               "JobState": "",
@@ -127,12 +127,12 @@
               "source_id": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
               "event_name": "",
               "event_type": "identify",
-              "message_id": "428f20b3-ef76-4463-8720-366b02102dff",
-              "received_at": "2022-12-24T13:33:23.178+05:30",
+              "message_id": "4ce7b3c4-af4a-4f17-bced-f4cb574e0124",
+              "received_at": "2022-12-24T17:29:00.699+05:30",
               "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
               "transform_at": "processor",
               "source_job_id": "",
-              "destination_id": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+              "destination_id": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
               "gateway_job_id": 1,
               "source_task_id": "",
               "source_batch_id": "",
@@ -144,11 +144,11 @@
             },
             "WorkspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
           },
-          "workerAssignedTime": "2022-12-24T13:33:26.593402+05:30"
+          "workerAssignedTime": "2022-12-24T17:29:04.051596+05:30"
         },
         "destination": {
-          "ID": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
-          "Name": "Amplitude-Dev",
+          "ID": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
+          "Name": "Amplitude-2",
           "DestinationDefinition": {
             "ID": "1QGzO4fWSyq3lsyFHf4eQAMDSr9",
             "Name": "AM",
@@ -263,14 +263,7 @@
               ],
               "saveDestinationResponse": true,
               "secretKeys": ["apiKey", "apiSecret"],
-              "supportedMessageTypes": [
-                "alias",
-                "group",
-                "identify",
-                "page",
-                "screen",
-                "track"
-              ],
+              "supportedMessageTypes": ["alias", "group", "identify", "page", "screen", "track"],
               "supportedSourceTypes": [
                 "android",
                 "ios",
@@ -290,7 +283,7 @@
             "ResponseRules": null
           },
           "Config": {
-            "apiKey": "a99702eb473e89c1352300172c142c77",
+            "apiKey": "Techno@2020",
             "apiSecret": "",
             "blacklistedEvents": [
               {
@@ -338,7 +331,7 @@
           "WorkspaceID": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
           "Transformations": [],
           "IsProcessorEnabled": true,
-          "RevisionID": "2JJoTOhsmYEuVu4FeeJkoaIkNBG"
+          "RevisionID": "2JMKUgZX3b8sbtDSZrkUB7okeOY"
         }
       },
       {
@@ -350,11 +343,9 @@
               "events": [
                 {
                   "ip": "[::1]",
-                  "time": 1671869005652,
+                  "time": 1671883143047,
                   "library": "rudderstack",
-                  "user_id": "testUser",
-                  "device_id": "anon-id",
-                  "insert_id": "a88cea27-2456-4f86-b5a2-79330150dda8",
+                  "insert_id": "14642496-9a12-4db7-b0f2-9a336cf6cea9",
                   "event_type": "Product Added",
                   "session_id": -1,
                   "user_properties": {
@@ -380,7 +371,7 @@
                   }
                 }
               ],
-              "api_key": "a99702eb473e89c1352300172c142c77",
+              "api_key": "Techno@2020",
               "options": {
                 "min_id_length": 1
               }
@@ -402,20 +393,20 @@
           "userId": "<<>>testUser<<>>testUser",
           "jobId": 2,
           "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
-          "destinationId": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+          "destinationId": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
           "attemptNum": 0,
-          "receivedAt": "2022-12-24T13:33:23.178+05:30",
-          "createdAt": "2022-12-24T08:03:25.699Z",
+          "receivedAt": "2022-12-24T17:29:00.699+05:30",
+          "createdAt": "2022-12-24T11:59:03.125Z",
           "firstAttemptedAt": "",
           "transformAt": "processor",
           "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
           "secret": null,
           "jobsT": {
-            "UUID": "2780f771-df21-4e97-8583-3bca7c7a78c9",
+            "UUID": "aaa8b7c4-2600-478b-b275-01740e1ef50c",
             "JobID": 2,
             "UserID": "<<>>testUser<<>>testUser",
-            "CreatedAt": "2022-12-24T08:03:25.699375Z",
-            "ExpireAt": "2022-12-24T08:03:25.699375Z",
+            "CreatedAt": "2022-12-24T11:59:03.125515Z",
+            "ExpireAt": "2022-12-24T11:59:03.125515Z",
             "CustomVal": "AM",
             "EventCount": 1,
             "EventPayload": {
@@ -426,11 +417,11 @@
                   "events": [
                     {
                       "ip": "[::1]",
-                      "time": 1671869005652,
+                      "time": 1671883143047,
                       "library": "rudderstack",
                       "user_id": "testUser",
                       "device_id": "anon-id",
-                      "insert_id": "a88cea27-2456-4f86-b5a2-79330150dda8",
+                      "insert_id": "14642496-9a12-4db7-b0f2-9a336cf6cea9",
                       "event_type": "Product Added",
                       "session_id": -1,
                       "user_properties": {
@@ -456,7 +447,7 @@
                       }
                     }
                   ],
-                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "api_key": "Techno@2020",
                   "options": {
                     "min_id_length": 1
                   }
@@ -474,7 +465,7 @@
               "version": "1",
               "endpoint": "https://api2.amplitude.com/2/httpapi"
             },
-            "PayloadSize": 1153,
+            "PayloadSize": 1133,
             "LastJobStatus": {
               "JobID": 0,
               "JobState": "",
@@ -491,12 +482,12 @@
               "source_id": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
               "event_name": "Product Added",
               "event_type": "track",
-              "message_id": "a88cea27-2456-4f86-b5a2-79330150dda8",
-              "received_at": "2022-12-24T13:33:23.178+05:30",
+              "message_id": "14642496-9a12-4db7-b0f2-9a336cf6cea9",
+              "received_at": "2022-12-24T17:29:00.699+05:30",
               "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
               "transform_at": "processor",
               "source_job_id": "",
-              "destination_id": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+              "destination_id": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
               "gateway_job_id": 1,
               "source_task_id": "",
               "source_batch_id": "",
@@ -508,11 +499,11 @@
             },
             "WorkspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
           },
-          "workerAssignedTime": "2022-12-24T13:33:26.593402+05:30"
+          "workerAssignedTime": "2022-12-24T17:29:04.051596+05:30"
         },
         "destination": {
-          "ID": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
-          "Name": "Amplitude-Dev",
+          "ID": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
+          "Name": "Amplitude-2",
           "DestinationDefinition": {
             "ID": "1QGzO4fWSyq3lsyFHf4eQAMDSr9",
             "Name": "AM",
@@ -627,14 +618,7 @@
               ],
               "saveDestinationResponse": true,
               "secretKeys": ["apiKey", "apiSecret"],
-              "supportedMessageTypes": [
-                "alias",
-                "group",
-                "identify",
-                "page",
-                "screen",
-                "track"
-              ],
+              "supportedMessageTypes": ["alias", "group", "identify", "page", "screen", "track"],
               "supportedSourceTypes": [
                 "android",
                 "ios",
@@ -654,7 +638,7 @@
             "ResponseRules": null
           },
           "Config": {
-            "apiKey": "a99702eb473e89c1352300172c142c77",
+            "apiKey": "Techno@2020",
             "apiSecret": "",
             "blacklistedEvents": [
               {
@@ -702,7 +686,7 @@
           "WorkspaceID": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
           "Transformations": [],
           "IsProcessorEnabled": true,
-          "RevisionID": "2JJoTOhsmYEuVu4FeeJkoaIkNBG"
+          "RevisionID": "2JMKUgZX3b8sbtDSZrkUB7okeOY"
         }
       },
       {
@@ -714,11 +698,11 @@
               "events": [
                 {
                   "ip": "[::1]",
-                  "time": 1671869005652,
+                  "time": 1671883143047,
                   "library": "rudderstack",
                   "user_id": "testUser",
                   "device_id": "anon-id",
-                  "insert_id": "3ab0052c-9ed0-4422-b8d5-8fbc743b2aa2",
+                  "insert_id": "73f7eed3-615e-43b3-ab58-acc631d21b12",
                   "event_type": "Product Viewed",
                   "session_id": -1,
                   "user_properties": {
@@ -744,7 +728,7 @@
                   }
                 }
               ],
-              "api_key": "a99702eb473e89c1352300172c142c77",
+              "api_key": "Techno@2020",
               "options": {
                 "min_id_length": 1
               }
@@ -766,20 +750,20 @@
           "userId": "<<>>testUser<<>>testUser",
           "jobId": 3,
           "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
-          "destinationId": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+          "destinationId": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
           "attemptNum": 0,
-          "receivedAt": "2022-12-24T13:33:23.178+05:30",
-          "createdAt": "2022-12-24T08:03:25.699Z",
+          "receivedAt": "2022-12-24T17:29:00.699+05:30",
+          "createdAt": "2022-12-24T11:59:03.125Z",
           "firstAttemptedAt": "",
           "transformAt": "processor",
           "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
           "secret": null,
           "jobsT": {
-            "UUID": "358dcf01-aa84-4f7a-bf3f-6f6dd3a2d6fa",
+            "UUID": "4c167cee-c58c-4d20-b7e2-c05ea34eec24",
             "JobID": 3,
             "UserID": "<<>>testUser<<>>testUser",
-            "CreatedAt": "2022-12-24T08:03:25.699375Z",
-            "ExpireAt": "2022-12-24T08:03:25.699375Z",
+            "CreatedAt": "2022-12-24T11:59:03.125515Z",
+            "ExpireAt": "2022-12-24T11:59:03.125515Z",
             "CustomVal": "AM",
             "EventCount": 1,
             "EventPayload": {
@@ -790,11 +774,11 @@
                   "events": [
                     {
                       "ip": "[::1]",
-                      "time": 1671869005652,
+                      "time": 1671883143047,
                       "library": "rudderstack",
                       "user_id": "testUser",
                       "device_id": "anon-id",
-                      "insert_id": "3ab0052c-9ed0-4422-b8d5-8fbc743b2aa2",
+                      "insert_id": "73f7eed3-615e-43b3-ab58-acc631d21b12",
                       "event_type": "Product Viewed",
                       "session_id": -1,
                       "user_properties": {
@@ -820,7 +804,7 @@
                       }
                     }
                   ],
-                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "api_key": "Techno@2020",
                   "options": {
                     "min_id_length": 1
                   }
@@ -838,7 +822,7 @@
               "version": "1",
               "endpoint": "https://api2.amplitude.com/2/httpapi"
             },
-            "PayloadSize": 1153,
+            "PayloadSize": 1133,
             "LastJobStatus": {
               "JobID": 0,
               "JobState": "",
@@ -855,12 +839,12 @@
               "source_id": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
               "event_name": "Product Viewed",
               "event_type": "track",
-              "message_id": "3ab0052c-9ed0-4422-b8d5-8fbc743b2aa2",
-              "received_at": "2022-12-24T13:33:23.178+05:30",
+              "message_id": "73f7eed3-615e-43b3-ab58-acc631d21b12",
+              "received_at": "2022-12-24T17:29:00.699+05:30",
               "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
               "transform_at": "processor",
               "source_job_id": "",
-              "destination_id": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+              "destination_id": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
               "gateway_job_id": 1,
               "source_task_id": "",
               "source_batch_id": "",
@@ -872,11 +856,11 @@
             },
             "WorkspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
           },
-          "workerAssignedTime": "2022-12-24T13:33:26.593402+05:30"
+          "workerAssignedTime": "2022-12-24T17:29:04.051596+05:30"
         },
         "destination": {
-          "ID": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
-          "Name": "Amplitude-Dev",
+          "ID": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
+          "Name": "Amplitude-2",
           "DestinationDefinition": {
             "ID": "1QGzO4fWSyq3lsyFHf4eQAMDSr9",
             "Name": "AM",
@@ -991,14 +975,7 @@
               ],
               "saveDestinationResponse": true,
               "secretKeys": ["apiKey", "apiSecret"],
-              "supportedMessageTypes": [
-                "alias",
-                "group",
-                "identify",
-                "page",
-                "screen",
-                "track"
-              ],
+              "supportedMessageTypes": ["alias", "group", "identify", "page", "screen", "track"],
               "supportedSourceTypes": [
                 "android",
                 "ios",
@@ -1018,7 +995,7 @@
             "ResponseRules": null
           },
           "Config": {
-            "apiKey": "a99702eb473e89c1352300172c142c77",
+            "apiKey": "Techno@2020",
             "apiSecret": "",
             "blacklistedEvents": [
               {
@@ -1066,13 +1043,134 @@
           "WorkspaceID": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
           "Transformations": [],
           "IsProcessorEnabled": true,
-          "RevisionID": "2JJoTOhsmYEuVu4FeeJkoaIkNBG"
+          "RevisionID": "2JMKUgZX3b8sbtDSZrkUB7okeOY"
         }
       }
     ],
     "destType": "am"
   },
   "output": [
+    {
+      "metadata": {
+        "userId": "<<>>testUser<<>>testUser",
+        "jobId": 2,
+        "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+        "destinationId": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
+        "attemptNum": 0,
+        "receivedAt": "2022-12-24T17:29:00.699+05:30",
+        "createdAt": "2022-12-24T11:59:03.125Z",
+        "firstAttemptedAt": "",
+        "transformAt": "processor",
+        "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+        "secret": null,
+        "jobsT": {
+          "UUID": "aaa8b7c4-2600-478b-b275-01740e1ef50c",
+          "JobID": 2,
+          "UserID": "<<>>testUser<<>>testUser",
+          "CreatedAt": "2022-12-24T11:59:03.125515Z",
+          "ExpireAt": "2022-12-24T11:59:03.125515Z",
+          "CustomVal": "AM",
+          "EventCount": 1,
+          "EventPayload": {
+            "body": {
+              "XML": {},
+              "FORM": {},
+              "JSON": {
+                "events": [
+                  {
+                    "ip": "[::1]",
+                    "time": 1671883143047,
+                    "library": "rudderstack",
+                    "user_id": "testUser",
+                    "device_id": "anon-id",
+                    "insert_id": "14642496-9a12-4db7-b0f2-9a336cf6cea9",
+                    "event_type": "Product Added",
+                    "session_id": -1,
+                    "user_properties": {
+                      "email": "utsab.c97@gmail.com",
+                      "phone": "+919830311522",
+                      "gender": "Male",
+                      "lastName": "chowdhury",
+                      "firstName": "utsab"
+                    },
+                    "event_properties": {
+                      "sku": "F15",
+                      "url": "https://www.website.com/product/path",
+                      "name": "Game",
+                      "brand": "Gamepro",
+                      "price": 13.49,
+                      "coupon": "DISC21",
+                      "variant": "111",
+                      "category": "Games",
+                      "position": 1,
+                      "quantity": 11,
+                      "image_url": "https://www.website.com/product/path.png",
+                      "product_id": "123"
+                    }
+                  }
+                ],
+                "api_key": "Techno@2020",
+                "options": {
+                  "min_id_length": 1
+                }
+              },
+              "JSON_ARRAY": {}
+            },
+            "type": "REST",
+            "files": {},
+            "method": "POST",
+            "params": {},
+            "userId": "anon-id",
+            "headers": {
+              "Content-Type": "application/json"
+            },
+            "version": "1",
+            "endpoint": "https://api2.amplitude.com/2/httpapi"
+          },
+          "PayloadSize": 1133,
+          "LastJobStatus": {
+            "JobID": 0,
+            "JobState": "",
+            "AttemptNum": 0,
+            "ExecTime": "0001-01-01T00:00:00Z",
+            "RetryTime": "0001-01-01T00:00:00Z",
+            "ErrorCode": "",
+            "ErrorResponse": null,
+            "Parameters": null,
+            "WorkspaceId": ""
+          },
+          "Parameters": {
+            "record_id": null,
+            "source_id": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+            "event_name": "Product Added",
+            "event_type": "track",
+            "message_id": "14642496-9a12-4db7-b0f2-9a336cf6cea9",
+            "received_at": "2022-12-24T17:29:00.699+05:30",
+            "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+            "transform_at": "processor",
+            "source_job_id": "",
+            "destination_id": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
+            "gateway_job_id": 1,
+            "source_task_id": "",
+            "source_batch_id": "",
+            "source_category": "",
+            "source_job_run_id": "",
+            "source_task_run_id": "",
+            "source_definition_id": "1b6gJdqOPOCadT3cddw8eidV591",
+            "destination_definition_id": ""
+          },
+          "WorkspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
+        },
+        "workerAssignedTime": "2022-12-24T17:29:04.051596+05:30"
+      },
+      "batched": false,
+      "statusCode": 400,
+      "statTags": {
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation"
+      },
+      "error": "Both userId and deviceId cannot be undefined"
+    },
     {
       "batchedRequest": {
         "body": {
@@ -1082,10 +1180,10 @@
             "events": [
               {
                 "ip": "[::1]",
-                "time": 1671869005652,
+                "time": 1671883143047,
                 "library": "rudderstack",
                 "user_id": "testUser",
-                "insert_id": "428f20b3-ef76-4463-8720-366b02102dff",
+                "insert_id": "4ce7b3c4-af4a-4f17-bced-f4cb574e0124",
                 "event_type": "$identify",
                 "session_id": -1,
                 "user_properties": {
@@ -1101,42 +1199,11 @@
               },
               {
                 "ip": "[::1]",
-                "time": 1671869005652,
+                "time": 1671883143047,
                 "library": "rudderstack",
                 "user_id": "testUser",
                 "device_id": "anon-id",
-                "insert_id": "a88cea27-2456-4f86-b5a2-79330150dda8",
-                "event_type": "Product Added",
-                "session_id": -1,
-                "user_properties": {
-                  "email": "utsab.c97@gmail.com",
-                  "phone": "+919830311522",
-                  "gender": "Male",
-                  "lastName": "chowdhury",
-                  "firstName": "utsab"
-                },
-                "event_properties": {
-                  "sku": "F15",
-                  "url": "https://www.website.com/product/path",
-                  "name": "Game",
-                  "brand": "Gamepro",
-                  "price": 13.49,
-                  "coupon": "DISC21",
-                  "variant": "111",
-                  "category": "Games",
-                  "position": 1,
-                  "quantity": 11,
-                  "image_url": "https://www.website.com/product/path.png",
-                  "product_id": "123"
-                }
-              },
-              {
-                "ip": "[::1]",
-                "time": 1671869005652,
-                "library": "rudderstack",
-                "user_id": "testUser",
-                "device_id": "anon-id",
-                "insert_id": "3ab0052c-9ed0-4422-b8d5-8fbc743b2aa2",
+                "insert_id": "73f7eed3-615e-43b3-ab58-acc631d21b12",
                 "event_type": "Product Viewed",
                 "session_id": -1,
                 "user_properties": {
@@ -1162,7 +1229,7 @@
                 }
               }
             ],
-            "api_key": "a99702eb473e89c1352300172c142c77"
+            "api_key": "Techno@2020"
           },
           "JSON_ARRAY": {}
         },
@@ -1182,20 +1249,20 @@
           "userId": "<<>>testUser<<>>testUser",
           "jobId": 1,
           "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
-          "destinationId": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+          "destinationId": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
           "attemptNum": 0,
-          "receivedAt": "2022-12-24T13:33:23.178+05:30",
-          "createdAt": "2022-12-24T08:03:25.699Z",
+          "receivedAt": "2022-12-24T17:29:00.699+05:30",
+          "createdAt": "2022-12-24T11:59:03.125Z",
           "firstAttemptedAt": "",
           "transformAt": "processor",
           "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
           "secret": null,
           "jobsT": {
-            "UUID": "627426f8-de29-47bd-963a-40fdb795f863",
+            "UUID": "604077dc-2fc6-4004-b895-4123893cab91",
             "JobID": 1,
             "UserID": "<<>>testUser<<>>testUser",
-            "CreatedAt": "2022-12-24T08:03:25.699375Z",
-            "ExpireAt": "2022-12-24T08:03:25.699375Z",
+            "CreatedAt": "2022-12-24T11:59:03.125515Z",
+            "ExpireAt": "2022-12-24T11:59:03.125515Z",
             "CustomVal": "AM",
             "EventCount": 1,
             "EventPayload": {
@@ -1206,10 +1273,10 @@
                   "events": [
                     {
                       "ip": "[::1]",
-                      "time": 1671869005652,
+                      "time": 1671883143047,
                       "library": "rudderstack",
                       "user_id": "testUser",
-                      "insert_id": "428f20b3-ef76-4463-8720-366b02102dff",
+                      "insert_id": "4ce7b3c4-af4a-4f17-bced-f4cb574e0124",
                       "event_type": "$identify",
                       "session_id": -1,
                       "user_properties": {
@@ -1224,7 +1291,7 @@
                       }
                     }
                   ],
-                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "api_key": "Techno@2020",
                   "options": {
                     "min_id_length": 1
                   }
@@ -1242,7 +1309,7 @@
               "version": "1",
               "endpoint": "https://api2.amplitude.com/2/httpapi"
             },
-            "PayloadSize": 837,
+            "PayloadSize": 813,
             "LastJobStatus": {
               "JobID": 0,
               "JobState": "",
@@ -1259,12 +1326,12 @@
               "source_id": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
               "event_name": "",
               "event_type": "identify",
-              "message_id": "428f20b3-ef76-4463-8720-366b02102dff",
-              "received_at": "2022-12-24T13:33:23.178+05:30",
+              "message_id": "4ce7b3c4-af4a-4f17-bced-f4cb574e0124",
+              "received_at": "2022-12-24T17:29:00.699+05:30",
               "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
               "transform_at": "processor",
               "source_job_id": "",
-              "destination_id": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+              "destination_id": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
               "gateway_job_id": 1,
               "source_task_id": "",
               "source_batch_id": "",
@@ -1276,138 +1343,26 @@
             },
             "WorkspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
           },
-          "workerAssignedTime": "2022-12-24T13:33:26.593402+05:30"
-        },
-        {
-          "userId": "<<>>testUser<<>>testUser",
-          "jobId": 2,
-          "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
-          "destinationId": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
-          "attemptNum": 0,
-          "receivedAt": "2022-12-24T13:33:23.178+05:30",
-          "createdAt": "2022-12-24T08:03:25.699Z",
-          "firstAttemptedAt": "",
-          "transformAt": "processor",
-          "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
-          "secret": null,
-          "jobsT": {
-            "UUID": "2780f771-df21-4e97-8583-3bca7c7a78c9",
-            "JobID": 2,
-            "UserID": "<<>>testUser<<>>testUser",
-            "CreatedAt": "2022-12-24T08:03:25.699375Z",
-            "ExpireAt": "2022-12-24T08:03:25.699375Z",
-            "CustomVal": "AM",
-            "EventCount": 1,
-            "EventPayload": {
-              "body": {
-                "XML": {},
-                "FORM": {},
-                "JSON": {
-                  "events": [
-                    {
-                      "ip": "[::1]",
-                      "time": 1671869005652,
-                      "library": "rudderstack",
-                      "user_id": "testUser",
-                      "device_id": "anon-id",
-                      "insert_id": "a88cea27-2456-4f86-b5a2-79330150dda8",
-                      "event_type": "Product Added",
-                      "session_id": -1,
-                      "user_properties": {
-                        "email": "utsab.c97@gmail.com",
-                        "phone": "+919830311522",
-                        "gender": "Male",
-                        "lastName": "chowdhury",
-                        "firstName": "utsab"
-                      },
-                      "event_properties": {
-                        "sku": "F15",
-                        "url": "https://www.website.com/product/path",
-                        "name": "Game",
-                        "brand": "Gamepro",
-                        "price": 13.49,
-                        "coupon": "DISC21",
-                        "variant": "111",
-                        "category": "Games",
-                        "position": 1,
-                        "quantity": 11,
-                        "image_url": "https://www.website.com/product/path.png",
-                        "product_id": "123"
-                      }
-                    }
-                  ],
-                  "api_key": "a99702eb473e89c1352300172c142c77",
-                  "options": {
-                    "min_id_length": 1
-                  }
-                },
-                "JSON_ARRAY": {}
-              },
-              "type": "REST",
-              "files": {},
-              "method": "POST",
-              "params": {},
-              "userId": "anon-id",
-              "headers": {
-                "Content-Type": "application/json"
-              },
-              "version": "1",
-              "endpoint": "https://api2.amplitude.com/2/httpapi"
-            },
-            "PayloadSize": 1153,
-            "LastJobStatus": {
-              "JobID": 0,
-              "JobState": "",
-              "AttemptNum": 0,
-              "ExecTime": "0001-01-01T00:00:00Z",
-              "RetryTime": "0001-01-01T00:00:00Z",
-              "ErrorCode": "",
-              "ErrorResponse": null,
-              "Parameters": null,
-              "WorkspaceId": ""
-            },
-            "Parameters": {
-              "record_id": null,
-              "source_id": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
-              "event_name": "Product Added",
-              "event_type": "track",
-              "message_id": "a88cea27-2456-4f86-b5a2-79330150dda8",
-              "received_at": "2022-12-24T13:33:23.178+05:30",
-              "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
-              "transform_at": "processor",
-              "source_job_id": "",
-              "destination_id": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
-              "gateway_job_id": 1,
-              "source_task_id": "",
-              "source_batch_id": "",
-              "source_category": "",
-              "source_job_run_id": "",
-              "source_task_run_id": "",
-              "source_definition_id": "1b6gJdqOPOCadT3cddw8eidV591",
-              "destination_definition_id": ""
-            },
-            "WorkspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
-          },
-          "workerAssignedTime": "2022-12-24T13:33:26.593402+05:30"
+          "workerAssignedTime": "2022-12-24T17:29:04.051596+05:30"
         },
         {
           "userId": "<<>>testUser<<>>testUser",
           "jobId": 3,
           "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
-          "destinationId": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+          "destinationId": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
           "attemptNum": 0,
-          "receivedAt": "2022-12-24T13:33:23.178+05:30",
-          "createdAt": "2022-12-24T08:03:25.699Z",
+          "receivedAt": "2022-12-24T17:29:00.699+05:30",
+          "createdAt": "2022-12-24T11:59:03.125Z",
           "firstAttemptedAt": "",
           "transformAt": "processor",
           "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
           "secret": null,
           "jobsT": {
-            "UUID": "358dcf01-aa84-4f7a-bf3f-6f6dd3a2d6fa",
+            "UUID": "4c167cee-c58c-4d20-b7e2-c05ea34eec24",
             "JobID": 3,
             "UserID": "<<>>testUser<<>>testUser",
-            "CreatedAt": "2022-12-24T08:03:25.699375Z",
-            "ExpireAt": "2022-12-24T08:03:25.699375Z",
+            "CreatedAt": "2022-12-24T11:59:03.125515Z",
+            "ExpireAt": "2022-12-24T11:59:03.125515Z",
             "CustomVal": "AM",
             "EventCount": 1,
             "EventPayload": {
@@ -1418,11 +1373,11 @@
                   "events": [
                     {
                       "ip": "[::1]",
-                      "time": 1671869005652,
+                      "time": 1671883143047,
                       "library": "rudderstack",
                       "user_id": "testUser",
                       "device_id": "anon-id",
-                      "insert_id": "3ab0052c-9ed0-4422-b8d5-8fbc743b2aa2",
+                      "insert_id": "73f7eed3-615e-43b3-ab58-acc631d21b12",
                       "event_type": "Product Viewed",
                       "session_id": -1,
                       "user_properties": {
@@ -1448,7 +1403,7 @@
                       }
                     }
                   ],
-                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "api_key": "Techno@2020",
                   "options": {
                     "min_id_length": 1
                   }
@@ -1466,7 +1421,7 @@
               "version": "1",
               "endpoint": "https://api2.amplitude.com/2/httpapi"
             },
-            "PayloadSize": 1153,
+            "PayloadSize": 1133,
             "LastJobStatus": {
               "JobID": 0,
               "JobState": "",
@@ -1483,12 +1438,12 @@
               "source_id": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
               "event_name": "Product Viewed",
               "event_type": "track",
-              "message_id": "3ab0052c-9ed0-4422-b8d5-8fbc743b2aa2",
-              "received_at": "2022-12-24T13:33:23.178+05:30",
+              "message_id": "73f7eed3-615e-43b3-ab58-acc631d21b12",
+              "received_at": "2022-12-24T17:29:00.699+05:30",
               "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
               "transform_at": "processor",
               "source_job_id": "",
-              "destination_id": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
+              "destination_id": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
               "gateway_job_id": 1,
               "source_task_id": "",
               "source_batch_id": "",
@@ -1500,12 +1455,12 @@
             },
             "WorkspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
           },
-          "workerAssignedTime": "2022-12-24T13:33:26.593402+05:30"
+          "workerAssignedTime": "2022-12-24T17:29:04.051596+05:30"
         }
       ],
       "destination": {
-        "ID": "2JJoPPYoFZyraqdTSDsSF0T9zIt",
-        "Name": "Amplitude-Dev",
+        "ID": "2JK3ACpBjq9AmvUbxR1u2pDPSYR",
+        "Name": "Amplitude-2",
         "DestinationDefinition": {
           "ID": "1QGzO4fWSyq3lsyFHf4eQAMDSr9",
           "Name": "AM",
@@ -1620,14 +1575,7 @@
             ],
             "saveDestinationResponse": true,
             "secretKeys": ["apiKey", "apiSecret"],
-            "supportedMessageTypes": [
-              "alias",
-              "group",
-              "identify",
-              "page",
-              "screen",
-              "track"
-            ],
+            "supportedMessageTypes": ["alias", "group", "identify", "page", "screen", "track"],
             "supportedSourceTypes": [
               "android",
               "ios",
@@ -1647,7 +1595,7 @@
           "ResponseRules": null
         },
         "Config": {
-          "apiKey": "a99702eb473e89c1352300172c142c77",
+          "apiKey": "Techno@2020",
           "apiSecret": "",
           "blacklistedEvents": [
             {
@@ -1695,7 +1643,7 @@
         "WorkspaceID": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
         "Transformations": [],
         "IsProcessorEnabled": true,
-        "RevisionID": "2JJoTOhsmYEuVu4FeeJkoaIkNBG"
+        "RevisionID": "2JMKUgZX3b8sbtDSZrkUB7okeOY"
       }
     }
   ]

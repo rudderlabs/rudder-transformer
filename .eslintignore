@@ -4,6 +4,7 @@ reports/
 *.md
 *.test.js
 test/**/*.js
+test/**/*.ts
 src/util/lodash-es-core.js
 **/ivm*.js
 **/custom*.js

@@ -2,15 +2,9 @@
   "input": [
     {
       "query_parameters": {
-        "topic": [
-          "fulfillments_update"
-        ],
-        "writeKey": [
-          "sample-write-key"
-        ],
-        "signature": [
-          "rudderstack"
-        ]
+        "topic": ["fulfillments_update"],
+        "writeKey": ["sample-write-key"],
+        "signature": ["rudderstack"]
       },
       "admin_graphql_api_id": "gid://shopify/Fulfillment/4124667937024",
       "created_at": "2022-01-05T18:13:02+05:30",
@@ -141,13 +135,9 @@
       "status": "success",
       "tracking_company": "Amazon Logistics UK",
       "tracking_number": "Sample001test",
-      "tracking_numbers": [
-        "Sample001test"
-      ],
+      "tracking_numbers": ["Sample001test"],
       "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
-      "tracking_urls": [
-        "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
-      ],
+      "tracking_urls": ["https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"],
       "updated_at": "2022-01-05T18:16:48+05:30"
     }
   ],
@@ -187,9 +177,7 @@
               "status": "success",
               "tracking_company": "Amazon Logistics UK",
               "tracking_number": "Sample001test",
-              "tracking_numbers": [
-                "Sample001test"
-              ],
+              "tracking_numbers": ["Sample001test"],
               "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
               "tracking_urls": [
                 "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"

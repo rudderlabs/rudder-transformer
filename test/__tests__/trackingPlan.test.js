@@ -266,6 +266,79 @@ const trackingPlan = {
   update_time: "2021-12-15T13:29:59.272Z"
 };
 
+const trackingPlan2 = {
+  rules: {
+    identify: {
+      type: "object",
+      $schema: "http://json-schema.org/draft-07/schema#",
+      required: ["traits"],
+      properties: {
+        traits: {
+            properties: {
+              id: {
+                type: ['string']
+              }
+            },
+            required: ['id'],
+            type: "object",
+            additionalProperties: false
+        }
+      },
+    }
+  },
+  group: {
+    type: "object",
+    $schema: "http://json-schema.org/draft-07/schema#",
+    required: ["traits"],
+    properties: {
+      traits: {
+          properties: {
+            id: {
+              type: ['string']
+            }
+          },
+          required: ['id'],
+          type: "object",
+          additionalProperties: false
+      }
+    },
+  },
+  page: {
+    type: "object",
+    $schema: "http://json-schema.org/draft-07/schema#",
+    required: ["properties"],
+    properties: {
+      properties: {
+          properties: {
+            id: {
+              type: ['string']
+            }
+          },
+          required: ['id'],
+          type: "object",
+          additionalProperties: false
+      }
+    },
+  },
+  screen: {
+    type: "object",
+    $schema: "http://json-schema.org/draft-07/schema#",
+    required: ["properties"],
+    properties: {
+      properties: {
+          properties: {
+            id: {
+              type: ['string']
+            }
+          },
+          required: ['id'],
+          type: "object",
+          additionalProperties: false
+      }
+    },
+  },
+}
+
 const constructEventToValidate = (eventName, dateStr='2020-06-08T01:00:00') => {
   const ev = {
     metadata: {
@@ -362,8 +435,8 @@ const sampleForumTrackingPlan = {
   update_time: "2021-12-15T13:29:59.272Z"
 }
 
-const sampleForumValidationEvents = [
-  { 
+const sampleForumValidationEvents = {
+  complexEvent1: { 
      metadata: {
       trackingPlanId: "dummy_tracking_plan_id2",
       trackingPlanVersion: "dummy_version",
@@ -387,7 +460,7 @@ const sampleForumValidationEvents = [
       timestamp: "2020-02-02T00:23:09.544Z"
     }
   },
-  { 
+  complexEvent2: { 
     metadata: {
       trackingPlanId: "dummy_tracking_plan_id2",
       trackingPlanVersion: "dummy_version",
@@ -412,7 +485,7 @@ const sampleForumValidationEvents = [
       timestamp: "2020-02-02T00:23:09.544Z"
     }
   },
-  { 
+  complexEvent3: { 
     metadata: {
       trackingPlanId: "dummy_tracking_plan_id2",
       trackingPlanVersion: "dummy_version",
@@ -437,7 +510,7 @@ const sampleForumValidationEvents = [
       timestamp: "2020-02-02T00:23:09.544Z"
     }
   },
-  { 
+  complexEvent4: { 
     metadata: {
       trackingPlanId: "dummy_tracking_plan_id2",
       trackingPlanVersion: "dummy_version",
@@ -461,7 +534,7 @@ const sampleForumValidationEvents = [
       timestamp: "2020-02-02T00:23:09.544Z"
     }
   },
-  { 
+  complexEvent5: { 
     metadata: {
       trackingPlanId: "dummy_tracking_plan_id2",
       trackingPlanVersion: "dummy_version",
@@ -486,7 +559,7 @@ const sampleForumValidationEvents = [
       timestamp: "2020-02-02T00:23:09.544Z"
     }
   }
-]
+}
 
 const eventValidationTestCases = [
   {
@@ -573,25 +646,25 @@ const eventValidationTestCases = [
   },
   {
     testCase: "draft 7",
-    event: sampleForumValidationEvents[0],
+    event: sampleForumValidationEvents.complexEvent1,
     trackingPlan: sampleForumTrackingPlan,
     output: []
   },
   {
     testCase: "draft 7",
-    event: sampleForumValidationEvents[1],
+    event: sampleForumValidationEvents.complexEvent2,
     trackingPlan: sampleForumTrackingPlan,
     output: []
   },
   {
     testCase: "draft 7",
-    event: sampleForumValidationEvents[2],
+    event: sampleForumValidationEvents.complexEvent3,
     trackingPlan: sampleForumTrackingPlan,
     output: []
   },
   {
     testCase: "draft 7 - missing flair",
-    event: sampleForumValidationEvents[3],
+    event: sampleForumValidationEvents.complexEvent4,
     trackingPlan: sampleForumTrackingPlan,
     output: [
       {
@@ -607,7 +680,7 @@ const eventValidationTestCases = [
   },
   {
     testCase: "draft 7 -  bad type for post_comment",
-    event: sampleForumValidationEvents[4],
+    event: sampleForumValidationEvents.complexEvent5,
     trackingPlan: sampleForumTrackingPlan,
     output: [
       {
@@ -655,6 +728,26 @@ const eventSchemaTestCases = [
     }
   },
   {
+    testCase: "Page is a part of Tracking Plan",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id",
+        trackingPlanVersion: "dummy_version",
+        workspaceId: "dummy_workspace_id"
+      },
+      message: {
+        properties: {
+          id: 'xyz'
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan2,
+    output: {
+      eventSchema: undefined
+    }
+  },
+  {
     testCase: "Screen is not part of Tracking Plan",
     event: {
       metadata: {
@@ -668,7 +761,7 @@ const eventSchemaTestCases = [
         anonymousId: "anon-id-new",
         name: "Screen View",
         properties: {
-          prop1: "5"
+          id: "5"
         },
         context: {
           ip: "14.5.67.21",
@@ -680,6 +773,36 @@ const eventSchemaTestCases = [
       }
     },
     trackingPlan,
+    output: {
+      eventSchema: undefined
+    }
+  },
+  {
+    testCase: "Screen is a part of Tracking Plan",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id",
+        trackingPlanVersion: "dummy_version",
+        workspaceId: "dummy_workspace_id"
+      },
+      message: {
+        type: "screen",
+        userId: "user12345",
+        anonymousId: "anon-id-new",
+        name: "Screen View",
+        properties: {
+          id: "5"
+        },
+        context: {
+          ip: "14.5.67.21",
+          library: {
+            name: "http"
+          }
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan2,
     output: {
       eventSchema: undefined
     }

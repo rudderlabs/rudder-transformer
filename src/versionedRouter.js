@@ -231,7 +231,7 @@ async function handleDest(ctx, version, destination) {
 
   const metaTags =
     events && events.length > 0 && events[0].metadata ? getMetadata(events[0].metadata) : {};
-  stats.counter('dest_transform_input_events', events.length, {
+  stats.histogram('dest_transform_input_events', events.length, {
     destination,
     version,
     ...metaTags,
@@ -325,7 +325,7 @@ async function handleDest(ctx, version, destination) {
     ...metaTags,
   });
   logger.debug(`[DT] Output events: ${JSON.stringify(respList)}`);
-  stats.counter('dest_transform_output_events', respList.length, {
+  stats.histogram('dest_transform_output_events', respList.length, {
     destination,
     version,
     ...metaTags,
@@ -638,7 +638,7 @@ if (startDestTransformer) {
       const events = ctx.request.body;
       const { processSessions } = ctx.query;
       logger.debug(`[CT] Input events: ${JSON.stringify(events)}`);
-      stats.counter('user_transform_input_events', events.length, {
+      stats.histogram('user_transform_input_events', events.length, {
         processSessions,
       });
       let groupedEvents;
@@ -776,7 +776,7 @@ if (startDestTransformer) {
         processSessions,
       });
       stats.increment('user_transform_requests', { processSessions });
-      stats.counter('user_transform_output_events', transformedEvents.length, {
+      stats.histogram('user_transform_output_events', transformedEvents.length, {
         processSessions,
       });
     });

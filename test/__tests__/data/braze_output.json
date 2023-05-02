@@ -1,818 +1,675 @@
 [
-  [
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://rest.iad-01.braze.com/users/identify",
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "aliases_to_identify": [
-            {
-              "user_alias": {
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                "alias_label": "rudder_id"
-              }
-            }
-          ]
-        },
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rest.iad-01.braze.com/users/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
     },
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://rest.iad-01.braze.com/users/track",
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "attributes": [
-            {
-              "city": "Disney",
-              "country": "USA",
-              "email": "mickey@disney.com",
-              "firstname": "Mickey",
-              "closed_at": null,
-              "orderTotal": 0,
-              "_update_existing_only": false,
-              "user_alias": {
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                "alias_label": "rudder_id"
-              }
+    "params": {},
+    "body": {
+      "JSON": {
+        "attributes": [
+          {
+            "email": "mickey@disney.com",
+            "city": "Disney",
+            "country": "USA",
+            "firstname": "Mickey",
+            "closed_at": null,
+            "orderTotal": 0,
+            "_update_existing_only": false,
+            "user_alias": {
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+              "alias_label": "rudder_id"
             }
-          ]
-        },
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {}
+          }
+        ]
       },
-      "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-    }
-  ],
-  [
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://rest.iad-01.braze.com/users/identify",
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "aliases_to_identify": [
-            {
-              "user_alias": {
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                "alias_label": "rudder_id"
-              },
-              "external_id": "mickeyMouse"
-            }
-          ]
-        },
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "mickeyMouse"
-    }
-  ],
-  [
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://rest.fra-01.braze.eu/users/track",
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "partner": "RudderStack",
-          "events": [
-            {
-              "name": "braze revenue test",
-              "time": "2020-01-24T11:59:02.403+05:30",
-              "properties": {
-                "revenue": 50
-              },
-              "external_id": "mickeyMouse"
-            }
-          ]
-        },
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "mickeyMouse"
-    }
-  ],
-  [
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://rest.fra-01.braze.eu/users/track",
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "attributes": [
-            {
-              "email": "mickey@disney.com",
-              "closed_at": null,
-              "external_id": "mickeyMouse"
-            }
-          ],
-          "partner": "RudderStack",
-          "events": [
-            {
-              "name": "braze revenue test",
-              "time": "2020-01-24T11:59:02.403+05:30",
-              "properties": {
-                "revenue": 50
-              },
-              "external_id": "mickeyMouse"
-            }
-          ]
-        },
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "mickeyMouse"
-    }
-  ],
-  [
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://rest.fra-01.braze.eu/users/track",
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "events": [
-            {
-              "name": "Page Viewed",
-              "time": "2020-01-24T11:59:02.402+05:30",
-              "properties": {
-                "path": "/tests/html/index2.html",
-                "referrer": "",
-                "search": "",
-                "title": "",
-                "url": "http://localhost/tests/html/index2.html"
-              },
-              "_update_existing_only": false,
-              "user_alias": {
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                "alias_label": "rudder_id"
-              }
-            }
-          ],
-          "partner": "RudderStack"
-        },
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-    }
-  ],
-  [
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://rest.iad-01.braze.com/users/identify",
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "aliases_to_identify": [
-            {
-              "user_alias": {
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                "alias_label": "rudder_id"
-              }
-            }
-          ]
-        },
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
     },
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://rest.iad-01.braze.com/users/track",
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+  },
+  {
+    "message": "No attributes found to update the user profile"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rest.fra-01.braze.eu/users/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "partner": "RudderStack",
+        "events": [
+          {
+            "name": "braze revenue test",
+            "time": "2020-01-24T11:59:02.403+05:30",
+            "properties": {
+              "revenue": 50
+            },
+            "external_id": "mickeyMouse"
+          }
+        ]
       },
-      "params": {},
-      "body": {
-        "JSON": {
-          "attributes": [
-            {
-              "city": "Disney",
-              "country": "USA",
-              "email": "mickey@disney.com",
-              "firstname": "Mickey",
-              "_update_existing_only": false,
-              "user_alias": {
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                "alias_label": "rudder_id"
-              }
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "mickeyMouse"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rest.fra-01.braze.eu/users/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "attributes": [
+          {
+            "email": "mickey@disney.com",
+            "closed_at": null,
+            "external_id": "mickeyMouse"
+          }
+        ],
+        "partner": "RudderStack",
+        "events": [
+          {
+            "name": "braze revenue test",
+            "time": "2020-01-24T11:59:02.403+05:30",
+            "properties": {
+              "revenue": 50
+            },
+            "external_id": "mickeyMouse"
+          }
+        ]
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "mickeyMouse"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rest.fra-01.braze.eu/users/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "events": [
+          {
+            "name": "Page Viewed",
+            "time": "2020-01-24T11:59:02.402+05:30",
+            "properties": {
+              "path": "/tests/html/index2.html",
+              "referrer": "",
+              "search": "",
+              "title": "",
+              "url": "http://localhost/tests/html/index2.html"
+            },
+            "_update_existing_only": false,
+            "user_alias": {
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+              "alias_label": "rudder_id"
             }
-          ]
-        },
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {}
+          }
+        ],
+        "partner": "RudderStack"
       },
-      "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-    }
-  ],
-  [
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://rest.fra-01.braze.eu/users/track",
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "attributes": [
-            {
-              "city": "Disney",
-              "country": "USA",
-              "email": "mickey@disney.com",
-              "first_name": "Mickey",
-              "gender": "F",
-              "_update_existing_only": false,
-              "user_alias": {
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                "alias_label": "rudder_id"
-              }
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rest.iad-01.braze.com/users/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "attributes": [
+          {
+            "city": "Disney",
+            "country": "USA",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey",
+            "_update_existing_only": false,
+            "user_alias": {
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+              "alias_label": "rudder_id"
             }
-          ],
-          "events": [
-            {
-              "name": "braze revenue test",
-              "time": "2020-01-24T11:59:02.403+05:30",
-              "properties": {
-                "revenue": 50
-              },
-              "_update_existing_only": false,
-              "user_alias": {
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                "alias_label": "rudder_id"
-              }
-            }
-          ],
-          "partner": "RudderStack"
-        },
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {}
+          }
+        ]
       },
-      "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-    }
-  ],
-  [
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://rest.fra-01.braze.eu/users/track",
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "attributes": [
-            {
-              "city": "Disney",
-              "country": "USA",
-              "email": "mickey@disney.com",
-              "firstname": "Mickey",
-              "_update_existing_only": false,
-              "user_alias": {
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                "alias_label": "rudder_id"
-              }
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rest.fra-01.braze.eu/users/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "attributes": [
+          {
+            "city": "Disney",
+            "country": "USA",
+            "email": "mickey@disney.com",
+            "first_name": "Mickey",
+            "gender": "F",
+            "_update_existing_only": false,
+            "user_alias": {
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+              "alias_label": "rudder_id"
             }
-          ],
-          "events": [
-            {
-              "name": "KM Order Completed",
-              "time": "2020-01-24T11:59:02.402+05:30",
-              "properties": {
-                "affiliation": "Google Store",
-                "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
-                "coupon": "hasbros",
-                "discount": 2.5,
-                "order_id": "50314b8e9bcf000000000000",
-                "products": [
-                  {
-                    "category": "Games",
-                    "image_url": "https:///www.example.com/product/path.jpg",
-                    "name": "Monopoly: 3rd Edition",
-                    "price": 19,
-                    "product_id": "507f1f77bcf86cd799439011",
-                    "quantity": 1,
-                    "sku": "45790-32",
-                    "url": "https://www.example.com/product/path"
-                  },
-                  {
-                    "category": "Games",
-                    "name": "Uno Card Game",
-                    "price": 3,
-                    "product_id": "505bd76785ebb509fc183733",
-                    "quantity": 2,
-                    "sku": "46493-32"
-                  }
-                ],
-                "revenue": 25,
-                "shipping": 3,
-                "subtotal": 22.5,
-                "tax": 2,
-                "total": 27.5
-              },
-              "_update_existing_only": false,
-              "user_alias": {
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                "alias_label": "rudder_id"
-              }
+          }
+        ],
+        "events": [
+          {
+            "name": "braze revenue test",
+            "time": "2020-01-24T11:59:02.403+05:30",
+            "properties": {
+              "revenue": 50
+            },
+            "_update_existing_only": false,
+            "user_alias": {
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+              "alias_label": "rudder_id"
             }
-          ],
-          "partner": "RudderStack"
-        },
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {}
+          }
+        ],
+        "partner": "RudderStack"
       },
-      "files": {},
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-    }
-  ],
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rest.fra-01.braze.eu/users/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "attributes": [
+          {
+            "city": "Disney",
+            "country": "USA",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey",
+            "_update_existing_only": false,
+            "user_alias": {
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+              "alias_label": "rudder_id"
+            }
+          }
+        ],
+        "events": [
+          {
+            "name": "KM Order Completed",
+            "time": "2020-01-24T11:59:02.402+05:30",
+            "properties": {
+              "affiliation": "Google Store",
+              "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+              "coupon": "hasbros",
+              "discount": 2.5,
+              "order_id": "50314b8e9bcf000000000000",
+              "products": [
+                {
+                  "category": "Games",
+                  "image_url": "https:///www.example.com/product/path.jpg",
+                  "name": "Monopoly: 3rd Edition",
+                  "price": 19,
+                  "product_id": "507f1f77bcf86cd799439011",
+                  "quantity": 1,
+                  "sku": "45790-32",
+                  "url": "https://www.example.com/product/path"
+                },
+                {
+                  "category": "Games",
+                  "name": "Uno Card Game",
+                  "price": 3,
+                  "product_id": "505bd76785ebb509fc183733",
+                  "quantity": 2,
+                  "sku": "46493-32"
+                }
+              ],
+              "revenue": 25,
+              "shipping": 3,
+              "subtotal": 22.5,
+              "tax": 2,
+              "total": 27.5
+            },
+            "_update_existing_only": false,
+            "user_alias": {
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+              "alias_label": "rudder_id"
+            }
+          }
+        ],
+        "partner": "RudderStack"
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+  },
   {
     "statusCode": 400,
     "message": "Invalid Order Completed event"
   },
-  [
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://rest.fra-01.braze.eu/users/track",
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "attributes": [
-            {
-              "ab_rudder_group_1234": true,
-              "external_id": "Randomuser2222"
-            }
-          ],
-          "partner": "RudderStack"
-        },
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "Randomuser2222"
-    }
-  ],
-  [
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://rest.iad-01.braze.com/users/identify",
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      },
-      "params": {},
-      "body": {
-        "JSON": {
-          "aliases_to_identify": [
-            {
-              "user_alias": {
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                "alias_label": "rudder_id"
-              },
-              "external_id": "mickey@disney.com"
-            }
-          ]
-        },
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {}
-      },
-      "files": {},
-      "userId": "mickey@disney.com"
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rest.fra-01.braze.eu/users/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
     },
-    {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "https://rest.iad-01.braze.com/users/track",
-      "headers": {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    "params": {},
+    "body": {
+      "JSON": {
+        "attributes": [
+          {
+            "ab_rudder_group_1234": true,
+            "external_id": "Randomuser2222"
+          }
+        ],
+        "partner": "RudderStack"
       },
-      "params": {},
-      "body": {
-        "JSON": {
-          "attributes": [
-            {
-              "home_city": "Disney",
-              "country": "USA",
-              "external_id": "mickey@disney.com",
-              "first_name": "Mickey"
-            }
-          ]
-        },
-        "XML": {},
-        "JSON_ARRAY": {},
-        "FORM": {}
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "Randomuser2222"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rest.iad-01.braze.com/users/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "attributes": [
+          {
+            "home_city": "Disney",
+            "country": "USA",
+            "external_id": "mickey@disney.com",
+            "first_name": "Mickey"
+          }
+        ]
       },
-      "files": {},
-      "userId": "mickey@disney.com"
-    }
-  ],
-  [
-    {
-      "body": {
-        "FORM": {},
-        "JSON": {
-          "attributes": [
-            {
-              "_update_existing_only": false,
-              "city": "Disney",
-              "country": "USA",
-              "email": "mickey@disney.com",
-              "firstname": "Mickey",
-              "user_alias": {
-                "alias_label": "rudder_id",
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-              }
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "mickey@disney.com"
+  },
+  {
+    "body": {
+      "FORM": {},
+      "JSON": {
+        "attributes": [
+          {
+            "_update_existing_only": false,
+            "city": "Disney",
+            "country": "USA",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey",
+            "user_alias": {
+              "alias_label": "rudder_id",
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
             }
-          ],
-          "partner": "RudderStack",
-          "purchases": [
-            {
-              "_update_existing_only": false,
-              "currency": "USD",
-              "price": 0,
-              "product_id": "507f1f77bcf86cd799439011",
-              "quantity": 1,
-              "time": "2020-01-24T11:59:02.402+05:30",
-              "user_alias": {
-                "alias_label": "rudder_id",
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-              }
+          }
+        ],
+        "partner": "RudderStack",
+        "purchases": [
+          {
+            "_update_existing_only": false,
+            "currency": "USD",
+            "price": 0,
+            "product_id": "507f1f77bcf86cd799439011",
+            "quantity": 1,
+            "time": "2020-01-24T11:59:02.402+05:30",
+            "user_alias": {
+              "alias_label": "rudder_id",
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+            }
+          },
+          {
+            "_update_existing_only": false,
+            "currency": "USD",
+            "price": 0,
+            "product_id": "505bd76785ebb509fc183733",
+            "quantity": 2,
+            "time": "2020-01-24T11:59:02.402+05:30",
+            "user_alias": {
+              "alias_label": "rudder_id",
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {}
+    },
+    "endpoint": "https://rest.fra-01.braze.eu/users/track",
+    "files": {},
+    "headers": {
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "Content-Type": "application/json"
+    },
+    "method": "POST",
+    "params": {},
+    "type": "REST",
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+    "version": "1"
+  },
+  {
+    "body": {
+      "FORM": {},
+      "JSON": {
+        "attributes": [
+          {
+            "_update_existing_only": false,
+            "city": "Disney",
+            "country": "USA",
+            "email": "mickey@disney.com",
+            "firstname": "Mickey",
+            "user_alias": {
+              "alias_label": "rudder_id",
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+            }
+          }
+        ],
+        "partner": "RudderStack",
+        "purchases": [
+          {
+            "_update_existing_only": false,
+            "currency": "USD",
+            "price": 0,
+            "product_id": "507f1f77bcf86cd799439011",
+            "quantity": 1,
+            "time": "2020-01-24T11:59:02.402+05:30",
+            "user_alias": {
+              "alias_label": "rudder_id",
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+            }
+          },
+          {
+            "_update_existing_only": false,
+            "currency": "USD",
+            "price": 10,
+            "product_id": "505bd76785ebb509fc183733",
+            "quantity": 2,
+            "time": "2020-01-24T11:59:02.402+05:30",
+            "user_alias": {
+              "alias_label": "rudder_id",
+              "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {}
+    },
+    "endpoint": "https://rest.fra-01.braze.eu/users/track",
+    "files": {},
+    "headers": {
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "Content-Type": "application/json"
+    },
+    "method": "POST",
+    "params": {},
+    "type": "REST",
+    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+    "version": "1"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "events": [
+          {
+            "name": "braze revenue test",
+            "time": "2023-03-14T02:06:22.432+05:30",
+            "properties": {
+              "revenue": 50,
+              "mergeObjectsUpdateOperation": false
             },
-            {
-              "_update_existing_only": false,
-              "currency": "USD",
-              "price": 0,
-              "product_id": "505bd76785ebb509fc183733",
-              "quantity": 2,
-              "time": "2020-01-24T11:59:02.402+05:30",
-              "user_alias": {
-                "alias_label": "rudder_id",
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-              }
-            }
-          ]
-        },
-        "JSON_ARRAY": {},
-        "XML": {}
-      },
-      "endpoint": "https://rest.fra-01.braze.eu/users/track",
-      "files": {},
-      "headers": {
-        "Accept": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "Content-Type": "application/json"
-      },
-      "method": "POST",
-      "params": {},
-      "type": "REST",
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "version": "1"
-    }
-  ],
-  [
-    {
-      "body": {
-        "FORM": {},
-        "JSON": {
-          "attributes": [
-            {
-              "_update_existing_only": false,
-              "city": "Disney",
-              "country": "USA",
-              "email": "mickey@disney.com",
-              "firstname": "Mickey",
-              "user_alias": {
-                "alias_label": "rudder_id",
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-              }
-            }
-          ],
-          "partner": "RudderStack",
-          "purchases": [
-            {
-              "_update_existing_only": false,
-              "currency": "USD",
-              "price": 0,
-              "product_id": "507f1f77bcf86cd799439011",
-              "quantity": 1,
-              "time": "2020-01-24T11:59:02.402+05:30",
-              "user_alias": {
-                "alias_label": "rudder_id",
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-              }
-            },
-            {
-              "_update_existing_only": false,
-              "currency": "USD",
-              "price": 10,
-              "product_id": "505bd76785ebb509fc183733",
-              "quantity": 2,
-              "time": "2020-01-24T11:59:02.402+05:30",
-              "user_alias": {
-                "alias_label": "rudder_id",
-                "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-              }
-            }
-          ]
-        },
-        "JSON_ARRAY": {},
-        "XML": {}
-      },
-      "endpoint": "https://rest.fra-01.braze.eu/users/track",
-      "files": {},
-      "headers": {
-        "Accept": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "Content-Type": "application/json"
-      },
-      "method": "POST",
-      "params": {},
-      "type": "REST",
-      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-      "version": "1"
-    }
-  ],
-  [
-    {
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON": {
-          "events": [
-            {
-              "name": "braze revenue test",
-              "time": "2023-03-14T02:06:22.432+05:30",
-              "properties": {
-                "revenue": 50,
-                "mergeObjectsUpdateOperation": false
-              },
-              "external_id": "finalUserTestCA"
-            }
-          ],
-          "partner": "RudderStack",
-          "attributes": [
-            {
-              "city": "Disney",
-              "pets": {
-                "$add": [
-                  {
-                    "id": 1,
-                    "age": 27,
-                    "name": "abc"
-                  }
-                ],
-                "$remove": [
-                  {
-                    "$identifier_key": "id",
-                    "$identifier_value": 3
-                  },
-                  {
-                    "$identifier_key": "id",
-                    "$identifier_value": 4
-                  }
-                ],
-                "$update": [
-                  {
-                    "$new_object": {
-                      "age": 27,
-                      "name": "abc"
-                    },
-                    "$identifier_key": "id",
-                    "$identifier_value": 2
-                  }
-                ]
-              },
-              "cars2": {
-                "$update": [
-                  {
-                    "$new_object": {
-                      "age": 30,
-                      "name": "abcd"
-                    },
-                    "$identifier_key": "id",
-                    "$identifier_value": 2
-                  },
-                  {
-                    "$new_object": {
-                      "age": 27,
-                      "name": "abcd"
-                    },
-                    "$identifier_key": "id",
-                    "$identifier_value": 1
-                  }
-                ]
-              },
-              "email": "mickey@disney.com",
-              "gender": "F",
-              "country": "USA",
-              "first_name": "Mickey",
-              "external_id": "finalUserTestCA",
-              "_merge_objects": false
-            }
-          ]
-        },
-        "JSON_ARRAY": {}
-      },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {},
-      "userId": "finalUserTestCA",
-      "headers": {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-      },
-      "version": "1",
-      "endpoint": "https://rest.fra-01.braze.eu/users/track"
-    }
-  ],
-  [
-    {
-      "body": {
-        "XML": {},
-        "FORM": {},
-        "JSON": {
-          "events": [
-            {
-              "name": "braze revenue test",
-              "time": "2023-03-14T02:13:10.518+05:30",
-              "properties": {
-                "revenue": 50,
-                "mergeObjectsUpdateOperation": false
-              },
-              "external_id": "finalUserTestCA"
-            }
-          ],
-          "partner": "RudderStack",
-          "attributes": [
-            {
-              "cars": {
-                "$add": [
-                  {
-                    "id": 1,
-                    "age": 27,
-                    "name": "abc"
-                  }
-                ],
-                "$update": [
-                  {
-                    "$new_object": {
-                      "age": 30,
-                      "name": "abcd"
-                    },
-                    "$identifier_key": "id",
-                    "$identifier_value": 2
-                  },
-                  {
-                    "$new_object": {
-                      "age": 27,
-                      "name": "abcd"
-                    },
-                    "$identifier_key": "id",
-                    "$identifier_value": 1
-                  }
-                ]
-              },
-              "city": "Disney",
-              "pets": [
+            "external_id": "finalUserTestCA"
+          }
+        ],
+        "partner": "RudderStack",
+        "attributes": [
+          {
+            "city": "Disney",
+            "pets": {
+              "$add": [
                 {
                   "id": 1,
-                  "name": "Gus",
-                  "type": "dog",
-                  "breed": "beagle"
-                },
-                {
-                  "id": 2,
-                  "name": "Gerald",
-                  "type": "cat",
-                  "breed": "calico"
+                  "age": 27,
+                  "name": "abc"
                 }
               ],
-              "email": "mickey@disney.com",
-              "gender": "F",
-              "country": "USA",
-              "first_name": "Mickey",
-              "external_id": "finalUserTestCA",
-              "_merge_objects": false
-            }
-          ]
-        },
-        "JSON_ARRAY": {}
+              "$remove": [
+                {
+                  "$identifier_key": "id",
+                  "$identifier_value": 3
+                },
+                {
+                  "$identifier_key": "id",
+                  "$identifier_value": 4
+                }
+              ],
+              "$update": [
+                {
+                  "$new_object": {
+                    "age": 27,
+                    "name": "abc"
+                  },
+                  "$identifier_key": "id",
+                  "$identifier_value": 2
+                }
+              ]
+            },
+            "cars2": {
+              "$update": [
+                {
+                  "$new_object": {
+                    "age": 30,
+                    "name": "abcd"
+                  },
+                  "$identifier_key": "id",
+                  "$identifier_value": 2
+                },
+                {
+                  "$new_object": {
+                    "age": 27,
+                    "name": "abcd"
+                  },
+                  "$identifier_key": "id",
+                  "$identifier_value": 1
+                }
+              ]
+            },
+            "email": "mickey@disney.com",
+            "gender": "F",
+            "country": "USA",
+            "first_name": "Mickey",
+            "external_id": "finalUserTestCA",
+            "_merge_objects": false
+          }
+        ]
       },
-      "type": "REST",
-      "files": {},
-      "method": "POST",
-      "params": {},
-      "userId": "finalUserTestCA",
-      "headers": {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-        "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "userId": "finalUserTestCA",
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "version": "1",
+    "endpoint": "https://rest.fra-01.braze.eu/users/track"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "events": [
+          {
+            "name": "braze revenue test",
+            "time": "2023-03-14T02:13:10.518+05:30",
+            "properties": {
+              "revenue": 50,
+              "mergeObjectsUpdateOperation": false
+            },
+            "external_id": "finalUserTestCA"
+          }
+        ],
+        "partner": "RudderStack",
+        "attributes": [
+          {
+            "cars": {
+              "$add": [
+                {
+                  "id": 1,
+                  "age": 27,
+                  "name": "abc"
+                }
+              ],
+              "$update": [
+                {
+                  "$new_object": {
+                    "age": 30,
+                    "name": "abcd"
+                  },
+                  "$identifier_key": "id",
+                  "$identifier_value": 2
+                },
+                {
+                  "$new_object": {
+                    "age": 27,
+                    "name": "abcd"
+                  },
+                  "$identifier_key": "id",
+                  "$identifier_value": 1
+                }
+              ]
+            },
+            "city": "Disney",
+            "pets": [
+              {
+                "id": 1,
+                "name": "Gus",
+                "type": "dog",
+                "breed": "beagle"
+              },
+              {
+                "id": 2,
+                "name": "Gerald",
+                "type": "cat",
+                "breed": "calico"
+              }
+            ],
+            "email": "mickey@disney.com",
+            "gender": "F",
+            "country": "USA",
+            "first_name": "Mickey",
+            "external_id": "finalUserTestCA",
+            "_merge_objects": false
+          }
+        ]
       },
-      "version": "1",
-      "endpoint": "https://rest.fra-01.braze.eu/users/track"
-    }
-  ]
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "userId": "finalUserTestCA",
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "version": "1",
+    "endpoint": "https://rest.fra-01.braze.eu/users/track"
+  }
 ]

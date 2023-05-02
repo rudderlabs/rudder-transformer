@@ -9,7 +9,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "event_name": "Watch Video",
+          "event_name": "watch_video",
           "event_time": 1597383030,
           "action_source": "web",
           "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
@@ -29,7 +29,7 @@
           },
           "custom_data": {
             "currency": "USD",
-            "value": 27.5,
+            "value": "27.5",
             "order_id": "50314b8e9bcf000000000000",
             "num_items": 3,
             "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
@@ -58,7 +58,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "event_name": "Checkout",
+          "event_name": "checkout",
           "event_time": 1597383030,
           "action_source": "web",
           "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
@@ -78,7 +78,7 @@
           },
           "custom_data": {
             "currency": "USD",
-            "value": 27.5,
+            "value": "27.5",
             "order_id": "50314b8e9bcf000000000000",
             "num_items": 3,
             "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
@@ -107,7 +107,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "event_name": "AddToCart",
+          "event_name": "add_to_cart",
           "event_time": 1597383030,
           "action_source": "web",
           "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
@@ -127,7 +127,7 @@
           },
           "custom_data": {
             "currency": "USD",
-            "value": 27.5,
+            "value": "27.5",
             "order_id": "50314b8e9bcf000000000000",
             "num_items": 2,
             "content_ids": ["123"],
@@ -173,7 +173,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "event_name": "Watch Video",
+          "event_name": "watch_video",
           "event_time": 1597383030,
           "action_source": "web",
           "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
@@ -193,7 +193,7 @@
           },
           "custom_data": {
             "currency": "USD",
-            "value": 27.5,
+            "value": "27.5",
             "num_items": 2,
             "order_id": "50314b8e9bcf000000000000",
             "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
@@ -272,7 +272,7 @@
           },
           "custom_data": {
             "currency": "USD",
-            "value": 27.5,
+            "value": "27.5",
             "num_items": 2,
             "order_id": "50314b8e9bcf000000000000",
             "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
@@ -304,7 +304,7 @@
           "event_time": 1597383030,
           "action_source": "web",
           "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-          "event_name": "PageVisit",
+          "event_name": "page_visit",
           "app_id": "429047995",
           "advertiser_id": "123456",
           "user_data": {
@@ -342,7 +342,7 @@
           "event_time": 1597383030,
           "action_source": "web",
           "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-          "event_name": "ViewCategory",
+          "event_name": "view_category",
           "app_id": "429047995",
           "advertiser_id": "123456",
           "user_data": {
@@ -381,7 +381,7 @@
           "action_source": "web",
           "opt_out": false,
           "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-          "event_name": "ViewCategory",
+          "event_name": "view_category",
           "app_id": "429047995",
           "advertiser_id": "123456",
           "user_data": {
@@ -420,7 +420,7 @@
           "action_source": "web",
           "opt_out": true,
           "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-          "event_name": "ViewCategory",
+          "event_name": "view_category",
           "app_id": "429047995",
           "advertiser_id": "123456",
           "user_data": {
@@ -458,7 +458,7 @@
           "action_source": "web",
           "opt_out": true,
           "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
-          "event_name": "ViewCategory",
+          "event_name": "view_category",
           "app_id": "429047995",
           "advertiser_id": "123456",
           "user_data": {

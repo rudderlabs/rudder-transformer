@@ -27,7 +27,8 @@
   },
   {
     "destKey": "eventTime",
-    "sourceKeys": ["originalTimestamp", "timestamp"],
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
     "required": true,
     "metadata": {
       "type": "timestamp"

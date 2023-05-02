@@ -6,7 +6,6 @@ const enableStats = process.env.ENABLE_STATS !== 'false';
 const statsClientType = process.env.STATS_CLIENT || 'statsd';
 
 let statsClient;
-let dontSendStats;
 function init() {
   if (!enableStats) {
     return;
@@ -21,13 +20,11 @@ function init() {
   } else {
     logger.info("Invalid stats client type. Valid values are 'statsd' and 'prometheus'.");
   }
-
-  dontSendStats = !enableStats || !statsClient;
 }
 
 // Sends the diff between current time and start as the stat
 const timing = (name, start, tags = {}) => {
-  if (dontSendStats) {
+  if (!enableStats || !statsClient) {
     return;
   }
 
@@ -35,7 +32,7 @@ const timing = (name, start, tags = {}) => {
 };
 
 const increment = (name, tags = {}) => {
-  if (dontSendStats) {
+  if (!enableStats || !statsClient) {
     return;
   }
 
@@ -43,7 +40,7 @@ const increment = (name, tags = {}) => {
 };
 
 const counter = (name, delta, tags = {}) => {
-  if (dontSendStats) {
+  if (!enableStats || !statsClient) {
     return;
   }
 
@@ -51,7 +48,7 @@ const counter = (name, delta, tags = {}) => {
 };
 
 const gauge = (name, value, tags = {}) => {
-  if (dontSendStats) {
+  if (!enableStats || !statsClient) {
     return;
   }
 
@@ -59,7 +56,7 @@ const gauge = (name, value, tags = {}) => {
 };
 
 const histogram = (name, value, tags = {}) => {
-  if (dontSendStats) {
+  if (!enableStats || !statsClient) {
     return;
   }
 
@@ -67,7 +64,7 @@ const histogram = (name, value, tags = {}) => {
 };
 
 async function metricsController(ctx) {
-  if (dontSendStats) {
+  if (!enableStats || !statsClient) {
     ctx.status = 404;
     ctx.body = `Not supported`;
     return;

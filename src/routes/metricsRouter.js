@@ -1,6 +1,6 @@
 const KoaRouter = require('@koa/router');
-const logger = require('./logger');
-const stats = require('./util/stats');
+const logger = require('../logger');
+const stats = require('../util/stats');
 
 const metricsRouter = new KoaRouter();
 

@@ -19,7 +19,6 @@
       "name": "Launch TS",
       "program": "${workspaceFolder}/dist/src/index.js",
       "outFiles": ["${workspaceFolder}/dist/src/**/*.js"],
-      "preLaunchTask": "npm run build",
       "runtimeExecutable": "/usr/local/bin/node"
     },
     {

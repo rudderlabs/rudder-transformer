@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.24.0",
+  "version": "1.25.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -91,7 +91,7 @@
     "pprof": "^3.2.0",
     "prom-client": "^14.2.0",
     "rudder-transformer-cdk": "^1.4.5",
-    "rudder-workflow-engine": "^0.4.4",
+    "rudder-workflow-engine": "^0.4.5",
     "set-value": "^4.1.0",
     "sha256": "^0.2.0",
     "stacktrace-parser": "^0.1.10",

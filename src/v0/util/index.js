@@ -1552,7 +1552,7 @@ const handleRtTfSingleEventError = (input, error, reqMetadata) => {
  * @param {Function} singleTfFunc - single event transformation function, we'd recommend this to be an async function(always)
  * @returns
  */
-const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata) => {
+const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, processParams) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
@@ -1564,7 +1564,7 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata) => {
         let resp = input.message;
         // transform if not already done
         if (!input.message.statusCode) {
-          resp = await singleTfFunc(input);
+          resp = await singleTfFunc(input, processParams);
         }
 
         return getSuccessRespEvents(resp, [input.metadata], input.destination);
@@ -1573,6 +1573,38 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata) => {
       }
     }),
   );
+  return respList;
+};
+/**
+ * This is the sync version of simpleProcessRouterDest
+ * 
+ * @param {*} inputs 
+ * @param {*} singleTfFunc 
+ * @param {*} reqMetadata 
+ * @param {*} processParams 
+ * @returns 
+ */
+const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, processParams) => {
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+  const respList = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const input of inputs) {
+    try {
+      let resp = input.message;
+      // transform if not already done
+      if (!input.message.statusCode) {
+        // eslint-disable-next-line no-await-in-loop
+        resp = await singleTfFunc(input, processParams);
+      }
+      respList.push(getSuccessRespEvents(resp, [input.metadata], input.destination));
+    } catch (error) {
+      respList.push(handleRtTfSingleEventError(input, error, reqMetadata));
+    }
+  }
+
   return respList;
 };
 
@@ -1681,12 +1713,7 @@ const validatePhoneWithCountryCode = (phone) => {
  * @param {*} Config
  * @returns
  */
-const isHybridModeEnabled = (Config) => {
-  if (isDefinedAndNotNull(Config.useNativeSDK) && isDefinedAndNotNull(Config.useNativeSDKToSend)) {
-    return Config.useNativeSDK && !Config.useNativeSDKToSend;
-  }
-  return false;
-};
+const isHybridModeEnabled = (Config) => Config.connectionMode === 'hybrid';
 
 /**
  * Get event type from the Rudder message object
@@ -1900,6 +1927,7 @@ module.exports = {
   updatePayload,
   checkInvalidRtTfEvents,
   simpleProcessRouterDest,
+  simpleProcessRouterDestSync,
   handleRtTfSingleEventError,
   getErrorStatusCode,
   getDestAuthCacheInstance,

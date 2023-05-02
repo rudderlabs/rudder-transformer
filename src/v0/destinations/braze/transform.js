@@ -185,6 +185,7 @@ function getUserAttributesObject(message, mappingJson, destination) {
   // reserved keys : already mapped through mappingJson
   const reservedKeys = [
     'address',
+    'home_city',
     'birthday',
     'email',
     'firstName',

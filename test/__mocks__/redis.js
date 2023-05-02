@@ -23,6 +23,7 @@ const getData = redisKey => {
 let connectionRequestCount = 0;
 class Redis {
     constructor(data) {
+        this.data = {};
         this.host = data.host,
             this.port = data.port,
             this.password = data.password,
@@ -80,6 +81,9 @@ class Redis {
     end(times) {
         this.retryStrategy(times);
         this.status = "end"
+    }
+    quit(){
+        this.status = "closed";
     }
 };
 

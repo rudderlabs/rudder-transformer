@@ -75,7 +75,7 @@ describe(`Redis Class Get Tests`, () => {
   });
 });
 
-describe(`Redis Class Set Fail Test`, () => {
+describe(`Redis Class Set Test`, () => {
   it(`Redis Set Fail Case Test`, async () => {
     try {
       await RedisDB.setVal("error", "test", false);
@@ -83,5 +83,16 @@ describe(`Redis Class Set Fail Test`, () => {
       expect(error.message).toEqual("Error setting value in Redis due Error: Connection is Closed");
     }
   });
+  it(`Redis Set Fail Case Test`, async () => {
+    const result = "OK"
+    await RedisDB.setVal("Key", "test", false);
+    expect(result).toEqual("OK");
+  });
 });
-
+describe(`Redis Disconnect`, () => {
+  it(`Redis Disconnect Test`, async () => {
+    const result = "OK"
+    await RedisDB.disconnect();
+    expect(result).toEqual("OK");
+  });
+});

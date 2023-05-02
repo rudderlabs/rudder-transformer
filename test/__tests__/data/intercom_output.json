@@ -384,14 +384,11 @@
       "FORM": {},
       "JSON": {
         "name": "rudderUpdate",
+        "plan": "basic",
         "size": 50,
         "industry": "IT",
-        "company_id": "test_company_id",
-        "monthly_spend": 2131231,
-        "custom_attributes": {
-          "plan": "basic",
-          "employees": 450
-        }
+        "company_id": "test_company_id_wdasda",
+        "monthly_spend": 2131231
       },
       "JSON_ARRAY": {}
     },
@@ -399,7 +396,7 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "userId": "12312312",
+    "userId": "sdfrsdfsdfsf",
     "headers": {
       "Accept": "application/json",
       "Content-Type": "application/json",
@@ -418,7 +415,7 @@
         "companies": [
           {
             "name": "rudderUpdate",
-            "company_id": "test_company_id"
+            "company_id": "test_company_id_wdasda"
           }
         ]
       },
@@ -428,7 +425,7 @@
     "files": {},
     "method": "POST",
     "params": {},
-    "userId": "12312312",
+    "userId": "sdfrsdfsdfsf",
     "headers": {
       "Accept": "application/json",
       "Content-Type": "application/json",
@@ -448,10 +445,7 @@
         "industry": "IT",
         "company_id": "test_company_id",
         "monthly_spend": 2131231,
-        "custom_attributes": {
-          "plan": "basic",
-          "employees": 450
-        }
+        "plan": "basic"
       },
       "JSON_ARRAY": {}
     },

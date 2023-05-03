@@ -27,7 +27,7 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
   };
 
   if (traitsInfo?.properties?.consent || consent) {
-    const subscribeConsent = traitsInfo.properties.consent || consent;
+    const subscribeConsent = traitsInfo?.properties?.consent || consent;
     const channels = {};
     if (Array.isArray(subscribeConsent)) {
       if (subscribeConsent.includes('email')) {

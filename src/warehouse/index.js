@@ -545,7 +545,7 @@ function processWarehouseMessage(message, options) {
       ? message.integrations[options.provider.toUpperCase()].options
       : {};
   const responses = [];
-  const eventType = message.type.toLowerCase();
+  const eventType = message.type?.toLowerCase();
   const skipTracksTable = options.integrationOptions.skipTracksTable || false;
   const skipReservedKeywordsEscaping =
     options.integrationOptions.skipReservedKeywordsEscaping || false;

@@ -1,38 +1,28 @@
 [
   {
-    "description": "Should return false if both flags (useNativeSDK and useNativeSDKToSend) are not present",
+    "description": "Should return false as no connectionMode key is present",
     "input": {},
     "output": false
   },
   {
-    "description": "Should return false if useNativeSDKToSend is not present",
+    "description": "Should return false as connectionMode is cloud",
     "input": {
-      "useNativeSDK": false
+      "connectionMode": "cloud"
     },
     "output": false
   },
   {
-    "description": "Should return true if both flags (useNativeSDK and useNativeSDKToSend) are present and device mode is enabled",
+    "description": "Should return false as connectionMode is device",
     "input": {
-      "useNativeSDK": true,
-      "useNativeSDKToSend": false
+      "connectionMode": "device"
+    },
+    "output": false
+  },
+  {
+    "description": "Should return true as connectionMode is hybrid",
+    "input": {
+      "connectionMode": "hybrid"
     },
     "output": true
-  },
-  {
-    "description": "Should return false if both flags (useNativeSDK and useNativeSDKToSend) are present and set to true",
-    "input": {
-      "useNativeSDK": true,
-      "useNativeSDKToSend": true
-    },
-    "output": false
-  },
-  {
-    "description": "Should return false if both flags (useNativeSDK and useNativeSDKToSend) are present but set to true",
-    "input": {
-      "useNativeSDK": false,
-      "useNativeSDKToSend": false
-    },
-    "output": false
   }
 ]

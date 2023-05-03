@@ -184,16 +184,16 @@ const processIdentifierEvent = async (event, metricMetadata) => {
     } catch (e) {
       stats.increment('shopify_identifier_events_lost_due_redis', {
         ...metricMetadata,
-        timestamp: Date.now(),
+
       });
       // This is a client side event
     }
-    stats.timing('redis_set_latency', setStartTime, {
+    stats.redisLatency(setStartTime, {
+      operation: 'set',
       ...metricMetadata,
     });
     stats.increment('shopify_redis_set_anonymousId', {
       ...metricMetadata,
-      timestamp: Date.now(),
     });
   }
   const result = {

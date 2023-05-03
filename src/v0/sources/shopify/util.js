@@ -160,7 +160,6 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
     stats.increment('shopify_no_cartToken', {
       ...metricMetadata,
       event,
-      timestamp: Date.now(),
     })
     if (!userId) {
       message.setProperty('userId', "shopify-admin");
@@ -175,16 +174,15 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
   } catch (e) {
     stats.increment('shopify_events_lost_due_redis', {
       ...metricMetadata,
-      timestamp: Date.now(),
     });
     redisVal = null;
   }
-  stats.timing('redis_get_latency', executeStartTime, {
+  stats.redisLatency(executeStartTime, {
+    operation: 'get',
     ...metricMetadata,
   });
   stats.increment('shopify_redis_get_data', {
     ...metricMetadata,
-    timestamp: Date.now(),
   });
   if (redisVal !== null) {
     anonymousIDfromDB = redisVal.anonymousId;
@@ -195,7 +193,6 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
     stats.increment('shopify_no_anon_id_from_redis', {
       ...metricMetadata,
       event,
-      timestamp: Date.now(),
     })
     anonymousIDfromDB = sha256(cartToken).toString().substring(0, 36);
   }

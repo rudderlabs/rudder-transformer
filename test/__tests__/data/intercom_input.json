@@ -1037,7 +1037,8 @@
       "integrations": {
         "All": true
       },
-      "type": "group"
+      "type": "group",
+      "userId": "sdfrsdfsdfsf"
     },
     "destination": {
       "Config": {
@@ -1055,7 +1056,8 @@
         "name": "rudderUpdate",
         "size": 50,
         "industry": "IT",
-        "monthlySpend": "2131231"
+        "monthlySpend": "2131231",
+        "email" : "comanyemail@abc.com"
       },
       "anonymousId": "12312312",
       "context": {
@@ -1100,6 +1102,41 @@
       },
       "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
       "type": "group"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcd=",
+        "appId": "asdasdasd",
+        "collectContext": false
+      }
+    }
+  },
+  {
+    "message": {
+      "groupId": "test_company_id_wdasda",
+      "context": {
+        "traits": {
+          "email": "testUser@test.com"
+        }
+      },
+      "traits": {
+        "employees": 450,
+        "plan": "basic",
+        "email": "test@test.com",
+        "name": "rudderUpdate",
+        "size": "50",
+        "industry": "IT",
+        "website": "url",
+        "monthlySpend": "2131231",
+        "remoteCreatedAt": "1683017572",
+        "key1": "val1"
+      },
+      "anonymousId": "sdfrsdfsdfsf",
+      "integrations": {
+        "All": true
+      },
+      "type": "group",
+      "userId": "sdfrsdfsdfsf"
     },
     "destination": {
       "Config": {

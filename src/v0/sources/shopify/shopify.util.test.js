@@ -94,7 +94,6 @@ describe('Shopify Utils Test', () => {
             const input = {
                 event: 'Customer Enabled',
                 properties: {
-                    cart_token: '123',
                 }
             };
             const output = getAnonymousId(input);
@@ -105,7 +104,7 @@ describe('Shopify Utils Test', () => {
             const input = {
                 event: 'Order Deleted',
                 properties: {
-                    cart_token: '123',
+                    order_id: 'Order_ID'
                 }
             };
             const expectedOutput = null;
@@ -135,6 +134,19 @@ describe('Shopify Utils Test', () => {
             };
 
             const expectedOutput = 'anon_shopify_test2';
+            const output = await getAnonymousIdFromDb(input);
+            expect(output).toEqual(expectedOutput);
+        });
+
+        it('Properties contain id for cart event but it is not present in DB', async () => {
+            const input = {
+                event: 'Cart Update',
+                properties: {
+                    id: 'unstored_id',
+                }
+            };
+
+            const expectedOutput = '1239d93a5f2892b9daf67d476467bdf963ec';
             const output = await getAnonymousIdFromDb(input);
             expect(output).toEqual(expectedOutput);
         });

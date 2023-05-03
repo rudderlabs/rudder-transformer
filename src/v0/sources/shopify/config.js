@@ -100,7 +100,7 @@ const SUPPORTED_TRACK_EVENTS = [
   'orders_paid',
   'orders_partially_fullfilled',
 ];
-const ANONYMOUSID_CACHE_TTL = 60 * 60;
+const ANONYMOUSID_CACHE_TTL_IN_SEC = 60 * 60;
 const useRedisDatabase = process.env.USE_REDIS_DB === 'true' || false;
 module.exports = {
   ECOM_TOPICS,
@@ -114,6 +114,6 @@ module.exports = {
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
-  ANONYMOUSID_CACHE_TTL,
+  ANONYMOUSID_CACHE_TTL_IN_SEC,
   useRedisDatabase,
 };

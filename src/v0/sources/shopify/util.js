@@ -12,12 +12,12 @@ const {
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   RUDDER_ECOM_MAP,
   SHOPIFY_TRACK_MAP,
-  ANONYMOUSID_CACHE_TTL,
+  ANONYMOUSID_CACHE_TTL_IN_SEC,
 } = require('./config');
 // 30 mins
 const { TransformationError } = require('../../util/errorTypes');
 
-const anonymousIdCache = new Cache(ANONYMOUSID_CACHE_TTL);
+const anonymousIdCache = new Cache(ANONYMOUSID_CACHE_TTL_IN_SEC);
 
 /**
  * query_parameters : { topic: ['<shopify_topic>'], ...}

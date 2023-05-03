@@ -60,7 +60,7 @@ const RedisDB = {
   /**
    * Used to get value from redis depending on the key and the expected value type
    * @param {*} key key for which value needs to be extracted
-   * @param {*} isJsonExpected false if fetched value can not be json
+   * @param {*} isObjExpected false if fetched value can not be json
    * @returns value which can be json or string or number
    *
    */
@@ -100,11 +100,11 @@ const RedisDB = {
    * @param {*} key key for which value needs to be stored
    * @param {*} value to be stored in redis send it in array format [field1, value1, field2, value2]
    *                  if Value is an object
-   * @param {*} expiryTime expiry time of data in redis by default 1 hr
+   * @param {*} expiryTimeInSec expiry time of data in redis by default 1 hr
    * @param {*} isValJson set to false if value is not a json object 
    * 
    */
-  async setVal(key, value, expiryTime = 60 * 60) {
+  async setVal(key, value, expiryTimeInSec = 60 * 60) {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       let bytes;
@@ -118,11 +118,11 @@ const RedisDB = {
         bytes = Buffer.byteLength(JSON.stringify(value), "utf-8");
         await this.client.multi()
           .hmset(key, ...valueToStore)
-          .expire(key, expiryTime)
+          .expire(key, expiryTimeInSec)
           .exec();
       } else {
         bytes = Buffer.byteLength(value, "utf-8");
-        await this.client.setex(key, expiryTime, value);
+        await this.client.setex(key, expiryTimeInSec, value);
       }
       stats.gauge('redis_set_val_size', bytes, {
         timestamp: Date.now()

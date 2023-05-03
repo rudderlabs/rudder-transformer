@@ -88,8 +88,8 @@ const RedisDB = {
       return isJsonExpected ? JSON.parse(value) : value;
     } catch (e) {
       stats.increment("redis_error", {
-        operation: "get",
-        key: `${key}`
+        operation: "get"
+        
       });
       throw new RedisError(`Error getting value from Redis: ${e}`);
     }
@@ -112,8 +112,7 @@ const RedisDB = {
       });
     } catch (e) {
       stats.increment("redis_error", {
-        operation: "set",
-        key: `${key}`
+        operation: "set"
       });
       throw new RedisError(`Error setting value in Redis due ${e}`);
     }

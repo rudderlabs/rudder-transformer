@@ -17,7 +17,7 @@ export default class UserTransformController {
       '(User transform - router:/customTransform ):: Request to transformer',
       JSON.stringify(ctx.request.body),
     );
-    let requestMetadata = MiscService.getRequestMetadata(ctx);
+    const requestMetadata = MiscService.getRequestMetadata(ctx);
     const events = ctx.request.body as ProcessorTransformationRequest[];
     const processedRespone: UserTransformationServiceResponse =
       await UserTransformService.transformRoutine(events);

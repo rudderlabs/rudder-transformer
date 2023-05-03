@@ -5,12 +5,14 @@
     "jest": true,
     "commonjs": true
   },
-  "extends": ["airbnb-base", "plugin:sonarjs/recommended", "prettier", "plugin:json/recommended"],
-  "plugins": ["unicorn"],
+  "extends": ["airbnb-base", "airbnb-typescript/base", "plugin:sonarjs/recommended", "prettier", "plugin:json/recommended", "plugin:@typescript-eslint/recommended"],
+  "plugins": ["@typescript-eslint", "unicorn"],
   "globals": {},
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 12,
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": "./tsconfig.json"
   },
   "rules": {
     "unicorn/filename-case": [
@@ -37,6 +39,8 @@
     "sonarjs/no-nested-template-literals": "off",
     "sonarjs/max-switch-cases": "off",
     "sonarjs/no-small-switch": "warn",
-    "sonarjs/cognitive-complexity": ["error", 40]
+    "sonarjs/cognitive-complexity": ["error", 40],
+    "@typescript-eslint/no-var-requires": "off",
+    "global-require": "off"
   }
 }

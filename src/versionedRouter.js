@@ -1081,7 +1081,7 @@ router.get('/health', (ctx) => {
 });
 
 router.get('/features', (ctx) => {
-  const obj = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../features.json'), 'utf8'));
+  const obj = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'features.json'), 'utf8'));
   ctx.body = JSON.stringify(obj);
 });
 

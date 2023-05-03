@@ -40,9 +40,7 @@ export default class UserTransformService {
         const eventsToProcess = destEvents as ProcessorTransformationRequest[];
         const transformationVersionId =
           eventsToProcess[0]?.destination?.Transformations[0]?.VersionID;
-        const messageIds = eventsToProcess.map((ev) => {
-          return ev.metadata?.messageId;
-        });
+        const messageIds = eventsToProcess.map((ev) => ev.metadata?.messageId);
 
         const commonMetadata = {
           sourceId: eventsToProcess[0]?.metadata?.sourceId,
@@ -52,7 +50,7 @@ export default class UserTransformService {
         };
 
         const metaTags =
-          eventsToProcess.length && eventsToProcess[0].metadata
+          eventsToProcess.length > 0 && eventsToProcess[0].metadata
             ? getMetadata(eventsToProcess[0].metadata)
             : {};
 
@@ -118,13 +116,11 @@ export default class UserTransformService {
             status = error.statusCode;
           }
           transformedEvents.push(
-            ...eventsToProcess.map((e) => {
-              return {
+            ...eventsToProcess.map((e) => ({
                 statusCode: status,
                 metadata: e.metadata,
                 error: errorString,
-              } as ProcessorTransformationResponse;
-            }),
+              } as ProcessorTransformationResponse)),
           );
           stats.counter('user_transform_errors', eventsToProcess.length, {
             transformationVersionId,
@@ -153,7 +149,7 @@ export default class UserTransformService {
   }
 
   public static async testTransformRoutine(events, trRevCode, libraryVersionIDs) {
-    let response: any = {};
+    const response: any = {};
     try {
       if (!trRevCode || !trRevCode.code || !trRevCode.codeVersion) {
         throw new Error('Invalid Request. Missing parameters in transformation code block');

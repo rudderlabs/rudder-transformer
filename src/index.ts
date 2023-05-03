@@ -1,16 +1,17 @@
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import gracefulShutdown from 'http-graceful-shutdown';
-import logger from './logger';
 import dotenv from 'dotenv';
+import logger from './logger';
 import cluster from './util/cluster';
 import { router } from './versionedRouter';
-const { RedisDB } = require('./util/redisConnector');
 import { testRouter } from './testRouter';
 import { metricsRouter } from './routes/metricsRouter';
 import { addStatMiddleware, addRequestSizeMiddleware } from './middleware';
 import { logProcessInfo } from './util/utils';
 import { applicationRoutes } from './routes';
+
+const { RedisDB } = require('./util/redisConnector');
 
 dotenv.config();
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';

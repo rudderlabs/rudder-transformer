@@ -4,8 +4,8 @@ import request from 'supertest';
 import { createHttpTerminator } from 'http-terminator';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
-import { applicationRoutes } from '../../../src/routes';
 import setValue from 'set-value';
+import { applicationRoutes } from '../../../src/routes';
 
 let server: any;
 const OLD_ENV = process.env;

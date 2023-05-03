@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.24.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.23.1...v1.24.0) (2023-04-25)
+
+
+### Features
+
+* fb_custom_audience batching according to payload size ([#2054](https://github.com/rudderlabs/rudder-transformer/issues/2054)) ([e742e8d](https://github.com/rudderlabs/rudder-transformer/commit/e742e8dba33bd468b27ae318bbd7df5552e4bc19))
+* **pinterest:** passing unkown event in v3 ([#2092](https://github.com/rudderlabs/rudder-transformer/issues/2092)) ([a77a0dd](https://github.com/rudderlabs/rudder-transformer/commit/a77a0dd227bd0d752d189f7464c2fa18117bb8b6))
+* **pinterest:** version update ([#2063](https://github.com/rudderlabs/rudder-transformer/issues/2063)) ([79f1629](https://github.com/rudderlabs/rudder-transformer/commit/79f16292fa2818ef9a0ab3f12f0e4bc7df419d06))
+
+
+### Bug Fixes
+
+* added missed stats to dest transform controllers ([#2080](https://github.com/rudderlabs/rudder-transformer/issues/2080)) ([9cbbd0e](https://github.com/rudderlabs/rudder-transformer/commit/9cbbd0e31ca49603c54fdae882d56ff1d1227020))
+* prioritize timestamp over originalTimstamp across destinations ([#2078](https://github.com/rudderlabs/rudder-transformer/issues/2078)) ([b7a0fdb](https://github.com/rudderlabs/rudder-transformer/commit/b7a0fdbf8bc4d132c7951a5eab01bb837b53f6e8))
+* shopify default check for anonymousId ([#2086](https://github.com/rudderlabs/rudder-transformer/issues/2086)) ([c7472a8](https://github.com/rudderlabs/rudder-transformer/commit/c7472a82822b652b101700617b782ca955f73b54))
+
 ### [1.23.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.23.0...v1.23.1) (2023-04-20)
 
 

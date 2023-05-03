@@ -139,12 +139,7 @@ const prepareDataField = (userSchema, userUpdateList, isHashRequired, disableFor
   userUpdateList.forEach((eachUser) => {
     dataElement = [];
     userSchema.forEach((eachProperty) => {
-      // if skip verify is true we replace undefined/null user properties with empty string
       const userProperty = eachUser[eachProperty];
-      //   if (skipVerify && !isDefinedAndNotNull(userProperty)) {
-      //     userProperty = '';
-      //   }
-
       if (isHashRequired) {
         if (!disableFormat) {
           // when user requires formatting

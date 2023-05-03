@@ -9,9 +9,10 @@ const {
   defaultPutRequestConfig,
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
+  getAccessToken,
 } = require('../../util');
 
-const { getAccessToken, createPayload } = require('./util');
+const { createPayload } = require('./util');
 const { InstrumentationError } = require('../../util/errorTypes');
 
 /**
@@ -60,7 +61,7 @@ const responseBuilder = async (message, destination, accessToken) => {
 };
 
 const processEvent = async (metadata, message, destination) => {
-  const accessToken = getAccessToken(metadata, 'accessToken');
+  const accessToken = getAccessToken(metadata, 'access_token');
   let response;
   if (!message.type) {
     throw new InstrumentationError('Event type is required');

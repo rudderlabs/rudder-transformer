@@ -6,7 +6,8 @@
   },
   {
     "destKey": "name",
-    "sourceKeys": ["traits.name","context.traits.name"],
+    "sourceKeys": "name",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {
@@ -24,7 +25,8 @@
   },
   {
     "destKey": "website",
-    "sourceKeys": ["traits.website","context.traits.website"],
+    "sourceKeys": "website",
+    "sourceFromGenericMap": true,
     "required": false
   },
   {

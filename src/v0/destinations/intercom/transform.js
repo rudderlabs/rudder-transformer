@@ -90,8 +90,8 @@ function validateTrack(message, payload) {
 }
 
 function attachUserAndCompany(message, Config) {
-  const email = message.traits?.email;
-  const userId = message.traits?.userId || message.userId;
+  const email = message.context?.traits?.email;
+  const userId = message.userId;
 
   if (!userId && !email) {
     return;

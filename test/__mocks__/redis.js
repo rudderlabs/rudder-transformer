@@ -20,11 +20,17 @@ const getData = redisKey => {
         return response;
     }
 }
-
+let connectionRequestCount = 0;
 class Redis {
     constructor(data) {
-        this.status = "closed",
-            this.data = data
+        this.data = {};
+        this.host = data.host,
+            this.port = data.port,
+            this.password = data.password,
+            this.username = data.username,
+            this.enableReadyCheck = data.enableReadyCheck,
+            this.retryStrategy = data.retryStrategy;
+        this.status = "connecting";
     };
 
     get(key) {
@@ -68,14 +74,34 @@ class Redis {
         }
     }
 
-    connect() {
-        this.status = "ready"
-        return new Promise((resolve, reject) => {
-            resolve({ data: "OK", status: 200 });
-        });
+
+    changeEventToReadyStatus() {
+        setTimeout(() => {
+            this.status = "ready"
+        },
+            100);
     }
-    on() {
-        return true;
+
+    connect() {
+        if (connectionRequestCount > 0) {
+            this.status = "ready"
+            return new Promise((resolve, reject) => {
+                resolve({ data: "OK", status: 200 });
+            });
+        } else {
+            connectionRequestCount += 1;
+            this.changeEventToReadyStatus();
+            throw new Error("Connection is Closed");
+        }
+
+    }
+    on() { jest.fn() }
+    end(times) {
+        this.retryStrategy(times);
+        this.status = "end"
+    }
+    quit(){
+        this.status = "closed";
     }
 };
 

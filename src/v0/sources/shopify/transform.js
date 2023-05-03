@@ -164,7 +164,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
-    let anonymousId
+    let anonymousId;
     if (useRedisDatabase) {
       anonymousId = await getAnonymousIdFromDb(message, metricMetadata);
     } else {
@@ -202,13 +202,18 @@ const processIdentifierEvent = async (event, metricMetadata) => {
     const setStartTime = Date.now();
     const value = ["anonymousId", event.anonymousId, "itemsHash", event.cart?.line_items.length !== 0 ? sha256(event
       .line_items) : "0"];
-    await RedisDB.setVal(`${event.cartToken}`, value);
+    try{
+      await RedisDB.setVal(`${event.cartToken}`, value);
+    }catch(e){
+      stats.increment('shopify_identifier_events_lost_due_redis', {
+        ...metricMetadata,
+      });
+    }
     stats.timing('redis_set_latency', setStartTime, {
       ...metricMetadata,
     });
     stats.increment('shopify_redis_set_anonymousId', {
       ...metricMetadata,
-      timestamp: Date.now(),
     });
   }
   const result = {
@@ -221,6 +226,7 @@ const processIdentifierEvent = async (event, metricMetadata) => {
   return result;
 };
 const process = async (event) => {
+
   const metricMetadata = {
     writeKey: event.query_parameters?.writeKey?.[0],
     source: "SHOPIFY"

@@ -6,6 +6,37 @@ jest.mock('ioredis', () => require('../__mocks__/redis'));
 const sourcesList = ['shopify']
 const destList = [];
 process.env.USE_REDIS_DB = 'true';
+
+const timeoutPromise = () => new Promise((resolve, _) => {
+  setTimeout(
+    () => resolve(),
+    100
+  );
+});
+
+describe('checkRedisConnectionReadyState', () => {
+  RedisDB.init();
+  it('should resolve if client connects after initial connection error', async () => {
+    RedisDB.client.end(3);
+    await Promise.race([RedisDB.checkRedisConnectionReadyState(), timeoutPromise()]);
+    expect(RedisDB.client.status).toBe('ready');
+  });
+  it('should resolve if client is already connected', async () => {
+    await RedisDB.checkRedisConnectionReadyState();
+    expect(RedisDB.client.status).toBe('ready');
+  });
+});
+describe('checkAndConnectConnection', () => {
+  it('Status is end', async () => {
+    RedisDB.client.end(11);
+    await Promise.race([RedisDB.checkAndConnectConnection(), timeoutPromise()]);
+    expect(RedisDB.client.status).toBe('ready');
+  });
+  it('should resolve if client is already connected', async () => {
+    await RedisDB.checkAndConnectConnection();
+    expect(RedisDB.client.status).toBe('ready');
+  });
+});
 describe(`Source Tests`, () => {
   sourcesList.forEach((source) => {
     const testDataFile = fs.readFileSync(
@@ -70,12 +101,24 @@ describe(`Redis Class Get Tests`, () => {
   });
 });
 
-describe(`Redis Class Set Fail Test`, () => {
+describe(`Redis Class Set Test`, () => {
   it(`Redis Set Fail Case Test`, async () => {
     try {
       await RedisDB.setVal("error", "test", false);
     } catch (error) {
       expect(error.message).toEqual("Error setting value in Redis due Error: Connection is Closed");
     }
+  });
+  it(`Redis Set Fail Case Test`, async () => {
+    const result = "OK"
+    await RedisDB.setVal("Key", "test", false);
+    expect(result).toEqual("OK");
+  });
+});
+describe(`Redis Disconnect`, () => {
+  it(`Redis Disconnect Test`, async () => {
+    const result = "OK"
+    await RedisDB.disconnect();
+    expect(result).toEqual("OK");
   });
 });

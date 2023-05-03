@@ -150,7 +150,6 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
     stats.increment('shopify_no_cartToken', {
       ...metricMetadata,
       event,
-      timestamp: Date.now(),
     });
     return null;
   }
@@ -159,8 +158,16 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
   let redisVal;
   if (!isDefinedAndNotNull(anonymousIDfromCache)) {
     const executeStartTime = Date.now();
-    redisVal = await RedisDB.getVal(`${cartToken}`);
-    stats.timing('redis_get_latency', executeStartTime, {
+    try{
+      redisVal = await RedisDB.getVal(`${cartToken}`);
+    }catch(e){
+      stats.increment('shopify_events_lost_due_redis', {
+      ...metricMetadata,
+      });
+      return null;
+    }
+    stats.timing("redis_latency", executeStartTime, {
+      operation: 'get',
       ...metricMetadata,
     });
     stats.increment('shopify_redis_get_data', {
@@ -179,7 +186,6 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
     stats.increment('shopify_no_anon_id_from_redis', {
       ...metricMetadata,
       event,
-      timestamp: Date.now(),
     })
     anonymousIDfromDB = sha256(cartToken).toString().substring(0, 36);
   }

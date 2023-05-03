@@ -4,10 +4,10 @@ const log = require('../logger');
 const stats = require('./stats');
 const { isDefinedAndNotNull } = require('../v0/util');
 
-const timeoutPromise = new Promise((resolve, reject) => {
+const timeoutPromise = () => new Promise((_, reject) => {
   setTimeout(
-    () => resolve(),
-    50
+    () => reject(new Error("Timeout while connecting to redis")),
+    1000
   );
 });
 
@@ -18,8 +18,8 @@ const RedisDB = {
       this.port = parseInt(process.env.REDIS_PORT, 10) || 6379;
       this.password = process.env.REDIS_PASSWORD;
       this.userName = process.env.REDIS_USERNAME;
-      this.maxRetries = parseInt(process.env.REDIS_MAX_RETRIES || 30, 10);
-      this.timeAfterRetry = parseInt(process.env.REDIS_TIME_AFTER_RETRY_IN_MS || 10, 10);
+      this.maxRetries = parseInt(process.env.REDIS_MAX_RETRIES, 10) || 5;
+      this.timeAfterRetry = parseInt(process.env.REDIS_TIME_AFTER_RETRY_IN_MS, 10) || 500;
       this.client = new Redis({
         host: this.host,
         port: this.port,
@@ -28,11 +28,10 @@ const RedisDB = {
         enableReadyCheck: true,
         retryStrategy: (times) => {
           if (times <= this.maxRetries) {
-            return 10 + times * this.timeAfterRetry;
+            return (1 + times) * this.timeAfterRetry; // reconnect after 
           }
-          stats.increment('redis_down', {
-            errorType: "Redis",
-            timestamp: Date.now()
+          stats.increment("redis_error", {
+            operation: 'redis_down',
           });
           log.error(`Redis is down at ${this.host}:${this.port}`);
           return false; // stop retrying
@@ -40,21 +39,35 @@ const RedisDB = {
       });
       this.client.on('ready', () => {
         stats.increment('redis_ready', {
-          timestamp: Date.now(),
         });
         log.info(`Connected to redis at ${this.host}:${this.port}`);
       });
     }
   },
+
+
+  async checkRedisConnectionReadyState() {
+    try {
+      await this.client.connect();
+    } catch (error) {
+      return new Promise((resolve) => {
+        this.client.on('ready', () => {
+          resolve();
+        });
+      });
+    }
+    return Promise.resolve();
+  },
+
   /**
    * Checks connection with redis and if not connected, tries to connect and throws error if connection request fails
    */
   async checkAndConnectConnection() {
-    if (!this.client) {
+    if (!this.client || this.client.status === "end") {
       this.init();
     }
-    else if (this.client.status !== 'ready') {
-      await Promise.race([this.client.connect(), timeoutPromise])
+    if (this.client.status !== 'ready') {
+      await Promise.race([this.checkRedisConnectionReadyState(), timeoutPromise()]);
     }
   },
   /**
@@ -81,6 +94,7 @@ const RedisDB = {
         }
       } else {
         value = await this.client.get(key);
+
       }
       const bytes = Buffer.byteLength(JSON.stringify(value), "utf-8");
       stats.gauge('redis_get_val_size', bytes, {
@@ -88,9 +102,8 @@ const RedisDB = {
       });
       return value;
     } catch (e) {
-      stats.increment('redis_get_val_error', {
-        errorType: "Redis",
-        timestamp: Date.now()
+      stats.increment("redis_error", {
+        operation: "get"
       });
       throw new RedisError(`Error getting value from Redis: ${e}`);
     }
@@ -125,12 +138,10 @@ const RedisDB = {
         await this.client.setex(key, expiryTimeInSec, value);
       }
       stats.gauge('redis_set_val_size', bytes, {
-        timestamp: Date.now()
       });
     } catch (e) {
-      stats.increment('redis_set_val_error', {
-        errorType: "Redis",
-        timestamp: Date.now()
+      stats.increment("redis_error", {
+        operation: "set"
       });
       throw new RedisError(`Error setting value in Redis due ${e}`);
     }
@@ -138,7 +149,6 @@ const RedisDB = {
   async disconnect() {
     if (process.env.USE_REDIS_DB && process.env.USE_REDIS_DB !== 'false') {
       stats.increment('redis_graceful_shutdown', {
-        timestamp: Date.now(),
       });
       this.client.quit();
     }

@@ -177,7 +177,7 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
     });
     redisVal = null;
   }
-  stats.redisLatency(executeStartTime, {
+  stats.timing("redis_latency", executeStartTime, {
     operation: 'get',
     ...metricMetadata,
   });

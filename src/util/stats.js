@@ -47,13 +47,6 @@ const counter = (name, delta, tags = {}) => {
   statsClient.counter(name, delta, tags);
 };
 
-const redisError = (tags = {}) => {
-  if (!enableStats || !statsClient) {
-    return;
-  }
-  statsClient.increment("redis_error", tags);
-}
-
 const redisLatency = (startTime, tags = {}) => {
   if (!enableStats || !statsClient) {
     return;

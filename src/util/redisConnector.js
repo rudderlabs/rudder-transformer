@@ -29,7 +29,7 @@ const RedisDB = {
           if (times <= this.maxRetries) {
             return (1 + times) * this.timeAfterRetry; // reconnect after 
           }
-          stats.redisError({
+          stats.increment("redis_error", {
             operation: 'redis_down',
           });
           log.error(`Redis is down at ${this.host}:${this.port}`);
@@ -87,7 +87,7 @@ const RedisDB = {
       }
       return isJsonExpected ? JSON.parse(value) : value;
     } catch (e) {
-      stats.redisError({
+      stats.increment("redis_error", {
         operation: "get",
         key: `${key}`
       });
@@ -111,7 +111,7 @@ const RedisDB = {
       stats.gauge('redis_set_val_size', bytes, {
       });
     } catch (e) {
-      stats.redisError({
+      stats.increment("redis_error", {
         operation: "set",
         key: `${key}`
       });

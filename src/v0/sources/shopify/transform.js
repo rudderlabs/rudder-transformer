@@ -188,7 +188,7 @@ const processIdentifierEvent = async (event, metricMetadata) => {
       });
       // This is a client side event
     }
-    stats.redisLatency(setStartTime, {
+    stats.timing("redis_latency", setStartTime, {
       operation: 'set',
       ...metricMetadata,
     });

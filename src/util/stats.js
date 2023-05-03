@@ -47,13 +47,6 @@ const counter = (name, delta, tags = {}) => {
   statsClient.counter(name, delta, tags);
 };
 
-const redisLatency = (startTime, tags = {}) => {
-  if (!enableStats || !statsClient) {
-    return;
-  }
-  statsClient.timing("redis_latency", startTime, tags);
-}
-
 const gauge = (name, value, tags = {}) => {
   if (!enableStats || !statsClient) {
     return;
@@ -88,4 +81,4 @@ async function metricsController(ctx) {
 
 init();
 
-module.exports = { init, timing, increment, counter, gauge, histogram, metricsController, redisError, redisLatency };
+module.exports = { init, timing, increment, counter, gauge, histogram, metricsController };

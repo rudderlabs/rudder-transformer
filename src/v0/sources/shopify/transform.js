@@ -8,7 +8,6 @@ const {
   extractEmailFromPayload,
   setAnonymousIdorUserIdFromDb,
   setAnonymousId,
-  // checkForValidRecord,
 } = require('./util');
 const { RedisDB } = require('../../../util/redisConnector');
 const { removeUndefinedAndNullValues } = require('../../util');

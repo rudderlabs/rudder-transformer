@@ -112,7 +112,20 @@ describe('Shopify Utils Test', () => {
             expect(output).toEqual(expectedOutput);
         });
     });
+
     describe('set AnonymousId with Redis Test Cases', () => {
+        it('Properties containing cartToken but due some redisError it failed', async () => {
+            const input = {
+                event: 'Order Paid',
+                properties: {
+                    cart_token: 'shopify_test2',
+                }
+            };
+            const expectedOutput = 'd523cfe0cc2308901cfac852db46e607ed29'
+            const output = await getAnonymousIdFromDb(input);
+            expect(output).toEqual(expectedOutput);
+        });
+
         it('Properties containing cartToken', async () => {
             const input = {
                 event: 'Order Paid',

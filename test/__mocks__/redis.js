@@ -85,7 +85,7 @@ class Redis {
     connect() {
         if (connectionRequestCount > 0) {
             this.status = "ready"
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve, _) => {
                 resolve({ data: "OK", status: 200 });
             });
         } else {

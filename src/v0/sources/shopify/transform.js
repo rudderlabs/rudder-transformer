@@ -133,7 +133,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
       break;
     case "carts_update":
       if (useRedisDatabase) {
-        const isValidEvent = await isValidCartEvent(inputEvent);
+        const isValidEvent = await isValidCartEvent(inputEvent, metricMetadata);
         if (!isValidEvent) {
           return {
             outputToSource: {
@@ -194,12 +194,12 @@ const processEvent = async (inputEvent, metricMetadata) => {
 const isIdentifierEvent = (event) => event?.event === 'rudderIdentifier';
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
+    const value = ["anonymousId", event.anonymousId, "itemsHash",
+      event.cart?.line_items.length !== 0 ? sha256(event.line_items) : "0"];
     const setStartTime = Date.now();
-    const value = ["anonymousId", event.anonymousId, "itemsHash", event.cart?.line_items.length !== 0 ? sha256(event
-      .line_items) : "0"];
-    try{
+    try {
       await RedisDB.setVal(`${event.cartToken}`, value);
-    }catch(e){
+    } catch (e) {
       stats.increment('shopify_identifier_events_lost_due_redis', {
         ...metricMetadata,
       });
@@ -221,7 +221,6 @@ const processIdentifierEvent = async (event, metricMetadata) => {
   return result;
 };
 const process = async (event) => {
-
   const metricMetadata = {
     writeKey: event.query_parameters?.writeKey?.[0],
     source: 'SHOPIFY',

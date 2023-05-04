@@ -200,7 +200,6 @@ const isValidCartEvent = async (inputEvent, metricMetadata) => {
     redisVal = await RedisDB.getVal(cartToken);
   } catch (e) {
     // so if redis is down we will send the event to downstream destinations
-    console.log("Error: ", e);
     stats.increment('shopify_events_not_stitched_due_redis', {
       ...metricMetadata,
     });

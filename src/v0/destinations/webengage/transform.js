@@ -16,6 +16,7 @@ const {
   extractCustomFields,
 } = require('../../util');
 const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (message, category, { Config }) => {
   let payload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -55,7 +56,7 @@ const responseBuilder = (message, category, { Config }) => {
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${apiKey}`,
   };
   response.endpoint = endPoint;

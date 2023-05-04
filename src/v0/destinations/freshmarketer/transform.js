@@ -26,6 +26,7 @@ const {
   getContactsDetails,
   updateAccountWOContact,
 } = require('./utils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /*
  * This functions is used for creating response config for identify call.
@@ -38,7 +39,7 @@ const identifyResponseConfig = (Config) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Token token=${Config.apiKey}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   return response;
 };
@@ -97,7 +98,7 @@ const trackResponseBuilder = async (message, { Config }, event) => {
   }
   response.headers = {
     Authorization: `Token token=${Config.apiKey}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   return response;

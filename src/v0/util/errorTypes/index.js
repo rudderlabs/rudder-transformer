@@ -31,5 +31,5 @@ module.exports = {
   UnauthorizedError,
   NetworkInstrumentationError,
   UnsupportedEventError,
-  RedisError
+  RedisError,
 };

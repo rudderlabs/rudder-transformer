@@ -32,6 +32,9 @@ const {
 } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+const CONTEXT_TRAITS_KEY_PATH = 'context.traits';
 
 function responseBuilder(message, headers, payload, endpoint) {
   const response = defaultRequestConfig();
@@ -187,7 +190,9 @@ function getIdentifyPayload(message, category, destinationConfig, type) {
   const mappingJson = mappingConfig[category.name];
 
   const traits =
-    type === 'group' ? get(message, 'context.traits') : getFieldValueFromMessage(message, 'traits');
+    type === 'group'
+      ? get(message, CONTEXT_TRAITS_KEY_PATH)
+      : getFieldValueFromMessage(message, 'traits');
 
   const payload = constructPayload(traits, mappingJson);
   if (!payload.user) {
@@ -248,7 +253,9 @@ const getUserIdByExternalId = async (message, headers, baseEndpoint) => {
 
 async function getUserId(message, headers, baseEndpoint, type) {
   const traits =
-    type === 'group' ? get(message, 'context.traits') : getFieldValueFromMessage(message, 'traits');
+    type === 'group'
+      ? get(message, CONTEXT_TRAITS_KEY_PATH)
+      : getFieldValueFromMessage(message, 'traits');
   const userEmail = traits?.email || traits?.primaryEmail;
   if (!userEmail) {
     logger.debug(`${NAME}:: Email ID is required for getting zenuserId`);
@@ -292,7 +299,9 @@ async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint) {
 
 async function createUser(message, headers, destinationConfig, baseEndpoint, type) {
   const traits =
-    type === 'group' ? get(message, 'context.traits') : getFieldValueFromMessage(message, 'traits');
+    type === 'group'
+      ? get(message, CONTEXT_TRAITS_KEY_PATH)
+      : getFieldValueFromMessage(message, 'traits');
   const { name, email } = traits;
   const userId = getFieldValueFromMessage(message, 'userId');
 
@@ -326,7 +335,7 @@ async function createUser(message, headers, destinationConfig, baseEndpoint, typ
 async function getUserMembershipPayload(message, headers, orgId, destinationConfig, baseEndpoint) {
   // let zendeskUserID = await getUserId(message.userId, headers);
   let zendeskUserID = await getUserId(message, headers, baseEndpoint, 'group');
-  const traits = get(message, 'context.traits');
+  const traits = get(message, CONTEXT_TRAITS_KEY_PATH);
   if (!zendeskUserID) {
     if (traits && traits.name && traits.email) {
       const { zendeskUserId } = await createUser(
@@ -522,16 +531,18 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
     );
   }
 
-  const eventObject = {};
-  eventObject.description = message.event;
-  eventObject.type = message.event;
-  eventObject.source = 'Rudder';
-  eventObject.properties = message.properties;
+  const eventObject = {
+    description: message.event,
+    type: message.event,
+    source: 'Rudder',
+    properties: message.properties,
+  };
 
-  const profileObject = {};
-  profileObject.type = message.event;
-  profileObject.source = 'Rudder';
-  profileObject.identifiers = [{ type: 'email', value: userEmail }];
+  const profileObject = {
+    type: message.event,
+    source: 'Rudder',
+    identifiers: [{ type: 'email', value: userEmail }],
+  };
 
   const eventPayload = { event: eventObject, profile: profileObject };
   const eventEndpoint = `${baseEndpoint}users/${zendeskUserID}/events`;
@@ -597,7 +608,7 @@ async function processSingleMessage(event) {
   const baseEndpoint = getBaseEndpoint(destinationConfig.domain);
   const headers = {
     Authorization: `Basic ${Buffer.from(unencodedBase64Str).toString('base64')}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
 
   const { message } = event;

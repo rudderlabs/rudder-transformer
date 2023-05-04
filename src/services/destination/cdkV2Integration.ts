@@ -54,7 +54,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
       events.map(async (event) => {
         try {
-          let transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[] =
+          const transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[] =
             await processCdkV2Workflow(destinationType, event, tags.FEATURES.PROCESSOR);
           // We are not passing destination handler for CDK flows
           return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
@@ -110,9 +110,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
               metaTO,
             );
           } catch (error: any) {
-            metaTO.metadatas = destInputArray.map((input) => {
-              return input.metadata;
-            });
+            metaTO.metadatas = destInputArray.map((input) => input.metadata);
             const erroredResp =
               DestinationPostTransformationService.handleRouterTransformFailureEvents(
                 error,

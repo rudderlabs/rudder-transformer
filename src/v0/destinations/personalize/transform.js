@@ -12,7 +12,7 @@ const {
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 
 const putEventsHandler = (message, destination) => {
-  const { properties, anonymousId, event, messageId } = message;
+  const { properties, anonymousId, event, messageId, context } = message;
   const { customMappings, trackingId, disableStringify } = destination.Config;
 
   if (!event || !isDefinedAndNotNull(event) || isBlank(event)) {
@@ -84,7 +84,7 @@ const putEventsHandler = (message, destination) => {
         : userId,
     // not using getFieldValueFromMessage(message, "userId") as we want to
     // prioritize anonymousId over userId
-    sessionId: anonymousId || userId || message.context?.sessionId,
+    sessionId: anonymousId || userId || context?.sessionId,
     trackingId,
     eventList: [outputEvent],
   };

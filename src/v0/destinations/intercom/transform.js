@@ -124,7 +124,7 @@ function attachUserAndCompany(message, Config) {
 }
 
 function buildCustomAttributes(message, payload) {
-  const traits = message.traits;
+  const { traits } = message;
   const customAttributes = {};
   const companyReservedKeys = [
       "remoteCreatedAt",

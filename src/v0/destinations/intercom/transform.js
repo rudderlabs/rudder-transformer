@@ -114,9 +114,9 @@ function attachUserAndCompany(message, Config) {
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = ConfigCategory.IDENTIFY.endpoint;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${Config.apiKey}`,
-    Accept: 'application/json',
+    Accept: JSON_MIME_TYPE,
     'Intercom-Version': '1.4',
   };
   response.body.JSON = requestBody;

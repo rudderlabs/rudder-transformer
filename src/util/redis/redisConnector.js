@@ -146,7 +146,7 @@ const RedisDB = {
     if (process.env.USE_REDIS_DB && process.env.USE_REDIS_DB !== 'false') {
       stats.increment('redis_graceful_shutdown', {
       });
-      this.client.quit();
+      this.client.disconnect();
     }
   }
 };

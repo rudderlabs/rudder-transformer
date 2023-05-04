@@ -5,7 +5,14 @@
     "jest": true,
     "commonjs": true
   },
-  "extends": ["airbnb-base", "airbnb-typescript/base", "plugin:sonarjs/recommended", "prettier", "plugin:json/recommended", "plugin:@typescript-eslint/recommended"],
+  "extends": [
+    "airbnb-base",
+    "airbnb-typescript/base",
+    "plugin:sonarjs/recommended",
+    "prettier",
+    "plugin:json/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
   "plugins": ["@typescript-eslint", "unicorn"],
   "globals": {},
   "parser": "@typescript-eslint/parser",
@@ -44,7 +51,7 @@
     "global-require": "off",
     "@typescript-eslint/naming-convention": "off",
     "@typescript-eslint/ban-types": "off",
-    "class-methods-use-this":"off",
+    "class-methods-use-this": "off",
     "@typescript-eslint/return-await": "off",
     "import/prefer-default-export": "off",
     "sonarjs/no-ignored-return": "off",
@@ -55,7 +62,7 @@
     "no-restricted-syntax": "off",
     "sonarjs/no-duplicate-string": "off",
     "sonarjs/no-identical-functions": "off",
-    "no-prototype-builtins":"off"
+    "no-prototype-builtins": "off",
+    "@typescript-eslint/dot-notation": "warn"
   }
 }
-

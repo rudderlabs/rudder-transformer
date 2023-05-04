@@ -98,7 +98,7 @@ const identifyRequestHandler = async (message, category, destination) => {
   };
   const resp = await httpPOST(endpoint, payload, requestOptions);
   if (resp.response?.status === 201) {
-    profileId = resp.response?.data?.id;
+    profileId = resp.response?.data?.data?.id;
   } else if (resp.response?.response?.status === 409) {
     const { response } = resp.response;
     profileId = response.data?.errors[0]?.meta?.duplicate_profile_id;

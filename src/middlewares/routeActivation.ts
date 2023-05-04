@@ -13,7 +13,7 @@ const deliveryTestModeEnabled =
 const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
   ? process.env.TRANSFORMER_TEST_MODE.toLowerCase() === 'true'
   : false;
-const areFunctionsEnabled = process.env.ENABLE_FUNCTIONS === 'false' ? false : true;
+const areFunctionsEnabled = process.env.ENABLE_FUNCTIONS !== 'false';
 const destinationFilterList = process.env.DESTINATION_FILTER_LIST?.toLocaleLowerCase();
 const sourceFilteList = process.env.SOURCE_FILTER_LIST?.toLocaleLowerCase();
 const deliveryFilterList = process.env.DESTINATION_DELIVERY_FILTER_LIST?.toLocaleLowerCase();
@@ -22,11 +22,11 @@ export default class RouteActivationMiddleware {
   private static executeActivationRule(ctx: Context, next: Next, shouldActivate: boolean) {
     if (shouldActivate) {
       return next();
-    } else {
+    } 
       ctx.status = 404;
       ctx.body = 'RouteActivationMiddleware route is disabled';
       return ctx;
-    }
+    
   }
 
   private static shouldActivateRoute(integration: string, filterList: string | undefined) {

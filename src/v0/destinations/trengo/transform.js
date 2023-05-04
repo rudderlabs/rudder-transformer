@@ -26,6 +26,7 @@ const {
 } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  *
@@ -339,8 +340,8 @@ const responseBuilderSimple = async (message, messageType, destination) => {
     }
 
     response.headers = {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
+      Accept: JSON_MIME_TYPE,
       Authorization: `Bearer ${apiToken}`,
     };
     response.body.JSON = trengoPayload.payload;

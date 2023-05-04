@@ -5,6 +5,7 @@ const {
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
 } = require('../../util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 const {
   TransformationError,
   InstrumentationError,
@@ -18,7 +19,7 @@ const responseBuilder = (payload, endpoint, destination) => {
     const { apiKey } = destination.Config;
     response.endpoint = endpoint;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${apiKey}`,
     };
     response.method = defaultPostRequestConfig.requestMethod;

@@ -13,6 +13,7 @@ const {
 
 const { getAccessToken, createPayload } = require('./util');
 const { InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * This function is used for building the final response to be returned.
@@ -75,7 +76,7 @@ const responseBuilder = async (message, destination) => {
   response.headers = {
     'X-Auth-Token': accessToken,
     'X-Auth-Method': 'OAuth2',
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   return response;
 };

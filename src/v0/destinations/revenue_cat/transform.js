@@ -20,6 +20,7 @@ const {
   TransformationError,
   InstrumentationError,
 } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const trackResponseBuilder = async (message, category, { Config }) => {
   if (!Config.xPlatform) {
@@ -45,7 +46,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
       const basicAuth = Buffer.from(Config.apiKey);
       response.headers = {
         Authorization: `Basic ${basicAuth}`,
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
         'X-Platform': `${Config.xPlatform}`,
       };
       response.body.JSON = payload;
@@ -62,7 +63,7 @@ const trackResponseBuilder = async (message, category, { Config }) => {
   const basicAuth = Buffer.from(Config.apiKey);
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     'X-Platform': `${Config.xPlatform}`,
   };
   response.body.JSON = payload;
@@ -107,7 +108,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
   const basicAuth = Buffer.from(Config.apiKey);
   responseGet.headers = {
     Authorization: `Basic ${basicAuth}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   returnValue.push(responseGet);
 
@@ -118,7 +119,7 @@ const identifyResponseBuilder = async (message, category, { Config }) => {
 
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.body.JSON.attributes = payload;
   returnValue.push(response);

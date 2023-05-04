@@ -28,6 +28,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * Main Identify request handler func
@@ -81,7 +82,7 @@ const identifyRequestHandler = async (message, category, destination) => {
     response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
     response.method = defaultPostRequestConfig.requestMethod;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Accept: 'text/html',
     };
     response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -89,7 +90,7 @@ const identifyRequestHandler = async (message, category, destination) => {
     response.endpoint = `${BASE_ENDPOINT}/api/v1/person/${personId}`;
     response.method = defaultPutRequestConfig.requestMethod;
     response.headers = {
-      Accept: 'application/json',
+      Accept: JSON_MIME_TYPE,
     };
     response.params = removeUndefinedAndNullValues(propertyPayload);
     response.params.api_key = destination.Config.privateApiKey;
@@ -187,7 +188,7 @@ const trackRequestHandler = (message, category, destination) => {
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Accept: 'text/html',
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -232,7 +233,7 @@ const groupRequestHandler = (message, category, destination) => {
   const subscribeResponse = defaultRequestConfig();
   subscribeResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${message.groupId}/subscribe`;
   subscribeResponse.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   subscribeResponse.body.JSON = subscribePayload;
   subscribeResponse.method = defaultPostRequestConfig.requestMethod;

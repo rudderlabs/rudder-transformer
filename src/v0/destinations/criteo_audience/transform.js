@@ -11,7 +11,6 @@ const {
 } = require('../../util');
 const { InstrumentationError } = require('../../util/errorTypes');
 const { MappedToDestinationKey } = require('../../../constants');
-
 const { preparePayload } = require('./util');
 
 const prepareResponse = (payload, audienceId, accessToken) => {

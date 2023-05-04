@@ -77,12 +77,10 @@ const getDynamicErrorType = (statusCode) => {
   if (isHttpStatusRetryable(statusCode)) {
     return tags.ERROR_TYPES.RETRYABLE;
   }
-  switch (statusCode) {
-    case 429:
-      return tags.ERROR_TYPES.THROTTLED;
-    default:
-      return tags.ERROR_TYPES.ABORTED;
+  if (statusCode === 429) {
+    return tags.ERROR_TYPES.THROTTLED;
   }
+  return tags.ERROR_TYPES.ABORTED;
 };
 
 const parseDestResponse = (destResponse, destination = '') => {

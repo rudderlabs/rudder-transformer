@@ -8,6 +8,7 @@ const {
   removeUndefinedAndNullAndEmptyValues,
   simpleProcessRouterDest,
 } = require('../../util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 const { InstrumentationError } = require('../../util/errorTypes');
 
 const { ConfigCategory, mappingConfig, getEndpoint } = require('./config');
@@ -19,7 +20,7 @@ function buildResponse(payload, endpoint) {
   return {
     ...response,
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     },
   };
 }

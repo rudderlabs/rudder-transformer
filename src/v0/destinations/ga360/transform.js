@@ -231,16 +231,16 @@ function responseBuilderSimple(parameters, message, hitType, mappingJson, destin
   const params = removeUndefinedAndNullValues(parameters);
 
   // Get dimensions  from destination config
-  let dimensionsParam = getParamsFromConfig(message, dimensions, 'dimensions');
+  let dimensionsParam = getParamsFromConfig(message, dimensions);
 
   dimensionsParam = removeUndefinedAndNullValues(dimensionsParam);
 
   // Get metrics from destination config
-  let metricsParam = getParamsFromConfig(message, metrics, 'metrics');
+  let metricsParam = getParamsFromConfig(message, metrics);
   metricsParam = removeUndefinedAndNullValues(metricsParam);
 
   // Get contentGroupings from destination config
-  let contentGroupingsParam = getParamsFromConfig(message, contentGroupings, 'content');
+  let contentGroupingsParam = getParamsFromConfig(message, contentGroupings);
   contentGroupingsParam = removeUndefinedAndNullValues(contentGroupingsParam);
 
   const customParams = {
@@ -378,13 +378,10 @@ function processPaymentRelatedEvent(message, destination) {
   let { enhancedEcommerce } = destination.Config;
   enhancedEcommerce = enhancedEcommerce || false;
   let pa;
-  switch (message.event.toLowerCase()) {
-    case Event.CHECKOUT_STEP_COMPLETED.name:
-      pa = 'checkout_option';
-      break;
-    default:
-      pa = 'checkout';
-      break;
+  if (message.event.toLowerCase() === Event.CHECKOUT_STEP_COMPLETED.name) {
+    pa = 'checkout_option';
+  } else {
+    pa = 'checkout';
   }
   if (enhancedEcommerce) {
     return {
@@ -672,6 +669,38 @@ function processEComGenericEvent(message, destination) {
   return parameters;
 }
 
+function updateCustomParamsUsingCategory(category, customParams, message, destination) {
+  switch (category.name) {
+    case ConfigCategory.PRODUCT_LIST.name:
+      Object.assign(customParams, processProductListEvent(message, destination));
+      break;
+    case ConfigCategory.PROMOTION.name:
+      Object.assign(customParams, processPromotionEvent(message, destination));
+      break;
+    case ConfigCategory.PRODUCT.name:
+      Object.assign(customParams, processProductEvent(message, destination));
+      break;
+    case ConfigCategory.TRANSACTION.name:
+      Object.assign(customParams, processTransactionEvent(message, destination));
+      break;
+    case ConfigCategory.PAYMENT.name:
+      Object.assign(customParams, processPaymentRelatedEvent(message, destination));
+      break;
+    case ConfigCategory.REFUND.name:
+      Object.assign(customParams, processRefundEvent(message, destination));
+      break;
+    case ConfigCategory.ECOM_GENERIC.name:
+      Object.assign(customParams, processEComGenericEvent(message, destination));
+      break;
+    case ConfigCategory.SHARING.name:
+      Object.assign(customParams, processSharingEvent(message));
+      break;
+    default:
+      Object.assign(customParams, processNonEComGenericEvent(message, destination));
+      break;
+  }
+}
+
 // Generic process function which invokes specific handler functions depending on message type
 // and event type where applicable
 function processSingleMessage(message, destination) {
@@ -725,35 +754,7 @@ function processSingleMessage(message, destination) {
         }
         customParams.ec = setCategory || 'EnhancedEcommerce';
         customParams.ev = formatValue(eventValue);
-        switch (category.name) {
-          case ConfigCategory.PRODUCT_LIST.name:
-            Object.assign(customParams, processProductListEvent(message, destination));
-            break;
-          case ConfigCategory.PROMOTION.name:
-            Object.assign(customParams, processPromotionEvent(message, destination));
-            break;
-          case ConfigCategory.PRODUCT.name:
-            Object.assign(customParams, processProductEvent(message, destination));
-            break;
-          case ConfigCategory.TRANSACTION.name:
-            Object.assign(customParams, processTransactionEvent(message, destination));
-            break;
-          case ConfigCategory.PAYMENT.name:
-            Object.assign(customParams, processPaymentRelatedEvent(message, destination));
-            break;
-          case ConfigCategory.REFUND.name:
-            Object.assign(customParams, processRefundEvent(message, destination));
-            break;
-          case ConfigCategory.ECOM_GENERIC.name:
-            Object.assign(customParams, processEComGenericEvent(message, destination));
-            break;
-          case ConfigCategory.SHARING.name:
-            Object.assign(customParams, processSharingEvent(message));
-            break;
-          default:
-            Object.assign(customParams, processNonEComGenericEvent(message, destination));
-            break;
-        }
+        updateCustomParamsUsingCategory(category, customParams, message, destination);
       } else {
         category = ConfigCategory.NON_ECOM;
         customParams = processNonEComGenericEvent(message, destination);

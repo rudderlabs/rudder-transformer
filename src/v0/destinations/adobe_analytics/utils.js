@@ -51,8 +51,8 @@ const stringifyValue = (val) => {
   return val;
 };
 
-const stringifyValueAndJoinWithDelimitter = (valArr, delimitter = ';') =>
-  valArr.map(stringifyValue).join(delimitter);
+const stringifyValueAndJoinWithDelimiter = (valArr, delimiter = ';') =>
+  valArr.map(stringifyValue).join(delimiter);
 
 function handleContextData(payload, destinationConfig, message) {
   const { contextDataPrefix, contextDataMapping } = destinationConfig;
@@ -194,5 +194,5 @@ module.exports = {
   handleHier,
   handleList,
   handleCustomProperties,
-  stringifyValueAndJoinWithDelimitter,
+  stringifyValueAndJoinWithDelimiter,
 };

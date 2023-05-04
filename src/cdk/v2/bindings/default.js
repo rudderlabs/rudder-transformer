@@ -12,9 +12,7 @@ function isValidEventType(event) {
   if (!eventType || typeof eventType !== 'string') return false;
 
   const sanitizedEventType = eventType.trim().toLowerCase();
-  if (!SUPPORTED_EVENT_TYPES.includes(sanitizedEventType)) return false;
-
-  return true;
+  return SUPPORTED_EVENT_TYPES.includes(sanitizedEventType);
 }
 
 function assert(val, message) {

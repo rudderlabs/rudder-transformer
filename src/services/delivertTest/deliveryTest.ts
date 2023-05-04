@@ -32,7 +32,7 @@ export default class DeliveryTestService {
         routerDestReqPayload.data = routerDataVal;
 
         const proxyDataVal = new URLSearchParams();
-        proxyDestReqPayload.data.forEach(function (value, key) {
+        proxyDestReqPayload.data.forEach((value, key) => {
           const encodeAsterisk = (x) => x.replace(/\*/g, '%2A');
           // Router encodes `*` as well
           proxyDataVal.append(encodeAsterisk(key), encodeAsterisk(value));

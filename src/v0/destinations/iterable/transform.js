@@ -1,6 +1,16 @@
 const _ = require('lodash');
 const get = require('get-value');
-const { getCatalogEndpoint } = require('./util');
+const {
+  getCatalogEndpoint,
+  identifyDeviceAction,
+  identifyBrowserAction,
+  identifyAction,
+  pageAction,
+  screenAction,
+  trackAction,
+  trackPurchaseAction,
+  updateCartAction,
+} = require('./util');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   ConfigCategory,
@@ -17,198 +27,42 @@ const {
   defaultRequestConfig,
   constructPayload,
   getSuccessRespEvents,
-  addExternalIdToTraits,
-  isAppleFamily,
   handleRtTfSingleEventError,
   checkInvalidRtTfEvents,
   getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 const logger = require('../../../logger');
-const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
-
-function validateMandatoryField(payload) {
-  if (payload.email === undefined && payload.userId === undefined) {
-    throw new InstrumentationError('userId or email is mandatory for this request');
-  }
-}
+const { InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function constructPayloadItem(message, category, destination) {
-  const rawPayloadItemArr = [];
+  // const rawPayloadItemArr = [];
   let rawPayload = {};
 
   switch (category.action) {
     case 'identifyDevice':
-      rawPayload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY_DEVICE.name]);
-      rawPayload.device = constructPayload(message, mappingConfig[ConfigCategory.DEVICE.name]);
-      rawPayload.preferUserId = true;
-      if (isAppleFamily(message.context.device.type)) {
-        rawPayload.device.platform = 'APNS';
-      } else {
-        rawPayload.device.platform = 'GCM';
-      }
+      rawPayload = identifyDeviceAction(message);
       break;
     case 'identifyBrowser':
-      rawPayload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY_BROWSER.name]);
-      validateMandatoryField(rawPayload);
+      rawPayload = identifyBrowserAction(message);
       break;
     case 'identify':
-      // If mapped to destination, Add externalId to traits
-      if (get(message, MappedToDestinationKey)) {
-        addExternalIdToTraits(message);
-      }
-      rawPayload = constructPayload(message, mappingConfig[category.name]);
-      rawPayload.preferUserId = true;
-      rawPayload.mergeNestedObjects = true;
-      validateMandatoryField(rawPayload);
+      rawPayload = identifyAction(message, category);
       break;
     case 'page':
-      if (destination.Config.trackAllPages) {
-        rawPayload = constructPayload(message, mappingConfig[category.name]);
-      } else if (
-        destination.Config.trackCategorisedPages &&
-        ((message.properties && message.properties.category) || message.category)
-      ) {
-        rawPayload = constructPayload(message, mappingConfig[category.name]);
-      } else if (
-        destination.Config.trackNamedPages &&
-        ((message.properties && message.properties.name) || message.name)
-      ) {
-        rawPayload = constructPayload(message, mappingConfig[category.name]);
-      } else {
-        throw new ConfigurationError('Invalid page call');
-      }
-      validateMandatoryField(rawPayload);
-      if (destination.Config.mapToSingleEvent) {
-        rawPayload.eventName = 'Loaded a Page';
-      } else {
-        rawPayload.eventName += ' page';
-      }
-      rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
-      if (rawPayload.campaignId) {
-        rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
-      }
-      if (rawPayload.templateId) {
-        rawPayload.templateId = parseInt(rawPayload.templateId, 10);
-      }
+      rawPayload = pageAction(message, destination, category);
       break;
     case 'screen':
-      if (destination.Config.trackAllPages) {
-        rawPayload = constructPayload(message, mappingConfig[category.name]);
-      } else if (
-        destination.Config.trackCategorisedPages &&
-        ((message.properties && message.properties.category) || message.category)
-      ) {
-        rawPayload = constructPayload(message, mappingConfig[category.name]);
-      } else if (
-        destination.Config.trackNamedPages &&
-        ((message.properties && message.properties.name) || message.name)
-      ) {
-        rawPayload = constructPayload(message, mappingConfig[category.name]);
-      } else {
-        throw new ConfigurationError('Invalid screen call');
-      }
-      validateMandatoryField(rawPayload);
-      if (destination.Config.mapToSingleEvent) {
-        rawPayload.eventName = 'Loaded a Screen';
-      } else {
-        rawPayload.eventName += ' screen';
-      }
-      rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
-      if (rawPayload.campaignId) {
-        rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
-      }
-      if (rawPayload.templateId) {
-        rawPayload.templateId = parseInt(rawPayload.templateId, 10);
-      }
+      rawPayload = screenAction(message, destination, category);
       break;
     case 'track':
-      rawPayload = constructPayload(message, mappingConfig[category.name]);
-      validateMandatoryField(rawPayload);
-      rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
-      if (rawPayload.campaignId) {
-        rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
-      }
-      if (rawPayload.templateId) {
-        rawPayload.templateId = parseInt(rawPayload.templateId, 10);
-      }
+      rawPayload = trackAction(message, category);
       break;
     case 'trackPurchase':
-      rawPayload = constructPayload(message, mappingConfig[category.name]);
-      rawPayload.user = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
-      validateMandatoryField(rawPayload.user);
-      rawPayload.user.preferUserId = true;
-      rawPayload.user.mergeNestedObjects = true;
-      rawPayload.items = message.properties.products;
-      if (rawPayload.items && Array.isArray(rawPayload.items)) {
-        rawPayload.items.forEach((el) => {
-          const element = constructPayload(el, mappingConfig[ConfigCategory.PRODUCT.name]);
-          if (element.categories && typeof element.categories === 'string') {
-            element.categories = element.categories.split(',');
-          }
-          element.price = parseFloat(element.price);
-          element.quantity = parseInt(element.quantity, 10);
-          const clone = { ...element };
-          rawPayloadItemArr.push(clone);
-        });
-      } else {
-        const element = constructPayload(
-          message.properties,
-          mappingConfig[ConfigCategory.PRODUCT.name],
-        );
-        if (element.categories && typeof element.categories === 'string') {
-          element.categories = element.categories.split(',');
-        }
-        element.price = parseFloat(element.price);
-        element.quantity = parseInt(element.quantity, 10);
-        const clone = { ...element };
-        rawPayloadItemArr.push(clone);
-      }
-
-      rawPayload.items = rawPayloadItemArr;
-      rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
-      rawPayload.total = parseFloat(rawPayload.total);
-      if (rawPayload.id) {
-        rawPayload.id = rawPayload.id.toString();
-      }
-      if (rawPayload.campaignId) {
-        rawPayload.campaignId = parseInt(rawPayload.campaignId, 10);
-      }
-      if (rawPayload.templateId) {
-        rawPayload.templateId = parseInt(rawPayload.templateId, 10);
-      }
+      rawPayload = trackPurchaseAction(message, category);
       break;
     case 'updateCart':
-      rawPayload.user = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
-      validateMandatoryField(rawPayload.user);
-      rawPayload.user.preferUserId = true;
-      rawPayload.user.mergeNestedObjects = true;
-      rawPayload.items = message.properties.products;
-      if (rawPayload.items && Array.isArray(rawPayload.items)) {
-        rawPayload.items.forEach((el) => {
-          const element = constructPayload(el, mappingConfig[ConfigCategory.PRODUCT.name]);
-          if (element.categories && typeof element.categories === 'string') {
-            element.categories = element.categories.split(',');
-          }
-          element.price = parseFloat(element.price);
-          element.quantity = parseInt(element.quantity, 10);
-          const clone = { ...element };
-          rawPayloadItemArr.push(clone);
-        });
-      } else {
-        const element = constructPayload(
-          message.properties,
-          mappingConfig[ConfigCategory.PRODUCT.name],
-        );
-        if (element.categories && typeof element.categories === 'string') {
-          element.categories = element.categories.split(',');
-        }
-        element.price = parseFloat(element.price);
-        element.quantity = parseInt(element.quantity, 10);
-        const clone = { ...element };
-        rawPayloadItemArr.push(clone);
-      }
-
-      rawPayload.items = rawPayloadItemArr;
+      rawPayload = updateCartAction(message);
       break;
     case 'alias':
       rawPayload = constructPayload(message, mappingConfig[category.name]);
@@ -234,7 +88,7 @@ function responseBuilderSimple(message, category, destination) {
     response.operation = 'catalogs';
   }
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     api_key: destination.Config.apiKey,
   };
   return response;
@@ -261,10 +115,26 @@ function responseBuilderSimpleForIdentify(message, category, destination) {
   }
 
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     api_key: destination.Config.apiKey,
   };
   return response;
+}
+
+function getCategoryUsingEventName(event) {
+  let category;
+  switch (event) {
+    case 'order completed':
+      category = ConfigCategory.TRACK_PURCHASE;
+      break;
+    case 'product added':
+    case 'product removed':
+      category = ConfigCategory.UPDATE_CART;
+      break;
+    default:
+      category = ConfigCategory.TRACK;
+  }
+  return category;
 }
 
 function processSingleMessage(message, destination) {
@@ -292,17 +162,7 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.TRACK:
       event = message.event.toLowerCase();
-      switch (event) {
-        case 'order completed':
-          category = ConfigCategory.TRACK_PURCHASE;
-          break;
-        case 'product added':
-        case 'product removed':
-          category = ConfigCategory.UPDATE_CART;
-          break;
-        default:
-          category = ConfigCategory.TRACK;
-      }
+      category = getCategoryUsingEventName(event);
       break;
     case EventType.ALIAS:
       category = ConfigCategory.ALIAS;
@@ -392,7 +252,7 @@ function batchEvents(arrayChunks) {
     }
 
     batchEventResponse.batchedRequest.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       api_key: apiKey,
     };
 

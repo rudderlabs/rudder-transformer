@@ -1,6 +1,7 @@
 import Router from '@koa/router';
 import ProfileController from '../controllers/profile';
 import MiscController from '../controllers/misc';
+
 const router = new Router();
 
 router.post('/heapdump', ProfileController.profile);

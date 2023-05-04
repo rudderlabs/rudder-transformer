@@ -23,7 +23,7 @@ export default class DestinationController {
       JSON.stringify(ctx.request.body),
     );
     let resplist: ProcessorTransformationResponse[];
-    let requestMetadata = MiscService.getRequestMetadata(ctx);
+    const requestMetadata = MiscService.getRequestMetadata(ctx);
     let events = ctx.request.body as ProcessorTransformationRequest[];
     const metaTags = MiscService.getMetaTags(events[0].metadata);
     const { version, destination }: { version: string; destination: string } = ctx.params;
@@ -91,14 +91,14 @@ export default class DestinationController {
       'Native(Router-Transform):: Requst to transformer::',
       JSON.stringify(ctx.request.body),
     );
-    let requestMetadata = MiscService.getRequestMetadata(ctx);
+    const requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
     let events = routerRequest.input;
     const metaTags = MiscService.getMetaTags(events[0].metadata);
     stats.histogram('dest_transform_input_events', events.length, {
       destination,
-      version: "v0",
+      version: 'v0',
       ...metaTags,
     });
     const integrationService = ServiceSelector.getDestinationService(events);
@@ -119,9 +119,7 @@ export default class DestinationController {
         events[0].metadata.workspaceId,
         tags.FEATURES.ROUTER,
       );
-      metaTO.metadatas = events.map((ev) => {
-        return ev.metadata;
-      });
+      metaTO.metadatas = events.map((ev) => ev.metadata);
       const errResp = PostTransformationDestinationService.handleRouterTransformFailureEvents(
         error,
         metaTO,
@@ -131,7 +129,7 @@ export default class DestinationController {
     ControllerUtility.postProcess(ctx);
     stats.histogram('dest_transform_output_events', ctx.body?.output?.length, {
       destination,
-      version: "v0",
+      version: 'v0',
       ...metaTags,
     });
     logger.debug(
@@ -146,7 +144,7 @@ export default class DestinationController {
       'Native(Process-Transform-Batch):: Requst to transformer::',
       JSON.stringify(ctx.request.body),
     );
-    let requestMetadata = MiscService.getRequestMetadata(ctx);
+    const requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
     let events = routerRequest.input;
@@ -167,9 +165,7 @@ export default class DestinationController {
         events[0].metadata.workspaceId,
         tags.FEATURES.BATCH,
       );
-      metaTO.metadatas = events.map((ev) => {
-        return ev.metadata;
-      });
+      metaTO.metadatas = events.map((ev) => ev.metadata);
       const errResp = PostTransformationDestinationService.handleBatchTransformFailureEvents(
         error,
         metaTO,

@@ -41,19 +41,20 @@ const AMUtils = require('./utils');
 
 const logger = require('../../../logger');
 const { InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const AMBatchSizeLimit = 20 * 1024 * 1024; // 20 MB
 const AMBatchEventLimit = 500; // event size limit from sdk is 32KB => 15MB
 
+const EVENTS_KEY_PATH = 'body.JSON.events';
+
 const baseEndpoint = (destConfig) => {
   let retVal;
-  switch (destConfig.residencyServer) {
-    case 'EU':
-      retVal = BASE_URL_EU;
-      break;
-    default:
-      // "US" or when it is not specified
-      retVal = BASE_URL;
+  if (destConfig.residencyServer === 'EU') {
+    retVal = BASE_URL_EU;
+  } else {
+    // "US" or when it is not specified
+    retVal = BASE_URL;
   }
   return retVal;
 };
@@ -97,8 +98,8 @@ function getSessionId(message) {
   return get(message, 'session_id')
     ? handleSessionIdUnderRoot(message)
     : get(message, 'context.sessionId')
-      ? handleSessionIdUnderContext(message)
-      : -1;
+    ? handleSessionIdUnderContext(message)
+    : -1;
 }
 
 function addMinIdlength() {
@@ -176,34 +177,46 @@ function handleTraits(messageTrait, destination) {
   return traitsObject;
 }
 
+function handleMappingJsonObject(
+  mappingJson,
+  sourceKey,
+  validatePayload,
+  payload,
+  message,
+  Config,
+) {
+  const { isFunc, funcName, outKey } = mappingJson[sourceKey];
+  if (isFunc) {
+    if (validatePayload) {
+      const data = get(payload, outKey);
+      if (!isDefinedAndNotNull(data)) {
+        const val = AMUtils[funcName](message, sourceKey, Config);
+        if (val || val === false || val === 0) {
+          set(payload, outKey, val);
+        }
+      }
+    } else {
+      const data = get(message.traits, outKey);
+      // when in identify(or any other call) it checks whether outKey is present in traits
+      // then that value is assigned else function is applied.
+      // that key (outKey) will be a default key for reverse ETL and thus removed from the payload.
+      if (isDefinedAndNotNull(data)) {
+        set(payload, outKey, data);
+        delete message.traits[outKey];
+      } else {
+        // get the destKey/outKey value from calling the util function
+        set(payload, outKey, AMUtils[funcName](message, sourceKey, Config));
+      }
+    }
+  }
+}
+
 function updateConfigProperty(message, payload, mappingJson, validatePayload, Config) {
   const sourceKeys = Object.keys(mappingJson);
   sourceKeys.forEach((sourceKey) => {
     // check if custom processing is required on the payload sourceKey ==> destKey
     if (typeof mappingJson[sourceKey] === 'object') {
-      const { isFunc, funcName, outKey } = mappingJson[sourceKey];
-      if (isFunc) {
-        if (validatePayload) {
-          const data = get(payload, outKey);
-          if (!isDefinedAndNotNull(data)) {
-            const val = AMUtils[funcName](message, sourceKey, Config);
-            if (val || val === false || val === 0) {
-              set(payload, outKey, val);
-            }
-          }
-        } else {
-          const data = get(message.traits, outKey); // when in identify(or any other call) it checks whether outKey is present in traits
-          // then that value is assigned else function is applied.
-          // that key (outKey) will be a default key for reverse ETL and thus removed from the payload.
-          if (isDefinedAndNotNull(data)) {
-            set(payload, outKey, data);
-            delete message.traits[outKey];
-          } else {
-            // get the destKey/outKey value from calling the util function
-            set(payload, outKey, AMUtils[funcName](message, sourceKey, Config));
-          }
-        }
-      }
+      handleMappingJsonObject(mappingJson, sourceKey, validatePayload, payload, message, Config);
     } else {
       // For common config
       if (validatePayload) {
@@ -232,67 +245,10 @@ function updateConfigProperty(message, payload, mappingJson, validatePayload, Co
   });
 }
 
-function responseBuilderSimple(
-  groupInfo,
-  rootElementName,
-  message,
-  evType,
-  mappingJson,
-  destination,
-) {
-  let rawPayload = {};
-  const addOptions = 'options';
-  const respList = [];
-  const response = defaultRequestConfig();
-  const groupResponse = defaultRequestConfig();
-  const aliasResponse = defaultRequestConfig();
-
-  let groups;
-
+function getResponseData(evType, destination, rawPayload, message, groupInfo) {
   let endpoint = defaultEndpoint(destination.Config);
   let traits;
-
-  if (
-    EventType.IDENTIFY && // If mapped to destination, Add externalId to traits
-    get(message, MappedToDestinationKey)
-  ) {
-    addExternalIdToTraits(message);
-    const identifierType = get(message, 'context.externalId.0.identifierType');
-    if (identifierType === 'user_id') {
-      // this can be either device_id / user_id
-      adduserIdFromExternalId(message);
-    }
-  }
-
-  // 1. first populate the dest keys from the config files.
-  // Group config file is similar to Identify config file
-  // because we need to make an identify call too along with group entity update
-  // to link the user to the partuclar group name/value. (pass in "groups" key to https://api.amplitude.com/2/httpapi where event_type: $identify)
-  // Additionally, we will update the user_properties with groupName:groupValue
-  updateConfigProperty(message, rawPayload, mappingJson, false, destination.Config);
-
-  // 2. get campaign info (only present for JS sdk and http calls)
-  const campaign = get(message, 'context.campaign') || {};
-  const initialRef = {
-    initial_referrer: get(message, 'context.page.initial_referrer'),
-    initial_referring_domain: get(message, 'context.page.initial_referring_domain'),
-  };
-  const oldKeys = Object.keys(campaign);
-  // appends utm_ prefix to all the keys of campaign object. For example the `name` key in campaign object will be changed to `utm_name`
-  oldKeys.forEach((oldKey) => {
-    Object.assign(campaign, { [`utm_${oldKey}`]: campaign[oldKey] });
-    delete campaign[oldKey];
-  });
-
-  // append campaign info extracted above(2.) to user_properties.
-  // AM sdk's have a flag that captures the UTM params(https://amplitude.github.io/Amplitude-JavaScript/#amplitudeclientinit)
-  // but http api docs don't have any such specific keys to send the UTMs, so attaching to user_properties
-  rawPayload.user_properties = rawPayload.user_properties || {};
-  rawPayload.user_properties = {
-    ...rawPayload.user_properties,
-    ...initialRef,
-    ...campaign,
-  };
+  let groups;
 
   switch (evType) {
     case EventType.IDENTIFY:
@@ -303,7 +259,7 @@ function responseBuilderSimple(
 
       if (evType === EventType.IDENTIFY) {
         // update payload user_properties from userProperties/traits/context.traits/nested traits of Rudder message
-        // traits like address converted to top level useproperties (think we can skip this extra processing as AM supports nesting upto 40 levels)
+        // traits like address converted to top level user properties (think we can skip this extra processing as AM supports nesting upto 40 levels)
         traits = getFieldValueFromMessage(message, 'traits');
         if (traits) {
           traits = handleTraits(traits, destination);
@@ -362,7 +318,7 @@ function responseBuilderSimple(
       if (message.isRevenue) {
         // making the revenue payload
         rawPayload = createRevenuePayload(message, rawPayload);
-        // deleting the properties price, product_id, quantity and revenue from evemt_properties since it is already in root
+        // deleting the properties price, product_id, quantity and revenue from event_properties since it is already in root
         if (rawPayload.event_properties) {
           delete rawPayload.event_properties.price;
           delete rawPayload.event_properties.product_id;
@@ -372,6 +328,70 @@ function responseBuilderSimple(
       }
       groups = groupInfo && Object.assign(groupInfo);
   }
+  return { endpoint, rawPayload, groups };
+}
+
+function responseBuilderSimple(
+  groupInfo,
+  rootElementName,
+  message,
+  evType,
+  mappingJson,
+  destination,
+) {
+  let rawPayload = {};
+  const addOptions = 'options';
+  const respList = [];
+  const response = defaultRequestConfig();
+  const groupResponse = defaultRequestConfig();
+  const aliasResponse = defaultRequestConfig();
+  let endpoint = defaultEndpoint(destination.Config);
+
+  if (
+    EventType.IDENTIFY && // If mapped to destination, Add externalId to traits
+    get(message, MappedToDestinationKey)
+  ) {
+    addExternalIdToTraits(message);
+    const identifierType = get(message, 'context.externalId.0.identifierType');
+    if (identifierType === 'user_id') {
+      // this can be either device_id / user_id
+      adduserIdFromExternalId(message);
+    }
+  }
+
+  // 1. first populate the dest keys from the config files.
+  // Group config file is similar to Identify config file
+  // because we need to make an identify call too along with group entity update
+  // to link the user to the particular group name/value. (pass in "groups" key to https://api.amplitude.com/2/httpapi where event_type: $identify)
+  // Additionally, we will update the user_properties with groupName:groupValue
+  updateConfigProperty(message, rawPayload, mappingJson, false, destination.Config);
+
+  // 2. get campaign info (only present for JS sdk and http calls)
+  const campaign = get(message, 'context.campaign') || {};
+  const initialRef = {
+    initial_referrer: get(message, 'context.page.initial_referrer'),
+    initial_referring_domain: get(message, 'context.page.initial_referring_domain'),
+  };
+  const oldKeys = Object.keys(campaign);
+  // appends utm_ prefix to all the keys of campaign object. For example the `name` key in campaign object will be changed to `utm_name`
+  oldKeys.forEach((oldKey) => {
+    Object.assign(campaign, { [`utm_${oldKey}`]: campaign[oldKey] });
+    delete campaign[oldKey];
+  });
+
+  // append campaign info extracted above(2.) to user_properties.
+  // AM sdk's have a flag that captures the UTM params(https://amplitude.github.io/Amplitude-JavaScript/#amplitudeclientinit)
+  // but http api docs don't have any such specific keys to send the UTMs, so attaching to user_properties
+  rawPayload.user_properties = rawPayload.user_properties || {};
+  rawPayload.user_properties = {
+    ...rawPayload.user_properties,
+    ...initialRef,
+    ...campaign,
+  };
+
+  const respData = getResponseData(evType, destination, rawPayload, message, groupInfo);
+  const { groups } = respData;
+  ({ endpoint, rawPayload } = respData);
 
   // for  https://api.amplitude.com/2/httpapi , pass the "groups" key
   // refer (1.) for passing "groups" for Rudder group call
@@ -379,118 +399,115 @@ function responseBuilderSimple(
   set(rawPayload, 'groups', groups);
   let payload = removeUndefinedValues(rawPayload);
   let unmapUserId;
-  switch (evType) {
-    case EventType.ALIAS:
-      // By default (1.), Alias config file populates user_id and global_user_id
-      // if the alias Rudder call has unmap set, delete the global_user_id key from AM event payload
-      // https://help.amplitude.com/hc/en-us/articles/360002750712-Portfolio-Cross-Project-Analysis#h_76557c8b-54cd-4e28-8c82-2f6778f65cd4
-      unmapUserId = get(message, 'integrations.Amplitude.unmap');
-      if (unmapUserId) {
-        payload.user_id = unmapUserId;
-        delete payload.global_user_id;
-        payload.unmap = true;
+  if (evType === EventType.ALIAS) {
+    // By default (1.), Alias config file populates user_id and global_user_id
+    // if the alias Rudder call has unmap set, delete the global_user_id key from AM event payload
+    // https://help.amplitude.com/hc/en-us/articles/360002750712-Portfolio-Cross-Project-Analysis#h_76557c8b-54cd-4e28-8c82-2f6778f65cd4
+    unmapUserId = get(message, 'integrations.Amplitude.unmap');
+    if (unmapUserId) {
+      payload.user_id = unmapUserId;
+      delete payload.global_user_id;
+      payload.unmap = true;
+    }
+    aliasResponse.method = defaultPostRequestConfig.requestMethod;
+    aliasResponse.endpoint = aliasEndpoint(destination.Config);
+    aliasResponse.userId = message.anonymousId;
+    payload = removeUndefinedValues(payload);
+    aliasResponse.body.FORM = {
+      api_key: destination.Config.apiKey,
+      [rootElementName]: [JSON.stringify(payload)],
+    };
+    respList.push(aliasResponse);
+  } else {
+    if (message.channel === 'mobile') {
+      if (!destination.Config.mapDeviceBrand) {
+        set(payload, 'device_brand', get(message, 'context.device.manufacturer'));
       }
-      aliasResponse.method = defaultPostRequestConfig.requestMethod;
-      aliasResponse.endpoint = aliasEndpoint(destination.Config);
-      aliasResponse.userId = message.anonymousId;
-      payload = removeUndefinedValues(payload);
-      aliasResponse.body.FORM = {
+
+      const deviceId = get(message, 'context.device.id');
+      const platform = get(message, 'context.device.type');
+      const advertId = get(message, 'context.device.advertisingId');
+
+      if (platform) {
+        if (isAppleFamily(platform)) {
+          set(payload, 'idfa', advertId);
+          set(payload, 'idfv', deviceId);
+        } else if (platform.toLowerCase() === 'android') {
+          set(payload, 'adid', advertId);
+        }
+      }
+    }
+
+    payload.time = new Date(getFieldValueFromMessage(message, 'timestamp')).getTime();
+
+    // send user_id only when present, for anonymous users not required
+    if (
+      message.userId &&
+      message.userId !== '' &&
+      message.userId !== 'null' &&
+      message.userId !== null
+    ) {
+      payload.user_id = message.userId;
+    }
+    payload.session_id = getSessionId(message);
+
+    updateConfigProperty(
+      message,
+      payload,
+      mappingConfig[ConfigCategory.COMMON_CONFIG.name],
+      true,
+      destination.Config,
+    );
+
+    // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
+    // for correct versionName
+    // ====================
+    // fixVersion(payload, message);
+
+    if (payload.user_properties) {
+      delete payload.user_properties.city;
+      delete payload.user_properties.country;
+      if (payload.user_properties.address) {
+        delete payload.user_properties.address.city;
+        delete payload.user_properties.address.country;
+      }
+    }
+
+    if (!payload.user_id && !payload.device_id) {
+      logger.debug('Either of user ID or device ID fields must be specified');
+      throw new InstrumentationError('Either of user ID or device ID fields must be specified');
+    }
+
+    payload.ip = getParsedIP(message);
+    payload.library = 'rudderstack';
+    payload = removeUndefinedAndNullValues(payload);
+    response.endpoint = endpoint;
+    response.method = defaultPostRequestConfig.requestMethod;
+    response.headers = {
+      'Content-Type': JSON_MIME_TYPE,
+    };
+    response.userId = message.anonymousId;
+    response.body.JSON = {
+      api_key: destination.Config.apiKey,
+      [rootElementName]: [payload],
+      [addOptions]: addMinIdlength(),
+    };
+    respList.push(response);
+
+    // https://developers.amplitude.com/docs/group-identify-api
+    // Refer (1.), Rudder group call updates group propertiees.
+    if (evType === EventType.GROUP && groupInfo) {
+      groupResponse.method = defaultPostRequestConfig.requestMethod;
+      groupResponse.endpoint = groupEndpoint(destination.Config);
+      let groupPayload = Object.assign(groupInfo);
+      groupResponse.userId = message.anonymousId;
+      groupPayload = removeUndefinedValues(groupPayload);
+      groupResponse.body.FORM = {
         api_key: destination.Config.apiKey,
-        [rootElementName]: [JSON.stringify(payload)],
+        identification: [JSON.stringify(groupPayload)],
       };
-      respList.push(aliasResponse);
-      break;
-    default:
-      if (message.channel === 'mobile') {
-        if (!destination.Config.mapDeviceBrand) {
-          set(payload, 'device_brand', get(message, 'context.device.manufacturer'));
-        }
-
-        const deviceId = get(message, 'context.device.id');
-        const platform = get(message, 'context.device.type');
-        const advertId = get(message, 'context.device.advertisingId');
-
-        if (platform) {
-          if (isAppleFamily(platform)) {
-            set(payload, 'idfa', advertId);
-            set(payload, 'idfv', deviceId);
-          } else if (platform.toLowerCase() === 'android') {
-            set(payload, 'adid', advertId);
-          }
-        }
-      }
-
-      payload.time = new Date(getFieldValueFromMessage(message, 'timestamp')).getTime();
-
-      // send user_id only when present, for anonymous users not required
-      if (
-        message.userId &&
-        message.userId !== '' &&
-        message.userId !== 'null' &&
-        message.userId !== null
-      ) {
-        payload.user_id = message.userId;
-      }
-      payload.session_id = getSessionId(message);
-
-      updateConfigProperty(
-        message,
-        payload,
-        mappingConfig[ConfigCategory.COMMON_CONFIG.name],
-        true,
-        destination.Config,
-      );
-
-      // we are not fixing the verson for android specifically any more because we've put a fix in iOS SDK
-      // for correct versionName
-      // ====================
-      // fixVersion(payload, message);
-
-      if (payload.user_properties) {
-        delete payload.user_properties.city;
-        delete payload.user_properties.country;
-        if (payload.user_properties.address) {
-          delete payload.user_properties.address.city;
-          delete payload.user_properties.address.country;
-        }
-      }
-
-      if (!payload.user_id && !payload.device_id) {
-        logger.debug('Either of user ID or device ID fields must be specified');
-        throw new InstrumentationError('Either of user ID or device ID fields must be specified');
-      }
-
-      payload.ip = getParsedIP(message);
-      payload.library = 'rudderstack';
-      payload = removeUndefinedAndNullValues(payload);
-      response.endpoint = endpoint;
-      response.method = defaultPostRequestConfig.requestMethod;
-      response.headers = {
-        'Content-Type': 'application/json',
-      };
-      response.userId = message.anonymousId;
-      response.body.JSON = {
-        api_key: destination.Config.apiKey,
-        [rootElementName]: [payload],
-        [addOptions]: addMinIdlength(),
-      };
-      respList.push(response);
-
-      // https://developers.amplitude.com/docs/group-identify-api
-      // Refer (1.), Rudder group call updates group propertiees.
-      if (evType === EventType.GROUP && groupInfo) {
-        groupResponse.method = defaultPostRequestConfig.requestMethod;
-        groupResponse.endpoint = groupEndpoint(destination.Config);
-        let groupPayload = Object.assign(groupInfo);
-        groupResponse.userId = message.anonymousId;
-        groupPayload = removeUndefinedValues(groupPayload);
-        groupResponse.body.FORM = {
-          api_key: destination.Config.apiKey,
-          identification: [JSON.stringify(groupPayload)],
-        };
-        respList.push(groupResponse);
-      }
-      break;
+      respList.push(groupResponse);
+    }
   }
 
   return respList;
@@ -510,6 +527,7 @@ function processSingleMessage(message, destination) {
   let category = ConfigCategory.DEFAULT;
 
   const messageType = message.type.toLowerCase();
+  const CATEGORY_KEY = 'properties.category';
   switch (messageType) {
     case EventType.IDENTIFY:
       payloadObjectName = 'events'; // identify same as events
@@ -517,19 +535,18 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.IDENTIFY;
       break;
     case EventType.PAGE:
-      evType = `Viewed ${message.name || get(message, 'properties.category') || ''} Page`;
+      evType = `Viewed ${message.name || get(message, CATEGORY_KEY) || ''} Page`;
       message.properties = {
         ...message.properties,
-        name: message.name || get(message, 'properties.category'),
+        name: message.name || get(message, CATEGORY_KEY),
       };
       category = ConfigCategory.PAGE;
       break;
     case EventType.SCREEN:
-      evType = `Viewed ${message.name || message.event || get(message, 'properties.category') || ''
-        } Screen`;
+      evType = `Viewed ${message.name || message.event || get(message, CATEGORY_KEY) || ''} Screen`;
       message.properties = {
         ...message.properties,
-        name: message.name || message.event || get(message, 'properties.category'),
+        name: message.name || message.event || get(message, CATEGORY_KEY),
       };
       category = ConfigCategory.SCREEN;
       break;
@@ -718,7 +735,7 @@ function getBatchEvents(message, destination, metadata, batchEventResponse) {
   const batchEventJobs = get(batchEventResponse, 'metadata') || [];
   const batchPayloadJSON = get(batchEventResponse, 'batchedRequest.body.JSON') || {};
   const incomingMessageJSON = get(message, 'body.JSON');
-  let incomingMessageEvent = get(message, 'body.JSON.events');
+  let incomingMessageEvent = get(message, EVENTS_KEY_PATH);
   // check if the incoming singular event is an array or not
   // and set it back to array
   incomingMessageEvent = Array.isArray(incomingMessageEvent)
@@ -742,7 +759,7 @@ function getBatchEvents(message, destination, metadata, batchEventResponse) {
     delete incomingMessageEvent.user_id;
   }
 
-  set(message, 'body.JSON.events', [incomingMessageEvent]);
+  set(message, EVENTS_KEY_PATH, [incomingMessageEvent]);
   // if this is the first event, push to batch and return
   const BATCH_ENDPOINT = batchEndpoint(destination.Config);
   if (batchEventArray.length === 0) {
@@ -760,7 +777,7 @@ function getBatchEvents(message, destination, metadata, batchEventResponse) {
     if (
       batchEventArray.length < AMBatchEventLimit &&
       JSON.stringify(batchPayloadJSON).length + JSON.stringify(incomingMessageEvent).length <
-      AMBatchSizeLimit
+        AMBatchSizeLimit
     ) {
       batchEventArray.push(incomingMessageEvent); // set value
       batchEventJobs.push(metadata);
@@ -789,19 +806,19 @@ function batch(destEvents) {
     const { message, metadata, destination } = ev;
     destinationObject = { ...destination };
     jsonBody = get(message, 'body.JSON');
-    messageEvent = get(message, 'body.JSON.events');
+    messageEvent = get(message, EVENTS_KEY_PATH);
     userId =
       messageEvent && Array.isArray(messageEvent)
         ? messageEvent[0].user_id
         : messageEvent
-          ? messageEvent.user_id
-          : undefined;
+        ? messageEvent.user_id
+        : undefined;
     deviceId =
       messageEvent && Array.isArray(messageEvent)
         ? messageEvent[0].device_id
         : messageEvent
-          ? messageEvent.device_id
-          : undefined;
+        ? messageEvent.device_id
+        : undefined;
     // this case shold not happen and should be filtered already
     // by the first pass of single event transformation
     if (messageEvent && !userId && !deviceId) {

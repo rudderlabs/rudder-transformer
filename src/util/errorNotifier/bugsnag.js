@@ -25,7 +25,11 @@ const {
   NetworkInstrumentationError,
 } = require('../../v0/util/errorTypes');
 
-const { BUGSNAG_API_KEY: apiKey, transformer_build_version: imageVersion, git_commit_sha: gitCommitSHA } = process.env;
+const {
+  BUGSNAG_API_KEY: apiKey,
+  transformer_build_version: imageVersion,
+  git_commit_sha: gitCommitSHA,
+} = process.env;
 
 const errorTypesDenyList = [
   BaseError,
@@ -63,8 +67,8 @@ function init() {
           version: imageVersion,
         },
         source: {
-          gitCommitSHA
-        }
+          gitCommitSHA,
+        },
       },
       onError(event) {
         event.severity = 'error';

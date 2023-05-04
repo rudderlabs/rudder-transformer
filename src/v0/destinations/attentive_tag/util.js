@@ -113,9 +113,7 @@ const getDestinationItemProperties = (message, isItemsRequired) => {
     products.forEach((item) => {
       const element = constructPayload(item, mappingConfig[ConfigCategory.ITEMS.name]);
       const price = [];
-      const pricing = {};
-      pricing.value = parseInt(item.price, 10);
-      pricing.currency = item.currency;
+      const pricing = { value: parseInt(item.price, 10), currency: item.currency };
       price.push(pricing);
       if (
         !isDefinedAndNotNull(element.productId) ||

@@ -22,8 +22,8 @@ const CONFIG_CATEGORIES = {
 };
 
 const MAX_BATCH_SIZE = 1000;
-const DEFAULT_OBJECT_ACTION = "identify";
-const OBJECT_ACTIONS = ["identify", "delete", "add_relationships", "delete_relationships"];
+const DEFAULT_OBJECT_ACTION = 'identify';
+const OBJECT_ACTIONS = ['identify', 'delete', 'add_relationships', 'delete_relationships'];
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 

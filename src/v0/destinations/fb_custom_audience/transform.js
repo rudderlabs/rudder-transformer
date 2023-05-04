@@ -51,6 +51,7 @@ const responseBuilderSimple = (payload, audienceId) => {
   // fail-safety for developer error
   throw new TransformationError(`Payload could not be constructed`);
 };
+
 // Function responsible prepare the payload field of every event parameter
 
 const preparePayload = (

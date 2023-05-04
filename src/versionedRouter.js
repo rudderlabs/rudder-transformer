@@ -53,6 +53,8 @@ const NS_PER_SEC = 1e9;
 
 const router = new Router();
 
+const PAYLOAD_PROC_ERR_MSG = 'Error occurred while processing payload';
+
 // Router for assistance in profiling
 router.use(profilingRouter);
 
@@ -510,6 +512,7 @@ async function routerHandleDest(ctx) {
     respEvents
       .filter((resp) => 'error' in resp && _.isObject(resp.statTags) && !_.isEmpty(resp.statTags))
       .forEach((resp) => {
+        // eslint-disable-next-line no-param-reassign
         resp.statTags = {
           ...resp.statTags,
           ...defTags,
@@ -633,6 +636,7 @@ if (startDestTransformer) {
       }
     });
 
+    // eslint-disable-next-line sonarjs/cognitive-complexity
     router.post('/customTransform', async (ctx) => {
       const startTime = new Date();
       const events = ctx.request.body;
@@ -912,8 +916,8 @@ async function handleSource(ctx, version, source) {
         // };
 
         const resp = {
-          statusCode: error.status || 400,
-          error: error.message || 'Error occurred while processing payload.',
+          statusCode: 400,
+          error: error.message || PAYLOAD_PROC_ERR_MSG,
         };
 
         respList.push(resp);
@@ -1077,7 +1081,7 @@ router.get('/health', (ctx) => {
 });
 
 router.get('/features', (ctx) => {
-  const obj = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../features.json'), 'utf8'));
+  const obj = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'features.json'), 'utf8'));
   ctx.body = JSON.stringify(obj);
 });
 
@@ -1108,9 +1112,9 @@ const batchHandler = (ctx) => {
   const allDestEvents = _.groupBy(input, (event) => event.destination.ID);
 
   const response = { batchedRequests: [], errors: [] };
-  Object.entries(allDestEvents).map(async ([, destEvents]) => {
-    // TODO: check await needed?
+  Object.entries(allDestEvents).forEach(([, destEvents]) => {
     try {
+      // eslint-disable-next-line no-param-reassign
       destEvents = processDynamicConfig(destEvents, 'batch');
       const destBatchedRequests = destHandler.batch(destEvents);
       response.batchedRequests.push(...destBatchedRequests);
@@ -1178,7 +1182,7 @@ const fileUpload = async (ctx) => {
   } catch (error) {
     response = {
       statusCode: error.response ? error.response.status : 400,
-      error: error.message || 'Error occurred while processing payload.',
+      error: error.message || PAYLOAD_PROC_ERR_MSG,
       metadata: error.response ? error.response.metadata : null,
     };
     errNotificationClient.notify(error, 'File Upload', {
@@ -1191,17 +1195,17 @@ const fileUpload = async (ctx) => {
   return ctx.body;
 };
 
-const pollStatus = async (ctx) => {
-  const getReqMetadata = () => {
-    try {
-      const reqBody = ctx.request.body;
-      return { destType: reqBody?.destType, importId: reqBody?.importId };
-    } catch (error) {
-      // Do nothing
-    }
-    return {};
-  };
+const jobAndPollStatusReqMetadata = (ctx) => {
+  try {
+    const reqBody = ctx.request.body;
+    return { destType: reqBody?.destType, importId: reqBody?.importId };
+  } catch (error) {
+    // Do nothing
+  }
+  return {};
+};
 
+const pollStatus = async (ctx) => {
   const { destType } = ctx.request.body;
   const destFileUploadHandler = getPollStatusHandler('v0', destType.toLowerCase());
   let response;
@@ -1215,12 +1219,12 @@ const pollStatus = async (ctx) => {
   } catch (error) {
     response = {
       statusCode: error.response ? error.response.status : 400,
-      error: error.message || 'Error occurred while processing payload.',
+      error: error.message || PAYLOAD_PROC_ERR_MSG,
     };
     errNotificationClient.notify(error, 'Poll Status', {
       ...response,
       ...getCommonMetadata(ctx),
-      ...getReqMetadata(),
+      ...jobAndPollStatusReqMetadata(ctx),
     });
   }
   ctx.body = response;
@@ -1228,16 +1232,6 @@ const pollStatus = async (ctx) => {
 };
 
 const getJobStatus = async (ctx, type) => {
-  const getReqMetadata = () => {
-    try {
-      const reqBody = ctx.request.body;
-      return { destType: reqBody?.destType, importId: reqBody?.importId };
-    } catch (error) {
-      // Do nothing
-    }
-    return {};
-  };
-
   const { destType } = ctx.request.body;
   const destFileUploadHandler = getJobStatusHandler('v0', destType.toLowerCase());
 
@@ -1252,12 +1246,12 @@ const getJobStatus = async (ctx, type) => {
   } catch (error) {
     response = {
       statusCode: error.response ? error.response.status : 400,
-      error: error.message || 'Error occurred while processing payload.',
+      error: error.message || PAYLOAD_PROC_ERR_MSG,
     };
     errNotificationClient.notify(error, 'Job Status', {
       ...response,
       ...getCommonMetadata(ctx),
-      ...getReqMetadata(),
+      ...jobAndPollStatusReqMetadata(ctx),
     });
   }
   ctx.body = response;

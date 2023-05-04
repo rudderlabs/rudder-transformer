@@ -17,6 +17,15 @@ const {
 } = require('../../util/errorTypes');
 const { CONFIG_CATEGORIES, LIFECYCLE_STAGE_ENDPOINT } = require('./config');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+const getHeaders = (apiKey) => {
+  const headers = {
+    Authorization: `Token token=${apiKey}`,
+    'Content-Type': JSON_MIME_TYPE,
+  };
+  return headers;
+};
 
 /*
  * This functions is used for getting Account details.
@@ -28,10 +37,7 @@ const tags = require('../../util/tags');
  */
 const createUpdateAccount = async (payload, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   const payloadBody = {
     unique_identifier: { name: payload.name },
@@ -67,10 +73,7 @@ const createUpdateAccount = async (payload, Config) => {
  */
 const getUserAccountDetails = async (payload, userEmail, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   const userPayload = {
     unique_identifier: {
@@ -122,10 +125,7 @@ const getUserAccountDetails = async (payload, userEmail, Config) => {
  */
 const getContactsDetails = async (userEmail, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   const userPayload = {
     unique_identifier: {
@@ -185,10 +185,7 @@ const responseBuilderWithContactDetails = async (email, Config, payload, salesAc
  */
 const UpdateContactWithSalesActivity = async (payload, message, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   if (!payload.sales_activity_name && !payload.sales_activity_type_id) {
     throw new InstrumentationError(
@@ -279,10 +276,7 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
  */
 const UpdateContactWithLifeCycleStage = async (message, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   const emails = getFieldValueFromMessage(message, 'email');
   if (!emails) {
@@ -356,10 +350,7 @@ const updateAccountWOContact = (payload, Config) => {
     unique_identifier: { name: payload.name },
     sales_account: payload,
   };
-  response.headers = {
-    Authorization: `Token token=${Config.apiKey}`,
-    'Content-Type': 'application/json',
-  };
+  response.headers = getHeaders(Config.apiKey);
   return response;
 };
 
@@ -379,4 +370,5 @@ module.exports = {
   UpdateContactWithSalesActivity,
   UpdateContactWithLifeCycleStage,
   updateAccountWOContact,
+  getHeaders,
 };

@@ -9,6 +9,7 @@ const { executeCommonValidations } = require('../../util/regulation-api');
 const { DEL_MAX_BATCH_SIZE } = require('./config');
 const { getUserIdBatches } = require('../../util/deleteUserUtils');
 const { NetworkError, ConfigurationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const userDeletionHandler = async (userAttributes, config) => {
   if (!config) {
@@ -35,7 +36,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       const data = { external_ids: batchEvent };
       const requestOptions = {
         headers: {
-          'Content-Type': 'application/json',
+          'Content-Type': JSON_MIME_TYPE,
           Authorization: `Bearer ${restApiKey}`,
         },
       };

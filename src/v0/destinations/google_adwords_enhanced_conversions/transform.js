@@ -17,6 +17,7 @@ const {
 } = require('../../util/errorTypes');
 
 const { trackMapping, BASE_ENDPOINT } = require('./config');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * This function is helping to update the mappingJson.
@@ -65,7 +66,7 @@ const responseBuilder = async (metadata, message, { Config }, payload) => {
   const accessToken = getAccessToken(metadata);
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     'developer-token': getValueFromMessage(metadata, 'secret.developer_token'),
   };
   response.params = { event, customerId: filteredCustomerId };
@@ -109,10 +110,7 @@ const processTrackEvent = async (metadata, message, destination) => {
   payload.conversionAdjustments[0].adjustmentType = 'ENHANCEMENT';
   // Removing the null values from userIdentifier
   const arr = payload.conversionAdjustments[0].userIdentifiers;
-  payload.conversionAdjustments[0].userIdentifiers = arr.filter((item) => {
-    if (item) return true;
-    return false;
-  });
+  payload.conversionAdjustments[0].userIdentifiers = arr.filter((item) => !!item);
   return responseBuilder(metadata, message, destination, payload);
 };
 

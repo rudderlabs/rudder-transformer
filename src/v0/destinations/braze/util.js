@@ -33,12 +33,14 @@ const CustomAttributeOperationUtil = {
     data[key] = {};
     const opsResultArray = [];
     for (let i = 0; i < traits[key][CustomAttributeOperationTypes.UPDATE].length; i += 1) {
-      const myObj = {};
-      myObj.$identifier_key = traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier;
-      myObj.$identifier_value =
-        traits[key][CustomAttributeOperationTypes.UPDATE][i][
-          traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
-        ];
+      const myObj = {
+        $identifier_key: traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier,
+        $identifier_value:
+          traits[key][CustomAttributeOperationTypes.UPDATE][i][
+            traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
+          ],
+      };
+
       delete traits[key][CustomAttributeOperationTypes.UPDATE][i][
         traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
       ];
@@ -59,12 +61,13 @@ const CustomAttributeOperationUtil = {
   customAttributeRemoveOperation(key, data, traits) {
     const opsResultArray = [];
     for (let i = 0; i < traits[key][CustomAttributeOperationTypes.REMOVE].length; i += 1) {
-      const myObj = {};
-      myObj.$identifier_key = traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier;
-      myObj.$identifier_value =
-        traits[key][CustomAttributeOperationTypes.REMOVE][i][
-          traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier
-        ];
+      const myObj = {
+        $identifier_key: traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier,
+        $identifier_value:
+          traits[key][CustomAttributeOperationTypes.REMOVE][i][
+            traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier
+          ],
+      };
       opsResultArray.push(myObj);
     }
     data[key][`$${CustomAttributeOperationTypes.REMOVE}`] = opsResultArray;

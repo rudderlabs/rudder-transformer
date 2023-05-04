@@ -97,25 +97,28 @@ const addressMappper = (address) => {
 
 const contactPayloadValidator = (payload) => {
   const updatedPayload = payload;
-  if (payload['@force_optin'] && typeof payload['@force_optin'] !== 'boolean') {
-    updatedPayload['@force_optin'] = null;
+  const FORCE_OPT_IN_KEY = '@force_optin';
+  if (payload[FORCE_OPT_IN_KEY] && typeof payload[FORCE_OPT_IN_KEY] !== 'boolean') {
+    updatedPayload[FORCE_OPT_IN_KEY] = null;
     logger.error('forceOptin must contain only boolean value.');
   }
   if (payload.phone_number && !isValidPhone(payload.phone_number)) {
     updatedPayload.phone_number = null;
     logger.error('phone number format must be E.164.');
   }
+
+  const TIMESTAMP_FORMAT_ERR_MSG = 'timestamp format must be ISO 8601';
   if (payload.timestamp_acquired && !isValidTimestamp(payload.timestamp_acquired)) {
     updatedPayload.timestamp_acquired = null;
-    logger.error('timestamp format must be ISO 8601.');
+    logger.error(TIMESTAMP_FORMAT_ERR_MSG);
   }
   if (payload.timestamp_subscribed && !isValidTimestamp(payload.timestamp_subscribed)) {
     updatedPayload.timestamp_subscribed = null;
-    logger.error('timestamp format must be ISO 8601.');
+    logger.error(TIMESTAMP_FORMAT_ERR_MSG);
   }
   if (payload.timestamp_unsubscribed && !isValidTimestamp(payload.timestamp_unsubscribed)) {
     updatedPayload.timestamp_unsubscribed = null;
-    logger.error('timestamp format must be ISO 8601.');
+    logger.error(TIMESTAMP_FORMAT_ERR_MSG);
   }
   return updatedPayload;
 };

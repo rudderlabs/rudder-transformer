@@ -70,12 +70,7 @@ const removeReservedParameterPrefixNames = (parameter) => {
   }
 
   Object.keys(parameter).forEach((key) => {
-    const valFound = reservedPrefixesNames.some((prefix) => {
-      if (key.toLowerCase().startsWith(prefix)) {
-        return true;
-      }
-      return false;
-    });
+    const valFound = reservedPrefixesNames.some((prefix) => key.toLowerCase().startsWith(prefix));
 
     // reject if found
     if (valFound) {
@@ -111,12 +106,7 @@ const removeReservedUserPropertyPrefixNames = (userProperties) => {
   }
 
   Object.keys(userProperties).forEach((key) => {
-    const valFound = reservedPrefixesNames.some((prefix) => {
-      if (key.toLowerCase().startsWith(prefix)) {
-        return true;
-      }
-      return false;
-    });
+    const valFound = reservedPrefixesNames.some((prefix) => key.toLowerCase().startsWith(prefix));
 
     // reject if found
     if (valFound) {
@@ -160,12 +150,7 @@ const isReservedWebCustomPrefixName = (event) => {
   const reservedPrefixesNames = ['_', 'firebase_', 'ga_', 'google_', 'gtag.'];
 
   // As soon as a single true is returned, .some() will itself return true and stop
-  return reservedPrefixesNames.some((prefix) => {
-    if (event.toLowerCase().startsWith(prefix)) {
-      return true;
-    }
-    return false;
-  });
+  return reservedPrefixesNames.some((prefix) => event.toLowerCase().startsWith(prefix));
 };
 
 const GA4_ITEM_EXCLUSION = [

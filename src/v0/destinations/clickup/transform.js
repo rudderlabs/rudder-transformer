@@ -15,13 +15,14 @@ const {
 } = require('./util');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, createTaskEndPoint } = require('./config');
 const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = async (payload, listId, apiToken) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = createTaskEndPoint(listId);
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: apiToken,
     };
     response.method = defaultPostRequestConfig.requestMethod;

@@ -104,8 +104,9 @@ function attachUserAndCompany(message, Config) {
   if (email) {
     requestBody.email = email;
   }
-  const companyObj = {};
-  companyObj.company_id = message.groupId;
+  const companyObj = {
+    company_id: message.groupId,
+  };
   if (message.traits?.name) {
     companyObj.name = message.traits.name;
   }
@@ -183,7 +184,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
       throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
 
-  return (messageType == EventType.GROUP) ? respList : response;
+  return (messageType === EventType.GROUP) ? respList : response;
 }
 
 function processSingleMessage(message, destination) {

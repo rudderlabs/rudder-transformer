@@ -1,10 +1,7 @@
 [
   {
     "destKey": "operations.create.transaction_attribute.store_attribute.store_code",
-    "sourceKeys": [
-      "properties.store_code",
-      "properties.storeCode"
-    ],
+    "sourceKeys": ["properties.store_code", "properties.storeCode"],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -25,10 +22,7 @@
   },
   {
     "destKey": "operations.create.transaction_attribute.order_id",
-    "sourceKeys": [
-      "properties.order_id",
-      "properties.orderId"
-    ],
+    "sourceKeys": ["properties.order_id", "properties.orderId"],
     "required": false,
     "metadata": {
       "type": "toString"
@@ -56,4 +50,3 @@
     }
   }
 ]
-

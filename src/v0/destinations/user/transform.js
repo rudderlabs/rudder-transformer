@@ -24,13 +24,14 @@ const {
 } = require('../../util/errorTypes');
 
 const { EventType } = require('../../../constants');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = async (payload, endpoint, method, apiKey) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Token ${apiKey}`,
       Accept: '*/*;version=2',
     };

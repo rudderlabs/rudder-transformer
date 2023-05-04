@@ -7,7 +7,8 @@ const parseAxiosError = (error) => {
   if (error.response) {
     const status = error.response.status || 400;
     const errorData = error.response?.data;
-    const message = (errorData && (errorData.message || errorData.error || errorData)) || error.message;
+    const message =
+      (errorData && (errorData.message || errorData.error || errorData)) || error.message;
     return new RespStatusError(message, status);
   }
   if (error.request) {
@@ -57,7 +58,7 @@ const checkFunctionHealth = async (functionName) =>
     const url = `${OPENFAAS_GATEWAY_URL}/function/${functionName}`;
     axios
       .get(url, {
-        headers: { "X-REQUEST-TYPE": "HEALTH-CHECK"}
+        headers: { 'X-REQUEST-TYPE': 'HEALTH-CHECK' },
       })
       .then((resp) => resolve(resp))
       .catch((err) => reject(parseAxiosError(err)));
@@ -78,5 +79,5 @@ module.exports = {
   getFunction,
   getFunctionList,
   invokeFunction,
-  checkFunctionHealth
+  checkFunctionHealth,
 };

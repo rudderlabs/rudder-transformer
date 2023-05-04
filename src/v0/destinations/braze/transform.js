@@ -30,6 +30,7 @@ const logger = require('../../../logger');
 const { getEndpointFromConfig } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function formatGender(gender) {
   // few possible cases of woman
@@ -58,8 +59,8 @@ function buildResponse(message, destination, properties, endpoint) {
   return {
     ...response,
     headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
+      Accept: JSON_MIME_TYPE,
       Authorization: `Bearer ${destination.Config.restApiKey}`,
     },
     userId: message.userId || message.anonymousId,
@@ -131,7 +132,7 @@ function populateCustomAttributesWithOperation(
         });
     }
   } catch (exp) {
-    logger.info('Failure occured during custom attributes operations', exp);
+    logger.info('Failure occurred during custom attributes operations', exp);
   }
 }
 
@@ -261,9 +262,7 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
       getTrackEndPoint(getEndpointFromConfig(destination)),
     );
   }
-  throw new InstrumentationError(
-    'No attributes found to update the user profile',
-  );
+  throw new InstrumentationError('No attributes found to update the user profile');
 }
 
 function handleReservedProperties(props) {
@@ -369,10 +368,8 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
       delete properties.products;
       delete properties.currency;
 
-      let payload = {};
-      payload.properties = properties;
-
-      payload = setExternalIdOrAliasObject(payload, message);
+      const payload = { properties };
+      setExternalIdOrAliasObject(payload, message);
       return buildResponse(
         message,
         destination,
@@ -422,8 +419,9 @@ function processGroup(message, destination) {
         'Message should have traits with subscriptionState, email or phone',
       );
     }
-    const subscriptionGroup = {};
-    subscriptionGroup.subscription_group_id = groupId;
+    const subscriptionGroup = {
+      subscription_group_id: groupId,
+    };
     if (
       message.traits.subscriptionState !== 'subscribed' &&
       message.traits.subscriptionState !== 'unsubscribed'
@@ -447,8 +445,8 @@ function processGroup(message, destination) {
     return {
       ...response,
       headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
+        Accept: JSON_MIME_TYPE,
         Authorization: `Bearer ${destination.Config.restApiKey}`,
       },
     };

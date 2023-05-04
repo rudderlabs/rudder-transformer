@@ -5,6 +5,7 @@ const { constructPayload, isDefinedAndNotNull } = require('../../util');
 const { NetworkError, AbortedError } = require('../../util/errorTypes');
 const { ENDPOINT, productMapping } = require('./config');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const isValidEmail = (email) => {
   const re =
@@ -25,7 +26,7 @@ const userExists = async (Config, id) => {
     response = await axios.get(`${ENDPOINT}/v2/${Config.accountId}/subscribers/${id}`, {
       headers: {
         Authorization: `Basic ${basicAuth}`,
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
       },
     });
     if (response && response.status) {
@@ -62,7 +63,7 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
       {
         headers: {
           Authorization: `Basic ${basicAuth}`,
-          'Content-Type': 'application/json',
+          'Content-Type': JSON_MIME_TYPE,
         },
       },
     );

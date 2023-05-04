@@ -10,10 +10,7 @@
         "params": {
           "access_token": "ABC",
           "payload": {
-            "schema": [
-              "EMAIL",
-              "FN"
-            ],
+            "schema": ["EMAIL", "FN"],
             "data": [
               [
                 "7625cab24612c37df6d2f724721bb38a25095d0295e29b807238ee188b8aca43",
@@ -85,9 +82,7 @@
         "skipVerify": false,
         "subType": "NA",
         "type": "NA",
-        "userSchema": [
-          "EMAIL"
-        ]
+        "userSchema": ["EMAIL"]
       },
       "secretConfig": {},
       "ID": "1mMy5cqbtfuaKZv1IhVQKnBdVwe",

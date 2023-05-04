@@ -68,10 +68,7 @@ const processWithCustomMapping = (message, attributeKeyMapping) => {
         // Check in free-flowing object level
         SOURCE_KEYS.some((sourceKey) => {
           value = getMappingFieldValueFormMessage(message, sourceKey, mapping[fromKey]);
-          if (value) {
-            return true;
-          }
-          return false;
+          return !!value;
         });
       }
       // Set the value if present else set an empty string

@@ -17,6 +17,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function getCompanyAttribute(company) {
   const companiesList = [];
@@ -106,9 +107,9 @@ function validateAndBuildResponse(message, payload, category, destination) {
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = category.endpoint;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${destination.Config.apiKey}`,
-    Accept: 'application/json',
+    Accept: JSON_MIME_TYPE,
     'Intercom-Version': '1.4',
   };
   response.userId = message.anonymousId;

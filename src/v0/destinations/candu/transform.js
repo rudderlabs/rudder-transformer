@@ -5,6 +5,7 @@ const {
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
 } = require('../../util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { endpoint, identifyDataMapping, trackDataMapping } = require('./config');
 
@@ -22,7 +23,7 @@ const responseBuilder = (body, { Config }) => {
   const basicAuth = Buffer.from(Config.apiKey).toString('base64');
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   return response;
 };

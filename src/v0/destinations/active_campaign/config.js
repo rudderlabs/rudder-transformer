@@ -47,9 +47,27 @@ const CONFIG_CATEGORIES = {
   },
 };
 
+/**
+ * 
+ * @param {*} destination 
+ * @returns the header block of structure:
+ * {
+    'Content-Type': 'application/json',
+    'Api-Token': destination.Config.apiKey,
+  }
+ */
+const getHeader = (destination) => {
+  const headers = {
+    'Content-Type': 'application/json',
+    'Api-Token': destination.Config.apiKey,
+  };
+  return headers;
+};
+
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
+  getHeader,
 };

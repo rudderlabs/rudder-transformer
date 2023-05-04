@@ -56,7 +56,7 @@ export default class MiscService {
   }
 
   public static getFetaures() {
-    const obj = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../features.json'), 'utf8'));
+    const obj = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../features.json'), 'utf8'));
     return JSON.stringify(obj);
   }
 }

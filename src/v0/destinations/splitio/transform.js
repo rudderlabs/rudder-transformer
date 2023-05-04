@@ -18,6 +18,7 @@ const {
   ErrorMessage,
 } = require('../../util');
 const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(payload, category, destination) {
   if (payload) {
@@ -26,7 +27,7 @@ function responseBuilderSimple(payload, category, destination) {
     response.endpoint = category.endPoint;
     response.method = defaultPostRequestConfig.requestMethod;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${destination.Config.apiKey}`,
     };
     response.body.JSON = removeUndefinedAndNullValues(responseBody);

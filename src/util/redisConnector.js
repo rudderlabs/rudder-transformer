@@ -81,7 +81,7 @@ const RedisDB = {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       const value = await this.client.get(key);
       if (value) {
-        const bytes = Buffer.byteLength(value, "utf-8");
+        const bytes = Buffer.byteLength(value, 'utf-8');
         stats.gauge('redis_get_val_size', bytes, {
         });
       }
@@ -89,7 +89,6 @@ const RedisDB = {
     } catch (e) {
       stats.increment("redis_error", {
         operation: "get"
-        
       });
       throw new RedisError(`Error getting value from Redis: ${e}`);
     }
@@ -106,7 +105,7 @@ const RedisDB = {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       const valueToStore = isValJson ? JSON.stringify(value) : value;
-      const bytes = Buffer.byteLength(valueToStore, "utf-8");
+      const bytes = Buffer.byteLength(valueToStore, 'utf-8');
       await this.client.setex(key, dataExpiry, valueToStore);
       stats.gauge('redis_set_val_size', bytes, {
       });
@@ -123,7 +122,7 @@ const RedisDB = {
       });
       this.client.quit();
     }
-  }
+  },
 };
 
 module.exports = { RedisDB };

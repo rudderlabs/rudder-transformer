@@ -3,6 +3,7 @@ const { ENDPOINTS } = require('./config');
 const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const handleErrorResponse = (error, customErrMessage, expectedErrStatus, defaultStatus = 400) => {
   let errMessage = '';
@@ -50,7 +51,7 @@ const objectExists = async (id, Config, objectType) => {
     response = await axios.get(url, {
       headers: {
         'X-APTRINSIC-API-KEY': Config.apiKey,
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
       },
     });
     if (response && response.status === 200) {
@@ -77,7 +78,7 @@ const createAccount = async (payload, Config) => {
     response = await axios.post(ENDPOINTS.ACCOUNTS_ENDPOINT, payload, {
       headers: {
         'X-APTRINSIC-API-KEY': Config.apiKey,
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
       },
     });
     if (response && response.status === 201) {
@@ -105,7 +106,7 @@ const updateAccount = async (accountId, payload, Config) => {
     response = await axios.put(`${ENDPOINTS.ACCOUNTS_ENDPOINT}/${accountId}`, payload, {
       headers: {
         'X-APTRINSIC-API-KEY': Config.apiKey,
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
       },
     });
     if (response && response.status === 204) {

@@ -52,14 +52,11 @@ const processEvent = (message, destination) => {
   const messageType = message.type.toLowerCase();
   let response;
   // Only identify type of events are processed
-  switch (messageType) {
-    case EventType.IDENTIFY:
-      response = responseBuilderSimple(message, destination);
-      break;
-    default:
-      throw new InstrumentationError(`Event type ${messageType} is not supported`);
+  if (messageType === EventType.IDENTIFY) {
+    response = responseBuilderSimple(message, destination);
+  } else {
+    throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
-
   return response;
 };
 const process = (event) => processEvent(event.message, event.destination);

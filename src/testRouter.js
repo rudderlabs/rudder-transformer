@@ -6,13 +6,14 @@ const fs = require('fs');
 const path = require('path');
 const Router = require('@koa/router');
 const { sendToDestination, userTransformHandler } = require('./routerUtils');
+const { JSON_MIME_TYPE } = require('./v0/util/constant');
 
 const version = 'v0';
 const API_VERSION = '1';
 
 const isSupportedContentType = (contentType) => {
   let supported = false;
-  const SUPPORTED_CONTENT_TYPES = ['application/xml', 'application/json', 'text'];
+  const SUPPORTED_CONTENT_TYPES = ['application/xml', JSON_MIME_TYPE, 'text'];
   if (contentType) {
     SUPPORTED_CONTENT_TYPES.some((type) => {
       if (contentType.toLowerCase().includes(type)) {
@@ -50,6 +51,129 @@ const transformDestination = (dest) => {
   return transformedObj;
 };
 
+const processUserTransform = async (events, ev, libraries) => {
+  let librariesVersionIDs = [];
+  if (libraries) {
+    librariesVersionIDs = events[0].libraries.map((library) => library.versionId);
+  }
+  const transformationVersionId =
+    ev.destination &&
+    ev.destination.Transformations &&
+    ev.destination.Transformations[0] &&
+    ev.destination.Transformations[0].versionId;
+
+  let errorFound = false;
+  let transformedPayload;
+  let updatedMessage;
+
+  if (transformationVersionId) {
+    try {
+      const destTransformedEvents = await userTransformHandler()(
+        [ev],
+        transformationVersionId,
+        librariesVersionIDs,
+      );
+      const userTransformedEvent = destTransformedEvents[0];
+      if (userTransformedEvent.error) {
+        throw new Error(userTransformedEvent.error);
+      }
+
+      transformedPayload = userTransformedEvent.transformedEvent;
+      updatedMessage = userTransformedEvent.transformedEvent;
+    } catch (err) {
+      errorFound = true;
+      transformedPayload = {
+        error: err.message || JSON.stringify(err),
+      };
+    }
+  } else {
+    transformedPayload = {
+      error: 'Transformation VersionID not found',
+    };
+  }
+  return { transformedPayload, errorFound, updatedMessage };
+};
+
+const processDestTransform = async (ev, utErrFound, dest) => {
+  let transformedPayload;
+  let errorFound = utErrFound;
+  if (!utErrFound) {
+    try {
+      const desthandler = getDestHandler(version, dest);
+      const transformedOutput = await desthandler.process(ev);
+      if (Array.isArray(transformedOutput)) {
+        transformedPayload = transformedOutput;
+      } else {
+        transformedPayload = [transformedOutput];
+      }
+    } catch (err) {
+      errorFound = true;
+      transformedPayload = {
+        error: err.message || JSON.stringify(err),
+      };
+    }
+  } else {
+    transformedPayload = {
+      error: 'error encountered in user_transformation stage. Aborting.',
+    };
+  }
+  return { transformedPayload, errorFound };
+};
+
+const sendEventToDestination = async (curResponse, dest, errorFound) => {
+  let response = curResponse;
+  // send event to destination only after transformation
+  if (!errorFound) {
+    const destResponses = [];
+    const destResponseStatuses = [];
+
+    const transformedPayloads = curResponse.dest_transformed_payload;
+    // eslint-disable-next-line no-restricted-syntax
+    for (const payload of transformedPayloads) {
+      // eslint-disable-next-line no-await-in-loop
+      const parsedResponse = await sendToDestination(dest, payload);
+
+      let contentType = '';
+      let destResp = '';
+      if (parsedResponse.headers) {
+        contentType = parsedResponse.headers['content-type'];
+        if (isSupportedContentType(contentType)) {
+          destResp = parsedResponse.response;
+        }
+      } else if (parsedResponse.networkFailure) {
+        destResp = parsedResponse.response;
+      }
+
+      destResponses.push(destResp);
+      destResponseStatuses.push(parsedResponse.status);
+
+      // TODO: Use updated handleResponseTransform function
+      // Removing the below part, because transformerStatus is not
+      // currently being returned by test api response
+
+      // call response transform here
+      // const ctxMock = {
+      //   request: {
+      //     body: parsedResponse
+      //   }
+      // };
+      // handleResponseTransform(version, dest, ctxMock);
+      // const { output } = ctxMock.body;
+      // transformerStatuses.push(output.status);
+    }
+    response = {
+      ...curResponse,
+      destination_response: destResponses,
+      destination_response_status: destResponseStatuses,
+    };
+  } else {
+    response.destination_response = {
+      error: 'error encountered in dest_transformation stage. Aborting.',
+    };
+  }
+  return response;
+};
+
 const handleTestEvent = async (ctx, dest) => {
   try {
     const { events } = ctx.request.body;
@@ -71,117 +195,23 @@ const handleTestEvent = async (ctx, dest) => {
         let errorFound = false;
 
         if (stage.user_transform) {
-          let librariesVersionIDs = [];
-          if (libraries) {
-            librariesVersionIDs = events[0].libraries.map((library) => library.versionId);
-          }
-          const transformationVersionId =
-            ev.destination &&
-            ev.destination.Transformations &&
-            ev.destination.Transformations[0] &&
-            ev.destination.Transformations[0].versionId;
-
-          if (transformationVersionId) {
-            try {
-              const destTransformedEvents = await userTransformHandler()(
-                [ev],
-                transformationVersionId,
-                librariesVersionIDs,
-              );
-              const userTransformedEvent = destTransformedEvents[0];
-              if (userTransformedEvent.error) {
-                throw new Error(userTransformedEvent.error);
-              }
-
-              response.user_transformed_payload = userTransformedEvent.transformedEvent;
-              ev.message = userTransformedEvent.transformedEvent;
-            } catch (err) {
-              errorFound = true;
-              response.user_transformed_payload = {
-                error: err.message || JSON.stringify(err),
-              };
-            }
-          } else {
-            response.user_transformed_payload = {
-              error: 'Transformation VersionID not found',
-            };
-          }
+          const utOutput = await processUserTransform(events, ev, libraries);
+          errorFound = utOutput.errorFound;
+          response.user_transformed_payload = utOutput.transformedPayload;
+          if (utOutput.updatedMessage) ev.message = utOutput.updatedMessage;
         }
 
         if (stage.dest_transform) {
-          if (!errorFound) {
-            try {
-              const desthandler = getDestHandler(version, dest);
-              const transformedOutput = await desthandler.process(ev);
-              if (Array.isArray(transformedOutput)) {
-                response.dest_transformed_payload = transformedOutput;
-              } else {
-                response.dest_transformed_payload = [transformedOutput];
-              }
-            } catch (err) {
-              errorFound = true;
-              response.dest_transformed_payload = {
-                error: err.message || JSON.stringify(err),
-              };
-            }
-          } else {
-            response.dest_transformed_payload = {
-              error: 'error encountered in user_transformation stage. Aborting.',
-            };
-          }
+          const dtOutput = await processDestTransform(ev, errorFound, dest);
+          response.dest_transformed_payload = dtOutput.transformedPayload;
+          errorFound = dtOutput.errorFound;
         }
+
         // const transformerStatuses = [];
         if (stage.dest_transform && stage.send_to_destination) {
-          // send event to destination only after transformation
-          if (!errorFound) {
-            const destResponses = [];
-            const destResponseStatuses = [];
-
-            const transformedPayloads = response.dest_transformed_payload;
-            // eslint-disable-next-line no-restricted-syntax
-            for (const payload of transformedPayloads) {
-              // eslint-disable-next-line no-await-in-loop
-              const parsedResponse = await sendToDestination(dest, payload);
-
-              let contentType = '';
-              let response = '';
-              if (parsedResponse.headers) {
-                contentType = parsedResponse.headers['content-type'];
-                if (isSupportedContentType(contentType)) {
-                  response = parsedResponse.response;
-                }
-              } else if (parsedResponse.networkFailure) {
-                response = parsedResponse.response;
-              }
-
-              destResponses.push(response);
-              destResponseStatuses.push(parsedResponse.status);
-
-              // TODO: Use updated handleResponseTransform function
-              // Removing the below part, because transformerStatus is not
-              // currently being returned by test api response
-
-              // call response transform here
-              // const ctxMock = {
-              //   request: {
-              //     body: parsedResponse
-              //   }
-              // };
-              // handleResponseTransform(version, dest, ctxMock);
-              // const { output } = ctxMock.body;
-              // transformerStatuses.push(output.status);
-            }
-            response = {
-              ...response,
-              destination_response: destResponses,
-              destination_response_status: destResponseStatuses,
-            };
-          } else {
-            response.destination_response = {
-              error: 'error encountered in dest_transformation stage. Aborting.',
-            };
-          }
+          response = await sendEventToDestination(response, dest, errorFound);
         }
+
         respList.push(response);
       }),
     );

@@ -8,6 +8,7 @@ const {
 const { ConfigurationError, OAuthSecretError } = require('../../util/errorTypes');
 const { BASE_URL, schemaType } = require('./config');
 const { validatePayload, validateFields } = require('./utils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * Get access token to be bound to the event req headers
@@ -45,7 +46,7 @@ const generateResponse = (groupedData, schema, segmentId, metadata, type) => {
   const accessToken = getAccessToken(metadata);
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
 
   return response;

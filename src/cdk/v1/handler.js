@@ -56,17 +56,11 @@ function getErrorInfo(err) {
       default:
         break;
     }
-
-    switch (err.statTags.scope) {
-      case TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE:
-        errInstance = new TransformationError(
-          `Unknown error occurred. Original error: ${err.message}`,
-        );
-        break;
-      default:
-        break;
+    if (err.statTags.scope === TRANSFORMER_METRIC.MEASUREMENT_TYPE.EXCEPTION.SCOPE) {
+      errInstance = new TransformationError(
+        `Unknown error occurred. Original error: ${err.message}`,
+      );
     }
-
     if (errInstance) {
       return generateErrorObject(errInstance, defTags);
     }

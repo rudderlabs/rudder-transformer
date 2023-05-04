@@ -12,6 +12,7 @@ const {
 } = require('../../util');
 const { InstrumentationError } = require('../../util/errorTypes');
 const { ENDPOINT } = require('./config');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function addAddons(properties, config) {
   const addons = [];
@@ -64,7 +65,7 @@ function buildResponse(eventName, message, destination) {
   response.endpoint = endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: destination.Config.writeKey,
   };
   response.userId = message.userId ? message.userId : message.anonymousId;
@@ -78,9 +79,10 @@ function processTrack(message, destination) {
   const eventName = message.event;
   let { properties } = message;
   const { userId, anonymousId, context } = message;
-  const user = {};
-  user.userId = userId ? (userId !== '' ? userId : anonymousId) : anonymousId;
-  user.traits = getFieldValueFromMessage(message, 'traits') || {};
+  const user = {
+    userId: userId ? (userId !== '' ? userId : anonymousId) : anonymousId,
+    traits: getFieldValueFromMessage(message, 'traits') || {},
+  };
   properties = {
     ...properties,
     user,

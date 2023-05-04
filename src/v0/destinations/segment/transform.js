@@ -6,13 +6,14 @@ const {
   removeUndefinedAndNullValues,
   getFieldValueFromMessage,
 } = require('../../util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(payload, segmentConfig) {
   const basicAuth = Buffer.from(`${segmentConfig.writeKey}:`).toString('base64');
 
   const response = defaultRequestConfig();
   const header = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Basic ${basicAuth}`,
   };
   response.method = defaultPostRequestConfig.requestMethod;
@@ -51,12 +52,8 @@ function getSegmentConfig(destination, message) {
   const segmentConfig = {};
   const configKeys = Object.keys(destination.Config);
   configKeys.forEach((key) => {
-    switch (key) {
-      case destinationConfigKeys.writeKey:
-        segmentConfig.writeKey = `${destination.Config[key]}`;
-        break;
-      default:
-        break;
+    if (key === destinationConfigKeys.writeKey) {
+      segmentConfig.writeKey = `${destination.Config[key]}`;
     }
   });
 

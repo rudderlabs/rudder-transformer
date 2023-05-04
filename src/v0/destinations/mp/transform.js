@@ -347,23 +347,24 @@ const processGroupEvents = (message, type, destination) => {
 };
 
 const processSingleMessage = async (message, destination) => {
-  if (message.userId) {
-    message.userId = String(message.userId);
+  const clonedMessage = { ...message };
+  if (clonedMessage.userId) {
+    clonedMessage.userId = String(clonedMessage.userId);
   }
-  if (message.anonymousId) {
-    message.anonymousId = String(message.anonymousId);
+  if (clonedMessage.anonymousId) {
+    clonedMessage.anonymousId = String(clonedMessage.anonymousId);
   }
-  if (!message.type) {
+  if (!clonedMessage.type) {
     throw new InstrumentationError('Event type is required');
   }
-  switch (message.type) {
+  switch (clonedMessage.type) {
     case EventType.TRACK:
-      return processTrack(message, destination);
+      return processTrack(clonedMessage, destination);
     case EventType.SCREEN:
     case EventType.PAGE:
-      return processPageOrScreenEvents(message, message.type, destination);
+      return processPageOrScreenEvents(clonedMessage, clonedMessage.type, destination);
     case EventType.IDENTIFY:
-      return processIdentifyEvents(message, message.type, destination);
+      return processIdentifyEvents(clonedMessage, clonedMessage.type, destination);
     case EventType.ALIAS:
       if (destination.Config?.identityMergeApi === 'simplified') {
         throw new InstrumentationError(
@@ -372,10 +373,10 @@ const processSingleMessage = async (message, destination) => {
       }
       return processAliasEvents(message, message.type, destination);
     case EventType.GROUP:
-      return processGroupEvents(message, message.type, destination);
+      return processGroupEvents(clonedMessage, clonedMessage.type, destination);
 
     default:
-      throw new InstrumentationError(`Event type ${message.type} is not supported`);
+      throw new InstrumentationError(`Event type ${clonedMessage.type} is not supported`);
   }
 };
 

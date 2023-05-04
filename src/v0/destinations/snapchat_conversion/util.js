@@ -8,6 +8,7 @@ const {
   defaultBatchRequestConfig,
 } = require('../../util');
 const { ENDPOINT } = require('./config');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const channelMapping = {
   web: 'WEB',
@@ -41,10 +42,7 @@ function getNormalizedPhoneNumber(message) {
   let leadingZero = true;
   if (phoneNumber) {
     for (let i = 0; i < phoneNumber.length; i += 1) {
-      if (Number.isNaN(parseInt(phoneNumber[i], 10))) {
-        phoneNumber = phoneNumber.replace(phoneNumber[i], '');
-        i -= 1;
-      } else if (phoneNumber[i] === '0' && leadingZero) {
+      if (Number.isNaN(parseInt(phoneNumber[i], 10)) || (phoneNumber[i] === '0' && leadingZero)) {
         phoneNumber = phoneNumber.replace(phoneNumber[i], '');
         i -= 1;
       } else {
@@ -132,7 +130,7 @@ function generateBatchedPayloadForArray(events, destination) {
 
   batchedRequest.endpoint = ENDPOINT;
   batchedRequest.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${apiKey}`,
   };
 

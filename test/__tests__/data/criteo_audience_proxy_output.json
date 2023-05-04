@@ -108,7 +108,7 @@
   },
   {
     "output": {
-      "destinationResponse":{
+      "destinationResponse": {
         "response": {
           "message": "unknown error"
         },

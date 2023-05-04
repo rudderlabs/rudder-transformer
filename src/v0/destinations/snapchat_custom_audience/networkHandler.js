@@ -38,13 +38,13 @@ const prepareProxyReq = (request) => {
  * @returns
  */
 const getAuthErrCategory = (code, response) => {
-  switch (code) {
-    case 401:
-      if (!response.error?.details) return REFRESH_TOKEN;
-      return '';
-    default:
-      return '';
+  let authErrCategory;
+  if (code === 401) {
+    authErrCategory = !response.error?.details ? REFRESH_TOKEN : '';
+  } else {
+    authErrCategory = '';
   }
+  return authErrCategory;
 };
 
 const scAudienceProxyRequest = async (request) => {

@@ -18,6 +18,7 @@ const {
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const { Event, ENDPOINT, ConfigCategory, mappingConfig, nameToEventMap } = require('./config');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(payload, message, destination) {
   const { androidAppId, appleAppId } = destination.Config;
@@ -92,7 +93,7 @@ function responseBuilderSimple(payload, message, destination) {
   const response = defaultRequestConfig();
   response.endpoint = endpoint;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     authentication: devKey,
   };
   response.method = defaultPostRequestConfig.requestMethod;
@@ -148,10 +149,11 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
 }
 
 function processNonTrackEvents(message, eventName) {
-  if (!isDefinedAndNotNull(message.event)) {
-    message.event = message.name || (message.properties && message.properties.name);
+  const clonedMessage = { ...message };
+  if (!isDefinedAndNotNull(clonedMessage.event)) {
+    clonedMessage.event = message.name || (message.properties && message.properties.name);
   }
-  const payload = getEventValueForUnIdentifiedTrackEvent(message);
+  const payload = getEventValueForUnIdentifiedTrackEvent(clonedMessage);
   payload.eventName = eventName;
   return payload;
 }
@@ -192,7 +194,7 @@ function processSingleMessage(message, destination) {
   let payload;
   switch (messageType) {
     case EventType.TRACK: {
-      payload = processEventTypeTrack(message, destination);
+      payload = processEventTypeTrack(message);
       break;
     }
     case EventType.SCREEN: {

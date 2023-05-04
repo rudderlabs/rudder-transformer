@@ -74,7 +74,7 @@ const getHeaderFields = (config, fieldSchemaNames) => {
 
   columnFieldsMapping.forEach((colField) => {
     if (fieldSchemaNames) {
-      if (fieldSchemaNames && !fieldSchemaNames.includes(colField.to)) {
+      if (!fieldSchemaNames.includes(colField.to)) {
         throw new ConfigurationError(
           `The field ${colField.to} is not present in Marketo Field Schema. Aborting`,
         );
@@ -89,7 +89,6 @@ const getHeaderFields = (config, fieldSchemaNames) => {
 
 const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   const input = inputEvents;
-  const jobIds = [];
   const messageArr = [];
   let startTime;
   let endTime;
@@ -99,13 +98,12 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   input.forEach((i) => {
     const inputData = i;
     const jobId = inputData.metadata.job_id;
-    jobIds.push(`${jobId}`);
     const data = {};
     data[jobId] = inputData.message;
     messageArr.push(data);
   });
 
-  const headerArr = getHeaderFields(config, fieldSchemaNames, jobIds);
+  const headerArr = getHeaderFields(config, fieldSchemaNames);
 
   if (isDefinedAndNotNullAndNotEmpty(config.deDuplicationField)) {
     // dedup starts
@@ -193,6 +191,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
     config,
     fieldSchemaNames,
   );
+  const FILE_UPLOAD_ERR_MSG = 'Could not upload file';
   try {
     const formReq = new FormData();
     const { munchkinId, deDuplicationField } = config;
@@ -265,7 +264,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
               state: 'Retryable',
             });
             throw new RetryableError(
-              resp.response.data.errors[0].message || 'Could not upload file',
+              resp.response.data.errors[0].message || FILE_UPLOAD_ERR_MSG,
               500,
               { successfulJobs, unsuccessfulJobs },
             );
@@ -282,7 +281,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
                 state: 'Retryable',
               });
               throw new RetryableError(
-                resp.response.data.errors[0].message || 'Could not upload file',
+                resp.response.data.errors[0].message || FILE_UPLOAD_ERR_MSG,
                 500,
                 { successfulJobs, unsuccessfulJobs },
               );
@@ -293,7 +292,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
               state: 'Abortable',
             });
             throw new AbortedError(
-              resp.response.data.errors[0].message || 'Could not upload file',
+              resp.response.data.errors[0].message || FILE_UPLOAD_ERR_MSG,
               400,
               { successfulJobs, unsuccessfulJobs },
             );
@@ -302,7 +301,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
               status: 500,
               state: 'Retryable',
             });
-            throw new ThrottledError(resp.response.response.statusText || 'Could not upload file', {
+            throw new ThrottledError(resp.response.response.statusText || FILE_UPLOAD_ERR_MSG, {
               successfulJobs,
               unsuccessfulJobs,
             });
@@ -311,11 +310,10 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
             status: 500,
             state: 'Retryable',
           });
-          throw new RetryableError(
-            resp.response.response.statusText || 'Error during uploading file',
-            500,
-            { successfulJobs, unsuccessfulJobs },
-          );
+          throw new RetryableError(resp.response.response.statusText || FILE_UPLOAD_ERR_MSG, 500, {
+            successfulJobs,
+            unsuccessfulJobs,
+          });
         }
       }
     }
@@ -324,11 +322,11 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
     // TODO check the tags
     stats.increment(UPLOAD_FILE, {
       status: err.response?.status || 400,
-      errorMessage: err.message || 'Error during uploading file',
+      errorMessage: err.message || FILE_UPLOAD_ERR_MSG,
     });
     const status = err.response?.status || 400;
     throw new NetworkError(
-      err.message || 'Error during uploading file',
+      err.message || FILE_UPLOAD_ERR_MSG,
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
@@ -353,10 +351,11 @@ const responseHandler = async (input, config) => {
     accessToken,
   );
   if (importId) {
-    const response = {};
-    response.statusCode = 200;
-    response.importId = importId;
-    response.pollURL = '/pollStatus';
+    const response = {
+      statusCode: 200,
+      importId,
+      pollURL: '/pollStatus',
+    };
     const csvHeader = getHeaderFields(config, fieldSchemaNames).toString();
     response.metadata = { successfulJobs, unsuccessfulJobs, csvHeader };
     return response;

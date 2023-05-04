@@ -21,6 +21,7 @@ const {
   TransformationError,
   InstrumentationError,
 } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(message, category, destination) {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
@@ -42,7 +43,7 @@ function responseBuilderSimple(message, category, destination) {
   }
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     'MOE-APPKEY': apiId,
     // Basic Authentication encodes a 'username:password'
     // using base64 and prepends it with the string 'Basic '.

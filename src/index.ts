@@ -1,16 +1,17 @@
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import gracefulShutdown from 'http-graceful-shutdown';
-import logger from './logger';
 import dotenv from 'dotenv';
+import logger from './logger';
 import cluster from './util/cluster';
 import { router } from './versionedRouter';
-const { RedisDB } = require('./util/redisConnector');
 import { testRouter } from './testRouter';
-import { metricsRouter } from './metricsRouter';
+import { metricsRouter } from './routes/metricsRouter';
 import { addStatMiddleware, addRequestSizeMiddleware } from './middleware';
 import { logProcessInfo } from './util/utils';
 import { applicationRoutes } from './routes';
+
+const { RedisDB } = require('./util/redisConnector');
 
 dotenv.config();
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
@@ -55,7 +56,13 @@ if (clusterEnabled) {
 } else {
   // HTTP server for exposing metrics
   if (process.env.STATS_CLIENT === 'prometheus') {
-    metricsApp.listen(metricsPort);
+    const metricsServer = metricsApp.listen(metricsPort);
+
+    gracefulShutdown(metricsServer, {
+      signals: 'SIGINT SIGTERM SIGSEGV',
+      timeout: 30000, // timeout: 30 secs
+      forceExit: false, // Don't force exit. Let graceful shutdown of server handle it.
+    });
   }
 
   const server = app.listen(port);

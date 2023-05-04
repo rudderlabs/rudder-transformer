@@ -20,6 +20,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * This function is used to check if the user/profile already exists or not, if already exists unique person_id
@@ -43,7 +44,7 @@ const isProfileExist = async (message, { Config }) => {
       // eslint-disable-next-line no-await-in-loop
       const profileResponse = await httpGET(`${BASE_ENDPOINT}/api/v2/people/search`, {
         header: {
-          Accept: 'application/json',
+          Accept: JSON_MIME_TYPE,
         },
         params: {
           api_key: privateApiKey,
@@ -109,7 +110,7 @@ const subscribeUserToList = (message, traitsInfo, conf, destination) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.params = { api_key: destination.Config.privateApiKey };
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
 

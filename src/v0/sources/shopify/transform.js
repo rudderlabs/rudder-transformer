@@ -191,12 +191,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
   message = removeUndefinedAndNullValues(message);
   return message;
 };
-const isIdentifierEvent = (event) => {
-  if (event?.event === 'rudderIdentifier') {
-    return true;
-  }
-  return false;
-};
+const isIdentifierEvent = (event) => event?.event === 'rudderIdentifier';
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
     const setStartTime = Date.now();
@@ -229,8 +224,8 @@ const process = async (event) => {
 
   const metricMetadata = {
     writeKey: event.query_parameters?.writeKey?.[0],
-    source: "SHOPIFY"
-  }
+    source: 'SHOPIFY',
+  };
   if (isIdentifierEvent(event)) {
     return processIdentifierEvent(event, metricMetadata);
   }

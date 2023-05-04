@@ -25,7 +25,7 @@ const {
   handleHier,
   handleList,
   handleCustomProperties,
-  stringifyValueAndJoinWithDelimitter,
+  stringifyValueAndJoinWithDelimiter,
 } = require('./utils');
 /*
   Configuration variables documentation: https://experienceleague.adobe.com/docs/analytics/implementation/vars/config-vars/configuration-variables.html?lang=en
@@ -169,21 +169,132 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   return response;
 };
 
+function handleProducts(
+  message,
+  destinationConfig,
+  event,
+  adobeProdEventArr,
+  isSingleProdEvent,
+  prod,
+) {
+  const { productMerchEventToAdobeEvent, productMerchProperties, productMerchEvarsMap } =
+    destinationConfig;
+  const { properties } = message;
+  let prodEventString = '';
+  let prodEVarsString = '';
+  if (productMerchEventToAdobeEvent[event] && productMerchProperties) {
+    const merchMap = [];
+    productMerchProperties.forEach((rudderProp) => {
+      // adding product level merchandise properties
+      if (
+        rudderProp.productMerchProperties.startsWith('products.') &&
+        isSingleProdEvent === false
+      ) {
+        // take the keys after products. and find the value in properties
+        const key = rudderProp?.productMerchProperties.split('.');
+        const v = get(prod, key[1]);
+        if (isDefinedAndNotNull(v)) {
+          adobeProdEventArr.forEach((val) => {
+            merchMap.push(`${val}=${v}`);
+          });
+        }
+      } else if (rudderProp.productMerchProperties in properties) {
+        // adding root level merchandise properties
+        adobeProdEventArr.forEach((val) => {
+          merchMap.push(`${val}=${properties[rudderProp?.productMerchProperties]}`);
+        });
+      }
+    });
+    // forming prodEventString from merchMap array delimited by |
+    prodEventString = merchMap.join('|');
+
+    const eVars = [];
+    Object.keys(productMerchEvarsMap).forEach((prodKey) => {
+      const prodVal = productMerchEvarsMap[prodKey];
+
+      if (prodKey.startsWith('products.')) {
+        // take the keys after products. and find the value in properties
+        const productValue = get(properties, prodKey?.split('.')?.[1]);
+        if (isDefinedAndNotNull(productValue)) {
+          eVars.push(`eVar${prodVal}=${productValue}`);
+        }
+      } else if (prodKey in properties) {
+        eVars.push(`eVar${prodVal}=${properties[prodKey]}`);
+      }
+    });
+    prodEVarsString = eVars.join('|');
+  }
+  return { prodEventString, prodEVarsString };
+}
+
+function handleProductStringSection(message, destinationConfig, event) {
+  const { productMerchEventToAdobeEvent, productIdentifier } = destinationConfig;
+  const { properties } = message;
+  const { products } = properties;
+  const adobeProdEvent = productMerchEventToAdobeEvent[event];
+  const prodString = [];
+
+  if (adobeProdEvent || ECOM_PRODUCT_EVENTS.includes(event.toLowerCase())) {
+    const isSingleProdEvent =
+      adobeProdEvent === 'scAdd' ||
+      adobeProdEvent === 'scRemove' ||
+      (adobeProdEvent === 'prodView' && event.toLowerCase() !== 'product list viewed') ||
+      !Array.isArray(products);
+    const productsArr = isSingleProdEvent ? [properties] : products;
+    let adobeProdEventArr = [];
+    if (adobeProdEvent) {
+      adobeProdEventArr = adobeProdEvent.split(',');
+    }
+
+    productsArr.forEach((prod) => {
+      const category = prod?.category || '';
+      const quantity = prod?.quantity || 1;
+      const total = prod?.price ? (prod.price * quantity).toFixed(2) : 0;
+      let item = prod[productIdentifier];
+      if (productIdentifier === 'id') {
+        item = prod?.product_id || prod?.id;
+      }
+
+      const { prodEventString, prodEVarsString } = handleProducts(
+        message,
+        destinationConfig,
+        event,
+        adobeProdEventArr,
+        isSingleProdEvent,
+        prod,
+      );
+
+      // preparing the product string for the final payload
+      // if prodEventString or prodEVarsString are missing or not
+      let prodArr = [category, item, quantity, total];
+      if (prodEventString || prodEVarsString) {
+        prodArr = [...prodArr, prodEventString, prodEVarsString];
+      }
+      const test = stringifyValueAndJoinWithDelimiter(prodArr);
+      if (isSingleProdEvent) {
+        prodString.push(test);
+      } else {
+        prodString.push(test);
+        prodString.push(',');
+      }
+    });
+    // we delimit multiple products by ',' removing the trailing here
+    if (prodString[prodString.length - 1] === ',') {
+      prodString.pop();
+    }
+  }
+  return prodString;
+}
+
 const processTrackEvent = (message, adobeEventName, destinationConfig, extras = {}) => {
   // set event string and product string only
   // handle extra properties
   // rest of the properties are handled under common properties
-  const {
-    eventMerchEventToAdobeEvent,
-    eventMerchProperties,
-    productMerchEventToAdobeEvent,
-    productIdentifier,
-    productMerchProperties,
-    productMerchEvarsMap,
-  } = destinationConfig;
+  const { eventMerchEventToAdobeEvent, eventMerchProperties, productMerchEventToAdobeEvent } =
+    destinationConfig;
   const { event: rawMessageEvent, properties } = message;
-  const { overrideEventString, overrideProductString, products } = properties;
-  const event = rawMessageEvent;
+  const { overrideEventString, overrideProductString } = properties;
+  const event = rawMessageEvent.toLowerCase();
   const adobeEventArr = adobeEventName ? adobeEventName.split(',') : [];
   // adobeEventArr is an array of events which is defined as
   // ["eventName", "mapped Adobe Event=mapped merchproperty's value", "mapped Adobe Event=mapped merchproperty's value", . . .]
@@ -210,93 +321,7 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
   }
 
   // product string section
-  const adobeProdEvent = productMerchEventToAdobeEvent[event];
-  const prodString = [];
-  let prodEventString = '';
-  let prodEVarsString = '';
-
-  if (adobeProdEvent || ECOM_PRODUCT_EVENTS.includes(event.toLowerCase())) {
-    const isSingleProdEvent =
-      adobeProdEvent === 'scAdd' ||
-      adobeProdEvent === 'scRemove' ||
-      (adobeProdEvent === 'prodView' && event.toLowerCase() !== 'product list viewed') ||
-      !Array.isArray(products);
-    const productsArr = isSingleProdEvent ? [properties] : products;
-    let adobeProdEventArr = [];
-    if (adobeProdEvent) {
-      adobeProdEventArr = adobeProdEvent.split(',');
-    }
-
-    productsArr.forEach((value) => {
-      const category = value?.category || '';
-      const quantity = value?.quantity || 1;
-      const total = value?.price ? (value.price * quantity).toFixed(2) : 0;
-      let item = value[productIdentifier];
-      if (productIdentifier === 'id') {
-        item = value?.product_id || value?.id;
-      }
-
-      const merchMap = [];
-      if (productMerchEventToAdobeEvent[event] && productMerchProperties) {
-        productMerchProperties.forEach((rudderProp) => {
-          // adding product level merchandise properties
-          if (
-            rudderProp.productMerchProperties.startsWith('products.') &&
-            isSingleProdEvent === false
-          ) {
-            // take the keys after products. and find the value in properties
-            const key = rudderProp?.productMerchProperties.split('.');
-            const v = get(value, key[1]);
-            if (isDefinedAndNotNull(v)) {
-              adobeProdEventArr.forEach((val) => {
-                merchMap.push(`${val}=${v}`);
-              });
-            }
-          } else if (rudderProp.productMerchProperties in properties) {
-            // adding root level merchandise properties
-            adobeProdEventArr.forEach((val) => {
-              merchMap.push(`${val}=${properties[rudderProp?.productMerchProperties]}`);
-            });
-          }
-        });
-        // forming prodEventString from merchMap array delimited by |
-        prodEventString = merchMap.join('|');
-
-        const eVars = [];
-        Object.keys(productMerchEvarsMap).forEach((prodKey) => {
-          const prodVal = productMerchEvarsMap[prodKey];
-
-          if (prodKey.startsWith('products.')) {
-            // take the keys after products. and find the value in properties
-            const productValue = get(properties, prodKey?.split('.')?.[1]);
-            if (isDefinedAndNotNull(productValue)) {
-              eVars.push(`eVar${prodVal}=${productValue}`);
-            }
-          } else if (prodKey in properties) {
-            eVars.push(`eVar${prodVal}=${properties[prodKey]}`);
-          }
-        });
-        prodEVarsString = eVars.join('|');
-      }
-      // preparing the product string for the final payload
-      // if prodEventString or prodEVarsString are missing or not
-      let prodArr = [category, item, quantity, total];
-      if (prodEventString || prodEVarsString) {
-        prodArr = [...prodArr, prodEventString, prodEVarsString];
-      }
-      const test = stringifyValueAndJoinWithDelimitter(prodArr);
-      if (isSingleProdEvent) {
-        prodString.push(test);
-      } else {
-        prodString.push(test);
-        prodString.push(',');
-      }
-    });
-    // we delimit multiple products by ',' removing the trailing here
-    if (prodString[prodString.length - 1] === ',') {
-      prodString.pop();
-    }
-  }
+  const prodString = handleProductStringSection(message, destinationConfig, event);
 
   return {
     ...extras,
@@ -306,12 +331,13 @@ const processTrackEvent = (message, adobeEventName, destinationConfig, extras = 
 };
 
 const handleTrack = (message, destinationConfig) => {
+  const ORDER_ID_KEY = 'properties.order_id';
   const { event: rawEvent } = message;
   let payload = null;
   // handle ecommerce events separately
   // generic events should go to the default
-  const event = rawEvent;
-  switch (event.toLowerCase()) {
+  const event = rawEvent?.toLowerCase();
+  switch (event) {
     case 'product viewed':
     case 'product list viewed':
       payload = processTrackEvent(message, 'prodView', destinationConfig);
@@ -324,9 +350,8 @@ const handleTrack = (message, destinationConfig) => {
       break;
     case 'order completed':
       payload = processTrackEvent(message, 'purchase', destinationConfig, {
-        purchaseID: get(message, 'properties.purchaseId') || get(message, 'properties.order_id'),
-        transactionID:
-          get(message, 'properties.transactionId') || get(message, 'properties.order_id'),
+        purchaseID: get(message, 'properties.purchaseId') || get(message, ORDER_ID_KEY),
+        transactionID: get(message, 'properties.transactionId') || get(message, ORDER_ID_KEY),
       });
       break;
     case 'cart viewed':
@@ -334,19 +359,18 @@ const handleTrack = (message, destinationConfig) => {
       break;
     case 'checkout started':
       payload = processTrackEvent(message, 'scCheckout', destinationConfig, {
-        purchaseID: get(message, 'properties.purchaseId') || get(message, 'properties.order_id'),
-        transactionID:
-          get(message, 'properties.transactionId') || get(message, 'properties.order_id'),
+        purchaseID: get(message, 'properties.purchaseId') || get(message, ORDER_ID_KEY),
+        transactionID: get(message, 'properties.transactionId') || get(message, ORDER_ID_KEY),
       });
       break;
     case 'cart opened':
       payload = processTrackEvent(message, 'scOpen', destinationConfig);
       break;
     default:
-      if (destinationConfig.rudderEventsToAdobeEvents[event]) {
+      if (destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()]) {
         payload = processTrackEvent(
           message,
-          destinationConfig.rudderEventsToAdobeEvents[event].trim(),
+          destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()].trim(),
           destinationConfig,
         );
       } else {

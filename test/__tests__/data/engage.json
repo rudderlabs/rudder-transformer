@@ -20,7 +20,7 @@
       }
     },
     "output": {
-      "error": "Neither externalId or userId is available."
+      "error": "Neither externalId nor userId is available"
     }
   },
   {

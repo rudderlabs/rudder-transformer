@@ -808,14 +808,8 @@
               "type": "UNKNOWN",
               "sub_type": "ANYTHING"
             },
-            "schema": [
-              "DOBM"
-            ],
-            "data": [
-              [
-                "2"
-              ]
-            ]
+            "schema": ["DOBM"],
+            "data": [["2"]]
           }
         },
         "body": {
@@ -840,14 +834,8 @@
               "type": "UNKNOWN",
               "sub_type": "ANYTHING"
             },
-            "schema": [
-              "DOBM"
-            ],
-            "data": [
-              [
-                "2"
-              ]
-            ]
+            "schema": ["DOBM"],
+            "data": [["2"]]
           }
         },
         "body": {

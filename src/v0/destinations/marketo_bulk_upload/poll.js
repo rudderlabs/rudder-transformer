@@ -3,6 +3,7 @@ const { getAccessToken, ABORTABLE_CODES, THROTTLED_CODES, POLL_ACTIVITY } = requ
 const { httpGET } = require('../../../adapters/network');
 const stats = require('../../../util/stats');
 const { AbortedError, ThrottledError, RetryableError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getPollStatus = async (event) => {
   const accessToken = await getAccessToken(event.config);
@@ -12,7 +13,7 @@ const getPollStatus = async (event) => {
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#polling_job_status
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${accessToken}`,
     },
   };
@@ -21,6 +22,7 @@ const getPollStatus = async (event) => {
   const pollStatus = await httpGET(pollUrl, requestOptions);
   const endTime = Date.now();
   const requestTime = endTime - startTime;
+  const POLL_STATUS_ERR_MSG = 'Could not poll status';
   if (pollStatus.success) {
     if (pollStatus.response && pollStatus.response.data.success) {
       stats.increment(POLL_ACTIVITY, {
@@ -58,7 +60,7 @@ const getPollStatus = async (event) => {
           state: 'Abortable',
         });
         throw new AbortedError(
-          pollStatus.response.data.errors[0].message || 'Could not poll status',
+          pollStatus.response.data.errors[0].message || POLL_STATUS_ERR_MSG,
           400,
           pollStatus,
         );
@@ -69,7 +71,7 @@ const getPollStatus = async (event) => {
           state: 'Retryable',
         });
         throw new ThrottledError(
-          pollStatus.response.data.errors[0].message || 'Could not poll status',
+          pollStatus.response.data.errors[0].message || POLL_STATUS_ERR_MSG,
           pollStatus,
         );
       }
@@ -90,7 +92,7 @@ const getPollStatus = async (event) => {
     status: 400,
     state: 'Abortable',
   });
-  throw new AbortedError('Could not poll status', 400, pollStatus);
+  throw new AbortedError(POLL_STATUS_ERR_MSG, 400, pollStatus);
 };
 
 const responseHandler = async (event) => {

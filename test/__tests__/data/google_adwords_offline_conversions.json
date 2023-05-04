@@ -4576,9 +4576,7 @@
                     "transaction_amount_micros": "100000000",
                     "transaction_date_time": "2019-10-14 11:15:18+00:00"
                   },
-                  "userIdentifiers": [
-                    {}
-                  ]
+                  "userIdentifiers": [{}]
                 }
               },
               "validate_only": false

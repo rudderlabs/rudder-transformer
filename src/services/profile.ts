@@ -105,16 +105,14 @@ export default class ProfileService {
         }
         logger.info('After pipeline');
       } else if (credBucketDetails.sendTo) {
-        switch (credBucketDetails.sendTo) {
-          case 'aws':
-            data = await this.uploadToAWS(credBucketDetails, fileName, snapshotReadableStream);
-            break;
-          default:
-            throw new Error(
-              `un-supported cloud provider, only these are supported currently(${supportedCloudProvidersForDumpStorage.join(
-                ', ',
-              )}) `,
-            );
+        if (credBucketDetails.sendTo === 'aws') {
+          data = await this.uploadToAWS(credBucketDetails, fileName, snapshotReadableStream);
+        } else {
+          throw new Error(
+            `un-supported cloud provider, only these are supported currently(${supportedCloudProvidersForDumpStorage.join(
+              ', ',
+            )}) `,
+          );
         }
       }
       // snapshotReadableStream.destroy();

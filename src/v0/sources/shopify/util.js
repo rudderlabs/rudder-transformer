@@ -142,54 +142,50 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
     case SHOPIFY_TRACK_MAP.carts_update:
       cartToken = properties?.id || properties?.token;
       break;
-    // https://help.shopify.com/en/manual/orders/edit-orders -> order can be edited through shopify-admin only
-    // https://help.shopify.com/en/manual/orders/fulfillment/setting-up-fulfillment -> fullfillments wont include cartToken neither in manual or automatiic
+    // order edit and fullfillments events dont have cart_token or id hence shopify-admin 
     default:
   }
   if (!isDefinedAndNotNull(cartToken)) {
-    stats.increment('shopify_no_cartToken', {
+    stats.increment('No_cartToken_in_payload', {
       ...metricMetadata,
       event,
     });
     return null;
   }
-  const anonymousIDfromCache = await anonymousIdCache.get(cartToken, () => null); // check if anonymousId is present in cachewith cartToken as key
-  let anonymousIDfromDB;
+  const anonymousIDfromCache = await anonymousIdCache.get(cartToken); // check if anonymousId is present in cache with cartToken as key
+  if (isDefinedAndNotNull(anonymousIDfromCache)) {
+    return anonymousIDfromCache;
+  }
   let redisVal;
-  if (!isDefinedAndNotNull(anonymousIDfromCache)) {
-    const executeStartTime = Date.now();
-    try{
-      redisVal = await RedisDB.getVal(`${cartToken}`);
-    }catch(e){
-      stats.increment('shopify_events_lost_due_redis', {
-      ...metricMetadata,
-      });
-      return null;
-    }
-    stats.timing("redis_latency", executeStartTime, {
-      operation: 'get',
+  const executeStartTime = Date.now();
+  try {
+    redisVal = await RedisDB.getVal(`${cartToken}`);
+  } catch (e) {
+    stats.increment('shopify_events_not_stitched_due_redis', {
       ...metricMetadata,
     });
-    stats.increment('shopify_redis_get_data', {
-      ...metricMetadata,
-      timestamp: Date.now(),
-    });
-  } else {
-    anonymousIDfromDB = anonymousIDfromCache;
   }
-  if (isDefinedAndNotNull(redisVal)) {
-    anonymousIDfromDB = redisVal.anonymousId;
-  }
-  if (!isDefinedAndNotNull(anonymousIDfromDB)) {
-    /* this is for backward compatability when we don't have the redis mapping for older events
-    we will get anonymousIDFromDb as null so we will set UUID using the session Key */
+  stats.timing("redis_latency", executeStartTime, {
+    operation: 'get',
+    ...metricMetadata,
+  });
+  stats.increment('shopify_redis_get_data', {
+    ...metricMetadata,
+  });
+  if (redisVal === null) {
     stats.increment('shopify_no_anon_id_from_redis', {
       ...metricMetadata,
       event,
     })
-    anonymousIDfromDB = sha256(cartToken).toString().substring(0, 36);
   }
-  return anonymousIDfromDB;
+  if (!isDefinedAndNotNull(redisVal)) {
+    /* if redis does not have the mapping for cartToken as key (null) 
+      or redis is down(undefined)
+      we will set anonymousId as sha256(cartToken)
+     */
+    return sha256(cartToken).toString().substring(0, 36);
+  }
+  return redisVal.anonymousId;
 };
 
 /**
@@ -197,10 +193,20 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
  * @param {*} inputEvent 
  * @returns true if event is valid else false
  */
-const isValidCartEvent = async (inputEvent) => {
+const isValidCartEvent = async (inputEvent, metricMetadata) => {
   const cartToken = inputEvent.token || inputEvent.id;
-  const redisVal = await RedisDB.getVal(cartToken);
-  const newCartItems = inputEvent?.line_items.length !== 0 ? sha256(inputEvent.line_items) : 0;
+  let redisVal;
+  try {
+    redisVal = await RedisDB.getVal(cartToken);
+  } catch (e) {
+    // so if redis is down we will send the event to downstream destinations
+    console.log("Error: ", e);
+    stats.increment('shopify_events_not_stitched_due_redis', {
+      ...metricMetadata,
+    });
+    return true;
+  }
+  const newCartItems = inputEvent?.line_items.length !== 0 ? sha256(inputEvent.line_items) : "0";
   if (redisVal) {
     const prevCartItems = redisVal.itemsHash;
     if (prevCartItems === newCartItems) {
@@ -211,7 +217,8 @@ const isValidCartEvent = async (inputEvent) => {
     await RedisDB.setVal(`${cartToken}`, value);
     return true;
   }
-  return false; // if redisVal is null then we will return false as we dont want to pollute the downstream destinations
+  // if nothing is found for cartToken provided then we will return false as we dont want to pollute the downstream destinations
+  return false;
 }
 
 module.exports = {

@@ -10,6 +10,7 @@ const {
 } = require('../../util');
 const { processIdentify, processTrack, processGroup } = require('./util');
 const { InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * This function validates the message and builds the response
@@ -48,9 +49,9 @@ const validateAndBuildResponse = async (message, destination) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = category.endpoint;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${destination.Config.apiKey}`,
-    Accept: 'application/json',
+    Accept: JSON_MIME_TYPE,
   };
   response.userId = responseBody.user_id;
   return response;

@@ -10,6 +10,7 @@ const eventNameMapping = {
 };
 
 function processExtraPayloadParams(event, mappedPayload) {
+  const clonedMappedPayload = { ...mappedPayload };
   const { message } = event;
   let eventName = message.event;
   const eventData = message.properties || {};
@@ -64,12 +65,12 @@ function processExtraPayloadParams(event, mappedPayload) {
     device_ua: message.context?.userAgent || '',
     currency: eventData?.currency || 'USD',
   };
-  mappedPayload.data = { ...mappedPayload.data, ...extraParams };
+  clonedMappedPayload.data = { ...clonedMappedPayload.data, ...extraParams };
   // Note: "defaultValue" cannot be empty string hence had to manually set it here since kochava requires it
   if (Utils.getValueFromMessage(message, 'context.os.version') === '') {
-    mappedPayload.data.os_version = '';
+    clonedMappedPayload.data.os_version = '';
   }
-  return mappedPayload;
+  return clonedMappedPayload;
 }
 
 module.exports = {

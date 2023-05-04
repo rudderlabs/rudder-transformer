@@ -1,39 +1,37 @@
 interface requestType {
-  method: string,
-  body?: any,
-  headers?: Record<string,string>,
-  params?: Record<string,string>
+  method: string;
+  body?: any;
+  headers?: Record<string, string>;
+  params?: Record<string, string>;
 }
 
 interface responseType {
-  status: number,
-  body?: any,
-  headers?: Record<string,string>
+  status: number;
+  body?: any;
+  headers?: Record<string, string>;
 }
 
 interface inputType {
-  request: requestType,
-  pathSuffix?: string
+  request: requestType;
+  pathSuffix?: string;
 }
 
 interface outputType {
-  response?: responseType
+  response?: responseType;
 }
 
 interface mockType {
-  request: requestType,
-  response: responseType
+  request: requestType;
+  response: responseType;
 }
 
 interface testCaseDataType {
-  name: string,
-  description: string,
-  feature: string,
-  module: string,
-  version?: string
-  input: inputType,
-  output: outputType,
-  mock?: mockType[]
-};
-
-
+  name: string;
+  description: string;
+  feature: string;
+  module: string;
+  version?: string;
+  input: inputType;
+  output: outputType;
+  mock?: mockType[];
+}

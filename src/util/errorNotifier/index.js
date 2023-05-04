@@ -4,15 +4,8 @@ const client = require('./client');
 
 const { ERROR_NOTIFIER } = process.env;
 
-let notifier;
-switch (ERROR_NOTIFIER) {
-  case 'Bugsnag':
-    notifier = Bugsnag;
-    break;
-  default:
-    notifier = defaultNotifier;
-    break;
-}
+const notifier = ERROR_NOTIFIER === 'Bugsnag' ? Bugsnag : defaultNotifier;
+
 client.setNotifier(notifier);
 
 // Initialize the notifier client

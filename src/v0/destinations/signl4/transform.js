@@ -12,13 +12,14 @@ const {
   TransformationError,
   InstrumentationError,
 } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = endpoint;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.body.JSON = removeUndefinedAndNullAndEmptyValues(payload);
@@ -57,12 +58,10 @@ const processEvent = (message, destination) => {
   }
   const messageType = message.type.toLowerCase();
   let response;
-  switch (messageType) {
-    case EventType.TRACK:
-      response = trackResponseBuilder(message, destination);
-      break;
-    default:
-      throw new InstrumentationError(`Event type ${messageType} is not supported`);
+  if (messageType === EventType.TRACK) {
+    response = trackResponseBuilder(message, destination);
+  } else {
+    throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
 };

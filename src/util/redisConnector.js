@@ -94,7 +94,6 @@ const RedisDB = {
         }
       } else {
         value = await this.client.get(key);
-
       }
       const bytes = Buffer.byteLength(JSON.stringify(value), "utf-8");
       stats.gauge('redis_get_val_size', bytes, {

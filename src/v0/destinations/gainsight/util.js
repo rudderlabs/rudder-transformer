@@ -4,6 +4,7 @@ const logger = require('../../../logger');
 const { ConfigurationError, RetryableError, NetworkError } = require('../../util/errorTypes');
 const { ENDPOINTS, getLookupPayload } = require('./config');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const searchGroup = async (groupName, Config) => {
   let resp;
@@ -14,7 +15,7 @@ const searchGroup = async (groupName, Config) => {
       {
         headers: {
           Accesskey: Config.accessKey,
-          'Content-Type': 'application/json',
+          'Content-Type': JSON_MIME_TYPE,
         },
       },
     );
@@ -47,7 +48,7 @@ const createGroup = async (payload, Config) => {
       {
         headers: {
           Accesskey: Config.accessKey,
-          'Content-Type': 'application/json',
+          'Content-Type': JSON_MIME_TYPE,
         },
       },
     );
@@ -80,7 +81,7 @@ const updateGroup = async (payload, Config) => {
       {
         headers: {
           Accesskey: Config.accessKey,
-          'Content-Type': 'application/json',
+          'Content-Type': JSON_MIME_TYPE,
         },
         params: {
           keys: 'Name',

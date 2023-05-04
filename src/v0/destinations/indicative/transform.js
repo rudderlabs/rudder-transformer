@@ -10,6 +10,7 @@ const {
 } = require('../../util');
 const { getUAInfo } = require('./utils');
 const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const handleProperties = (properties) => {
   const result = {};
@@ -119,7 +120,7 @@ const responseBuilderSimple = (message, category, destination) => {
     response.method = defaultPostRequestConfig.requestMethod;
     response.headers = {
       'Indicative-Client': 'RudderStack',
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     };
     response.userId = getFieldValueFromMessage(message, 'userId');
     response.body.JSON = responseBody;

@@ -148,21 +148,6 @@ function getUserAttributesObject(message, mappingJson, destination) {
     return traits;
   }
 
-  // iterate over the destKeys and set the value if present
-  Object.keys(mappingJson).forEach((destKey) => {
-    let value = get(traits, mappingJson[destKey]);
-    if (value) {
-      // handle gender special case
-      if (destKey === 'gender') {
-        value = formatGender(value);
-      }
-      if (destKey === 'email') {
-        value = value.toLowerCase();
-      }
-      data[destKey] = value;
-    }
-  });
-
   // reserved keys : already mapped through mappingJson
   const reservedKeys = [
     'address',
@@ -184,6 +169,9 @@ function getUserAttributesObject(message, mappingJson, destination) {
         // handle gender special case
         if (destKey === 'gender') {
           value = formatGender(value);
+        }
+        if (destKey === 'email') {
+          value = value.toLowerCase();
         }
         data[destKey] = value;
       }

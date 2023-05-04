@@ -377,5 +377,168 @@
   {
     "statusCode": 400,
     "error": "Email or userId is mandatory"
-  }
+  },
+  [{
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "name": "rudderUpdate",
+        "plan": "basic",
+        "size": 50,
+        "industry": "IT",
+        "company_id": "test_company_id_wdasda",
+        "monthly_spend": 2131231,
+        "remote_created_at": 1683017572,
+        "custom_attributes": {
+          "key1": "val1",
+          "employees": 450,
+          "email": "test@test.com"
+        }
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "userId": "sdfrsdfsdfsf",
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer abcd=",
+      "Intercom-Version": "1.4"
+    },
+    "version": "1",
+    "endpoint": "https://api.intercom.io/companies"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "user_id": "sdfrsdfsdfsf",
+        "companies": [
+          {
+            "name": "rudderUpdate",
+            "company_id": "test_company_id_wdasda"
+          }
+        ]
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "userId": "sdfrsdfsdfsf",
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer abcd=",
+      "Intercom-Version": "1.4"
+    },
+    "version": "1",
+    "endpoint": "https://api.intercom.io/users"
+  }],
+  [
+    {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "name": "rudderUpdate",
+          "size": 50,
+          "industry": "IT",
+          "company_id": "test_company_id",
+          "monthly_spend": 2131231,
+          "plan": "basic",
+          "custom_attributes": {
+            "email" : "comanyemail@abc.com"
+          }
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "userId": "12312312",
+      "headers": {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer abcd=",
+        "Intercom-Version": "1.4"
+      },
+      "version": "1",
+      "endpoint": "https://api.intercom.io/companies"
+    }
+  ],
+  [
+    {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "name": "rudderUpdate",
+        "plan": "basic",
+        "size": 50,
+        "industry": "IT",
+        "company_id": "test_company_id_wdasda",
+        "monthly_spend": 2131231,
+        "remote_created_at": 1683017572,
+        "website": "url",
+        "custom_attributes": {
+          "key1": "val1",
+          "employees": 450,
+          "email": "test@test.com"
+        }
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "userId": "sdfrsdfsdfsf",
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer abcd=",
+      "Intercom-Version": "1.4"
+    },
+    "version": "1",
+    "endpoint": "https://api.intercom.io/companies"
+  },
+  {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "user_id": "sdfrsdfsdfsf",
+          "email": "testUser@test.com",
+          "companies": [
+            {
+              "name": "rudderUpdate",
+              "company_id": "test_company_id_wdasda"
+            }
+          ]
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "userId": "sdfrsdfsdfsf",
+      "headers": {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer abcd=",
+        "Intercom-Version": "1.4"
+      },
+      "version": "1",
+      "endpoint": "https://api.intercom.io/users"
+    }
+  ]
 ]

@@ -58,29 +58,30 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
   let updatedProperty;
   let userInformationTrimmed;
   if (isDefinedAndNotNull(userInformation)) {
-    userInformation = userInformation.toString();
+    const stringifiedUserInformation = userInformation.toString();
     switch (userProperty) {
       case 'EMAIL':
-        updatedProperty = userInformation.trim().toLowerCase();
+        updatedProperty = stringifiedUserInformation.trim().toLowerCase();
         break;
       case 'PHONE':
         // remove all non-numerical characters
-        updatedProperty = userInformation.replace(/\D/g, '');
+        updatedProperty = stringifiedUserInformation.replace(/\D/g, '');
         // remove all leading zeros
         updatedProperty = updatedProperty.replace(/^0+/g, '');
         break;
       case 'GEN':
         updatedProperty =
-          userInformation.toLowerCase() === 'f' || userInformation.toLowerCase() === 'female'
+          stringifiedUserInformation.toLowerCase() === 'f' ||
+          stringifiedUserInformation.toLowerCase() === 'female'
             ? 'f'
             : 'm';
         break;
       case 'DOBY':
-        updatedProperty = userInformation.trim().replace(/\./g, '');
+        updatedProperty = stringifiedUserInformation.trim().replace(/\./g, '');
         break;
       case 'DOBM':
       case 'DOBD':
-        userInformationTrimmed = userInformation.replace(/\./g, '');
+        userInformationTrimmed = stringifiedUserInformation.replace(/\./g, '');
         if (userInformationTrimmed.length < 2) {
           updatedProperty = `0${userInformationTrimmed}`;
         } else {
@@ -91,30 +92,32 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
       case 'FN':
       case 'FI':
         if (userProperty !== 'FI') {
-          updatedProperty = userInformation.toLowerCase().replace(/[!#$%&@A-Za-z]/g, '');
+          updatedProperty = stringifiedUserInformation.toLowerCase().replace(/[!#$%&@A-Za-z]/g, '');
         } else {
-          updatedProperty = userInformation.toLowerCase().replace(/[^!#$%&,.?@A-Za-z]/g, '');
+          updatedProperty = stringifiedUserInformation
+            .toLowerCase()
+            .replace(/[^!#$%&,.?@A-Za-z]/g, '');
         }
         break;
       case 'MADID':
-        updatedProperty = userInformation.toLowerCase();
+        updatedProperty = stringifiedUserInformation.toLowerCase();
         break;
       case 'COUNTRY':
-        updatedProperty = userInformation.toLowerCase();
+        updatedProperty = stringifiedUserInformation.toLowerCase();
         break;
       case 'ZIP':
-        userInformationTrimmed = userInformation.replace(/\s/g, '');
+        userInformationTrimmed = stringifiedUserInformation.replace(/\s/g, '');
         updatedProperty = userInformationTrimmed.toLowerCase();
         break;
       case 'ST':
       case 'CT':
-        updatedProperty = userInformation
+        updatedProperty = stringifiedUserInformation
           .replace(/[^ A-Za-z]/g, '')
           .replace(/\s/g, '')
           .toLowerCase();
         break;
       case 'EXTERN_ID':
-        updatedProperty = userInformation;
+        updatedProperty = stringifiedUserInformation;
         break;
       default:
         throw new ConfigurationError(`The property ${userProperty} is not supported`);

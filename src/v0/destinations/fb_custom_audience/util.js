@@ -79,13 +79,6 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
         updatedProperty = userInformation.trim().replace(/\./g, '');
         break;
       case 'DOBM':
-        userInformationTrimmed = userInformation.replace(/\./g, '');
-        if (userInformationTrimmed.length < 2) {
-          updatedProperty = `0${userInformationTrimmed}`;
-        } else {
-          updatedProperty = userInformationTrimmed;
-        }
-        break;
       case 'DOBD':
         userInformationTrimmed = userInformation.replace(/\./g, '');
         if (userInformationTrimmed.length < 2) {

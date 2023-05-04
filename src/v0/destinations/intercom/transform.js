@@ -94,7 +94,7 @@ function attachUserAndCompany(message, Config) {
   const email = message.context?.traits?.email;
   const userId = message.userId;
   if (!userId && !email) {
-    return;
+    return false;
   }
   const requestBody = {};
   if (userId) {

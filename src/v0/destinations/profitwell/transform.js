@@ -1,41 +1,30 @@
-const get = require('get-value');
 const { EventType } = require('../../../constants');
-const { getSubscriptionHistory, unixTimestampOrError, isValidPlanCurrency } = require('./utils');
 const {
-  getDestinationExternalID,
+  getSubscriptionHistory,
+  unixTimestampOrError,
+  isValidPlanCurrency,
+  validatePayloadAndRetunImpIds,
+  createMissingSubscriptionResponse,
+  createResponseForSubscribedUser,
+} = require('./utils');
+const {
   defaultRequestConfig,
   defaultPostRequestConfig,
-  defaultPutRequestConfig,
   removeUndefinedAndNullValues,
   constructPayload,
-  getFieldValueFromMessage,
   simpleProcessRouterDest,
 } = require('../../util');
-const { BASE_ENDPOINT, createPayloadMapping, updatePayloadMapping } = require('./config');
-const {
-  NetworkError,
-  ConfigurationError,
-  InstrumentationError,
-  NetworkInstrumentationError,
-} = require('../../util/errorTypes');
+const { BASE_ENDPOINT, createPayloadMapping } = require('./config');
+const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const identifyResponseBuilder = async (message, { Config }) => {
-  const userId = getDestinationExternalID(message, 'profitwellUserId');
-  const userAlias = getFieldValueFromMessage(message, 'userId');
-
-  if (!userId && !userAlias) {
-    throw new InstrumentationError('userId or userAlias is required for identify');
-  }
-
-  let subscriptionId = getDestinationExternalID(message, 'profitwellSubscriptionId');
-  let subscriptionAlias =
-    get(message, 'traits.subscriptionAlias') || get(message, 'context.traits.subscriptionAlias');
-
-  if (!subscriptionId && !subscriptionAlias) {
-    throw new InstrumentationError('subscriptionId or subscriptionAlias is required for identify');
-  }
+  const { userId, userAlias, subscriptionId, subscriptionAlias } =
+    validatePayloadAndRetunImpIds(message);
+  let finalSubscriptionId = subscriptionId;
+  let finalSubscriptionAlias = subscriptionAlias;
 
   const targetUrl = `${BASE_ENDPOINT}/v2/users/${userId || userAlias}/`;
   const res = await getSubscriptionHistory(targetUrl, {
@@ -50,34 +39,21 @@ const identifyResponseBuilder = async (message, { Config }) => {
   if (res.success) {
     let subscriptionFound = true;
     const valFound = res.response.data.some((element) => {
-      if (userId && userId === element.user_id) {
-        if (subscriptionId && subscriptionId === element.subscription_id) {
-          subscriptionId = element.subscription_id;
+      if (
+        (userId && userId === element.user_id) ||
+        (userAlias && userAlias === element.user_alias)
+      ) {
+        if (finalSubscriptionId && finalSubscriptionId === element.subscription_id) {
+          finalSubscriptionId = element.subscription_id;
           subscriptionFound = true;
           return true;
         }
         if (
-          !subscriptionId &&
-          subscriptionAlias &&
-          subscriptionAlias === element.subscription_alias
+          !finalSubscriptionId &&
+          finalSubscriptionAlias &&
+          finalSubscriptionAlias === element.subscription_alias
         ) {
-          subscriptionAlias = element.subscription_alias;
-          subscriptionFound = true;
-          return true;
-        }
-        subscriptionFound = false;
-      } else if (userAlias && userAlias === element.user_alias) {
-        if (subscriptionId && subscriptionId === element.subscription_id) {
-          subscriptionId = element.subscription_id;
-          subscriptionFound = true;
-          return true;
-        }
-        if (
-          !subscriptionId &&
-          subscriptionAlias &&
-          subscriptionAlias === element.subscription_alias
-        ) {
-          subscriptionAlias = element.subscription_alias;
+          finalSubscriptionAlias = element.subscription_alias;
           subscriptionFound = true;
           return true;
         }
@@ -87,84 +63,24 @@ const identifyResponseBuilder = async (message, { Config }) => {
     });
 
     if (!subscriptionFound) {
-      // for a given userId, subscriptionId not found
-      // dropping event if profitwellSubscriptionId (externalId) did not
-      // match with any subscription_id at destination
-      if (subscriptionId) {
-        throw new NetworkInstrumentationError('Profitwell subscription_id not found');
-      }
-      payload = constructPayload(message, createPayloadMapping);
-      payload = {
-        ...payload,
-        user_id: userId,
-        user_alias: userAlias,
-      };
-      if (
-        payload.plan_interval &&
-        !(
-          payload.plan_interval.toLowerCase() === 'month' ||
-          payload.plan_interval.toLowerCase() === 'year'
-        )
-      ) {
-        throw new InstrumentationError('invalid format for planInterval. Aborting');
-      }
-      if (payload.plan_currency && !isValidPlanCurrency(payload.plan_currency)) {
-        payload.plan_currency = null;
-      }
-      if (
-        payload.status &&
-        !(payload.status.toLowerCase() === 'active' || payload.status.toLowerCase() === 'trialing')
-      ) {
-        payload.status = null;
-      }
-      payload.effective_date = unixTimestampOrError(
-        payload.effective_date,
-        message.timestamp,
-        message.originalTimestamp,
+      return createMissingSubscriptionResponse(
+        userId,
+        userAlias,
+        finalSubscriptionId,
+        finalSubscriptionAlias,
+        message,
+        Config,
       );
-      response.method = defaultPostRequestConfig.requestMethod;
-      response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/`;
-      response.headers = {
-        'Content-Type': 'application/json',
-        Authorization: Config.privateApiKey,
-      };
-      response.body.JSON = removeUndefinedAndNullValues(payload);
-      return response;
     }
 
     // for a given userId, subscription is found at dest.
     if (valFound) {
-      payload = constructPayload(message, updatePayloadMapping);
-      if (
-        payload.plan_interval &&
-        !(
-          payload.plan_interval.toLowerCase() === 'month' ||
-          payload.plan_interval.toLowerCase() === 'year'
-        )
-      ) {
-        throw new InstrumentationError('invalid format for planInterval. Aborting');
-      }
-      if (
-        payload.status &&
-        !(payload.status.toLowerCase() === 'active' || payload.status.toLowerCase() === 'trialing')
-      ) {
-        payload.status = null;
-      }
-      payload.effective_date = unixTimestampOrError(
-        payload.effective_date,
-        message.timestamp,
-        message.originalTimestamp,
+      return createResponseForSubscribedUser(
+        message,
+        finalSubscriptionId,
+        finalSubscriptionAlias,
+        Config,
       );
-      response.method = defaultPutRequestConfig.requestMethod;
-      response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/${
-        subscriptionId || subscriptionAlias
-      }/`;
-      response.headers = {
-        'Content-Type': 'application/json',
-        Authorization: Config.privateApiKey,
-      };
-      response.body.JSON = removeUndefinedAndNullValues(payload);
-      return response;
     }
   }
 
@@ -210,15 +126,11 @@ const identifyResponseBuilder = async (message, { Config }) => {
   ) {
     payload.status = null;
   }
-  payload.effective_date = unixTimestampOrError(
-    payload.effective_date,
-    message.timestamp,
-    message.originalTimestamp,
-  );
+  payload.effective_date = unixTimestampOrError(payload.effective_date, message.originalTimestamp);
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/`;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: Config.privateApiKey,
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -238,12 +150,10 @@ const process = async (event) => {
   const messageType = message.type.toLowerCase();
 
   let response;
-  switch (messageType) {
-    case EventType.IDENTIFY:
-      response = await identifyResponseBuilder(message, destination);
-      break;
-    default:
-      throw new InstrumentationError(`message type ${messageType} not supported`);
+  if (messageType === EventType.IDENTIFY) {
+    response = await identifyResponseBuilder(message, destination);
+  } else {
+    throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
 };

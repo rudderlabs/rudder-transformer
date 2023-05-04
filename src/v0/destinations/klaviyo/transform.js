@@ -36,10 +36,12 @@ const {
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
 } = require('../../util');
+
 const { ConfigurationError, InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const { httpPOST } = require('../../../adapters/network');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * Main Identify request handler func
@@ -89,8 +91,8 @@ const identifyRequestHandler = async (message, category, destination) => {
   const requestOptions = {
     headers: {
       Authorization: `Klaviyo-API-Key ${privateApiKey}`,
-      accept: 'application/json',
-      'content-type': 'application/json',
+      accept: JSON_MIME_TYPE,
+      'content-type': JSON_MIME_TYPE,
       revision: '2023-02-22',
     },
   };
@@ -118,8 +120,8 @@ const identifyRequestHandler = async (message, category, destination) => {
   identifyResponse.method = defaultPatchRequestConfig.requestMethod;
   identifyResponse.headers = {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
+    Accept: JSON_MIME_TYPE,
     revision: '2023-02-22',
   };
   identifyResponse.body.JSON = removeUndefinedAndNullValues(payload);
@@ -231,8 +233,8 @@ const trackRequestHandler = (message, category, destination) => {
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
     Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
+    Accept: JSON_MIME_TYPE,
     revision: '2023-02-22',
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);

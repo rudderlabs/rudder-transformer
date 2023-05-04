@@ -36,6 +36,7 @@ const responseBuilderSimple = (finalPayload, { Config }) => {
   response.endpoint = ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = removeUndefinedAndNullValues(finalPayload);
+
   response.headers = { 'Content-Type': 'application/json' };
 
   if (apiVersion === API_VERSION.v5) {
@@ -145,7 +146,6 @@ const process = (event) => {
 const generateBatchedPayloadForArray = (events) => {
   const { batchedRequest } = defaultBatchRequestConfig();
   const batchResponseList = events.map((event) => event.body.JSON);
-
   batchedRequest.body.JSON = { data: batchResponseList };
   batchedRequest.endpoint = events[0].endpoint;
   batchedRequest.headers = events[0].headers;

@@ -11,6 +11,7 @@ const {
 } = require('../../util');
 
 const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * This function is used for creating response for subscribing users to a particular list.
@@ -66,8 +67,8 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
   response.endpoint = targetUrl;
   response.headers = {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
+    Accept: JSON_MIME_TYPE,
     revision: '2023-02-22',
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);

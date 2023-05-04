@@ -54,7 +54,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
       events.map(async (event) => {
         try {
-          let transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[] =
+          const transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[] =
             await destHandler.process(event);
           return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,
@@ -110,9 +110,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
             metaTO,
           );
         } catch (error: any) {
-          metaTO.metadatas = destInputArray.map((input) => {
-            return input.metadata;
-          });
+          metaTO.metadatas = destInputArray.map((input) => input.metadata);
           const errorResp = DestinationPostTransformationService.handleRouterTransformFailureEvents(
             error,
             metaTO,
@@ -150,9 +148,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
           destEvents[0].metadata.workspaceId,
           tags.FEATURES.BATCH,
         );
-        metaTO.metadatas = events.map((event) => {
-          return event.metadata;
-        });
+        metaTO.metadatas = events.map((event) => event.metadata);
         const errResp = DestinationPostTransformationService.handleBatchTransformFailureEvents(
           error,
           metaTO,

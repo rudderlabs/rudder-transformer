@@ -1,25 +1,22 @@
 [
-    {
-        "destKey": "method",
-        "sourceKeys": [
-            "traits.method",
-            "properties.method"
-        ],
-        "required": false
+  {
+    "destKey": "method",
+    "sourceKeys": ["traits.method", "properties.method"],
+    "required": false
+  },
+  {
+    "destKey": "engagement_time_msec",
+    "sourceKeys": [
+      "traits.engagementTimeMsec",
+      "properties.engagementTimeMsec",
+      "context.traits.engagementTimeMsec",
+      "traits.engagement_time_msec",
+      "properties.engagement_time_msec",
+      "context.traits.engagement_time_msec"
+    ],
+    "metadata": {
+      "defaultValue": 1
     },
-    {
-        "destKey": "engagement_time_msec",
-        "sourceKeys": [
-            "traits.engagementTimeMsec",
-            "properties.engagementTimeMsec",
-            "context.traits.engagementTimeMsec",
-            "traits.engagement_time_msec",
-            "properties.engagement_time_msec",
-            "context.traits.engagement_time_msec"
-        ],
-        "metadata": {
-            "defaultValue": 1
-        },
-        "required": false
-    }
+    "required": false
+  }
 ]

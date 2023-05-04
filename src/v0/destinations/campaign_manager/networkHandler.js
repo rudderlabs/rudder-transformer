@@ -17,12 +17,10 @@ const tags = require('../../util/tags');
  * @returns
  */
 const getAuthErrCategory = (code) => {
-  switch (code) {
-    case 401:
-      return REFRESH_TOKEN;
-    default:
-      return '';
+  if (code === 401) {
+    return REFRESH_TOKEN;
   }
+  return '';
 };
 
 function checkIfFailuresAreRetryable(response) {
@@ -79,11 +77,11 @@ const responseHandler = (destinationResponse) => {
   );
 };
 
-const networkHandler = function () {
+function networkHandler() {
   this.prepareProxy = prepareProxyRequest;
   this.proxy = proxyRequest;
   this.processAxiosResponse = processAxiosResponse;
   this.responseHandler = responseHandler;
-};
+}
 
 module.exports = { networkHandler };

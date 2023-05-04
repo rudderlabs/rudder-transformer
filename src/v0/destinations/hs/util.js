@@ -28,6 +28,7 @@ const {
 } = require('./config');
 
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * validate destination config and check for existence of data
@@ -92,7 +93,7 @@ const getProperties = async (destination) => {
     // Private Apps
     const requestOptions = {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
         Authorization: `Bearer ${Config.accessToken}`,
       },
     };
@@ -274,10 +275,7 @@ const getLookupFieldValue = (message, lookupField) => {
     // Check in free-flowing object level
     SOURCE_KEYS.some((sourceKey) => {
       value = getMappingFieldValueFormMessage(message, sourceKey, lookupField);
-      if (value) {
-        return true;
-      }
-      return false;
+      return !!value;
     });
   }
   const lookupValueInfo = value ? { fieldName: lookupField, value } : null;
@@ -327,7 +325,7 @@ const searchContacts = async (message, destination) => {
     // Private Apps
     const requestOptions = {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
         Authorization: `Bearer ${Config.accessToken}`,
       },
     };
@@ -473,7 +471,7 @@ const getExistingData = async (inputs, destination) => {
 
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${Config.accessToken}`,
     },
   };

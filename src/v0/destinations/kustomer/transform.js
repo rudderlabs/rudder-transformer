@@ -14,6 +14,7 @@ const {
 } = require('../../util');
 const { fetchKustomer, handleAdvancedtransformations } = require('./util');
 const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // Function responsible for constructing the Kustomer (User) Payload for identify
 // type of events.
@@ -190,7 +191,7 @@ const responseBuilderSimple = async (message, category, destination) => {
       ? defaultPutRequestConfig.requestMethod
       : defaultPostRequestConfig.requestMethod;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${destination.Config.apiKey}`,
     };
     response.body.JSON = { ...payload };

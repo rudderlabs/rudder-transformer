@@ -58,6 +58,7 @@ const processEvent = (message, destination) => {
   let STORAGE_URL;
   let response;
   let payload;
+  const CONTEXT_TRAITS_KEY_PATH = 'context.traits';
   switch (messageType) {
     case EventType.TRACK:
       payload = payloadBuilder(
@@ -72,7 +73,7 @@ const processEvent = (message, destination) => {
       payload = payloadBuilder(
         message,
         CONFIG_CATEGORIES.IDENTIFY.name,
-        ['traits', 'context.traits'],
+        ['traits', CONTEXT_TRAITS_KEY_PATH],
         SERENYTICS_IDENTIFY_EXCLUSION_LIST,
       );
       break;
@@ -81,7 +82,7 @@ const processEvent = (message, destination) => {
       payload = payloadBuilder(
         message,
         CONFIG_CATEGORIES.GROUP.name,
-        ['traits', 'context.traits'],
+        ['traits', CONTEXT_TRAITS_KEY_PATH],
         [],
       );
       break;
@@ -108,7 +109,7 @@ const processEvent = (message, destination) => {
       payload = payloadBuilder(
         message,
         CONFIG_CATEGORIES.ALIAS.name,
-        ['traits', 'context.traits'],
+        ['traits', CONTEXT_TRAITS_KEY_PATH],
         [],
       );
       break;

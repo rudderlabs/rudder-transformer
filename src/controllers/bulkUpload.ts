@@ -2,25 +2,19 @@ import { client as errNotificationClient } from '../util/errorNotifier';
 import logger from '../logger';
 // TODO: To be refactored and redisgned
 
-const getDestFileUploadHandler = (version, dest) => {
-  return require(`../${version}/destinations/${dest}/fileUpload`);
-};
-const getPollStatusHandler = (version, dest) => {
-  return require(`../${version}/destinations/${dest}/poll`);
-};
-const getJobStatusHandler = (version, dest) => {
-  return require(`../${version}/destinations/${dest}/fetchJobStatus`);
-};
+const getDestFileUploadHandler = (version, dest) => require(`../${version}/destinations/${dest}/fileUpload`);
+const getPollStatusHandler = (version, dest) => require(`../${version}/destinations/${dest}/poll`);
+const getJobStatusHandler = (version, dest) => require(`../${version}/destinations/${dest}/fetchJobStatus`);
 
-const getCommonMetadata = (ctx) => {
+const getCommonMetadata = (ctx) => 
   // TODO: Parse information such as
   // cluster, namespace, etc information
   // from the request
-  return {
+   ({
     namespace: 'Unknown',
     cluster: 'Unknown',
-  };
-};
+  })
+;
 
 export const fileUpload = async (ctx) => {
   logger.debug(

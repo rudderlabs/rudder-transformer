@@ -104,7 +104,7 @@ class Redis {
         this.retryStrategy(times);
         this.status = "end"
     }
-    quit() {
+    disconnect() {
         this.status = "closed";
     }
 };

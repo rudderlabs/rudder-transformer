@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const { flattenJson, removeUndefinedAndNullValues, generateUUID } = require('../../util');
 const Message = require('../message');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // import mapping json using JSON.parse to preserve object key order
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
@@ -31,7 +32,7 @@ function process(event) {
     return {
       outputToSource: {
         body: Buffer.from(JSON.stringify(event)).toString('base64'),
-        contentType: 'application/json',
+        contentType: JSON_MIME_TYPE,
       },
       statusCode: 200,
     };

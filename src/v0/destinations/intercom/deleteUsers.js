@@ -5,6 +5,7 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { NetworkError, ConfigurationError } = require('../../util/errorTypes');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // Ref-> https://developers.intercom.com/intercom-api-reference/v1.3/reference/permanently-delete-a-user
 const userDeletionHandler = async (userAttributes, config) => {
@@ -31,7 +32,7 @@ const userDeletionHandler = async (userAttributes, config) => {
       const requestOptions = {
         headers: {
           Authorization: `Bearer ${apiKey}`,
-          Accept: 'application/json',
+          Accept: JSON_MIME_TYPE,
         },
       };
       const resp = await httpPOST(url, data, requestOptions);

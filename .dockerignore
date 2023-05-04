@@ -1,6 +1,5 @@
 *
 !src
-!features.json
 !Makefile
 !jest*.js
 !benchmark

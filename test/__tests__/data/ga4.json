@@ -10939,11 +10939,7 @@
             "city": "kolkata",
             "district": "24pgs"
           },
-          "categoryLevels": [
-            "Furniture",
-            "Bedroom Furniture",
-            "Dressers & Chests"
-          ],
+          "categoryLevels": ["Furniture", "Bedroom Furniture", "Dressers & Chests"],
           "products": [
             {
               "product_id": "1234",
@@ -10951,11 +10947,7 @@
                 "colour": "red",
                 "shape": "rectangle"
               },
-              "productLevels": [
-                "test1",
-                "test2",
-                "test3"
-              ]
+              "productLevels": ["test1", "test2", "test3"]
             }
           ]
         },

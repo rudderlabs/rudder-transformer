@@ -19,6 +19,15 @@ const {
   NetworkError,
 } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+const getHeaders = (apiKey) => {
+  const headers = {
+    Authorization: `Token token=${apiKey}`,
+    'Content-Type': JSON_MIME_TYPE,
+  };
+  return headers;
+};
 
 /*
  * This functions is used for getting Account details.
@@ -30,10 +39,7 @@ const tags = require('../../util/tags');
  */
 const createUpdateAccount = async (payload, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   const payloadBody = {
     unique_identifier: { name: payload.name },
@@ -70,10 +76,7 @@ const createUpdateAccount = async (payload, Config) => {
  */
 const getUserAccountDetails = async (payload, userEmail, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   const userPayload = {
     unique_identifier: {
@@ -126,10 +129,7 @@ const getUserAccountDetails = async (payload, userEmail, Config) => {
  */
 const createOrUpdateListDetails = async (listName, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrlList}`;
   // fetch all lists
@@ -176,10 +176,7 @@ const updateAccountWOContact = (payload, Config) => {
     unique_identifier: { name: payload.name },
     sales_account: payload,
   };
-  response.headers = {
-    Authorization: `Token token=${Config.apiKey}`,
-    'Content-Type': 'application/json',
-  };
+  response.headers = getHeaders(Config.apiKey);
   return response;
 };
 
@@ -195,10 +192,7 @@ const updateAccountWOContact = (payload, Config) => {
 const updateContactWithList = (userId, listId, Config) => {
   const response = defaultRequestConfig();
   response.endpoint = `https://${Config.domain}.myfreshworks.com/crm/sales/api/lists/${listId}/add_contacts`;
-  response.headers = {
-    Authorization: `Token token=${Config.apiKey}`,
-    'Content-Type': 'application/json',
-  };
+  response.headers = getHeaders(Config.apiKey);
   response.body.JSON = {
     ids: [userId],
   };
@@ -215,10 +209,7 @@ const updateContactWithList = (userId, listId, Config) => {
  */
 const getContactsDetails = async (userEmail, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   const userPayload = {
     unique_identifier: {
@@ -276,10 +267,7 @@ const responseBuilderWithContactDetails = async (email, Config, payload, salesAc
  */
 const UpdateContactWithLifeCycleStage = async (message, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   const emails = getFieldValueFromMessage(message, 'email');
   if (!emails) {
@@ -346,10 +334,7 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
  */
 const UpdateContactWithSalesActivity = async (payload, message, Config) => {
   const requestOptions = {
-    headers: {
-      Authorization: `Token token=${Config.apiKey}`,
-      'Content-Type': 'application/json',
-    },
+    headers: getHeaders(Config.apiKey),
   };
   if (!payload.sales_activity_name && !payload.sales_activity_type_id) {
     throw new InstrumentationError(

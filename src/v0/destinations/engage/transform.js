@@ -15,6 +15,9 @@ const { EventType } = require('../../../constants');
 const { mappingConfig, ConfigCategories } = require('./config');
 const { refinePayload, generatePageName, getLists } = require('./utils');
 const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+const UID_ERROR_MSG = 'Neither externalId nor userId is available';
 
 const responseBuilder = (payload, endpoint, method, Config) => {
   if (!payload) {
@@ -25,7 +28,7 @@ const responseBuilder = (payload, endpoint, method, Config) => {
   // Authentication Ref : https://engage.so/docs/api/
   const basicAuth = Buffer.from(`${publicKey}:${privateKey}`).toString('base64');
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Basic ${basicAuth}`,
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -43,7 +46,7 @@ const identifyResponseBuilder = (message, Config) => {
     getDestinationExternalID(message, 'engageId') ||
     getFieldValueFromMessage(message, 'userIdOnly');
   if (!uid) {
-    throw new InstrumentationError('Neither externalId or userId is available.');
+    throw new InstrumentationError(UID_ERROR_MSG);
   }
   const endpoint = `${ConfigCategories.IDENTIFY.endpoint.replace('uid', uid)}`;
   const refinedPayload = refinePayload(traits, ConfigCategories.IDENTIFY.genericFields);
@@ -66,7 +69,7 @@ const trackResponseBuilder = (message, Config) => {
     getDestinationExternalID(message, 'engageId') ||
     getFieldValueFromMessage(message, 'userIdOnly');
   if (!uid) {
-    throw new InstrumentationError('Neither externalId or userId is available.');
+    throw new InstrumentationError(UID_ERROR_MSG);
   }
   const endpoint = `${ConfigCategories.TRACK.endpoint.replace('uid', uid)}`;
   payload.properties = meta;
@@ -79,7 +82,7 @@ const pageResponseBuilder = (message, Config) => {
     getDestinationExternalID(message, 'engageId') ||
     getFieldValueFromMessage(message, 'userIdOnly');
   if (!uid) {
-    throw new InstrumentationError('Neither externalId or userId is available.');
+    throw new InstrumentationError(UID_ERROR_MSG);
   }
   const endpoint = `${ConfigCategories.PAGE.endpoint.replace('uid', uid)}`;
 

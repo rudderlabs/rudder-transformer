@@ -9,6 +9,7 @@ const {
 } = require('../../util');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint, destination) => {
   if (payload) {
@@ -16,7 +17,7 @@ const responseBuilder = (payload, endpoint, destination) => {
     const { apiKey } = destination.Config;
     response.endpoint = endpoint;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Basic ${apiKey}`,
     };
     response.method = defaultPostRequestConfig.requestMethod;

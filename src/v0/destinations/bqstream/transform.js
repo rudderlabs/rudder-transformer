@@ -105,30 +105,28 @@ const processRouterDest = (inputs) => {
 
   const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];
-  Promise.all(
-    inputs.map((event) => {
-      try {
-        if (event.message.statusCode) {
-          // already transformed event
-          eventsChunk.push(event);
-        } else {
-          // if not transformed
-          let response = process(event);
-          response = Array.isArray(response) ? response : [response];
-          response.forEach((res) => {
-            eventsChunk.push({
-              message: res,
-              metadata: event.metadata,
-              destination: event.destination,
-            });
+  inputs.forEach((event) => {
+    try {
+      if (event.message.statusCode) {
+        // already transformed event
+        eventsChunk.push(event);
+      } else {
+        // if not transformed
+        let response = process(event);
+        response = Array.isArray(response) ? response : [response];
+        response.forEach((res) => {
+          eventsChunk.push({
+            message: res,
+            metadata: event.metadata,
+            destination: event.destination,
           });
-        }
-      } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(event, error, DESTINATION);
-        errorRespList.push(errRespEvent);
+        });
       }
-    }),
-  );
+    } catch (error) {
+      const errRespEvent = handleRtTfSingleEventError(event, error, DESTINATION);
+      errorRespList.push(errRespEvent);
+    }
+  });
 
   let batchedResponseList = [];
   if (eventsChunk.length > 0) {

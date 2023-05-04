@@ -10,6 +10,7 @@ const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const Cache = require('../../util/cache');
 const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL_SECONDS);
 
@@ -32,7 +33,7 @@ const getAccessToken = async (destination) => {
     const request = {
       header: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        Accept: 'application/json',
+        Accept: JSON_MIME_TYPE,
       },
       url: `${BASE_ENDPOINT}/oauth/token?account_token=${accountToken}`,
       data: qs.stringify({
@@ -86,7 +87,7 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
 
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${accessToken}`,
     },
   };

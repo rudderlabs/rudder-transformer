@@ -9,6 +9,7 @@ const {
 const { validateConfig, validateEvent } = require('./util');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, getTrackEndPoint } = require('./config');
 const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint, destination) => {
   if (payload) {
@@ -16,7 +17,7 @@ const responseBuilder = (payload, endpoint, destination) => {
     const { sdkKey } = destination.Config;
     response.endpoint = endpoint;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       'X-Optimizely-SDK-Key': sdkKey,
     };
     response.method = defaultPostRequestConfig.requestMethod;

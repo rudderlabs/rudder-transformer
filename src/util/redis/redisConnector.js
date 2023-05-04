@@ -2,7 +2,6 @@ const Redis = require('ioredis');
 const { RedisError } = require('../../v0/util/errorTypes');
 const log = require('../../logger');
 const stats = require('../stats');
-const { isDefinedAndNotNull } = require('../../v0/util');
 
 const timeoutPromise = () => new Promise((_, reject) => {
   setTimeout(

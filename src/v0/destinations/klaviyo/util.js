@@ -147,8 +147,8 @@ const generateBatchedPaylaodForArray = (events) => {
 
   batchEventResponse.batchedRequest[0].headers = {
     Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
+    Accept: JSON_MIME_TYPE,
     revision: '2023-02-22',
   };
 

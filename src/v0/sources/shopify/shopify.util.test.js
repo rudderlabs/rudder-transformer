@@ -1,7 +1,7 @@
 const { getShopifyTopic,
     getAnonymousIdFromDb,
     getAnonymousId,
-    isValidCartEvent } = require('./util');
+    checkAndUpdateCartItems } = require('./util');
 
 jest.mock('ioredis', () => require('../../../../test/__mocks__/redis'));
 process.env.USE_REDIS_DB = 'true';
@@ -72,7 +72,7 @@ describe('Shopify Utils Test', () => {
                     cart_token: '123',
                 }
             };
-            const expectedOutput = 'a665a45920422f9d417e4867efdc4fb8a04a';
+            const expectedOutput = 'b9b6607d-6974-594f-8e99-ac3de71c4d89';
             const output = getAnonymousId(input);
             expect(output).toEqual(expectedOutput);
         });
@@ -85,7 +85,7 @@ describe('Shopify Utils Test', () => {
                 }
             };
 
-            const expectedOutput = 'a665a45920422f9d417e4867efdc4fb8a04a';
+            const expectedOutput = 'b9b6607d-6974-594f-8e99-ac3de71c4d89';
             const output = getAnonymousId(input);
             expect(output).toEqual(expectedOutput);
         });
@@ -121,7 +121,7 @@ describe('Shopify Utils Test', () => {
                     cart_token: 'shopify_test2',
                 }
             };
-            const expectedOutput = 'd523cfe0cc2308901cfac852db46e607ed29'
+            const expectedOutput = 'bcaf0473-fb11-562f-80a1-c83a35f053bc'
             const output = await getAnonymousIdFromDb(input);
             expect(output).toEqual(expectedOutput);
         });
@@ -159,7 +159,7 @@ describe('Shopify Utils Test', () => {
                 }
             };
 
-            const expectedOutput = '1239d93a5f2892b9daf67d476467bdf963ec';
+            const expectedOutput = '281a3e25-e603-5870-9cda-281c22940970';
             const output = await getAnonymousIdFromDb(input);
             expect(output).toEqual(expectedOutput);
         });
@@ -176,7 +176,7 @@ describe('Shopify Utils Test', () => {
                 ]
             };
             const expectedOutput = false
-            const output = await isValidCartEvent(input);
+            const output = await checkAndUpdateCartItems(input);
             expect(output).toEqual(expectedOutput);
         });
 
@@ -192,7 +192,7 @@ describe('Shopify Utils Test', () => {
             };
 
             const expectedOutput = true;
-            const output = await isValidCartEvent(input);
+            const output = await checkAndUpdateCartItems(input);
             expect(output).toEqual(expectedOutput);
         });
 
@@ -208,7 +208,7 @@ describe('Shopify Utils Test', () => {
             };
 
             const expectedOutput = false;
-            const output = await isValidCartEvent(input);
+            const output = await checkAndUpdateCartItems(input);
             expect(output).toEqual(expectedOutput);
         });
     });

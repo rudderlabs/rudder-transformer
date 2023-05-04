@@ -9,7 +9,7 @@ const {
   extractEmailFromPayload,
   getAnonymousIdFromDb,
   getAnonymousId,
-  isValidCartEvent,
+  checkAndUpdateCartItems,
 } = require('./util');
 const { RedisDB } = require('../../../util/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
@@ -133,7 +133,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
       break;
     case "carts_update":
       if (useRedisDatabase) {
-        const isValidEvent = await isValidCartEvent(inputEvent, metricMetadata);
+        const isValidEvent = await checkAndUpdateCartItems(inputEvent, metricMetadata);
         if (!isValidEvent) {
           return {
             outputToSource: {
@@ -196,18 +196,16 @@ const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
     const value = ["anonymousId", event.anonymousId, "itemsHash",
       event.cart?.line_items.length !== 0 ? sha256(event.line_items) : "0"];
-    const setStartTime = Date.now();
     try {
       await RedisDB.setVal(`${event.cartToken}`, value);
     } catch (e) {
-      stats.increment('shopify_identifier_events_lost_due_redis', {
+      stats.increment('shopify_redis_call_failure', {
+        type: "set",
         ...metricMetadata,
       });
     }
-    stats.timing('redis_set_latency', setStartTime, {
-      ...metricMetadata,
-    });
-    stats.increment('shopify_redis_set_anonymousId', {
+    stats.increment('shopify_redis_call', {
+      type: 'set',
       ...metricMetadata,
     });
   }

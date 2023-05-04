@@ -21,6 +21,11 @@ const RUDDER_ECOM_MAP = {
   orders_updated: 'Order Updated',
   orders_create: 'Order Created',
 };
+const SHOPIFY_ADMIN_ONLY_EVENTS = [
+  'Order Deleted',
+  'Fulfillments Create',
+  'Fulfillments Update',
+];
 
 const SHOPIFY_TRACK_MAP = {
   checkouts_delete: 'Checkout Deleted',
@@ -100,9 +105,8 @@ const SUPPORTED_TRACK_EVENTS = [
   'orders_paid',
   'orders_partially_fullfilled',
 ];
-const ANONYMOUSID_CACHE_TTL_IN_SEC = 60 * 60;
-
 const useRedisDatabase = process.env.USE_REDIS_DB === 'true' || false;
+
 module.exports = {
   ECOM_TOPICS,
   IDENTIFY_TOPICS,
@@ -115,6 +119,6 @@ module.exports = {
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
-  ANONYMOUSID_CACHE_TTL_IN_SEC,
   useRedisDatabase,
+  SHOPIFY_ADMIN_ONLY_EVENTS
 };

@@ -11,7 +11,7 @@ const {
   getAnonymousId,
   checkAndUpdateCartItems,
 } = require('./util');
-const { RedisDB } = require('../../../util/redisConnector');
+const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
 const Message = require('../message');
 const { EventType } = require('../../../constants');

@@ -23,7 +23,6 @@ const getData = redisKey => {
 let connectionRequestCount = 0;
 class Redis {
     constructor(data) {
-        this.data = {};
         this.host = data.host,
             this.port = data.port,
             this.password = data.password,
@@ -49,20 +48,25 @@ class Redis {
         if (key === "error") {
             throw new Error("Connection is Closed");
         }
-        this.data[key] = value;
+        return {
+            expire: (key) => {
+                return {
+                    exec: () => { }
+                }
+            }
+        }
     }
 
-    setex(key, expiry, value) {
-        if (key === "error") {
-            throw new Error("Connection is Closed");
+    hmget(key, internalKey) {
+        const obj = this.get(key);
+        if (obj === null) {
+            return null;
         }
-        this.data[key] = value;
-    }
-    hmget(key) {
-        return this.get(key);
+        console.log(obj)
+        return obj[`${internalKey}`];
     }
     multi() {
-        return { hmset: this.hmset }
+        return { hmset: this.hmset, set: this.set }
     };
     hmset(key, value) {
         return {
@@ -100,7 +104,7 @@ class Redis {
         this.retryStrategy(times);
         this.status = "end"
     }
-    quit(){
+    quit() {
         this.status = "closed";
     }
 };

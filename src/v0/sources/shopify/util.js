@@ -3,7 +3,7 @@ const { v5 } = require('uuid');
 const sha256 = require('sha256');
 const stats = require('../../../util/stats');
 const { constructPayload, extractCustomFields, flattenJson, generateUUID, isDefinedAndNotNull } = require('../../util');
-const { RedisDB } = require('../../../util/redisConnector');
+const { RedisDB } = require('../../../util/redis/redisConnector');
 const logger = require('../../../logger');
 const {
   lineItemsMappingJSON,
@@ -111,9 +111,9 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
   if (!isDefinedAndNotNull(cartToken)) {
     return null;
   }
-  let redisVal;
+  let anonymousId;
   try {
-    redisVal = await RedisDB.getVal(`${cartToken}`);
+    anonymousId = await RedisDB.getVal(`${cartToken}`, 'anonymousId');
   } catch (e) {
     stats.increment('shopify_redis_call_failure', {
       type: 'get',
@@ -125,20 +125,20 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
     type: 'get',
     ...metricMetadata,
   });
-  if (redisVal === null) {
+  if (anonymousId === null) {
     stats.increment('shopify_redis_no_val', {
       ...metricMetadata,
       event,
     })
   }
-  if (!isDefinedAndNotNull(redisVal)) {
+  if (!isDefinedAndNotNull(anonymousId)) {
     /* if redis does not have the mapping for cartToken as key (null) 
       or redis is down(undefined)
       we will set anonymousId as sha256(cartToken)
      */
     return v5(cartToken, v5.URL)
   }
-  return redisVal.anonymousId;
+  return anonymousId;
 };
 
 /**
@@ -146,36 +146,33 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
  * @param {*} inputEvent 
  * @returns true if event is valid else false
  */
-const isValidCartEvent = (inputEvent, redisEvent) => {
-  const newCartItems = inputEvent?.line_items.length !== 0 ? sha256(inputEvent.line_items) : "0";
-  const prevCartItems = redisEvent.itemsHash;
-  return !(prevCartItems === newCartItems);
-}
-const updateCartItemsInRedis = async (inputEvent) => {
-  const cartToken = inputEvent.token || inputEvent.id;
-  const newCartItems = inputEvent?.line_items.length !== 0 ? sha256(inputEvent.line_items) : "0";
-  const value = ["itemsHash", newCartItems];
+const isValidCartEvent = (newCartItems, prevCartItems) => !(prevCartItems === newCartItems);
+
+const updateCartItemsInRedis = async (cartToken, newCartItemsHash) => {
+  const value = ["itemsHash", newCartItemsHash];
   await RedisDB.setVal(`${cartToken}`, value);
 }
 const checkAndUpdateCartItems = async (inputEvent, metricMetadata) => {
   const cartToken = inputEvent.token || inputEvent.id;
-  let redisVal;
+  let itemsHash;
   try {
-    redisVal = await RedisDB.getVal(cartToken);
+    itemsHash = await RedisDB.getVal(cartToken, 'itemsHash');
   } catch (e) {
     // so if redis is down we will send the event to downstream destinations
+    console.log("Error in getting itemsHash from redis", e);
     stats.increment('shopify_redis_call_failure', {
       type: 'get',
       ...metricMetadata,
     });
     return true;
   }
-  if (redisVal) {
-    const isCartValid = isValidCartEvent(inputEvent, redisVal);
+  if (isDefinedAndNotNull(itemsHash)) {
+    const newCartItemsHash = inputEvent?.line_items.length !== 0 ? sha256(inputEvent.line_items) : "0";
+    const isCartValid = isValidCartEvent(newCartItemsHash, itemsHash);
     if (!isCartValid) {
       return false;
     }
-    await updateCartItemsInRedis(inputEvent);
+    await updateCartItemsInRedis(cartToken, newCartItemsHash);
     return true;
   }
   // if nothing is found for cartToken provided then we will return false as we dont want to pollute the downstream destinations

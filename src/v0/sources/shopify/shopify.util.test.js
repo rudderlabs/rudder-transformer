@@ -165,7 +165,7 @@ describe('Shopify Utils Test', () => {
         });
     });
     describe('Check for valid cart update event test cases', () => {
-        it('Event containing id and nothing is retreived from redis', async () => {
+        it('Event containing token and nothing is retreived from redis', async () => {
             const input = {
                 token: "token_not_in_redis",
                 line_items: [

@@ -1,8 +1,8 @@
 const Redis = require('ioredis');
-const { RedisError } = require('../v0/util/errorTypes');
-const log = require('../logger');
-const stats = require('./stats');
-const { isDefinedAndNotNull } = require('../v0/util');
+const { RedisError } = require('../../v0/util/errorTypes');
+const log = require('../../logger');
+const stats = require('../stats');
+const { isDefinedAndNotNull } = require('../../v0/util');
 
 const timeoutPromise = () => new Promise((_, reject) => {
   setTimeout(
@@ -72,33 +72,30 @@ const RedisDB = {
   },
   /**
    * Used to get value from redis depending on the key and the expected value type
-   * @param {*} key key for which value needs to be extracted
+   * @param {*} hashKey parent key 
    * @param {*} isObjExpected false if fetched value can not be json
+   * @param {*} key  key for which value needs to be extracted, required if isObjExpected is true
    * @returns value which can be json or string or number
-   *
+   * storage of data in case isObjExpected is true
+   * hashKey:{
+   * key1: {internalKey1:val1},
+   * key2: {internalKey2:val2},
+   * }
    */
-  async getVal(key, isObjExpected = true) {
+  async getVal(hashKey, key, isObjExpected = true) {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       let value;
       if (isObjExpected === true) {
-        value = await this.client.hmget(key);
-        if (isDefinedAndNotNull(value)) {
-          Object.keys(value).forEach(objKey => {
-            try {
-              value[objKey] = JSON.parse(value[objKey]);
-            } catch (e) {
-              // do nothing
-            }
-          });
+        value = await this.client.hmget(hashKey, key);
+        try {
+          value = JSON.parse(value);
+        } catch (e) {
+          // do nothing
         }
       } else {
-        value = await this.client.get(key);
+        value = await this.client.get(hashKey);
       }
-      const bytes = Buffer.byteLength(JSON.stringify(value), "utf-8");
-      stats.gauge('redis_get_val_size', bytes, {
-        timestamp: Date.now()
-      });
       return value;
     } catch (e) {
       stats.increment("redis_error", {
@@ -131,9 +128,13 @@ const RedisDB = {
           .expire(key, expiryTimeInSec)
           .exec();
       } else {
-        await this.client.setex(key, expiryTimeInSec, value);
+        await this.client.multi()
+          .set(key, value)
+          .expire(expiryTimeInSec)
+          .exec();
+
       }
-      
+
     } catch (e) {
       stats.increment("redis_error", {
         operation: "set"

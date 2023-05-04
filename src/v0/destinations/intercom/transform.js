@@ -93,7 +93,6 @@ function validateTrack(message, payload) {
 function attachUserAndCompany(message, Config) {
   const email = message.context?.traits?.email;
   const userId = message.userId;
-
   if (!userId && !email) {
     return;
   }
@@ -122,7 +121,7 @@ function attachUserAndCompany(message, Config) {
   };
   response.body.JSON = requestBody;
   return response;
-};
+}
 
 function buildCustomAttributes(message, payload) {
   const traits = message.traits;
@@ -170,16 +169,18 @@ function validateAndBuildResponse(message, payload, category, destination) {
     case EventType.TRACK:
       response.body.JSON = removeUndefinedAndNullValues(validateTrack(message, payload));
       break;
-    case EventType.GROUP:
+    case EventType.GROUP: {
       buildCustomAttributes(message, payload);
       response.body.JSON = removeUndefinedAndNullValues(payload);
       respList.push(response);
-      const attachUserAndCompanyResponse = attachUserAndCompany(message, destination.Config);
+      const attachUserAndCompanyResponse =
+          attachUserAndCompany(message, destination.Config);
       if (attachUserAndCompanyResponse) {
         attachUserAndCompanyResponse.userId = message.anonymousId;
         respList.push(attachUserAndCompanyResponse);
       }
       break;
+    }
     default:
       throw new InstrumentationError(`Message type ${messageType} not supported`);
   }

@@ -1017,5 +1017,133 @@
         "sendAnonymousId": false
       }
     }
+  },
+  {
+    "message": {
+      "groupId": "test_company_id_wdasda",
+      "traits": {
+        "employees": 450,
+        "plan": "basic",
+        "userId": "sdfrsdfsdfsf",
+        "email": "test@test.com",
+        "name": "rudderUpdate",
+        "size": "50",
+        "industry": "IT",
+        "monthlySpend": "2131231",
+        "remoteCreatedAt": "1683017572",
+        "key1": "val1"
+      },
+      "anonymousId": "sdfrsdfsdfsf",
+      "integrations": {
+        "All": true
+      },
+      "type": "group",
+      "userId": "sdfrsdfsdfsf"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcd=",
+        "appId": "asdasdasd",
+        "collectContext": false
+      }
+    }
+  },
+  {
+    "message": {
+      "groupId": "test_company_id",
+      "traits": {
+        "plan": "basic",
+        "name": "rudderUpdate",
+        "size": 50,
+        "industry": "IT",
+        "monthlySpend": "2131231",
+        "email" : "comanyemail@abc.com"
+      },
+      "anonymousId": "12312312",
+      "context": {
+        "app": {
+          "build": "1.0",
+          "name": "Test_Example",
+          "namespace": "com.example.testapp",
+          "version": "1.0"
+        },
+        "device": {
+          "id": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
+          "manufacturer": "Apple",
+          "model": "iPhone",
+          "name": "iPod touch (7th generation)",
+          "type": "iOS"
+        },
+        "library": {
+          "name": "test-ios-library",
+          "version": "1.0.7"
+        },
+        "locale": "en-US",
+        "network": {
+          "bluetooth": false,
+          "carrier": "unavailable",
+          "cellular": false,
+          "wifi": true
+        },
+        "os": {
+          "name": "iOS",
+          "version": "14.0"
+        },
+        "screen": {
+          "density": 2,
+          "height": 320,
+          "width": 568
+        },
+        "timezone": "Asia/Kolkata",
+        "userAgent": "unknown"
+      },
+      "integrations": {
+        "All": true
+      },
+      "messageId": "1601493060-39010c49-e6e4-4626-a75c-0dbf1925c9e8",
+      "type": "group"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcd=",
+        "appId": "asdasdasd",
+        "collectContext": false
+      }
+    }
+  },
+  {
+    "message": {
+      "groupId": "test_company_id_wdasda",
+      "context": {
+        "traits": {
+          "email": "testUser@test.com"
+        }
+      },
+      "traits": {
+        "employees": 450,
+        "plan": "basic",
+        "email": "test@test.com",
+        "name": "rudderUpdate",
+        "size": "50",
+        "industry": "IT",
+        "website": "url",
+        "monthlySpend": "2131231",
+        "remoteCreatedAt": "1683017572",
+        "key1": "val1"
+      },
+      "anonymousId": "sdfrsdfsdfsf",
+      "integrations": {
+        "All": true
+      },
+      "type": "group",
+      "userId": "sdfrsdfsdfsf"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcd=",
+        "appId": "asdasdasd",
+        "collectContext": false
+      }
+    }
   }
 ]

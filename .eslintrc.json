@@ -62,6 +62,7 @@
     "no-restricted-syntax": "off",
     "sonarjs/no-duplicate-string": "off",
     "sonarjs/no-identical-functions": "off",
-    "no-prototype-builtins": "off"
+    "no-prototype-builtins": "off",
+    "@typescript-eslint/dot-notation": "warn"
   }
 }

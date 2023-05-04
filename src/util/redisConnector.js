@@ -84,9 +84,9 @@ const RedisDB = {
       if (isObjExpected === true) {
         value = await this.client.hmget(key);
         if (isDefinedAndNotNull(value)) {
-          Object.keys(value).forEach(Key => {
+          Object.keys(value).forEach(objKey => {
             try {
-              value[Key] = JSON.parse(value[Key]);
+              value[objKey] = JSON.parse(value[objKey]);
             } catch (e) {
               // do nothing
             }
@@ -119,7 +119,6 @@ const RedisDB = {
   async setVal(key, value, expiryTimeInSec = 60 * 60) {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
-      let bytes;
       if (typeof value === "object") {
         const valueToStore = value.map(element => {
           if (typeof element === "object") {
@@ -127,17 +126,14 @@ const RedisDB = {
           }
           return element;
         })
-        bytes = Buffer.byteLength(JSON.stringify(value), "utf-8");
         await this.client.multi()
           .hmset(key, ...valueToStore)
           .expire(key, expiryTimeInSec)
           .exec();
       } else {
-        bytes = Buffer.byteLength(value, "utf-8");
         await this.client.setex(key, expiryTimeInSec, value);
       }
-      stats.gauge('redis_set_val_size', bytes, {
-      });
+      
     } catch (e) {
       stats.increment("redis_error", {
         operation: "set"

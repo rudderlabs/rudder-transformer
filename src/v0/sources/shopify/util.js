@@ -146,7 +146,7 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
     default:
   }
   if (!isDefinedAndNotNull(cartToken)) {
-    stats.increment('No_cartToken_in_payload', {
+    stats.increment('no_cartToken_in_payload', {
       ...metricMetadata,
       event,
     });

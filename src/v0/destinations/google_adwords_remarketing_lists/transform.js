@@ -24,6 +24,7 @@ const {
   hashAttributes,
   TYPEOFLIST,
 } = require('./config');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const hashEncrypt = (object) => {
   Object.keys(object).forEach((key) => {
@@ -73,7 +74,7 @@ const responseBuilder = (metadata, body, { Config }) => {
   response.params = { listId: Config.listId, customerId: filteredCustomerId };
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     'developer-token': getValueFromMessage(metadata, 'secret.developer_token'),
   };
   if (Config.subAccount)

@@ -995,5 +995,68 @@
         "signUpSourceId": "241654"
       }
     }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "traits": {},
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "ip": "0.0.0.0",
+        "os": {
+          "id": "72e528f869711c3d",
+          "manufacturer": "Google",
+          "model": "sdk_gphone_x86",
+          "name": "generic_x86_arm",
+          "token": "some_device_token",
+          "type": "android"
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "properties": {
+        "price": "12",
+        "currency": "USD",
+        "product_id": "r494",
+        "quantity": "34",
+        "products": [
+          {
+            "product_id": "507f1f77bcf86cd799439011",
+            "name": "MOBILE",
+            "variant": "green",
+            "price": "19",
+            "quantity": "2",
+            "currency": "USD"
+          }
+        ]
+      },
+      "event": "Product Viewed",
+      "originalTimestamp": "2019-10-14T09:03:17.562Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "123456",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "t1yurrb968zk",
+        "signUpSourceId": "240654"
+      }
+    }
   }
 ]

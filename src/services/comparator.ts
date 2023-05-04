@@ -16,10 +16,12 @@ import tags from '../v0/util/tags';
 import stats from '../util/stats';
 import logger from '../logger';
 import { CommonUtils } from '../util/common';
+
 const NS_PER_SEC = 1e9;
 
 export default class ComparatorService implements IntegrationDestinationService {
   secondaryService: IntegrationDestinationService;
+
   primaryService: IntegrationDestinationService;
 
   constructor(
@@ -79,8 +81,8 @@ export default class ComparatorService implements IntegrationDestinationService 
       return;
     }
 
-    for (let index = 0; index < primaryResplist.length; index++) {
-      const objectDiff = CommonUtils.objectDiff(primaryResplist[index], secondaryResplist[index]);
+    for (const [index, element] of primaryResplist.entries()) {
+      const objectDiff = CommonUtils.objectDiff(element, secondaryResplist[index]);
       if (Object.keys(objectDiff).length > 0) {
         logger.error(
           `[LIVE_COMPARE_TEST] failed for destinationId=${destinationId}, destType=${destination}, feature=${feature}, diff_keys=${JSON.stringify(
@@ -127,8 +129,8 @@ export default class ComparatorService implements IntegrationDestinationService 
     }
 
     let hasComparisonFailed = false;
-    for (let index = 0; index < primaryResplist.length; index++) {
-      const objectDiff = CommonUtils.objectDiff(primaryResplist[index], secondaryResplist[index]);
+    for (const [index, element] of primaryResplist.entries()) {
+      const objectDiff = CommonUtils.objectDiff(element, secondaryResplist[index]);
       if (Object.keys(objectDiff).length > 0) {
         stats.counter('compare_test_failed_count', 1, {
           destinationId,

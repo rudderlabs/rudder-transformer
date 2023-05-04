@@ -1,6 +1,6 @@
 bindings:
-- name: handleRtTfSingleEventError
-  path: ../../../../v0/util/index
+  - name: handleRtTfSingleEventError
+    path: ../../../../v0/util/index
 
 steps:
   - name: validateInput
@@ -29,4 +29,3 @@ steps:
   - name: finalPayload
     template: |
       [...$.outputs.failedEvents, ...$.outputs.successfulEvents]
-      

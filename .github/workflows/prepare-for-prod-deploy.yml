@@ -189,7 +189,7 @@ jobs:
   create-pull-request:
     name: Update Helm Charts For Production and Create Pull Request
     runs-on: ubuntu-latest
-    needs: [ build-transformer-image, build-user-transformer-image ]
+    needs: [build-transformer-image, build-user-transformer-image]
     env:
       TAG_NAME: ${{ needs.build-transformer-image.outputs.tag_name }}
       UT_TAG_NAME: ${{ needs.build-user-transformer-image.outputs.tag_name }}
@@ -241,4 +241,3 @@ jobs:
           git push -u origin shared-transformer-$TAG_NAME
 
           hub pull-request -m "chore: upgrade shared transformers to $TAG_NAME"
-

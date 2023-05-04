@@ -4,8 +4,8 @@ import request from 'supertest';
 import { createHttpTerminator } from 'http-terminator';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
-import { applicationRoutes } from '../../../src/routes';
 import setValue from 'set-value';
+import { applicationRoutes } from '../../../src/routes';
 
 let server: any;
 const OLD_ENV = process.env;
@@ -37,7 +37,9 @@ const getDataFromPath = (pathInput) => {
 
 describe('Basic route tests', () => {
   test('successful features response', async () => {
-    const expectedData = JSON.parse(fs.readFileSync('features.json', 'utf8'));
+    const expectedData = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, '../../../src/features.json'), 'utf8'),
+    );
     const response = await request(server).get('/features');
     expect(response.status).toEqual(200);
     expect(JSON.parse(response.text)).toEqual(expectedData);

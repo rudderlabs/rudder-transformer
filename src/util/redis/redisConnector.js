@@ -1,7 +1,7 @@
 const Redis = require('ioredis');
-const { RedisError } = require('../v0/util/errorTypes');
-const log = require('../logger');
-const stats = require('./stats');
+const { RedisError } = require('../../v0/util/errorTypes');
+const log = require('../../logger');
+const stats = require('../stats');
 
 const timeoutPromise = () => new Promise((_, reject) => {
   setTimeout(
@@ -71,21 +71,31 @@ const RedisDB = {
   },
   /**
    * Used to get value from redis depending on the key and the expected value type
-   * @param {*} key key for which value needs to be extracted
-   * @param {*} isJsonExpected false if fetched value can not be json
+   * @param {*} hashKey parent key 
+   * @param {*} isObjExpected false if fetched value can not be json
+   * @param {*} key  key for which value needs to be extracted, required if isObjExpected is true
    * @returns value which can be json or string or number
-   *
+   * storage of data in case isObjExpected is true
+   * hashKey:{
+   * key1: {internalKey1:val1},
+   * key2: {internalKey2:val2},
+   * }
    */
-  async getVal(key, isJsonExpected = true) {
+  async getVal(hashKey, key, isObjExpected = true) {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
-      const value = await this.client.get(key);
-      if (value) {
-        const bytes = Buffer.byteLength(value, 'utf-8');
-        stats.gauge('redis_get_val_size', bytes, {
-        });
+      let value;
+      if (isObjExpected === true) {
+        value = await this.client.hmget(hashKey, key);
+        try {
+          value = JSON.parse(value);
+        } catch (e) {
+          // do nothing
+        }
+      } else {
+        value = await this.client.get(hashKey);
       }
-      return isJsonExpected ? JSON.parse(value) : value;
+      return value;
     } catch (e) {
       stats.increment("redis_error", {
         operation: "get"
@@ -96,19 +106,34 @@ const RedisDB = {
   /**
    * Used to set value in redis depending on the key and the value type
    * @param {*} key key for which value needs to be stored
-   * @param {*} value value to be stored in redis
-   * @param {*} isValJson set to false if value is not a json object
+   * @param {*} value to be stored in redis send it in array format [field1, value1, field2, value2]
+   *                  if Value is an object
+   * @param {*} expiryTimeInSec expiry time of data in redis by default 1 hr
+   * @param {*} isValJson set to false if value is not a json object 
+   * 
    */
-
-  async setVal(key, value, isValJson = true) {
-    const dataExpiry = 60 * 60; // 1 hour
+  async setVal(key, value, expiryTimeInSec = 60 * 60) {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
-      const valueToStore = isValJson ? JSON.stringify(value) : value;
-      const bytes = Buffer.byteLength(valueToStore, 'utf-8');
-      await this.client.setex(key, dataExpiry, valueToStore);
-      stats.gauge('redis_set_val_size', bytes, {
-      });
+      if (typeof value === "object") {
+        const valueToStore = value.map(element => {
+          if (typeof element === "object") {
+            return JSON.stringify(element);
+          }
+          return element;
+        })
+        await this.client.multi()
+          .hmset(key, ...valueToStore)
+          .expire(key, expiryTimeInSec)
+          .exec();
+      } else {
+        await this.client.multi()
+          .set(key, value)
+          .expire(expiryTimeInSec)
+          .exec();
+
+      }
+
     } catch (e) {
       stats.increment("redis_error", {
         operation: "set"
@@ -120,9 +145,9 @@ const RedisDB = {
     if (process.env.USE_REDIS_DB && process.env.USE_REDIS_DB !== 'false') {
       stats.increment('redis_graceful_shutdown', {
       });
-      this.client.quit();
+      this.client.disconnect();
     }
-  },
+  }
 };
 
 module.exports = { RedisDB };

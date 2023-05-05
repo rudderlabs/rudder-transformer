@@ -16,14 +16,13 @@ const getData = redisKey => {
             path.resolve(__dirname, `./data/sources/${directory}/response.json`)
         );
         const data = JSON.parse(dataFile);
-        response = data[redisKey];
+        const response = data[redisKey];
         return response;
     }
 }
 let connectionRequestCount = 0;
 class Redis {
     constructor(data) {
-        this.data = {};
         this.host = data.host,
             this.port = data.port,
             this.password = data.password,
@@ -39,7 +38,7 @@ class Redis {
         }
         const mockData = getData(key);
         if (mockData) {
-            return JSON.stringify(mockData);
+            return mockData;
         } else {
             return null;
         }
@@ -49,25 +48,48 @@ class Redis {
         if (key === "error") {
             throw new Error("Connection is Closed");
         }
-        this.data[key] = value;
+        return {
+            expire: (key) => {
+                return {
+                    exec: () => { }
+                }
+            }
+        }
     }
 
-    setex(key, expiry, value) {
-        if (key === "error") {
-            throw new Error("Connection is Closed");
+    hmget(key, internalKey) {
+        const obj = this.get(key);
+        if (obj === null) {
+            return null;
         }
-        this.data[key] = value;
+        console.log(obj)
+        return obj[`${internalKey}`];
     }
+    multi() {
+        return { hmset: this.hmset, set: this.set }
+    };
+    hmset(key, value) {
+        return {
+            expire: (key, expiryTime) => {
+                return {
+                    exec: () => { }
+                }
+            }
+        }
+    }
+
+
     changeEventToReadyStatus() {
         setTimeout(() => {
             this.status = "ready"
         },
             100);
     }
+
     connect() {
         if (connectionRequestCount > 0) {
             this.status = "ready"
-            return new Promise((resolve, reject) => {
+            return new Promise((resolve, _) => {
                 resolve({ data: "OK", status: 200 });
             });
         } else {
@@ -82,7 +104,7 @@ class Redis {
         this.retryStrategy(times);
         this.status = "end"
     }
-    quit(){
+    disconnect() {
         this.status = "closed";
     }
 };

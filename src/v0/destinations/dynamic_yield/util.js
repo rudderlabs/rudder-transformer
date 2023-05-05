@@ -20,7 +20,7 @@ const populateProperties = (messageProperties, event) => {
       messageProperties.value || messageProperties.revenue || messageProperties.price;
   } else {
     properties.quantity = messageProperties.quantity;
-    properties.productId = messageProperties.sku;
+    properties.productId = messageProperties.sku || messageProperties.product_id;
   }
   if (messageProperties.products && Array.isArray(messageProperties.products)) {
     properties.cart = [];

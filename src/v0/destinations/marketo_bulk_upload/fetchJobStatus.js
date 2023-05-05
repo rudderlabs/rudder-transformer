@@ -15,6 +15,12 @@ const {
   PlatformError,
 } = require('../../util/errorTypes');
 const stats = require('../../../util/stats');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+const FETCH_FAILURE_JOB_STATUS_ERR_MSG = 'Could not fetch failure job status';
+const FAILURE_JOB_STATUS_ERR_MSG = 'Error during fetching failure job status';
+const FETCH_WARNING_JOB_STATUS_ERR_MSG = 'Could not fetch warning job status';
+const WARNING_JOB_STATUS_ERR_MSG = 'Error during fetching warning job status';
 
 const getFailedJobStatus = async (event) => {
   const { config, importId } = event;
@@ -24,7 +30,7 @@ const getFailedJobStatus = async (event) => {
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#failures
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${accessToken}`,
     },
   };
@@ -47,7 +53,7 @@ const getFailedJobStatus = async (event) => {
       status: 400,
       state: 'Abortable',
     });
-    throw new AbortedError('Could not fetch failure job status', 400, resp);
+    throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 400, resp);
   }
   if (resp.response) {
     if (
@@ -72,7 +78,7 @@ const getFailedJobStatus = async (event) => {
           state: 'Abortable',
         });
         throw new AbortedError(
-          resp.response.response.statusText || 'Error during fetching failure job status',
+          resp.response.response.statusText || FAILURE_JOB_STATUS_ERR_MSG,
           400,
           resp,
         );
@@ -82,7 +88,7 @@ const getFailedJobStatus = async (event) => {
           state: 'Retryable',
         });
         throw new ThrottledError(
-          resp.response.response.statusText || 'Error during fetching failure job status',
+          resp.response.response.statusText || FAILURE_JOB_STATUS_ERR_MSG,
           resp,
         );
       }
@@ -91,7 +97,7 @@ const getFailedJobStatus = async (event) => {
         state: 'Retryable',
       });
       throw new RetryableError(
-        resp.response.response.statusText || 'Error during fetching failure job status',
+        resp.response.response.statusText || FAILURE_JOB_STATUS_ERR_MSG,
         500,
         resp,
       );
@@ -100,13 +106,13 @@ const getFailedJobStatus = async (event) => {
       status: 400,
       state: 'Abortable',
     });
-    throw new AbortedError('Could not fetch failure job status', 400, resp);
+    throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 400, resp);
   }
   stats.increment(JOB_STATUS_ACTIVITY, {
     status: 400,
     state: 'Abortable',
   });
-  throw new AbortedError('Could not fetch failure job status', 400, resp);
+  throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 400, resp);
 };
 
 const getWarningJobStatus = async (event) => {
@@ -117,7 +123,7 @@ const getWarningJobStatus = async (event) => {
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#warnings
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${accessToken}`,
     },
   };
@@ -139,7 +145,7 @@ const getWarningJobStatus = async (event) => {
       status: 400,
       state: 'Abortable',
     });
-    throw new AbortedError('Could not fetch warning job status', 400, resp);
+    throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
   }
   if (resp.response) {
     if (
@@ -164,7 +170,7 @@ const getWarningJobStatus = async (event) => {
           state: 'Abortable',
         });
         throw new AbortedError(
-          resp.response.response.statusText || 'Error during fetching warning job status',
+          resp.response.response.statusText || WARNING_JOB_STATUS_ERR_MSG,
           400,
           resp,
         );
@@ -174,7 +180,7 @@ const getWarningJobStatus = async (event) => {
           state: 'Retryable',
         });
         throw new ThrottledError(
-          resp.response.response.statusText || 'Error during fetching warning job status',
+          resp.response.response.statusText || WARNING_JOB_STATUS_ERR_MSG,
           resp,
         );
       }
@@ -184,7 +190,7 @@ const getWarningJobStatus = async (event) => {
         state: 'Retryable',
       });
       throw new RetryableError(
-        resp.response.response.statusText || 'Error during fetching warning job status',
+        resp.response.response.statusText || WARNING_JOB_STATUS_ERR_MSG,
         500,
         resp,
       );
@@ -193,13 +199,13 @@ const getWarningJobStatus = async (event) => {
       status: 400,
       state: 'Abortable',
     });
-    throw new AbortedError('Could not fetch warning job status', 400, resp);
+    throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
   }
   stats.increment(JOB_STATUS_ACTIVITY, {
     status: 400,
     state: 'Abortable',
   });
-  throw new AbortedError('Could not fetch warning job status', 400, resp);
+  throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
 };
 
 const responseHandler = async (event, type) => {

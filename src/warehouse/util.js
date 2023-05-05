@@ -82,10 +82,10 @@ const getCloudRecordID = (message, fallbackValue) => {
   return fallbackValue || null;
 };
 
-const getRecordIDForExtract = message => {
+const getRecordIDForExtract = (message) => {
   const { recordId } = message;
-  if (typeof recordId === "object" || isBlank(recordId)) {
-    throw new Error("recordId cannot be empty for cloud sources events");
+  if (typeof recordId === 'object' || isBlank(recordId)) {
+    throw new Error('recordId cannot be empty for cloud sources events');
   }
   return recordId;
 };
@@ -101,5 +101,5 @@ module.exports = {
   isRudderSourcesEvent,
   sourceCategoriesToUseRecordId,
   getCloudRecordID,
-  getRecordIDForExtract
+  getRecordIDForExtract,
 };

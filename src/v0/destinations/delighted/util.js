@@ -8,6 +8,7 @@ const {
 } = require('../../util/errorTypes');
 const { ENDPOINT } = require('./config');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const isValidEmail = (email) => {
   const re =
@@ -54,7 +55,7 @@ const userValidity = async (channel, Config, userId) => {
     response = await axios.get(`${ENDPOINT}`, {
       headers: {
         Authorization: `Basic ${basicAuth}`,
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
       },
       params: paramsdata,
     });

@@ -70,7 +70,8 @@ const process = async (event) => {
 
 // we are batching by default at routerTransform
 const processRouterDest = async (inputs, reqMetadata) => {
-  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  let tempInputs = inputs;
+  const errorRespEvents = checkInvalidRtTfEvents(tempInputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
@@ -78,21 +79,21 @@ const processRouterDest = async (inputs, reqMetadata) => {
   const successRespList = [];
   const errorRespList = [];
   // using the first destination config for transforming the batch
-  const { destination } = inputs[0];
+  const { destination } = tempInputs[0];
   let propertyMap;
-  const mappedToDestination = get(inputs[0].message, MappedToDestinationKey);
-  const { objectType } = getDestinationExternalIDInfoForRetl(inputs[0].message, 'HS');
+  const mappedToDestination = get(tempInputs[0].message, MappedToDestinationKey);
+  const { objectType } = getDestinationExternalIDInfoForRetl(tempInputs[0].message, 'HS');
 
   try {
     if (mappedToDestination && GENERIC_TRUE_VALUES.includes(mappedToDestination?.toString())) {
       // skip splitting the batches to inserts and updates if object it is an association
       if (objectType.toLowerCase() !== 'association') {
         // get info about existing objects and splitting accordingly.
-        inputs = await splitEventsForCreateUpdate(inputs, destination);
+        tempInputs = await splitEventsForCreateUpdate(tempInputs, destination);
       }
     } else {
       // reduce the no. of calls for properties endpoint
-      const traitsFound = inputs.some(
+      const traitsFound = tempInputs.some(
         (input) => fetchFinalSetOfTraits(input.message) !== undefined,
       );
       if (traitsFound) {
@@ -101,11 +102,11 @@ const processRouterDest = async (inputs, reqMetadata) => {
     }
   } catch (error) {
     // Any error thrown from the above try block applies to all the events
-    return inputs.map((input) => handleRtTfSingleEventError(input, error, reqMetadata));
+    return tempInputs.map((input) => handleRtTfSingleEventError(input, error, reqMetadata));
   }
 
   await Promise.all(
-    inputs.map(async (input) => {
+    tempInputs.map(async (input) => {
       try {
         if (input.message.statusCode) {
           // already transformed event

@@ -18,14 +18,15 @@ const {
   TransformationError,
   InstrumentationError,
 } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint, eventType) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.endpoint = `${BASE_URL}${endpoint}`;
     response.headers = {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
+      Accept: JSON_MIME_TYPE,
+      'Content-Type': JSON_MIME_TYPE,
     };
     if (eventType.toLowerCase() === 'identify' && endpoint === '/players') {
       response.method = defaultPostRequestConfig.requestMethod;
@@ -164,8 +165,9 @@ const groupResponseBuilder = (message, { Config }) => {
   }
   endpoint = `${endpoint}/${appId}/users/${externalUserId}`;
   const payload = {};
-  const tags = {};
-  tags.groupId = groupId;
+  const tags = {
+    groupId,
+  };
 
   // Populating tags using allowed properties(from dashboard)
   const properties = getFieldValueFromMessage(message, 'traits');

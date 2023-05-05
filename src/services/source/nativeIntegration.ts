@@ -23,6 +23,7 @@ export default class NativeIntegrationSourceService implements IntegrationSource
     } as MetaTransferObject;
     return metaTO;
   }
+
   public async sourceTransformRoutine(
     sourceEvents: Object[],
     sourceType: string,

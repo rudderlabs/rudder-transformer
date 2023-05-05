@@ -1,7 +1,13 @@
 /* eslint-disable camelcase */
 const sha256 = require('sha256');
 const stats = require('../../../util/stats');
-const { constructPayload, extractCustomFields, flattenJson, generateUUID, isDefinedAndNotNull } = require('../../util');
+const {
+  constructPayload,
+  extractCustomFields,
+  flattenJson,
+  generateUUID,
+  isDefinedAndNotNull,
+} = require('../../util');
 const { RedisDB } = require('../../../util/redisConnector');
 const logger = require('../../../logger');
 const {
@@ -10,7 +16,7 @@ const {
   LINE_ITEM_EXCLUSION_FIELDS,
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   RUDDER_ECOM_MAP,
-  SHOPIFY_TRACK_MAP
+  SHOPIFY_TRACK_MAP,
 } = require('./config');
 // 30 mins
 const { TransformationError } = require('../../util/errorTypes');
@@ -122,36 +128,27 @@ const setAnonymousId = (message) => {
 };
 /**
  * This function sets the anonymousId based on cart_token or id from the properties of message.
- * If it's null then we set userId as "ADMIN".
+ * If it's null then we set userId as "shopify-admin".
  * @param {*} message
  * @returns
  */
 const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
   let cartToken;
-  switch (message.event) {
+  const { event, properties, userId } = message;
+  switch (event) {
     /**
      * Following events will contain cart_token and we will map it in cartToken
      */
     case RUDDER_ECOM_MAP.checkouts_create:
     case RUDDER_ECOM_MAP.checkouts_update:
+    case SHOPIFY_TRACK_MAP.checkouts_delete:
     case SHOPIFY_TRACK_MAP.orders_cancelled:
     case SHOPIFY_TRACK_MAP.orders_fulfilled:
     case SHOPIFY_TRACK_MAP.orders_paid:
     case SHOPIFY_TRACK_MAP.orders_partially_fullfilled:
     case RUDDER_ECOM_MAP.orders_create:
     case RUDDER_ECOM_MAP.orders_updated:
-
-      if (!isDefinedAndNotNull(message.properties?.cart_token)) {
-        /**
-         * This case will rise when we will be using Shopify Admin Dashboard to create, update, delete orders etc.
-         * Since it is done by shopify-admin we will set "userId" to be "shopify-admin"
-         */
-        if (!message.userId) {
-          message.setProperty('userId', 'shopify-admin');
-        }
-        return;
-      }
-      cartToken = message.properties?.cart_token;
+      cartToken = properties?.cart_token;
       break;
     /*
      * we dont have cart_token for carts_create and update events but have id and token field
@@ -159,18 +156,22 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
      */
     case SHOPIFY_TRACK_MAP.carts_create:
     case SHOPIFY_TRACK_MAP.carts_update:
-      cartToken = message.properties?.id;
+      cartToken = properties?.id || properties?.token;
       break;
     // https://help.shopify.com/en/manual/orders/edit-orders -> order can be edited through shopify-admin only
     // https://help.shopify.com/en/manual/orders/fulfillment/setting-up-fulfillment -> fullfillments wont include cartToken neither in manual or automatiic
-    case SHOPIFY_TRACK_MAP.orders_edited:
-    case SHOPIFY_TRACK_MAP.fulfillments_create:
-    case SHOPIFY_TRACK_MAP.fulfillments_update:
-      if (!message.userId) {
-        message.setProperty('userId', 'shopify-admin');
-      }
-      return;
     default:
+  }
+  if (!isDefinedAndNotNull(cartToken)) {
+    stats.increment('shopify_no_cartToken', {
+      ...metricMetadata,
+      event,
+      timestamp: Date.now(),
+    });
+    if (!userId) {
+      message.setProperty('userId', 'shopify-admin');
+    }
+    return;
   }
   let anonymousIDfromDB;
   const executeStartTime = Date.now();
@@ -188,6 +189,11 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
   if (!isDefinedAndNotNull(anonymousIDfromDB)) {
     /* this is for backward compatability when we don't have the redis mapping for older events
     we will get anonymousIDFromDb as null so we will set UUID using the session Key */
+    stats.increment('shopify_no_anon_id_from_redis', {
+      ...metricMetadata,
+      event,
+      timestamp: Date.now(),
+    });
     anonymousIDfromDB = sha256(cartToken).toString().substring(0, 36);
   }
   message.setProperty('anonymousId', anonymousIDfromDB);

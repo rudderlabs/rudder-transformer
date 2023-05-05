@@ -53,12 +53,10 @@ const process = (event) => {
 
   let response;
   const messageType = message.type.toLowerCase();
-  switch (messageType) {
-    case EventType.TRACK:
-      response = responseBuilderSimple(message, CONFIG_CATEGORIES.TRACK, destination);
-      break;
-    default:
-      throw new InstrumentationError(`Message type ${messageType} is not supported`);
+  if (messageType === EventType.TRACK) {
+    response = responseBuilderSimple(message, CONFIG_CATEGORIES.TRACK, destination);
+  } else {
+    throw new InstrumentationError(`Message type ${messageType} is not supported`);
   }
   return response;
 };

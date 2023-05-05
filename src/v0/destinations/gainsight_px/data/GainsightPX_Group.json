@@ -67,7 +67,7 @@
   },
   {
     "destKey": "createDate",
-    "sourceKeys": ["traits.createDate", "originalTimestamp"],
+    "sourceKeys": ["traits.createDate", "timestamp", "originalTimestamp"],
     "required": false,
     "metadata": {
       "type": "timestamp"

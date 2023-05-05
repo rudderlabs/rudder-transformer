@@ -16,17 +16,18 @@ const CannyOperation = {
  * @param {*} typeOfUser
  */
 function settingIds(message, event, typeOfUser) {
+  const clonedMessage = { ...message };
   try {
     // setting up userId
     if (event.object[`${typeOfUser}`]?.userID) {
-      message.userId = event.object[`${typeOfUser}`].userID;
+      clonedMessage.userId = event.object[`${typeOfUser}`].userID;
     } else {
       // setting up anonymousId if userId is not present
-      message.anonymousId = sha256(event.object[`${typeOfUser}`]?.email);
+      clonedMessage.anonymousId = sha256(event.object[`${typeOfUser}`]?.email);
     }
 
     if (event.object[`${typeOfUser}`]?.id) {
-      message.context.externalId = [
+      clonedMessage.context.externalId = [
         {
           type: 'cannyUserId',
           id: event.object[`${typeOfUser}`].id,
@@ -37,6 +38,8 @@ function settingIds(message, event, typeOfUser) {
     logger?.error(`Missing essential fields from Canny. Error: (${e})`);
     throw new TransformationError(`Missing essential fields from Canny. Error: (${e})`);
   }
+
+  return clonedMessage;
 }
 
 /**
@@ -58,16 +61,16 @@ function createMessage(event, typeOfUser) {
 
   message.context.integration.version = '1.0.0';
 
-  settingIds(message, event, typeOfUser);
+  const finalMessage = settingIds(message, event, typeOfUser);
 
-  checkForRequiredFields(message);
+  checkForRequiredFields(finalMessage);
 
   // deleting already mapped fields
-  delete message.properties[`${typeOfUser}`];
-  delete message.context.traits?.userID;
-  delete message.context.traits?.id;
+  delete finalMessage.properties[`${typeOfUser}`];
+  delete finalMessage.context.traits?.userID;
+  delete finalMessage.context.traits?.id;
 
-  return message;
+  return finalMessage;
 }
 
 function process(event) {

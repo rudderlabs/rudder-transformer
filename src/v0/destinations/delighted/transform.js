@@ -25,6 +25,7 @@ const {
   ConfigurationError,
   NetworkInstrumentationError,
 } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const identifyResponseBuilder = (message, { Config }) => {
   const userId = getFieldValueFromMessage(message, 'userIdOnly');
@@ -68,7 +69,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = ENDPOINT;
@@ -119,7 +120,7 @@ const trackResponseBuilder = async (message, { Config }) => {
   const response = defaultRequestConfig();
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = ENDPOINT;
@@ -159,7 +160,7 @@ const aliasResponseBuilder = (message, { Config }) => {
   response.body.JSON = payload;
   response.headers = {
     Authorization: `Basic ${basicAuth}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.endpoint = ENDPOINT;
   return response;

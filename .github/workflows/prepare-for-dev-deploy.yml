@@ -147,4 +147,3 @@ jobs:
           build-args: |
             version=${{ steps.gen_tag_name.outputs.tag_name }}
             GIT_COMMIT_SHA=${{ github.sha }}
-

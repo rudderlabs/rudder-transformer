@@ -12,12 +12,8 @@ const deviceTypeMapping = {
 
 // This function is used to check for the valid device_type value. device_type value should be integer
 // and can be from [0 to 14] only.
-const validateDeviceType = (deviceType) => {
-  if (Number.isNaN(deviceType) || deviceType < 0 || deviceType > 14) {
-    return false;
-  }
-  return true;
-};
+const validateDeviceType = (deviceType) =>
+  !(Number.isNaN(deviceType) || deviceType < 0 || deviceType > 14);
 
 /**
  * This function is used to populate the tags using the traits

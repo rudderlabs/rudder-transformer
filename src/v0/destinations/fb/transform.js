@@ -65,14 +65,15 @@ const eventAndPropRegexPattern = '^[0-9a-zA-Z_][0-9a-zA-Z _-]{0,39}$';
 const eventAndPropRegex = new RegExp(eventAndPropRegexPattern);
 
 function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
+  const clonedUpdatedEvent = { ...updatedEvent };
   // Conversion required fields
-  const dateTime = new Date(get(updatedEvent.custom_events[0], '_logTime'));
-  set(updatedEvent.custom_events[0], '_logTime', dateTime.getTime());
+  const dateTime = new Date(get(clonedUpdatedEvent.custom_events[0], '_logTime'));
+  set(clonedUpdatedEvent.custom_events[0], '_logTime', dateTime.getTime());
 
-  let num = Number(updatedEvent.advertiser_tracking_enabled);
-  updatedEvent.advertiser_tracking_enabled = Number.isNaN(num) ? '0' : `${num}`;
-  num = Number(updatedEvent.application_tracking_enabled);
-  updatedEvent.application_tracking_enabled = Number.isNaN(num) ? '0' : `${num}`;
+  let num = Number(clonedUpdatedEvent.advertiser_tracking_enabled);
+  clonedUpdatedEvent.advertiser_tracking_enabled = Number.isNaN(num) ? '0' : `${num}`;
+  num = Number(clonedUpdatedEvent.application_tracking_enabled);
+  clonedUpdatedEvent.application_tracking_enabled = Number.isNaN(num) ? '0' : `${num}`;
 
   let isUDSet = false;
   userProps.forEach((prop) => {
@@ -82,40 +83,44 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
       case 'ud[ln]':
       case 'ud[st]':
       case 'ud[cn]':
-        if (updatedEvent[prop] && updatedEvent[prop] !== '') {
+        if (clonedUpdatedEvent[prop] && clonedUpdatedEvent[prop] !== '') {
           isUDSet = true;
-          updatedEvent[prop] = sha256(updatedEvent[prop].toLowerCase());
+          clonedUpdatedEvent[prop] = sha256(clonedUpdatedEvent[prop].toLowerCase());
         }
         break;
       case 'ud[zp]':
       case 'ud[ph]':
-        if (updatedEvent[prop] && updatedEvent[prop] !== '') {
+        if (clonedUpdatedEvent[prop] && clonedUpdatedEvent[prop] !== '') {
           isUDSet = true;
           // remove all non-numerical characters
-          let processedVal = updatedEvent[prop].replace(/\D/g, '');
+          let processedVal = clonedUpdatedEvent[prop].replace(/\D/g, '');
           // remove all leading zeros
           processedVal = processedVal.replace(/^0+/g, '');
           if (processedVal.length > 0) {
-            updatedEvent[prop] = sha256(processedVal);
+            clonedUpdatedEvent[prop] = sha256(processedVal);
           }
         }
         break;
       case 'ud[ge]':
-        if (updatedEvent[prop] && updatedEvent[prop] !== '') {
+        if (clonedUpdatedEvent[prop] && clonedUpdatedEvent[prop] !== '') {
           isUDSet = true;
-          updatedEvent[prop] = sha256(updatedEvent[prop].toLowerCase() === 'female' ? 'f' : 'm');
+          clonedUpdatedEvent[prop] = sha256(
+            clonedUpdatedEvent[prop].toLowerCase() === 'female' ? 'f' : 'm',
+          );
         }
         break;
       case 'ud[db]':
-        if (updatedEvent[prop] && updatedEvent[prop] !== '') {
+        if (clonedUpdatedEvent[prop] && clonedUpdatedEvent[prop] !== '') {
           isUDSet = true;
-          updatedEvent[prop] = sha256(getDateInFormat(updatedEvent[prop]));
+          clonedUpdatedEvent[prop] = sha256(getDateInFormat(clonedUpdatedEvent[prop]));
         }
         break;
       case 'ud[ct]':
-        if (updatedEvent[prop] && updatedEvent[prop] !== '') {
+        if (clonedUpdatedEvent[prop] && clonedUpdatedEvent[prop] !== '') {
           isUDSet = true;
-          updatedEvent[prop] = sha256(updatedEvent[prop].toLowerCase().replace(/ /g, ''));
+          clonedUpdatedEvent[prop] = sha256(
+            clonedUpdatedEvent[prop].toLowerCase().replace(/ /g, ''),
+          );
         }
         break;
       default:
@@ -124,26 +129,28 @@ function sanityCheckPayloadForTypesAndModifications(updatedEvent) {
   });
 
   // remove anon_id if user data or advertiser_id present
-  if (isUDSet || updatedEvent.advertiser_id) {
-    delete updatedEvent.anon_id;
+  if (isUDSet || clonedUpdatedEvent.advertiser_id) {
+    delete clonedUpdatedEvent.anon_id;
   }
 
-  if (!isUDSet && !updatedEvent.advertiser_id && !updatedEvent.anon_id) {
+  if (!isUDSet && !clonedUpdatedEvent.advertiser_id && !clonedUpdatedEvent.anon_id) {
     throw new InstrumentationError(
       'Either context.device.advertisingId or traits or anonymousId must be present for all events',
     );
   }
 
-  if (updatedEvent.custom_events) {
-    updatedEvent.custom_events = JSON.stringify(updatedEvent.custom_events);
+  if (clonedUpdatedEvent.custom_events) {
+    clonedUpdatedEvent.custom_events = JSON.stringify(clonedUpdatedEvent.custom_events);
   }
 
-  if (updatedEvent.extinfo) {
-    updatedEvent.extinfo = JSON.stringify(updatedEvent.extinfo);
+  if (clonedUpdatedEvent.extinfo) {
+    clonedUpdatedEvent.extinfo = JSON.stringify(clonedUpdatedEvent.extinfo);
   }
 
   // Event type required by fb
-  updatedEvent.event = 'CUSTOM_APP_EVENTS';
+  clonedUpdatedEvent.event = 'CUSTOM_APP_EVENTS';
+
+  return clonedUpdatedEvent;
 }
 
 function getCorrectedTypedValue(pathToKey, value, originalPath) {
@@ -251,9 +258,10 @@ function responseBuilderSimple(message, payload, destination) {
 }
 
 function buildBaseEvent(message) {
-  const baseEvent = {};
-  baseEvent.extinfo = Array.from(extInfoArray);
-  baseEvent.custom_events = [{}];
+  const baseEvent = {
+    extinfo: Array.from(extInfoArray),
+    custom_events: [{}],
+  };
 
   let sourceSDK = get(message, 'context.device.type') || '';
   sourceSDK = sourceSDK.toLowerCase();
@@ -290,9 +298,9 @@ function buildBaseEvent(message) {
         baseEvent.extinfo[extInfoIdx] = outputVal || baseEvent.extinfo[extInfoIdx];
       } else if (splits.length === 3) {
         // custom event key
-        set(baseEvent.custom_events[0], splits[2], inputVal || '');
+        set(baseEvent.custom_events[0], splits[2], inputVal);
       } else {
-        set(baseEvent, destKey, inputVal || '');
+        set(baseEvent, destKey, inputVal);
       }
     }
   });
@@ -340,7 +348,7 @@ function processSingleMessage(message, destination) {
       throw new InstrumentationError(`Message type ${message.type} not supported`);
   }
 
-  sanityCheckPayloadForTypesAndModifications(updatedEvent);
+  updatedEvent = sanityCheckPayloadForTypesAndModifications(updatedEvent);
   return responseBuilderSimple(message, updatedEvent, destination);
 }
 

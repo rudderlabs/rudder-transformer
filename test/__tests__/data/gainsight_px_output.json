@@ -117,9 +117,7 @@
         "signUpDate": 1624431528295,
         "createDate": 1571043797562,
         "title": "engineer",
-        "propertyKeys": [
-          "AP-XABC-123"
-        ],
+        "propertyKeys": ["AP-XABC-123"],
         "location": {
           "countryName": "USA",
           "countryCode": "US",
@@ -253,9 +251,7 @@
         "signUpDate": 1624431528295,
         "createDate": 1571043797562,
         "title": "engineer",
-        "propertyKeys": [
-          "AP-XABC-123"
-        ],
+        "propertyKeys": ["AP-XABC-123"],
         "location": {
           "countryName": "USA",
           "countryCode": "US",
@@ -292,9 +288,7 @@
         "signUpDate": 1624431528295,
         "createDate": 1571043797562,
         "title": "engineer",
-        "propertyKeys": [
-          "AP-XABC-123"
-        ],
+        "propertyKeys": ["AP-XABC-123"],
         "accountId": "1234",
         "location": {
           "countryName": "USA",

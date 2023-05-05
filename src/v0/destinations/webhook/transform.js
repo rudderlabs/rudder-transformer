@@ -18,6 +18,7 @@ const {
 
 const { EventType } = require('../../../constants');
 const { ConfigurationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getPropertyParams = (message) => {
   if (message.type === EventType.IDENTIFY) {
@@ -49,7 +50,7 @@ const processEvent = (event) => {
         response.method = defaultPutRequestConfig.requestMethod;
         response.body.JSON = message;
         response.headers = {
-          'content-type': 'application/json',
+          'content-type': JSON_MIME_TYPE,
         };
         break;
       }
@@ -57,7 +58,7 @@ const processEvent = (event) => {
         response.method = defaultPatchRequestConfig.requestMethod;
         response.body.JSON = message;
         response.headers = {
-          'content-type': 'application/json',
+          'content-type': JSON_MIME_TYPE,
         };
         break;
       }
@@ -71,7 +72,7 @@ const processEvent = (event) => {
         response.method = defaultPostRequestConfig.requestMethod;
         response.body.JSON = message;
         response.headers = {
-          'content-type': 'application/json',
+          'content-type': JSON_MIME_TYPE,
         };
         break;
       }

@@ -11,7 +11,7 @@ export default class SourceController {
       'Native(Source-Transform):: Request to transformer::',
       JSON.stringify(ctx.request.body),
     );
-    let requestMetadata = MiscService.getRequestMetadata(ctx);
+    const requestMetadata = MiscService.getRequestMetadata(ctx);
     const events = ctx.request.body as Object[];
     const { version, source }: { version: string; source: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeSourceService();

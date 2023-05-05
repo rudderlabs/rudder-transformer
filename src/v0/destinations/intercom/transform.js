@@ -90,20 +90,68 @@ function validateTrack(message, payload) {
   throw new InstrumentationError('Email or userId is mandatory');
 }
 
-function validateAndBuildResponse(message, payload, category, destination) {
-  const messageType = message.type.toLowerCase();
-  const response = defaultRequestConfig();
-  switch (messageType) {
-    case EventType.IDENTIFY:
-      response.body.JSON = removeUndefinedAndNullValues(validateIdentify(message, payload));
-      break;
-    case EventType.TRACK:
-      response.body.JSON = removeUndefinedAndNullValues(validateTrack(message, payload));
-      break;
-    default:
-      throw new InstrumentationError(`Message type ${messageType} not supported`);
+function attachUserAndCompany(message, Config) {
+  const email = message.context?.traits?.email;
+  const { userId } = message;
+  if (!userId && !email) {
+    return false;
+  }
+  const requestBody = {};
+  if (userId) {
+    requestBody.user_id = userId;
+  }
+  if (email) {
+    requestBody.email = email;
+  }
+  const companyObj = {
+    company_id: message.groupId,
+  };
+  if (message.traits?.name) {
+    companyObj.name = message.traits.name;
+  }
+  requestBody.companies = [companyObj];
+  let response = defaultRequestConfig();
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.endpoint = ConfigCategory.IDENTIFY.endpoint;
+  response.headers = {
+    'Content-Type': JSON_MIME_TYPE,
+    Authorization: `Bearer ${Config.apiKey}`,
+    Accept: JSON_MIME_TYPE,
+    'Intercom-Version': '1.4',
+  };
+  response.body.JSON = requestBody;
+  return response;
+}
+
+function buildCustomAttributes(message, payload) {
+  const { traits } = message;
+  const customAttributes = {};
+  const companyReservedKeys = [
+      "remoteCreatedAt",
+      "monthlySpend",
+      "industry",
+      "website",
+      "size",
+      "plan",
+      "name"
+  ];
+
+  if (traits) {
+    Object.keys(traits).forEach((key) => {
+      if (!companyReservedKeys.includes(key) && key !== "userId") {
+        customAttributes[key] = traits[key];
+      }
+    })
   }
 
+  if (Object.keys(customAttributes).length > 0) {
+    payload.custom_attributes = customAttributes;
+  }
+}
+
+function validateAndBuildResponse(message, payload, category, destination) {
+  const respList = [];
+  let response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.endpoint = category.endpoint;
   response.headers = {
@@ -113,7 +161,31 @@ function validateAndBuildResponse(message, payload, category, destination) {
     'Intercom-Version': '1.4',
   };
   response.userId = message.anonymousId;
-  return response;
+  const messageType = message.type.toLowerCase();
+  switch (messageType) {
+    case EventType.IDENTIFY:
+      response.body.JSON = removeUndefinedAndNullValues(validateIdentify(message, payload));
+      break;
+    case EventType.TRACK:
+      response.body.JSON = removeUndefinedAndNullValues(validateTrack(message, payload));
+      break;
+    case EventType.GROUP: {
+      buildCustomAttributes(message, payload);
+      response.body.JSON = removeUndefinedAndNullValues(payload);
+      respList.push(response);
+      const attachUserAndCompanyResponse =
+          attachUserAndCompany(message, destination.Config);
+      if (attachUserAndCompanyResponse) {
+        attachUserAndCompanyResponse.userId = message.anonymousId;
+        respList.push(attachUserAndCompanyResponse);
+      }
+      break;
+    }
+    default:
+      throw new InstrumentationError(`Message type ${messageType} not supported`);
+  }
+
+  return (messageType === EventType.GROUP) ? respList : response;
 }
 
 function processSingleMessage(message, destination) {
@@ -131,9 +203,9 @@ function processSingleMessage(message, destination) {
     case EventType.TRACK:
       category = ConfigCategory.TRACK;
       break;
-    // case EventType.GROUP:
-    //   category = ConfigCategory.GROUP;
-    //   break;
+    case EventType.GROUP:
+      category = ConfigCategory.GROUP;
+      break;
     default:
       throw new InstrumentationError(`Message type ${messageType} not supported`);
   }

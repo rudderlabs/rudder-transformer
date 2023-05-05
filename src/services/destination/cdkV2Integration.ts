@@ -54,8 +54,13 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
       events.map(async (event) => {
         try {
-          const transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[] =
-            await processCdkV2Workflow(destinationType, event, tags.FEATURES.PROCESSOR);
+          const transformedPayloads:
+            | ProcessorTransformationOutput
+            | ProcessorTransformationOutput[] = await processCdkV2Workflow(
+            destinationType,
+            event,
+            tags.FEATURES.PROCESSOR,
+          );
           // We are not passing destination handler for CDK flows
           return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,

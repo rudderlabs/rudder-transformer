@@ -60,7 +60,6 @@ const preparePayload = (
   paramsPayload,
   isHashRequired,
   disableFormat,
-  skipVerify,
 ) => {
   const prepareFinalPayload = _.cloneDeep(paramsPayload);
   if (Array.isArray(userSchema)) {
@@ -74,7 +73,6 @@ const preparePayload = (
     userUpdateList,
     isHashRequired,
     disableFormat,
-    skipVerify,
   );
   return batchingWithPayloadSize(prepareFinalPayload);
 };
@@ -88,7 +86,7 @@ const prepareResponse = (
   userSchema,
   isHashRequired = true,
 ) => {
-  const { accessToken, disableFormat, type, subType, isRaw, skipVerify } = destination.Config;
+  const { accessToken, disableFormat, type, subType, isRaw } = destination.Config;
 
   const mappedToDestination = get(message, MappedToDestinationKey);
 
@@ -127,7 +125,6 @@ const prepareResponse = (
     paramsPayload,
     isHashRequired,
     disableFormat,
-    skipVerify,
   );
   // paramsPayload.schema = userSchema;
   const respList = [];

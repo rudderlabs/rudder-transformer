@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.25.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.24.0...v1.25.0) (2023-05-02)
+
+
+### Features
+
+* **destination:** braze dedup  ([#1931](https://github.com/rudderlabs/rudder-transformer/issues/1931)) ([66b335c](https://github.com/rudderlabs/rudder-transformer/commit/66b335c2c18ce123024a2605b5a1964a0dfa71ed))
+* fetch audience id for retl criteo audience ([#2058](https://github.com/rudderlabs/rudder-transformer/issues/2058)) ([f80f843](https://github.com/rudderlabs/rudder-transformer/commit/f80f843d283c6b97cd3075857671a12db3d5e813))
+* introduced additional variable for conversionDateTime for GAOC Stor… ([#2108](https://github.com/rudderlabs/rudder-transformer/issues/2108)) ([14e06ee](https://github.com/rudderlabs/rudder-transformer/commit/14e06ee0b9bc91c8fc79545cd1ebde6d35da5a9c))
+
+
+### Bug Fixes
+
+* **attentive_tag:** ecom events user object fix ([#2106](https://github.com/rudderlabs/rudder-transformer/issues/2106)) ([ebd3c05](https://github.com/rudderlabs/rudder-transformer/commit/ebd3c0569eca00d3f732010027388aad76bcfe77))
+* **ga4:** update hybrid mode check condition and remove dependency on… ([#2087](https://github.com/rudderlabs/rudder-transformer/issues/2087)) ([041d4b6](https://github.com/rudderlabs/rudder-transformer/commit/041d4b6f2c6d4161fab6cc9092a1a228c5e28604))
+* gracefulshutdown ([#2113](https://github.com/rudderlabs/rudder-transformer/issues/2113)) ([2367241](https://github.com/rudderlabs/rudder-transformer/commit/2367241e002990880ada425ae3c7aef844ce6998))
+* **pinterest cdk:** add step name ([#2101](https://github.com/rudderlabs/rudder-transformer/issues/2101)) ([f7a302b](https://github.com/rudderlabs/rudder-transformer/commit/f7a302babce96b9ae5abe20e28b05c49437c1089))
+
 ## [1.24.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.23.1...v1.24.0) (2023-04-25)
 
 

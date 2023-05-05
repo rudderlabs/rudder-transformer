@@ -62,7 +62,6 @@ class Redis {
         if (obj === null) {
             return null;
         }
-        console.log(obj)
         return obj[`${internalKey}`];
     }
     multi() {

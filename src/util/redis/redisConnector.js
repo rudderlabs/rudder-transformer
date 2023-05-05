@@ -37,8 +37,6 @@ const RedisDB = {
         },
       });
       this.client.on('ready', () => {
-        stats.increment('redis_ready', {
-        });
         log.info(`Connected to redis at ${this.host}:${this.port}`);
       });
     }
@@ -143,8 +141,7 @@ const RedisDB = {
   },
   async disconnect() {
     if (process.env.USE_REDIS_DB && process.env.USE_REDIS_DB !== 'false') {
-      stats.increment('redis_graceful_shutdown', {
-      });
+      log.info(`Disconnecting from redis at ${this.host}:${this.port}`);
       this.client.disconnect();
     }
   }

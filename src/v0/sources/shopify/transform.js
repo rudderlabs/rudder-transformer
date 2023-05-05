@@ -199,12 +199,12 @@ const processIdentifierEvent = async (event, metricMetadata) => {
     try {
       await RedisDB.setVal(`${event.cartToken}`, value);
     } catch (e) {
-      stats.increment('shopify_redis_call_failure', {
+      stats.increment('shopify_redis_failures', {
         type: "set",
         ...metricMetadata,
       });
     }
-    stats.increment('shopify_redis_call', {
+    stats.increment('shopify_redis_calls', {
       type: 'set',
       ...metricMetadata,
     });

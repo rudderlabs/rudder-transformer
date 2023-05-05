@@ -131,7 +131,6 @@ const BrazeDedupUtility = {
         const externalIdentifiers = ids.filter((id) => id.external_id);
         const aliasIdentifiers = ids.filter((id) => id.alias_name !== undefined);
 
-        const startTime = Date.now();
         const { processedResponse: lookUpResponse } = await handleHttpRequest(
           'post',
           `${getEndpointFromConfig(destination)}/users/export/ids`,
@@ -145,11 +144,6 @@ const BrazeDedupUtility = {
             },
             timeout: 10 * 1000,
           },
-        );
-        const endTime = Date.now();
-        // TODO: Remove this log
-        console.log(
-          `Time taken to fetch user store: ${endTime - startTime} ms for ${ids.length} users`,
         );
         stats.counter('braze_lookup_failure_count', 1, { http_status: lookUpResponse.status });
         const { users } = lookUpResponse.response;

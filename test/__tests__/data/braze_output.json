@@ -671,5 +671,83 @@
     },
     "version": "1",
     "endpoint": "https://rest.fra-01.braze.eu/users/track"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rest.iad-01.braze.com/users/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "attributes": [
+          {
+            "country": "India",
+            "dob": "01/01/1971",
+            "email": "anuj.kumar@gmail.com",
+            "first_name": "anuj",
+            "gender": "M",
+            "home_city": "Mathura",
+            "image_url": "https://i.kym-cdn.com/entries/icons/mobile/000/034/772/anuj-1.jpg",
+            "last_name": "kumar",
+            "phone": "9988123321",
+            "bio": "Tech and tension go together",
+            "language": "en-IN",
+            "job": "Director",
+            "company": "Plinth India",
+            "external_id": "ank101"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ank101"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rest.iad-01.braze.com/users/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "attributes": [
+          {
+            "country": "India",
+            "dob": "01/01/1971",
+            "email": "anuj.kumar@gmail.com",
+            "first_name": "anuj",
+            "gender": null,
+            "home_city": "Mathura",
+            "image_url": "https://i.kym-cdn.com/entries/icons/mobile/000/034/772/anuj-1.jpg",
+            "last_name": "kumar",
+            "phone": "9988123321",
+            "bio": "Tech and tension go together",
+            "language": "en-IN",
+            "job": "Director",
+            "company": null,
+            "external_id": "ank101"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ank101"
   }
 ]

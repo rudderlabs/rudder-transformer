@@ -2,20 +2,20 @@ import { client as errNotificationClient } from '../util/errorNotifier';
 import logger from '../logger';
 // TODO: To be refactored and redisgned
 
-const getDestFileUploadHandler = (version, dest) => require(`../${version}/destinations/${dest}/fileUpload`);
+const getDestFileUploadHandler = (version, dest) =>
+  require(`../${version}/destinations/${dest}/fileUpload`);
 const getPollStatusHandler = (version, dest) => require(`../${version}/destinations/${dest}/poll`);
-const getJobStatusHandler = (version, dest) => require(`../${version}/destinations/${dest}/fetchJobStatus`);
+const getJobStatusHandler = (version, dest) =>
+  require(`../${version}/destinations/${dest}/fetchJobStatus`);
 
-const getCommonMetadata = (ctx) => 
+const getCommonMetadata = (ctx) =>
   // TODO: Parse information such as
   // cluster, namespace, etc information
   // from the request
-   ({
+  ({
     namespace: 'Unknown',
     cluster: 'Unknown',
-  })
-;
-
+  });
 export const fileUpload = async (ctx) => {
   logger.debug(
     'Native(Bulk-Upload): Request to transformer:: /fileUpload route',

@@ -25,10 +25,10 @@ export default class PostTransformationSourceService {
     // We will not return array for events not meant for gateway
     if (Object.prototype.hasOwnProperty.call(events, 'outputToSource')) {
       return events as SourceTransformationResponse;
-    } if (Array.isArray(events)) {
+    }
+    if (Array.isArray(events)) {
       return { output: { batch: events } } as SourceTransformationResponse;
-    } 
-      return { output: { batch: [events] } } as SourceTransformationResponse;
-    
+    }
+    return { output: { batch: [events] } } as SourceTransformationResponse;
   }
 }

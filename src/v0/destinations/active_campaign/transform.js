@@ -2,7 +2,7 @@
 /* eslint-disable  no-empty */
 const get = require('get-value');
 const { EventType } = require('../../../constants');
-const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
+const { CONFIG_CATEGORIES, MAPPING_CONFIG, getHeader } = require('./config');
 const {
   defaultRequestConfig,
   constructPayload,
@@ -20,6 +20,9 @@ const {
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 
+const TOTAL_RECORDS_KEY = 'response.data.meta.total';
+const EVENT_DATA_KEY = 'properties.eventData';
+
 // The Final data is both application/url-encoded FORM and POST JSON depending on type of event
 // Creating a switch case for final request building
 const responseBuilderSimple = (payload, category, destination) => {
@@ -30,10 +33,7 @@ const responseBuilderSimple = (payload, category, destination) => {
       case 'ACPage':
         response.endpoint = `${destination.Config.apiUrl}${category.endPoint}`;
         response.method = defaultPostRequestConfig.requestMethod;
-        response.headers = {
-          'Content-Type': 'application/json',
-          'Api-Token': destination.Config.apiKey,
-        };
+        response.headers = getHeader(destination);
         response.body.JSON = payload;
         break;
       case 'ACScreen':
@@ -61,10 +61,7 @@ const syncContact = async (contactPayload, category, destination) => {
     contact: contactPayload,
   };
   const requestOptions = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Api-Token': destination.Config.apiKey,
-    },
+    headers: getHeader(destination),
   };
   const res = await httpPOST(endpoint, requestData, requestOptions);
   if (res.success === false) {
@@ -104,10 +101,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
   // Ref - https://developers.activecampaign.com/reference/retrieve-all-tags
   endpoint = `${destination.Config.apiUrl}${`${category.tagEndPoint}?limit=100`}`;
   requestOptions = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Api-Token': destination.Config.apiKey,
-    },
+    headers: getHeader(destination),
   };
   res = await httpGET(endpoint, requestOptions);
   if (res.success === false) {
@@ -127,17 +121,14 @@ const customTagProcessor = async (message, category, destination, contactId) => 
     // We are retrieving 100 tags which is the maximum limit, in each iteration, until all tags are retrieved.
     // Ref - https://developers.activecampaign.com/reference/pagination
     const promises = [];
-    if (parseInt(get(res, 'response.data.meta.total'), 10) > 100) {
-      const limit = Math.floor(parseInt(get(res, 'response.data.meta.total'), 10) / 100);
+    if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
+      const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
       for (let i = 0; i < limit; i += 1) {
         endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}?limit=100&offset=${
           100 * (i + 1)
         }`;
         requestOptions = {
-          headers: {
-            'Content-Type': 'application/json',
-            'Api-Token': destination.Config.apiKey,
-          },
+          headers: getHeader(destination),
         };
         const resp = httpGET(endpoint, requestOptions);
         promises.push(resp);
@@ -176,10 +167,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
           },
         };
         requestOptions = {
-          headers: {
-            'Content-Type': 'application/json',
-            'Api-Token': destination.Config.apiKey,
-          },
+          headers: getHeader(destination),
         };
         res = await httpPOST(endpoint, requestData, requestOptions);
         if (res.success === false) {
@@ -204,10 +192,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
         },
       };
       requestOptions = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Api-Token': destination.Config.apiKey,
-        },
+        headers: getHeader(destination),
       };
       res = httpPOST(endpoint, requestData, requestOptions);
       return res;
@@ -246,8 +231,8 @@ const customFieldProcessor = async (message, category, destination) => {
   responseStaging.push(res.response.status === 200 ? res.response.data.fields : []);
 
   const promises = [];
-  const limit = Math.floor(parseInt(get(res, 'response.data.meta.total'), 10) / 100);
-  if (parseInt(get(res, 'response.data.meta.total'), 10) > 100) {
+  const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
+  if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
     for (let i = 0; i < limit; i += 1) {
       endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100&offset=${
         100 * (i + 1)
@@ -347,10 +332,7 @@ const customListProcessor = async (message, category, destination, contactId) =>
         },
       };
       const requestOptions = {
-        headers: {
-          'Content-Type': 'application/json',
-          'Api-Token': destination.Config.apiKey,
-        },
+        headers: getHeader(destination),
       };
       const res = httpPOST(endpoint, requestData, requestOptions);
       promises.push(res);
@@ -404,10 +386,7 @@ const screenRequestHandler = async (message, category, destination) => {
   let res;
   let endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint}`;
   const requestOptions = {
-    headers: {
-      'Content-Type': 'application/json',
-      'Api-Token': destination.Config.apiKey,
-    },
+    headers: getHeader(destination),
   };
   res = await httpGET(endpoint, requestOptions);
   if (res.success === false) {
@@ -438,10 +417,7 @@ const screenRequestHandler = async (message, category, destination) => {
       },
     };
     const requestOpt = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Api-Token': destination.Config.apiKey,
-      },
+      headers: getHeader(destination),
     };
     res = await httpPOST(endpoint, requestData, requestOpt);
     if (res.success === false) {
@@ -466,8 +442,8 @@ const screenRequestHandler = async (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   payload.actid = destination.Config.actid;
   payload.key = destination.Config.eventKey;
-  if (get(message, 'properties.eventData')) {
-    payload.eventdata = get(message, 'properties.eventData');
+  if (get(message, EVENT_DATA_KEY)) {
+    payload.eventdata = get(message, EVENT_DATA_KEY);
   }
   payload.visit = `{"email":"${get(message, 'context.traits.email')}"}`;
   return responseBuilderSimple(payload, category, destination);
@@ -513,10 +489,7 @@ const trackRequestHandler = async (message, category, destination) => {
       },
     };
     const requestOpt = {
-      headers: {
-        'Content-Type': 'application/json',
-        'Api-Token': destination.Config.apiKey,
-      },
+      headers: getHeader(destination),
     };
     res = await httpPOST(endpoint, requestData, requestOpt);
     if (res.response?.status !== 201) {
@@ -538,8 +511,8 @@ const trackRequestHandler = async (message, category, destination) => {
   const payload = constructPayload(message, MAPPING_CONFIG[category.name]);
   payload.actid = destination.Config.actid;
   payload.key = destination.Config.eventKey;
-  if (get(message, 'properties.eventData')) {
-    payload.eventdata = get(message, 'properties.eventData');
+  if (get(message, EVENT_DATA_KEY)) {
+    payload.eventdata = get(message, EVENT_DATA_KEY);
   }
   payload.visit = `{"email":"${get(message, 'context.traits.email')}"}`;
 

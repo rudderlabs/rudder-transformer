@@ -9,6 +9,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { NetworkError, InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * @param {*} propertyName
@@ -168,7 +169,7 @@ const searchContactIds = async (message, Config, baseUrl) => {
   const basicAuth = Buffer.from(`${userName}:${password}`).toString('base64');
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Basic ${basicAuth}`,
     },
   };

@@ -575,6 +575,234 @@ const getFieldValueFromMessage = (message, sourceKey) => {
   return null;
 };
 
+function checkTimestamp(validateTimestamp, formattedVal) {
+  const {
+    allowedPastTimeDifference,
+    allowedPastTimeUnit, // seconds, minutes, hours
+    allowedFutureTimeDifference,
+    allowedFutureTimeUnit, // seconds, minutes, hours
+  } = validateTimestamp;
+
+  let pastTimeDifference;
+  let futureTimeDifference;
+
+  const currentTime = moment.unix(moment().format('X'));
+  const time = moment.unix(moment(formattedVal).format('X'));
+
+  switch (allowedPastTimeUnit) {
+    case 'seconds':
+      pastTimeDifference = Math.ceil(moment.duration(currentTime.diff(time)).asSeconds());
+      break;
+    case 'minutes':
+      pastTimeDifference = Math.ceil(moment.duration(currentTime.diff(time)).asMinutes());
+      break;
+    case 'hours':
+      pastTimeDifference = Math.ceil(moment.duration(currentTime.diff(time)).asHours());
+      break;
+    default:
+      break;
+  }
+
+  if (pastTimeDifference > allowedPastTimeDifference) {
+    throw new InstrumentationError(
+      `Allowed timestamp is [${allowedPastTimeDifference} ${allowedPastTimeUnit}] into the past`,
+    );
+  }
+
+  if (pastTimeDifference <= 0) {
+    switch (allowedFutureTimeUnit) {
+      case 'seconds':
+        futureTimeDifference = Math.ceil(moment.duration(time.diff(currentTime)).asSeconds());
+        break;
+      case 'minutes':
+        futureTimeDifference = Math.ceil(moment.duration(time.diff(currentTime)).asMinutes());
+        break;
+      case 'hours':
+        futureTimeDifference = Math.ceil(moment.duration(time.diff(currentTime)).asHours());
+        break;
+      default:
+        break;
+    }
+
+    if (futureTimeDifference > allowedFutureTimeDifference) {
+      throw new InstrumentationError(
+        `Allowed timestamp is [${allowedFutureTimeDifference} ${allowedFutureTimeUnit}] into the future`,
+      );
+    }
+  }
+}
+
+// handle type and format
+function formatValues(formattedVal, formattingType, typeFormat, integrationsObj) {
+  let curFormattedVal = formattedVal;
+  switch (formattingType) {
+    case 'timestamp':
+      curFormattedVal = formatTimeStamp(formattedVal, typeFormat);
+      break;
+    case 'secondTimestamp':
+      if (!moment(formattedVal, 'x', true).isValid()) {
+        curFormattedVal = Math.floor(formatTimeStamp(formattedVal, typeFormat) / 1000);
+      }
+      break;
+    case 'microSecondTimestamp':
+      curFormattedVal = moment.unix(moment(formattedVal).format('X'));
+      curFormattedVal =
+        curFormattedVal.toDate().getTime() * 1000 + curFormattedVal.toDate().getMilliseconds();
+      break;
+    case 'flatJson':
+      curFormattedVal = flattenJson(formattedVal);
+      break;
+    case 'encodeURIComponent':
+      curFormattedVal = encodeURIComponent(JSON.stringify(formattedVal));
+      break;
+    case 'jsonStringify':
+      curFormattedVal = JSON.stringify(formattedVal);
+      break;
+    case 'jsonStringifyOnFlatten':
+      curFormattedVal = JSON.stringify(flattenJson(formattedVal));
+      break;
+    case 'dobInMMDD':
+      curFormattedVal = String(formattedVal).slice(5);
+      curFormattedVal = curFormattedVal.replace('-', '/');
+      break;
+    case 'jsonStringifyOnObject':
+      // if already a string, will not stringify
+      // calling stringify on string will add escape characters
+      if (typeof formattedVal !== 'string') {
+        curFormattedVal = JSON.stringify(formattedVal);
+      }
+      break;
+    case 'numberForRevenue':
+      if (
+        (typeof formattedVal === 'string' || formattedVal instanceof String) &&
+        formattedVal.charAt(0) === '$'
+      ) {
+        curFormattedVal = formattedVal.substring(1);
+      }
+      curFormattedVal = Number.parseFloat(Number(curFormattedVal || 0).toFixed(2));
+      if (Number.isNaN(curFormattedVal)) {
+        throw new InstrumentationError('Revenue is not in the correct format');
+      }
+      break;
+    case 'toString':
+      curFormattedVal = String(formattedVal);
+      break;
+    case 'toNumber':
+      curFormattedVal = Number(formattedVal);
+      break;
+    case 'toFloat':
+      curFormattedVal = parseFloat(formattedVal);
+      break;
+    case 'toInt':
+      curFormattedVal = parseInt(formattedVal, 10);
+      break;
+    case 'toLower':
+      curFormattedVal = formattedVal.toString().toLowerCase();
+      break;
+    case 'hashToSha256':
+      curFormattedVal =
+        integrationsObj && integrationsObj.hashed
+          ? String(formattedVal)
+          : hashToSha256(String(formattedVal));
+      break;
+    case 'getFbGenderVal':
+      curFormattedVal = getFbGenderVal(formattedVal);
+      break;
+    case 'getOffsetInSec':
+      curFormattedVal = getOffsetInSec(formattedVal);
+      break;
+    case 'domainUrl':
+      curFormattedVal = formattedVal.replace('https://', '').replace('http://', '');
+      break;
+    case 'domainUrlV2': {
+      const url = isValidUrl(formattedVal);
+      if (!url) {
+        throw new InstrumentationError(`Invalid URL: ${formattedVal}`);
+      }
+      curFormattedVal = url.hostname.replace('www.', '');
+      break;
+    }
+    case 'IsBoolean':
+      if (!(typeof formattedVal === 'boolean')) {
+        logger.debug('Boolean value missing, so dropping it');
+      }
+      break;
+    case 'trim':
+      if (typeof formattedVal === 'string') {
+        curFormattedVal = formattedVal.trim();
+      }
+      break;
+    default:
+      break;
+  }
+  return curFormattedVal;
+}
+
+function handleExcludes(value, excludes, formattedVal) {
+  if (typeof value === 'object') {
+    // exclude the fields from the formattedVal
+    excludes.forEach((key) => {
+      // eslint-disable-next-line no-param-reassign
+      delete formattedVal[key];
+    });
+  } else {
+    logger.warn("excludes doesn't work with non-object data type. Ignoring excludes");
+  }
+}
+
+function handleTemplate(template, value) {
+  const hTemplate = Handlebars.compile(template.trim());
+  const formattedVal = hTemplate({ value }).trim();
+  return formattedVal;
+}
+
+function handleMultikeyMap(multikeyMap, strictMultiMap, formattedVal, destKey) {
+  // sourceVal is expected to be an array
+  // if value is present in sourceVal, returns the destVal
+  // else returns the original value
+  // Expected multikeyMap value:
+  // "multikeyMap": [
+  //   {
+  //     "sourceVal": ["m", "M", "Male", "male"],
+  //     "destVal": "M"
+  //   },
+  //   {
+  //     "sourceVal": ["f", "F", "Female", "female"],
+  //     "destVal": "F"
+  //   }
+  // ]
+  let curFormattedVal = formattedVal;
+  const finalKeyMap = multikeyMap || strictMultiMap;
+  let foundVal = false;
+  if (Array.isArray(finalKeyMap)) {
+    finalKeyMap.some((map) => {
+      if (!map.sourceVal || !isDefinedAndNotNull(map.destVal) || !Array.isArray(map.sourceVal)) {
+        logger.warn('multikeyMap skipped: sourceVal and destVal must be of valid type');
+        foundVal = true;
+        return true;
+      }
+
+      if (map.sourceVal.includes(formattedVal)) {
+        curFormattedVal = map.destVal;
+        foundVal = true;
+        return true;
+      }
+
+      return false;
+    });
+  } else {
+    logger.warn('multikeyMap skipped: multikeyMap must be an array');
+  }
+  if (!foundVal) {
+    if (strictMultiMap) {
+      throw new InstrumentationError(`Invalid entry for key ${destKey}`);
+    } else {
+      curFormattedVal = undefined;
+    }
+  }
+  return curFormattedVal;
+}
+
 // format the value as per the metadata values
 // Expected metadata keys are: (according to precedence)
 // - - type, typeFormat: expected data type and its format
@@ -586,7 +814,7 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
     return value;
   }
 
-  // get infor from metadata
+  // get information from metadata
   const {
     type,
     typeFormat,
@@ -610,237 +838,32 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
    * validate allowed time difference
    */
   if (validateTimestamp) {
-    const {
-      allowedPastTimeDifference,
-      allowedPastTimeUnit, // seconds, minutes, hours
-      allowedFutureTimeDifference,
-      allowedFutureTimeUnit, // seconds, minutes, hours
-    } = validateTimestamp;
-
-    let pastTimeDifference;
-    let futureTimeDifference;
-
-    const currentTime = moment.unix(moment().format('X'));
-    const time = moment.unix(moment(formattedVal).format('X'));
-
-    switch (allowedPastTimeUnit) {
-      case 'seconds':
-        pastTimeDifference = Math.ceil(moment.duration(currentTime.diff(time)).asSeconds());
-        break;
-      case 'minutes':
-        pastTimeDifference = Math.ceil(moment.duration(currentTime.diff(time)).asMinutes());
-        break;
-      case 'hours':
-        pastTimeDifference = Math.ceil(moment.duration(currentTime.diff(time)).asHours());
-        break;
-      default:
-        break;
-    }
-
-    if (pastTimeDifference > allowedPastTimeDifference) {
-      throw new InstrumentationError(
-        `Allowed timestamp is [${allowedPastTimeDifference} ${allowedPastTimeUnit}] into the past`,
-      );
-    }
-
-    if (pastTimeDifference <= 0) {
-      switch (allowedFutureTimeUnit) {
-        case 'seconds':
-          futureTimeDifference = Math.ceil(moment.duration(time.diff(currentTime)).asSeconds());
-          break;
-        case 'minutes':
-          futureTimeDifference = Math.ceil(moment.duration(time.diff(currentTime)).asMinutes());
-          break;
-        case 'hours':
-          futureTimeDifference = Math.ceil(moment.duration(time.diff(currentTime)).asHours());
-          break;
-        default:
-          break;
-      }
-
-      if (futureTimeDifference > allowedFutureTimeDifference) {
-        throw new InstrumentationError(
-          `Allowed timestamp is [${allowedFutureTimeDifference} ${allowedFutureTimeUnit}] into the future`,
-        );
-      }
-    }
+    checkTimestamp(validateTimestamp, formattedVal);
   }
 
-  // handle type and format
-  function formatValues(formatingType) {
-    switch (formatingType) {
-      case 'timestamp':
-        formattedVal = formatTimeStamp(formattedVal, typeFormat);
-        break;
-      case 'secondTimestamp':
-        if (!moment(formattedVal, 'x', true).isValid()) {
-          formattedVal = Math.floor(formatTimeStamp(formattedVal, typeFormat) / 1000);
-        }
-        break;
-      case 'microSecondTimestamp':
-        formattedVal = moment.unix(moment(formattedVal).format('X'));
-        formattedVal =
-          formattedVal.toDate().getTime() * 1000 + formattedVal.toDate().getMilliseconds();
-        break;
-      case 'flatJson':
-        formattedVal = flattenJson(formattedVal);
-        break;
-      case 'encodeURIComponent':
-        formattedVal = encodeURIComponent(JSON.stringify(formattedVal));
-        break;
-      case 'jsonStringify':
-        formattedVal = JSON.stringify(formattedVal);
-        break;
-      case 'jsonStringifyOnFlatten':
-        formattedVal = JSON.stringify(flattenJson(formattedVal));
-        break;
-      case 'dobInMMDD':
-        formattedVal = String(formattedVal).slice(5);
-        formattedVal = formattedVal.replace('-', '/');
-        break;
-      case 'jsonStringifyOnObject':
-        // if already a string, will not stringify
-        // calling stringify on string will add escape characters
-        if (typeof formattedVal !== 'string') {
-          formattedVal = JSON.stringify(formattedVal);
-        }
-        break;
-      case 'numberForRevenue':
-        if (
-          (typeof formattedVal === 'string' || formattedVal instanceof String) &&
-          formattedVal.charAt(0) === '$'
-        ) {
-          formattedVal = formattedVal.substring(1);
-        }
-        formattedVal = Number.parseFloat(Number(formattedVal || 0).toFixed(2));
-        if (Number.isNaN(formattedVal)) {
-          throw new InstrumentationError('Revenue is not in the correct format');
-        }
-        break;
-      case 'toString':
-        formattedVal = String(formattedVal);
-        break;
-      case 'toNumber':
-        formattedVal = Number(formattedVal);
-        break;
-      case 'toFloat':
-        formattedVal = parseFloat(formattedVal);
-        break;
-      case 'toInt':
-        formattedVal = parseInt(formattedVal, 10);
-        break;
-      case 'toLower':
-        formattedVal = formattedVal.toString().toLowerCase();
-        break;
-      case 'hashToSha256':
-        formattedVal =
-          integrationsObj && integrationsObj.hashed
-            ? String(formattedVal)
-            : hashToSha256(String(formattedVal));
-        break;
-      case 'getFbGenderVal':
-        formattedVal = getFbGenderVal(formattedVal);
-        break;
-      case 'getOffsetInSec':
-        formattedVal = getOffsetInSec(formattedVal);
-        break;
-      case 'domainUrl':
-        formattedVal = formattedVal.replace('https://', '').replace('http://', '');
-        break;
-      case 'domainUrlV2': {
-        const url = isValidUrl(formattedVal);
-        if (!url) {
-          throw new InstrumentationError(`Invalid URL: ${formattedVal}`);
-        }
-        formattedVal = url.hostname.replace('www.', '');
-        break;
-      }
-      case 'IsBoolean':
-        if (!(typeof formattedVal === 'boolean')) {
-          logger.debug('Boolean value missing, so dropping it');
-        }
-        break;
-      case 'trim':
-        if (typeof formattedVal === 'string') {
-          formattedVal = formattedVal.trim();
-        }
-        break;
-      default:
-        break;
-    }
-  }
   if (type) {
     if (Array.isArray(type)) {
       type.forEach((eachType) => {
-        formatValues(eachType);
+        formattedVal = formatValues(formattedVal, eachType, typeFormat, integrationsObj);
       });
     } else {
-      formatValues(type);
+      formattedVal = formatValues(formattedVal, type, typeFormat, integrationsObj);
     }
   }
 
   // handle template
   if (template) {
-    const hTemplate = Handlebars.compile(template.trim());
-    formattedVal = hTemplate({ value }).trim();
+    formattedVal = handleTemplate(template, value);
   }
 
   // handle excludes
   if (excludes) {
-    if (typeof value === 'object') {
-      // exlude the fields from the formattedVal
-      excludes.forEach((key) => {
-        delete formattedVal[key];
-      });
-    } else {
-      logger.warn("exludes doesn't work with non-object data type. Ignoring exludes");
-    }
+    handleExcludes(value, excludes, formattedVal);
   }
 
   // handle multikeyMap
-  // sourceVal is expected to be an array
-  // if value is present in sourceVal, returns the destVal
-  // else returns the original value
-  // Expected multikeyMap value:
-  // "multikeyMap": [
-  //   {
-  //     "sourceVal": ["m", "M", "Male", "male"],
-  //     "destVal": "M"
-  //   },
-  //   {
-  //     "sourceVal": ["f", "F", "Female", "female"],
-  //     "destVal": "F"
-  //   }
-  // ]
   if (multikeyMap || strictMultiMap) {
-    const finalKeyMap = multikeyMap || strictMultiMap;
-    let foundVal = false;
-    if (Array.isArray(finalKeyMap)) {
-      finalKeyMap.some((map) => {
-        if (!map.sourceVal || !isDefinedAndNotNull(map.destVal) || !Array.isArray(map.sourceVal)) {
-          logger.warn('multikeyMap skipped: sourceVal and destVal must be of valid type');
-          foundVal = true;
-          return true;
-        }
-
-        if (map.sourceVal.includes(formattedVal)) {
-          formattedVal = map.destVal;
-          foundVal = true;
-          return true;
-        }
-
-        return false;
-      });
-    } else {
-      logger.warn('multikeyMap skipped: multikeyMap must be an array');
-    }
-    if (!foundVal) {
-      if (strictMultiMap) {
-        throw new InstrumentationError(`Invalid entry for key ${destKey}`);
-      } else {
-        formattedVal = undefined;
-      }
-    }
+    formattedVal = handleMultikeyMap(multikeyMap, strictMultiMap, formattedVal, destKey);
   }
 
   if (allowedKeyCheck) {
@@ -1218,9 +1241,11 @@ function deleteObjectProperty(object, pathToObject) {
     return;
   }
   if (typeof pathToObject === 'string') {
+    // eslint-disable-next-line no-param-reassign
     pathToObject = pathToObject.split('.');
   }
   for (i = 0; i < pathToObject.length - 1; i += 1) {
+    // eslint-disable-next-line no-param-reassign
     object = object[pathToObject[i]];
 
     if (typeof object === 'undefined') {
@@ -1228,6 +1253,7 @@ function deleteObjectProperty(object, pathToObject) {
     }
   }
 
+  // eslint-disable-next-line no-param-reassign
   delete object[pathToObject.pop()];
 }
 
@@ -1301,6 +1327,7 @@ function addExternalIdToTraits(message) {
 const adduserIdFromExternalId = (message) => {
   const externalId = get(message, 'context.externalId.0.id');
   if (externalId) {
+    // eslint-disable-next-line no-param-reassign
     message.userId = externalId;
   }
 };
@@ -1577,12 +1604,12 @@ const simpleProcessRouterDest = async (inputs, singleTfFunc, reqMetadata, proces
 };
 /**
  * This is the sync version of simpleProcessRouterDest
- * 
- * @param {*} inputs 
- * @param {*} singleTfFunc 
- * @param {*} reqMetadata 
- * @param {*} processParams 
- * @returns 
+ *
+ * @param {*} inputs
+ * @param {*} singleTfFunc
+ * @param {*} reqMetadata
+ * @param {*} processParams
+ * @returns
  */
 const simpleProcessRouterDestSync = async (inputs, singleTfFunc, reqMetadata, processParams) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs);

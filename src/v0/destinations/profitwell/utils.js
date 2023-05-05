@@ -1,6 +1,17 @@
+const get = require('get-value');
 const { httpGET } = require('../../../adapters/network');
-const { toUnixTimestamp } = require('../../util');
-const { InstrumentationError } = require('../../util/errorTypes');
+const {
+  toUnixTimestamp,
+  getDestinationExternalID,
+  getFieldValueFromMessage,
+  defaultRequestConfig,
+  defaultPostRequestConfig,
+  defaultPutRequestConfig,
+  removeUndefinedAndNullValues,
+  constructPayload,
+} = require('../../util');
+const { BASE_ENDPOINT, createPayloadMapping, updatePayloadMapping } = require('./config');
+const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
 
 const CURRENCY_CODES = [
   'aed',
@@ -188,8 +199,116 @@ const unixTimestampOrError = (date, timestamp, originalTimestamp) => {
 
 const isValidPlanCurrency = (planCurrency) => CURRENCY_CODES.includes(planCurrency.toLowerCase());
 
+const validatePayloadAndRetunImpIds = (message) => {
+  const userId = getDestinationExternalID(message, 'profitwellUserId');
+  const userAlias = getFieldValueFromMessage(message, 'userId');
+
+  const subscriptionId = getDestinationExternalID(message, 'profitwellSubscriptionId');
+  const subscriptionAlias =
+    get(message, 'traits.subscriptionAlias') || get(message, 'context.traits.subscriptionAlias');
+
+  if (!userId && !userAlias) {
+    throw new InstrumentationError('userId or userAlias is required for identify');
+  }
+  if (!subscriptionId && !subscriptionAlias) {
+    throw new InstrumentationError('subscriptionId or subscriptionAlias is required for identify');
+  }
+  return { userId, userAlias, subscriptionId, subscriptionAlias };
+};
+
+function createMissingSubscriptionResponse(
+  userId,
+  userAlias,
+  subscriptionId,
+  subscriptionAlias,
+  message,
+  Config,
+) {
+  // for a given userId, subscriptionId not found
+  // dropping event if profitwellSubscriptionId (externalId) did not
+  // match with any subscription_id at destination
+  let payload = {};
+  const response = defaultRequestConfig();
+  if (subscriptionId) {
+    throw new NetworkInstrumentationError('Profitwell subscription_id not found');
+  }
+  payload = constructPayload(message, createPayloadMapping);
+  payload = {
+    ...payload,
+    user_id: userId,
+    user_alias: userAlias,
+  };
+  if (
+    payload.plan_interval &&
+    !(
+      payload.plan_interval.toLowerCase() === 'month' ||
+      payload.plan_interval.toLowerCase() === 'year'
+    )
+  ) {
+    throw new InstrumentationError('invalid format for planInterval. Aborting');
+  }
+  if (payload.plan_currency && !isValidPlanCurrency(payload.plan_currency)) {
+    payload.plan_currency = null;
+  }
+  if (
+    payload.status &&
+    !(payload.status.toLowerCase() === 'active' || payload.status.toLowerCase() === 'trialing')
+  ) {
+    payload.status = null;
+  }
+  payload.effective_date = unixTimestampOrError(
+    payload.effective_date,
+    message.timestamp,
+    message.originalTimestamp,
+  );
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/`;
+  response.headers = {
+    'Content-Type': 'application/json',
+    Authorization: Config.privateApiKey,
+  };
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  return response;
+}
+
+const createResponseForSubscribedUser = (message, subscriptionId, subscriptionAlias, Config) => {
+  const response = defaultRequestConfig();
+  const payload = constructPayload(message, updatePayloadMapping);
+  if (
+    payload.plan_interval &&
+    !(
+      payload.plan_interval.toLowerCase() === 'month' ||
+      payload.plan_interval.toLowerCase() === 'year'
+    )
+  ) {
+    throw new InstrumentationError('invalid format for planInterval. Aborting');
+  }
+  if (
+    payload.status &&
+    !(payload.status.toLowerCase() === 'active' || payload.status.toLowerCase() === 'trialing')
+  ) {
+    payload.status = null;
+  }
+  payload.effective_date = unixTimestampOrError(
+    payload.effective_date,
+    unixTimestampOrError,
+    message.originalTimestamp,
+  );
+  response.method = defaultPutRequestConfig.requestMethod;
+  response.endpoint = `${BASE_ENDPOINT}/v2/subscriptions/${subscriptionId || subscriptionAlias}/`;
+  response.headers = {
+    'Content-Type': 'application/json',
+    Authorization: Config.privateApiKey,
+  };
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  return response;
+};
+
 module.exports = {
   getSubscriptionHistory,
   unixTimestampOrError,
   isValidPlanCurrency,
+  validatePayloadAndRetunImpIds,
+  createMissingSubscriptionResponse,
+  createResponseForSubscribedUser,
 };

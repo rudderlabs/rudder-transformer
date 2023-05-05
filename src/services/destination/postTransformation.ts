@@ -64,7 +64,7 @@ export default class DestinationPostTransformationService {
     destHandler: any,
     metaTO: MetaTransferObject,
   ): RouterTransformationResponse[] {
-    let resultantPayloads: RouterTransformationResponse[] = cloneDeep(transformedPayloads);
+    const resultantPayloads: RouterTransformationResponse[] = cloneDeep(transformedPayloads);
     resultantPayloads.forEach((resultantPayload) => {
       if (resultantPayload.batchedRequest && resultantPayload.batchedRequest.userId) {
         resultantPayload.batchedRequest.userId = `${resultantPayload.batchedRequest.userId}`;
@@ -142,7 +142,7 @@ export default class DestinationPostTransformationService {
     metaTO: MetaTransferObject,
   ): UserDeletionResponse {
     const errObj = generateErrorObject(error, metaTO.errorDetails);
-    //TODO: Add stat tags here
+    // TODO: Add stat tags here
     const resp = {
       statusCode: errObj.status,
       error: errObj.message,

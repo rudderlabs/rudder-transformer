@@ -29,6 +29,7 @@ const {
   getConfigOrThrowError,
 } = require('./util');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * Person Object is created or updated. Upsert API makes PUT request for both cases
@@ -67,7 +68,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.headers = {
     Accesskey: accessKey,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.endpoint = ENDPOINTS.identifyEndpoint(Config.domain);
   return response;
@@ -119,7 +120,7 @@ const groupResponseBuilder = async (message, { Config }) => {
   response.endpoint = ENDPOINTS.identifyEndpoint(Config.domain);
   response.headers = {
     Accesskey: accessKey,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.body.JSON = responsePayload;
   return response;
@@ -164,7 +165,7 @@ const trackResponseBuilder = (message, { Config }) => {
   response.endpoint = ENDPOINTS.trackEndpoint(Config.domain);
   response.headers = {
     ...config,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     eventName: get(eventNameMap, event),
     eventVersion: get(eventVersionMap, event),
   };

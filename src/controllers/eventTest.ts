@@ -3,6 +3,7 @@ import EventTesterService from '../services/eventTest/eventTester';
 
 export default class EventTestController {
   private static API_VERSION = '1';
+
   public static async testEvent(ctx: Context) {
     const { version, destination }: { version: string; destination: string } = ctx.params as any;
     const { events }: { events: any } = ctx.request.body as any;

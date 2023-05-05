@@ -13,6 +13,7 @@ const { MAX_BATCH_SIZE } = require('./config');
 const { EventType } = require('../../../constants');
 const { createOrUpdateContactResponseBuilder } = require('./utils');
 const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload) => {
   if (payload) {
@@ -77,7 +78,7 @@ const generateBatchedPaylaodForArray = (events, combination) => {
   batchEventResponse.batchedRequest.method = defaultPostRequestConfig.requestMethod;
 
   batchEventResponse.batchedRequest.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Basic ${token}`,
   };
   batchEventResponse = {

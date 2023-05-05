@@ -26,10 +26,11 @@ const populateProperties = (messageProperties, event) => {
     properties.cart = [];
     const { products } = messageProperties;
     products.forEach((product) => {
-      const cartObj = {};
-      cartObj.productId = product.sku;
-      cartObj.quantity = product.quantity;
-      cartObj.itemPrice = product.price;
+      const cartObj = {
+        productId: product.sku || product.product_id,
+        quantity: product.quantity,
+        itemPrice: product.price,
+      };
       properties.cart.push(cartObj);
     });
   }

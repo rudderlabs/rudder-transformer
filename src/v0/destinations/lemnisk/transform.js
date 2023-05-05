@@ -19,6 +19,7 @@ const {
   TransformationError,
   InstrumentationError,
 } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (message, category, destination, platform) => {
   let payload;
@@ -37,7 +38,7 @@ const responseBuilder = (message, category, destination, platform) => {
     };
     response.endpoint = pl;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     };
   } else {
     // diapi
@@ -60,7 +61,7 @@ const responseBuilder = (message, category, destination, platform) => {
     }
     response.endpoint = diapi;
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       'x-api-passKey': passKey,
       'x-api-key': apiKey,
     };
@@ -107,15 +108,13 @@ const process = (event) => {
     }
   }
   if (platform === 'diapi') {
-    switch (messageType) {
-      case EventType.TRACK:
-        category = DIAPI_CONFIG_CATEGORIES.TRACK;
-        response = responseBuilder(message, category, destination, platform);
-        break;
-      default:
-        throw new InstrumentationError(
-          `Event type ${messageType} is not supported in Server Cloud Mode`,
-        );
+    if (messageType === EventType.TRACK) {
+      category = DIAPI_CONFIG_CATEGORIES.TRACK;
+      response = responseBuilder(message, category, destination, platform);
+    } else {
+      throw new InstrumentationError(
+        `Event type ${messageType} is not supported in Server Cloud Mode`,
+      );
     }
   }
   return response;

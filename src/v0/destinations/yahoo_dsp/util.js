@@ -8,6 +8,7 @@ const { ACCESS_TOKEN_CACHE_TTL, AUDIENCE_ATTRIBUTE, DSP_SUPPORTED_OPERATION } = 
 const Cache = require('../../util/cache');
 const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const ACCESS_TOKEN_CACHE = new Cache(ACCESS_TOKEN_CACHE_TTL);
 
@@ -120,7 +121,7 @@ const getAccessToken = async (destination) => {
     const request = {
       header: {
         'Content-Type': 'application/x-www-form-urlencoded',
-        Accept: 'application/json',
+        Accept: JSON_MIME_TYPE,
       },
       url: 'https://id.b2b.yahooinc.com/identity/oauth2/access_token',
       data: qs.stringify({

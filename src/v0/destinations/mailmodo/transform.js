@@ -15,6 +15,7 @@ const {
 } = require('../../util');
 const { deduceAddressFields, extractCustomProperties } = require('./utils');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (responseConfgs) => {
   const { resp, apiKey, endpoint } = responseConfgs;
@@ -24,7 +25,7 @@ const responseBuilder = (responseConfgs) => {
     response.endpoint = `${BASE_URL}${endpoint}`;
     response.headers = {
       mmApiKey: `${apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.body.JSON = removeUndefinedAndNullValues(resp);
@@ -139,7 +140,7 @@ function batchEvents(eventsChunk) {
     batchEventResponse.batchedRequest.endpoint = `${BASE_URL}/addToList/batch`;
 
     batchEventResponse.batchedRequest.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       mmApiKey: apiKey,
     };
 

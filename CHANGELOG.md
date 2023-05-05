@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.26.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.25.0...v1.26.0) (2023-05-05)
+
+
+### Features
+
+* intercom group support ([#2089](https://github.com/rudderlabs/rudder-transformer/issues/2089)) ([8185f28](https://github.com/rudderlabs/rudder-transformer/commit/8185f288f8b6c0822f6aea8bf080d6b2b9ef2691))
+
+
+### Bug Fixes
+
+* allow null values to be passed in Braze for standard properties ([#2111](https://github.com/rudderlabs/rudder-transformer/issues/2111)) ([10d037a](https://github.com/rudderlabs/rudder-transformer/commit/10d037a17aae9ff0e60be1276120a2a1fa6c6a86))
+* call to lower case only when message.type is defined ([#2109](https://github.com/rudderlabs/rudder-transformer/issues/2109)) ([71c1e7a](https://github.com/rudderlabs/rudder-transformer/commit/71c1e7aea8c14904660908eabf2eabb060315410))
+* remove skip verify flag ([#2114](https://github.com/rudderlabs/rudder-transformer/issues/2114)) ([c4b0a69](https://github.com/rudderlabs/rudder-transformer/commit/c4b0a695442bb30c280c7301a10aea773f610e4f))
+
 ## [1.25.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.24.0...v1.25.0) (2023-05-02)
 
 

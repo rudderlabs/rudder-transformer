@@ -30,20 +30,21 @@ const logger = require('../../../logger');
 const { getEndpointFromConfig } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function formatGender(gender) {
   // few possible cases of woman
-  if (['woman', 'female', 'w', 'f'].includes(gender.toLowerCase())) {
+  if (['woman', 'female', 'w', 'f'].includes(gender?.toLowerCase())) {
     return 'F';
   }
 
   // few possible cases of man
-  if (['man', 'male', 'm'].includes(gender.toLowerCase())) {
+  if (['man', 'male', 'm'].includes(gender?.toLowerCase())) {
     return 'M';
   }
 
   // few possible cases of other
-  if (['other', 'o'].includes(gender.toLowerCase())) {
+  if (['other', 'o'].includes(gender?.toLowerCase())) {
     return 'O';
   }
 
@@ -58,8 +59,8 @@ function buildResponse(message, destination, properties, endpoint) {
   return {
     ...response,
     headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
+      Accept: JSON_MIME_TYPE,
       Authorization: `Bearer ${destination.Config.restApiKey}`,
     },
     userId: message.userId || message.anonymousId,
@@ -131,7 +132,7 @@ function populateCustomAttributesWithOperation(
         });
     }
   } catch (exp) {
-    logger.info('Failure occured during custom attributes operations', exp);
+    logger.info('Failure occurred during custom attributes operations', exp);
   }
 }
 
@@ -147,21 +148,6 @@ function getUserAttributesObject(message, mappingJson, destination) {
     return traits;
   }
 
-  // iterate over the destKeys and set the value if present
-  Object.keys(mappingJson).forEach((destKey) => {
-    let value = get(traits, mappingJson[destKey]);
-    if (value) {
-      // handle gender special case
-      if (destKey === 'gender') {
-        value = formatGender(value);
-      }
-      if (destKey === 'email') {
-        value = value.toLowerCase();
-      }
-      data[destKey] = value;
-    }
-  });
-
   // reserved keys : already mapped through mappingJson
   const reservedKeys = [
     'address',
@@ -174,7 +160,22 @@ function getUserAttributesObject(message, mappingJson, destination) {
     'phone',
   ];
 
+  // iterate over the destKeys and set the value if present
   if (traits) {
+    Object.keys(mappingJson).forEach((destKey) => {
+      let value = get(traits, mappingJson[destKey]);
+      if (value || (value === null && reservedKeys.includes(destKey))) {
+        // handle gender special case
+        if (destKey === 'gender') {
+          value = formatGender(value);
+        }
+        if (destKey === 'email') {
+          value = value.toLowerCase();
+        }
+        data[destKey] = value;
+      }
+    });
+
     // iterate over rest of the traits properties
     Object.keys(traits).forEach((traitKey) => {
       // if traitKey is not reserved add the value to final output
@@ -261,9 +262,7 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
       getTrackEndPoint(getEndpointFromConfig(destination)),
     );
   }
-  throw new InstrumentationError(
-    'No attributes found to update the user profile',
-  );
+  throw new InstrumentationError('No attributes found to update the user profile');
 }
 
 function handleReservedProperties(props) {
@@ -369,10 +368,8 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
       delete properties.products;
       delete properties.currency;
 
-      let payload = {};
-      payload.properties = properties;
-
-      payload = setExternalIdOrAliasObject(payload, message);
+      const payload = { properties };
+      setExternalIdOrAliasObject(payload, message);
       return buildResponse(
         message,
         destination,
@@ -422,8 +419,9 @@ function processGroup(message, destination) {
         'Message should have traits with subscriptionState, email or phone',
       );
     }
-    const subscriptionGroup = {};
-    subscriptionGroup.subscription_group_id = groupId;
+    const subscriptionGroup = {
+      subscription_group_id: groupId,
+    };
     if (
       message.traits.subscriptionState !== 'subscribed' &&
       message.traits.subscriptionState !== 'unsubscribed'
@@ -447,8 +445,8 @@ function processGroup(message, destination) {
     return {
       ...response,
       headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
+        Accept: JSON_MIME_TYPE,
         Authorization: `Bearer ${destination.Config.restApiKey}`,
       },
     };

@@ -33,12 +33,14 @@ const CustomAttributeOperationUtil = {
     data[key] = {};
     const opsResultArray = [];
     for (let i = 0; i < traits[key][CustomAttributeOperationTypes.UPDATE].length; i += 1) {
-      const myObj = {};
-      myObj.$identifier_key = traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier;
-      myObj.$identifier_value =
-        traits[key][CustomAttributeOperationTypes.UPDATE][i][
-          traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
-        ];
+      const myObj = {
+        $identifier_key: traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier,
+        $identifier_value:
+          traits[key][CustomAttributeOperationTypes.UPDATE][i][
+            traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
+          ],
+      };
+
       delete traits[key][CustomAttributeOperationTypes.UPDATE][i][
         traits[key][CustomAttributeOperationTypes.UPDATE][i].identifier
       ];
@@ -59,12 +61,13 @@ const CustomAttributeOperationUtil = {
   customAttributeRemoveOperation(key, data, traits) {
     const opsResultArray = [];
     for (let i = 0; i < traits[key][CustomAttributeOperationTypes.REMOVE].length; i += 1) {
-      const myObj = {};
-      myObj.$identifier_key = traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier;
-      myObj.$identifier_value =
-        traits[key][CustomAttributeOperationTypes.REMOVE][i][
-          traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier
-        ];
+      const myObj = {
+        $identifier_key: traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier,
+        $identifier_value:
+          traits[key][CustomAttributeOperationTypes.REMOVE][i][
+            traits[key][CustomAttributeOperationTypes.REMOVE][i].identifier
+          ],
+      };
       opsResultArray.push(myObj);
     }
     data[key][`$${CustomAttributeOperationTypes.REMOVE}`] = opsResultArray;
@@ -128,7 +131,6 @@ const BrazeDedupUtility = {
         const externalIdentifiers = ids.filter((id) => id.external_id);
         const aliasIdentifiers = ids.filter((id) => id.alias_name !== undefined);
 
-        const startTime = Date.now();
         const { processedResponse: lookUpResponse } = await handleHttpRequest(
           'post',
           `${getEndpointFromConfig(destination)}/users/export/ids`,
@@ -142,11 +144,6 @@ const BrazeDedupUtility = {
             },
             timeout: 10 * 1000,
           },
-        );
-        const endTime = Date.now();
-        // TODO: Remove this log
-        console.log(
-          `Time taken to fetch user store: ${endTime - startTime} ms for ${ids.length} users`,
         );
         stats.counter('braze_lookup_failure_count', 1, { http_status: lookUpResponse.status });
         const { users } = lookUpResponse.response;

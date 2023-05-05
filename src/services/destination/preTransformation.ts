@@ -8,10 +8,12 @@ export default class PreTransformationDestinationService {
     ctx: Context,
   ) {
     const reqParams = ctx.request.query;
-    events = events.map((event: ProcessorTransformationRequest | RouterTransformationRequestData) => {
-      event.request = { query: reqParams };
-      return event;
-    }); 
+    events = events.map(
+      (event: ProcessorTransformationRequest | RouterTransformationRequestData) => {
+        event.request = { query: reqParams };
+        return event;
+      },
+    );
     return events;
   }
 }

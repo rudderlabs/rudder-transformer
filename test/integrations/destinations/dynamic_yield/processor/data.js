@@ -1,7 +1,7 @@
 const data = [
   {
     name: 'dynamic_yield',
-    description: 'Identify call with email',
+    description: 'Identify call without hashed email',
     feature: 'processor',
     module: 'destination',
     version: 'v0',
@@ -31,6 +31,92 @@ const data = [
             destination: {
               Config: {
                 apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                hashEmail: true,
+              },
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://dy-api.com/v2/collect/user/event',
+              headers: {
+                'Content-Type': 'application/json',
+                'DY-API-Key': '34d8efa09c5b048bbacc6af157f2e687',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  user: { id: 'user0' },
+                  session: { custom: '16733896350494' },
+                  context: { device: { ip: '54.100.200.255' } },
+                  events: [
+                    {
+                      name: 'Identify User',
+                      properties: {
+                        dyType: 'identify-v1',
+                        hashedEmail:
+                          'f111db891a36b76df28abc74867e6c7248f796e045117f0cff27b6e2be25d2df',
+                      },
+                    },
+                  ],
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'dynamic_yield',
+    description: 'Identify call with hashed email',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            message: {
+              anonymousId: '507f191e810c19729de860ea',
+              context: {
+                ip: '54.100.200.255',
+                sessionId: '16733896350494',
+                userAgent:
+                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/40.0.2214.115 Safari/537.36',
+              },
+              integrations: { All: true },
+              receivedAt: '2015-02-23T22:28:55.387Z',
+              sentAt: '2015-02-23T22:28:55.111Z',
+              timestamp: '2015-02-23T22:28:55.111Z',
+              traits: {
+                email: 'f111db891a36b76df28abc74867e6c7248f796e045117f0cff27b6e2be25d2df',
+              },
+              type: 'identify',
+              userId: 'user0',
+              version: '1',
+            },
+            destination: {
+              Config: {
+                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                hashEmail: false,
               },
             },
           },
@@ -126,6 +212,7 @@ const data = [
             destination: {
               Config: {
                 apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                hashEmail: false,
               },
             },
           },
@@ -209,6 +296,7 @@ const data = [
             destination: {
               Config: {
                 apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                hashEmail: false,
               },
             },
           },
@@ -304,6 +392,7 @@ const data = [
             destination: {
               Config: {
                 apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                hashEmail: false,
               },
             },
           },
@@ -400,6 +489,7 @@ const data = [
             destination: {
               Config: {
                 apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                hashEmail: false,
               },
             },
           },
@@ -514,6 +604,7 @@ const data = [
             destination: {
               Config: {
                 apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                hashEmail: false,
               },
             },
           },

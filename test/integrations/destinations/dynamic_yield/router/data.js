@@ -32,6 +32,7 @@ const data = [
               destination: {
                 Config: {
                   apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                  hashEmail: true,
                 },
               },
               metadata: {
@@ -87,6 +88,7 @@ const data = [
               destination: {
                 Config: {
                   apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                  hashEmail: true,
                 },
               },
               metadata: [
@@ -211,6 +213,97 @@ const data = [
               ],
               batched: false,
               statusCode: 200,
+            },
+          ],
+        },
+      },
+    },
+  },
+  {
+    name: 'dynamic_yield',
+    description: 'Event is not there in input for track call',
+    feature: 'router',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: {
+          input: [
+            {
+              message: {
+                context: {
+                  traits: { email: 'testone@gmail.com' },
+                  userAgent:
+                    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
+                  ip: '54.100.200.255',
+                },
+                type: 'track',
+                session_id: '16733896350494',
+                originalTimestamp: '2019-10-14T09:03:17.562Z',
+                anonymousId: '123456',
+                userId: 'testuserId1',
+                properties: {
+                  product_id: '123',
+                  sku: 'item-34454ga',
+                  category: 'Games',
+                  name: 'Game',
+                  brand: 'Gamepro',
+                  variant: '111',
+                  price: 39.95,
+                  quantity: 1,
+                  coupon: 'DISC21',
+                  position: 1,
+                  url: 'https://www.website.com/product/path',
+                  image_url: 'https://www.website.com/product/path.png',
+                },
+                integrations: { All: true },
+                sentAt: '2019-10-14T09:03:22.563Z',
+              },
+              destination: {
+                Config: {
+                  apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                  hashEmail: true,
+                },
+              },
+              metadata: {
+                jobId: 3,
+              },
+            },
+          ],
+          destType: 'dynamic_yield',
+        },
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: {
+          output: [
+            {
+              error: 'Event is not present in the input payload',
+              destination: {
+                Config: {
+                  apiKey: '34d8efa09c5b048bbacc6af157f2e687',
+                  hashEmail: true,
+                },
+              },
+              metadata: [
+                {
+                  jobId: 3,
+                },
+              ],
+              batched: false,
+              statTags: {
+                destType: 'DYNAMIC_YIELD',
+                errorCategory: 'dataValidation',
+                errorType: 'instrumentation',
+                feature: 'router',
+                implementation: 'native',
+                module: 'destination',
+              },
+              statusCode: 400,
             },
           ],
         },

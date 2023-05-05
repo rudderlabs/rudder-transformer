@@ -31,7 +31,7 @@ const responseBuilder = (payload, apiKey, endpoint) => {
 };
 
 const identifyResponseBuilder = (message, { Config }) => {
-  const { apiKey } = Config;
+  const { apiKey, hashEmail } = Config;
 
   const payload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
   payload.events = [];
@@ -41,10 +41,13 @@ const identifyResponseBuilder = (message, { Config }) => {
       dyType: 'identify-v1',
       hashedEmail:
         message.traits?.email || message.context?.traits?.email
-          ? sha256(message.traits?.email || message.context?.traits?.email)
+          ? message.traits?.email || message.context?.traits?.email
           : null,
     },
   };
+  if (hashEmail && eventsObj.properties.hashedEmail) {
+    eventsObj.properties.hashedEmail = sha256(eventsObj.properties.hashedEmail);
+  }
   if (!eventsObj.properties.hashedEmail) {
     delete eventsObj.properties.hashedEmail;
     eventsObj.properties.cuidType = 'userId';

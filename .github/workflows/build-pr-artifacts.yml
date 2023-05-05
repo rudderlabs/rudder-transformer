@@ -27,7 +27,7 @@ jobs:
           echo "tag_name=$(echo ${{ github.head_ref }} | tr "/" .)" >> $GITHUB_OUTPUT
 
   build-transformer-image-amd:
-    name: Build Transformer Docker Image - PR
+    name: Build Transformer Docker Image amd - PR
     runs-on: ubuntu-latest
     needs: [generate-tag-name]
     env:
@@ -102,7 +102,7 @@ jobs:
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
 
   build-transformer-image-arm:
-    name: Build Transformer Docker Image - PR
+    name: Build Transformer Docker Image arm - PR
     runs-on: ubuntu-latest
     needs: [generate-tag-name]
     env:

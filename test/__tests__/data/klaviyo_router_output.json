@@ -158,5 +158,45 @@
         "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
       }
     }
+  },
+  {
+    "error": "Event type random is not supported",
+    "metadata": [
+      {
+        "jobId": 4
+      }
+    ],
+    "batched": false,
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    },
+    "statusCode": 400,
+    "destination": {
+      "Config": {
+        "publicApiKey": "WJqij9",
+        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+      }
+    }
+  },
+  {
+    "error": "groupId is a required field for group events",
+    "metadata": [
+      {
+        "jobId": 5
+      }
+    ],
+    "batched": false,
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "instrumentation"
+    },
+    "statusCode": 400,
+    "destination": {
+      "Config": {
+        "publicApiKey": "WJqij9",
+        "privateApiKey": "pk_b68c7b5163d98807fcb57e6f921216629d"
+      }
+    }
   }
 ]

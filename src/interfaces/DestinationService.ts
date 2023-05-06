@@ -11,8 +11,7 @@ import {
 } from '../types/index';
 
 export default interface DestinationService {
-
-  getName():string
+  getName(): string;
 
   init(): void;
 

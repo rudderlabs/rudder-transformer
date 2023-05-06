@@ -19,6 +19,7 @@ const {
   validateTimestamp,
 } = require('./util');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, apiKey, endpoint) => {
   if (payload) {
@@ -26,7 +27,7 @@ const responseBuilder = (payload, apiKey, endpoint) => {
     response.endpoint = `${BASE_URL}${endpoint}`;
     response.headers = {
       Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     };
     response.method = defaultPostRequestConfig.requestMethod;
     response.body.JSON = removeUndefinedAndNullValues(payload);
@@ -115,26 +116,22 @@ const trackResponseBuilder = (message, { Config }) => {
       payload = constructPayload(message, mappingConfig[ConfigCategory.PRODUCT_LIST_VIEWED.name]);
       endpoint = ConfigCategory.PRODUCT_LIST_VIEWED.endpoint;
       payload.items = getDestinationItemProperties(message, true);
-      payload.externalIdentifiers = getExternalIdentifiersMapping(message);
       break;
     /* Ordering Section */
     case 'product_viewed':
       payload = constructPayload(message, mappingConfig[ConfigCategory.PRODUCT_VIEWED.name]);
       endpoint = ConfigCategory.PRODUCT_VIEWED.endpoint;
       payload.items = getDestinationItemProperties(message, true);
-      payload.externalIdentifiers = getExternalIdentifiersMapping(message);
       break;
     case 'order_completed':
       payload = constructPayload(message, mappingConfig[ConfigCategory.ORDER_COMPLETED.name]);
       endpoint = ConfigCategory.ORDER_COMPLETED.endpoint;
       payload.items = getDestinationItemProperties(message, true);
-      payload.externalIdentifiers = getExternalIdentifiersMapping(message);
       break;
     case 'product_added':
       payload = constructPayload(message, mappingConfig[ConfigCategory.PRODUCT_ADDED.name]);
       endpoint = ConfigCategory.PRODUCT_ADDED.endpoint;
       payload.items = getDestinationItemProperties(message, true);
-      payload.externalIdentifiers = getExternalIdentifiersMapping(message);
       break;
     default:
       payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
@@ -145,16 +142,18 @@ const trackResponseBuilder = (message, { Config }) => {
           '[Attentive Tag]:The event name contains characters which is not allowed',
         );
       }
-      payload.externalIdentifiers = getExternalIdentifiersMapping(message);
   }
 
-  if (
-    !payload.user ||
-    (!isDefinedAndNotNullAndNotEmpty(payload.user.email) &&
-      !isDefinedAndNotNullAndNotEmpty(payload.user.phone))
-  ) {
-    throw new InstrumentationError('[Attentive Tag] :: Either email or phone is required');
+  if (getExternalIdentifiersMapping(message)) {
+    payload.user = {
+      ...payload.user,
+      externalIdentifiers: getExternalIdentifiersMapping(message),
+    };
   }
+  if (!payload.user) {
+    payload.user = {};
+  }
+
   return responseBuilder(payload, apiKey, endpoint);
 };
 

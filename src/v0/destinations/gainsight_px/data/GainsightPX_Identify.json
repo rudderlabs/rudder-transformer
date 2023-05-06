@@ -55,7 +55,12 @@
   },
   {
     "destKey": "signUpDate",
-    "sourceKeys": ["traits.signUpDate", "context.traits.signUpDate", "originalTimestamp"],
+    "sourceKeys": [
+      "traits.signUpDate",
+      "context.traits.signUpDate",
+      "timestamp",
+      "originalTimestamp"
+    ],
     "required": false,
     "metadata": {
       "type": "timestamp"
@@ -104,7 +109,12 @@
   },
   {
     "destKey": "createDate",
-    "sourceKeys": ["traits.createDate", "context.traits.createDate", "originalTimestamp"],
+    "sourceKeys": [
+      "traits.createDate",
+      "context.traits.createDate",
+      "timestamp",
+      "originalTimestamp"
+    ],
     "required": false,
     "metadata": {
       "type": "timestamp"

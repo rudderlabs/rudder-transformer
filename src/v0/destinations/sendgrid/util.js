@@ -22,7 +22,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { httpGET } = require('../../../adapters/network');
 const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
-const { AUTH_CACHE_TTL } = require('../../util/constant');
+const { AUTH_CACHE_TTL, JSON_MIME_TYPE } = require('../../util/constant');
 const { MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
 
 const customFieldsCache = new Cache(AUTH_CACHE_TTL);
@@ -432,7 +432,7 @@ const fetchCustomFields = async (destination) => {
   return customFieldsCache.get(destination.ID, async () => {
     const requestOptions = {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
         Authorization: `Bearer ${apiKey}`,
       },
     };

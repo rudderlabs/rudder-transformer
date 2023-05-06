@@ -1,4 +1,4 @@
-const {  set } = require('lodash');
+const { set } = require('lodash');
 const moment = require('moment');
 const { EventType } = require('../../../constants');
 const {
@@ -11,13 +11,13 @@ const {
 const {
   CALL_CONVERSION,
   trackCallConversionsMapping,
-  STORE_CONVERSION_CONFIG
+  STORE_CONVERSION_CONFIG,
 } = require('./config');
 const {
   validateDestinationConfig,
   getStoreConversionPayload,
   requestBuilder,
-  getClickConversionPayloadAndEndpoint
+  getClickConversionPayloadAndEndpoint,
 } = require('./utils');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
@@ -35,14 +35,18 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
   let payload = {};
   let endpoint;
   const { customerId } = Config;
-  const { properties, originalTimestamp } = message;
+  const { properties, timestamp, originalTimestamp } = message;
 
   const filteredCustomerId = removeHyphens(customerId);
   if (conversionType === 'click') {
     // click conversion
-    const convertedPayload = getClickConversionPayloadAndEndpoint(message, Config, filteredCustomerId);
+    const convertedPayload = getClickConversionPayloadAndEndpoint(
+      message,
+      Config,
+      filteredCustomerId,
+    );
     payload = convertedPayload.payload;
-    endpoint = convertedPayload.endpoint
+    endpoint = convertedPayload.endpoint;
   } else if (conversionType === 'store') {
     payload = getStoreConversionPayload(message, Config, filteredCustomerId);
     endpoint = STORE_CONVERSION_CONFIG.replace(':customerId', filteredCustomerId);
@@ -53,20 +57,19 @@ const getConversions = (message, metadata, { Config }, event, conversionType) =>
   }
 
   if (conversionType !== 'store') {
-
     // transform originalTimestamp to conversionDateTime format (yyyy-mm-dd hh:mm:ss+|-hh:mm)
     // e.g 2019-10-14T11:15:18.299Z -> 2019-10-14 16:10:29+0530
-    if (!properties.conversionDateTime && originalTimestamp) {
-      const timestamp = originalTimestamp;
-      const conversionDateTime = moment(timestamp)
-        .utcOffset(moment(timestamp).utcOffset())
+    // eslint-disable-next-line unicorn/consistent-destructuring
+    if (!properties.conversionDateTime && (timestamp || originalTimestamp)) {
+      const conversionTimestamp = timestamp || originalTimestamp;
+      const conversionDateTime = moment(conversionTimestamp)
+        .utcOffset(moment(conversionTimestamp).utcOffset())
         .format('YYYY-MM-DD HH:mm:ssZ');
       set(payload, 'conversions[0].conversionDateTime', conversionDateTime);
     }
     payload.partialFailure = true;
   }
   return requestBuilder(payload, endpoint, Config, metadata, event, filteredCustomerId, properties);
-
 };
 
 /**
@@ -97,7 +100,7 @@ const trackResponseBuilder = (message, metadata, destination) => {
     throw new ConfigurationError(`Event name '${event}' is not valid`);
   }
   const conversionTypes = Array.from(eventsToOfflineConversionsTypeMapping[event]);
-  conversionTypes.forEach(conversionType => {
+  conversionTypes.forEach((conversionType) => {
     responseList.push(
       getConversions(
         message,

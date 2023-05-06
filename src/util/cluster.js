@@ -2,11 +2,16 @@ const cluster = require('cluster');
 const gracefulShutdown = require('http-graceful-shutdown');
 const logger = require('../logger');
 const { logProcessInfo } = require('./utils');
+const { RedisDB } = require('./redisConnector');
 
 const numWorkers = parseInt(process.env.NUM_PROCS || '1', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
 
 function finalFunction() {
+  logger.info('Process exit event received');
+  RedisDB.disconnect();
+  logger.info('Redis client disconnected');
+
   logger.error(`Worker (pid: ${process.pid}) was gracefully shutdown`);
   logProcessInfo();
 }
@@ -26,7 +31,13 @@ function start(port, app, metricsApp) {
 
     // HTTP server for exposing metrics
     if (process.env.STATS_CLIENT === 'prometheus') {
-      metricsApp.listen(metricsPort);
+      const metricsServer = metricsApp.listen(metricsPort);
+
+      gracefulShutdown(metricsServer, {
+        signals: 'SIGINT SIGTERM SIGSEGV',
+        timeout: 30000, // timeout: 30 secs
+        forceExit: false, // triggers process.exit() at the end of shutdown process
+      });
     }
 
     // Fork workers.
@@ -52,6 +63,13 @@ function start(port, app, metricsApp) {
 
     process.on('SIGTERM', () => {
       logger.error('SIGTERM signal received. Closing workers...');
+      logProcessInfo();
+      isShuttingDown = true;
+      shutdownWorkers();
+    });
+
+    process.on('SIGINT', () => {
+      logger.error('SIGINT signal received. Closing workers...');
       logProcessInfo();
       isShuttingDown = true;
       shutdownWorkers();

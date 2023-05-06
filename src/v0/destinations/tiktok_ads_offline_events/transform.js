@@ -22,6 +22,7 @@ const {
   PARTNER_NAME,
 } = require('./config');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getContents = (message) => {
   const contents = [];
@@ -90,7 +91,7 @@ const getTrackResponse = (message, category, Config, event) => {
   const response = defaultRequestConfig();
   response.headers = {
     'Access-Token': accessToken,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
 
   response.method = category.method;
@@ -141,12 +142,10 @@ const process = (event) => {
   const messageType = message.type.toLowerCase();
 
   let response;
-  switch (messageType) {
-    case EventType.TRACK:
-      response = trackResponseBuilder(message, CONFIG_CATEGORIES.TRACK, destination);
-      break;
-    default:
-      throw new InstrumentationError(`Event type ${messageType} is not supported`);
+  if (messageType === EventType.TRACK) {
+    response = trackResponseBuilder(message, CONFIG_CATEGORIES.TRACK, destination);
+  } else {
+    throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
 };
@@ -169,7 +168,7 @@ const createBatch = (events, eventSetId, destination) => {
 
   batchedRequest.headers = {
     'Access-Token': accessToken,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   return batchedRequest;
 };

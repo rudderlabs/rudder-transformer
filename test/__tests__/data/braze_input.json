@@ -1164,5 +1164,139 @@
       "type": "track",
       "userId": "finalUserTestCA"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false,
+        "dataCenter": "us-01"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Braze",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "BRAZE"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Braze",
+      "Transformations": []
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "traits": {
+          "address": {
+            "city": "Mathura",
+            "country": "India"
+          },
+          "email": "anuj.kumar@gmail.com",
+          "phone": "9988123321",
+          "firstName": "anuj",
+          "lastName": "kumar",
+          "gender": "male",
+          "birthday": "01/01/1971",
+          "avatar": "https://i.kym-cdn.com/entries/icons/mobile/000/034/772/anuj-1.jpg",
+          "bio": "Tech and tension go together",
+          "language": "en-IN",
+          "job": "Director",
+          "company": "Plinth India"
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "request_ip": "[::1]:53709",
+      "type": "identify",
+      "userId": "ank101"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "prefixProperties": true,
+        "useNativeSDK": false,
+        "dataCenter": "us-01"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Braze",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "BRAZE"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Braze",
+      "Transformations": []
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "traits": {
+          "address": {
+            "city": "Mathura",
+            "country": "India"
+          },
+          "email": "anuj.kumar@gmail.com",
+          "phone": "9988123321",
+          "firstName": "anuj",
+          "lastName": "kumar",
+          "gender": null,
+          "birthday": "01/01/1971",
+          "avatar": "https://i.kym-cdn.com/entries/icons/mobile/000/034/772/anuj-1.jpg",
+          "bio": "Tech and tension go together",
+          "language": "en-IN",
+          "job": "Director",
+          "company": null
+        },
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "request_ip": "[::1]:53709",
+      "type": "identify",
+      "userId": "ank101"
+    }
   }
 ]

@@ -5,6 +5,7 @@ const { getDestinationExternalID, isDefinedAndNotNull } = require('../../util');
 const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * This function is taking the board(received from the lookup call) and groupTitle as parameter
@@ -182,7 +183,7 @@ const getBoardDetails = async (url, boardID, apiToken) => {
     },
     {
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': JSON_MIME_TYPE,
         Authorization: `${apiToken}`,
       },
     },

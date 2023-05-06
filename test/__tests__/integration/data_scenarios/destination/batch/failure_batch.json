@@ -263,14 +263,7 @@
               ],
               "saveDestinationResponse": true,
               "secretKeys": ["apiKey", "apiSecret"],
-              "supportedMessageTypes": [
-                "alias",
-                "group",
-                "identify",
-                "page",
-                "screen",
-                "track"
-              ],
+              "supportedMessageTypes": ["alias", "group", "identify", "page", "screen", "track"],
               "supportedSourceTypes": [
                 "android",
                 "ios",
@@ -625,14 +618,7 @@
               ],
               "saveDestinationResponse": true,
               "secretKeys": ["apiKey", "apiSecret"],
-              "supportedMessageTypes": [
-                "alias",
-                "group",
-                "identify",
-                "page",
-                "screen",
-                "track"
-              ],
+              "supportedMessageTypes": ["alias", "group", "identify", "page", "screen", "track"],
               "supportedSourceTypes": [
                 "android",
                 "ios",
@@ -989,14 +975,7 @@
               ],
               "saveDestinationResponse": true,
               "secretKeys": ["apiKey", "apiSecret"],
-              "supportedMessageTypes": [
-                "alias",
-                "group",
-                "identify",
-                "page",
-                "screen",
-                "track"
-              ],
+              "supportedMessageTypes": ["alias", "group", "identify", "page", "screen", "track"],
               "supportedSourceTypes": [
                 "android",
                 "ios",
@@ -1186,7 +1165,7 @@
       },
       "batched": false,
       "statusCode": 400,
-      "statTags":  {
+      "statTags": {
         "errorCategory": "dataValidation",
         "errorType": "instrumentation"
       },
@@ -1596,14 +1575,7 @@
             ],
             "saveDestinationResponse": true,
             "secretKeys": ["apiKey", "apiSecret"],
-            "supportedMessageTypes": [
-              "alias",
-              "group",
-              "identify",
-              "page",
-              "screen",
-              "track"
-            ],
+            "supportedMessageTypes": ["alias", "group", "identify", "page", "screen", "track"],
             "supportedSourceTypes": [
               "android",
               "ios",

@@ -4,8 +4,8 @@ import request from 'supertest';
 import { createHttpTerminator } from 'http-terminator';
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
-import { applicationRoutes } from '../../../src/routes';
 import setValue from 'set-value';
+import { applicationRoutes } from '../../../src/routes';
 
 let server: any;
 const OLD_ENV = process.env;
@@ -37,7 +37,9 @@ const getDataFromPath = (pathInput) => {
 
 describe('Basic route tests', () => {
   test('successful features response', async () => {
-    const expectedData = JSON.parse(fs.readFileSync('features.json', 'utf8'));
+    const expectedData = JSON.parse(
+      fs.readFileSync(path.resolve(__dirname, '../../../src/features.json'), 'utf8'),
+    );
     const response = await request(server).get('/features');
     expect(response.status).toEqual(200);
     expect(JSON.parse(response.text)).toEqual(expectedData);
@@ -231,7 +233,6 @@ describe('CDK V1 api tests', () => {
 
 describe('CDK V2 api tests', () => {
   test('(pinterest_tag) successful transform', async () => {
-    process.env.CDK_V2_Enabled = 'true';
     const data = getDataFromPath('./data_scenarios/cdk_v2/success.json');
     const response = await request(server)
       .post('/v0/destinations/pinterest_tag')
@@ -242,7 +243,6 @@ describe('CDK V2 api tests', () => {
   });
 
   test('(pinterest_tag) partial failure scenario', async () => {
-    process.env.CDK_V2_Enabled = 'true';
     const data = getDataFromPath('./data_scenarios/cdk_v2/failure.json');
     const response = await request(server)
       .post('/v0/destinations/pinterest_tag')

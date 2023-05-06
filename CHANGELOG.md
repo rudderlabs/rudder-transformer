@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.24.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.23.1...v1.24.0) (2023-04-25)
+
+
+### Features
+
+* fb_custom_audience batching according to payload size ([#2054](https://github.com/rudderlabs/rudder-transformer/issues/2054)) ([e742e8d](https://github.com/rudderlabs/rudder-transformer/commit/e742e8dba33bd468b27ae318bbd7df5552e4bc19))
+* **pinterest:** passing unkown event in v3 ([#2092](https://github.com/rudderlabs/rudder-transformer/issues/2092)) ([a77a0dd](https://github.com/rudderlabs/rudder-transformer/commit/a77a0dd227bd0d752d189f7464c2fa18117bb8b6))
+* **pinterest:** version update ([#2063](https://github.com/rudderlabs/rudder-transformer/issues/2063)) ([79f1629](https://github.com/rudderlabs/rudder-transformer/commit/79f16292fa2818ef9a0ab3f12f0e4bc7df419d06))
+
+
+### Bug Fixes
+
+* added missed stats to dest transform controllers ([#2080](https://github.com/rudderlabs/rudder-transformer/issues/2080)) ([9cbbd0e](https://github.com/rudderlabs/rudder-transformer/commit/9cbbd0e31ca49603c54fdae882d56ff1d1227020))
+* prioritize timestamp over originalTimstamp across destinations ([#2078](https://github.com/rudderlabs/rudder-transformer/issues/2078)) ([b7a0fdb](https://github.com/rudderlabs/rudder-transformer/commit/b7a0fdbf8bc4d132c7951a5eab01bb837b53f6e8))
+* shopify default check for anonymousId ([#2086](https://github.com/rudderlabs/rudder-transformer/issues/2086)) ([c7472a8](https://github.com/rudderlabs/rudder-transformer/commit/c7472a82822b652b101700617b782ca955f73b54))
+
+### [1.23.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.23.0...v1.23.1) (2023-04-20)
+
+
+### Bug Fixes
+
+* anonymous id default value  ([#2081](https://github.com/rudderlabs/rudder-transformer/issues/2081)) ([6457c09](https://github.com/rudderlabs/rudder-transformer/commit/6457c09a0f0963179388ba8535fbcd9f872ba9fd))
+* Default Val for Anon Id ([4dd1df7](https://github.com/rudderlabs/rudder-transformer/commit/4dd1df7e25bd6fea7770e6c38c4c63bb1d81141c))
+
+## [1.23.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.22.2...v1.23.0) (2023-04-17)
+
+
+### Features
+
+* **mixpanel:** add simplified api in page/screen/group/revenue event ([#2065](https://github.com/rudderlabs/rudder-transformer/issues/2065)) ([400a5d3](https://github.com/rudderlabs/rudder-transformer/commit/400a5d37e40fdc7c31e13d1d167959803f57aaf3))
+* **mixpanel:** add support of simplified api ([#2042](https://github.com/rudderlabs/rudder-transformer/issues/2042)) ([593bcc0](https://github.com/rudderlabs/rudder-transformer/commit/593bcc0a37b5c0c3fc63e748646077e498782780))
+* onboarding tiktok ads to transformmer proxy ([#1905](https://github.com/rudderlabs/rudder-transformer/issues/1905)) ([d26a924](https://github.com/rudderlabs/rudder-transformer/commit/d26a92477e6a1b3354e66dbe8f8d9561a1dc7296))
+* shopify identity stitching  3 ([#2039](https://github.com/rudderlabs/rudder-transformer/issues/2039)) ([0d3c4fc](https://github.com/rudderlabs/rudder-transformer/commit/0d3c4fceb2933448c4614b129aa79aa856b5fc5d))
+* **tiktok_ads_offline_conversions:** support of multiple phone numbers ([#2061](https://github.com/rudderlabs/rudder-transformer/issues/2061)) ([ecaa337](https://github.com/rudderlabs/rudder-transformer/commit/ecaa3376ecf62b62526a9fea67002ae84530aa2a))
+
+
+### Bug Fixes
+
+* add override field support in contextual traits ([#2066](https://github.com/rudderlabs/rudder-transformer/issues/2066)) ([e4abff8](https://github.com/rudderlabs/rudder-transformer/commit/e4abff8c8a58a344c3aa59d4c58b725c2f7a0c65))
+* **cdk v2:** webhook destination can accept payload without message type ([#2067](https://github.com/rudderlabs/rudder-transformer/issues/2067)) ([4d920a3](https://github.com/rudderlabs/rudder-transformer/commit/4d920a3b7518ac1be6325ad9b06b50319ba96539))
+* freshsales rudderEvent to freshsales standard event ([#2053](https://github.com/rudderlabs/rudder-transformer/issues/2053)) ([606e10c](https://github.com/rudderlabs/rudder-transformer/commit/606e10ccbcba63c5efcd70c97f700552b97d5a20))
+* **hs:** input data type validation based on the property map ([#2055](https://github.com/rudderlabs/rudder-transformer/issues/2055)) ([8cbb215](https://github.com/rudderlabs/rudder-transformer/commit/8cbb215dbaf099fbc3002236b0c286af8964fa92))
+* update priority of timestamp over originaltimestamp ([#2064](https://github.com/rudderlabs/rudder-transformer/issues/2064)) ([bf969ff](https://github.com/rudderlabs/rudder-transformer/commit/bf969ff7cbbfe913bcc78bbf11a47413cb42ae47))
+
 ### [1.22.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.22.1...v1.22.2) (2023-04-13)
 
 

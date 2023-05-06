@@ -2935,5 +2935,60 @@
       "isConnectionEnabled": true,
       "isProcessorEnabled": true
     }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-GB",
+        "ip": "0.0.0.0",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "page": {
+          "path": "",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": ""
+        },
+        "traits": {
+          "email": "testhubspot2@email.com",
+          "firstname": "Test Hubspot",
+          "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+          "days_to_close": "29 days to close"
+        }
+      },
+      "type": "identify",
+      "messageId": "50360b9c-ea8d-409c-b672-c9230f91cce5",
+      "originalTimestamp": "2023-04-11T09:35:31.288Z",
+      "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+      "userId": "user@1",
+      "integrations": {
+        "All": true
+      }
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "dummy-apikey",
+        "hubID": "dummy-hubId"
+      },
+      "Enabled": true
+    }
   }
 ]

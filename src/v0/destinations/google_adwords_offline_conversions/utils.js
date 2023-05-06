@@ -8,7 +8,9 @@ const {
   defaultRequestConfig,
   defaultPostRequestConfig,
   removeHyphens,
-  getFieldValueFromMessage
+  getFieldValueFromMessage,
+  isDefinedAndNotNullAndNotEmpty,
+  isDefinedAndNotNull,
 } = require('../../util');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const {
@@ -18,11 +20,16 @@ const {
   trackAddStoreConversionsMapping,
   trackAddStoreAddressConversionsMapping,
   trackClickConversionsMapping,
-  CLICK_CONVERSION
+  CLICK_CONVERSION,
 } = require('./config');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const Cache = require('../../util/cache');
-const { AbortedError, OAuthSecretError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const {
+  AbortedError,
+  OAuthSecretError,
+  ConfigurationError,
+  InstrumentationError,
+} = require('../../util/errorTypes');
 
 const conversionActionIdCache = new Cache(CONVERSION_ACTION_ID_CACHE_TTL);
 
@@ -57,13 +64,11 @@ const getAccessToken = ({ secret }) => {
  * @returns
  */
 const getAuthErrCategory = (status) => {
-  switch (status) {
-    case 401:
-      // UNAUTHORIZED
-      return REFRESH_TOKEN;
-    default:
-      return '';
+  if (status === 401) {
+    // UNAUTHORIZED
+    return REFRESH_TOKEN;
   }
+  return '';
 };
 
 /**
@@ -104,6 +109,20 @@ const getConversionActionId = async (headers, params) => {
   });
 };
 
+const generateItemListFromProducts = (products) => {
+  const itemList = [];
+  products.forEach((product) => {
+    if (Object.keys(product).length > 0) {
+      itemList.push({
+        productId: product.product_id,
+        quantity: parseInt(product.quantity, 10),
+        unitPrice: Number(product.price),
+      });
+    }
+  });
+  return itemList;
+};
+
 /**
  * update mapping Json config to remove 'hashToSha256'
  * operation from metadata.type and replace it with
@@ -124,18 +143,24 @@ const removeHashToSha256TypeFromMappingJson = (mapping) => {
 };
 /**
  * To construct the address object according to the google ads documentation
- * @param {*} message 
+ * @param {*} message
  */
 const buildAndGetAddress = (message, hashUserIdentifier) => {
   const address = constructPayload(message, trackAddStoreAddressConversionsMapping);
-  if(address.hashed_last_name){
-    address.hashed_last_name = hashUserIdentifier? sha256(address.hashed_last_name).toString(): address.hashed_last_name;
+  if (address.hashed_last_name) {
+    address.hashed_last_name = hashUserIdentifier
+      ? sha256(address.hashed_last_name).toString()
+      : address.hashed_last_name;
   }
-  if(address.hashed_first_name){
-    address.hashed_first_name = hashUserIdentifier? sha256(address.hashed_first_name).toString(): address.hashed_first_name;
+  if (address.hashed_first_name) {
+    address.hashed_first_name = hashUserIdentifier
+      ? sha256(address.hashed_first_name).toString()
+      : address.hashed_first_name;
   }
-  if(address.hashed_street_address){
-    address.hashed_street_address = hashUserIdentifier? sha256(address.hashed_street_address).toString(): address.hashed_street_address;
+  if (address.hashed_street_address) {
+    address.hashed_street_address = hashUserIdentifier
+      ? sha256(address.hashed_street_address).toString()
+      : address.hashed_street_address;
   }
   return Object.keys(address).length > 0 ? address : null;
 };
@@ -148,7 +173,7 @@ const requestBuilder = (
   metadata,
   event,
   filteredCustomerId,
-  properties
+  properties,
 ) => {
   const { customVariables, subAccount, loginCustomerId } = Config;
   const response = defaultRequestConfig();
@@ -156,7 +181,7 @@ const requestBuilder = (
   response.endpoint = endpoint;
   response.params = {
     event,
-    customerId: filteredCustomerId
+    customerId: filteredCustomerId,
   };
   if (!payload?.isStoreConversion) {
     response.params.customVariables = customVariables;
@@ -183,26 +208,39 @@ const requestBuilder = (
  * This function creates a offlineUserDataJob Payload
  * and returns the payload
  */
-const getCreateJobPayload = message => {
+const getCreateJobPayload = (message) => {
   const payload = constructPayload(message, trackCreateStoreConversionsMapping);
-  set(payload, "job.type", 'STORE_SALES_UPLOAD_FIRST_PARTY');
+  set(payload, 'job.type', 'STORE_SALES_UPLOAD_FIRST_PARTY');
   if (!payload.job?.storeSalesMetadata?.loyaltyFraction) {
-    set(payload, "job.storeSalesMetadata.loyaltyFraction", '1');
+    set(payload, 'job.storeSalesMetadata.loyaltyFraction', '1');
   }
   if (!payload.job?.storeSalesMetadata?.transaction_upload_fraction) {
-    set(payload, "job.storeSalesMetadata.transaction_upload_fraction", '1');
+    set(payload, 'job.storeSalesMetadata.transaction_upload_fraction', '1');
   }
   return payload;
 };
 
+const UserIdentifierFieldNameMap = {
+  email: 'hashedEmail',
+  phone: 'hashedPhoneNumber',
+  address: 'address_info',
+};
+
+function getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier) {
+  const result = Object.keys(userIdentifierInfo).find(
+    (key) =>
+      key !== defaultUserIdentifier && isDefinedAndNotNullAndNotEmpty(userIdentifierInfo[key]),
+  );
+  return result;
+}
+
 /**
- * This Function create the add conversion payload 
+ * This Function create the add conversion payload
  * and returns the payload
  */
 const getAddConversionPayload = (message, Config) => {
   const { properties } = message;
-  const { validateOnly, hashUserIdentifier,
-    defaultUserIdentifier } = Config;
+  const { validateOnly, hashUserIdentifier, defaultUserIdentifier } = Config;
   const payload = constructPayload(message, trackAddStoreConversionsMapping);
   payload.enable_partial_failure = false;
   payload.enable_warnings = false;
@@ -217,58 +255,63 @@ const getAddConversionPayload = (message, Config) => {
   payload.operations.create.transaction_attribute.transaction_date_time = convertedDateTime;
   // mapping custom_key that should be predefined in google Ui and mentioned when new job is created
   if (properties.custom_key && properties[properties.custom_key]) {
-    payload.operations.create.transaction_attribute[properties.custom_key] = properties[properties.custom_key];
+    payload.operations.create.transaction_attribute[properties.custom_key] =
+      properties[properties.custom_key];
   }
   // Converting transaction Cost to micro as mentioned here : https://developers.google.com/google-ads/api/reference/rpc/v13/TransactionAttribute#:~:text=30%2B03%3A00%22-,transaction_amount_micros,-double
-  payload.operations.create.transaction_attribute.transaction_amount_micros = `${payload.operations.create.transaction_attribute.transaction_amount_micros * 1000000}`;
+  payload.operations.create.transaction_attribute.transaction_amount_micros = `${
+    payload.operations.create.transaction_attribute.transaction_amount_micros * 1000000
+  }`;
   // userIdentifierSource
   // if userIdentifierSource doesn't exist in properties
   // then it is taken from the webapp config
-  let email = getFieldValueFromMessage(message, 'email');
-  let phone = getFieldValueFromMessage(message, 'phone');
-  const address = buildAndGetAddress(message, hashUserIdentifier);
-  if (defaultUserIdentifier === 'email' && email) {
-    email = hashUserIdentifier ? sha256(email).toString() : email;
-    set(payload, 'operations.create.userIdentifiers[0].hashedEmail', email);
-  } else if (defaultUserIdentifier === 'phone' && phone) {
-    phone = hashUserIdentifier ? sha256(phone).toString(): phone;
-    set(payload, 'operations.create.userIdentifiers[0].hashedPhoneNumber', phone);
-  } else if (address) {
-    // priortizing address in case defaultUserIdentifier is not present
-    set(payload, 'operations.create.userIdentifiers[0].address_info', address);
-  } else if (email) {
-    // case when default choosen value is not present
-    email = hashUserIdentifier ? sha256(email).toString() : email;
-    set(payload, 'operations.create.userIdentifiers[0].hashedEmail', email);
-  } else if (phone) {
-    phone = hashUserIdentifier ? sha256(phone).toString(): phone;
-    set(payload, 'operations.create.userIdentifiers[0].hashedPhoneNumber', phone);
+  const email = getFieldValueFromMessage(message, 'email');
+  const phone = getFieldValueFromMessage(message, 'phone');
+
+  const userIdentifierInfo = {
+    email: hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email).toString() : email,
+    phone: hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone).toString() : phone,
+    address: buildAndGetAddress(message, hashUserIdentifier),
+  };
+
+  if (isDefinedAndNotNull(userIdentifierInfo[defaultUserIdentifier])) {
+    set(
+      payload,
+      `operations.create.userIdentifiers[0].${UserIdentifierFieldNameMap[defaultUserIdentifier]}`,
+      userIdentifierInfo[defaultUserIdentifier],
+    );
   } else {
-    set(payload, 'operations.create.userIdentifiers[0]', {}); // if no user identifier is present
+    const keyName = getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier);
+    if (isDefinedAndNotNull(keyName)) {
+      set(
+        payload,
+        `operations.create.userIdentifiers[0].${UserIdentifierFieldNameMap[keyName]}`,
+        userIdentifierInfo[keyName],
+      );
+    } else {
+      set(payload, 'operations.create.userIdentifiers[0]', {});
+    }
   }
   return payload;
 };
 
 const getStoreConversionPayload = (message, Config, event) => {
   const { validateOnly } = Config;
-  const payload = {};
-  payload.event = event;
-  payload.isStoreConversion = true;
-  payload.createJobPayload = getCreateJobPayload(message);
-  payload.addConversionPayload = getAddConversionPayload(message, Config);
-  payload.executeJobPayload = { validate_only: validateOnly }
+  const payload = {
+    event,
+    isStoreConversion: true,
+    createJobPayload: getCreateJobPayload(message),
+    addConversionPayload: getAddConversionPayload(message, Config),
+    executeJobPayload: { validate_only: validateOnly },
+  };
   return payload;
-}
+};
 
 const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerId) => {
-  let email = getFieldValueFromMessage(message, 'email');
-  let phone = getFieldValueFromMessage(message, 'phone');
-  const {
-    hashUserIdentifier,
-    defaultUserIdentifier,
-    UserIdentifierSource,
-    conversionEnvironment
-  } = Config;
+  const email = getFieldValueFromMessage(message, 'emailOnly');
+  const phone = getFieldValueFromMessage(message, 'phone');
+  const { hashUserIdentifier, defaultUserIdentifier, UserIdentifierSource, conversionEnvironment } =
+    Config;
   const { properties } = message;
   // click conversions
   let updatedClickMapping = cloneDeep(trackClickConversionsMapping);
@@ -278,7 +321,6 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
   }
 
   const payload = constructPayload(message, updatedClickMapping);
-
 
   const endpoint = CLICK_CONVERSION.replace(':customerId', filteredCustomerId);
 
@@ -313,21 +355,28 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
   // either of email or phone should be passed
   // defaultUserIdentifier depends on the webapp configuration
   // Ref - https://developers.google.com/google-ads/api/rest/reference/rest/v11/customers/uploadClickConversions#ClickConversion
-  if (defaultUserIdentifier === 'email' && email) {
-    email = hashUserIdentifier ? sha256(email).toString() : email;
-    set(payload, 'conversions[0].userIdentifiers[0].hashedEmail', email);
-  } else if (defaultUserIdentifier === 'phone' && phone) {
-    phone = hashUserIdentifier ? sha256(phone).toString() : phone;
-    set(payload, 'conversions[0].userIdentifiers[0].hashedPhoneNumber', phone);
-  } else if (email) {
-    // case when default choosen value is not present
-    email = hashUserIdentifier ? sha256(email).toString() : email;
-    set(payload, 'conversions[0].userIdentifiers[0].hashedEmail', email);
-  } else if (phone) {
-    phone = hashUserIdentifier ? sha256(phone).toString() : phone;
-    set(payload, 'conversions[0].userIdentifiers[0].hashedPhoneNumber', phone);
-  }
 
+  const userIdentifierInfo = {
+    email: hashUserIdentifier && isDefinedAndNotNull(email) ? sha256(email).toString() : email,
+    phone: hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone).toString() : phone,
+  };
+
+  if (isDefinedAndNotNull(userIdentifierInfo[defaultUserIdentifier])) {
+    set(
+      payload,
+      `conversions[0].userIdentifiers[0].${UserIdentifierFieldNameMap[defaultUserIdentifier]}`,
+      userIdentifierInfo[defaultUserIdentifier],
+    );
+  } else {
+    const keyName = getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier);
+    if (isDefinedAndNotNull(keyName)) {
+      set(
+        payload,
+        `conversions[0].userIdentifiers[0].${UserIdentifierFieldNameMap[keyName]}`,
+        userIdentifierInfo[keyName],
+      );
+    }
+  }
   // conversionEnvironment
   // if conversionEnvironment doesn't exist in properties
   // then it is taken from the webapp config
@@ -335,15 +384,17 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
     set(payload, 'conversions[0].conversionEnvironment', conversionEnvironment);
   }
   return { payload, endpoint };
-}
+};
 
 module.exports = {
   validateDestinationConfig,
+  generateItemListFromProducts,
   getAccessToken,
   getConversionActionId,
   removeHashToSha256TypeFromMappingJson,
   getStoreConversionPayload,
   requestBuilder,
   buildAndGetAddress,
-  getClickConversionPayloadAndEndpoint
+  getClickConversionPayloadAndEndpoint,
+  getExisitingUserIdentifier,
 };

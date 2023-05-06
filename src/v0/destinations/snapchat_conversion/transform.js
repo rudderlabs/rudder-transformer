@@ -1,6 +1,5 @@
 const get = require('get-value');
 const moment = require('moment');
-const _ = require('lodash');
 const { EventType } = require('../../../constants');
 
 const {
@@ -34,6 +33,58 @@ const {
   generateBatchedPayloadForArray,
 } = require('./util');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+function buildResponse(apiKey, payload) {
+  const response = defaultRequestConfig();
+  response.endpoint = ENDPOINT;
+  response.headers = {
+    Authorization: `Bearer ${apiKey}`,
+    'Content-Type': JSON_MIME_TYPE,
+  };
+  response.method = defaultPostRequestConfig.requestMethod;
+  response.body.JSON = removeUndefinedAndNullValues(payload);
+  return response;
+}
+
+/**
+ * Seperate out hashing operations into one function
+ * @param {*} payload
+ * @param {*} message
+ * @returns updatedPayload
+ */
+function populateHashedValues(payload, message) {
+  const updatedPayload = payload;
+  const email = getFieldValueFromMessage(message, 'email');
+  const phone = getNormalizedPhoneNumber(message);
+  const ip = message.context?.ip || message.request_ip;
+
+  if (email) {
+    updatedPayload.hashed_email = getHashedValue(email.toString().toLowerCase().trim());
+  }
+  if (phone) {
+    updatedPayload.hashed_phone_number = getHashedValue(phone.toString().toLowerCase().trim());
+  }
+  if (ip) {
+    updatedPayload.hashed_ip_address = getHashedValue(ip.toString().toLowerCase().trim());
+  }
+  // only in case of ios platform this is required
+  if (
+    isAppleFamily(message.context?.device?.type) &&
+    (message.properties?.idfv || message.context?.device?.id)
+  ) {
+    updatedPayload.hashed_idfv = getHashedValue(
+      message.properties?.idfv || message.context?.device?.id,
+    );
+  }
+
+  if (message.properties?.adId || message.context?.device?.advertisingId) {
+    updatedPayload.hashed_mobile_ad_id = getHashedValue(
+      message.properties?.adId || message.context?.device?.advertisingId,
+    );
+  }
+  return updatedPayload;
+}
 
 // Returns the response for the track event after constructing the payload and setting necessary fields
 function trackResponseBuilder(message, { Config }, mappedEvent) {
@@ -140,35 +191,8 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
     throw new InstrumentationError(`Event ${event} doesn't match with Snapchat Events!`);
   }
 
-  if (get(message, 'properties.event_tag')) {
-    payload.event_tag = message.properties.event_tag;
-  }
-
-  const email = getFieldValueFromMessage(message, 'email');
-  if (email) {
-    payload.hashed_email = getHashedValue(email.toString().toLowerCase().trim());
-  }
-  const phone = getNormalizedPhoneNumber(message);
-  if (phone) {
-    payload.hashed_phone_number = getHashedValue(phone.toString().toLowerCase().trim());
-  }
-  const ip = message.context?.ip || message.request_ip;
-  if (ip) {
-    payload.hashed_ip_address = getHashedValue(ip.toString().toLowerCase().trim());
-  }
-  // only in case of ios platform this is required
-  if (
-    isAppleFamily(message.context?.device?.type) &&
-    (message.properties?.idfv || message.context?.device?.id)
-  ) {
-    payload.hashed_idfv = getHashedValue(message.properties?.idfv || message.context?.device?.id);
-  }
-
-  if (message.properties?.adId || message.context?.device?.advertisingId) {
-    payload.hashed_mobile_ad_id = getHashedValue(
-      message.properties?.adId || message.context?.device?.advertisingId,
-    );
-  }
+  payload.event_tag = get(message, 'properties.event_tag');
+  payload = populateHashedValues(payload, message);
 
   payload.user_agent = message.context?.userAgent?.toString().toLowerCase();
 
@@ -219,14 +243,7 @@ function trackResponseBuilder(message, { Config }, mappedEvent) {
   payload = removeUndefinedAndNullValues(payload);
 
   // build response
-  const response = defaultRequestConfig();
-  response.endpoint = ENDPOINT;
-  response.headers = {
-    Authorization: `Bearer ${apiKey}`,
-    'Content-Type': 'application/json',
-  };
-  response.method = defaultPostRequestConfig.requestMethod;
-  response.body.JSON = removeUndefinedAndNullValues(payload);
+  const response = buildResponse(apiKey, payload);
   return response;
 }
 
@@ -269,22 +286,19 @@ function process(event) {
 
   const messageType = message.type.toLowerCase();
   let response;
-  switch (messageType) {
-    case EventType.TRACK: {
-      const mappedEvents = eventMappingHandler(message, destination);
-      if (mappedEvents.length > 0) {
-        response = [];
-        mappedEvents.forEach((mappedEvent) => {
-          const res = trackResponseBuilder(message, destination, mappedEvent);
-          response.push(res);
-        });
-      } else {
-        response = trackResponseBuilder(message, destination, get(message, 'event'));
-      }
-      break;
+  if (messageType === EventType.TRACK) {
+    const mappedEvents = eventMappingHandler(message, destination);
+    if (mappedEvents.length > 0) {
+      response = [];
+      mappedEvents.forEach((mappedEvent) => {
+        const res = trackResponseBuilder(message, destination, mappedEvent);
+        response.push(res);
+      });
+    } else {
+      response = trackResponseBuilder(message, destination, get(message, 'event'));
     }
-    default:
-      throw new InstrumentationError(`Event type ${messageType} is not supported`);
+  } else {
+    throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
 }

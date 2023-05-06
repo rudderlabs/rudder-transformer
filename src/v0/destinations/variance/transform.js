@@ -5,6 +5,7 @@ const {
   defaultRequestConfig,
   isDefinedAndNotNull,
 } = require('../../util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function process(event) {
   const { message, destination } = event;
@@ -18,7 +19,7 @@ function process(event) {
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = message;
   response.headers = {
-    'content-type': 'application/json',
+    'content-type': JSON_MIME_TYPE,
     authorization: authHeader,
   };
 

@@ -1,4 +1,5 @@
 const Redis = require('ioredis');
+const { isDefinedAndNotNull } = require('../../v0/util');
 const { RedisError } = require('../../v0/util/errorTypes');
 const log = require('../../logger');
 const stats = require('../stats');
@@ -83,16 +84,23 @@ const RedisDB = {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       let value;
+      let redisVal;
       if (isObjExpected === true) {
-        value = await this.client.hmget(hashKey, key);
-        try {
-          value = JSON.parse(value);
-        } catch (e) {
-          // do nothing
+        redisVal = await this.client.hmget(hashKey, key);
+        if (isDefinedAndNotNull(redisVal)) {
+          value = redisVal.map(element => {
+            try {
+              return JSON.parse(element);
+            } catch (e) {
+              // do nothing
+              return element;
+            }
+          })
+          return value;
         }
-      } else {
-        value = await this.client.get(hashKey);
+        return redisVal;
       }
+      value = await this.client.get(hashKey);
       return value;
     } catch (e) {
       stats.increment("redis_error", {

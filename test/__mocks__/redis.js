@@ -62,7 +62,7 @@ class Redis {
         if (obj === null) {
             return null;
         }
-        return obj[`${internalKey}`];
+        return [obj[`${internalKey}`]];
     }
     multi() {
         return { hmset: this.hmset, set: this.set }

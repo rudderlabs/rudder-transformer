@@ -1,6 +1,6 @@
 [
     {
-        "description": "Track Call -> dupliate carts_update ",
+        "description": "Track Call -> duplicate carts_update ",
         "input": {
             "id": "shopify_test3",
             "query_parameters": {
@@ -901,13 +901,13 @@
     {
         "description": "Track Call -> carts_update with invalid cartToken",
         "input": {
-            "id": "shopify_test3",
+            "id": "shopify_test4",
             "query_parameters": {
                 "topic": [
                     "carts_update"
                 ]
             },
-            "token": "shopify_test3",
+            "token": "shopify_test4",
             "line_items": [
                 {
                     "id": 44323300999443,

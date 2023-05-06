@@ -10,6 +10,7 @@ const {
   getAnonymousIdFromDb,
   getAnonymousId,
   checkAndUpdateCartItems,
+  getHashLineItems
 } = require('./util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
@@ -194,8 +195,8 @@ const processEvent = async (inputEvent, metricMetadata) => {
 const isIdentifierEvent = (event) => event?.event === 'rudderIdentifier';
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
-    const value = ["anonymousId", event.anonymousId, "itemsHash",
-      event.cart?.line_items.length !== 0 ? sha256(event.line_items) : "0"];
+    const lineItemshash = getHashLineItems(event.cart)
+    const value = ["anonymousId", event.anonymousId, "itemsHash", lineItemshash];
     try {
       await RedisDB.setVal(`${event.cartToken}`, value);
     } catch (e) {

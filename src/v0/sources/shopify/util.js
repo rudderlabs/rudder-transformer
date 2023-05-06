@@ -37,7 +37,12 @@ const getShopifyTopic = (event) => {
   }
   return topic[0];
 };
-
+const getHashLineItems = (cart) => {
+  if (cart && cart?.line_items && cart.line_items.length > 0) {
+    return sha256(JSON.stringify(cart.line_items));
+  }
+  return "0";
+};
 const getVariantString = (lineItem) => {
   const { variant_id, variant_price, variant_title } = lineItem;
   return `${variant_id || ''} ${variant_price || ''} ${variant_title || ''}`;
@@ -112,8 +117,10 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
     return null;
   }
   let anonymousId;
+  let redisVal;
   try {
-    anonymousId = await RedisDB.getVal(`${cartToken}`, 'anonymousId');
+    redisVal = await RedisDB.getVal(`${cartToken}`, 'anonymousId');
+    [anonymousId] = isDefinedAndNotNull(redisVal) ? redisVal : [null]; // redis returns value as array
   } catch (e) {
     stats.increment('shopify_redis_failures', {
       type: 'get',
@@ -155,8 +162,10 @@ const updateCartItemsInRedis = async (cartToken, newCartItemsHash) => {
 const checkAndUpdateCartItems = async (inputEvent, metricMetadata) => {
   const cartToken = inputEvent.token || inputEvent.id;
   let itemsHash;
+  let redisVal;
   try {
-    itemsHash = await RedisDB.getVal(cartToken, 'itemsHash');
+    redisVal = await RedisDB.getVal(cartToken, 'itemsHash');
+    [itemsHash] = isDefinedAndNotNull(redisVal) ? redisVal : [null]; // redis returns value as array
   } catch (e) {
     // so if redis is down we will send the event to downstream destinations
     stats.increment('shopify_redis_failures', {
@@ -166,7 +175,7 @@ const checkAndUpdateCartItems = async (inputEvent, metricMetadata) => {
     return true;
   }
   if (isDefinedAndNotNull(itemsHash)) {
-    const newCartItemsHash = inputEvent?.line_items.length !== 0 ? sha256(inputEvent.line_items) : "0";
+    const newCartItemsHash = getHashLineItems(inputEvent);
     const isCartValid = isValidCartEvent(newCartItemsHash, itemsHash);
     if (!isCartValid) {
       return false;
@@ -184,5 +193,6 @@ module.exports = {
   extractEmailFromPayload,
   getAnonymousIdFromDb,
   getAnonymousId,
-  checkAndUpdateCartItems
+  checkAndUpdateCartItems,
+  getHashLineItems
 };

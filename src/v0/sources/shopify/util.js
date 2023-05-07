@@ -16,7 +16,7 @@ const {
   LINE_ITEM_EXCLUSION_FIELDS,
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   RUDDER_ECOM_MAP,
-  SHOPIFY_TRACK_MAP
+  SHOPIFY_TRACK_MAP,
 } = require('./config');
 // 30 mins
 const { TransformationError } = require('../../util/errorTypes');

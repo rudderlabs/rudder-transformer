@@ -5,7 +5,6 @@ import dotenv from 'dotenv';
 import logger from './logger';
 import cluster from './util/cluster';
 import { router } from './versionedRouter';
-const { RedisDB } = require('./util/redisConnector');
 import { testRouter } from './testRouter';
 import { metricsRouter } from './routes/metricsRouter';
 import { addStatMiddleware, addRequestSizeMiddleware } from './middleware';
@@ -22,6 +21,7 @@ const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
 
 const app = new Koa();
 addStatMiddleware(app);
+
 const metricsApp = new Koa();
 addStatMiddleware(metricsApp);
 metricsApp.use(metricsRouter.routes()).use(metricsRouter.allowedMethods());

@@ -1057,7 +1057,7 @@
         "size": 50,
         "industry": "IT",
         "monthlySpend": "2131231",
-        "email": "comanyemail@abc.com"
+        "email" : "comanyemail@abc.com"
       },
       "anonymousId": "12312312",
       "context": {

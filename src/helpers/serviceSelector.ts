@@ -20,22 +20,22 @@ export default class ServiceSelector {
   };
 
   private static isCdkDestination(destinationDefinitionConfig: Object) {
-    return !!destinationDefinitionConfig.cdkEnabled;
+    return !!destinationDefinitionConfig['cdkEnabled'];
   }
 
   private static isCdkV2Destination(destinationDefinitionConfig: Object) {
-    return Boolean(destinationDefinitionConfig?.cdkV2Enabled);
+    return Boolean(destinationDefinitionConfig?.['cdkV2Enabled']);
   }
 
   private static isComparatorEnabled(destinationDefinitionConfig: Object): boolean {
     return (
       process.env.COMPARATOR_ENABLED === 'true' &&
-      !!destinationDefinitionConfig.comparisonTestEnabeld
+      !!destinationDefinitionConfig['comparisonTestEnabeld']
     );
   }
 
   private static getSecondaryServiceName(destinationDefinitionConfig: Object): string {
-    return destinationDefinitionConfig.comparisonService;
+    return destinationDefinitionConfig['comparisonService'];
   }
 
   private static fetchCachedService(serviceType: string) {

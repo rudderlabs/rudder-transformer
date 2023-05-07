@@ -62,7 +62,7 @@ export default class ComparatorService implements IntegrationDestinationService 
   }
 
   private getTestThreshold(destination: Destination) {
-    return destination.DestinationDefinition?.Config.camparisonTestThreshold || 0;
+    return destination.DestinationDefinition?.Config['camparisonTestThreshold'] || 0;
   }
 
   private getComparisonLogs(

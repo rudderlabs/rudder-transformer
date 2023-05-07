@@ -3,7 +3,7 @@ const Ajv2019 = require('ajv/dist/2019');
 const Ajv = require('ajv-draft-04');
 const draft7MetaSchema = require('ajv/dist/refs/json-schema-draft-07.json');
 const draft6MetaSchema = require('ajv/dist/refs/json-schema-draft-06.json');
-const addFormats = require("ajv-formats");
+const addFormats = require('ajv-formats');
 
 const NodeCache = require('node-cache');
 const hash = require('object-hash');
@@ -244,6 +244,72 @@ async function validate(event) {
   }
 }
 
+function handleValidationErrors(validationErrors, mergedTpConfig, curDropEvent, curViolationType) {
+  let dropEvent = curDropEvent;
+  let violationType = curViolationType;
+  const violationsByType = new Set(validationErrors.map((err) => err.type));
+  // eslint-disable-next-line no-restricted-syntax
+  for (const [key, val] of Object.entries(mergedTpConfig)) {
+    // To have compatibility for config-backend, spread-sheet plugin and postman collection
+    // We are making everything to lower string and doing string comparison.
+    const value = val?.toString()?.toLowerCase();
+    // eslint-disable-next-line default-case
+    switch (key) {
+      case 'allowUnplannedEvents': {
+        const exists = violationsByType.has(violationTypes.UnplannedEvent);
+        if (value === 'false' && exists) {
+          dropEvent = true;
+          violationType = violationTypes.UnplannedEvent;
+          break;
+        }
+        if (!(value === 'true' || value === 'false')) {
+          logger.error(`Unknown option ${value} in ${key}"`);
+        }
+        break;
+      }
+      case 'unplannedProperties': {
+        const exists = violationsByType.has(violationTypes.AdditionalProperties);
+        if (value === 'drop' && exists) {
+          dropEvent = true;
+          violationType = violationTypes.AdditionalProperties;
+          break;
+        }
+        if (!(value === 'forward' || value === 'drop')) {
+          logger.error(`Unknown option ${value} in ${key}"`);
+        }
+        break;
+      }
+      case 'anyOtherViolation': {
+        const exists1 = violationsByType.has(violationTypes.UnknownViolation);
+        const exists2 = violationsByType.has(violationTypes.DatatypeMismatch);
+        const exists3 = violationsByType.has(violationTypes.RequiredMissing);
+        if (value === 'drop' && (exists1 || exists2 || exists3)) {
+          if (exists1) {
+            violationType = violationTypes.UnknownViolation;
+          } else if (exists2) {
+            violationType = violationTypes.DatatypeMismatch;
+          } else {
+            violationType = violationTypes.RequiredMissing;
+          }
+          dropEvent = true;
+          break;
+        }
+        if (!(value === 'forward' || value === 'drop')) {
+          logger.error(`Unknown option ${value} in ${key}"`);
+        }
+        break;
+      }
+      case 'sendViolatedEventsTo': {
+        if (value !== 'procerrors') {
+          logger.error(`Unknown option ${value} in ${key}"`);
+        }
+        break;
+      }
+    }
+  }
+  return { dropEvent, violationType };
+}
+
 /**
  * @param {*} event
  * @returns {dropEvent, violationType, validationErrors}
@@ -283,66 +349,12 @@ async function handleValidation(event) {
       };
     }
 
-    const violationsByType = new Set(validationErrors.map((err) => err.type));
-    // eslint-disable-next-line no-restricted-syntax
-    for (const [key, val] of Object.entries(mergedTpConfig)) {
-      // To have compatibility for config-backend, spread-sheet plugin and postman collection
-      // We are making everything to lower string and doing string comparision.
-      const value = val?.toString()?.toLowerCase();
-      // eslint-disable-next-line default-case
-      switch (key) {
-        case 'allowUnplannedEvents': {
-          const exists = violationsByType.has(violationTypes.UnplannedEvent);
-          if (value === 'false' && exists) {
-            dropEvent = true;
-            violationType = violationTypes.UnplannedEvent;
-            break;
-          }
-          if (!(value === 'true' || value === 'false')) {
-            logger.error(`Unknown option ${value} in ${key}"`);
-          }
-          break;
-        }
-        case 'unplannedProperties': {
-          const exists = violationsByType.has(violationTypes.AdditionalProperties);
-          if (value === 'drop' && exists) {
-            dropEvent = true;
-            violationType = violationTypes.AdditionalProperties;
-            break;
-          }
-          if (!(value === 'forward' || value === 'drop')) {
-            logger.error(`Unknown option ${value} in ${key}"`);
-          }
-          break;
-        }
-        case 'anyOtherViolation': {
-          const exists1 = violationsByType.has(violationTypes.UnknownViolation);
-          const exists2 = violationsByType.has(violationTypes.DatatypeMismatch);
-          const exists3 = violationsByType.has(violationTypes.RequiredMissing);
-          if (value === 'drop' && (exists1 || exists2 || exists3)) {
-            if (exists1) {
-              violationType = violationTypes.UnknownViolation;
-            } else if (exists2) {
-              violationType = violationTypes.DatatypeMismatch;
-            } else {
-              violationType = violationTypes.RequiredMissing;
-            }
-            dropEvent = true;
-            break;
-          }
-          if (!(value === 'forward' || value === 'drop')) {
-            logger.error(`Unknown option ${value} in ${key}"`);
-          }
-          break;
-        }
-        case 'sendViolatedEventsTo': {
-          if (value !== 'procerrors') {
-            logger.error(`Unknown option ${value} in ${key}"`);
-          }
-          break;
-        }
-      }
-    }
+    ({ dropEvent, violationType } = handleValidationErrors(
+      validationErrors,
+      mergedTpConfig,
+      dropEvent,
+      violationType,
+    ));
 
     return {
       dropEvent,

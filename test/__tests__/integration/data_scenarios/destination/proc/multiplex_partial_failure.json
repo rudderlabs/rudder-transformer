@@ -366,7 +366,7 @@
         "params": {},
         "body": {
           "JSON": {
-            "event_name": "AddToCart",
+            "event_name": "add_to_cart",
             "event_time": 1671791272,
             "event_source_url": "https://www.website.com/product/path",
             "action_source": "offline",
@@ -374,21 +374,11 @@
             "app_id": "",
             "advertiser_id": "549764492980",
             "user_data": {
-              "em": [
-                "7e4f504f2f6ec2d363365ec866894c6e2c4c1609889f33535bbfeeec3c33a617"
-              ],
-              "ph": [
-                "6bd20b059b192cded172dfd75d49bd91d6a4ad09b56ace298db8a067cbef310a"
-              ],
-              "ge": [
-                "62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a"
-              ],
-              "ln": [
-                "b0e6036f293e37324425377b579507ee4455a3bdf74447e5fd0ba1b512e739c2"
-              ],
-              "fn": [
-                "a4371f70c2cc620598bdd98dca42c1cfb2d57da40886fc19c10491cd7f666cd7"
-              ],
+              "em": ["7e4f504f2f6ec2d363365ec866894c6e2c4c1609889f33535bbfeeec3c33a617"],
+              "ph": ["6bd20b059b192cded172dfd75d49bd91d6a4ad09b56ace298db8a067cbef310a"],
+              "ge": ["62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a"],
+              "ln": ["b0e6036f293e37324425377b579507ee4455a3bdf74447e5fd0ba1b512e739c2"],
+              "fn": ["a4371f70c2cc620598bdd98dca42c1cfb2d57da40886fc19c10491cd7f666cd7"],
               "client_ip_address": "[::1]"
             },
             "custom_data": {
@@ -454,7 +444,7 @@
         "params": {},
         "body": {
           "JSON": {
-            "event_name": "Checkout",
+            "event_name": "checkout",
             "event_time": 1671791272,
             "event_source_url": "https://www.website.com/product/path",
             "action_source": "offline",
@@ -462,21 +452,11 @@
             "app_id": "",
             "advertiser_id": "549764492980",
             "user_data": {
-              "em": [
-                "7e4f504f2f6ec2d363365ec866894c6e2c4c1609889f33535bbfeeec3c33a617"
-              ],
-              "ph": [
-                "6bd20b059b192cded172dfd75d49bd91d6a4ad09b56ace298db8a067cbef310a"
-              ],
-              "ge": [
-                "62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a"
-              ],
-              "ln": [
-                "b0e6036f293e37324425377b579507ee4455a3bdf74447e5fd0ba1b512e739c2"
-              ],
-              "fn": [
-                "a4371f70c2cc620598bdd98dca42c1cfb2d57da40886fc19c10491cd7f666cd7"
-              ],
+              "em": ["7e4f504f2f6ec2d363365ec866894c6e2c4c1609889f33535bbfeeec3c33a617"],
+              "ph": ["6bd20b059b192cded172dfd75d49bd91d6a4ad09b56ace298db8a067cbef310a"],
+              "ge": ["62c66a7a5dd70c3146618063c344e531e6d4b59e379808443ce962b3abd63c5a"],
+              "ln": ["b0e6036f293e37324425377b579507ee4455a3bdf74447e5fd0ba1b512e739c2"],
+              "fn": ["a4371f70c2cc620598bdd98dca42c1cfb2d57da40886fc19c10491cd7f666cd7"],
               "client_ip_address": "[::1]"
             },
             "custom_data": {

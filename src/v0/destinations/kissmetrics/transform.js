@@ -202,7 +202,7 @@ function buildResponse(message, properties, endpoint) {
 function processIdentify(message, destination) {
   const { apiKey } = destination.Config;
   let properties = JSON.parse(JSON.stringify(getFieldValueFromMessage(message, 'traits') || {}));
-  const timestamp = toUnixTimestamp(message.originalTimestamp);
+  const timestamp = toUnixTimestamp(message.timestamp || message.originalTimestamp);
   const endpoint = ENDPOINT.IDENTIFY;
 
   properties = clean(properties);
@@ -225,8 +225,7 @@ function processTrack(message, destination) {
     properties = JSON.parse(JSON.stringify(message.properties));
   }
 
-  // TODO: Give priority to timestamp, then originalTimestam ?
-  const timestamp = toUnixTimestamp(originalTimestamp);
+  const timestamp = toUnixTimestamp(message.timestamp || originalTimestamp);
   let endpoint = ENDPOINT.TRACK;
 
   const revenue = getRevenue(properties);
@@ -315,10 +314,11 @@ function processAlias(message, destination) {
   const { apiKey } = destination.Config;
   const endpoint = ENDPOINT.ALIAS;
 
-  const properties = {};
-  properties._k = apiKey;
-  properties._p = previousId;
-  properties._n = userId;
+  const properties = {
+    _k: apiKey,
+    _p: previousId,
+    _n: userId,
+  };
   return buildResponse(message, properties, endpoint);
 }
 

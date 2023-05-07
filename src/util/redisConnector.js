@@ -3,11 +3,8 @@ const { RedisError } = require('../v0/util/errorTypes');
 const log = require('../logger');
 const stats = require('./stats');
 
-const timeoutPromise = new Promise((resolve, reject) => {
-  setTimeout(
-    () => resolve(),
-    50
-  );
+const timeoutPromise = new Promise((resolve) => {
+  setTimeout(() => resolve(), 50);
 });
 
 const RedisDB = {
@@ -16,12 +13,14 @@ const RedisDB = {
       this.host = process.env.REDIS_HOST || 'localhost';
       this.port = parseInt(process.env.REDIS_PORT, 10) || 6379;
       this.password = process.env.REDIS_PASSWORD;
+      this.userName = process.env.REDIS_USERNAME;
       this.maxRetries = parseInt(process.env.REDIS_MAX_RETRIES || 30, 10);
       this.timeAfterRetry = parseInt(process.env.REDIS_TIME_AFTER_RETRY_IN_MS || 10, 10);
       this.client = new Redis({
         host: this.host,
         port: this.port,
         password: this.password,
+        username: this.userName,
         enableReadyCheck: true,
         retryStrategy: (times) => {
           if (times <= this.maxRetries) {
@@ -45,9 +44,8 @@ const RedisDB = {
   async checkAndConnectConnection() {
     if (!this.client) {
       this.init();
-    }
-    else if (this.client.status !== 'ready') {
-      await Promise.race([this.client.connect(), timeoutPromise])
+    } else if (this.client.status !== 'ready') {
+      await Promise.race([this.client.connect(), timeoutPromise]);
     }
   },
   /**
@@ -62,13 +60,17 @@ const RedisDB = {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       const value = await this.client.get(key);
       if (value) {
-        const bytes = Buffer.byteLength(value, "utf-8");
+        const bytes = Buffer.byteLength(value, 'utf-8');
         stats.gauge('redis_get_val_size', bytes, {
-          timestamp: Date.now()
+          timestamp: Date.now(),
         });
       }
       return isJsonExpected ? JSON.parse(value) : value;
     } catch (e) {
+      stats.increment('redis_get_val_error', {
+        error: e,
+        timestamp: Date.now(),
+      });
       throw new RedisError(`Error getting value from Redis: ${e}`);
     }
   },
@@ -80,16 +82,20 @@ const RedisDB = {
    */
 
   async setVal(key, value, isValJson = true) {
-    const dataExpiry = 60*60; // 1 hour
+    const dataExpiry = 60 * 60; // 1 hour
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       const valueToStore = isValJson ? JSON.stringify(value) : value;
-      const bytes = Buffer.byteLength(valueToStore, "utf-8");
-      await this.client.setex(key,dataExpiry, valueToStore);
+      const bytes = Buffer.byteLength(valueToStore, 'utf-8');
+      await this.client.setex(key, dataExpiry, valueToStore);
       stats.gauge('redis_set_val_size', bytes, {
-        timestamp: Date.now()
+        timestamp: Date.now(),
       });
     } catch (e) {
+      stats.increment('redis_set_val_error', {
+        error: e,
+        timestamp: Date.now(),
+      });
       throw new RedisError(`Error setting value in Redis due ${e}`);
     }
   },
@@ -100,7 +106,7 @@ const RedisDB = {
       });
       this.client.quit();
     }
-  }
+  },
 };
 
 module.exports = { RedisDB };

@@ -9,6 +9,7 @@ const { TransformationError } = require('../../util/errorTypes');
 const mapping = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
 
 function settingProperties(event, message) {
+  const cloneMessage = { ...message };
   const flatEvent = event;
 
   // deleting object fields(already mapped) before flattening the event
@@ -18,7 +19,7 @@ function settingProperties(event, message) {
   delete flatEvent?.triggerData?.formSubmissionData?.recipientData;
 
   // flattening the event and assigning it to properties
-  message.properties = removeUndefinedAndNullAndEmptyValues(flattenJson(flatEvent));
+  cloneMessage.properties = removeUndefinedAndNullAndEmptyValues(flattenJson(flatEvent));
 
   // fields that are already mapped
   const excludeFields = [
@@ -32,8 +33,10 @@ function settingProperties(event, message) {
 
   // deleting already mapped fields
   excludeFields.forEach((excludeField) => {
-    delete message?.properties[excludeField];
+    delete cloneMessage?.properties[excludeField];
   });
+
+  return cloneMessage;
 }
 
 function process(event) {
@@ -83,9 +86,9 @@ function process(event) {
     ).toISOString();
   }
 
-  settingProperties(event, message);
+  const finalMessage = settingProperties(event, message);
 
-  return message;
+  return finalMessage;
 }
 
 module.exports = { process };

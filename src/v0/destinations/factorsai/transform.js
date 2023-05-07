@@ -8,6 +8,7 @@ const {
   defaultPostRequestConfig,
   simpleProcessRouterDest,
 } = require('../../util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 const { InstrumentationError } = require('../../util/errorTypes');
 
 const { ConfigCategories, mappingConfig, BASE_URL } = require('./config');
@@ -18,7 +19,7 @@ function buildResponse(payload, factorsAIApiKey) {
   const apiKey = Buffer.from(`${factorsAIApiKey}:`).toString('base64');
   response.endpoint = BASE_URL;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Basic ${apiKey}`,
   };
   response.method = defaultPostRequestConfig.requestMethod;

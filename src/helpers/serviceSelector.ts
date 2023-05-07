@@ -20,25 +20,22 @@ export default class ServiceSelector {
   };
 
   private static isCdkDestination(destinationDefinitionConfig: Object) {
-    return !!destinationDefinitionConfig?.['cdkEnabled'];
+    return !!destinationDefinitionConfig?.cdkEnabled;
   }
 
   private static isCdkV2Destination(destinationDefinitionConfig: Object) {
-    return (
-      process.env.CDK_V2_Enabled === 'true' &&
-      Boolean(destinationDefinitionConfig?.['cdkV2Enabled'])
-    );
+    return Boolean(destinationDefinitionConfig?.cdkV2Enabled);
   }
 
   private static isComparatorEnabled(destinationDefinitionConfig: Object): boolean {
     return (
       process.env.COMPARATOR_ENABLED === 'true' &&
-      !!destinationDefinitionConfig['comparisonTestEnabeld']
+      !!destinationDefinitionConfig.comparisonTestEnabeld
     );
   }
 
   private static getSecondaryServiceName(destinationDefinitionConfig: Object): string {
-    return destinationDefinitionConfig['comparisonService'];
+    return destinationDefinitionConfig.comparisonService;
   }
 
   private static fetchCachedService(serviceType: string) {
@@ -72,11 +69,11 @@ export default class ServiceSelector {
       events[0]?.destination?.DestinationDefinition?.Config;
     if (this.isCdkDestination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
-    } else if (this.isCdkV2Destination(destinationDefinitionConfig)) {
+    } if (this.isCdkV2Destination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V2_DEST);
-    } else {
+    } 
       return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
-    }
+    
   }
 
   public static getSourceService(arg: unknown) {

@@ -42,6 +42,7 @@ const {
   getEventAndPropertiesFromConfig,
   getHsSearchId,
 } = require('./util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const addHsAuthentication = (response, Config) => {
   // choosing API Type
@@ -95,7 +96,7 @@ const processIdentify = async (message, destination, propertyMap) => {
       type: associationTypeId,
     };
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
     };
     response.operation = RETL_CREATE_ASSOCIATION_OPERATION;
     response.source = RETL_SOURCE;
@@ -160,7 +161,7 @@ const processIdentify = async (message, destination, propertyMap) => {
 
   response.endpoint = endpoint;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
 
   // choosing API Type
@@ -209,7 +210,7 @@ const processTrack = async (message, destination) => {
   response.endpoint = TRACK_CRM_ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.messageType = 'track';

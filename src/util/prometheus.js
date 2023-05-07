@@ -165,6 +165,12 @@ class Prometheus {
         labelNames: ['destType', 'feature'],
       },
       {
+        name: 'cdk_v2_propagated_events',
+        help: 'cdk_v2_propagated_events',
+        type: 'counter',
+        labelNames: ['destType', 'feature'],
+      },
+      {
         name: 'hv_violation_type',
         help: 'hv_violation_type',
         type: 'counter',

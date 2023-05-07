@@ -1,6 +1,7 @@
 const { WorkflowEngineFactory, TemplateType } = require('rudder-workflow-engine');
 
 const tags = require('../../v0/util/tags');
+const stats = require('../../util/stats');
 
 const defTags = {
   [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.CDK_V2,
@@ -51,6 +52,7 @@ async function process(workflowEngine, parsedEvent) {
 async function processCdkV2Workflow(destType, parsedEvent, feature, bindings = {}) {
   try {
     const workflowEngine = await getCachedWorkflowEngine(destType, feature, bindings);
+    stats.counter('cdk_v2_propagated_events', 1, { destType, feature });
     return await process(workflowEngine, parsedEvent);
   } catch (error) {
     throw getErrorInfo(error, isCdkV2Destination(parsedEvent), defTags);

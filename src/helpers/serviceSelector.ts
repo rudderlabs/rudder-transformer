@@ -20,7 +20,7 @@ export default class ServiceSelector {
   };
 
   private static isCdkDestination(destinationDefinitionConfig: Object) {
-    return !!destinationDefinitionConfig['cdkEnabled'];
+    return !!destinationDefinitionConfig?.['cdkEnabled'];
   }
 
   private static isCdkV2Destination(destinationDefinitionConfig: Object) {

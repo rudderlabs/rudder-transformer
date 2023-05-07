@@ -20,11 +20,11 @@ export default class ServiceSelector {
   };
 
   private static isCdkDestination(destinationDefinitionConfig: Object) {
-    return !!destinationDefinitionConfig?.cdkEnabled;
+    return !!destinationDefinitionConfig.cdkEnabled;
   }
 
   private static isCdkV2Destination(destinationDefinitionConfig: Object) {
-    return Boolean(destinationDefinitionConfig?.['cdkV2Enabled']);
+    return Boolean(destinationDefinitionConfig?.cdkV2Enabled);
   }
 
   private static isComparatorEnabled(destinationDefinitionConfig: Object): boolean {
@@ -69,11 +69,11 @@ export default class ServiceSelector {
       events[0]?.destination?.DestinationDefinition?.Config;
     if (this.isCdkDestination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
-    } if (this.isCdkV2Destination(destinationDefinitionConfig)) {
+    }
+    if (this.isCdkV2Destination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V2_DEST);
-    } 
-      return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
-    
+    }
+    return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
   }
 
   public static getSourceService(arg: unknown) {

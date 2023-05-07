@@ -7,172 +7,57 @@ on:
       - reopened
       - synchronize
 
-env:
-  REPO_NAME_OLD: rudderlabs/develop-rudder-transformer
-  REPO_NAME: rudderstack/develop-rudder-transformer
-  DOCKERHUB_USERNAME: rudderlabs
-
 jobs:
-  generate-tag-name:
-    name: Generate Tag Name
+  generate-tag-names:
     runs-on: ubuntu-latest
+    name: Generate Tag Names
+    # Skip for the release pull requests as staging artifacts will be generated
+    if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
     outputs:
-      tag_name: ${{ steps.gen_tag_name.outputs.tag_name }}
+      tag_name: ${{ steps.gen_tag_names.outputs.tag_name }}
+      tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
     steps:
       # Replace problematic characters in branch name (like '/') with safe characters (like '.')
-      - name: Generate Tag Name
-        id: gen_tag_name
-        shell: bash
+      - name: Generate Tag Names
+        id: gen_tag_names
         run: |
-          echo "tag_name=$(echo ${{ github.head_ref }} | tr "/" .)" >> $GITHUB_OUTPUT
+          tag_name=$(echo ${{ github.head_ref }} | tr "/" .)
+          echo "Tag Name: $tag_name"
+          echo "tag_name=$tag_name" >> $GITHUB_OUTPUT
+
+          tag_name_ut="ut-$tag_name"
+          echo "UT Tag Name: $tag_name_ut"
+          echo "tag_name_ut=$tag_name_ut" >> $GITHUB_OUTPUT
 
   build-transformer-image:
     name: Build Transformer Docker Image - PR
-    runs-on: ubuntu-latest
-    needs: [generate-tag-name]
-    env:
-      TAG_NAME: ${{ needs.generate-tag-name.outputs.tag_name }}
-
     # Skip for the release pull requests as staging artifacts will be generated
     # Skip main to develop sync pull requests
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3.5.0
-        with:
-          fetch-depth: 1
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2.5.0
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v2.1.0
-        with:
-          username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
-
-      - name: Cache Docker Layers
-        uses: actions/cache@v3.3.1
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Build Docker Image for Tests
-        uses: docker/build-push-action@v4.0.0
-        with:
-          context: .
-          file: Dockerfile
-          target: development
-          load: true
-          tags: |
-            ${{ env.REPO_NAME }}:${{ env.TAG_NAME }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-
-      - name: Run Tests
-        run: |
-          docker run ${{ env.REPO_NAME }}:${{ env.TAG_NAME }} npm run test:ci
-          docker run ${{ env.REPO_NAME }}:${{ env.TAG_NAME }} npm run test:integration
-
-      - name: Build and Push Multi-platform Images
-        uses: docker/build-push-action@v4.0.0
-        with:
-          context: .
-          push: true
-          target: production
-          tags: |
-            ${{ env.REPO_NAME_OLD }}:${{ env.TAG_NAME }}
-            ${{ env.REPO_NAME }}:${{ env.TAG_NAME }}
-          platforms: |
-            linux/amd64
-            linux/arm64
-          build-args: |
-            version=${{ env.TAG_NAME }}
-            GIT_COMMIT_SHA=${{ github.sha }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-
-        # Temp fix
-        # https://github.com/docker/build-push-action/issues/252
-        # https://github.com/moby/buildkit/issues/1896
-      - name: Move Cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+    needs: [generate-tag-names]
+    uses: ./.github/workflows/build-push-docker-image.yml
+    with:
+      build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
+      push_tags: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }},rudderlabs/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
+      img_tag: ${{ needs.generate-tag-names.outputs.tag_name }}
+      dockerfile: Dockerfile
+      load_target: development
+      push_target: production
+    secrets:
+      DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
   build-user-transformer-image:
     name: Build User Transformer Docker Image - PR
-    runs-on: ubuntu-latest
-    needs: [generate-tag-name]
-    env:
-      TAG_NAME: ut-${{ needs.generate-tag-name.outputs.tag_name }}
-
     # Skip for the release pull requests as staging artifacts will be generated
     if: startsWith(github.event.pull_request.head.ref, 'release/') != true && startsWith(github.event.pull_request.head.ref, 'hotfix-release/') != true && github.event.pull_request.head.ref != 'main'
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3.5.0
-        with:
-          fetch-depth: 1
-
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2.5.0
-
-      - name: Login to DockerHub
-        uses: docker/login-action@v2.1.0
-        with:
-          username: ${{ env.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
-
-      - name: Cache Docker Layers
-        uses: actions/cache@v3.3.1
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      - name: Build Docker Image for Tests
-        uses: docker/build-push-action@v4.0.0
-        with:
-          context: .
-          file: Dockerfile-ut-func
-          target: development
-          load: true
-          tags: |
-            ${{ env.REPO_NAME }}:${{ env.TAG_NAME }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-
-      - name: Run Tests
-        run: |
-          docker run ${{ env.REPO_NAME }}:${{ env.TAG_NAME }} npm run test:ci
-
-      - name: Build and Push Multi-platform Images
-        uses: docker/build-push-action@v4.0.0
-        with:
-          context: .
-          file: Dockerfile-ut-func
-          target: development
-          push: true
-          tags: |
-            ${{ env.REPO_NAME_OLD }}:${{ env.TAG_NAME }}
-            ${{ env.REPO_NAME }}:${{ env.TAG_NAME }}
-          platforms: |
-            linux/amd64
-            linux/arm64
-          build-args: |
-            version=${{ env.TAG_NAME }}
-            GIT_COMMIT_SHA=${{ github.sha }}
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
-
-        # Temp fix
-        # https://github.com/docker/build-push-action/issues/252
-        # https://github.com/moby/buildkit/issues/1896
-      - name: Move Cache
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+    needs: [generate-tag-names]
+    uses: ./.github/workflows/build-push-docker-image.yml
+    with:
+      build_tag: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
+      push_tags: rudderstack/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }},rudderlabs/develop-rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
+      img_tag: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
+      dockerfile: Dockerfile-ut-func
+      load_target: development
+      push_target: development
+    secrets:
+      DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}

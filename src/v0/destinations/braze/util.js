@@ -9,8 +9,15 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
+  defaultRequestConfig,
+  isHttpStatusSuccess,
 } = require('../../util');
-const { BRAZE_NON_BILLABLE_ATTRIBUTES, CustomAttributeOperationTypes } = require('./config');
+const {
+  BRAZE_NON_BILLABLE_ATTRIBUTES,
+  CustomAttributeOperationTypes,
+  getTrackEndPoint,
+} = require('./config');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getEndpointFromConfig = (destination) => {
   // Init -- mostly for test cases
@@ -299,9 +306,70 @@ const processDeduplication = (userStore, payload) => {
   return null;
 };
 
+const processBatch = (transformedEvents) => {
+  const { destination } = transformedEvents[0];
+  const attributesArray = [];
+  const eventsArray = [];
+  const purchaseArray = [];
+  const successMetadata = [];
+  const failureResponses = [];
+  for (const transformedEvent of transformedEvents) {
+    if (transformedEvent?.batchedRequest?.body?.JSON) {
+      const { attributes, events, purchases } = transformedEvent.batchedRequest.body.JSON;
+      attributesArray.push(...attributes);
+      eventsArray.push(...events);
+      purchaseArray.push(...purchases);
+      successMetadata.push(transformedEvent.metadata);
+    } else if (!isHttpStatusSuccess(transformedEvent?.statusCode)) {
+      failureResponses.push(transformedEvent);
+    }
+  }
+  const attributeArrayChunks = _.chunk(attributesArray, 75);
+  const eventsArrayChunks = _.chunk(eventsArray, 75);
+  const purchaseArrayChunks = _.chunk(purchaseArray, 75);
+
+  const maxNumberOfRequest = Math.max(
+    attributeArrayChunks.length,
+    eventsArrayChunks.length,
+    eventsArrayChunks.length,
+  );
+  const responseArray = [];
+  for (let i = 0; i < maxNumberOfRequest; i += 1) {
+    const attributes = attributeArrayChunks[i];
+    const events = eventsArrayChunks[i];
+    const purchases = purchaseArrayChunks[i];
+    const response = defaultRequestConfig();
+    response.endpoint = getTrackEndPoint(getEndpointFromConfig(destination));
+    response.body.JSON = removeUndefinedAndNullValues({
+      attributes,
+      events,
+      purchases,
+    });
+    responseArray.push({
+      ...response,
+      headers: {
+        'Content-Type': JSON_MIME_TYPE,
+        Accept: JSON_MIME_TYPE,
+        Authorization: `Bearer ${destination.Config.restApiKey}`,
+      },
+    });
+  }
+  return [
+    {
+      batchedRequest: responseArray,
+      metadata: successMetadata,
+      batched: true,
+      statusCode: 200,
+      destination,
+    },
+    ...failureResponses,
+  ];
+};
+
 module.exports = {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
   getEndpointFromConfig,
   processDeduplication,
+  processBatch
 };

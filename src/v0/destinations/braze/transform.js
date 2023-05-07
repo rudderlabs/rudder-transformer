@@ -1,7 +1,12 @@
 /* eslint-disable no-nested-ternary,no-param-reassign */
 const _ = require('lodash');
 const get = require('get-value');
-const { BrazeDedupUtility, CustomAttributeOperationUtil, processDeduplication } = require('./util');
+const {
+  BrazeDedupUtility,
+  CustomAttributeOperationUtil,
+  processDeduplication,
+  processBatch,
+} = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
@@ -557,7 +562,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   const output = await Promise.all(allResps);
 
-  return _.flatMap(output);
+  const allTransfomredEvents = _.flatMap(output);
+  return processBatch(allTransfomredEvents);
 };
 
 module.exports = { process, processRouterDest };

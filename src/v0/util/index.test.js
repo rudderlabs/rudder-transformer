@@ -13,6 +13,7 @@ const functionNames = [
   'batchMultiplexedEvents',
 ];
 
+
 // Names of the utility functions to test which expects multiple arguments as values and not objects
 const functionNamesExpectingMultipleArguments = ['checkAndCorrectUserId'];
 

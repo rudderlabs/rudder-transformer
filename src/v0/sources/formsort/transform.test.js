@@ -47,7 +47,6 @@ it(`Transform.js Tests`, () => {
         }
     };
     const output = process(data.input);
-    delete output.anonymousId;
     expect(output).toEqual(data.output);
 
 });

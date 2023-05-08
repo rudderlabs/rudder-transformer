@@ -1,6 +1,6 @@
 const path = require("path");
 const fs = require("fs");
-const { generateUUID } = require("../../util");
+const { generateUUID, isDefinedAndNotNull } = require("../../util");
 const Message = require("../message");
 
 // import mapping json using JSON.parse to preserve object key order
@@ -14,10 +14,12 @@ function process(event) {
   // we are setting event type as track always
   message.setEventType("track");
 
-  // setting anonymousId
-  message.anonymousId = generateUUID();
-
   message.setPropertiesV2(event, mapping);
+
+  // setting anonymousId if userId is not present
+  if (!isDefinedAndNotNull(message.userId)) {
+    message.anonymousId = generateUUID();
+  }
 
   // setting event Name
   if (event.finalized) {

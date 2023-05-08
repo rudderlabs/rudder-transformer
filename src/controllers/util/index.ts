@@ -1,14 +1,10 @@
 import { Context } from 'koa';
 import { API_VERSION } from '../../routes/utils/constants';
-import { isHttpStatusSuccess } from '../../v0/util';
-import { HttpStatus } from '../../v0/util/constant';
+import { getCompatibleStatusCode } from '../../adapters/network';
 
 export default class ControllerUtility {
-  private static handleForNotfoundStatus(status: number) {
-    if (status === HttpStatus.NOT_FOUND) {
-      return HttpStatus.BAD_REQUEST;
-    }
-    return status;
+  private static getCompatibleStatusCode(status: number): number {
+    return getCompatibleStatusCode(status)
   }
 
   public static postProcess(ctx: Context, status = 200) {
@@ -18,6 +14,6 @@ export default class ControllerUtility {
 
   public static deliveryPostProcess(ctx: Context, status = 200) {
     ctx.set('apiVersion', API_VERSION);
-    ctx.status = isHttpStatusSuccess(status) ? 200 : this.handleForNotfoundStatus(status);
+    ctx.status = this.getCompatibleStatusCode(status);
   }
 }

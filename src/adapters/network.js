@@ -315,6 +315,16 @@ const handleHttpRequest = async (requestType = 'post', ...httpArgs) => {
   return { httpResponse, processedResponse };
 };
 
+function getCompatibleStatusCode(status) {
+  if (status === HttpStatus.NOT_FOUND) {
+    return HttpStatus.BAD_REQUEST;
+  }
+  if (isHttpStatusSuccess(status)) {
+    return HttpStatus.OK;
+  }
+  return status;
+}
+
 module.exports = {
   httpSend,
   httpGET,
@@ -327,4 +337,5 @@ module.exports = {
   getPayloadData,
   getFormData,
   handleHttpRequest,
+  getCompatibleStatusCode,
 };

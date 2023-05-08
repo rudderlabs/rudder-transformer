@@ -305,11 +305,12 @@ const batchEvents = (successRespList) => {
   const batchedResponseList = [];
   const identifyResponseList = [];
   successRespList.forEach((event) => {
-    if (event.message.length === 2) {
+    const processedEvent = event;
+    if (processedEvent.message.length === 2) {
       identifyResponseList.push(event.message[0]);
-      event.message = event.message[1];
+      [processedEvent.message, processedEvent.message] = event.message;
     } else {
-      event.message = event.message[0];
+      [processedEvent.message] = processedEvent.message;
     }
   });
   const subscribeEventGroups = _.groupBy(

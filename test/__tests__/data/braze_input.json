@@ -1298,5 +1298,156 @@
       "type": "identify",
       "userId": "ank101"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "restApiKey": "abcd=",
+        "prefixProperties": true,
+        "useNativeSDK": false,
+        "dataCenter": "US-03"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Braze",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "BRAZE"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Braze",
+      "Transformations": []
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "request_ip": "[::1]:53709",
+      "type": "alias",
+      "previousId": "userId",
+      "userId": "userMergeTest2"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "restApiKey": "abcd=",
+        "prefixProperties": true,
+        "useNativeSDK": false,
+        "dataCenter": "US-03"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Braze",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "BRAZE"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Braze",
+      "Transformations": []
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "request_ip": "[::1]:53709",
+      "type": "alias",
+      "userId": "userMergeTest2"
+    }
+  },
+  {
+    "destination": {
+      "Config": {
+        "restApiKey": "abcd=",
+        "prefixProperties": true,
+        "useNativeSDK": false,
+        "dataCenter": "US-03"
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Braze",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "BRAZE"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Braze",
+      "Transformations": []
+    },
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.5"
+        },
+        "ip": "0.0.0.0",
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.5"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36"
+      },
+      "integrations": {
+        "All": true
+      },
+      "request_ip": "[::1]:53709",
+      "type": "alias",
+      "previousId": "userMergeTest2"
+    }
   }
 ]

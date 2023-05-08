@@ -6,7 +6,7 @@ function getDeliveryStreamMapTo(event) {
   const { mapEvents } = destination.Config;
   const hashMap = getHashFromArray(mapEvents, 'from', 'to');
   return (
-    (message.event ? hashMap[message.event.toLowerCase()] : null) ||
+    (message.event ? hashMap[message?.event.toLowerCase()] : null) ||
     (message.type ? hashMap[message.type.toLowerCase()] : null) ||
     hashMap['*']
   );

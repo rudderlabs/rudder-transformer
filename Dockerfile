@@ -37,7 +37,7 @@ CMD [ "npm", "start" ]
 
 EXPOSE 9090/tcp
 
-FROM base AS prodDepsBuilder	
+FROM base AS prodDepsBuilder
 
 WORKDIR /home/node/app
 USER node

@@ -23,7 +23,6 @@ RUN chown -R node:node /home/node/app
 USER node
 
 COPY package*.json ./
-RUN npm set progress=false
 RUN npm ci --no-audit --cache .npm
 COPY --chown=node:node . .
 RUN npm run build:ci -- --sourceMap false
@@ -38,6 +37,15 @@ CMD [ "npm", "start" ]
 
 EXPOSE 9090/tcp
 
+FROM base AS prodDepsBuilder	
+
+WORKDIR /home/node/app	
+USER node	
+COPY --chown=node:node --from=development /home/node/app/package*.json ./	
+
+RUN npm ci --omit=dev --ignore-scripts --no-audit --cache .npm
+RUN npm run clean:node
+
 FROM base as production
 ENV HUSKY 0
 
@@ -50,10 +58,9 @@ WORKDIR /home/node/app
 
 USER node
 
-COPY package*.json ./
-RUN npm set progress=false
-RUN npm ci --omit=dev --ignore-scripts --no-audit --cache .npm
-RUN npm run clean:node
+COPY --chown=node:node --from=prodDepsBuilder /home/node/app/package.json ./
+
+COPY --chown=node:node --from=prodDepsBuilder /home/node/app/node_modules ./node_modules
 
 COPY --chown=node:node --from=development /home/node/app/dist/ ./dist
 

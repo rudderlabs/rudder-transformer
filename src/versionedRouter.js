@@ -36,7 +36,7 @@ const { PlatformError } = require('./v0/util/errorTypes');
 const { getCachedWorkflowEngine, processCdkV2Workflow } = require('./cdk/v2/handler');
 const { processCdkV1 } = require('./cdk/v1/handler');
 const { extractLibraries } = require('./util/customTransformer');
-const { getCompatibleStatusCode } = require('./adapters/network');
+const { getCompatibleStatusCode } = require('./adapters/utils/networkUtils');
 
 const CDK_V1_DEST_PATH = 'cdk/v1';
 

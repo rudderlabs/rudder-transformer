@@ -1,6 +1,6 @@
 import { Context } from 'koa';
 import { API_VERSION } from '../../routes/utils/constants';
-import { getCompatibleStatusCode } from '../../adapters/network';
+import { getCompatibleStatusCode } from '../../adapters/utils/networkUtils';
 
 export default class ControllerUtility {
   private static getCompatibleStatusCode(status: number): number {

@@ -6,9 +6,11 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   isNonFuncObject,
   isDefinedAndNotNull,
+  isHttpStatusSuccess,
 } = require('../../v0/util');
 const { AbortedError } = require('../../v0/util/errorTypes');
 const tags = require('../../v0/util/tags');
+const { HttpStatus } = require('../../v0/util/constant');
 
 const nodeSysErrorToStatus = (code) => {
   const sysErrorToStatusMap = {
@@ -153,9 +155,21 @@ const processAxiosResponse = (clientResponse) => {
   };
 };
 
+
+function getCompatibleStatusCode(status) {
+  if (status === HttpStatus.NOT_FOUND) {
+    return HttpStatus.BAD_REQUEST;
+  }
+  if (isHttpStatusSuccess(status)) {
+    return HttpStatus.OK;
+  }
+  return status;
+}
+
 module.exports = {
   nodeSysErrorToStatus,
   getDynamicErrorType,
   parseDestResponse,
   processAxiosResponse,
+  getCompatibleStatusCode,
 };

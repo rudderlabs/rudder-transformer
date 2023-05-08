@@ -64,15 +64,20 @@ const ConfigCategory = {
     endpoint: `${BASE_URL}catalogs`,
   },
 };
+
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
+
 const IDENTIFY_MAX_BATCH_SIZE = 1000;
-const TRACK_MAX_BATCH_SIZE = 8000;
+const IDENTIFY_MAX_BODY_SIZE = 4000000;
 const IDENTIFY_BATCH_ENDPOINT = 'https://api.iterable.com/api/users/bulkUpdate';
+
+const TRACK_MAX_BATCH_SIZE = 8000;
 const TRACK_BATCH_ENDPOINT = 'https://api.iterable.com/api/events/trackBulk';
 
 module.exports = {
   ConfigCategory,
   mappingConfig,
+  IDENTIFY_MAX_BODY_SIZE,
   IDENTIFY_BATCH_ENDPOINT,
   TRACK_BATCH_ENDPOINT,
   IDENTIFY_MAX_BATCH_SIZE,

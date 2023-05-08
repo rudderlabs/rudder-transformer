@@ -1,5 +1,6 @@
 const _ = require('lodash');
 const get = require('get-value');
+const jsonSize = require('json-size');
 const {
   getCatalogEndpoint,
   identifyDeviceAction,
@@ -15,6 +16,7 @@ const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
   ConfigCategory,
   mappingConfig,
+  IDENTIFY_MAX_BODY_SIZE,
   IDENTIFY_BATCH_ENDPOINT,
   TRACK_BATCH_ENDPOINT,
   IDENTIFY_MAX_BATCH_SIZE,
@@ -191,6 +193,11 @@ function process(event) {
 function batchEvents(arrayChunks) {
   const batchedResponseList = [];
 
+  let size = 0;
+  let identifyMetadata = [];
+  let identifyBatchResponseList = [];
+  const identifyBatchEventResponses = [];
+
   // list of chunks [ [..], [..] ]
   arrayChunks.forEach((chunk) => {
     const batchResponseList = [];
@@ -205,8 +212,6 @@ function batchEvents(arrayChunks) {
     // from the first event in a batch
     const { destination } = chunk[0];
     const { apiKey } = destination.Config;
-
-    let batchEventResponse = defaultBatchRequestConfig();
 
     // Batch event into dest batch structure
     chunk.forEach((ev) => {
@@ -228,47 +233,89 @@ function batchEvents(arrayChunks) {
           'message.body.JSON.update',
         );
       }
-      batchResponseList.push(get(ev, 'message.body.JSON'));
-      metadatas.push(ev.metadata);
+      if (chunk[0].message.endpoint.includes('/api/users')) {
+        size += jsonSize(get(ev, 'message.body.JSON'));
+        if (size > IDENTIFY_MAX_BODY_SIZE) {
+          identifyBatchEventResponses.push({ users: identifyBatchResponseList, identifyMetadata });
+          identifyBatchResponseList = [];
+          identifyMetadata = [];
+          size = jsonSize(get(ev, 'message.body.JSON'));
+        }
+        identifyBatchResponseList.push(get(ev, 'message.body.JSON'));
+        identifyMetadata.push(ev.metadata);
+      } else {
+        batchResponseList.push(get(ev, 'message.body.JSON'));
+        metadatas.push(ev.metadata);
+      }
     });
-    // batching into identify batch structure
-    if (chunk[0].message.operation === 'catalogs') {
-      batchEventResponse.batchedRequest.body.JSON = batchCatalogResponseList;
-      batchEventResponse.batchedRequest.endpoint = chunk[0].message.endpoint.substr(
-        0,
-        chunk[0].message.endpoint.lastIndexOf('/'),
-      );
-    } else if (chunk[0].message.endpoint.includes('/api/users')) {
-      batchEventResponse.batchedRequest.body.JSON = {
-        users: batchResponseList,
-      };
-      batchEventResponse.batchedRequest.endpoint = IDENTIFY_BATCH_ENDPOINT;
-    } else {
-      // batching into track batch structure
-      batchEventResponse.batchedRequest.body.JSON = {
-        events: batchResponseList,
-      };
-      batchEventResponse.batchedRequest.endpoint = TRACK_BATCH_ENDPOINT;
+
+    if (identifyBatchResponseList.length > 0) {
+      identifyBatchEventResponses.push({ users: identifyBatchResponseList, identifyMetadata });
     }
 
-    batchEventResponse.batchedRequest.headers = {
-      'Content-Type': JSON_MIME_TYPE,
-      api_key: apiKey,
-    };
+    if (chunk[0].message.endpoint.includes('/api/users')) {
+      identifyBatchEventResponses.forEach((identifyEventResponse) => {
+        let batchEventResponse = defaultBatchRequestConfig();
+        batchEventResponse.batchedRequest.body.JSON = {
+          users: identifyEventResponse.users,
+        };
+        batchEventResponse.batchedRequest.endpoint = IDENTIFY_BATCH_ENDPOINT;
 
-    batchEventResponse = {
-      ...batchEventResponse,
-      metadata: metadatas,
-      destination,
-    };
-    batchedResponseList.push(
-      getSuccessRespEvents(
-        batchEventResponse.batchedRequest,
-        batchEventResponse.metadata,
-        batchEventResponse.destination,
-        true,
-      ),
-    );
+        batchEventResponse.batchedRequest.headers = {
+          'Content-Type': JSON_MIME_TYPE,
+          api_key: apiKey,
+        };
+
+        batchEventResponse = {
+          ...batchEventResponse,
+          metadata: identifyEventResponse.identifyMetadata,
+          destination,
+        };
+
+        batchedResponseList.push(
+          getSuccessRespEvents(
+            batchEventResponse.batchedRequest,
+            batchEventResponse.metadata,
+            batchEventResponse.destination,
+            true,
+          ),
+        );
+      })
+    } else {      
+      let batchEventResponse = defaultBatchRequestConfig();
+      if (chunk[0].message.operation === 'catalogs') {
+        batchEventResponse.batchedRequest.body.JSON = batchCatalogResponseList;
+        batchEventResponse.batchedRequest.endpoint = chunk[0].message.endpoint.substr(
+          0,
+          chunk[0].message.endpoint.lastIndexOf('/'),
+        );
+      } else {
+        // batching into track batch structure
+        batchEventResponse.batchedRequest.body.JSON = {
+          events: batchResponseList,
+        };
+        batchEventResponse.batchedRequest.endpoint = TRACK_BATCH_ENDPOINT;
+      }
+
+      batchEventResponse.batchedRequest.headers = {
+        'Content-Type': JSON_MIME_TYPE,
+        api_key: apiKey,
+      };
+
+      batchEventResponse = {
+        ...batchEventResponse,
+        metadata: metadatas,
+        destination,
+      };
+      batchedResponseList.push(
+        getSuccessRespEvents(
+          batchEventResponse.batchedRequest,
+          batchEventResponse.metadata,
+          batchEventResponse.destination,
+          true,
+        ),
+      );
+    }
   });
 
   return batchedResponseList;

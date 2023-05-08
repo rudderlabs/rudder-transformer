@@ -148,6 +148,14 @@
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.4"
   },
+  "overrides": {
+    "trim-newlines": "3.0.1",
+    "dot-prop": "4.2.1",
+    "semver-regex": "3.1.4",
+    "cacheable-request@2.1.4": {
+      "http-cache-semantics": "4.1.1"
+    }
+  },
   "lint-staged": {
     "*.{js,ts}": "eslint --cache --fix",
     "*.{json,js,ts,md}": "prettier --write"

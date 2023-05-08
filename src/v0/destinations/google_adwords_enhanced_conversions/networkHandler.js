@@ -1,6 +1,6 @@
 const { get, set } = require('lodash');
 const sha256 = require('sha256');
-const { httpSend, prepareProxyRequest } = require('../../../adapters/network');
+const { httpSend, prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');
@@ -46,28 +46,35 @@ const getConversionActionId = async (method, headers, params) => {
       url: `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`,
       data,
       headers,
-      method,
     };
-    const response = await httpSend(requestBody);
-    if (!response.success && !isHttpStatusSuccess(response.response?.response?.status)) {
+    const { processedResponse: gaecConversionActionIdResponse } = await handleHttpRequest(
+      'post',
+      requestBody.url,
+      requestBody.data,
+      { headers: requestBody.headers },
+    );
+    if (!isHttpStatusSuccess(gaecConversionActionIdResponse.status)) {
       throw new NetworkError(
         `"${get(
-          response,
-          'response.response.data[0].error.message',
+          gaecConversionActionIdResponse,
+          'response[0].error.message',
           '',
         )}" during Google_adwords_enhanced_conversions response transformation`,
-        response.response?.response?.status,
+        gaecConversionActionIdResponse.status,
         {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(response.response?.response?.status),
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(gaecConversionActionIdResponse.status),
         },
-        response.response?.response?.data,
+        gaecConversionActionIdResponse.response.data,
         getAuthErrCategory(
-          get(response, 'response.response.status'),
-          get(response, 'response.response.data[0]'),
+          get(gaecConversionActionIdResponse, 'status'),
+          get(gaecConversionActionIdResponse, 'response[0].error.message'),
         ),
       );
     }
-    const conversionActionId = get(response, 'response.data[0].results[0].conversionAction.id');
+    const conversionActionId = get(
+      gaecConversionActionIdResponse,
+      'response[0].results[0].conversionAction.id',
+    );
     if (!conversionActionId) {
       throw new NetworkInstrumentationError(
         `Unable to find conversionActionId for conversion:${params.event}`,

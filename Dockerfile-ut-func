@@ -45,9 +45,9 @@ EXPOSE 9090/tcp
 
 FROM base AS prodDepsBuilder	
 
-WORKDIR /home/node/app	
-USER node	
-COPY --chown=node:node --from=development /home/node/app/package*.json ./	
+WORKDIR /home/node/app
+USER node
+COPY --chown=node:node --from=development /home/node/app/package*.json ./
 
 RUN npm ci --omit=dev --ignore-scripts --no-audit --cache .npm
 RUN npm run clean:node

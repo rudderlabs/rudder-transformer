@@ -106,7 +106,7 @@ const processRouterDest = (inputs) => {
   const eventsChunk = []; // temporary variable to divide payload into chunks
   const errorRespList = [];
 
-  inputs.map((event) => {
+  inputs.forEach((event) => {
     try {
       if (event.message.statusCode) {
         // already transformed event

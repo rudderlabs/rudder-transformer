@@ -316,10 +316,16 @@ const processBatch = (transformedEvents) => {
   for (const transformedEvent of transformedEvents) {
     if (transformedEvent?.batchedRequest?.body?.JSON) {
       const { attributes, events, purchases } = transformedEvent.batchedRequest.body.JSON;
-      attributesArray.push(...attributes);
-      eventsArray.push(...events);
-      purchaseArray.push(...purchases);
-      successMetadata.push(transformedEvent.metadata);
+      if (Array.isArray(attributes)) {
+        attributesArray.push(...attributes);
+      }
+      if (Array.isArray(events)) {
+        eventsArray.push(...events);
+      }
+      if (Array.isArray(purchases)) {
+        purchaseArray.push(...purchases);
+      }
+      successMetadata.push(...transformedEvent.metadata);
     } else if (!isHttpStatusSuccess(transformedEvent?.statusCode)) {
       failureResponses.push(transformedEvent);
     }
@@ -341,6 +347,7 @@ const processBatch = (transformedEvents) => {
     const response = defaultRequestConfig();
     response.endpoint = getTrackEndPoint(getEndpointFromConfig(destination));
     response.body.JSON = removeUndefinedAndNullValues({
+      partner: 'RudderStack',
       attributes,
       events,
       purchases,
@@ -371,5 +378,5 @@ module.exports = {
   CustomAttributeOperationUtil,
   getEndpointFromConfig,
   processDeduplication,
-  processBatch
+  processBatch,
 };

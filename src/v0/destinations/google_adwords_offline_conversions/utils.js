@@ -92,7 +92,9 @@ const getConversionActionId = async (headers, params) => {
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
     if (!isHttpStatusSuccess(searchStreamResponse.status)) {
       throw new AbortedError(
-        `[Google Ads Offline Conversions]:: ${searchStreamResponse.response[0].error.message} during google_ads_offline_conversions response transformation`,
+        `[Google Ads Offline Conversions]:: ${JSON.stringify(
+          searchStreamResponse.response,
+        )} during google_ads_offline_conversions response transformation`,
         searchStreamResponse.status,
         searchStreamResponse.response,
         getAuthErrCategory(get(searchStreamResponse, 'status')),

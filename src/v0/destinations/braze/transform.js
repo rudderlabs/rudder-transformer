@@ -1,5 +1,6 @@
 /* eslint-disable no-nested-ternary,no-param-reassign */
 const _ = require('lodash');
+const isArray = require('lodash/isArray');
 const get = require('get-value');
 const { BrazeDedupUtility, CustomAttributeOperationUtil, processDeduplication } = require('./util');
 const tags = require('../../util/tags');
@@ -301,7 +302,7 @@ function getPurchaseObjs(message) {
 
   const purchaseObjs = [];
 
-  if (products) {
+  if (isArray(products)) {
     // we have to make a separate call to appboy for each product
     products.forEach((product) => {
       const productId = product.product_id || product.sku;

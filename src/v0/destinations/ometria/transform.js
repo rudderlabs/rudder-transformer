@@ -264,7 +264,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     // using the first destination config in chunk for transforming the events in one
     // chunk into a batch
     const { destination } = chunk[0];
-    chunk.forEach(async (input) => {
+    chunk.forEach((input) => {
       try {
         const transformedEvent = handleMessage(input.message, destination);
         eventsList.push(transformedEvent);

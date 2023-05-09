@@ -1,7 +1,7 @@
 const { proxyRequest, prepareProxyRequest } = require('../../../adapters/network');
 const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
 const { DESTINATION } = require('./config');
-const { AbortedError } = require('../../util/errorTypes');
+const { AbortedError, RetryableError } = require('../../util/errorTypes');
 
 const responseHandler = (destinationResponse) => {
   const msg = `[${DESTINATION} Response Handler] - Request Processed Successfully`;
@@ -14,6 +14,9 @@ const responseHandler = (destinationResponse) => {
       message: msg,
       destinationResponse,
     };
+  }
+  if (code === 40100) {
+    throw new RetryableError(`Request failed with status: ${code}`, 429, destinationResponse);
   }
   throw new AbortedError(`Request failed with status: ${code}`, 400, destinationResponse);
 };

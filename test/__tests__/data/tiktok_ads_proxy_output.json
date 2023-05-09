@@ -53,5 +53,26 @@
         "module": "destination"
       }
     }
+  },
+  {
+    "output": {
+      "status": 429,
+      "message": "Request failed with status: 40100",
+      "destinationResponse": {
+        "response": {
+          "code": 40100,
+          "message": "Too many requests. Please retry in some time."
+        },
+        "status": 200
+      },
+      "statTags": {
+        "destType": "TIKTOK_ADS",
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
   }
 ]

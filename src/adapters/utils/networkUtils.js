@@ -10,7 +10,7 @@ const {
 } = require('../../v0/util');
 const { AbortedError } = require('../../v0/util/errorTypes');
 const tags = require('../../v0/util/tags');
-const { HttpStatus } = require('../../v0/util/constant');
+const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
 const nodeSysErrorToStatus = (code) => {
   const sysErrorToStatusMap = {
@@ -157,11 +157,11 @@ const processAxiosResponse = (clientResponse) => {
 
 
 function getCompatibleStatusCode(status) {
-  if (status === HttpStatus.NOT_FOUND) {
-    return HttpStatus.BAD_REQUEST;
+  if (status === HTTP_STATUS_CODES.NOT_FOUND) {
+    return HTTP_STATUS_CODES.BAD_REQUEST;
   }
   if (isHttpStatusSuccess(status)) {
-    return HttpStatus.OK;
+    return HTTP_STATUS_CODES.OK;
   }
   return status;
 }

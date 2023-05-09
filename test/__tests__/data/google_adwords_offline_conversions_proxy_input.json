@@ -325,7 +325,7 @@
           "customerId": "1234567891",
           "customVariables": [
             {
-              "from": "value",
+              "from": "Value",
               "to": "revenue"
             },
             {
@@ -339,7 +339,7 @@
             "externalAttributionCredit": 10,
             "externalAttributionModel": "externalAttributionModel",
             "conversionCustomVariable": "conversionCustomVariable",
-            "value": "value",
+            "Value": "value",
             "merchantId": "9876merchantId",
             "feedCountryCode": "feedCountryCode",
             "feedLanguageCode": "feedLanguageCode",

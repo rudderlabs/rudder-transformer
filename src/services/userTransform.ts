@@ -116,11 +116,14 @@ export default class UserTransformService {
             status = error.statusCode;
           }
           transformedEvents.push(
-            ...eventsToProcess.map((e) => ({
-                statusCode: status,
-                metadata: e.metadata,
-                error: errorString,
-              } as ProcessorTransformationResponse)),
+            ...eventsToProcess.map(
+              (e) =>
+                ({
+                  statusCode: status,
+                  metadata: e.metadata,
+                  error: errorString,
+                } as ProcessorTransformationResponse),
+            ),
           );
           stats.counter('user_transform_errors', eventsToProcess.length, {
             transformationVersionId,

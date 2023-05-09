@@ -54,8 +54,9 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
       events.map(async (event) => {
         try {
-          const transformedPayloads: ProcessorTransformationOutput | ProcessorTransformationOutput[] =
-            await destHandler.process(event);
+          const transformedPayloads:
+            | ProcessorTransformationOutput
+            | ProcessorTransformationOutput[] = await destHandler.process(event);
           return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,
             transformedPayloads,

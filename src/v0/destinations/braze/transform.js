@@ -22,6 +22,7 @@ const {
   getIdentifyEndpoint,
   getTrackEndPoint,
   getSubscriptionGroupEndPoint,
+  getAliasMergeEndPoint,
   BRAZE_PARTNER_NAME,
   CustomAttributeOperationTypes,
 } = require('./config');
@@ -34,17 +35,17 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function formatGender(gender) {
   // few possible cases of woman
-  if (['woman', 'female', 'w', 'f'].includes(gender.toLowerCase())) {
+  if (['woman', 'female', 'w', 'f'].includes(gender?.toLowerCase())) {
     return 'F';
   }
 
   // few possible cases of man
-  if (['man', 'male', 'm'].includes(gender.toLowerCase())) {
+  if (['man', 'male', 'm'].includes(gender?.toLowerCase())) {
     return 'M';
   }
 
   // few possible cases of other
-  if (['other', 'o'].includes(gender.toLowerCase())) {
+  if (['other', 'o'].includes(gender?.toLowerCase())) {
     return 'O';
   }
 
@@ -148,21 +149,6 @@ function getUserAttributesObject(message, mappingJson, destination) {
     return traits;
   }
 
-  // iterate over the destKeys and set the value if present
-  Object.keys(mappingJson).forEach((destKey) => {
-    let value = get(traits, mappingJson[destKey]);
-    if (value) {
-      // handle gender special case
-      if (destKey === 'gender') {
-        value = formatGender(value);
-      }
-      if (destKey === 'email') {
-        value = value.toLowerCase();
-      }
-      data[destKey] = value;
-    }
-  });
-
   // reserved keys : already mapped through mappingJson
   const reservedKeys = [
     'address',
@@ -175,7 +161,22 @@ function getUserAttributesObject(message, mappingJson, destination) {
     'phone',
   ];
 
+  // iterate over the destKeys and set the value if present
   if (traits) {
+    Object.keys(mappingJson).forEach((destKey) => {
+      let value = get(traits, mappingJson[destKey]);
+      if (value || (value === null && reservedKeys.includes(destKey))) {
+        // handle gender special case
+        if (destKey === 'gender') {
+          value = formatGender(value);
+        }
+        if (destKey === 'email') {
+          value = value.toLowerCase();
+        }
+        data[destKey] = value;
+      }
+    });
+
     // iterate over rest of the traits properties
     Object.keys(traits).forEach((traitKey) => {
       // if traitKey is not reserved add the value to final output
@@ -465,6 +466,41 @@ function processGroup(message, destination) {
   );
 }
 
+function processAlias(message, destination) {
+  const userId = message?.userId;
+  const previousId = message?.previousId;
+
+  if (!userId) {
+    throw new InstrumentationError('[BRAZE]: userId is required for alias call');
+  }
+
+  if (!previousId) {
+    throw new InstrumentationError('[BRAZE]: previousId is required for alias call');
+  }
+
+  const mergeUpdates = [
+    {
+      "identifier_to_merge": {
+        "external_id": previousId
+      },
+      "identifier_to_keep": {
+        "external_id": userId
+      }
+    }
+  ];
+
+  const requestJson = {
+    merge_updates: mergeUpdates
+  }
+
+  return buildResponse(
+      message,
+      destination,
+      requestJson,
+      getAliasMergeEndPoint(getEndpointFromConfig(destination)),
+  );
+}
+
 async function process(event, processParams = { userStore: new Map() }) {
   let response;
   const { message, destination } = event;
@@ -515,7 +551,9 @@ async function process(event, processParams = { userStore: new Map() }) {
       break;
     case EventType.GROUP:
       response = processGroup(message, destination);
-
+      break;
+    case EventType.ALIAS:
+      response = processAlias(message, destination);
       break;
     default:
       throw new InstrumentationError('Message type is not supported');

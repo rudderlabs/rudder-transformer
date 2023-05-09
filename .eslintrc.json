@@ -63,6 +63,6 @@
     "sonarjs/no-duplicate-string": "off",
     "sonarjs/no-identical-functions": "off",
     "no-prototype-builtins": "off",
-    "@typescript-eslint/dot-notation": "warn"
+    "@typescript-eslint/dot-notation": "off"
   }
 }

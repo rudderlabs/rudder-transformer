@@ -121,8 +121,6 @@ Also checks if it is a standard event and sends properties only if it is mention
 @param isStandard --> is standard if among the ecommerce spec of rudder other wise is not standard for simple track, identify and page calls
 false
 
-@param eventCustomProperties -->
-[ { eventCustomProperties: 'leadId' } ] // leadId if present will be set
 
 */
 
@@ -132,7 +130,6 @@ const transformedPayloadData = (
   blacklistPiiProperties,
   whitelistPiiProperties,
   isStandard,
-  eventCustomProperties,
   integrationsObj,
 ) => {
   const defaultPiiProperties = [
@@ -155,10 +152,8 @@ const transformedPayloadData = (
   const clonedCustomData = { ...customData };
   const finalBlacklistPiiProperties = blacklistPiiProperties || [];
   const finalWhitelistPiiProperties = whitelistPiiProperties || [];
-  const finalEventCustomProperties = eventCustomProperties || [];
   const customBlackListedPiiProperties = {};
   const customWhiteListedProperties = {};
-  const customEventProperties = {};
   finalBlacklistPiiProperties.forEach((property) => {
     const singularConfigInstance = property;
     customBlackListedPiiProperties[singularConfigInstance.blacklistPiiProperties] =
@@ -170,10 +165,6 @@ const transformedPayloadData = (
     customWhiteListedProperties[singularConfigInstance.whitelistPiiProperties] = true;
   });
 
-  finalEventCustomProperties.forEach((property) => {
-    const singularConfigInstance = property;
-    customEventProperties[singularConfigInstance.eventCustomProperties] = true;
-  });
 
   Object.keys(clonedCustomData).forEach((eventProp) => {
     const isDefaultPiiProperty = defaultPiiProperties.includes(eventProp);
@@ -192,8 +183,8 @@ const transformedPayloadData = (
         delete clonedCustomData[eventProp];
       }
     }
-    const isCustomProperty = customEventProperties[eventProp] || false;
-    if (isStandard && !isCustomProperty && !isDefaultPiiProperty) {
+
+    if (isStandard && isDefaultPiiProperty) {
       delete clonedCustomData[eventProp];
     }
   });

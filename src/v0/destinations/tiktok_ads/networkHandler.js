@@ -16,7 +16,7 @@ const responseHandler = (destinationResponse) => {
     };
   }
   if (code === 40100) {
-    throw new RetryableError(`Request failed with status: ${code}`, 500, destinationResponse);
+    throw new RetryableError(`Request failed with status: ${code}`, 429, destinationResponse);
   }
   throw new AbortedError(`Request failed with status: ${code}`, 400, destinationResponse);
 };

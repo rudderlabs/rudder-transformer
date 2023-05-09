@@ -56,7 +56,7 @@
   },
   {
     "output": {
-      "status": 500,
+      "status": 429,
       "message": "Request failed with status: 40100",
       "destinationResponse": {
         "response": {

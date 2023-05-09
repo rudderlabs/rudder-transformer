@@ -25,7 +25,7 @@ const whGroupColumnMappingRules = require('./config/WHGroupConfig.js');
 const whAliasColumnMappingRules = require('./config/WHAliasConfig.js');
 const { isDataLakeProvider } = require('./config/helpers');
 const { InstrumentationError } = require('../v0/util/errorTypes');
-const whExtractEventTableColumnMappingRules = require("./config/WHExtractEventTableConfig.js");
+const whExtractEventTableColumnMappingRules = require('./config/WHExtractEventTableConfig.js');
 
 const maxColumnsInEvent = parseInt(process.env.WH_MAX_COLUMNS_IN_EVENT || '200', 10);
 
@@ -67,7 +67,7 @@ const rudderReservedColums = {
   screen: { ...whDefaultColumnMappingRules, ...whScreenColumnMappingRules },
   group: { ...whDefaultColumnMappingRules, ...whGroupColumnMappingRules },
   alias: { ...whDefaultColumnMappingRules, ...whAliasColumnMappingRules },
-  extract: { ...whExtractEventTableColumnMappingRules }
+  extract: { ...whExtractEventTableColumnMappingRules },
 };
 
 function excludeRudderCreatedTableNames(name, skipReservedKeywordsEscaping = false) {
@@ -545,7 +545,7 @@ function processWarehouseMessage(message, options) {
       ? message.integrations[options.provider.toUpperCase()].options
       : {};
   const responses = [];
-  const eventType = message.type.toLowerCase();
+  const eventType = message.type?.toLowerCase();
   const skipTracksTable = options.integrationOptions.skipTracksTable || false;
   const skipReservedKeywordsEscaping =
     options.integrationOptions.skipReservedKeywordsEscaping || false;
@@ -615,7 +615,9 @@ function processWarehouseMessage(message, options) {
 
       // return error if event name is missing
       if (_.toString(commonProps[eventColName]).trim() === '') {
-        throw new InstrumentationError("cannot create event table with empty event name, event name is missing in the payload")
+        throw new InstrumentationError(
+          'cannot create event table with empty event name, event name is missing in the payload',
+        );
       }
       // always set commonProps last so that they are not overwritten
       const eventTableEvent = {
@@ -638,7 +640,7 @@ function processWarehouseMessage(message, options) {
       };
       responses.push({
         metadata: eventTableMetadata,
-        data: eventTableEvent
+        data: eventTableEvent,
       });
       break;
     }

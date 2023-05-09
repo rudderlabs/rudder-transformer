@@ -6,15 +6,15 @@
     "code": "400",
     "response": {
       "data": {
-          "errors": [
-            {
-              "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
-              "type": "authorization",
-              "code": "authorization-token-invalid",
-              "instance": "/2022-10/audiences/123/contactlist",
-              "title": "The authorization header is invalid"
-            }
-          ]
+        "errors": [
+          {
+            "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
+            "type": "authorization",
+            "code": "authorization-token-invalid",
+            "instance": "/2022-10/audiences/123/contactlist",
+            "title": "The authorization header is invalid"
+          }
+        ]
       },
       "status": 401
     }
@@ -23,13 +23,13 @@
     "code": "400",
     "response": {
       "data": {
-          "errors": [
-            {
-              "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
-              "type": "authorization",
-              "code": "audience-invalid"
-            }
-          ]
+        "errors": [
+          {
+            "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
+            "type": "authorization",
+            "code": "audience-invalid"
+          }
+        ]
       },
       "status": 404
     }
@@ -38,13 +38,13 @@
     "code": "500",
     "response": {
       "data": {
-          "errors": [
-            {
-              "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
-              "type": "authorization",
-              "code": "audience-invalid"
-            }
-          ]
+        "errors": [
+          {
+            "traceIdentifier": "80a1a0ba3981b04da847d05700752c77",
+            "type": "authorization",
+            "code": "audience-invalid"
+          }
+        ]
       },
       "status": 503
     }
@@ -52,8 +52,7 @@
   "https://api.criteo.com/2022-10/audiences/34898/contactlist": {
     "code": "429",
     "response": {
-      "data": {
-      },
+      "data": {},
       "status": 429
     }
   },

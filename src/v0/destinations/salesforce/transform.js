@@ -26,6 +26,7 @@ const {
 const { getAccessToken, salesforceResponseHandler } = require('./utils');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // Basic response builder
 // We pass the parameterMap with any processing-specific key-value pre-populated
@@ -84,7 +85,7 @@ function responseBuilderSimple(
 
   const response = defaultRequestConfig();
   const header = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: authorizationData.token,
   };
   response.method = defaultPostRequestConfig.requestMethod;

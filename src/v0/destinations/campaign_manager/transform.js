@@ -18,6 +18,7 @@ const {
 } = require('./config');
 
 const { InstrumentationError, OAuthSecretError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getAccessToken = ({ secret }) => {
   if (!secret) {
@@ -36,7 +37,7 @@ function buildResponse(requestJson, metadata, endpointUrl, requestType, encrypti
   response.endpoint = endpointUrl;
   response.headers = {
     Authorization: `Bearer ${getAccessToken(metadata)}`,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON.kind =
@@ -190,12 +191,10 @@ function process(event) {
   const messageType = message.type.toLowerCase();
   let response = {};
 
-  switch (messageType) {
-    case EventType.TRACK:
-      response = processTrack(message, metadata, destination);
-      break;
-    default:
-      throw new InstrumentationError(`Message type ${messageType} not supported`);
+  if (messageType === EventType.TRACK) {
+    response = processTrack(message, metadata, destination);
+  } else {
+    throw new InstrumentationError(`Message type ${messageType} not supported`);
   }
   postValidateRequest(response);
   return response;

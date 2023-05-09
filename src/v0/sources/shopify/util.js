@@ -1,7 +1,13 @@
 /* eslint-disable camelcase */
 const sha256 = require('sha256');
 const stats = require('../../../util/stats');
-const { constructPayload, extractCustomFields, flattenJson, generateUUID, isDefinedAndNotNull } = require('../../util');
+const {
+  constructPayload,
+  extractCustomFields,
+  flattenJson,
+  generateUUID,
+  isDefinedAndNotNull,
+} = require('../../util');
 const { RedisDB } = require('../../../util/redisConnector');
 const logger = require('../../../logger');
 const {
@@ -10,7 +16,7 @@ const {
   LINE_ITEM_EXCLUSION_FIELDS,
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   RUDDER_ECOM_MAP,
-  SHOPIFY_TRACK_MAP
+  SHOPIFY_TRACK_MAP,
 } = require('./config');
 // 30 mins
 const { TransformationError } = require('../../util/errorTypes');
@@ -161,9 +167,9 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
       ...metricMetadata,
       event,
       timestamp: Date.now(),
-    })
+    });
     if (!userId) {
-      message.setProperty('userId', "shopify-admin");
+      message.setProperty('userId', 'shopify-admin');
     }
     return;
   }
@@ -187,7 +193,7 @@ const setAnonymousIdorUserIdFromDb = async (message, metricMetadata) => {
       ...metricMetadata,
       event,
       timestamp: Date.now(),
-    })
+    });
     anonymousIDfromDB = sha256(cartToken).toString().substring(0, 36);
   }
   message.setProperty('anonymousId', anonymousIDfromDB);

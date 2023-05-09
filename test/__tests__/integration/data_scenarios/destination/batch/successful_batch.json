@@ -263,14 +263,7 @@
               ],
               "saveDestinationResponse": true,
               "secretKeys": ["apiKey", "apiSecret"],
-              "supportedMessageTypes": [
-                "alias",
-                "group",
-                "identify",
-                "page",
-                "screen",
-                "track"
-              ],
+              "supportedMessageTypes": ["alias", "group", "identify", "page", "screen", "track"],
               "supportedSourceTypes": [
                 "android",
                 "ios",
@@ -627,14 +620,7 @@
               ],
               "saveDestinationResponse": true,
               "secretKeys": ["apiKey", "apiSecret"],
-              "supportedMessageTypes": [
-                "alias",
-                "group",
-                "identify",
-                "page",
-                "screen",
-                "track"
-              ],
+              "supportedMessageTypes": ["alias", "group", "identify", "page", "screen", "track"],
               "supportedSourceTypes": [
                 "android",
                 "ios",
@@ -991,14 +977,7 @@
               ],
               "saveDestinationResponse": true,
               "secretKeys": ["apiKey", "apiSecret"],
-              "supportedMessageTypes": [
-                "alias",
-                "group",
-                "identify",
-                "page",
-                "screen",
-                "track"
-              ],
+              "supportedMessageTypes": ["alias", "group", "identify", "page", "screen", "track"],
               "supportedSourceTypes": [
                 "android",
                 "ios",
@@ -1620,14 +1599,7 @@
             ],
             "saveDestinationResponse": true,
             "secretKeys": ["apiKey", "apiSecret"],
-            "supportedMessageTypes": [
-              "alias",
-              "group",
-              "identify",
-              "page",
-              "screen",
-              "track"
-            ],
+            "supportedMessageTypes": ["alias", "group", "identify", "page", "screen", "track"],
             "supportedSourceTypes": [
               "android",
               "ios",

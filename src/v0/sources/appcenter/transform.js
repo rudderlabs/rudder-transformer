@@ -7,6 +7,7 @@ const mappingJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mappin
 const { removeUndefinedAndNullValues } = require('../../util');
 
 const { TransformationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const guidGenerator = () => {
   const S4 = () =>
@@ -56,7 +57,7 @@ const isTestEvent = (event) => !!event?.text;
 const processTestEvent = (event) => ({
   outputToSource: {
     body: Buffer.from(JSON.stringify(event)).toString('base64'),
-    contentType: 'application/json',
+    contentType: JSON_MIME_TYPE,
   },
   statusCode: 200,
 });

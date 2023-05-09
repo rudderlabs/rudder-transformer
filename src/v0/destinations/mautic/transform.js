@@ -25,6 +25,7 @@ const {
   InstrumentationError,
   ConfigurationError,
 } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = async (payload, endpoint, method, messageType, Config) => {
   const { userName, password } = Config;
@@ -40,7 +41,7 @@ const responseBuilder = async (payload, endpoint, method, messageType, Config) =
     response.endpoint = endpoint;
     const basicAuth = Buffer.from(`${userName}:${password}`).toString('base64');
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Basic ${basicAuth}`,
     };
     response.method = method;
@@ -166,10 +167,8 @@ const process = async (event) => {
     );
   }
 
-  
   // if both are present we will be taking endpoint after checking the domainMethod selected
   const endpoint = getEndpoint(destination.Config);
-  
 
   // Validating if message type is even given or not
   if (!message.type) {

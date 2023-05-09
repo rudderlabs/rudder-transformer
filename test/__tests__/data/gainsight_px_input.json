@@ -645,20 +645,12 @@
       "properties": {
         "description": "Stringify test for object values",
         "nested": {
-          "a": [
-            1,
-            2,
-            3
-          ],
+          "a": [1, 2, 3],
           "b": {
             "c": 1
           }
         },
-        "arr": [
-          1,
-          2,
-          3
-        ]
+        "arr": [1, 2, 3]
       },
       "integrations": {
         "All": true
@@ -729,20 +721,12 @@
       "properties": {
         "description": "Stringify test for object values",
         "nested": {
-          "a": [
-            1,
-            2,
-            3
-          ],
+          "a": [1, 2, 3],
           "b": {
             "c": 1
           }
         },
-        "arr": [
-          1,
-          2,
-          3
-        ],
+        "arr": [1, 2, 3],
         "globalContext": {
           "someKey": "someVal"
         }

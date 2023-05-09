@@ -7,6 +7,7 @@ const { executeCommonValidations } = require('../../util/regulation-api');
 const { ConfigurationError, NetworkError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -39,7 +40,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   });
   const headers = {
     accept: 'text/plain',
-    'content-type': 'application/json',
+    'content-type': JSON_MIME_TYPE,
   };
 
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]

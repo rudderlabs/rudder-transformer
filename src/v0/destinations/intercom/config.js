@@ -7,7 +7,7 @@ const TRACK_ENDPOINT = `${BASE_ENDPOINT}/events`;
 // Create, Update a user with a company | Identify
 const IDENTIFY_ENDPOINT = `${BASE_ENDPOINT}/users`;
 // create, update, delete a company | Group
-// const GROUP_ENDPOINT = `${BASE_ENDPOINT}/companies`;
+const GROUP_ENDPOINT = `${BASE_ENDPOINT}/companies`;
 
 const ConfigCategory = {
   TRACK: {
@@ -18,11 +18,10 @@ const ConfigCategory = {
     endpoint: IDENTIFY_ENDPOINT,
     name: 'INTERCOMIdentifyConfig',
   },
-  // ,
-  // GROUP: {
-  //   endpoint: GROUP_ENDPOINT,
-  //   name: "INTERCOMGroupConfig"
-  // }
+  GROUP: {
+    endpoint: GROUP_ENDPOINT,
+    name: 'INTERCOMGroupConfig',
+  },
 };
 
 const MappingConfig = getMappingConfig(ConfigCategory, __dirname);

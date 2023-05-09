@@ -14,16 +14,17 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const prepareHeader = (apiKey, clientKey = null, trackerApi = false) => {
   if (trackerApi) {
     return {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       'ma-key': clientKey,
     };
   }
   return {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     'api-key': apiKey,
   };
 };

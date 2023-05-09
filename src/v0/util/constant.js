@@ -10,7 +10,7 @@ const API_CALL = 'api_call_count';
 
 const JSON_MIME_TYPE = 'application/json';
 
-const HttpStatus = {
+const HTTP_STATUS_CODES = {
   // 1xx Informational
   CONTINUE: 100,
   SWITCHING_PROTOCOLS: 101,
@@ -84,5 +84,5 @@ module.exports = {
   AUTH_CACHE_TTL,
   USER_LEAD_CACHE_TTL,
   JSON_MIME_TYPE,
-  HttpStatus
+  HTTP_STATUS_CODES
 };

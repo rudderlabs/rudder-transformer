@@ -749,5 +749,44 @@
     },
     "files": {},
     "userId": "ank101"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "merge_updates": [
+          {
+            "identifier_to_keep": {
+              "external_id": "userMergeTest2"
+            },
+            "identifier_to_merge": {
+              "external_id": "userId"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "userId": "userMergeTest2",
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer abcd="
+    },
+    "version": "1",
+    "endpoint": "https://rest.iad-03.braze.com/users/merge"
+  },
+  {
+    "statusCode": 400,
+    "message": "[BRAZE]: previousId is required for alias call"
+  },
+  {
+    "statusCode": 400,
+    "message": "[BRAZE]: userId is required for alias call"
   }
 ]

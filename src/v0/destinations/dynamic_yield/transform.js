@@ -13,7 +13,7 @@ const {
   TransformationError,
   InstrumentationError,
 } = require('../../util/errorTypes');
-const { preparePayload } = require('./util');
+const { prepareIdentifyPayload, prepareTrackPayload } = require('./util');
 
 const responseBuilder = (payload, apiKey, endpoint) => {
   if (payload) {
@@ -33,27 +33,8 @@ const responseBuilder = (payload, apiKey, endpoint) => {
 const identifyResponseBuilder = (message, { Config }) => {
   const { apiKey, hashEmail } = Config;
 
-  const payload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
-  payload.events = [];
-  const eventsObj = {
-    name: 'Identify User',
-    properties: {
-      dyType: 'identify-v1',
-      hashedEmail:
-        message.traits?.email || message.context?.traits?.email
-          ? message.traits?.email || message.context?.traits?.email
-          : null,
-    },
-  };
-  if (hashEmail && eventsObj.properties.hashedEmail) {
-    eventsObj.properties.hashedEmail = sha256(eventsObj.properties.hashedEmail);
-  }
-  if (!eventsObj.properties.hashedEmail) {
-    delete eventsObj.properties.hashedEmail;
-    eventsObj.properties.cuidType = 'userId';
-    eventsObj.properties.cuid = payload.user.id;
-  }
-  payload.events.push(eventsObj);
+  let payload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
+  payload = prepareIdentifyPayload(message, payload, hashEmail);
   const endpoint = `${BASE_URL}/collect/user/event`;
   return responseBuilder(payload, apiKey, endpoint);
 };
@@ -72,7 +53,8 @@ const trackResponseBuilder = (message, { Config }) => {
     throw new InstrumentationError('Event is not present in the input payload');
   }
 
-  const payload = preparePayload(message, event);
+  let payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
+  payload = prepareTrackPayload(message, event, payload);
   const endpoint = `${BASE_URL}/collect/user/event`;
 
   return responseBuilder(payload, apiKey, endpoint);

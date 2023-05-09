@@ -1,5 +1,4 @@
-const { constructPayload } = require('../../util');
-const { ConfigCategory, mappingConfig } = require('./config');
+const sha256 = require('sha256');
 
 const ecomEventsMapping = {
   product_added: 'Add to Cart',
@@ -37,8 +36,33 @@ const populateProperties = (messageProperties, event) => {
   return properties;
 };
 
-const preparePayload = (message, event) => {
-  const payload = constructPayload(message, mappingConfig[ConfigCategory.TRACK.name]);
+const prepareIdentifyPayload = (message, payload, hashEmail) => {
+  const updatedPayload = payload;
+  updatedPayload.events = [];
+  const eventsObj = {
+    name: 'Identify User',
+    properties: {
+      dyType: 'identify-v1',
+      hashedEmail:
+        message.traits?.email || message.context?.traits?.email
+          ? message.traits?.email || message.context?.traits?.email
+          : null,
+    },
+  };
+  if (hashEmail && eventsObj.properties.hashedEmail) {
+    eventsObj.properties.hashedEmail = sha256(eventsObj.properties.hashedEmail);
+  }
+  if (!eventsObj.properties.hashedEmail) {
+    delete eventsObj.properties.hashedEmail;
+    eventsObj.properties.cuidType = 'userId';
+    eventsObj.properties.cuid = updatedPayload.user.id;
+  }
+  updatedPayload.events.push(eventsObj);
+  return updatedPayload;
+};
+
+const prepareTrackPayload = (message, event, payload) => {
+  const updatedPayload = payload;
   const eventsObj = {};
 
   const trimmedEvent = event.toLowerCase().trim().replace(/\s+/g, '_');
@@ -55,10 +79,11 @@ const preparePayload = (message, event) => {
       eventsObj.properties = message.properties;
       break;
   }
-  payload.events = [eventsObj];
-  return payload;
+  updatedPayload.events = [eventsObj];
+  return updatedPayload;
 };
 
 module.exports = {
-  preparePayload,
+  prepareIdentifyPayload,
+  prepareTrackPayload,
 };

@@ -314,7 +314,9 @@ const processBatch = (transformedEvents) => {
   const successMetadata = [];
   const failureResponses = [];
   for (const transformedEvent of transformedEvents) {
-    if (transformedEvent?.batchedRequest?.body?.JSON) {
+    if (!isHttpStatusSuccess(transformedEvent?.statusCode)) {
+      failureResponses.push(transformedEvent);
+    }else if (transformedEvent?.batchedRequest?.body?.JSON) {
       const { attributes, events, purchases } = transformedEvent.batchedRequest.body.JSON;
       if (Array.isArray(attributes)) {
         attributesArray.push(...attributes);
@@ -326,9 +328,7 @@ const processBatch = (transformedEvents) => {
         purchaseArray.push(...purchases);
       }
       successMetadata.push(...transformedEvent.metadata);
-    } else if (!isHttpStatusSuccess(transformedEvent?.statusCode)) {
-      failureResponses.push(transformedEvent);
-    }
+    } 
   }
   const attributeArrayChunks = _.chunk(attributesArray, 75);
   const eventsArrayChunks = _.chunk(eventsArray, 75);
@@ -340,6 +340,11 @@ const processBatch = (transformedEvents) => {
     eventsArrayChunks.length,
   );
   const responseArray = [];
+  const headers ={
+    'Content-Type': JSON_MIME_TYPE,
+    Accept: JSON_MIME_TYPE,
+    Authorization: `Bearer ${destination.Config.restApiKey}`,
+  }
   for (let i = 0; i < maxNumberOfRequest; i += 1) {
     const attributes = attributeArrayChunks[i];
     const events = eventsArrayChunks[i];
@@ -354,11 +359,7 @@ const processBatch = (transformedEvents) => {
     });
     responseArray.push({
       ...response,
-      headers: {
-        'Content-Type': JSON_MIME_TYPE,
-        Accept: JSON_MIME_TYPE,
-        Authorization: `Bearer ${destination.Config.restApiKey}`,
-      },
+      headers ,
     });
   }
   return [

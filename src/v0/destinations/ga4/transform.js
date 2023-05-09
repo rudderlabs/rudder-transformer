@@ -245,6 +245,10 @@ const responseBuilder = (message, { Config }) => {
     payload.params.session_id = integrationsObj.sessionId;
   }
 
+  if (integrationsObj && integrationsObj.sessionNumber) {
+    payload.params.session_number = integrationsObj.sessionNumber;
+  }
+
   if (payload.params) {
     payload.params = removeUndefinedAndNullValues(payload.params);
   }

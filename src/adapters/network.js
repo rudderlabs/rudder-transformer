@@ -315,8 +315,6 @@ const handleHttpRequest = async (requestType = 'post', ...httpArgs) => {
   return { httpResponse, processedResponse };
 };
 
-
-
 module.exports = {
   httpSend,
   httpGET,

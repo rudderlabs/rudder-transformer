@@ -165,8 +165,8 @@ class Prometheus {
         labelNames: ['destType', 'feature'],
       },
       {
-        name: 'cdk_v2_propagated_events',
-        help: 'cdk_v2_propagated_events',
+        name: 'cdk_v2_events',
+        help: 'cdk_v2_events',
         type: 'counter',
         labelNames: ['destType', 'feature'],
       },

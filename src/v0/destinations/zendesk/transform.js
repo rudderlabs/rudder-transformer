@@ -127,7 +127,7 @@ async function createUserFields(url, config, newFields, fieldJson) {
   let fieldData;
   // removing trailing 's' from fieldJson
   const fieldJsonSliced = fieldJson.slice(0, -1);
-  newFields.forEach(async (field) => {
+  await Promise.all(newFields.map(async (field) => {
     // create payload for each new user field
     fieldData = {
       [fieldJsonSliced]: {
@@ -148,7 +148,7 @@ async function createUserFields(url, config, newFields, fieldJson) {
         logger.debug(`${NAME}:: Cannot create User field `, field, error);
       }
     }
-  });
+  }));
 }
 
 async function checkAndCreateUserFields(

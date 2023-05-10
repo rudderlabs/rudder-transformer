@@ -8,6 +8,7 @@ const stats = require('./stats');
 
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
+const GEO_RUDDERSTACK_URL = process.env.GEO_RUDDERSTACK_URL;
 
 const isolateVmMem = ISOLATE_VM_MEMORY;
 async function evaluateModule(isolate, context, moduleCode) {
@@ -205,6 +206,26 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
     }),
   );
 
+  await jail.set(
+    '_getGeoLocation',
+    new ivm.Reference(async (resolve, ...args) => {
+      try {
+        const geoStartTime = new Date();
+        let geoData = {};
+        if (GEO_RUDDERSTACK_URL && args.length > 0) {
+          const res = await fetch(`${GEO_RUDDERSTACK_URL}/geoip/${args[0]}`);
+          if (res.status === 200) {
+            geoData = await res.json();
+          }
+        }
+        stats.timing('geo_call_duration', geoStartTime, { versionId });
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
+      } catch (error) {
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy({}).copyInto()]);
+      }
+    }),
+  );
+
   await jail.set('_rsSecrets', function (...args) {
     if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
     return secrets[args[0]];
@@ -254,6 +275,17 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
           fetchV2.applyIgnored(undefined, [
             new ivm.Reference(resolve),
             new ivm.Reference(reject),
+            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+          ]);
+        });
+      };
+
+      let getGeoLocation = _getGeoLocation;
+      delete _getGeoLocation;
+      global.getGeoLocation = function(...args) {
+        return new Promise(resolve => {
+          getGeoLocation.applyIgnored(undefined, [
+            new ivm.Reference(resolve),
             ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           ]);
         });

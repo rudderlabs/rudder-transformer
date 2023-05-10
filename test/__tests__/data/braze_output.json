@@ -749,5 +749,130 @@
     },
     "files": {},
     "userId": "ank101"
+  },
+  {
+    "body": {
+      "XML": {},
+      "FORM": {},
+      "JSON": {
+        "merge_updates": [
+          {
+            "identifier_to_keep": {
+              "external_id": "userMergeTest2"
+            },
+            "identifier_to_merge": {
+              "external_id": "userId"
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {}
+    },
+    "type": "REST",
+    "files": {},
+    "method": "POST",
+    "params": {},
+    "userId": "userMergeTest2",
+    "headers": {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer abcd="
+    },
+    "version": "1",
+    "endpoint": "https://rest.iad-03.braze.com/users/merge"
+  },
+  {
+    "statusCode": 400,
+    "message": "[BRAZE]: previousId is required for alias call"
+  },
+  {
+    "statusCode": 400,
+    "message": "[BRAZE]: userId is required for alias call"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rest.iad-01.braze.com/users/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "attributes": [
+          {
+            "dob": "01/01/1971",
+            "email": "anil.kumar@hotmail.com",
+            "first_name": "anil",
+            "gender": null,
+            "image_url": "https://i.kym-cdn.com/entries/icons/mobile/000/034/772/anuj-1.jpg",
+            "last_name": "kumar",
+            "phone": "9988123321",
+            "bio": "Tech and tension go together",
+            "language": "en-IN",
+            "job": "Director",
+            "company": null,
+            "external_id": "ank101"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "ank101"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rest.iad-01.braze.com/users/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "attributes": [
+          {
+            "email": "mickey@disney.com",
+            "city": "Disney",
+            "country": "USA",
+            "firstname": "Mickey",
+            "_update_existing_only": false,
+            "user_alias": {
+              "alias_name": "e6ab2c5e-1cda-34a9-g962-r2f62df18abc",
+              "alias_label": "rudder_id"
+            }
+          }
+        ],
+        "purchases": [
+          {
+            "product_id": "507f1f77bcf86cd799439011",
+            "price": 0,
+            "currency": "USD",
+            "quantity": 1,
+            "time": "2020-01-24T11:59:02.402+05:30",
+            "_update_existing_only": false,
+            "user_alias": {
+              "alias_name": "e6ab2c5e-1cda-34a9-g962-r2f62df18abc",
+              "alias_label": "rudder_id"
+            }
+          }
+        ],
+        "partner": "RudderStack"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "e6ab2c5e-1cda-34a9-g962-r2f62df18abc"
   }
 ]

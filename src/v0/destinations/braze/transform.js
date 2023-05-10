@@ -27,6 +27,7 @@ const {
   getIdentifyEndpoint,
   getTrackEndPoint,
   getSubscriptionGroupEndPoint,
+  getAliasMergeEndPoint,
   BRAZE_PARTNER_NAME,
   CustomAttributeOperationTypes,
 } = require('./config');
@@ -174,8 +175,8 @@ function getUserAttributesObject(message, mappingJson, destination) {
         if (destKey === 'gender') {
           value = formatGender(value);
         }
-        if (destKey === 'email') {
-          value = value.toLowerCase();
+        if (destKey === 'email' && value !== null) {
+          value = value?.toLowerCase();
         }
         data[destKey] = value;
       }
@@ -306,7 +307,7 @@ function getPurchaseObjs(message) {
 
   const purchaseObjs = [];
 
-  if (products) {
+  if (Array.isArray(products)) {
     // we have to make a separate call to appboy for each product
     products.forEach((product) => {
       const productId = product.product_id || product.sku;
@@ -470,6 +471,41 @@ function processGroup(message, destination) {
   );
 }
 
+function processAlias(message, destination) {
+  const userId = message?.userId;
+  const previousId = message?.previousId;
+
+  if (!userId) {
+    throw new InstrumentationError('[BRAZE]: userId is required for alias call');
+  }
+
+  if (!previousId) {
+    throw new InstrumentationError('[BRAZE]: previousId is required for alias call');
+  }
+
+  const mergeUpdates = [
+    {
+      identifier_to_merge: {
+        external_id: previousId,
+      },
+      identifier_to_keep: {
+        external_id: userId,
+      },
+    },
+  ];
+
+  const requestJson = {
+    merge_updates: mergeUpdates,
+  };
+
+  return buildResponse(
+    message,
+    destination,
+    requestJson,
+    getAliasMergeEndPoint(getEndpointFromConfig(destination)),
+  );
+}
+
 async function process(event, processParams = { userStore: new Map() }) {
   let response;
   const { message, destination } = event;
@@ -520,7 +556,9 @@ async function process(event, processParams = { userStore: new Map() }) {
       break;
     case EventType.GROUP:
       response = processGroup(message, destination);
-
+      break;
+    case EventType.ALIAS:
+      response = processAlias(message, destination);
       break;
     default:
       throw new InstrumentationError('Message type is not supported');

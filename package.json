@@ -39,7 +39,7 @@
     "test:integration:silent": "jest -c jest.config.integration.js --detectOpenHandles --silent",
     "pre-commit": "npm run test:silent && npm run test:integration:silent && npx lint-staged",
     "commit-msg": "commitlint --edit",
-    "prepare": "husky install",
+    "prepare": "node ./scripts/skipPrepareScript.js || husky install",
     "release": "npx standard-version",
     "release:github": "DEBUG=conventional-github-releaser npx conventional-github-releaser -p angular --config github-release.config.js",
     "clean:node": "modclean",

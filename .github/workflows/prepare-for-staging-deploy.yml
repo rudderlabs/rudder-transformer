@@ -19,11 +19,6 @@ jobs:
       tag_name: ${{ steps.gen_tag_names.outputs.tag_name }}
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3.5.2
-        with:
-          fetch-depth: 1
-
       - name: Generate Tag Names
         id: gen_tag_names
         run: |

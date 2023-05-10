@@ -2,6 +2,53 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.27.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.26.0...v1.27.0) (2023-05-09)
+
+
+### Features
+
+* braze merge users ([#2135](https://github.com/rudderlabs/rudder-transformer/issues/2135)) ([a0f9ae9](https://github.com/rudderlabs/rudder-transformer/commit/a0f9ae9008308cbfd6270522bf37f8e3f8531a23))
+* braze merge users ([#2135](https://github.com/rudderlabs/rudder-transformer/issues/2135)) ([58f69d2](https://github.com/rudderlabs/rudder-transformer/commit/58f69d2778e822716e7f9f10f1f899b00b2d8785))
+* **ga4:** common page call information(page, url, title) support in track call ([#2141](https://github.com/rudderlabs/rudder-transformer/issues/2141)) ([f7a32b2](https://github.com/rudderlabs/rudder-transformer/commit/f7a32b28373ef1e8de76edad5afbe9d04fd7561e))
+* onboard new source formsort ([#2120](https://github.com/rudderlabs/rudder-transformer/issues/2120)) ([203a0c4](https://github.com/rudderlabs/rudder-transformer/commit/203a0c48eb72e6d076d611d5d23a9454c2934f4d))
+
+
+### Bug Fixes
+
+* snyk issues fix ([#2136](https://github.com/rudderlabs/rudder-transformer/issues/2136)) ([653ae9b](https://github.com/rudderlabs/rudder-transformer/commit/653ae9b050f507a78671ce559e5563f13610baa9))
+* undefined errors in braze, firehose, gaoc ([#2139](https://github.com/rudderlabs/rudder-transformer/issues/2139)) ([06110c5](https://github.com/rudderlabs/rudder-transformer/commit/06110c5f070e05d6d0f7e04b11a23f777cb65af8))
+
+## [1.26.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.25.0...v1.26.0) (2023-05-05)
+
+
+### Features
+
+* intercom group support ([#2089](https://github.com/rudderlabs/rudder-transformer/issues/2089)) ([8185f28](https://github.com/rudderlabs/rudder-transformer/commit/8185f288f8b6c0822f6aea8bf080d6b2b9ef2691))
+
+
+### Bug Fixes
+
+* allow null values to be passed in Braze for standard properties ([#2111](https://github.com/rudderlabs/rudder-transformer/issues/2111)) ([10d037a](https://github.com/rudderlabs/rudder-transformer/commit/10d037a17aae9ff0e60be1276120a2a1fa6c6a86))
+* call to lower case only when message.type is defined ([#2109](https://github.com/rudderlabs/rudder-transformer/issues/2109)) ([71c1e7a](https://github.com/rudderlabs/rudder-transformer/commit/71c1e7aea8c14904660908eabf2eabb060315410))
+* remove skip verify flag ([#2114](https://github.com/rudderlabs/rudder-transformer/issues/2114)) ([c4b0a69](https://github.com/rudderlabs/rudder-transformer/commit/c4b0a695442bb30c280c7301a10aea773f610e4f))
+
+## [1.25.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.24.0...v1.25.0) (2023-05-02)
+
+
+### Features
+
+* **destination:** braze dedup  ([#1931](https://github.com/rudderlabs/rudder-transformer/issues/1931)) ([66b335c](https://github.com/rudderlabs/rudder-transformer/commit/66b335c2c18ce123024a2605b5a1964a0dfa71ed))
+* fetch audience id for retl criteo audience ([#2058](https://github.com/rudderlabs/rudder-transformer/issues/2058)) ([f80f843](https://github.com/rudderlabs/rudder-transformer/commit/f80f843d283c6b97cd3075857671a12db3d5e813))
+* introduced additional variable for conversionDateTime for GAOC Stor… ([#2108](https://github.com/rudderlabs/rudder-transformer/issues/2108)) ([14e06ee](https://github.com/rudderlabs/rudder-transformer/commit/14e06ee0b9bc91c8fc79545cd1ebde6d35da5a9c))
+
+
+### Bug Fixes
+
+* **attentive_tag:** ecom events user object fix ([#2106](https://github.com/rudderlabs/rudder-transformer/issues/2106)) ([ebd3c05](https://github.com/rudderlabs/rudder-transformer/commit/ebd3c0569eca00d3f732010027388aad76bcfe77))
+* **ga4:** update hybrid mode check condition and remove dependency on… ([#2087](https://github.com/rudderlabs/rudder-transformer/issues/2087)) ([041d4b6](https://github.com/rudderlabs/rudder-transformer/commit/041d4b6f2c6d4161fab6cc9092a1a228c5e28604))
+* gracefulshutdown ([#2113](https://github.com/rudderlabs/rudder-transformer/issues/2113)) ([2367241](https://github.com/rudderlabs/rudder-transformer/commit/2367241e002990880ada425ae3c7aef844ce6998))
+* **pinterest cdk:** add step name ([#2101](https://github.com/rudderlabs/rudder-transformer/issues/2101)) ([f7a302b](https://github.com/rudderlabs/rudder-transformer/commit/f7a302babce96b9ae5abe20e28b05c49437c1089))
+
 ## [1.24.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.23.1...v1.24.0) (2023-04-25)
 
 

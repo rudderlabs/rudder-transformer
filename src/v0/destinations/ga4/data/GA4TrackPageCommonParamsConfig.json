@@ -1,10 +1,7 @@
 [
   {
     "destKey": "engagement_time_msec",
-    "sourceKeys": [
-      "properties.engagementTimeMsec",
-      "properties.engagement_time_msec"
-    ],
+    "sourceKeys": ["properties.engagementTimeMsec", "properties.engagement_time_msec"],
     "metadata": {
       "defaultValue": 1
     },
@@ -12,19 +9,27 @@
   },
   {
     "destKey": "session_id",
-    "sourceKeys": [
-      "properties.sessionId",
-      "properties.session_id",
-      "context.sessionId"
-    ],
+    "sourceKeys": ["properties.sessionId", "properties.session_id", "context.sessionId"],
     "required": false
   },
   {
     "destKey": "session_number",
-    "sourceKeys": [
-      "properties.sessionNumber",
-      "properties.session_number"
-    ],
+    "sourceKeys": ["properties.sessionNumber", "properties.session_number"],
+    "required": false
+  },
+  {
+    "destKey": "page_referrer",
+    "sourceKeys": "context.page.referrer",
+    "required": false
+  },
+  {
+    "destKey": "page_title",
+    "sourceKeys": "context.page.title",
+    "required": false
+  },
+  {
+    "destKey": "page_location",
+    "sourceKeys": "context.page.url",
     "required": false
   },
   {

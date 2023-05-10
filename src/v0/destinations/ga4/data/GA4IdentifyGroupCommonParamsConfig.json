@@ -22,5 +22,15 @@
       "context.sessionId"
     ],
     "required": false
+  },
+  {
+    "destKey": "session_number",
+    "sourceKeys": [
+      "traits.sessionNumber",
+      "traits.session_number",
+      "context.traits.sessionNumber",
+      "context.traits.session_number"
+    ],
+    "required": false
   }
 ]

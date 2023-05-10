@@ -64,7 +64,7 @@ const getConversionActionId = async (method, headers, params) => {
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(gaecConversionActionIdResponse.status),
         },
-        gaecConversionActionIdResponse.response.data,
+        gaecConversionActionIdResponse.response,
         getAuthErrCategory(
           get(gaecConversionActionIdResponse, 'status'),
           get(gaecConversionActionIdResponse, 'response[0].error.message'),
@@ -103,7 +103,13 @@ const ProxyRequest = async (request) => {
     `customers/${params.customerId}/conversionActions/${conversionActionId}`,
   );
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
-  const response = await httpSend(requestBody);
+  // const response = await httpSend(requestBody);
+  const { httpResponse: response } = await handleHttpRequest(
+    method,
+    requestBody.url,
+    requestBody.data,
+    { headers },
+  );
   return response;
 };
 

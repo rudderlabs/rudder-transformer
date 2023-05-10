@@ -20,6 +20,13 @@
         "message": "No permission to operate pixel code: BU35TSQHT2A1QT375OMG. You must be an admin or operator of this advertiser account."
       },
       "status": 200
+    },
+    "tooManyRequests": {
+      "data": {
+        "code": 40100,
+        "message": "Too many requests. Please retry in some time."
+      },
+      "status": 200
     }
   }
 }

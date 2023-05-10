@@ -1351,11 +1351,11 @@ const errorStatusCodeKeys = ['response.status', 'code', 'status'];
  * @param {Number} defaultStatusCode default status code that has to be set
  * @returns {Number}
  */
-const getErrorStatusCode = (error, defaultStatusCode = 400) => {
+const getErrorStatusCode = (error, defaultStatusCode = 500) => {
   try {
     let defaultStCode = defaultStatusCode;
     if (!_.isNumber(defaultStatusCode)) {
-      defaultStCode = 400;
+      defaultStCode = 500;
     }
     const errStCode = errorStatusCodeKeys
       .map((statusKey) => get(error, statusKey))

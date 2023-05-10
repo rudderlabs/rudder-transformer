@@ -188,7 +188,7 @@ const ProxyRequest = async (request) => {
     const { properties } = params;
     let { customVariables } = params;
     const resultantCustomVariables = [];
-    customVariables = getHashFromArray(customVariables);
+    customVariables = getHashFromArray(customVariables,"from","to",false);
     Object.keys(customVariables).forEach((key) => {
       if (properties[key] && conversionCustomVariable[customVariables[key]]) {
         // 1. set custom variable name

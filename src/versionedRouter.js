@@ -36,6 +36,7 @@ const { PlatformError } = require('./v0/util/errorTypes');
 const { getCachedWorkflowEngine, processCdkV2Workflow } = require('./cdk/v2/handler');
 const { processCdkV1 } = require('./cdk/v1/handler');
 const { extractLibraries } = require('./util/customTransformer');
+const { getCompatibleStatusCode } = require('./adapters/utils/networkUtils');
 
 const CDK_V1_DEST_PATH = 'cdk/v1';
 
@@ -1037,7 +1038,7 @@ async function handleProxyRequest(destination, ctx) {
   ctx.body = { output: response };
   // Sending `204` status(obtained from destination) is not working as expected
   // Since this is success scenario, we'll be forcefully sending `200` status-code to server
-  ctx.status = isHttpStatusSuccess(response.status) ? 200 : response.status;
+  ctx.status = getCompatibleStatusCode(response.status);
   return ctx.body;
 }
 

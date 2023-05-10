@@ -28,5 +28,11 @@
       "statusCode": 200,
       "status": "successful"
     }
+  ],
+  [
+    {
+      "statusCode": 400,
+      "error": "GDPR Api Token is a required field for creating deletion task in mixpanel"
+    }
   ]
 ]

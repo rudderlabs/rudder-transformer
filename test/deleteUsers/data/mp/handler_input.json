@@ -3083,5 +3083,55 @@
         }
       ]
     }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "MP",
+          "userAttributes": [
+            {
+              "userId": "rudder1",
+              "complianceType": "CCPA"
+            },
+            {
+              "userId": "rudder2",
+              "complianceType": "GDPR"
+            },
+            {
+              "userId": "rudder3",
+              "complianceType": "CCPA"
+            }
+          ],
+          "config": {
+            "token": "test_token",
+            "prefixProperties": true,
+            "useNativeSDK": false,
+            "userDeletionApi": "task",
+            "gdprApiToken": "test_gdpr_token"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "MP",
+          "userAttributes": [
+            {
+              "userId": "rudder1"
+            }
+          ],
+          "config": {
+            "token": "test_token",
+            "prefixProperties": true,
+            "useNativeSDK": false,
+            "userDeletionApi": "task"
+          }
+        }
+      ]
+    }
   }
 ]

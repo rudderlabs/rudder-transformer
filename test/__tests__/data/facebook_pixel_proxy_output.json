@@ -105,5 +105,29 @@
         "module": "destination"
       }
     }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "Failed with Not found during response transformation",
+      "destinationResponse": {
+        "error": {
+          "message": "Not found",
+          "type": "GraphMethodException",
+          "code": 100,
+          "error_subcode": 33,
+          "fbtrace_id": "facebook_px_trace_id_6"
+        },
+        "status": 404
+      },
+      "statTags": {
+        "destType": "FACEBOOK_PIXEL",
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
   }
 ]

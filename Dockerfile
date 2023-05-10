@@ -42,8 +42,11 @@ FROM base AS prodDepsBuilder
 WORKDIR /home/node/app
 USER node
 COPY --chown=node:node --from=development /home/node/app/package*.json ./
+COPY --chown=node:node --from=development /home/node/app/scripts/skipPrepareScript.js ./scripts/skipPrepareScript.js
 
-RUN npm ci --omit=dev --ignore-scripts --no-audit --cache .npm
+ENV SKIP_PREPARE_SCRIPT='true'
+
+RUN npm ci --omit=dev --no-audit --cache .npm
 RUN npm run clean:node
 
 FROM base as production

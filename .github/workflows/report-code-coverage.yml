@@ -1,6 +1,10 @@
 name: Report Code Coverage
 on:
   workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: true
+
   pull_request:
     types: ['opened', 'reopened', 'synchronize']
 
@@ -11,7 +15,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.5.0
+        uses: actions/checkout@v3.5.2
         with:
           fetch-depth: 1
 

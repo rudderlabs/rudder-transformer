@@ -316,7 +316,7 @@ const processBatch = (transformedEvents) => {
   for (const transformedEvent of transformedEvents) {
     if (!isHttpStatusSuccess(transformedEvent?.statusCode)) {
       failureResponses.push(transformedEvent);
-    }else if (transformedEvent?.batchedRequest?.body?.JSON) {
+    } else if (transformedEvent?.batchedRequest?.body?.JSON) {
       const { attributes, events, purchases } = transformedEvent.batchedRequest.body.JSON;
       if (Array.isArray(attributes)) {
         attributesArray.push(...attributes);
@@ -328,7 +328,7 @@ const processBatch = (transformedEvents) => {
         purchaseArray.push(...purchases);
       }
       successMetadata.push(...transformedEvent.metadata);
-    } 
+    }
   }
   const attributeArrayChunks = _.chunk(attributesArray, 75);
   const eventsArrayChunks = _.chunk(eventsArray, 75);
@@ -337,20 +337,21 @@ const processBatch = (transformedEvents) => {
   const maxNumberOfRequest = Math.max(
     attributeArrayChunks.length,
     eventsArrayChunks.length,
-    eventsArrayChunks.length,
+    purchaseArrayChunks.length,
   );
   const responseArray = [];
-  const headers ={
+  const headers = {
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
     Authorization: `Bearer ${destination.Config.restApiKey}`,
-  }
+  };
+  const endpoint = getTrackEndPoint(getEndpointFromConfig(destination));
   for (let i = 0; i < maxNumberOfRequest; i += 1) {
     const attributes = attributeArrayChunks[i];
     const events = eventsArrayChunks[i];
     const purchases = purchaseArrayChunks[i];
     const response = defaultRequestConfig();
-    response.endpoint = getTrackEndPoint(getEndpointFromConfig(destination));
+    response.endpoint = endpoint;
     response.body.JSON = removeUndefinedAndNullValues({
       partner: 'RudderStack',
       attributes,
@@ -359,7 +360,7 @@ const processBatch = (transformedEvents) => {
     });
     responseArray.push({
       ...response,
-      headers ,
+      headers,
     });
   }
   return [

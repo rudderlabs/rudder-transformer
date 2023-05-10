@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.27.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.27.0...v1.27.1) (2023-05-10)
+
+
+### Bug Fixes
+
+* checkout code for generating tags ([e377f68](https://github.com/rudderlabs/rudder-transformer/commit/e377f68409eaee3c589a851ee83b6f00889fc20c))
+
 ## [1.27.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.26.0...v1.27.0) (2023-05-09)
 
 

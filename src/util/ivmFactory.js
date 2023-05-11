@@ -207,21 +207,28 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
   );
 
   await jail.set(
-    '_getGeoLocation',
-    new ivm.Reference(async (resolve, ...args) => {
+    '_geolocation',
+    new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const geoStartTime = new Date();
-        let geoData = {};
-        if (GEO_RUDDERSTACK_URL && args.length > 0) {
-          const res = await fetch(`${GEO_RUDDERSTACK_URL}/geoip/${args[0]}`);
-          if (res.status === 200) {
-            geoData = await res.json();
-          }
+        if (args.length < 1) {
+          throw new Error('ip address is required');
         }
+        if (!GEO_RUDDERSTACK_URL) throw new Error('geolocation is not available right now');
+
+        const res = await fetch(
+          `${GEO_RUDDERSTACK_URL}/geoip/${args[0]}`,
+          { timeout: GEO_CALL_TIMEOUT_IN_MS }
+        );
+        if (res.status !== 200) {
+          throw new Error(`request to fetch geolocation failed with status code: ${res.status}`);
+        }
+        const geoData = await res.json();
         stats.timing('geo_call_duration', geoStartTime, { versionId });
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
       } catch (error) {
-        resolve.applyIgnored(undefined, [new ivm.ExternalCopy({}).copyInto()]);
+        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        reject.applyIgnored(undefined, [new ivm.ExternalCopy({}).copyInto()]);
       }
     }),
   );
@@ -280,12 +287,13 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
         });
       };
 
-      let getGeoLocation = _getGeoLocation;
-      delete _getGeoLocation;
-      global.getGeoLocation = function(...args) {
+      let geolocation = _geolocation;
+      delete _geolocation;
+      global.geolocation = function(...args) {
         return new Promise(resolve => {
-          getGeoLocation.applyIgnored(undefined, [
+          geolocation.applyIgnored(undefined, [
             new ivm.Reference(resolve),
+            new ivm.Reference(reject),
             ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
           ]);
         });

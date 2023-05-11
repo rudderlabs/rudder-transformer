@@ -39,12 +39,13 @@ const {
   TransformationError,
   InstrumentationError,
 } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, method, endpoint, apiKey) => {
   if (payload) {
     const response = defaultRequestConfig();
     response.headers = {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${apiKey}`,
     };
     response.method = method;
@@ -177,7 +178,7 @@ const generateBatchedPaylaodForArray = (events, combination) => {
   batchEventResponse.batchedRequest.method = defaultPutRequestConfig.requestMethod;
 
   batchEventResponse.batchedRequest.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${apiKey}`,
   };
   batchEventResponse = {

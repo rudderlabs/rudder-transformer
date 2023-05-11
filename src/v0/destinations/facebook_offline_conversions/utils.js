@@ -442,10 +442,11 @@ const offlineConversionResponseBuilder = (message, destination) => {
   const offlineConversionsPayloads = [];
   eventToIdsArray.forEach((eventToIds) => {
     const { standardEvent, eventSetIds } = eventToIds;
-    const obj = {};
-    obj.data = getData(data, standardEvent, message, destination);
-    obj.eventSetIds = eventSetIds;
-    obj.payload = payload;
+    const obj = {
+      data: getData(data, standardEvent, message, destination),
+      eventSetIds,
+      payload,
+    };
     offlineConversionsPayloads.push(obj);
   });
   return offlineConversionsPayloads;

@@ -40,6 +40,7 @@ function trackPostMapper(event, mappedPayload, rudderContext) {
 
   const contactIdOrEmail = Utils.getFieldValueFromMessage(message, 'email');
   if (contactIdOrEmail) {
+    // eslint-disable-next-line no-param-reassign
     rudderContext.endpoint = `https://api2.autopilothq.com/v1/trigger/${destination.Config.triggerId}/contact/${contactIdOrEmail}`;
   } else {
     throw new InstrumentationError('Email is required for track calls');

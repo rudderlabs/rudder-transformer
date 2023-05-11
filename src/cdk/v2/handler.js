@@ -51,7 +51,7 @@ async function process(workflowEngine, parsedEvent) {
 async function processCdkV2Workflow(destType, parsedEvent, feature, bindings = {}) {
   try {
     const workflowEngine = await getCachedWorkflowEngine(destType, feature, bindings);
-    return process(workflowEngine, parsedEvent);
+    return await process(workflowEngine, parsedEvent);
   } catch (error) {
     throw getErrorInfo(error, isCdkV2Destination(parsedEvent), defTags);
   }

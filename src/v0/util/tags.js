@@ -50,7 +50,7 @@ const ERROR_TYPES = {
   ABORTED: 'aborted',
   OAUTH_SECRET: 'oAuthSecret',
   UNSUPPORTED: 'unsupported',
-  REDIS:'redis',
+  REDIS: 'redis',
 };
 
 const METADATA = {

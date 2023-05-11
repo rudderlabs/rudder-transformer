@@ -9,7 +9,14 @@ const stats = require('./stats');
 
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 
-async function runUserTransform(events, code, secrets, eventsMetadata, versionId, testMode = false) {
+async function runUserTransform(
+  events,
+  code,
+  secrets,
+  eventsMetadata,
+  versionId,
+  testMode = false,
+) {
   const tags = {
     transformerVersionId: versionId,
     identifier: 'v0',

@@ -39,17 +39,30 @@ const {
   getGA4CustomParameters,
   GA4_PARAMETERS_EXCLUSION,
 } = require('./utils');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * returns client_id
  * @param {*} message
  * @returns
  */
-const getGA4ClientId = (message) => {
-  const clientId =
-    getDestinationExternalID(message, 'ga4ClientId') ||
-    get(message, 'anonymousId') ||
-    get(message, 'rudderId');
+const getGA4ClientId = (message, Config) => {
+  let clientId;
+
+  if (isHybridModeEnabled(Config)) {
+    const integrationsObj = getIntegrationsObj(message, 'ga4');
+    if (integrationsObj && integrationsObj.clientId) {
+      clientId = integrationsObj.clientId;
+    }
+  }
+
+  if (!clientId) {
+    clientId =
+      getDestinationExternalID(message, 'ga4ClientId') ||
+      get(message, 'anonymousId') ||
+      get(message, 'rudderId');
+  }
+
   return clientId;
 };
 
@@ -83,7 +96,7 @@ const responseBuilder = (message, { Config }) => {
     case 'gtag':
       // gtag.js uses client_id
       // GA4 uses it as an identifier to distinguish site visitors.
-      rawPayload.client_id = getGA4ClientId(message);
+      rawPayload.client_id = getGA4ClientId(message, Config);
       if (!isDefinedAndNotNull(rawPayload.client_id)) {
         throw new ConfigurationError('ga4ClientId, anonymousId or messageId must be provided');
       }
@@ -228,8 +241,12 @@ const responseBuilder = (message, { Config }) => {
 
   removeReservedParameterPrefixNames(payload.params);
   const integrationsObj = getIntegrationsObj(message, 'ga4');
-  if (integrationsObj && integrationsObj.sessionId) {
+  if (isHybridModeEnabled(Config) && integrationsObj && integrationsObj.sessionId) {
     payload.params.session_id = integrationsObj.sessionId;
+  }
+
+  if (integrationsObj && integrationsObj.sessionNumber) {
+    payload.params.session_number = integrationsObj.sessionNumber;
   }
 
   if (payload.params) {
@@ -270,7 +287,7 @@ const responseBuilder = (message, { Config }) => {
   }
   response.headers = {
     HOST: 'www.google-analytics.com',
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.params = {
     api_secret: Config.apiSecret,

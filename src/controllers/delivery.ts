@@ -12,8 +12,8 @@ export default class DeliveryController {
   public static async deliverToDestination(ctx: Context) {
     logger.debug('Native(Delivery):: Request to transformer::', JSON.stringify(ctx.request.body));
     let deliveryResponse: DeliveryResponse;
-    let requestMetadata = MiscService.getRequestMetadata(ctx);
-    let event = ctx.request.body as ProcessorTransformationOutput;
+    const requestMetadata = MiscService.getRequestMetadata(ctx);
+    const event = ctx.request.body as ProcessorTransformationOutput;
     const { destination }: { destination: string } = ctx.params;
     const integrationService = ServiceSelector.getNativeDestinationService();
     try {

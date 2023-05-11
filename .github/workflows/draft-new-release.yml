@@ -11,7 +11,7 @@ jobs:
     if: (github.ref == 'refs/heads/develop' || startsWith(github.ref, 'refs/heads/hotfix/')) && (github.actor == 'ItsSudip' || github.actor == 'krishna2020' || github.actor == 'saikumarrs' || github.actor == 'sandeepdsvs' || github.actor == 'shrouti1507') &&  (github.triggering_actor == 'ItsSudip' || github.triggering_actor == 'krishna2020' || github.triggering_actor == 'saikumarrs' || github.triggering_actor == 'sandeepdsvs' || github.triggering_actor == 'shrouti1507')
     steps:
       - name: Checkout
-        uses: actions/checkout@v3.5.0
+        uses: actions/checkout@v3.5.2
         with:
           fetch-depth: 0
 
@@ -73,6 +73,8 @@ jobs:
         run: |
           echo "Current version: $CURRENT_VERSION_VALUE"
           echo "New version: $NEW_VERSION_VALUE"
+          npx replace $CURRENT_VERSION_VALUE $NEW_VERSION_VALUE sonar-project.properties
+          git add sonar-project.properties
           npm run release -- -a --skip.tag --no-verify
           git push
 

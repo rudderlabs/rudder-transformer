@@ -26,6 +26,7 @@ const getAccessToken = async (config) => {
   const { clientId, clientSecret, munchkinId } = config;
   const url = `https://${munchkinId}.mktorest.com/identity/oauth/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`;
   const resp = await httpGET(url);
+  const ACCESS_TOKEN_FETCH_ERR_MSG = 'Error during fetching access token';
   if (resp.success) {
     if (resp.response && resp.response.data && resp.response.data.access_token) {
       return resp.response.data.access_token;
@@ -54,20 +55,20 @@ const getAccessToken = async (config) => {
     else if (resp.response.response) {
       if (ABORTABLE_CODES.includes(resp.response.response.status)) {
         throw new AbortedError(
-          resp.response.response.statusText || 'Error during fetching access token',
+          resp.response.response.statusText || ACCESS_TOKEN_FETCH_ERR_MSG,
           400,
           resp,
         );
       } // handle for throttled codes
       else if (THROTTLED_CODES.includes(resp.response.response.status)) {
         throw new ThrottledError(
-          resp.response.response.statusText || 'Error during fetching access token',
+          resp.response.response.statusText || ACCESS_TOKEN_FETCH_ERR_MSG,
           resp,
         );
       }
       // Assuming none we should retry the remaining errors
       throw new RetryableError(
-        resp.response.response.statusText || 'Error during fetching access token',
+        resp.response.response.statusText || ACCESS_TOKEN_FETCH_ERR_MSG,
         500,
         resp,
       );

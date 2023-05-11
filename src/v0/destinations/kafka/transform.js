@@ -47,10 +47,11 @@ const batch = (destEvents) => {
   // example: input events = [{event1,topic1},{event2,topic1},{event3,topic2}]
   // out from transformer:  {batchedRequest:[{event1},{event2}]}, {batchedRequest:[{event3}]} (2 multilexed responses)
   for (const events of Object.values(groupedEvents)) {
-    const response = {};
-    response.batchedRequest = events.map((event) => event.message);
-    response.metadata = events.map((event) => event.metadata);
-    response.destination = events[0].destination;
+    const response = {
+      batchedRequest: events.map((event) => event.message),
+      metadata: events.map((event) => event.metadata),
+      destination: events[0].destination,
+    };
     respList.push(response);
   }
 

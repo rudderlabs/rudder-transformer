@@ -11,7 +11,11 @@ const {
   simpleProcessRouterDest,
   getDestinationExternalIDInfoForRetl,
 } = require('../../util');
-const { prepareDataField, getSchemaForEventMappedToDest, batchingWithPayloadSize } = require('./util');
+const {
+  prepareDataField,
+  getSchemaForEventMappedToDest,
+  batchingWithPayloadSize,
+} = require('./util');
 const {
   getEndPoint,
   schemaFields,
@@ -47,6 +51,7 @@ const responseBuilderSimple = (payload, audienceId) => {
   // fail-safety for developer error
   throw new TransformationError(`Payload could not be constructed`);
 };
+
 // Function responsible prepare the payload field of every event parameter
 
 const preparePayload = (
@@ -55,7 +60,6 @@ const preparePayload = (
   paramsPayload,
   isHashRequired,
   disableFormat,
-  skipVerify,
 ) => {
   const prepareFinalPayload = _.cloneDeep(paramsPayload);
   if (Array.isArray(userSchema)) {
@@ -69,7 +73,6 @@ const preparePayload = (
     userUpdateList,
     isHashRequired,
     disableFormat,
-    skipVerify,
   );
   return batchingWithPayloadSize(prepareFinalPayload);
 };
@@ -83,7 +86,7 @@ const prepareResponse = (
   userSchema,
   isHashRequired = true,
 ) => {
-  const { accessToken, disableFormat, type, subType, isRaw, skipVerify } = destination.Config;
+  const { accessToken, disableFormat, type, subType, isRaw } = destination.Config;
 
   const mappedToDestination = get(message, MappedToDestinationKey);
 
@@ -122,14 +125,13 @@ const prepareResponse = (
     paramsPayload,
     isHashRequired,
     disableFormat,
-    skipVerify,
   );
   // paramsPayload.schema = userSchema;
   const respList = [];
   payloadBatches.forEach((payloadBatch) => {
     const response = {
       ...prepareParams,
-      payload: payloadBatch ,
+      payload: payloadBatch,
     };
     respList.push(response);
   });
@@ -137,13 +139,19 @@ const prepareResponse = (
 };
 
 /**
- * Prepare to send events array 
- * @param {*} message 
- * @param {*} destination 
- * @returns 
+ * Prepare to send events array
+ * @param {*} message
+ * @param {*} destination
+ * @returns
  */
-const prepareToSendEvents = (message, destination, audienceChunksArray, userSchema,
-  isHashRequired, operation) => {
+const prepareToSendEvents = (
+  message,
+  destination,
+  audienceChunksArray,
+  userSchema,
+  isHashRequired,
+  operation,
+) => {
   const toSendEvents = [];
   audienceChunksArray.forEach((allowedAudienceArray) => {
     const responseArray = prepareResponse(
@@ -159,7 +167,7 @@ const prepareToSendEvents = (message, destination, audienceChunksArray, userSche
         operationCategory: operation,
       };
       toSendEvents.push(wrappedResponse);
-    })
+    });
   });
   return toSendEvents;
 };
@@ -208,13 +216,29 @@ const processEvent = (message, destination) => {
   // when "remove" is present in the payload
   if (isDefinedAndNotNullAndNotEmpty(listData[USER_DELETE])) {
     const audienceChunksArray = returnArrayOfSubarrays(listData[USER_DELETE], maxUserCountNumber);
-    toSendEvents = prepareToSendEvents(message, destination, audienceChunksArray, userSchema, isHashRequired, USER_DELETE);
+    toSendEvents = prepareToSendEvents(
+      message,
+      destination,
+      audienceChunksArray,
+      userSchema,
+      isHashRequired,
+      USER_DELETE,
+    );
   }
 
   // When "add" is present in the payload
   if (isDefinedAndNotNullAndNotEmpty(listData[USER_ADD])) {
     const audienceChunksArray = returnArrayOfSubarrays(listData[USER_ADD], maxUserCountNumber);
-    toSendEvents.push(...prepareToSendEvents(message, destination, audienceChunksArray, userSchema, isHashRequired, USER_ADD));
+    toSendEvents.push(
+      ...prepareToSendEvents(
+        message,
+        destination,
+        audienceChunksArray,
+        userSchema,
+        isHashRequired,
+        USER_ADD,
+      ),
+    );
   }
   toSendEvents.forEach((sendEvent) => {
     respList.push(responseBuilderSimple(sendEvent, operationAudienceId));

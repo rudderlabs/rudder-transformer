@@ -646,8 +646,7 @@
       "statusCode": 400,
       "error": "Action source must be one of app_android, app_ios, web, offline: Workflow: procWorkflow, Step: validateCommonFields, ChildStep: undefined, OriginalError: Action source must be one of app_android, app_ios, web, offline",
       "statTags": {
-        "errorCategory": "dataValidation",
-        "errorType": "instrumentation",
+        "errorCategory": "platform",
         "implementation": "cdkV2",
         "destType": "PINTEREST_TAG",
         "module": "destination",

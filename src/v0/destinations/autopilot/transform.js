@@ -10,6 +10,7 @@ const {
 } = require('../../util');
 
 const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const identifyFields = [
   'email',
@@ -29,8 +30,8 @@ function responseBuilderSimple(message, category, destination) {
     const response = defaultRequestConfig();
     response.headers = {
       autopilotapikey: destination.Config.apiKey,
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
+      Accept: JSON_MIME_TYPE,
     };
     let responseBody;
     let contactIdOrEmail;

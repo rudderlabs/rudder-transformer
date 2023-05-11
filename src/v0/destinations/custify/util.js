@@ -18,6 +18,7 @@ const {
 } = require('../../util');
 const { InstrumentationError, NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  *
@@ -29,7 +30,7 @@ const tags = require('../../util/tags');
 const createUpdateCompany = async (companyPayload, Config) => {
   const companyResponse = await httpPOST(ConfigCategory.GROUP_COMPANY.endpoint, companyPayload, {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${Config.apiKey}`,
     },
   });

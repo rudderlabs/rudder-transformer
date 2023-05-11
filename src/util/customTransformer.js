@@ -8,8 +8,8 @@ const { parserForImport } = require('./parser');
 const stats = require('./stats');
 
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
-const GEO_RUDDERSTACK_URL = process.env.GEO_RUDDERSTACK_URL;
-const GEO_CALL_TIMEOUT_IN_MS = parseInt(process.env.GEO_CALL_TIMEOUT_IN_MS || '1000', 10);
+const GEOLOCATION_URL = process.env.GEOLOCATION_URL;
+const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
 
 async function runUserTransform(
   events,
@@ -88,11 +88,11 @@ async function runUserTransform(
         if (args.length < 1) {
           throw new Error('ip address is required');
         }
-        if (!GEO_RUDDERSTACK_URL) throw new Error('geolocation is not available right now');
+        if (!GEOLOCATION_URL) throw new Error('geolocation is not available right now');
 
         const res = await fetch(
-          `${GEO_RUDDERSTACK_URL}/geoip/${args[0]}`,
-          { timeout: GEO_CALL_TIMEOUT_IN_MS }
+          `${GEOLOCATION_URL}/geoip/${args[0]}`,
+          { timeout: GEOLOCATION_TIMEOUT_IN_MS }
         );
         if (res.status !== 200) {
           throw new Error(`request to fetch geolocation failed with status code: ${res.status}`);

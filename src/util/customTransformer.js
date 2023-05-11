@@ -8,7 +8,7 @@ const { parserForImport } = require('./parser');
 const stats = require('./stats');
 
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
-const GEO_RUDDERSTACK_URL = process.env.GEO_RUDDERSTACK_URL || 'geo.rudderstack.com';
+const GEO_RUDDERSTACK_URL = process.env.GEO_RUDDERSTACK_URL;
 const GEO_CALL_TIMEOUT_IN_MS = parseInt(process.env.GEO_CALL_TIMEOUT_IN_MS || '1000', 10);
 
 async function runUserTransform(

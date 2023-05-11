@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const vRouter = require("../../src/versionedRouter");
+const vRouter = require("../../src/legacy/router");
 
 const version = "v0";
 const integration = "marketo_bulk_upload";

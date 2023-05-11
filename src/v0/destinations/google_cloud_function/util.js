@@ -1,4 +1,5 @@
 const { defaultBatchRequestConfig } = require('../../util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 const { ConfigurationError } = require('../../util/errorTypes');
 
 const { TRIGGERTYPE } = require('./config');
@@ -28,7 +29,7 @@ const validateDestinationConfig = ({ Config }) => {
 function addHeader(response, Config) {
   const { triggerType, apiKeyId, gcloudAuthorization } = Config;
 
-  response.headers = { 'content-type': 'application/json' };
+  response.headers = { 'content-type': JSON_MIME_TYPE };
   if (apiKeyId) {
     const basicAuth = Buffer.from(`apiKey:${apiKeyId}`).toString('base64');
     response.headers.ApiKey = `Basic ${basicAuth}`;

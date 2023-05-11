@@ -6,13 +6,14 @@ const {
   getFieldValueFromMessage,
 } = require('../../util');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilderSimple(payload, attributionConfig) {
   const basicAuth = Buffer.from(`${attributionConfig.writeKey}:`).toString('base64');
 
   const response = defaultRequestConfig();
   const header = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Basic ${basicAuth}`,
   };
   response.method = defaultPostRequestConfig.requestMethod;

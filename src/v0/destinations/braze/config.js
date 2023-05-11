@@ -21,6 +21,10 @@ function getSubscriptionGroupEndPoint(endPoint) {
   return `${endPoint}/subscription/status/set`;
 }
 
+function getAliasMergeEndPoint(endPoint) {
+  return `${endPoint}/users/merge`;
+}
+
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
 
 const BRAZE_PARTNER_NAME = 'RudderStack';
@@ -55,6 +59,7 @@ module.exports = {
   getIdentifyEndpoint,
   getTrackEndPoint,
   getSubscriptionGroupEndPoint,
+  getAliasMergeEndPoint,
   BRAZE_PARTNER_NAME,
   TRACK_BRAZE_MAX_REQ_COUNT,
   IDENTIFY_BRAZE_MAX_REQ_COUNT,

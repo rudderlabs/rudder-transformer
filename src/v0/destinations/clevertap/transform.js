@@ -21,9 +21,12 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+const TIMESTAMP_KEY_PATH = 'context.traits.ts';
 
 /*
-Following behaviour is expected when "enableObjectIdMapping" is enabled
+Following behavior is expected when "enableObjectIdMapping" is enabled
 
 For Identify Events
 ---------------RudderStack-----------------             ------------Clevertap-------------
@@ -43,7 +46,7 @@ false					              true						          identity (value = userId)
 // wraps to default request config
 const responseWrapper = (payload, destination) => {
   const response = defaultRequestConfig();
-  // If the acount belongs to specific regional server,
+  // If the account belongs to specific regional server,
   // we need to modify the url endpoint based on dest config.
   // Source: https://developer.clevertap.com/docs/idc
   response.endpoint = getEndpoint(destination.Config);
@@ -51,14 +54,14 @@ const responseWrapper = (payload, destination) => {
   response.headers = {
     'X-CleverTap-Account-Id': destination.Config.accountId,
     'X-CleverTap-Passcode': destination.Config.passcode,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   response.body.JSON = payload;
   return response;
 };
 
 /**
- * Expected behaviours:                            
+ * Expected behaviors:                            
     payload = {                                       "finalPayload": {
       "device": {                                          "device": "{\"browser\":{\"name\":\"Chrome121\",\"version\":\"106.0.0.0\"},\"os\":{\"version\":\"10.15.7\"}}",
         "browser": {                                       "name": "macOS",
@@ -109,7 +112,7 @@ const mapIdentifyPayloadWithObjectId = (message, profile) => {
   const payload = {
     type: 'profile',
     profileData: profile,
-    ts: get(message, 'traits.ts') || get(message, 'context.traits.ts'),
+    ts: get(message, 'traits.ts') || get(message, TIMESTAMP_KEY_PATH),
   };
 
   // If timestamp is not in unix format
@@ -117,7 +120,7 @@ const mapIdentifyPayloadWithObjectId = (message, profile) => {
     payload.ts = toUnixTimestamp(payload.ts);
   }
 
-  // If anonymousId is present prioritising to set it as objectId
+  // If anonymousId is present prioritizing to set it as objectId
   if (anonymousId) {
     payload.objectId = anonymousId;
     // If userId is present we set it as identity inside profiledData
@@ -140,7 +143,7 @@ const mapIdentifyPayload = (message, profile) => {
       {
         type: 'profile',
         profileData: profile,
-        ts: get(message, 'traits.ts') || get(message, 'context.traits.ts'),
+        ts: get(message, 'traits.ts') || get(message, TIMESTAMP_KEY_PATH),
         identity: getFieldValueFromMessage(message, 'userId'),
       },
     ],
@@ -159,7 +162,7 @@ const mapAliasPayload = (message) => {
       {
         type: 'profile',
         profileData: { identity: message.userId },
-        ts: get(message, 'traits.ts') || get(message, 'context.traits.ts'),
+        ts: get(message, 'traits.ts') || get(message, TIMESTAMP_KEY_PATH),
         identity: message.previousId,
       },
     ],

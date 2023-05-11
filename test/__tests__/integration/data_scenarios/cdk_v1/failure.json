@@ -79,18 +79,10 @@
           "Config": {
             "cdkEnabled": true,
             "destConfig": {
-              "defaultConfig": [
-                "zapUrl",
-                "trackEventsToZap",
-                "pageScreenEventsToZap"
-              ]
+              "defaultConfig": ["zapUrl", "trackEventsToZap", "pageScreenEventsToZap"]
             },
             "excludeKeys": [],
-            "includeKeys": [
-              "zapUrl",
-              "trackEventsToZap",
-              "pageScreenEventsToZap"
-            ],
+            "includeKeys": ["zapUrl", "trackEventsToZap", "pageScreenEventsToZap"],
             "saveDestinationResponse": true,
             "secretKeys": ["zapUrl"],
             "supportedMessageTypes": ["track", "page", "screen"],
@@ -156,7 +148,7 @@
         "sourceDefinitionId": "1b6gJdqOPOCadT3cddw8eidV591",
         "destinationDefinitionId": ""
       },
-      "statusCode": 400,
+      "statusCode": 500,
       "error": "Unsupported \"channel\": \"offline\". It must be one of: web,server,mobile,sources",
       "statTags": {
         "errorCategory": "transformation",

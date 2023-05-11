@@ -236,5 +236,5 @@ export {
   UserDeletionRequest,
   UserDeletionResponse,
   Destination,
-  ComparatorInput
+  ComparatorInput,
 };

@@ -11,6 +11,7 @@ const {
 const { getCustomFieldsEndPoint } = require('./config');
 const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * Validates priority
@@ -209,7 +210,7 @@ const retrieveCustomFields = async (listId, apiToken) => {
   const endpoint = getCustomFieldsEndPoint(listId);
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: apiToken,
     },
   };

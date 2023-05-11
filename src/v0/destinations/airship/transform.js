@@ -23,6 +23,9 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+const DEFAULT_ACCEPT_HEADER = 'application/vnd.urbanairship+json; version=3';
 
 const identifyResponseBuilder = (message, { Config }) => {
   const tagPayload = constructPayload(message, identifyMapping);
@@ -49,8 +52,7 @@ const identifyResponseBuilder = (message, { Config }) => {
   timestamp = new Date(timestamp).toISOString().replace(/\.\d{3}/, '');
 
   // Creating attribute payload
-  const attributePayload = {};
-  attributePayload.attributes = [];
+  const attributePayload = { attributes: [] };
   Object.keys(traits).forEach((key) => {
     // tags
     if (typeof traits[key] === 'boolean') {
@@ -64,8 +66,7 @@ const identifyResponseBuilder = (message, { Config }) => {
     }
     // attribute
     if (typeof traits[key] !== 'boolean') {
-      const attribute = {};
-      attribute.action = 'set';
+      const attribute = { action: 'set' };
       const keyMapped = RESERVED_TRAITS_MAPPING[key.toLowerCase()];
       if (keyMapped) {
         attribute.key = keyMapped;
@@ -91,8 +92,8 @@ const identifyResponseBuilder = (message, { Config }) => {
     tagResponse = defaultRequestConfig();
     tagResponse.endpoint = `${BASE_URL}/api/named_users/tags`;
     tagResponse.headers = {
-      'Content-Type': 'application/json',
-      Accept: 'application/vnd.urbanairship+json; version=3',
+      'Content-Type': JSON_MIME_TYPE,
+      Accept: DEFAULT_ACCEPT_HEADER,
       Authorization: `Bearer ${apiKey}`,
     };
     tagResponse.method = defaultPostRequestConfig.requestMethod;
@@ -107,8 +108,8 @@ const identifyResponseBuilder = (message, { Config }) => {
       'userId',
     )}/attributes`;
     attributeResponse.headers = {
-      'Content-Type': 'application/json',
-      Accept: 'application/vnd.urbanairship+json; version=3',
+      'Content-Type': JSON_MIME_TYPE,
+      Accept: DEFAULT_ACCEPT_HEADER,
       Authorization: `Bearer ${apiKey}`,
     };
     attributeResponse.method = defaultPostRequestConfig.requestMethod;
@@ -154,8 +155,8 @@ const trackResponseBuilder = async (message, { Config }) => {
   response.body.JSON.user = {};
   response.body.JSON.user.named_user_id = message.userId;
   response.headers = {
-    'Content-Type': 'application/json',
-    Accept: 'application/vnd.urbanairship+json; version=3',
+    'Content-Type': JSON_MIME_TYPE,
+    Accept: DEFAULT_ACCEPT_HEADER,
     'X-UA-Appkey': `${appKey}`,
     Authorization: `Bearer ${apiKey}`,
   };
@@ -190,8 +191,7 @@ const groupResponseBuilder = (message, { Config }) => {
   let timestamp = getFieldValueFromMessage(message, 'timestamp');
   timestamp = new Date(timestamp).toISOString().replace(/\.\d{3}/, '');
 
-  const attributePayload = {};
-  attributePayload.attributes = [];
+  const attributePayload = { attributes: [] };
   Object.keys(traits).forEach((key) => {
     // tags
     if (typeof traits[key] === 'boolean') {
@@ -205,8 +205,7 @@ const groupResponseBuilder = (message, { Config }) => {
     }
     // attribute
     if (typeof traits[key] !== 'boolean') {
-      const attribute = {};
-      attribute.action = 'set';
+      const attribute = { action: 'set' };
       const keyMapped = RESERVED_TRAITS_MAPPING[key.toLowerCase()];
       if (keyMapped) {
         attribute.key = keyMapped;
@@ -233,8 +232,8 @@ const groupResponseBuilder = (message, { Config }) => {
     tagResponse = defaultRequestConfig();
     tagResponse.endpoint = `${BASE_URL}/api/named_users/tags`;
     tagResponse.headers = {
-      'Content-Type': 'application/json',
-      Accept: 'application/vnd.urbanairship+json; version=3',
+      'Content-Type': JSON_MIME_TYPE,
+      Accept: DEFAULT_ACCEPT_HEADER,
       Authorization: `Bearer ${apiKey}`,
     };
     tagResponse.method = defaultPostRequestConfig.requestMethod;
@@ -249,8 +248,8 @@ const groupResponseBuilder = (message, { Config }) => {
       'userId',
     )}/attributes`;
     attributeResponse.headers = {
-      'Content-Type': 'application/json',
-      Accept: 'application/vnd.urbanairship+json; version=3',
+      'Content-Type': JSON_MIME_TYPE,
+      Accept: DEFAULT_ACCEPT_HEADER,
       Authorization: `Bearer ${apiKey}`,
     };
     attributeResponse.method = defaultPostRequestConfig.requestMethod;

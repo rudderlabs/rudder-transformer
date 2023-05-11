@@ -314,10 +314,11 @@ function processAlias(message, destination) {
   const { apiKey } = destination.Config;
   const endpoint = ENDPOINT.ALIAS;
 
-  const properties = {};
-  properties._k = apiKey;
-  properties._p = previousId;
-  properties._n = userId;
+  const properties = {
+    _k: apiKey,
+    _p: previousId,
+    _n: userId,
+  };
   return buildResponse(message, properties, endpoint);
 }
 

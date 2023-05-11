@@ -21,11 +21,11 @@
     "output": 403
   },
   {
-    "description": "Should return 400 status code if 'response.status' is not a positive integer",
+    "description": "Should return 500 status code if 'response.status' is not a positive integer",
     "input": {
       "response": { "status": "403" }
     },
-    "output": 400
+    "output": 500
   },
   {
     "description": "Should return the supplied default status code if 'response.status' is not a positive integer",
@@ -48,13 +48,13 @@
     "output": 502
   },
   {
-    "description": "Should return 400 status code if no status code is present and the the default status code is not a positive integer",
+    "description": "Should return 500 status code if no status code is present and the the default status code is not a positive integer",
     "input": [
       {
         "message": "An error occurred"
       },
       "502"
     ],
-    "output": 400
+    "output": 500
   }
 ]

@@ -8,6 +8,7 @@ const {
   simpleProcessRouterDest,
   generateUUID,
 } = require('../../util');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 const { InstrumentationError } = require('../../util/errorTypes');
 
 const { ConfigCategory, mappingConfig } = require('./config');
@@ -18,7 +19,7 @@ function buildResponse(payload, endpoint) {
   response.endpoint = endpoint;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   response.headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
   return response;
 }
@@ -41,13 +42,10 @@ function process(event) {
   }
 
   const messageType = message.type.toLowerCase();
-
-  switch (messageType) {
-    case EventType.PAGE:
-      return processPage(message, shynetServiceUrl);
-    default:
-      throw new InstrumentationError(`Event type "${messageType}" is not supported`);
+  if (messageType === EventType.PAGE) {
+    return processPage(message, shynetServiceUrl);
   }
+  throw new InstrumentationError(`Event type ${messageType} is not supported`);
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {

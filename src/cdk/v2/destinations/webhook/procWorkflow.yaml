@@ -22,26 +22,26 @@ steps:
       $.assertConfig(.destination.Config.webhookUrl, "Invalid URL in destination config");
   - name: deduceMethod
     template: |
-       $.context.method = .destination.Config.webhookMethod ?? 'POST';
+      $.context.method = .destination.Config.webhookMethod ?? 'POST';
   - name: buildHeaderBlock
     template: |
-        let defaultHeaders = $.context.method in ['POST', 'PUT', 'PATCH'] ? {"content-type": "application/json"} : {}
-        let configHeaders = $.getHashFromArray(.destination.Config.headers)  
-        let messageHeader = typeof .message.header === "object" ? Object.assign(...Object.entries(.message.header).{typeof .[1] === 'string'}[].({[.[0]]: .[1]})[]) : {}  
-        $.context.finalHeaders = {
-          ...defaultHeaders,
-          ...configHeaders,
-          ...messageHeader
-        }
+      let defaultHeaders = $.context.method in ['POST', 'PUT', 'PATCH'] ? {"content-type": "application/json"} : {}
+      let configHeaders = $.getHashFromArray(.destination.Config.headers)  
+      let messageHeader = typeof .message.header === "object" ? Object.assign(...Object.entries(.message.header).{typeof .[1] === 'string'}[].({[.[0]]: .[1]})[]) : {}  
+      $.context.finalHeaders = {
+        ...defaultHeaders,
+        ...configHeaders,
+        ...messageHeader
+      }
 
   - name: deduceEndPoint
     template: |
-        let integrationsObjects = $.getIntegrationsObj(.message, "webhook");
-        let defaultEndpoint = .destination.Config.webhookUrl;
-        let messageAppendPath = .message.appendPath ?? integrationsObjects.appendPath ?? "";
-        
-        $.context.finalEndpoint = .message.fullPath ?? integrationsObjects.fullPath ?? defaultEndpoint;
-        $.context.finalEndpoint = $.context.finalEndpoint + messageAppendPath;
+      let integrationsObjects = $.getIntegrationsObj(.message, "webhook");
+      let defaultEndpoint = .destination.Config.webhookUrl;
+      let messageAppendPath = .message.appendPath ?? integrationsObjects.appendPath ?? "";
+
+      $.context.finalEndpoint = .message.fullPath ?? integrationsObjects.fullPath ?? defaultEndpoint;
+      $.context.finalEndpoint = $.context.finalEndpoint + messageAppendPath;
   - name: prepareContext
     template: |
       $.context.params = {}
@@ -62,20 +62,19 @@ steps:
       $.context.payload = $.removeUndefinedAndNullValues(payload)
   - name: buildResponseForProcessTransformation
     template: |
-       $.context.payload.({
-          "body": {
-            "JSON": .,
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "version": "1",
-          "userId": ^.message.anonymousId,
-          "type": "REST",
-          "method": $.context.method,
-          "endpoint": $.context.finalEndpoint,
-          "headers": $.context.finalHeaders,
-          "params": $.context.params,
-          "files": {}
-        })
-        
+      $.context.payload.({
+         "body": {
+           "JSON": .,
+           "JSON_ARRAY": {},
+           "XML": {},
+           "FORM": {}
+         },
+         "version": "1",
+         "userId": ^.message.anonymousId,
+         "type": "REST",
+         "method": $.context.method,
+         "endpoint": $.context.finalEndpoint,
+         "headers": $.context.finalHeaders,
+         "params": $.context.params,
+         "files": {}
+       })

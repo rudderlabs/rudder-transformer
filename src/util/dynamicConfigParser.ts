@@ -14,7 +14,7 @@ export class DynamicConfigParser {
     //  " {{message.traits.key  ||   \"email\" }} "
     //  " {{ message.traits.key || 1233 }} "
     const defFormat =
-      /^\s*\{\{\s*(?<path>[a-zA-Z_]([a-zA-Z0-9_]*\.[a-zA-Z_][a-zA-Z0-9_]*)+)+\s*\|\|\s*(?<defaultVal>.*)\s*\}\}\s*$/;
+      /^\s*{{\s*(?<path>[A-Z_a-z](\w*\.[A-Z_a-z]\w*)+)+\s*\|\|\s*(?<defaultVal>.*)\s*}}\s*$/;
     const matResult = value.match(defFormat);
     if (matResult) {
       // Support "event.<obj1>.<key>" alias for "message.<obj1>.<key>"
@@ -57,7 +57,9 @@ export class DynamicConfigParser {
     return value;
   }
 
-  private static getDynamicConfig(event: ProcessorTransformationRequest | RouterTransformationRequestData) {
+  private static getDynamicConfig(
+    event: ProcessorTransformationRequest | RouterTransformationRequestData,
+  ) {
     const resultantEvent = cloneDeep(event);
     const { Config } = event.destination;
     resultantEvent.destination.Config = this.configureVal(Config, event);
@@ -67,9 +69,10 @@ export class DynamicConfigParser {
   public static process(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ) {
-    const eventRespArr = events.map((e: ProcessorTransformationRequest | RouterTransformationRequestData) => {
-      return this.getDynamicConfig(e);
-    });
+    const eventRespArr = events.map(
+      (e: ProcessorTransformationRequest | RouterTransformationRequestData) =>
+        this.getDynamicConfig(e),
+    );
     return eventRespArr;
   }
 }

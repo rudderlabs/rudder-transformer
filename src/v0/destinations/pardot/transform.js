@@ -172,21 +172,19 @@ const processEvent = (metadata, message, destination) => {
 
 const process = (event) => processEvent(event.metadata, event.message, event.destination);
 
-const processRouterDest = async (events, reqMetadata) => {
+const processRouterDest = (events, reqMetadata) => {
   const errorRespEvents = checkInvalidRtTfEvents(events);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
 
-  const responseList = Promise.all(
-    events.map((event) => {
-      try {
-        return getSuccessRespEvents(process(event), [event.metadata], event.destination);
-      } catch (error) {
-        return handleRtTfSingleEventError(event, error, reqMetadata);
-      }
-    }),
-  );
+  const responseList = events.map((event) => {
+    try {
+      return getSuccessRespEvents(process(event), [event.metadata], event.destination);
+    } catch (error) {
+      return handleRtTfSingleEventError(event, error, reqMetadata);
+    }
+  });
   return responseList;
 };
 

@@ -211,11 +211,11 @@ const processEvent = async (message, destination) => {
     case EventType.TRACK: {
       const mappedEvents = eventMappingHandler(message, destination);
       if (mappedEvents.length > 0) {
-        response = [];
-        mappedEvents.forEach(async (mappedEvent) => {
-          const res = await trackResponseBuilder(message, destination, mappedEvent);
-          response.push(res);
-        });
+        response = await Promise.all(
+          mappedEvents.map(async (mappedEvent) =>
+            trackResponseBuilder(message, destination, mappedEvent),
+          ),
+        );
       } else {
         response = await trackResponseBuilder(message, destination, get(message, 'event'));
       }

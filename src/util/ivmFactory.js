@@ -9,6 +9,7 @@ const stats = require('./stats');
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
 const GEO_RUDDERSTACK_URL = process.env.GEO_RUDDERSTACK_URL;
+const GEO_CALL_TIMEOUT_IN_MS = parseInt(process.env.GEO_CALL_TIMEOUT_IN_MS || '1000', 10);
 
 const isolateVmMem = ISOLATE_VM_MEMORY;
 async function evaluateModule(isolate, context, moduleCode) {
@@ -228,7 +229,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
       } catch (error) {
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
-        reject.applyIgnored(undefined, [new ivm.ExternalCopy({}).copyInto()]);
+        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
       }
     }),
   );
@@ -290,7 +291,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
       let geolocation = _geolocation;
       delete _geolocation;
       global.geolocation = function(...args) {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
           geolocation.applyIgnored(undefined, [
             new ivm.Reference(resolve),
             new ivm.Reference(reject),

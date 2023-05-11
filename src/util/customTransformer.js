@@ -102,7 +102,7 @@ async function runUserTransform(
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
       } catch (error) {
         const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
-        reject.applyIgnored(undefined, [new ivm.ExternalCopy({}).copyInto()]);
+        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
       }
     }),
   );
@@ -169,7 +169,7 @@ async function runUserTransform(
       let geolocation = _geolocation;
       delete _geolocation;
       global.geolocation = function(...args) {
-        return new Promise(resolve => {
+        return new Promise((resolve, reject) => {
           geolocation.applyIgnored(undefined, [
             new ivm.Reference(resolve),
             new ivm.Reference(reject),

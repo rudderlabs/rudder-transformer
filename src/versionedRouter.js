@@ -1,3 +1,6 @@
+// =============================================================================
+// DEPRICIATION NOTICE: THIS FILE IS GETTING DEPRECATED AND WILL BE REMOVED IN FUTURE RELEASE
+// =============================================================================
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 const Router = require('@koa/router');
@@ -59,6 +62,9 @@ const PAYLOAD_PROC_ERR_MSG = 'Error occurred while processing payload';
 // Router for assistance in profiling
 router.use(profilingRouter);
 
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 const getDestHandler = (version, dest) => {
   if (Object.prototype.hasOwnProperty.call(DestHandlerMap, dest)) {
     return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
@@ -183,6 +189,9 @@ const enrichTransformedEvent = (transformedEvent) => ({
   userId: checkAndCorrectUserId(transformedEvent.statusCode, transformedEvent?.userId),
 });
 
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 async function handleV0Destination(destHandler, destType, inputArr, feature) {
   const v0Result = {};
   let v0Time = 0;
@@ -209,7 +218,9 @@ async function handleV0Destination(destHandler, destType, inputArr, feature) {
     }
   }
 }
-
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 async function handleDest(ctx, version, destination) {
   const getReqMetadata = (event) => {
     try {
@@ -436,7 +447,9 @@ async function isValidRouterDest(event, destType) {
     return false;
   }
 }
-
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 async function routerHandleDest(ctx) {
   const getReqMetadata = () => {
     try {
@@ -962,7 +975,9 @@ if (startSourceTransformer) {
     });
   });
 }
-
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 async function handleProxyRequest(destination, ctx) {
   const getReqMetadata = () => {
     try {
@@ -1085,7 +1100,9 @@ router.get('/features', (ctx) => {
   const obj = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'features.json'), 'utf8'));
   ctx.body = JSON.stringify(obj);
 });
-
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 const batchHandler = (ctx) => {
   const getReqMetadata = (destEvents) => {
     try {
@@ -1158,6 +1175,9 @@ router.post('/batch', (ctx) => {
   batchHandler(ctx);
 });
 
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 const fileUpload = async (ctx) => {
   const getReqMetadata = () => {
     try {
@@ -1206,6 +1226,9 @@ const jobAndPollStatusReqMetadata = (ctx) => {
   return {};
 };
 
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 const pollStatus = async (ctx) => {
   const { destType } = ctx.request.body;
   const destFileUploadHandler = getPollStatusHandler('v0', destType.toLowerCase());
@@ -1232,6 +1255,9 @@ const pollStatus = async (ctx) => {
   return ctx.body;
 };
 
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 const getJobStatus = async (ctx, type) => {
   const { destType } = ctx.request.body;
   const destFileUploadHandler = getJobStatusHandler('v0', destType.toLowerCase());
@@ -1259,6 +1285,9 @@ const getJobStatus = async (ctx, type) => {
   return ctx.body;
 };
 
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 const handleDeletionOfUsers = async (ctx) => {
   const getReqMetadata = () => {
     try {

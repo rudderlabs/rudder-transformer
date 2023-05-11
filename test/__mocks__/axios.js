@@ -20,7 +20,6 @@ const { dripPostRequestHandler } = require("./drip.mock");
 const profitwellGetRequestHandler = require("./profitwell.mock");
 const cannyPostRequestHandler = require("./canny.mock");
 const custifyPostRequestHandler = require("./custify.mock");
-const garlPostRequestHandler = require("./google_adwords_remarketing_lists.mock");
 const {
   wootricGetRequestHandler,
   wootricPostRequestHandler
@@ -244,13 +243,6 @@ function post(url, payload) {
   }
   if (url.includes("https://api.custify.com")) {
     return Promise.resolve(custifyPostRequestHandler(url));
-  }
-  if (
-    url.includes("https://googleads.googleapis.com/v13/")
-  ) {
-    return new Promise((resolve, reject) => {
-      resolve(garlPostRequestHandler(url));
-    });
   }
   return new Promise((resolve, reject) => {
     if (mockData) {

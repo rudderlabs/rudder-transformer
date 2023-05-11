@@ -61,16 +61,18 @@
     }
   },
   "https://googleads.googleapis.com/v13/customers/1234567890/googleAds:searchStream": {
-    "data": [
-      {
-        "error": {
-          "code": 401,
-          "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
-          "status": "UNAUTHENTICATED"
+    "response": {
+      "data": [
+        {
+          "error": {
+            "code": 401,
+            "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+            "status": "UNAUTHENTICATED"
+          }
         }
-      }
-    ],
-    "status": 401
+      ],
+      "status": 401
+    }
   },
   "https://googleads.googleapis.com/v13/customers/1234567891/googleAds:searchStream": {
     "data": [

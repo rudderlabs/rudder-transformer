@@ -48,10 +48,8 @@ const getConversionActionId = async (method, headers, params) => {
       headers,
     };
     const { processedResponse: gaecConversionActionIdResponse } = await handleHttpRequest(
-      'post',
-      requestBody.url,
-      requestBody.data,
-      { headers: requestBody.headers },
+      'constructor',
+      requestBody,
     );
     if (!isHttpStatusSuccess(gaecConversionActionIdResponse.status)) {
       throw new NetworkError(
@@ -104,12 +102,7 @@ const ProxyRequest = async (request) => {
   );
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
   // const response = await httpSend(requestBody);
-  const { httpResponse: response } = await handleHttpRequest(
-    method,
-    requestBody.url,
-    requestBody.data,
-    { headers },
-  );
+  const { httpResponse: response } = await handleHttpRequest('constructor', requestBody);
   return response;
 };
 

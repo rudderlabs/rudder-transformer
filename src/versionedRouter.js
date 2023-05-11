@@ -1,5 +1,5 @@
 // =============================================================================
-// DEPRICIATION NOTICE: THIS FILE IS GETTING DEPRECATED AND WILL BE REMOVED IN FUTURE RELEASE
+// DEPRECATION NOTICE: THIS FILE IS GETTING DEPRECATED AND WILL BE REMOVED IN FUTURE RELEASE
 // =============================================================================
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */

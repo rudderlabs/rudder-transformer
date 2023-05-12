@@ -425,6 +425,18 @@ class Prometheus {
         type: 'counter',
         labelNames: ['transformerVersionId', 'language', 'identifier', 'testMode', 'sourceType', 'destinationType', 'k8_namespace'],
       },
+      {
+        name: 'get_transformation_code',
+        help: 'get_transformation_code',
+        type: 'counter',
+        labelNames: ['versionId', 'version', 'success'],
+      },
+      {
+        name: 'get_libraries_code',
+        help: 'get_libraries_code',
+        type: 'counter',
+        labelNames: ['libraryVersionId', 'version', 'type', 'success'],
+      },
 
       // Gauges
       {
@@ -555,22 +567,10 @@ class Prometheus {
         labelNames: ['versionId', 'version'],
       },
       {
-        name: 'get_transformation_code',
-        help: 'get_transformation_code',
-        type: 'histogram',
-        labelNames: ['versionId', 'version', 'success'],
-      },
-      {
         name: 'get_libraries_code_time',
         help: 'get_libraries_code_time',
         type: 'histogram',
         labelNames: ['libraryVersionId', 'versionId', 'type'],
-      },
-      {
-        name: 'get_libraries_code',
-        help: 'get_libraries_code',
-        type: 'histogram',
-        labelNames: ['libraryVersionId', 'version', 'type', 'success'],
       },
       {
         name: 'isolate_cpu_time',

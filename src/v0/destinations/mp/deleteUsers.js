@@ -1,6 +1,5 @@
 const _ = require('lodash');
-const { httpPOST } = require('../../../adapters/network');
-const { processAxiosResponse } = require('../../../adapters/utils/networkUtils');
+const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
 const {
   DEL_MAX_BATCH_SIZE,
@@ -44,8 +43,12 @@ const deleteProfile = async (userAttributes, config) => {
   const batchEvents = _.chunk(data, DEL_MAX_BATCH_SIZE);
   await Promise.all(
     batchEvents.map(async (batchEvent) => {
-      const deletionResponse = await httpPOST(endpoint, batchEvent, headers);
-      const handledDelResponse = processAxiosResponse(deletionResponse);
+      const { processedResponse: handledDelResponse } = await handleHttpRequest(
+        'post',
+        endpoint,
+        batchEvent,
+        headers,
+      );
       if (!isHttpStatusSuccess(handledDelResponse.status)) {
         throw new NetworkError(
           'User deletion request failed',
@@ -98,8 +101,12 @@ const createDeletionTask = async (userAttributes, config) => {
             distinct_ids: batchEvent,
             compliance_type: complianceType,
           };
-          const deletionResponse = await httpPOST(endpoint, request, { headers });
-          const handledDelResponse = processAxiosResponse(deletionResponse);
+          const { processedResponse: handledDelResponse } = await handleHttpRequest(
+            'post',
+            endpoint,
+            request,
+            { headers },
+          );
           if (!isHttpStatusSuccess(handledDelResponse.status)) {
             throw new NetworkError(
               'User deletion request failed',

@@ -1,6 +1,6 @@
 const { get, set } = require('lodash');
 const sha256 = require('sha256');
-const { httpSend, prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
+const { prepareProxyRequest, handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util/index');
 const { REFRESH_TOKEN } = require('../../../adapters/networkhandler/authConstants');
 const { CONVERSION_ACTION_ID_CACHE_TTL } = require('./config');

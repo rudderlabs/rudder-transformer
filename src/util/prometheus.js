@@ -419,6 +419,24 @@ class Prometheus {
         type: 'counter',
         labelNames: [],
       },
+      {
+        name: 'events_to_process',
+        help: 'events_to_process',
+        type: 'counter',
+        labelNames: ['transformerVersionId', 'language', 'identifier', 'testMode', 'sourceType', 'destinationType', 'k8_namespace'],
+      },
+      {
+        name: 'get_transformation_code',
+        help: 'get_transformation_code',
+        type: 'counter',
+        labelNames: ['versionId', 'version', 'success'],
+      },
+      {
+        name: 'get_libraries_code',
+        help: 'get_libraries_code',
+        type: 'counter',
+        labelNames: ['libraryVersionId', 'version', 'type', 'success'],
+      },
 
       // Gauges
       {
@@ -549,22 +567,10 @@ class Prometheus {
         labelNames: ['versionId', 'version'],
       },
       {
-        name: 'get_transformation_code',
-        help: 'get_transformation_code',
-        type: 'histogram',
-        labelNames: ['versionId', 'version', 'success'],
-      },
-      {
         name: 'get_libraries_code_time',
         help: 'get_libraries_code_time',
         type: 'histogram',
         labelNames: ['libraryVersionId', 'versionId', 'type'],
-      },
-      {
-        name: 'get_libraries_code',
-        help: 'get_libraries_code',
-        type: 'histogram',
-        labelNames: ['libraryVersionId', 'version', 'type', 'success'],
       },
       {
         name: 'isolate_cpu_time',
@@ -572,6 +578,7 @@ class Prometheus {
         type: 'histogram',
         labelNames: [
           'transformerVersionId',
+          'identifier',
           'version',
           'sourceType',
           'destinationType',
@@ -584,6 +591,7 @@ class Prometheus {
         type: 'histogram',
         labelNames: [
           'transformerVersionId',
+          'identifier',
           'version',
           'sourceType',
           'destinationType',

@@ -25,6 +25,21 @@
   },
   {
     "output": {
+      "message": "\"\" during Google_adwords_enhanced_conversions response transformation",
+      "destinationResponse": "[ECONNREFUSED] :: Connection refused",
+      "statTags": {
+        "destType": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      },
+      "status": 500
+    }
+  },
+  {
+    "output": {
       "status": 200,
       "message": "Request Processed Successfully",
       "destinationResponse": {

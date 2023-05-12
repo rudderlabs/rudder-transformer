@@ -46,6 +46,7 @@ const getConversionActionId = async (method, headers, params) => {
       url: `${BASE_ENDPOINT}/${params.customerId}/googleAds:searchStream`,
       data,
       headers,
+      method,
     };
     const { processedResponse: gaecConversionActionIdResponse } = await handleHttpRequest(
       'constructor',

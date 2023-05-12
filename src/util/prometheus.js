@@ -419,6 +419,12 @@ class Prometheus {
         type: 'counter',
         labelNames: [],
       },
+      {
+        name: 'events_to_process',
+        help: 'events_to_process',
+        type: 'counter',
+        labelNames: ['transformerVersionId', 'language', 'identifier', 'testMode', 'sourceType', 'destinationType', 'k8_namespace'],
+      },
 
       // Gauges
       {
@@ -572,6 +578,7 @@ class Prometheus {
         type: 'histogram',
         labelNames: [
           'transformerVersionId',
+          'identifier',
           'version',
           'sourceType',
           'destinationType',
@@ -584,6 +591,7 @@ class Prometheus {
         type: 'histogram',
         labelNames: [
           'transformerVersionId',
+          'identifier',
           'version',
           'sourceType',
           'destinationType',

@@ -419,6 +419,36 @@ class Prometheus {
         type: 'counter',
         labelNames: [],
       },
+      {
+        name: 'redis_error',
+        help: 'redis_error',
+        type: 'counter',
+        labelNames: ['operation'],
+      },
+      {
+        name: 'shopify_redis_failures',
+        help: 'shopify_redis_failures',
+        type: 'counter',
+        labelNames: ['type', 'writeKey', 'source'],
+      },
+      {
+        name: 'shopify_redis_calls',
+        help: 'shopify_redis_calls',
+        type: 'counter',
+        labelNames: ['type', 'writeKey', 'source'],
+      },
+      {
+        name: 'shopify_redis_ops',
+        help: 'shopify_redis_ops',
+        type: 'counter',
+        labelNames: ['type', 'writeKey', 'source'],
+      },
+      {
+        name: 'shopify_redis_no_val',
+        help: 'shopify_redis_no_val',
+        type: 'counter',
+        labelNames: ['event', 'writeKey', 'source'],
+      },
 
       // Gauges
       {

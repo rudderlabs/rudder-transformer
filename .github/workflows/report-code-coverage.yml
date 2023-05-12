@@ -1,6 +1,10 @@
 name: Report Code Coverage
 on:
   workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: true
+
   pull_request:
     types: ['opened', 'reopened', 'synchronize']
 

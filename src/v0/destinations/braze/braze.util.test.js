@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { BrazeDedupUtility } = require('./util');
+const { processBatch } = require('./util');
 const {
   removeUndefinedAndNullValues,
   removeUndefinedAndNullAndEmptyValues,
@@ -542,7 +543,7 @@ describe('dedup utility tests', () => {
         },
       ];
 
-      BrazeDedupUtility.updateUserStore(store, users);
+      BrazeDedupUtility.updateUserStore(store, users, 'destination_id_value');
 
       expect(store.get('123')).toEqual({
         external_id: '123',
@@ -721,5 +722,178 @@ describe('dedup utility tests', () => {
       const result = BrazeDedupUtility.deduplicate(userData, store);
       expect(result).toBeNull();
     });
+  });
+});
+
+describe('processBatch', () => {
+  test('processBatch handles more than 75 attributes, events, and purchases', () => {
+    // Create input data with more than 75 attributes, events, and purchases
+    const transformedEvents = [];
+    for (let i = 0; i < 100; i++) {
+      transformedEvents.push({
+        destination: {
+          Config: {
+            restApiKey: 'restApiKey',
+            dataCenter: 'eu',
+          },
+        },
+        statusCode: 200,
+        batchedRequest: {
+          body: {
+            JSON: {
+              attributes: [{ id: i, name: 'test', xyz: 'abc' }],
+              events: [{ id: i, event: 'test', xyz: 'abc' }],
+              purchases: [{ id: i, purchase: 'test', xyz: 'abc' }],
+            },
+          },
+        },
+        metadata: [{ job_id: i }],
+      });
+    }
+
+    // Call the processBatch function
+    const result = processBatch(transformedEvents);
+
+    // Assert that the response is as expected
+    expect(result.length).toBe(1); // One successful batched request and one failure response
+    expect(result[0].batchedRequest.length).toBe(2); // Two batched requests
+    expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack'); // Verify partner name
+    expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(75); // First batch contains 75 attributes
+    expect(result[0].batchedRequest[0].body.JSON.events.length).toBe(75); // First batch contains 75 events
+    expect(result[0].batchedRequest[0].body.JSON.purchases.length).toBe(75); // First batch contains 75 purchases
+    expect(result[0].batchedRequest[1].body.JSON.partner).toBe('RudderStack'); // Verify partner name
+    expect(result[0].batchedRequest[1].body.JSON.attributes.length).toBe(25); // Second batch contains remaining 25 attributes
+    expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(25); // Second batch contains remaining 25 events
+    expect(result[0].batchedRequest[1].body.JSON.purchases.length).toBe(25); // Second batch contains remaining 25 purchases
+  });
+
+  test('processBatch handles more than 75 attributes, events, and purchases with non uniform distribution', () => {
+    // Create input data with more than 75 attributes, events, and purchases
+    const transformedEventsSet1 = new Array(120).fill(0).map((_, i) => ({
+      destination: {
+        Config: {
+          restApiKey: 'restApiKey',
+          dataCenter: 'eu',
+        },
+      },
+      statusCode: 200,
+      batchedRequest: {
+        body: {
+          JSON: {
+            events: [{ id: i, event: 'test', xyz: 'abc' }],
+          },
+        },
+      },
+      metadata: [{ job_id: i }],
+    }));
+
+    const transformedEventsSet2 = new Array(160).fill(0).map((_, i) => ({
+      destination: {
+        Config: {
+          restApiKey: 'restApiKey',
+          dataCenter: 'eu',
+        },
+      },
+      statusCode: 200,
+      batchedRequest: {
+        body: {
+          JSON: {
+            purchases: [{ id: i, name: 'test', xyz: 'abc' }],
+          },
+        },
+      },
+      metadata: [{ job_id: 120 + i }],
+    }));
+
+    const transformedEventsSet3 = new Array(100).fill(0).map((_, i) => ({
+      destination: {
+        Config: {
+          restApiKey: 'restApiKey',
+          dataCenter: 'eu',
+        },
+      },
+      statusCode: 200,
+      batchedRequest: {
+        body: {
+          JSON: {
+            attributes: [{ id: i, name: 'test', xyz: 'abc' }],
+          },
+        },
+      },
+      metadata: [{ job_id: 280 + i }],
+    }));
+
+    // Call the processBatch function
+    const result = processBatch([
+      ...transformedEventsSet1,
+      ...transformedEventsSet2,
+      ...transformedEventsSet3,
+    ]);
+
+    // Assert that the response is as expected
+    expect(result.length).toBe(1); // One successful batched request and one failure response
+    expect(result[0].metadata.length).toBe(380); // Check the total length is same as input jobs (120 + 160 + 100)
+    expect(result[0].batchedRequest.length).toBe(3); // Two batched requests
+    expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack'); // Verify partner name
+    expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(75); // First batch contains 75 attributes
+    expect(result[0].batchedRequest[0].body.JSON.events.length).toBe(75); // First batch contains 75 events
+    expect(result[0].batchedRequest[0].body.JSON.purchases.length).toBe(75); // First batch contains 75 purchases
+    expect(result[0].batchedRequest[1].body.JSON.partner).toBe('RudderStack'); // Verify partner name
+    expect(result[0].batchedRequest[1].body.JSON.attributes.length).toBe(25); // Second batch contains remaining 25 attributes
+    expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(45); // Second batch contains remaining 45 events
+    expect(result[0].batchedRequest[1].body.JSON.purchases.length).toBe(75); // Second batch contains remaining 75 purchases
+    expect(result[0].batchedRequest[2].body.JSON.purchases.length).toBe(10); // Third batch contains remaining 10 purchases
+  });
+
+  test('check success and failure scenarios both for processBatch', () => {
+    const transformedEvents = [];
+    let successCount = 0;
+    let failureCount = 0;
+    for (let i = 0; i < 100; i++) {
+      const rando = Math.random() * 100;
+      if (rando < 50) {
+        transformedEvents.push({
+          destination: {
+            Config: {
+              restApiKey: 'restApiKey',
+              dataCenter: 'eu',
+            },
+          },
+          statusCode: 200,
+          batchedRequest: {
+            body: {
+              JSON: {
+                attributes: [{ id: i, name: 'test', xyz: 'abc' }],
+                events: [{ id: i, event: 'test', xyz: 'abc' }],
+                purchases: [{ id: i, purchase: 'test', xyz: 'abc' }],
+              },
+            },
+          },
+          metadata: [{ job_id: i }],
+        });
+        successCount = successCount + 1;
+      } else {
+        transformedEvents.push({
+          destination: {
+            Config: {
+              restApiKey: 'restApiKey',
+              dataCenter: 'eu',
+            },
+          },
+          statusCode: 400,
+          metadata: [{ job_id: i }],
+          error: 'Random Error',
+        });
+        failureCount = failureCount + 1;
+      }
+    }
+    // Call the processBatch function
+    const result = processBatch(transformedEvents);
+    expect(result.length).toBe(failureCount + 1);
+    expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(successCount);
+    expect(result[0].batchedRequest[0].body.JSON.events.length).toBe(successCount);
+    expect(result[0].batchedRequest[0].body.JSON.purchases.length).toBe(successCount);
+    expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack');
+    expect(result[0].metadata.length).toBe(successCount);
   });
 });

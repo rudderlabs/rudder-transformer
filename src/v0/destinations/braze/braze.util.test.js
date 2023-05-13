@@ -543,7 +543,7 @@ describe('dedup utility tests', () => {
         },
       ];
 
-      BrazeDedupUtility.updateUserStore(store, users);
+      BrazeDedupUtility.updateUserStore(store, users, 'destination_id_value');
 
       expect(store.get('123')).toEqual({
         external_id: '123',

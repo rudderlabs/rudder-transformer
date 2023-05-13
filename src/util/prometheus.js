@@ -624,24 +624,25 @@ class Prometheus {
         name: 'braze_deduped_users_count',
         help: 'braze deduped users count',
         type: 'counter',
-
+        labelNames: ['destination_id'],
       },
       {
         name: 'braze_dedup_and_drop_count',
         help: 'braze dedup and drop count',
         type: 'counter',
-
+        labelNames: ['destination_id'],
       },
       {
         name: 'braze_user_store_update_count',
         help: 'braze user store update count',
         type: 'counter',
+        labelNames: ['identifier_type', 'destination_id'],
       },
       {
         name: 'braze_lookup_failure_count',
         help: 'braze look-up failure count',
         type: 'counter',
-        labelNames: ['http_status'],
+        labelNames: ['http_status', 'destination_id'],
       },
       {
         name: 'braze_lookup_time',

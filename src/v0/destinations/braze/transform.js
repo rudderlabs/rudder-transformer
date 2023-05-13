@@ -252,7 +252,11 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
     payload = setExternalIdOrAliasObject(payload, message);
     const requestJson = { attributes: [payload] };
     if (destination.Config.supportDedup) {
-      const dedupedAttributePayload = processDeduplication(processParams.userStore, payload);
+      const dedupedAttributePayload = processDeduplication(
+        processParams.userStore,
+        payload,
+        destination.ID,
+      );
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
       } else {
@@ -353,6 +357,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
       const dedupedAttributePayload = processDeduplication(
         processParams.userStore,
         attributePayload,
+        destination.ID,
       );
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
@@ -578,7 +583,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       logger.error('Error while fetching user store', error);
     }
 
-    BrazeDedupUtility.updateUserStore(userStore, lookedUpUsers);
+    BrazeDedupUtility.updateUserStore(userStore, lookedUpUsers, destination.ID);
   }
   // group events by userId or anonymousId and then call process
   const groupedInputs = _.groupBy(

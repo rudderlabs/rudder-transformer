@@ -54,11 +54,11 @@ const getConversionActionId = async (method, headers, params) => {
     );
     if (!isHttpStatusSuccess(gaecConversionActionIdResponse.status)) {
       throw new NetworkError(
-        `"${get(
-          gaecConversionActionIdResponse,
-          'response[0].error.message',
-          '',
-        )}" during Google_adwords_enhanced_conversions response transformation`,
+        `"${JSON.stringify(
+          get(gaecConversionActionIdResponse, 'response[0].error.message', '')
+            ? get(gaecConversionActionIdResponse, 'response[0].error.message', '')
+            : gaecConversionActionIdResponse.response,
+        )} during Google_adwords_enhanced_conversions response transformation"`,
         gaecConversionActionIdResponse.status,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(gaecConversionActionIdResponse.status),

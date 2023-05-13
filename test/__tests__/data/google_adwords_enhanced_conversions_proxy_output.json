@@ -1,7 +1,7 @@
 [
   {
     "output": {
-      "message": "\"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.\" during Google_adwords_enhanced_conversions response transformation",
+      "message": "\"\"Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.\" during Google_adwords_enhanced_conversions response transformation\"",
       "authErrorCategory": "REFRESH_TOKEN",
       "destinationResponse": [
         {
@@ -25,7 +25,7 @@
   },
   {
     "output": {
-      "message": "\"\" during Google_adwords_enhanced_conversions response transformation",
+      "message": "\"\"[ECONNREFUSED] :: Connection refused\" during Google_adwords_enhanced_conversions response transformation\"",
       "destinationResponse": "[ECONNREFUSED] :: Connection refused",
       "statTags": {
         "destType": "GOOGLE_ADWORDS_ENHANCED_CONVERSIONS",

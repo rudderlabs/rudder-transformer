@@ -9,8 +9,15 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNull,
   isDefinedAndNotNullAndNotEmpty,
+  defaultRequestConfig,
+  isHttpStatusSuccess,
 } = require('../../util');
-const { BRAZE_NON_BILLABLE_ATTRIBUTES, CustomAttributeOperationTypes } = require('./config');
+const {
+  BRAZE_NON_BILLABLE_ATTRIBUTES,
+  CustomAttributeOperationTypes,
+  getTrackEndPoint,
+} = require('./config');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getEndpointFromConfig = (destination) => {
   // Init -- mostly for test cases
@@ -145,7 +152,10 @@ const BrazeDedupUtility = {
             timeout: 10 * 1000,
           },
         );
-        stats.counter('braze_lookup_failure_count', 1, { http_status: lookUpResponse.status });
+        stats.counter('braze_lookup_failure_count', 1, {
+          http_status: lookUpResponse.status,
+          destination_id: destination.ID,
+        });
         const { users } = lookUpResponse.response;
 
         return users;
@@ -183,13 +193,15 @@ const BrazeDedupUtility = {
    *
    * @param {*} store
    * @param {*} users
+   * @param {*} destinationId
    */
-  updateUserStore(store, users) {
+  updateUserStore(store, users, destinationId) {
     if (isDefinedAndNotNull(users) && Array.isArray(users)) {
       users.forEach((user) => {
         if (user?.external_id) {
           stats.counter('braze_user_store_update_count', 1, {
             identifier_type: 'external_id',
+            destination_id: destinationId,
           });
           store.set(user.external_id, user);
         } else if (user?.user_aliases) {
@@ -199,6 +211,7 @@ const BrazeDedupUtility = {
             }
             stats.counter('braze_user_store_update_count', 1, {
               identifier_type: 'alias_name',
+              destination_id: destinationId,
             });
           });
         }
@@ -284,19 +297,89 @@ const BrazeDedupUtility = {
  *
  * @param {*} userStore
  * @param {*} payload
+ * @param {*} destinationId
  * @returns
  */
-const processDeduplication = (userStore, payload) => {
+const processDeduplication = (userStore, payload, destinationId) => {
   const dedupedAttributePayload = BrazeDedupUtility.deduplicate(payload, userStore);
   if (
     isDefinedAndNotNullAndNotEmpty(dedupedAttributePayload) &&
     Object.keys(dedupedAttributePayload).some((key) => !['external_id', 'user_alias'].includes(key))
   ) {
-    stats.increment('braze_deduped_users_count');
+    stats.increment('braze_deduped_users_count', { destinationId });
     return dedupedAttributePayload;
   }
-  stats.increment('braze_dedup_and_drop_count');
+  stats.increment('braze_dedup_and_drop_count', { destinationId });
   return null;
+};
+
+const processBatch = (transformedEvents) => {
+  const { destination } = transformedEvents[0];
+  const attributesArray = [];
+  const eventsArray = [];
+  const purchaseArray = [];
+  const successMetadata = [];
+  const failureResponses = [];
+  for (const transformedEvent of transformedEvents) {
+    if (!isHttpStatusSuccess(transformedEvent?.statusCode)) {
+      failureResponses.push(transformedEvent);
+    } else if (transformedEvent?.batchedRequest?.body?.JSON) {
+      const { attributes, events, purchases } = transformedEvent.batchedRequest.body.JSON;
+      if (Array.isArray(attributes)) {
+        attributesArray.push(...attributes);
+      }
+      if (Array.isArray(events)) {
+        eventsArray.push(...events);
+      }
+      if (Array.isArray(purchases)) {
+        purchaseArray.push(...purchases);
+      }
+      successMetadata.push(...transformedEvent.metadata);
+    }
+  }
+  const attributeArrayChunks = _.chunk(attributesArray, 75);
+  const eventsArrayChunks = _.chunk(eventsArray, 75);
+  const purchaseArrayChunks = _.chunk(purchaseArray, 75);
+
+  const maxNumberOfRequest = Math.max(
+    attributeArrayChunks.length,
+    eventsArrayChunks.length,
+    purchaseArrayChunks.length,
+  );
+  const responseArray = [];
+  const headers = {
+    'Content-Type': JSON_MIME_TYPE,
+    Accept: JSON_MIME_TYPE,
+    Authorization: `Bearer ${destination.Config.restApiKey}`,
+  };
+  const endpoint = getTrackEndPoint(getEndpointFromConfig(destination));
+  for (let i = 0; i < maxNumberOfRequest; i += 1) {
+    const attributes = attributeArrayChunks[i];
+    const events = eventsArrayChunks[i];
+    const purchases = purchaseArrayChunks[i];
+    const response = defaultRequestConfig();
+    response.endpoint = endpoint;
+    response.body.JSON = removeUndefinedAndNullValues({
+      partner: 'RudderStack',
+      attributes,
+      events,
+      purchases,
+    });
+    responseArray.push({
+      ...response,
+      headers,
+    });
+  }
+  return [
+    {
+      batchedRequest: responseArray,
+      metadata: successMetadata,
+      batched: true,
+      statusCode: 200,
+      destination,
+    },
+    ...failureResponses,
+  ];
 };
 
 module.exports = {
@@ -304,4 +387,5 @@ module.exports = {
   CustomAttributeOperationUtil,
   getEndpointFromConfig,
   processDeduplication,
+  processBatch,
 };

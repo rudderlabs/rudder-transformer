@@ -34,7 +34,7 @@ const RedisDB = {
             operation: 'redis_down',
           });
           log.error(`Redis is down at ${this.host}:${this.port}`);
-          return -1; // stop retrying
+          return false; // stop retrying
         },
       });
       this.client.on('ready', () => {

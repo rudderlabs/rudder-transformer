@@ -373,7 +373,7 @@ async function handleValidation(ctx) {
       if (hv.dropEvent) {
         const errMessage = `Error occurred while validating due to: ${
           hv.violationType
-        }\n Other errors: ${JSON.stringify(getValidationErrMsg(hv.validationErrors))}`;
+        }, other validations: ${JSON.stringify(getValidationErrMsg(hv.validationErrors))}`;
         respList.push({
           output: event.message,
           metadata: event.metadata,

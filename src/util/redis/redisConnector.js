@@ -138,7 +138,6 @@ const RedisDB = {
       stats.increment("redis_error", {
         operation: "set"
       });
-      console.log("Error: ", e)
       throw new RedisError(`Error setting value in Redis due ${e}`);
     }
   },

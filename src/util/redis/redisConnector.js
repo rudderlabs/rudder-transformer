@@ -1,5 +1,5 @@
 const Redis = require('ioredis');
-const { isDefinedAndNotNull } = require('../../v0/util');
+const { isDefinedAndNotNull, isObject } = require('../../v0/util');
 const { RedisError } = require('../../v0/util/errorTypes');
 const log = require('../../logger');
 const stats = require('../stats');
@@ -116,9 +116,9 @@ const RedisDB = {
   async setVal(key, value, expiryTimeInSec = 60 * 60) {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
-      if (typeof value === "object") {
+      if (isObject(value)) {
         const valueToStore = value.map(element => {
-          if (typeof element === "object") {
+          if (isObject(element)) {
             return JSON.stringify(element);
           }
           return element;

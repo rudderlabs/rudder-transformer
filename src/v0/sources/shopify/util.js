@@ -153,9 +153,17 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
  */
 const isValidCartEvent = (newCartItems, prevCartItems) => !(prevCartItems === newCartItems);
 
-const updateCartItemsInRedis = async (cartToken, newCartItemsHash) => {
+const updateCartItemsInRedis = async (cartToken, newCartItemsHash, metricMetadata) => {
   const value = ["itemsHash", newCartItemsHash];
-  await RedisDB.setVal(`${cartToken}`, value);
+  try {
+    await RedisDB.setVal(`${cartToken}`, value);
+  } catch (e) {
+    stats.increment('shopify_redis_failures', {
+      type: "set",
+      ...metricMetadata,
+    });
+  }
+
 }
 const checkAndUpdateCartItems = async (inputEvent, metricMetadata) => {
   const cartToken = inputEvent.token || inputEvent.id;
@@ -176,7 +184,7 @@ const checkAndUpdateCartItems = async (inputEvent, metricMetadata) => {
     if (!isCartValid) {
       return false;
     }
-    await updateCartItemsInRedis(cartToken, newCartItemsHash);
+    await updateCartItemsInRedis(cartToken, newCartItemsHash, metricMetadata);
     return true;
   }
   // if nothing is found for cartToken provided then we will return false as we dont want to pollute the downstream destinations

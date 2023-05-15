@@ -17,5 +17,11 @@ paths:
   #Misc Routes
   /health:
     $ref: './routes/misc.yaml#/~1health'
+  /transformerBuildVersion:
+    $ref: './routes/misc.yaml#/~1transformerBuildVersion'
+  /buildVersion:
+    $ref: './routes/misc.yaml#/~1buildVersion'
+  /version:
+    $ref: './routes/misc.yaml#/~1version'
   /features:
     $ref: './routes/misc.yaml#/~1features'

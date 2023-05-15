@@ -33,7 +33,12 @@ const eventValidator = require('../util/eventValidation');
 const { getIntegrations } = require('../routes/utils');
 const { setupUserTransformHandler, validateCode } = require('../util/customTransformer');
 const { CommonUtils } = require('../util/common');
-const { RespStatusError, RetryRequestError, sendViolationMetrics } = require('../util/utils');
+const {
+  RespStatusError,
+  RetryRequestError,
+  sendViolationMetrics,
+  getValidationErrMsg,
+} = require('../util/utils');
 const { isCdkV2Destination, getCdkV2TestThreshold } = require('../cdk/v2/utils');
 const { PlatformError } = require('../v0/util/errorTypes');
 const { getCachedWorkflowEngine, processCdkV2Workflow } = require('../cdk/v2/handler');
@@ -366,7 +371,9 @@ async function handleValidation(ctx) {
       const hv = await eventValidator.handleValidation(parsedEvent);
       sendViolationMetrics(hv.validationErrors, hv.dropEvent, metaTags);
       if (hv.dropEvent) {
-        const errMessage = `Error occurred while validating because : ${hv.violationType}`;
+        const errMessage = `Error occurred while validating due to: ${
+          hv.violationType
+        }\n Other errors: ${JSON.stringify(getValidationErrMsg(hv.validationErrors))}`;
         respList.push({
           output: event.message,
           metadata: event.metadata,

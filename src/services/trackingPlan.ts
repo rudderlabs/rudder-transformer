@@ -1,5 +1,5 @@
 import logger from '../logger';
-import { RetryRequestError, RespStatusError } from '../util/utils';
+import { RetryRequestError, RespStatusError, getValidationErrMsg } from '../util/utils';
 import { getMetadata } from '../v0/util';
 import eventValidator from '../util/eventValidation';
 import stats from '../util/stats';
@@ -18,7 +18,9 @@ export default class TrackingPlanservice {
         parsedEvent.request = { query: reqParams };
         const hv = await eventValidator.handleValidation(parsedEvent);
         if (hv['dropEvent']) {
-          const errMessage = `Error occurred while validating because : ${hv['violationType']}`;
+          const errMessage = `Error occurred while validating due to: ${
+            hv['violationType']
+          }\n Other errors: ${JSON.stringify(getValidationErrMsg(hv['validationErrors']))}`;
           respList.push({
             output: event.message,
             metadata: event.metadata,

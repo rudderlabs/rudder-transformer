@@ -18,7 +18,7 @@ const destinations = [
   "criteo_audience",
   "tiktok_ads"
 ];
-const service = require("../../src/versionedRouter").handleProxyRequest;
+const service = require("../../src/legacy/router").handleProxyRequest;
 
 jest.mock("axios", () => jest.fn(mockedAxiosClient));
 

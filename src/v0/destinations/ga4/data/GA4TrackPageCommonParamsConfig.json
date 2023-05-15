@@ -18,6 +18,11 @@
     "required": false
   },
   {
+    "destKey": "session_number",
+    "sourceKeys": ["properties.sessionNumber", "properties.session_number"],
+    "required": false
+  },
+  {
     "destKey": "page_referrer",
     "sourceKeys": "context.page.referrer",
     "required": false

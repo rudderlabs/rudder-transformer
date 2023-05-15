@@ -41,7 +41,7 @@ const getHashLineItems = (cart) => {
   if (cart && cart?.line_items && cart.line_items.length > 0) {
     return sha256(JSON.stringify(cart.line_items));
   }
-  return "0";
+  return "EMPTY";
 };
 const getVariantString = (lineItem) => {
   const { variant_id, variant_price, variant_title } = lineItem;

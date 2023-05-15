@@ -83,25 +83,20 @@ const RedisDB = {
   async getVal(hashKey, key, isObjExpected = true) {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
-      let value;
       let redisVal;
       if (isObjExpected === true) {
-        redisVal = await this.client.hmget(hashKey, key);
+        redisVal = await this.client.hget(hashKey, key);
         if (isDefinedAndNotNull(redisVal)) {
-          value = redisVal.map(element => {
-            try {
-              return JSON.parse(element);
-            } catch (e) {
-              // do nothing
-              return element;
-            }
-          })
-          return value;
+          try {
+            return JSON.parse(redisVal);
+          } catch (e) {
+            // do nothing
+            return redisVal;
+          }
         }
         return redisVal;
       }
-      value = await this.client.get(hashKey);
-      return value;
+      return  this.client.get(hashKey);
     } catch (e) {
       stats.increment("redis_error", {
         operation: "get"

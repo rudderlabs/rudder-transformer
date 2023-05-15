@@ -57,12 +57,12 @@ class Redis {
         }
     }
 
-    hmget(key, internalKey) {
+    hget(key, internalKey) {
         const obj = this.get(key);
         if (obj === null) {
             return null;
         }
-        return [obj[`${internalKey}`]];
+        return obj[`${internalKey}`];
     }
     multi() {
         return { hmset: this.hmset, set: this.set }
@@ -76,7 +76,6 @@ class Redis {
             }
         }
     }
-
 
     changeEventToReadyStatus() {
         setTimeout(() => {

@@ -25,7 +25,7 @@ export default class UserTransformService {
         `${event.metadata.destinationId}_${event.metadata.sourceId}`,
     );
     stats.counter('user_transform_function_group_size', Object.entries(groupedEvents).length, {});
-    stats.counter('user_transform_input_events', events.length, {});
+    stats.histogram('user_transform_input_events', events.length, {});
 
     const transformedEvents: any[] = [];
     let librariesVersionIDs: any[] = [];
@@ -139,7 +139,7 @@ export default class UserTransformService {
         }
         stats.timing('user_transform_request_latency', startTime, {});
         stats.counter('user_transform_requests', 1, {});
-        stats.counter('user_transform_output_events', transformedEvents.length, {});
+        stats.histogram('user_transform_output_events', transformedEvents.length, {});
         return transformedEvents;
       }),
     );

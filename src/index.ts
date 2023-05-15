@@ -4,7 +4,7 @@ import gracefulShutdown from 'http-graceful-shutdown';
 import dotenv from 'dotenv';
 import logger from './logger';
 import cluster from './util/cluster';
-import { router } from './versionedRouter';
+import { router } from './legacy/router';
 import { testRouter } from './testRouter';
 import { metricsRouter } from './routes/metricsRouter';
 import { addStatMiddleware, addRequestSizeMiddleware } from './middleware';

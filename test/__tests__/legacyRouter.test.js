@@ -1,4 +1,4 @@
-const vRouter = require("../../src/versionedRouter");
+const vRouter = require("../../src/legacy/router");
 const fs = require("fs");
 const path = require("path");
 const version = "v0";
@@ -6,11 +6,6 @@ const version = "v0";
 const destArg = process.argv.filter(x => x.startsWith("--destName="))[0]; // send arguments on which destination
 const typeArg = process.argv.filter(x => x.startsWith("--type="))[0]; // send argument on which function
 
-// eg: jest versionedRouter --destName=am --type=batch
-// eg: jest versionedRouter --destName=heap --type=processor
-// eg: jest versionedRouter --destName=heap --type=router
-// eg: jest versionedRouter --destName=heap --type=response
-// eg: jest versionedRouter --type=all
 // To invoke CDK live compare:
 // router: CDK_LIVE_TEST=1 npx jest versionedRouter --destName=algolia --type=router
 // processor: CDK_LIVE_TEST=1 npx jest versionedRouter --destName=algolia --type=processor

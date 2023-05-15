@@ -1,14 +1,17 @@
+// =============================================================================
+// DEPRECATION NOTICE: THIS FILE IS GETTING DEPRECATED AND WILL BE REMOVED IN FUTURE RELEASE
+// =============================================================================
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 const Router = require('@koa/router');
 const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
-const logger = require('./logger');
-const stats = require('./util/stats');
-const { SUPPORTED_VERSIONS, API_VERSION } = require('./routes/utils/constants');
-const { client: errNotificationClient } = require('./util/errorNotifier');
-const tags = require('./v0/util/tags');
+const logger = require('../logger');
+const stats = require('../util/stats');
+const { SUPPORTED_VERSIONS, API_VERSION } = require('../routes/utils/constants');
+const { client: errNotificationClient } = require('../util/errorNotifier');
+const tags = require('../v0/util/tags');
 
 const {
   isNonFuncObject,
@@ -19,24 +22,24 @@ const {
   isCdkDestination,
   getErrorStatusCode,
   checkAndCorrectUserId,
-} = require('./v0/util');
-const { processDynamicConfig } = require('./util/dynamicConfig');
-const { DestHandlerMap } = require('./constants/destinationCanonicalNames');
-const { userTransformHandler } = require('./routerUtils');
-const networkHandlerFactory = require('./adapters/networkHandlerFactory');
-const profilingRouter = require('./routes/obs.profiling');
-const destProxyRoutes = require('./routes/obs.delivery');
-const eventValidator = require('./util/eventValidation');
-const { getIntegrations } = require('./routes/utils');
-const { setupUserTransformHandler, validateCode } = require('./util/customTransformer');
-const { CommonUtils } = require('./util/common');
-const { RespStatusError, RetryRequestError, sendViolationMetrics } = require('./util/utils');
-const { isCdkV2Destination, getCdkV2TestThreshold } = require('./cdk/v2/utils');
-const { PlatformError } = require('./v0/util/errorTypes');
-const { getCachedWorkflowEngine, processCdkV2Workflow } = require('./cdk/v2/handler');
-const { processCdkV1 } = require('./cdk/v1/handler');
-const { extractLibraries } = require('./util/customTransformer');
-const { getCompatibleStatusCode } = require('./adapters/utils/networkUtils');
+} = require('../v0/util');
+const { processDynamicConfig } = require('../util/dynamicConfig');
+const { DestHandlerMap } = require('../constants/destinationCanonicalNames');
+const { userTransformHandler } = require('../routerUtils');
+const networkHandlerFactory = require('../adapters/networkHandlerFactory');
+const profilingRouter = require('./profiling');
+const destProxyRoutes = require('./delivery');
+const eventValidator = require('../util/eventValidation');
+const { getIntegrations } = require('../routes/utils');
+const { setupUserTransformHandler, validateCode } = require('../util/customTransformer');
+const { CommonUtils } = require('../util/common');
+const { RespStatusError, RetryRequestError, sendViolationMetrics } = require('../util/utils');
+const { isCdkV2Destination, getCdkV2TestThreshold } = require('../cdk/v2/utils');
+const { PlatformError } = require('../v0/util/errorTypes');
+const { getCachedWorkflowEngine, processCdkV2Workflow } = require('../cdk/v2/handler');
+const { processCdkV1 } = require('../cdk/v1/handler');
+const { extractLibraries } = require('../util/customTransformer');
+const { getCompatibleStatusCode } = require('../adapters/utils/networkUtils');
 
 const CDK_V1_DEST_PATH = 'cdk/v1';
 
@@ -59,25 +62,28 @@ const PAYLOAD_PROC_ERR_MSG = 'Error occurred while processing payload';
 // Router for assistance in profiling
 router.use(profilingRouter);
 
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 const getDestHandler = (version, dest) => {
   if (Object.prototype.hasOwnProperty.call(DestHandlerMap, dest)) {
-    return require(`./${version}/destinations/${DestHandlerMap[dest]}/transform`);
+    return require(`../${version}/destinations/${DestHandlerMap[dest]}/transform`);
   }
-  return require(`./${version}/destinations/${dest}/transform`);
+  return require(`../${version}/destinations/${dest}/transform`);
 };
 
 const getDestFileUploadHandler = (version, dest) =>
-  require(`./${version}/destinations/${dest}/fileUpload`);
+  require(`../${version}/destinations/${dest}/fileUpload`);
 
-const getPollStatusHandler = (version, dest) => require(`./${version}/destinations/${dest}/poll`);
+const getPollStatusHandler = (version, dest) => require(`../${version}/destinations/${dest}/poll`);
 
 const getJobStatusHandler = (version, dest) =>
-  require(`./${version}/destinations/${dest}/fetchJobStatus`);
+  require(`../${version}/destinations/${dest}/fetchJobStatus`);
 
 const getDeletionUserHandler = (version, dest) =>
-  require(`./${version}/destinations/${dest}/deleteUsers`);
+  require(`../${version}/destinations/${dest}/deleteUsers`);
 
-const getSourceHandler = (version, source) => require(`./${version}/sources/${source}/transform`);
+const getSourceHandler = (version, source) => require(`../${version}/sources/${source}/transform`);
 
 let areFunctionsEnabled = -1;
 const functionsEnabled = () => {
@@ -183,6 +189,9 @@ const enrichTransformedEvent = (transformedEvent) => ({
   userId: checkAndCorrectUserId(transformedEvent.statusCode, transformedEvent?.userId),
 });
 
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 async function handleV0Destination(destHandler, destType, inputArr, feature) {
   const v0Result = {};
   let v0Time = 0;
@@ -209,7 +218,9 @@ async function handleV0Destination(destHandler, destType, inputArr, feature) {
     }
   }
 }
-
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 async function handleDest(ctx, version, destination) {
   const getReqMetadata = (event) => {
     try {
@@ -436,7 +447,9 @@ async function isValidRouterDest(event, destType) {
     return false;
   }
 }
-
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 async function routerHandleDest(ctx) {
   const getReqMetadata = () => {
     try {
@@ -551,8 +564,8 @@ async function routerHandleDest(ctx) {
 
 if (startDestTransformer) {
   SUPPORTED_VERSIONS.forEach((version) => {
-    const destinations = getIntegrations(path.resolve(__dirname, `./${version}/destinations`));
-    destinations.push(...getIntegrations(path.resolve(__dirname, `./${CDK_V1_DEST_PATH}`)));
+    const destinations = getIntegrations(path.resolve(__dirname, `../${version}/destinations`));
+    destinations.push(...getIntegrations(path.resolve(__dirname, `../${CDK_V1_DEST_PATH}`)));
     destinations.forEach((destination) => {
       // eg. v0/destinations/ga
       router.post(`/${version}/destinations/${destination}`, async (ctx) => {
@@ -946,7 +959,7 @@ async function handleSource(ctx, version, source) {
 
 if (startSourceTransformer) {
   SUPPORTED_VERSIONS.forEach((version) => {
-    const sources = getIntegrations(path.resolve(__dirname, `./${version}/sources`));
+    const sources = getIntegrations(path.resolve(__dirname, `../${version}/sources`));
     sources.forEach((source) => {
       // eg. v0/sources/customerio
       router.post(`/${version}/sources/${source}`, async (ctx) => {
@@ -962,7 +975,9 @@ if (startSourceTransformer) {
     });
   });
 }
-
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 async function handleProxyRequest(destination, ctx) {
   const getReqMetadata = () => {
     try {
@@ -1044,7 +1059,7 @@ async function handleProxyRequest(destination, ctx) {
 
 if (transformerProxy) {
   SUPPORTED_VERSIONS.forEach((version) => {
-    const destinations = getIntegrations(path.resolve(__dirname, `./${version}/destinations`));
+    const destinations = getIntegrations(path.resolve(__dirname, `../${version}/destinations`));
     destinations.forEach((destination) => {
       router.post(`/${version}/destinations/${destination}/proxy`, async (ctx) => {
         const startTime = new Date();
@@ -1085,7 +1100,9 @@ router.get('/features', (ctx) => {
   const obj = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'features.json'), 'utf8'));
   ctx.body = JSON.stringify(obj);
 });
-
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 const batchHandler = (ctx) => {
   const getReqMetadata = (destEvents) => {
     try {
@@ -1158,6 +1175,9 @@ router.post('/batch', (ctx) => {
   batchHandler(ctx);
 });
 
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 const fileUpload = async (ctx) => {
   const getReqMetadata = () => {
     try {
@@ -1206,6 +1226,9 @@ const jobAndPollStatusReqMetadata = (ctx) => {
   return {};
 };
 
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 const pollStatus = async (ctx) => {
   const { destType } = ctx.request.body;
   const destFileUploadHandler = getPollStatusHandler('v0', destType.toLowerCase());
@@ -1232,6 +1255,9 @@ const pollStatus = async (ctx) => {
   return ctx.body;
 };
 
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 const getJobStatus = async (ctx, type) => {
   const { destType } = ctx.request.body;
   const destFileUploadHandler = getJobStatusHandler('v0', destType.toLowerCase());
@@ -1259,6 +1285,9 @@ const getJobStatus = async (ctx, type) => {
   return ctx.body;
 };
 
+/**
+ * @deprecated this function is deprecated and will be removed in future release
+ */
 const handleDeletionOfUsers = async (ctx) => {
   const getReqMetadata = () => {
     try {

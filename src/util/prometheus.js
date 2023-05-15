@@ -441,7 +441,7 @@ class Prometheus {
         name: 'shopify_no_cartToken',
         help: 'shopify_no_cartToken',
         type: 'counter',
-        labelNames: ['sourceType', 'k8_namespace', 'status'],
+        labelNames: ['sourceType', 'status'],
       },
 
       // Gauges

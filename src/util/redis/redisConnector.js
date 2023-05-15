@@ -1,5 +1,5 @@
 const Redis = require('ioredis');
-const { isDefinedAndNotNull, isObject } = require('../../v0/util');
+const { isDefinedAndNotNull } = require('../../v0/util');
 const { RedisError } = require('../../v0/util/errorTypes');
 const log = require('../../logger');
 const stats = require('../stats');
@@ -96,7 +96,7 @@ const RedisDB = {
         }
         return redisVal;
       }
-      return  this.client.get(hashKey);
+      return this.client.get(hashKey);
     } catch (e) {
       stats.increment("redis_error", {
         operation: "get"
@@ -116,9 +116,9 @@ const RedisDB = {
   async setVal(key, value, expiryTimeInSec = 60 * 60) {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
-      if (isObject(value)) {
+      if (typeof value === "object") {
         const valueToStore = value.map(element => {
-          if (isObject(element)) {
+          if (typeof element === "object") {
             return JSON.stringify(element);
           }
           return element;
@@ -130,15 +130,15 @@ const RedisDB = {
       } else {
         await this.client.multi()
           .set(key, value)
-          .expire(expiryTimeInSec)
+          .expire(key, expiryTimeInSec)
           .exec();
 
       }
-
     } catch (e) {
       stats.increment("redis_error", {
         operation: "set"
       });
+      console.log("Error: ", e)
       throw new RedisError(`Error setting value in Redis due ${e}`);
     }
   },

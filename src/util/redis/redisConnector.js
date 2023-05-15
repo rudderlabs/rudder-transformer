@@ -34,7 +34,7 @@ const RedisDB = {
             operation: 'redis_down',
           });
           log.error(`Redis is down at ${this.host}:${this.port}`);
-          return false; // stop retrying
+          return -1; // stop retrying
         },
       });
       this.client.on('ready', () => {
@@ -101,6 +101,7 @@ const RedisDB = {
       stats.increment("redis_error", {
         operation: "get"
       });
+      log.error(`Error getting value from Redis: ${e}`);
       throw new RedisError(`Error getting value from Redis: ${e}`);
     }
   },
@@ -138,6 +139,7 @@ const RedisDB = {
       stats.increment("redis_error", {
         operation: "set"
       });
+      log.error(`Error setting value in Redis due ${e}`);
       throw new RedisError(`Error setting value in Redis due ${e}`);
     }
   },

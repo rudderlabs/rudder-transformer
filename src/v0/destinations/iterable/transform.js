@@ -190,8 +190,41 @@ function process(event) {
   return processSingleMessage(event.message, event.destination);
 }
 
+/**
+ * 
+ * @param {*} batchedResponseList 
+ * @param {*} batchEventResponse 
+ * @param {*} apiKey 
+ * @param {*} metadata 
+ * @param {*} destination 
+ * @returns 
+ */
+const addEventToBatchedResponseList = (batchedResponseList, batchEventResponse, apiKey, metadata, destination) => {
+  const responseList = batchedResponseList;
+  let eventResponse = batchEventResponse;
+  eventResponse.batchedRequest.headers = {
+    'Content-Type': JSON_MIME_TYPE,
+    api_key: apiKey,
+  };
+
+  eventResponse = {
+    ...eventResponse,
+    metadata,
+    destination,
+  };
+  responseList.push(
+    getSuccessRespEvents(
+      eventResponse.batchedRequest,
+      eventResponse.metadata,
+      eventResponse.destination,
+      true,
+    ),
+  );
+  return responseList;
+}
+
 function batchEvents(arrayChunks) {
-  const batchedResponseList = [];
+  let batchedResponseList = [];
 
   let size = 0;
   let identifyMetadata = [];
@@ -255,34 +288,16 @@ function batchEvents(arrayChunks) {
 
     if (chunk[0].message.endpoint.includes('/api/users')) {
       identifyBatchEventResponses.forEach((identifyEventResponse) => {
-        let batchEventResponse = defaultBatchRequestConfig();
+        const batchEventResponse = defaultBatchRequestConfig();
         batchEventResponse.batchedRequest.body.JSON = {
           users: identifyEventResponse.users,
         };
         batchEventResponse.batchedRequest.endpoint = IDENTIFY_BATCH_ENDPOINT;
 
-        batchEventResponse.batchedRequest.headers = {
-          'Content-Type': JSON_MIME_TYPE,
-          api_key: apiKey,
-        };
-
-        batchEventResponse = {
-          ...batchEventResponse,
-          metadata: identifyEventResponse.identifyMetadata,
-          destination,
-        };
-
-        batchedResponseList.push(
-          getSuccessRespEvents(
-            batchEventResponse.batchedRequest,
-            batchEventResponse.metadata,
-            batchEventResponse.destination,
-            true,
-          ),
-        );
+        batchedResponseList = addEventToBatchedResponseList(batchedResponseList, batchEventResponse, apiKey, identifyEventResponse.identifyMetadata, destination);
       })
-    } else {      
-      let batchEventResponse = defaultBatchRequestConfig();
+    } else {
+      const batchEventResponse = defaultBatchRequestConfig();
       if (chunk[0].message.operation === 'catalogs') {
         batchEventResponse.batchedRequest.body.JSON = batchCatalogResponseList;
         batchEventResponse.batchedRequest.endpoint = chunk[0].message.endpoint.substr(
@@ -297,24 +312,7 @@ function batchEvents(arrayChunks) {
         batchEventResponse.batchedRequest.endpoint = TRACK_BATCH_ENDPOINT;
       }
 
-      batchEventResponse.batchedRequest.headers = {
-        'Content-Type': JSON_MIME_TYPE,
-        api_key: apiKey,
-      };
-
-      batchEventResponse = {
-        ...batchEventResponse,
-        metadata: metadatas,
-        destination,
-      };
-      batchedResponseList.push(
-        getSuccessRespEvents(
-          batchEventResponse.batchedRequest,
-          batchEventResponse.metadata,
-          batchEventResponse.destination,
-          true,
-        ),
-      );
+      batchedResponseList = addEventToBatchedResponseList(batchedResponseList, batchEventResponse, apiKey, metadatas, destination);
     }
   });
 

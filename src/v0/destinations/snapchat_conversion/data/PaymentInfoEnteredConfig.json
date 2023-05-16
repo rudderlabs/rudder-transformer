@@ -16,7 +16,7 @@
   },
   {
     "destKey": "number_items",
-    "sourceKeys": "properties.number_items",
+    "sourceKeys": ["properties.number_items", "properties.quantity"],
     "required": false
   },
   {

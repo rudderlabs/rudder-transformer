@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.28.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.27.1...v1.28.0) (2023-05-15)
+
+
+### Features
+
+* braze merge users ([#2135](https://github.com/rudderlabs/rudder-transformer/issues/2135)) ([a0f9ae9](https://github.com/rudderlabs/rudder-transformer/commit/a0f9ae9008308cbfd6270522bf37f8e3f8531a23))
+* braze merge users ([#2135](https://github.com/rudderlabs/rudder-transformer/issues/2135)) ([58f69d2](https://github.com/rudderlabs/rudder-transformer/commit/58f69d2778e822716e7f9f10f1f899b00b2d8785))
+* checkout code for generating tags ([#2153](https://github.com/rudderlabs/rudder-transformer/issues/2153)) ([76f36e1](https://github.com/rudderlabs/rudder-transformer/commit/76f36e122c2a510ccb07970d6a55a72efa3edabd))
+* **fb_pixel:** add validation ([#2159](https://github.com/rudderlabs/rudder-transformer/issues/2159)) ([64a05cb](https://github.com/rudderlabs/rudder-transformer/commit/64a05cbf6844bc78406c3a8f9397981484a7e075))
+* **ga4:** common page call information(page, url, title) support in track call ([#2141](https://github.com/rudderlabs/rudder-transformer/issues/2141)) ([f7a32b2](https://github.com/rudderlabs/rudder-transformer/commit/f7a32b28373ef1e8de76edad5afbe9d04fd7561e))
+* **ga4:** override client_id and session_id and add support of session_number in GA hybrid mode ([#2121](https://github.com/rudderlabs/rudder-transformer/issues/2121)) ([fd0dc94](https://github.com/rudderlabs/rudder-transformer/commit/fd0dc946ff35265a14658bf5336f6a089ca36438))
+* **ga4:** override client_id and session_id in ga4 hybrid mode ([#2167](https://github.com/rudderlabs/rudder-transformer/issues/2167)) ([ff9d778](https://github.com/rudderlabs/rudder-transformer/commit/ff9d778d6e18cecec92b72437c9e00d66eb4f2b6))
+* onboard new source formsort ([#2120](https://github.com/rudderlabs/rudder-transformer/issues/2120)) ([203a0c4](https://github.com/rudderlabs/rudder-transformer/commit/203a0c48eb72e6d076d611d5d23a9454c2934f4d))
+* onboarding router batching for braze ([#2130](https://github.com/rudderlabs/rudder-transformer/issues/2130)) ([35a5b37](https://github.com/rudderlabs/rudder-transformer/commit/35a5b376aeb7bf7f8bc477f63df18cd9a8b91fc2))
+
+
+### Bug Fixes
+
+* async implementations ([#2103](https://github.com/rudderlabs/rudder-transformer/issues/2103)) ([52dee04](https://github.com/rudderlabs/rudder-transformer/commit/52dee043865ae169d89105199ea499cb224da222))
+* **gaec:** gaec axios reponse parsing ([#2138](https://github.com/rudderlabs/rudder-transformer/issues/2138)) ([1f9a864](https://github.com/rudderlabs/rudder-transformer/commit/1f9a864af66657708bfe4c820316154350929ba8))
+* handle 404 response code for proxy route ([#2134](https://github.com/rudderlabs/rudder-transformer/issues/2134)) ([99e2cf3](https://github.com/rudderlabs/rudder-transformer/commit/99e2cf3b1ace063229841e6401f7deab4af3ec51))
+* prometheus metrics errors ([#2168](https://github.com/rudderlabs/rudder-transformer/issues/2168)) ([ccd911a](https://github.com/rudderlabs/rudder-transformer/commit/ccd911a873b524208391ef6c8503e905f1fe2b44))
+* snyk issues fix ([#2136](https://github.com/rudderlabs/rudder-transformer/issues/2136)) ([653ae9b](https://github.com/rudderlabs/rudder-transformer/commit/653ae9b050f507a78671ce559e5563f13610baa9))
+* undefined errors in braze, firehose, gaoc ([#2139](https://github.com/rudderlabs/rudder-transformer/issues/2139)) ([06110c5](https://github.com/rudderlabs/rudder-transformer/commit/06110c5f070e05d6d0f7e04b11a23f777cb65af8))
+
 ### [1.27.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.27.0...v1.27.1) (2023-05-10)
 
 

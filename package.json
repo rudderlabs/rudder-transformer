@@ -1,6 +1,6 @@
 {
   "name": "rudder-transformer",
-  "version": "1.27.1",
+  "version": "1.28.0",
   "description": "",
   "homepage": "https://github.com/rudderlabs/rudder-transformer#readme",
   "bugs": {
@@ -46,7 +46,6 @@
   },
   "dependencies": {
     "@amplitude/ua-parser-js": "0.7.24",
-    "@aws-sdk/client-lambda": "^3.295.0",
     "@aws-sdk/client-s3": "^3.306.0",
     "@aws-sdk/lib-storage": "^3.306.0",
     "@bugsnag/js": "^7.20.0",
@@ -77,7 +76,6 @@
     "json-query": "^2.2.2",
     "json-size": "^1.0.0",
     "jsontoxml": "^1.0.1",
-    "jszip": "^3.10.1",
     "koa": "^2.14.1",
     "koa-bodyparser": "^4.4.0",
     "lodash": "^4.17.21",

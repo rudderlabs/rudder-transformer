@@ -2,7 +2,7 @@
   [
     {
       "statusCode": 400,
-      "error": "User deletion request failed"
+      "error": "User deletion request failed for `delete profile` api"
     }
   ],
   [
@@ -32,7 +32,7 @@
   [
     {
       "statusCode": 400,
-      "error": "GDPR Api Token is a required field for creating deletion task in mixpanel"
+      "error": "GDPR API Token is a required field for creating deletion task in mixpanel"
     }
   ]
 ]

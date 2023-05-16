@@ -5,13 +5,13 @@ const {
   DEL_MAX_BATCH_SIZE,
   getCreateDeletionTaskEndpoint,
   DISTINCT_ID_MAX_BATCH_SIZE,
-  DEFAULT_COMPLIANCE_TYPE,
 } = require('./config');
 const { executeCommonValidations } = require('../../util/regulation-api');
 const { ConfigurationError, NetworkError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { getUserIdBatches } = require('../../util/deleteUserUtils');
 
 const deleteProfile = async (userAttributes, config) => {
   const endpoint =
@@ -47,11 +47,11 @@ const deleteProfile = async (userAttributes, config) => {
         'post',
         endpoint,
         batchEvent,
-        headers,
+        { headers },
       );
       if (!isHttpStatusSuccess(handledDelResponse.status)) {
         throw new NetworkError(
-          'User deletion request failed',
+          'User deletion request failed for `delete profile` api',
           handledDelResponse.status,
           {
             [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
@@ -72,7 +72,7 @@ const createDeletionTask = async (userAttributes, config) => {
 
   if (!gdprApiToken) {
     throw new ConfigurationError(
-      'GDPR Api Token is a required field for creating deletion task in mixpanel',
+      'GDPR API Token is a required field for creating deletion task in mixpanel',
     );
   }
 
@@ -81,44 +81,33 @@ const createDeletionTask = async (userAttributes, config) => {
     'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${gdprApiToken}`,
   };
+  const complianceType = config?.dataResidency === 'eu' ? 'GDPR' : 'CCPA';
 
-  const groupedUserAttributes = _.groupBy(
-    userAttributes,
-    (attribute) => attribute.complianceType || DEFAULT_COMPLIANCE_TYPE,
-  );
-
-  // chunkedUserIds = [[u1,u2,u3,..batchSize],[u1,u2,u3,..batchSize]..]
+  // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.mixpanel.com/docs/privacy-security#create-a-deletion-task
-  const chunkedUserIds = _.mapValues(groupedUserAttributes, (group) =>
-    _.chunk(_.map(group, 'userId'), DISTINCT_ID_MAX_BATCH_SIZE),
-  );
+  const batchEvents = getUserIdBatches(userAttributes, DISTINCT_ID_MAX_BATCH_SIZE);
   await Promise.all(
-    Object.keys(chunkedUserIds).map(async (complianceType) => {
-      const batchEvents = chunkedUserIds[complianceType];
-      await Promise.all(
-        batchEvents.map(async (batchEvent) => {
-          const request = {
-            distinct_ids: batchEvent,
-            compliance_type: complianceType,
-          };
-          const { processedResponse: handledDelResponse } = await handleHttpRequest(
-            'post',
-            endpoint,
-            request,
-            { headers },
-          );
-          if (!isHttpStatusSuccess(handledDelResponse.status)) {
-            throw new NetworkError(
-              'User deletion request failed',
-              handledDelResponse.status,
-              {
-                [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
-              },
-              handledDelResponse,
-            );
-          }
-        }),
+    batchEvents.map(async (batchEvent) => {
+      const request = {
+        distinct_ids: batchEvent,
+        compliance_type: complianceType,
+      };
+      const { processedResponse: handledDelResponse } = await handleHttpRequest(
+        'post',
+        endpoint,
+        request,
+        { headers },
       );
+      if (!isHttpStatusSuccess(handledDelResponse.status)) {
+        throw new NetworkError(
+          'User deletion request failed for `create deletion task` api',
+          handledDelResponse.status,
+          {
+            [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(handledDelResponse.status),
+          },
+          handledDelResponse,
+        );
+      }
     }),
   );
 

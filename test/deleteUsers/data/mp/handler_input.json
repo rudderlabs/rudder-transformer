@@ -3091,16 +3091,13 @@
           "destType": "MP",
           "userAttributes": [
             {
-              "userId": "rudder1",
-              "complianceType": "CCPA"
+              "userId": "rudder1"
             },
             {
-              "userId": "rudder2",
-              "complianceType": "GDPR"
+              "userId": "rudder2"
             },
             {
-              "userId": "rudder3",
-              "complianceType": "CCPA"
+              "userId": "rudder3"
             }
           ],
           "config": {
@@ -3128,7 +3125,8 @@
             "token": "test_token",
             "prefixProperties": true,
             "useNativeSDK": false,
-            "userDeletionApi": "task"
+            "userDeletionApi": "task",
+            "dataResidency": "eu"
           }
         }
       ]

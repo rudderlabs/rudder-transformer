@@ -37,7 +37,7 @@ const logger = require('../../../logger');
 const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
-function constructPayloadItem(message, category, destination) {
+const constructPayloadItem = (message, category, destination) => {
   // const rawPayloadItemArr = [];
   let rawPayload = {};
 
@@ -79,7 +79,7 @@ function constructPayloadItem(message, category, destination) {
   return removeUndefinedValues(rawPayload);
 }
 
-function responseBuilderSimple(message, category, destination) {
+const responseBuilderSimple = (message, category, destination) => {
   const response = defaultRequestConfig();
   response.endpoint =
     category.action === 'catalogs' ? getCatalogEndpoint(category, message) : category.endpoint;
@@ -96,7 +96,7 @@ function responseBuilderSimple(message, category, destination) {
   return response;
 }
 
-function responseBuilderSimpleForIdentify(message, category, destination) {
+const responseBuilderSimpleForIdentify = (message, category, destination) => {
   const response = defaultRequestConfig();
   const { os, device } = message.context;
 
@@ -123,7 +123,7 @@ function responseBuilderSimpleForIdentify(message, category, destination) {
   return response;
 }
 
-function getCategoryUsingEventName(event) {
+const getCategoryUsingEventName = (event) => {
   let category;
   switch (event) {
     case 'order completed':
@@ -139,7 +139,7 @@ function getCategoryUsingEventName(event) {
   return category;
 }
 
-function processSingleMessage(message, destination) {
+const processSingleMessage = (message, destination) => {
   const messageType = message.type.toLowerCase();
   let category = {};
   let event;
@@ -186,12 +186,10 @@ function processSingleMessage(message, destination) {
   return response;
 }
 
-function process(event) {
-  return processSingleMessage(event.message, event.destination);
-}
+const process = (event) => processSingleMessage(event.message, event.destination)
 
 /**
- * 
+ * Processes the event response and push into responseList
  * @param {*} batchedResponseList 
  * @param {*} batchEventResponse 
  * @param {*} apiKey 
@@ -223,7 +221,7 @@ const addEventToBatchedResponseList = (batchedResponseList, batchEventResponse, 
   return responseList;
 }
 
-function batchEvents(arrayChunks) {
+const batchEvents = (arrayChunks) => {
   let batchedResponseList = [];
 
   let size = 0;
@@ -319,7 +317,7 @@ function batchEvents(arrayChunks) {
   return batchedResponseList;
 }
 
-function getEventChunks(event, identifyEventChunks, trackEventChunks, eventResponseList) {
+const getEventChunks = (event, identifyEventChunks, trackEventChunks, eventResponseList) => {
   // Categorizing identify and track type of events
   // Checking if it is identify type event
   if (

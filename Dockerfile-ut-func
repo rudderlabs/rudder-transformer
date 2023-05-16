@@ -31,6 +31,7 @@ RUN chown -R node:node /home/node/app
 USER node
 
 COPY package*.json ./
+COPY scripts/skipPrepareScript.js ./scripts/skipPrepareScript.js
 RUN npm ci --no-audit --cache .npm
 COPY --chown=node:node . .
 RUN npm run build:ci -- --sourceMap false

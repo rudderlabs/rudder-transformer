@@ -6656,7 +6656,9 @@
           "timestamp_micros": 1650950229000000,
           "non_personalized_ads": true,
           "user_properties": {
-            "price": "19"
+            "price": {
+              "value": "19"
+            }
           },
           "events": [
             {
@@ -7012,7 +7014,9 @@
           "timestamp_micros": 1650950229000000,
           "non_personalized_ads": true,
           "user_properties": {
-            "price": "100"
+            "price": {
+              "value": "100"
+            }
           },
           "events": [
             {
@@ -10939,7 +10943,11 @@
             "city": "kolkata",
             "district": "24pgs"
           },
-          "categoryLevels": ["Furniture", "Bedroom Furniture", "Dressers & Chests"],
+          "categoryLevels": [
+            "Furniture",
+            "Bedroom Furniture",
+            "Dressers & Chests"
+          ],
           "products": [
             {
               "product_id": "1234",
@@ -10947,7 +10955,11 @@
                 "colour": "red",
                 "shape": "rectangle"
               },
-              "productLevels": ["test1", "test2", "test3"]
+              "productLevels": [
+                "test1",
+                "test2",
+                "test3"
+              ]
             }
           ]
         },
@@ -11497,6 +11509,11 @@
             }
           ],
           "user_id": "user@1",
+          "user_properties": {
+            "campaign": {
+              "value": "advertizing"
+            }
+          },
           "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "non_personalized_ads": true
         },
@@ -11604,6 +11621,11 @@
             }
           ],
           "user_id": "user@1",
+          "user_properties": {
+            "campaign": {
+              "value": "advertizing"
+            }
+          },
           "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "non_personalized_ads": true
         },
@@ -11714,6 +11736,11 @@
             }
           ],
           "user_id": "user@1",
+          "user_properties": {
+            "campaign": {
+              "value": "advertizing"
+            }
+          },
           "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "non_personalized_ads": true
         },
@@ -11778,9 +11805,6 @@
             "tab_url": "https://www.rudderstack.com/",
             "title": "Document",
             "url": "https://www.rudderstack.com/"
-          },
-          "traits": {
-            "campaign": "advertizing"
           },
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
         },
@@ -11951,6 +11975,11 @@
             }
           ],
           "user_id": "user@1",
+          "user_properties": {
+            "campaign": {
+              "value": "advertizing"
+            }
+          },
           "client_id": "554581488.1683172875",
           "non_personalized_ads": true
         },
@@ -12064,6 +12093,11 @@
             }
           ],
           "user_id": "user@1",
+          "user_properties": {
+            "campaign": {
+              "value": "advertizing"
+            }
+          },
           "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "non_personalized_ads": true
         },
@@ -12199,6 +12233,134 @@
         "FORM": {}
       },
       "files": {}
+    }
+  },
+  {
+    "description": "(gtag) sign_up event with all data types of user_properties",
+    "input": {
+      "message": {
+        "userId": "user@1",
+        "channel": "web",
+        "anonymousId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "traits": {
+            "campaign": "advertizing",
+            "name": "rudder",
+            "age": 45,
+            "hobby": [
+              "dancing",
+              "singing",
+              "reading"
+            ],
+            "isEnterpriseUser": {
+              "value": false
+            }
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "type": "track",
+        "event": "sign_up",
+        "properties": {
+          "method": "google"
+        },
+        "integrations": {
+          "All": true
+        }
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWKGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6BET4",
+          "firebaseAppId": "",
+          "typesOfClient": "gtag",
+          "eventFilteringOption": "disable",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
+        },
+        "Enabled": true
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "events": [
+            {
+              "name": "sign_up",
+              "params": {
+                "method": "google",
+                "engagement_time_msec": 1
+              }
+            }
+          ],
+          "user_id": "user@1",
+          "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+          "user_properties": {
+            "age": {
+              "value": 45
+            },
+            "name": {
+              "value": "rudder"
+            },
+            "campaign": {
+              "value": "advertizing"
+            }
+          },
+          "non_personalized_ads": true
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {
+        "api_secret": "QyWKGHj8QhG2L4ePAPiXCA",
+        "measurement_id": "G-T40PE6BET4"
+      },
+      "headers": {
+        "HOST": "www.google-analytics.com",
+        "Content-Type": "application/json"
+      },
+      "version": "1",
+      "endpoint": "https://www.google-analytics.com/mp/collect"
     }
   }
 ]

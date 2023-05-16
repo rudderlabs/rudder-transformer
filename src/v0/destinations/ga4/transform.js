@@ -262,12 +262,22 @@ const responseBuilder = (message, { Config }) => {
   userProperties = extractCustomFields(
     message,
     userProperties,
-    ['properties.user_properties'],
+    ['properties.user_properties', 'context.traits'],
     GA4_RESERVED_USER_PROPERTY_EXCLUSION,
   );
 
   if (!isEmptyObject(userProperties)) {
-    rawPayload.user_properties = userProperties;
+    const userPropertiesKeys = Object.keys(userProperties);
+    const validatedUserProperties = {};
+
+    for (const key of userPropertiesKeys) {
+      const value = userProperties[key];
+      if (typeof value === 'string' || typeof value === 'number') {
+        validatedUserProperties[key] = { value };
+      }
+    }
+
+    rawPayload.user_properties = validatedUserProperties;
   }
 
   removeReservedUserPropertyPrefixNames(rawPayload.user_properties);

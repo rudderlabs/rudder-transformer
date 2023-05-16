@@ -318,7 +318,7 @@ const processBatch = (transformedEvents) => {
   const attributesArray = [];
   const eventsArray = [];
   const purchaseArray = [];
-  const successMetadata = [];
+  const metadata = [];
   const failureResponses = [];
   for (const transformedEvent of transformedEvents) {
     if (!isHttpStatusSuccess(transformedEvent?.statusCode)) {
@@ -334,8 +334,9 @@ const processBatch = (transformedEvents) => {
       if (Array.isArray(purchases)) {
         purchaseArray.push(...purchases);
       }
-      successMetadata.push(...transformedEvent.metadata);
+      
     }
+    metadata.push(...transformedEvent.metadata);
   }
   const attributeArrayChunks = _.chunk(attributesArray, 75);
   const eventsArrayChunks = _.chunk(eventsArray, 75);
@@ -373,7 +374,7 @@ const processBatch = (transformedEvents) => {
   return [
     {
       batchedRequest: responseArray,
-      metadata: successMetadata,
+      metadata,
       batched: true,
       statusCode: 200,
       destination,

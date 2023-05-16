@@ -848,24 +848,23 @@ if (transformerTestModeEnabled) {
    * code: transfromation code
    * language
    * name
-   * testWithPublish: publish version or not
    */
   router.post('/transformation/sethandle', async (ctx) => {
     try {
       const { trRevCode, libraryVersionIDs = [] } = ctx.request.body;
-      const { code, versionId, language, testName, testWithPublish = false } = trRevCode || {};
+      const { code, versionId, language, testName } = trRevCode || {};
       if (!code || !language || !testName || (language === 'pythonfaas' && !versionId)) {
         throw new Error('Invalid Request. Missing parameters in transformation code block');
       }
 
-      logger.debug(`[CT] Setting up a transformation ${testName} with publish: ${testWithPublish}`);
+      logger.debug(`[CT] Setting up a transformation ${testName}`);
       if (!trRevCode.versionId) {
         trRevCode.versionId = 'testVersionId';
       }
       if (!trRevCode.workspaceId) {
         trRevCode.workspaceId = 'workspaceId';
       }
-      const res = await setupUserTransformHandler(trRevCode, libraryVersionIDs, testWithPublish);
+      const res = await setupUserTransformHandler(trRevCode, libraryVersionIDs);
       logger.debug(`[CT] Finished setting up transformation: ${testName}`);
       ctx.body = res;
     } catch (error) {

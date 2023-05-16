@@ -25,7 +25,7 @@ jest.mock("axios", () => ({
 
 const workspaceId = "workspaceId";
 const versionId = "versionId";
-const contructTrRevCode = vid => {
+const contructTrRevCode = (vid, language = 'pythonfaas') => {
   return {
     codeVersion: "1",
     language: "pythonfaas",
@@ -52,7 +52,16 @@ const faasCodeParsedForLibs = [
     response: {
       time: []
     },
-  }
+  },
+  {
+    code: "import uuid\nimport requests\nimport time\ndef transformEvent(event, metadata):\n    return event\n",
+    language: "python",
+    response: {
+      uuid: [],
+      requests: [],
+      time: []
+    },
+  },
 ]
 
 beforeAll(async () => {
@@ -62,7 +71,6 @@ beforeAll(async () => {
       versionId: FAAS_AST_VID
     },
     [],
-    true,
     FAAS_AST_FN_NAME
   ));
 
@@ -83,8 +91,8 @@ describe("Function Creation Tests", () => {
 
   const expectedData = { success: true, publishedVersion: funcName };
 
-  it("Setting up function with testWithPublish as true - creates faas function", async () => {
-    const outputData = await setupUserTransformHandler(trRevCode, [], true);
+  it("Setting up function - creates faas function", async () => {
+    const outputData = await setupUserTransformHandler(trRevCode, []);
 
     expect(outputData).toEqual(expectedData);
 
@@ -94,7 +102,7 @@ describe("Function Creation Tests", () => {
     expect(fnNames.sort()).toEqual([funcName, FAAS_AST_FN_NAME].sort());
   });
 
-  it("Setting up already existing function with testWithPublish as true - return from cache", async () => {
+  it("Setting up already existing function - return from cache", async () => {
     let fnCreatedAt;
     
     for(const fn of (await getFunctionList())) {
@@ -104,7 +112,7 @@ describe("Function Creation Tests", () => {
       break;
     }
 
-    const outputData = await setupUserTransformHandler(trRevCode, [], true);
+    const outputData = await setupUserTransformHandler(trRevCode, []);
 
     expect(outputData).toEqual(expectedData);
 
@@ -126,7 +134,7 @@ describe("Function Creation Tests", () => {
   it("Setting up already existing function with cache clearing - return retry request error", async () => {
     invalidateFnCache();
     await expect(async () => {
-      await setupUserTransformHandler(trRevCode, [], true);
+      await setupUserTransformHandler(trRevCode, []);
     }).rejects.toThrow(RetryRequestError);
   });
 });
@@ -144,16 +152,20 @@ describe("Function invocation & creation tests", () => {
     const inputEvents = require(`./data/user_transformation_input.json`);
     const outputEvents = require(`./data/user_transformation_pycode_test_output.json`);
 
-    const trRevCode = contructTrRevCode(versionId);
+    let trRevCode = contructTrRevCode(versionId);
 
-    const response = await userTransformHandler(
+    let response = await userTransformHandler(
       inputEvents,
       versionId,
       [],
       trRevCode,
       true
     );
+    expect(response).toEqual(outputEvents);
 
+    // Test with language python; should return same output
+    trRevCode = contructTrRevCode(versionId, 'python');
+    response = await userTransformHandler(inputEvents, versionId, [], trRevCode, true);
     expect(response).toEqual(outputEvents);
   });
 

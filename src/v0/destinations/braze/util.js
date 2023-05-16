@@ -370,16 +370,21 @@ const processBatch = (transformedEvents) => {
       headers,
     });
   }
-  return [
-    {
+  const finalResponse = [];
+  if (successMetadata.length > 0) {
+    finalResponse.push({
       batchedRequest: responseArray,
       metadata: successMetadata,
       batched: true,
       statusCode: 200,
       destination,
-    },
-    ...failureResponses,
-  ];
+    });
+  }
+  if (failureResponses.length > 0) {
+    finalResponse.push(...failureResponses);
+  }
+
+  return finalResponse;
 };
 
 module.exports = {

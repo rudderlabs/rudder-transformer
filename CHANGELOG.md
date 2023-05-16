@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.28.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.28.0...v1.28.1) (2023-05-16)
+
+
+### Bug Fixes
+
+* batch logic to handle empty json in input ([e0f5c52](https://github.com/rudderlabs/rudder-transformer/commit/e0f5c52bb8c9ebd85308b1d7e8543bfde6e637be))
+* batch metatdata count ([addb183](https://github.com/rudderlabs/rudder-transformer/commit/addb18300d8372bda02bd4439e0935d10cd9c700))
+* batch metatdata count ([#2182](https://github.com/rudderlabs/rudder-transformer/issues/2182)) ([cb335f2](https://github.com/rudderlabs/rudder-transformer/commit/cb335f2bcacf88d3bdd8d8d4c0eb9ce454fadbd0))
+
 ## [1.28.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.27.1...v1.28.0) (2023-05-15)
 
 

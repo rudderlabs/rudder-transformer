@@ -1,0 +1,108 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../../../v0/destinations/dynamic_yield/config
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - path: ../../bindings/jsontemplate
+
+steps:
+  - name: messageType
+    template: |
+      .message.type.toLowerCase()
+  - name: validateInput
+    template: |
+      let messageType = $.outputs.messageType;
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assertConfig(.destination.Config.apiKey, "Invalid Api Key");
+      $.assert(messageType in {{$.EventType.([.IDENTIFY, .TRACK])}}, 
+        "message type " + messageType + " is not supported")
+
+  - name: validateInputForTrack
+    description: Additional validation for Track events
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      $.assert(.message.event, "event_name could not be mapped. Aborting.")
+
+  - name: commonFields
+    description: |
+      Builds common fields in destination payload.
+    template: |
+      let commonFields = .message.().({
+        "user": { "id": {{{{$.getGenericPaths("userId")}}}}},
+        "session": {"custom": $.toString({{{{$.getGenericPaths("sessionId")}}}})},
+        "context":{"device":{"ip": .context.ip}}
+      });
+      $.removeUndefinedAndNullValues(commonFields)
+
+  - name: validateCommonFields
+    template: |
+      const userId = $.outputs.commonFields.user.id;
+      const sessionId = $.outputs.commonFields.session.custom;
+      const ip = $.outputs.commonFields.context.device.ip;
+      $.assert(userId, "userId is required");
+      $.assert(sessionId, "sessionId is required");
+      $.assert(ip, "ip is required");
+
+  - name: prepareIdentifyPayload
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+
+    steps:
+      - name: propertiesFields
+        template: |
+          let hashedEmail = .message.().(
+            {{{{$.getGenericPaths("email")}}}};
+            );
+          hashedEmail = hashedEmail? sha256(hashedEmail): hashedEmail;
+          let properties = {
+            "hashedEmail": hashedEmail,
+            "dyType": 'identify-v1'
+          };
+          properties = $.removeUndefinedAndNullValues(properties);
+      - name: updatedPropertiesFields
+        condition: $.outputs.prepareIdentifyPayload.propertiesFields.hashedEmail === null
+        template: |
+          let updatedProperties = $.outputs.prepareIdentifyPayload.propertiesFields;
+          let cuid = $.outputs.commonFields.user.id;
+          updatedProperties = {
+            "cuidType": "userId",
+            "cuid": cuid
+          };
+      - name: events
+        template: |
+          let properties = $.outputs.updatedPropertiesFields? $.outputs.updatedPropertiesFields : $.outputs.propertiesFields;
+          let events = {
+            "eventsObj": {
+              "name": "Identify User",
+              "properties": properties
+            }
+          }[];
+  - name: payload
+    template: |
+      const outputPayload = {
+        ...$.outputs.commonFields,
+        "events": $.outputs.prepareIdentifyPayload
+        }
+
+  - name: buildResponseForProcessTransformation
+    description: build response
+    template: |
+      {
+        "body": {
+          "JSON": $.outputs.payload,
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": {{$.BASE_URL}},
+        "headers": {
+          "DY-API-Key": .destination.Config.apiKey,
+          "Content-Type": "application/json"
+        },
+        "params": {},
+        "files": {}
+      }

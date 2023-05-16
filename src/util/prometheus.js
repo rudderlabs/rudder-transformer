@@ -147,7 +147,7 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
       if (!metric) {
-        logger.error(`Prometheus: Gauge metric ${name} not found in the registry. Creating a new one`);
+        logger.warn(`Prometheus: Gauge metric ${name} not found in the registry. Creating a new one`);
         metric =  this.newGaugeStat(name, '', Object.keys(tags));
       }
       metric.set(tags, value);

@@ -18,21 +18,17 @@ const deleteProfile = async (userAttributes, config) => {
     config.dataResidency === 'eu'
       ? 'https://api-eu.mixpanel.com/engage'
       : 'https://api.mixpanel.com/engage';
-  const data = [];
   const defaultValues = {
     $token: `${config.token}`,
     $delete: null,
     $ignore_alias: true,
   };
-  userAttributes.forEach((userAttribute) => {
-    // Dropping the user if userId is not present
-    if (userAttribute.userId) {
-      data.push({
-        $distinct_id: userAttribute.userId,
-        ...defaultValues,
-      });
-    }
-  });
+  const data = userAttributes
+    .filter((attr) => attr.userId)
+    .map((userAttribute) => ({
+      $distinct_id: userAttribute.userId,
+      ...defaultValues,
+    }));
   const headers = {
     accept: 'text/plain',
     'content-type': JSON_MIME_TYPE,
@@ -135,10 +131,10 @@ const userDeletionHandler = async (userAttributes, config) => {
   return deleteProfile(userAttributes, config);
 };
 
-const processDeleteUsers = (event) => {
+const processDeleteUsers = async (event) => {
   const { userAttributes, config } = event;
   executeCommonValidations(userAttributes);
-  const resp = userDeletionHandler(userAttributes, config);
+  const resp = await userDeletionHandler(userAttributes, config);
   return resp;
 };
 module.exports = { processDeleteUsers };

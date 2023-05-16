@@ -438,12 +438,6 @@ class Prometheus {
         labelNames: ['type', 'writeKey', 'source'],
       },
       {
-        name: 'shopify_redis_ops',
-        help: 'shopify_redis_ops',
-        type: 'counter',
-        labelNames: ['type', 'writeKey', 'source'],
-      },
-      {
         name: 'shopify_redis_no_val',
         help: 'shopify_redis_no_val',
         type: 'counter',

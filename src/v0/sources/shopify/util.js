@@ -125,8 +125,7 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
       ...metricMetadata,
     });
   }
-
-  stats.increment('shopify_redis_ops', {
+  stats.increment('shopify_redis_calls', {
     type: 'get',
     ...metricMetadata,
   });
@@ -170,6 +169,12 @@ const checkAndUpdateCartItems = async (inputEvent, metricMetadata) => {
   let itemsHash;
   try {
     itemsHash = await RedisDB.getVal(cartToken, 'itemsHash');
+    if (!isDefinedAndNotNull(itemsHash)) {
+      stats.increment('shopify_redis_no_val', {
+        ...metricMetadata,
+        event: "carts_update",
+      })
+    }
   } catch (e) {
     // so if redis is down we will send the event to downstream destinations
     stats.increment('shopify_redis_failures', {

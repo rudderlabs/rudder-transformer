@@ -7,16 +7,17 @@ bindings:
   - path: ../../bindings/jsontemplate
 
 steps:
-  - name: messageType
-    template: |
-      .message.type.toLowerCase()
   - name: validateInput
     template: |
-      let messageType = $.outputs.messageType;
+      let messageType = .message.type;
       $.assert(.message.type, "message Type is not present. Aborting message.");
       $.assertConfig(.destination.Config.apiKey, "Invalid Api Key");
       $.assert(messageType in {{$.EventType.([.IDENTIFY, .TRACK])}}, 
         "message type " + messageType + " is not supported")
+
+  - name: messageType
+    template: |
+      .message.type.toLowerCase()
 
   - name: validateInputForTrack
     description: Additional validation for Track events

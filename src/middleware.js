@@ -38,12 +38,11 @@ function requestSizeMiddleware() {
 function blockLocalhostMiddleware() {
   return async (ctx, next) => {
     const remoteAddress = ctx.request.ip;
-    logger.info(`Request from ${remoteAddress}`);
-    logger.info(`Request URL: ${ctx.request.url}`);
     // Check if the request is originating from the localhost
-    if (remoteAddress === '127.0.0.1' || remoteAddress === '::1') {
+    if (remoteAddress.includes('127.0.0.1')) {
+      logger.info(`localhost request blocked: ${remoteAddress}`);
       ctx.status = 403;
-      ctx.body = 'Localhost requests are not allowed.';
+      ctx.body = 'localhost requests are not allowed.';
       return;
     }
     await next();

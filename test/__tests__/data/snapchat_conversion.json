@@ -51,7 +51,8 @@
         "event": "Products Searched",
         "properties": {
           "query": "t-shirts",
-          "event_conversion_type": "web"
+          "event_conversion_type": "web",
+          "number_items": 4
         },
         "integrations": {
           "All": true
@@ -86,7 +87,8 @@
           "user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36",
           "timestamp": "1650625078",
           "event_conversion_type": "OFFLINE",
-          "pixel_id": "68e3dab0-3282-49ef10931dbf3"
+          "pixel_id": "68e3dab0-3282-49ef10931dbf3",
+          "number_items": 4
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -1127,7 +1129,9 @@
           "product_id": "123",
           "price": "14",
           "category": "shoes",
-          "currency": "USD"
+          "currency": "USD",
+          "number_items": 14,
+          "quantity": 1
         },
         "integrations": {
           "All": true
@@ -1167,7 +1171,8 @@
           "user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36",
           "timestamp": "1650625078",
           "event_conversion_type": "WEB",
-          "pixel_id": "dihfnjrnerneknrenrjenjer"
+          "pixel_id": "dihfnjrnerneknrenrjenjer",
+          "number_items": 14
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -1230,7 +1235,8 @@
           "product_id": "123",
           "price": "14",
           "category": "shoes",
-          "currency": "USD"
+          "currency": "USD",
+          "quantity": 1
         },
         "integrations": {
           "All": true
@@ -1270,7 +1276,8 @@
           "user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_15_2) applewebkit/537.36 (khtml, like gecko) chrome/79.0.3945.88 safari/537.36",
           "timestamp": "1650625078",
           "event_conversion_type": "OFFLINE",
-          "pixel_id": "dihfnjrnerneknrenrjenjer"
+          "pixel_id": "dihfnjrnerneknrenrjenjer",
+          "number_items": 1
         },
         "JSON_ARRAY": {},
         "XML": {},

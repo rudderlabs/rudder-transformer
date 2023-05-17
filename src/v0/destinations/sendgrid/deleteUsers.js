@@ -7,6 +7,7 @@ const {
 const { isHttpStatusSuccess } = require('../../util');
 const { NetworkError, ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { executeCommonValidations } = require('../../util/regulation-api');
 
 /**
  * This drops the user if userId is not available and converts the ids's into list of strings
@@ -46,9 +47,6 @@ const getUserIdChunks = (userAttributes, maxUrlLength) => {
  */
 const userDeletionHandler = async (userAttributes, config) => {
   const { apiKey } = config;
-  if (!Array.isArray(userAttributes)) {
-    throw new InstrumentationError('userAttributes is not an array');
-  }
 
   if (!apiKey) {
     throw new ConfigurationError('apiKey is required for deleting user');
@@ -108,6 +106,7 @@ const userDeletionHandler = async (userAttributes, config) => {
 
 const processDeleteUsers = async (event) => {
   const { userAttributes, config } = event;
+  executeCommonValidations(userAttributes);
   const resp = await userDeletionHandler(userAttributes, config);
   return resp;
 };

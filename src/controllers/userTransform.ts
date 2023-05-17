@@ -80,16 +80,16 @@ export default class UserTransformController {
     );
     try {
       const { trRevCode, libraryVersionIDs = [] } = ctx.request.body as any;
-      const { code, language, testName, testWithPublish = false } = trRevCode || {};
+      const { code, language, testName } = trRevCode || {};
       if (!code || !language || !testName) {
         throw new Error('Invalid Request. Missing parameters in transformation code block');
       }
 
-      logger.debug(`[CT] Setting up a transformation ${testName} with publish: ${testWithPublish}`);
+      logger.debug(`[CT] Setting up a transformation ${testName}`);
       if (!trRevCode.versionId) {
         trRevCode.versionId = 'testVersionId';
       }
-      const res = await setupUserTransformHandler(trRevCode, libraryVersionIDs, testWithPublish);
+      const res = await setupUserTransformHandler(trRevCode, libraryVersionIDs);
       logger.debug(`[CT] Finished setting up transformation: ${testName}`);
       ctx.body = res;
     } catch (error: any) {

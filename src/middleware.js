@@ -25,11 +25,11 @@ function requestSizeMiddleware() {
       route: ctx.request.url,
     };
 
-    const inputLength =
-      ctx.request && ctx.request.body ? Buffer.byteLength(JSON.stringify(ctx.request.body)) : 0;
+    const inputLength = ctx.request?.body ? Buffer.byteLength(JSON.stringify(ctx.request.body)) : 0;
     stats.histogram('http_request_size', inputLength, labels);
-    const outputLength =
-      ctx.response && ctx.response.body ? Buffer.byteLength(JSON.stringify(ctx.response.body)) : 0;
+    const outputLength = ctx.response?.body
+      ? Buffer.byteLength(JSON.stringify(ctx.response.body))
+      : 0;
     stats.histogram('http_response_size', outputLength, labels);
   };
 }

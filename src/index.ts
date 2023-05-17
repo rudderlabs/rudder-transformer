@@ -7,7 +7,7 @@ import cluster from './util/cluster';
 import { router } from './legacy/router';
 import { testRouter } from './testRouter';
 import { metricsRouter } from './routes/metricsRouter';
-import { addStatMiddleware, addRequestSizeMiddleware } from './middleware';
+import { addStatMiddleware, addRequestSizeMiddleware, addLocalhostMiddleware } from './middleware';
 import { logProcessInfo } from './util/utils';
 import { applicationRoutes } from './routes';
 
@@ -21,6 +21,7 @@ const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
 
 const app = new Koa();
 addStatMiddleware(app);
+addLocalhostMiddleware(app);
 
 const metricsApp = new Koa();
 addStatMiddleware(metricsApp);

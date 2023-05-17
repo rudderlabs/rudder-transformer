@@ -34,6 +34,19 @@ function requestSizeMiddleware() {
   };
 }
 
+function blockLocalhostMiddleware() {
+  return async (ctx, next) => {
+    const remoteAddress = ctx.request.ip;
+    // Check if the request is originating from the localhost
+    if (remoteAddress === '127.0.0.1') {
+      ctx.status = 403;
+      ctx.body = 'Localhost requests are not allowed.';
+      return;
+    }
+    await next();
+  };
+}
+
 function addStatMiddleware(app) {
   app.use(durationMiddleware());
 }
@@ -42,7 +55,12 @@ function addRequestSizeMiddleware(app) {
   app.use(requestSizeMiddleware());
 }
 
+function addLocalhostMiddleware(app) {
+  app.use(blockLocalhostMiddleware());
+}
+
 module.exports = {
   addStatMiddleware,
   addRequestSizeMiddleware,
+  addLocalhostMiddleware,
 };

@@ -1,3 +1,4 @@
+const logger = require('./logger');
 const stats = require('./util/stats');
 
 function durationMiddleware() {
@@ -37,8 +38,10 @@ function requestSizeMiddleware() {
 function blockLocalhostMiddleware() {
   return async (ctx, next) => {
     const remoteAddress = ctx.request.ip;
+    logger.info(`Request from ${remoteAddress}`);
+    logger.info(`Request URL: ${ctx.request.url}`);
     // Check if the request is originating from the localhost
-    if (remoteAddress === '127.0.0.1') {
+    if (remoteAddress === '127.0.0.1' || remoteAddress === '::1') {
       ctx.status = 403;
       ctx.body = 'Localhost requests are not allowed.';
       return;

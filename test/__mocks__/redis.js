@@ -16,52 +16,94 @@ const getData = redisKey => {
             path.resolve(__dirname, `./data/sources/${directory}/response.json`)
         );
         const data = JSON.parse(dataFile);
-        response = data[redisKey];
+        const response = data[redisKey];
         return response;
     }
 }
-
+let connectionRequestCount = 0;
 class Redis {
     constructor(data) {
-        this.status = "closed",
-            this.data = data
-
+        this.host = data.host,
+            this.port = data.port,
+            this.password = data.password,
+            this.username = data.username,
+            this.enableReadyCheck = data.enableReadyCheck,
+            this.retryStrategy = data.retryStrategy;
+        this.status = "connecting";
     };
 
     get(key) {
-        if(key === "error"){
+        if (key === "error") {
             throw new Error("Connection is Closed");
         }
         const mockData = getData(key);
         if (mockData) {
-            return JSON.stringify(mockData);
+            return mockData;
         } else {
             return null;
         }
     }
 
     set(key, value) {
-        if(key === "error"){
+        if (key === "error") {
             throw new Error("Connection is Closed");
         }
-        this.data[key] = value;
+        return {
+            expire: (key) => {
+                return {
+                    exec: () => { }
+                }
+            }
+        }
     }
 
-    setex(key,expiry, value) {
-        if(key === "error"){
-            throw new Error("Connection is Closed");
+    hget(key, internalKey) {
+        const obj = this.get(key);
+        if (obj === null) {
+            return null;
         }
-        this.data[key] = value;
+        return obj[`${internalKey}`];
+    }
+    multi() {
+        return { hmset: this.hmset, set: this.set }
+    };
+    hmset(key, value) {
+        return {
+            expire: (key, expiryTime) => {
+                return {
+                    exec: () => { }
+                }
+            }
+        }
+    }
+
+    changeEventToReadyStatus() {
+        setTimeout(() => {
+            this.status = "ready"
+        },
+            100);
     }
 
     connect() {
-        this.status = "ready"
-        return new Promise((resolve, reject) => {
-            resolve({ data: "OK", status: 200 });
-        });
+        if (connectionRequestCount > 0) {
+            this.status = "ready"
+            return new Promise((resolve, _) => {
+                resolve({ data: "OK", status: 200 });
+            });
+        } else {
+            connectionRequestCount += 1;
+            this.changeEventToReadyStatus();
+            throw new Error("Connection is Closed");
+        }
+
     }
-    on() {
-        return true;
+    on() { jest.fn() }
+    end(times) {
+        this.retryStrategy(times);
+        this.status = "end"
+    }
+    disconnect() {
+        this.status = "closed";
     }
 };
 

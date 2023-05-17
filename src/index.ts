@@ -11,7 +11,7 @@ import { addStatMiddleware, addRequestSizeMiddleware } from './middleware';
 import { logProcessInfo } from './util/utils';
 import { applicationRoutes } from './routes';
 
-const { RedisDB } = require('./util/redisConnector');
+const { RedisDB } = require('../src/util/redis/redisConnector');
 
 dotenv.config();
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';

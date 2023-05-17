@@ -21,10 +21,14 @@ const RUDDER_ECOM_MAP = {
   orders_updated: 'Order Updated',
   orders_create: 'Order Created',
 };
+const SHOPIFY_ADMIN_ONLY_EVENTS = [
+  'Order Deleted',
+  'Fulfillments Create',
+  'Fulfillments Update',
+];
 
 const SHOPIFY_TRACK_MAP = {
   checkouts_delete: 'Checkout Deleted',
-  carts_create: 'Cart Create',
   carts_update: 'Cart Update',
   customers_enable: 'Customer Enabled',
   customers_disable: 'Customer Disabled',
@@ -90,7 +94,6 @@ const SUPPORTED_TRACK_EVENTS = [
   'checkouts_update',
   'customers_disable',
   'customers_enable',
-  'carts_create',
   'carts_update',
   'fulfillments_create',
   'fulfillments_update',
@@ -102,8 +105,8 @@ const SUPPORTED_TRACK_EVENTS = [
   'orders_paid',
   'orders_partially_fullfilled',
 ];
-const timeDifferenceForCartEvents = 10000; // in micro seconds as we will be compairing it in timestamp
 const useRedisDatabase = process.env.USE_REDIS_DB === 'true' || false;
+
 module.exports = {
   ECOM_TOPICS,
   IDENTIFY_TOPICS,
@@ -116,6 +119,6 @@ module.exports = {
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
-  timeDifferenceForCartEvents,
   useRedisDatabase,
+  SHOPIFY_ADMIN_ONLY_EVENTS
 };

@@ -47,8 +47,6 @@ steps:
 
   - name: prepareIdentifyPayload
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
-    template: |
-
     steps:
       - name: propertiesFields
         template: |
@@ -64,9 +62,9 @@ steps:
       - name: updatedPropertiesFields
         condition: $.outputs.prepareIdentifyPayload.propertiesFields.hashedEmail === null
         template: |
-          let updatedProperties = $.outputs.prepareIdentifyPayload.propertiesFields;
           let cuid = $.outputs.commonFields.user.id;
-          updatedProperties = {
+          const updatedProperties = {
+            "dyType": 'identify-v1'
             "cuidType": "userId",
             "cuid": cuid
           };
@@ -79,11 +77,67 @@ steps:
               "properties": properties
             }
           }[];
+
+  - name: prepareTrackPayload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    steps:
+      - name: getTrimmedEvent
+        template: |
+          const trimmedEvent = .message.event.toLowerCase().trim().replace(/\s+/g, '_');
+
+      - name: populateEventProperties
+        condition: trimmedEvent in ["product_added", "product_removed", "product_added_to_wishlist", "order_completed"]
+        steps:
+          - name: propulateEcommProperties
+            template: |
+              const properties = {
+                "dyType": `${ecomEventsMapping[event].toLowerCase().trim().replace(/\s+/g, '-')}-v1`,
+                "value": Number(parseFloat(messageProperties.price).toFixed(2)),
+                "currency": .message.properties.currency,
+              }
+          - name: updateOrderCompletedEventProperties
+            condition: $.outputs.getTrimmedEvent === 'order_completed'
+            template: |
+              const updatedProperties = {
+                ...$.outputs.populateEventProperties.propulateEcommProperties,
+                "uniqueTransactionId" : .message.properties.order_id,
+                "value": .message.properties.value || .message.properties.revenue || .message.properties.price;
+              }
+
+          - name: updateOtherEventProperties
+            condition: $.outputs.getTrimmedEvent !== 'order_completed'
+            template: |
+              const updatedProperties = {
+                ...$.outputs.populateEventProperties.propulateEcommProperties,
+                "quantity" : .message.properties.quantity,
+                "productId": .message.properties.sku || .message.properties.product_id;
+              }
+
+          - name: populateCartObj
+            condition: .message.properties.products && Array.isArray(.message.properties.products)
+            template: |
+              const cart = {
+                "cartObj": {
+                  "productId": .message.properties@prop.products.({
+                  "quantity": Number(.quantity ?? prop.quantity ?? 1),
+                  "itemPrice": String(.price ?? prop.price)
+                  })[]
+                }
+               }[];
+
   - name: payload
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
     template: |
       const outputPayload = {
         ...$.outputs.commonFields,
         "events": $.outputs.prepareIdentifyPayload
+        }
+    else:
+      name: trackPayload
+      template: |
+        const outputPayload = {
+        ...$.outputs.commonFields,
+        "events": $.outputs.prepareTrackPayload
         }
 
   - name: buildResponseForProcessTransformation

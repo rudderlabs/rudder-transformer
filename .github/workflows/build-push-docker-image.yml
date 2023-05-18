@@ -62,6 +62,7 @@ jobs:
         run: |
           docker run ${{ inputs.build_tag }} npm run test:ci
           docker run ${{ inputs.build_tag }} npm run test:integration
+          docker run ${{ inputs.build_tag }} npm run test:utils
 
       - name: Build and Push Multi-platform Images
         uses: docker/build-push-action@v4.0.0

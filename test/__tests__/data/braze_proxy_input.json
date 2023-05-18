@@ -30,6 +30,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "braze"
     }
   },
   {
@@ -63,6 +66,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "braze"
     }
   },
   {
@@ -96,6 +102,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "braze"
     }
   },
   {
@@ -129,6 +138,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "braze"
     }
   },
   {
@@ -162,6 +174,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "braze"
     }
   },
   {
@@ -195,6 +210,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "braze"
     }
   },
   {
@@ -228,6 +246,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "braze"
     }
   }
 ]

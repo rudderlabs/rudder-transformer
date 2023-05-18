@@ -26,6 +26,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "snapchat_custom_audience"
     }
   },
   {
@@ -55,6 +58,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "snapchat_custom_audience"
     }
   },
   {
@@ -85,6 +91,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "snapchat_custom_audience"
     }
   }
 ]

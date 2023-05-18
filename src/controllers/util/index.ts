@@ -13,7 +13,8 @@ export default class ControllerUtility {
   }
 
   public static deliveryPostProcess(ctx: Context, status = 200) {
-    ctx.set('apiVersion', API_VERSION);
+    // To Do(fix error) : ctx.set is not a function  
+    ctx.apiVersion = API_VERSION;
     ctx.status = this.getCompatibleStatusCode(status);
   }
 }

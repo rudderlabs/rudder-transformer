@@ -60,6 +60,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "tiktok_ads"
     }
   },
   {
@@ -123,6 +126,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "tiktok_ads"
     }
   },
   {
@@ -186,6 +192,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "tiktok_ads"
     }
   },
   {
@@ -249,6 +258,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "tiktok_ads"
     }
   }
 ]

@@ -33,6 +33,9 @@
         "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "version": "1"
       }
+    },
+    "params": {
+      "destination": "fb"
     }
   },
   {
@@ -69,6 +72,9 @@
         "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "version": "1"
       }
+    },
+    "params": {
+      "destination": "fb"
     }
   },
   {
@@ -105,6 +111,9 @@
         "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "version": "1"
       }
+    },
+    "params": {
+      "destination": "fb"
     }
   },
   {
@@ -133,6 +142,9 @@
         "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "statusCode": 200
       }
+    },
+    "params": {
+      "destination": "fb"
     }
   },
   {
@@ -161,6 +173,9 @@
         "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
         "statusCode": 200
       }
+    },
+    "params": {
+      "destination": "fb"
     }
   }
 ]

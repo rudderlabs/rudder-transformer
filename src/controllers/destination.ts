@@ -127,11 +127,11 @@ export default class DestinationController {
       ctx.body = { output: [errResp] };
     }
     ControllerUtility.postProcess(ctx);
-    stats.histogram('dest_transform_output_events', ctx.body?.output?.length, {
-      destination,
-      version: 'v0',
-      ...metaTags,
-    });
+    // stats.histogram('dest_transform_output_events', ctx.body?.output?.length, {
+    //   destination,
+    //   version: 'v0',
+    //   ...metaTags,
+    // });
     logger.debug(
       'Native(Router-Transform):: Response from transformer::',
       JSON.stringify(ctx.body),

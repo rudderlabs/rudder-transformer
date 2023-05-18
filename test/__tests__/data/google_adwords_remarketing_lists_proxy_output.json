@@ -41,6 +41,8 @@
       "statTags": {
         "destType": "GOOGLE_ADWORDS_REMARKETING_LISTS",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "aborted",
         "feature": "dataDelivery",
         "implementation": "native",

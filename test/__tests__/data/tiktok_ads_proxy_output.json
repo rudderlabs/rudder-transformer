@@ -26,6 +26,8 @@
       "statTags": {
         "destType": "TIKTOK_ADS",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "aborted",
         "feature": "dataDelivery",
         "implementation": "native",
@@ -47,6 +49,8 @@
       "statTags": {
         "destType": "TIKTOK_ADS",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "aborted",
         "feature": "dataDelivery",
         "implementation": "native",
@@ -68,6 +72,8 @@
       "statTags": {
         "destType": "TIKTOK_ADS",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "retryable",
         "feature": "dataDelivery",
         "implementation": "native",

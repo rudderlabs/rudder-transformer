@@ -5,6 +5,18 @@ import { mockedAxiosClient } from '../__mocks__/network';
 
 const destinations = [
   'marketo',
+  'braze',
+  'pardot',
+  'google_adwords_remarketing_lists',
+  'google_adwords_enhanced_conversions',
+  'facebook_pixel',
+  'fb',
+  'snapchat_custom_audience',
+  'clevertap',
+  'salesforce',
+  'marketo_static_list',
+  'criteo_audience',
+  'tiktok_ads',
 ];
 import DeliveryController from '../../src/controllers/delivery';
 
@@ -19,7 +31,7 @@ const expectedData = JSON.parse(outputDataFile.toString());
 inputData.forEach((input, index) => {
   it(`${name} Tests: payload - ${index}`, async () => {
     const output = await DeliveryController.deliverToDestination(input);
-    expect(output).toEqual(expectedData[index]);
+    expect(output.body).toEqual(expectedData[index]);
   });
 });
 // end of generic tests
@@ -39,7 +51,7 @@ destinations.forEach((destination) => {
     inputData.forEach((input, index) => {
       it(`${name} Tests: ${destination} - Payload ${index}`, async () => {
         const output = await DeliveryController.deliverToDestination(input);
-        expect(output).toEqual(expectedData[index]);
+        expect(output.body).toEqual(expectedData[index]);
       });
     });
   });

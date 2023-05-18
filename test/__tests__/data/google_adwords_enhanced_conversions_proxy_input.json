@@ -53,6 +53,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "google_adwords_enhanced_conversions"
     }
   },
   {
@@ -109,6 +112,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "google_adwords_enhanced_conversions"
     }
   },
   {
@@ -165,6 +171,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "google_adwords_enhanced_conversions"
     }
   }
 ]

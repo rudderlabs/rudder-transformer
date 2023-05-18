@@ -37,6 +37,8 @@
     "test:benchmark": "node benchmark/index.js",
     "test:integration": "jest -c jest.config.integration.js --detectOpenHandles",
     "test:integration:silent": "jest -c jest.config.integration.js --detectOpenHandles --silent",
+    "test:utils": "jest -c jest.config.utils.js --detectOpenHandles",
+    "test:utils:silent": "jest -c jest.config.utils.js --detectOpenHandles --silent",
     "pre-commit": "npm run test:silent && npm run test:integration:silent && npx lint-staged",
     "commit-msg": "commitlint --edit",
     "prepare": "husky install",

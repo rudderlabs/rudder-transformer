@@ -50,6 +50,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "google_adwords_remarketing_lists"
     }
   },
   {
@@ -89,6 +92,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "google_adwords_remarketing_lists"
     }
   },
   {
@@ -142,6 +148,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "google_adwords_remarketing_lists"
     }
   }
 ]

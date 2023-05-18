@@ -25,6 +25,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "pardot"
     }
   },
   {
@@ -53,6 +56,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "pardot"
     }
   },
   {
@@ -81,6 +87,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "pardot"
     }
   },
   {
@@ -109,6 +118,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "pardot"
     }
   }
 ]

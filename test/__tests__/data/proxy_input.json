@@ -43,6 +43,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "any"
     }
   },
   {
@@ -89,6 +92,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "any"
     }
   },
   {
@@ -135,6 +141,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "any"
     }
   },
   {
@@ -181,6 +190,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "any"
     }
   },
   {
@@ -227,6 +239,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "any"
     }
   },
   {
@@ -273,6 +288,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "any"
     }
   }
 ]

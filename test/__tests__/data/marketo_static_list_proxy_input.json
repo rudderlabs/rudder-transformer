@@ -19,6 +19,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "marketo_static_list"
     }
   },
   {
@@ -55,6 +58,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "marketo_static_list"
     }
   }
 ]

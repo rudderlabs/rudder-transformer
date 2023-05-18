@@ -46,6 +46,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "clevertap"
     }
   },
   {
@@ -81,6 +84,9 @@
         "version": "1",
         "endpoint": "https://api.clevertap.com/1/upload/test2"
       }
+    },
+    "params": {
+      "destination": "clevertap"
     }
   },
   {
@@ -115,6 +121,9 @@
         "version": "1",
         "endpoint": "https://api.clevertap.com/1/upload/test3"
       }
+    },
+    "params": {
+      "destination": "clevertap"
     }
   }
 ]

@@ -28,6 +28,8 @@
       "statTags": {
         "destType": "CRITEO_AUDIENCE",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "aborted",
         "feature": "dataDelivery",
         "implementation": "native",
@@ -53,6 +55,8 @@
       "statTags": {
         "destType": "CRITEO_AUDIENCE",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "aborted",
         "feature": "dataDelivery",
         "implementation": "native",
@@ -80,6 +84,8 @@
       "statTags": {
         "destType": "CRITEO_AUDIENCE",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "feature": "dataDelivery",
         "implementation": "native",
         "errorType": "retryable",
@@ -98,6 +104,8 @@
       "statTags": {
         "destType": "CRITEO_AUDIENCE",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "throttled",
         "feature": "dataDelivery",
         "implementation": "native",
@@ -118,6 +126,8 @@
       "statTags": {
         "destType": "CRITEO_AUDIENCE",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "aborted",
         "feature": "dataDelivery",
         "implementation": "native",

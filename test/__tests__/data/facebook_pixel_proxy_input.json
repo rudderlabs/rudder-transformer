@@ -21,6 +21,9 @@
         "version": "1",
         "endpoint": "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=invalid_access_token"
       }
+    },
+    "params": {
+      "destination": "facebook_pixel"
     }
   },
   {
@@ -45,6 +48,9 @@
         "version": "1",
         "endpoint": "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=my_access_token"
       }
+    },
+    "params": {
+      "destination": "facebook_pixel"
     }
   },
   {
@@ -69,6 +75,9 @@
         "version": "1",
         "endpoint": "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=invalid_timestamp_correct_access_token"
       }
+    },
+    "params": {
+      "destination": "facebook_pixel"
     }
   },
   {
@@ -93,6 +102,9 @@
         "version": "1",
         "endpoint": "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=throttled_valid_access_token"
       }
+    },
+    "params": {
+      "destination": "facebook_pixel"
     }
   },
   {
@@ -117,6 +129,9 @@
         "version": "1",
         "endpoint": "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=invalid_account_id_valid_access_token"
       }
+    },
+    "params": {
+      "destination": "facebook_pixel"
     }
   },
   {
@@ -141,6 +156,9 @@
         "version": "1",
         "endpoint": "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=not_found_access_token"
       }
+    },
+    "params": {
+      "destination": "facebook_pixel"
     }
   }
 ]

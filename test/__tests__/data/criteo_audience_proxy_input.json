@@ -31,6 +31,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "criteo_audience"
     }
   },
   {
@@ -64,6 +67,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "criteo_audience"
     }
   },
   {
@@ -97,6 +103,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "criteo_audience"
     }
   },
   {
@@ -130,6 +139,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "criteo_audience"
     }
   },
   {
@@ -163,6 +175,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "criteo_audience"
     }
   },
   {
@@ -196,6 +211,9 @@
         },
         "files": {}
       }
+    },
+    "params": {
+      "destination": "criteo_audience"
     }
   }
 ]

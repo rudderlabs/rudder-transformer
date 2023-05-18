@@ -733,5 +733,21 @@
       "errorCategory": "dataValidation",
       "errorType": "instrumentation"
     }
+  },
+  {
+    "error": "Access token not found. Aborting",
+    "statusCode": 400,
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "configuration"
+    }
+  },
+  {
+    "error": "Pixel Id not found. Aborting",
+    "statusCode": 400,
+    "statTags": {
+      "errorCategory": "dataValidation",
+      "errorType": "configuration"
+    }
   }
 ]

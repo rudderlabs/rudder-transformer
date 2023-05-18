@@ -29,6 +29,15 @@ const responseBuilder = (payload, endpoint, destination) => {
   throw new TransformationError('Something went wrong while constructing the payload');
 };
 
+const identifyResponseBuilder = (message, destination) => {
+  const payload = message;
+  payload.traits = message.traits || message.context.traits;
+  if (!payload.traits) {
+    throw new InstrumentationError('traits is a required field for identify call');
+  }
+  return responseBuilder(payload, API_URL, destination);
+};
+
 const processEvent = (message, destination) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
@@ -40,6 +49,8 @@ const processEvent = (message, destination) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
+      response = identifyResponseBuilder(message, destination);
+      break;
     case EventType.TRACK:
       response = responseBuilder(message, API_URL, destination);
       break;

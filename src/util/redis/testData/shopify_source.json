@@ -1,0 +1,1022 @@
+[
+    {
+        "description": "Track Call -> duplicate carts_update ",
+        "input": {
+            "id": "shopify_test3",
+            "query_parameters": {
+                "topic": [
+                    "carts_update"
+                ]
+            },
+            "token": "shopify_test3",
+            "line_items": [],
+            "note": null,
+            "updated_at": "2023-02-10T12:16:07.251Z",
+            "created_at": "2023-02-10T12:16:04.402Z"
+        },
+        "output": {
+            "outputToSource": {
+                "body": "T0s=",
+                "contentType": "text/plain"
+            },
+            "statusCode": 200
+        }
+    },
+    {
+        "description": "Track Call -> orders_delete with invalid cartToken",
+        "input": {
+            "id": "shopify_test3",
+            "query_parameters": {
+                "topic": [
+                    "orders_delete"
+                ]
+            },
+            "line_items": [],
+            "note": null,
+            "updated_at": "2023-02-10T12:16:07.251Z",
+            "created_at": "2023-02-10T12:05:04.402Z"
+        },
+        "output": {
+            "context": {
+                "library": {
+                    "name": "RudderStack Shopify Cloud",
+                    "version": "1.0.0"
+                },
+                "integration": {
+                    "name": "SHOPIFY"
+                },
+                "topic": "orders_delete"
+            },
+            "event": "Order Deleted",
+            "integrations": {
+                "SHOPIFY": true
+            },
+            "type": "track",
+            "userId": "shopify-admin",
+            "properties": {
+                "created_at": "2023-02-10T12:05:04.402Z",
+                "id": "shopify_test3",
+                "note": null,
+                "products": [],
+                "updated_at": "2023-02-10T12:16:07.251Z"
+            }
+        }
+    },
+    {
+        "description": "Track Call -> checkouts_delete with invalid cartToken",
+        "input": {
+            "id": "shopify_test3",
+            "query_parameters": {
+                "topic": [
+                    "checkouts_delete"
+                ]
+            },
+            "line_items": [],
+            "note": null,
+            "updated_at": "2023-02-10T12:16:07.251Z",
+            "created_at": "2023-02-10T12:05:04.402Z"
+        },
+        "output": {
+            "context": {
+                "library": {
+                    "name": "RudderStack Shopify Cloud",
+                    "version": "1.0.0"
+                },
+                "integration": {
+                    "name": "SHOPIFY"
+                },
+                "topic": "checkouts_delete"
+            },
+            "event": "Checkout Deleted",
+            "integrations": {
+                "SHOPIFY": true
+            },
+            "type": "track",
+            "userId": "shopify-admin",
+            "properties": {
+                "created_at": "2023-02-10T12:05:04.402Z",
+                "id": "shopify_test3",
+                "note": null,
+                "products": [],
+                "updated_at": "2023-02-10T12:16:07.251Z"
+            }
+        }
+    },
+    {
+        "description": "Track Call -> carts_update",
+        "input": {
+            "user_id": "rudder01",
+            "id": "shopify_test_cart",
+            "query_parameters": {
+                "topic": [
+                    "carts_update"
+                ]
+            },
+            "token": "shopify_test_cart",
+            "email": "test@rudderstack.com",
+            "line_items": [
+                {
+                    "id": 44323300999443,
+                    "properties": null,
+                    "quantity": 1,
+                    "variant_id": 44323300999443,
+                    "key": "44323300999443:70b21df78d403673a8b5dbafd62f0559",
+                    "discounted_price": "30.00",
+                    "discounts": [],
+                    "gift_card": false,
+                    "grams": 0,
+                    "line_price": "30.00",
+                    "original_line_price": "30.00",
+                    "original_price": "30.00",
+                    "price": "30.00",
+                    "product_id": 8100575674643,
+                    "sku": "",
+                    "taxable": true,
+                    "title": "Shirt 2 - LARGE",
+                    "total_discount": "0.00",
+                    "vendor": "testAnant",
+                    "discounted_price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "line_price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "original_line_price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "total_discount_set": {
+                        "shop_money": {
+                            "amount": "0.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "0.0",
+                            "currency_code": "GBP"
+                        }
+                    }
+                }
+            ],
+            "note": null,
+            "updated_at": "2023-02-10T12:16:07.251Z",
+            "created_at": "2023-02-10T12:05:04.402Z"
+        },
+        "output": {
+            "userId": "rudder01",
+            "anonymousId": "anon_shopify_test1",
+            "context": {
+                "library": {
+                    "name": "RudderStack Shopify Cloud",
+                    "version": "1.0.0"
+                },
+                "integration": {
+                    "name": "SHOPIFY"
+                },
+                "topic": "carts_update"
+            },
+            "event": "Cart Update",
+            "integrations": {
+                "SHOPIFY": true
+            },
+            "traits": {
+                "email": "test@rudderstack.com"
+            },
+            "type": "track",
+            "properties": {
+                "note": null,
+                "created_at": "2023-02-10T12:05:04.402Z",
+                "email": "test@rudderstack.com",
+                "id": "shopify_test_cart",
+                "products": [
+                    {
+                        "id": 44323300999443,
+                        "properties": null,
+                        "quantity": 1,
+                        "variant": "44323300999443  ",
+                        "key": "44323300999443:70b21df78d403673a8b5dbafd62f0559",
+                        "discounted_price": "30.00",
+                        "discounts": [],
+                        "gift_card": false,
+                        "grams": 0,
+                        "line_price": "30.00",
+                        "original_line_price": "30.00",
+                        "original_price": "30.00",
+                        "price": "30.00",
+                        "product_id": 8100575674643,
+                        "taxable": true,
+                        "title": "Shirt 2 - LARGE",
+                        "total_discount": "0.00",
+                        "brand": "testAnant",
+                        "discounted_price_set": {
+                            "shop_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            }
+                        },
+                        "line_price_set": {
+                            "shop_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            }
+                        },
+                        "original_line_price_set": {
+                            "shop_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            }
+                        },
+                        "price_set": {
+                            "shop_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            }
+                        },
+                        "total_discount_set": {
+                            "shop_money": {
+                                "amount": "0.0",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "0.0",
+                                "currency_code": "GBP"
+                            }
+                        }
+                    }
+                ],
+                "user_id": "rudder01",
+                "token": "shopify_test_cart",
+                "updated_at": "2023-02-10T12:16:07.251Z"
+            }
+        }
+    },
+    {
+        "description": "Track Call -> orders_updated with empty line_items",
+        "input": {
+            "id": "shopify_test2",
+            "query_parameters": {
+                "topic": [
+                    "orders_updated"
+                ]
+            },
+            "shipping_address": "abc",
+            "billing_address": "abc",
+            "customer": {
+                "first_name": "Test",
+                "last_name": "Person"
+            },
+            "cart_token": null,
+            "checkout_id": 36601802719507,
+            "checkout_token": "checkout token",
+            "client_details": {
+                "accept_language": null,
+                "browser_height": null,
+                "browser_ip": "122.161.73.113",
+                "user_agent": "Mozilla/5.0 User Agent"
+            },
+            "line_items": [],
+            "note": null,
+            "updated_at": "2023-02-10T12:16:07.251Z",
+            "created_at": "2023-02-10T12:05:04.402Z"
+        },
+        "output": {
+            "userId": "shopify-admin",
+            "context": {
+                "cart_token": null,
+                "checkout_token": "checkout token",
+                "library": {
+                    "name": "RudderStack Shopify Cloud",
+                    "version": "1.0.0"
+                },
+                "integration": {
+                    "name": "SHOPIFY"
+                },
+                "topic": "orders_updated"
+            },
+            "event": "Order Updated",
+            "integrations": {
+                "SHOPIFY": true
+            },
+            "type": "track",
+            "properties": {
+                "checkout_id": 36601802719507,
+                "checkout_token": "checkout token",
+                "client_details": {
+                    "accept_language": null,
+                    "browser_height": null,
+                    "browser_ip": "122.161.73.113",
+                    "user_agent": "Mozilla/5.0 User Agent"
+                },
+                "order_id": "shopify_test2",
+                "created_at": "2023-02-10T12:05:04.402Z",
+                "products": [],
+                "updated_at": "2023-02-10T12:16:07.251Z"
+            },
+            "traits": {
+                "shippingAddress": "abc",
+                "billingAddress": "abc",
+                "firstName": "Test",
+                "lastName": "Person"
+            },
+            "timestamp": "2023-02-10T12:16:07.251Z"
+        }
+    },
+    {
+        "description": "Track Call -> fullfillments_create",
+        "input": {
+            "query_parameters": {
+                "topic": [
+                    "fulfillments_create"
+                ]
+            },
+            "order_id": "random",
+            "status": "success",
+            "created_at": "2023-02-10T07:44:06-05:00",
+            "service": "manual",
+            "updated_at": "2023-02-10T07:44:06-05:00",
+            "tracking_company": null,
+            "shipment_status": null,
+            "location_id": 77735330067,
+            "origin_address": null,
+            "destination": null,
+            "line_items": [
+                {
+                    "variant_id": "variantId",
+                    "title": "bitter cloud",
+                    "quantity": 1,
+                    "sku": "",
+                    "variant_title": null,
+                    "vendor": "testAnant",
+                    "fulfillment_service": "manual",
+                    "product_id": 8100634689811,
+                    "requires_shipping": true,
+                    "taxable": true,
+                    "gift_card": false,
+                    "name": "bitter cloud",
+                    "variant_inventory_management": null,
+                    "properties": [],
+                    "product_exists": true,
+                    "fulfillable_quantity": 0,
+                    "grams": 0,
+                    "price": "9.54",
+                    "total_discount": "0.00",
+                    "fulfillment_status": "fulfilled",
+                    "price_set": {
+                        "shop_money": {
+                            "amount": "9.54",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "9.54",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "total_discount_set": {
+                        "shop_money": {
+                            "amount": "0.00",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "0.00",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "discount_allocations": [],
+                    "duties": [],
+                    "shopify-admin_graphql_api_id": "gid://shopify/LineItem/13729348059411",
+                    "tax_lines": []
+                }
+            ],
+            "tracking_number": null,
+            "tracking_numbers": [],
+            "tracking_url": null,
+            "tracking_urls": [],
+            "receipt": {},
+            "name": "#1001.1",
+            "shopify-admin_graphql_api_id": "gid://shopify/Fulfillment/4655820210451"
+        },
+        "output": {
+            "userId": "shopify-admin",
+            "context": {
+                "library": {
+                    "name": "RudderStack Shopify Cloud",
+                    "version": "1.0.0"
+                },
+                "integration": {
+                    "name": "SHOPIFY"
+                },
+                "topic": "fulfillments_create"
+            },
+            "event": "Fulfillments Create",
+            "integrations": {
+                "SHOPIFY": true
+            },
+            "type": "track",
+            "properties": {
+                "shopify-admin_graphql_api_id": "gid://shopify/Fulfillment/4655820210451",
+                "created_at": "2023-02-10T07:44:06-05:00",
+                "destination": null,
+                "location_id": 77735330067,
+                "name": "#1001.1",
+                "order_id": "random",
+                "origin_address": null,
+                "products": [
+                    {
+                        "shopify-admin_graphql_api_id": "gid://shopify/LineItem/13729348059411",
+                        "quantity": 1,
+                        "product_exists": true,
+                        "title": "bitter cloud",
+                        "product_id": 8100634689811,
+                        "properties": [],
+                        "requires_shipping": true,
+                        "tax_lines": [],
+                        "variant": "variantId  ",
+                        "variant_inventory_management": null,
+                        "price": "9.54",
+                        "taxable": true,
+                        "total_discount": "0.00",
+                        "brand": "testAnant",
+                        "fulfillable_quantity": 0,
+                        "fulfillment_service": "manual",
+                        "fulfillment_status": "fulfilled",
+                        "gift_card": false,
+                        "grams": 0,
+                        "discount_allocations": [],
+                        "duties": [],
+                        "price_set": {
+                            "shop_money": {
+                                "amount": "9.54",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "9.54",
+                                "currency_code": "GBP"
+                            }
+                        },
+                        "total_discount_set": {
+                            "shop_money": {
+                                "amount": "0.00",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "0.00",
+                                "currency_code": "GBP"
+                            }
+                        }
+                    }
+                ],
+                "receipt": {},
+                "service": "manual",
+                "shipment_status": null,
+                "status": "success",
+                "tracking_company": null,
+                "tracking_number": null,
+                "tracking_numbers": [],
+                "tracking_url": null,
+                "tracking_urls": [],
+                "updated_at": "2023-02-10T07:44:06-05:00"
+            }
+        }
+    },
+    {
+        "description": "Track Call -> checkouts_update ",
+        "input": {
+            "id": "shopify_test2",
+            "query_parameters": {
+                "topic": [
+                    "checkouts_update"
+                ]
+            },
+            "token": "shopify_test2",
+            "cart_token": "shopify_test2",
+            "line_items": [
+                {
+                    "id": 44323300999443,
+                    "token": "shopify_test2",
+                    "properties": null,
+                    "quantity": 1,
+                    "variant_id": 44323300999443,
+                    "key": "44323300999443:ky",
+                    "discounted_price": "30.00",
+                    "discounts": [],
+                    "gift_card": false,
+                    "grams": 0,
+                    "line_price": "30.00",
+                    "original_line_price": "30.00",
+                    "original_price": "30.00",
+                    "price": "30.00",
+                    "product_id": 8100575674643,
+                    "sku": "",
+                    "taxable": true,
+                    "title": "Shirt 2 - LARGE",
+                    "total_discount": "0.00",
+                    "vendor": "testAnant",
+                    "discounted_price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "line_price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "original_line_price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "total_discount_set": {
+                        "shop_money": {
+                            "amount": "0.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "0.0",
+                            "currency_code": "GBP"
+                        }
+                    }
+                }
+            ],
+            "note": null,
+            "updated_at": "2023-02-10T12:16:07.251Z",
+            "created_at": "2023-02-10T12:05:04.402Z"
+        },
+        "output": {
+            "anonymousId": "anon_shopify_test2",
+            "context": {
+                "cart_token": "shopify_test2",
+                "library": {
+                    "name": "RudderStack Shopify Cloud",
+                    "version": "1.0.0"
+                },
+                "integration": {
+                    "name": "SHOPIFY"
+                },
+                "topic": "checkouts_update"
+            },
+            "event": "Checkout Updated",
+            "integrations": {
+                "SHOPIFY": true
+            },
+            "type": "track",
+            "properties": {
+                "created_at": "2023-02-10T12:05:04.402Z",
+                "cart_token": "shopify_test2",
+                "order_id": "shopify_test2",
+                "products": [
+                    {
+                        "id": 44323300999443,
+                        "properties": null,
+                        "quantity": 1,
+                        "variant": "44323300999443  ",
+                        "key": "44323300999443:ky",
+                        "discounted_price": "30.00",
+                        "discounts": [],
+                        "gift_card": false,
+                        "grams": 0,
+                        "line_price": "30.00",
+                        "original_line_price": "30.00",
+                        "original_price": "30.00",
+                        "price": "30.00",
+                        "product_id": 8100575674643,
+                        "taxable": true,
+                        "token": "shopify_test2",
+                        "title": "Shirt 2 - LARGE",
+                        "total_discount": "0.00",
+                        "brand": "testAnant",
+                        "discounted_price_set": {
+                            "shop_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            }
+                        },
+                        "line_price_set": {
+                            "shop_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            }
+                        },
+                        "original_line_price_set": {
+                            "shop_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            }
+                        },
+                        "price_set": {
+                            "shop_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            }
+                        },
+                        "total_discount_set": {
+                            "shop_money": {
+                                "amount": "0.0",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "0.0",
+                                "currency_code": "GBP"
+                            }
+                        }
+                    }
+                ],
+                "token": "shopify_test2",
+                "updated_at": "2023-02-10T12:16:07.251Z"
+            },
+            "timestamp": "2023-02-10T12:16:07.251Z"
+        }
+    },
+    {
+        "description": "Track Call -> checkouts_update with null cartToken",
+        "input": {
+            "id": "shopify_test2",
+            "query_parameters": {
+                "topic": [
+                    "checkouts_update"
+                ]
+            },
+            "cart_token": null,
+            "line_items": [
+                {
+                    "id": 44323300999443,
+                    "properties": null,
+                    "quantity": 1,
+                    "variant_id": 44323300999443,
+                    "key": "44323300999443:ky",
+                    "discounted_price": "30.00",
+                    "discounts": [],
+                    "gift_card": false,
+                    "grams": 0,
+                    "line_price": "30.00",
+                    "original_line_price": "30.00",
+                    "original_price": "30.00",
+                    "price": "30.00",
+                    "product_id": 8100575674643,
+                    "sku": "",
+                    "taxable": true,
+                    "title": "Shirt 2 - LARGE",
+                    "total_discount": "0.00",
+                    "vendor": "testAnant",
+                    "discounted_price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "line_price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "original_line_price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "total_discount_set": {
+                        "shop_money": {
+                            "amount": "0.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "0.0",
+                            "currency_code": "GBP"
+                        }
+                    }
+                }
+            ],
+            "note": null,
+            "updated_at": "2023-02-10T12:16:07.251Z",
+            "created_at": "2023-02-10T12:05:04.402Z"
+        },
+        "output": {
+            "userId": "shopify-admin",
+            "context": {
+                "cart_token": null,
+                "library": {
+                    "name": "RudderStack Shopify Cloud",
+                    "version": "1.0.0"
+                },
+                "integration": {
+                    "name": "SHOPIFY"
+                },
+                "topic": "checkouts_update"
+            },
+            "event": "Checkout Updated",
+            "integrations": {
+                "SHOPIFY": true
+            },
+            "type": "track",
+            "properties": {
+                "order_id": "shopify_test2",
+                "created_at": "2023-02-10T12:05:04.402Z",
+                "products": [
+                    {
+                        "id": 44323300999443,
+                        "properties": null,
+                        "quantity": 1,
+                        "variant": "44323300999443  ",
+                        "key": "44323300999443:ky",
+                        "discounted_price": "30.00",
+                        "discounts": [],
+                        "gift_card": false,
+                        "grams": 0,
+                        "line_price": "30.00",
+                        "original_line_price": "30.00",
+                        "original_price": "30.00",
+                        "price": "30.00",
+                        "product_id": 8100575674643,
+                        "taxable": true,
+                        "title": "Shirt 2 - LARGE",
+                        "total_discount": "0.00",
+                        "brand": "testAnant",
+                        "discounted_price_set": {
+                            "shop_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            }
+                        },
+                        "line_price_set": {
+                            "shop_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            }
+                        },
+                        "original_line_price_set": {
+                            "shop_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            }
+                        },
+                        "price_set": {
+                            "shop_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "30.0",
+                                "currency_code": "GBP"
+                            }
+                        },
+                        "total_discount_set": {
+                            "shop_money": {
+                                "amount": "0.0",
+                                "currency_code": "GBP"
+                            },
+                            "presentment_money": {
+                                "amount": "0.0",
+                                "currency_code": "GBP"
+                            }
+                        }
+                    }
+                ],
+                "updated_at": "2023-02-10T12:16:07.251Z"
+            },
+            "timestamp": "2023-02-10T12:16:07.251Z"
+        }
+    },
+    {
+        "description": "Track Call -> carts_update with invalid cartToken",
+        "input": {
+            "id": "shopify_test4",
+            "query_parameters": {
+                "topic": [
+                    "carts_update"
+                ]
+            },
+            "token": "shopify_test4",
+            "line_items": [
+                {
+                    "id": 44323300999443,
+                    "properties": null,
+                    "quantity": 1,
+                    "variant_id": 44323300999443,
+                    "key": "44323300999443:70b21df78d403673a8b5dbafd62f0559",
+                    "discounted_price": "30.00",
+                    "discounts": [],
+                    "gift_card": false,
+                    "grams": 0,
+                    "line_price": "30.00",
+                    "original_line_price": "30.00",
+                    "original_price": "30.00",
+                    "price": "30.00",
+                    "product_id": 8100575674643,
+                    "sku": "",
+                    "taxable": true,
+                    "title": "Shirt 2 - LARGE",
+                    "total_discount": "0.00",
+                    "vendor": "testAnant",
+                    "discounted_price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "line_price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "original_line_price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "price_set": {
+                        "shop_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "30.0",
+                            "currency_code": "GBP"
+                        }
+                    },
+                    "total_discount_set": {
+                        "shop_money": {
+                            "amount": "0.0",
+                            "currency_code": "GBP"
+                        },
+                        "presentment_money": {
+                            "amount": "0.0",
+                            "currency_code": "GBP"
+                        }
+                    }
+                }
+            ],
+            "note": null,
+            "updated_at": "2023-02-10T12:16:07.251Z",
+            "created_at": "2023-02-10T12:05:04.402Z"
+        },
+        "output": {
+            "outputToSource": {
+                "body": "T0s=",
+                "contentType": "text/plain"
+            },
+            "statusCode": 200
+        }
+    },
+    {
+        "description": "Rudder Identifier Event",
+        "input": {
+            "event": "rudderIdentifier",
+            "anonymousId": "b9993cc5-9e60-4e69-be0e-4e38c228314b",
+            "cartToken": "shopify_test1",
+            "query_parameters": {
+                "writeKey": [
+                    "Shopify Write Key"
+                ]
+            },
+            "cart": {
+                "token": "token",
+                "id": "id",
+                "updated_at": "2023-02-10T07:44:06-05:00",
+                "line_items": []
+            }
+        },
+        "output": {
+            "outputToSource": {
+                "body": "T0s=",
+                "contentType": "text/plain"
+            },
+            "statusCode": 200
+        }
+    }
+]

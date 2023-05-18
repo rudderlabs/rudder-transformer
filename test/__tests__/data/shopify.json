@@ -1,809 +1,843 @@
 [
-  {
-    "description": "Track Call -> carts_create with invalid cartToken",
-    "input": {
-      "id": "shopify_test3",
-      "query_parameters": {
-        "topic": ["carts_create"]
-      },
-      "token": "shopify_test3",
-      "line_items": [],
-      "note": null,
-      "updated_at": "2023-02-10T12:16:07.251Z",
-      "created_at": "2023-02-10T12:05:04.402Z"
-    },
-    "output": {
-      "context": {
-        "library": {
-          "name": "RudderStack Shopify Cloud",
-          "version": "1.0.0"
+    {
+        "description": "Track Call -> carts_create with invalid cartToken",
+        "input": {
+            "id": "shopify_test3",
+            "query_parameters": {
+                "topic": [
+                    "carts_create"
+                ]
+            },
+            "token": "shopify_test3",
+            "line_items": [],
+            "note": null,
+            "updated_at": "2023-02-10T12:16:07.251Z",
+            "created_at": "2023-02-10T12:05:04.402Z"
         },
-        "integration": {
-          "name": "SHOPIFY"
-        },
-        "topic": "carts_create"
-      },
-      "event": "Cart Create",
-      "integrations": {
-        "SHOPIFY": true
-      },
-      "type": "track",
-      "properties": {
-        "created_at": "2023-02-10T12:05:04.402Z",
-        "id": "shopify_test3",
-        "note": null,
-        "products": [],
-        "token": "shopify_test3",
-        "updated_at": "2023-02-10T12:16:07.251Z"
-      }
-    }
-  },
-  {
-    "description": "No Query Parameters",
-    "input": {},
-    "output": {
-      "error": "Query_parameters is missing"
-    }
-  },
-  {
-    "description": "Invalid topic",
-    "input": {
-      "query_parameters": {
-        "signature": ["rudderstack"],
-        "writeKey": ["sample-write-key"]
-      }
-    },
-    "output": {
-      "error": "Invalid topic in query_parameters"
-    }
-  },
-  {
-    "description": "Topic Not found",
-    "input": {
-      "query_parameters": {
-        "topic": [],
-        "signature": ["rudderstack"],
-        "writeKey": ["sample-write-key"]
-      }
-    },
-    "output": {
-      "error": "Topic not found"
-    }
-  },
-  {
-    "description": "Unsupported Event Type",
-    "input": {
-      "query_parameters": {
-        "topic": ["random_event"],
-        "signature": ["rudderstack"],
-        "writeKey": ["sample-write-key"]
-      }
-    },
-    "output": {
-      "error": "event type random_event not supported"
-    }
-  },
-  {
-    "description": "Identify Call for customers create event",
-    "input": {
-      "query_parameters": {
-        "topic": ["customers_create"],
-        "signature": ["rudderstack"],
-        "writeKey": ["sample-write-key"]
-      },
-      "id": 5747017285820,
-      "email": "anuraj@rudderstack.com",
-      "accepts_marketing": false,
-      "created_at": "2021-12-29T15:15:19+05:30",
-      "updated_at": "2021-12-29T15:15:20+05:30",
-      "first_name": "Anuraj",
-      "last_name": "Guha",
-      "orders_count": 0,
-      "state": "disabled",
-      "total_spent": "0.00",
-      "last_order_id": null,
-      "note": "",
-      "verified_email": true,
-      "multipass_identifier": null,
-      "tax_exempt": false,
-      "phone": "+919876543210",
-      "tags": "",
-      "last_order_name": null,
-      "currency": "INR",
-      "addresses": [
-        {
-          "id": 6947581821116,
-          "customer_id": 5747017285820,
-          "first_name": "Anuraj",
-          "last_name": "Guha",
-          "company": "Rudderstack",
-          "address1": "Home",
-          "address2": "Apartment",
-          "city": "Kolkata",
-          "province": "West Bengal",
-          "country": "India",
-          "zip": "708091",
-          "phone": "+919876543210",
-          "name": "Anuraj Guha",
-          "province_code": "WB",
-          "country_code": "IN",
-          "country_name": "India",
-          "default": true
+        "output": {
+            "error": "event type carts_create not supported"
         }
-      ],
-      "accepts_marketing_updated_at": "2021-12-29T15:15:20+05:30",
-      "marketing_opt_in_level": null,
-      "tax_exemptions": [],
-      "sms_marketing_consent": {
-        "state": "not_subscribed",
-        "opt_in_level": "single_opt_in",
-        "consent_updated_at": null,
-        "consent_collected_from": "SHOPIFY"
-      },
-      "admin_graphql_api_id": "gid://shopify/Customer/5747017285820",
-      "default_address": {
-        "id": 6947581821116,
-        "customer_id": 5747017285820,
-        "first_name": "Anuraj",
-        "last_name": "Guha",
-        "company": "Rudderstack",
-        "address1": "Home",
-        "address2": "Apartment",
-        "city": "Kolkata",
-        "province": "West Bengal",
-        "country": "India",
-        "zip": "708091",
-        "phone": "+919876543210",
-        "name": "Anuraj Guha",
-        "province_code": "WB",
-        "country_code": "IN",
-        "country_name": "India",
-        "default": true
-      }
     },
-    "output": {
-      "context": {
-        "library": {
-          "name": "RudderStack Shopify Cloud",
-          "version": "1.0.0"
+    {
+        "description": "No Query Parameters",
+        "input": {},
+        "output": {
+            "error": "Query_parameters is missing"
+        }
+    },
+    {
+        "description": "Invalid topic",
+        "input": {
+            "query_parameters": {
+                "signature": [
+                    "rudderstack"
+                ],
+                "writeKey": [
+                    "sample-write-key"
+                ]
+            }
         },
-        "integration": {
-          "name": "SHOPIFY"
+        "output": {
+            "error": "Invalid topic in query_parameters"
+        }
+    },
+    {
+        "description": "Topic Not found",
+        "input": {
+            "query_parameters": {
+                "topic": [],
+                "signature": [
+                    "rudderstack"
+                ],
+                "writeKey": [
+                    "sample-write-key"
+                ]
+            }
         },
-        "topic": "customers_create"
-      },
-      "integrations": {
-        "SHOPIFY": true
-      },
-      "type": "identify",
-      "userId": "5747017285820",
-      "traits": {
-        "email": "anuraj@rudderstack.com",
-        "firstName": "Anuraj",
-        "lastName": "Guha",
-        "phone": "+919876543210",
-        "addressList": [
-          {
-            "id": 6947581821116,
-            "customer_id": 5747017285820,
+        "output": {
+            "error": "Topic not found"
+        }
+    },
+    {
+        "description": "Unsupported Event Type",
+        "input": {
+            "query_parameters": {
+                "topic": [
+                    "random_event"
+                ],
+                "signature": [
+                    "rudderstack"
+                ],
+                "writeKey": [
+                    "sample-write-key"
+                ]
+            }
+        },
+        "output": {
+            "error": "event type random_event not supported"
+        }
+    },
+    {
+        "description": "Identify Call for customers create event",
+        "input": {
+            "query_parameters": {
+                "topic": [
+                    "customers_create"
+                ],
+                "signature": [
+                    "rudderstack"
+                ],
+                "writeKey": [
+                    "sample-write-key"
+                ]
+            },
+            "id": 5747017285820,
+            "email": "anuraj@rudderstack.com",
+            "accepts_marketing": false,
+            "created_at": "2021-12-29T15:15:19+05:30",
+            "updated_at": "2021-12-29T15:15:20+05:30",
             "first_name": "Anuraj",
             "last_name": "Guha",
-            "company": "Rudderstack",
-            "address1": "Home",
-            "address2": "Apartment",
-            "city": "Kolkata",
-            "province": "West Bengal",
-            "country": "India",
-            "zip": "708091",
+            "orders_count": 0,
+            "state": "disabled",
+            "total_spent": "0.00",
+            "last_order_id": null,
+            "note": "",
+            "verified_email": true,
+            "multipass_identifier": null,
+            "tax_exempt": false,
             "phone": "+919876543210",
-            "name": "Anuraj Guha",
-            "province_code": "WB",
-            "country_code": "IN",
-            "country_name": "India",
-            "default": true
-          }
-        ],
-        "address": {
-          "id": 6947581821116,
-          "customer_id": 5747017285820,
-          "first_name": "Anuraj",
-          "last_name": "Guha",
-          "company": "Rudderstack",
-          "address1": "Home",
-          "address2": "Apartment",
-          "city": "Kolkata",
-          "province": "West Bengal",
-          "country": "India",
-          "zip": "708091",
-          "phone": "+919876543210",
-          "name": "Anuraj Guha",
-          "province_code": "WB",
-          "country_code": "IN",
-          "country_name": "India",
-          "default": true
-        },
-        "acceptsMarketing": false,
-        "orderCount": 0,
-        "state": "disabled",
-        "totalSpent": "0.00",
-        "note": "",
-        "verifiedEmail": true,
-        "taxExempt": false,
-        "tags": "",
-        "currency": "INR",
-        "taxExemptions": [],
-        "smsMarketingConsent": {
-          "state": "not_subscribed",
-          "opt_in_level": "single_opt_in",
-          "consent_updated_at": null,
-          "consent_collected_from": "SHOPIFY"
-        },
-        "adminGraphqlApiId": "gid://shopify/Customer/5747017285820",
-        "acceptsMarketingUpdatedAt": "2021-12-29T15:15:20+05:30"
-      },
-      "timestamp": "2021-12-29T09:45:20.000Z"
-    }
-  },
-  {
-    "description": "Unsupported checkout event",
-    "input": {
-      "query_parameters": {
-        "topic": ["checkout_delete"],
-        "writeKey": ["sample-write-key"],
-        "signature": ["rudderstack"]
-      },
-      "admin_graphql_api_id": "gid://shopify/Fulfillment/4124667937024",
-      "created_at": "2022-01-05T18:13:02+05:30",
-      "destination": null,
-      "id": 4124667937024,
-      "line_items": [],
-      "customer": {
-        "email": "test_person@email.com",
-        "first_name": "Test",
-        "last_name": "Person"
-      },
-      "billing_address": {
-        "address1": "11 Rani Sankari Lane Patuapara Bhowanipore"
-      },
-      "shipping_address": {
-        "address1": "11 Rani Sankari Lane Patuapara Bhowanipore"
-      },
-      "location_id": 66855371008,
-      "name": "#1002.1",
-      "order_id": 4617255092480,
-      "origin_address": null,
-      "receipt": {},
-      "service": "manual",
-      "shipment_status": null,
-      "status": "success",
-      "tracking_company": "Amazon Logistics UK",
-      "tracking_number": "Sample001test",
-      "tracking_numbers": ["Sample001test"],
-      "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
-      "tracking_urls": ["https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"],
-      "updated_at": "2022-01-05T18:16:48+05:30"
-    },
-    "output": {
-      "error": "event type checkout_delete not supported"
-    }
-  },
-  {
-    "description": "Track Call -> Fullfillments updated event",
-    "input": {
-      "query_parameters": {
-        "topic": ["fulfillments_update"],
-        "writeKey": ["sample-write-key"],
-        "signature": ["rudderstack"]
-      },
-      "admin_graphql_api_id": "gid://shopify/Fulfillment/4124667937024",
-      "created_at": "2022-01-05T18:13:02+05:30",
-      "destination": null,
-      "email": "test_person@email.com",
-      "id": 4124667937024,
-      "line_items": [
-        {
-          "admin_graphql_api_id": "gid://shopify/LineItem/11896203149568",
-          "discount_allocations": [],
-          "duties": [],
-          "fulfillable_quantity": 0,
-          "fulfillment_service": "manual",
-          "fulfillment_status": "fulfilled",
-          "gift_card": false,
-          "grams": 0,
-          "id": 11896203149568,
-          "name": "p1",
-          "origin_location": {
-            "address1": "74 CC/7, Anupama Housing Estate - II",
-            "address2": "",
-            "city": "Kolkatta",
-            "country_code": "IN",
-            "id": 3373642219776,
-            "name": "74 CC/7, Anupama Housing Estate - II",
-            "province_code": "WB",
-            "zip": "700052"
-          },
-          "price": "5000.00",
-          "price_set": {
-            "presentment_money": {
-              "amount": "5000.00",
-              "currency_code": "INR"
-            },
-            "shop_money": {
-              "amount": "5000.00",
-              "currency_code": "INR"
-            }
-          },
-          "product_exists": true,
-          "product_id": 7510929801472,
-          "properties": [],
-          "quantity": 1,
-          "requires_shipping": true,
-          "sku": "15",
-          "tax_lines": [
-            {
-              "channel_liable": false,
-              "price": "900.00",
-              "price_set": {
-                "presentment_money": {
-                  "amount": "900.00",
-                  "currency_code": "INR"
-                },
-                "shop_money": {
-                  "amount": "900.00",
-                  "currency_code": "INR"
+            "tags": "",
+            "last_order_name": null,
+            "currency": "INR",
+            "addresses": [
+                {
+                    "id": 6947581821116,
+                    "customer_id": 5747017285820,
+                    "first_name": "Anuraj",
+                    "last_name": "Guha",
+                    "company": "Rudderstack",
+                    "address1": "Home",
+                    "address2": "Apartment",
+                    "city": "Kolkata",
+                    "province": "West Bengal",
+                    "country": "India",
+                    "zip": "708091",
+                    "phone": "+919876543210",
+                    "name": "Anuraj Guha",
+                    "province_code": "WB",
+                    "country_code": "IN",
+                    "country_name": "India",
+                    "default": true
                 }
-              },
-              "rate": 0.18,
-              "title": "IGST"
-            }
-          ],
-          "taxable": true,
-          "title": "p1",
-          "total_discount": "0.00",
-          "total_discount_set": {
-            "presentment_money": {
-              "amount": "0.00",
-              "currency_code": "INR"
-            },
-            "shop_money": {
-              "amount": "0.00",
-              "currency_code": "INR"
-            }
-          },
-          "variant_id": 42211160228096,
-          "variant_inventory_management": "shopify",
-          "variant_title": "",
-          "vendor": "rudderstack-store"
-        }
-      ],
-      "location_id": 66855371008,
-      "name": "#1002.1",
-      "order_id": 4617255092480,
-      "origin_address": null,
-      "receipt": {},
-      "service": "manual",
-      "shipment_status": null,
-      "status": "success",
-      "tracking_company": "Amazon Logistics UK",
-      "tracking_number": "Sample001test",
-      "tracking_numbers": ["Sample001test"],
-      "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
-      "tracking_urls": ["https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"],
-      "updated_at": "2022-01-05T18:16:48+05:30"
-    },
-    "output": {
-      "context": {
-        "library": {
-          "name": "RudderStack Shopify Cloud",
-          "version": "1.0.0"
-        },
-        "integration": {
-          "name": "SHOPIFY"
-        },
-        "topic": "fulfillments_update"
-      },
-      "integrations": {
-        "SHOPIFY": true
-      },
-      "type": "track",
-      "userId": "shopify-admin",
-      "event": "Fulfillments Update",
-      "properties": {
-        "admin_graphql_api_id": "gid://shopify/Fulfillment/4124667937024",
-        "created_at": "2022-01-05T18:13:02+05:30",
-        "destination": null,
-        "email": "test_person@email.com",
-        "id": 4124667937024,
-        "location_id": 66855371008,
-        "name": "#1002.1",
-        "order_id": 4617255092480,
-        "origin_address": null,
-        "receipt": {},
-        "service": "manual",
-        "shipment_status": null,
-        "status": "success",
-        "tracking_company": "Amazon Logistics UK",
-        "tracking_number": "Sample001test",
-        "tracking_numbers": ["Sample001test"],
-        "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
-        "tracking_urls": [
-          "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
-        ],
-        "updated_at": "2022-01-05T18:16:48+05:30",
-        "products": [
-          {
-            "product_id": 7510929801472,
-            "sku": "15",
-            "title": "p1",
-            "price": "5000.00",
-            "brand": "rudderstack-store",
-            "quantity": 1,
-            "admin_graphql_api_id": "gid://shopify/LineItem/11896203149568",
-            "discount_allocations": [],
-            "duties": [],
-            "fulfillable_quantity": 0,
-            "fulfillment_service": "manual",
-            "fulfillment_status": "fulfilled",
-            "gift_card": false,
-            "grams": 0,
-            "id": 11896203149568,
-            "origin_location": {
-              "address1": "74 CC/7, Anupama Housing Estate - II",
-              "address2": "",
-              "city": "Kolkatta",
-              "country_code": "IN",
-              "id": 3373642219776,
-              "name": "74 CC/7, Anupama Housing Estate - II",
-              "province_code": "WB",
-              "zip": "700052"
-            },
-            "price_set": {
-              "presentment_money": {
-                "amount": "5000.00",
-                "currency_code": "INR"
-              },
-              "shop_money": {
-                "amount": "5000.00",
-                "currency_code": "INR"
-              }
-            },
-            "product_exists": true,
-            "properties": [],
-            "requires_shipping": true,
-            "tax_lines": [
-              {
-                "channel_liable": false,
-                "price": "900.00",
-                "price_set": {
-                  "presentment_money": {
-                    "amount": "900.00",
-                    "currency_code": "INR"
-                  },
-                  "shop_money": {
-                    "amount": "900.00",
-                    "currency_code": "INR"
-                  }
-                },
-                "rate": 0.18,
-                "title": "IGST"
-              }
             ],
-            "taxable": true,
-            "total_discount": "0.00",
-            "total_discount_set": {
-              "presentment_money": {
-                "amount": "0.00",
-                "currency_code": "INR"
-              },
-              "shop_money": {
-                "amount": "0.00",
-                "currency_code": "INR"
-              }
+            "accepts_marketing_updated_at": "2021-12-29T15:15:20+05:30",
+            "marketing_opt_in_level": null,
+            "tax_exemptions": [],
+            "sms_marketing_consent": {
+                "state": "not_subscribed",
+                "opt_in_level": "single_opt_in",
+                "consent_updated_at": null,
+                "consent_collected_from": "SHOPIFY"
             },
-            "variant_inventory_management": "shopify",
-            "variant": "42211160228096  "
-          }
-        ]
-      },
-      "traits": {
-        "email": "test_person@email.com"
-      }
-    }
-  },
-  {
-    "description": "Track Call -> Fullfillments updated event with traits",
-    "input": {
-      "query_parameters": {
-        "topic": ["fulfillments_update"],
-        "writeKey": ["sample-write-key"],
-        "signature": ["rudderstack"]
-      },
-      "admin_graphql_api_id": "gid://shopify/Fulfillment/4124667937024",
-      "created_at": "2022-01-05T18:13:02+05:30",
-      "destination": null,
-      "id": 4124667937024,
-      "line_items": [
-        {
-          "admin_graphql_api_id": "gid://shopify/LineItem/11896203149568",
-          "discount_allocations": [],
-          "duties": [],
-          "fulfillable_quantity": 0,
-          "fulfillment_service": "manual",
-          "fulfillment_status": "fulfilled",
-          "gift_card": false,
-          "grams": 0,
-          "id": 11896203149568,
-          "name": "p1",
-          "origin_location": {
-            "address1": "74 CC/7, Anupama Housing Estate - II",
-            "address2": "",
-            "city": "Kolkatta",
-            "country_code": "IN",
-            "id": 3373642219776,
-            "name": "74 CC/7, Anupama Housing Estate - II",
-            "province_code": "WB",
-            "zip": "700052"
-          },
-          "price": "5000.00",
-          "price_set": {
-            "presentment_money": {
-              "amount": "5000.00",
-              "currency_code": "INR"
-            },
-            "shop_money": {
-              "amount": "5000.00",
-              "currency_code": "INR"
+            "admin_graphql_api_id": "gid://shopify/Customer/5747017285820",
+            "default_address": {
+                "id": 6947581821116,
+                "customer_id": 5747017285820,
+                "first_name": "Anuraj",
+                "last_name": "Guha",
+                "company": "Rudderstack",
+                "address1": "Home",
+                "address2": "Apartment",
+                "city": "Kolkata",
+                "province": "West Bengal",
+                "country": "India",
+                "zip": "708091",
+                "phone": "+919876543210",
+                "name": "Anuraj Guha",
+                "province_code": "WB",
+                "country_code": "IN",
+                "country_name": "India",
+                "default": true
             }
-          },
-          "product_exists": true,
-          "product_id": 7510929801472,
-          "properties": [],
-          "quantity": 1,
-          "requires_shipping": true,
-          "sku": "15",
-          "tax_lines": [
-            {
-              "channel_liable": false,
-              "price": "900.00",
-              "price_set": {
-                "presentment_money": {
-                  "amount": "900.00",
-                  "currency_code": "INR"
+        },
+        "output": {
+            "context": {
+                "library": {
+                    "name": "RudderStack Shopify Cloud",
+                    "version": "1.0.0"
                 },
-                "shop_money": {
-                  "amount": "900.00",
-                  "currency_code": "INR"
+                "integration": {
+                    "name": "SHOPIFY"
+                },
+                "topic": "customers_create"
+            },
+            "integrations": {
+                "SHOPIFY": true
+            },
+            "type": "identify",
+            "userId": "5747017285820",
+            "traits": {
+                "email": "anuraj@rudderstack.com",
+                "firstName": "Anuraj",
+                "lastName": "Guha",
+                "phone": "+919876543210",
+                "addressList": [
+                    {
+                        "id": 6947581821116,
+                        "customer_id": 5747017285820,
+                        "first_name": "Anuraj",
+                        "last_name": "Guha",
+                        "company": "Rudderstack",
+                        "address1": "Home",
+                        "address2": "Apartment",
+                        "city": "Kolkata",
+                        "province": "West Bengal",
+                        "country": "India",
+                        "zip": "708091",
+                        "phone": "+919876543210",
+                        "name": "Anuraj Guha",
+                        "province_code": "WB",
+                        "country_code": "IN",
+                        "country_name": "India",
+                        "default": true
+                    }
+                ],
+                "address": {
+                    "id": 6947581821116,
+                    "customer_id": 5747017285820,
+                    "first_name": "Anuraj",
+                    "last_name": "Guha",
+                    "company": "Rudderstack",
+                    "address1": "Home",
+                    "address2": "Apartment",
+                    "city": "Kolkata",
+                    "province": "West Bengal",
+                    "country": "India",
+                    "zip": "708091",
+                    "phone": "+919876543210",
+                    "name": "Anuraj Guha",
+                    "province_code": "WB",
+                    "country_code": "IN",
+                    "country_name": "India",
+                    "default": true
+                },
+                "acceptsMarketing": false,
+                "orderCount": 0,
+                "state": "disabled",
+                "totalSpent": "0.00",
+                "note": "",
+                "verifiedEmail": true,
+                "taxExempt": false,
+                "tags": "",
+                "currency": "INR",
+                "taxExemptions": [],
+                "smsMarketingConsent": {
+                    "state": "not_subscribed",
+                    "opt_in_level": "single_opt_in",
+                    "consent_updated_at": null,
+                    "consent_collected_from": "SHOPIFY"
+                },
+                "adminGraphqlApiId": "gid://shopify/Customer/5747017285820",
+                "acceptsMarketingUpdatedAt": "2021-12-29T15:15:20+05:30"
+            },
+            "timestamp": "2021-12-29T09:45:20.000Z"
+        }
+    },
+    {
+        "description": "Unsupported checkout event",
+        "input": {
+            "query_parameters": {
+                "topic": [
+                    "checkout_delete"
+                ],
+                "writeKey": [
+                    "sample-write-key"
+                ],
+                "signature": [
+                    "rudderstack"
+                ]
+            },
+            "admin_graphql_api_id": "gid://shopify/Fulfillment/4124667937024",
+            "created_at": "2022-01-05T18:13:02+05:30",
+            "destination": null,
+            "id": 4124667937024,
+            "line_items": [],
+            "customer": {
+                "email": "test_person@email.com",
+                "first_name": "Test",
+                "last_name": "Person"
+            },
+            "billing_address": {
+                "address1": "11 Rani Sankari Lane Patuapara Bhowanipore"
+            },
+            "shipping_address": {
+                "address1": "11 Rani Sankari Lane Patuapara Bhowanipore"
+            },
+            "location_id": 66855371008,
+            "name": "#1002.1",
+            "order_id": 4617255092480,
+            "origin_address": null,
+            "receipt": {},
+            "service": "manual",
+            "shipment_status": null,
+            "status": "success",
+            "tracking_company": "Amazon Logistics UK",
+            "tracking_number": "Sample001test",
+            "tracking_numbers": [
+                "Sample001test"
+            ],
+            "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
+            "tracking_urls": [
+                "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
+            ],
+            "updated_at": "2022-01-05T18:16:48+05:30"
+        },
+        "output": {
+            "error": "event type checkout_delete not supported"
+        }
+    },
+    {
+        "description": "Track Call -> Fullfillments updated event",
+        "input": {
+            "query_parameters": {
+                "topic": [
+                    "fulfillments_update"
+                ],
+                "writeKey": [
+                    "sample-write-key"
+                ],
+                "signature": [
+                    "rudderstack"
+                ]
+            },
+            "admin_graphql_api_id": "gid://shopify/Fulfillment/4124667937024",
+            "created_at": "2022-01-05T18:13:02+05:30",
+            "destination": null,
+            "email": "test_person@email.com",
+            "id": 4124667937024,
+            "line_items": [
+                {
+                    "admin_graphql_api_id": "gid://shopify/LineItem/11896203149568",
+                    "discount_allocations": [],
+                    "duties": [],
+                    "fulfillable_quantity": 0,
+                    "fulfillment_service": "manual",
+                    "fulfillment_status": "fulfilled",
+                    "gift_card": false,
+                    "grams": 0,
+                    "id": 11896203149568,
+                    "name": "p1",
+                    "origin_location": {
+                        "address1": "74 CC/7, Anupama Housing Estate - II",
+                        "address2": "",
+                        "city": "Kolkatta",
+                        "country_code": "IN",
+                        "id": 3373642219776,
+                        "name": "74 CC/7, Anupama Housing Estate - II",
+                        "province_code": "WB",
+                        "zip": "700052"
+                    },
+                    "price": "5000.00",
+                    "price_set": {
+                        "presentment_money": {
+                            "amount": "5000.00",
+                            "currency_code": "INR"
+                        },
+                        "shop_money": {
+                            "amount": "5000.00",
+                            "currency_code": "INR"
+                        }
+                    },
+                    "product_exists": true,
+                    "product_id": 7510929801472,
+                    "properties": [],
+                    "quantity": 1,
+                    "requires_shipping": true,
+                    "sku": "15",
+                    "tax_lines": [
+                        {
+                            "channel_liable": false,
+                            "price": "900.00",
+                            "price_set": {
+                                "presentment_money": {
+                                    "amount": "900.00",
+                                    "currency_code": "INR"
+                                },
+                                "shop_money": {
+                                    "amount": "900.00",
+                                    "currency_code": "INR"
+                                }
+                            },
+                            "rate": 0.18,
+                            "title": "IGST"
+                        }
+                    ],
+                    "taxable": true,
+                    "title": "p1",
+                    "total_discount": "0.00",
+                    "total_discount_set": {
+                        "presentment_money": {
+                            "amount": "0.00",
+                            "currency_code": "INR"
+                        },
+                        "shop_money": {
+                            "amount": "0.00",
+                            "currency_code": "INR"
+                        }
+                    },
+                    "variant_id": 42211160228096,
+                    "variant_inventory_management": "shopify",
+                    "variant_title": "",
+                    "vendor": "rudderstack-store"
                 }
-              },
-              "rate": 0.18,
-              "title": "IGST"
-            }
-          ],
-          "taxable": true,
-          "title": "p1",
-          "total_discount": "0.00",
-          "total_discount_set": {
-            "presentment_money": {
-              "amount": "0.00",
-              "currency_code": "INR"
-            },
-            "shop_money": {
-              "amount": "0.00",
-              "currency_code": "INR"
-            }
-          },
-          "variant_id": 42211160228096,
-          "variant_inventory_management": "shopify",
-          "variant_title": "",
-          "vendor": "rudderstack-store"
-        }
-      ],
-      "customer": {
-        "email": "test_person@email.com",
-        "first_name": "Test",
-        "last_name": "Person"
-      },
-      "billing_address": {
-        "address1": "11 Rani Sankari Lane Patuapara Bhowanipore",
-        "address2": "",
-        "city": "Kolkata",
-        "company": null,
-        "country": "India",
-        "country_code": "IN",
-        "first_name": "Utsab",
-        "last_name": "Chowdhury",
-        "latitude": null,
-        "longitude": null,
-        "name": "Utsab Chowdhury",
-        "phone": null,
-        "province": "West Bengal",
-        "province_code": "WB",
-        "zip": "700025"
-      },
-      "shipping_address": {
-        "address1": "11 Rani Sankari Lane Patuapara Bhowanipore",
-        "address2": "",
-        "city": "Kolkata",
-        "company": null,
-        "country": "India",
-        "country_code": "IN",
-        "first_name": "Utsab",
-        "last_name": "Chowdhury",
-        "latitude": null,
-        "longitude": null,
-        "name": "Utsab Chowdhury",
-        "phone": null,
-        "province": "West Bengal",
-        "province_code": "WB",
-        "zip": "700025"
-      },
-      "location_id": 66855371008,
-      "name": "#1002.1",
-      "order_id": 4617255092480,
-      "origin_address": null,
-      "receipt": {},
-      "service": "manual",
-      "shipment_status": null,
-      "status": "success",
-      "tracking_company": "Amazon Logistics UK",
-      "tracking_number": "Sample001test",
-      "tracking_numbers": ["Sample001test"],
-      "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
-      "tracking_urls": ["https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"],
-      "updated_at": "2022-01-05T18:16:48+05:30"
-    },
-    "output": {
-      "context": {
-        "library": {
-          "name": "RudderStack Shopify Cloud",
-          "version": "1.0.0"
-        },
-        "integration": {
-          "name": "SHOPIFY"
-        },
-        "topic": "fulfillments_update"
-      },
-      "integrations": {
-        "SHOPIFY": true
-      },
-      "type": "track",
-      "event": "Fulfillments Update",
-      "userId": "shopify-admin",
-      "properties": {
-        "admin_graphql_api_id": "gid://shopify/Fulfillment/4124667937024",
-        "created_at": "2022-01-05T18:13:02+05:30",
-        "destination": null,
-        "id": 4124667937024,
-        "location_id": 66855371008,
-        "name": "#1002.1",
-        "order_id": 4617255092480,
-        "origin_address": null,
-        "receipt": {},
-        "service": "manual",
-        "shipment_status": null,
-        "status": "success",
-        "tracking_company": "Amazon Logistics UK",
-        "tracking_number": "Sample001test",
-        "tracking_numbers": ["Sample001test"],
-        "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
-        "tracking_urls": [
-          "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
-        ],
-        "updated_at": "2022-01-05T18:16:48+05:30",
-        "products": [
-          {
-            "product_id": 7510929801472,
-            "sku": "15",
-            "title": "p1",
-            "price": "5000.00",
-            "brand": "rudderstack-store",
-            "quantity": 1,
-            "admin_graphql_api_id": "gid://shopify/LineItem/11896203149568",
-            "discount_allocations": [],
-            "duties": [],
-            "fulfillable_quantity": 0,
-            "fulfillment_service": "manual",
-            "fulfillment_status": "fulfilled",
-            "gift_card": false,
-            "grams": 0,
-            "id": 11896203149568,
-            "origin_location": {
-              "address1": "74 CC/7, Anupama Housing Estate - II",
-              "address2": "",
-              "city": "Kolkatta",
-              "country_code": "IN",
-              "id": 3373642219776,
-              "name": "74 CC/7, Anupama Housing Estate - II",
-              "province_code": "WB",
-              "zip": "700052"
-            },
-            "price_set": {
-              "presentment_money": {
-                "amount": "5000.00",
-                "currency_code": "INR"
-              },
-              "shop_money": {
-                "amount": "5000.00",
-                "currency_code": "INR"
-              }
-            },
-            "product_exists": true,
-            "properties": [],
-            "requires_shipping": true,
-            "tax_lines": [
-              {
-                "channel_liable": false,
-                "price": "900.00",
-                "price_set": {
-                  "presentment_money": {
-                    "amount": "900.00",
-                    "currency_code": "INR"
-                  },
-                  "shop_money": {
-                    "amount": "900.00",
-                    "currency_code": "INR"
-                  }
-                },
-                "rate": 0.18,
-                "title": "IGST"
-              }
             ],
-            "taxable": true,
-            "total_discount": "0.00",
-            "total_discount_set": {
-              "presentment_money": {
-                "amount": "0.00",
-                "currency_code": "INR"
-              },
-              "shop_money": {
-                "amount": "0.00",
-                "currency_code": "INR"
-              }
-            },
-            "variant_inventory_management": "shopify",
-            "variant": "42211160228096  "
-          }
-        ]
-      },
-      "traits": {
-        "email": "test_person@email.com",
-        "firstName": "Test",
-        "lastName": "Person",
-        "shippingAddress": {
-          "address1": "11 Rani Sankari Lane Patuapara Bhowanipore",
-          "address2": "",
-          "city": "Kolkata",
-          "company": null,
-          "country": "India",
-          "country_code": "IN",
-          "first_name": "Utsab",
-          "last_name": "Chowdhury",
-          "latitude": null,
-          "longitude": null,
-          "name": "Utsab Chowdhury",
-          "phone": null,
-          "province": "West Bengal",
-          "province_code": "WB",
-          "zip": "700025"
+            "location_id": 66855371008,
+            "name": "#1002.1",
+            "order_id": 4617255092480,
+            "origin_address": null,
+            "receipt": {},
+            "service": "manual",
+            "shipment_status": null,
+            "status": "success",
+            "tracking_company": "Amazon Logistics UK",
+            "tracking_number": "Sample001test",
+            "tracking_numbers": [
+                "Sample001test"
+            ],
+            "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
+            "tracking_urls": [
+                "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
+            ],
+            "updated_at": "2022-01-05T18:16:48+05:30"
         },
-        "billingAddress": {
-          "address1": "11 Rani Sankari Lane Patuapara Bhowanipore",
-          "address2": "",
-          "city": "Kolkata",
-          "company": null,
-          "country": "India",
-          "country_code": "IN",
-          "first_name": "Utsab",
-          "last_name": "Chowdhury",
-          "latitude": null,
-          "longitude": null,
-          "name": "Utsab Chowdhury",
-          "phone": null,
-          "province": "West Bengal",
-          "province_code": "WB",
-          "zip": "700025"
+        "output": {
+            "context": {
+                "library": {
+                    "name": "RudderStack Shopify Cloud",
+                    "version": "1.0.0"
+                },
+                "integration": {
+                    "name": "SHOPIFY"
+                },
+                "topic": "fulfillments_update"
+            },
+            "integrations": {
+                "SHOPIFY": true
+            },
+            "type": "track",
+            "userId": "shopify-admin",
+            "event": "Fulfillments Update",
+            "properties": {
+                "admin_graphql_api_id": "gid://shopify/Fulfillment/4124667937024",
+                "created_at": "2022-01-05T18:13:02+05:30",
+                "destination": null,
+                "email": "test_person@email.com",
+                "id": 4124667937024,
+                "location_id": 66855371008,
+                "name": "#1002.1",
+                "order_id": 4617255092480,
+                "origin_address": null,
+                "receipt": {},
+                "service": "manual",
+                "shipment_status": null,
+                "status": "success",
+                "tracking_company": "Amazon Logistics UK",
+                "tracking_number": "Sample001test",
+                "tracking_numbers": [
+                    "Sample001test"
+                ],
+                "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
+                "tracking_urls": [
+                    "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
+                ],
+                "updated_at": "2022-01-05T18:16:48+05:30",
+                "products": [
+                    {
+                        "product_id": 7510929801472,
+                        "sku": "15",
+                        "title": "p1",
+                        "price": "5000.00",
+                        "brand": "rudderstack-store",
+                        "quantity": 1,
+                        "admin_graphql_api_id": "gid://shopify/LineItem/11896203149568",
+                        "discount_allocations": [],
+                        "duties": [],
+                        "fulfillable_quantity": 0,
+                        "fulfillment_service": "manual",
+                        "fulfillment_status": "fulfilled",
+                        "gift_card": false,
+                        "grams": 0,
+                        "id": 11896203149568,
+                        "origin_location": {
+                            "address1": "74 CC/7, Anupama Housing Estate - II",
+                            "address2": "",
+                            "city": "Kolkatta",
+                            "country_code": "IN",
+                            "id": 3373642219776,
+                            "name": "74 CC/7, Anupama Housing Estate - II",
+                            "province_code": "WB",
+                            "zip": "700052"
+                        },
+                        "price_set": {
+                            "presentment_money": {
+                                "amount": "5000.00",
+                                "currency_code": "INR"
+                            },
+                            "shop_money": {
+                                "amount": "5000.00",
+                                "currency_code": "INR"
+                            }
+                        },
+                        "product_exists": true,
+                        "properties": [],
+                        "requires_shipping": true,
+                        "tax_lines": [
+                            {
+                                "channel_liable": false,
+                                "price": "900.00",
+                                "price_set": {
+                                    "presentment_money": {
+                                        "amount": "900.00",
+                                        "currency_code": "INR"
+                                    },
+                                    "shop_money": {
+                                        "amount": "900.00",
+                                        "currency_code": "INR"
+                                    }
+                                },
+                                "rate": 0.18,
+                                "title": "IGST"
+                            }
+                        ],
+                        "taxable": true,
+                        "total_discount": "0.00",
+                        "total_discount_set": {
+                            "presentment_money": {
+                                "amount": "0.00",
+                                "currency_code": "INR"
+                            },
+                            "shop_money": {
+                                "amount": "0.00",
+                                "currency_code": "INR"
+                            }
+                        },
+                        "variant_inventory_management": "shopify",
+                        "variant": "42211160228096  "
+                    }
+                ]
+            },
+            "traits": {
+                "email": "test_person@email.com"
+            }
         }
-      }
+    },
+    {
+        "description": "Track Call -> Fullfillments updated event with traits",
+        "input": {
+            "query_parameters": {
+                "topic": [
+                    "fulfillments_update"
+                ],
+                "writeKey": [
+                    "sample-write-key"
+                ],
+                "signature": [
+                    "rudderstack"
+                ]
+            },
+            "admin_graphql_api_id": "gid://shopify/Fulfillment/4124667937024",
+            "created_at": "2022-01-05T18:13:02+05:30",
+            "destination": null,
+            "id": 4124667937024,
+            "line_items": [
+                {
+                    "admin_graphql_api_id": "gid://shopify/LineItem/11896203149568",
+                    "discount_allocations": [],
+                    "duties": [],
+                    "fulfillable_quantity": 0,
+                    "fulfillment_service": "manual",
+                    "fulfillment_status": "fulfilled",
+                    "gift_card": false,
+                    "grams": 0,
+                    "id": 11896203149568,
+                    "name": "p1",
+                    "origin_location": {
+                        "address1": "74 CC/7, Anupama Housing Estate - II",
+                        "address2": "",
+                        "city": "Kolkatta",
+                        "country_code": "IN",
+                        "id": 3373642219776,
+                        "name": "74 CC/7, Anupama Housing Estate - II",
+                        "province_code": "WB",
+                        "zip": "700052"
+                    },
+                    "price": "5000.00",
+                    "price_set": {
+                        "presentment_money": {
+                            "amount": "5000.00",
+                            "currency_code": "INR"
+                        },
+                        "shop_money": {
+                            "amount": "5000.00",
+                            "currency_code": "INR"
+                        }
+                    },
+                    "product_exists": true,
+                    "product_id": 7510929801472,
+                    "properties": [],
+                    "quantity": 1,
+                    "requires_shipping": true,
+                    "sku": "15",
+                    "tax_lines": [
+                        {
+                            "channel_liable": false,
+                            "price": "900.00",
+                            "price_set": {
+                                "presentment_money": {
+                                    "amount": "900.00",
+                                    "currency_code": "INR"
+                                },
+                                "shop_money": {
+                                    "amount": "900.00",
+                                    "currency_code": "INR"
+                                }
+                            },
+                            "rate": 0.18,
+                            "title": "IGST"
+                        }
+                    ],
+                    "taxable": true,
+                    "title": "p1",
+                    "total_discount": "0.00",
+                    "total_discount_set": {
+                        "presentment_money": {
+                            "amount": "0.00",
+                            "currency_code": "INR"
+                        },
+                        "shop_money": {
+                            "amount": "0.00",
+                            "currency_code": "INR"
+                        }
+                    },
+                    "variant_id": 42211160228096,
+                    "variant_inventory_management": "shopify",
+                    "variant_title": "",
+                    "vendor": "rudderstack-store"
+                }
+            ],
+            "customer": {
+                "email": "test_person@email.com",
+                "first_name": "Test",
+                "last_name": "Person"
+            },
+            "billing_address": {
+                "address1": "11 Rani Sankari Lane Patuapara Bhowanipore",
+                "address2": "",
+                "city": "Kolkata",
+                "company": null,
+                "country": "India",
+                "country_code": "IN",
+                "first_name": "Utsab",
+                "last_name": "Chowdhury",
+                "latitude": null,
+                "longitude": null,
+                "name": "Utsab Chowdhury",
+                "phone": null,
+                "province": "West Bengal",
+                "province_code": "WB",
+                "zip": "700025"
+            },
+            "shipping_address": {
+                "address1": "11 Rani Sankari Lane Patuapara Bhowanipore",
+                "address2": "",
+                "city": "Kolkata",
+                "company": null,
+                "country": "India",
+                "country_code": "IN",
+                "first_name": "Utsab",
+                "last_name": "Chowdhury",
+                "latitude": null,
+                "longitude": null,
+                "name": "Utsab Chowdhury",
+                "phone": null,
+                "province": "West Bengal",
+                "province_code": "WB",
+                "zip": "700025"
+            },
+            "location_id": 66855371008,
+            "name": "#1002.1",
+            "order_id": 4617255092480,
+            "origin_address": null,
+            "receipt": {},
+            "service": "manual",
+            "shipment_status": null,
+            "status": "success",
+            "tracking_company": "Amazon Logistics UK",
+            "tracking_number": "Sample001test",
+            "tracking_numbers": [
+                "Sample001test"
+            ],
+            "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
+            "tracking_urls": [
+                "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
+            ],
+            "updated_at": "2022-01-05T18:16:48+05:30"
+        },
+        "output": {
+            "context": {
+                "library": {
+                    "name": "RudderStack Shopify Cloud",
+                    "version": "1.0.0"
+                },
+                "integration": {
+                    "name": "SHOPIFY"
+                },
+                "topic": "fulfillments_update"
+            },
+            "integrations": {
+                "SHOPIFY": true
+            },
+            "type": "track",
+            "event": "Fulfillments Update",
+            "userId": "shopify-admin",
+            "properties": {
+                "admin_graphql_api_id": "gid://shopify/Fulfillment/4124667937024",
+                "created_at": "2022-01-05T18:13:02+05:30",
+                "destination": null,
+                "id": 4124667937024,
+                "location_id": 66855371008,
+                "name": "#1002.1",
+                "order_id": 4617255092480,
+                "origin_address": null,
+                "receipt": {},
+                "service": "manual",
+                "shipment_status": null,
+                "status": "success",
+                "tracking_company": "Amazon Logistics UK",
+                "tracking_number": "Sample001test",
+                "tracking_numbers": [
+                    "Sample001test"
+                ],
+                "tracking_url": "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530",
+                "tracking_urls": [
+                    "https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=201910530"
+                ],
+                "updated_at": "2022-01-05T18:16:48+05:30",
+                "products": [
+                    {
+                        "product_id": 7510929801472,
+                        "sku": "15",
+                        "title": "p1",
+                        "price": "5000.00",
+                        "brand": "rudderstack-store",
+                        "quantity": 1,
+                        "admin_graphql_api_id": "gid://shopify/LineItem/11896203149568",
+                        "discount_allocations": [],
+                        "duties": [],
+                        "fulfillable_quantity": 0,
+                        "fulfillment_service": "manual",
+                        "fulfillment_status": "fulfilled",
+                        "gift_card": false,
+                        "grams": 0,
+                        "id": 11896203149568,
+                        "origin_location": {
+                            "address1": "74 CC/7, Anupama Housing Estate - II",
+                            "address2": "",
+                            "city": "Kolkatta",
+                            "country_code": "IN",
+                            "id": 3373642219776,
+                            "name": "74 CC/7, Anupama Housing Estate - II",
+                            "province_code": "WB",
+                            "zip": "700052"
+                        },
+                        "price_set": {
+                            "presentment_money": {
+                                "amount": "5000.00",
+                                "currency_code": "INR"
+                            },
+                            "shop_money": {
+                                "amount": "5000.00",
+                                "currency_code": "INR"
+                            }
+                        },
+                        "product_exists": true,
+                        "properties": [],
+                        "requires_shipping": true,
+                        "tax_lines": [
+                            {
+                                "channel_liable": false,
+                                "price": "900.00",
+                                "price_set": {
+                                    "presentment_money": {
+                                        "amount": "900.00",
+                                        "currency_code": "INR"
+                                    },
+                                    "shop_money": {
+                                        "amount": "900.00",
+                                        "currency_code": "INR"
+                                    }
+                                },
+                                "rate": 0.18,
+                                "title": "IGST"
+                            }
+                        ],
+                        "taxable": true,
+                        "total_discount": "0.00",
+                        "total_discount_set": {
+                            "presentment_money": {
+                                "amount": "0.00",
+                                "currency_code": "INR"
+                            },
+                            "shop_money": {
+                                "amount": "0.00",
+                                "currency_code": "INR"
+                            }
+                        },
+                        "variant_inventory_management": "shopify",
+                        "variant": "42211160228096  "
+                    }
+                ]
+            },
+            "traits": {
+                "email": "test_person@email.com",
+                "firstName": "Test",
+                "lastName": "Person",
+                "shippingAddress": {
+                    "address1": "11 Rani Sankari Lane Patuapara Bhowanipore",
+                    "address2": "",
+                    "city": "Kolkata",
+                    "company": null,
+                    "country": "India",
+                    "country_code": "IN",
+                    "first_name": "Utsab",
+                    "last_name": "Chowdhury",
+                    "latitude": null,
+                    "longitude": null,
+                    "name": "Utsab Chowdhury",
+                    "phone": null,
+                    "province": "West Bengal",
+                    "province_code": "WB",
+                    "zip": "700025"
+                },
+                "billingAddress": {
+                    "address1": "11 Rani Sankari Lane Patuapara Bhowanipore",
+                    "address2": "",
+                    "city": "Kolkata",
+                    "company": null,
+                    "country": "India",
+                    "country_code": "IN",
+                    "first_name": "Utsab",
+                    "last_name": "Chowdhury",
+                    "latitude": null,
+                    "longitude": null,
+                    "name": "Utsab Chowdhury",
+                    "phone": null,
+                    "province": "West Bengal",
+                    "province_code": "WB",
+                    "zip": "700025"
+                }
+            }
+        }
     }
-  }
 ]

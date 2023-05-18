@@ -153,6 +153,18 @@ const isReservedWebCustomPrefixName = (event) => {
   return reservedPrefixesNames.some((prefix) => event.toLowerCase().startsWith(prefix));
 };
 
+/**
+ * Validation for event name must start with alphabetic characters only
+ * Ref - https://support.google.com/analytics/answer/13316687?hl=en&ref_topic=13367860&sjid=16827682213264631791-NA
+ * @param {*} eventName 
+ * @returns 
+ */
+const isEventNameStartsWithoutAlphaChar = (eventName) => {
+  // Event name pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/
+  const pattern = /^[A-Za-z]\w*$/;
+  return !pattern.test(eventName);
+}
+
 const GA4_ITEM_EXCLUSION = [
   'item_id',
   'itemId',
@@ -308,6 +320,35 @@ const getGA4CustomParameters = (message, keys, exclusionFields, payload) => {
   return payload.params;
 };
 
+/**
+ * Validation for event name
+ * Ref - https://support.google.com/analytics/answer/13316687?hl=en&ref_topic=13367860&sjid=16827682213264631791-NA
+ * @param {*} event 
+ */
+const validateEventName = (event) => {
+  /**
+   * Event name should not use reserved prefixes and event names
+   * Event names are case sensitive
+   * Event name must start with alphabetic characters only
+   */
+
+  if (isReservedWebCustomEventName(event)) {
+    throw new InstrumentationError('Reserved custom event names are not allowed');
+  }
+
+  if (isReservedWebCustomPrefixName(event)) {
+    throw new InstrumentationError(
+      'Reserved custom prefix names are not allowed',
+    );
+  }
+
+  if (isEventNameStartsWithoutAlphaChar(event)) {
+    throw new InstrumentationError(
+      'Event name must start with an alphabetic character',
+    );
+  }
+}
+
 module.exports = {
   isReservedEventName,
   GA4_RESERVED_PARAMETER_EXCLUSION,
@@ -321,4 +362,5 @@ module.exports = {
   getItem,
   getGA4ExclusionList,
   getGA4CustomParameters,
+  validateEventName,
 };

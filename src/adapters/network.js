@@ -269,7 +269,7 @@ const proxyRequest = async (request) => {
  *
  * @param {string} requestType - http request type like post, get etc,.
  * @param {any} httpArgs - arguments that should be sent to the request. This is a variadic argument(https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions/rest_parameters)
- * @returns {{httpResponse: any, processedResponse: any}}
+ * @returns {Promise<{httpResponse: Promise<any>, processedResponse: any}>}
  *  - __httpResponse__: indicates the response we get from httpGET or httpPOST methods
  *  - __processedResponse__: indicates a wrapeed response object returned from processedAxiosResponse
  * @example

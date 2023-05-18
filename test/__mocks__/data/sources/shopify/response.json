@@ -1,11 +1,22 @@
 {
   "shopify_test1": {
-    "anonymousId": "anon_shopify_test1"
+    "anonymousId": "anon_shopify_test1",
+    "itemsHash": "\"EMPTY\""
+  },
+  "shopify_test3": {
+    "anonymousId": "anon_shopify_test1",
+    "itemsHash": "\"EMPTY\""
   },
   "shopify_test2": {
-    "anonymousId": "anon_shopify_test2"
+    "anonymousId": "anon_shopify_test2",
+    "itemsHash": "\"EMPTY\""
   },
   "shopify_test_cart": {
-    "anonymousId": "anon_shopify_test1"
+    "anonymousId": "anon_shopify_test1",
+    "itemsHash": "\"EMPTY\""
+  },
+  "shopify_test_duplicate_cart": {
+    "anonymousId": "anon_shopify_test1",
+    "itemsHash": "210e4c525d04ceaef92a0058f6794f8f32a1efd7debdacb502ca5cb59c0e55e2"
   }
 }

@@ -2,7 +2,7 @@ const axios = require("axios");
 const logger = require("../../src/logger");
 const { isHttpStatusSuccess } = require("../../src/v0/util");
 
-// To Do : jest.mock is not working in typescript test cases so as of now commented below line
+// TODO : jest.mock is not working in typescript test cases so as of now commented below line
 // jest.mock("axios");
 
 /**

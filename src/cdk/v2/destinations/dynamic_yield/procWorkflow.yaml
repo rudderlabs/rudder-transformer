@@ -1,6 +1,8 @@
 bindings:
   - name: EventType
     path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
   - path: ../../../../v0/destinations/dynamic_yield/config
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
@@ -31,9 +33,10 @@ steps:
     template: |
       let commonFields = .message.().({
         "user": { "id": {{{{$.getGenericPaths("userId")}}}}},
-        "session": {"custom": $.toString({{{{$.getGenericPaths("sessionId")}}}})},
+        "session": {"custom": {{{{$.getGenericPaths("sessionId")}}}}},
         "context":{"device":{"ip": .context.ip}}
       });
+      commonFields.session.custom = String(commonFields.session.custom);
       $.removeUndefinedAndNullValues(commonFields)
 
   - name: validateCommonFields
@@ -53,29 +56,27 @@ steps:
           let hashedEmail = .message.().(
             {{{{$.getGenericPaths("email")}}}};
             );
-          hashedEmail = hashedEmail? sha256(hashedEmail): hashedEmail;
+          hashedEmail = hashedEmail;
           let properties = {
             "hashedEmail": hashedEmail,
             "dyType": 'identify-v1'
           };
           properties = $.removeUndefinedAndNullValues(properties);
       - name: updatedPropertiesFields
-        condition: $.outputs.prepareIdentifyPayload.propertiesFields.hashedEmail === null
+        condition: $.outputs.prepareIdentifyPayload.propertiesFields.hashedEmail === undefined
         template: |
           let cuid = $.outputs.commonFields.user.id;
           const updatedProperties = {
-            "dyType": 'identify-v1'
+            "dyType": 'identify-v1',
             "cuidType": "userId",
             "cuid": cuid
           };
       - name: events
         template: |
-          let properties = $.outputs.updatedPropertiesFields? $.outputs.updatedPropertiesFields : $.outputs.propertiesFields;
+          let properties = $.outputs.prepareIdentifyPayload.updatedPropertiesFields? $.outputs.prepareIdentifyPayload.updatedPropertiesFields : $.outputs.prepareIdentifyPayload.propertiesFields;
           let events = {
-            "eventsObj": {
-              "name": "Identify User",
-              "properties": properties
-            }
+            "name": "Identify User",
+            "properties": properties 
           }[];
 
   - name: prepareTrackPayload
@@ -83,47 +84,59 @@ steps:
     steps:
       - name: getTrimmedEvent
         template: |
-          const trimmedEvent = .message.event.toLowerCase().trim().replace(/\s+/g, '_');
+          const trimmedEvent = .message.event.trim().toLowerCase().replace(" ", "_");
 
       - name: populateEventProperties
-        condition: trimmedEvent in ["product_added", "product_removed", "product_added_to_wishlist", "order_completed"]
-        steps:
-          - name: propulateEcommProperties
-            template: |
-              const properties = {
-                "dyType": `${ecomEventsMapping[event].toLowerCase().trim().replace(/\s+/g, '-')}-v1`,
-                "value": Number(parseFloat(messageProperties.price).toFixed(2)),
-                "currency": .message.properties.currency,
-              }
-          - name: updateOrderCompletedEventProperties
-            condition: $.outputs.getTrimmedEvent === 'order_completed'
-            template: |
-              const updatedProperties = {
-                ...$.outputs.populateEventProperties.propulateEcommProperties,
-                "uniqueTransactionId" : .message.properties.order_id,
-                "value": .message.properties.value || .message.properties.revenue || .message.properties.price;
-              }
+        condition: $.outputs.prepareTrackPayload.getTrimmedEvent in ["product_added", "product_removed", "product_added_to_wishlist", "order_completed"]
+        template: |
+          const trimmedEvent = $.outputs.prepareTrackPayload.getTrimmedEvent;
+          const eventsObj = {
+            "name": {{$.ecomEventsMapping}}[trimmedEvent],
+            "properties" : {
+              "dyType": {{$.ecomEventsMapping}}[trimmedEvent],
+              "value": Number(parseFloat(.message.properties.price).toFixed(2)),
+              "currency": .message.properties.currency,
+            }
+          }
 
-          - name: updateOtherEventProperties
-            condition: $.outputs.getTrimmedEvent !== 'order_completed'
-            template: |
-              const updatedProperties = {
-                ...$.outputs.populateEventProperties.propulateEcommProperties,
-                "quantity" : .message.properties.quantity,
-                "productId": .message.properties.sku || .message.properties.product_id;
-              }
+      - name: updateOrderCompletedEventProperties
+        condition: $.outputs.prepareTrackPayload.getTrimmedEvent === 'order_completed'
+        template: |
+          const updatedEventsObj = {
+            ...$.outputs.prepareTrackPayload.populateEventProperties,
+            "properties": {
+              ...$.outputs.prepareTrackPayload.populateEventProperties.properties,
+              "uniqueTransactionId" : .message.properties.order_id,
+              "value": .message.properties.value || .message.properties.revenue || .message.properties.price
+            }
+          }
 
-          - name: populateCartObj
-            condition: .message.properties.products && Array.isArray(.message.properties.products)
-            template: |
-              const cart = {
-                "cartObj": {
-                  "productId": .message.properties@prop.products.({
-                  "quantity": Number(.quantity ?? prop.quantity ?? 1),
-                  "itemPrice": String(.price ?? prop.price)
-                  })[]
-                }
-               }[];
+      - name: updateOtherEventProperties
+        condition: $.outputs.prepareTrackPayload.getTrimmedEvent !== 'order_completed'
+        template: |
+          const updatedEventsObj = {
+            ...$.outputs.prepareTrackPayload.populateEventProperties,
+            "properties": {
+              ...$.outputs.prepareTrackPayload.populateEventProperties.properties,
+              "quantity" : .message.properties.quantity,
+              "productId": .message.properties.sku || .message.properties.product_id
+              }
+            }
+
+      - name: populateCartObj
+        condition: .message.properties.products && Array.isArray(.message.properties.products)
+        template: |
+          const finalProperties = {
+           ...$.outputs.prepareTrackPayload.populateEventProperties,
+            "properties": {
+              ...$.outputs.prepareTrackPayload.populateEventProperties.properties,
+              cart: .message.properties@prop.products.({
+                "productId": .message.properties.sku ?? .message.properties.product_id,
+                "quantity": Number(.quantity ?? prop.quantity ?? 1),
+                "itemPrice": String(.price ?? prop.price)
+              })
+            }
+          }
 
   - name: payload
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
@@ -137,7 +150,7 @@ steps:
       template: |
         const outputPayload = {
         ...$.outputs.commonFields,
-        "events": $.outputs.prepareTrackPayload
+        "events": [$.outputs.prepareTrackPayload]
         }
 
   - name: buildResponseForProcessTransformation
@@ -153,7 +166,7 @@ steps:
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": {{$.BASE_URL}},
+        "endpoint": {{$.ENDPOINT}},
         "headers": {
           "DY-API-Key": .destination.Config.apiKey,
           "Content-Type": "application/json"

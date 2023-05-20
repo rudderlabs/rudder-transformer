@@ -53,10 +53,11 @@ steps:
     steps:
       - name: propertiesFields
         template: |
-          let hashedEmail = .message.().(
+          const email = .message.().(
             {{{{$.getGenericPaths("email")}}}};
             );
-          hashedEmail = hashedEmail;
+          const hashEmail = .destination.Config.hashEmail;
+          hashedEmail = hashEmail ? SHA256(email) : email;
           let properties = {
             "hashedEmail": hashedEmail,
             "dyType": 'identify-v1'

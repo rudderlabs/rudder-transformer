@@ -1,0 +1,9 @@
+title: Health
+type: object
+properties:
+  imageVersion:
+    type: string
+  gitCommitSha:
+    type: string
+  service:
+    type: string

@@ -15,7 +15,7 @@ import logger from '../logger';
 
 dotenv.config();
 
-const enableSwagger = process.env.ENABLE_SWAGGER !== 'false';
+const enableSwagger = process.env.ENABLE_SWAGGER === 'true';
 
 export function applicationRoutes(app: Koa<any, {}>) {
   app.use(bulkUploadRoutes);
@@ -33,15 +33,21 @@ export function addSwaggerRoutes(app: Koa<any, {}>) {
   if (enableSwagger) {
     const router = new Router();
     if (existsSync('./dist/src/swagger.json')) {
-      const rawContent = readFileSync('./dist/src/swagger.json', { encoding: 'utf8' });
+      let rawContent: string | undefined;
+      try {
+        rawContent = readFileSync('./dist/src/swagger.json', { encoding: 'utf8' });
+      } catch (err) {
+        logger.error('Error reading swagger file', err);
+      }
+
       if (rawContent) {
         const spec = JSON.parse(rawContent);
-        logger.info('Config backend: Swagger route loading');
+        logger.info('Transformer backend: Swagger route loading');
         router.get(
           '/docs',
           koaSwagger({ routePrefix: false, swaggerOptions: { spec, deepLinking: true } }),
         );
-        logger.info('Config backend: Swagger route loaded');
+        logger.info('Transformer backend: Swagger route loaded');
         app.use(router.routes());
       }
     } else {

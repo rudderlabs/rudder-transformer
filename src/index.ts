@@ -10,7 +10,7 @@ import { metricsRouter } from './routes/metricsRouter';
 import { addStatMiddleware, addRequestSizeMiddleware } from './middleware';
 import { logProcessInfo } from './util/utils';
 import { applicationRoutes, addSwaggerRoutes } from './routes';
-import { RedisDB } from './util/redisConnector';
+import { RedisDB } from './util/redis/redisConnector';
 
 dotenv.config();
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';

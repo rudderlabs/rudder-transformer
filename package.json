@@ -18,7 +18,7 @@
     "copy": "find ./src -name '*.yaml' -o -name '*csv' | cpio -pdm ./dist  ",
     "clean": "rm -rf ./dist",
     "setup": "npm ci",
-    "setup:swagger": "swagger-cli bundle src/swagger/api.yaml --outfile dist/src/swagger.json --type json",
+    "setup:swagger": "swagger-cli bundle swagger/api.yaml --outfile dist/swagger.json --type json",
     "format": "prettier --write .",
     "lint": "eslint . || exit 0",
     "lint:fix": "eslint . --fix",

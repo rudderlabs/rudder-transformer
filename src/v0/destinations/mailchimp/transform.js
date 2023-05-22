@@ -62,6 +62,9 @@ const trackResponseBuilder = (message, { Config }) => {
   if (processedPayload?.properties) {
     processedPayload.properties = stringifyPropertiesValues(processedPayload.properties);
   }
+  if (processedPayload.name && !(processedPayload.name.length >= 2 && processedPayload.name.length <= 30)) {
+    throw new InstrumentationError('Event name should be between 2 and 30 characters');
+  }
   processedPayload.name = processedPayload.name.trim().replace(/\s+/g, '_');
   processedPayload.occurred_at = formatTimeStamp(
     processedPayload.occurred_at,

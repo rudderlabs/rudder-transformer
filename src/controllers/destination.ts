@@ -6,6 +6,7 @@ import {
   ProcessorTransformationRequest,
   RouterTransformationRequest,
   ProcessorTransformationResponse,
+  RouterTransformationResponse,
 } from '../types/index';
 import ServiceSelector from '../helpers/serviceSelector';
 import ControllerUtility from './util';
@@ -102,16 +103,16 @@ export default class DestinationController {
       ...metaTags,
     });
     const integrationService = ServiceSelector.getDestinationService(events);
+    let resplist: RouterTransformationResponse[];
     try {
       events = PreTransformationDestinationService.preProcess(events, ctx);
       events = DynamicConfigParser.process(events);
-      const resplist = await integrationService.doRouterTransformation(
+      resplist = await integrationService.doRouterTransformation(
         events,
         destination,
         getIntegrationVersion(),
         requestMetadata,
       );
-      ctx.body = { output: resplist };
     } catch (error: any) {
       const metaTO = integrationService.getTags(
         destination,
@@ -124,10 +125,11 @@ export default class DestinationController {
         error,
         metaTO,
       );
-      ctx.body = { output: [errResp] };
+      resplist = [errResp];
     }
+    ctx.body = { output: resplist };
     ControllerUtility.postProcess(ctx);
-    stats.histogram('dest_transform_output_events', ctx.body?.output?.length, {
+    stats.histogram('dest_transform_output_events', resplist.length, {
       destination,
       version: 'v0',
       ...metaTags,

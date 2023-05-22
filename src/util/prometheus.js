@@ -447,7 +447,15 @@ class Prometheus {
         name: 'events_to_process',
         help: 'events_to_process',
         type: 'counter',
-        labelNames: ['transformerVersionId', 'language', 'identifier', 'testMode', 'sourceType', 'destinationType', 'k8_namespace'],
+        labelNames: [
+          'transformerVersionId',
+          'language',
+          'identifier',
+          'testMode',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+        ],
       },
       {
         name: 'get_transformation_code',
@@ -460,7 +468,6 @@ class Prometheus {
         help: 'get_libraries_code',
         type: 'counter',
         labelNames: ['libraryVersionId', 'version', 'type', 'success'],
-
       },
 
       // Gauges

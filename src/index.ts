@@ -9,9 +9,8 @@ import { testRouter } from './testRouter';
 import { metricsRouter } from './routes/metricsRouter';
 import { addStatMiddleware, addRequestSizeMiddleware } from './middleware';
 import { logProcessInfo } from './util/utils';
-import { applicationRoutes } from './routes';
-
-const { RedisDB } = require('../src/util/redis/redisConnector');
+import { applicationRoutes, addSwaggerRoutes } from './routes';
+import { RedisDB } from './util/redis/redisConnector';
 
 dotenv.config();
 const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
@@ -33,6 +32,7 @@ app.use(
 );
 
 addRequestSizeMiddleware(app);
+addSwaggerRoutes(app);
 
 if (useUpdatedRoutes) {
   logger.info('Using new routes');

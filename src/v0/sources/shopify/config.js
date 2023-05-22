@@ -21,11 +21,7 @@ const RUDDER_ECOM_MAP = {
   orders_updated: 'Order Updated',
   orders_create: 'Order Created',
 };
-const SHOPIFY_ADMIN_ONLY_EVENTS = [
-  'Order Deleted',
-  'Fulfillments Create',
-  'Fulfillments Update',
-];
+const SHOPIFY_ADMIN_ONLY_EVENTS = ['Order Deleted', 'Fulfillments Create', 'Fulfillments Update'];
 
 const SHOPIFY_TRACK_MAP = {
   checkouts_delete: 'Checkout Deleted',
@@ -120,5 +116,5 @@ module.exports = {
   SUPPORTED_TRACK_EVENTS,
   SHOPIFY_TRACK_MAP,
   useRedisDatabase,
-  SHOPIFY_ADMIN_ONLY_EVENTS
+  SHOPIFY_ADMIN_ONLY_EVENTS,
 };

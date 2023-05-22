@@ -1,6 +1,6 @@
 {
-    "redis_test_get": "redis_test_get_value",
-    "redis_test_Object": {
-        "testVal": "testVal"
-    }
+  "redis_test_get": "redis_test_get_value",
+  "redis_test_Object": {
+    "testVal": "testVal"
+  }
 }

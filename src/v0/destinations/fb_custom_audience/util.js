@@ -139,8 +139,9 @@ const prepareDataField = (
   const data = [];
   let updatedProperty;
   let dataElement;
-  let nullData = true; // flag to check for bad events (all null)
+  let nullEvent = true; // flag to check for bad events (all user properties are null)
   userUpdateList.forEach((eachUser) => {
+    let nullUserData = true; // flag to check for bad event (all properties are null for a user)
     dataElement = [];
     userSchema.forEach((eachProperty) => {
       const userProperty = eachUser[eachProperty];
@@ -170,17 +171,18 @@ const prepareDataField = (
     });
     dataElement.forEach((property) => {
       if (property) {
-        nullData = false;
+        nullUserData = false;
+        nullEvent = false;
       }
     });
-    if (nullData) {
+    if (nullUserData) {
       stats.increment('fb_custom_audience_event_having_all_null_field_values_for_a_user', {
         destinationId,
       });
     }
     data.push(dataElement);
   });
-  if (nullData) {
+  if (nullEvent) {
     stats.increment('fb_custom_audience_event_having_all_null_field_values_for_all_users', {
       destinationId,
     });

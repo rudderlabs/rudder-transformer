@@ -6090,7 +6090,7 @@
   {
     "type": "post",
     "reqParams": [
-      "https://api.mixpanel.com/engage",
+      "https://api-eu.mixpanel.com/engage",
       [
         {
           "$distinct_id": "rudder1",

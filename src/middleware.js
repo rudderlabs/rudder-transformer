@@ -57,12 +57,12 @@ function addRequestSizeMiddleware(app) {
   app.use(requestSizeMiddleware());
 }
 
-function addLocalhostMiddleware(app) {
+function localhostMiddleware(app) {
   app.use(blockLocalhostMiddleware());
 }
 
 module.exports = {
   addStatMiddleware,
   addRequestSizeMiddleware,
-  addLocalhostMiddleware,
+  localhostMiddleware,
 };

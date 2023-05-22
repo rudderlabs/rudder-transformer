@@ -7,7 +7,7 @@ import cluster from './util/cluster';
 import { router } from './legacy/router';
 import { testRouter } from './testRouter';
 import { metricsRouter } from './routes/metricsRouter';
-import { addStatMiddleware, addRequestSizeMiddleware, addLocalhostMiddleware } from './middleware';
+import { addStatMiddleware, addRequestSizeMiddleware, localhostMiddleware } from './middleware';
 import { logProcessInfo } from './util/utils';
 import { applicationRoutes } from './routes';
 
@@ -18,10 +18,14 @@ const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
 const useUpdatedRoutes = process.env.ENABLE_NEW_ROUTES !== 'false';
 const port = parseInt(process.env.PORT || '9090', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);
+const blockLoopbackApiCalls = process.env.BLOCK_LOOPBACK_API_CALLS === 'true';
 
 const app = new Koa();
 addStatMiddleware(app);
-addLocalhostMiddleware(app);
+
+if (blockLoopbackApiCalls) {
+  localhostMiddleware(app);
+}
 
 const metricsApp = new Koa();
 addStatMiddleware(metricsApp);

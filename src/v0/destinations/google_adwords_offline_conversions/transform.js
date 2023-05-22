@@ -1,12 +1,16 @@
-const { set } = require('lodash');
+const { set, get } = require('lodash');
 const moment = require('moment');
 const { EventType } = require('../../../constants');
 const {
   getHashFromArrayWithDuplicate,
   constructPayload,
   removeHyphens,
-  simpleProcessRouterDest,
+  getErrorRespEvents,
   getHashFromArray,
+  simpleProcessRouterDest,
+  handleRtTfSingleEventError,
+  defaultBatchRequestConfig,
+  getSuccessRespEvents,
 } = require('../../util');
 const {
   CALL_CONVERSION,
@@ -134,9 +138,96 @@ const process = async (event) => {
   return response;
 };
 
+const getEventChunks = (event, storeSalesEvents, clickCallEvents) => {
+  if (event.message[0].body.JSON?.isStoreConversion) {
+    storeSalesEvents.push(event);
+  } else {
+    clickCallEvents.push(event);
+  }
+  return { storeSalesEvents, clickCallEvents };
+};
+
+const batchEvents = (storeSalesEvents) => {
+  const batchEventResponse = defaultBatchRequestConfig();
+  batchEventResponse.metadatas = [];
+  set(batchEventResponse, 'batchedRequest.body.JSON', storeSalesEvents[0].message[0].body.JSON);
+  set(batchEventResponse, 'batchedRequest.body.JSON.addConversionPayload.operations', [
+    get(storeSalesEvents[0], 'message[0].body.JSON.addConversionPayload.operations'),
+  ]);
+  batchEventResponse.metadatas.push(storeSalesEvents[0].metadata);
+  const { params, headers, endpoint } = storeSalesEvents[0].message[0];
+  batchEventResponse.batchedRequest.params = params;
+  batchEventResponse.batchedRequest.headers = headers;
+  batchEventResponse.batchedRequest.endpoint = endpoint;
+  storeSalesEvents.forEach((storeSalesEvent, index) => {
+    // we are discarding the first event as it is already added
+    if (index === 0) {
+      return;
+    }
+    batchEventResponse.batchedRequest.body.JSON['addConversionPayload'].operations.push(
+      storeSalesEvent.message[0].body.JSON.addConversionPayload.operations,
+    );
+    batchEventResponse.metadatas.push(storeSalesEvent.metadata);
+    batchEventResponse.destination = storeSalesEvent.destination;
+  });
+
+  return [
+    getSuccessRespEvents(
+      batchEventResponse.batchedRequest,
+      batchEventResponse.metadatas,
+      batchEventResponse.destination,
+      true,
+    ),
+  ];
+};
+
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+  if (!Array.isArray(inputs) || inputs.length <= 0) {
+    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
+    return [respEvents];
+  }
+
+  const storeSalesEvents = []; // list containing store sales events in batched format
+  const clickCallEvents = []; // list containing click and call events in batched format
+  const errorRespList = [];
+  await Promise.all(
+    inputs.map(async (event) => {
+      try {
+        if (event.message.statusCode) {
+          // already transformed event
+          getEventChunks(event, storeSalesEvents, clickCallEvents);
+        } else {
+          // if not transformed
+          getEventChunks(
+            {
+              message: await process(event),
+              metadata: event.metadata,
+              destination: event.destination,
+            },
+            storeSalesEvents,
+            clickCallEvents,
+          );
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+        errorRespList.push(errRespEvent);
+      }
+    }),
+  );
+  let storeSalesEventsBatchedResponseList = [];
+
+  if (storeSalesEvents.length > 0) {
+    storeSalesEventsBatchedResponseList = batchEvents(storeSalesEvents);
+  }
+
+  let batchedResponseList = [];
+  // appending all kinds of batches
+  batchedResponseList = batchedResponseList
+    .concat(storeSalesEventsBatchedResponseList)
+    .concat(clickCallEvents);
+  const temp = [...batchedResponseList, ...clickCallEvents, ...errorRespList];
+  return temp;
+
 };
 
 module.exports = { process, processRouterDest };

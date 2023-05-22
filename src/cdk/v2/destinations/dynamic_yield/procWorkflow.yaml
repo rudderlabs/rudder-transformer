@@ -57,7 +57,7 @@ steps:
             {{{{$.getGenericPaths("email")}}}};
             );
           const hashEmail = .destination.Config.hashEmail;
-          hashedEmail = hashEmail ? SHA256(email) : email;
+          hashedEmail = hashEmail ? $.SHA256(email) : email;
           let properties = {
             "hashedEmail": hashedEmail,
             "dyType": 'identify-v1'
@@ -85,16 +85,17 @@ steps:
     steps:
       - name: getTrimmedEvent
         template: |
-          const trimmedEvent = .message.event.trim().toLowerCase().replace(" ", "_");
+          const trimmedEvent = .message.event.trim().toLowerCase().split(" ").join("_");
 
       - name: populateEventProperties
         condition: $.outputs.prepareTrackPayload.getTrimmedEvent in ["product_added", "product_removed", "product_added_to_wishlist", "order_completed"]
         template: |
           const trimmedEvent = $.outputs.prepareTrackPayload.getTrimmedEvent;
+          const dyType = {{$.ecomEventsMapping}}[trimmedEvent].toLowerCase().split(" ").join("-")+"-v1";
           const eventsObj = {
             "name": {{$.ecomEventsMapping}}[trimmedEvent],
             "properties" : {
-              "dyType": {{$.ecomEventsMapping}}[trimmedEvent],
+              "dyType": dyType,
               "value": Number(parseFloat(.message.properties.price).toFixed(2)),
               "currency": .message.properties.currency,
             }

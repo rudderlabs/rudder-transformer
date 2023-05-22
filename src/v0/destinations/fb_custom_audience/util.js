@@ -2,6 +2,7 @@ const _ = require('lodash');
 const sha256 = require('sha256');
 const get = require('get-value');
 const jsonSize = require('json-size');
+const stats = require('../../../util/stats');
 
 const { isDefinedAndNotNull } = require('../../util');
 const { maxPayloadSize } = require('./config');
@@ -128,10 +129,17 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
 
 // Function responsible for making the data field without payload object
 // Based on the "isHashRequired" value hashing is explicitly enabled or disabled
-const prepareDataField = (userSchema, userUpdateList, isHashRequired, disableFormat) => {
+const prepareDataField = (
+  userSchema,
+  userUpdateList,
+  isHashRequired,
+  disableFormat,
+  destinationId,
+) => {
   const data = [];
   let updatedProperty;
   let dataElement;
+  let nullData = true; // flag to check for bad events (all null)
   userUpdateList.forEach((eachUser) => {
     dataElement = [];
     userSchema.forEach((eachProperty) => {
@@ -160,9 +168,23 @@ const prepareDataField = (userSchema, userUpdateList, isHashRequired, disableFor
         dataElement.push(updatedProperty);
       }
     });
+    dataElement.forEach((property) => {
+      if (property) {
+        nullData = false;
+      }
+    });
+    if (nullData) {
+      stats.increment('fb_custom_audience_event_having_all_null_field_values_for_a_user', {
+        destinationId,
+      });
+    }
     data.push(dataElement);
   });
-
+  if (nullData) {
+    stats.increment('fb_custom_audience_event_having_all_null_field_values_for_all_users', {
+      destinationId,
+    });
+  }
   return data;
 };
 module.exports = { prepareDataField, getSchemaForEventMappedToDest, batchingWithPayloadSize };

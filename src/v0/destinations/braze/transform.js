@@ -1,7 +1,12 @@
 /* eslint-disable no-nested-ternary,no-param-reassign */
 const _ = require('lodash');
 const get = require('get-value');
-const { BrazeDedupUtility, CustomAttributeOperationUtil, processDeduplication } = require('./util');
+const {
+  BrazeDedupUtility,
+  CustomAttributeOperationUtil,
+  processDeduplication,
+  processBatch,
+} = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
@@ -247,7 +252,11 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
     payload = setExternalIdOrAliasObject(payload, message);
     const requestJson = { attributes: [payload] };
     if (destination.Config.supportDedup) {
-      const dedupedAttributePayload = processDeduplication(processParams.userStore, payload);
+      const dedupedAttributePayload = processDeduplication(
+        processParams.userStore,
+        payload,
+        destination.ID,
+      );
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
       } else {
@@ -348,6 +357,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
       const dedupedAttributePayload = processDeduplication(
         processParams.userStore,
         attributePayload,
+        destination.ID,
       );
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
@@ -573,7 +583,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       logger.error('Error while fetching user store', error);
     }
 
-    BrazeDedupUtility.updateUserStore(userStore, lookedUpUsers);
+    BrazeDedupUtility.updateUserStore(userStore, lookedUpUsers, destination.ID);
   }
   // group events by userId or anonymousId and then call process
   const groupedInputs = _.groupBy(
@@ -595,7 +605,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   const output = await Promise.all(allResps);
 
-  return _.flatMap(output);
+  const allTransfomredEvents = _.flatMap(output);
+  return processBatch(allTransfomredEvents);
 };
 
 module.exports = { process, processRouterDest };

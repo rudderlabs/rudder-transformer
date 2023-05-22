@@ -80,19 +80,13 @@ async function extractRelevantLibraryVersionIdsForVersionId(
 async function setOpenFaasUserTransform(
   userTransformation,
   libraryVersionIds,
-  testWithPublish,
   pregeneratedFnName,
   testMode = false,
 ) {
-  if (!testWithPublish) {
-    return { success: true };
-  }
-
   const tags = {
     transformerVersionId: userTransformation.versionId,
     language: userTransformation.language,
     identifier: 'openfaas',
-    publish: testWithPublish,
     testMode,
   };
   const functionName =
@@ -147,7 +141,6 @@ async function runOpenFaasUserTransform(
     await setOpenFaasUserTransform(
       userTransformation,
       libraryVersionIds,
-      true,
       functionName,
       testMode,
     );

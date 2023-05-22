@@ -3083,5 +3083,53 @@
         }
       ]
     }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "MP",
+          "userAttributes": [
+            {
+              "userId": "rudder1"
+            },
+            {
+              "userId": "rudder2"
+            },
+            {
+              "userId": "rudder3"
+            }
+          ],
+          "config": {
+            "token": "test_token",
+            "prefixProperties": true,
+            "useNativeSDK": false,
+            "userDeletionApi": "task",
+            "gdprApiToken": "test_gdpr_token"
+          }
+        }
+      ]
+    }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "MP",
+          "userAttributes": [
+            {
+              "userId": "rudder1"
+            }
+          ],
+          "config": {
+            "token": "test_token",
+            "prefixProperties": true,
+            "useNativeSDK": false,
+            "userDeletionApi": "task",
+            "dataResidency": "eu"
+          }
+        }
+      ]
+    }
   }
 ]

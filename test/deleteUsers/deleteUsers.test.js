@@ -18,7 +18,7 @@ const deleteUserDestinations = [
 ];
 // Note: Useful for troubleshooting not to be used in production
 const exclusionDestList = [];
-const { handleDeletionOfUsers } = require("../../src/versionedRouter");
+const { handleDeletionOfUsers } = require("../../src/legacy/router");
 const { default: axios } = require("axios");
 
 // delete user tests

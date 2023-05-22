@@ -3856,5 +3856,114 @@
       },
       "Enabled": true
     }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "custom",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": true
+          }
+        ],
+        "pixelId": "dfgdfgdgd",
+        "valueFieldIdentifier": "",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.0.0"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.0.0"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+        "locale": "en-US",
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "screen": {
+          "density": 2
+        }
+      },
+      "type": "track",
+      "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+      "originalTimestamp": "2019-09-01T15:46:51.693229+05:30",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "event": "custom",
+      "integrations": {
+        "All": true
+      },
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": true
+          }
+        ],
+        "valueFieldIdentifier": "",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [
+          {
+            "whitelistPiiProperties": ""
+          }
+        ]
+      },
+      "Enabled": true
+    }
   }
 ]

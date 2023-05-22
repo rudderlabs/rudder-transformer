@@ -74,6 +74,10 @@
       "status": 401
     }
   },
+  "https://googleads.googleapis.com/v13/customers/1234567899/googleAds:searchStream": {
+    "response": "",
+    "code": "ECONNREFUSED"
+  },
   "https://googleads.googleapis.com/v13/customers/1234567891/googleAds:searchStream": {
     "data": [
       {

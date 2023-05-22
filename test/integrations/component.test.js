@@ -2,7 +2,7 @@ const path = require("path");
 const Koa = require("koa");
 const bodyParser = require("koa-bodyparser");
 
-const { router } = require("../../src/versionedRouter");
+const { router } = require("../../src/legacy/router");
 const { getTestDataFilePaths, getTestData } = require("./testUtils");
 const tags = require("../../src/v0/util/tags");
 const supertest = require("supertest");

@@ -1,6 +1,6 @@
 const name = 'DeleteUsers';
 import logger from '../../src/logger';
-import { formAxiosMock, validateMockAxiosClientReqParams } from '../__mocks__/gen-axios-ts.mock';
+import { formAxiosMock, validateMockAxiosClientReqParams } from '../__mocks__/gen-axios.mock';
 const deleteUserDestinations = [
   'am',
   'braze',

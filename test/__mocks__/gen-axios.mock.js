@@ -2,9 +2,6 @@ const axios = require("axios");
 const logger = require("../../src/logger");
 const { isHttpStatusSuccess } = require("../../src/v0/util");
 
-// TODO : jest.mock is not working in typescript test cases so as of now created a new file called gen-axios-ts.mock.ts
-jest.mock("axios");
-
 /**
  * Forms the mock axios client
  * This client is used in cases where each response is returned almost immediately

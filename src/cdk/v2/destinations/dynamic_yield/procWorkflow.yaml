@@ -141,6 +141,14 @@ steps:
             }
           }
 
+      - name: populateCustomEventProperties
+        condition: $.ecomEventsMapping[$.outputs.prepareTrackPayload.getTrimmedEvent] === undefined
+        template: |
+          {
+            "name": .message.event,
+            "properties" : .message.properties
+          }
+
   - name: payload
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
     template: |

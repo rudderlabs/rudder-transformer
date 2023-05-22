@@ -308,7 +308,7 @@ const batchEvents = (successRespList) => {
     const processedEvent = event;
     if (processedEvent.message.length === 2) {
       identifyResponseList.push(event.message[0]);
-      [processedEvent.message, processedEvent.message] = event.message;
+      [processedEvent.message] = event.message.slice(1);
     } else {
       [processedEvent.message] = processedEvent.message;
     }

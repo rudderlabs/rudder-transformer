@@ -28,6 +28,17 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
+// Mocking IDENTIFY_MAX_BODY_SIZE and IDENTIFY_MAX_BATCH_SIZE variable to test batching
+jest.mock(`../../src/${version}/destinations/${integration}/config`, () => {
+  const originalConfig = jest.requireActual(`../../src/${version}/destinations/${integration}/config`);
+  return {
+    ...originalConfig,
+    IDENTIFY_MAX_BODY_SIZE: 450,
+    IDENTIFY_MAX_BATCH_SIZE: 2
+  };
+});
+
+
 inputData.forEach((input, index) => {
   it(`${name} Tests: payload: ${index}`, async () => {
     try {

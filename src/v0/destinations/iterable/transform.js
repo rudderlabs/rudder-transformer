@@ -224,11 +224,6 @@ const addEventToBatchedResponseList = (batchedResponseList, batchEventResponse, 
 const batchEvents = (arrayChunks) => {
   let batchedResponseList = [];
 
-  let size = 0;
-  let identifyMetadata = [];
-  let identifyBatchResponseList = [];
-  const identifyBatchEventResponses = [];
-
   // list of chunks [ [..], [..] ]
   arrayChunks.forEach((chunk) => {
     const batchResponseList = [];
@@ -245,6 +240,10 @@ const batchEvents = (arrayChunks) => {
     const { apiKey } = destination.Config;
 
     // Batch event into dest batch structure
+    let size = 0;
+    let identifyMetadata = [];
+    let identifyBatchResponseList = [];
+    const identifyBatchEventResponses = [];
     chunk.forEach((ev) => {
       if (chunk[0].message.operation === 'catalogs') {
         // body will be in the format:
@@ -267,7 +266,9 @@ const batchEvents = (arrayChunks) => {
       if (chunk[0].message.endpoint.includes('/api/users')) {
         size += jsonSize(get(ev, 'message.body.JSON'));
         if (size > IDENTIFY_MAX_BODY_SIZE) {
-          identifyBatchEventResponses.push({ users: identifyBatchResponseList, identifyMetadata });
+          if (identifyBatchResponseList.length > 0) {
+            identifyBatchEventResponses.push({ users: identifyBatchResponseList, identifyMetadata });
+          }
           identifyBatchResponseList = [];
           identifyMetadata = [];
           size = jsonSize(get(ev, 'message.body.JSON'));
@@ -283,7 +284,6 @@ const batchEvents = (arrayChunks) => {
     if (identifyBatchResponseList.length > 0) {
       identifyBatchEventResponses.push({ users: identifyBatchResponseList, identifyMetadata });
     }
-
     if (chunk[0].message.endpoint.includes('/api/users')) {
       identifyBatchEventResponses.forEach((identifyEventResponse) => {
         const batchEventResponse = defaultBatchRequestConfig();

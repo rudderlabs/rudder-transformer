@@ -415,5 +415,84 @@
     },
     "files": {},
     "audienceId": "aud111"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab/events",
+    "headers": {
+      "Content-Type": "application/json",
+      "Authorization": "Basic YXBpS2V5OmFwaWtleQ=="
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "name": "22",
+        "occurred_at": "2019-11-15T10:26:53+00:00",
+        "is_syncing": false,
+        "properties": {
+          "brand": "Aster",
+          "product": "Garments",
+          "products": "[{\"product_id\":\"123\",\"price\":\"14\"},{\"product_id\":\"123\",\"price\":14}]",
+          "purchased": "false"
+        }
+      },
+      "XML": {},
+      "JSON_ARRAY": {},
+      "FORM": {}
+    },
+    "files": {},
+    "audienceId": "aud111"
+  },
+  {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "d966df2e59d105c00f13de330d94000b-us14",
+        "audienceId": "ff21810ddc",
+        "datacenterId": "us14"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
+    "statusCode": 400,
+    "error": "Event name should be between 2 and 30 characters",
+    "statTags": {
+      "destination": "mailchimp",
+      "stage": "transform",
+      "scope": "exception"
+    }
+  },
+  {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "d966df2e59d105c00f13de330d94000b-us14",
+        "audienceId": "ff21810ddc",
+        "datacenterId": "us14"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
+    "statusCode": 400,
+    "error": "Event name should be between 2 and 30 characters",
+    "statTags": {
+      "destination": "mailchimp",
+      "stage": "transform",
+      "scope": "exception"
+    }
   }
 ]

@@ -1,9 +1,6 @@
-const axios = require("axios");
-const logger = require("../../src/logger");
-const { isHttpStatusSuccess } = require("../../src/v0/util");
-
-// TODO : jest.mock is not working in typescript test cases so as of now created a new file called gen-axios-ts.mock.ts
-jest.mock("axios");
+import axios from 'axios';
+import logger from '../../src/logger';
+import { isHttpStatusSuccess } from '../../src/v0/util';
 
 /**
  * Forms the mock axios client
@@ -16,7 +13,7 @@ jest.mock("axios");
  * @param {Array<{type: 'constructor'|'get'|'post'|'delete', response: any }>} responsesData
  * @returns
  */
-const formAxiosMock = responsesData => {
+export function formAxiosMock(responsesData) {
   const returnVal = ({ resp, mockInstance }) => {
     if (isHttpStatusSuccess(resp.response.status)) {
       mockInstance.mockResolvedValueOnce(resp.response);
@@ -30,16 +27,16 @@ const formAxiosMock = responsesData => {
     const postMock = jest.fn();
     const getMock = jest.fn();
     const deleteMock = jest.fn();
-    responsesData.flat().forEach(resp => {
+    responsesData.flat().forEach((resp) => {
       let mockInstance;
       switch (resp.type) {
-        case "constructor":
+        case 'constructor':
           mockInstance = constructorMock;
           break;
-        case "get":
+        case 'get':
           mockInstance = getMock;
           break;
-        case "delete":
+        case 'delete':
           mockInstance = deleteMock;
           break;
 
@@ -54,21 +51,20 @@ const formAxiosMock = responsesData => {
     axios.get = getMock;
     axios.post = postMock;
     axios.delete = deleteMock;
-    axios.mockImplementation(constructorMock);
   }
   return axios;
-};
+}
 
-const validateMockAxiosClientReqParams = ({ resp }) => {
+export function validateMockAxiosClientReqParams({ resp }) {
   let mockInstance;
   switch (resp.type) {
-    case "constructor":
+    case 'constructor':
       mockInstance = axios;
       break;
-    case "get":
+    case 'get':
       mockInstance = axios.get;
       break;
-    case "delete":
+    case 'delete':
       mockInstance = axios.delete;
       break;
 
@@ -85,6 +81,4 @@ const validateMockAxiosClientReqParams = ({ resp }) => {
       );
     }
   }
-};
-
-module.exports = { formAxiosMock, validateMockAxiosClientReqParams };
+}

@@ -114,6 +114,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   }
   return message;
 };
+
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
   const event = _.cloneDeep(inputEvent);
@@ -169,7 +170,9 @@ const processEvent = async (inputEvent, metricMetadata) => {
   message = removeUndefinedAndNullValues(message);
   return message;
 };
+
 const isIdentifierEvent = (event) => event?.event === 'rudderIdentifier';
+
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
     const setStartTime = Date.now();

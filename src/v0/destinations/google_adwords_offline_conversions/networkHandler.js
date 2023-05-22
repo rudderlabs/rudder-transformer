@@ -162,7 +162,6 @@ const ProxyRequest = async (request) => {
     const conversionId = await getConversionActionId(headers, params);
     set(addPayload, 'operations.create.transaction_attribute.conversion_action', conversionId);
     await addConversionToJob(endpoint, headers, firstResponse, addPayload);
-    // console.log(JSON.stringify(secondResponse.response.response));
     const thirdResponse = await runTheJob(
       endpoint,
       headers,

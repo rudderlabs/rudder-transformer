@@ -126,7 +126,7 @@ const prepareResponse = (
     isHashRequired,
     disableFormat,
   );
-  // paramsPayload.schema = userSchema;
+
   const respList = [];
   payloadBatches.forEach((payloadBatch) => {
     const response = {

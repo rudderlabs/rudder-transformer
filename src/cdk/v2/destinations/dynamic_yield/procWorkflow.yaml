@@ -3,7 +3,7 @@ bindings:
     path: ../../../../constants
   - path: ../../bindings/jsontemplate
     exportAll: true
-  - path: ../../../../v0/destinations/dynamic_yield/config
+  - path: ./config
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
   - path: ../../bindings/jsontemplate
@@ -91,9 +91,9 @@ steps:
         condition: $.outputs.prepareTrackPayload.getTrimmedEvent in ["product_added", "product_removed", "product_added_to_wishlist", "order_completed"]
         template: |
           const trimmedEvent = $.outputs.prepareTrackPayload.getTrimmedEvent;
-          const dyType = {{$.ecomEventsMapping}}[trimmedEvent].toLowerCase().split(" ").join("-")+"-v1";
+          const dyType = $.ecomEventsMapping[trimmedEvent].toLowerCase().split(" ").join("-")+"-v1";
           const eventsObj = {
-            "name": {{$.ecomEventsMapping}}[trimmedEvent],
+            "name": $.ecomEventsMapping[trimmedEvent],
             "properties" : {
               "dyType": dyType,
               "value": Number(parseFloat(.message.properties.price).toFixed(2)),
@@ -168,7 +168,7 @@ steps:
         "version": "1",
         "type": "REST",
         "method": "POST",
-        "endpoint": {{$.ENDPOINT}},
+        "endpoint": $.ENDPOINT,
         "headers": {
           "DY-API-Key": .destination.Config.apiKey,
           "Content-Type": "application/json"

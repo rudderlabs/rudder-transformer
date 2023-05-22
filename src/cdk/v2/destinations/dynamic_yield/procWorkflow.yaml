@@ -75,10 +75,10 @@ steps:
       - name: events
         template: |
           let properties = $.outputs.prepareIdentifyPayload.updatedPropertiesFields? $.outputs.prepareIdentifyPayload.updatedPropertiesFields : $.outputs.prepareIdentifyPayload.propertiesFields;
-          let events = {
+          let events = [{
             "name": "Identify User",
             "properties": properties 
-          }[];
+          }];
 
   - name: prepareTrackPayload
     condition: $.outputs.messageType === {{$.EventType.TRACK}}

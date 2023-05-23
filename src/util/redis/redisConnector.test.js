@@ -1,18 +1,16 @@
-const fs = require("fs");
-const path = require("path");
-const version = "v0";
+const fs = require('fs');
+const path = require('path');
+const version = 'v0';
 const { RedisDB } = require('./redisConnector');
 jest.mock('ioredis', () => require('../../../test/__mocks__/redis'));
-const sourcesList = ['shopify']
+const sourcesList = ['shopify'];
 const destList = [];
 process.env.USE_REDIS_DB = 'true';
 
-const timeoutPromise = () => new Promise((resolve, _) => {
-  setTimeout(
-    () => resolve(),
-    100
-  );
-});
+const timeoutPromise = () =>
+  new Promise((resolve, _) => {
+    setTimeout(() => resolve(), 100);
+  });
 
 describe('checkRedisConnectionReadyState', () => {
   RedisDB.init();
@@ -40,7 +38,7 @@ describe('checkAndConnectConnection', () => {
 describe(`Source Tests`, () => {
   sourcesList.forEach((source) => {
     const testDataFile = fs.readFileSync(
-      path.resolve(__dirname, `./testData/${source}_source.json`)
+      path.resolve(__dirname, `./testData/${source}_source.json`),
     );
     const data = JSON.parse(testDataFile);
     const transformer = require(`../../${version}/sources/${source}/transform`);
@@ -55,18 +53,16 @@ describe(`Source Tests`, () => {
         }
       });
     });
-  })
+  });
 });
 
 describe(`Redis Class Get Tests`, () => {
-  const testDataFile = fs.readFileSync(
-    path.resolve(__dirname, `./testData/redisConnector.json`)
-  );
+  const testDataFile = fs.readFileSync(path.resolve(__dirname, `./testData/redisConnector.json`));
   const data = JSON.parse(testDataFile);
   data.forEach((dataPoint, index) => {
     it(`${index}. Redis Get- ${dataPoint.description}`, async () => {
       try {
-        const output = await RedisDB.getVal(dataPoint.input.value, isObjExpected = false);
+        const output = await RedisDB.getVal(dataPoint.input.value, (isObjExpected = false));
         expect(output).toEqual(dataPoint.output);
       } catch (error) {
         expect(error.message).toEqual(dataPoint.output.error);
@@ -76,13 +72,13 @@ describe(`Redis Class Get Tests`, () => {
   it(`Redis Get- Nothing Found in redis - return null`, async () => {
     const dataPoint = {
       input: {
-        value: "not_in_redis",
+        value: 'not_in_redis',
       },
       output: {
-        value: null
-      }
+        value: null,
+      },
     };
-    const output = await RedisDB.getVal(dataPoint.input.value, "key1");
+    const output = await RedisDB.getVal(dataPoint.input.value, 'key1');
     expect(output).toEqual(dataPoint.output.value);
   });
 });
@@ -90,21 +86,21 @@ describe(`Redis Class Get Tests`, () => {
 describe(`Redis Class Set Test`, () => {
   it(`Redis Set Fail Case Test`, async () => {
     try {
-      await RedisDB.setVal("error", "test");
+      await RedisDB.setVal('error', 'test');
     } catch (error) {
-      expect(error.message).toEqual("Error setting value in Redis due Error: Connection is Closed");
+      expect(error.message).toEqual('Error setting value in Redis due Error: Connection is Closed');
     }
   });
   it(`Redis Set Fail Case Test`, async () => {
-    const result = "OK"
-    await RedisDB.setVal("Key", "test");
-    expect(result).toEqual("OK");
+    const result = 'OK';
+    await RedisDB.setVal('Key', 'test');
+    expect(result).toEqual('OK');
   });
 });
 describe(`Redis Disconnect`, () => {
   it(`Redis Disconnect Test`, async () => {
-    const result = "OK"
+    const result = 'OK';
     await RedisDB.disconnect();
-    expect(result).toEqual("OK");
+    expect(result).toEqual('OK');
   });
 });

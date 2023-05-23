@@ -31,12 +31,13 @@ const {
   removeReservedParameterPrefixNames,
   GA4_RESERVED_USER_PROPERTY_EXCLUSION,
   removeReservedUserPropertyPrefixNames,
+  isReservedWebCustomEventName,
+  isReservedWebCustomPrefixName,
   getItemList,
   getGA4ExclusionList,
   getItem,
   getGA4CustomParameters,
   GA4_PARAMETERS_EXCLUSION,
-  validateEventName,
 } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -208,8 +209,19 @@ const responseBuilder = (message, { Config }) => {
       ),
     };
   } else {
-    validateEventName(event);
-    
+    // track
+    // custom events category
+    // Event names are case sensitive
+    if (isReservedWebCustomEventName(event)) {
+      throw new InstrumentationError('track:: Reserved custom event names are not allowed');
+    }
+
+    if (isReservedWebCustomPrefixName(event)) {
+      throw new InstrumentationError(
+        '[Google Analytics 4] track:: Reserved custom prefix names are not allowed',
+      );
+    }
+
     payload.name = event;
 
     // all extra parameters passed is incorporated inside params

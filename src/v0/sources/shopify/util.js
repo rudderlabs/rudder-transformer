@@ -111,7 +111,6 @@ const getAnonymousId = (message) => {
 };
 /**
  * This function sets the anonymousId based on cart_token or id from the properties of message.
- * If it's null then we set userId as "shopify-admin".
  * @param {*} message
  * @returns
  */
@@ -148,6 +147,38 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
     return v5(cartToken, v5.URL);
   }
   return anonymousId;
+};
+/**
+ * This function sets the sessionId based on cart_token or id from the properties of message.
+ * @param {*} message
+ * @returns
+ */
+const getSessionIdFromDB = async (message, metricMetadata) => {
+  const cartToken = getCartToken(message);
+  const { event } = message;
+  if (!isDefinedAndNotNull(cartToken)) {
+    return null;
+  }
+  let sessionId;
+  try {
+    sessionId = await RedisDB.getVal(`${cartToken}`, 'sessionId');
+  } catch (e) {
+    stats.increment('shopify_redis_failures', {
+      type: 'get',
+      ...metricMetadata,
+    });
+  }
+  stats.increment('shopify_redis_calls', {
+    type: 'get',
+    ...metricMetadata,
+  });
+  if (sessionId === null) {
+    stats.increment('shopify_redis_no_val', {
+      ...metricMetadata,
+      event,
+    });
+  }
+  return sessionId;
 };
 
 /**
@@ -208,4 +239,5 @@ module.exports = {
   getAnonymousId,
   checkAndUpdateCartItems,
   getHashLineItems,
+  getSessionIdFromDB
 };

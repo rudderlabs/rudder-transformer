@@ -10,6 +10,7 @@ const {
   getAnonymousId,
   checkAndUpdateCartItems,
   getHashLineItems,
+  getSessionIdFromDB
 } = require('./util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
@@ -165,8 +166,10 @@ const processEvent = async (inputEvent, metricMetadata) => {
   }
   if (message.type !== EventType.IDENTIFY) {
     let anonymousId;
+    let sessionId;
     if (useRedisDatabase) {
       anonymousId = await getAnonymousIdFromDb(message, metricMetadata);
+      sessionId = await getSessionIdFromDB(message, metricMetadata);
     } else {
       anonymousId = getAnonymousId(message);
     }
@@ -174,6 +177,9 @@ const processEvent = async (inputEvent, metricMetadata) => {
       message.setProperty('anonymousId', anonymousId);
     } else if (!message.userId) {
       message.setProperty('userId', 'shopify-admin');
+    }
+    if (isDefinedAndNotNull(sessionId)) {
+      message.setProperty('sessionId', sessionId);
     }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
@@ -191,11 +197,16 @@ const processEvent = async (inputEvent, metricMetadata) => {
   message = removeUndefinedAndNullValues(message);
   return message;
 };
-const isIdentifierEvent = (event) => event?.event === 'rudderIdentifier';
+const isIdentifierEvent = (event) => event?.event === 'rudderIdentifier' || event?.event ==='rudderSessionIdentifier';
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
-    const lineItemshash = getHashLineItems(event.cart);
-    const value = ['anonymousId', event.anonymousId, 'itemsHash', lineItemshash];
+    let value;
+    if (event.event === 'rudderIdentifier') {
+      const lineItemshash = getHashLineItems(event.cart);
+      value = ['anonymousId', event.anonymousId, 'itemsHash', lineItemshash];
+    } else {
+      value = ['sessionId', event.sessionId];
+    }
     try {
       await RedisDB.setVal(`${event.cartToken}`, value);
     } catch (e) {

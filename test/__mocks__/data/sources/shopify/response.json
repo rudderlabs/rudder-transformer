@@ -9,6 +9,7 @@
   },
   "shopify_test2": {
     "anonymousId": "anon_shopify_test2",
+    "sessionId": "session_id_2",
     "itemsHash": "\"EMPTY\""
   },
   "shopify_test_cart": {

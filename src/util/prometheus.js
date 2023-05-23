@@ -167,8 +167,32 @@ class Prometheus {
       {
         name: 'cdk_v2_processed_events',
         help: 'cdk_v2_processed_events',
-        type: 'counter',
-        labelNames: ['destType', 'feature'],
+        type: 'increment',
+        labelNames: ['destinationType', 'feature'],
+      },
+      {
+        name: 'cdk_v2_processor_transform_success_events',
+        help: 'cdk_v2_processor_transform_success_events',
+        type: 'increment',
+        labelNames: ['destinationType', 'destinationId', 'workspaceId', 'feature'],
+      },
+      {
+        name: 'cdk_v2_processor_transform_failed_events',
+        help: 'cdk_v2_processor_transform_failed_events',
+        type: 'increment',
+        labelNames: ['destinationType', 'destinationId', 'workspaceId', 'feature'],
+      },
+      {
+        name: 'cdk_v2_router_transform_success_events',
+        help: 'cdk_v2_router_transform_success_events',
+        type: 'increment',
+        labelNames: ['destinationType', 'destinationId', 'workspaceId', 'feature'],
+      },
+      {
+        name: 'cdk_v2_router_transform_failed_events',
+        help: 'cdk_v2_router_transform_failed_events',
+        type: 'increment',
+        labelNames: ['destinationType', 'destinationId', 'workspaceId', 'feature'],
       },
       {
         name: 'hv_violation_type',

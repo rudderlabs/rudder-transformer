@@ -16,6 +16,7 @@ import {
 import { TransformationError } from '../../v0/util/errorTypes';
 import tags from '../../v0/util/tags';
 import DestinationPostTransformationService from './postTransformation';
+import stats from '../../util/stats';
 
 export default class CDKV2DestinationService implements IntegrationDestinationService {
   public init() {}
@@ -61,6 +62,14 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
             event,
             tags.FEATURES.PROCESSOR,
           );
+
+          stats.increment('cdk_v2_processor_transform_success_events', {
+            destinationType,
+            destinationId: event.metadata.destinationId,
+            workspaceId: event.metadata.workspaceId,
+            feature: tags.FEATURES.PROCESSOR,
+          });
+
           // We are not passing destination handler for CDK flows
           return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,
@@ -80,6 +89,9 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
               error,
               metaTO,
             );
+
+          stats.increment('cdk_v2_processor_transform_failed_events', metaTO.errorDetails);
+
           return [erroredResp];
         }
       }),
@@ -109,6 +121,14 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
           try {
             const doRouterTransformationResponse: RouterTransformationResponse[] =
               await processCdkV2Workflow(destinationType, destInputArray, tags.FEATURES.ROUTER);
+
+            stats.increment('cdk_v2_router_transform_success_events', {
+              destinationType,
+              destinationId: destInputArray[0].metadata.destinationId,
+              workspaceId: destInputArray[0].metadata.workspaceId,
+              feature: tags.FEATURES.ROUTER,
+            });
+
             return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
               doRouterTransformationResponse,
               undefined,
@@ -121,6 +141,9 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
                 error,
                 metaTO,
               );
+
+            stats.increment('cdk_v2_router_transform_failed_events', metaTO.errorDetails);
+
             return [erroredResp];
           }
         },

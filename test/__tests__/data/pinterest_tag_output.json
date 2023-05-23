@@ -498,8 +498,7 @@
           "advertiser_id": "123478671210",
           "user_data": {
             "client_ip_address": "66.249.72.218",
-            "client_user_agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/109.0.5414.101 Safari/537.36",
-            "ge": [null]
+            "client_user_agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/109.0.5414.101 Safari/537.36"
           },
           "event_name": "page_visit"
         },

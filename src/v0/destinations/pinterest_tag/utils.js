@@ -293,9 +293,11 @@ const processHashedUserPayload = (userPayload, message) => {
   });
   // multiKeyMap will works on only specific values like m, male, MALE, f, F, Female
   // if hashed data is sent from the user, it is directly set over here
-  processedHashedUserPayload.ge = [
-    message.traits?.gender || message.context?.traits?.gender || null,
-  ];
+  const gender = message.traits?.gender || message.context?.traits?.gender;
+  if (gender) {
+    processedHashedUserPayload.ge = [gender];
+  }
+
   return processedHashedUserPayload;
 };
 

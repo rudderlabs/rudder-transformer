@@ -85,7 +85,7 @@ steps:
     steps:
       - name: getTrimmedEvent
         template: |
-          const trimmedEvent = .message.event.trim().toLowerCase().split(" ").join("_");
+          const trimmedEvent = .message.event.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'_');
 
       - name: populateCustomEventProperties
         condition: $.ecomEventsMapping[$.outputs.prepareTrackPayload.getTrimmedEvent] === undefined
@@ -100,7 +100,7 @@ steps:
         condition: $.outputs.prepareTrackPayload.getTrimmedEvent in ["product_added", "product_removed", "product_added_to_wishlist", "order_completed"]
         template: |
           const trimmedEvent = $.outputs.prepareTrackPayload.getTrimmedEvent;
-          const dyType = $.ecomEventsMapping[trimmedEvent].toLowerCase().split(" ").join("-")+"-v1";
+          const dyType = $.ecomEventsMapping[trimmedEvent].toLowerCase().replace(new RegExp('\\s+', 'g'),'-')+"-v1";
           {
             "name": $.ecomEventsMapping[trimmedEvent],
             "properties" : {

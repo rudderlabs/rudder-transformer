@@ -64,7 +64,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
           );
 
           stats.increment('cdk_v2_processor_transform_success_events', {
-            destinationType,
+            destType: destinationType,
             destinationId: event.metadata.destinationId,
             workspaceId: event.metadata.workspaceId,
             feature: tags.FEATURES.PROCESSOR,
@@ -123,7 +123,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
               await processCdkV2Workflow(destinationType, destInputArray, tags.FEATURES.ROUTER);
 
             stats.increment('cdk_v2_router_transform_success_events', {
-              destinationType,
+              destType: destinationType,
               destinationId: destInputArray[0].metadata.destinationId,
               workspaceId: destInputArray[0].metadata.workspaceId,
               feature: tags.FEATURES.ROUTER,

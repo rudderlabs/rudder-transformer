@@ -3092,40 +3092,12 @@
           "userAttributes": [
             {
               "userId": "rudder1"
-            },
-            {
-              "userId": "rudder2"
-            },
-            {
-              "userId": "rudder3"
             }
           ],
           "config": {
-            "token": "test_token",
+            "token": "651c8d62a01c28e5283288ce8a9cdc4c",
             "prefixProperties": true,
             "useNativeSDK": false,
-            "userDeletionApi": "task",
-            "gdprApiToken": "test_gdpr_token"
-          }
-        }
-      ]
-    }
-  },
-  {
-    "request": {
-      "body": [
-        {
-          "destType": "MP",
-          "userAttributes": [
-            {
-              "userId": "rudder1"
-            }
-          ],
-          "config": {
-            "token": "test_token",
-            "prefixProperties": true,
-            "useNativeSDK": false,
-            "userDeletionApi": "task",
             "dataResidency": "eu"
           }
         }

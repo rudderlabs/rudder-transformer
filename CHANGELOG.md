@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.29.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.28.1...v1.29.0) (2023-05-23)
+
+
+### Features
+
+* **ga4:** added validation for event name ([#2186](https://github.com/rudderlabs/rudder-transformer/issues/2186)) ([6e6a8e9](https://github.com/rudderlabs/rudder-transformer/commit/6e6a8e98569375bb5465eb36f94f4524bbd450e3))
+* mixpanel deletion api ([#2152](https://github.com/rudderlabs/rudder-transformer/issues/2152)) ([a9dcbdc](https://github.com/rudderlabs/rudder-transformer/commit/a9dcbdc2e837c0a2a732a0938c1677eb6e3454e6))
+* onboard swagger ([#2175](https://github.com/rudderlabs/rudder-transformer/issues/2175)) ([9817f2e](https://github.com/rudderlabs/rudder-transformer/commit/9817f2e6c85bc9cc4843c16e590d4ae66fda433a))
+
+
+### Bug Fixes
+
+* mailchip track event name length ([#2198](https://github.com/rudderlabs/rudder-transformer/issues/2198)) ([bb5882c](https://github.com/rudderlabs/rudder-transformer/commit/bb5882c8721a36b4d03383d032a86e2a9b5e9d9f))
+* redis connect with promise race ([#2107](https://github.com/rudderlabs/rudder-transformer/issues/2107)) ([d439485](https://github.com/rudderlabs/rudder-transformer/commit/d4394854d2826f62aa69f9b1a10a900d1c7de486)), closes [#2091](https://github.com/rudderlabs/rudder-transformer/issues/2091)
+
 ### [1.28.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.28.0...v1.28.1) (2023-05-16)
 
 

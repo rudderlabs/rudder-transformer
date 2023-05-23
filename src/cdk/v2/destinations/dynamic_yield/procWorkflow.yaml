@@ -74,7 +74,7 @@ steps:
           };
       - name: events
         template: |
-          let properties = $.outputs.prepareIdentifyPayload.updatedPropertiesFields ||  $.outputs.prepareIdentifyPayload.propertiesFields);
+          let properties = $.outputs.prepareIdentifyPayload.updatedPropertiesFields ||  $.outputs.prepareIdentifyPayload.propertiesFields;
           [{
             "name": "Identify User",
             "properties": properties 
@@ -126,7 +126,7 @@ steps:
           }
 
       - name: populateCartObj
-        condition: Array.isArray(.message.properties.products) one condition alone is sufficient.
+        condition: Array.isArray(.message.properties.products)
         template: |
           const eventProperties = $.outputs.prepareTrackPayload.getTrimmedEvent === 'order_completed' ? $.outputs.prepareTrackPayload.updateOrderCompletedEventProperties.properties : $.outputs.prepareTrackPayload.populateEventProperties.properties;
           {

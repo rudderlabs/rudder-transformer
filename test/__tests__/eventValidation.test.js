@@ -122,11 +122,11 @@ const eventTypesTestCases = [
   },
   {
     eventType: "page",
-    output: false
+    output: true
   },
   {
     eventType: "screen",
-    output: false
+    output: true
   },
   {
     eventType: "alias",

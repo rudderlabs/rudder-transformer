@@ -449,6 +449,56 @@ class Prometheus {
         type: 'counter',
         labelNames: [],
       },
+      {
+        name: 'redis_error',
+        help: 'redis_error',
+        type: 'counter',
+        labelNames: ['operation'],
+      },
+      {
+        name: 'shopify_redis_failures',
+        help: 'shopify_redis_failures',
+        type: 'counter',
+        labelNames: ['type', 'writeKey', 'source'],
+      },
+      {
+        name: 'shopify_redis_calls',
+        help: 'shopify_redis_calls',
+        type: 'counter',
+        labelNames: ['type', 'writeKey', 'source'],
+      },
+      {
+        name: 'shopify_redis_no_val',
+        help: 'shopify_redis_no_val',
+        type: 'counter',
+        labelNames: ['event', 'writeKey', 'source'],
+      },
+      {
+        name: 'events_to_process',
+        help: 'events_to_process',
+        type: 'counter',
+        labelNames: [
+          'transformerVersionId',
+          'language',
+          'identifier',
+          'testMode',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+        ],
+      },
+      {
+        name: 'get_transformation_code',
+        help: 'get_transformation_code',
+        type: 'counter',
+        labelNames: ['versionId', 'version', 'success'],
+      },
+      {
+        name: 'get_libraries_code',
+        help: 'get_libraries_code',
+        type: 'counter',
+        labelNames: ['libraryVersionId', 'version', 'type', 'success'],
+      },
 
       // Gauges
       {
@@ -579,22 +629,10 @@ class Prometheus {
         labelNames: ['versionId', 'version'],
       },
       {
-        name: 'get_transformation_code',
-        help: 'get_transformation_code',
-        type: 'histogram',
-        labelNames: ['versionId', 'version', 'success'],
-      },
-      {
         name: 'get_libraries_code_time',
         help: 'get_libraries_code_time',
         type: 'histogram',
         labelNames: ['libraryVersionId', 'versionId', 'type'],
-      },
-      {
-        name: 'get_libraries_code',
-        help: 'get_libraries_code',
-        type: 'histogram',
-        labelNames: ['libraryVersionId', 'version', 'type', 'success'],
       },
       {
         name: 'isolate_cpu_time',
@@ -602,6 +640,7 @@ class Prometheus {
         type: 'histogram',
         labelNames: [
           'transformerVersionId',
+          'identifier',
           'version',
           'sourceType',
           'destinationType',
@@ -614,6 +653,7 @@ class Prometheus {
         type: 'histogram',
         labelNames: [
           'transformerVersionId',
+          'identifier',
           'version',
           'sourceType',
           'destinationType',
@@ -649,6 +689,30 @@ class Prometheus {
         help: 'marketo_bulk_upload_upload_file_size',
         type: 'histogram',
         labelNames: [],
+      },
+      {
+        name: 'braze_deduped_users_count',
+        help: 'braze deduped users count',
+        type: 'counter',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'braze_dedup_and_drop_count',
+        help: 'braze dedup and drop count',
+        type: 'counter',
+        labelNames: ['destination_id'],
+      },
+      {
+        name: 'braze_user_store_update_count',
+        help: 'braze user store update count',
+        type: 'counter',
+        labelNames: ['identifier_type', 'destination_id'],
+      },
+      {
+        name: 'braze_lookup_failure_count',
+        help: 'braze look-up failure count',
+        type: 'counter',
+        labelNames: ['http_status', 'destination_id'],
       },
       {
         name: 'braze_lookup_time',

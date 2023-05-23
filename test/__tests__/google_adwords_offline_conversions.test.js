@@ -10,7 +10,7 @@ const responseFile = fs.readFileSync(
 );
 // fs.readFileSync("/Users/apple/Desktop/workspace/rudder-transformer/test//data/google_adwords_offline_conversion/response.json");
 const axios = require("axios");
-const { handleProxyRequest } = require("../../src/versionedRouter");
+const { handleProxyRequest } = require("../../src/legacy/router");
 
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
 

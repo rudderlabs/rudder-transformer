@@ -67,15 +67,15 @@ steps:
         condition: $.outputs.prepareIdentifyPayload.propertiesFields.hashedEmail === undefined
         template: |
           let cuid = $.outputs.commonFields.user.id;
-          const updatedProperties = {
+          {
             "dyType": 'identify-v1',
             "cuidType": "userId",
             "cuid": cuid
           };
       - name: events
         template: |
-          let properties = $.outputs.prepareIdentifyPayload.updatedPropertiesFields? $.outputs.prepareIdentifyPayload.updatedPropertiesFields : $.outputs.prepareIdentifyPayload.propertiesFields;
-          let events = [{
+          let properties = $.outputs.prepareIdentifyPayload.updatedPropertiesFields ||  $.outputs.prepareIdentifyPayload.propertiesFields);
+          [{
             "name": "Identify User",
             "properties": properties 
           }];
@@ -126,7 +126,7 @@ steps:
           }
 
       - name: populateCartObj
-        condition: .message.properties.products && Array.isArray(.message.properties.products)
+        condition: Array.isArray(.message.properties.products) one condition alone is sufficient.
         template: |
           const eventProperties = $.outputs.prepareTrackPayload.getTrimmedEvent === 'order_completed' ? $.outputs.prepareTrackPayload.updateOrderCompletedEventProperties.properties : $.outputs.prepareTrackPayload.populateEventProperties.properties;
           {

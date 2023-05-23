@@ -30,19 +30,17 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
   if (traitsInfo?.properties?.consent || consent) {
     const subscribeConsent = traitsInfo?.properties?.consent || consent;
     const channels = {};
-    if (Array.isArray(subscribeConsent)) {
-      if (subscribeConsent.includes('email')) {
-        channels.email = [...(channels.email || []), 'MARKETING'];
-      }
-      if (subscribeConsent.includes('sms')) {
-        channels.sms = [...(channels.sms || []), 'MARKETING'];
-      }
-    } else if (subscribeConsent) {
-      if (subscribeConsent === 'sms') {
-        channels.sms = [...(channels.sms || []), 'MARKETING'];
-      } else {
-        channels.email = [...(channels.email || []), 'MARKETING'];
-      }
+
+    let subscribeConsentArr = subscribeConsent;
+    if (!Array.isArray(subscribeConsentArr)) {
+      subscribeConsentArr = [subscribeConsent];
+    }
+
+    if (subscribeConsentArr.includes('email')) {
+      channels.email = [...(channels.email || []), 'MARKETING'];
+    }
+    if (subscribeConsentArr.includes('sms')) {
+      channels.sms = [...(channels.sms || []), 'MARKETING'];
     }
     subscriptionObj.channels = channels;
   }

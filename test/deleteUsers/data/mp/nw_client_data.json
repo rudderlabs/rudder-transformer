@@ -6086,5 +6086,30 @@
         " message": "1"
       }
     }
+  },
+  {
+    "type": "post",
+    "reqParams": [
+      "https://api-eu.mixpanel.com/engage",
+      [
+        {
+          "$distinct_id": "rudder1",
+          "$token": "651c8d62a01c28e5283288ce8a9cdc4c",
+          "$delete": null,
+          "$ignore_alias": true
+        }
+      ],
+      {
+        "Content-Type": "application/json",
+        "Accept": "text/plain"
+      }
+    ],
+    "response": {
+      "status": 200,
+      "statusText": "OK",
+      "data": {
+        " message": "1"
+      }
+    }
   }
 ]

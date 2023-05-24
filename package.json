@@ -94,7 +94,7 @@
     "prom-client": "^14.2.0",
     "qs": "^6.11.1",
     "rudder-transformer-cdk": "^1.4.5",
-    "rudder-workflow-engine": "^0.4.5",
+    "rudder-workflow-engine": "^0.4.6",
     "set-value": "^4.1.0",
     "sha256": "^0.2.0",
     "stacktrace-parser": "^0.1.10",

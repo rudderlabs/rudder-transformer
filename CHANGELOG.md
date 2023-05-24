@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.29.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.29.0...v1.29.1) (2023-05-24)
+
+
+### Bug Fixes
+
+* **pinterest_tag:** remove null assignment to ge parameter ([1cfb5d2](https://github.com/rudderlabs/rudder-transformer/commit/1cfb5d2e7079d74ff2986ccbaffe332f13160225))
+
 ## [1.29.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.28.1...v1.29.0) (2023-05-23)
 
 

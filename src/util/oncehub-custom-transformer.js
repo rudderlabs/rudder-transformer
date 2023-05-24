@@ -23,8 +23,10 @@ const handleFirstLoginGA4Property = (destination, event, traits) => {
 
   // add firstLoginGA4 property in traits when Identify call is for GA4 destination
   if (event.message.type === EventType.IDENTIFY) {
-    traits.firstLoginGA4 = !!traits.firstLoginGA4;
+    traits.firstLoginGA4 = true;
+    traits.value = 0;
     }
+
   };
 
   const oncehubTransformer = (destination, event) => {

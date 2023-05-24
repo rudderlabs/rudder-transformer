@@ -6,6 +6,8 @@ bindings:
   - path: ./config
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
 
 steps:
   - name: validateInput
@@ -167,21 +169,11 @@ steps:
   - name: buildResponseForProcessTransformation
     description: build response
     template: |
-      {
-        "body": {
-          "JSON": $.outputs.payload,
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": $.ENDPOINT,
-        "headers": {
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.outputs.payload;
+      response.endpoint = $.ENDPOINT;
+      response.headers = {
           "DY-API-Key": .destination.Config.apiKey,
           "Content-Type": "application/json"
-        },
-        "params": {},
-        "files": {}
-      }
+        };
+      finalResponse = response;

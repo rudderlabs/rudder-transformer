@@ -1,7 +1,6 @@
 const { WorkflowEngineFactory, TemplateType } = require('rudder-workflow-engine');
 
 const tags = require('../../v0/util/tags');
-const stats = require('../../util/stats');
 
 const defTags = {
   [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.CDK_V2,

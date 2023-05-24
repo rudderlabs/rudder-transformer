@@ -63,11 +63,12 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
             tags.FEATURES.PROCESSOR,
           );
 
-          stats.increment('cdk_v2_processor_transform_success_events', {
+          stats.increment('event_transform_success', {
             destType: destinationType,
             destinationId: event.metadata.destinationId,
             workspaceId: event.metadata.workspaceId,
             feature: tags.FEATURES.PROCESSOR,
+            implementation: tags.IMPLEMENTATIONS.CDK_V2,
           });
 
           // We are not passing destination handler for CDK flows
@@ -90,7 +91,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
               metaTO,
             );
 
-          stats.increment('cdk_v2_processor_transform_failed_events', metaTO.errorDetails);
+          stats.increment('event_transform_failure', metaTO.errorDetails);
 
           return [erroredResp];
         }
@@ -122,11 +123,12 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
             const doRouterTransformationResponse: RouterTransformationResponse[] =
               await processCdkV2Workflow(destinationType, destInputArray, tags.FEATURES.ROUTER);
 
-            stats.increment('cdk_v2_router_transform_success_events', {
+            stats.increment('event_router_success', {
               destType: destinationType,
               destinationId: destInputArray[0].metadata.destinationId,
               workspaceId: destInputArray[0].metadata.workspaceId,
               feature: tags.FEATURES.ROUTER,
+              implementation: tags.IMPLEMENTATIONS.CDK_V2,
             });
 
             return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
@@ -142,7 +144,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
                 metaTO,
               );
 
-            stats.increment('cdk_v2_router_transform_failed_events', metaTO.errorDetails);
+            stats.increment('event_router_failure', metaTO.errorDetails);
 
             return [erroredResp];
           }

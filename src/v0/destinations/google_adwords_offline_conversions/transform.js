@@ -7,7 +7,6 @@ const {
   removeHyphens,
   getErrorRespEvents,
   getHashFromArray,
-  simpleProcessRouterDest,
   handleRtTfSingleEventError,
   defaultBatchRequestConfig,
   getSuccessRespEvents,
@@ -139,23 +138,26 @@ const process = async (event) => {
 };
 
 const getEventChunks = (event, storeSalesEvents, clickCallEvents) => {
-  if (event.message[0].body.JSON?.isStoreConversion) {
-    storeSalesEvents.push(event);
-  } else {
-    clickCallEvents.push(event);
-  }
+  const { message, metadata, destination } = event;
+  message.forEach((message) => {
+    if (message.body.JSON?.isStoreConversion) {
+      storeSalesEvents.push({ message, metadata, destination });
+    } else {
+      clickCallEvents.push(getSuccessRespEvents(message, [metadata], destination));
+    }
+  });
   return { storeSalesEvents, clickCallEvents };
 };
 
 const batchEvents = (storeSalesEvents) => {
   const batchEventResponse = defaultBatchRequestConfig();
   batchEventResponse.metadatas = [];
-  set(batchEventResponse, 'batchedRequest.body.JSON', storeSalesEvents[0].message[0].body.JSON);
+  set(batchEventResponse, 'batchedRequest.body.JSON', storeSalesEvents[0].message.body.JSON);
   set(batchEventResponse, 'batchedRequest.body.JSON.addConversionPayload.operations', [
-    get(storeSalesEvents[0], 'message[0].body.JSON.addConversionPayload.operations'),
+    get(storeSalesEvents[0], 'message.body.JSON.addConversionPayload.operations'),
   ]);
   batchEventResponse.metadatas.push(storeSalesEvents[0].metadata);
-  const { params, headers, endpoint } = storeSalesEvents[0].message[0];
+  const { params, headers, endpoint } = storeSalesEvents[0].message;
   batchEventResponse.batchedRequest.params = params;
   batchEventResponse.batchedRequest.headers = headers;
   batchEventResponse.batchedRequest.endpoint = endpoint;
@@ -165,7 +167,7 @@ const batchEvents = (storeSalesEvents) => {
       return;
     }
     batchEventResponse.batchedRequest.body.JSON['addConversionPayload'].operations.push(
-      storeSalesEvent.message[0].body.JSON.addConversionPayload.operations,
+      storeSalesEvent.message.body.JSON.addConversionPayload.operations,
     );
     batchEventResponse.metadatas.push(storeSalesEvent.metadata);
     batchEventResponse.destination = storeSalesEvent.destination;
@@ -224,10 +226,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   // appending all kinds of batches
   batchedResponseList = batchedResponseList
     .concat(storeSalesEventsBatchedResponseList)
-    .concat(clickCallEvents);
-  const temp = [...batchedResponseList, ...clickCallEvents, ...errorRespList];
-  return temp;
-
+    .concat(clickCallEvents)
+    .concat(errorRespList);
+  return batchedResponseList;
 };
 
 module.exports = { process, processRouterDest };

@@ -289,15 +289,8 @@ async function userTransformHandler(
   return events;
 }
 
-async function setupUserTransformHandler(
-  trRevCode = {},
-  libraryVersionIDs,
-  testWithPublish = false,
-) {
-  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(
-    libraryVersionIDs,
-    testWithPublish,
-  );
+async function setupUserTransformHandler(trRevCode = {}, libraryVersionIDs) {
+  const resp = await UserTransformHandlerFactory(trRevCode).setUserTransform(libraryVersionIDs);
   return resp;
 }
 

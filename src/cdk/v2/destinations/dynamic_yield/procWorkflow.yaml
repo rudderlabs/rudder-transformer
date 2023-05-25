@@ -1,0 +1,179 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - path: ./config
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    template: |
+      let messageType = .message.type;
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.destination.Config.apiKey, "Api Key is not present");
+      $.assert(messageType in {{$.EventType.([.IDENTIFY, .TRACK])}}, 
+        "message type " + messageType + " is not supported")
+
+  - name: messageType
+    template: |
+      .message.type.toLowerCase()
+
+  - name: validateInputForTrack
+    description: Additional validation for Track events
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      $.assert(.message.event, "event is not present. Aborting.")
+
+  - name: commonFields
+    description: |
+      Builds common fields in destination payload.
+    template: |
+      let commonFields = .message.().({
+        "user": { "id": {{{{$.getGenericPaths("userId")}}}}},
+        "session": {"custom": {{{{$.getGenericPaths("sessionId")}}}}},
+        "context":{"device":{"ip": .context.ip}}
+      });
+      commonFields.session.custom = String(commonFields.session.custom);
+      $.removeUndefinedAndNullValues(commonFields)
+
+  - name: validateCommonFields
+    template: |
+      const userId = $.outputs.commonFields.user.id;
+      const sessionId = $.outputs.commonFields.session.custom;
+      const ip = $.outputs.commonFields.context.device.ip;
+      $.assert(userId, "userId is required");
+      $.assert(sessionId, "sessionId is required");
+      $.assert(ip, "ip is required");
+
+  - name: prepareIdentifyPayload
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    steps:
+      - name: propertiesFields
+        template: |
+          const email = .message.().(
+            {{{{$.getGenericPaths("email")}}}};
+            );
+          const hashEmail = .destination.Config.hashEmail;
+          hashedEmail = hashEmail ? $.SHA256(email) : email;
+          let properties = {
+            "hashedEmail": hashedEmail,
+            "dyType": 'identify-v1'
+          };
+          properties = $.removeUndefinedAndNullValues(properties);
+      - name: updatedPropertiesFields
+        condition: $.outputs.prepareIdentifyPayload.propertiesFields.hashedEmail === undefined
+        template: |
+          let cuid = $.outputs.commonFields.user.id;
+          {
+            "dyType": 'identify-v1',
+            "cuidType": "userId",
+            "cuid": cuid
+          };
+      - name: events
+        template: |
+          let properties = $.outputs.prepareIdentifyPayload.updatedPropertiesFields ||  $.outputs.prepareIdentifyPayload.propertiesFields;
+          [{
+            "name": "Identify User",
+            "properties": properties 
+          }];
+
+  - name: prepareTrackPayload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    steps:
+      - name: getTrimmedEvent
+        template: |
+          const trimmedEvent = .message.event.trim().toLowerCase().replace(new RegExp('\\s+', 'g'),'_');
+
+      - name: populateCustomEventProperties
+        condition: $.ecomEventsMapping[$.outputs.prepareTrackPayload.getTrimmedEvent] === undefined
+        template: |
+          {
+            "name": .message.event,
+            "properties" : .message.properties
+          }
+        onComplete: return
+
+      - name: populateEventProperties
+        condition: $.outputs.prepareTrackPayload.getTrimmedEvent in ["product_added", "product_removed", "product_added_to_wishlist", "order_completed"]
+        template: |
+          const trimmedEvent = $.outputs.prepareTrackPayload.getTrimmedEvent;
+          const dyType = $.ecomEventsMapping[trimmedEvent].toLowerCase().replace(new RegExp('\\s+', 'g'),'-')+"-v1";
+          {
+            "name": $.ecomEventsMapping[trimmedEvent],
+            "properties" : {
+              "dyType": dyType,
+              "value": Number(parseFloat(.message.properties.value || .message.properties.revenue || .message.properties.price).toFixed(2)),
+              "currency": .message.properties.currency,
+            }
+          }
+
+      - name: updateOrderCompletedEventProperties
+        condition: $.outputs.prepareTrackPayload.getTrimmedEvent === 'order_completed'
+        template: |
+          {
+            ...$.outputs.prepareTrackPayload.populateEventProperties,
+            "properties": {
+              ...$.outputs.prepareTrackPayload.populateEventProperties.properties,
+              "uniqueTransactionId" : ^.message.properties.order_id,
+              "value": .message.properties.value || .message.properties.revenue || .message.properties.price
+            }
+          }
+
+      - name: updateOtherEventProperties
+        condition: $.outputs.prepareTrackPayload.getTrimmedEvent !== 'order_completed'
+        template: |
+          {
+          ...$.outputs.prepareTrackPayload.populateEventProperties,
+          "properties": {
+            ...$.outputs.prepareTrackPayload.populateEventProperties.properties,
+            "quantity" : .message.properties.quantity,
+            "productId": .message.properties.sku || .message.properties.product_id
+            }
+          }
+
+      - name: populateCartObj
+        condition: Array.isArray(.message.properties.products)
+        template: |
+          const eventProperties = $.outputs.prepareTrackPayload.getTrimmedEvent === 'order_completed' ? $.outputs.prepareTrackPayload.updateOrderCompletedEventProperties.properties : $.outputs.prepareTrackPayload.populateEventProperties.properties;
+          {
+          ...$.outputs.prepareTrackPayload.populateEventProperties,
+            "properties": {
+              ...eventProperties,
+              cart: .message.properties@prop.products.({
+                "productId": .sku ?? prop.sku,
+                "quantity": Number(.quantity ?? prop.quantity),
+                "itemPrice": Number(parseFloat(.price ?? prop.price).toFixed(2))
+              })
+            }
+          }
+
+  - name: payload
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      const outputPayload = {
+        ...$.outputs.commonFields,
+        "events": $.outputs.prepareIdentifyPayload
+        }
+    else:
+      name: trackPayload
+      template: |
+        const outputPayload = {
+        ...$.outputs.commonFields,
+        "events": [$.outputs.prepareTrackPayload]
+        }
+
+  - name: buildResponseForProcessTransformation
+    description: build response
+    template: |
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.outputs.payload;
+      response.endpoint = $.ENDPOINT;
+      response.headers = {
+          "DY-API-Key": .destination.Config.apiKey,
+          "Content-Type": "application/json"
+        };
+      finalResponse = response;

@@ -256,7 +256,7 @@ const trackingPlan = {
             }
           }
         }
-      }
+      },    
     ]
   },
   name: "workspaces/dummy_workspace_id/tracking-plans/dummy_tracking_plan_id",
@@ -265,6 +265,79 @@ const trackingPlan = {
   create_time: "2021-12-14T19:19:13.666Z",
   update_time: "2021-12-15T13:29:59.272Z"
 };
+
+const trackingPlan2 = {
+  rules: {
+    identify: {
+      type: "object",
+      $schema: "http://json-schema.org/draft-07/schema#",
+      required: ["traits"],
+      properties: {
+        traits: {
+            properties: {
+              id: {
+                type: ['string']
+              }
+            },
+            required: ['id'],
+            type: "object",
+            additionalProperties: false
+        }
+      },
+    }
+  },
+  group: {
+    type: "object",
+    $schema: "http://json-schema.org/draft-07/schema#",
+    required: ["traits"],
+    properties: {
+      traits: {
+          properties: {
+            id: {
+              type: ['string']
+            }
+          },
+          required: ['id'],
+          type: "object",
+          additionalProperties: false
+      }
+    },
+  },
+  page: {
+    type: "object",
+    $schema: "http://json-schema.org/draft-07/schema#",
+    required: ["properties"],
+    properties: {
+      properties: {
+          properties: {
+            id: {
+              type: ['string']
+            }
+          },
+          required: ['id'],
+          type: "object",
+          additionalProperties: false
+      }
+    },
+  },
+  screen: {
+    type: "object",
+    $schema: "http://json-schema.org/draft-07/schema#",
+    required: ["properties"],
+    properties: {
+      properties: {
+          properties: {
+            id: {
+              type: ['string']
+            }
+          },
+          required: ['id'],
+          type: "object",
+          additionalProperties: false
+      }
+    },
+  },
+}
 
 const constructEventToValidate = (eventName, dateStr='2020-06-08T01:00:00') => {
   const ev = {
@@ -297,6 +370,196 @@ const constructEventToValidate = (eventName, dateStr='2020-06-08T01:00:00') => {
   };
   return ev;
 };
+
+const sampleForumTrackingPlan = {
+  rules: {
+    events: [
+      {
+        id: "ev_complex_draft_7",
+        name: "Post Created - Draft 7",
+        description: "Fired when a post is created.",
+        version: "1-0-0",
+        rules: {
+          type: "object",
+          $schema: "http://json-schema.org/draft-07/schema#",
+          required: ["properties"],
+          properties: {
+            properties: {
+              $schema: "http://json-schema.org/draft-07/schema#",
+              additionalProperties: false,
+              properties: {
+                flairs: {
+                  type: ["array", "object"],
+                  items: {
+                    type: ["string", "object"],
+                    properties: {
+                      name: {
+                        type: "string"
+                      }
+                    },
+                    required: ["name"]
+                  },
+                  properties: {
+                    name: {
+                      type: "array",
+                      items: {
+                        type: "string"
+                      }
+                    }
+                  },
+                  required: ["name"],
+                  additionalProperties: false
+                },
+                title: {
+                  type: ["string"]
+                },
+                body: {
+                  type: ["string"]
+                },
+                post_comment: {
+                  type: ["string", "null"]
+                }
+              },
+              type: "object",
+              required: ["flairs", "title", "body"]
+            }
+          }
+        }
+      },
+    ]
+  },
+  name: "workspaces/dummy_workspace_id/tracking-plans/dummy_tracking_plan_id2",
+  display_name: "Reddit Tracking Plan - Draft",
+  version: 1,
+  create_time: "2021-12-14T19:19:13.666Z",
+  update_time: "2021-12-15T13:29:59.272Z"
+}
+
+const sampleForumValidationEvents = {
+  complexEvent1: { 
+     metadata: {
+      trackingPlanId: "dummy_tracking_plan_id2",
+      trackingPlanVersion: "dummy_version",
+      workspaceId: "dummy_workspace_id",
+      sourceTpConfig: {
+        track: {}
+      }
+    },
+    message: {
+      type: "track",
+      userId: "user-demo",
+      event: "Post Created - Draft 7",
+      properties: {
+        flairs: ["Current Events", "Geopolitics"],
+        title: "Some Post",
+        body: "Some Body..."
+      },
+      context: {
+        ip: "14.5.67.21"
+      },
+      timestamp: "2020-02-02T00:23:09.544Z"
+    }
+  },
+  complexEvent2: { 
+    metadata: {
+      trackingPlanId: "dummy_tracking_plan_id2",
+      trackingPlanVersion: "dummy_version",
+      workspaceId: "dummy_workspace_id",
+      sourceTpConfig: {
+        track: {}
+      }
+    },
+    message: {
+      type: "track",
+      userId: "user-demo",
+      event: "Post Created - Draft 7",
+      properties: {
+        flairs: { "name": ["Current Events", "Geopolitics"] },
+        title: "Some Post",
+        body: "Some Body...",
+        post_comment: null
+      },
+      context: {
+        ip: "14.5.67.21"
+      },
+      timestamp: "2020-02-02T00:23:09.544Z"
+    }
+  },
+  complexEvent3: { 
+    metadata: {
+      trackingPlanId: "dummy_tracking_plan_id2",
+      trackingPlanVersion: "dummy_version",
+      workspaceId: "dummy_workspace_id",
+      sourceTpConfig: {
+        track: {}
+      }
+    },
+    message: {
+      type: "track",
+      userId: "user-demo",
+      event: "Post Created - Draft 7",
+      properties: {
+        flairs: [{ name: "Current Events" }, { name: "Geopolitics" }],
+        title: "Some Post",
+        body: "Some Body...",
+        post_comment: "More info here..."
+      },
+      context: {
+        ip: "14.5.67.21"
+      },
+      timestamp: "2020-02-02T00:23:09.544Z"
+    }
+  },
+  complexEvent4: { 
+    metadata: {
+      trackingPlanId: "dummy_tracking_plan_id2",
+      trackingPlanVersion: "dummy_version",
+      workspaceId: "dummy_workspace_id",
+      sourceTpConfig: {
+        track: {}
+      }
+    },
+    message: {
+      type: "track",
+      userId: "user-demo",
+      event: "Post Created - Draft 7",
+      properties: {
+        title: "Some Post",
+        body: "Some Body...",
+        post_comment: "More info here..."
+      },
+      context: {
+        ip: "14.5.67.21"
+      },
+      timestamp: "2020-02-02T00:23:09.544Z"
+    }
+  },
+  complexEvent5: { 
+    metadata: {
+      trackingPlanId: "dummy_tracking_plan_id2",
+      trackingPlanVersion: "dummy_version",
+      workspaceId: "dummy_workspace_id",
+      sourceTpConfig: {
+        track: {}
+      }
+    },
+    message: {
+      type: "track",
+      userId: "user-demo",
+      event: "Post Created - Draft 7",
+      properties: {
+        flairs: [],
+        title: "Some Post",
+        body: "Some Body...",
+        post_comment: 1
+      },
+      context: {
+        ip: "14.5.67.21"
+      },
+      timestamp: "2020-02-02T00:23:09.544Z"
+    }
+  }
+}
 
 const eventValidationTestCases = [
   {
@@ -380,12 +643,61 @@ const eventValidationTestCases = [
         type: "Unknown-Violation",
       }
     ]
+  },
+  {
+    testCase: "draft 7",
+    event: sampleForumValidationEvents.complexEvent1,
+    trackingPlan: sampleForumTrackingPlan,
+    output: []
+  },
+  {
+    testCase: "draft 7",
+    event: sampleForumValidationEvents.complexEvent2,
+    trackingPlan: sampleForumTrackingPlan,
+    output: []
+  },
+  {
+    testCase: "draft 7",
+    event: sampleForumValidationEvents.complexEvent3,
+    trackingPlan: sampleForumTrackingPlan,
+    output: []
+  },
+  {
+    testCase: "draft 7 - missing flair",
+    event: sampleForumValidationEvents.complexEvent4,
+    trackingPlan: sampleForumTrackingPlan,
+    output: [
+      {
+        type: "Required-Missing",
+        message: "must have required property 'flairs'",
+        meta: {
+            instacePath: "/properties",
+            schemaPath: "#/properties/properties/required",
+            missingProperty: "flairs"
+        }
+      }
+    ]
+  },
+  {
+    testCase: "draft 7 -  bad type for post_comment",
+    event: sampleForumValidationEvents.complexEvent5,
+    trackingPlan: sampleForumTrackingPlan,
+    output: [
+      {
+        "type": "Datatype-Mismatch",
+        "message": "must be string,null",
+        "meta": {
+            "instacePath": "/properties/post_comment",
+            "schemaPath": "#/properties/properties/properties/post_comment/type"
+        }
+      }
+    ]
   }
 ];
 
 const eventSchemaTestCases = [
   {
-    testCase: "Page Event is not Supported",
+    testCase: "Page is not part of Tracking Plan",
     event: {
       metadata: {
         trackingPlanId: "dummy_tracking_plan_id",
@@ -416,7 +728,27 @@ const eventSchemaTestCases = [
     }
   },
   {
-    testCase: "Screen Event is not Supported",
+    testCase: "Page is a part of Tracking Plan",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id",
+        trackingPlanVersion: "dummy_version",
+        workspaceId: "dummy_workspace_id"
+      },
+      message: {
+        properties: {
+          id: 'xyz'
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan2,
+    output: {
+      eventSchema: undefined
+    }
+  },
+  {
+    testCase: "Screen is not part of Tracking Plan",
     event: {
       metadata: {
         trackingPlanId: "dummy_tracking_plan_id",
@@ -429,7 +761,7 @@ const eventSchemaTestCases = [
         anonymousId: "anon-id-new",
         name: "Screen View",
         properties: {
-          prop1: "5"
+          id: "5"
         },
         context: {
           ip: "14.5.67.21",
@@ -441,6 +773,36 @@ const eventSchemaTestCases = [
       }
     },
     trackingPlan,
+    output: {
+      eventSchema: undefined
+    }
+  },
+  {
+    testCase: "Screen is a part of Tracking Plan",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id",
+        trackingPlanVersion: "dummy_version",
+        workspaceId: "dummy_workspace_id"
+      },
+      message: {
+        type: "screen",
+        userId: "user12345",
+        anonymousId: "anon-id-new",
+        name: "Screen View",
+        properties: {
+          id: "5"
+        },
+        context: {
+          ip: "14.5.67.21",
+          library: {
+            name: "http"
+          }
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan2,
     output: {
       eventSchema: undefined
     }

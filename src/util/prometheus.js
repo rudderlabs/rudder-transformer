@@ -168,7 +168,14 @@ class Prometheus {
         name: 'event_transform_success',
         help: 'event_transform_success',
         type: 'counter',
-        labelNames: ['destType', 'destinationId', 'workspaceId', 'feature', 'implementation'],
+        labelNames: [
+          'destType',
+          'module',
+          'destinationId',
+          'workspaceId',
+          'feature',
+          'implementation',
+        ],
       },
       {
         name: 'event_transform_failure',

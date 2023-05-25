@@ -65,6 +65,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
 
           stats.increment('event_transform_success', {
             destType: destinationType,
+            module: tags.MODULES.DESTINATION,
             destinationId: event.metadata.destinationId,
             workspaceId: event.metadata.workspaceId,
             feature: tags.FEATURES.PROCESSOR,
@@ -125,6 +126,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
 
             stats.increment('event_transform_success', {
               destType: destinationType,
+              module: tags.MODULES.DESTINATION,
               destinationId: destInputArray[0].metadata.destinationId,
               workspaceId: destInputArray[0].metadata.workspaceId,
               feature: tags.FEATURES.ROUTER,

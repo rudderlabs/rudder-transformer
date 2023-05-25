@@ -62,7 +62,11 @@
       }
     },
     "output": {
-      "error": "event type random_event not supported"
+      "outputToSource": {
+        "body": "T0s=",
+        "contentType": "text/plain"
+      },
+      "statusCode": 200
     }
   },
   {
@@ -266,7 +270,11 @@
       "updated_at": "2022-01-05T18:16:48+05:30"
     },
     "output": {
-      "error": "event type checkout_delete not supported"
+      "outputToSource": {
+        "body": "T0s=",
+        "contentType": "text/plain"
+      },
+      "statusCode": 200
     }
   },
   {

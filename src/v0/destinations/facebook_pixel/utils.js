@@ -165,7 +165,6 @@ const transformedPayloadData = (
     customWhiteListedProperties[singularConfigInstance.whitelistPiiProperties] = true;
   });
 
-
   Object.keys(clonedCustomData).forEach((eventProp) => {
     const isDefaultPiiProperty = defaultPiiProperties.includes(eventProp);
     const isProperyWhiteListed = customWhiteListedProperties[eventProp] || false;
@@ -184,7 +183,7 @@ const transformedPayloadData = (
       }
     }
 
-    if (isStandard && isDefaultPiiProperty) {
+    if (isStandard && !isDefaultPiiProperty) {
       delete clonedCustomData[eventProp];
     }
   });

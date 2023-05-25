@@ -708,6 +708,18 @@ class Prometheus {
         ],
       },
       {
+        name: 'fb_custom_audience_event_having_all_null_field_values_for_a_user',
+        help: 'fbcustomaudience event having all null field values for a user',
+        type: 'counter',
+        labelNames: ['destinationId'],
+      },
+      {
+        name: 'fb_custom_audience_event_having_all_null_field_values_for_all_users',
+        help: 'fbcustomaudience event having all null field values for all users',
+        type: 'counter',
+        labelNames: ['destinationId'],
+      },
+      {
         name: 'http_request_size',
         help: 'http_request_size',
         type: 'histogram',

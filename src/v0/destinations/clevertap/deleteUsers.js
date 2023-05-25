@@ -68,10 +68,10 @@ const userDeletionHandler = async (userAttributes, config) => {
   };
 };
 
-const processDeleteUsers = (event) => {
+const processDeleteUsers = async (event) => {
   const { userAttributes, config } = event;
   executeCommonValidations(userAttributes);
-  const resp = userDeletionHandler(userAttributes, config);
+  const resp = await userDeletionHandler(userAttributes, config);
   return resp;
 };
 module.exports = { processDeleteUsers };

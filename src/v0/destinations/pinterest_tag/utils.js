@@ -358,9 +358,12 @@ const postProcessEcomFields = (message, mandatoryPayload) => {
   }
   customPayload = {
     ...customPayload,
-    content_ids: contentIds.length > 0 ? contentIds : null,
     contents: contentArray,
   };
+
+  if (contentIds.length > 0) {
+    customPayload.content_ids = contentIds;
+  }
 
   return {
     ...mandatoryPayload,

@@ -123,7 +123,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
             const doRouterTransformationResponse: RouterTransformationResponse[] =
               await processCdkV2Workflow(destinationType, destInputArray, tags.FEATURES.ROUTER);
 
-            stats.increment('event_router_success', {
+            stats.increment('event_transform_success', {
               destType: destinationType,
               destinationId: destInputArray[0].metadata.destinationId,
               workspaceId: destInputArray[0].metadata.workspaceId,
@@ -144,7 +144,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
                 metaTO,
               );
 
-            stats.increment('event_router_failure', metaTO.errorDetails);
+            stats.increment('event_transform_failure', metaTO.errorDetails);
 
             return [erroredResp];
           }

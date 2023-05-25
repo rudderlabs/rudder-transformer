@@ -184,25 +184,6 @@ class Prometheus {
         ],
       },
       {
-        name: 'event_router_success',
-        help: 'event_router_success',
-        type: 'counter',
-        labelNames: ['destType', 'destinationId', 'workspaceId', 'feature', 'implementation'],
-      },
-      {
-        name: 'event_router_failure',
-        help: 'event_router_failure',
-        type: 'counter',
-        labelNames: [
-          'destType',
-          'module',
-          'destinationId',
-          'workspaceId',
-          'feature',
-          'implementation',
-        ],
-      },
-      {
         name: 'hv_violation_type',
         help: 'hv_violation_type',
         type: 'counter',

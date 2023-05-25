@@ -117,37 +117,33 @@ const getAnonymousId = (message) => {
  */
 const getAnonymousIdFromDb = async (message, metricMetadata) => {
   const cartToken = getCartToken(message);
-  const { event } = message;
-  if (!isDefinedAndNotNull(cartToken)) {
-    return null;
-  }
-  let anonymousId;
-  try {
-    anonymousId = await RedisDB.getVal(`${cartToken}`, 'anonymousId');
-  } catch (e) {
-    stats.increment('shopify_redis_failures', {
+  if (isDefinedAndNotNull(cartToken)) {
+    let anonymousId;
+    stats.increment('shopify_redis_calls', {
       type: 'get',
       ...metricMetadata,
     });
-  }
-  stats.increment('shopify_redis_calls', {
-    type: 'get',
-    ...metricMetadata,
-  });
-  if (anonymousId === null) {
+    try {
+      anonymousId = await RedisDB.getVal(`${cartToken}`, 'anonymousId');
+    } catch (e) {
+      stats.increment('shopify_redis_failures', {
+        type: 'get',
+        ...metricMetadata,
+      });
+    }
+    if (isDefinedAndNotNull(anonymousId)) {
+      return anonymousId;
+    }
     stats.increment('shopify_redis_no_val', {
       ...metricMetadata,
-      event,
+      event: message.event,
     });
-  }
-  if (!isDefinedAndNotNull(anonymousId)) {
     /* if redis does not have the mapping for cartToken as key (null) 
       or redis is down(undefined)
       we will set anonymousId as sha256(cartToken)
      */
-    return v5(cartToken, v5.URL);
   }
-  return anonymousId;
+  return getAnonymousId(message);
 };
 
 /**

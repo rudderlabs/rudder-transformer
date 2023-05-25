@@ -36,7 +36,7 @@ const responseBuilder = async (message, destination, accessToken) => {
 
   /**
    * The below written switch case is used to build the response for each of the supported audience type.
-   *  eg. ["email", "deviceId", "ipAddress"].
+   *  eg. ["email"].
    */
   const audienceAttribute = AUDIENCE_ATTRIBUTE[audienceType];
   switch (audienceAttribute) {

@@ -20,7 +20,7 @@ const { InstrumentationError } = require('../../util/errorTypes');
  * ]
  */
 const populateIdentifiers = (audienceList, Config) => {
-  const seedList = [];
+  const list = [];
   const { audienceType } = Config;
   const { hashRequired } = Config;
   const audienceAttribute = AUDIENCE_ATTRIBUTE[audienceType];
@@ -39,9 +39,15 @@ const populateIdentifiers = (audienceList, Config) => {
       }
       // here, hashing the data if is not hashed and pushing in the seedList array.
       if (hashRequired) {
-        seedList.push(sha256(userTraits[audienceAttribute]));
+        list.push({
+          email: userTraits[audienceAttribute],
+          hashedEmail: sha256(userTraits[audienceAttribute]),
+        });
       } else {
-        seedList.push(userTraits[audienceAttribute]);
+        list.push({
+          email: userTraits[audienceAttribute],
+          hashedEmail: userTraits[audienceAttribute],
+        });
       }
     });
   }

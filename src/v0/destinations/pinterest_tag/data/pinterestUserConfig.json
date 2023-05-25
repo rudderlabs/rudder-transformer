@@ -26,7 +26,7 @@
           "destVal": "m"
         },
         {
-          "sourceVal": ["n", "N", "non-binary", "Non Binary", "NonBinary", "non binary"],
+          "sourceVal": ["n", "N", "non-binary", "non binary", "Non-Binary", "Non Binary"],
           "destVal": "n"
         }
       ]

@@ -84,7 +84,7 @@ steps:
       gender = gender && (
                 (gender in ["f", "F", "Female", "female", "FEMALE"] ? "f") ??
                 (gender in ["m", "M", "Male", "male", "MALE"] ? "m") ??
-                (gender in ["n", "N", "non-binary", "Non Binary", "NonBinary", "non binary"] ? "n" : gender)
+                (gender in ["n", "N", "non-binary", "non binary", "Non-Binary", "Non Binary"] ? "n" : gender)
               );
       let userFields = .message.().({
         "em": {{{{$.getGenericPaths("email")}}}},

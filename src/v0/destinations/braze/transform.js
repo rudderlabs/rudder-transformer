@@ -187,8 +187,9 @@ function getUserAttributesObject(message, mappingJson, destination) {
   // iterate over rest of the traits properties
   Object.keys(traits).forEach((traitKey) => {
     // if traitKey is not reserved add the value to final output
-    if (!reservedKeys.includes(traitKey) && traits[traitKey] !== undefined) {
-      data[traitKey] = traits[traitKey];
+    const value = get(traits, traitKey);
+    if (!reservedKeys.includes(traitKey) && value !== undefined) {
+      data[traitKey] = value;
     }
   });
 

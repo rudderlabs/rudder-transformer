@@ -301,13 +301,16 @@ const fetchUserData = (message, Config) => {
     delete userData.external_id;
   }
 
-  const split = userData.name ? userData.name.split(' ') : null;
-  if (split !== null && Array.isArray(split) && split.length === 2) {
-    userData.fn = integrationsObj?.hashed ? split[0] : sha256(split[0]);
-    userData.ln = integrationsObj?.hashed ? split[1] : sha256(split[1]);
+  if (userData) {
+    const split = userData.name?.split(' ');
+    if (split && split.length === 2) {
+      const hashValue = (value) => (integrationsObj?.hashed ? value : sha256(value));
+      userData.fn = hashValue(split[0]);
+      userData.ln = hashValue(split[1]);
+    }
+    delete userData.name;
+    userData.fbc = userData.fbc || deduceFbcParam(message);
   }
-  delete userData.name;
-  userData.fbc = userData.fbc || deduceFbcParam(message);
 
   return userData;
 };

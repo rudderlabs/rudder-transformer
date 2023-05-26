@@ -1,0 +1,71 @@
+/health:
+  get:
+    tags:
+      - Miscellaneous
+    summary: Health of the service
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/health.yaml'
+      500:
+        description: Health Check Failed
+/features:
+  get:
+    tags:
+      - Miscellaneous
+    summary: Gets features json describing destination eligible for router transform
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: 'object'
+      500:
+        description: Fetch Features Failed
+/transformerBuildVersion:
+  get:
+    deprecated: true
+    tags:
+      - Miscellaneous
+    summary: Gets transformer build version
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: 'string'
+      500:
+        description: Get transformer build version Failed
+/buildVersion:
+  get:
+    tags:
+      - Miscellaneous
+    summary: Gets transformer build version
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: 'string'
+      500:
+        description: Get transformer build version Failed
+/version:
+  get:
+    tags:
+      - Miscellaneous
+    summary: Gets transformer version
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: 'string'
+      500:
+        description: Get transformer version Failed

@@ -165,6 +165,32 @@ class Prometheus {
         labelNames: ['destType', 'feature'],
       },
       {
+        name: 'event_transform_success',
+        help: 'event_transform_success',
+        type: 'counter',
+        labelNames: [
+          'destType',
+          'module',
+          'destinationId',
+          'workspaceId',
+          'feature',
+          'implementation',
+        ],
+      },
+      {
+        name: 'event_transform_failure',
+        help: 'event_transform_failure',
+        type: 'counter',
+        labelNames: [
+          'destType',
+          'module',
+          'destinationId',
+          'workspaceId',
+          'feature',
+          'implementation',
+        ],
+      },
+      {
         name: 'hv_violation_type',
         help: 'hv_violation_type',
         type: 'counter',
@@ -420,10 +446,42 @@ class Prometheus {
         labelNames: [],
       },
       {
+        name: 'redis_error',
+        help: 'redis_error',
+        type: 'counter',
+        labelNames: ['operation'],
+      },
+      {
+        name: 'shopify_redis_failures',
+        help: 'shopify_redis_failures',
+        type: 'counter',
+        labelNames: ['type', 'writeKey', 'source'],
+      },
+      {
+        name: 'shopify_redis_calls',
+        help: 'shopify_redis_calls',
+        type: 'counter',
+        labelNames: ['type', 'writeKey', 'source'],
+      },
+      {
+        name: 'shopify_redis_no_val',
+        help: 'shopify_redis_no_val',
+        type: 'counter',
+        labelNames: ['event', 'writeKey', 'source'],
+      },
+      {
         name: 'events_to_process',
         help: 'events_to_process',
         type: 'counter',
-        labelNames: ['transformerVersionId', 'language', 'identifier', 'testMode', 'sourceType', 'destinationType', 'k8_namespace'],
+        labelNames: [
+          'transformerVersionId',
+          'language',
+          'identifier',
+          'testMode',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+        ],
       },
       {
         name: 'get_transformation_code',
@@ -436,6 +494,12 @@ class Prometheus {
         help: 'get_libraries_code',
         type: 'counter',
         labelNames: ['libraryVersionId', 'version', 'type', 'success'],
+      },
+      {
+        name: 'invalid_shopify_event',
+        help: 'invalid_shopify_event',
+        type: 'counter',
+        labelNames: ['writeKey', 'source', 'shopifyTopic'],
       },
 
       // Gauges

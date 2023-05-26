@@ -165,6 +165,32 @@ class Prometheus {
         labelNames: ['destType', 'feature'],
       },
       {
+        name: 'event_transform_success',
+        help: 'event_transform_success',
+        type: 'counter',
+        labelNames: [
+          'destType',
+          'module',
+          'destinationId',
+          'workspaceId',
+          'feature',
+          'implementation',
+        ],
+      },
+      {
+        name: 'event_transform_failure',
+        help: 'event_transform_failure',
+        type: 'counter',
+        labelNames: [
+          'destType',
+          'module',
+          'destinationId',
+          'workspaceId',
+          'feature',
+          'implementation',
+        ],
+      },
+      {
         name: 'hv_violation_type',
         help: 'hv_violation_type',
         type: 'counter',

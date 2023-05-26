@@ -69,11 +69,11 @@ export default class ServiceSelector {
       events[0]?.destination?.DestinationDefinition?.Config;
     if (this.isCdkDestination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
-    } else if (this.isCdkV2Destination(destinationDefinitionConfig)) {
-      return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V2_DEST);
-    } else {
-      return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
     }
+    if (this.isCdkV2Destination(destinationDefinitionConfig)) {
+      return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V2_DEST);
+    }
+    return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
   }
 
   public static getSourceService(arg: unknown) {

@@ -24,6 +24,10 @@
         {
           "sourceVal": ["m", "M", "Male", "male", "MALE"],
           "destVal": "m"
+        },
+        {
+          "sourceVal": ["n", "N", "non-binary", "non binary", "Non-Binary", "Non Binary"],
+          "destVal": "n"
         }
       ]
     }

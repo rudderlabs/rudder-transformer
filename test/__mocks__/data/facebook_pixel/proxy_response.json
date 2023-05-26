@@ -91,5 +91,19 @@
       },
       "status": 500
     }
+  },
+  "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=not_found_access_token": {
+    "response": {
+      "data": {
+        "error": {
+          "message": "Invalid Parameter",
+          "type": "GraphMethodException",
+          "code": 100,
+          "error_subcode": 34,
+          "fbtrace_id": "facebook_px_trace_id_6"
+        }
+      },
+      "status": 404
+    }
   }
 }

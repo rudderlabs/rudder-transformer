@@ -1,7 +1,12 @@
 /* eslint-disable no-nested-ternary,no-param-reassign */
 const _ = require('lodash');
 const get = require('get-value');
-const { BrazeDedupUtility, CustomAttributeOperationUtil, processDeduplication } = require('./util');
+const {
+  BrazeDedupUtility,
+  CustomAttributeOperationUtil,
+  processDeduplication,
+  processBatch,
+} = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
@@ -22,6 +27,7 @@ const {
   getIdentifyEndpoint,
   getTrackEndPoint,
   getSubscriptionGroupEndPoint,
+  getAliasMergeEndPoint,
   BRAZE_PARTNER_NAME,
   CustomAttributeOperationTypes,
 } = require('./config');
@@ -34,17 +40,17 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function formatGender(gender) {
   // few possible cases of woman
-  if (['woman', 'female', 'w', 'f'].includes(gender.toLowerCase())) {
+  if (['woman', 'female', 'w', 'f'].includes(gender?.toLowerCase())) {
     return 'F';
   }
 
   // few possible cases of man
-  if (['man', 'male', 'm'].includes(gender.toLowerCase())) {
+  if (['man', 'male', 'm'].includes(gender?.toLowerCase())) {
     return 'M';
   }
 
   // few possible cases of other
-  if (['other', 'o'].includes(gender.toLowerCase())) {
+  if (['other', 'o'].includes(gender?.toLowerCase())) {
     return 'O';
   }
 
@@ -148,21 +154,6 @@ function getUserAttributesObject(message, mappingJson, destination) {
     return traits;
   }
 
-  // iterate over the destKeys and set the value if present
-  Object.keys(mappingJson).forEach((destKey) => {
-    let value = get(traits, mappingJson[destKey]);
-    if (value) {
-      // handle gender special case
-      if (destKey === 'gender') {
-        value = formatGender(value);
-      }
-      if (destKey === 'email') {
-        value = value.toLowerCase();
-      }
-      data[destKey] = value;
-    }
-  });
-
   // reserved keys : already mapped through mappingJson
   const reservedKeys = [
     'address',
@@ -175,7 +166,22 @@ function getUserAttributesObject(message, mappingJson, destination) {
     'phone',
   ];
 
+  // iterate over the destKeys and set the value if present
   if (traits) {
+    Object.keys(mappingJson).forEach((destKey) => {
+      let value = get(traits, mappingJson[destKey]);
+      if (value || (value === null && reservedKeys.includes(destKey))) {
+        // handle gender special case
+        if (destKey === 'gender') {
+          value = formatGender(value);
+        }
+        if (destKey === 'email' && value !== null) {
+          value = value?.toLowerCase();
+        }
+        data[destKey] = value;
+      }
+    });
+
     // iterate over rest of the traits properties
     Object.keys(traits).forEach((traitKey) => {
       // if traitKey is not reserved add the value to final output
@@ -246,7 +252,11 @@ function processTrackWithUserAttributes(message, destination, mappingJson, proce
     payload = setExternalIdOrAliasObject(payload, message);
     const requestJson = { attributes: [payload] };
     if (destination.Config.supportDedup) {
-      const dedupedAttributePayload = processDeduplication(processParams.userStore, payload);
+      const dedupedAttributePayload = processDeduplication(
+        processParams.userStore,
+        payload,
+        destination.ID,
+      );
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
       } else {
@@ -301,7 +311,7 @@ function getPurchaseObjs(message) {
 
   const purchaseObjs = [];
 
-  if (products) {
+  if (Array.isArray(products)) {
     // we have to make a separate call to appboy for each product
     products.forEach((product) => {
       const productId = product.product_id || product.sku;
@@ -347,6 +357,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
       const dedupedAttributePayload = processDeduplication(
         processParams.userStore,
         attributePayload,
+        destination.ID,
       );
       if (dedupedAttributePayload) {
         requestJson.attributes = [dedupedAttributePayload];
@@ -465,6 +476,41 @@ function processGroup(message, destination) {
   );
 }
 
+function processAlias(message, destination) {
+  const userId = message?.userId;
+  const previousId = message?.previousId;
+
+  if (!userId) {
+    throw new InstrumentationError('[BRAZE]: userId is required for alias call');
+  }
+
+  if (!previousId) {
+    throw new InstrumentationError('[BRAZE]: previousId is required for alias call');
+  }
+
+  const mergeUpdates = [
+    {
+      identifier_to_merge: {
+        external_id: previousId,
+      },
+      identifier_to_keep: {
+        external_id: userId,
+      },
+    },
+  ];
+
+  const requestJson = {
+    merge_updates: mergeUpdates,
+  };
+
+  return buildResponse(
+    message,
+    destination,
+    requestJson,
+    getAliasMergeEndPoint(getEndpointFromConfig(destination)),
+  );
+}
+
 async function process(event, processParams = { userStore: new Map() }) {
   let response;
   const { message, destination } = event;
@@ -515,7 +561,9 @@ async function process(event, processParams = { userStore: new Map() }) {
       break;
     case EventType.GROUP:
       response = processGroup(message, destination);
-
+      break;
+    case EventType.ALIAS:
+      response = processAlias(message, destination);
       break;
     default:
       throw new InstrumentationError('Message type is not supported');
@@ -535,7 +583,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       logger.error('Error while fetching user store', error);
     }
 
-    BrazeDedupUtility.updateUserStore(userStore, lookedUpUsers);
+    BrazeDedupUtility.updateUserStore(userStore, lookedUpUsers, destination.ID);
   }
   // group events by userId or anonymousId and then call process
   const groupedInputs = _.groupBy(
@@ -557,7 +605,8 @@ const processRouterDest = async (inputs, reqMetadata) => {
 
   const output = await Promise.all(allResps);
 
-  return _.flatMap(output);
+  const allTransfomredEvents = _.flatMap(output);
+  return processBatch(allTransfomredEvents);
 };
 
 module.exports = { process, processRouterDest };

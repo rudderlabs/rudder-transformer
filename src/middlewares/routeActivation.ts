@@ -22,11 +22,10 @@ export default class RouteActivationMiddleware {
   private static executeActivationRule(ctx: Context, next: Next, shouldActivate: boolean) {
     if (shouldActivate) {
       return next();
-    } 
-      ctx.status = 404;
-      ctx.body = 'RouteActivationMiddleware route is disabled';
-      return ctx;
-    
+    }
+    ctx.status = 404;
+    ctx.body = 'RouteActivationMiddleware route is disabled';
+    return ctx;
   }
 
   private static shouldActivateRoute(integration: string, filterList: string | undefined) {

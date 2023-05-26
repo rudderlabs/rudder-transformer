@@ -57,114 +57,107 @@ const getSchemaForEventMappedToDest = (message) => {
 const ensureApplicableFormat = (userProperty, userInformation) => {
   let updatedProperty;
   let userInformationTrimmed;
-  const stringifiedUserInfo = userInformation.toString();
-  switch (userProperty) {
-    case 'EMAIL':
-      updatedProperty = stringifiedUserInfo.trim().toLowerCase();
-      break;
-    case 'PHONE':
-      // remove all non-numerical characters
-      updatedProperty = stringifiedUserInfo.replace(/\D/g, '');
-      // remove all leading zeros
-      updatedProperty = updatedProperty.replace(/^0+/g, '');
-      break;
-    case 'GEN':
-      updatedProperty =
-        stringifiedUserInfo.toLowerCase() === 'f' || stringifiedUserInfo.toLowerCase() === 'female'
-          ? 'f'
-          : 'm';
-      break;
-    case 'DOBY':
-      updatedProperty = stringifiedUserInfo.trim().replace(/\./g, '');
-      break;
-    case 'DOBM':
-    case 'DOBD':
-      userInformationTrimmed = stringifiedUserInfo.replace(/\./g, '');
-      if (stringifiedUserInfo.length < 2) {
-        updatedProperty = `0${userInformationTrimmed}`;
-      } else {
-        updatedProperty = userInformationTrimmed;
-      }
-      break;
-    case 'LN':
-    case 'FN':
-    case 'FI':
-      if (userProperty !== 'FI') {
-        updatedProperty = stringifiedUserInfo.toLowerCase().replace(/[!#$%&@A-Za-z]/g, '');
-      } else {
-        updatedProperty = stringifiedUserInfo.toLowerCase().replace(/[^!#$%&,.?@A-Za-z]/g, '');
-      }
-      break;
-    case 'MADID':
-      updatedProperty = stringifiedUserInfo.toLowerCase();
-      break;
-    case 'COUNTRY':
-      updatedProperty = stringifiedUserInfo.toLowerCase();
-      break;
-    case 'ZIP':
-      userInformationTrimmed = stringifiedUserInfo.replace(/\s/g, '');
-      updatedProperty = userInformationTrimmed.toLowerCase();
-      break;
-    case 'ST':
-    case 'CT':
-      updatedProperty = stringifiedUserInfo
-        .replace(/[^ A-Za-z]/g, '')
-        .replace(/\s/g, '')
-        .toLowerCase();
-      break;
-    case 'EXTERN_ID':
-      updatedProperty = stringifiedUserInfo;
-      break;
-    default:
-      throw new ConfigurationError(`The property ${userProperty} is not supported`);
+  if (isDefinedAndNotNull(userInformation)) {
+    const stringifiedUserInformation = userInformation.toString();
+    switch (userProperty) {
+      case 'EMAIL':
+        updatedProperty = stringifiedUserInformation.trim().toLowerCase();
+        break;
+      case 'PHONE':
+        // remove all non-numerical characters
+        updatedProperty = stringifiedUserInformation.replace(/\D/g, '');
+        // remove all leading zeros
+        updatedProperty = updatedProperty.replace(/^0+/g, '');
+        break;
+      case 'GEN':
+        updatedProperty =
+          stringifiedUserInformation.toLowerCase() === 'f' ||
+          stringifiedUserInformation.toLowerCase() === 'female'
+            ? 'f'
+            : 'm';
+        break;
+      case 'DOBY':
+        updatedProperty = stringifiedUserInformation.trim().replace(/\./g, '');
+        break;
+      case 'DOBM':
+      case 'DOBD':
+        userInformationTrimmed = stringifiedUserInformation.replace(/\./g, '');
+        if (userInformationTrimmed.length < 2) {
+          updatedProperty = `0${userInformationTrimmed}`;
+        } else {
+          updatedProperty = userInformationTrimmed;
+        }
+        break;
+      case 'LN':
+      case 'FN':
+      case 'FI':
+        if (userProperty !== 'FI') {
+          updatedProperty = stringifiedUserInformation.toLowerCase().replace(/[!#$%&@A-Za-z]/g, '');
+        } else {
+          updatedProperty = stringifiedUserInformation
+            .toLowerCase()
+            .replace(/[^!#$%&,.?@A-Za-z]/g, '');
+        }
+        break;
+      case 'MADID':
+        updatedProperty = stringifiedUserInformation.toLowerCase();
+        break;
+      case 'COUNTRY':
+        updatedProperty = stringifiedUserInformation.toLowerCase();
+        break;
+      case 'ZIP':
+        userInformationTrimmed = stringifiedUserInformation.replace(/\s/g, '');
+        updatedProperty = userInformationTrimmed.toLowerCase();
+        break;
+      case 'ST':
+      case 'CT':
+        updatedProperty = stringifiedUserInformation
+          .replace(/[^ A-Za-z]/g, '')
+          .replace(/\s/g, '')
+          .toLowerCase();
+        break;
+      case 'EXTERN_ID':
+        updatedProperty = stringifiedUserInformation;
+        break;
+      default:
+        throw new ConfigurationError(`The property ${userProperty} is not supported`);
+    }
   }
   return updatedProperty;
 };
 
 // Function responsible for making the data field without payload object
 // Based on the "isHashRequired" value hashing is explicitly enabled or disabled
-const prepareDataField = (
-  userSchema,
-  userUpdateList,
-  isHashRequired,
-  disableFormat,
-  skipVerify,
-) => {
+const prepareDataField = (userSchema, userUpdateList, isHashRequired, disableFormat) => {
   const data = [];
   let updatedProperty;
   let dataElement;
   userUpdateList.forEach((eachUser) => {
     dataElement = [];
     userSchema.forEach((eachProperty) => {
-      // if skip verify is true we replace undefined/null user properties with empty string
-      let userProperty = eachUser[eachProperty];
-      if (skipVerify && !isDefinedAndNotNull(userProperty)) {
-        userProperty = '';
-      }
-      if (isDefinedAndNotNull(userProperty)) {
-        if (isHashRequired) {
-          if (!disableFormat) {
-            // when user requires formatting
-            updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
-          } else {
-            // when user requires hashing but does not require formatting
-            updatedProperty = userProperty;
-          }
+      const userProperty = eachUser[eachProperty];
+      if (isHashRequired) {
+        if (!disableFormat) {
+          // when user requires formatting
+          updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
         } else {
-          // when hashing is not required
+          // when user requires hashing but does not require formatting
           updatedProperty = userProperty;
         }
-        if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
-          // for MOBILE_ADVERTISER_ID, MADID,EXTERN_ID hashing is not required ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
+      } else {
+        // when hashing is not required
+        updatedProperty = userProperty;
+      }
+      if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
+        // for MOBILE_ADVERTISER_ID, MADID,EXTERN_ID hashing is not required ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
+        if (updatedProperty) {
           updatedProperty = `${updatedProperty}`;
           dataElement.push(sha256(updatedProperty));
         } else {
-          dataElement.push(updatedProperty);
+          dataElement.push(null);
         }
       } else {
-        throw new ConfigurationError(
-          `Configured Schema field ${eachProperty} is missing in one or more user records`,
-        );
+        dataElement.push(updatedProperty);
       }
     });
     data.push(dataElement);

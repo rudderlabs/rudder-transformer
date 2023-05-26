@@ -165,6 +165,32 @@ class Prometheus {
         labelNames: ['destType', 'feature'],
       },
       {
+        name: 'event_transform_success',
+        help: 'event_transform_success',
+        type: 'counter',
+        labelNames: [
+          'destType',
+          'module',
+          'destinationId',
+          'workspaceId',
+          'feature',
+          'implementation',
+        ],
+      },
+      {
+        name: 'event_transform_failure',
+        help: 'event_transform_failure',
+        type: 'counter',
+        labelNames: [
+          'destType',
+          'module',
+          'destinationId',
+          'workspaceId',
+          'feature',
+          'implementation',
+        ],
+      },
+      {
         name: 'hv_violation_type',
         help: 'hv_violation_type',
         type: 'counter',
@@ -468,6 +494,12 @@ class Prometheus {
         help: 'get_libraries_code',
         type: 'counter',
         labelNames: ['libraryVersionId', 'version', 'type', 'success'],
+      },
+      {
+        name: 'invalid_shopify_event',
+        help: 'invalid_shopify_event',
+        type: 'counter',
+        labelNames: ['writeKey', 'source', 'shopifyTopic'],
       },
 
       // Gauges

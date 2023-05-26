@@ -92,14 +92,14 @@
         "SHOPIFY": true
       },
       "type": "track",
-      "userId": "shopify-admin",
       "properties": {
         "created_at": "2023-02-10T12:05:04.402Z",
         "id": "shopify_test3",
         "note": null,
         "products": [],
         "updated_at": "2023-02-10T12:16:07.251Z"
-      }
+      },
+      "anonymousId": "generated_uuid"
     }
   },
   {
@@ -325,7 +325,6 @@
       "created_at": "2023-02-10T12:05:04.402Z"
     },
     "output": {
-      "userId": "shopify-admin",
       "context": {
         "cart_token": null,
         "checkout_token": "checkout token",
@@ -363,7 +362,8 @@
         "firstName": "Test",
         "lastName": "Person"
       },
-      "timestamp": "2023-02-10T12:16:07.251Z"
+      "timestamp": "2023-02-10T12:16:07.251Z",
+      "anonymousId": "generated_uuid"
     }
   },
   {
@@ -802,7 +802,6 @@
       "created_at": "2023-02-10T12:05:04.402Z"
     },
     "output": {
-      "userId": "shopify-admin",
       "context": {
         "cart_token": null,
         "library": {
@@ -896,7 +895,8 @@
         ],
         "updated_at": "2023-02-10T12:16:07.251Z"
       },
-      "timestamp": "2023-02-10T12:16:07.251Z"
+      "timestamp": "2023-02-10T12:16:07.251Z",
+      "anonymousId": "generated_uuid"
     }
   },
   {

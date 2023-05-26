@@ -32,7 +32,6 @@ class ErrorDetailsExtractBuilder {
    */
   setMessageField(fieldPath) {
     if (this.messageDetails?.message) {
-      // TODO: Should we throw an error here ?
       // This check basically ensures that "setMessage" was not already before
       return this;
     }
@@ -50,7 +49,6 @@ class ErrorDetailsExtractBuilder {
    */
   setMessage(msg) {
     if (this.messageDetails?.field) {
-      // TODO: Should we throw an error here ?
       // This check basically ensures that "setMessageField" was not already called before
       return this;
     }

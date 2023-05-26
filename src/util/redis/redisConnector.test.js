@@ -4,13 +4,21 @@ const version = 'v0';
 const { RedisDB } = require('./redisConnector');
 jest.mock('ioredis', () => require('../../../test/__mocks__/redis'));
 const sourcesList = ['shopify'];
-const destList = [];
 process.env.USE_REDIS_DB = 'true';
 
 const timeoutPromise = () =>
   new Promise((resolve, _) => {
     setTimeout(() => resolve(), 100);
   });
+
+// mock a specific function from the module
+jest.mock('../../v0/util/index', () => {
+  const originalModule = jest.requireActual('../../v0/util/index');
+  return {
+    ...originalModule,
+    generateUUID: jest.fn(() => 'generated_uuid'),
+  };
+});
 
 describe('checkRedisConnectionReadyState', () => {
   RedisDB.init();

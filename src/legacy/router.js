@@ -371,15 +371,12 @@ async function handleValidation(ctx) {
       const hv = await eventValidator.handleValidation(parsedEvent);
       sendViolationMetrics(hv.validationErrors, hv.dropEvent, metaTags);
       if (hv.dropEvent) {
-        const errMessage = `Error occurred while validating due to: ${
-          hv.violationType
-        }, other validations: ${JSON.stringify(getValidationErrMsg(hv.validationErrors))}`;
         respList.push({
           output: event.message,
           metadata: event.metadata,
           statusCode: 400,
           validationErrors: hv.validationErrors,
-          error: errMessage,
+          error: JSON.stringify(getValidationErrMsg(hv.validationErrors), null, 2),
         });
         stats.counter('hv_violation_type', 1, {
           violationType: hv.violationType,
@@ -391,6 +388,7 @@ async function handleValidation(ctx) {
           metadata: event.metadata,
           statusCode: 200,
           validationErrors: hv.validationErrors,
+          error: JSON.stringify(getValidationErrMsg(hv.validationErrors), null, 2),
         });
         stats.counter('hv_propagated_events', 1, {
           ...metaTags,

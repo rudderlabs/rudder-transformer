@@ -23,8 +23,11 @@
   {
     "output": {
       "status": 500,
-      "destinationResponse": "",
-      "message": "undefined during snapchat_custom_audience response transformation",
+      "destinationResponse": {
+        "response": "unauthorized",
+        "status": 401
+      },
+      "message": "Failed with unauthorized during snapchat_custom_audience response transformation",
       "statTags": {
         "destType": "SNAPCHAT_CUSTOM_AUDIENCE",
         "errorCategory": "network",
@@ -32,18 +35,28 @@
         "feature": "dataDelivery",
         "implementation": "native",
         "module": "destination"
-      }
+      },
+      "authErrorCategory": "REFRESH_TOKEN"
     }
   },
   {
     "output": {
-      "status": 500,
-      "destinationResponse": "",
+      "status": 400,
+      "destinationResponse": {
+        "response": {
+          "request_status": "ERROR",
+          "request_id": "98e2a602-3cf4-4596-a8f9-7f034161f89a",
+          "debug_message": "Caller does not have permission",
+          "display_message": "We're sorry, but the requested resource is not available at this time",
+          "error_code": "E3002"
+        },
+        "status": 403
+      },
       "message": "undefined during snapchat_custom_audience response transformation",
       "statTags": {
         "destType": "SNAPCHAT_CUSTOM_AUDIENCE",
         "errorCategory": "network",
-        "errorType": "retryable",
+        "errorType": "aborted",
         "feature": "dataDelivery",
         "implementation": "native",
         "module": "destination"

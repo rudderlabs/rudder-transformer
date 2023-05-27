@@ -1250,7 +1250,7 @@ describe("Rudder library tests", () => {
   });
 });
 
-// tests for geolocation functionq
+// tests for geolocation function
 describe("Geolocation function", () => {
   const OLD_ENV = process.env;
   beforeEach(() => {
@@ -1274,6 +1274,11 @@ describe("Geolocation function", () => {
       }`,
     name: "geotest",
     codeVersion: "1"
+  };
+  const geoResp = {
+    country: "US",
+    region: "CA",
+    city: "San Francisco",
   };
 
   it("Should throw error if GEOLOCATION_URL is not set", async () => {
@@ -1315,11 +1320,6 @@ describe("Geolocation function", () => {
     const versionId = randomID();
     const inputData = require(`./data/${integration}_input.json`);
     inputData.forEach((input) => { input.message.request_ip = "1.1.1.1"; });
-    const geoResp = {
-      country: "US",
-      region: "CA",
-      city: "San Francisco",
-    };
 
     const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
     when(fetch)
@@ -1343,12 +1343,8 @@ describe("Geolocation function", () => {
     const versionId = randomID();
     const inputData = require(`./data/${integration}_input.json`);
     inputData.forEach((input) => { input.message.request_ip = "1.1.1.1"; });
-    const geoResp = {
-      country: "US",
-      region: "CA",
-      city: "San Francisco",
-    };
-    const respBodyV1 = {
+
+    const respBody = {
       code: `
         async function transform(events, metadata) {
           await Promise.all(events.map(async (event) => {
@@ -1369,7 +1365,7 @@ describe("Geolocation function", () => {
       .calledWith(transformerUrl)
       .mockResolvedValue({
         status: 200,
-        json: jest.fn().mockResolvedValue({ ...respBodyV1, versionId })
+        json: jest.fn().mockResolvedValue({ ...respBody, versionId })
       });
     when(fetch)
       .calledWith("https://dummyUrl.com/geoip/1.1.1.1", { timeout: 1000 })

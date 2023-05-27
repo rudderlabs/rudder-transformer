@@ -7,7 +7,7 @@ const {
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
-const ErrorDetailsExtractor = require('../../../util/error-extractor');
+const ErrorDetailsExtractorBuilder = require('../../../util/error-extractor/builder');
 
 /**
  * The actual API reference doc to which events from Rudderstack are being sent
@@ -50,69 +50,69 @@ const THROTTLED_ERROR_CODES = [4, 17];
 const errorDetailsMap = {
   100: {
     // This error talks about event being sent after seven days or so
-    2804003: new ErrorDetailsExtractor.Builder().setStatus(400).setMessageField('error_user_title').build(),
-    2804001: new ErrorDetailsExtractor.Builder().setStatus(400).setMessageField('error_user_title').build(),
-    2804007: new ErrorDetailsExtractor.Builder().setStatus(400).setMessageField('error_user_title').build(),
-    2804016: new ErrorDetailsExtractor.Builder().setStatus(400).setMessageField('error_user_title').build(),
-    2804017: new ErrorDetailsExtractor.Builder().setStatus(400).setMessageField('error_user_title').build(),
-    2804019: new ErrorDetailsExtractor.Builder().setStatus(400).setMessageField('error_user_title').build(),
-    2804048: new ErrorDetailsExtractor.Builder().setStatus(400).setMessageField('error_user_title').build(),
+    2804003: new ErrorDetailsExtractorBuilder().setStatus(400).setMessageField('error_user_title').build(),
+    2804001: new ErrorDetailsExtractorBuilder().setStatus(400).setMessageField('error_user_title').build(),
+    2804007: new ErrorDetailsExtractorBuilder().setStatus(400).setMessageField('error_user_title').build(),
+    2804016: new ErrorDetailsExtractorBuilder().setStatus(400).setMessageField('error_user_title').build(),
+    2804017: new ErrorDetailsExtractorBuilder().setStatus(400).setMessageField('error_user_title').build(),
+    2804019: new ErrorDetailsExtractorBuilder().setStatus(400).setMessageField('error_user_title').build(),
+    2804048: new ErrorDetailsExtractorBuilder().setStatus(400).setMessageField('error_user_title').build(),
     // This error-subcode indicates that the business access token expired or is invalid or sufficient permissions are not provided
     // since there is involvement of changes required on dashboard to make event successful
     // for now, we are aborting this error-subCode combination
-    33: new ErrorDetailsExtractor.Builder().setStatus(400)
+    33: new ErrorDetailsExtractorBuilder().setStatus(400)
       .setMessage('Object with ID \'PIXEL_ID\' does not exist, cannot be loaded due to missing permissions, or does not support this operation')
       .build(),
-    default: new ErrorDetailsExtractor.Builder().setStatus(400)
+    default: new ErrorDetailsExtractorBuilder().setStatus(400)
       .setMessage('Invalid Parameter')
       .build(),
   },
   1: {
     // An unknown error occurred.
     // This error may occur if you set level to adset but the correct value should be campaign
-    99: new ErrorDetailsExtractor.Builder().setStatus(500).setMessage('This error may occur if you set level to adset but the correct value should be campaign').build(),
-    default: new ErrorDetailsExtractor.Builder().setStatus(500).setMessage('An unknown error occurred').build(),
+    99: new ErrorDetailsExtractorBuilder().setStatus(500).setMessage('This error may occur if you set level to adset but the correct value should be campaign').build(),
+    default: new ErrorDetailsExtractorBuilder().setStatus(500).setMessage('An unknown error occurred').build(),
   },
   190: {
-    460: new ErrorDetailsExtractor.Builder().setStatus(400)
+    460: new ErrorDetailsExtractorBuilder().setStatus(400)
       .setMessage('The session has been invalidated because the user changed their password or Facebook has changed the session for security reasons')
       .build(),
-    default: new ErrorDetailsExtractor.Builder().setStatus(400)
+    default: new ErrorDetailsExtractorBuilder().setStatus(400)
       .setMessage('Invalid OAuth 2.0 access token')
       .build(),
   },
   3: {
-    default: new ErrorDetailsExtractor.Builder().setStatus(400)
+    default: new ErrorDetailsExtractorBuilder().setStatus(400)
       .setMessage('Capability or permissions issue.')
       .build(), 
   },
   2: {
-    default: new ErrorDetailsExtractor.Builder().setStatus(500)
+    default: new ErrorDetailsExtractorBuilder().setStatus(500)
       .setMessage('Temporary issue due to downtime.')
       .build(), 
   },
   341: {
-    default: new ErrorDetailsExtractor.Builder().setStatus(500)
+    default: new ErrorDetailsExtractorBuilder().setStatus(500)
       .setMessage('Application limit reached: Temporary issue due to downtime or throttling')
       .build(), 
   },
   368: {
-    default: new ErrorDetailsExtractor.Builder().setStatus(500)
+    default: new ErrorDetailsExtractorBuilder().setStatus(500)
       .setMessage('Temporarily blocked for policies violations.')
       .build(), 
   },
   5000: {
-    default: new ErrorDetailsExtractor.Builder().setStatus(500)
+    default: new ErrorDetailsExtractorBuilder().setStatus(500)
       .setMessage('Unknown Error Code')
       .build(), 
   },
   4: {
-    default: new ErrorDetailsExtractor.Builder().setStatus(429)
+    default: new ErrorDetailsExtractorBuilder().setStatus(429)
       .setMessage('API Too Many Calls')
       .build(), 
   },
   17: {
-    default: new ErrorDetailsExtractor.Builder().setStatus(429)
+    default: new ErrorDetailsExtractorBuilder().setStatus(429)
       .setMessage('API User Too Many Calls')
       .build(), 
   }

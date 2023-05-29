@@ -458,5 +458,55 @@
         "customVariables": [{ "from": "", "to": "" }]
       }
     }
+  },
+  {
+    "metadata": [
+      {
+        "secret": {
+          "access_token": "abcd1234",
+          "refresh_token": "efgh5678",
+          "developer_token": "ijkl91011"
+        },
+        "jobId": 3
+      }
+    ],
+    "batched": false,
+    "statusCode": 400,
+    "error": "Event name 'order completed' is not valid",
+    "statTags": { "errorCategory": "dataValidation", "errorType": "configuration" },
+    "destination": {
+      "Config": {
+        "rudderAccountId": "2Hsy2iFyoG5VLDd9wQcggHLMYFA",
+        "customerId": "769-372-9833",
+        "subAccount": false,
+        "UserIdentifierSource": "FIRST_PARTY",
+        "conversionEnvironment": "none",
+        "defaultUserIdentifier": "email",
+        "hashUserIdentifier": true,
+        "validateOnly": true,
+        "eventsToOfflineConversionsTypeMapping": [
+          { "from": "Data Reading Guide", "to": "click" },
+          { "from": "Sign-up - click", "to": "click" },
+          { "from": "Outbound click (rudderstack.com)", "to": "click" },
+          { "from": "Page view", "to": "click" },
+          { "from": "download", "to": "click" },
+          { "from": "Product Clicked", "to": "store" },
+          { "from": "Order Completed", "to": "call" }
+        ],
+        "loginCustomerId": "4219454086",
+        "eventsToConversionsNamesMapping": [
+          { "from": "Data Reading Guide", "to": "Data Reading Guide" },
+          { "from": "Sign-up - click", "to": "Sign-up - click" },
+          { "from": "Outbound click (rudderstack.com)", "to": "Outbound click (rudderstack.com)" },
+          { "from": "Page view", "to": "Page view" },
+          { "from": "Sign up completed", "to": "Sign-up - click" },
+          { "from": "download", "to": "Page view" },
+          { "from": "Product Clicked", "to": "Store sales" }
+        ],
+        "authStatus": "active",
+        "oneTrustCookieCategories": [],
+        "customVariables": [{ "from": "", "to": "" }]
+      }
+    }
   }
 ]

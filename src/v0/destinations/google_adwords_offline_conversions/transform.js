@@ -5,11 +5,11 @@ const {
   getHashFromArrayWithDuplicate,
   constructPayload,
   removeHyphens,
-  getErrorRespEvents,
   getHashFromArray,
   handleRtTfSingleEventError,
   defaultBatchRequestConfig,
   getSuccessRespEvents,
+  checkInvalidRtTfEvents,
 } = require('../../util');
 const {
   CALL_CONVERSION,
@@ -166,8 +166,8 @@ const batchEvents = (storeSalesEvents) => {
     if (index === 0) {
       return;
     }
-    batchEventResponse.batchedRequest.body.JSON['addConversionPayload'].operations.push(
-      storeSalesEvent.message.body.JSON.addConversionPayload.operations,
+    batchEventResponse.batchedRequest?.body?.JSON['addConversionPayload']?.operations?.push(
+      storeSalesEvent.message?.body?.JSON?.addConversionPayload?.operations,
     );
     batchEventResponse.metadatas.push(storeSalesEvent.metadata);
     batchEventResponse.destination = storeSalesEvent.destination;
@@ -184,9 +184,9 @@ const batchEvents = (storeSalesEvents) => {
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
-  if (!Array.isArray(inputs) || inputs.length <= 0) {
-    const respEvents = getErrorRespEvents(null, 400, 'Invalid event array');
-    return [respEvents];
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
   }
 
   const storeSalesEvents = []; // list containing store sales events in batched format

@@ -185,6 +185,9 @@ const mapTrackPayloadWithObjectId = (message, eventPayload) => {
   } else if (userId) {
     // If userId is present set it as identity in root
     eventPayload.identity = userId;
+  } else {
+    // Flow should not reach here fail safety
+    throw new InstrumentationError('Unable to process without anonymousId or userId');
   }
   return eventPayload;
 };

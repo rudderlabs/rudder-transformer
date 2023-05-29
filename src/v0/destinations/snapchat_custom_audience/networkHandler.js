@@ -7,7 +7,8 @@ const {
   getDynamicErrorType,
   processAxiosResponse,
 } = require('../../../adapters/utils/networkUtils');
-const { NetworkError } = require('../../util/errorTypes');
+const { NetworkError, RetryableError, AbortedError } = require('../../util/errorTypes');
+const { HTTP_STATUS_CODES } = require('../../util/constant');
 
 const prepareProxyReq = (request) => {
   const { body } = request;
@@ -38,11 +39,9 @@ const prepareProxyReq = (request) => {
  * @returns
  */
 const getAuthErrCategory = (code, response) => {
-  let authErrCategory;
+  let authErrCategory = '';
   if (code === 401) {
     authErrCategory = !response.error?.details ? REFRESH_TOKEN : '';
-  } else {
-    authErrCategory = '';
   }
   return authErrCategory;
 };
@@ -63,16 +62,34 @@ const scAudienceProxyRequest = async (request) => {
 
 const scaAudienceRespHandler = (destResponse, stageMsg) => {
   const { status, response } = destResponse;
-  // const respAttributes = response["@attributes"] || null;
-  // const { stat, err_code: errorCode } = respAttributes;
+  const authErrCategory = getAuthErrCategory(status, response);
+
+  if (authErrCategory === REFRESH_TOKEN) {
+    throw new RetryableError(
+      `Failed with ${response} ${stageMsg}`,
+      HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+      destResponse,
+      authErrCategory,
+    );
+  }
+
+  // Permissions error
+  if (response?.error_code === 'E3002') {
+    throw new AbortedError(
+      `${response.error?.message} ${stageMsg}`,
+      null,
+      destResponse,
+      authErrCategory,
+    );
+  }
   throw new NetworkError(
     `${response.error?.message} ${stageMsg}`,
     status,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
-    response,
-    getAuthErrCategory(status, response),
+    destResponse,
+    authErrCategory,
   );
 };
 

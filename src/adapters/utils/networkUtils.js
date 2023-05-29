@@ -7,6 +7,7 @@ const {
   isNonFuncObject,
   isDefinedAndNotNull,
   isHttpStatusSuccess,
+  getErrorStatusCode,
 } = require('../../v0/util');
 const { AbortedError } = require('../../v0/util/errorTypes');
 const tags = require('../../v0/util/tags');
@@ -143,8 +144,8 @@ const processAxiosResponse = (clientResponse) => {
     }
     // (edge case) response and code is not present
     return {
-      response: '',
-      status: 500,
+      response: clientResponse?.response?.data || '',
+      status: getErrorStatusCode(clientResponse, HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR),
     };
   }
   // success(2xx) axios response
@@ -154,7 +155,6 @@ const processAxiosResponse = (clientResponse) => {
     status: status || 500,
   };
 };
-
 
 function getCompatibleStatusCode(status) {
   if (status === HTTP_STATUS_CODES.NOT_FOUND) {

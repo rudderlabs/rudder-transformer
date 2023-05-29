@@ -137,26 +137,20 @@ const prepareDataField = (
   destinationId,
 ) => {
   const data = [];
-  let updatedProperty;
-  let dataElement;
   let nullEvent = true; // flag to check for bad events (all user properties are null)
+
   userUpdateList.forEach((eachUser) => {
+    const dataElement = [];
     let nullUserData = true; // flag to check for bad event (all properties are null for a user)
-    dataElement = [];
+
     userSchema.forEach((eachProperty) => {
       const userProperty = eachUser[eachProperty];
-      if (isHashRequired) {
-        if (!disableFormat) {
-          // when user requires formatting
-          updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
-        } else {
-          // when user requires hashing but does not require formatting
-          updatedProperty = userProperty;
-        }
-      } else {
-        // when hashing is not required
-        updatedProperty = userProperty;
+      let updatedProperty = userProperty;
+
+      if (isHashRequired && !disableFormat) {
+        updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
       }
+
       if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
         // for MOBILE_ADVERTISER_ID, MADID,EXTERN_ID hashing is not required ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
         if (updatedProperty) {
@@ -170,25 +164,29 @@ const prepareDataField = (
       } else {
         dataElement.push(updatedProperty);
       }
-    });
-    dataElement.forEach((property) => {
-      if (property) {
+
+      if (dataElement[dataElement.length - 1]) {
         nullUserData = false;
         nullEvent = false;
       }
     });
+
     if (nullUserData) {
       stats.increment('fb_custom_audience_event_having_all_null_field_values_for_a_user', {
         destinationId,
       });
     }
+
     data.push(dataElement);
   });
+
   if (nullEvent) {
     stats.increment('fb_custom_audience_event_having_all_null_field_values_for_all_users', {
       destinationId,
     });
   }
+
   return data;
 };
+
 module.exports = { prepareDataField, getSchemaForEventMappedToDest, batchingWithPayloadSize };

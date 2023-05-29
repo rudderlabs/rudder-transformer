@@ -165,6 +165,8 @@ const prepareDataField = (
         } else {
           dataElement.push(null);
         }
+      } else if (!updatedProperty && (eachProperty === 'MADID' || eachProperty === 'EXTERN_ID')) {
+        dataElement.push(null);
       } else {
         dataElement.push(updatedProperty);
       }

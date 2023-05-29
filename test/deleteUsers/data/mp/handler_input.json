@@ -3131,5 +3131,25 @@
         }
       ]
     }
+  },
+  {
+    "request": {
+      "body": [
+        {
+          "destType": "MP",
+          "userAttributes": [
+            {
+              "userId": "rudder1"
+            }
+          ],
+          "config": {
+            "token": "test_token",
+            "prefixProperties": true,
+            "useNativeSDK": false,
+            "dataResidency": "eu"
+          }
+        }
+      ]
+    }
   }
 ]

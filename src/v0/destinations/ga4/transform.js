@@ -260,7 +260,7 @@ const responseBuilder = (message, { Config }) => {
 
     for (const key of userPropertiesKeys) {
       const value = userProperties[key];
-      if (typeof value === 'string' || typeof value === 'number') {
+      if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
         validatedUserProperties[key] = { value };
       }
     }

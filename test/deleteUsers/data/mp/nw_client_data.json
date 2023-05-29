@@ -6087,6 +6087,50 @@
       }
     }
   },
+  [
+    {
+      "type": "post",
+      "reqParams": [
+        "https://mixpanel.com/api/app/data-deletions/v3.0/?token=test_token",
+        {
+          "distinct_ids": ["rudder1", "rudder3"],
+          "compliance_type": "CCPA"
+        },
+        {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer test_gdpr_token"
+        }
+      ],
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "data": {
+          " message": "1"
+        }
+      }
+    },
+    {
+      "type": "post",
+      "reqParams": [
+        "https://mixpanel.com/api/app/data-deletions/v3.0/?token=test_token",
+        {
+          "distinct_ids": ["rudder2"],
+          "compliance_type": "GDPR"
+        },
+        {
+          "Content-Type": "application/json",
+          "Authorization": "Bearer test_gdpr_token"
+        }
+      ],
+      "response": {
+        "status": 200,
+        "statusText": "OK",
+        "data": {
+          " message": "1"
+        }
+      }
+    }
+  ],
   {
     "type": "post",
     "reqParams": [

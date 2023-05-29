@@ -248,65 +248,73 @@ function handleValidationErrors(validationErrors, mergedTpConfig, curDropEvent, 
   let dropEvent = curDropEvent;
   let violationType = curViolationType;
   const violationsByType = new Set(validationErrors.map((err) => err.type));
-  // eslint-disable-next-line no-restricted-syntax
+
+  const handleUnknownOption = (value, key) => {
+    logger.error(`Unknown option ${value} in ${key}`);
+  };
+
+  const handleAllowUnplannedEvents = (value) => {
+    if (!['true', 'false'].includes(value)) {
+      handleUnknownOption(value, 'allowUnplannedEvents');
+    } else if (value === 'false' && violationsByType.has(violationTypes.UnplannedEvent)) {
+      dropEvent = true;
+      violationType = violationTypes.UnplannedEvent;
+    }
+  };
+
+  const handleUnplannedProperties = (value) => {
+    const exists = violationsByType.has(violationTypes.AdditionalProperties);
+    if (!['forward', 'drop'].includes(value)) {
+      handleUnknownOption(value, 'unplannedProperties');
+    } else if (value === 'drop' && exists) {
+      dropEvent = true;
+      violationType = violationTypes.AdditionalProperties;
+    }
+  };
+
+  const handleAnyOtherViolation = (value) => {
+    if (!['forward', 'drop'].includes(value)) {
+      handleUnknownOption(value, 'anyOtherViolation');
+    } else {
+      const exists1 = violationsByType.has(violationTypes.UnknownViolation);
+      const exists2 = violationsByType.has(violationTypes.DatatypeMismatch);
+      const exists3 = violationsByType.has(violationTypes.RequiredMissing);
+      if (value === 'drop' && (exists1 || exists2 || exists3)) {
+        if (exists1) {
+          violationType = violationTypes.UnknownViolation;
+        } else if (exists2) {
+          violationType = violationTypes.DatatypeMismatch;
+        } else {
+          violationType = violationTypes.RequiredMissing;
+        }
+        dropEvent = true;
+      }
+    }
+  };
+
   for (const [key, val] of Object.entries(mergedTpConfig)) {
     // To have compatibility for config-backend, spread-sheet plugin and postman collection
     // We are making everything to lower string and doing string comparison.
     const value = val?.toString()?.toLowerCase();
     // eslint-disable-next-line default-case
     switch (key) {
-      case 'allowUnplannedEvents': {
-        const exists = violationsByType.has(violationTypes.UnplannedEvent);
-        if (value === 'false' && exists) {
-          dropEvent = true;
-          violationType = violationTypes.UnplannedEvent;
-          break;
-        }
-        if (!(value === 'true' || value === 'false')) {
-          logger.error(`Unknown option ${value} in ${key}"`);
-        }
+      case 'allowUnplannedEvents':
+        handleAllowUnplannedEvents(value);
         break;
-      }
-      case 'unplannedProperties': {
-        const exists = violationsByType.has(violationTypes.AdditionalProperties);
-        if (value === 'drop' && exists) {
-          dropEvent = true;
-          violationType = violationTypes.AdditionalProperties;
-          break;
-        }
-        if (!(value === 'forward' || value === 'drop')) {
-          logger.error(`Unknown option ${value} in ${key}"`);
-        }
+      case 'unplannedProperties':
+        handleUnplannedProperties(value);
         break;
-      }
-      case 'anyOtherViolation': {
-        const exists1 = violationsByType.has(violationTypes.UnknownViolation);
-        const exists2 = violationsByType.has(violationTypes.DatatypeMismatch);
-        const exists3 = violationsByType.has(violationTypes.RequiredMissing);
-        if (value === 'drop' && (exists1 || exists2 || exists3)) {
-          if (exists1) {
-            violationType = violationTypes.UnknownViolation;
-          } else if (exists2) {
-            violationType = violationTypes.DatatypeMismatch;
-          } else {
-            violationType = violationTypes.RequiredMissing;
-          }
-          dropEvent = true;
-          break;
-        }
-        if (!(value === 'forward' || value === 'drop')) {
-          logger.error(`Unknown option ${value} in ${key}"`);
-        }
+      case 'anyOtherViolation':
+        handleAnyOtherViolation(value);
         break;
-      }
-      case 'sendViolatedEventsTo': {
+      case 'sendViolatedEventsTo':
         if (value !== 'procerrors') {
-          logger.error(`Unknown option ${value} in ${key}"`);
+          handleUnknownOption(value, 'sendViolatedEventsTo');
         }
         break;
-      }
     }
   }
+
   return { dropEvent, violationType };
 }
 

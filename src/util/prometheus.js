@@ -87,12 +87,25 @@ class Prometheus {
     return histogram;
   }
 
+  summary(name, value, tags = {}) {
+    try {
+      let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
+      if (!metric) {
+        logger.warn(`Prometheus: Summary metric ${name} not found in the registry. Creating a new one`);
+        metric = this.newSummaryStat(name, '', Object.keys(tags));
+      }
+      metric.observe(tags, value);
+    } catch (e) {
+      logger.error(`Prometheus: Summary metric ${name} failed with error ${e}`);
+    }
+  }
+
   timing(name, start, tags = {}) {
     try {
-      const metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
+      let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
       if (!metric) {
-        logger.error(`Prometheus: Timing metric ${name} not found in the registry`);
-        return;
+        logger.warn(`Prometheus: Timing metric ${name} not found in the registry. Creating a new one`);
+        metric = this.newHistogramStat(name, '', Object.keys(tags));
       }
       metric.observe(tags, (new Date() - start) / 1000);
     } catch (e) {
@@ -102,10 +115,10 @@ class Prometheus {
 
   histogram(name, value, tags = {}) {
     try {
-      const metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
+      let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
       if (!metric) {
-        logger.error(`Prometheus: Histogram metric ${name} not found in the registry`);
-        return;
+        logger.warn(`Prometheus: Histogram metric ${name} not found in the registry. Creating a new one`);
+        metric = this.newHistogramStat(name, '', Object.keys(tags));
       }
       metric.observe(tags, value);
     } catch (e) {
@@ -119,10 +132,10 @@ class Prometheus {
 
   counter(name, delta, tags = {}) {
     try {
-      const metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
+      let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
       if (!metric) {
-        logger.error(`Prometheus: Counter metric ${name} not found in the registry`);
-        return;
+        logger.warn(`Prometheus: Counter metric ${name} not found in the registry. Creating a new one`);
+        metric = this.newCounterStat(name, '', Object.keys(tags));
       }
       metric.inc(tags, delta);
     } catch (e) {
@@ -132,10 +145,10 @@ class Prometheus {
 
   gauge(name, value, tags = {}) {
     try {
-      const metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
+      let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
       if (!metric) {
-        logger.error(`Prometheus: Gauge metric ${name} not found in the registry`);
-        return;
+        logger.warn(`Prometheus: Gauge metric ${name} not found in the registry. Creating a new one`);
+        metric =  this.newGaugeStat(name, '', Object.keys(tags));
       }
       metric.set(tags, value);
     } catch (e) {

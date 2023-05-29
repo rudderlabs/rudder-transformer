@@ -1136,5 +1136,164 @@
       "event": "local testing",
       "userId": "userId12345"
     }
+  },
+  {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "userId12345",
+      "channel": "web",
+      "context": {
+        "traits": {
+          "anonymousId": "userId12345",
+          "email": "bob.dole@initech.com"
+        }
+      },
+      "properties": {
+        "brand": "Aster",
+        "product": "Garments",
+        "isSyncing": false,
+        "products": [
+          {
+            "product_id": "123",
+            "price": "14"
+          },
+          {
+            "product_id": "123",
+            "price": 14
+          }
+        ],
+        "purchased": false
+      },
+      "messageId": "6d1f3ca8-e2d0-4d34-9926-44596171af0c",
+      "originalTimestamp": "2019-11-15T10:26:53Z",
+      "receivedAt": "2019-11-15T15:56:58+05:30",
+      "sentAt": "2019-11-15T10:26:58Z",
+      "source_id": "1TdhTcwsUVOeEMWyPUpQIgF3pYr",
+      "timestamp": "2019-11-15T15:56:53+05:30",
+      "type": "track",
+      "event": 22,
+      "userId": "userId12345"
+    }
+  },
+  {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "userId12345",
+      "channel": "web",
+      "context": {
+        "traits": {
+          "anonymousId": "userId12345",
+          "email": "bob.dole@initech.com"
+        }
+      },
+      "properties": {
+        "brand": "Aster",
+        "product": "Garments",
+        "isSyncing": false,
+        "products": [
+          {
+            "product_id": "123",
+            "price": "14"
+          },
+          {
+            "product_id": "123",
+            "price": 14
+          }
+        ],
+        "purchased": false
+      },
+      "messageId": "6d1f3ca8-e2d0-4d34-9926-44596171af0c",
+      "originalTimestamp": "2019-11-15T10:26:53Z",
+      "receivedAt": "2019-11-15T15:56:58+05:30",
+      "sentAt": "2019-11-15T10:26:58Z",
+      "source_id": "1TdhTcwsUVOeEMWyPUpQIgF3pYr",
+      "timestamp": "2019-11-15T15:56:53+05:30",
+      "type": "track",
+      "event": "E",
+      "userId": "userId12345"
+    }
+  },
+  {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "userId12345",
+      "channel": "web",
+      "context": {
+        "traits": {
+          "anonymousId": "userId12345",
+          "email": "bob.dole@initech.com"
+        }
+      },
+      "properties": {
+        "brand": "Aster",
+        "product": "Garments",
+        "isSyncing": false,
+        "products": [
+          {
+            "product_id": "123",
+            "price": "14"
+          },
+          {
+            "product_id": "123",
+            "price": 14
+          }
+        ],
+        "purchased": false
+      },
+      "messageId": "6d1f3ca8-e2d0-4d34-9926-44596171af0c",
+      "originalTimestamp": "2019-11-15T10:26:53Z",
+      "receivedAt": "2019-11-15T15:56:58+05:30",
+      "sentAt": "2019-11-15T10:26:58Z",
+      "source_id": "1TdhTcwsUVOeEMWyPUpQIgF3pYr",
+      "timestamp": "2019-11-15T15:56:53+05:30",
+      "type": "track",
+      "event": "Event Name more than 30 characters abcdefghijklmno",
+      "userId": "userId12345"
+    }
   }
 ]

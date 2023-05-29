@@ -157,7 +157,7 @@
   },
   {
     "output": {
-      "status": 500,
+      "status": 400,
       "message": "Capability or permissions issue.",
       "destinationResponse": {
         "error": {
@@ -172,7 +172,7 @@
       "statTags": {
         "destType": "FACEBOOK_PIXEL",
         "errorCategory": "network",
-        "errorType": "retryable",
+        "errorType": "aborted",
         "feature": "dataDelivery",
         "implementation": "native",
         "module": "destination"

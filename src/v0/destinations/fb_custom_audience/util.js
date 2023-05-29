@@ -127,6 +127,24 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
   return updatedProperty;
 };
 
+const getUpdatedDataElement = (dataElement, isHashRequired, eachProperty, updatedProperty) => {
+  let tmpUpdatedProperty = updatedProperty;
+  if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
+    // for MOBILE_ADVERTISER_ID, MADID,EXTERN_ID hashing is not required ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
+    if (tmpUpdatedProperty) {
+      tmpUpdatedProperty = `${tmpUpdatedProperty}`;
+      dataElement.push(sha256(tmpUpdatedProperty));
+    } else {
+      dataElement.push(null);
+    }
+  } else if (!tmpUpdatedProperty && (eachProperty === 'MADID' || eachProperty === 'EXTERN_ID')) {
+    dataElement.push(null);
+  } else {
+    dataElement.push(tmpUpdatedProperty);
+  }
+  return dataElement;
+};
+
 // Function responsible for making the data field without payload object
 // Based on the "isHashRequired" value hashing is explicitly enabled or disabled
 const prepareDataField = (
@@ -140,7 +158,7 @@ const prepareDataField = (
   let nullEvent = true; // flag to check for bad events (all user properties are null)
 
   userUpdateList.forEach((eachUser) => {
-    const dataElement = [];
+    let dataElement = [];
     let nullUserData = true; // flag to check for bad event (all properties are null for a user)
 
     userSchema.forEach((eachProperty) => {
@@ -151,19 +169,12 @@ const prepareDataField = (
         updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
       }
 
-      if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
-        // for MOBILE_ADVERTISER_ID, MADID,EXTERN_ID hashing is not required ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
-        if (updatedProperty) {
-          updatedProperty = `${updatedProperty}`;
-          dataElement.push(sha256(updatedProperty));
-        } else {
-          dataElement.push(null);
-        }
-      } else if (!updatedProperty && (eachProperty === 'MADID' || eachProperty === 'EXTERN_ID')) {
-        dataElement.push(null);
-      } else {
-        dataElement.push(updatedProperty);
-      }
+      dataElement = getUpdatedDataElement(
+        dataElement,
+        isHashRequired,
+        eachProperty,
+        updatedProperty,
+      );
 
       if (dataElement[dataElement.length - 1]) {
         nullUserData = false;

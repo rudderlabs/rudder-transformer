@@ -1,6 +1,6 @@
 [
   {
-    "description": "Track Call -> carts_create with invalid cartToken",
+    "description": "Track Call -> carts_create ",
     "input": {
       "id": "shopify_test3",
       "query_parameters": {

@@ -15,6 +15,7 @@ const {
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
 const Message = require('../message');
+const logger = require('../../../logger');
 const { EventType } = require('../../../constants');
 const {
   INTEGERATION,
@@ -202,19 +203,29 @@ const processEvent = async (inputEvent, metricMetadata) => {
   message = removeUndefinedAndNullValues(message);
   return message;
 };
-const isIdentifierEvent = (event) => event?.event === 'rudderIdentifier' || event?.event ==='rudderSessionIdentifier';
+const isIdentifierEvent = (event) => ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
     let value;
     if (event.event === 'rudderIdentifier') {
       const lineItemshash = getHashLineItems(event.cart);
       value = ['anonymousId', event.anonymousId, 'itemsHash', lineItemshash];
+      // cart_token: {
+      //   anonymousId:"anon_id1",
+      //   lineItemshash:"0943gh34pg"
+      // }
     } else {
       value = ['sessionId', event.sessionId];
+      // cart_token: {
+      //   anonymousId:"anon_id1",
+      //   lineItemshash:"90fg348fg83497u",
+      //   sessionId: "session_id1"
+      // }
     }
     try {
       await RedisDB.setVal(`${event.cartToken}`, value);
     } catch (e) {
+      logger.debug(`Time: ${new Date()} {{SHOPIFY::}} itemsHash set call Failed due redis error ${e}`);
       stats.increment('shopify_redis_failures', {
         type: 'set',
         ...metricMetadata,

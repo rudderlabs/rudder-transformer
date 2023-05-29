@@ -20,7 +20,6 @@ const {
   SHOPIFY_ADMIN_ONLY_EVENTS,
 } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
-
 /**
  * query_parameters : { topic: ['<shopify_topic>'], ...}
  * Throws error otherwise
@@ -125,6 +124,7 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
     try {
       anonymousId = await RedisDB.getVal(`${cartToken}`, 'anonymousId');
     } catch (e) {
+      logger.debug(`Time: ${new Date()} {{SHOPIFY::}} anonymousId get call Failed due redis error ${e}`);
       stats.increment('shopify_redis_failures', {
         type: 'get',
         ...metricMetadata,
@@ -159,6 +159,8 @@ const getSessionIdFromDB = async (message, metricMetadata) => {
   try {
     sessionId = await RedisDB.getVal(`${cartToken}`, 'sessionId');
   } catch (e) {
+    logger.debug(`Time: ${new Date()} {{SHOPIFY::}} sessionId get call Failed due redis error ${e}`);
+
     stats.increment('shopify_redis_failures', {
       type: 'get',
       ...metricMetadata,
@@ -189,6 +191,7 @@ const updateCartItemsInRedis = async (cartToken, newCartItemsHash, metricMetadat
   try {
     await RedisDB.setVal(`${cartToken}`, value);
   } catch (e) {
+    logger.debug(`Time: ${new Date()} {{SHOPIFY::}} itemsHash set call Failed due redis error ${e}`);
     stats.increment('shopify_redis_failures', {
       type: 'set',
       ...metricMetadata,
@@ -208,6 +211,7 @@ const checkAndUpdateCartItems = async (inputEvent, metricMetadata) => {
     }
   } catch (e) {
     // so if redis is down we will send the event to downstream destinations
+    logger.debug(`Time: ${new Date()} {{SHOPIFY::}} itemsHash get call Failed due redis error ${e}`);
     stats.increment('shopify_redis_failures', {
       type: 'get',
       ...metricMetadata,

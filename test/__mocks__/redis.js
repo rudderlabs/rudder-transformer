@@ -21,6 +21,7 @@ const getData = redisKey => {
     }
 }
 let connectionRequestCount = 0;
+const getCallKeysForError = ["error", "shopifyGetAnonymousId", "shopifyGetSessionId"];
 class Redis {
     constructor(data) {
         this.host = data.host,
@@ -33,7 +34,7 @@ class Redis {
     };
 
     get(key) {
-        if (key === "error") {
+        if (getCallKeysForError.includes(key)) {
             throw new Error("Connection is Closed");
         }
         const mockData = getData(key);

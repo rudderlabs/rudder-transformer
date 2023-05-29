@@ -168,14 +168,6 @@ const getStatus = (error) => {
   if (!isEmpty(errorDetail)) {
     errorStatus = errorDetail.status;
   }
-  // TODO: Clean-up this logic
-  // if (RETRYABLE_ERROR_CODES.includes(error.code)) {
-  //   errorStatus = 500;
-  // }
-
-  // if (THROTTLED_ERROR_CODES.includes(error.code)) {
-  //   errorStatus = 429;
-  // }
 
   let errorMessage = errorDetail?.messageDetails?.message;
   if (errorDetail?.messageDetails?.field) {

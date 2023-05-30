@@ -87,12 +87,25 @@ class Prometheus {
     return histogram;
   }
 
+  summary(name, value, tags = {}) {
+    try {
+      let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
+      if (!metric) {
+        logger.warn(`Prometheus: Summary metric ${name} not found in the registry. Creating a new one`);
+        metric = this.newSummaryStat(name, '', Object.keys(tags));
+      }
+      metric.observe(tags, value);
+    } catch (e) {
+      logger.error(`Prometheus: Summary metric ${name} failed with error ${e}`);
+    }
+  }
+
   timing(name, start, tags = {}) {
     try {
-      const metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
+      let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
       if (!metric) {
-        logger.error(`Prometheus: Timing metric ${name} not found in the registry`);
-        return;
+        logger.warn(`Prometheus: Timing metric ${name} not found in the registry. Creating a new one`);
+        metric = this.newHistogramStat(name, '', Object.keys(tags));
       }
       metric.observe(tags, (new Date() - start) / 1000);
     } catch (e) {
@@ -102,10 +115,10 @@ class Prometheus {
 
   histogram(name, value, tags = {}) {
     try {
-      const metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
+      let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
       if (!metric) {
-        logger.error(`Prometheus: Histogram metric ${name} not found in the registry`);
-        return;
+        logger.warn(`Prometheus: Histogram metric ${name} not found in the registry. Creating a new one`);
+        metric = this.newHistogramStat(name, '', Object.keys(tags));
       }
       metric.observe(tags, value);
     } catch (e) {
@@ -119,10 +132,10 @@ class Prometheus {
 
   counter(name, delta, tags = {}) {
     try {
-      const metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
+      let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
       if (!metric) {
-        logger.error(`Prometheus: Counter metric ${name} not found in the registry`);
-        return;
+        logger.warn(`Prometheus: Counter metric ${name} not found in the registry. Creating a new one`);
+        metric = this.newCounterStat(name, '', Object.keys(tags));
       }
       metric.inc(tags, delta);
     } catch (e) {
@@ -132,10 +145,10 @@ class Prometheus {
 
   gauge(name, value, tags = {}) {
     try {
-      const metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
+      let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
       if (!metric) {
-        logger.error(`Prometheus: Gauge metric ${name} not found in the registry`);
-        return;
+        logger.warn(`Prometheus: Gauge metric ${name} not found in the registry. Creating a new one`);
+        metric =  this.newGaugeStat(name, '', Object.keys(tags));
       }
       metric.set(tags, value);
     } catch (e) {
@@ -163,6 +176,32 @@ class Prometheus {
         help: 'cdk_live_compare_test_errored',
         type: 'counter',
         labelNames: ['destType', 'feature'],
+      },
+      {
+        name: 'event_transform_success',
+        help: 'event_transform_success',
+        type: 'counter',
+        labelNames: [
+          'destType',
+          'module',
+          'destinationId',
+          'workspaceId',
+          'feature',
+          'implementation',
+        ],
+      },
+      {
+        name: 'event_transform_failure',
+        help: 'event_transform_failure',
+        type: 'counter',
+        labelNames: [
+          'destType',
+          'module',
+          'destinationId',
+          'workspaceId',
+          'feature',
+          'implementation',
+        ],
       },
       {
         name: 'hv_violation_type',
@@ -595,6 +634,12 @@ class Prometheus {
       {
         name: 'fetch_call_duration',
         help: 'fetch_call_duration',
+        type: 'histogram',
+        labelNames: ['versionId'],
+      },
+      {
+        name: 'geo_call_duration',
+        help: 'geo_call_duration',
         type: 'histogram',
         labelNames: ['versionId'],
       },

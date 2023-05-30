@@ -46,7 +46,6 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
 
   const {
     blacklistPiiProperties,
-    eventCustomProperties,
     valueFieldIdentifier,
     whitelistPiiProperties,
     limitedDataUSage,
@@ -84,7 +83,6 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
       blacklistPiiProperties,
       whitelistPiiProperties,
       category.standard,
-      eventCustomProperties,
       integrationsObj,
     );
     message.properties = message.properties || {};

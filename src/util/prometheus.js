@@ -638,6 +638,12 @@ class Prometheus {
         labelNames: ['versionId'],
       },
       {
+        name: 'geo_call_duration',
+        help: 'geo_call_duration',
+        type: 'histogram',
+        labelNames: ['versionId'],
+      },
+      {
         name: 'get_transformation_code_time',
         help: 'get_transformation_code_time',
         type: 'histogram',

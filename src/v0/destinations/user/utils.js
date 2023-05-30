@@ -20,6 +20,9 @@ const {
   identifySourceKeys,
 } = require('./config');
 const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+const ACCEPT_HEADER_VAL = '*/*;version=2';
 
 /**
  * Returns updated User.com url
@@ -222,9 +225,9 @@ const createCompany = async (message, destination) => {
 
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Token ${apiKey}`,
-      Accept: '*/*;version=2',
+      Accept: ACCEPT_HEADER_VAL,
     },
   };
 
@@ -259,9 +262,9 @@ const updateCompany = async (message, destination, company) => {
 
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Token ${apiKey}`,
-      Accept: '*/*;version=2',
+      Accept: ACCEPT_HEADER_VAL,
     },
   };
 
@@ -282,9 +285,9 @@ const getUserByUserKey = async (apiKey, userKey, appSubdomain) => {
   const endpoint = prepareUrl(`${BASE_ENDPOINT}/users/search/?key=${userKey}`, appSubdomain);
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Token ${apiKey}`,
-      Accept: '*/*;version=2',
+      Accept: ACCEPT_HEADER_VAL,
     },
   };
 
@@ -312,9 +315,9 @@ const getUserByEmail = async (apiKey, email, appSubdomain) => {
   const endpoint = prepareUrl(`${BASE_ENDPOINT}/users/search/?email=${email}`, appSubdomain);
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Token ${apiKey}`,
-      Accept: '*/*;version=2',
+      Accept: ACCEPT_HEADER_VAL,
     },
   };
 
@@ -347,9 +350,9 @@ const getUserByPhoneNumber = async (apiKey, phoneNumber, appSubdomain) => {
   );
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Token ${apiKey}`,
-      Accept: '*/*;version=2',
+      Accept: ACCEPT_HEADER_VAL,
     },
   };
 
@@ -388,9 +391,9 @@ const getUserByCustomId = async (message, destination) => {
 
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Token ${apiKey}`,
-      Accept: '*/*;version=2',
+      Accept: ACCEPT_HEADER_VAL,
     },
   };
 
@@ -420,9 +423,9 @@ const getCompanyByCustomId = async (message, destination) => {
 
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Token ${apiKey}`,
-      Accept: '*/*;version=2',
+      Accept: ACCEPT_HEADER_VAL,
     },
   };
 

@@ -115,14 +115,15 @@ const destResponseHandler = (destinationResponse) => {
   };
 };
 
-const networkHandler = function () {
+function networkHandler() {
   // The order of execution also happens in this way
-  this.prepareProxyRequest = prepareProxyRequest;
+  this.prepareProxy = prepareProxyRequest;
   this.proxy = proxyRequest;
   this.processAxiosResponse = processAxiosResponse;
   this.responseHandler = destResponseHandler;
-};
+}
 
 module.exports = {
   networkHandler,
+  errorResponseHandler,
 };

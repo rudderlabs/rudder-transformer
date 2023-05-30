@@ -9,9 +9,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX",
         "enableMergeFields": true
       },
       "Enabled": true,
@@ -77,9 +77,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20",
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX",
         "enableMergeFields": true
       },
       "Enabled": true,
@@ -140,9 +140,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "25adacdcd8c4ef4672fbdc626fbcf331-us6",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "apiKey": "apikey-usYY",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -217,9 +217,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "25adacdcd8c4ef4442fbdc626fbcf331-us6",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -296,9 +296,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -366,9 +366,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -413,9 +413,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "d966df2e59d105c00f13de330d94000b-us14",
-        "audienceId": "ff21810ddc",
-        "datacenterId": "us14"
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -470,9 +470,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "ff21810eec",
-        "datacenterId": "us20"
+        "apiKey": "apikey",
+        "audienceId": "aud112",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -529,9 +529,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -588,9 +588,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "94f71917d8522770c97449b0c90caa4c-us20",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -651,8 +651,8 @@
       },
       "Config": {
         "apiKey": "",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -712,8 +712,8 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "awesrdcfgvhbjnkkjhgf",
-        "datacenterId": "us20"
+        "apiKey": "apikey",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -773,8 +773,8 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "w4a5346yeu75jyhrgfred",
-        "audienceId": "df42a82d07",
+        "apiKey": "apikey",
+        "audienceId": "aud111",
         "datacenterId": ""
       },
       "Enabled": true,
@@ -835,9 +835,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "zesrxdthfcjg345yruikyhntbgrafvd",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -897,9 +897,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "zesrxdthfcjg345yruikyhntbgrafvd",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -938,9 +938,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "zesrxdthfcjg345yruikyhntbgrafvd",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -980,9 +980,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "zesrxdthfcjg345yruikyhntbgrafvd",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -1016,9 +1016,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "zesrxdthfcjg345yruikyhntbgrafvd",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -1057,9 +1057,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "zesrxdthfcjg345yruikyhntbgrafvd",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -1094,9 +1094,9 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "zesrxdthfcjg345yruikyhntbgrafvd",
-        "audienceId": "df42a82d07",
-        "datacenterId": "us20"
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
       },
       "Enabled": true,
       "Transformations": []
@@ -1134,6 +1134,165 @@
       "timestamp": "2019-11-15T15:56:53+05:30",
       "type": "track",
       "event": "local testing",
+      "userId": "userId12345"
+    }
+  },
+  {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "userId12345",
+      "channel": "web",
+      "context": {
+        "traits": {
+          "anonymousId": "userId12345",
+          "email": "bob.dole@initech.com"
+        }
+      },
+      "properties": {
+        "brand": "Aster",
+        "product": "Garments",
+        "isSyncing": false,
+        "products": [
+          {
+            "product_id": "123",
+            "price": "14"
+          },
+          {
+            "product_id": "123",
+            "price": 14
+          }
+        ],
+        "purchased": false
+      },
+      "messageId": "6d1f3ca8-e2d0-4d34-9926-44596171af0c",
+      "originalTimestamp": "2019-11-15T10:26:53Z",
+      "receivedAt": "2019-11-15T15:56:58+05:30",
+      "sentAt": "2019-11-15T10:26:58Z",
+      "source_id": "1TdhTcwsUVOeEMWyPUpQIgF3pYr",
+      "timestamp": "2019-11-15T15:56:53+05:30",
+      "type": "track",
+      "event": 22,
+      "userId": "userId12345"
+    }
+  },
+  {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "userId12345",
+      "channel": "web",
+      "context": {
+        "traits": {
+          "anonymousId": "userId12345",
+          "email": "bob.dole@initech.com"
+        }
+      },
+      "properties": {
+        "brand": "Aster",
+        "product": "Garments",
+        "isSyncing": false,
+        "products": [
+          {
+            "product_id": "123",
+            "price": "14"
+          },
+          {
+            "product_id": "123",
+            "price": 14
+          }
+        ],
+        "purchased": false
+      },
+      "messageId": "6d1f3ca8-e2d0-4d34-9926-44596171af0c",
+      "originalTimestamp": "2019-11-15T10:26:53Z",
+      "receivedAt": "2019-11-15T15:56:58+05:30",
+      "sentAt": "2019-11-15T10:26:58Z",
+      "source_id": "1TdhTcwsUVOeEMWyPUpQIgF3pYr",
+      "timestamp": "2019-11-15T15:56:53+05:30",
+      "type": "track",
+      "event": "E",
+      "userId": "userId12345"
+    }
+  },
+  {
+    "destination": {
+      "ID": "1Tdi0lpXwSVwXG1lcdP2pXHKrJ6",
+      "Name": "test-mc",
+      "DestinationDefinition": {
+        "ID": "1SujZGrVEPqYmpUJcV4vSl9tfxn",
+        "Name": "MC",
+        "DisplayName": "MailChimp"
+      },
+      "Config": {
+        "apiKey": "apikey",
+        "audienceId": "aud111",
+        "datacenterId": "usXX"
+      },
+      "Enabled": true,
+      "Transformations": []
+    },
+    "message": {
+      "anonymousId": "userId12345",
+      "channel": "web",
+      "context": {
+        "traits": {
+          "anonymousId": "userId12345",
+          "email": "bob.dole@initech.com"
+        }
+      },
+      "properties": {
+        "brand": "Aster",
+        "product": "Garments",
+        "isSyncing": false,
+        "products": [
+          {
+            "product_id": "123",
+            "price": "14"
+          },
+          {
+            "product_id": "123",
+            "price": 14
+          }
+        ],
+        "purchased": false
+      },
+      "messageId": "6d1f3ca8-e2d0-4d34-9926-44596171af0c",
+      "originalTimestamp": "2019-11-15T10:26:53Z",
+      "receivedAt": "2019-11-15T15:56:58+05:30",
+      "sentAt": "2019-11-15T10:26:58Z",
+      "source_id": "1TdhTcwsUVOeEMWyPUpQIgF3pYr",
+      "timestamp": "2019-11-15T15:56:53+05:30",
+      "type": "track",
+      "event": "Event Name more than 30 characters abcdefghijklmno",
       "userId": "userId12345"
     }
   }

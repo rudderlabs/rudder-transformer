@@ -1,0 +1,222 @@
+{
+  "input": [
+    {
+      "message": {
+        "anonymousId": "2073230",
+        "context": {
+          "traits": {
+            "email": "utsab.c97@gmail.com",
+            "firstName": "utsab",
+            "gender": "Male",
+            "lastName": "chowdhury",
+            "phone": "+919830311522"
+          }
+        },
+        "event": "Product Added",
+        "messageId": "c8ca2798-616b-47f6-901a-d184bd8cc9e7",
+        "originalTimestamp": "2022-12-23T13:07:40.754+05:30",
+        "properties": {
+          "brand": "Gamepro",
+          "category": "Games",
+          "coupon": "DISC21",
+          "image_url": "https://www.website.com/product/path.png",
+          "name": "Game",
+          "position": 1,
+          "price": 13.49,
+          "product_id": "123",
+          "quantity": 11,
+          "sku": "F15",
+          "url": "https://www.website.com/product/path",
+          "variant": "111"
+        },
+        "receivedAt": "2022-12-23T13:07:39.679+05:30",
+        "request_ip": "[::1]",
+        "rudderId": "c6bac0d9-5ed4-45d8-a937-bf9e62060b78",
+        "sentAt": "2022-12-23T13:07:40.754+05:30",
+        "timestamp": "2022-12-23T13:07:39.678+05:30",
+        "type": "track",
+        "userId": "2564871"
+      },
+      "metadata": {
+        "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+        "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+        "namespace": "",
+        "instanceId": "1",
+        "sourceType": "HTTP",
+        "sourceCategory": "",
+        "trackingPlanId": "",
+        "trackingPlanVersion": 0,
+        "sourceTpConfig": null,
+        "mergedTpConfig": null,
+        "destinationId": "2JIqVoWNvSOHa9ppKOqSo4hPuc0",
+        "jobRunId": "",
+        "jobId": 1,
+        "sourceBatchId": "",
+        "sourceJobId": "",
+        "sourceJobRunId": "",
+        "sourceTaskId": "",
+        "sourceTaskRunId": "",
+        "recordId": null,
+        "destinationType": "PINTEREST_TAG",
+        "messageId": "c8ca2798-616b-47f6-901a-d184bd8cc9e7",
+        "oauthAccessToken": "",
+        "messageIds": null,
+        "rudderId": "<<>>2073230<<>>2564871",
+        "receivedAt": "2022-12-23T13:07:39.679+05:30",
+        "eventName": "Product Added",
+        "eventType": "track",
+        "sourceDefinitionId": "1b6gJdqOPOCadT3cddw8eidV591",
+        "destinationDefinitionId": ""
+      },
+      "destination": {
+        "ID": "2JIqVoWNvSOHa9ppKOqSo4hPuc0",
+        "Name": "Pinterest-test",
+        "DestinationDefinition": {
+          "ID": "1s0w2bMAleYngscZRgH1ExynlpT",
+          "Name": "PINTEREST_TAG",
+          "DisplayName": "Pinterest Tag",
+          "Config": {
+            "cdkV2TestThreshold": 1,
+            "destConfig": {
+              "defaultConfig": [
+                "tagId",
+                "appId",
+                "advertiserId",
+                "sendingUnHashedData",
+                "enableDeduplication",
+                "deduplicationKey",
+                "customProperties",
+                "eventsMapping",
+                "enhancedMatch",
+                "blacklistedEvents",
+                "whitelistedEvents",
+                "eventFilteringOption"
+              ],
+              "web": ["useNativeSDK", "oneTrustCookieCategories"]
+            },
+            "excludeKeys": [],
+            "includeKeys": [
+              "tagId",
+              "advertiserId",
+              "appId",
+              "customProperties",
+              "eventsMapping",
+              "enhancedMatch",
+              "enableDeduplication",
+              "deduplicationKey",
+              "blacklistedEvents",
+              "whitelistedEvents",
+              "oneTrustCookieCategories",
+              "eventFilteringOption"
+            ],
+            "saveDestinationResponse": false,
+            "secretKeys": [],
+            "supportedSourceTypes": [
+              "android",
+              "ios",
+              "web",
+              "unity",
+              "amp",
+              "cloud",
+              "warehouse",
+              "reactnative",
+              "flutter",
+              "cordova"
+            ],
+            "transformAt": "processor",
+            "transformAtV1": "processor"
+          },
+          "ResponseRules": {}
+        },
+        "Config": {
+          "advertiserId": "549764492980",
+          "appId": "",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "customProperties": [
+            {
+              "properties": ""
+            }
+          ],
+          "deduplicationKey": "",
+          "enableDeduplication": false,
+          "enhancedMatch": false,
+          "eventFilteringOption": "disable",
+          "eventsMapping": [
+            {
+              "from": "Product Added",
+              "to": "AddToCart"
+            },
+            {
+              "from": "Product Added",
+              "to": "Checkout"
+            }
+          ],
+          "sendingUnHashedData": true,
+          "tagId": "",
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
+        },
+        "Enabled": true,
+        "WorkspaceID": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+        "Transformations": [],
+        "IsProcessorEnabled": true,
+        "RevisionID": "2JIqVp4fJCQBHq2qsWTj03BJBcS"
+      },
+      "libraries": null
+    }
+  ],
+  "output": [
+    {
+      "metadata": {
+        "sourceId": "27O0bmEEx3GgfmEhZHUcPwJQVWC",
+        "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+        "namespace": "",
+        "instanceId": "1",
+        "sourceType": "HTTP",
+        "sourceCategory": "",
+        "trackingPlanId": "",
+        "trackingPlanVersion": 0,
+        "sourceTpConfig": null,
+        "mergedTpConfig": null,
+        "destinationId": "2JIqVoWNvSOHa9ppKOqSo4hPuc0",
+        "jobRunId": "",
+        "jobId": 1,
+        "sourceBatchId": "",
+        "sourceJobId": "",
+        "sourceJobRunId": "",
+        "sourceTaskId": "",
+        "sourceTaskRunId": "",
+        "recordId": null,
+        "destinationType": "PINTEREST_TAG",
+        "messageId": "c8ca2798-616b-47f6-901a-d184bd8cc9e7",
+        "oauthAccessToken": "",
+        "messageIds": null,
+        "rudderId": "<<>>2073230<<>>2564871",
+        "receivedAt": "2022-12-23T13:07:39.679+05:30",
+        "eventName": "Product Added",
+        "eventType": "track",
+        "sourceDefinitionId": "1b6gJdqOPOCadT3cddw8eidV591",
+        "destinationDefinitionId": ""
+      },
+      "statusCode": 400,
+      "error": "Missing required value from [\"traits.action_source\",\"context.traits.action_source\",\"traits.actionSource\",\"context.traits.actionSource\",\"properties.action_source\",\"properties.actionSource\",\"channel\"]",
+      "statTags": {
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation",
+        "destType": "PINTEREST_TAG",
+        "module": "destination",
+        "implementation": "native",
+        "feature": "processor",
+        "destinationId": "2JIqVoWNvSOHa9ppKOqSo4hPuc0",
+        "workspaceId": "27O0bhB6p5ehfOWeeZlOSsSDTLg"
+      }
+    }
+  ]
+}

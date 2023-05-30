@@ -12,6 +12,7 @@ const {
   handleRtTfSingleEventError,
   getSuccessRespEvents,
   defaultBatchRequestConfig,
+  batchMultiplexedEvents,
 } = require('../../util');
 const {
   CONFIG_CATEGORIES,
@@ -21,6 +22,7 @@ const {
   PARTNER_NAME,
 } = require('./config');
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getContents = (message) => {
   const contents = [];
@@ -56,26 +58,40 @@ const getTrackResponse = (message, category, Config, event) => {
     set(payload, 'properties.contents', contents);
   }
 
-  const email = message?.traits?.email || message?.context?.traits?.email;
+  const email = message.traits?.email || message.context?.traits?.email;
+  let emails;
   if (isDefinedAndNotNullAndNotEmpty(email)) {
-    const emails = hashUserProperties
-      ? [SHA256(email.trim().toLowerCase()).toString()]
-      : [email.trim().toLowerCase()];
+    if (Array.isArray(email)) {
+      emails = email.map((em) =>
+        hashUserProperties ? SHA256(em.trim().toLowerCase()).toString() : em.trim().toLowerCase(),
+      );
+    } else {
+      emails = hashUserProperties
+        ? [SHA256(email.trim().toLowerCase()).toString()]
+        : [email.trim().toLowerCase()];
+    }
     set(payload, 'context.user.emails', emails);
   }
 
-  const phoneNumber = message?.traits?.phone || message?.context?.traits.phone;
+  const phoneNumber = message.traits?.phone || message.context?.traits?.phone;
+  let phoneNumbers;
   if (isDefinedAndNotNullAndNotEmpty(phoneNumber)) {
-    const phoneNumbers = hashUserProperties
-      ? [SHA256(phoneNumber.trim()).toString()]
-      : [phoneNumber.trim()];
+    if (Array.isArray(phoneNumber)) {
+      phoneNumbers = phoneNumber.map((pn) =>
+        hashUserProperties ? SHA256(pn.trim().toLowerCase()).toString() : pn.trim().toLowerCase(),
+      );
+    } else {
+      phoneNumbers = hashUserProperties
+        ? [SHA256(phoneNumber.trim()).toString()]
+        : [phoneNumber.trim()];
+    }
     set(payload, 'context.user.phone_numbers', phoneNumbers);
   }
 
   const response = defaultRequestConfig();
   response.headers = {
     'Access-Token': accessToken,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
 
   response.method = category.method;
@@ -126,74 +142,60 @@ const process = (event) => {
   const messageType = message.type.toLowerCase();
 
   let response;
-  switch (messageType) {
-    case EventType.TRACK:
-      response = trackResponseBuilder(message, CONFIG_CATEGORIES.TRACK, destination);
-      break;
-    default:
-      throw new InstrumentationError(`Event type ${messageType} is not supported`);
+  if (messageType === EventType.TRACK) {
+    response = trackResponseBuilder(message, CONFIG_CATEGORIES.TRACK, destination);
+  } else {
+    throw new InstrumentationError(`Event type ${messageType} is not supported`);
   }
   return response;
 };
 
-const generateBatch = (eventSetId, events) => {
-  const batchRequestObject = defaultBatchRequestConfig();
+const createBatch = (events, eventSetId, destination) => {
   const batchPayload = [];
-  const metadata = [];
-  // extracting destination from the first event in a batch
-  const { destination } = events[0];
-  // Batch event into dest batch structure
+  const { batchedRequest } = defaultBatchRequestConfig();
   events.forEach((ev) => {
-    batchPayload.push(ev.message.body.JSON);
-    metadata.push(ev.metadata);
+    batchPayload.push(ev.body.JSON);
   });
-
-  batchRequestObject.batchedRequest.body.JSON = {
+  batchedRequest.body.JSON = {
     event_set_id: eventSetId,
     partner_name: PARTNER_NAME,
     batch: batchPayload,
   };
 
-  batchRequestObject.batchedRequest.endpoint = CONFIG_CATEGORIES.TRACK.batchEndpoint;
+  batchedRequest.endpoint = CONFIG_CATEGORIES.TRACK.batchEndpoint;
 
   const { accessToken } = destination.Config;
 
-  batchRequestObject.batchedRequest.headers = {
+  batchedRequest.headers = {
     'Access-Token': accessToken,
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
   };
-
-  return {
-    ...batchRequestObject,
-    metadata,
-    destination,
-  };
+  return batchedRequest;
 };
 
+const generateBatch = (batch, eventSetId) => {
+  // extracting destination from the first event in a batch
+  const { destination, events } = batch;
+  // Batch event into dest batch structure
+  if (Array.isArray(events[0])) {
+    const batchedRequests = [];
+    events.forEach((event) => {
+      batchedRequests.push(createBatch(event, eventSetId, destination));
+    });
+    return batchedRequests;
+  }
+  return createBatch(events, eventSetId, destination);
+};
 const batchEvents = (eventChunksArray) => {
-  const batchedResponseList = [];
-
   // {
   //    event_set_id1: [...events]
   //    event_set_id2: [...events]
   // }
-  const groupedEventChunks = _.groupBy(eventChunksArray, (event) => event.message.event_set_id);
-  Object.keys(groupedEventChunks).forEach((eventSetId) => {
-    // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-    const eventChunks = _.chunk(groupedEventChunks[eventSetId], MAX_BATCH_SIZE);
-    eventChunks.forEach((chunk) => {
-      const batchEventResponse = generateBatch(eventSetId, chunk);
-      batchedResponseList.push(
-        getSuccessRespEvents(
-          batchEventResponse.batchedRequest,
-          batchEventResponse.metadata,
-          batchEventResponse.destination,
-          true,
-        ),
-      );
-    });
+  const groupedEventChunks = _.groupBy(eventChunksArray, ({ message }) => {
+    if (Array.isArray(message)) return message[0].event_set_id;
+    return message.event_set_id;
   });
-  return batchedResponseList;
+  return groupedEventChunks;
 };
 
 const processRouterDest = async (inputs, reqMetadata) => {
@@ -218,12 +220,12 @@ const processRouterDest = async (inputs, reqMetadata) => {
         } else {
           // if not transformed
           const procRespList = await process(event);
-          const transformedPayload = procRespList.map((procResponse) => ({
-            message: procResponse,
+          const transformedPayload = {
+            message: procRespList,
             metadata: event.metadata,
             destination,
-          }));
-          eventChunksArray.push(...transformedPayload);
+          };
+          eventChunksArray.push(transformedPayload);
         }
       } catch (error) {
         const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
@@ -231,13 +233,21 @@ const processRouterDest = async (inputs, reqMetadata) => {
       }
     }),
   );
+  const batchedResponseList = [];
+  const chunksOnEventSetId = batchEvents(eventChunksArray);
+  Object.keys(chunksOnEventSetId).forEach((eventSetId) => {
+    if (chunksOnEventSetId[eventSetId].length > 0) {
+      const batchedEvents = batchMultiplexedEvents(chunksOnEventSetId[eventSetId], MAX_BATCH_SIZE);
+      batchedEvents.forEach((batch) => {
+        const batchedRequest = generateBatch(batch, eventSetId);
+        batchedResponseList.push(
+          getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
+        );
+      });
+    }
+  });
 
-  let batchResponseList = [];
-  if (eventChunksArray.length > 0) {
-    batchResponseList = batchEvents(eventChunksArray);
-  }
-
-  return [...batchResponseList, ...batchErrorRespList];
+  return [...batchedResponseList, ...batchErrorRespList];
 };
 
 module.exports = { process, processRouterDest };

@@ -24,6 +24,7 @@ const {
 } = require('./utils');
 const { MAX_BATCH_SIZE, VALID_STATUSES, TRACK_CONFIG } = require('./config');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilderSimple = (finalPayload, endpoint, Config, audienceId) => {
   const { apiKey } = Config;
@@ -42,7 +43,7 @@ const responseBuilderSimple = (finalPayload, endpoint, Config, audienceId) => {
   return {
     ...response,
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Basic ${basicAuth}`,
     },
     audienceId,
@@ -60,6 +61,9 @@ const trackResponseBuilder = (message, { Config }) => {
   const processedPayload = constructPayload(message, TRACK_CONFIG);
   if (processedPayload?.properties) {
     processedPayload.properties = stringifyPropertiesValues(processedPayload.properties);
+  }
+  if (processedPayload.name && !(processedPayload.name.length >= 2 && processedPayload.name.length <= 30)) {
+    throw new InstrumentationError('Event name should be between 2 and 30 characters');
   }
   processedPayload.name = processedPayload.name.trim().replace(/\s+/g, '_');
   processedPayload.occurred_at = formatTimeStamp(

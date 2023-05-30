@@ -4,7 +4,7 @@
   "createdAtOnly": ["traits.createdAt", "context.traits.createdAt"],
   "email": ["traits.email", "context.traits.email", "properties.email", "context.externalId.0.id"],
   "emailOnly": ["traits.email", "context.traits.email", "properties.email"],
-  "timestamp": ["originalTimestamp", "timestamp"],
+  "timestamp": ["timestamp", "originalTimestamp"],
   "historicalTimestamp": ["timestamp", "originalTimestamp"],
   "traits": ["traits", "context.traits"],
   "groupId": ["groupId", "traits.groupId"],

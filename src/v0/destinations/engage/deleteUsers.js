@@ -7,6 +7,7 @@ const { isHttpStatusSuccess } = require('../../util');
 const tags = require('../../util/tags');
 const { ConfigurationError, NetworkError } = require('../../util/errorTypes');
 const { executeCommonValidations } = require('../../util/regulation-api');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * This function will help to delete the users one by one from the userAttributes array.
@@ -26,7 +27,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   const BASE_URL = 'https://api.engage.so/v1/users/uid';
   const basicAuth = Buffer.from(`${publicKey}:${privateKey}`).toString('base64');
   const headers = {
-    'Content-Type': 'application/json',
+    'Content-Type': JSON_MIME_TYPE,
     Authorization: `Basic ${basicAuth}`,
   };
 
@@ -54,10 +55,10 @@ const userDeletionHandler = async (userAttributes, config) => {
   return { statusCode: 200, status: 'successful' };
 };
 
-const processDeleteUsers = (event) => {
+const processDeleteUsers = async (event) => {
   const { userAttributes, config } = event;
   executeCommonValidations(userAttributes);
-  const resp = userDeletionHandler(userAttributes, config);
+  const resp = await userDeletionHandler(userAttributes, config);
   return resp;
 };
 module.exports = { processDeleteUsers };

@@ -1,163 +1,197 @@
-[
-  {
-    "batchedRequest": [
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.fra-01.braze.eu/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+{
+  "simpleRouterResponse": [
+    {
+      "batchedRequest": [
+        {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://rest.fra-01.braze.eu/users/track",
+          "headers": {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+          },
+          "params": {},
+          "body": {
+            "JSON": {
+              "partner": "RudderStack",
+              "events": [
+                {
+                  "name": "Page Viewed",
+                  "time": "2020-01-24T11:59:02.402+05:30",
+                  "properties": {
+                    "path": "/tests/html/index2.html",
+                    "referrer": "",
+                    "search": "",
+                    "title": "",
+                    "url": "http://localhost/tests/html/index2.html"
+                  },
+                  "_update_existing_only": false,
+                  "user_alias": {
+                    "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+                    "alias_label": "rudder_id"
+                  }
+                }
+              ],
+              "attributes": [
+                {
+                  "email": "mickey@disney.com",
+                  "city": "Disney",
+                  "country": "USA",
+                  "firstname": "Mickey",
+                  "_update_existing_only": false,
+                  "user_alias": {
+                    "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
+                    "alias_label": "rudder_id"
+                  }
+                }
+              ]
+            },
+            "XML": {},
+            "JSON_ARRAY": {},
+            "FORM": {}
+          },
+          "files": {}
+        }
+      ],
+      "metadata": [
+        {
+          "jobId": 2
         },
-        "params": {},
-        "body": {
-          "JSON": {
-            "partner": "RudderStack",
-            "events": [
-              {
-                "name": "Page Viewed",
-                "time": "2020-01-24T11:59:02.402+05:30",
-                "properties": {
-                  "path": "/tests/html/index2.html",
-                  "referrer": "",
-                  "search": "",
-                  "title": "",
-                  "url": "http://localhost/tests/html/index2.html"
+        {
+          "jobId": 2
+        }
+      ],
+      "batched": true,
+      "statusCode": 200,
+      "destination": {
+        "Config": {
+          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "prefixProperties": true,
+          "useNativeSDK": false,
+          "dataCenter": "eu-01"
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Braze",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "BRAZE"
+        },
+        "Enabled": true,
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "Name": "Braze",
+        "Transformations": []
+      }
+    }
+  ],
+  "dedupEnabledRouterResponse": [
+    {
+      "batchedRequest": [
+        {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://rest.iad-03.braze.com/users/track",
+          "headers": {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer 0066a73e-d9b3-4d1f-b17d-8cf410505e36"
+          },
+          "params": {},
+          "body": {
+            "JSON": {
+              "partner": "RudderStack",
+              "attributes": [
+                {
+                  "first_name": "Spencer",
+                  "subscribe_once": true,
+                  "pwa": true,
+                  "external_id": "braze_test_user",
+                  "custom_obj_attr": {
+                    "key1": "value1",
+                    "key2": "value2",
+                    "key4": "value4"
+                  }
                 },
-                "_update_existing_only": false,
-                "user_alias": {
-                  "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                  "alias_label": "rudder_id"
+                {
+                  "last_name": "Miranda 2",
+                  "is_pickup_selected": "true",
+                  "external_id": "braze_test_user",
+                  "custom_arr": ["1", "2", "str1"]
                 }
-              }
-            ]
+              ],
+              "events": [
+                {
+                  "name": "Sign In Completed",
+                  "time": "2023-03-10T18:36:05.028Z",
+                  "properties": {
+                    "cause": "/redirector",
+                    "method": "GOOGLE",
+                    "region": "ON",
+                    "orderId": "6179367977099",
+                    "order_id": "6179367977099",
+                    "webhookurl": "https://my.test.com",
+                    "countingMethod": "standard",
+                    "is_first_time_signin": false
+                  },
+                  "external_id": "braze_test_user"
+                },
+                {
+                  "name": "Sign In Completed",
+                  "time": "2023-03-10T18:36:05.028Z",
+                  "properties": {
+                    "cause": "/redirector",
+                    "method": "GOOGLE",
+                    "region": "ON",
+                    "orderId": "6179367977099",
+                    "order_id": "6179367977099",
+                    "webhookurl": "https://my.test.com",
+                    "countingMethod": "standard",
+                    "is_first_time_signin": false
+                  },
+                  "external_id": "braze_test_user"
+                }
+              ]
+            },
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
           },
-          "XML": {},
-          "JSON_ARRAY": {},
-          "FORM": {}
+          "files": {}
+        }
+      ],
+      "metadata": [
+        {
+          "jobId": 1
         },
-        "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+        {
+          "jobId": 2
+        }
+      ],
+      "batched": true,
+      "statusCode": 200,
+      "destination": {
+        "ID": "2N9UakqKF0D35wfzSeofIxPdL8X",
+        "Name": "Braze-Test",
+        "Config": {
+          "appKey": "0e5440c3-226b-45d0-91b5-c64da56cde16",
+          "blacklistedEvents": [],
+          "dataCenter": "US-03",
+          "enableNestedArrayOperations": false,
+          "enableSubscriptionGroupInGroupCall": false,
+          "eventFilteringOption": "disable",
+          "oneTrustCookieCategories": [],
+          "restApiKey": "0066a73e-d9b3-4d1f-b17d-8cf410505e36",
+          "supportDedup": true,
+          "trackAnonymousUser": true,
+          "whitelistedEvents": []
+        },
+        "Enabled": true,
+        "WorkspaceID": "27O0bhB6p5ehfOWeeZlOSsSDTLg",
+        "Transformations": [],
+        "IsProcessorEnabled": true,
+        "RevisionID": "2N9Uaf2tWq2QRmatBWQm03Rz6qX"
       }
-    ],
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
-    "batched": false,
-    "statusCode": 200,
-    "destination": {
-      "Config": {
-        "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "prefixProperties": true,
-        "useNativeSDK": false,
-        "dataCenter": "eu-01",
-        "endPoint": "https://rest.fra-01.braze.eu"
-      },
-      "DestinationDefinition": {
-        "DisplayName": "Braze",
-        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
-        "Name": "BRAZE"
-      },
-      "Enabled": true,
-      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "Name": "Braze",
-      "Transformations": []
     }
-  },
-  {
-    "batchedRequest": [
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/identify",
-        "headers": {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "aliases_to_identify": [
-              {
-                "user_alias": {
-                  "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                  "alias_label": "rudder_id"
-                }
-              }
-            ]
-          },
-          "XML": {},
-          "JSON_ARRAY": {},
-          "FORM": {}
-        },
-        "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-      },
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://rest.iad-01.braze.com/users/track",
-        "headers": {
-          "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "attributes": [
-              {
-                "email": "mickey@disney.com",
-                "city": "Disney",
-                "country": "USA",
-                "firstname": "Mickey",
-                "_update_existing_only": false,
-                "user_alias": {
-                  "alias_name": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
-                  "alias_label": "rudder_id"
-                }
-              }
-            ]
-          },
-          "XML": {},
-          "JSON_ARRAY": {},
-          "FORM": {}
-        },
-        "files": {},
-        "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-      }
-    ],
-    "metadata": [
-      {
-        "jobId": 2
-      }
-    ],
-    "batched": false,
-    "statusCode": 200,
-    "destination": {
-      "Config": {
-        "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "prefixProperties": true,
-        "useNativeSDK": false,
-        "dataCenter": "us-01",
-        "endPoint": "https://rest.iad-01.braze.com"
-      },
-      "DestinationDefinition": {
-        "DisplayName": "Braze",
-        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
-        "Name": "BRAZE"
-      },
-      "Enabled": true,
-      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "Name": "Braze",
-      "Transformations": []
-    }
-  }
-]
+  ]
+}

@@ -10,13 +10,15 @@ const destinations = [
   "google_adwords_remarketing_lists",
   "google_adwords_enhanced_conversions",
   "facebook_pixel",
+  "fb",
   "snapchat_custom_audience",
   "clevertap",
   "salesforce",
   "marketo_static_list",
-  "criteo_audience"
+  "criteo_audience",
+  "tiktok_ads"
 ];
-const service = require("../../src/versionedRouter").handleProxyRequest;
+const service = require("../../src/legacy/router").handleProxyRequest;
 
 jest.mock("axios", () => jest.fn(mockedAxiosClient));
 
@@ -49,11 +51,13 @@ destinations.forEach(destination => {
   const inputData = JSON.parse(inputDataFile);
   const expectedData = JSON.parse(outputDataFile);
 
-  inputData.forEach((input, index) => {
-    it(`${name} Tests: ${destination} - Payload ${index}`, async () => {
-      const output = await service(destination, input);
-      expect(output).toEqual(expectedData[index]);
+  describe(`Proxy Test for ${destination}`, () => {
+    inputData.forEach((input, index) => {
+      it(`${name} Tests: ${destination} - Payload ${index}`, async () => {
+        const output = await service(destination, input);
+        expect(output).toEqual(expectedData[index]);
+      });
     });
   });
-});
+})
 // destination tests end

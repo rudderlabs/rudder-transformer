@@ -6,7 +6,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://hooks.slack.com/services/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",
+    "endpoint": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
     "headers": { "Content-Type": "application/x-www-form-urlencoded" },
     "params": {},
     "body": {
@@ -25,7 +25,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://hooks.slack.com/services/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",
+    "endpoint": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
     "headers": { "Content-Type": "application/x-www-form-urlencoded" },
     "params": {},
     "body": {
@@ -44,7 +44,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://hooks.slack.com/services/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",
+    "endpoint": "https://hooks.slack.com/services/THZM86VSS/BV9HZ2UN6/demo",
     "headers": { "Content-Type": "application/x-www-form-urlencoded" },
     "params": {},
     "body": {
@@ -64,5 +64,8 @@
   },
   {
     "error": "Event name is required"
+  },
+  {
+    "error": "Something is wrong with the event template: '{{name}} performed {{event}} with {{properties. key1}} {{properties.key2}} and traits {{traitsList.hiji}}'"
   }
 ]

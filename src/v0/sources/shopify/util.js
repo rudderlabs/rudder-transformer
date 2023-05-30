@@ -1,14 +1,23 @@
 /* eslint-disable camelcase */
+const { v5 } = require('uuid');
 const sha256 = require('sha256');
-const { constructPayload, extractCustomFields, flattenJson, generateUUID } = require('../../util');
+const stats = require('../../../util/stats');
+const {
+  constructPayload,
+  extractCustomFields,
+  flattenJson,
+  generateUUID,
+  isDefinedAndNotNull,
+} = require('../../util');
+const { RedisDB } = require('../../../util/redis/redisConnector');
 const logger = require('../../../logger');
 const {
   lineItemsMappingJSON,
   productMappingJSON,
   LINE_ITEM_EXCLUSION_FIELDS,
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
-  RUDDER_ECOM_MAP,
   SHOPIFY_TRACK_MAP,
+  SHOPIFY_ADMIN_ONLY_EVENTS,
 } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 
@@ -20,7 +29,7 @@ const { TransformationError } = require('../../util/errorTypes');
  */
 const getShopifyTopic = (event) => {
   const { query_parameters: qParams } = event;
-  logger.info(`[Shopify] Input event: query_params: ${JSON.stringify(qParams)}`);
+  logger.debug(`[Shopify] Input event: query_params: ${JSON.stringify(qParams)}`);
   if (!qParams) {
     throw new TransformationError('Query_parameters is missing');
   }
@@ -34,7 +43,12 @@ const getShopifyTopic = (event) => {
   }
   return topic[0];
 };
-
+const getHashLineItems = (cart) => {
+  if (cart && cart?.line_items && cart.line_items.length > 0) {
+    return sha256(JSON.stringify(cart.line_items));
+  }
+  return 'EMPTY';
+};
 const getVariantString = (lineItem) => {
   const { variant_id, variant_price, variant_title } = lineItem;
   return `${variant_id || ''} ${variant_price || ''} ${variant_title || ''}`;
@@ -77,45 +91,117 @@ const extractEmailFromPayload = (event) => {
   return email;
 };
 
-// Hash the id and use it as anonymousId (limiting 256 -> 36 chars)
-const setAnonymousId = (message) => {
-  switch (message.event) {
-    case SHOPIFY_TRACK_MAP.carts_create:
-    case SHOPIFY_TRACK_MAP.carts_update:
-      message.setProperty(
-        'anonymousId',
-        message.properties?.id
-          ? sha256(message.properties.id).toString().substring(0, 36)
-          : generateUUID(),
-      );
-      break;
-    case SHOPIFY_TRACK_MAP.orders_delete:
-    case SHOPIFY_TRACK_MAP.orders_edited:
-    case SHOPIFY_TRACK_MAP.orders_cancelled:
-    case SHOPIFY_TRACK_MAP.orders_fulfilled:
-    case SHOPIFY_TRACK_MAP.orders_paid:
-    case SHOPIFY_TRACK_MAP.orders_partially_fullfilled:
-    case RUDDER_ECOM_MAP.checkouts_create:
-    case RUDDER_ECOM_MAP.checkouts_update:
-    case RUDDER_ECOM_MAP.orders_create:
-    case RUDDER_ECOM_MAP.orders_updated:
-      message.setProperty(
-        'anonymousId',
-        message.properties?.cart_token
-          ? sha256(message.properties.cart_token).toString().substring(0, 36)
-          : generateUUID(),
-      );
-      break;
-    default:
-      message.setProperty('anonymousId', generateUUID());
-      break;
+const getCartToken = (message) => {
+  const { event } = message;
+  if (event === SHOPIFY_TRACK_MAP.carts_update) {
+    return message.properties?.id || message.properties?.token;
   }
+  return message.properties?.cart_token || null;
+};
+// Hash the id and use it as anonymousId (limiting 256 -> 36 chars)
+const getAnonymousId = (message) => {
+  const cartToken = getCartToken(message);
+  if (isDefinedAndNotNull(cartToken)) {
+    return v5(cartToken, v5.URL);
+  }
+  if (SHOPIFY_ADMIN_ONLY_EVENTS.includes(message.event)) {
+    return null;
+  }
+  return generateUUID();
+};
+/**
+ * This function sets the anonymousId based on cart_token or id from the properties of message.
+ * If it's null then we set userId as "shopify-admin".
+ * @param {*} message
+ * @returns
+ */
+const getAnonymousIdFromDb = async (message, metricMetadata) => {
+  const cartToken = getCartToken(message);
+  if (isDefinedAndNotNull(cartToken)) {
+    let anonymousId;
+    stats.increment('shopify_redis_calls', {
+      type: 'get',
+      ...metricMetadata,
+    });
+    try {
+      anonymousId = await RedisDB.getVal(`${cartToken}`, 'anonymousId');
+    } catch (e) {
+      stats.increment('shopify_redis_failures', {
+        type: 'get',
+        ...metricMetadata,
+      });
+    }
+    if (isDefinedAndNotNull(anonymousId)) {
+      return anonymousId;
+    }
+    stats.increment('shopify_redis_no_val', {
+      ...metricMetadata,
+      event: message.event,
+    });
+    /* if redis does not have the mapping for cartToken as key (null) 
+      or redis is down(undefined)
+      we will set anonymousId as sha256(cartToken)
+     */
+  }
+  return getAnonymousId(message);
 };
 
+/**
+ * It checks if the event is valid or not based on previous cartItems
+ * @param {*} inputEvent
+ * @returns true if event is valid else false
+ */
+const isValidCartEvent = (newCartItems, prevCartItems) => !(prevCartItems === newCartItems);
+
+const updateCartItemsInRedis = async (cartToken, newCartItemsHash, metricMetadata) => {
+  const value = ['itemsHash', newCartItemsHash];
+  try {
+    await RedisDB.setVal(`${cartToken}`, value);
+  } catch (e) {
+    stats.increment('shopify_redis_failures', {
+      type: 'set',
+      ...metricMetadata,
+    });
+  }
+};
+const checkAndUpdateCartItems = async (inputEvent, metricMetadata) => {
+  const cartToken = inputEvent.token || inputEvent.id;
+  let itemsHash;
+  try {
+    itemsHash = await RedisDB.getVal(cartToken, 'itemsHash');
+    if (!isDefinedAndNotNull(itemsHash)) {
+      stats.increment('shopify_redis_no_val', {
+        ...metricMetadata,
+        event: 'carts_update',
+      });
+    }
+  } catch (e) {
+    // so if redis is down we will send the event to downstream destinations
+    stats.increment('shopify_redis_failures', {
+      type: 'get',
+      ...metricMetadata,
+    });
+    return true;
+  }
+  if (isDefinedAndNotNull(itemsHash)) {
+    const newCartItemsHash = getHashLineItems(inputEvent);
+    const isCartValid = isValidCartEvent(newCartItemsHash, itemsHash);
+    if (!isCartValid) {
+      return false;
+    }
+    await updateCartItemsInRedis(cartToken, newCartItemsHash, metricMetadata);
+    return true;
+  }
+  // if nothing is found for cartToken provided then we will return false as we dont want to pollute the downstream destinations
+  return false;
+};
 module.exports = {
   getShopifyTopic,
   getProductsListFromLineItems,
   createPropertiesForEcomEvent,
   extractEmailFromPayload,
-  setAnonymousId,
+  getAnonymousIdFromDb,
+  getAnonymousId,
+  checkAndUpdateCartItems,
+  getHashLineItems,
 };

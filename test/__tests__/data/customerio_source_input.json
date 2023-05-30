@@ -100,6 +100,23 @@
   },
   {
     "data": {
+      "customer_id": "user-123",
+      "delivery_id": "REAC4wUAAYYJgQgkyRqwwEPeOA6Nfv==",
+      "identifiers": {
+        "cio_id": "7ef807109981",
+        "id": "user-123"
+      },
+      "recipient": "test@example.com",
+      "subject": "Thanks for signing up",
+      "transactional_message_id": 2
+    },
+    "event_id": "01ER4R5WB62QWCNREKFB4DYXGR",
+    "metric": "delivered",
+    "object_type": "email",
+    "timestamp": 1675196819
+  },
+  {
+    "data": {
       "action_id": 38,
       "campaign_id": 6,
       "customer_id": "0200102",

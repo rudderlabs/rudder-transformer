@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const BASE_ENDPOINT = 'https://googleads.googleapis.com/v10/customers';
+const BASE_ENDPOINT = 'https://googleads.googleapis.com/v13/customers';
 
 const CONFIG_CATEGORIES = {
   TRACK_CONFIG: { type: 'track', name: 'trackConfig' },

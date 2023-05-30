@@ -32,12 +32,11 @@ const WEBENGAGE_IDENTIFY_EXCLUSION = [
   'region',
 ];
 const ENDPOINT = (dataCenter) => {
-  switch (dataCenter) {
-    case 'ind':
-      return 'https://api.in.webengage.com/v1/accounts';
-    default:
-      return 'https://api.webengage.com/v1/accounts';
-  }
+  const endPoint =
+    dataCenter === 'ind'
+      ? 'https://api.in.webengage.com/v1/accounts'
+      : 'https://api.webengage.com/v1/accounts';
+  return endPoint;
 };
 const CONFIG_CATEGORIES = {
   IDENTIFY: {

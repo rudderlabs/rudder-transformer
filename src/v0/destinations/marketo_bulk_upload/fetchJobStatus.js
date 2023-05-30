@@ -8,13 +8,19 @@ const {
   JOB_STATUS_ACTIVITY,
 } = require('./util');
 const { httpGET } = require('../../../adapters/network');
-const stats = require('../../../util/stats');
 const {
   AbortedError,
   RetryableError,
   ThrottledError,
   PlatformError,
 } = require('../../util/errorTypes');
+const stats = require('../../../util/stats');
+const { JSON_MIME_TYPE } = require('../../util/constant');
+
+const FETCH_FAILURE_JOB_STATUS_ERR_MSG = 'Could not fetch failure job status';
+const FAILURE_JOB_STATUS_ERR_MSG = 'Error during fetching failure job status';
+const FETCH_WARNING_JOB_STATUS_ERR_MSG = 'Could not fetch warning job status';
+const WARNING_JOB_STATUS_ERR_MSG = 'Error during fetching warning job status';
 
 const getFailedJobStatus = async (event) => {
   const { config, importId } = event;
@@ -24,7 +30,7 @@ const getFailedJobStatus = async (event) => {
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#failures
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${accessToken}`,
     },
   };
@@ -33,91 +39,80 @@ const getFailedJobStatus = async (event) => {
   const resp = await httpGET(failedLeadUrl, requestOptions);
   const endTime = Date.now();
   const requestTime = endTime - startTime;
-  stats.gauge('marketo_bulk_upload_fetch_job_time', requestTime, {
-    integration: 'Marketo_bulk_upload',
-  });
+
+  stats.gauge('marketo_bulk_upload_fetch_job_time', requestTime);
   if (resp.success) {
     if (resp.response && resp.response.data) {
-      stats.increment(JOB_STATUS_ACTIVITY, 1, {
-        integration: 'Marketo_bulk_upload',
+      stats.increment(JOB_STATUS_ACTIVITY, {
         status: 200,
         state: 'Success',
       });
       return resp.response;
     }
-    stats.increment(JOB_STATUS_ACTIVITY, 1, {
-      integration: 'Marketo_bulk_upload',
-
+    stats.increment(JOB_STATUS_ACTIVITY, {
       status: 400,
       state: 'Abortable',
     });
-    throw new AbortedError('Could not fetch failure job status', 400, resp);
+    throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 400, resp);
   }
   if (resp.response) {
     if (
       ABORTABLE_CODES.includes(resp.response.code) ||
       (resp.response.code >= 400 && resp.response.code <= 499)
     ) {
-      stats.increment(JOB_STATUS_ACTIVITY, 1, {
-        integration: 'Marketo_bulk_upload',
+      stats.increment(JOB_STATUS_ACTIVITY, {
         status: 400,
         state: 'Abortable',
       });
       throw new AbortedError(resp.response.code, 400, resp);
     } else if (RETRYABLE_CODES.includes(resp.response.code)) {
-      stats.increment(JOB_STATUS_ACTIVITY, 1, {
-        integration: 'Marketo_bulk_upload',
+      stats.increment(JOB_STATUS_ACTIVITY, {
         status: 500,
         state: 'Retryable',
       });
       throw new RetryableError(resp.response.code, 500, resp);
     } else if (resp.response.response) {
       if (ABORTABLE_CODES.includes(resp.response.response.status)) {
-        stats.increment(JOB_STATUS_ACTIVITY, 1, {
-          integration: 'Marketo_bulk_upload',
+        stats.increment(JOB_STATUS_ACTIVITY, {
           status: 400,
           state: 'Abortable',
         });
         throw new AbortedError(
-          resp.response.response.statusText || 'Error during fetching failure job status',
+          resp.response.response.statusText || FAILURE_JOB_STATUS_ERR_MSG,
           400,
           resp,
         );
       } else if (THROTTLED_CODES.includes(resp.response.response.status)) {
-        stats.increment(JOB_STATUS_ACTIVITY, 1, {
-          integration: 'Marketo_bulk_upload',
+        stats.increment(JOB_STATUS_ACTIVITY, {
           status: 500,
           state: 'Retryable',
         });
         throw new ThrottledError(
-          resp.response.response.statusText || 'Error during fetching failure job status',
+          resp.response.response.statusText || FAILURE_JOB_STATUS_ERR_MSG,
           resp,
         );
       }
-      stats.increment(JOB_STATUS_ACTIVITY, 1, {
-        integration: 'Marketo_bulk_upload',
+      stats.increment(JOB_STATUS_ACTIVITY, {
         status: 500,
         state: 'Retryable',
       });
       throw new RetryableError(
-        resp.response.response.statusText || 'Error during fetching failure job status',
+        resp.response.response.statusText || FAILURE_JOB_STATUS_ERR_MSG,
         500,
         resp,
       );
     }
-    stats.increment(JOB_STATUS_ACTIVITY, 1, {
-      integration: 'Marketo_bulk_upload',
+    stats.increment(JOB_STATUS_ACTIVITY, {
       status: 400,
       state: 'Abortable',
     });
-    throw new AbortedError('Could not fetch failure job status', 400, resp);
+    throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 400, resp);
   }
-  stats.increment(JOB_STATUS_ACTIVITY, 1, {
-    integration: 'Marketo_bulk_upload',
+  stats.increment(JOB_STATUS_ACTIVITY, {
     status: 400,
     state: 'Abortable',
   });
-  throw new AbortedError('Could not fetch failure job status', 400, resp);
+  throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 400, resp);
 };
 
 const getWarningJobStatus = async (event) => {
@@ -128,7 +123,7 @@ const getWarningJobStatus = async (event) => {
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#warnings
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Bearer ${accessToken}`,
     },
   };
@@ -137,90 +132,80 @@ const getWarningJobStatus = async (event) => {
   const resp = await httpGET(warningJobStatusUrl, requestOptions);
   const endTime = Date.now();
   const requestTime = endTime - startTime;
-  stats.gauge('marketo_bulk_upload_fetch_job_time', requestTime, {
-    integration: 'Marketo_bulk_upload',
-  });
+  stats.gauge('marketo_bulk_upload_fetch_job_time', requestTime);
   if (resp.success) {
     if (resp.response && resp.response.data) {
-      stats.increment(JOB_STATUS_ACTIVITY, 1, {
-        integration: 'Marketo_bulk_upload',
+      stats.increment(JOB_STATUS_ACTIVITY, {
         status: 200,
         state: 'Success',
       });
       return resp.response;
     }
-    stats.increment(JOB_STATUS_ACTIVITY, 1, {
-      integration: 'Marketo_bulk_upload',
+    stats.increment(JOB_STATUS_ACTIVITY, {
       status: 400,
       state: 'Abortable',
     });
-    throw new AbortedError('Could not fetch warning job status', 400, resp);
+    throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
   }
   if (resp.response) {
     if (
       ABORTABLE_CODES.includes(resp.response.code) ||
       (resp.response.code >= 400 && resp.response.code <= 499)
     ) {
-      stats.increment(JOB_STATUS_ACTIVITY, 1, {
-        integration: 'Marketo_bulk_upload',
+      stats.increment(JOB_STATUS_ACTIVITY, {
         status: 400,
         state: 'Abortable',
       });
       throw new AbortedError(resp.response.code, 400, resp);
     } else if (RETRYABLE_CODES.includes(resp.response.code)) {
-      stats.increment(JOB_STATUS_ACTIVITY, 1, {
-        integration: 'Marketo_bulk_upload',
+      stats.increment(JOB_STATUS_ACTIVITY, {
         status: 500,
         state: 'Retryable',
       });
       throw new RetryableError(resp.response.code, 500, resp);
     } else if (resp.response.response) {
       if (ABORTABLE_CODES.includes(resp.response.response.status)) {
-        stats.increment(JOB_STATUS_ACTIVITY, 1, {
-          integration: 'Marketo_bulk_upload',
+        stats.increment(JOB_STATUS_ACTIVITY, {
           status: 400,
           state: 'Abortable',
         });
         throw new AbortedError(
-          resp.response.response.statusText || 'Error during fetching warning job status',
+          resp.response.response.statusText || WARNING_JOB_STATUS_ERR_MSG,
           400,
           resp,
         );
       } else if (THROTTLED_CODES.includes(resp.response.response.status)) {
-        stats.increment(JOB_STATUS_ACTIVITY, 1, {
-          integration: 'Marketo_bulk_upload',
+        stats.increment(JOB_STATUS_ACTIVITY, {
           status: 500,
           state: 'Retryable',
         });
         throw new ThrottledError(
-          resp.response.response.statusText || 'Error during fetching warning job status',
+          resp.response.response.statusText || WARNING_JOB_STATUS_ERR_MSG,
           resp,
         );
       }
-      stats.increment(JOB_STATUS_ACTIVITY, 1, {
-        integration: 'Marketo_bulk_upload',
+
+      stats.increment(JOB_STATUS_ACTIVITY, {
         status: 500,
         state: 'Retryable',
       });
       throw new RetryableError(
-        resp.response.response.statusText || 'Error during fetching warning job status',
+        resp.response.response.statusText || WARNING_JOB_STATUS_ERR_MSG,
         500,
         resp,
       );
     }
-    stats.increment(JOB_STATUS_ACTIVITY, 1, {
-      integration: 'Marketo_bulk_upload',
+    stats.increment(JOB_STATUS_ACTIVITY, {
       status: 400,
       state: 'Abortable',
     });
-    throw new AbortedError('Could not fetch warning job status', 400, resp);
+    throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
   }
-  stats.increment(JOB_STATUS_ACTIVITY, 1, {
-    integration: 'Marketo_bulk_upload',
+  stats.increment(JOB_STATUS_ACTIVITY, {
     status: 400,
     state: 'Abortable',
   });
-  throw new AbortedError('Could not fetch warning job status', 400, resp);
+  throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
 };
 
 const responseHandler = async (event, type) => {
@@ -295,9 +280,7 @@ const responseHandler = async (event, type) => {
   const succeededKeys = successfulJobIdsArr;
   const endTime = Date.now();
   const requestTime = endTime - startTime;
-  stats.gauge('marketo_bulk_upload_fetch_job_create_response_time', requestTime, {
-    integration: 'Marketo_bulk_upload',
-  });
+  stats.gauge('marketo_bulk_upload_fetch_job_create_response_time', requestTime);
   const response = {
     statusCode: 200,
     metadata: {

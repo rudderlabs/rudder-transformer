@@ -1,7 +1,7 @@
 /* eslint-disable no-return-assign, no-param-reassign, no-restricted-syntax */
 const get = require('get-value');
 const { getFieldValueFromMessage } = require('../../util');
-const { lookupFieldMap } = require('./config');
+const { BASE_URL, lookupFieldMap } = require('./config');
 const { httpGET } = require('../../../adapters/network');
 const {
   processAxiosResponse,
@@ -9,6 +9,7 @@ const {
 } = require('../../../adapters/utils/networkUtils');
 const { NetworkError, InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
  * @param {*} propertyName
@@ -168,7 +169,7 @@ const searchContactIds = async (message, Config, baseUrl) => {
   const basicAuth = Buffer.from(`${userName}:${password}`).toString('base64');
   const requestOptions = {
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
       Authorization: `Basic ${basicAuth}`,
     },
   };
@@ -194,6 +195,17 @@ const searchContactIds = async (message, Config, baseUrl) => {
   return Object.keys(contacts);
 };
 
+const getEndpoint = (Config) => {
+  const { subDomainName, domainName, domainMethod } = Config;
+  let endpoint = `${BASE_URL.replace('subDomainName', subDomainName)}`;
+  if (domainMethod === 'domainNameOption' && domainName) {
+    endpoint = `${domainName}/api`;
+  }
+  if (!subDomainName && !domainName) {
+    throw new ConfigurationError('Please Provide either subDomain or Domain Name');
+  }
+  return endpoint;
+};
 module.exports = {
   deduceStateField,
   validateEmail,
@@ -202,4 +214,5 @@ module.exports = {
   validateGroupCall,
   validatePayload,
   searchContactIds,
+  getEndpoint,
 };

@@ -12,6 +12,7 @@ const {
   simpleProcessRouterDest,
 } = require('../../util');
 const { InstrumentationError } = require('../../util/errorTypes');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function responseBuilder(payload, message, destination, category) {
   const response = defaultRequestConfig();
@@ -31,8 +32,8 @@ function responseBuilder(payload, message, destination, category) {
   return {
     ...response,
     headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+      'Content-Type': JSON_MIME_TYPE,
+      Accept: JSON_MIME_TYPE,
     },
     userId: message.anonymousId,
   };

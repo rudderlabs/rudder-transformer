@@ -1,0 +1,25 @@
+[
+  {
+    "description": "userId as an integer",
+    "input": {
+      "statusCode": 200,
+      "userId": 1234
+    },
+    "output": "1234"
+  },
+  {
+    "description": "userId not given",
+    "input": {
+      "statusCode": 200
+    },
+    "output": ""
+  },
+  {
+    "description": "userID as string",
+    "input": {
+      "statusCode": 200,
+      "userId": "abcd1234"
+    },
+    "output": "abcd1234"
+  }
+]

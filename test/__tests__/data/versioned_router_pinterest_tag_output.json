@@ -12,7 +12,7 @@
           "JSON": {
             "data": [
               {
-                "event_name": "Watch Video",
+                "event_name": "watch_video",
                 "event_time": 1597383030,
                 "action_source": "web",
                 "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
@@ -34,7 +34,7 @@
                 },
                 "custom_data": {
                   "currency": "USD",
-                  "value": 27.5,
+                  "value": "27.5",
                   "order_id": "50314b8e9bcf000000000000",
                   "num_items": 3,
                   "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
@@ -45,7 +45,7 @@
                 }
               },
               {
-                "event_name": "Signup",
+                "event_name": "signup",
                 "event_time": 1597383030,
                 "action_source": "web",
                 "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
@@ -67,7 +67,7 @@
                 },
                 "custom_data": {
                   "currency": "USD",
-                  "value": 27.5,
+                  "value": "27.5",
                   "order_id": "50314b8e9bcf000000000000",
                   "num_items": 3,
                   "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
@@ -78,7 +78,7 @@
                 }
               },
               {
-                "event_name": "Checkout",
+                "event_name": "checkout",
                 "event_time": 1597383030,
                 "action_source": "web",
                 "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
@@ -100,7 +100,7 @@
                 },
                 "custom_data": {
                   "currency": "USD",
-                  "value": 27.5,
+                  "value": "27.5",
                   "order_id": "50314b8e9bcf000000000000",
                   "num_items": 3,
                   "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],
@@ -111,7 +111,7 @@
                 }
               },
               {
-                "event_name": "AddToCart",
+                "event_name": "add_to_cart",
                 "event_time": 1597383030,
                 "action_source": "web",
                 "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
@@ -133,7 +133,7 @@
                 },
                 "custom_data": {
                   "currency": "USD",
-                  "value": 27.5,
+                  "value": "27.5",
                   "order_id": "50314b8e9bcf000000000000",
                   "num_items": 2,
                   "content_ids": ["123"],
@@ -141,7 +141,7 @@
                 }
               },
               {
-                "event_name": "Signup",
+                "event_name": "signup",
                 "event_time": 1597383030,
                 "action_source": "web",
                 "event_id": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
@@ -163,7 +163,7 @@
                 },
                 "custom_data": {
                   "currency": "USD",
-                  "value": 27.5,
+                  "value": "27.5",
                   "order_id": "50314b8e9bcf000000000000",
                   "num_items": 3,
                   "content_ids": ["507f1f77bcf86cd799439011", "505bd76785ebb509fc183733"],

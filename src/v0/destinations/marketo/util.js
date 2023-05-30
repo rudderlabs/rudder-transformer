@@ -10,6 +10,7 @@ const {
   ThrottledError,
   RetryableError,
   UnhandledStatusCodeError,
+  ConfigurationError,
 } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
@@ -59,6 +60,39 @@ const marketoApplicationErrorHandler = (marketoResponse, sourceMessage, destinat
   }
 };
 
+const nestedResponseHandler = (marketoResponse, sourceMessage) => {
+  const checkStatus = (res) => {
+    const { status } = res;
+    if (status !== 'updated' && status !== 'created' && status !== 'added') {
+      const { reasons } = res;
+      let statusCode = 400;
+      if (reasons && MARKETO_ABORTABLE_CODES.includes(reasons[0].code)) {
+        statusCode = 400;
+      } else if (reasons && MARKETO_THROTTLED_CODES.includes(reasons[0].code)) {
+        statusCode = 429;
+      } else if (reasons && MARKETO_RETRYABLE_CODES.includes(reasons[0].code)) {
+        statusCode = 500;
+      }
+      throw new ConfigurationError(
+        `Request failed during: ${sourceMessage}, error: ${JSON.stringify(reasons)}`,
+        statusCode,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(statusCode),
+        },
+        marketoResponse,
+      );
+    }
+  };
+  const { result } = marketoResponse;
+  if (Array.isArray(result) && result.length > 0) {
+    result.forEach((res) => {
+      checkStatus(res);
+    });
+  } else {
+    checkStatus(result);
+  }
+};
+
 const marketoResponseHandler = (
   destResponse,
   sourceMessage,
@@ -85,6 +119,7 @@ const marketoResponseHandler = (
     }
     // marketo application level success
     if (response && response.success) {
+      nestedResponseHandler(response, sourceMessage);
       return response;
     }
     // marketo application level failure

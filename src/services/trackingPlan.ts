@@ -23,7 +23,7 @@ export default class TrackingPlanservice {
             metadata: event.metadata,
             statusCode: 400,
             validationErrors: hv['validationErrors'],
-            error: JSON.stringify(getValidationErrMsg(hv['validationErrors']), null, 2),
+            error: JSON.stringify(getValidationErrMsg(hv['validationErrors'])),
           });
           stats.counter('hv_violation_type', 1, {
             violationType: hv['violationType'],
@@ -35,7 +35,7 @@ export default class TrackingPlanservice {
             metadata: event.metadata,
             statusCode: 200,
             validationErrors: hv['validationErrors'],
-            error: JSON.stringify(getValidationErrMsg(hv['validationErrors']), null, 2),
+            error: JSON.stringify(getValidationErrMsg(hv['validationErrors'])),
           });
           stats.counter('hv_propagated_events', 1, {
             ...metaTags,

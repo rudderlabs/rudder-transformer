@@ -306,5 +306,237 @@
         "rudderAccountId": "25u5whFH7gVTnCiAjn4ykoCLGoC"
       }
     }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "traits": {
+          "firstName": "John"
+        }
+      },
+      "event": "Product Clicked",
+      "type": "track",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "loyaltyFraction": 1,
+        "order_id": "order id",
+        "currency": "INR",
+        "revenue": "100",
+        "store_code": "store code",
+        "email": "alex@example.com",
+        "gclid": "gclid",
+        "product_id": "123445",
+        "quantity": 123,
+        "callerId": "1234",
+        "callStartDateTime": "2019-10-14T11:15:18.299Z"
+      },
+      "integrations": {
+        "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "metadata": {
+      "secret": {
+        "access_token": "abcd1234",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl91011"
+      },
+      "jobId": 1
+    },
+    "destination": {
+      "Config": {
+        "rudderAccountId": "2Hsy2iFyoG5VLDd9wQcggHLMYFA",
+        "customerId": "769-372-9833",
+        "subAccount": false,
+        "UserIdentifierSource": "FIRST_PARTY",
+        "conversionEnvironment": "none",
+        "defaultUserIdentifier": "email",
+        "hashUserIdentifier": true,
+        "validateOnly": true,
+        "eventsToOfflineConversionsTypeMapping": [
+          { "from": "Data Reading Guide", "to": "click" },
+          { "from": "Order Completed", "to": "store" },
+          { "from": "Sign-up - click", "to": "click" },
+          { "from": "Outbound click (rudderstack.com)", "to": "click" },
+          { "from": "Page view", "to": "click" },
+          { "from": "download", "to": "click" },
+          { "from": "Product Clicked", "to": "store" },
+          { "from": "Order Completed", "to": "call" }
+        ],
+        "loginCustomerId": "4219454086",
+        "eventsToConversionsNamesMapping": [
+          { "from": "Data Reading Guide", "to": "Data Reading Guide" },
+          { "from": "Order Completed", "to": "Order Completed" },
+          { "from": "Sign-up - click", "to": "Sign-up - click" },
+          { "from": "Outbound click (rudderstack.com)", "to": "Outbound click (rudderstack.com)" },
+          { "from": "Page view", "to": "Page view" },
+          { "from": "Sign up completed", "to": "Sign-up - click" },
+          { "from": "download", "to": "Page view" },
+          { "from": "Product Clicked", "to": "Store sales" }
+        ],
+        "authStatus": "active",
+        "oneTrustCookieCategories": [],
+        "customVariables": [{ "from": "", "to": "" }]
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "traits": {
+          "firstName": "John"
+        }
+      },
+      "event": "Order Completed",
+      "type": "track",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "loyaltyFraction": 1,
+        "order_id": "order id",
+        "currency": "INR",
+        "revenue": "100",
+        "store_code": "store code2",
+        "email": "alex@example.com",
+        "gclid": "gclid",
+        "product_id": "123445",
+        "quantity": 123,
+        "callerId": "1234",
+        "callStartDateTime": "2019-10-14T11:15:18.299Z"
+      },
+      "integrations": {
+        "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "metadata": {
+      "secret": {
+        "access_token": "abcd1234",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl91011"
+      },
+      "jobId": 2
+    },
+    "destination": {
+      "Config": {
+        "rudderAccountId": "2Hsy2iFyoG5VLDd9wQcggHLMYFA",
+        "customerId": "769-372-9833",
+        "subAccount": false,
+        "UserIdentifierSource": "FIRST_PARTY",
+        "conversionEnvironment": "none",
+        "defaultUserIdentifier": "email",
+        "hashUserIdentifier": true,
+        "validateOnly": true,
+        "eventsToOfflineConversionsTypeMapping": [
+          { "from": "Data Reading Guide", "to": "click" },
+          { "from": "Order Completed", "to": "store" },
+          { "from": "Sign-up - click", "to": "click" },
+          { "from": "Outbound click (rudderstack.com)", "to": "click" },
+          { "from": "Page view", "to": "click" },
+          { "from": "download", "to": "click" },
+          { "from": "Product Clicked", "to": "store" },
+          { "from": "Order Completed", "to": "call" }
+        ],
+        "loginCustomerId": "4219454086",
+        "eventsToConversionsNamesMapping": [
+          { "from": "Data Reading Guide", "to": "Data Reading Guide" },
+          { "from": "Order Completed", "to": "Order Completed" },
+          { "from": "Sign-up - click", "to": "Sign-up - click" },
+          { "from": "Outbound click (rudderstack.com)", "to": "Outbound click (rudderstack.com)" },
+          { "from": "Page view", "to": "Page view" },
+          { "from": "Sign up completed", "to": "Sign-up - click" },
+          { "from": "download", "to": "Page view" },
+          { "from": "Product Clicked", "to": "Store sales" }
+        ],
+        "authStatus": "active",
+        "oneTrustCookieCategories": [],
+        "customVariables": [{ "from": "", "to": "" }]
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
+      "context": {
+        "traits": {
+          "firstName": "John"
+        }
+      },
+      "event": "Order Completed",
+      "type": "track",
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "loyaltyFraction": 1,
+        "order_id": "order id",
+        "currency": "INR",
+        "revenue": "100",
+        "store_code": "store code2",
+        "email": "alex@example.com",
+        "gclid": "gclid",
+        "product_id": "123445",
+        "quantity": 123,
+        "callerId": "1234",
+        "callStartDateTime": "2019-10-14T11:15:18.299Z"
+      },
+      "integrations": {
+        "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "metadata": {
+      "secret": {
+        "access_token": "abcd1234",
+        "refresh_token": "efgh5678",
+        "developer_token": "ijkl91011"
+      },
+      "jobId": 3
+    },
+    "destination": {
+      "Config": {
+        "rudderAccountId": "2Hsy2iFyoG5VLDd9wQcggHLMYFA",
+        "customerId": "769-372-9833",
+        "subAccount": false,
+        "UserIdentifierSource": "FIRST_PARTY",
+        "conversionEnvironment": "none",
+        "defaultUserIdentifier": "email",
+        "hashUserIdentifier": true,
+        "validateOnly": true,
+        "eventsToOfflineConversionsTypeMapping": [
+          { "from": "Data Reading Guide", "to": "click" },
+          { "from": "Sign-up - click", "to": "click" },
+          { "from": "Outbound click (rudderstack.com)", "to": "click" },
+          { "from": "Page view", "to": "click" },
+          { "from": "download", "to": "click" },
+          { "from": "Product Clicked", "to": "store" },
+          { "from": "Order Completed", "to": "call" }
+        ],
+        "loginCustomerId": "4219454086",
+        "eventsToConversionsNamesMapping": [
+          { "from": "Data Reading Guide", "to": "Data Reading Guide" },
+          { "from": "Sign-up - click", "to": "Sign-up - click" },
+          { "from": "Outbound click (rudderstack.com)", "to": "Outbound click (rudderstack.com)" },
+          { "from": "Page view", "to": "Page view" },
+          { "from": "Sign up completed", "to": "Sign-up - click" },
+          { "from": "download", "to": "Page view" },
+          { "from": "Product Clicked", "to": "Store sales" }
+        ],
+        "authStatus": "active",
+        "oneTrustCookieCategories": [],
+        "customVariables": [{ "from": "", "to": "" }]
+      }
+    }
   }
 ]

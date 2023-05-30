@@ -25,7 +25,14 @@ const {
   SHOPIFY_TRACK_MAP,
   useRedisDatabase,
 } = require('./config');
-const { TransformationError } = require('../../util/errorTypes');
+
+const NO_OPERATION_SUCCESS = {
+  outputToSource: {
+    body: Buffer.from('OK').toString('base64'),
+    contentType: 'text/plain',
+  },
+  statusCode: 200,
+};
 
 const identifyPayloadBuilder = (event) => {
   const message = new Message(INTEGERATION);
@@ -135,20 +142,18 @@ const processEvent = async (inputEvent, metricMetadata) => {
       if (useRedisDatabase) {
         const isValidEvent = await checkAndUpdateCartItems(inputEvent, metricMetadata);
         if (!isValidEvent) {
-          return {
-            outputToSource: {
-              body: Buffer.from('OK').toString('base64'),
-              contentType: 'text/plain',
-            },
-            statusCode: 200,
-          };
+          return NO_OPERATION_SUCCESS;
         }
       }
       message = trackPayloadBuilder(event, shopifyTopic);
       break;
     default:
       if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
-        throw new TransformationError(`event type ${shopifyTopic} not supported`);
+        stats.increment('invalid_shopify_event', {
+          event: shopifyTopic,
+          ...metricMetadata,
+        });
+        return NO_OPERATION_SUCCESS;
       }
       message = trackPayloadBuilder(event, shopifyTopic);
       break;

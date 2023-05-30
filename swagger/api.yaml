@@ -1,0 +1,27 @@
+openapi: 3.0.1
+
+info:
+  title: Transformer API
+  description: |
+    This is transformer API documentation with all needed APIs.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:9090/
+  - url: https://localhost:9090/
+
+tags:
+  - name: 'Miscellaneous'
+
+paths:
+  #Misc Routes
+  /health:
+    $ref: './routes/misc.yaml#/~1health'
+  /transformerBuildVersion:
+    $ref: './routes/misc.yaml#/~1transformerBuildVersion'
+  /buildVersion:
+    $ref: './routes/misc.yaml#/~1buildVersion'
+  /version:
+    $ref: './routes/misc.yaml#/~1version'
+  /features:
+    $ref: './routes/misc.yaml#/~1features'

@@ -567,5 +567,39 @@
     "userId": "0200102",
     "originalTimestamp": "2020-04-01T13:16:24.000Z",
     "sentAt": "2020-04-01T13:16:24.000Z"
+  },
+  {
+    "context": {
+      "library": {
+        "name": "unknown",
+        "version": "unknown"
+      },
+      "integration": {
+        "name": "Customer.io"
+      }
+    },
+    "integrations": {
+      "Customer.io": false
+    },
+    "type": "track",
+    "event": "Push Delivered",
+    "properties": {
+      "eventId": "01E4V2SBHYK4TNTG8WKMP39G9S",
+      "deliveryId": "RPILAgUBcRhIBqSfeiIwdIYJKxTY",
+      "actionId": 37,
+      "broadcastId": 9,
+      "link": {
+        "url": "ciosas://product/2",
+        "id": 1
+      },
+      "recipients": [
+        {
+          "device_id": "eeC2XC_NVPo:APA91bEYRSgmu-dAZcOWi7RzKBbT9gdY3WJACOpLQEMAmAOsChJMAZWirvSlSF3EuHxb7qdwlYeOyCWtbsnR14Vyx5nwBmg5J3SyPxfNn-ey1tNgXIj5UOq8IBk2VwzMApk-xzD4JJof"
+        }
+      ]
+    },
+    "userId": "0200102",
+    "originalTimestamp": "2020-04-01T14:37:10.000Z",
+    "sentAt": "2020-04-01T14:37:10.000Z"
   }
 ]

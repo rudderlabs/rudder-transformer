@@ -37,7 +37,7 @@ const {
   RespStatusError,
   RetryRequestError,
   sendViolationMetrics,
-  getValidationErrMsg,
+  constructValidationErrors,
 } = require('../util/utils');
 const { isCdkV2Destination, getCdkV2TestThreshold } = require('../cdk/v2/utils');
 const { PlatformError } = require('../v0/util/errorTypes');
@@ -376,7 +376,7 @@ async function handleValidation(ctx) {
           metadata: event.metadata,
           statusCode: 400,
           validationErrors: hv.validationErrors,
-          error: JSON.stringify(getValidationErrMsg(hv.validationErrors)),
+          error: JSON.stringify(constructValidationErrors(hv.validationErrors)),
         });
         stats.counter('hv_violation_type', 1, {
           violationType: hv.violationType,
@@ -388,7 +388,7 @@ async function handleValidation(ctx) {
           metadata: event.metadata,
           statusCode: 200,
           validationErrors: hv.validationErrors,
-          error: JSON.stringify(getValidationErrMsg(hv.validationErrors)),
+          error: JSON.stringify(constructValidationErrors(hv.validationErrors)),
         });
         stats.counter('hv_propagated_events', 1, {
           ...metaTags,

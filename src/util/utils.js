@@ -51,7 +51,7 @@ const sendViolationMetrics = (validationErrors, dropped, metaTags) => {
   });
 };
 
-const getValidationErrMsg = (validationErrors) =>
+const constructValidationErrors = (validationErrors) =>
   validationErrors.reduce((acc, elem) => {
     if (!acc[elem.type]) {
       acc[elem.type] = [];
@@ -79,7 +79,7 @@ module.exports = {
   RetryRequestError,
   responseStatusHandler,
   getIntegrationVersion,
-  getValidationErrMsg,
+  constructValidationErrors,
   sendViolationMetrics,
   logProcessInfo,
 };

@@ -132,7 +132,6 @@ const transformedPayloadData = (
   blacklistPiiProperties,
   whitelistPiiProperties,
   isStandard,
-  eventCustomProperties,
   integrationsObj,
 ) => {
   const defaultPiiProperties = [
@@ -155,10 +154,8 @@ const transformedPayloadData = (
   const clonedCustomData = { ...customData };
   const finalBlacklistPiiProperties = blacklistPiiProperties || [];
   const finalWhitelistPiiProperties = whitelistPiiProperties || [];
-  const finalEventCustomProperties = eventCustomProperties || [];
   const customBlackListedPiiProperties = {};
   const customWhiteListedProperties = {};
-  const customEventProperties = {};
   finalBlacklistPiiProperties.forEach((property) => {
     const singularConfigInstance = property;
     customBlackListedPiiProperties[singularConfigInstance.blacklistPiiProperties] =
@@ -168,11 +165,6 @@ const transformedPayloadData = (
   finalWhitelistPiiProperties.forEach((property) => {
     const singularConfigInstance = property;
     customWhiteListedProperties[singularConfigInstance.whitelistPiiProperties] = true;
-  });
-
-  finalEventCustomProperties.forEach((property) => {
-    const singularConfigInstance = property;
-    customEventProperties[singularConfigInstance.eventCustomProperties] = true;
   });
 
   Object.keys(clonedCustomData).forEach((eventProp) => {
@@ -191,10 +183,6 @@ const transformedPayloadData = (
       } else {
         delete clonedCustomData[eventProp];
       }
-    }
-    const isCustomProperty = customEventProperties[eventProp] || false;
-    if (isStandard && !isCustomProperty && !isDefaultPiiProperty) {
-      delete clonedCustomData[eventProp];
     }
   });
 

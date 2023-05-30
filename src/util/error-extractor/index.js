@@ -1,11 +1,6 @@
-class ErrorDetailsExtractor {
-
-  constructor(builder) {
-    this.status = builder.getStatus();
-    this.messageDetails = builder.getMessageDetails();
-  }
-
-  
+function ErrorDetailsExtractor(builder) {
+  this.status = builder.getStatus();
+  this.messageDetails = builder.getMessageDetails();
 }
 
 module.exports = ErrorDetailsExtractor;

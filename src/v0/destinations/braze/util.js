@@ -18,6 +18,8 @@ const {
   getTrackEndPoint,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { isObject } = require('../../util');
+const { removeUndefinedValues } = require('../../util');
 
 const getEndpointFromConfig = (destination) => {
   // Init -- mostly for test cases
@@ -257,14 +259,16 @@ const BrazeDedupUtility = {
     const keys = Object.keys(userData)
       .filter((key) => !excludeKeys.includes(key))
       .filter((key) => !BRAZE_NON_BILLABLE_ATTRIBUTES.includes(key))
-      .filter(
-        (key) =>
-          !(
+      .filter((key) => {
+        if (isObject(userData[key])) {
+          return !(
             Object.keys(userData[key]).includes('$add') ||
             Object.keys(userData[key]).includes('$update') ||
             Object.keys(userData[key]).includes('$remove')
-          ),
-      );
+          );
+        }
+        return true;
+      });
 
     if (keys.length === 0) {
       return null;
@@ -286,7 +290,7 @@ const BrazeDedupUtility = {
     };
     const identifier = external_id || user_alias.alias_name;
     store.set(identifier, { ...storedUserData, ...deduplicatedUserData });
-    return removeUndefinedAndNullValues(deduplicatedUserData);
+    return removeUndefinedValues(deduplicatedUserData);
   },
 };
 

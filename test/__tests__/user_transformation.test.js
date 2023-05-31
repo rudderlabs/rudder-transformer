@@ -1395,7 +1395,7 @@ describe("Python transformations", () => {
     axios.post.mockResolvedValue({});
     axios.get.mockResolvedValue({});
 
-    const output = await setupUserTransformHandler([], trRevCode);
+    const output = await setupUserTransformHandler(trRevCode, []);
     expect(output).toEqual(expectedData);
     expect(axios.post).toHaveBeenCalledTimes(1);
     expect(axios.post).toHaveBeenCalledWith(
@@ -1415,7 +1415,7 @@ describe("Python transformations", () => {
 
     const expectedData = { success: true, publishedVersion: funcName };
 
-    const output = await setupUserTransformHandler([], trRevCode);
+    const output = await setupUserTransformHandler(trRevCode, []);
     expect(output).toEqual(expectedData);
     expect(axios.post).toHaveBeenCalledTimes(0);
     expect(axios.get).toHaveBeenCalledTimes(0);
@@ -1429,14 +1429,14 @@ describe("Python transformations", () => {
     });
 
     await expect(async () => {
-      await setupUserTransformHandler([], trRevCode);
+      await setupUserTransformHandler(trRevCode, []);
     }).rejects.toThrow(RetryRequestError);
 
     // function gets cached on already exists error
     const funcName = pyfaasFuncName(trRevCode.workspaceId, trRevCode.versionId);
     const expectedData = { success: true, publishedVersion: funcName };
 
-    const output = await setupUserTransformHandler([], trRevCode);
+    const output = await setupUserTransformHandler(trRevCode, []);
     expect(output).toEqual(expectedData);
   });
 
@@ -1448,7 +1448,7 @@ describe("Python transformations", () => {
     });
 
     await expect(async () => {
-      await setupUserTransformHandler([], trRevCode);
+      await setupUserTransformHandler(trRevCode, []);
     }).rejects.toThrow(RespStatusError);
   });
 
@@ -1460,7 +1460,7 @@ describe("Python transformations", () => {
     });
 
     await expect(async () => {
-      await setupUserTransformHandler([], trRevCode);
+      await setupUserTransformHandler(trRevCode, []);
     }).rejects.toThrow(RetryRequestError);
   });
 

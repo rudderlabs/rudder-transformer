@@ -1250,6 +1250,135 @@ describe("Rudder library tests", () => {
   });
 });
 
+// tests for geolocation function
+describe("Geolocation function", () => {
+  const OLD_ENV = process.env;
+  beforeEach(() => {
+    jest.resetModules();
+    process.env = { ...OLD_ENV };
+    process.env.GEOLOCATION_URL = "https://dummyUrl.com";
+  });
+  afterAll(() => {
+    process.env = OLD_ENV; // restore old env
+  });
+
+  const respBodyV1 = {
+    code: `
+      export async function transformEvent(event, metadata) {
+        try {
+          event.context.geo = await geolocation(event.request_ip);
+        } catch (err) {
+          event.context.geoerror = err.message;
+        }
+        return event;
+      }`,
+    name: "geotest",
+    codeVersion: "1"
+  };
+  const geoResp = {
+    country: "US",
+    region: "CA",
+    city: "San Francisco",
+  };
+
+  it("Should throw error if GEOLOCATION_URL is not set", async () => {
+    process.env.GEOLOCATION_URL = undefined;
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ ...respBodyV1, versionId })
+      });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(output[0].transformedEvent.context.geoerror).toBe("geolocation is not available right now");
+  });
+
+  it("Should throw error when geo request fails with invalid arg", async () => {
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    inputData.forEach((input) => { input.message.request_ip = "invalid"; });
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ ...respBodyV1, versionId })
+      });
+    when(fetch)
+      .calledWith("https://dummyUrl.com/geoip/invalid", { timeout: 1000 })
+      .mockResolvedValue({ status: 400 });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(output[0].transformedEvent.context.geoerror).toBe("request to fetch geolocation failed with status code: 400");
+  });
+
+  it("Should enrich context when geo request succeedes", async () => {
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    inputData.forEach((input) => { input.message.request_ip = "1.1.1.1"; });
+
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ ...respBodyV1, versionId })
+      });
+    when(fetch)
+      .calledWith("https://dummyUrl.com/geoip/1.1.1.1", { timeout: 1000 })
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(geoResp)
+      });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(output[0].transformedEvent.context.geo).toEqual(geoResp);
+  });
+
+  it("Should enrich context when geo request succeedes - V0 transformation", async () => {
+    const versionId = randomID();
+    const inputData = require(`./data/${integration}_input.json`);
+    inputData.forEach((input) => { input.message.request_ip = "1.1.1.1"; });
+
+    const respBody = {
+      code: `
+        async function transform(events, metadata) {
+          await Promise.all(events.map(async (event) => {
+            try {
+              event.context.geo = await geolocation(event.request_ip);
+            } catch (err) {
+              event.context.geoerror = err.message;
+            }
+          }));
+          return events;
+        }`,
+      name: "geotest",
+      codeVersion: "0"
+    };
+
+    const transformerUrl = `https://api.rudderlabs.com/transformation/getByVersionId?versionId=${versionId}`;
+    when(fetch)
+      .calledWith(transformerUrl)
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue({ ...respBody, versionId })
+      });
+    when(fetch)
+      .calledWith("https://dummyUrl.com/geoip/1.1.1.1", { timeout: 1000 })
+      .mockResolvedValue({
+        status: 200,
+        json: jest.fn().mockResolvedValue(geoResp)
+      });
+
+    const output = await userTransformHandler(inputData, versionId, []);
+    expect(output[0].transformedEvent.context.geo).toEqual(geoResp);
+  });
+});
+
 // Running tests for python transformations with openfaas mocks
 describe("Python transformations", () => {
   beforeEach(() => {

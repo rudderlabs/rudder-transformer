@@ -27,7 +27,8 @@
             "zp": ["1a4292e00780e18d00e76fde9850aee5344e939ba593333cd5e4b4aa2cd33b0c"],
             "country": ["582967534d0f909d196b97f9e6921342777aea87b46fa52df165389db1fb8ccf"],
             "hashed_maids": ["6ca13d52ca70c883e0f0bb101e425a89e8624de51db2d2392593af6a84118090"],
-            "client_user_agent": "chrome"
+            "client_user_agent": "chrome",
+            "ge": ["1b16b1df538ba12dc3f97edbb85caa7050d46c148134290feba80f8236c83db9"]
           },
           "custom_data": {
             "currency": "USD",
@@ -498,8 +499,7 @@
           "advertiser_id": "123478671210",
           "user_data": {
             "client_ip_address": "66.249.72.218",
-            "client_user_agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/109.0.5414.101 Safari/537.36",
-            "ge": [null]
+            "client_user_agent": "Mozilla/5.0 AppleWebKit/537.36 (KHTML, like Gecko; compatible; Googlebot/2.1; +http://www.google.com/bot.html) Chrome/109.0.5414.101 Safari/537.36"
           },
           "event_name": "page_visit"
         },

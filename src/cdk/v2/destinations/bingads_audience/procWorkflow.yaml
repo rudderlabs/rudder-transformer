@@ -1,0 +1,49 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - path: ./config
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    template: |
+      let messageType = .message.type;
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.type.toLowerCase() ==='audiencelist', "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
+      $.assert(.message.properties, "Message properties is not present. Aborting message.");
+      $.assert(.message.properties.listData, "listData is not present inside properties. Aborting message.");
+      $.assert(.message.properties.listData.[$.BINGADS_SUPPORTED_OPERATION], "The only supported operation for audience updationn" +$.BINGADS_SUPPORTED_OPERATION+ " is not present. Aborting message.");
+
+  - name: prepareIdentifiersList
+    description: |
+      Populate list of identifiers to be updated
+    template: |
+      const listArray = .message.properties.listData.add;
+      const hashEmail = .destination.Config.hashEmail;
+      console.log("fdsfdsf", listArray@prop.listData);
+      console.log("aaa", hashEmail)
+      list = listArray.({
+          "hashedEmail" :  hashEmail ? $.SHA256(.email) : .email ,
+          "email": .email
+        })
+
+  - name: payload
+    template: |
+      const outputPayload = {
+       "list": $.outputs.prepareIdentifiersList
+      }
+
+  - name: buildResponseForProcessTransformation
+    description: build response
+    template: |
+      const response = $.defaultRequestConfig();
+      console.log(response);
+      response.body.JSON = $.outputs.payload;
+      response.endpoint = "";
+      response.headers = {};
+      finalResponse = response;

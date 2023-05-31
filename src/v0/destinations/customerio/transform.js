@@ -91,7 +91,7 @@ function processSingleMessage(message, destination) {
       break;
     case EventType.PAGE:
       evType = 'page'; // customerio mandates sending 'page' for pageview events
-      evName = message.name || message.properties.url;
+      evName = message.name || message.properties?.url;
       break;
     case EventType.SCREEN:
       evType = 'event';

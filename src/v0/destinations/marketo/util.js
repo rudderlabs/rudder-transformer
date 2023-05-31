@@ -59,7 +59,41 @@ const marketoApplicationErrorHandler = (marketoResponse, sourceMessage, destinat
     );
   }
 };
-
+/**
+ * this function checks the status of individual responses and throws error if any
+ * response ststus does not match the expected status
+ * doc1: https://developers.marketo.com/rest-api/lead-database/custom-objects/#create_and_update
+ * doc2: https://developers.marketo.com/rest-api/lead-database/#create_and_update
+ * Structure of marketoResponse: {
+    "requestId":"e42b#14272d07d78",
+    "success":true,
+    "result":[
+        {
+          "seq":0,
+          "status": "updated",
+          "marketoGUID":"dff23271-f996-47d7-984f-f2676861b5fb"
+        },
+        {
+          "seq":1,
+          "status": "created",
+          "marketoGUID":"cff23271-f996-47d7-984f-f2676861b5fb"
+        },
+        {
+          "seq":2,
+          "status": "skipped"
+          "reasons":[
+              {
+                "code":"1004",
+                "message":"Lead not found"
+              }
+          ]
+        }
+    ]
+  } 
+ * 
+ * @param {*} marketoResponse 
+ * @param {*} sourceMessage 
+ */
 const nestedResponseHandler = (marketoResponse, sourceMessage) => {
   const checkStatus = (res) => {
     const { status } = res;

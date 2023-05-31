@@ -71,7 +71,7 @@ jobs:
       img_tag: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
       dockerfile: Dockerfile-ut-func
       load_target: development
-      push_target: development
+      push_target: production
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 

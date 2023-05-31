@@ -8,6 +8,7 @@ const { parserForImport } = require('./parser');
 const stats = require('./stats');
 
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
+const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
 
 async function runUserTransform(
   events,
@@ -78,6 +79,32 @@ async function runUserTransform(
     }),
   );
 
+  await jail.set(
+    '_geolocation',
+    new ivm.Reference(async (resolve, reject, ...args) => {
+      try {
+        const geoStartTime = new Date();
+        if (args.length < 1) {
+          throw new Error('ip address is required');
+        }
+        if (!process.env.GEOLOCATION_URL) throw new Error('geolocation is not available right now');
+
+        const res = await fetch(`${process.env.GEOLOCATION_URL}/geoip/${args[0]}`, {
+          timeout: GEOLOCATION_TIMEOUT_IN_MS,
+        });
+        if (res.status !== 200) {
+          throw new Error(`request to fetch geolocation failed with status code: ${res.status}`);
+        }
+        const geoData = await res.json();
+        stats.timing('geo_call_duration', geoStartTime, { versionId });
+        resolve.applyIgnored(undefined, [new ivm.ExternalCopy(geoData).copyInto()]);
+      } catch (error) {
+        const err = JSON.parse(JSON.stringify(error, Object.getOwnPropertyNames(error)));
+        reject.applyIgnored(undefined, [new ivm.ExternalCopy(err).copyInto()]);
+      }
+    }),
+  );
+
   await jail.set('_rsSecrets', function (...args) {
     if (args.length == 0 || !secrets || !secrets[args[0]]) return 'ERROR';
     return secrets[args[0]];
@@ -130,6 +157,18 @@ async function runUserTransform(
       global.fetchV2 = function(...args) {
         return new Promise((resolve, reject) => {
           fetchV2.applyIgnored(undefined, [
+            new ivm.Reference(resolve),
+            new ivm.Reference(reject),
+            ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())
+          ]);
+        });
+      };
+
+      let geolocation = _geolocation;
+      delete _geolocation;
+      global.geolocation = function(...args) {
+        return new Promise((resolve, reject) => {
+          geolocation.applyIgnored(undefined, [
             new ivm.Reference(resolve),
             new ivm.Reference(reject),
             ...args.map(arg => new ivm.ExternalCopy(arg).copyInto())

@@ -6,3 +6,4 @@
 !package*.json
 !tsconfig.json
 !test
+!scripts/skipPrepareScript.js

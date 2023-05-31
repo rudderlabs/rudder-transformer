@@ -26,6 +26,7 @@ const {
   OAuthSecretError,
 } = require('./errorTypes');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
+const { HTTP_STATUS_CODES } = require('./constant');
 // ========================================================================
 // INLINERS
 // ========================================================================
@@ -1351,11 +1352,11 @@ const errorStatusCodeKeys = ['response.status', 'code', 'status'];
  * @param {Number} defaultStatusCode default status code that has to be set
  * @returns {Number}
  */
-const getErrorStatusCode = (error, defaultStatusCode = 500) => {
+const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR) => {
   try {
     let defaultStCode = defaultStatusCode;
     if (!_.isNumber(defaultStatusCode)) {
-      defaultStCode = 500;
+      defaultStCode = HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
     }
     const errStCode = errorStatusCodeKeys
       .map((statusKey) => get(error, statusKey))

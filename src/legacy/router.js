@@ -864,7 +864,7 @@ if (transformerTestModeEnabled) {
       if (!trRevCode.workspaceId) {
         trRevCode.workspaceId = 'workspaceId';
       }
-      const res = await setupUserTransformHandler(libraryVersionIDs, trRevCode);
+      const res = await setupUserTransformHandler(trRevCode, libraryVersionIDs);
       logger.debug(`[CT] Finished setting up transformation: ${testName}`);
       ctx.body = res;
     } catch (error) {

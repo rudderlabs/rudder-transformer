@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.29.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.29.1...v1.29.2) (2023-05-26)
+
+
+### Bug Fixes
+
+* braze dedup ([#2211](https://github.com/rudderlabs/rudder-transformer/issues/2211)) ([86a9d25](https://github.com/rudderlabs/rudder-transformer/commit/86a9d255f16409902e4d881ded7c876782d3311b))
+
+### [1.29.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.29.0...v1.29.1) (2023-05-25)
+
+
+### Bug Fixes
+
+* shopify idenity stitch ([#2207](https://github.com/rudderlabs/rudder-transformer/issues/2207)) ([b78e690](https://github.com/rudderlabs/rudder-transformer/commit/b78e69081e8db768de80bd560f23d1eeecbc40ab))
+
 ## [1.29.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.28.1...v1.29.0) (2023-05-23)
 
 

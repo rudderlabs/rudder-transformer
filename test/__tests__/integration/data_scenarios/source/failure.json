@@ -10,15 +10,11 @@
   ],
   "output": [
     {
-      "statusCode": 400,
-      "error": "event type random_event not supported",
-      "statTags": {
-        "errorCategory": "transformation",
-        "module": "source",
-        "implementation": "native",
-        "destinationId": "Non determinable",
-        "workspaceId": "Non determinable"
-      }
+      "outputToSource": {
+        "body": "T0s=",
+        "contentType": "text/plain"
+      },
+      "statusCode": 200
     }
   ]
 }

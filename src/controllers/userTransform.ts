@@ -89,7 +89,7 @@ export default class UserTransformController {
       if (!trRevCode.versionId) {
         trRevCode.versionId = 'testVersionId';
       }
-      const res = await setupUserTransformHandler(trRevCode, libraryVersionIDs);
+      const res = await setupUserTransformHandler(libraryVersionIDs, trRevCode);
       logger.debug(`[CT] Finished setting up transformation: ${testName}`);
       ctx.body = res;
     } catch (error: any) {

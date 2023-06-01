@@ -174,20 +174,11 @@ const trackRequestHandler = (message, category, destination) => {
       delete payload.properties;
     }
   } else {
-    attributes = constructPayload(message, MAPPING_CONFIG[category.name]);
     const value =
       message.properties?.revenue || message.properties?.total || message.properties?.value;
+    attributes = constructPayload(message, MAPPING_CONFIG[category.name]);
     if (value) {
       attributes.value = value;
-      if (attributes.properties) {
-        if (attributes.properties.revenue) {
-          delete attributes.properties.revenue;
-        } else if (attributes.properties.total) {
-          delete attributes.properties.total;
-        } else if (attributes.properties.value) {
-          delete attributes.properties.value;
-        }
-      }
     }
     attributes.properties = {
       ...attributes.properties,

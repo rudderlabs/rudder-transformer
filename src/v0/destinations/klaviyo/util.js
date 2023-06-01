@@ -10,10 +10,52 @@ const {
   removeUndefinedAndNullValues,
   defaultBatchRequestConfig,
   getSuccessRespEvents,
+  defaultPatchRequestConfig,
 } = require('../../util');
 
 const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES, MAX_BATCH_SIZE } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { NetworkError } = require('../../util/errorTypes');
+const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const tags = require('../../util/tags');
+const { handleHttpRequest } = require('../../../adapters/network');
+
+const getProfileId = async (endpoint, payload, requestOptions) => {
+  let profileId;
+  const { httpResponse: resp } = await handleHttpRequest('post', endpoint, payload, requestOptions);
+  if (resp.response?.status === 201) {
+    profileId = resp.response?.data?.data?.id;
+  } else if (resp.response?.response?.status === 409) {
+    const { response } = resp.response;
+    profileId = response.data?.errors[0]?.meta?.duplicate_profile_id;
+  } else {
+    throw new NetworkError(
+      `Failed to create user due to ${resp.response?.data}`,
+      resp.response?.response?.status,
+      {
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.response?.response?.status),
+      },
+      resp.response?.data,
+    );
+  }
+  return profileId;
+};
+
+const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKey) => {
+  const updatedPayload = payload;
+  const identifyResponse = defaultRequestConfig();
+  updatedPayload.data.id = profileId;
+  identifyResponse.endpoint = `${BASE_ENDPOINT}${category.apiUrl}/${profileId}`;
+  identifyResponse.method = defaultPatchRequestConfig.requestMethod;
+  identifyResponse.headers = {
+    Authorization: `Klaviyo-API-Key ${privateApiKey}`,
+    'Content-Type': JSON_MIME_TYPE,
+    Accept: JSON_MIME_TYPE,
+    revision: '2023-02-22',
+  };
+  identifyResponse.body.JSON = removeUndefinedAndNullValues(payload);
+  return identifyResponse;
+};
 
 /**
  * This function is used for creating response for subscribing users to a particular list.
@@ -222,4 +264,6 @@ module.exports = {
   populateCustomFieldsFromTraits,
   generateBatchedPaylaodForArray,
   batchSubscribeEvents,
+  getProfileId,
+  profileUpdateResponseBuilder,
 };

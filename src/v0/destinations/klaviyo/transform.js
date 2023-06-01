@@ -2,7 +2,6 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable  array-callback-return */
 const get = require('get-value');
-const _ = require('lodash');
 const { EventType, WhiteListedTraits, MappedToDestinationKey } = require('../../../constants');
 const {
   CONFIG_CATEGORIES,
@@ -17,8 +16,9 @@ const {
   createCustomerProperties,
   subscribeUserToList,
   populateCustomFieldsFromTraits,
-  batchEvents,
   batchSubscribeEvents,
+  getProfileId,
+  profileUpdateResponseBuilder,
 } = require('./util');
 const {
   defaultRequestConfig,
@@ -31,16 +31,12 @@ const {
   isEmptyObject,
   addExternalIdToTraits,
   adduserIdFromExternalId,
-  defaultPatchRequestConfig,
   getSuccessRespEvents,
   checkInvalidRtTfEvents,
   handleRtTfSingleEventError,
 } = require('../../util');
 
-const { ConfigurationError, InstrumentationError, NetworkError } = require('../../util/errorTypes');
-const { httpPOST } = require('../../../adapters/network');
-const tags = require('../../util/tags');
-const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
+const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
@@ -63,7 +59,6 @@ const identifyRequestHandler = async (message, category, destination) => {
     adduserIdFromExternalId(message);
   }
   const traitsInfo = getFieldValueFromMessage(message, 'traits');
-  let profileId;
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
   let customPropertyPayload = {};
@@ -96,36 +91,13 @@ const identifyRequestHandler = async (message, category, destination) => {
       revision: '2023-02-22',
     },
   };
-  const resp = await httpPOST(endpoint, payload, requestOptions);
-  if (resp.response?.status === 201) {
-    profileId = resp.response?.data?.data?.id;
-  } else if (resp.response?.response?.status === 409) {
-    const { response } = resp.response;
-    profileId = response.data?.errors[0]?.meta?.duplicate_profile_id;
-  } else {
-    throw new NetworkError(
-      `Failed to create user due to ${resp.response?.data}`,
-      resp.response?.response?.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.response?.response?.status),
-      },
-      resp.response?.data,
-    );
-  }
+
+  const profileId = await getProfileId(endpoint, payload, requestOptions);
 
   // Update Profile
-  const identifyResponse = defaultRequestConfig();
-  payload.data.id = profileId;
-  identifyResponse.endpoint = `${BASE_ENDPOINT}${category.apiUrl}/${profileId}`;
-  identifyResponse.method = defaultPatchRequestConfig.requestMethod;
-  identifyResponse.headers = {
-    Authorization: `Klaviyo-API-Key ${privateApiKey}`,
-    'Content-Type': JSON_MIME_TYPE,
-    Accept: JSON_MIME_TYPE,
-    revision: '2023-02-22',
-  };
-  identifyResponse.body.JSON = removeUndefinedAndNullValues(payload);
-  const responseArray = [identifyResponse];
+  const responseArray = [profileUpdateResponseBuilder(payload, profileId, category, privateApiKey)];
+
+  // check if user wants to subscribe profile or not
   if (traitsInfo?.properties?.subscribe) {
     responseArray.push(subscribeUserToList(message, traitsInfo, destination));
     return responseArray;

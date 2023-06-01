@@ -1,4 +1,5 @@
 const { defaultRequestConfig } = require('rudder-transformer-cdk/build/utils');
+const _ = require('lodash');
 const { WhiteListedTraits } = require('../../../constants');
 
 const {
@@ -8,9 +9,10 @@ const {
   extractCustomFields,
   removeUndefinedAndNullValues,
   defaultBatchRequestConfig,
+  getSuccessRespEvents,
 } = require('../../util');
 
-const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES } = require('./config');
+const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES, MAX_BATCH_SIZE } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 /**
@@ -158,10 +160,60 @@ const generateBatchedPaylaodForArray = (events) => {
   return batchEventResponse;
 };
 
+/**
+ * It takes list of subscribe responses and groups them on the basis of listId
+ * @param {*} subscribeResponseList
+ * @returns
+ */
+const groupSubsribeResponsesUsingListId = (subscribeResponseList) => {
+  const subscribeEventGroups = _.groupBy(
+    subscribeResponseList,
+    (event) => event.message.body.JSON.data.attributes.list_id,
+  );
+  return subscribeEventGroups;
+};
+
+const batchEvents = (successRespList) => {
+  let batchedResponseList = [];
+  const identifyResponseList = [];
+  successRespList.forEach((event) => {
+    const processedEvent = event;
+    if (processedEvent.message.length === 2) {
+      // the array will contain one update profile reponse and one subscribe reponse
+      identifyResponseList.push(event.message[0]);
+      [processedEvent.message] = event.message.slice(1);
+    } else {
+      // for group events (it will contain only subscribe response)
+      [processedEvent.message] = event.message.slice(0);
+    }
+  });
+
+  const subscribeEventGroups = groupSubsribeResponsesUsingListId(successRespList);
+
+  Object.keys(subscribeEventGroups).forEach((listId) => {
+    // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
+    const eventChunks = _.chunk(subscribeEventGroups[listId], MAX_BATCH_SIZE);
+    batchedResponseList = eventChunks.map((chunk) => {
+      const batchEventResponse = generateBatchedPaylaodForArray(chunk);
+      return getSuccessRespEvents(
+        batchEventResponse.batchedRequest,
+        batchEventResponse.metadata,
+        batchEventResponse.destination,
+        true,
+      );
+    });
+  });
+  identifyResponseList.forEach((response) => {
+    batchedResponseList[0].batchedRequest.push(response);
+  });
+  return batchedResponseList;
+};
+
 module.exports = {
   subscribeUserToList,
   checkForSubscribe,
   createCustomerProperties,
   populateCustomFieldsFromTraits,
   generateBatchedPaylaodForArray,
+  batchEvents,
 };

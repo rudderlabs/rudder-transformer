@@ -12,13 +12,12 @@ const {
   ecomEvents,
   eventNameMapping,
   jsonNameMapping,
-  MAX_BATCH_SIZE,
 } = require('./config');
 const {
   createCustomerProperties,
   subscribeUserToList,
-  generateBatchedPaylaodForArray,
   populateCustomFieldsFromTraits,
+  batchEvents,
 } = require('./util');
 const {
   defaultRequestConfig,
@@ -301,50 +300,13 @@ const process = async (event) => {
   return result;
 };
 
-const batchEvents = (successRespList) => {
-  const batchedResponseList = [];
-  const identifyResponseList = [];
-  successRespList.forEach((event) => {
-    const processedEvent = event;
-    if (processedEvent.message.length === 2) {
-      // the array will contain one update profile reponse and one subscribe reponse
-      identifyResponseList.push(event.message[0]);
-      [processedEvent.message] = event.message.slice(1);
-    } else {
-      // for group events (it will contain only subscribe response)
-      [processedEvent.message] = event.message.slice(0);
-    }
-  });
-  const subscribeEventGroups = _.groupBy(
-    successRespList,
-    (event) => event.message.body.JSON.data.attributes.list_id,
-  );
-  Object.keys(subscribeEventGroups).forEach((listId) => {
-    // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-    const eventChunks = _.chunk(subscribeEventGroups[listId], MAX_BATCH_SIZE);
-    eventChunks.forEach((chunk) => {
-      const batchEventResponse = generateBatchedPaylaodForArray(chunk);
-      batchedResponseList.push(
-        getSuccessRespEvents(
-          batchEventResponse.batchedRequest,
-          batchEventResponse.metadata,
-          batchEventResponse.destination,
-          true,
-        ),
-      );
-    });
-  });
-  identifyResponseList.forEach((response) => {
-    batchedResponseList[0].batchedRequest.push(response);
-  });
-  return batchedResponseList;
-};
-
 // This function separates subscribe response and other responses in chunks
 const getEventChunks = (event, subscribeRespList, otherRespList) => {
   if (Array.isArray(event.message)) {
+    // this list contains responses for subscribe endpoint
     subscribeRespList.push(event);
   } else {
+    // this list doesn't contain subsribe endpoint responses
     otherRespList.push(event);
   }
 };

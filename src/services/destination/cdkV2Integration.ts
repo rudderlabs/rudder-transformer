@@ -31,7 +31,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     workspaceId: string,
     feature: string,
   ): MetaTransferObject {
-    const metaTO = {
+    const metaTo = {
       errorDetails: {
         destType: destType.toUpperCase(),
         module: tags.MODULES.DESTINATION,
@@ -42,7 +42,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
       } as ErrorDetailer,
       errorContext: '[CDKV2 Integration Service] Failure During Router Transform',
     } as MetaTransferObject;
-    return metaTO;
+    return metaTo;
   }
 
   public async doProcessorTransformation(
@@ -79,20 +79,20 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
             undefined,
           );
         } catch (error: any) {
-          const metaTO = this.getTags(
+          const metaTo = this.getTags(
             destinationType,
             event.metadata.destinationId,
             event.metadata.workspaceId,
             tags.FEATURES.PROCESSOR,
           );
-          metaTO.metadata = event.metadata;
+          metaTo.metadata = event.metadata;
           const erroredResp =
             DestinationPostTransformationService.handleProcessorTransformFailureEvents(
               error,
-              metaTO,
+              metaTo,
             );
 
-          stats.increment('event_transform_failure', metaTO.errorDetails);
+          stats.increment('event_transform_failure', metaTo.errorDetails);
 
           return [erroredResp];
         }
@@ -114,7 +114,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     const response: RouterTransformationResponse[][] = await Promise.all(
       Object.values(allDestEvents).map(
         async (destInputArray: RouterTransformationRequestData[]) => {
-          const metaTO = this.getTags(
+          const metaTo = this.getTags(
             destinationType,
             destInputArray[0].metadata.destinationId,
             destInputArray[0].metadata.workspaceId,
@@ -136,17 +136,17 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
             return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
               doRouterTransformationResponse,
               undefined,
-              metaTO,
+              metaTo,
             );
           } catch (error: any) {
-            metaTO.metadatas = destInputArray.map((input) => input.metadata);
+            metaTo.metadatas = destInputArray.map((input) => input.metadata);
             const erroredResp =
               DestinationPostTransformationService.handleRouterTransformFailureEvents(
                 error,
-                metaTO,
+                metaTo,
               );
 
-            stats.increment('event_transform_failure', metaTO.errorDetails);
+            stats.increment('event_transform_failure', metaTo.errorDetails);
 
             return [erroredResp];
           }

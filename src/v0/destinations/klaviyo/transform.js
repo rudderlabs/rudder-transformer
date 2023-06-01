@@ -18,6 +18,7 @@ const {
   subscribeUserToList,
   populateCustomFieldsFromTraits,
   batchEvents,
+  batchSubscribeEvents,
 } = require('./util');
 const {
   defaultRequestConfig,
@@ -351,7 +352,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   );
   let batchedSubscribeResponseList = [];
   if (subscribeRespList.length > 0) {
-    batchedSubscribeResponseList = batchEvents(subscribeRespList);
+    batchedSubscribeResponseList = batchSubscribeEvents(subscribeRespList);
   }
   const otherResponseList = [];
   otherRespList.forEach((resp) => {

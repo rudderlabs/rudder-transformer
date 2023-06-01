@@ -194,9 +194,9 @@ const getBatchedResponseList = (subscribeEventGroups, identifyResponseList) => {
   return batchedResponseList;
 };
 
-const batchEvents = (successRespList) => {
+const batchSubscribeEvents = (subscribeRespList) => {
   const identifyResponseList = [];
-  successRespList.forEach((event) => {
+  subscribeRespList.forEach((event) => {
     const processedEvent = event;
     if (processedEvent.message.length === 2) {
       // the array will contain one update profile reponse and one subscribe reponse
@@ -208,7 +208,7 @@ const batchEvents = (successRespList) => {
     }
   });
 
-  const subscribeEventGroups = groupSubsribeResponsesUsingListId(successRespList);
+  const subscribeEventGroups = groupSubsribeResponsesUsingListId(subscribeRespList);
 
   const batchedResponseList = getBatchedResponseList(subscribeEventGroups, identifyResponseList);
 
@@ -221,5 +221,5 @@ module.exports = {
   createCustomerProperties,
   populateCustomFieldsFromTraits,
   generateBatchedPaylaodForArray,
-  batchEvents,
+  batchSubscribeEvents,
 };

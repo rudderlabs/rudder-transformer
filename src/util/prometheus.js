@@ -91,7 +91,9 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
       if (!metric) {
-        logger.warn(`Prometheus: Summary metric ${name} not found in the registry. Creating a new one`);
+        logger.warn(
+          `Prometheus: Summary metric ${name} not found in the registry. Creating a new one`,
+        );
         metric = this.newSummaryStat(name, '', Object.keys(tags));
       }
       metric.observe(tags, value);
@@ -104,7 +106,9 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
       if (!metric) {
-        logger.warn(`Prometheus: Timing metric ${name} not found in the registry. Creating a new one`);
+        logger.warn(
+          `Prometheus: Timing metric ${name} not found in the registry. Creating a new one`,
+        );
         metric = this.newHistogramStat(name, '', Object.keys(tags));
       }
       metric.observe(tags, (new Date() - start) / 1000);
@@ -117,7 +121,9 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
       if (!metric) {
-        logger.warn(`Prometheus: Histogram metric ${name} not found in the registry. Creating a new one`);
+        logger.warn(
+          `Prometheus: Histogram metric ${name} not found in the registry. Creating a new one`,
+        );
         metric = this.newHistogramStat(name, '', Object.keys(tags));
       }
       metric.observe(tags, value);
@@ -134,7 +140,9 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
       if (!metric) {
-        logger.warn(`Prometheus: Counter metric ${name} not found in the registry. Creating a new one`);
+        logger.warn(
+          `Prometheus: Counter metric ${name} not found in the registry. Creating a new one`,
+        );
         metric = this.newCounterStat(name, '', Object.keys(tags));
       }
       metric.inc(tags, delta);
@@ -147,8 +155,10 @@ class Prometheus {
     try {
       let metric = this.prometheusRegistry.getSingleMetric(appendPrefix(name));
       if (!metric) {
-        logger.warn(`Prometheus: Gauge metric ${name} not found in the registry. Creating a new one`);
-        metric =  this.newGaugeStat(name, '', Object.keys(tags));
+        logger.warn(
+          `Prometheus: Gauge metric ${name} not found in the registry. Creating a new one`,
+        );
+        metric = this.newGaugeStat(name, '', Object.keys(tags));
       }
       metric.set(tags, value);
     } catch (e) {
@@ -757,6 +767,18 @@ class Prometheus {
           0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 200, 300, 400,
           500, 600, 700, 800, 900, 1000,
         ],
+      },
+      {
+        name: 'fb_custom_audience_event_having_all_null_field_values_for_a_user',
+        help: 'fbcustomaudience event having all null field values for a user',
+        type: 'counter',
+        labelNames: ['destinationId', 'nullFields'],
+      },
+      {
+        name: 'fb_custom_audience_event_having_all_null_field_values_for_all_users',
+        help: 'fbcustomaudience event having all null field values for all users',
+        type: 'counter',
+        labelNames: ['destinationId'],
       },
       {
         name: 'http_request_size',

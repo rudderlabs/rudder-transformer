@@ -185,6 +185,7 @@ const prepareDataField = (
     if (nullUserData) {
       stats.increment('fb_custom_audience_event_having_all_null_field_values_for_a_user', {
         destinationId,
+        nullFields: userSchema,
       });
     }
 

@@ -198,10 +198,10 @@ async function validate(event) {
           rudderValidationError = {
             type: violationTypes.RequiredMissing,
             message: error.message,
+            property: error.params.missingProperty,
             meta: {
               instacePath: error.instancePath,
               schemaPath: error.schemaPath,
-              missingProperty: error.params.missingProperty,
             },
           };
           break;
@@ -219,6 +219,7 @@ async function validate(event) {
           rudderValidationError = {
             type: violationTypes.AdditionalProperties,
             message: `${error.message} : ${error.params.additionalProperty}`,
+            property: error.params.additionalProperty,
             meta: {
               instacePath: error.instancePath,
               schemaPath: error.schemaPath,

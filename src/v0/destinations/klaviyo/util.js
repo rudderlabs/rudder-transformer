@@ -173,23 +173,8 @@ const groupSubsribeResponsesUsingListId = (subscribeResponseList) => {
   return subscribeEventGroups;
 };
 
-const batchEvents = (successRespList) => {
-  let batchedResponseList = [];
-  const identifyResponseList = [];
-  successRespList.forEach((event) => {
-    const processedEvent = event;
-    if (processedEvent.message.length === 2) {
-      // the array will contain one update profile reponse and one subscribe reponse
-      identifyResponseList.push(event.message[0]);
-      [processedEvent.message] = event.message.slice(1);
-    } else {
-      // for group events (it will contain only subscribe response)
-      [processedEvent.message] = event.message.slice(0);
-    }
-  });
-
-  const subscribeEventGroups = groupSubsribeResponsesUsingListId(successRespList);
-
+const getBatchedResponseList = (subscribeEventGroups, identifyResponseList) => {
+  let batchedResponseList;
   Object.keys(subscribeEventGroups).forEach((listId) => {
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
     const eventChunks = _.chunk(subscribeEventGroups[listId], MAX_BATCH_SIZE);
@@ -206,6 +191,27 @@ const batchEvents = (successRespList) => {
   identifyResponseList.forEach((response) => {
     batchedResponseList[0].batchedRequest.push(response);
   });
+  return batchedResponseList;
+};
+
+const batchEvents = (successRespList) => {
+  const identifyResponseList = [];
+  successRespList.forEach((event) => {
+    const processedEvent = event;
+    if (processedEvent.message.length === 2) {
+      // the array will contain one update profile reponse and one subscribe reponse
+      identifyResponseList.push(event.message[0]);
+      [processedEvent.message] = event.message.slice(1);
+    } else {
+      // for group events (it will contain only subscribe response)
+      [processedEvent.message] = event.message.slice(0);
+    }
+  });
+
+  const subscribeEventGroups = groupSubsribeResponsesUsingListId(successRespList);
+
+  const batchedResponseList = getBatchedResponseList(subscribeEventGroups, identifyResponseList);
+
   return batchedResponseList;
 };
 

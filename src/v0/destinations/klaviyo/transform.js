@@ -357,7 +357,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   otherRespList.forEach((resp) => {
     otherResponseList.push(getSuccessRespEvents(resp.message, [resp.metadata], resp.destination));
   });
-  batchResponseList = batchResponseList.concat(batchedSubscribeResponseList, otherResponseList);
+  batchResponseList = [...batchedSubscribeResponseList, ...otherResponseList];
 
   return [...batchResponseList, ...batchErrorRespList];
 };

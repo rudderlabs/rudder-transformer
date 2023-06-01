@@ -129,9 +129,12 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
 
 const getUpdatedDataElement = (dataElement, isHashRequired, eachProperty, updatedProperty) => {
   let tmpUpdatedProperty = updatedProperty;
-  // if hashRequired is true and the property name is not (MADID or EXTERN_ID) hash the value if it is defined else send null
+  /**
+   * hash the original value for the properties apart from 'MADID' && 'EXTERN_ID as hashing is not required for them
+   * ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
+   * sending null values for the properties for which user hasn't provided any value
+   */
   if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
-    // for MOBILE_ADVERTISER_ID, MADID,EXTERN_ID hashing is not required ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
     if (tmpUpdatedProperty) {
       tmpUpdatedProperty = `${tmpUpdatedProperty}`;
       dataElement.push(sha256(tmpUpdatedProperty));

@@ -307,10 +307,12 @@ const batchEvents = (successRespList) => {
   successRespList.forEach((event) => {
     const processedEvent = event;
     if (processedEvent.message.length === 2) {
+      // the array will contain one update profile reponse and one subscribe reponse
       identifyResponseList.push(event.message[0]);
       [processedEvent.message] = event.message.slice(1);
     } else {
-      [processedEvent.message] = processedEvent.message;
+      // for group events (it will contain only subscribe response)
+      [processedEvent.message] = event.message.slice(0);
     }
   });
   const subscribeEventGroups = _.groupBy(

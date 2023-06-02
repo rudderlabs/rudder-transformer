@@ -51,6 +51,15 @@ const sendViolationMetrics = (validationErrors, dropped, metaTags) => {
   });
 };
 
+const constructValidationErrors = (validationErrors) =>
+  validationErrors.reduce((acc, elem) => {
+    if (!acc[elem.type]) {
+      acc[elem.type] = [];
+    }
+    acc[elem.type].push({ message: elem.message, schemaPath: elem.meta?.schemaPath });
+    return acc;
+  }, {});
+
 function processInfo() {
   return {
     pid: process.pid,
@@ -70,6 +79,7 @@ module.exports = {
   RetryRequestError,
   responseStatusHandler,
   getIntegrationVersion,
+  constructValidationErrors,
   sendViolationMetrics,
   logProcessInfo,
 };

@@ -13,7 +13,8 @@ const { EventType } = require('../../../constants');
 const {
   ConfigCategories,
   mappingConfig,
-  BASE_URL
+  BASE_URL,
+  authHeaderConstant
 } = require('./config');
 
 const { InstrumentationError, OAuthSecretError, ConfigurationError } = require('../../util/errorTypes');
@@ -67,18 +68,17 @@ function buildResponse(message, requestJson, metadata, endpointUrl) {
   const oAuthObject = getOAuthFields(metadata);
   let authHeader = getAuthHeaderForRequest(request, oAuthObject).Authorization;
   if(message.properties.testModeEnable === true) {
-    authHeader = "OAuth oauth_consumer_key=\"qwe\", oauth_nonce=\"V1kMh028kZLLhfeYozuL0B45Pcx6LvuW\", oauth_signature=\"Di4cuoGv4PnCMMEeqfWTcqhvdwc%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1685603652\", oauth_token=\"yrdghfvhjvhj\", oauth_version=\"1.0\"";
+    authHeader = authHeaderConstant;
   }
   response.headers = {
-    Authorization: authHeader,
+    Authorization: authHeaderConstant,
     'Content-Type': JSON_MIME_TYPE,
   };
   return response;
 }
 
 function prepareUrl(message, destination) {
-  const pixelId = message.properties.pixelId
-    ? message.properties.pixelId : destination.Config.pixelId;
+  const pixelId = message.properties.pixelId || destination.Config.pixelId;
   return `${BASE_URL}/${pixelId}`;
 }
 

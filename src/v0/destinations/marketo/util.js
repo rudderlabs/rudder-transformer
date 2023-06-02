@@ -33,6 +33,31 @@ const MARKETO_ABORTABLE_CODES = [
   '1001',
 ];
 const MARKETO_THROTTLED_CODES = ['502', '606', '607', '608', '615'];
+
+const RECORD_LEVEL_ABORTBALE_ERRORS = [
+  '1001',
+  '1002',
+  '1003',
+  '1004',
+  '1005',
+  '1006',
+  '1007',
+  '1008',
+  '1011',
+  '1013',
+  '1014',
+  '1015',
+  '1016',
+  '1017',
+  '1018',
+  '1021',
+  '1026',
+  '1027',
+  '1028',
+  '1036',
+  '1049',
+];
+
 const { DESTINATION } = require('./config');
 const logger = require('../../../logger');
 
@@ -97,10 +122,12 @@ const marketoApplicationErrorHandler = (marketoResponse, sourceMessage, destinat
 const nestedResponseHandler = (marketoResponse, sourceMessage) => {
   const checkStatus = (res) => {
     const { status } = res;
-    if (status !== 'updated' && status !== 'created' && status !== 'added') {
+    if (status && status !== 'updated' && status !== 'created' && status !== 'added') {
       const { reasons } = res;
       let statusCode = 400;
-      if (reasons && MARKETO_ABORTABLE_CODES.includes(reasons[0].code)) {
+      if (reasons && RECORD_LEVEL_ABORTBALE_ERRORS.includes(reasons[0].code)) {
+        statusCode = 400;
+      } else if (reasons && MARKETO_ABORTABLE_CODES.includes(reasons[0].code)) {
         statusCode = 400;
       } else if (reasons && MARKETO_THROTTLED_CODES.includes(reasons[0].code)) {
         statusCode = 429;

@@ -55,7 +55,8 @@
           "email": "abc@ax.com",
           "contents": [{
             "price": "123.33",
-            "quantity": "12"
+            "quantity": "12",
+            "id": "12"
           }],
           "testModeEnable": true
         },
@@ -110,7 +111,8 @@
             "contents": [
               {
                 "content_price": 123.33,
-                "num_items": 12
+                "num_items": 12,
+                "content_id": "12"
               }
             ],
             "event_id": "tw-234234324234",
@@ -188,10 +190,6 @@
           "subtotal": 22.5,
           "affiliation": "Google Store",
           "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
-          "contents": [{
-            "price": "123.33",
-            "quantity": "12"
-          }],
           "testModeEnable": true
         },
         "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
@@ -293,10 +291,6 @@
           "affiliation": "Google Store",
           "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
           "email": "abc@ax.com",
-          "contents": [{
-            "price": "123.33",
-            "quantity": "12"
-          }],
           "testModeEnable": true
         },
         "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
@@ -347,12 +341,6 @@
               "price_currency": "USD",
               "value": 25,
               "conversion_id": "213123",
-              "contents": [
-                {
-                  "content_price": 123.33,
-                  "num_items": 12
-                }
-              ],
               "event_id": "429047995",
               "conversion_time": "2023-06-01T06:03:08.739Z",
               "identifiers": [
@@ -431,10 +419,6 @@
           "affiliation": "Google Store",
           "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
           "email": "abc@ax.com",
-          "contents": [{
-            "price": "123.33",
-            "quantity": "12"
-          }],
           "testModeEnable": true
         },
         "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",

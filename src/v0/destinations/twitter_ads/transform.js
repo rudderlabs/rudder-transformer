@@ -89,7 +89,7 @@ function populateEventId(event, requestJson, destination) {
 
   if (eventNameToIdMappings) {
     eventNameToIdMappings.forEach(obj => {
-      if (obj.rudderEventName && obj.rudderEventName.trim() && obj.rudderEventName.trim().toLowerCase() == event.toString().toLowerCase()) {
+      if (obj.rudderEventName && obj.rudderEventName.trim() && obj.rudderEventName.trim().toLowerCase() === event.toString().toLowerCase()) {
         eventId = obj.twitterEventId;
       }
     });
@@ -115,28 +115,22 @@ function processTrack(message, metadata, destination) {
   const identifiers = [];
 
   if (message.properties.email) {
-    const obj = {};
     let email = message.properties.email.trim();
     if (email) {
       email = email.toLowerCase();
-      obj.hashed_email = sha256(email);
-      identifiers.push(obj)
+      identifiers.push({hashed_email: sha256(email)})
     }
   }
 
   if (message.properties.phone) {
-    const obj = {};
     let phone = message.properties.phone.trim();
     if (phone) {
-      obj.hashed_phone_number = sha256(phone);
-      identifiers.push(obj)
+      identifiers.push({hashed_phone_number: sha256(phone)})
     }
   }
 
   if (message.properties.twclid) {
-    const obj = {};
-    obj.twclid = sha256(message.properties.twclid);
-    identifiers.push(obj);
+    identifiers.push({twclid: sha256(message.properties.twclid)});
   }
 
   if (requestJson.contents) {
@@ -164,7 +158,7 @@ function processTrack(message, metadata, destination) {
       }
 
       if (obj.quantity) {
-        transformedObj.num_items = parseInt(obj.quantity);
+        transformedObj.num_items = parseInt(obj.quantity, 10);
       }
 
       if (Object.keys(transformedObj).length > 0) {
@@ -173,7 +167,7 @@ function processTrack(message, metadata, destination) {
     });
     requestJson.contents = transformedContents;
 
-    if(transformedContents.length == 0) {
+    if(transformedContents.length === 0) {
       delete requestJson.contents;
     }
   }
@@ -192,7 +186,7 @@ function processTrack(message, metadata, destination) {
 
 function validateRequest(message) {
 
-  const properties = message.properties;
+  const { properties } = message;
 
   if (!properties) {
     throw new InstrumentationError(

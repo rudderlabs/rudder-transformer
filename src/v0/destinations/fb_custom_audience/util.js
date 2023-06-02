@@ -2,6 +2,7 @@ const _ = require('lodash');
 const sha256 = require('sha256');
 const get = require('get-value');
 const jsonSize = require('json-size');
+const stats = require('../../../util/stats');
 
 const { isDefinedAndNotNull } = require('../../util');
 const { maxPayloadSize } = require('./config');
@@ -126,43 +127,84 @@ const ensureApplicableFormat = (userProperty, userInformation) => {
   return updatedProperty;
 };
 
+const getUpdatedDataElement = (dataElement, isHashRequired, eachProperty, updatedProperty) => {
+  let tmpUpdatedProperty = updatedProperty;
+  /**
+   * hash the original value for the properties apart from 'MADID' && 'EXTERN_ID as hashing is not required for them
+   * ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
+   * sending null values for the properties for which user hasn't provided any value
+   */
+  if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
+    if (tmpUpdatedProperty) {
+      tmpUpdatedProperty = `${tmpUpdatedProperty}`;
+      dataElement.push(sha256(tmpUpdatedProperty));
+    } else {
+      dataElement.push(null);
+    }
+  }
+  // if property name is MADID or EXTERN_ID if the value is undefined send null
+  else if (!tmpUpdatedProperty && (eachProperty === 'MADID' || eachProperty === 'EXTERN_ID')) {
+    dataElement.push(null);
+  } else {
+    dataElement.push(tmpUpdatedProperty);
+  }
+  return dataElement;
+};
+
 // Function responsible for making the data field without payload object
 // Based on the "isHashRequired" value hashing is explicitly enabled or disabled
-const prepareDataField = (userSchema, userUpdateList, isHashRequired, disableFormat) => {
+const prepareDataField = (
+  userSchema,
+  userUpdateList,
+  isHashRequired,
+  disableFormat,
+  destinationId,
+) => {
   const data = [];
-  let updatedProperty;
-  let dataElement;
+  let nullEvent = true; // flag to check for bad events (all user properties are null)
+
   userUpdateList.forEach((eachUser) => {
-    dataElement = [];
+    let dataElement = [];
+    let nullUserData = true; // flag to check for bad event (all properties are null for a user)
+
     userSchema.forEach((eachProperty) => {
       const userProperty = eachUser[eachProperty];
-      if (isHashRequired) {
-        if (!disableFormat) {
-          // when user requires formatting
-          updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
-        } else {
-          // when user requires hashing but does not require formatting
-          updatedProperty = userProperty;
-        }
-      } else {
-        // when hashing is not required
-        updatedProperty = userProperty;
+      let updatedProperty = userProperty;
+
+      if (isHashRequired && !disableFormat) {
+        updatedProperty = ensureApplicableFormat(eachProperty, userProperty);
       }
-      if (isHashRequired && eachProperty !== 'MADID' && eachProperty !== 'EXTERN_ID') {
-        // for MOBILE_ADVERTISER_ID, MADID,EXTERN_ID hashing is not required ref: https://developers.facebook.com/docs/marketing-api/audiences/guides/custom-audiences#hash
-        if (updatedProperty) {
-          updatedProperty = `${updatedProperty}`;
-          dataElement.push(sha256(updatedProperty));
-        } else {
-          dataElement.push(null);
-        }
-      } else {
-        dataElement.push(updatedProperty);
+
+      dataElement = getUpdatedDataElement(
+        dataElement,
+        isHashRequired,
+        eachProperty,
+        updatedProperty,
+      );
+
+      if (dataElement[dataElement.length - 1]) {
+        nullUserData = false;
+        nullEvent = false;
       }
     });
+
+    if (nullUserData) {
+      stats.increment('fb_custom_audience_event_having_all_null_field_values_for_a_user', {
+        destinationId,
+        nullFields: userSchema,
+      });
+    }
+
     data.push(dataElement);
   });
 
+  if (nullEvent) {
+    stats.increment('fb_custom_audience_event_having_all_null_field_values_for_all_users', {
+      destinationId,
+    });
+  }
+
   return data;
 };
+
 module.exports = { prepareDataField, getSchemaForEventMappedToDest, batchingWithPayloadSize };

@@ -1,8 +1,9 @@
-* @rudderlabs/integrations-platform @sivashanmukh @lvrach
-__tests__/ @rudderlabs/integrations
+* @rudderlabs/integrations-platform @sivashanmukh
+__tests__/ @rudderlabs/integrations @rudderlabs/data-management
 __mocks__/ @rudderlabs/integrations
 v0/ @rudderlabs/integrations
 cdk/ @rudderlabs/integrations
 src/features.json @rudderlabs/integrations
 constants/ @rudderlabs/integrations
 warehouse/ @rudderlabs/warehouse
+src/util/ @rudderlabs/data-management

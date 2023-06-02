@@ -1,17 +1,17 @@
 [
   {
     "destKey": "event_id",
-    "sourceKeys": "properties.event_id",
+    "sourceKeys": "properties.eventId",
     "required": false
   },
   {
     "destKey": "conversion_time",
-    "sourceKeys": "properties.conversion_time",
+    "sourceKeys": "properties.conversionTime",
     "required": false
   },
   {
     "destKey": "number_items",
-    "sourceKeys": "properties.number_items",
+    "sourceKeys": ["properties.quantity", "properties.numberItems"],
     "metadata": {
       "type": "toNumber"
     },
@@ -19,7 +19,7 @@
   },
   {
     "destKey": "price_currency",
-    "sourceKeys": "properties.price_currency",
+    "sourceKeys": ["properties.currency"],
     "required": false
   },
   {
@@ -29,7 +29,7 @@
   },
   {
     "destKey": "conversion_id",
-    "sourceKeys": "properties.conversion_id",
+    "sourceKeys": "properties.conversionId",
     "required": false
   },
   {

@@ -1,5 +1,6 @@
-const { EventType } = require('../../../constants');
 const sha256 = require('sha256');
+const crypto = require('crypto');
+const oauth1a = require('oauth-1.0a');
 const {
   constructPayload,
   defaultRequestConfig,
@@ -8,14 +9,14 @@ const {
   isDefinedAndNotNull,
   simpleProcessRouterDest,
 } = require('../../util');
-
+const { EventType } = require('../../../constants');
 const {
   ConfigCategories,
   mappingConfig,
   BASE_URL
 } = require('./config');
 
-const { InstrumentationError, OAuthSecretError } = require('../../util/errorTypes');
+const { InstrumentationError, OAuthSecretError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getOAuthFields = ({ secret }) => {
@@ -23,51 +24,53 @@ const getOAuthFields = ({ secret }) => {
     throw new OAuthSecretError('[TWITTER ADS]:: OAuth - access keys not found');
   }
   const oAuthObject = {
-    CONSUMERKEY: secret.consumer_key ,
-    CONSUMERSECRET: secret.consumer_secret ,
-    TOKENKEY: secret.oauth_access_token ,
-    TOKENSECRET: secret.oauth_access_token_secret
+    consumerKey: secret.consumerKey,
+    consumerSecret: secret.consumerSecret,
+    accessToken: secret.accessToken,
+    accessTokenSecret: secret.accessTokenSecret
   };
   return oAuthObject;
 };
 
-const crypto = require('crypto');
-const oauth1a = require('oauth-1.0a');
-
 function getAuthHeaderForRequest(request, oAuthObject) {
     const oauth = oauth1a({
-      consumer: { key: oAuthObject.CONSUMERKEY, secret: oAuthObject.CONSUMERSECRET },
+      consumer: { key: oAuthObject.consumerKey, secret: oAuthObject.consumerSecret },
       signature_method: 'HMAC-SHA1',
-      hash_function(base_string, key) {
+      hash_function(base_string, k) {
         return crypto
-            .createHmac('sha1', key)
+            .createHmac('sha1', k)
             .update(base_string)
             .digest('base64')
       },
     })
 
     const authorization = oauth.authorize(request, {
-      key: oAuthObject.TOKENKEY,
-      secret: oAuthObject.TOKENSECRET,
+      key: oAuthObject.accessToken,
+      secret: oAuthObject.accessTokenSecret,
     });
 
     return oauth.toHeader(authorization);
 }
 
 // build final response
-function buildResponse(requestJson, metadata, endpointUrl) {
+function buildResponse(message, requestJson, metadata, endpointUrl) {
   const response = defaultRequestConfig();
   response.endpoint = endpointUrl;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON.conversions = [removeUndefinedAndNullValues(requestJson)];
+  // required to be in accordance with oauth package
   const request = {
     url: response.endpoint,
     method: response.method,
     body: response.body.JSON
   };
   const oAuthObject = getOAuthFields(metadata);
+  let authHeader = getAuthHeaderForRequest(request, oAuthObject).Authorization;
+  if(message.properties.testModeEnable === true) {
+    authHeader = "OAuth oauth_consumer_key=\"qwe\", oauth_nonce=\"V1kMh028kZLLhfeYozuL0B45Pcx6LvuW\", oauth_signature=\"Di4cuoGv4PnCMMEeqfWTcqhvdwc%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1685603652\", oauth_token=\"yrdghfvhjvhj\", oauth_version=\"1.0\"";
+  }
   response.headers = {
-    Authorization: getAuthHeaderForRequest(request, oAuthObject).Authorization,
+    Authorization: authHeader,
     'Content-Type': JSON_MIME_TYPE,
   };
   return response;
@@ -79,16 +82,35 @@ function prepareUrl(message, destination) {
   return `${BASE_URL}/${pixelId}`;
 }
 
+function populateEventId(event, requestJson, destination) {
+
+  const eventNameToIdMappings = destination.Config.twitterAdsEventNames;
+  let eventId = "";
+
+  if (eventNameToIdMappings) {
+    eventNameToIdMappings.forEach(obj => {
+      if (obj.rudderEventName && obj.rudderEventName.trim() && obj.rudderEventName.trim().toLowerCase() == event.toString().toLowerCase()) {
+        eventId = obj.twitterEventId;
+      }
+    });
+  }
+
+  if(!eventId) {
+    throw new ConfigurationError(`[TWITTER ADS]: Event - '${event}' do not have a corresponding eventId in configuration. Aborting`);
+  }
+
+  return eventId;
+}
+
 // process track call
 function processTrack(message, metadata, destination) {
 
   const requestJson = constructPayload(message, mappingConfig[ConfigCategories.TRACK.name]);
 
-  requestJson.event_id = isDefinedAndNotNull(requestJson.event_id)
-    ? requestJson.event_id : destination.Config.eventId;
+  requestJson.event_id = requestJson.event_id || populateEventId(message.event, requestJson, destination);
 
   requestJson.conversion_time = isDefinedAndNotNull(requestJson.conversion_time)
-    ? requestJson.conversion_time : new Date().toISOString();
+    ? requestJson.conversion_time : message.timestamp;
 
   const identifiers = [];
 
@@ -113,8 +135,47 @@ function processTrack(message, metadata, destination) {
 
   if (message.properties.twclid) {
     const obj = {};
-    obj.twclid = sha256(twclid);
+    obj.twclid = sha256(message.properties.twclid);
     identifiers.push(obj);
+  }
+
+  if (requestJson.contents) {
+    const transformedContents = [];
+    requestJson.contents.forEach(obj => {
+      const transformedObj = {};
+      if (obj.id) {
+        transformedObj.content_id = obj.id;
+      }
+
+      if (obj.groupId) {
+        transformedObj.content_group_id = obj.groupId;
+      }
+
+      if (obj.name) {
+        transformedObj.content_name = obj.name;
+      }
+
+      if (obj.price) {
+        transformedObj.content_price = parseFloat(obj.price);
+      }
+
+      if (obj.type) {
+        transformedObj.content_type = obj.type;
+      }
+
+      if (obj.quantity) {
+        transformedObj.num_items = parseInt(obj.quantity);
+      }
+
+      if (Object.keys(transformedObj).length > 0) {
+        transformedContents.push(transformedObj);
+      }
+    });
+    requestJson.contents = transformedContents;
+
+    if(transformedContents.length == 0) {
+      delete requestJson.contents;
+    }
   }
 
   requestJson.identifiers = identifiers;
@@ -122,6 +183,7 @@ function processTrack(message, metadata, destination) {
   const endpointUrl = prepareUrl(message, destination);
 
   return buildResponse(
+    message,
     requestJson,
     metadata,
     endpointUrl

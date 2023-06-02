@@ -1727,6 +1727,115 @@
     ]
   },
   {
+    "description": "All the field values are null",
+    "input": {
+      "message": {
+        "userId": "user 1",
+        "anonymousId": "anon-id-new",
+        "event": "event1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "EMAIL": null,
+                "DOBM": null,
+                "DOBD": null,
+                "DOBY": null,
+                "PHONE": null,
+                "GEN": null,
+                "FI": null,
+                "MADID": null,
+                "ZIP": null,
+                "ST": null,
+                "COUNTRY": null
+              }
+            ]
+          }
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      },
+      "destination": {
+        "Config": {
+          "accessToken": "ABC",
+          "userSchema": [
+            "EMAIL",
+            "DOBM",
+            "DOBD",
+            "DOBY",
+            "PHONE",
+            "GEN",
+            "FI",
+            "MADID",
+            "ZIP",
+            "ST",
+            "COUNTRY"
+          ],
+          "isHashRequired": true,
+          "disableFormat": false,
+          "audienceId": "aud1",
+          "isRaw": true,
+          "type": "UNKNOWN",
+          "subType": "ANYTHING",
+          "maxUserCount": "50"
+        },
+        "Enabled": true,
+        "Transformations": [],
+        "IsProcessorEnabled": true
+      },
+      "libraries": [],
+      "request": {
+        "query": {}
+      }
+    },
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://graph.facebook.com/v16.0/aud1/users",
+        "headers": {},
+        "params": {
+          "access_token": "ABC",
+          "payload": {
+            "is_raw": true,
+            "data_source": {
+              "type": "UNKNOWN",
+              "sub_type": "ANYTHING"
+            },
+            "schema": [
+              "EMAIL",
+              "DOBM",
+              "DOBD",
+              "DOBY",
+              "PHONE",
+              "GEN",
+              "FI",
+              "MADID",
+              "ZIP",
+              "ST",
+              "COUNTRY"
+            ],
+            "data": [[null, null, null, null, null, null, null, null, null, null, null]]
+          }
+        },
+        "body": {
+          "JSON": {},
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
+  },
+  {
     "description": "Schema Phone Field Missing",
     "input": {
       "message": {

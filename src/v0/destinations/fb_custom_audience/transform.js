@@ -60,6 +60,7 @@ const preparePayload = (
   paramsPayload,
   isHashRequired,
   disableFormat,
+  destinationId,
 ) => {
   const prepareFinalPayload = _.cloneDeep(paramsPayload);
   if (Array.isArray(userSchema)) {
@@ -73,6 +74,7 @@ const preparePayload = (
     userUpdateList,
     isHashRequired,
     disableFormat,
+    destinationId,
   );
   return batchingWithPayloadSize(prepareFinalPayload);
 };
@@ -125,6 +127,7 @@ const prepareResponse = (
     paramsPayload,
     isHashRequired,
     disableFormat,
+    destination.ID,
   );
   // paramsPayload.schema = userSchema;
   const respList = [];

@@ -81,4 +81,5 @@ async function processCdkV1(destType, parsedEvent) {
 
 module.exports = {
   processCdkV1,
+  getErrorInfo,
 };

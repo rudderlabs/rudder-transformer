@@ -190,7 +190,7 @@ async function validate(event) {
     if (valid) {
       return [];
     }
-
+    // console.log(JSON.stringify(validateEvent.errors));
     const validationErrors = validateEvent.errors.map((error) => {
       let rudderValidationError;
       switch (error.keyword) {

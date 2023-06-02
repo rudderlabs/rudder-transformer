@@ -17,7 +17,7 @@ const {
   subscribeUserToList,
   populateCustomFieldsFromTraits,
   batchSubscribeEvents,
-  getProfileId,
+  getIdFromNewOrExistingProfile,
   profileUpdateResponseBuilder,
 } = require('./util');
 const {
@@ -92,7 +92,7 @@ const identifyRequestHandler = async (message, category, destination) => {
     },
   };
 
-  const profileId = await getProfileId(endpoint, payload, requestOptions);
+  const profileId = await getIdFromNewOrExistingProfile(endpoint, payload, requestOptions);
 
   // Update Profile
   const responseArray = [profileUpdateResponseBuilder(payload, profileId, category, privateApiKey)];
@@ -265,13 +265,13 @@ const process = async (event) => {
 };
 
 // This function separates subscribe response and other responses in chunks
-const getEventChunks = (event, subscribeRespList, otherRespList) => {
+const getEventChunks = (event, subscribeRespList, nonSubscribeRespList) => {
   if (Array.isArray(event.message)) {
     // this list contains responses for subscribe endpoint
     subscribeRespList.push(event);
   } else {
     // this list doesn't contain subsribe endpoint responses
-    otherRespList.push(event);
+    nonSubscribeRespList.push(event);
   }
 };
 
@@ -283,7 +283,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   let batchResponseList = [];
   const batchErrorRespList = [];
   const subscribeRespList = [];
-  const otherRespList = [];
+  const nonSubscribeRespList = [];
   const { destination } = inputs[0];
   await Promise.all(
     inputs.map(async (event) => {
@@ -293,7 +293,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
           getEventChunks(
             { message: event.message, metadata: event.metadata, destination },
             subscribeRespList,
-            otherRespList,
+            nonSubscribeRespList,
           );
         } else {
           // if not transformed
@@ -304,7 +304,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
               destination,
             },
             subscribeRespList,
-            otherRespList,
+            nonSubscribeRespList,
           );
         }
       } catch (error) {
@@ -317,11 +317,13 @@ const processRouterDest = async (inputs, reqMetadata) => {
   if (subscribeRespList.length > 0) {
     batchedSubscribeResponseList = batchSubscribeEvents(subscribeRespList);
   }
-  const otherResponseList = [];
-  otherRespList.forEach((resp) => {
-    otherResponseList.push(getSuccessRespEvents(resp.message, [resp.metadata], resp.destination));
+  const nonSubscribeSuccessList = [];
+  nonSubscribeRespList.forEach((resp) => {
+    nonSubscribeSuccessList.push(
+      getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
+    );
   });
-  batchResponseList = [...batchedSubscribeResponseList, ...otherResponseList];
+  batchResponseList = [...batchedSubscribeResponseList, ...nonSubscribeSuccessList];
 
   return [...batchResponseList, ...batchErrorRespList];
 };

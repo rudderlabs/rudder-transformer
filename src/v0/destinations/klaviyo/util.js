@@ -20,7 +20,18 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
 
-const getProfileId = async (endpoint, payload, requestOptions) => {
+/**
+ * This function calls the create user endpoint ref: https://developers.klaviyo.com/en/reference/create_profile
+ * If the user doesn't exist, it creates a profile for the user and return 201 status code and the response which contains all the profile data
+ * and profileId.
+ * If the user already exists, it return 409 status code and a response which contains the profileId for that existing user, which can be used to
+ * update the profile
+ * @param {*} endpoint
+ * @param {*} payload
+ * @param {*} requestOptions
+ * @returns
+ */
+const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) => {
   let profileId;
   const { httpResponse: resp } = await handleHttpRequest('post', endpoint, payload, requestOptions);
   if (resp.response?.status === 201) {
@@ -264,6 +275,6 @@ module.exports = {
   populateCustomFieldsFromTraits,
   generateBatchedPaylaodForArray,
   batchSubscribeEvents,
-  getProfileId,
+  getIdFromNewOrExistingProfile,
   profileUpdateResponseBuilder,
 };

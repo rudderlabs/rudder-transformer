@@ -137,7 +137,7 @@ async function validate(event) {
       }
       const rudderValidationError = {
         type: violationTypes.UnplannedEvent,
-        message: `no schema for eventName : ${event.message.event}, eventType : ${event.message.type} in trackingPlanID : ${trackingPlanId}::${trackingPlanVersion}`,
+        message: `no schema for event: ${event.message.event}`,
         meta: {},
       };
       return [rudderValidationError];

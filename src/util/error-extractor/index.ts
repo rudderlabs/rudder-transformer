@@ -1,13 +1,29 @@
-const ErrorDetailsExtractor = require(".");
+/* eslint-disable max-classes-per-file */
+import { MessageDetails, StatusCode } from "./types";
 
-class ErrorDetailsExtractorBuilder {
+export class ErrorDetailsExtractor {
+  status: StatusCode;
+
+  messageDetails: MessageDetails;
+
+  constructor (builder: ErrorDetailsExtractorBuilder) {
+    this.status = builder.getStatus();
+    this.messageDetails = builder.getMessageDetails();
+  }
+
+}
+
+export class ErrorDetailsExtractorBuilder {
+  status: StatusCode;
+
+  messageDetails: MessageDetails;
 
   constructor() {
     this.status = 0;
     this.messageDetails = {};
   }
   
-  setStatus(status) {
+  setStatus(status: number): ErrorDetailsExtractorBuilder {
     this.status = status;
     return this;
   }
@@ -18,7 +34,7 @@ class ErrorDetailsExtractorBuilder {
    * @param {string} fieldPath -- Path of the field which should be set as "error message"
    * @returns 
    */
-  setMessageField(fieldPath) {
+  setMessageField(fieldPath: string): ErrorDetailsExtractorBuilder {
     if (this.messageDetails?.message) {
       // This check basically ensures that "setMessage" was not already before
       return this;
@@ -35,7 +51,7 @@ class ErrorDetailsExtractorBuilder {
    * @param {string} msg - error message
    * @returns 
    */
-  setMessage(msg) {
+  setMessage(msg: string): ErrorDetailsExtractorBuilder {
     if (this.messageDetails?.field) {
       // This check basically ensures that "setMessageField" was not already called before
       return this;
@@ -46,17 +62,17 @@ class ErrorDetailsExtractorBuilder {
     return this;
   }
 
-  build() {
+  build(): ErrorDetailsExtractor {
     return new ErrorDetailsExtractor(this)
   }
 
-  getStatus() {
+  getStatus(): number {
     return this.status;
   }
   
-  getMessageDetails() {
+  getMessageDetails(): Record<string, string> {
     return this.messageDetails;
   }
 }
 
-module.exports = ErrorDetailsExtractorBuilder
+

@@ -64,6 +64,20 @@
       "status": 400
     }
   },
+  "https://graph.facebook.com/v16.0/1234567891234572/events?access_token=valid_access_token_unhandled_response": {
+    "response": {
+      "data": {
+        "error": {
+          "message": "Unhandled random error",
+          "type": "RandomException",
+          "code": 5,
+          "error_subcode": 12,
+          "fbtrace_id": "facebook_px_trace_id_10"
+        }
+      },
+      "status": 412
+    }
+  },
   "https://graph.facebook.com/v16.0/1234567891234570/events?access_token=valid_access_token": {
     "response": {
       "data": {

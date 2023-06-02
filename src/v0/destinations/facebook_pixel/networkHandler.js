@@ -7,7 +7,7 @@ const {
 const { prepareProxyRequest, proxyRequest } = require('../../../adapters/network');
 const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
-const ErrorDetailsExtractorBuilder = require('../../../util/error-extractor/builder');
+const { ErrorDetailsExtractorBuilder } = require('../../../util/error-extractor');
 
 /**
  * Only under below mentioned scenario(s), add the errorCodes, subCodes etc,. to this map
@@ -165,9 +165,12 @@ const getErrorDetailsFromErrorMap = (error) => {
 const getStatus = (error) => {
   const errorDetail = getErrorDetailsFromErrorMap(error);
   let errorStatus = 500;
-  if (!isEmpty(errorDetail)) {
-    errorStatus = errorDetail.status;
+  const isErrorDetailEmpty = isEmpty(errorDetail);
+  if (isErrorDetailEmpty) {
+    // Unhandled error response
+    return {status: errorStatus, tags: { [tags.TAG_NAMES.META]: tags.METADATA.UNHANDLED_STATUS_CODE, } }
   }
+  errorStatus = errorDetail.status;
 
   let errorMessage = errorDetail?.messageDetails?.message;
   if (errorDetail?.messageDetails?.field) {
@@ -184,11 +187,12 @@ const errorResponseHandler = (destResponse) => {
     return;
   }
   const { error } = response;
-  const { status, errorMessage } = getStatus(error);
+  const { status, errorMessage, tags: errorStatTags } = getStatus(error);
   throw new NetworkError(
     `${errorMessage || error.message || 'Unknown failure during response transformation'}`,
     status,
     {
+      ...errorStatTags,
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
     },
     { ...response, status: destResponse.status },

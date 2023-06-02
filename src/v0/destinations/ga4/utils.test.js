@@ -25,7 +25,35 @@ describe('Google Analytics 4 utils test', () => {
                 const output = validateEventName("123 sign_up");
                 expect(output).toEqual('');
             } catch (error) {
-                expect(error.message).toEqual("Event name must start with an alphabetic character");
+                expect(error.message).toEqual("Event name should only contain letters, numbers, and underscores and event name must start with a letter");
+            }
+        })
+
+        it('Should throw an error as event name should only contain letters, numbers, and underscores', () => {
+            try {
+                const output = validateEventName("Grisly*_Open_General_Setting");
+                expect(output).toEqual('');
+            } catch (error) {
+                expect(error.message).toEqual("Event name should only contain letters, numbers, and underscores and event name must start with a letter");
+            }
+        })
+
+        it('Should throw an error as event name should only contain letters, numbers, and underscores', () => {
+            try {
+                const output = validateEventName("Test[]_Rudder$$");
+                expect(output).toEqual('');
+            } catch (error) {
+                expect(error.message).toEqual("Event name should only contain letters, numbers, and underscores and event name must start with a letter");
+            }
+        })
+
+        it('Should not throw an error as event name is valid', () => {
+            try {
+                const output = validateEventName("Grisly1234567_Open_General_Setting");
+                expect(output).toEqual();
+            } catch (error) {
+                console.log(error.message);
+                expect(error.message).toEqual();
             }
         })
 

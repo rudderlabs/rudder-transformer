@@ -12282,7 +12282,7 @@
       },
       "output": {
         "statusCode": 400,
-        "error": "Event name must start with an alphabetic character",
+        "error": "Event name should only contain letters, numbers, and underscores and event name must start with a letter",
         "statTags": {
           "destination": "ga4",
           "stage": "transform",

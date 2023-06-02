@@ -154,15 +154,14 @@ const isReservedWebCustomPrefixName = (event) => {
 };
 
 /**
- * Validation for event name must start with alphabetic characters only
+ * Validation for event name should only contain letters, numbers, and underscores and events name must start with a letter
  * Ref - https://support.google.com/analytics/answer/13316687?hl=en&ref_topic=13367860&sjid=16827682213264631791-NA
  * @param {*} eventName 
  * @returns 
  */
-const isEventNameStartsWithoutAlphaChar = (eventName) => {
-  // Event name pattern: /^[a-zA-Z][a-zA-Z0-9_]*$/
+function isEventNameValid(eventName) {
   const pattern = /^[A-Za-z]\w*$/;
-  return !pattern.test(eventName);
+  return pattern.test(eventName);
 }
 
 const GA4_ITEM_EXCLUSION = [
@@ -342,9 +341,9 @@ const validateEventName = (event) => {
     );
   }
 
-  if (isEventNameStartsWithoutAlphaChar(event)) {
+  if (!isEventNameValid(event)){
     throw new InstrumentationError(
-      'Event name must start with an alphabetic character',
+      'Event name should only contain letters, numbers, and underscores and event name must start with a letter',
     );
   }
 }

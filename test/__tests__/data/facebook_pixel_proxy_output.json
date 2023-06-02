@@ -178,5 +178,30 @@
         "module": "destination"
       }
     }
+  },
+  {
+    "output": {
+      "status": 500,
+      "message": "Unhandled random error",
+      "destinationResponse": {
+        "error": {
+          "message": "Unhandled random error",
+          "type": "RandomException",
+          "code": 5,
+          "error_subcode": 12,
+          "fbtrace_id": "facebook_px_trace_id_10"
+        },
+        "status": 412
+      },
+      "statTags": {
+        "destType": "FACEBOOK_PIXEL",
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination",
+        "meta": "unhandledStatusCode"
+      }
+    }
   }
 ]

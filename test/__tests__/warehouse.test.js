@@ -363,7 +363,7 @@ describe("handle reserved words", () => {
         Object.keys(reserverdKeywordsMap).forEach(k => {
           expect(out.metadata.columns).not.toHaveProperty(k.toLowerCase());
           expect(out.metadata.columns).not.toHaveProperty(k.toUpperCase());
-          snakeCasedKey = _.snakeCase(k).toUpperCase();
+          let snakeCasedKey = _.snakeCase(k).toUpperCase();
           if (k === snakeCasedKey) {
             k = `_${k}`;
           } else {

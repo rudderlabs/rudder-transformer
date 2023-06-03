@@ -299,27 +299,26 @@ function handleValidationErrors(validationErrors, metadata, curDropEvent, curVio
     }
   };
 
-  for (const [key, val] of Object.entries(mergedTpConfig)) {
+  const handleSendViolatedEventsTo = (value) => {
+    if (value !== 'procerrors') {
+      handleUnknownOption(value, 'sendViolatedEventsTo');
+    }
+  };
+
+  const handlerMap = {
+    allowUnplannedEvents: handleAllowUnplannedEvents,
+    unplannedProperties: handleUnplannedProperties,
+    anyOtherViolation: handleAnyOtherViolation,
+    sendViolatedEventsTo: handleSendViolatedEventsTo,
+  };
+
+  const matchingKey = Object.keys(mergedTpConfig).find((key) => handlerMap.hasOwnProperty(key));
+  if (matchingKey) {
     // To have compatibility for config-backend, spread-sheet plugin and postman collection
     // We are making everything to lower string and doing string comparison.
-    const value = val?.toString()?.toLowerCase();
-    // eslint-disable-next-line default-case
-    switch (key) {
-      case 'allowUnplannedEvents':
-        handleAllowUnplannedEvents(value);
-        break;
-      case 'unplannedProperties':
-        handleUnplannedProperties(value);
-        break;
-      case 'anyOtherViolation':
-        handleAnyOtherViolation(value);
-        break;
-      case 'sendViolatedEventsTo':
-        if (value !== 'procerrors') {
-          handleUnknownOption(value, 'sendViolatedEventsTo');
-        }
-        break;
-    }
+    const value = mergedTpConfig[matchingKey]?.toString()?.toLowerCase();
+    const handler = handlerMap[matchingKey];
+    handler(value);
   }
 
   return { dropEvent, violationType };

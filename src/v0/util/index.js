@@ -655,7 +655,7 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
       curFormattedVal = flattenJson(formattedVal);
     },
     encodeURIComponent: () => {
-      curFormattedVal = encodeURIComponent(JSON.stringify(formattedVal));
+      curFormattedVal = encodeURIComponent(formattedVal);
     },
     jsonStringify: () => {
       curFormattedVal = JSON.stringify(formattedVal);
@@ -722,8 +722,10 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
       curFormattedVal = url.hostname.replace('www.', '');
     },
     IsBoolean: () => {
+      curFormattedVal = true;
       if (!(typeof formattedVal === 'boolean')) {
         logger.debug('Boolean value missing, so dropping it');
+        curFormattedVal = false;
       }
     },
     trim: () => {
@@ -1969,4 +1971,5 @@ module.exports = {
   getEventType,
   checkAndCorrectUserId,
   getAccessToken,
+  formatValues,
 };

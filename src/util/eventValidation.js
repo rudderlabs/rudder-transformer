@@ -244,13 +244,20 @@ async function validate(event) {
   }
 }
 
-function handleValidationErrors(validationErrors, mergedTpConfig, curDropEvent, curViolationType) {
+function handleValidationErrors(validationErrors, metadata, curDropEvent, curViolationType) {
   let dropEvent = curDropEvent;
   let violationType = curViolationType;
+  const {
+    mergedTpConfig,
+    destinationId = 'Non-determininable',
+    destinationType = 'Non-determininable',
+  } = metadata;
   const violationsByType = new Set(validationErrors.map((err) => err.type));
 
   const handleUnknownOption = (value, key) => {
-    logger.error(`Unknown option ${value} in ${key}`);
+    logger.error(
+      `Unknown option ${value} in ${key} for destId ${destinationId}, destType ${destinationType}`,
+    );
   };
 
   const handleAllowUnplannedEvents = (value) => {
@@ -359,7 +366,7 @@ async function handleValidation(event) {
 
     ({ dropEvent, violationType } = handleValidationErrors(
       validationErrors,
-      mergedTpConfig,
+      event.metadata,
       dropEvent,
       violationType,
     ));

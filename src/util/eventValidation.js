@@ -282,20 +282,20 @@ function handleValidationErrors(validationErrors, metadata, curDropEvent, curVio
   const handleAnyOtherViolation = (value) => {
     if (!['forward', 'drop'].includes(value)) {
       handleUnknownOption(value, 'anyOtherViolation');
-    } else {
-      const exists1 = violationsByType.has(violationTypes.UnknownViolation);
-      const exists2 = violationsByType.has(violationTypes.DatatypeMismatch);
-      const exists3 = violationsByType.has(violationTypes.RequiredMissing);
-      if (value === 'drop' && (exists1 || exists2 || exists3)) {
-        if (exists1) {
-          violationType = violationTypes.UnknownViolation;
-        } else if (exists2) {
-          violationType = violationTypes.DatatypeMismatch;
-        } else {
-          violationType = violationTypes.RequiredMissing;
-        }
-        dropEvent = true;
-      }
+      return;
+    }
+
+    const violationTypesToCheck = [
+      violationTypes.UnknownViolation,
+      violationTypes.DatatypeMismatch,
+      violationTypes.RequiredMissing,
+    ];
+
+    const existingViolationType = violationTypesToCheck.find((type) => violationsByType.has(type));
+
+    if (value === 'drop' && existingViolationType) {
+      dropEvent = true;
+      violationType = existingViolationType;
     }
   };
 

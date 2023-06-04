@@ -312,14 +312,16 @@ function handleValidationErrors(validationErrors, metadata, curDropEvent, curVio
     sendViolatedEventsTo: handleSendViolatedEventsTo,
   };
 
-  const matchingKey = Object.keys(mergedTpConfig).find((key) => handlerMap.hasOwnProperty(key));
-  if (matchingKey) {
-    // To have compatibility for config-backend, spread-sheet plugin and postman collection
-    // We are making everything to lower string and doing string comparison.
-    const value = mergedTpConfig[matchingKey]?.toString()?.toLowerCase();
-    const handler = handlerMap[matchingKey];
-    handler(value);
+  const foundConfig = Object.keys(mergedTpConfig).find((key) => handlerMap.hasOwnProperty(key));
+  if (!foundConfig) {
+    return { dropEvent, violationType };
   }
+
+  // To have compatibility for config-backend, spread-sheet plugin and postman collection
+  // We are making everything to lower string and doing string comparison.
+  const value = mergedTpConfig[foundConfig]?.toString()?.toLowerCase();
+  const handler = handlerMap[foundConfig];
+  handler(value);
 
   return { dropEvent, violationType };
 }

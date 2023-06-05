@@ -64,14 +64,56 @@
       "status": 400
     }
   },
+  "https://graph.facebook.com/v16.0/1234567891234572/events?access_token=valid_access_token_unhandled_response": {
+    "response": {
+      "data": {
+        "error": {
+          "message": "Unhandled random error",
+          "type": "RandomException",
+          "code": 5,
+          "error_subcode": 12,
+          "fbtrace_id": "facebook_px_trace_id_10"
+        }
+      },
+      "status": 412
+    }
+  },
+  "https://graph.facebook.com/v16.0/1234567891234570/events?access_token=valid_access_token": {
+    "response": {
+      "data": {
+        "error": {
+          "message": "Unsupported post request. some problem with sent parameters",
+          "type": "GraphMethodException",
+          "code": 100,
+          "error_subcode": 38,
+          "fbtrace_id": "facebook_px_trace_id_6"
+        }
+      },
+      "status": 400
+    }
+  },
+  "https://graph.facebook.com/v16.0/1234567891234571/events?access_token=valid_access_token": {
+    "response": {
+      "data": {
+        "error": {
+          "message": "Some error in permission",
+          "type": "GraphMethodException",
+          "code": 3,
+          "error_subcode": 10,
+          "fbtrace_id": "facebook_px_trace_id_7"
+        }
+      },
+      "status": 500
+    }
+  },
   "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=not_found_access_token": {
     "response": {
       "data": {
         "error": {
-          "message": "Not found",
+          "message": "Invalid Parameter",
           "type": "GraphMethodException",
           "code": 100,
-          "error_subcode": 33,
+          "error_subcode": 34,
           "fbtrace_id": "facebook_px_trace_id_6"
         }
       },

@@ -36,7 +36,6 @@ const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function constructPayloadItem(message, category, destination) {
-  // const rawPayloadItemArr = [];
   let rawPayload = {};
 
   switch (category.action) {

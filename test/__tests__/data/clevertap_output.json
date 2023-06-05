@@ -687,5 +687,8 @@
   },
   {
     "error": "Products property value must be an array of objects"
+  },
+  {
+    "error": "Unable to process without anonymousId or userId"
   }
 ]

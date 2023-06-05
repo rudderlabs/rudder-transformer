@@ -7,6 +7,14 @@ const integration = "marketo_bulk_upload";
 const transformer = require(`../../src/${version}/destinations/${integration}/transform`);
 
 jest.mock("axios");
+let reqTransformBody;
+let respTransformBody;
+let respFileUploadBody;
+let reqFileUploadBody;
+let reqPollBody;
+let respPollBody;
+let reqJobStatusBody;
+let respJobStatusBody;
 
 try {
   reqTransformBody = JSON.parse(

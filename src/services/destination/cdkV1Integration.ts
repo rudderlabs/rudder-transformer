@@ -1,4 +1,4 @@
-import { ConfigFactory, Executor } from 'rudder-transformer-cdk';
+import { ConfigFactory, Executor, RudderBaseConfig } from 'rudder-transformer-cdk';
 import path from 'path';
 import IntegrationDestinationService from '../../interfaces/DestinationService';
 import {
@@ -16,6 +16,7 @@ import {
 import { TransformationError } from '../../v0/util/errorTypes';
 import DestinationPostTransformationService from './postTransformation';
 import tags from '../../v0/util/tags';
+import { getErrorInfo } from '../../cdk/v1/handler';
 
 export default class CDKV1DestinationService implements IntegrationDestinationService {
   public init() {
@@ -49,6 +50,15 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
     return metaTO;
   }
 
+  private async processCDKV1(event: any, tfConfig: RudderBaseConfig): Promise<any> {
+    try {
+      const respEvents = await Executor.execute(event, tfConfig);
+      return respEvents;
+    } catch (error) {
+      throw getErrorInfo(error);
+    }
+  }
+
   public async doProcessorTransformation(
     events: ProcessorTransformationRequest[],
     destinationType: string,
@@ -59,7 +69,7 @@ export default class CDKV1DestinationService implements IntegrationDestinationSe
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
       events.map(async (event) => {
         try {
-          const transformedPayloads: any = await Executor.execute(event as any, tfConfig);
+          const transformedPayloads: any = await this.processCDKV1(event as any, tfConfig);
           // We are not passing destinationHandler to post processor as we don't have post processing in CDK flows
           return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,

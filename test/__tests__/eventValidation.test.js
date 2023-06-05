@@ -1120,7 +1120,7 @@ const eventValidationTestCases = [
         trackingPlanVersion: "dummy_version",
         workspaceId: "dummy_workspace_id",
         mergedTpConfig: {
-          anyOtherViolation: "unknown",
+          allowUnplannedEvents: "unknown",
           ajvOptions: {}
         },
         sourceTpConfig

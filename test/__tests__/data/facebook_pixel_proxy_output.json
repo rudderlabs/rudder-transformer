@@ -2,7 +2,7 @@
   {
     "output": {
       "status": 400,
-      "message": "Failed with The access token could not be decrypted during response transformation",
+      "message": "Invalid OAuth 2.0 access token",
       "destinationResponse": {
         "error": {
           "message": "The access token could not be decrypted",
@@ -35,7 +35,7 @@
   {
     "output": {
       "status": 400,
-      "message": "Failed with Invalid parameter during response transformation",
+      "message": "Event Timestamp Too Old",
       "destinationResponse": {
         "error": {
           "message": "Invalid parameter",
@@ -62,7 +62,7 @@
   {
     "output": {
       "status": 429,
-      "message": "Failed with User request limit reached during response transformation",
+      "message": "API User Too Many Calls",
       "destinationResponse": {
         "error": {
           "message": "User request limit reached",
@@ -85,7 +85,7 @@
   {
     "output": {
       "status": 400,
-      "message": "Failed with Unsupported post request. Object with ID '1234567891234569' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api during response transformation",
+      "message": "Object with ID 'PIXEL_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
       "destinationResponse": {
         "error": {
           "message": "Unsupported post request. Object with ID '1234567891234569' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api",
@@ -109,13 +109,13 @@
   {
     "output": {
       "status": 400,
-      "message": "Failed with Not found during response transformation",
+      "message": "Invalid Parameter",
       "destinationResponse": {
         "error": {
-          "message": "Not found",
+          "message": "Invalid Parameter",
           "type": "GraphMethodException",
           "code": 100,
-          "error_subcode": 33,
+          "error_subcode": 34,
           "fbtrace_id": "facebook_px_trace_id_6"
         },
         "status": 404
@@ -127,6 +127,80 @@
         "feature": "dataDelivery",
         "implementation": "native",
         "module": "destination"
+      }
+    }
+  },
+
+  {
+    "output": {
+      "status": 400,
+      "message": "Invalid Parameter",
+      "destinationResponse": {
+        "error": {
+          "message": "Unsupported post request. some problem with sent parameters",
+          "type": "GraphMethodException",
+          "code": 100,
+          "error_subcode": 38,
+          "fbtrace_id": "facebook_px_trace_id_6"
+        },
+        "status": 400
+      },
+      "statTags": {
+        "destType": "FACEBOOK_PIXEL",
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 400,
+      "message": "Capability or permissions issue.",
+      "destinationResponse": {
+        "error": {
+          "message": "Some error in permission",
+          "type": "GraphMethodException",
+          "code": 3,
+          "error_subcode": 10,
+          "fbtrace_id": "facebook_px_trace_id_7"
+        },
+        "status": 500
+      },
+      "statTags": {
+        "destType": "FACEBOOK_PIXEL",
+        "errorCategory": "network",
+        "errorType": "aborted",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 500,
+      "message": "Unhandled random error",
+      "destinationResponse": {
+        "error": {
+          "message": "Unhandled random error",
+          "type": "RandomException",
+          "code": 5,
+          "error_subcode": 12,
+          "fbtrace_id": "facebook_px_trace_id_10"
+        },
+        "status": 412
+      },
+      "statTags": {
+        "destType": "FACEBOOK_PIXEL",
+        "errorCategory": "network",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination",
+        "meta": "unhandledStatusCode"
       }
     }
   }

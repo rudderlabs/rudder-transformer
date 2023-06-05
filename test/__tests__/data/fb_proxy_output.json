@@ -2,7 +2,7 @@
   {
     "output": {
       "status": 400,
-      "message": "Failed with The access token could not be decrypted during response transformation",
+      "message": "Invalid OAuth 2.0 access token",
       "destinationResponse": {
         "error": {
           "message": "The access token could not be decrypted",
@@ -35,7 +35,7 @@
   {
     "output": {
       "status": 400,
-      "message": "Failed with Invalid parameter during response transformation",
+      "message": "Event Timestamp Too Old",
       "destinationResponse": {
         "error": {
           "message": "Invalid parameter",
@@ -62,7 +62,7 @@
   {
     "output": {
       "status": 429,
-      "message": "Failed with User request limit reached during response transformation",
+      "message": "API User Too Many Calls",
       "destinationResponse": {
         "error": {
           "message": "User request limit reached",
@@ -85,7 +85,7 @@
   {
     "output": {
       "status": 400,
-      "message": "Failed with Unsupported post request. Object with ID '1234567891234569' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api during response transformation",
+      "message": "Object with ID 'PIXEL_ID' does not exist, cannot be loaded due to missing permissions, or does not support this operation",
       "destinationResponse": {
         "error": {
           "message": "Unsupported post request. Object with ID '1234567891234569' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api",

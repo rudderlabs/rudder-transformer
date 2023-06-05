@@ -160,7 +160,7 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.SCREEN;
       break;
     case EventType.TRACK:
-      event = message.event.toLowerCase();
+      event = message.event?.toLowerCase();
       category = getCategoryUsingEventName(event);
       break;
     case EventType.ALIAS:

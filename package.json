@@ -46,7 +46,7 @@
     "test:ut": "jest -c jest.config.ut.js --detectOpenHandles",
     "test:ut:silent": "npm run test:ut -- --silent",
     "test:ut:ci": "npm run test:ut --expand --silent --maxWorkers=50%",
-    "pre-commit": "npm run test:silent && npm run test:integration:silent && npx lint-staged",
+    "pre-commit": "npm run test:silent && npm run test:js:silent && npx lint-staged",
     "commit-msg": "commitlint --edit",
     "prepare": "husky install",
     "release": "npx standard-version",

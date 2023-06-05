@@ -74,5 +74,5 @@ jobs:
       - name: Port Forwarding to port on gateway-external
         run: kubectl port-forward service/gateway-external 8080:8080 -n openfaas &
 
-      - name: Jest User Transformation test
+      - name: Transformation test
         run: npm run test:ut:ci

@@ -21,26 +21,28 @@
             "addConversionPayload": {
               "enable_partial_failure": false,
               "enable_warnings": false,
-              "operations": {
-                "create": {
-                  "transaction_attribute": {
-                    "CUSTOM_KEY": "CUSTOM_VALUE",
-                    "currency_code": "INR",
-                    "order_id": "order id",
-                    "store_attribute": {
-                      "store_code": "store code"
+              "operations": [
+                {
+                  "create": {
+                    "transaction_attribute": {
+                      "CUSTOM_KEY": "CUSTOM_VALUE",
+                      "currency_code": "INR",
+                      "order_id": "order id",
+                      "store_attribute": {
+                        "store_code": "store code"
+                      },
+                      "transaction_amount_micros": "100000000",
+                      "transaction_date_time": "2019-10-14 11:15:18+00:00"
                     },
-                    "transaction_amount_micros": "100000000",
-                    "transaction_date_time": "2019-10-14 11:15:18+00:00"
-                  },
-                  "userIdentifiers": [
-                    {
-                      "hashedEmail": "6db61e6dcbcf2390e4a46af26f26a133a3bee45021422fc7ae86e9136f14110",
-                      "userIdentifierSource": "UNSPECIFIED"
-                    }
-                  ]
+                    "userIdentifiers": [
+                      {
+                        "hashedEmail": "6db61e6dcbcf2390e4a46af26f26a133a3bee45021422fc7ae86e9136f14110",
+                        "userIdentifierSource": "UNSPECIFIED"
+                      }
+                    ]
+                  }
                 }
-              },
+              ],
               "validate_only": false
             },
             "createJobPayload": {
@@ -89,26 +91,28 @@
             "addConversionPayload": {
               "enable_partial_failure": false,
               "enable_warnings": false,
-              "operations": {
-                "create": {
-                  "transaction_attribute": {
-                    "CUSTOM_KEY": "CUSTOM_VALUE",
-                    "currency_code": "INR",
-                    "order_id": "order id",
-                    "store_attribute": {
-                      "store_code": "store code"
+              "operations": [
+                {
+                  "create": {
+                    "transaction_attribute": {
+                      "CUSTOM_KEY": "CUSTOM_VALUE",
+                      "currency_code": "INR",
+                      "order_id": "order id",
+                      "store_attribute": {
+                        "store_code": "store code"
+                      },
+                      "transaction_amount_micros": "100000000",
+                      "transaction_date_time": "2019-10-14 11:15:18+00:00"
                     },
-                    "transaction_amount_micros": "100000000",
-                    "transaction_date_time": "2019-10-14 11:15:18+00:00"
-                  },
-                  "userIdentifiers": [
-                    {
-                      "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
-                      "userIdentifierSource": "UNSPECIFIED"
-                    }
-                  ]
+                    "userIdentifiers": [
+                      {
+                        "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
+                        "userIdentifierSource": "UNSPECIFIED"
+                      }
+                    ]
+                  }
                 }
-              },
+              ],
               "validate_only": false
             },
             "createJobPayload": {
@@ -157,26 +161,28 @@
             "addConversionPayload": {
               "enable_partial_failure": false,
               "enable_warnings": false,
-              "operations": {
-                "create": {
-                  "transaction_attribute": {
-                    "CUSTOM_KEY": "CUSTOM_VALUE",
-                    "currency_code": "INR",
-                    "order_id": "order id",
-                    "store_attribute": {
-                      "store_code": "store code"
+              "operations": [
+                {
+                  "create": {
+                    "transaction_attribute": {
+                      "CUSTOM_KEY": "CUSTOM_VALUE",
+                      "currency_code": "INR",
+                      "order_id": "order id",
+                      "store_attribute": {
+                        "store_code": "store code"
+                      },
+                      "transaction_amount_micros": "100000000",
+                      "transaction_date_time": "2019-10-14 11:15:18+00:00"
                     },
-                    "transaction_amount_micros": "100000000",
-                    "transaction_date_time": "2019-10-14 11:15:18+00:00"
-                  },
-                  "userIdentifiers": [
-                    {
-                      "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
-                      "userIdentifierSource": "UNSPECIFIED"
-                    }
-                  ]
+                    "userIdentifiers": [
+                      {
+                        "hashedEmail": "6db61e6dcbcf2390e4a46af426f26a133a3bee45021422fc7ae86e9136f14110",
+                        "userIdentifierSource": "UNSPECIFIED"
+                      }
+                    ]
+                  }
                 }
-              },
+              ],
               "validate_only": false
             },
             "createJobPayload": {

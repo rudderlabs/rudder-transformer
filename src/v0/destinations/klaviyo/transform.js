@@ -217,8 +217,7 @@ const groupRequestHandler = (message, category, destination) => {
   if (!message.traits.subscribe) {
     throw new InstrumentationError('Subscribe flag should be true for group call');
   }
-  // let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
-  // profile = removeUndefinedAndNullValues(profile);
+
   const traitsInfo = getFieldValueFromMessage(message, 'traits');
   let response;
   if (traitsInfo?.subscribe) {
@@ -317,12 +316,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
   if (subscribeRespList.length > 0) {
     batchedSubscribeResponseList = batchSubscribeEvents(subscribeRespList);
   }
-  const nonSubscribeSuccessList = [];
-  nonSubscribeRespList.forEach((resp) => {
-    nonSubscribeSuccessList.push(
-      getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
-    );
-  });
+  const nonSubscribeSuccessList = nonSubscribeRespList.map((resp) =>
+    getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
+  );
   batchResponseList = [...batchedSubscribeResponseList, ...nonSubscribeSuccessList];
 
   return [...batchResponseList, ...batchErrorRespList];

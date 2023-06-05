@@ -1850,61 +1850,70 @@
     }
   },
   {
-    "destination": {
-      "Config": {
-        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
-        "accountId": "476550467",
-        "trackAnonymous": true,
-        "enableObjectIdMapping": false
-      }
-    },
     "message": {
-      "channel": "web",
+      "type": "track",
+      "sentAt": "2020-08-28T16:26:16.473Z",
       "context": {
-        "app": {
-          "build": "1.0.0",
-          "name": "RudderLabs JavaScript SDK",
-          "namespace": "com.rudderlabs.javascript",
-          "version": "1.0.0"
-        },
-        "traits": {
-          "email": "sayan@gmail.com"
-        },
         "library": {
-          "name": "RudderLabs JavaScript SDK",
-          "version": "1.0.0"
-        },
-        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
-        "locale": "en-US",
-        "ip": "0.0.0.0",
-        "os": {
-          "name": "",
-          "version": ""
-        },
-        "screen": {
-          "density": 2
+          "name": "analytics-node",
+          "version": "0.0.3"
         }
       },
-      "type": "track",
-      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
-      "originalTimestamp": "2019-10-14T11:15:18.299Z",
-      "anonymousId": "00000000000000000000000000",
-      "userId": "12345",
+      "_metadata": {
+        "nodeVersion": "10.22.0"
+      },
+      "messageId": "node-570110489d3e99b234b18af9a9eca9d4-6009779e-82d7-469d-aaeb-5ccf162b0453",
       "properties": {
-        "product_id": 1234,
-        "name": "Shoes",
-        "price": 45,
-        "quantity": 1,
-        "orderId": 10000,
-        "total": "1000",
-        "campaignId": "123456",
-        "templateId": "1213458"
+        "subject": "resume validate",
+        "sendtime": "2020-01-01",
+        "sendlocation": "akashdeep@gmail.com"
       },
-      "integrations": {
-        "All": true
+      "anonymousId": "abcdeeeeeeeexxxx102",
+      "originalTimestamp": "2020-08-28T16:26:06.468Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "mapToSingleEvent": false,
+        "trackAllPages": true,
+        "trackCategorisedPages": false,
+        "trackNamedPages": false
       },
-      "name": "ApplicationLoaded",
-      "sentAt": "2019-10-14T11:15:53.296Z"
+      "Enabled": true
+    }
+  },
+  {
+    "message": {
+      "type": "track",
+      "event": "",
+      "sentAt": "2020-08-28T16:26:16.473Z",
+      "context": {
+        "library": {
+          "name": "analytics-node",
+          "version": "0.0.3"
+        }
+      },
+      "_metadata": {
+        "nodeVersion": "10.22.0"
+      },
+      "messageId": "node-570110489d3e99b234b18af9a9eca9d4-6009779e-82d7-469d-aaeb-5ccf162b0453",
+      "properties": {
+        "subject": "resume validate",
+        "sendtime": "2020-01-01",
+        "sendlocation": "akashdeep@gmail.com"
+      },
+      "anonymousId": "abcdeeeeeeeexxxx102",
+      "originalTimestamp": "2020-08-28T16:26:06.468Z"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "mapToSingleEvent": false,
+        "trackAllPages": true,
+        "trackCategorisedPages": false,
+        "trackNamedPages": false
+      },
+      "Enabled": true
     }
   }
 ]

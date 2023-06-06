@@ -10,7 +10,7 @@ const {
   ThrottledError,
   RetryableError,
   UnhandledStatusCodeError,
-  ConfigurationError,
+  InstrumentationError,
 } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 
@@ -134,7 +134,7 @@ const nestedResponseHandler = (marketoResponse, sourceMessage) => {
       } else if (reasons && MARKETO_RETRYABLE_CODES.includes(reasons[0].code)) {
         statusCode = 500;
       }
-      throw new ConfigurationError(
+      throw new InstrumentationError(
         `Request failed during: ${sourceMessage}, error: ${JSON.stringify(reasons)}`,
         statusCode,
         {
@@ -145,9 +145,9 @@ const nestedResponseHandler = (marketoResponse, sourceMessage) => {
     }
   };
   const { result } = marketoResponse;
-  if (Array.isArray(result) && result.length > 0) {
-    result.forEach((res) => {
-      checkStatus(res);
+  if (Array.isArray(result)) {
+    result.forEach((resultElement) => {
+      checkStatus(resultElement);
     });
   } else {
     checkStatus(result);

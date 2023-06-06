@@ -41,6 +41,7 @@ jobs:
         uses: codecov/codecov-action@v3.1.4
         with:
           directory: ./reports/coverage
+          files: ./lcov.info,./clover.xml,./coverage-final.json
 
       - name: Fix filesystem paths in generated reports
         if: always()

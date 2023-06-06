@@ -51,7 +51,7 @@ const getGA4ClientId = (message, Config) => {
 
   if (isHybridModeEnabled(Config)) {
     const integrationsObj = getIntegrationsObj(message, 'ga4');
-    if (integrationsObj && integrationsObj.clientId) {
+    if (integrationsObj?.clientId) {
       clientId = integrationsObj.clientId;
     }
   }
@@ -245,7 +245,7 @@ const responseBuilder = (message, { Config }) => {
     payload.params.session_id = integrationsObj.sessionId;
   }
 
-  if (integrationsObj && integrationsObj.sessionNumber) {
+  if (integrationsObj?.sessionNumber) {
     payload.params.session_number = integrationsObj.sessionNumber;
   }
 

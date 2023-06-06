@@ -90,12 +90,13 @@ function validateTrack(message, payload) {
   throw new InstrumentationError('Email or userId is mandatory');
 }
 
+function checkIfEmailOrUserIdPresent(message) {
+  return !!(message.userId || message.context?.traits?.email);
+}
+
 function attachUserAndCompany(message, Config) {
   const email = message.context?.traits?.email;
   const { userId } = message;
-  if (!userId && !email) {
-    return false;
-  }
   const requestBody = {};
   if (userId) {
     requestBody.user_id = userId;
@@ -124,6 +125,7 @@ function attachUserAndCompany(message, Config) {
 }
 
 function buildCustomAttributes(message, payload) {
+  const finalPayload = payload;
   const { traits } = message;
   const customAttributes = {};
   const companyReservedKeys = [
@@ -145,8 +147,10 @@ function buildCustomAttributes(message, payload) {
   }
 
   if (Object.keys(customAttributes).length > 0) {
-    payload.custom_attributes = customAttributes;
+    finalPayload.custom_attributes = customAttributes;
   }
+
+  return finalPayload;
 }
 
 function validateAndBuildResponse(message, payload, category, destination) {
@@ -170,11 +174,10 @@ function validateAndBuildResponse(message, payload, category, destination) {
       response.body.JSON = removeUndefinedAndNullValues(validateTrack(message, payload));
       break;
     case EventType.GROUP: {
-      buildCustomAttributes(message, payload);
-      response.body.JSON = removeUndefinedAndNullValues(payload);
+      response.body.JSON = removeUndefinedAndNullValues(buildCustomAttributes(message, payload));
       respList.push(response);
-      const attachUserAndCompanyResponse = attachUserAndCompany(message, destination.Config);
-      if (attachUserAndCompanyResponse) {
+      if (checkIfEmailOrUserIdPresent(message)) {
+        const attachUserAndCompanyResponse = attachUserAndCompany(message, destination.Config);
         attachUserAndCompanyResponse.userId = message.anonymousId;
         respList.push(attachUserAndCompanyResponse);
       }

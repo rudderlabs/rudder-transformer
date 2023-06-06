@@ -32,16 +32,6 @@ const {
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
-
-function cleanObject(obj) {
-  for (var propName in obj) {
-    if (obj[propName] === null || obj[propName] === undefined) {
-      delete obj[propName];
-    }
-  }
-  return obj;
-}
-
 /**
  * Create/Update a User with user attributes
  */
@@ -74,7 +64,7 @@ const identifyResponseBuilder = async (message, { Config }) => {
     USER_EXCLUSION_FIELDS,
   );
 
-  customAttributes = cleanObject(customAttributes);
+  customAttributes = removeUndefinedAndNullValues(customAttributes);
 
   const userCustomFieldsMap = getHashFromArray(Config.userAttributeMap, 'from', 'to', false);
   customAttributes = renameCustomFields(customAttributes, userCustomFieldsMap);

@@ -725,7 +725,7 @@ const eventValidationTestCases = [
     output: [
       {
         "type": "Additional-Properties",
-        "message": "must NOT have additional properties : new_property",
+        "message": "must NOT have additional properties 'new_property'",
         "property": "new_property",
         "meta": {
           "instacePath": "/properties",

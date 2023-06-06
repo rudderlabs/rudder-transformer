@@ -218,7 +218,7 @@ async function validate(event) {
         case 'additionalProperties':
           rudderValidationError = {
             type: violationTypes.AdditionalProperties,
-            message: `${error.message} : ${error.params.additionalProperty}`,
+            message: `${error.message} '${error.params.additionalProperty}'`,
             property: error.params.additionalProperty,
             meta: {
               instacePath: error.instancePath,

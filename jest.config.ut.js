@@ -60,7 +60,7 @@ module.exports = {
   // globals: {
   //   'ts-jest': {
   //     tsConfigFile: 'tsconfig.json',
-  //     diagnostics: false
+  //     diagnostics: true
   //   },
   // },
 
@@ -86,24 +86,13 @@ module.exports = {
   notifyMode: 'failure-change',
 
   // A preset that is used as a base for Jest's configuration
-  // preset: null,
+  preset: 'ts-jest',
 
   // Run tests from one or more projects
   // projects: null,
 
   // Use this configuration option to add custom reporters to Jest
-  reporters: [
-    'default',
-    [
-      'jest-sonar',
-      {
-        outputDirectory: 'reports/sonar',
-        outputName: 'results-report.xml',
-        reportedFilePath: 'relative',
-        relativeRootDir: './',
-      },
-    ],
-  ],
+  // reporters: undefined,
 
   // Automatically reset mock state between every test
   // resetMocks: false,
@@ -168,9 +157,15 @@ module.exports = {
   // timers: "real",
 
   // A map from regular expressions to paths to transformers
-  // transform: {
-  //   '^.+\\.(ts|tsx)$': 'ts-jest',
-  // },
+  transform: {
+    '^.+\\.tsx?$': [
+      'ts-jest',
+      {
+        tsconfig: 'tsconfig.json',
+        diagnostics: true,
+      },
+    ],
+  },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [

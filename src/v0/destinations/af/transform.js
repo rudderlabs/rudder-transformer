@@ -151,7 +151,7 @@ function getEventValueMapFromMappingJson(message, mappingJson, isMultiSupport) {
 function processNonTrackEvents(message, eventName) {
   const clonedMessage = { ...message };
   if (!isDefinedAndNotNull(clonedMessage.event)) {
-    clonedMessage.event = message.name || (message.properties && message.properties.name);
+    clonedMessage.event = message.name || message.properties?.name;
   }
   const payload = getEventValueForUnIdentifiedTrackEvent(clonedMessage);
   payload.eventName = eventName;

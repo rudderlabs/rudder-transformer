@@ -1,0 +1,147 @@
+[
+  {
+    "description": "Format timestamp",
+    "input": {
+      "formattedVal": "2020-08-14T05:30:30.118Z",
+      "formattingType": "timestamp"
+    },
+    "output": 1597383030118
+  },
+  {
+    "description": "Format second timestamp",
+    "input": {
+      "formattedVal": "2020-08-14T05:30:30.118Z",
+      "formattingType": "secondTimestamp"
+    },
+    "output": 1597383030
+  },
+  {
+    "description": "Encode URI Component",
+    "input": {
+      "formattedVal": "abc@example.com",
+      "formattingType": "encodeURIComponent"
+    },
+    "output": "abc%40example.com"
+  },
+  {
+    "description": "Stringify JSON",
+    "input": {
+      "formattedVal": "test",
+      "formattingType": "jsonStringify"
+    },
+    "output": "\"test\""
+  },
+  {
+    "description": "Stringify and Flatten JSON",
+    "input": {
+      "formattedVal": {
+        "checkout_id": "what is checkout id here??",
+        "coupon": "APPARELSALE",
+        "currency": "GBP",
+        "order_id": "transactionId",
+        "products": [
+          {
+            "brand": "",
+            "category": "Merch",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/bacon-jam.jpg",
+            "name": "Food/Drink",
+            "position": 1,
+            "price": 3,
+            "product_id": "product-bacon-jam",
+            "quantity": 2,
+            "sku": "sku-1",
+            "typeOfProduct": "Food",
+            "url": "https://www.example.com/product/bacon-jam",
+            "value": 6,
+            "variant": "Extra topped"
+          },
+          {
+            "brand": "Levis",
+            "category": "Merch",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/t-shirt.jpg",
+            "name": "T-Shirt",
+            "position": 2,
+            "price": 12.99,
+            "product_id": "product-t-shirt",
+            "quantity": 1,
+            "sku": "sku-2",
+            "typeOfProduct": "Shirt",
+            "url": "https://www.example.com/product/t-shirt",
+            "value": 12.99,
+            "variant": "White"
+          },
+          {
+            "brand": "Levis",
+            "category": "Merch",
+            "coupon": "APPARELSALE",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/offer-t-shirt.jpg",
+            "name": "T-Shirt-on-offer",
+            "position": 1,
+            "price": 12.99,
+            "product_id": "offer-t-shirt",
+            "quantity": 1,
+            "sku": "sku-3",
+            "typeOfProduct": "Shirt",
+            "url": "https://www.example.com/product/offer-t-shirt",
+            "value": 12.99,
+            "variant": "Black"
+          }
+        ],
+        "category": "some category",
+        "originalArray": [
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1"]
+          },
+          {
+            "nested_field": "nested value"
+          }
+        ],
+        "revenue": 31.98,
+        "shipping": 4,
+        "value": 31.98
+      },
+      "formattingType": "jsonStringifyOnFlatten"
+    },
+    "output": "{\"checkout_id\":\"what is checkout id here??\",\"coupon\":\"APPARELSALE\",\"currency\":\"GBP\",\"order_id\":\"transactionId\",\"products[0].brand\":\"\",\"products[0].category\":\"Merch\",\"products[0].currency\":\"GBP\",\"products[0].image_url\":\"https://www.example.com/product/bacon-jam.jpg\",\"products[0].name\":\"Food/Drink\",\"products[0].position\":1,\"products[0].price\":3,\"products[0].product_id\":\"product-bacon-jam\",\"products[0].quantity\":2,\"products[0].sku\":\"sku-1\",\"products[0].typeOfProduct\":\"Food\",\"products[0].url\":\"https://www.example.com/product/bacon-jam\",\"products[0].value\":6,\"products[0].variant\":\"Extra topped\",\"products[1].brand\":\"Levis\",\"products[1].category\":\"Merch\",\"products[1].currency\":\"GBP\",\"products[1].image_url\":\"https://www.example.com/product/t-shirt.jpg\",\"products[1].name\":\"T-Shirt\",\"products[1].position\":2,\"products[1].price\":12.99,\"products[1].product_id\":\"product-t-shirt\",\"products[1].quantity\":1,\"products[1].sku\":\"sku-2\",\"products[1].typeOfProduct\":\"Shirt\",\"products[1].url\":\"https://www.example.com/product/t-shirt\",\"products[1].value\":12.99,\"products[1].variant\":\"White\",\"products[2].brand\":\"Levis\",\"products[2].category\":\"Merch\",\"products[2].coupon\":\"APPARELSALE\",\"products[2].currency\":\"GBP\",\"products[2].image_url\":\"https://www.example.com/product/offer-t-shirt.jpg\",\"products[2].name\":\"T-Shirt-on-offer\",\"products[2].position\":1,\"products[2].price\":12.99,\"products[2].product_id\":\"offer-t-shirt\",\"products[2].quantity\":1,\"products[2].sku\":\"sku-3\",\"products[2].typeOfProduct\":\"Shirt\",\"products[2].url\":\"https://www.example.com/product/offer-t-shirt\",\"products[2].value\":12.99,\"products[2].variant\":\"Black\",\"category\":\"some category\",\"originalArray[0].nested_field\":\"nested value\",\"originalArray[0].tags[0]\":\"tag_1\",\"originalArray[0].tags[1]\":\"tag_2\",\"originalArray[0].tags[2]\":\"tag_3\",\"originalArray[1].nested_field\":\"nested value\",\"originalArray[1].tags[0]\":\"tag_1\",\"originalArray[2].nested_field\":\"nested value\",\"revenue\":31.98,\"shipping\":4,\"value\":31.98}"
+  },
+  {
+    "description": "Format Domain Url",
+    "input": {
+      "formattedVal": "https://www.example.com",
+      "formattingType": "domainUrl"
+    },
+    "output": "www.example.com"
+  },
+  {
+    "description": "Format Domain Url V2",
+    "input": {
+      "formattedVal": "https://www.example.com",
+      "formattingType": "domainUrlV2"
+    },
+    "output": "example.com"
+  },
+  {
+    "description": "Check if boolean",
+    "input": {
+      "formattedVal": "test",
+      "formattingType": "IsBoolean"
+    },
+    "output": false
+  },
+  {
+    "description": "Check if boolean",
+    "input": {
+      "formattedVal": true,
+      "formattingType": "IsBoolean"
+    },
+    "output": true
+  }
+]

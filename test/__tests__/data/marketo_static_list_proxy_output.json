@@ -56,7 +56,7 @@
       "statTags": {
         "destType": "MARKETO_STATIC_LIST",
         "errorCategory": "dataValidation",
-        "errorType": "configuration",
+        "errorType": "instrumentation",
         "feature": "dataDelivery",
         "implementation": "native",
         "module": "destination"

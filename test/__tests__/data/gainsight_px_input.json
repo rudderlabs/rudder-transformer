@@ -1000,7 +1000,8 @@
         "industry": "software",
         "numberOfEmployees": 400,
         "website": "www.ecorp.com",
-        "plan": "premium"
+        "plan": "premium",
+        "term": null
       },
       "integrations": {
         "All": true,

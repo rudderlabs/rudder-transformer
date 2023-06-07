@@ -58,4 +58,4 @@ uninstall:
 .PHONY: test
 test:
 	kubectl port-forward service/gateway-external 8080:8080 -n openfaas & \
-	npm run test:integration
+	npm run test:ut:integration:ci

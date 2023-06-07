@@ -1,60 +1,56 @@
 [
   {
-    "request": {
-      "body": {
-        "type": "REST",
-        "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2&id=3",
-        "method": "POST",
-        "userId": "",
-        "headers": {
-          "Authorization": "Bearer Incorrect_token",
-          "Content-Type": "application/json"
-        },
-        "params": {},
-        "body": {
-          "FORM": {},
-          "JSON": {},
-          "JSON_ARRAY": {},
-          "XML": {}
-        },
-        "files": {}
-      }
+    "type": "REST",
+    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2&id=3",
+    "method": "POST",
+    "userId": "",
+    "headers": {
+      "Authorization": "Bearer Incorrect_token",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "FORM": {},
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {}
+    },
+    "files": {},
+    "params": {
+      "destination": "marketo_static_list"
     }
   },
   {
-    "request": {
-      "body": {
-        "type": "REST",
-        "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2",
-        "method": "POST",
-        "userId": "",
-        "headers": {
-          "Authorization": "Bearer token",
-          "Content-Type": "application/json"
-        },
-        "params": {},
-        "body": {
-          "FORM": {},
-          "JSON": {
-            "action": "createOrUpdate",
-            "input": [
-              {
-                "City": "Tokyo",
-                "Country": "JP",
-                "Email": "gabi29@gmail.com",
-                "PostalCode": "100-0001",
-                "Title": "Owner",
-                "id": 1328328,
-                "userId": "gabi_userId_45"
-              }
-            ],
-            "lookupField": "id"
-          },
-          "JSON_ARRAY": {},
-          "XML": {}
-        },
-        "files": {}
-      }
+    "type": "REST",
+    "endpoint": "https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=1&id=2",
+    "method": "POST",
+    "userId": "",
+    "headers": {
+      "Authorization": "Bearer token",
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "FORM": {},
+      "JSON": {
+        "action": "createOrUpdate",
+        "input": [
+          {
+            "City": "Tokyo",
+            "Country": "JP",
+            "Email": "gabi29@gmail.com",
+            "PostalCode": "100-0001",
+            "Title": "Owner",
+            "id": 1328328,
+            "userId": "gabi_userId_45"
+          }
+        ],
+        "lookupField": "id"
+      },
+      "JSON_ARRAY": {},
+      "XML": {}
+    },
+    "files": {},
+    "params": {
+      "destination": "marketo_static_list"
     }
   }
 ]

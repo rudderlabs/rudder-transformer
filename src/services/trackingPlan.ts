@@ -12,7 +12,7 @@ export default class TrackingPlanservice {
     let ctxStatusCode = 200;
     for (let i = 0; i < events.length; i++) {
       const event = events[i];
-      logger.debug(`Request to tracking plan validator: ${JSON.stringify(event)}`);
+      logger.info(`Request to tracking plan validator: ${JSON.stringify(event)}`);
       const eventStartTime = new Date();
       try {
         const parsedEvent = event;

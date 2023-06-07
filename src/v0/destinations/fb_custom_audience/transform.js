@@ -129,7 +129,7 @@ const prepareResponse = (
     disableFormat,
     destination.ID,
   );
-  // paramsPayload.schema = userSchema;
+
   const respList = [];
   payloadBatches.forEach((payloadBatch) => {
     const response = {

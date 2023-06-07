@@ -118,9 +118,12 @@ const getProperties = async (destination) => {
   }
 
   const propertyMap = {};
-  hubspotPropertyMapResponse.response.forEach((element) => {
-    propertyMap[element.name] = element.type;
-  });
+  if (hubspotPropertyMapResponse.response && Array.isArray(hubspotPropertyMapResponse.response)) {
+    hubspotPropertyMapResponse.response.forEach((element) => {
+      propertyMap[element.name] = element.type;
+    });
+  }
+
   hubspotPropertyMap = propertyMap;
   return hubspotPropertyMap;
 };

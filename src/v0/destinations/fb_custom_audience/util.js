@@ -32,7 +32,6 @@ const batchingWithPayloadSize = (payload) => {
     const noOfBatches = Math.ceil(payloadSize / maxPayloadSize);
     const revisedRecordsPerPayload = Math.floor(payload.data.length / noOfBatches);
     const revisedDataArray = _.chunk(payload.data, revisedRecordsPerPayload);
-    // const { schema } = payload;
     revisedDataArray.forEach((data) => {
       revisedPayloadArray.push({ ...payload, data });
     });

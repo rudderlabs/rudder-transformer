@@ -19,6 +19,8 @@
       "statTags": {
         "destType": "MARKETO_STATIC_LIST",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "retryable",
         "feature": "dataDelivery",
         "implementation": "native",

@@ -60,9 +60,10 @@ module.exports = {
   // globals: {
   //   'ts-jest': {
   //     tsConfigFile: 'tsconfig.json',
-  //     diagnostics: true
+  //     diagnostics: false
   //   },
   // },
+  // preset: 'ts-jest/presets/js-with-ts-esm',
 
   // The maximum amount of workers used to run your tests. Can be specified as % or a number. E.g. maxWorkers: 10% will use 10% of your CPU amount + 1 as the maximum worker number. maxWorkers: 2 will use a maximum of 2 workers.
   // maxWorkers: "50%",
@@ -86,13 +87,24 @@ module.exports = {
   notifyMode: 'failure-change',
 
   // A preset that is used as a base for Jest's configuration
-  preset: 'ts-jest',
+  // preset: null,
 
   // Run tests from one or more projects
   // projects: null,
 
   // Use this configuration option to add custom reporters to Jest
-  // reporters: undefined,
+  reporters: [
+    'default',
+    [
+      'jest-sonar',
+      {
+        outputDirectory: 'reports/sonar',
+        outputName: 'results-report.xml',
+        reportedFilePath: 'relative',
+        relativeRootDir: './',
+      },
+    ],
+  ],
 
   // Automatically reset mock state between every test
   // resetMocks: false,
@@ -136,7 +148,7 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: ['**/__tests__/**/*.(integration.test).[jt]s?(x)'],
+  testMatch: ['**/__tests__/**/*.(test).[j]s?(x)', '**/integrations/**/*.(test).[j]s?(x)'],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: ['/node_modules/', 'user_transformation.integration.test.js'],
@@ -157,15 +169,9 @@ module.exports = {
   // timers: "real",
 
   // A map from regular expressions to paths to transformers
-  transform: {
-    '^.+\\.tsx?$': [
-      'ts-jest',
-      {
-        tsconfig: 'tsconfig.json',
-        diagnostics: true,
-      },
-    ],
-  },
+  // transform: {
+  //   '^.+\\.(ts|tsx)$': 'ts-jest',
+  // },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [

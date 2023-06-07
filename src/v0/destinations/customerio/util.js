@@ -86,16 +86,16 @@ const populateSpecedTraits = (payload, message) => {
     const mapping = TraitsMapping[trait];
     const keys = Object.keys(mapping);
     keys.forEach((key) => {
-      set(payload, key, get(message, `${pathToTraits}.${mapping[`${key}`]}`));
+      const traitKey = mapping[key];
+      const traitValue = get(message, `${pathToTraits}.${traitKey}`);
+      set(payload, key, traitValue);
     });
   });
 };
 
 const isdeviceRelatedEventName = (eventName, destination) =>
   deviceRelatedEventNames.includes(eventName) ||
-  (destination.Config &&
-    destination.Config.deviceTokenEventName &&
-    destination.Config.deviceTokenEventName === eventName);
+  destination?.Config?.deviceTokenEventName === eventName;
 
 const identifyResponseBuilder = (userId, message) => {
   const rawPayload = {};
@@ -154,7 +154,7 @@ const identifyResponseBuilder = (userId, message) => {
     );
   }
   // anonymous_id needs to be sent for identify calls to merge with any previous anon track calls
-  if (message && message.anonymousId) {
+  if (message?.anonymousId) {
     set(rawPayload, 'anonymous_id', message.anonymousId);
   }
   const endpoint = IDENTITY_ENDPOINT.replace(':id', userId);
@@ -218,36 +218,30 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
 
   // use this if only top level keys are to be sent
   // DEVICE DELETE from CustomerIO
-  if (deviceDeleteRelatedEventName === evName) {
-    if (userId && token) {
-      endpoint = DEVICE_DELETE_ENDPOINT.replace(':id', userId).replace(':device_id', token);
-      requestConfig = defaultDeleteRequestConfig;
-
-      return { rawPayload, endpoint, requestConfig };
+  const isDeviceDeleteEvent = deviceDeleteRelatedEventName === evName;
+  if (isDeviceDeleteEvent) {
+    if (!userId || !token) {
+      throw new InstrumentationError('userId or device_token not present');
     }
-    throw new InstrumentationError('userId or device_token not present');
+    endpoint = DEVICE_DELETE_ENDPOINT.replace(':id', userId).replace(':device_id', token);
+    requestConfig = defaultDeleteRequestConfig;
+    return { rawPayload, endpoint, requestConfig };
   }
 
   // DEVICE registration
-  if (isdeviceRelatedEventName(evName, destination) && userId && token) {
+  const isDeviceRelatedEvent = isdeviceRelatedEventName(evName, destination);
+  if (isDeviceRelatedEvent && userId && token) {
     const devProps = {
       ...message.properties,
-      id: get(message, 'context.device.token'),
+      id: token,
       last_used: Math.floor(new Date(message.originalTimestamp).getTime() / 1000),
     };
-    //  const devProps = message.properties || {};
-    //  set(devProps, 'id', get(message, 'context.device.token'));
     const deviceType = get(message, 'context.device.type');
     if (deviceType) {
       // Ref - https://www.customer.io/docs/api/#operation/add_device
       // supported platform are "ios", "android"
-      if (isAppleFamily(deviceType)) {
-        set(devProps, 'platform', 'ios');
-      } else {
-        set(devProps, 'platform', deviceType.toLowerCase());
-      }
+      devProps.platform = isAppleFamily(deviceType) ? 'ios' : deviceType.toLowerCase();
     }
-    //  set(devProps, 'last_used', Math.floor(new Date(message.originalTimestamp).getTime() / 1000));
     set(rawPayload, 'device', devProps);
     requestConfig = defaultPutRequestConfig;
   } else {
@@ -267,11 +261,10 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
   }
 
   if (userId) {
-    if (isdeviceRelatedEventName(evName, destination) && token) {
-      endpoint = DEVICE_REGISTER_ENDPOINT.replace(':id', userId);
-    } else {
-      endpoint = USER_EVENT_ENDPOINT.replace(':id', userId);
-    }
+    endpoint =
+      isDeviceRelatedEvent && token
+        ? DEVICE_REGISTER_ENDPOINT.replace(':id', userId)
+        : USER_EVENT_ENDPOINT.replace(':id', userId);
   } else {
     endpoint = ANON_EVENT_ENDPOINT;
     // CustomerIO supports 100byte of event name for anonymous users
@@ -287,12 +280,10 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
     }
     // anonymous_id needs to be sent for anon track calls to provide information on which anon user is being tracked
     // This will help in merging for subsequent calls
-    const anonymousId = message.anonymousId ? message.anonymousId : undefined;
-    if (!anonymousId) {
+    if (!message.anonymousId) {
       throw new InstrumentationError('Anonymous id/ user id is required');
-    } else {
-      rawPayload.anonymous_id = anonymousId;
     }
+    rawPayload.anonymous_id = message.anonymousId;
     set(rawPayload, 'name', trimmedEvName);
   }
 

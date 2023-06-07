@@ -99,7 +99,6 @@ const gaAudienceProxyRequest = async (request) => {
     // eslint-disable-next-line prefer-destructuring
     jobId = firstResponse.response.data.resourceName.split('/')[3];
   const secondResponse = await addUserToJob(endpoint, headers, method, jobId, body);
-  // console.log(JSON.stringify(secondResponse.response.response));
   if (!secondResponse.success && !isHttpStatusSuccess(secondResponse?.response?.response?.status)) {
     return secondResponse;
   }

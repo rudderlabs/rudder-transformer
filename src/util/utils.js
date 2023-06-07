@@ -56,7 +56,17 @@ const constructValidationErrors = (validationErrors) =>
     if (!acc[elem.type]) {
       acc[elem.type] = [];
     }
-    acc[elem.type].push({ message: elem.message, schemaPath: elem.meta?.schemaPath });
+    const validationObject = {};
+    if (elem.property) {
+      validationObject.property = elem.property;
+    }
+    if (elem.message) {
+      validationObject.message = elem.message;
+    }
+    if (elem.meta?.schemaPath) {
+      validationObject.schemaPath = elem.meta.schemaPath;
+    }
+    acc[elem.type].push(validationObject);
     return acc;
   }, {});
 

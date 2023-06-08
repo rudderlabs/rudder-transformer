@@ -52,61 +52,123 @@
   ],
   "others": [
     {
+      "batched": true,
       "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://api.iterable.com/api/users/bulkUpdate",
-        "headers": {
-          "Content-Type": "application/json",
-          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
-        },
-        "params": {},
         "body": {
+          "FORM": {},
           "JSON": {
             "users": [
               {
-                "email": "manashi@website.com",
                 "dataFields": {
                   "city": "Bangalore",
-                  "name": "manashi",
+                  "country": "India",
                   "email": "manashi@website.com",
-                  "country": "India"
+                  "name": "manashi"
                 },
-                "userId": "abcdeeeeeeeexxxx102",
+                "email": "manashi@website.com",
+                "mergeNestedObjects": true,
                 "preferUserId": true,
-                "mergeNestedObjects": true
-              },
-              {
-                "email": "kishan@website.com",
-                "dataFields": {
-                  "city": "Ahmedabad",
-                  "name": "kishan",
-                  "email": "kishan@website.com",
-                  "country": "India"
-                },
-                "userId": "bf412108-0357-4330-b119-7305e767823c",
-                "preferUserId": true,
-                "mergeNestedObjects": true
+                "userId": "abcdeeeeeeeexxxx102"
               }
             ]
           },
           "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
+          "XML": {}
         },
-        "files": {}
+        "endpoint": "https://api.iterable.com/api/users/bulkUpdate",
+        "files": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
+        },
+        "method": "POST",
+        "params": {},
+        "type": "REST",
+        "version": "1"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+          "mapToSingleEvent": false,
+          "trackAllPages": true,
+          "trackCategorisedPages": false,
+          "trackNamedPages": false
+        },
+        "Enabled": true
       },
       "metadata": [
         {
           "jobId": 3
-        },
-        {
-          "jobId": 9
         }
       ],
+      "statusCode": 200
+    },
+    {
       "batched": true,
-      "statusCode": 200,
+      "batchedRequest": [
+        {
+          "body": {
+            "FORM": {},
+            "JSON": {
+              "users": [
+                {
+                  "dataFields": {
+                    "administrative_unit": "Minnesota",
+                    "am_pm": "AM",
+                    "boolean": true,
+                    "email": "lynnanderson@smith.net",
+                    "firstname": "Jacqueline",
+                    "pPower": "AM",
+                    "userId": "Jacqueline"
+                  },
+                  "email": "lynnanderson@smith.net",
+                  "mergeNestedObjects": true,
+                  "preferUserId": true,
+                  "userId": "lynnanderson@smith.net"
+                }
+              ]
+            },
+            "JSON_ARRAY": {},
+            "XML": {}
+          },
+          "endpoint": "https://api.iterable.com/api/users/bulkUpdate",
+          "files": {},
+          "headers": {
+            "Content-Type": "application/json",
+            "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
+          },
+          "method": "POST",
+          "params": {},
+          "type": "REST",
+          "version": "1"
+        },
+        {
+          "body": {
+            "FORM": {},
+            "JSON": {
+              "device": {
+                "platform": "GCM",
+                "token": 54321
+              },
+              "email": "lynnanderson@smith.net",
+              "preferUserId": true,
+              "userId": "lynnanderson@smith.net"
+            },
+            "JSON_ARRAY": {},
+            "XML": {}
+          },
+          "endpoint": "https://api.iterable.com/api/users/registerDeviceToken",
+          "files": {},
+          "headers": {
+            "Content-Type": "application/json",
+            "api_key": "12345"
+          },
+          "method": "POST",
+          "params": {},
+          "type": "REST",
+          "version": "1"
+        }
+      ],
       "destination": {
         "Config": {
           "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
@@ -116,169 +178,80 @@
           "trackNamedPages": false
         },
         "Enabled": true
-      }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://api.iterable.com/api/users/bulkUpdate",
-        "headers": {
-          "Content-Type": "application/json",
-          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "users": [
-              {
-                "email": "anant@website.com",
-                "dataFields": {
-                  "city": "Delhi",
-                  "name": "anant",
-                  "email": "anant@website.com",
-                  "country": "India"
-                },
-                "userId": "b255896a-94cd-4bf9-98d5-40389e4b70b8",
-                "preferUserId": true,
-                "mergeNestedObjects": true
-              }
-            ]
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
       },
       "metadata": [
         {
-          "jobId": 10
+          "jobId": 5
         }
       ],
-      "batched": true,
-      "statusCode": 200,
-      "destination": {
-        "Config": {
-          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
-          "mapToSingleEvent": false,
-          "trackAllPages": true,
-          "trackCategorisedPages": false,
-          "trackNamedPages": false
-        },
-        "Enabled": true
-      }
+      "statusCode": 200
     },
     {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://api.iterable.com/api/users/bulkUpdate",
-        "headers": {
-          "Content-Type": "application/json",
-          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "users": [
-              {
-                "email": "nishant@website.com",
-                "dataFields": {
-                  "city": "Kolkata",
-                  "name": "nishant",
-                  "email": "nishant@website.com",
-                  "country": "India",
-                  "age": 29,
-                  "plan": "growth"
-                },
-                "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
-                "preferUserId": true,
-                "mergeNestedObjects": true
-              }
-            ]
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      "metadata": [
-        {
-          "jobId": 11
-        }
-      ],
       "batched": true,
-      "statusCode": 200,
-      "destination": {
-        "Config": {
-          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
-          "mapToSingleEvent": false,
-          "trackAllPages": true,
-          "trackCategorisedPages": false,
-          "trackNamedPages": false
-        },
-        "Enabled": true
-      }
-    },
-    {
       "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://api.iterable.com/api/events/trackBulk",
-        "headers": {
-          "Content-Type": "application/json",
-          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
-        },
-        "params": {},
         "body": {
+          "FORM": {},
           "JSON": {
             "events": [
               {
+                "createdAt": 1598631966468,
                 "dataFields": {
-                  "subject": "resume validate",
+                  "sendlocation": "akashdeep@gmail.com",
                   "sendtime": "2020-01-01",
-                  "sendlocation": "akashdeep@gmail.com"
+                  "subject": "resume validate"
                 },
-                "userId": "abcdeeeeeeeexxxx102",
                 "eventName": "Email Opened",
-                "createdAt": 1598631966468
+                "userId": "abcdeeeeeeeexxxx102"
               },
               {
-                "email": "sayan@gmail.com",
+                "createdAt": 1571051718299,
                 "dataFields": {
+                  "category": "test-category",
                   "path": "/abc",
                   "referrer": "",
                   "search": "",
                   "title": "",
-                  "url": "",
-                  "category": "test-category"
+                  "url": ""
                 },
-                "userId": "12345",
+                "email": "sayan@gmail.com",
                 "eventName": "ApplicationLoaded page",
-                "createdAt": 1571051718299
+                "userId": "12345"
               },
               {
-                "dataFields": {
-                  "url": "https://dominos.com",
-                  "title": "Pizza",
-                  "referrer": "https://google.com"
-                },
-                "userId": "abcdeeeeeeeexxxx102",
                 "createdAt": 1598631966468,
-                "eventName": "undefined page"
+                "dataFields": {
+                  "referrer": "https://google.com",
+                  "title": "Pizza",
+                  "url": "https://dominos.com"
+                },
+                "eventName": "undefined page",
+                "userId": "abcdeeeeeeeexxxx102"
               }
             ]
           },
           "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
+          "XML": {}
         },
-        "files": {}
+        "endpoint": "https://api.iterable.com/api/events/trackBulk",
+        "files": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
+        },
+        "method": "POST",
+        "params": {},
+        "type": "REST",
+        "version": "1"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+          "mapToSingleEvent": false,
+          "trackAllPages": true,
+          "trackCategorisedPages": false,
+          "trackNamedPages": false
+        },
+        "Enabled": true
       },
       "metadata": [
         {
@@ -291,8 +264,64 @@
           "jobId": 7
         }
       ],
-      "batched": true,
-      "statusCode": 200,
+      "statusCode": 200
+    },
+    {
+      "batched": false,
+      "batchedRequest": {
+        "body": {
+          "FORM": {},
+          "JSON": {
+            "items": [
+              {
+                "categories": [
+                  "cars"
+                ],
+                "id": "507f1f77bcf86cd799439011",
+                "imageUrl": "https://www.example.com/product/path.jpg",
+                "name": "Monopoly: 3rd Edition",
+                "price": 19,
+                "quantity": 2,
+                "sku": "45790-32",
+                "url": "https://www.example.com/product/path"
+              },
+              {
+                "categories": [
+                  "Cars2"
+                ],
+                "id": "507f1f77bcf86cd7994390112",
+                "imageUrl": "https://www.example.com/product/path.jpg2",
+                "name": "Monopoly: 3rd Edition2",
+                "price": 192,
+                "quantity": 22,
+                "sku": "45790-322",
+                "url": "https://www.example.com/product/path2"
+              }
+            ],
+            "user": {
+              "dataFields": {
+                "email": "sayan@gmail.com"
+              },
+              "email": "sayan@gmail.com",
+              "mergeNestedObjects": true,
+              "preferUserId": true,
+              "userId": "12345"
+            }
+          },
+          "JSON_ARRAY": {},
+          "XML": {}
+        },
+        "endpoint": "https://api.iterable.com/api/commerce/updateCart",
+        "files": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
+        },
+        "method": "POST",
+        "params": {},
+        "type": "REST",
+        "version": "1"
+      },
       "destination": {
         "Config": {
           "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
@@ -302,233 +331,37 @@
           "trackNamedPages": false
         },
         "Enabled": true
-      }
-    },
-    {
-      "batchedRequest": [
-        {
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": "https://api.iterable.com/api/users/update",
-          "headers": {
-            "Content-Type": "application/json",
-            "api_key": "12345"
-          },
-          "params": {},
-          "body": {
-            "JSON": {
-              "email": "lynnanderson@smith.net",
-              "dataFields": {
-                "administrative_unit": "Minnesota",
-                "am_pm": "AM",
-                "boolean": true,
-                "firstname": "Jacqueline",
-                "pPower": "AM",
-                "userId": "Jacqueline",
-                "email": "lynnanderson@smith.net"
-              },
-              "userId": "lynnanderson@smith.net",
-              "preferUserId": true,
-              "mergeNestedObjects": true
-            },
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "files": {}
-        },
-        {
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": "https://api.iterable.com/api/users/registerDeviceToken",
-          "headers": {
-            "Content-Type": "application/json",
-            "api_key": "12345"
-          },
-          "params": {},
-          "body": {
-            "JSON": {
-              "email": "lynnanderson@smith.net",
-              "userId": "lynnanderson@smith.net",
-              "device": {
-                "token": 54321,
-                "platform": "GCM"
-              },
-              "preferUserId": true
-            },
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "files": {}
-        }
-      ],
-      "metadata": {
-        "jobId": 5
-      },
-      "batched": false,
-      "statusCode": 200,
-      "destination": {
-        "ID": "1zia9wKshXt80YksLmUdJnr7IHI",
-        "Name": "test_iterable",
-        "DestinationDefinition": {
-          "ID": "1iVQvTRMsPPyJzwol0ifH93QTQ6",
-          "Name": "ITERABLE",
-          "DisplayName": "Iterable",
-          "Config": {
-            "destConfig": {
-              "defaultConfig": [
-                "apiKey",
-                "mapToSingleEvent",
-                "trackAllPages",
-                "trackCategorisedPages",
-                "trackNamedPages"
-              ]
-            },
-            "excludeKeys": [],
-            "includeKeys": [],
-            "saveDestinationResponse": true,
-            "secretKeys": [],
-            "supportedMessageTypes": [
-              "identify",
-              "page",
-              "screen",
-              "track"
-            ],
-            "supportedSourceTypes": [
-              "android",
-              "ios",
-              "web",
-              "unity",
-              "amp",
-              "cloud",
-              "warehouse",
-              "reactnative",
-              "flutter",
-              "cordova"
-            ],
-            "supportsVisualMapper": true,
-            "transformAt": "processor",
-            "transformAtV1": "processor"
-          },
-          "ResponseRules": null
-        },
-        "Config": {
-          "apiKey": "12345",
-          "mapToSingleEvent": true,
-          "trackAllPages": false,
-          "trackCategorisedPages": true,
-          "trackNamedPages": true
-        },
-        "Enabled": true,
-        "Transformations": [],
-        "IsProcessorEnabled": true
-      }
-    },
-    {
-      "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://api.iterable.com/api/commerce/updateCart",
-        "headers": {
-          "Content-Type": "application/json",
-          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
-        },
-        "params": {},
-        "body": {
-          "JSON": {
-            "user": {
-              "email": "sayan@gmail.com",
-              "dataFields": {
-                "email": "sayan@gmail.com"
-              },
-              "userId": "12345",
-              "preferUserId": true,
-              "mergeNestedObjects": true
-            },
-            "items": [
-              {
-                "id": "507f1f77bcf86cd799439011",
-                "sku": "45790-32",
-                "name": "Monopoly: 3rd Edition",
-                "categories": [
-                  "cars"
-                ],
-                "price": 19,
-                "quantity": 2,
-                "imageUrl": "https://www.example.com/product/path.jpg",
-                "url": "https://www.example.com/product/path"
-              },
-              {
-                "id": "507f1f77bcf86cd7994390112",
-                "sku": "45790-322",
-                "name": "Monopoly: 3rd Edition2",
-                "categories": [
-                  "Cars2"
-                ],
-                "price": 192,
-                "quantity": 22,
-                "imageUrl": "https://www.example.com/product/path.jpg2",
-                "url": "https://www.example.com/product/path2"
-              }
-            ]
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
       },
       "metadata": [
         {
           "jobId": 6
         }
       ],
-      "batched": false,
-      "statusCode": 200,
-      "destination": {
-        "Config": {
-          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
-          "mapToSingleEvent": false,
-          "trackAllPages": true,
-          "trackCategorisedPages": false,
-          "trackNamedPages": false
-        },
-        "Enabled": true
-      }
+      "statusCode": 200
     },
     {
+      "batched": false,
       "batchedRequest": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://api.iterable.com/api/users/updateEmail",
-        "headers": {
-          "Content-Type": "application/json",
-          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
-        },
-        "params": {},
         "body": {
+          "FORM": {},
           "JSON": {
             "currentEmail": "old@email.com",
             "newEmail": "new@email.com"
           },
           "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
+          "XML": {}
         },
-        "files": {}
+        "endpoint": "https://api.iterable.com/api/users/updateEmail",
+        "files": {},
+        "headers": {
+          "Content-Type": "application/json",
+          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
+        },
+        "method": "POST",
+        "params": {},
+        "type": "REST",
+        "version": "1"
       },
-      "metadata": [
-        {
-          "jobId": 8
-        }
-      ],
-      "batched": false,
-      "statusCode": 200,
       "destination": {
         "Config": {
           "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
@@ -538,7 +371,13 @@
           "trackNamedPages": false
         },
         "Enabled": true
-      }
+      },
+      "metadata": [
+        {
+          "jobId": 8
+        }
+      ],
+      "statusCode": 200
     }
   ]
 }

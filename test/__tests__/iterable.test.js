@@ -33,7 +33,7 @@ jest.mock(`../../src/${version}/destinations/${integration}/config`, () => {
   const originalConfig = jest.requireActual(`../../src/${version}/destinations/${integration}/config`);
   return {
     ...originalConfig,
-    IDENTIFY_MAX_BODY_SIZE: 450,
+    IDENTIFY_MAX_BODY_SIZE: 250,
     IDENTIFY_MAX_BATCH_SIZE: 2
   };
 });

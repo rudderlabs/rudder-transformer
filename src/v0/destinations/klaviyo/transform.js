@@ -187,7 +187,7 @@ const trackRequestHandler = (message, category, destination) => {
     attributes.profile = createCustomerProperties(message);
   }
   if (message.timestamp) {
-    attributes.time = toUnixTimestamp(message.timestamp);
+    attributes.time = message.timestamp;
   }
   payload.data = { type: 'event' };
   payload.data.attributes = attributes;

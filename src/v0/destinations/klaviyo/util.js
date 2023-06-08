@@ -99,7 +99,7 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
     }
     subscriptionObj.channels = channels;
   }
-  const subscriptions = [subscriptionObj];
+  const subscriptions = [removeUndefinedAndNullValues(subscriptionObj)];
   if (traitsInfo?.properties?.listId) {
     listId = traitsInfo.properties.listId;
   }
@@ -227,11 +227,11 @@ const groupSubsribeResponsesUsingListId = (subscribeResponseList) => {
 };
 
 const getBatchedResponseList = (subscribeEventGroups, identifyResponseList) => {
-  let batchedResponseList;
+  let batchedResponseList = [];
   Object.keys(subscribeEventGroups).forEach((listId) => {
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
     const eventChunks = _.chunk(subscribeEventGroups[listId], MAX_BATCH_SIZE);
-    batchedResponseList = eventChunks.map((chunk) => {
+    const batchedResponse = eventChunks.map((chunk) => {
       const batchEventResponse = generateBatchedPaylaodForArray(chunk);
       return getSuccessRespEvents(
         batchEventResponse.batchedRequest,
@@ -240,6 +240,7 @@ const getBatchedResponseList = (subscribeEventGroups, identifyResponseList) => {
         true,
       );
     });
+    batchedResponseList = [...batchedResponseList, ...batchedResponse];
   });
   identifyResponseList.forEach((response) => {
     batchedResponseList[0].batchedRequest.push(response);

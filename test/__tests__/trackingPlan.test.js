@@ -558,6 +558,31 @@ const sampleForumValidationEvents = {
       },
       timestamp: "2020-02-02T00:23:09.544Z"
     }
+  },
+  complexEvent6: { 
+    metadata: {
+      trackingPlanId: "dummy_tracking_plan_id2",
+      trackingPlanVersion: "dummy_version",
+      workspaceId: "dummy_workspace_id",
+      sourceTpConfig: {
+        track: {}
+      }
+    },
+    message: {
+      type: "track",
+      userId: "user-demo",
+      event: "Post Created - Draft 7",
+      properties: {
+        flairs: [],
+        title: "Some Post",
+        body: "Some Body...",
+        new_property: 1,
+      },
+      context: {
+        ip: "14.5.67.21"
+      },
+      timestamp: "2020-02-02T00:23:09.544Z"
+    }
   }
 }
 
@@ -670,10 +695,10 @@ const eventValidationTestCases = [
       {
         type: "Required-Missing",
         message: "must have required property 'flairs'",
+        property: "flairs",
         meta: {
             instacePath: "/properties",
             schemaPath: "#/properties/properties/required",
-            missingProperty: "flairs"
         }
       }
     ]
@@ -689,6 +714,22 @@ const eventValidationTestCases = [
         "meta": {
             "instacePath": "/properties/post_comment",
             "schemaPath": "#/properties/properties/properties/post_comment/type"
+        }
+      }
+    ]
+  },
+  {
+    testCase: "draft 7 -  additional property",
+    event: sampleForumValidationEvents.complexEvent6,
+    trackingPlan: sampleForumTrackingPlan,
+    output: [
+      {
+        "type": "Additional-Properties",
+        "message": "must NOT have additional properties 'new_property'",
+        "property": "new_property",
+        "meta": {
+          "instacePath": "/properties",
+          "schemaPath": "#/properties/properties/additionalProperties",
         }
       }
     ]

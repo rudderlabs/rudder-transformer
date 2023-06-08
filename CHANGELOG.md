@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.31.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.31.0...v1.31.1) (2023-06-07)
+
+
+### Bug Fixes
+
+* **transformer:** test cases migration ([#2190](https://github.com/rudderlabs/rudder-transformer/issues/2190)) ([52019ac](https://github.com/rudderlabs/rudder-transformer/commit/52019acf6533931fc36ed7ae93ce79d71671bd2e))
+
+## [1.31.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.30.1...v1.31.0) (2023-06-05)
+
+
+### Features
+
+* add stats for bad events in fb_custom_audience ([#2192](https://github.com/rudderlabs/rudder-transformer/issues/2192)) ([8176874](https://github.com/rudderlabs/rudder-transformer/commit/8176874bd599c999a70a382577c7605a1d3b3695))
+* error enrichment to get clear error messages for facebook pixel ([#2018](https://github.com/rudderlabs/rudder-transformer/issues/2018)) ([0ee7c73](https://github.com/rudderlabs/rudder-transformer/commit/0ee7c7348e363ec542c5e8b63d43854f8c8672c2)), closes [#2233](https://github.com/rudderlabs/rudder-transformer/issues/2233)
+
+
+### Bug Fixes
+
+* **cdkv1:** error handling for cdkv1 destinations ([#2227](https://github.com/rudderlabs/rudder-transformer/issues/2227)) ([c3aedbf](https://github.com/rudderlabs/rudder-transformer/commit/c3aedbfe41c176c9791770cc52b1a4cb1dddbefe))
+* **customerio destination:** added fix for unhandled exception for pr… ([#2226](https://github.com/rudderlabs/rudder-transformer/issues/2226)) ([fde530f](https://github.com/rudderlabs/rudder-transformer/commit/fde530f542b4229220f93c09a5ac0bd2ef563507))
+* **hubspot  destination:** added fix for handling error when  hubspotPropertyMapResponse not present ([d1613b6](https://github.com/rudderlabs/rudder-transformer/commit/d1613b6ae275d7e884b21eccbf2a9391040d3ef1))
+* hubspot bugsnag error ([#2235](https://github.com/rudderlabs/rudder-transformer/issues/2235)) ([1d4df3a](https://github.com/rudderlabs/rudder-transformer/commit/1d4df3ab8f7deb89eaaec154500bd4c94350c551))
+* **hubspot destination:** add fix for handling  error case when properties are not sent in hubspot ([0225a28](https://github.com/rudderlabs/rudder-transformer/commit/0225a280f1efd051d2d732d633d1cbab7b0f37ea))
+* iterable bugsnag error ([#2234](https://github.com/rudderlabs/rudder-transformer/issues/2234)) ([b2b3b19](https://github.com/rudderlabs/rudder-transformer/commit/b2b3b1973ddd2e298befdcc30ac2b1be44023736))
+* sonarCloud code smells ([#2187](https://github.com/rudderlabs/rudder-transformer/issues/2187)) ([6646257](https://github.com/rudderlabs/rudder-transformer/commit/66462570823a08c21d55a519f59fbf19af0a54b9))
+
+### [1.30.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.30.0...v1.30.1) (2023-05-31)
+
+## [1.30.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.29.2...v1.30.0) (2023-05-30)
+
+
+### Features
+
+* add cdk stats ([#2131](https://github.com/rudderlabs/rudder-transformer/issues/2131)) ([3fe837b](https://github.com/rudderlabs/rudder-transformer/commit/3fe837b1b561da1563042b2128420214b1103b2a))
+* auto register missing metrics ([#2170](https://github.com/rudderlabs/rudder-transformer/issues/2170)) ([0bbe371](https://github.com/rudderlabs/rudder-transformer/commit/0bbe371246f750b9b92595b5e8d00212366742c7))
+* mixpanel deletion api  ([#2206](https://github.com/rudderlabs/rudder-transformer/issues/2206)) ([19e20eb](https://github.com/rudderlabs/rudder-transformer/commit/19e20eb16def7296d88e67a7c325b123881042f9)), closes [#2200](https://github.com/rudderlabs/rudder-transformer/issues/2200)
+* onboard bingads audience destination (CDK) ([#2214](https://github.com/rudderlabs/rudder-transformer/issues/2214)) ([411c2c9](https://github.com/rudderlabs/rudder-transformer/commit/411c2c9fcd7c8892ce994ad18831f1accc632dab))
+* onboard dynamic yield ([#2177](https://github.com/rudderlabs/rudder-transformer/issues/2177)) ([fc4c007](https://github.com/rudderlabs/rudder-transformer/commit/fc4c00716a4e45852e9aef20682ab4388cc8e890))
+* remove custom property dependency for fb pixel ([#2215](https://github.com/rudderlabs/rudder-transformer/issues/2215)) ([e22b2ac](https://github.com/rudderlabs/rudder-transformer/commit/e22b2ac62d5c442f78862201acbb611c5e6f7c63))
+* **transformation:** adding geo location function support ([#2165](https://github.com/rudderlabs/rudder-transformer/issues/2165)) ([7a153a5](https://github.com/rudderlabs/rudder-transformer/commit/7a153a58a93fb7dde44abdd26a5d3a6fff20b77e))
+
+
+### Bug Fixes
+
+* add async/await in af,clevertap, engage and sendgird ([#2183](https://github.com/rudderlabs/rudder-transformer/issues/2183)) ([20846ab](https://github.com/rudderlabs/rudder-transformer/commit/20846ab102abd41bc75eb4c164f096638e822d73))
+* **gaoc:** adding batching support ([#2201](https://github.com/rudderlabs/rudder-transformer/issues/2201)) ([5865f50](https://github.com/rudderlabs/rudder-transformer/commit/5865f508d98c8bb8eed809636b14d3cf2eb213be))
+* handling proxy responses for tiktok_ads, snapchat_custom_audience ([#2169](https://github.com/rudderlabs/rudder-transformer/issues/2169)) ([906d799](https://github.com/rudderlabs/rudder-transformer/commit/906d79985d6162f7ebc3ab5b57b72ada72b988fa))
+* pinterest ge parameter ([#2210](https://github.com/rudderlabs/rudder-transformer/issues/2210)) ([f64e30d](https://github.com/rudderlabs/rudder-transformer/commit/f64e30df851366207e8464a9073a5d5e628923e5))
+
 ### [1.29.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.29.1...v1.29.2) (2023-05-26)
 
 

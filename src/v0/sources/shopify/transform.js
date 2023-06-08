@@ -123,6 +123,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   }
   return message;
 };
+
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
   const event = _.cloneDeep(inputEvent);

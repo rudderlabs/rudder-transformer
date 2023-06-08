@@ -1011,5 +1011,25 @@
       },
       "originalTimestamp": "2021-03-10T11:59:22.080Z"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
+        "accountId": "476550467",
+        "trackAnonymous": true,
+        "enableObjectIdMapping": true
+      }
+    },
+    "message": {
+      "event": "Random",
+      "properties": {
+        "country_region": "India",
+        "test": "abc"
+      },
+      "receivedAt": "2021-08-20T12:49:07.691Z",
+      "rudderId": "138c4214-b537-4f77-9dea-9abde70b5147",
+      "type": "track"
+    }
   }
 ]

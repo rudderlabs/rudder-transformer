@@ -1,0 +1,324 @@
+[
+  {
+    "description": "unhashed email available with hashEmail as true in config",
+    "input": {
+      "message": {
+        "userId": "user 1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "email": "alex@email.com"
+              },
+              {
+                "email": "amy@abc.com"
+              },
+              {
+                "email": "van@abc.com"
+              }
+            ]
+          }
+        },
+        "context": { "ip": "14.5.67.21", "library": { "name": "http" } },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      },
+      "destination": {
+        "Config": {
+          "customerAccountId": "89236978",
+          "customerId": "78678678",
+          "audienceId": "564567",
+          "hashEmail": true
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {
+          "list": [
+            {
+              "email": "alex@email.com",
+              "hashedEmail": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b"
+            },
+            {
+              "email": "amy@abc.com",
+              "hashedEmail": "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579"
+            },
+            {
+              "email": "van@abc.com",
+              "hashedEmail": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "hashed email available with hashEmail as false in config",
+    "input": {
+      "message": {
+        "userId": "user 1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "email": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b"
+              },
+              {
+                "email": "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579"
+              },
+              {
+                "email": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
+              }
+            ]
+          }
+        },
+        "context": { "ip": "14.5.67.21", "library": { "name": "http" } },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      },
+      "destination": {
+        "Config": {
+          "customerAccountId": "89236978",
+          "customerId": "78678678",
+          "audienceId": "564567",
+          "hashEmail": false
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {
+          "list": [
+            {
+              "email": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b",
+              "hashedEmail": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b"
+            },
+            {
+              "email": "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579",
+              "hashedEmail": "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579"
+            },
+            {
+              "email": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c",
+              "hashedEmail": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Unsupported event type",
+    "input": {
+      "message": {
+        "userId": "user 1",
+        "type": "track",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "email": "alex@email.com"
+              },
+              {
+                "email": "amy@abc.com"
+              },
+              {
+                "email": "van@abc.com"
+              }
+            ]
+          }
+        },
+        "context": { "ip": "14.5.67.21", "library": { "name": "http" } },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      },
+      "destination": {
+        "Config": {
+          "customerAccountId": "89236978",
+          "customerId": "78678678",
+          "audienceId": "564567",
+          "hashEmail": true
+        }
+      }
+    },
+    "output": {
+      "error": "Event type track is not supported. Aborting message."
+    }
+  },
+  {
+    "description": "event type not present",
+    "input": {
+      "message": {
+        "userId": "user 1",
+        "type": "",
+        "properties": {
+          "listData": {
+            "add": [
+              {
+                "email": "alex@email.com"
+              },
+              {
+                "email": "amy@abc.com"
+              },
+              {
+                "email": "van@abc.com"
+              }
+            ]
+          }
+        },
+        "context": { "ip": "14.5.67.21", "library": { "name": "http" } },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      },
+      "destination": {
+        "Config": {
+          "customerAccountId": "89236978",
+          "customerId": "78678678",
+          "audienceId": "564567",
+          "hashEmail": true
+        }
+      }
+    },
+    "output": {
+      "error": "message Type is not present. Aborting message."
+    }
+  },
+  {
+    "description": "Message properties is not present",
+    "input": {
+      "message": {
+        "userId": "user 1",
+        "type": "audiencelist",
+        "context": { "ip": "14.5.67.21", "library": { "name": "http" } },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      },
+      "destination": {
+        "Config": {
+          "customerAccountId": "89236978",
+          "customerId": "78678678",
+          "audienceId": "564567",
+          "hashEmail": true
+        }
+      }
+    },
+    "output": {
+      "error": "Message properties is not present. Aborting message."
+    }
+  },
+  {
+    "description": "listData is not present in properties",
+    "input": {
+      "message": {
+        "userId": "user 1",
+        "type": "audiencelist",
+        "properties": {},
+        "context": { "ip": "14.5.67.21", "library": { "name": "http" } },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      },
+      "destination": {
+        "Config": {
+          "customerAccountId": "89236978",
+          "customerId": "78678678",
+          "audienceId": "564567",
+          "hashEmail": true
+        }
+      }
+    },
+    "output": {
+      "error": "listData is not present inside properties. Aborting message."
+    }
+  },
+  {
+    "description": "Both add and remove are present in listData",
+    "input": {
+      "message": {
+        "userId": "user 1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "remove": [
+              {
+                "email": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b"
+              },
+              {
+                "email": "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579"
+              },
+              {
+                "email": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
+              }
+            ],
+            "add": [
+              {
+                "email": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b"
+              },
+              {
+                "email": "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579"
+              },
+              {
+                "email": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
+              }
+            ]
+          }
+        },
+        "context": { "ip": "14.5.67.21", "library": { "name": "http" } },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      },
+      "destination": {
+        "Config": {
+          "customerAccountId": "89236978",
+          "customerId": "78678678",
+          "audienceId": "564567",
+          "hashEmail": false
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {
+          "list": [
+            {
+              "email": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b",
+              "hashedEmail": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b"
+            },
+            {
+              "email": "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579",
+              "hashedEmail": "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579"
+            },
+            {
+              "email": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c",
+              "hashedEmail": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  }
+]

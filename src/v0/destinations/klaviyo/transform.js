@@ -26,7 +26,6 @@ const {
   getFieldValueFromMessage,
   defaultPostRequestConfig,
   extractCustomFields,
-  toUnixTimestamp,
   removeUndefinedAndNullValues,
   isEmptyObject,
   addExternalIdToTraits,

@@ -6,4 +6,4 @@ cdk/ @rudderlabs/integrations
 src/features.json @rudderlabs/integrations
 constants/ @rudderlabs/integrations
 warehouse/ @rudderlabs/warehouse
-src/util/ @rudderlabs/data-management
+src/util/ @rudderlabs/integrations @rudderlabs/data-management

@@ -53,64 +53,24 @@
   "others": [
     {
       "batched": true,
-      "batchedRequest": {
-        "body": {
-          "FORM": {},
-          "JSON": {
-            "users": [
-              {
-                "dataFields": {
-                  "city": "Bangalore",
-                  "country": "India",
-                  "email": "manashi@website.com",
-                  "name": "manashi"
-                },
-                "email": "manashi@website.com",
-                "mergeNestedObjects": true,
-                "preferUserId": true,
-                "userId": "abcdeeeeeeeexxxx102"
-              }
-            ]
-          },
-          "JSON_ARRAY": {},
-          "XML": {}
-        },
-        "endpoint": "https://api.iterable.com/api/users/bulkUpdate",
-        "files": {},
-        "headers": {
-          "Content-Type": "application/json",
-          "api_key": "62d12498c37c4fd8a1a546c2d35c2f60"
-        },
-        "method": "POST",
-        "params": {},
-        "type": "REST",
-        "version": "1"
-      },
-      "destination": {
-        "Config": {
-          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
-          "mapToSingleEvent": false,
-          "trackAllPages": true,
-          "trackCategorisedPages": false,
-          "trackNamedPages": false
-        },
-        "Enabled": true
-      },
-      "metadata": [
-        {
-          "jobId": 3
-        }
-      ],
-      "statusCode": 200
-    },
-    {
-      "batched": true,
       "batchedRequest": [
         {
           "body": {
             "FORM": {},
             "JSON": {
               "users": [
+                {
+                  "dataFields": {
+                    "city": "Bangalore",
+                    "country": "India",
+                    "email": "manashi@website.com",
+                    "name": "manashi"
+                  },
+                  "email": "manashi@website.com",
+                  "mergeNestedObjects": true,
+                  "preferUserId": true,
+                  "userId": "abcdeeeeeeeexxxx102"
+                },
                 {
                   "dataFields": {
                     "administrative_unit": "Minnesota",
@@ -180,6 +140,9 @@
         "Enabled": true
       },
       "metadata": [
+        {
+          "jobId": 3
+        },
         {
           "jobId": 5
         }

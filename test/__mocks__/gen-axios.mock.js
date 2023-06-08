@@ -2,8 +2,6 @@ const axios = require("axios");
 const logger = require("../../src/logger");
 const { isHttpStatusSuccess } = require("../../src/v0/util");
 
-jest.mock("axios");
-
 /**
  * Forms the mock axios client
  * This client is used in cases where each response is returned almost immediately

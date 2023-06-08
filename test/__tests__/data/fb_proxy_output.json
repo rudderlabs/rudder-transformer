@@ -15,6 +15,8 @@
       "statTags": {
         "destType": "FB",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "aborted",
         "feature": "dataDelivery",
         "implementation": "native",
@@ -52,6 +54,8 @@
       "statTags": {
         "destType": "FB",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "aborted",
         "feature": "dataDelivery",
         "implementation": "native",
@@ -75,6 +79,8 @@
       "statTags": {
         "destType": "FB",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "throttled",
         "feature": "dataDelivery",
         "implementation": "native",
@@ -99,6 +105,8 @@
       "statTags": {
         "destType": "FB",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "aborted",
         "feature": "dataDelivery",
         "implementation": "native",

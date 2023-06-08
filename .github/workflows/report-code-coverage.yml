@@ -30,7 +30,7 @@ jobs:
 
       - name: Run Tests
         run: |
-          npm run test:ci
+          npm run test:js:ci
 
       - name: Run Lint Checks
         run: |

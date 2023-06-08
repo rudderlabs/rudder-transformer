@@ -72,7 +72,10 @@ const identifyRequestHandler = async (message, category, destination) => {
   propertyPayload = removeUndefinedAndNullValues(propertyPayload);
   if (enforceEmailAsPrimary) {
     delete propertyPayload.external_id;
-    propertyPayload.properties._id = getFieldValueFromMessage(message, 'userId');
+    customPropertyPayload = {
+      ...customPropertyPayload,
+      _id: getFieldValueFromMessage(message, 'userId'),
+    };
   }
   const data = {
     type: 'profile',

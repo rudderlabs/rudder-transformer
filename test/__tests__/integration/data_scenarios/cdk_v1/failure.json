@@ -148,8 +148,8 @@
         "sourceDefinitionId": "1b6gJdqOPOCadT3cddw8eidV591",
         "destinationDefinitionId": ""
       },
-      "statusCode": 500,
-      "error": "Unsupported \"channel\": \"offline\". It must be one of: web,server,mobile,sources",
+      "statusCode": 400,
+      "error": "Unknown error occurred. Original error: Unsupported \"channel\": \"offline\". It must be one of: web,server,mobile,sources",
       "statTags": {
         "errorCategory": "transformation",
         "destType": "ZAPIER",

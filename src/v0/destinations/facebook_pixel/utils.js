@@ -176,10 +176,9 @@ const transformedPayloadData = (
 
     if (Object.prototype.hasOwnProperty.call(customBlackListedPiiProperties, eventProp)) {
       if (customBlackListedPiiProperties[eventProp]) {
-        clonedCustomData[eventProp] =
-          integrationsObj && integrationsObj.hashed
-            ? String(message.properties[eventProp])
-            : sha256(String(message.properties[eventProp]));
+        clonedCustomData[eventProp] = integrationsObj?.hashed
+          ? String(message.properties[eventProp])
+          : sha256(String(message.properties[eventProp]));
       } else {
         delete clonedCustomData[eventProp];
       }
@@ -289,15 +288,18 @@ const fetchUserData = (message, Config) => {
   if (removeExternalId) {
     delete userData.external_id;
   }
+
   if (userData) {
-    const split = userData.name ? userData.name.split(' ') : null;
-    if (split !== null && Array.isArray(split) && split.length === 2) {
-      userData.fn = integrationsObj && integrationsObj.hashed ? split[0] : sha256(split[0]);
-      userData.ln = integrationsObj && integrationsObj.hashed ? split[1] : sha256(split[1]);
+    const split = userData.name?.split(' ');
+    if (split && split.length === 2) {
+      const hashValue = (value) => (integrationsObj?.hashed ? value : sha256(value));
+      userData.fn = hashValue(split[0]);
+      userData.ln = hashValue(split[1]);
     }
     delete userData.name;
     userData.fbc = userData.fbc || deduceFbcParam(message);
   }
+
   return userData;
 };
 

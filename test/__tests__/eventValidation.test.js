@@ -1111,6 +1111,156 @@ const eventValidationTestCases = [
       dropEvent: false,
       violationType: "None"
     }
+  },
+  {
+    testCase: "allowUnplannedEvents set to value other than true/false",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id",
+        trackingPlanVersion: "dummy_version",
+        workspaceId: "dummy_workspace_id",
+        mergedTpConfig: {
+          allowUnplannedEvents: "unknown",
+          ajvOptions: {}
+        },
+        sourceTpConfig
+      },
+      message: {
+        type: "track",
+        userId: "user-demo",
+        event: "Product clicked",
+        properties: {
+          name: "Rubik's Cube",
+          revenue: 4.99,
+          prop_integer: 2,
+          prop_float: 2.3,
+          email: "demo@rudderstack.com",
+          mobile: "999888777666"
+        },
+        context: {
+          ip: "14.5.67.21"
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan,
+    output: {
+      dropEvent: false,
+      violationType: "None"
+    }
+  },
+  {
+    testCase: "unplannedProperties set to value other than forward/drop",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id",
+        trackingPlanVersion: "dummy_version",
+        workspaceId: "dummy_workspace_id",
+        mergedTpConfig: {
+          unplannedProperties: "unknown",
+          ajvOptions: {}
+        },
+        sourceTpConfig
+      },
+      message: {
+        type: "track",
+        userId: "user-demo",
+        event: "Product clicked",
+        properties: {
+          name: "Rubik's Cube",
+          revenue: 4.99,
+          prop_integer: 2,
+          prop_float: 2.3,
+          email: "demo@rudderstack.com",
+          mobile: "999888777666"
+        },
+        context: {
+          ip: "14.5.67.21"
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan,
+    output: {
+      dropEvent: false,
+      violationType: "None"
+    }
+  },
+  {
+    testCase: "anyOtherViolation set to value other than forward/drop",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id",
+        trackingPlanVersion: "dummy_version",
+        workspaceId: "dummy_workspace_id",
+        mergedTpConfig: {
+          anyOtherViolation: "unknown",
+          ajvOptions: {}
+        },
+        sourceTpConfig
+      },
+      message: {
+        type: "track",
+        userId: "user-demo",
+        event: "Product clicked",
+        properties: {
+          name: "Rubik's Cube",
+          revenue: 4.99,
+          prop_integer: 2,
+          prop_float: 2.3,
+          email: "demo@rudderstack.com",
+          mobile: "999888777666"
+        },
+        context: {
+          ip: "14.5.67.21"
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan,
+    output: {
+      dropEvent: false,
+      violationType: "None"
+    }
+  },
+  {
+    testCase: "sendViolatedEventsTo set to value other than procerrors",
+    event: {
+      metadata: {
+        trackingPlanId: "dummy_tracking_plan_id",
+        trackingPlanVersion: "dummy_version",
+        workspaceId: "dummy_workspace_id",
+        destinationId: "dummy_destination_id",
+        destinationType: "dummy_destination_type",
+        mergedTpConfig: {
+          sendViolatedEventsTo: "unknown",
+          ajvOptions: {}
+        },
+        sourceTpConfig
+      },
+      message: {
+        type: "track",
+        userId: "user-demo",
+        event: "Product clicked",
+        properties: {
+          name: "Rubik's Cube",
+          revenue: 4.99,
+          prop_integer: 2,
+          prop_float: 2.3,
+          email: "demo@rudderstack.com",
+          mobile: "999888777666"
+        },
+        context: {
+          ip: "14.5.67.21"
+        },
+        timestamp: "2020-02-02T00:23:09.544Z"
+      }
+    },
+    trackingPlan,
+    output: {
+      dropEvent: false,
+      violationType: "None"
+    }
   }
 ];
 

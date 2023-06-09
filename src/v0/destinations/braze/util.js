@@ -170,7 +170,7 @@ const BrazeDedupUtility = {
    * uses the external_id field and the alias_name field to lookup users
    *
    * @param {*} inputs router transform input events array
-   * @returns {Array} array of braze user objects
+   * @returns {Promise<Array>} array of braze user objects
    */
   async doLookup(inputs) {
     const lookupStartTime = new Date();

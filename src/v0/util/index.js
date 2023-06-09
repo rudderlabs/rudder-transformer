@@ -636,44 +636,43 @@ function checkTimestamp(validateTimestamp, formattedVal) {
 // handle type and format
 function formatValues(formattedVal, formattingType, typeFormat, integrationsObj) {
   let curFormattedVal = formattedVal;
-  switch (formattingType) {
-    case 'timestamp':
+
+  const formattingFunctions = {
+    timestamp: () => {
       curFormattedVal = formatTimeStamp(formattedVal, typeFormat);
-      break;
-    case 'secondTimestamp':
+    },
+    secondTimestamp: () => {
       if (!moment(formattedVal, 'x', true).isValid()) {
         curFormattedVal = Math.floor(formatTimeStamp(formattedVal, typeFormat) / 1000);
       }
-      break;
-    case 'microSecondTimestamp':
+    },
+    microSecondTimestamp: () => {
       curFormattedVal = moment.unix(moment(formattedVal).format('X'));
       curFormattedVal =
         curFormattedVal.toDate().getTime() * 1000 + curFormattedVal.toDate().getMilliseconds();
-      break;
-    case 'flatJson':
+    },
+    flatJson: () => {
       curFormattedVal = flattenJson(formattedVal);
-      break;
-    case 'encodeURIComponent':
-      curFormattedVal = encodeURIComponent(JSON.stringify(formattedVal));
-      break;
-    case 'jsonStringify':
+    },
+    encodeURIComponent: () => {
+      curFormattedVal = encodeURIComponent(formattedVal);
+    },
+    jsonStringify: () => {
       curFormattedVal = JSON.stringify(formattedVal);
-      break;
-    case 'jsonStringifyOnFlatten':
+    },
+    jsonStringifyOnFlatten: () => {
       curFormattedVal = JSON.stringify(flattenJson(formattedVal));
-      break;
-    case 'dobInMMDD':
+    },
+    dobInMMDD: () => {
       curFormattedVal = String(formattedVal).slice(5);
       curFormattedVal = curFormattedVal.replace('-', '/');
-      break;
-    case 'jsonStringifyOnObject':
-      // if already a string, will not stringify
-      // calling stringify on string will add escape characters
+    },
+    jsonStringifyOnObject: () => {
       if (typeof formattedVal !== 'string') {
         curFormattedVal = JSON.stringify(formattedVal);
       }
-      break;
-    case 'numberForRevenue':
+    },
+    numberForRevenue: () => {
       if (
         (typeof formattedVal === 'string' || formattedVal instanceof String) &&
         formattedVal.charAt(0) === '$'
@@ -684,58 +683,63 @@ function formatValues(formattedVal, formattingType, typeFormat, integrationsObj)
       if (Number.isNaN(curFormattedVal)) {
         throw new InstrumentationError('Revenue is not in the correct format');
       }
-      break;
-    case 'toString':
+    },
+    toString: () => {
       curFormattedVal = String(formattedVal);
-      break;
-    case 'toNumber':
+    },
+    toNumber: () => {
       curFormattedVal = Number(formattedVal);
-      break;
-    case 'toFloat':
+    },
+    toFloat: () => {
       curFormattedVal = parseFloat(formattedVal);
-      break;
-    case 'toInt':
+    },
+    toInt: () => {
       curFormattedVal = parseInt(formattedVal, 10);
-      break;
-    case 'toLower':
+    },
+    toLower: () => {
       curFormattedVal = formattedVal.toString().toLowerCase();
-      break;
-    case 'hashToSha256':
+    },
+    hashToSha256: () => {
       curFormattedVal =
         integrationsObj && integrationsObj.hashed
           ? String(formattedVal)
           : hashToSha256(String(formattedVal));
-      break;
-    case 'getFbGenderVal':
+    },
+    getFbGenderVal: () => {
       curFormattedVal = getFbGenderVal(formattedVal);
-      break;
-    case 'getOffsetInSec':
+    },
+    getOffsetInSec: () => {
       curFormattedVal = getOffsetInSec(formattedVal);
-      break;
-    case 'domainUrl':
+    },
+    domainUrl: () => {
       curFormattedVal = formattedVal.replace('https://', '').replace('http://', '');
-      break;
-    case 'domainUrlV2': {
+    },
+    domainUrlV2: () => {
       const url = isValidUrl(formattedVal);
       if (!url) {
         throw new InstrumentationError(`Invalid URL: ${formattedVal}`);
       }
       curFormattedVal = url.hostname.replace('www.', '');
-      break;
-    }
-    case 'IsBoolean':
+    },
+    IsBoolean: () => {
+      curFormattedVal = true;
       if (!(typeof formattedVal === 'boolean')) {
         logger.debug('Boolean value missing, so dropping it');
+        curFormattedVal = false;
       }
-      break;
-    case 'trim':
+    },
+    trim: () => {
       if (typeof formattedVal === 'string') {
         curFormattedVal = formattedVal.trim();
       }
-      break;
-    default:
-      break;
+    },
+  };
+
+  if (formattingType in formattingFunctions) {
+    const formattingFunction = formattingFunctions[formattingType];
+    formattingFunction();
   }
+
   return curFormattedVal;
 }
 
@@ -1967,4 +1971,5 @@ module.exports = {
   getEventType,
   checkAndCorrectUserId,
   getAccessToken,
+  formatValues,
 };

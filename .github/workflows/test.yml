@@ -27,7 +27,9 @@ jobs:
         run: npm ci
 
       - name: Run Unit Tests
-        run: npm run test:ci
+        run: |
+          npm run test:js:ci
+          npm run test:ts:ci
 
       - name: Setup Go
         uses: actions/setup-go@v4.0.1
@@ -74,5 +76,5 @@ jobs:
       - name: Port Forwarding to port on gateway-external
         run: kubectl port-forward service/gateway-external 8080:8080 -n openfaas &
 
-      - name: Jest Integration test
-        run: npm run test:integration
+      - name: User Transformation Tests
+        run: npm run test:ut:integration:ci

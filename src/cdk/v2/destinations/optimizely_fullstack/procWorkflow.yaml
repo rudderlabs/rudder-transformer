@@ -3,7 +3,6 @@ bindings:
     path: ../../../../constants
   - path: ../../bindings/jsontemplate
     exportAll: true
-  - path: ./config
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
   - name: defaultRequestConfig
@@ -34,6 +33,8 @@ steps:
       $.assertConfig(.destination.Config.accountId, "Account ID is not present. Aborting");
       $.assertConfig(.destination.Config.campaignId, "Campaign ID is not present. Aborting");
       $.assertConfig(.destination.Config.experimentId, "Experiment ID is not present. Aborting");
+      $.assertConfig(!(.destination.Config.trackKnownUsers && !(.message.userId)), "RudderStack will only track users associated with a userId when the trackKnownUsers setting is enabled");
+      $.assertConfig(!(!.destination.Config.trackKnownUsers && !(.message.anonymousId)), "AnonymousId is required when trackKnownUsers setting is disabled");
 
   - name: messageType
     template: |
@@ -47,7 +48,10 @@ steps:
   - name: validateInputForPageAndScreen
     condition: $.outputs.messageType in [{{$.EventType.PAGE}}, {{$.EventType.SCREEN}}]
     template: |
-      $.assert(.message.name ?? .message.properties.category, "Name/Category is not present. Aborting.");
+      $.assert(.message.name ?? .message.properties.category, "Name and Category are not present. Aborting.");
+      $.assertConfig(.destination.Config.trackCategorizedPages  || .destination.Config.trackNamedPages, 
+      "Both 'Track Categorized Pages' and 'Track Named Pages' toggles are disabled in webapp. " + 
+      "Please enable at one of them to send page/screen events to Optimizely.");
 
   - name: dataFile
     template: |
@@ -66,29 +70,24 @@ steps:
   - name: extractExperimentIds
     template: |
       const integrationObj = $.getIntegrationsObj(.message, "optimizely_fullstack");
-      $.assert(integrationObj.variationId, "Variation ID is not present. Please pass the variation ID in the integrations object.");
+      $.assert(integrationObj.variationId, "Variation ID is not present in the integrations object");
       {
         "campaignId": integrationObj.campaignId,
         "experimentId": integrationObj.experimentId,
         "variationId": integrationObj.variationId
       }
 
-  - name: clientInfo
-    template: |
-      {
-        "client_name": "RudderStack",
-        "client_version": "1.0.0"
-      }
-
   - name: commonPayload
     template: |
+      const commonPayload =
       {
-         "account_id": .destination.Config.accountId,
-         "project_id": .destination.Config.projectId,
-         "anonymize_ip": .destination.Config.anonymizeIp || false,
-         "enrich_decisions": .destination.Config.enrichDecisions || true,
-         ...$.outputs.clientInfo
-       }
+        "account_id": .destination.Config.accountId,
+        "project_id": .destination.Config.projectId,
+        "anonymize_ip": .destination.Config.anonymizeIp || false,
+        "enrich_decisions": .destination.Config.enrichDecisions || true,
+        ...$.CLIENT_INFO
+      }
+      $.removeUndefinedAndNullValues(commonPayload);
 
   - name: getAttributes
     template: |
@@ -113,10 +112,13 @@ steps:
 
       - name: events
         template: |
+          const timestamp = .message.().(
+            {{{{$.getGenericPaths("timestamp")}}}};
+          );
           [{
             "entity_id": $.outputs.extractExperimentIds.campaignId || .destination.Config.campaignId, 
             "type": "campaign_activated", 
-            "timestamp": $.formatTimeStamp(.message.timestamp),
+            "timestamp": $.formatTimeStamp(timestamp),
             "uuid": .message.messageId
           }];
 
@@ -127,15 +129,16 @@ steps:
             "events": $.outputs.prepareIdentifyPayload.events
           }];
           const visitorId = .destination.Config.trackKnownUsers ? .message.userId : .message.anonymousId;
-          const sessionId = .message.().(
-            {{{{$.getGenericPaths("sessionId")}}}};
-          );
-          [{
+          const visitors = [{
             "visitor_id": visitorId,
-            "session_id": sessionId,
             "attributes": $.outputs.getAttributes,
             "snapshots": snapshots
           }];
+          const sessionId = .message.().(
+            {{{{$.getGenericPaths("sessionId")}}}};
+          );
+          sessionId ? visitors[0].session_id = String(sessionId);
+          visitors;
 
       - name: payload
         template: |
@@ -152,21 +155,27 @@ steps:
           const eventsMap = $.getHashFromArray(.destination.Config.eventMapping, 'from', 'to');
           const eventInLowerCase = .message.event.toLowerCase();
           const mappedEvent = eventsMap[eventInLowerCase];
-          mappedEvent || eventInLowerCase;
+          $.assert(mappedEvent, "No mapped event found for " + .message.event + 
+          " event. Make sure to map the event in 'RudderStack to Optimizely event mappings' setting");
+          mappedEvent;
 
-      - name: eventId
+      - name: optimizelyEvent
         template: |
           const availableEvents = $.outputs.dataFile.events;
           const eventFound = availableEvents.(){.key === $.outputs.prepareTrackPayload.mappedEvent};
-          $.assert(eventFound, "Given event " + $.outputs.prepareTrackPayload.mappedEvent + " is not present in data file. Make sure event exists in Optimizely.");
-          eventFound.id;
+          $.assert(eventFound, "Mapped event " + $.outputs.prepareTrackPayload.mappedEvent + 
+          " is not present in data file. Make sure event exists in Optimizely.");
+          eventFound;
 
       - name: events
         template: |
+          const timestamp = .message.().(
+            {{{{$.getGenericPaths("timestamp")}}}};
+          );
           [{
-            "entity_id": $.outputs.prepareTrackPayload.eventId,
-            "timestamp": $.formatTimeStamp(.message.timestamp),
-            "key": $.outputs.prepareTrackPayload.mappedEvent,
+            "entity_id": $.outputs.prepareTrackPayload.optimizelyEvent.id,
+            "timestamp": $.formatTimeStamp(timestamp),
+            "key": $.outputs.prepareTrackPayload.optimizelyEvent.key,
             "uuid": .message.messageId,
             "quantity": .message.properties.quantity,
             "revenue": .message.properties.revenue ? Math.floor(.message.properties.revenue * 100),
@@ -179,16 +188,17 @@ steps:
             "decisions": [],
             "events": $.outputs.prepareTrackPayload.events
           }];
-          const visitorId = .destination.Config.trackKnownUser ? .message.userId : .message.anonymousId;
-          const sessionId = .message.().(
-            {{{{$.getGenericPaths("sessionId")}}}};
-          );
-          [{
+          const visitorId = .destination.Config.trackKnownUsers ? .message.userId : .message.anonymousId;
+          const visitors = [{
             "visitor_id": visitorId,
-            "session_id": sessionId,
             "attributes": $.outputs.getAttributes,
             "snapshots": snapshots
           }];
+           const sessionId = .message.().(
+            {{{{$.getGenericPaths("sessionId")}}}};
+          );
+          sessionId ? visitors[0].session_id = String(sessionId);
+          visitors;
 
       - name: payload
         template: |
@@ -208,44 +218,45 @@ steps:
           const mappedEvents = [];
           .destination.Config.trackCategorizedPages && eventsMap[category] ? mappedEvents.push(eventsMap[category]);
           .destination.Config.trackNamedPages && eventsMap[name] ? mappedEvents.push(eventsMap[name]);
-          console.log("mappedEvents", mappedEvents);
-          console.log("eventsMap", eventsMap);
           $.assert(mappedEvents.length > 0, "No mapped event found for " + $.outputs.messageType + 
-          " call. Make sure to map the event in 'RudderStack Page Name/Category to Optimizely event mappings' setting");
+          " Name/Category. Make sure to map the event in 'RudderStack Page Name/Category to Optimizely event mappings' setting");
           mappedEvents;
 
-      - name: eventIds
+      - name: optimizelyEvents
         template: |
           const mappedEvents = $.outputs.preparePageOrScreenPayload.mappedEvents;
           const availableEvents = $.outputs.dataFile.events;
-          const eventIds = [];
-          let id = availableEvents.(){.key.toLowerCase() === mappedEvents[0].toLowerCase()}.id;
-          id ? eventIds.push(id);
+          const eventsFound = [];
+          let event = availableEvents.(){.key.toLowerCase() === mappedEvents[0].toLowerCase()} 
+          event.id ? eventsFound.push(event);
 
-          id = availableEvents.(){.key.toLowerCase() === mappedEvents[1].toLowerCase()}.id;
-          id ? eventIds.push(id);
 
-          $.assert(eventIds.length > 0, "Mapped events [" + mappedEvents.join(", ") + "] are not present in the data file. Make sure events exist in Optimizely.");
-          console.log("eventIds", eventIds);
-          eventIds;
+          event = availableEvents.(){.key.toLowerCase() === mappedEvents[1].toLowerCase()};
+          event.id ? eventsFound.push(event);
+
+          $.assert(eventsFound.length > 0, "Mapped events [" + mappedEvents.join(", ") + "] are not present in the data file. Make sure events exist in Optimizely.");
+          eventsFound;
 
       - name: events
         template: |
-          const eventIds = $.outputs.preparePageOrScreenPayload.eventIds;
+          const optimizelyEvents = $.outputs.preparePageOrScreenPayload.optimizelyEvents;
+          const timestamp = .message.().(
+            {{{{$.getGenericPaths("timestamp")}}}};
+          );
           const events = [
             {
-            "entity_id": eventIds[0],
-            "timestamp": $.formatTimeStamp(.message.timestamp),
-            "key": $.outputs.preparePageOrScreenPayload.mappedEvents[0],
+            "entity_id": optimizelyEvents[0].id,
+            "timestamp": $.formatTimeStamp(timestamp),
+            "key": optimizelyEvents[0].key,
             "uuid": .message.messageId,
             "tags": .message.properties
             }
           ];
 
-          eventIds.length > 1 ? events.push({
-            "entity_id": eventIds[1],
-            "timestamp": $.formatTimeStamp(.message.timestamp),
-            "key": $.outputs.preparePageOrScreenPayload.mappedEvents[1],
+          optimizelyEvents.length > 1 ? events.push({
+            "entity_id": optimizelyEvents[1].id,
+            "timestamp": $.formatTimeStamp(timestamp),
+            "key": optimizelyEvents[1].key,
             "uuid": .message.messageId,
             "tags": .message.properties
           });
@@ -257,16 +268,18 @@ steps:
             "decisions": [],
             "events": $.outputs.preparePageOrScreenPayload.events
           }];
-          const visitorId = .destination.Config.trackKnownUser ? .message.userId : .message.anonymousId;
+          const visitorId = .destination.Config.trackKnownUsers ? .message.userId : .message.anonymousId;
+          const visitors = [{
+            "visitor_id": visitorId,
+            "snapshots": snapshots
+          }];
           const sessionId = .message.().(
             {{{{$.getGenericPaths("sessionId")}}}};
           );
-          [{
-            "visitor_id": visitorId,
-            "session_id": sessionId,
-            "attributes": $.outputs.getAttributes,
-            "snapshots": snapshots
-          }];
+          const attributes = $.outputs.getAttributes;
+          sessionId ? visitors[0].session_id = String(sessionId);
+          attributes.length > 0 ? visitors[0].attributes = attributes
+          visitors;
 
       - name: payload
         template: |

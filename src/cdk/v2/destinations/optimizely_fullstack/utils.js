@@ -8,8 +8,9 @@ const prepareAttributes = (attributeMap, traits, availableAttributes) =>
 
       if (matchingAttribute) {
         response.push({
-          type: ATTRIBUTE_TYPE,
           entity_id: matchingAttribute.id,
+          key: matchingAttribute.key,
+          type: ATTRIBUTE_TYPE,
           value: traitValue,
         });
       }
@@ -17,4 +18,4 @@ const prepareAttributes = (attributeMap, traits, availableAttributes) =>
     return response;
   }, []);
 
-export { prepareAttributes };
+module.exports = { prepareAttributes };

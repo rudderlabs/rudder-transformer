@@ -10,10 +10,12 @@ const {
   getAnonymousId,
   checkAndUpdateCartItems,
   getHashLineItems,
+  getSessionIdFromDB
 } = require('./util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
 const Message = require('../message');
+const logger = require('../../../logger');
 const { EventType } = require('../../../constants');
 const {
   INTEGERATION,
@@ -171,8 +173,10 @@ const processEvent = async (inputEvent, metricMetadata) => {
   }
   if (message.type !== EventType.IDENTIFY) {
     let anonymousId;
+    let sessionId;
     if (useRedisDatabase) {
       anonymousId = await getAnonymousIdFromDb(message, metricMetadata);
+      sessionId = await getSessionIdFromDB(message, metricMetadata);
     } else {
       anonymousId = getAnonymousId(message);
     }
@@ -180,6 +184,9 @@ const processEvent = async (inputEvent, metricMetadata) => {
       message.setProperty('anonymousId', anonymousId);
     } else if (!message.userId) {
       message.setProperty('userId', 'shopify-admin');
+    }
+    if (isDefinedAndNotNull(sessionId)) {
+      message.setProperty('sessionId', sessionId);
     }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
@@ -198,15 +205,31 @@ const processEvent = async (inputEvent, metricMetadata) => {
   return message;
 };
 
-const isIdentifierEvent = (event) => event?.event === 'rudderIdentifier';
-
+const isIdentifierEvent = (event) => ['rudderIdentifier', 'rudderSessionIdentifier'].includes(event?.event);
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
-    const lineItemshash = getHashLineItems(event.cart);
-    const value = ['anonymousId', event.anonymousId, 'itemsHash', lineItemshash];
+    let value;
+    if (event.event === 'rudderIdentifier') {
+      const lineItemshash = getHashLineItems(event.cart);
+      value = ['anonymousId', event.anonymousId, 'itemsHash', lineItemshash];
+      /*
+      cart_token: {
+      anonymousId:"anon_id1",
+      lineItemshash:"0943gh34pg"
+     }
+      */
+    } else {
+      value = ['sessionId', event.sessionId];
+      /*
+      cart_token: {
+      sessionId: "session_id1"
+     }
+     */
+    }
     try {
       await RedisDB.setVal(`${event.cartToken}`, value);
     } catch (e) {
+      logger.debug(`{{SHOPIFY::}} cartToken maping set call Failed due redis error ${e}`);
       stats.increment('shopify_redis_failures', {
         type: 'set',
         ...metricMetadata,

@@ -126,6 +126,7 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
     try {
       anonymousId = await RedisDB.getVal(`${cartToken}`, 'anonymousId');
     } catch (e) {
+      logger.debug(`{{SHOPIFY::}} anonymousId get call Failed due redis error ${e}`);
       stats.increment('shopify_redis_failures', {
         type: 'get',
         ...metricMetadata,
@@ -147,6 +148,41 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
 };
 
 /**
+ * This function sets the sessionId based on cart_token or id from the properties of message.
+ * @param {*} message
+ * @returns
+ */
+const getSessionIdFromDB = async (message, metricMetadata) => {
+  const cartToken = getCartToken(message);
+  const { event } = message;
+  if (!isDefinedAndNotNull(cartToken)) {
+    return null;
+  }
+  let sessionId;
+  try {
+    sessionId = await RedisDB.getVal(`${cartToken}`, 'sessionId');
+  } catch (e) {
+    logger.debug(`Time: ${new Date()} {{SHOPIFY::}} sessionId get call Failed due redis error ${e}`);
+
+    stats.increment('shopify_redis_failures', {
+      type: 'get',
+      ...metricMetadata,
+    });
+  }
+  stats.increment('shopify_redis_calls', {
+    type: 'get',
+    ...metricMetadata,
+  });
+  if (sessionId === null) {
+    stats.increment('shopify_redis_no_val', {
+      ...metricMetadata,
+      event,
+    });
+  }
+  return sessionId;
+};
+
+/**
  * It checks if the event is valid or not based on previous cartItems
  * @param {*} inputEvent
  * @returns true if event is valid else false
@@ -158,6 +194,7 @@ const updateCartItemsInRedis = async (cartToken, newCartItemsHash, metricMetadat
   try {
     await RedisDB.setVal(`${cartToken}`, value);
   } catch (e) {
+    logger.debug(`{{SHOPIFY::}} itemsHash set call Failed due redis error ${e}`);
     stats.increment('shopify_redis_failures', {
       type: 'set',
       ...metricMetadata,
@@ -176,6 +213,7 @@ const checkAndUpdateCartItems = async (inputEvent, metricMetadata) => {
       });
     }
   } catch (e) {
+    logger.debug(`{{SHOPIFY::}} itemsHash get call Failed due redis error ${e}`);
     // so if redis is down we will send the event to downstream destinations
     stats.increment('shopify_redis_failures', {
       type: 'get',
@@ -204,4 +242,5 @@ module.exports = {
   getAnonymousId,
   checkAndUpdateCartItems,
   getHashLineItems,
+  getSessionIdFromDB
 };

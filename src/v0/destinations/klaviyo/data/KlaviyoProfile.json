@@ -1,46 +1,30 @@
 [
   {
-    "destKey": "external_id",
-    "sourceKeys": "userId",
-    "required": false,
-    "sourceFromGenericMap": true
-  },
-  {
-    "destKey": "email",
+    "destKey": "$email",
     "sourceKeys": "email",
     "required": false,
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "first_name",
+    "destKey": "$first_name",
     "sourceKeys": "firstName",
     "required": false,
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "last_name",
+    "destKey": "$last_name",
     "sourceKeys": "lastName",
     "required": false,
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "phone_number",
+    "destKey": "$phone_number",
     "sourceKeys": "phone",
     "required": false,
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "title",
-    "sourceKeys": ["traits.title", "context.traits.title", "properties.title"],
-    "required": false
-  },
-  {
-    "destKey": "organization",
-    "sourceKeys": ["traits.organization", "context.traits.organization", "properties.organization"],
-    "required": false
-  },
-  {
-    "destKey": "location.city",
+    "destKey": "$city",
     "sourceKeys": [
       "traits.city",
       "traits.address.city",
@@ -51,7 +35,7 @@
     "required": false
   },
   {
-    "destKey": "location.region",
+    "destKey": "$region",
     "sourceKeys": [
       "traits.region",
       "traits.address.region",
@@ -62,7 +46,7 @@
     "required": false
   },
   {
-    "destKey": "location.country",
+    "destKey": "$country",
     "sourceKeys": [
       "traits.country",
       "traits.address.country",
@@ -73,7 +57,7 @@
     "required": false
   },
   {
-    "destKey": "location.zip",
+    "destKey": "$zip",
     "sourceKeys": [
       "traits.zip",
       "traits.postalcode",
@@ -89,13 +73,13 @@
     "required": false
   },
   {
-    "destKey": "image",
-    "sourceKeys": ["traits.image", "context.traits.image", "properties.image"],
+    "destKey": "$consent",
+    "sourceKeys": ["context.traits.consent", "traits.consent", "properties.consent"],
     "required": false
   },
   {
-    "destKey": "location.timezone",
-    "sourceKeys": ["traits.timezone", "context.traits.timezone", "properties.timezone"],
+    "destKey": "$image",
+    "sourceKeys": ["traits.image", "context.traits.image", "properties.image"],
     "required": false
   }
 ]

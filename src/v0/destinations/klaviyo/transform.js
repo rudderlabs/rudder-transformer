@@ -12,21 +12,29 @@ const {
   eventNameMapping,
   jsonNameMapping,
 } = require('./config');
-const { isProfileExist, createCustomerProperties, checkForSubscribe } = require('./util');
+const {
+  createCustomerProperties,
+  subscribeUserToList,
+  populateCustomFieldsFromTraits,
+  batchSubscribeEvents,
+  getIdFromNewOrExistingProfile,
+  profileUpdateResponseBuilder,
+} = require('./util');
 const {
   defaultRequestConfig,
   constructPayload,
   getFieldValueFromMessage,
   defaultPostRequestConfig,
   extractCustomFields,
-  toUnixTimestamp,
   removeUndefinedAndNullValues,
   isEmptyObject,
   addExternalIdToTraits,
   adduserIdFromExternalId,
-  defaultPutRequestConfig,
-  simpleProcessRouterDest,
+  getSuccessRespEvents,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError,
 } = require('../../util');
+
 const { ConfigurationError, InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -43,61 +51,60 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  */
 const identifyRequestHandler = async (message, category, destination) => {
   // If listId property is present try to subscribe/member user in list
-  if (!destination.Config.publicApiKey || !destination.Config.privateApiKey) {
-    if (!destination.Config.publicApiKey) {
-      throw new ConfigurationError('Public API Key is a required field for identify events');
-    } else {
-      throw new ConfigurationError('Private API Key is a required field for identify events');
-    }
-  }
+  const { privateApiKey, enforceEmailAsPrimary } = destination.Config;
   const mappedToDestination = get(message, MappedToDestinationKey);
   if (mappedToDestination) {
     addExternalIdToTraits(message);
     adduserIdFromExternalId(message);
   }
   const traitsInfo = getFieldValueFromMessage(message, 'traits');
-  const response = defaultRequestConfig();
-  let personId;
-  if (message.channel !== 'sources') {
-    personId = await isProfileExist(message, destination);
-  }
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
-  propertyPayload = extractCustomFields(
+  let customPropertyPayload = {};
+  customPropertyPayload = extractCustomFields(
     message,
-    propertyPayload,
+    customPropertyPayload,
     ['traits', 'context.traits'],
     WhiteListedTraits,
   );
-  if (!personId) {
-    propertyPayload = removeUndefinedAndNullValues(propertyPayload);
-    if (destination.Config?.enforceEmailAsPrimary) {
-      delete propertyPayload.$id;
-      propertyPayload._id = getFieldValueFromMessage(message, 'userId');
-    }
-    const payload = {
-      token: destination.Config.publicApiKey,
-      properties: propertyPayload,
+
+  propertyPayload = removeUndefinedAndNullValues(propertyPayload);
+  if (enforceEmailAsPrimary) {
+    delete propertyPayload.external_id;
+    customPropertyPayload = {
+      ...customPropertyPayload,
+      _id: getFieldValueFromMessage(message, 'userId'),
     };
-    response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
-    response.method = defaultPostRequestConfig.requestMethod;
-    response.headers = {
-      'Content-Type': JSON_MIME_TYPE,
-      Accept: 'text/html',
-    };
-    response.body.JSON = removeUndefinedAndNullValues(payload);
-  } else {
-    response.endpoint = `${BASE_ENDPOINT}/api/v1/person/${personId}`;
-    response.method = defaultPutRequestConfig.requestMethod;
-    response.headers = {
-      Accept: JSON_MIME_TYPE,
-    };
-    response.params = removeUndefinedAndNullValues(propertyPayload);
-    response.params.api_key = destination.Config.privateApiKey;
   }
-  const responseArray = [response];
-  responseArray.push(...checkForSubscribe(message, traitsInfo, destination));
-  return responseArray;
+  const data = {
+    type: 'profile',
+    attributes: propertyPayload,
+    properties: removeUndefinedAndNullValues(customPropertyPayload),
+  };
+  const payload = {
+    data: removeUndefinedAndNullValues(data),
+  };
+  const endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
+  const requestOptions = {
+    headers: {
+      Authorization: `Klaviyo-API-Key ${privateApiKey}`,
+      accept: JSON_MIME_TYPE,
+      'content-type': JSON_MIME_TYPE,
+      revision: '2023-02-22',
+    },
+  };
+
+  const profileId = await getIdFromNewOrExistingProfile(endpoint, payload, requestOptions);
+
+  // Update Profile
+  const responseArray = [profileUpdateResponseBuilder(payload, profileId, category, privateApiKey)];
+
+  // check if user wants to subscribe profile or not
+  if (traitsInfo?.properties?.subscribe) {
+    responseArray.push(subscribeUserToList(message, traitsInfo, destination));
+    return responseArray;
+  }
+  return responseArray[0];
 };
 
 // ----------------------
@@ -107,24 +114,25 @@ const identifyRequestHandler = async (message, category, destination) => {
 // ----------------------
 
 const trackRequestHandler = (message, category, destination) => {
-  let payload = {};
-  if (!destination.Config.publicApiKey) {
-    throw new ConfigurationError('Public API Key is a required field for track events');
-  }
+  const payload = {};
   let event = get(message, 'event');
   event = event ? event.trim().toLowerCase() : event;
+  let attributes = {};
   if (ecomEvents.includes(event) && message.properties) {
     const eventName = eventNameMapping[event];
-    payload.event = eventName;
-    payload.token = destination.Config.publicApiKey;
     const eventMap = jsonNameMapping[eventName];
+    attributes.metric = { name: eventName };
     // using identify to create customer properties
-    payload.customer_properties = createCustomerProperties(message);
-    if (!payload.customer_properties.$email && !payload.customer_properties.$phone_number) {
-      throw new InstrumentationError('email or phone is required for customer_properties');
+    attributes.profile = createCustomerProperties(message);
+    if (!attributes.profile.$email && !attributes.profile.$phone_number) {
+      throw new InstrumentationError('email or phone is required for track call');
     }
     const categ = CONFIG_CATEGORIES[eventMap];
-    payload.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
+    attributes.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
+    attributes.properties = {
+      ...attributes.properties,
+      ...populateCustomFieldsFromTraits(message),
+    };
 
     // products mapping using Items.json
     // mapping properties.items to payload.properties.items and using properties.products as a fallback to properties.items
@@ -141,11 +149,11 @@ const trackRequestHandler = (message, category, destination) => {
           }
         });
       }
-      if (!payload.properties) {
+      if (!attributes.properties) {
         payload.properties = {};
       }
       if (itemArr.length > 0) {
-        payload.properties.items = itemArr;
+        attributes.properties.items = itemArr;
       }
     }
 
@@ -153,43 +161,46 @@ const trackRequestHandler = (message, category, destination) => {
     let customProperties = {};
     customProperties = extractCustomFields(
       message,
-      customProperties,
+      attributes.customProperties,
       ['properties'],
       ecomExclusionKeys,
     );
     if (!isEmptyObject(customProperties)) {
-      payload.properties = {
-        ...payload.properties,
+      attributes.properties = {
+        ...attributes.properties,
         ...customProperties,
       };
     }
 
-    if (isEmptyObject(payload.properties)) {
+    if (isEmptyObject(attributes.properties)) {
       delete payload.properties;
     }
   } else {
-    payload = constructPayload(message, MAPPING_CONFIG[category.name]);
-    payload.token = destination.Config.publicApiKey;
-    if (message.properties && message.properties.revenue) {
-      payload.properties.$value = message.properties.revenue;
-      delete payload.properties.revenue;
+    const value =
+      message.properties?.revenue || message.properties?.total || message.properties?.value;
+    attributes = constructPayload(message, MAPPING_CONFIG[category.name]);
+    if (value) {
+      attributes.value = value;
     }
-    const customerProperties = createCustomerProperties(message);
-    if (destination.Config.enforceEmailAsPrimary) {
-      delete customerProperties.$id;
-      customerProperties._id = getFieldValueFromMessage(message, 'userId');
-    }
-    payload.customer_properties = customerProperties;
+    attributes.properties = {
+      ...attributes.properties,
+      ...populateCustomFieldsFromTraits(message),
+    };
+    attributes.profile = createCustomerProperties(message);
   }
   if (message.timestamp) {
-    payload.time = toUnixTimestamp(message.timestamp);
+    attributes.time = message.timestamp;
   }
+  payload.data = { type: 'event' };
+  payload.data.attributes = attributes;
   const response = defaultRequestConfig();
   response.endpoint = `${BASE_ENDPOINT}${category.apiUrl}`;
   response.method = defaultPostRequestConfig.requestMethod;
   response.headers = {
+    Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
-    Accept: 'text/html',
+    Accept: JSON_MIME_TYPE,
+    revision: '2023-02-22',
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
   return response;
@@ -202,49 +213,28 @@ const trackRequestHandler = (message, category, destination) => {
 // DOCS: https://www.klaviyo.com/docs/api/v2/lists
 // ----------------------
 const groupRequestHandler = (message, category, destination) => {
-  if (!destination.Config.privateApiKey) {
-    throw new ConfigurationError('Private API Key is a required field for group events');
-  }
   if (!message.groupId) {
     throw new InstrumentationError('groupId is a required field for group events');
   }
-  let profile = constructPayload(message, MAPPING_CONFIG[category.name]);
-  // Extract other K-V property from traits about user custom properties
-  const groupWhitelistedTraits = [...WhiteListedTraits, 'consent', 'smsConsent', 'subscribe'];
-  profile = extractCustomFields(
-    message,
-    profile,
-    ['traits', 'context.traits'],
-    groupWhitelistedTraits,
-  );
-  profile = removeUndefinedAndNullValues(profile);
-  if (destination.Config.enforceEmailAsPrimary) {
-    delete profile.$id;
-    profile._id = getFieldValueFromMessage(message, 'userId');
-  }
-  if (message.traits.subscribe === true) {
-    profile.sms_consent = message.context?.traits.smsConsent || destination.Config.smsConsent;
-    profile.$consent = message.context?.traits.consent || destination.Config.consent;
+  if (!message.traits.subscribe) {
+    throw new InstrumentationError('Subscribe flag should be true for group call');
   }
 
-  const subscribePayload = {
-    profiles: [profile],
-  };
-  const subscribeResponse = defaultRequestConfig();
-  subscribeResponse.endpoint = `${BASE_ENDPOINT}/api/v2/list/${message.groupId}/subscribe`;
-  subscribeResponse.headers = {
-    'Content-Type': JSON_MIME_TYPE,
-  };
-  subscribeResponse.body.JSON = subscribePayload;
-  subscribeResponse.method = defaultPostRequestConfig.requestMethod;
-  subscribeResponse.params = { api_key: destination.Config.privateApiKey };
-  return subscribeResponse;
+  const traitsInfo = getFieldValueFromMessage(message, 'traits');
+  let response;
+  if (traitsInfo?.subscribe) {
+    response = subscribeUserToList(message, traitsInfo, destination);
+  }
+  return [response];
 };
 
 // Main event processor using specific handler funcs
 const processEvent = async (message, destination) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
+  }
+  if (!destination.Config.privateApiKey) {
+    throw new ConfigurationError(`Private API Key is a required field for ${message.type} events`);
   }
   const messageType = message.type.toLowerCase();
 
@@ -275,9 +265,65 @@ const process = async (event) => {
   return result;
 };
 
+// This function separates subscribe response and other responses in chunks
+const getEventChunks = (event, subscribeRespList, nonSubscribeRespList) => {
+  if (Array.isArray(event.message)) {
+    // this list contains responses for subscribe endpoint
+    subscribeRespList.push(event);
+  } else {
+    // this list doesn't contain subsribe endpoint responses
+    nonSubscribeRespList.push(event);
+  }
+};
+
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+  let batchResponseList = [];
+  const batchErrorRespList = [];
+  const subscribeRespList = [];
+  const nonSubscribeRespList = [];
+  const { destination } = inputs[0];
+  await Promise.all(
+    inputs.map(async (event) => {
+      try {
+        if (event.message.statusCode) {
+          // already transformed event
+          getEventChunks(
+            { message: event.message, metadata: event.metadata, destination },
+            subscribeRespList,
+            nonSubscribeRespList,
+          );
+        } else {
+          // if not transformed
+          getEventChunks(
+            {
+              message: await process(event),
+              metadata: event.metadata,
+              destination,
+            },
+            subscribeRespList,
+            nonSubscribeRespList,
+          );
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+        batchErrorRespList.push(errRespEvent);
+      }
+    }),
+  );
+  let batchedSubscribeResponseList = [];
+  if (subscribeRespList.length > 0) {
+    batchedSubscribeResponseList = batchSubscribeEvents(subscribeRespList);
+  }
+  const nonSubscribeSuccessList = nonSubscribeRespList.map((resp) =>
+    getSuccessRespEvents(resp.message, [resp.metadata], resp.destination),
+  );
+  batchResponseList = [...batchedSubscribeResponseList, ...nonSubscribeSuccessList];
+
+  return [...batchResponseList, ...batchErrorRespList];
 };
 
 module.exports = { process, processRouterDest };

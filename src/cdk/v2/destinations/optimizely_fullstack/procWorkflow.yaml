@@ -70,12 +70,16 @@ steps:
   - name: extractExperimentIds
     template: |
       const integrationObj = $.getIntegrationsObj(.message, "optimizely_fullstack");
-      $.assert(integrationObj.variationId, "Variation ID is not present in the integrations object");
       {
         "campaignId": integrationObj.campaignId,
         "experimentId": integrationObj.experimentId,
         "variationId": integrationObj.variationId
       }
+
+  - name: validateInputForIdentify
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      $.assert($.outputs.extractExperimentIds.variationId, "Variation ID is not present in the integrations object");
 
   - name: commonPayload
     template: |
@@ -179,7 +183,7 @@ steps:
             "uuid": .message.messageId,
             "quantity": .message.properties.quantity,
             "revenue": .message.properties.revenue ? Math.floor(.message.properties.revenue * 100),
-            "tags": .message.properties
+            "tags": .message.properties{~["revenue", "quantity"]}
           }];
 
       - name: visitors
@@ -191,13 +195,14 @@ steps:
           const visitorId = .destination.Config.trackKnownUsers ? .message.userId : .message.anonymousId;
           const visitors = [{
             "visitor_id": visitorId,
-            "attributes": $.outputs.getAttributes,
             "snapshots": snapshots
           }];
            const sessionId = .message.().(
             {{{{$.getGenericPaths("sessionId")}}}};
           );
+          const attributes = $.outputs.getAttributes;
           sessionId ? visitors[0].session_id = String(sessionId);
+          attributes.length > 0 ? visitors[0].attributes = attributes
           visitors;
 
       - name: payload
@@ -219,7 +224,7 @@ steps:
           .destination.Config.trackCategorizedPages && eventsMap[category] ? mappedEvents.push(eventsMap[category]);
           .destination.Config.trackNamedPages && eventsMap[name] ? mappedEvents.push(eventsMap[name]);
           $.assert(mappedEvents.length > 0, "No mapped event found for " + $.outputs.messageType + 
-          " Name/Category. Make sure to map the event in 'RudderStack Page Name/Category to Optimizely event mappings' setting");
+          " call. Make sure to map the event in 'RudderStack Page Name/Category to Optimizely event mappings' setting");
           mappedEvents;
 
       - name: optimizelyEvents
@@ -300,5 +305,4 @@ steps:
       response.headers = {
           "Content-Type": "application/json"
         };
-      console.log("response", JSON.stringify(response));
-      finalResponse = response;
+      response;

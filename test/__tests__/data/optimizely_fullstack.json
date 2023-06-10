@@ -790,9 +790,7 @@
                       "quantity": 2,
                       "revenue": 12300,
                       "tags": {
-                        "foo": "bar",
-                        "revenue": 123,
-                        "quantity": 2
+                        "foo": "bar"
                       }
                     }
                   ]
@@ -1267,7 +1265,7 @@
       }
     },
     "output": {
-      "error": "No mapped event found for page Name/Category. Make sure to map the event in 'RudderStack Page Name/Category to Optimizely event mappings' setting"
+      "error": "No mapped event found for page call. Make sure to map the event in 'RudderStack Page Name/Category to Optimizely event mappings' setting"
     }
   },
   {

@@ -5,7 +5,6 @@ bindings:
 steps:
   - name: validateInput
     template: |
-      console.log("In ROuter transform....")
       $.assert(Array.isArray(^) && ^.length > 0, "Invalid event array")
 
   - name: transform

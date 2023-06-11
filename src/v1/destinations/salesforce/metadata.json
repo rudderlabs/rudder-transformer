@@ -1,0 +1,11 @@
+{
+  "integrationName": "Salesforce",
+  "implementation": {
+    "streaming": "native",
+    "retl": "cdk"
+  },
+  "batchingenabled": {
+    "cdk": false,
+    "native": true
+  }
+}

@@ -1,3 +1,93 @@
+type TransformationStage = 'processor' | 'router';
+type RudderStackEvent = {
+  anonymousId: string;
+  channel: string;
+  context: Context;
+  type: MessageType;
+  event: string;
+  originalTimestamp: string;
+  sentAt: string;
+  integrations: Record<string, unknown>;
+  messageId: string;
+  properties: Record<string, unknown>;
+  receivedAt: string;
+  timestamp: string;
+  userId: string;
+  request_ip: string;
+};
+
+type Context = {
+  app: {
+    name: string;
+    version: string;
+    build: string;
+    namespace: string;
+  };
+  campaign: {
+    name: string;
+    source: string;
+    medium: string;
+    term: string;
+    content: string;
+  };
+  device: {
+    id: string;
+    manufacturer: string;
+    model: string;
+    name: string;
+    type: string;
+    version: string;
+    token: string;
+    advertisingId: string;
+    adTrackingEnabled: boolean;
+    attTrackingStatus: string;
+  };
+  library: {
+    name: string;
+    version: string;
+  };
+  locale: string;
+  network: {
+    bluetooth: string;
+    carrier: string;
+    cellular: string;
+    wifi: string;
+  };
+  os: {
+    name: string;
+    version: string;
+  };
+  screen: {
+    density: number;
+    width: number;
+    height: number;
+  };
+  timezone: string;
+  traits: Record<string, unknown>;
+  userAgent: string;
+  ip: string;
+  mappedToDestination: boolean;
+  page: {
+    path: string;
+    referrer: string;
+    referring_domain: string;
+    initial_referrer: string;
+    initial_referring_domain: string;
+    search: string;
+    title: string;
+    url: string;
+  };
+  location: {
+    city: string;
+    country: string;
+    latitude: number;
+    longitude: number;
+    timezone: string;
+    geoSource: string;
+  };
+};
+
+
 type ProcessorTransformationOutput = {
   version: string;
   type: string;
@@ -15,6 +105,8 @@ type ProcessorTransformationOutput = {
   files?: Record<string, unknown>;
   metadata?: Metadata;
 };
+
+type TransformedOutput = ProcessorTransformationOutput; 
 
 type Metadata = {
   sourceId: string;
@@ -78,7 +170,7 @@ type UserTransformationLibrary = {
 
 type ProcessorTransformationRequest = {
   request?: Object;
-  message: Object;
+  message: RudderStackEvent;
   metadata: Metadata;
   destination: Destination;
   libraries: UserTransformationLibrary[];
@@ -86,7 +178,7 @@ type ProcessorTransformationRequest = {
 
 type RouterTransformationRequestData = {
   request?: Object;
-  message: Object;
+  message: RudderStackEvent;
   metadata: Metadata;
   destination: Destination;
 };
@@ -97,7 +189,7 @@ type RouterTransformationRequest = {
 };
 
 type ProcessorTransformationResponse = {
-  output?: ProcessorTransformationOutput | RudderMessage;
+  output?: ProcessorTransformationOutput | RudderStackEvent;
   metadata: Metadata;
   statusCode: number;
   error?: string;
@@ -115,7 +207,7 @@ type RouterTransformationResponse = {
 };
 
 type SourceTransformationOutput = {
-  batch: RudderMessage[];
+  batch: RudderStackEvent[];
 };
 
 type SourceTransformationResponse = {
@@ -144,21 +236,6 @@ enum MessageType {
   AUDIENCE_LIST = 'audiencelist',
 }
 
-type RudderMessage = {
-  userId?: string;
-  anonymousId: string;
-  type: MessageType;
-  channel: string;
-  context: Object;
-  originalTimestamp: Date;
-  sentAt: Date;
-  timestamp: Date;
-  event?: string;
-  integrations?: Object;
-  messageId: string;
-  properties?: Object;
-  traits?: Object;
-};
 
 type ErrorDetailer = {
   module: string;
@@ -184,7 +261,7 @@ type MetaTransferObject = {
 };
 
 type UserTransformationResponse = {
-  transformedEvent: RudderMessage;
+  transformedEvent: RudderStackEvent;
   metadata: Metadata;
   error: Object;
 };
@@ -199,6 +276,7 @@ type UserDeletionRequest = {
   config: Object;
   destType: string;
   jobId: string;
+  rudderDestInfo?: Object;
 };
 
 type UserDeletionResponse = {
@@ -225,7 +303,7 @@ export {
   RouterTransformationRequest,
   RouterTransformationRequestData,
   RouterTransformationResponse,
-  RudderMessage,
+  RudderStackEvent,
   ProcessorTransformationOutput,
   SourceTransformationResponse,
   DeliveryResponse,
@@ -237,4 +315,6 @@ export {
   UserDeletionResponse,
   Destination,
   ComparatorInput,
+  TransformationStage,
+  TransformedOutput,
 };

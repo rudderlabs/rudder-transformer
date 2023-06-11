@@ -1,11 +1,13 @@
+import fs from 'fs';
 import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types/index';
 import { INTEGRATION_SERVICE } from '../routes/utils/constants';
-import CDKV1DestinationService from '../services/destination/cdkV1Integration';
-import CDKV2DestinationService from '../services/destination/cdkV2Integration';
+import CDKV1DestinationService from '../services/destination/cdkV1';
+import CDKV2DestinationService from '../services/destination/cdkV2';
 import DestinationService from '../interfaces/DestinationService';
-import NativeIntegrationDestinationService from '../services/destination/nativeIntegration';
+import NativeIntegrationDestinationService from '../services/destination/native';
 import SourceService from '../interfaces/SourceService';
 import NativeIntegrationSourceService from '../services/source/nativeIntegration';
+import AdapterIntegrationService from '../services/destination/adapter';
 import { PlatformError } from '../v0/util/errorTypes';
 import ComparatorService from '../services/comparator';
 
@@ -17,7 +19,16 @@ export default class ServiceSelector {
     [INTEGRATION_SERVICE.CDK_V2_DEST]: CDKV2DestinationService,
     [INTEGRATION_SERVICE.NATIVE_DEST]: NativeIntegrationDestinationService,
     [INTEGRATION_SERVICE.NATIVE_SOURCE]: NativeIntegrationSourceService,
+    [INTEGRATION_SERVICE.ADAPTER]: AdapterIntegrationService,
   };
+
+  private static isAdapterDestination(destinationDefinitionConfig: Object, destination: string) {
+    const config = JSON.parse(fs.readFileSync('../adapterConfig.json').toString());
+    return (
+      destinationDefinitionConfig?.['adapterImplementationEnabled'] &&
+      config.destinations.incluedes(destination)
+    );
+  }
 
   private static isCdkDestination(destinationDefinitionConfig: Object) {
     return !!destinationDefinitionConfig?.['cdkEnabled'];
@@ -67,6 +78,10 @@ export default class ServiceSelector {
   ): DestinationService {
     const destinationDefinitionConfig: Object =
       events[0]?.destination?.DestinationDefinition?.Config;
+    const destination = events[0]?.destination.DestinationDefinition.Name.toLowerCase();
+    if (this.isAdapterDestination(destinationDefinitionConfig, destination)) {
+      return this.fetchCachedService(INTEGRATION_SERVICE.ADAPTER);
+    }
     if (this.isCdkDestination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
     }

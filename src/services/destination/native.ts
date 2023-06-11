@@ -51,35 +51,41 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     _requestMetadata: Object,
   ): Promise<ProcessorTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
-    const respList: ProcessorTransformationResponse[][] = await Promise.all(
-      events.map(async (event) => {
-        try {
-          const transformedPayloads:
-            | ProcessorTransformationOutput
-            | ProcessorTransformationOutput[] = await destHandler.process(event);
-          return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
-            event,
-            transformedPayloads,
-            destHandler,
-          );
-        } catch (error: any) {
-          const metaTO = this.getTags(
-            destinationType,
-            event.metadata.destinationId,
-            event.metadata.workspaceId,
-            tags.FEATURES.PROCESSOR,
-          );
-          metaTO.metadata = event.metadata;
-          const erroredResp =
-            DestinationPostTransformationService.handleProcessorTransformFailureEvents(
-              error,
-              metaTO,
+    let respList: ProcessorTransformationResponse[];
+    if (version === 'v1') {
+      respList = destHandler.executeTransformation(events, 'processor');
+    } else {
+      const respListArr: ProcessorTransformationResponse[][] = await Promise.all(
+        events.map(async (event) => {
+          try {
+            const transformedPayloads:
+              | ProcessorTransformationOutput
+              | ProcessorTransformationOutput[] = await destHandler.process(event);
+            return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
+              event,
+              transformedPayloads,
+              destHandler,
             );
-          return [erroredResp];
-        }
-      }),
-    );
-    return respList.flat();
+          } catch (error: any) {
+            const metaTO = this.getTags(
+              destinationType,
+              event.metadata.destinationId,
+              event.metadata.workspaceId,
+              tags.FEATURES.PROCESSOR,
+            );
+            metaTO.metadata = event.metadata;
+            const erroredResp =
+              DestinationPostTransformationService.handleProcessorTransformFailureEvents(
+                error,
+                metaTO,
+              );
+            return [erroredResp];
+          }
+        }),
+      );
+      respList = respListArr.flat();
+    }
+    return respList;
   }
 
   public async doRouterTransformation(
@@ -104,7 +110,9 @@ export default class NativeIntegrationDestinationService implements IntegrationD
         );
         try {
           const doRouterTransformationResponse: RouterTransformationResponse[] =
-            await destHandler.processRouterDest(destInputArray);
+            version === 'v1'
+              ? await destHandler.processRouterDest(destInputArray)
+              : await destHandler.executeTransformation(destInputArray);
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
             doRouterTransformationResponse,
             destHandler,

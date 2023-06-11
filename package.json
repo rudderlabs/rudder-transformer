@@ -108,6 +108,7 @@
   "devDependencies": {
     "@commitlint/config-conventional": "^17.4.4",
     "@digitalroute/cz-conventional-changelog-for-jira": "^8.0.0",
+    "@types/get-value": "^3.0.3",
     "@types/jest": "^29.5.0",
     "@types/koa": "^2.13.6",
     "@types/koa-bodyparser": "^4.3.10",

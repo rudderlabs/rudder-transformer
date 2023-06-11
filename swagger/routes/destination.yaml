@@ -1,0 +1,120 @@
+'/{version}/destinations/{destination}':
+  post:
+    tags:
+      - Miscellaneous
+    summary: Destination processor transformation
+    parameters:
+      - in: path
+        name: version
+        description: The version of the destination
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: destination
+        description: The destination identifier
+        required: true
+        schema:
+          type: string
+    requestBody:
+      description: Request Body
+      required: true
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+              properties:
+                message:
+                  type: object
+                  required: true
+                metadata:
+                  type: object
+                destinationId:
+                  type: object
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/processorTransform.yaml'
+      400:
+        description: Destination processor transformation failed
+'/routerTransform':
+  post:
+    tags:
+      - Miscellaneous
+    summary: Destination router transformations
+    requestBody:
+      description: Request Body
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              input:
+                type: array
+                required: true
+                items:
+                  type: object
+                  properties:
+                    message:
+                      type: object
+                      required: true
+                    metadata:
+                      $ref: '../components/schemas/metadata.yaml'
+                    destination:
+                      type: object
+              destType:
+                type: string
+                required: true
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/routerTransform.yaml'
+      400:
+        description: Destination router transformation failed
+'/batch':
+  post:
+    tags:
+      - Miscellaneous
+    summary: Batch input payload
+    requestBody:
+      description: Request Body
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              input:
+                type: array
+                required: true
+                items:
+                  type: object
+                  properties:
+                    message:
+                      type: object
+                      required: true
+                    metadata:
+                      $ref: '../components/schemas/metadata.yaml'
+                    destination:
+                      type: object
+              destType:
+                type: string
+                required: true
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/routerTransform.yaml'
+      400:
+        description: Batch transformation failed

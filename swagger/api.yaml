@@ -25,3 +25,11 @@ paths:
     $ref: './routes/misc.yaml#/~1version'
   /features:
     $ref: './routes/misc.yaml#/~1features'
+
+  #Destination Routes
+  /{version}/destinations/{destination}:
+    $ref: './routes/destination.yaml#/~1{version}~1destinations~1{destination}'
+  /routerTransform:
+    $ref: './routes/destination.yaml#/~1routerTransform'
+  /batch:
+    $ref: './routes/destination.yaml#/~1routerTransform'

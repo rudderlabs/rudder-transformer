@@ -1,0 +1,58 @@
+title: Router Transform
+type: array
+items:
+  type: object
+  properties:
+    batchedRequest:
+      type: object
+      properties:
+        version:
+          type: string
+        type:
+          type: string
+        method:
+          type: string
+        endpoint:
+          type: string
+        userId:
+          type: string
+        headers:
+          type: object
+          properties: {}
+        params:
+          type: object
+          properties: {}
+        body:
+          type: object
+          properties:
+            JSON:
+              type: object
+              properties: {}
+            JSON_ARRAY:
+              type: object
+              properties: {}
+            XML:
+              type: object
+              properties: {}
+            FORM:
+              type: object
+              properties: {}
+        files:
+          type: object
+          properties: {}
+        metadata:
+          $ref: './metadata.yaml'
+    metadata:
+      $ref: './metadata.yaml'
+    destination:
+      type: object
+      properties: {}
+    batched:
+      type: boolean
+    statusCode:
+      type: number
+    error:
+      type: string
+    statTags:
+      type: object
+      properties: {}

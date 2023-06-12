@@ -4,7 +4,7 @@ import NativeSalesforceStreamingImpl from '../implementation/streaming/native';
 import NativeSalesforceRetlImpl from '../implementation/retl/native';
 import CDKSalesforceStreamingImpl from '../implementation/streaming/cdk';
 import CDKSalesforceRetlImpl from '../implementation/retl/cdk';
-import AdapterUtility from '../../../util/executorUtil';
+import ExecutorUtil from '../../../util/executorUtil';
 import {
   DeliveryResponse,
   ProcessorTransformationRequest,
@@ -55,7 +55,7 @@ export default class SalesforceExecutor implements Executor {
     inputs: (ProcessorTransformationRequest | RouterTransformationRequestData)[],
     stage: TransformationStage,
   ): Promise<(ProcessorTransformationResponse | RouterTransformationResponse)[]> {
-    const output = await AdapterUtility.executeTransformation(
+    const output = await ExecutorUtil.executeTransformation(
       this.streamingImplementation,
       inputs,
       stage,
@@ -67,11 +67,7 @@ export default class SalesforceExecutor implements Executor {
     inputs: (ProcessorTransformationRequest | RouterTransformationRequestData)[],
     stage: TransformationStage,
   ): Promise<(ProcessorTransformationResponse | RouterTransformationResponse)[]> {
-    const output = await AdapterUtility.executeTransformation(
-      this.retlImplementation,
-      inputs,
-      stage,
-    );
+    const output = await ExecutorUtil.executeTransformation(this.retlImplementation, inputs, stage);
     return output;
   }
 

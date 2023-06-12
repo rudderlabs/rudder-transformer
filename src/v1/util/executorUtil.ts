@@ -1,6 +1,5 @@
 import IDestination from '../../interfaces/Destination';
 import {
-  DeliveryResponse,
   Destination,
   ErrorDetailer,
   MetaTransferObject,

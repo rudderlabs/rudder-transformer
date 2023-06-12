@@ -14,7 +14,6 @@ import {
 } from '../../types';
 import tags from '../../v0/util/tags';
 import { TransformationError } from '../../v0/util/errorTypes';
-import AdapterUtility from '../../v1/util/executorUtil';
 import FetchAdaptiveHandlers from '../../helpers/fetchAdaptiveHandlers';
 import { MappedToDestinationKey } from '../../constants';
 
@@ -50,14 +49,17 @@ export default class AdapterIntegrationService implements DestinationService {
     destinationType: string,
   ): Promise<ProcessorTransformationResponse[]> {
     const isRetlEvents = get(events[0].message, MappedToDestinationKey);
-    // het the implementation name from the destinationType
     const executor = FetchAdaptiveHandlers.getAdapterExecutor(destinationType);
-    // get the implementation name from the executor
-    const implementation = isRetlEvents
-      ? executor.getRetlImplementationState()
-      : executor.getStreamingImplementationState();
-    const resp = await AdapterUtility.executeTransformation(implementation, events, 'processor');
-    return resp as ProcessorTransformationResponse[];
+    let resp: ProcessorTransformationResponse[];
+    if (isRetlEvents) {
+      resp = (await executor.executeRetl(events, 'processor')) as ProcessorTransformationResponse[];
+    } else {
+      resp = (await executor.executeStreaming(
+        events,
+        'processor',
+      )) as ProcessorTransformationResponse[];
+    }
+    return resp;
   }
 
   async doRouterTransformation(
@@ -65,14 +67,14 @@ export default class AdapterIntegrationService implements DestinationService {
     destinationType: string,
   ): Promise<RouterTransformationResponse[]> {
     const isRetlEvents = get(events[0].message, MappedToDestinationKey);
-     // het the implementation name from the destinationType
-     const executor = FetchAdaptiveHandlers.getAdapterExecutor(destinationType);
-     // get the implementation name from the executor
-     const implementation = isRetlEvents
-       ? executor.getRetlImplementationState()
-       : executor.getStreamingImplementationState();
-     const resp = await AdapterUtility.executeTransformation(implementation, events, 'processor');
-     return resp as RouterTransformationResponse[];
+    const executor = FetchAdaptiveHandlers.getAdapterExecutor(destinationType);
+    let resp: RouterTransformationResponse[];
+    if (isRetlEvents) {
+      resp = (await executor.executeRetl(events, 'router')) as RouterTransformationResponse[];
+    } else {
+      resp = (await executor.executeStreaming(events, 'router')) as RouterTransformationResponse[];
+    }
+    return resp;
   }
 
   // depriciated in this service
@@ -86,10 +88,7 @@ export default class AdapterIntegrationService implements DestinationService {
     // Would need this for kafka multit topic support
   }
 
-  async deliver(
-    event: TransformedOutput,
-    destinationType: string,
-  ): Promise<DeliveryResponse> {
+  async deliver(event: TransformedOutput, destinationType: string): Promise<DeliveryResponse> {
     const executor = FetchAdaptiveHandlers.getAdapterExecutor(destinationType);
     return await executor.executeDelivery(event);
   }

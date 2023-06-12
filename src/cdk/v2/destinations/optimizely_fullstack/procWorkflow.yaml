@@ -67,7 +67,7 @@ steps:
     condition: $.outputs.messageType in [ {{$.EventType.TRACK}}, {{$.EventType.PAGE}}, {{$.EventType.SCREEN}}]
     template: |
       const availableEvents = $.outputs.dataFile.events;
-      $.assert(Array.isArray(availableEvents) && availableEvents.length > 0, "No events are not present in the data file");
+      $.assert(Array.isArray(availableEvents) && availableEvents.length > 0, "No events are present in the data file");
 
   - name: extractExperimentIds
     template: |

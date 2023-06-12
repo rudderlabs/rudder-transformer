@@ -897,7 +897,7 @@
                       "entity_id": "test_event_id_4",
                       "key": "Viewed Meal page",
                       "timestamp": 1676031367251,
-                      "uuid": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+                      "uuid": "generated_uuid",
                       "tags": {
                         "foo": "bar",
                         "category": "food"
@@ -1358,7 +1358,7 @@
                       "entity_id": "test_event_id_6",
                       "key": "Viewed Main screen",
                       "timestamp": 1676031367251,
-                      "uuid": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+                      "uuid": "generated_uuid",
                       "tags": {
                         "foo": "bar",
                         "category": "food"

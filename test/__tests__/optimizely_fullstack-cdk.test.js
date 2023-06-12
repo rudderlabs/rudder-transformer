@@ -6,6 +6,14 @@ const tags = require("../../src/v0/util/tags");
 const integration = "optimizely_fullstack";
 const name = "Optimizely Fullstack";
 
+jest.mock('../../src/v0/util/index', () => {
+  const originalModule = jest.requireActual('../../src/v0/util/index');
+  return {
+    ...originalModule,
+    generateUUID: jest.fn(() => 'generated_uuid'),
+  };
+});
+
 
 // Processor Test files
 const testDataFile = fs.readFileSync(

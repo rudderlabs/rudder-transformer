@@ -1,6 +1,6 @@
 [
   {
-    "destKey": "event",
+    "destKey": "metric.name",
     "sourceKeys": ["event", "properties.event", "properties.name"],
     "required": true
   },
@@ -8,7 +8,7 @@
     "destKey": "properties",
     "sourceKeys": "properties",
     "metadata": {
-      "excludes": ["email", "phone"]
+      "excludes": ["email", "phone", "revenue", "total", "value"]
     }
   }
 ]

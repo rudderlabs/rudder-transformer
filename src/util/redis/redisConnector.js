@@ -6,9 +6,8 @@ const stats = require('../stats');
 
 const timeoutPromise = () =>
   new Promise((_, reject) => {
-    setTimeout(() => reject(new Error('Timeout while connecting to redis')), 1000);
+    setTimeout(() => reject(new Error('Timeout while connecting to redis')), 1200);
   });
-
 const RedisDB = {
   init() {
     if (process.env.USE_REDIS_DB && process.env.USE_REDIS_DB !== 'false') {

@@ -31,6 +31,8 @@
       "statTags": {
         "destType": "SNAPCHAT_CUSTOM_AUDIENCE",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "retryable",
         "feature": "dataDelivery",
         "implementation": "native",
@@ -56,6 +58,8 @@
       "statTags": {
         "destType": "SNAPCHAT_CUSTOM_AUDIENCE",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "aborted",
         "feature": "dataDelivery",
         "implementation": "native",

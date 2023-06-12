@@ -1,0 +1,25 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - path: ./config
+    exportAll: true
+  - path: ../../../../v0/util
+    exportAll: true
+
+steps:
+  - name: buildResponseForProcessTransformation
+    description: build response
+    template: |
+      const isPatchRequest = .message.event === "create a block";
+      const response = isPatchRequest ? $.defaultPatchRequestConfig : $.defaultRequestConfig();
+      const authString = "Bearer " + .destination.Config.apiKey;
+      response.body.JSON = $.outputs.payload;
+      response.endpoint = $.ENDPOINTS;
+      response.headers = {
+          "Authorization": authString,
+          "Content-Type": "application/json",
+          'Notion-Version': '2022-06-28',
+        };
+      finalResponse = response;

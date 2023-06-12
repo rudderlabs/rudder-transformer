@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.31.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.31.1...v1.31.2) (2023-06-08)
+
+
+### Bug Fixes
+
+* remove tls object ([67468b4](https://github.com/rudderlabs/rudder-transformer/commit/67468b4735aad9d603505ceadaa97798a86e67a3))
+
 ### [1.31.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.31.0...v1.31.1) (2023-06-07)
 
 

@@ -13,7 +13,7 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
+            "os_name": "iOS",
             "os_version": "test os",
             "device_model": "Mac",
             "platform": "Web",
@@ -69,7 +69,7 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
+            "os_name": "iOS",
             "os_version": "test os",
             "device_model": "Mac",
             "platform": "Web",
@@ -125,8 +125,8 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
-            "os_version": "77.0.3865.90",
+            "os_name": "iOS",
+            "os_version": "10",
             "city": "kolkata",
             "country": "India",
             "platform": "Web",
@@ -180,8 +180,8 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
-            "os_version": "77.0.3865.90",
+            "os_name": "iOS",
+            "os_version": "10",
             "platform": "Web",
             "library": "rudderstack",
             "device_model": "Mac",
@@ -239,8 +239,8 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
-            "os_version": "77.0.3865.90",
+            "os_name": "iOS",
+            "os_version": "10",
             "platform": "Web",
             "library": "rudderstack",
             "device_model": "Mac",
@@ -301,8 +301,8 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
-            "os_version": "77.0.3865.90",
+            "os_name": "iOS",
+            "os_version": "10",
             "platform": "Web",
             "library": "rudderstack",
             "device_model": "Mac",
@@ -354,8 +354,8 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
-            "os_version": "77.0.3865.90",
+            "os_name": "iOS",
+            "os_version": "10",
             "city": "kolkata",
             "country": "India",
             "platform": "Web",
@@ -570,8 +570,8 @@
           "api_key": "abcde",
           "events": [
             {
-              "os_name": "Chrome",
-              "os_version": "85.0.4183.121",
+              "os_name": "iOS",
+              "os_version": "10",
               "platform": "Web",
               "library": "rudderstack",
               "device_model": "Mac",
@@ -1721,8 +1721,8 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
-            "os_version": "86.0.4240.198",
+            "os_name": "iOS",
+            "os_version": "10",
             "library": "rudderstack",
             "device_model": "Mac",
             "platform": "Web",
@@ -1774,8 +1774,8 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
-            "os_version": "86.0.4240.198",
+            "os_name": "iOS",
+            "os_version": "10",
             "device_model": "Mac",
             "library": "rudderstack",
             "platform": "Web",
@@ -1825,8 +1825,8 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
-            "os_version": "86.0.4240.198",
+            "os_name": "iOS",
+            "os_version": "10",
             "device_model": "Mac",
             "library": "rudderstack",
             "platform": "Web",
@@ -1876,8 +1876,8 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
-            "os_version": "86.0.4240.198",
+            "os_name": "iOS",
+            "os_version": "10",
             "device_model": "Mac",
             "library": "rudderstack",
             "platform": "Web",
@@ -1927,8 +1927,8 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
-            "os_version": "86.0.4240.198",
+            "os_name": "iOS",
+            "os_version": "10",
             "device_model": "Mac",
             "library": "rudderstack",
             "platform": "Web",
@@ -2342,8 +2342,8 @@
             "device_id": "2f8b0ba7-d76e-4b91-9577-d1b6ebd68946",
             "device_model": "Mac",
             "event_type": "$identify",
-            "os_name": "Chrome",
-            "os_version": "86.0.4240.198",
+            "os_name": "iOS",
+            "os_version": "10",
             "platform": "Web",
             "insert_id": "6f08cc45-95c3-40c1-90f2-2f44a92947ef",
             "language": "en-GB",
@@ -2874,8 +2874,8 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
-            "os_version": "77.0.3865.90",
+            "os_name": "iOS",
+            "os_version": "10",
             "city": "kolkata",
             "country": "India",
             "platform": "Web",
@@ -3023,7 +3023,7 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
+            "os_name": "iOS",
             "os_version": "test os",
             "device_model": "Mac",
             "platform": "Web",
@@ -3080,8 +3080,8 @@
           "api_key": "abcde",
           "events": [
             {
-              "os_name": "Chrome",
-              "os_version": "85.0.4183.121",
+              "os_name": "iOS",
+              "os_version": "10",
               "platform": "Web",
               "library": "rudderstack",
               "device_model": "Mac",
@@ -3350,7 +3350,7 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
+            "os_name": "iOS",
             "os_version": "test os",
             "device_model": "Mac",
             "platform": "Web",
@@ -3407,7 +3407,7 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
+            "os_name": "iOS",
             "os_version": "test os",
             "device_model": "Mac",
             "platform": "Web",
@@ -3465,8 +3465,8 @@
           "api_key": "abcde",
           "events": [
             {
-              "os_name": "Chrome",
-              "os_version": "85.0.4183.121",
+              "os_name": "iOS",
+              "os_version": "10",
               "device_model": "Mac",
               "platform": "Web",
               "event_id": 3,
@@ -3583,8 +3583,8 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
-            "os_version": "77.0.3865.90",
+            "os_name": "iOS",
+            "os_version": "10",
             "device_model": "Mac",
             "platform": "Web",
             "device_id": "00000000000000000000000000",
@@ -3716,7 +3716,7 @@
         "api_key": "abcde",
         "events": [
           {
-            "os_name": "Chrome",
+            "os_name": "iOS",
             "os_version": "test os",
             "device_model": "Mac",
             "platform": "Web",

@@ -21,18 +21,11 @@ function getInfoFromUA(path, payload, defaultVal) {
 
 function getOSName(payload, sourceKey) {
   const payloadVal = get(payload, sourceKey);
-  if (payload.channel && payload.channel.toLowerCase() === 'web') {
-    return getInfoFromUA('browser.name', payload, payloadVal);
-  }
   return payloadVal;
 }
 
 function getOSVersion(payload, sourceKey) {
   const payloadVal = get(payload, sourceKey);
-
-  if (payload.channel && payload.channel.toLowerCase() === 'web') {
-    return getInfoFromUA('browser.version', payload, payloadVal);
-  }
   return payloadVal;
 }
 

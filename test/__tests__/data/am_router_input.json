@@ -30,8 +30,8 @@
         "locale": "en-US",
         "ip": "0.0.0.0",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 2
@@ -90,8 +90,8 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 2

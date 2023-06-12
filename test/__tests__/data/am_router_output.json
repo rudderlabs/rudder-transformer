@@ -15,8 +15,8 @@
             "api_key": "abcde",
             "events": [
               {
-                "os_name": "Chrome",
-                "os_version": "77.0.3865.90",
+                "os_name": "iOS",
+                "os_version": "10",
                 "device_model": "Mac",
                 "library": "rudderstack",
                 "platform": "Web",
@@ -88,8 +88,8 @@
             "api_key": "abcde",
             "events": [
               {
-                "os_name": "Chrome",
-                "os_version": "77.0.3865.90",
+                "os_name": "iOS",
+                "os_version": "10",
                 "device_model": "Mac",
                 "library": "rudderstack",
                 "platform": "Web",

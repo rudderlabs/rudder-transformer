@@ -38,8 +38,8 @@
         "locale": "en-US",
         "ip": "0.0.0.0",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 2
@@ -135,8 +135,8 @@
         "locale": "en-US",
         "ip": "0.0.0.0",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 2
@@ -219,8 +219,8 @@
         "locale": "en-US",
         "ip": "0.0.0.0",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 2
@@ -276,8 +276,8 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 2
@@ -343,8 +343,8 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 2
@@ -416,8 +416,8 @@
         "locale": "en-US",
         "ip": "0.0.0.0",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 2
@@ -483,8 +483,8 @@
         "locale": "en-US",
         "ip": "0.0.0.0",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 2
@@ -654,8 +654,8 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
         "locale": "en-US",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 0.8999999761581421
@@ -1752,8 +1752,8 @@
       "channel": "web",
       "context": {
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "app": {
           "name": "RudderLabs JavaScript SDK",
@@ -1823,8 +1823,8 @@
       "channel": "web",
       "context": {
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "app": {
           "name": "RudderLabs JavaScript SDK",
@@ -1891,8 +1891,8 @@
       "channel": "web",
       "context": {
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "app": {
           "name": "RudderLabs JavaScript SDK",
@@ -1959,8 +1959,8 @@
       "channel": "web",
       "context": {
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "app": {
           "name": "RudderLabs JavaScript SDK",
@@ -2027,8 +2027,8 @@
       "channel": "web",
       "context": {
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "app": {
           "name": "RudderLabs JavaScript SDK",
@@ -2377,8 +2377,8 @@
       "channel": "web",
       "context": {
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "app": {
           "name": "RudderLabs JavaScript SDK",
@@ -2873,8 +2873,8 @@
         "locale": "en-US",
         "ip": "0.0.0.0",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 2
@@ -3050,8 +3050,8 @@
         "locale": "en-US",
         "ip": "0.0.0.0",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 2
@@ -3129,8 +3129,8 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
         "locale": "en-US",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 0.8999999761581421
@@ -3497,8 +3497,8 @@
         "locale": "en-US",
         "ip": "0.0.0.0",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 2
@@ -3591,8 +3591,8 @@
         "locale": "en-US",
         "ip": "0.0.0.0",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 2
@@ -3671,8 +3671,8 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36",
         "locale": "en-US",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 0.8999999761581421
@@ -3781,8 +3781,8 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
         "locale": "en-US",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 2
@@ -4004,8 +4004,8 @@
         "locale": "en-US",
         "ip": "0.0.0.0",
         "os": {
-          "name": "",
-          "version": ""
+          "name": "iOS",
+          "version": "10"
         },
         "screen": {
           "density": 2

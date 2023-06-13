@@ -9,6 +9,11 @@ All notable changes to this project will be documented in this file. See [standa
 
 * update klaviyo api version ([#1981](https://github.com/rudderlabs/rudder-transformer/issues/1981)) ([dd69dbc](https://github.com/rudderlabs/rudder-transformer/commit/dd69dbc6cb55e2e1de9f8c762bb1d8907e347a8d))
 
+### Bug Fixes
+
+* add check for listId for subscribe ([#2263](https://github.com/rudderlabs/rudder-transformer/issues/2263)) ([36a6cad](https://github.com/rudderlabs/rudder-transformer/commit/36a6cad32b98a75c46ecc750c2e9bdac7bda9a2e))
+
+
 ### [1.31.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.31.1...v1.31.2) (2023-06-08)
 
 

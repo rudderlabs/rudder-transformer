@@ -129,26 +129,6 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
   return response;
 };
 
-/**
- * This function is used to check if the user needs to be subscribed or not.
- * Building and returning response array for subscribe endpoint (for subscribing)
- * @param {*} message
- * @param {*} traitsInfo
- * @param {*} destination
- * @returns
- */
-const checkForSubscribe = (message, traitsInfo, destination) => {
-  const responseArray = [];
-  if (
-    (traitsInfo.properties?.listId || destination.Config?.listId) &&
-    traitsInfo.properties?.subscribe === true
-  ) {
-    const subscribeResponse = subscribeUserToList(message, traitsInfo, destination);
-    responseArray.push(subscribeResponse);
-  }
-  return responseArray;
-};
-
 // This function is used for creating and returning customer properties using mapping json
 const createCustomerProperties = (message) => {
   let customerProperties = constructPayload(
@@ -271,7 +251,6 @@ const batchSubscribeEvents = (subscribeRespList) => {
 
 module.exports = {
   subscribeUserToList,
-  checkForSubscribe,
   createCustomerProperties,
   populateCustomFieldsFromTraits,
   generateBatchedPaylaodForArray,

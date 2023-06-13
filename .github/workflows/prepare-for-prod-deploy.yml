@@ -82,6 +82,7 @@ jobs:
     env:
       TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}
       UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
+      TF_IMAGE_REPOSITORY: rudderstack/rudder-transformer
     steps:
       - name: Checkout
         uses: actions/checkout@v3.5.2
@@ -111,19 +112,23 @@ jobs:
           cd helm-charts/shared-services/per-az
           yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" values.blue-release.yaml
           yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" values.blue-release.yaml
+          yq eval -i ".rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.blue-release.yaml
           git add values.blue-release.yaml
-
+          
           yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" values.enterprise.yaml
           yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" values.enterprise.yaml
+          yq eval -i ".rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.enterprise.yaml
           git add values.enterprise.yaml
 
           yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" values.multi-tenant.yaml
           yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" values.multi-tenant.yaml
+          yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.multi-tenant.yaml
           git add values.multi-tenant.yaml
 
           cd ../../config-be-rudder-transformer
           yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" values.prod.yaml
           yq eval -i ".config-be-user-transformer.image.tag=\"$TAG_NAME\"" values.prod.yaml
+          yq eval -i ".config-be-user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.prod.yaml
           git add values.prod.yaml
 
           git commit -m "chore: upgrade shared transformers to $TAG_NAME"

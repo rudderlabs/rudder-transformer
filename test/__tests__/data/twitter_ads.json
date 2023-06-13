@@ -57,8 +57,7 @@
             "price": "123.33",
             "quantity": "12",
             "id": "12"
-          }],
-          "testModeEnable": true
+          }]
         },
         "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
         "integrations": {
@@ -67,10 +66,10 @@
       },
       "metadata": {
         "secret": {
-          "consumer_key": "qwe",
-          "consumer_secret": "fdghv",
-          "oauth_access_token": "yrdghfvhjvhj",
-          "oauth_access_token_secret": "453etyfghjvhgcdcghv"
+          "consumerKey": "qwe",
+          "consumerSecret": "fdghv",
+          "accessToken": "yrdghfvhjvhj",
+          "accessTokenSecret": "453etyfghjvhgcdcghv"
         }
       },
       "destination": {
@@ -189,8 +188,7 @@
           "shipping": 3,
           "subtotal": 22.5,
           "affiliation": "Google Store",
-          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
-          "testModeEnable": true
+          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f"
         },
         "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
         "integrations": {
@@ -199,10 +197,10 @@
       },
       "metadata": {
         "secret": {
-          "consumer_key": "qwe",
-          "consumer_secret": "fdghv",
-          "oauth_access_token": "yrdghfvhjvhj",
-          "oauth_access_token_secret": "453etyfghjvhgcdcghv"
+          "consumerKey": "qwe",
+          "consumerSecret": "fdghv",
+          "accessToken": "yrdghfvhjvhj",
+          "accessTokenSecret": "453etyfghjvhgcdcghv"
         }
       },
       "destination": {
@@ -290,8 +288,7 @@
           "subtotal": 22.5,
           "affiliation": "Google Store",
           "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
-          "email": "abc@ax.com",
-          "testModeEnable": true
+          "email": "abc@ax.com"
         },
         "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
         "integrations": {
@@ -300,10 +297,10 @@
       },
       "metadata": {
         "secret": {
-          "consumer_key": "qwe",
-          "consumer_secret": "fdghv",
-          "oauth_access_token": "yrdghfvhjvhj",
-          "oauth_access_token_secret": "453etyfghjvhgcdcghv"
+          "consumerKey": "qwe",
+          "consumerSecret": "fdghv",
+          "accessToken": "yrdghfvhjvhj",
+          "accessTokenSecret": "453etyfghjvhgcdcghv"
         }
       },
       "destination": {
@@ -418,8 +415,7 @@
           "subtotal": 22.5,
           "affiliation": "Google Store",
           "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
-          "email": "abc@ax.com",
-          "testModeEnable": true
+          "email": "abc@ax.com"
         },
         "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
         "integrations": {
@@ -428,10 +424,10 @@
       },
       "metadata": {
         "secret": {
-          "consumer_key": "qwe",
-          "consumer_secret": "fdghv",
-          "oauth_access_token": "yrdghfvhjvhj",
-          "oauth_access_token_secret": "453etyfghjvhgcdcghv"
+          "consumerKey": "qwe",
+          "consumerSecret": "fdghv",
+          "accessToken": "yrdghfvhjvhj",
+          "accessTokenSecret": "453etyfghjvhgcdcghv"
         }
       },
       "destination": {

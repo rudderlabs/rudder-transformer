@@ -1,6 +1,5 @@
 const sha256 = require('sha256');
-const crypto = require('crypto');
-const oauth1a = require('oauth-1.0a');
+
 const {
   constructPayload,
   defaultRequestConfig,
@@ -13,12 +12,12 @@ const { EventType } = require('../../../constants');
 const {
   ConfigCategories,
   mappingConfig,
-  BASE_URL,
-  authHeaderConstant
+  BASE_URL
 } = require('./config');
 
 const { InstrumentationError, OAuthSecretError, ConfigurationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { getAuthHeaderForRequest } = require("./util");
 
 const getOAuthFields = ({ secret }) => {
   if (!secret) {
@@ -32,26 +31,6 @@ const getOAuthFields = ({ secret }) => {
   };
   return oAuthObject;
 };
-
-function getAuthHeaderForRequest(request, oAuthObject) {
-    const oauth = oauth1a({
-      consumer: { key: oAuthObject.consumerKey, secret: oAuthObject.consumerSecret },
-      signature_method: 'HMAC-SHA1',
-      hash_function(base_string, k) {
-        return crypto
-            .createHmac('sha1', k)
-            .update(base_string)
-            .digest('base64')
-      },
-    })
-
-    const authorization = oauth.authorize(request, {
-      key: oAuthObject.accessToken,
-      secret: oAuthObject.accessTokenSecret,
-    });
-
-    return oauth.toHeader(authorization);
-}
 
 // build final response
 function buildResponse(message, requestJson, metadata, endpointUrl) {
@@ -67,11 +46,8 @@ function buildResponse(message, requestJson, metadata, endpointUrl) {
   };
   const oAuthObject = getOAuthFields(metadata);
   let authHeader = getAuthHeaderForRequest(request, oAuthObject).Authorization;
-  if(message.properties.testModeEnable === true) {
-    authHeader = authHeaderConstant;
-  }
   response.headers = {
-    Authorization: authHeaderConstant,
+    Authorization: authHeader,
     'Content-Type': JSON_MIME_TYPE,
   };
   return response;

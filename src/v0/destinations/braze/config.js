@@ -18,7 +18,7 @@ function getTrackEndPoint(endPoint) {
 }
 
 function getSubscriptionGroupEndPoint(endPoint) {
-  return `${endPoint}/subscription/status/set`;
+  return `${endPoint}/v2/subscription/status/set`;
 }
 
 function getAliasMergeEndPoint(endPoint) {

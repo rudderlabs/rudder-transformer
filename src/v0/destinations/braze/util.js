@@ -15,7 +15,7 @@ const {
 const {
   BRAZE_NON_BILLABLE_ATTRIBUTES,
   CustomAttributeOperationTypes,
-  getTrackEndPoint,
+  getTrackEndPoint, getSubscriptionGroupEndPoint,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { isObject } = require('../../util');
@@ -324,11 +324,12 @@ const processBatch = (transformedEvents) => {
   const purchaseArray = [];
   const successMetadata = [];
   const failureResponses = [];
+  const subscriptionsArray = [];
   for (const transformedEvent of transformedEvents) {
     if (!isHttpStatusSuccess(transformedEvent?.statusCode)) {
       failureResponses.push(transformedEvent);
     } else if (transformedEvent?.batchedRequest?.body?.JSON) {
-      const { attributes, events, purchases } = transformedEvent.batchedRequest.body.JSON;
+      const { attributes, events, purchases, subscription_groups } = transformedEvent.batchedRequest.body.JSON;
       if (Array.isArray(attributes)) {
         attributesArray.push(...attributes);
       }
@@ -338,24 +339,46 @@ const processBatch = (transformedEvents) => {
       if (Array.isArray(purchases)) {
         purchaseArray.push(...purchases);
       }
+
+      if (Array.isArray(subscription_groups)) {
+        subscriptionsArray.push(...subscription_groups);
+      }
       successMetadata.push(...transformedEvent.metadata);
     }
   }
   const attributeArrayChunks = _.chunk(attributesArray, 75);
   const eventsArrayChunks = _.chunk(eventsArray, 75);
   const purchaseArrayChunks = _.chunk(purchaseArray, 75);
+  const subscriptionArrayChunks = _.chunk(subscriptionsArray, 50);
+
+  console.log(subscriptionArrayChunks);
 
   const maxNumberOfRequest = Math.max(
     attributeArrayChunks.length,
     eventsArrayChunks.length,
     purchaseArrayChunks.length,
   );
-  const responseArray = [];
+  let responseArray = [];
+  let finalResponse = [];
   const headers = {
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
     Authorization: `Bearer ${destination.Config.restApiKey}`,
   };
+
+  for (let i = 0; i < subscriptionArrayChunks.length; i += 1) {
+    const response = defaultRequestConfig();
+    response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
+    const subscription_groups = subscriptionArrayChunks[i];
+    response.body.JSON = removeUndefinedAndNullValues({
+      subscription_groups
+    });
+    responseArray.push({
+      ...response,
+      headers,
+    });
+  }
+
   const endpoint = getTrackEndPoint(getEndpointFromConfig(destination));
   for (let i = 0; i < maxNumberOfRequest; i += 1) {
     const attributes = attributeArrayChunks[i];
@@ -374,8 +397,7 @@ const processBatch = (transformedEvents) => {
       headers,
     });
   }
-  const finalResponse = [];
-  if (successMetadata.length > 0) {
+  if (successMetadata.length > 0 && responseArray.length > 0) {
     finalResponse.push({
       batchedRequest: responseArray,
       metadata: successMetadata,

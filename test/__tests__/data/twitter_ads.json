@@ -53,11 +53,17 @@
           "affiliation": "Google Store",
           "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
           "email": "abc@ax.com",
-          "contents": [{
-            "price": "123.33",
-            "quantity": "12",
-            "id": "12"
-          }]
+          "contents": [
+            {
+              "price": "123.3345",
+              "quantity": "12",
+              "id": "12"
+            },
+            {
+              "price": 200,
+              "quantity": 11,
+              "id": "4"
+            }]
         },
         "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
         "integrations": {
@@ -90,52 +96,57 @@
       }
     },
     "output": {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://ads-api.twitter.com/12/measurement/conversions/5343234",
-    "headers": {
-      "Authorization": "OAuth oauth_consumer_key=\"qwe\", oauth_nonce=\"V1kMh028kZLLhfeYozuL0B45Pcx6LvuW\", oauth_signature=\"Di4cuoGv4PnCMMEeqfWTcqhvdwc%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1685603652\", oauth_token=\"yrdghfvhjvhj\", oauth_version=\"1.0\"",
-      "Content-Type": "application/json"
-    },
-    "params": {},
-    "body": {
-      "JSON": {
-        "conversions": [
-          {
-            "number_items": 2,
-            "price_currency": "USD",
-            "value": 25,
-            "conversion_id": "213123",
-            "contents": [
-              {
-                "content_price": 123.33,
-                "num_items": 12,
-                "content_id": "12"
-              }
-            ],
-            "event_id": "tw-234234324234",
-            "conversion_time": "2023-06-01T06:03:08.739Z",
-            "identifiers": [
-              {
-                "hashed_email": "4c3c8a8cba2f3bb1e9e617301f85d1f68e816a01c7b716f482f2ab9adb8181fb"
-              },
-              {
-                "hashed_phone_number": "b308962b96b40cce7981493a372db9478edae79f83c2d8ca6cd15a39566f8c56"
-              },
-              {
-                "twclid": "18beb4813723e788a1d79bcbf80802538ec813aa19ded2e9c21cbf08bed6bee3"
-              }
-            ]
-          }
-        ]
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://ads-api.twitter.com/12/measurement/conversions/5343234",
+      "headers": {
+        "Authorization": "OAuth oauth_consumer_key=\"qwe\", oauth_nonce=\"V1kMh028kZLLhfeYozuL0B45Pcx6LvuW\", oauth_signature=\"Di4cuoGv4PnCMMEeqfWTcqhvdwc%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1685603652\", oauth_token=\"yrdghfvhjvhj\", oauth_version=\"1.0\"",
+        "Content-Type": "application/json"
       },
-      "JSON_ARRAY": {},
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {}
-  }
+      "params": {},
+      "body": {
+        "JSON": {
+          "conversions": [
+            {
+              "number_items": 2,
+              "price_currency": "USD",
+              "value": 25,
+              "conversion_id": "213123",
+              "contents": [
+                {
+                  "content_price": 123.3345,
+                  "num_items": 12,
+                  "content_id": "12"
+                },
+                {
+                  "content_price": 200.00,
+                  "num_items": 11,
+                  "content_id": "4"
+                }
+              ],
+              "event_id": "tw-234234324234",
+              "conversion_time": "2023-06-01T06:03:08.739Z",
+              "identifiers": [
+                {
+                  "hashed_email": "4c3c8a8cba2f3bb1e9e617301f85d1f68e816a01c7b716f482f2ab9adb8181fb"
+                },
+                {
+                  "hashed_phone_number": "b308962b96b40cce7981493a372db9478edae79f83c2d8ca6cd15a39566f8c56"
+                },
+                {
+                  "twclid": "18beb4813723e788a1d79bcbf80802538ec813aa19ded2e9c21cbf08bed6bee3"
+                }
+              ]
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
   },
   {
     "description": "Track - validation fail call",
@@ -232,7 +243,7 @@
         "feature": "processor"
       }
     }
-    },
+  },
   {
     "description": "Track - pixelId from payload call",
     "input": {

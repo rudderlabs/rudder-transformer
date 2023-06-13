@@ -86,7 +86,7 @@ function processTrack(message, metadata, destination) {
   requestJson.event_id = requestJson.event_id || populateEventId(message.event, requestJson, destination);
 
   requestJson.conversion_time = isDefinedAndNotNull(requestJson.conversion_time)
-    ? requestJson.conversion_time : message.timestamp;
+      ? requestJson.conversion_time : message.timestamp;
 
   const identifiers = [];
 
@@ -99,7 +99,7 @@ function processTrack(message, metadata, destination) {
   }
 
   if (message.properties.phone) {
-    let phone = message.properties.phone.trim();
+    const phone = message.properties.phone.trim();
     if (phone) {
       identifiers.push({hashed_phone_number: sha256(phone)})
     }
@@ -110,41 +110,16 @@ function processTrack(message, metadata, destination) {
   }
 
   if (requestJson.contents) {
-    const transformedContents = [];
-    requestJson.contents.forEach(obj => {
-      const transformedObj = {};
-      if (obj.id) {
-        transformedObj.content_id = obj.id;
-      }
-
-      if (obj.groupId) {
-        transformedObj.content_group_id = obj.groupId;
-      }
-
-      if (obj.name) {
-        transformedObj.content_name = obj.name;
-      }
-
-      if (obj.price) {
-        transformedObj.content_price = parseFloat(obj.price);
-      }
-
-      if (obj.type) {
-        transformedObj.content_type = obj.type;
-      }
-
-      if (obj.quantity) {
-        transformedObj.num_items = parseInt(obj.quantity, 10);
-      }
-
-      if (Object.keys(transformedObj).length > 0) {
-        transformedContents.push(transformedObj);
-      }
-    });
-    requestJson.contents = transformedContents;
-
-    if(transformedContents.length === 0) {
-      delete requestJson.contents;
+    const transformedContents = requestJson.contents.map(obj => ({
+      ...(obj.id && { content_id: obj.id }),
+      ...(obj.groupId && { content_group_id: obj.groupId }),
+      ...(obj.name && { content_name: obj.name }),
+      ...(obj.price && { content_price: parseFloat(obj.price) }),
+      ...(obj.type && { content_type: obj.type }),
+      ...(obj.quantity && { num_items: parseInt(obj.quantity, 10) })
+    })).filter(tfObj => Object.keys(tfObj).length > 0);
+    if (transformedContents.length > 0) {
+      requestJson.contents = transformedContents;
     }
   }
 
@@ -153,10 +128,10 @@ function processTrack(message, metadata, destination) {
   const endpointUrl = prepareUrl(message, destination);
 
   return buildResponse(
-    message,
-    requestJson,
-    metadata,
-    endpointUrl
+      message,
+      requestJson,
+      metadata,
+      endpointUrl
   );
 }
 
@@ -181,18 +156,16 @@ function process(event) {
 
   const { message, metadata, destination } = event;
 
- validateRequest(message);
+  validateRequest(message);
 
   const messageType = message.type?.toLowerCase();
-  let response = {};
 
   if (messageType === EventType.TRACK) {
-    response = processTrack(message, metadata, destination);
-  } else {
-    throw new InstrumentationError(`Message type ${messageType} not supported`);
+    return processTrack(message, metadata, destination);
   }
 
-  return response;
+  throw new InstrumentationError(`Message type ${messageType} not supported`);
+
 }
 
 const processRouterDest = async (inputs, reqMetadata) => {

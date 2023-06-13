@@ -7233,7 +7233,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "[Google Analytics 4] track:: Reserved custom prefix names are not allowed",
+      "error": "Reserved custom prefix names are not allowed",
       "statTags": {
         "destination": "ga4",
         "stage": "transform",
@@ -8877,7 +8877,7 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "track:: Reserved custom event names are not allowed",
+      "error": "Reserved custom event names are not allowed",
       "statTags": {
         "destination": "ga4",
         "stage": "transform",
@@ -12183,7 +12183,6 @@
           "measurementId": "G-T40PE6KET4",
           "firebaseAppId": "",
           "typesOfClient": "gtag",
-          "extendPageViewParams": false,
           "eventFilteringOption": "disable",
           "connectionMode": "hybrid",
           "blacklistedEvents": [
@@ -12365,6 +12364,96 @@
       },
       "version": "1",
       "endpoint": "https://www.google-analytics.com/mp/collect"
+    }
+  },
+  {
+    "description": "[Error]: (gtag) event name starts with numbers",
+    "input": {
+      "message": {
+        "channel": "web",
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "externalId": [
+            {
+              "type": "ga4AppInstanceId",
+              "id": "f0dd99b6f979fb551ce583373900f937"
+            },
+            {
+              "type": "ga4ClientId",
+              "id": "client_id"
+            }
+          ],
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "type": "track",
+        "event": "1234_sign_up",
+        "properties": {
+          "total": "10"
+        },
+        "integrations": {
+          "All": true
+        }
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6KET4",
+          "firebaseAppId": "",
+          "typesOfClient": "gtag",
+          "eventFilteringOption": "disable",
+          "connectionMode": "cloud",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
+        },
+        "Enabled": true
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "Event name should only contain letters, numbers, and underscores and event name must start with a letter",
+      "statTags": {
+        "destination": "ga4",
+        "stage": "transform",
+        "scope": "exception"
+      }
     }
   }
 ]

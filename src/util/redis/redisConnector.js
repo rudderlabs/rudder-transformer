@@ -33,6 +33,7 @@ const RedisDB = {
           log.error(`Redis is down at ${this.host}:${this.port}`);
           return false; // stop retrying
         },
+        tls: {}
       });
       this.client.on('ready', () => {
         log.info(`Connected to redis at ${this.host}:${this.port}`);

@@ -16,7 +16,7 @@ const {
   TRACK_BATCH_ENDPOINT,
   IDENTIFY_MAX_BATCH_SIZE,
   IDENTIFY_BATCH_ENDPOINT,
-  IDENTIFY_MAX_BODY_SIZE_IN_BYTES
+  IDENTIFY_MAX_BODY_SIZE_IN_BYTES,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
@@ -24,7 +24,7 @@ const { MappedToDestinationKey } = require('../../../constants');
 
 const getCatalogEndpoint = (category, message) => {
   const externalIdInfo = getDestinationExternalIDInfoForRetl(message, 'ITERABLE');
-  return `${category.endpoint}/${externalIdInfo.objectType}/items/${externalIdInfo.destinationExternalId}`;
+  return `${category.endpoint}/${externalIdInfo.objectType}/items`;
 };
 
 function validateMandatoryField(payload) {
@@ -230,47 +230,35 @@ const updateCartAction = (message) => {
 };
 
 /**
- * Function to prepare batch request and returns it
- * @param {*} apiKey 
- * @param {*} metadata 
- * @param {*} endPoint 
- * @param {*} destination 
- * @param {*} eventResponse 
- * @param {*} addTransformedEventsWithBatch 
- * @returns 
+ * Combines batched and non batched requests
+ * @param {*} apiKey
+ * @param {*} metadata
+ * @param {*} endPoint
+ * @param {*} destination
+ * @param {*} eventResponse
+ * @param {*} transformedEvents
+ * @returns
  */
-const prepareFinalBatchRequest = (
+const combineBatchedAndNonBatchedEvents = (
   apiKey,
   metadata,
   endPoint,
   destination,
   eventResponse,
-  addTransformedEventsWithBatch,
+  nonBatchedRequests,
 ) => {
-  let batchEventResponse = eventResponse;
-
-  batchEventResponse.batchedRequest.endpoint = endPoint;
-
-  batchEventResponse.batchedRequest.headers = {
+  const { batchedRequest } = eventResponse;
+  batchedRequest.endpoint = endPoint;
+  batchedRequest.headers = {
     'Content-Type': JSON_MIME_TYPE,
     api_key: apiKey,
   };
 
-  /**
-   [
-    {
-      batchedRequest: [{e1_batched,e2_batched,e3_batched},{e6_not_batched}]
-      batched: true,
-      metadata: [m1,m2,m3,m6],
-      destination,
-    }
-   ]
-  */
-  batchEventResponse = {
-    events:
-      addTransformedEventsWithBatch.length > 0
-        ? [batchEventResponse.batchedRequest, ...addTransformedEventsWithBatch]
-        : batchEventResponse.batchedRequest,
+  const batchedEvents =
+    nonBatchedRequests.length > 0 ? [batchedRequest, ...nonBatchedRequests] : batchedRequest;
+
+  const batchEventResponse = {
+    events: batchedEvents,
     metadata,
     destination,
   };
@@ -284,225 +272,347 @@ const prepareFinalBatchRequest = (
 };
 
 /**
- * Function to batch updateUser events
- * @param {*} updateUserEventsChunks 
+ * This function prepares and splits update user batches based on payload size
+ * @param {*} chunk 
  * @param {*} registerDeviceOrBrowserEvents 
  * @returns 
  */
-const batchUpdateUserEvents = (updateUserEventsChunks, registerDeviceOrBrowserEvents) => {
-  const batchedResponseList = [];
-  updateUserEventsChunks.forEach((chunk) => {
-    // Variable to keep a track of payload size
-    let size = 0;
-    
-    let usersChunk = [];
-    const batchUsers = [];
+const prepareAndSplitUpdateUserBatchesBasedOnPayloadSize = (chunk, registerDeviceOrBrowserEvents) => {
+  const batches = [];
+  let size = 0;
+  let usersChunk = [];
+  let metadataChunk = [];
+  let nonBatchedRequests = [];
 
-    let metadataChunk = [];
+  chunk.forEach((event) => {
+    size += jsonSize(get(event, 'message.body.JSON'));
 
-    const { destination } = chunk[0];
-    const { apiKey } = destination.Config;
-    // All the registerDeviceOrBrowserEvents will get stored in this variable
-    let addTransformedEventsWithBatch = [];
-
-    chunk.forEach((event) => {
-      size += jsonSize(get(event, 'message.body.JSON'));
-      // Checks if payload size is more then 4MB then it will device the payload and prepare separate batch request for each 
-      if (size > IDENTIFY_MAX_BODY_SIZE_IN_BYTES) {
-        batchUsers.push({
-          users: usersChunk,
-          metadata: metadataChunk,
-          transformedEvents: addTransformedEventsWithBatch,
-        });
-        usersChunk = [];
-        metadataChunk = [];
-        addTransformedEventsWithBatch = [];
-        size = jsonSize(get(event, 'message.body.JSON'));
-      }
-      if (registerDeviceOrBrowserEvents[event.metadata.jobId]) {
-        const response = registerDeviceOrBrowserEvents[event.metadata.jobId];
-        addTransformedEventsWithBatch.push(response.message);
-      }
-      metadataChunk.push(event.metadata);
-      usersChunk.push(get(event, 'message.body.JSON'));
-    });
-
-    if (usersChunk.length > 0) {
-      batchUsers.push({
+    if (size > IDENTIFY_MAX_BODY_SIZE_IN_BYTES) {
+      batches.push({
         users: usersChunk,
         metadata: metadataChunk,
-        transformedEvents: addTransformedEventsWithBatch,
+        nonBatchedRequests,
+        destination: event.destination,
       });
-    }
-  
-    batchUsers.forEach((batch) => {
-      const batchEventResponse = defaultBatchRequestConfig();
-      batchEventResponse.batchedRequest.body.JSON = {
-        users: batch.users,
-      };
 
-      batchedResponseList.push(
-        prepareFinalBatchRequest(
-          apiKey,
-          batch.metadata,
-          IDENTIFY_BATCH_ENDPOINT,
-          destination,
-          batchEventResponse,
-          batch.transformedEvents,
-        ),
-      );
+      usersChunk = [];
+      metadataChunk = [];
+      nonBatchedRequests = [];
+      size = jsonSize(get(event, 'message.body.JSON'));
+    }
+
+    if (registerDeviceOrBrowserEvents[event?.metadata?.jobId]) {
+      const response = registerDeviceOrBrowserEvents[event.metadata.jobId];
+      nonBatchedRequests.push(response);
+    }
+
+    metadataChunk.push(event.metadata);
+    usersChunk.push(get(event, 'message.body.JSON'));
+  });
+
+  if (usersChunk.length > 0) {
+    batches.push({
+      users: usersChunk,
+      metadata: metadataChunk,
+      nonBatchedRequests,
+      destination: chunk[0].destination,
     });
+  }
+
+  return batches;
+};
+
+/**
+ * Takes updateUser event chunks, divides them into smaller batches based on payload size
+ * extracts user data and metadata from each event
+ * and prepares batched responses for further processing
+ * @param {*} updateUserEventsChunks
+ * @param {*} registerDeviceOrBrowserEvents
+ * @returns
+ */
+const processUpdateUserBatch = (chunk, registerDeviceOrBrowserEvents) => {
+  const batchedResponseList = [];
+
+  const batches = prepareAndSplitUpdateUserBatchesBasedOnPayloadSize(
+    chunk,
+    registerDeviceOrBrowserEvents,
+  );
+
+  batches.forEach((batch) => {
+    const batchEventResponse = defaultBatchRequestConfig();
+    batchEventResponse.batchedRequest.body.JSON = { users: batch.users };
+
+    const { destination, metadata, nonBatchedRequests } = batch;
+    const { apiKey } = destination.Config;
+
+    const batchedResponse = combineBatchedAndNonBatchedEvents(
+      apiKey,
+      metadata,
+      IDENTIFY_BATCH_ENDPOINT,
+      destination,
+      batchEventResponse,
+      nonBatchedRequests,
+    );
+
+    batchedResponseList.push(batchedResponse);
   });
 
   return batchedResponseList;
 };
 
 /**
- * Function to batch catalog events
+ * Takes a list of update user events and batches them into chunks, preparing them for batch processing
+ * @param {*} updateUserEvents
+ * @param {*} registerDeviceOrBrowserEvents
+ * @returns
+ */
+const batchUpdateUserEvents = (updateUserEvents, registerDeviceOrBrowserEvents) => {
+  // Batching update user events
+  const updateUserEventsChunks = _.chunk(updateUserEvents, IDENTIFY_MAX_BATCH_SIZE);
+  return updateUserEventsChunks.reduce((batchedResponseList, chunk) => {
+    const batchedResponse = processUpdateUserBatch(chunk, registerDeviceOrBrowserEvents);
+    return batchedResponseList.concat(batchedResponse);
+  }, []);
+};
+
+/**
+ * Processes chunks of catalog events, extracts the necessary data, and prepares batched requests for further processing
  * @param {*} catalogEventsChunks
  * @returns
  */
-const batchCatalogEvents = (catalogEventsChunks) => {
-  const batchedResponseList = [];
-  catalogEventsChunks.forEach((chunk) => {
-    const metadata = [];
-    // DOC: https://api.iterable.com/api/docs#catalogs_bulkUpdateCatalogItems
-    const batchCatalogResponseList = {
-      documents: {},
-      replaceUploadedFieldsOnly: true,
-    };
+const processCatalogBatch = (chunk) => {
+  const metadata = [];
+  const batchCatalogResponseList = {
+    documents: {},
+    replaceUploadedFieldsOnly: true,
+  };
 
-    const { destination } = chunk[0];
-    const { apiKey } = destination.Config;
-    /** body will be in below format:
-      {
-        "documents": {
-            "test-1-item": {
-                "abc": "TestValue"
-            },
-            "test-2-item": {
-                "abc": "TestValue1"
-            }
-        },
-        "replaceUploadedFieldsOnly": true
-      } 
-    */
-    chunk.forEach((event) => {
-      metadata.push(event.metadata);
-      batchCatalogResponseList.documents[event.message.endpoint.split('/').pop()] = get(
-        event,
-        'message.body.JSON.update',
-      );
-    });
+  const { destination } = chunk[0];
+  const { apiKey } = destination.Config;
 
-    const batchEventResponse = defaultBatchRequestConfig();
-    batchEventResponse.batchedRequest.body.JSON = batchCatalogResponseList;
-    const endPoint = chunk[0].message.endpoint.substr(
-      0,
-      chunk[0].message.endpoint.lastIndexOf('/'),
-    );
-
-    batchedResponseList.push(
-      prepareFinalBatchRequest(apiKey, metadata, endPoint, destination, batchEventResponse, []),
-    );
+  chunk.forEach((event) => {
+    metadata.push(event.metadata);
+    const catalogId = get(event, 'message.body.JSON.catalogId');
+    const update = get(event, 'message.body.JSON.update');
+    batchCatalogResponseList.documents[catalogId] = update;
   });
-  return batchedResponseList;
+
+  const batchEventResponse = defaultBatchRequestConfig();
+  batchEventResponse.batchedRequest.body.JSON = batchCatalogResponseList;
+  const endPoint = chunk[0].message.endpoint;
+
+  return combineBatchedAndNonBatchedEvents(
+    apiKey,
+    metadata,
+    endPoint,
+    destination,
+    batchEventResponse,
+    [],
+  );
 };
 
 /**
- * Function to batch track events
+ * Takes a list of catalog events and batches them into chunks, preparing them for batch processing
+ * @param {*} catalogEvents
+ * @returns
+ */
+const batchCatalogEvents = (catalogEvents) => {
+  // Batching catalog events
+  const catalogEventsChunks = _.chunk(catalogEvents, IDENTIFY_MAX_BATCH_SIZE);
+  return catalogEventsChunks.reduce((batchedResponseList, chunk) => {
+    const batchedResponse = processCatalogBatch(chunk);
+    return batchedResponseList.concat(batchedResponse);
+  }, []);
+};
+
+/**
+ * Processes chunks of track events, extracts the necessary data, and prepares batched requests for further processing
  * @param {*} trackEventsChunks
  * @returns
  */
-const batchTrackEvents = (trackEventsChunks) => {
-  const batchedResponseList = [];
-  trackEventsChunks.forEach((chunk) => {
-    const events = [];
-    const metadata = [];
+const processTrackBatch = (chunk) => {
+  const events = [];
+  const metadata = [];
 
-    const { destination } = chunk[0];
-    const { apiKey } = destination.Config;
+  const { destination } = chunk[0];
+  const { apiKey } = destination.Config;
 
-    chunk.forEach((event) => {
-      metadata.push(event.metadata);
-      events.push(get(event, 'message.body.JSON'));
-    });
-
-    const batchEventResponse = defaultBatchRequestConfig();
-
-    batchEventResponse.batchedRequest.body.JSON = {
-      events,
-    };
-
-    batchedResponseList.push(
-      prepareFinalBatchRequest(
-        apiKey,
-        metadata,
-        TRACK_BATCH_ENDPOINT,
-        destination,
-        batchEventResponse,
-        [],
-      ),
-    );
+  chunk.forEach((event) => {
+    metadata.push(event.metadata);
+    events.push(get(event, 'message.body.JSON'));
   });
 
-  return batchedResponseList;
+  const batchEventResponse = defaultBatchRequestConfig();
+  batchEventResponse.batchedRequest.body.JSON = {
+    events,
+  };
+
+  return combineBatchedAndNonBatchedEvents(
+    apiKey,
+    metadata,
+    TRACK_BATCH_ENDPOINT,
+    destination,
+    batchEventResponse,
+    [],
+  );
+};
+
+/**
+ * Takes a list of track events and batches them into chunks, preparing them for batch processing
+ * @param {*} trackEvents
+ * @returns
+ */
+const batchTrackEvents = (trackEvents) => {
+  // Batching track events
+  const trackEventsChunks = _.chunk(trackEvents, TRACK_MAX_BATCH_SIZE);
+  return trackEventsChunks.reduce((batchedResponseList, chunk) => {
+    const batchedResponse = processTrackBatch(chunk);
+    return batchedResponseList.concat(batchedResponse);
+  }, []);
+};
+
+/**
+ * Batch and prepare various types of events (track, catalog, updateUser) for processing in a modular and organized manner
+ * @param {*} filteredEvents
+ * @returns
+ */
+const prepareBatchRequests = (filteredEvents) => {
+  const {
+    trackEvents,
+    catalogEvents,
+    errorRespList,
+    updateUserEvents,
+    eventResponseList,
+    registerDeviceOrBrowserEvents,
+  } = filteredEvents;
+
+  const updateUserBatchedResponseList =
+    updateUserEvents.length > 0
+      ? batchUpdateUserEvents(updateUserEvents, registerDeviceOrBrowserEvents)
+      : [];
+
+  const catalogBatchedResponseList =
+    catalogEvents.length > 0 ? batchCatalogEvents(catalogEvents) : [];
+
+  // Batching track events
+  const trackBatchedResponseList = trackEvents.length > 0 ? batchTrackEvents(trackEvents) : [];
+
+  // appending all kinds of batches
+  const batchedResponseList = [
+    ...updateUserBatchedResponseList,
+    ...catalogBatchedResponseList,
+    ...trackBatchedResponseList,
+    ...eventResponseList,
+  ];
+
+  return [...batchedResponseList, ...errorRespList];
+};
+
+/**
+ * This function creates an object by mapping events to their corresponding jobId
+ * @param {*} events
+ * @returns
+ */
+const mapRegisterDeviceOrBrowserEventsWithJobId = (events) => {
+  const registerDeviceOrBrowserEvents = {};
+  events.forEach((event) => {
+    const { data } = event;
+    registerDeviceOrBrowserEvents[data?.metadata?.jobId] = data?.message;
+  });
+  return registerDeviceOrBrowserEvents;
+};
+
+/**
+ * Function to categorizes events.
+ * @param {*} event
+ * @returns
+ */
+const categorizeEvent = (event) => {
+  const { message, metadata, destination } = event;
+
+  if (event?.error) {
+    return { type: 'error', data: event };
+  }
+
+  if (message.endpoint === ConfigCategory.IDENTIFY.endpoint) {
+    return { type: 'updateUser', data: { message, metadata, destination } };
+  }
+
+  if (message?.operation === 'catalogs') {
+    return { type: 'catalog', data: { message, metadata, destination } };
+  }
+
+  if (
+    message.endpoint === ConfigCategory.IDENTIFY.endpointBrowser ||
+    message.endpoint === ConfigCategory.IDENTIFY.endpointDevice
+  ) {
+    return { type: 'registerDeviceOrBrowser', data: { message, metadata, destination } };
+  }
+
+  if (message.endpoint.includes('api/events/track')) {
+    return { type: 'track', data: { message, metadata, destination } };
+  }
+
+  return { type: 'eventResponse', data: getSuccessRespEvents(message, [metadata], destination) };
+};
+
+/**
+ * Function to categorizes and filters events, organizing them into different arrays based on their properties
+ * @param {*} transformedEvents
+ */
+const filterEvents = (transformedEvents) => {
+  const categorizeEventList = transformedEvents.map(categorizeEvent);
+
+  // Identify events
+  const catalogEvents = categorizeEventList
+    .filter((event) => event.type === 'catalog')
+    .map((event) => event.data);
+  const updateUserEvents = categorizeEventList
+    .filter((event) => event.type === 'updateUser')
+    .map((event) => event.data);
+  const registerDeviceOrBrowserEventsArray = categorizeEventList.filter(
+    (event) => event.type === 'registerDeviceOrBrowser',
+  );
+  const registerDeviceOrBrowserEvents = mapRegisterDeviceOrBrowserEventsWithJobId(
+    registerDeviceOrBrowserEventsArray,
+  );
+
+  // Track events
+  const trackEvents = categorizeEventList
+    .filter((event) => event.type === 'track')
+    .map((event) => event.data);
+
+  // Rest of the events
+  const eventResponseList = categorizeEventList
+    .filter((event) => event.type === 'eventResponse')
+    .map((event) => event.data);
+
+  // Failed events
+  const errorRespList = categorizeEventList
+    .filter((event) => event.type === 'error')
+    .map((event) => event.data);
+
+  return {
+    trackEvents,
+    catalogEvents,
+    errorRespList,
+    updateUserEvents,
+    eventResponseList,
+    registerDeviceOrBrowserEvents,
+  };
 };
 
 /**
  * Function to prepare batch events and add it to final payload
  * @param {*} trackEvents
- * @param {*} catalogEvents
- * @param {*} errorRespList
- * @param {*} updateUserEvents
- * @param {*} eventResponseList
- * @param {*} registerDeviceOrBrowserEvents
  * @returns
  */
-const prepareBatchEvents = (
-  trackEvents,
-  catalogEvents,
-  errorRespList,
-  updateUserEvents,
-  eventResponseList,
-  registerDeviceOrBrowserEvents,
-) => {
-  // Batching update user events
-  let updateUserBatchedResponseList = [];
-  if (updateUserEvents.length > 0) {
-    // updateUserEventsChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-    const updateUserEventsChunks = _.chunk(updateUserEvents, IDENTIFY_MAX_BATCH_SIZE);
-    updateUserBatchedResponseList = batchUpdateUserEvents(
-      updateUserEventsChunks,
-      registerDeviceOrBrowserEvents,
-    );
-  }
+const filterEventsAndPrepareBatchRequests = (transformedEvents) => {
+  // Part 1 : filter events
+  const filteredEvents = filterEvents(transformedEvents);
 
-  // Batching catalog events
-  let catalogBatchedResponseList = [];
-  if (catalogEvents.length > 0) {
-    // catalogEventsChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-    const catalogEventsChunks = _.chunk(catalogEvents, IDENTIFY_MAX_BATCH_SIZE);
-    catalogBatchedResponseList = batchCatalogEvents(catalogEventsChunks);
-  }
-
-  // Batching track events
-  let trackBatchedResponseList = [];
-  if (trackEvents.length > 0) {
-    // trackEventsChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-    const trackEventsChunks = _.chunk(trackEvents, TRACK_MAX_BATCH_SIZE);
-    trackBatchedResponseList = batchTrackEvents(trackEventsChunks);
-  }
-
-  let batchedResponseList = [];
-  // appending all kinds of batches
-  batchedResponseList = batchedResponseList
-    .concat(updateUserBatchedResponseList)
-    .concat(catalogBatchedResponseList)
-    .concat(trackBatchedResponseList)
-    .concat(eventResponseList);
-
-  return [...batchedResponseList, ...errorRespList];
+  // Part 2 : prepare batch requests
+  return prepareBatchRequests(filteredEvents);
 };
 
 module.exports = {
@@ -512,8 +622,8 @@ module.exports = {
   identifyAction,
   updateCartAction,
   getCatalogEndpoint,
-  prepareBatchEvents,
   trackPurchaseAction,
   identifyDeviceAction,
   identifyBrowserAction,
+  filterEventsAndPrepareBatchRequests,
 };

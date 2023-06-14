@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const get = require('get-value');
 const {
   pageAction,
@@ -6,19 +7,15 @@ const {
   identifyAction,
   updateCartAction,
   getCatalogEndpoint,
-  prepareBatchEvents,
   trackPurchaseAction,
   identifyDeviceAction,
   identifyBrowserAction,
+  filterEventsAndPrepareBatchRequests,
 } = require('./util');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
-const {
-  mappingConfig,
-  ConfigCategory,
-} = require('./config');
+const { mappingConfig, ConfigCategory } = require('./config');
 const {
   constructPayload,
-  getSuccessRespEvents,
   defaultRequestConfig,
   removeUndefinedValues,
   checkInvalidRtTfEvents,
@@ -64,6 +61,10 @@ const constructPayloadItem = (message, category, destination) => {
       break;
     case 'catalogs':
       rawPayload = constructPayload(message, mappingConfig[category.name]);
+      rawPayload.catalogId = getDestinationExternalIDInfoForRetl(
+        message,
+        'ITERABLE',
+      ).destinationExternalId;
       break;
     default:
       logger.debug('not supported type');
@@ -182,106 +183,43 @@ const processSingleMessage = (message, destination) => {
 
 const process = (event) => processSingleMessage(event.message, event.destination);
 
-/**
- * Function to categorize events based on it's endpoint and operation values
- * @param {*} event 
- * @param {*} catalogEvents 
- * @param {*} updateUserEvents 
- * @param {*} registerDeviceOrBrowserEvents 
- * @param {*} trackEvents 
- * @param {*} eventResponseList 
- */
-const filterEvents = (
-  event,
-  catalogEvents,
-  updateUserEvents,
-  registerDeviceOrBrowserEvents,
-  trackEvents,
-  eventResponseList,
-) => {
-  const { metadata, destination } = event;
-  let { message } = event;
-  message = Array.isArray(message) ? message : [message];
-  message.forEach((response) => {
-    if (response.endpoint === ConfigCategory.IDENTIFY.endpoint) {
-      updateUserEvents.push({ message: response, metadata, destination });
-    } else if (response.operation === 'catalogs') {
-      catalogEvents.push({ message: response, metadata, destination });
-    } else if (
-      response.endpoint === ConfigCategory.IDENTIFY.endpointBrowser ||
-      response.endpoint === ConfigCategory.IDENTIFY.endpointDevice
-    ) {
-      // eslint-disable-next-line no-param-reassign
-      registerDeviceOrBrowserEvents[metadata?.jobId] = { message: response };
-    } else if (response?.endpoint?.includes('api/events/track')) {
-      trackEvents.push({ message: response, metadata, destination });
-    } else {
-      eventResponseList.push(getSuccessRespEvents(response, [metadata], destination));
-    }
-  });
-};
-
 const processRouterDest = async (inputs, reqMetadata) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs);
   if (errorRespEvents.length > 0) {
     return errorRespEvents;
   }
 
-  // Identify events
-  const catalogEvents = [];
-  const updateUserEvents = [];
-  const registerDeviceOrBrowserEvents = {};
-
-  // Track events
-  const trackEvents = [];
-
-  // Events Response
-  const errorRespList = [];
-  const eventResponseList = [];
-
-  await Promise.all(
+  let transformedEvents = await Promise.all(
     inputs.map(async (event) => {
       try {
         if (event.message.statusCode) {
           // already transformed event
-          filterEvents(
-            event,
-            catalogEvents,
-            updateUserEvents,
-            registerDeviceOrBrowserEvents,
-            trackEvents,
-            eventResponseList,
-          );
-        } else {
-          // if not transformed
-          filterEvents(
-            {
-              message: await process(event),
-              metadata: event.metadata,
-              destination: event.destination,
-            },
-            catalogEvents,
-            updateUserEvents,
-            registerDeviceOrBrowserEvents,
-            trackEvents,
-            eventResponseList,
-          );
+          return {
+            message: event.message,
+            metadata: event.metadata,
+            destination: event.destination,
+          };
         }
+        // if not transformed
+        const transformedPayloads = [];
+        let responses = await process(event);
+        responses = Array.isArray(responses) ? responses : [responses];
+        responses.forEach((response) => {
+          transformedPayloads.push({
+            message: response,
+            metadata: event.metadata,
+            destination: event.destination,
+          });
+        });
+        return transformedPayloads;
       } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
-        errorRespList.push(errRespEvent);
+        return handleRtTfSingleEventError(event, error, reqMetadata);
       }
     }),
   );
-
-  return prepareBatchEvents(
-    trackEvents,
-    catalogEvents,
-    errorRespList,
-    updateUserEvents,
-    eventResponseList,
-    registerDeviceOrBrowserEvents,
-  );
+  
+  transformedEvents = _.flatMap(transformedEvents);
+  return filterEventsAndPrepareBatchRequests(transformedEvents);
 };
 
 module.exports = { process, processRouterDest };

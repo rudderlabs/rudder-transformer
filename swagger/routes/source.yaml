@@ -1,0 +1,39 @@
+/{version}/sources/{source}:
+  post:
+    tags:
+      - Source
+    summary: Source Transformation
+    params:
+      properties:
+        version:
+          type: number
+      source:
+        type: string
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: object
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/sourceTransformationResponse.yaml'
+      400:
+        description: Failure
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                statusCode:
+                  type: number
+                error:
+                  type: string
+                  example: '[Source Transform] Error occurred while processing payload.'
+                statTags:
+                  type: object

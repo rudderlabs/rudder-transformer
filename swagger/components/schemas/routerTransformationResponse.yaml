@@ -1,0 +1,18 @@
+title: Processor Transformation Response
+type: object
+properties:
+  batchedRequest:
+    $ref: './processorTransformationOutput.yaml'
+  metadata:
+    items:
+      $ref: './metadata.yaml'
+  destination:
+    $ref: './destination.yaml'
+  batched:
+    type: boolean
+  statusCode:
+    type: number
+  error:
+    type: string
+  statTags:
+    type: object

@@ -1,0 +1,13 @@
+title: Processor Transformation Response
+type: object
+properties:
+  output:
+    $ref: './processorTransformationOutput.yaml'
+  metadata:
+    $ref: './metadata.yaml'
+  statusCode:
+    type: number
+  error:
+    type: string
+  statTags:
+    type: object

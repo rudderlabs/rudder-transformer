@@ -1,7 +1,7 @@
-'/{version}/destinations/{destination}':
+/{version}/destinations/{destination}:
   post:
     tags:
-      - Miscellaneous
+      - Destination
     summary: Destination processor transformation
     parameters:
       - in: path
@@ -24,97 +24,118 @@
           schema:
             type: array
             items:
+              $ref: '../components/schemas/processorTransformationRequest.yaml'
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              $ref: '../components/schemas/processorTransformationResponse.yaml'
+      400:
+        description: Failure
+        content:
+          application/json:
+            schema:
               type: object
               properties:
-                message:
-                  type: object
-                  required: true
                 metadata:
+                  $ref: '../components/schemas/metadata.yaml'
+                statusCode:
+                  type: number
+                error:
+                  type: string
+                statTags:
                   type: object
-                destinationId:
-                  type: object
-    responses:
-      200:
-        description: Success
-        content:
-          application/json:
-            schema:
-              $ref: '../components/schemas/processorTransform.yaml'
-      400:
-        description: Destination processor transformation failed
-'/routerTransform':
+
+/routerTransform:
   post:
     tags:
-      - Miscellaneous
-    summary: Destination router transformations
+      - Destination
+    summary: Destination router transformation
     requestBody:
       description: Request Body
       required: true
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              input:
-                type: array
-                required: true
-                items:
-                  type: object
-                  properties:
-                    message:
-                      type: object
-                      required: true
-                    metadata:
-                      $ref: '../components/schemas/metadata.yaml'
-                    destination:
-                      type: object
-              destType:
-                type: string
-                required: true
+            $ref: '../components/schemas/routerTransformationRequest.yaml'
     responses:
       200:
         description: Success
         content:
           application/json:
             schema:
-              $ref: '../components/schemas/routerTransform.yaml'
+              $ref: '../components/schemas/routerTransformationResponse.yaml'
       400:
-        description: Destination router transformation failed
-'/batch':
+        description: Failure
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                output:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      metadata:
+                        type: array
+                        items:
+                          $ref: '../components/schemas/metadata.yaml'
+                      destination:
+                        $ref: '../components/schemas/destination.yaml'
+                      batched:
+                        type: boolean
+                        example: false
+                      statusCode:
+                        type: number
+                      error:
+                        type: string
+                      statTags:
+                        type: object
+
+/batch:
   post:
     tags:
-      - Miscellaneous
-    summary: Batch input payload
+      - Destination
+    summary: Destination router transformation
     requestBody:
       description: Request Body
       required: true
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              input:
-                type: array
-                required: true
-                items:
-                  type: object
-                  properties:
-                    message:
-                      type: object
-                      required: true
-                    metadata:
-                      $ref: '../components/schemas/metadata.yaml'
-                    destination:
-                      type: object
-              destType:
-                type: string
-                required: true
+            $ref: '../components/schemas/routerTransformationRequest.yaml'
     responses:
       200:
         description: Success
         content:
           application/json:
             schema:
-              $ref: '../components/schemas/routerTransform.yaml'
-      400:
-        description: Batch transformation failed
+              $ref: '../components/schemas/routerTransformationResponse.yaml'
+      500:
+        description: Failure
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  metadata:
+                    type: array
+                    items:
+                      $ref: '../components/schemas/metadata.yaml'
+                  destination:
+                    $ref: '../components/schemas/destination.yaml'
+                  batched:
+                    type: boolean
+                    example: false
+                  statusCode:
+                    type: number
+                    example: 500
+                  error:
+                    type: string
+                  statTags:
+                    type: object

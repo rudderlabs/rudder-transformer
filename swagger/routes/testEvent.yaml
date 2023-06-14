@@ -1,0 +1,91 @@
+/{version}/{destination}:
+  get:
+    tags:
+      - Miscellaneous
+    summary: Events Tester
+    parameters:
+      - in: path
+        name: version
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: destination
+        required: true
+        schema:
+          type: string
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              events:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    message:
+                      type: object
+                    metadata:
+                      type: object
+                    destination:
+                      type: object
+                    stage:
+                      type: object
+                    library:
+                      type: object
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  user_transformed_payload:
+                    type: object
+                  dest_transformed_payload:
+                    type: object
+                  destination_response:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        headers:
+                          type: object
+                        response:
+                          type: object
+                        status:
+                          type: string
+                  destination_response_status:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        status:
+                          type: string
+
+      400:
+        description: Event Tester Failed
+
+/{version}/health:
+  get:
+    tags:
+      - Miscellaneous
+    summary: Health of the service
+    parameters:
+      - name: version
+        in: path
+        required: true
+        schema:
+          type: string
+    responses:
+      '200':
+        description: OK
+        content:
+          '*/*':
+            schema:
+              type: string

@@ -19,10 +19,8 @@ properties:
     type: number
   sourceTpConfig:
     type: object
-    properties: {}
   mergedTpConfig:
     type: object
-    properties: {}
   destinationId:
     type: string
   jobRunId:
@@ -41,7 +39,6 @@ properties:
     type: string
   recordId:
     type: object
-    properties: {}
   destinationType:
     type: string
   messageId:

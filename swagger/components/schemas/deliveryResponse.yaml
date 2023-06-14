@@ -1,0 +1,13 @@
+title: Delivery response
+type: object
+properties:
+  status:
+    type: number
+  message:
+    type: string
+  destinationResponse:
+    type: object
+  statTags:
+    type: object
+  authErrorCategory:
+    type: string

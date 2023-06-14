@@ -131,7 +131,7 @@ const updateUserEventPayloadBuilder = (message, category) => {
 };
 
 /**
- * Prepares screen or page event payload
+ * Common function to build screen or page event payload
  * @param {*} message
  * @param {*} destination
  * @param {*} category
@@ -164,6 +164,25 @@ const pageOrScreenEventPayloadBuilder = (message, destination, category) => {
 
   return rawPayload;
 };
+
+/**
+ * Prepares page event payload
+ * @param {*} message 
+ * @param {*} destination 
+ * @param {*} category 
+ * @returns 
+ */
+const pageEventPayloadBuilder = (message, destination, category) => pageOrScreenEventPayloadBuilder(message, destination, category);
+
+/**
+ * Prepares screen event payload
+ * @param {*} message 
+ * @param {*} destination 
+ * @param {*} category 
+ * @returns 
+ */
+const screenEventPayloadBuilder = (message, destination, category) =>
+  pageOrScreenEventPayloadBuilder(message, destination, category);
 
 /**
  * Prepares track event payload
@@ -661,13 +680,15 @@ const filterEventsAndPrepareBatchRequests = (transformedEvents) => {
 module.exports = {
   getCatalogEndpoint,
   hasMultipleResponses,
+  pageEventPayloadBuilder,
   trackEventPayloadBuilder,
+  screenEventPayloadBuilder,
   getCategoryUsingEventName,
   purchaseEventPayloadBuilder,
   updateCartEventPayloadBuilder,
   updateUserEventPayloadBuilder,
   pageOrScreenEventPayloadBuilder,
+  filterEventsAndPrepareBatchRequests,
   registerDeviceTokenEventPayloadBuilder,
   registerBrowserTokenEventPayloadBuilder,
-  filterEventsAndPrepareBatchRequests,
 };

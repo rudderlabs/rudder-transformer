@@ -3,15 +3,16 @@ const get = require('get-value');
 const {
   getCatalogEndpoint,
   hasMultipleResponses,
+  pageEventPayloadBuilder,
   trackEventPayloadBuilder,
+  screenEventPayloadBuilder,
   getCategoryUsingEventName,
   purchaseEventPayloadBuilder,
   updateCartEventPayloadBuilder,
   updateUserEventPayloadBuilder,
-  pageOrScreenEventPayloadBuilder,
+  filterEventsAndPrepareBatchRequests,
   registerDeviceTokenEventPayloadBuilder,
   registerBrowserTokenEventPayloadBuilder,
-  filterEventsAndPrepareBatchRequests,
 } = require('./util');
 const {
   constructPayload,
@@ -49,10 +50,10 @@ const constructPayloadItem = (message, category, destination) => {
       rawPayload = updateUserEventPayloadBuilder(message, category);
       break;
     case 'page':
-      rawPayload = pageOrScreenEventPayloadBuilder(message, destination, category);
+      rawPayload = pageEventPayloadBuilder(message, destination, category);
       break;
     case 'screen':
-      rawPayload = pageOrScreenEventPayloadBuilder(message, destination, category);
+      rawPayload = screenEventPayloadBuilder(message, destination, category);
       break;
     case 'track':
       rawPayload = trackEventPayloadBuilder(message, category);

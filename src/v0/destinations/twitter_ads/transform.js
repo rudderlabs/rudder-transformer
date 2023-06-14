@@ -45,6 +45,8 @@ function buildResponse(message, requestJson, metadata, endpointUrl) {
     body: response.body.JSON
   };
 
+  console.log(metadata,  ' <><><>');
+
   const oAuthObject = getOAuthFields(metadata);
   const authHeader = getAuthHeaderForRequest(request, oAuthObject).Authorization;
   response.headers = {
@@ -65,13 +67,8 @@ function populateEventId(event, requestJson, destination) {
   let eventId = "";
 
   if (eventNameToIdMappings) {
-    eventNameToIdMappings.find(obj => {
-      if (obj.rudderEventName?.trim().toLowerCase() === event?.toString().toLowerCase()) {
-        eventId = obj.twitterEventId;
-        return true;
-      }
-      return false;
-    });
+    const eventObj = eventNameToIdMappings.find(obj => obj.rudderEventName?.trim().toLowerCase() === event?.toString().toLowerCase());
+    eventId = eventObj?.twitterEventId;
   }
 
   if(!eventId) {

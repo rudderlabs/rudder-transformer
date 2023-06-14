@@ -5,18 +5,18 @@ const BASE_URL = 'https://api.iterable.com/api/';
 const ConfigCategory = {
   IDENTIFY_BROWSER: {
     name: 'IterableRegisterBrowserTokenConfig',
+    action: 'identifyBrowser',
+    endpoint: `${BASE_URL}users/registerBrowserToken`,
   },
   IDENTIFY_DEVICE: {
     name: 'IterableRegisterDeviceTokenConfig',
+    action: 'identifyDevice',
+    endpoint: `${BASE_URL}users/registerDeviceToken`,
   },
   IDENTIFY: {
     name: 'IterableIdentifyConfig',
     action: 'identify',
-    actionDevice: 'identifyDevice',
-    actionBrowser: 'identifyBrowser',
     endpoint: `${BASE_URL}users/update`,
-    endpointDevice: `${BASE_URL}users/registerDeviceToken`,
-    endpointBrowser: `${BASE_URL}users/registerBrowserToken`,
   },
   PAGE: {
     name: 'IterablePageConfig',

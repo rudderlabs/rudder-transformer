@@ -1,60 +1,67 @@
 const _ = require('lodash');
 const get = require('get-value');
 const {
-  pageAction,
-  trackAction,
-  screenAction,
-  identifyAction,
-  updateCartAction,
   getCatalogEndpoint,
-  trackPurchaseAction,
-  identifyDeviceAction,
-  identifyBrowserAction,
+  hasMultipleResponses,
+  trackEventPayloadBuilder,
+  getCategoryUsingEventName,
+  purchaseEventPayloadBuilder,
+  updateCartEventPayloadBuilder,
+  updateUserEventPayloadBuilder,
+  pageOrScreenEventPayloadBuilder,
+  registerDeviceTokenEventPayloadBuilder,
+  registerBrowserTokenEventPayloadBuilder,
   filterEventsAndPrepareBatchRequests,
 } = require('./util');
-const { EventType, MappedToDestinationKey } = require('../../../constants');
-const { mappingConfig, ConfigCategory } = require('./config');
 const {
   constructPayload,
   defaultRequestConfig,
-  removeUndefinedValues,
   checkInvalidRtTfEvents,
   defaultPostRequestConfig,
   handleRtTfSingleEventError,
+  removeUndefinedAndNullValues,
   getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 const logger = require('../../../logger');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { mappingConfig, ConfigCategory } = require('./config');
+const { InstrumentationError } = require('../../util/errorTypes');
+const { EventType, MappedToDestinationKey } = require('../../../constants');
 
+/**
+ * Common payload builder function for all events
+ * @param {*} message
+ * @param {*} category
+ * @param {*} destination
+ * @returns
+ */
 const constructPayloadItem = (message, category, destination) => {
-  // const rawPayloadItemArr = [];
   let rawPayload = {};
 
   switch (category.action) {
     case 'identifyDevice':
-      rawPayload = identifyDeviceAction(message);
+      rawPayload = registerDeviceTokenEventPayloadBuilder(message);
       break;
     case 'identifyBrowser':
-      rawPayload = identifyBrowserAction(message);
+      rawPayload = registerBrowserTokenEventPayloadBuilder(message);
       break;
     case 'identify':
-      rawPayload = identifyAction(message, category);
+      rawPayload = updateUserEventPayloadBuilder(message, category);
       break;
     case 'page':
-      rawPayload = pageAction(message, destination, category);
+      rawPayload = pageOrScreenEventPayloadBuilder(message, destination, category);
       break;
     case 'screen':
-      rawPayload = screenAction(message, destination, category);
+      rawPayload = pageOrScreenEventPayloadBuilder(message, destination, category);
       break;
     case 'track':
-      rawPayload = trackAction(message, category);
+      rawPayload = trackEventPayloadBuilder(message, category);
       break;
     case 'trackPurchase':
-      rawPayload = trackPurchaseAction(message, category);
+      rawPayload = purchaseEventPayloadBuilder(message, category);
       break;
     case 'updateCart':
-      rawPayload = updateCartAction(message);
+      rawPayload = updateCartEventPayloadBuilder(message);
       break;
     case 'alias':
       rawPayload = constructPayload(message, mappingConfig[category.name]);
@@ -70,19 +77,22 @@ const constructPayloadItem = (message, category, destination) => {
       logger.debug('not supported type');
   }
 
-  return removeUndefinedValues(rawPayload);
+  return removeUndefinedAndNullValues(rawPayload);
 };
 
-const responseBuilderSimple = (message, category, destination) => {
+/**
+ * Common response builder function for all events
+ * @param {*} message
+ * @param {*} category
+ * @param {*} destination
+ * @returns
+ */
+const responseBuilder = (message, category, destination) => {
   const response = defaultRequestConfig();
   response.endpoint =
     category.action === 'catalogs' ? getCatalogEndpoint(category, message) : category.endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = constructPayloadItem(message, category, destination);
-  // adding operation to understand what type of event will be sent in batch
-  if (category.action === 'catalogs') {
-    response.operation = 'catalogs';
-  }
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
     api_key: destination.Config.apiKey,
@@ -90,98 +100,62 @@ const responseBuilderSimple = (message, category, destination) => {
   return response;
 };
 
-const responseBuilderSimpleForIdentify = (message, category, destination) => {
-  const response = defaultRequestConfig();
-  const { os, device } = message.context;
-
-  if (device) {
-    response.endpoint = category.endpointDevice;
-    response.body.JSON = constructPayloadItem(
-      message,
-      { ...category, action: category.actionDevice },
-      destination,
-    );
-  } else if (os) {
-    response.endpoint = category.endpointBrowser;
-    response.body.JSON = constructPayloadItem(
-      message,
-      { ...category, action: category.actionBrowser },
-      destination,
-    );
-  }
-
-  response.headers = {
-    'Content-Type': JSON_MIME_TYPE,
-    api_key: destination.Config.apiKey,
-  };
-  return response;
+/**
+ * Function to build response for register device and register browser events
+ * @param {*} message
+ * @param {*} destination
+ * @returns
+ */
+const responseBuilderForRegisterDeviceOrBrowserTokenEvents = (message, destination) => {
+  const { device } = message.context;
+  const category =
+    device && device?.token ? ConfigCategory.IDENTIFY_DEVICE : ConfigCategory.IDENTIFY_BROWSER;
+  return responseBuilder(message, category, destination);
 };
 
-const getCategoryUsingEventName = (event) => {
-  let category;
-  switch (event) {
-    case 'order completed':
-      category = ConfigCategory.TRACK_PURCHASE;
-      break;
-    case 'product added':
-    case 'product removed':
-      category = ConfigCategory.UPDATE_CART;
-      break;
-    default:
-      category = ConfigCategory.TRACK;
-  }
-  return category;
-};
+/**
+ * Function to find category value
+ * @param {*} messageType
+ * @param {*} message
+ * @returns
+ */
+const getCategory = (messageType, message) => {
+  const eventType = messageType.toLowerCase();
 
-const processSingleMessage = (message, destination) => {
-  const messageType = message.type.toLowerCase();
-  let category = {};
-  let event;
-  switch (messageType) {
+  switch (eventType) {
     case EventType.IDENTIFY:
       if (
         get(message, MappedToDestinationKey) &&
         getDestinationExternalIDInfoForRetl(message, 'ITERABLE').objectType !== 'users'
       ) {
-        // catagory will be catalog for any other object other than users
-        // DOC: https://support.iterable.com/hc/en-us/articles/360033214932-Catalog-Overview
-        category = ConfigCategory.CATALOG;
-      } else {
-        category = ConfigCategory.IDENTIFY;
+        return ConfigCategory.CATALOG;
       }
-      break;
+      return ConfigCategory.IDENTIFY;
     case EventType.PAGE:
-      category = ConfigCategory.PAGE;
-      break;
+      return ConfigCategory.PAGE;
     case EventType.SCREEN:
-      category = ConfigCategory.SCREEN;
-      break;
+      return ConfigCategory.SCREEN;
     case EventType.TRACK:
-      event = message.event?.toLowerCase();
-      category = getCategoryUsingEventName(event);
-      break;
+      return getCategoryUsingEventName(message);
     case EventType.ALIAS:
-      category = ConfigCategory.ALIAS;
-      break;
+      return ConfigCategory.ALIAS;
     default:
-      throw new InstrumentationError(`Message type ${messageType} not supported`);
+      throw new InstrumentationError(`Message type ${eventType} not supported`);
   }
-  const response = responseBuilderSimple(message, category, destination);
+};
 
-  if (
-    message.type === EventType.IDENTIFY &&
-    category === ConfigCategory.IDENTIFY &&
-    message.context &&
-    ((message.context.device && message.context.device.token) ||
-      (message.context.os && message.context.os.token))
-  ) {
-    return [response, responseBuilderSimpleForIdentify(message, category, destination)];
+const process = (event) => {
+  const { message, destination } = event;
+  const messageType = message.type.toLowerCase();
+  const category = getCategory(messageType, message);
+  const response = responseBuilder(message, category, destination);
+
+  if (hasMultipleResponses(message, category)) {
+    return [response, responseBuilderForRegisterDeviceOrBrowserTokenEvents(message, destination)];
   }
 
   return response;
 };
-
-const process = (event) => processSingleMessage(event.message, event.destination);
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs);
@@ -217,7 +191,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       }
     }),
   );
-  
+
   transformedEvents = _.flatMap(transformedEvents);
   return filterEventsAndPrepareBatchRequests(transformedEvents);
 };

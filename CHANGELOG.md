@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.32.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.32.0...v1.32.1) (2023-06-14)
+
+
+### Bug Fixes
+
+* add support for external_id in track call and use processedResponse for axios calls ([377b240](https://github.com/rudderlabs/rudder-transformer/commit/377b240e53264c9503aa82d6d38787f42ce7e6e4))
+
 ## [1.32.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.31.2...v1.32.0) (2023-06-12)
 
 

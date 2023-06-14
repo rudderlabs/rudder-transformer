@@ -82,7 +82,8 @@ function populateEventId(event, requestJson, destination) {
 }
 
 function populateContents(requestJson) {
-  if (requestJson.contents) {
+  const reqJson = { ...requestJson };
+  if (reqJson.contents) {
     const transformedContents = requestJson.contents.map(obj => ({
       ...(obj.id && { content_id: obj.id }),
       ...(obj.groupId && { content_group_id: obj.groupId }),
@@ -92,12 +93,10 @@ function populateContents(requestJson) {
       ...(obj.quantity && { num_items: parseInt(obj.quantity, 10) })
     })).filter(tfObj => Object.keys(tfObj).length > 0);
     if (transformedContents.length > 0) {
-      requestJson.contents = transformedContents;
+      reqJson.contents = transformedContents;
     }
   }
-
-  return requestJson;
-
+  return reqJson;
 }
 
 // process track call

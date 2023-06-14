@@ -35,9 +35,17 @@ const { InstrumentationError, ConfigurationError } = require('../../util/errorTy
 const responseBuilderSimple = (message, category, destination, categoryToContent) => {
   const { Config } = destination;
   const { pixelId, accessToken } = Config;
+
+  if (!pixelId) {
+    throw new ConfigurationError('Pixel Id not found. Aborting');
+  }
+
+  if (!accessToken) {
+    throw new ConfigurationError('Access token not found. Aborting');
+  }
+
   const {
     blacklistPiiProperties,
-    eventCustomProperties,
     valueFieldIdentifier,
     whitelistPiiProperties,
     limitedDataUSage,
@@ -75,7 +83,6 @@ const responseBuilderSimple = (message, category, destination, categoryToContent
       blacklistPiiProperties,
       whitelistPiiProperties,
       category.standard,
-      eventCustomProperties,
       integrationsObj,
     );
     message.properties = message.properties || {};

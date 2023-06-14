@@ -760,5 +760,71 @@
   },
   {
     "error": "Property days_to_close data type string is not matching with Hubspot property data type number"
-  }
+  },
+  [
+    {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "properties": [
+            { "property": "email", "value": "testhubspot2@email.com" },
+            { "property": "firstname", "value": "Test Hubspot" }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com",
+      "files": {},
+      "headers": { "Content-Type": "application/json" },
+      "method": "POST",
+      "params": { "hapikey": "dummy-apikey" },
+      "type": "REST",
+      "version": "1"
+    }
+  ],
+  [
+    {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "properties": [
+            { "property": "email", "value": "testhubspot2@email.com" },
+            { "property": "firstname", "value": "Test Hubspot" }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com",
+      "files": {},
+      "headers": { "Content-Type": "application/json" },
+      "method": "POST",
+      "params": { "hapikey": "dummy-apikey" },
+      "type": "REST",
+      "version": "1"
+    }
+  ],
+  [
+    {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "properties": [
+            { "property": "email", "value": "testhubspot2@email.com" },
+            { "property": "firstname", "value": "Test Hubspot" }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://api.hubapi.com/contacts/v1/contact/createOrUpdate/email/testhubspot2@email.com",
+      "files": {},
+      "headers": { "Content-Type": "application/json" },
+      "method": "POST",
+      "params": { "hapikey": "dummy-apikey" },
+      "type": "REST",
+      "version": "1"
+    }
+  ]
 ]

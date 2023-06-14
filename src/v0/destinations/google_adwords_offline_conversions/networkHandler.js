@@ -160,9 +160,10 @@ const ProxyRequest = async (request) => {
     const addPayload = body.JSON.addConversionPayload;
     // Mapping Conversion Action
     const conversionId = await getConversionActionId(headers, params);
-    set(addPayload, 'operations.create.transaction_attribute.conversion_action', conversionId);
+    addPayload.operations.forEach((operation) => {
+      set(operation, 'create.transaction_attribute.conversion_action', conversionId);
+    });
     await addConversionToJob(endpoint, headers, firstResponse, addPayload);
-    // console.log(JSON.stringify(secondResponse.response.response));
     const thirdResponse = await runTheJob(
       endpoint,
       headers,
@@ -188,7 +189,7 @@ const ProxyRequest = async (request) => {
     const { properties } = params;
     let { customVariables } = params;
     const resultantCustomVariables = [];
-    customVariables = getHashFromArray(customVariables);
+    customVariables = getHashFromArray(customVariables, 'from', 'to', false);
     Object.keys(customVariables).forEach((key) => {
       if (properties[key] && conversionCustomVariable[customVariables[key]]) {
         // 1. set custom variable name

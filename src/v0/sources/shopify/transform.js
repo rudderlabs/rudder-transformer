@@ -6,12 +6,13 @@ const {
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
   extractEmailFromPayload,
-  setAnonymousIdorUserIdFromDb,
-  setAnonymousId,
-  // checkForValidRecord,
+  getAnonymousIdFromDb,
+  getAnonymousId,
+  checkAndUpdateCartItems,
+  getHashLineItems,
 } = require('./util');
-const { RedisDB } = require('../../../util/redisConnector');
-const { removeUndefinedAndNullValues } = require('../../util');
+const { RedisDB } = require('../../../util/redis/redisConnector');
+const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
 const Message = require('../message');
 const { EventType } = require('../../../constants');
 const {
@@ -24,7 +25,14 @@ const {
   SHOPIFY_TRACK_MAP,
   useRedisDatabase,
 } = require('./config');
-const { TransformationError } = require('../../util/errorTypes');
+
+const NO_OPERATION_SUCCESS = {
+  outputToSource: {
+    body: Buffer.from('OK').toString('base64'),
+    contentType: 'text/plain',
+  },
+  statusCode: 200,
+};
 
 const identifyPayloadBuilder = (event) => {
   const message = new Message(INTEGERATION);
@@ -114,6 +122,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
   }
   return message;
 };
+
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
   const event = _.cloneDeep(inputEvent);
@@ -130,9 +139,22 @@ const processEvent = async (inputEvent, metricMetadata) => {
     case ECOM_TOPICS.CHECKOUTS_UPDATE:
       message = ecomPayloadBuilder(event, shopifyTopic);
       break;
+    case 'carts_update':
+      if (useRedisDatabase) {
+        const isValidEvent = await checkAndUpdateCartItems(inputEvent, metricMetadata);
+        if (!isValidEvent) {
+          return NO_OPERATION_SUCCESS;
+        }
+      }
+      message = trackPayloadBuilder(event, shopifyTopic);
+      break;
     default:
       if (!SUPPORTED_TRACK_EVENTS.includes(shopifyTopic)) {
-        throw new TransformationError(`event type ${shopifyTopic} not supported`);
+        stats.increment('invalid_shopify_event', {
+          event: shopifyTopic,
+          ...metricMetadata,
+        });
+        return NO_OPERATION_SUCCESS;
       }
       message = trackPayloadBuilder(event, shopifyTopic);
       break;
@@ -148,10 +170,16 @@ const processEvent = async (inputEvent, metricMetadata) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
+    let anonymousId;
     if (useRedisDatabase) {
-      await setAnonymousIdorUserIdFromDb(message, metricMetadata);
+      anonymousId = await getAnonymousIdFromDb(message, metricMetadata);
     } else {
-      setAnonymousId(message);
+      anonymousId = getAnonymousId(message);
+    }
+    if (isDefinedAndNotNull(anonymousId)) {
+      message.setProperty('anonymousId', anonymousId);
+    } else if (!message.userId) {
+      message.setProperty('userId', 'shopify-admin');
     }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);
@@ -169,17 +197,24 @@ const processEvent = async (inputEvent, metricMetadata) => {
   message = removeUndefinedAndNullValues(message);
   return message;
 };
+
 const isIdentifierEvent = (event) => event?.event === 'rudderIdentifier';
+
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
-    const setStartTime = Date.now();
-    await RedisDB.setVal(`${event.cartToken}`, { anonymousId: event.anonymousId });
-    stats.timing('redis_set_latency', setStartTime, {
+    const lineItemshash = getHashLineItems(event.cart);
+    const value = ['anonymousId', event.anonymousId, 'itemsHash', lineItemshash];
+    try {
+      await RedisDB.setVal(`${event.cartToken}`, value);
+    } catch (e) {
+      stats.increment('shopify_redis_failures', {
+        type: 'set',
+        ...metricMetadata,
+      });
+    }
+    stats.increment('shopify_redis_calls', {
+      type: 'set',
       ...metricMetadata,
-    });
-    stats.increment('shopify_redis_set_anonymousId', {
-      ...metricMetadata,
-      timestamp: Date.now(),
     });
   }
   const result = {

@@ -31,13 +31,12 @@ const {
   removeReservedParameterPrefixNames,
   GA4_RESERVED_USER_PROPERTY_EXCLUSION,
   removeReservedUserPropertyPrefixNames,
-  isReservedWebCustomEventName,
-  isReservedWebCustomPrefixName,
   getItemList,
   getGA4ExclusionList,
   getItem,
   getGA4CustomParameters,
   GA4_PARAMETERS_EXCLUSION,
+  validateEventName,
 } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -46,11 +45,23 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @param {*} message
  * @returns
  */
-const getGA4ClientId = (message) => {
-  const clientId =
-    getDestinationExternalID(message, 'ga4ClientId') ||
-    get(message, 'anonymousId') ||
-    get(message, 'rudderId');
+const getGA4ClientId = (message, Config) => {
+  let clientId;
+
+  if (isHybridModeEnabled(Config)) {
+    const integrationsObj = getIntegrationsObj(message, 'ga4');
+    if (integrationsObj?.clientId) {
+      clientId = integrationsObj.clientId;
+    }
+  }
+
+  if (!clientId) {
+    clientId =
+      getDestinationExternalID(message, 'ga4ClientId') ||
+      get(message, 'anonymousId') ||
+      get(message, 'rudderId');
+  }
+
   return clientId;
 };
 
@@ -84,7 +95,7 @@ const responseBuilder = (message, { Config }) => {
     case 'gtag':
       // gtag.js uses client_id
       // GA4 uses it as an identifier to distinguish site visitors.
-      rawPayload.client_id = getGA4ClientId(message);
+      rawPayload.client_id = getGA4ClientId(message, Config);
       if (!isDefinedAndNotNull(rawPayload.client_id)) {
         throw new ConfigurationError('ga4ClientId, anonymousId or messageId must be provided');
       }
@@ -197,19 +208,8 @@ const responseBuilder = (message, { Config }) => {
       ),
     };
   } else {
-    // track
-    // custom events category
-    // Event names are case sensitive
-    if (isReservedWebCustomEventName(event)) {
-      throw new InstrumentationError('track:: Reserved custom event names are not allowed');
-    }
-
-    if (isReservedWebCustomPrefixName(event)) {
-      throw new InstrumentationError(
-        '[Google Analytics 4] track:: Reserved custom prefix names are not allowed',
-      );
-    }
-
+    validateEventName(event);
+    
     payload.name = event;
 
     // all extra parameters passed is incorporated inside params
@@ -229,8 +229,12 @@ const responseBuilder = (message, { Config }) => {
 
   removeReservedParameterPrefixNames(payload.params);
   const integrationsObj = getIntegrationsObj(message, 'ga4');
-  if (integrationsObj && integrationsObj.sessionId) {
+  if (isHybridModeEnabled(Config) && integrationsObj && integrationsObj.sessionId) {
     payload.params.session_id = integrationsObj.sessionId;
+  }
+
+  if (integrationsObj?.sessionNumber) {
+    payload.params.session_number = integrationsObj.sessionNumber;
   }
 
   if (payload.params) {

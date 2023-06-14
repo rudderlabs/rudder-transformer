@@ -1,8 +1,12 @@
 import { Context } from 'koa';
 import { API_VERSION } from '../../routes/utils/constants';
-import { isHttpStatusSuccess } from '../../v0/util';
+import { getCompatibleStatusCode } from '../../adapters/utils/networkUtils';
 
 export default class ControllerUtility {
+  private static getCompatibleStatusCode(status: number): number {
+    return getCompatibleStatusCode(status)
+  }
+
   public static postProcess(ctx: Context, status = 200) {
     ctx.set('apiVersion', API_VERSION);
     ctx.status = status;
@@ -10,6 +14,6 @@ export default class ControllerUtility {
 
   public static deliveryPostProcess(ctx: Context, status = 200) {
     ctx.set('apiVersion', API_VERSION);
-    ctx.status = isHttpStatusSuccess(status) ? 200 : status;
+    ctx.status = this.getCompatibleStatusCode(status);
   }
 }

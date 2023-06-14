@@ -92,7 +92,9 @@ const getConversionActionId = async (headers, params) => {
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
     if (!isHttpStatusSuccess(searchStreamResponse.status)) {
       throw new AbortedError(
-        `[Google Ads Offline Conversions]:: ${searchStreamResponse.response[0].error.message} during google_ads_offline_conversions response transformation`,
+        `[Google Ads Offline Conversions]:: ${JSON.stringify(
+          searchStreamResponse.response,
+        )} during google_ads_offline_conversions response transformation`,
         searchStreamResponse.status,
         searchStreamResponse.response,
         getAuthErrCategory(get(searchStreamResponse, 'status')),
@@ -325,18 +327,15 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
   const endpoint = CLICK_CONVERSION.replace(':customerId', filteredCustomerId);
 
   const products = get(message, 'properties.products');
-  const itemList = [];
-  if (products && products.length > 0 && Array.isArray(products)) {
+  if (Array.isArray(products)) {
     // products is a list of items
-    products.forEach((product) => {
-      if (Object.keys(product).length > 0) {
-        itemList.push({
-          productId: product.product_id,
-          quantity: parseInt(product.quantity, 10),
-          unitPrice: Number(product.price),
-        });
-      }
-    });
+    const itemList = products
+      .filter((product) => Object.keys(product).length > 0)
+      .map((product) => ({
+        productId: product.product_id,
+        quantity: parseInt(product.quantity, 10),
+        unitPrice: Number(product.price),
+      }));
 
     set(payload, 'conversions[0].cartData.items', itemList);
   }
@@ -361,22 +360,21 @@ const getClickConversionPayloadAndEndpoint = (message, Config, filteredCustomerI
     phone: hashUserIdentifier && isDefinedAndNotNull(phone) ? sha256(phone).toString() : phone,
   };
 
+  const keyName = getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier);
   if (isDefinedAndNotNull(userIdentifierInfo[defaultUserIdentifier])) {
     set(
       payload,
       `conversions[0].userIdentifiers[0].${UserIdentifierFieldNameMap[defaultUserIdentifier]}`,
       userIdentifierInfo[defaultUserIdentifier],
     );
-  } else {
-    const keyName = getExisitingUserIdentifier(userIdentifierInfo, defaultUserIdentifier);
-    if (isDefinedAndNotNull(keyName)) {
-      set(
-        payload,
-        `conversions[0].userIdentifiers[0].${UserIdentifierFieldNameMap[keyName]}`,
-        userIdentifierInfo[keyName],
-      );
-    }
+  } else if (isDefinedAndNotNull(keyName)) {
+    set(
+      payload,
+      `conversions[0].userIdentifiers[0].${UserIdentifierFieldNameMap[keyName]}`,
+      userIdentifierInfo[keyName],
+    );
   }
+
   // conversionEnvironment
   // if conversionEnvironment doesn't exist in properties
   // then it is taken from the webapp config

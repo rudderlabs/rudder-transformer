@@ -19,6 +19,11 @@ jobs:
       tag_name: ${{ steps.gen_tag_names.outputs.tag_name }}
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v3.5.2
+        with:
+          fetch-depth: 1
+
       - name: Generate Tag Names
         id: gen_tag_names
         run: |
@@ -55,11 +60,11 @@ jobs:
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
       build_tag: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
-      push_tags: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }},rudderlabs/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}`
+      push_tags: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }},rudderlabs/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
       img_tag: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
       dockerfile: Dockerfile-ut-func
       load_target: development
-      push_target: development
+      push_target: production
     secrets:
       DOCKERHUB_PROD_TOKEN: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 

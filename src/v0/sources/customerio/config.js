@@ -16,6 +16,7 @@ const emailEventNameMap = {
   sent: 'Email Sent',
   attempted: 'Email Attempted',
   drafted: 'Email Drafted',
+  deferred: 'Email Deferred',
 };
 
 const smsEventNameMap = {
@@ -39,6 +40,7 @@ const pushEventNameMap = {
   sent: 'Push Sent',
   attempted: 'Push Attempted',
   drafted: 'Push Drafted',
+  delivered: 'Push Delivered',
 };
 
 const slackEventNameMap = {

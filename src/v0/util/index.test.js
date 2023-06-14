@@ -14,7 +14,7 @@ const functionNames = [
 ];
 
 // Names of the utility functions to test which expects multiple arguments as values and not objects
-const functionNamesExpectingMultipleArguments = ['checkAndCorrectUserId'];
+const functionNamesExpectingMultipleArguments = ['checkAndCorrectUserId', 'formatValues'];
 
 describe('Utility Functions Tests', () => {
   describe.each(functionNames)('%s Tests', (funcName) => {

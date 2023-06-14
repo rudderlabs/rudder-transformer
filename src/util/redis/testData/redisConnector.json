@@ -1,0 +1,11 @@
+[
+  {
+    "description": "Get Value error",
+    "input": {
+      "value": "error"
+    },
+    "output": {
+      "error": "Error getting value from Redis: Error: Connection is Closed"
+    }
+  }
+]

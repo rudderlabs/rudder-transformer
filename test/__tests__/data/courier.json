@@ -78,6 +78,91 @@
     }
   },
   {
+    "description": "Identify call with traits inside context but not at root level",
+    "input": {
+      "message": {
+        "context": {
+          "ip": "8.8.8.8",
+          "traits": {
+            "name": "Joe Doe",
+            "email": "joe@example.com",
+            "plan": "basic",
+            "age": 27
+          }
+        },
+        "type": "identify",
+        "userId": "userIdTest",
+        "originalTimestamp": "2022-10-17T15:53:10.566+05:30",
+        "messageId": "8d04cc30-fc15-49bd-901f-c5c3f72a7d82"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "test-api-key"
+        }
+      }
+    },
+    "output": {
+      "body": {
+        "FORM": {},
+        "JSON": {
+          "context": {
+            "ip": "8.8.8.8",
+            "traits": {
+              "name": "Joe Doe",
+              "email": "joe@example.com",
+              "plan": "basic",
+              "age": 27
+            }
+          },
+          "traits": {
+            "name": "Joe Doe",
+            "email": "joe@example.com",
+            "plan": "basic",
+            "age": 27
+          },
+          "type": "identify",
+          "userId": "userIdTest",
+          "originalTimestamp": "2022-10-17T15:53:10.566+05:30",
+          "messageId": "8d04cc30-fc15-49bd-901f-c5c3f72a7d82"
+        },
+        "JSON_ARRAY": {},
+        "XML": {}
+      },
+      "endpoint": "https://api.courier.com/inbound/rudderstack",
+      "files": {},
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer test-api-key"
+      },
+      "method": "POST",
+      "params": {},
+      "type": "REST",
+      "version": "1"
+    }
+  },
+  {
+    "description": "Identify call without traits",
+    "input": {
+      "message": {
+        "context": {
+          "ip": "8.8.8.8"
+        },
+        "type": "identify",
+        "userId": "userIdTest",
+        "originalTimestamp": "2022-10-17T15:53:10.566+05:30",
+        "messageId": "8d04cc30-fc15-49bd-901f-c5c3f72a7d82"
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "test-api-key"
+        }
+      }
+    },
+    "output": {
+      "error": "traits is a required field for identify call"
+    }
+  },
+  {
     "description": "Track call",
     "input": {
       "message": {

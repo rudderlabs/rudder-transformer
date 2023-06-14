@@ -16,6 +16,7 @@ import {
 import { TransformationError } from '../../v0/util/errorTypes';
 import tags from '../../v0/util/tags';
 import DestinationPostTransformationService from './postTransformation';
+import stats from '../../util/stats';
 
 export default class CDKV2DestinationService implements IntegrationDestinationService {
   public init() {}
@@ -30,7 +31,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     workspaceId: string,
     feature: string,
   ): MetaTransferObject {
-    const metaTO = {
+    const metaTo = {
       errorDetails: {
         destType: destType.toUpperCase(),
         module: tags.MODULES.DESTINATION,
@@ -41,7 +42,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
       } as ErrorDetailer,
       errorContext: '[CDKV2 Integration Service] Failure During Router Transform',
     } as MetaTransferObject;
-    return metaTO;
+    return metaTo;
   }
 
   public async doProcessorTransformation(
@@ -61,6 +62,16 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
             event,
             tags.FEATURES.PROCESSOR,
           );
+
+          stats.increment('event_transform_success', {
+            destType: destinationType,
+            module: tags.MODULES.DESTINATION,
+            destinationId: event.metadata.destinationId,
+            workspaceId: event.metadata.workspaceId,
+            feature: tags.FEATURES.PROCESSOR,
+            implementation: tags.IMPLEMENTATIONS.CDK_V2,
+          });
+
           // We are not passing destination handler for CDK flows
           return DestinationPostTransformationService.handleProcessorTransformSucessEvents(
             event,
@@ -68,18 +79,21 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
             undefined,
           );
         } catch (error: any) {
-          const metaTO = this.getTags(
+          const metaTo = this.getTags(
             destinationType,
             event.metadata.destinationId,
             event.metadata.workspaceId,
             tags.FEATURES.PROCESSOR,
           );
-          metaTO.metadata = event.metadata;
+          metaTo.metadata = event.metadata;
           const erroredResp =
             DestinationPostTransformationService.handleProcessorTransformFailureEvents(
               error,
-              metaTO,
+              metaTo,
             );
+
+          stats.increment('event_transform_failure', metaTo.errorDetails);
+
           return [erroredResp];
         }
       }),
@@ -100,7 +114,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     const response: RouterTransformationResponse[][] = await Promise.all(
       Object.values(allDestEvents).map(
         async (destInputArray: RouterTransformationRequestData[]) => {
-          const metaTO = this.getTags(
+          const metaTo = this.getTags(
             destinationType,
             destInputArray[0].metadata.destinationId,
             destInputArray[0].metadata.workspaceId,
@@ -109,18 +123,31 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
           try {
             const doRouterTransformationResponse: RouterTransformationResponse[] =
               await processCdkV2Workflow(destinationType, destInputArray, tags.FEATURES.ROUTER);
+
+            stats.increment('event_transform_success', {
+              destType: destinationType,
+              module: tags.MODULES.DESTINATION,
+              destinationId: destInputArray[0].metadata.destinationId,
+              workspaceId: destInputArray[0].metadata.workspaceId,
+              feature: tags.FEATURES.ROUTER,
+              implementation: tags.IMPLEMENTATIONS.CDK_V2,
+            });
+
             return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
               doRouterTransformationResponse,
               undefined,
-              metaTO,
+              metaTo,
             );
           } catch (error: any) {
-            metaTO.metadatas = destInputArray.map((input) => input.metadata);
+            metaTo.metadatas = destInputArray.map((input) => input.metadata);
             const erroredResp =
               DestinationPostTransformationService.handleRouterTransformFailureEvents(
                 error,
-                metaTO,
+                metaTo,
               );
+
+            stats.increment('event_transform_failure', metaTo.errorDetails);
+
             return [erroredResp];
           }
         },

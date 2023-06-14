@@ -58,13 +58,10 @@ const pageAction = (message, destination, category) => {
     rawPayload = constructPayload(message, mappingConfig[category.name]);
   } else if (
     destination.Config.trackCategorisedPages &&
-    ((message.properties && message.properties.category) || message.category)
+    (message.properties?.category || message.category)
   ) {
     rawPayload = constructPayload(message, mappingConfig[category.name]);
-  } else if (
-    destination.Config.trackNamedPages &&
-    ((message.properties && message.properties.name) || message.name)
-  ) {
+  } else if (destination.Config.trackNamedPages && (message.properties?.name || message.name)) {
     rawPayload = constructPayload(message, mappingConfig[category.name]);
   } else {
     throw new ConfigurationError('Invalid page call');
@@ -92,13 +89,10 @@ const screenAction = (message, destination, category) => {
     rawPayload = constructPayload(message, mappingConfig[category.name]);
   } else if (
     destination.Config.trackCategorisedPages &&
-    ((message.properties && message.properties.category) || message.category)
+    (message.properties?.category || message.category)
   ) {
     rawPayload = constructPayload(message, mappingConfig[category.name]);
-  } else if (
-    destination.Config.trackNamedPages &&
-    ((message.properties && message.properties.name) || message.name)
-  ) {
+  } else if (destination.Config.trackNamedPages && (message.properties?.name || message.name)) {
     rawPayload = constructPayload(message, mappingConfig[category.name]);
   } else {
     throw new ConfigurationError('Invalid screen call');

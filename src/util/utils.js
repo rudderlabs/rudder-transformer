@@ -51,6 +51,25 @@ const sendViolationMetrics = (validationErrors, dropped, metaTags) => {
   });
 };
 
+const constructValidationErrors = (validationErrors) =>
+  validationErrors.reduce((acc, elem) => {
+    if (!acc[elem.type]) {
+      acc[elem.type] = [];
+    }
+    const validationObject = {};
+    if (elem.property) {
+      validationObject.property = elem.property;
+    }
+    if (elem.message) {
+      validationObject.message = elem.message;
+    }
+    if (elem.meta?.schemaPath) {
+      validationObject.schemaPath = elem.meta.schemaPath;
+    }
+    acc[elem.type].push(validationObject);
+    return acc;
+  }, {});
+
 function processInfo() {
   return {
     pid: process.pid,
@@ -70,6 +89,7 @@ module.exports = {
   RetryRequestError,
   responseStatusHandler,
   getIntegrationVersion,
+  constructValidationErrors,
   sendViolationMetrics,
   logProcessInfo,
 };

@@ -6,9 +6,12 @@ const {
   isDefinedAndNotNullAndNotEmpty,
   isNonFuncObject,
   isDefinedAndNotNull,
+  isHttpStatusSuccess,
+  getErrorStatusCode,
 } = require('../../v0/util');
 const { AbortedError } = require('../../v0/util/errorTypes');
 const tags = require('../../v0/util/tags');
+const { HTTP_STATUS_CODES } = require('../../v0/util/constant');
 
 const nodeSysErrorToStatus = (code) => {
   const sysErrorToStatusMap = {
@@ -141,8 +144,8 @@ const processAxiosResponse = (clientResponse) => {
     }
     // (edge case) response and code is not present
     return {
-      response: '',
-      status: 500,
+      response: clientResponse?.response?.data || '',
+      status: getErrorStatusCode(clientResponse, HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR),
     };
   }
   // success(2xx) axios response
@@ -153,9 +156,20 @@ const processAxiosResponse = (clientResponse) => {
   };
 };
 
+function getCompatibleStatusCode(status) {
+  if (status === HTTP_STATUS_CODES.NOT_FOUND) {
+    return HTTP_STATUS_CODES.BAD_REQUEST;
+  }
+  if (isHttpStatusSuccess(status)) {
+    return HTTP_STATUS_CODES.OK;
+  }
+  return status;
+}
+
 module.exports = {
   nodeSysErrorToStatus,
   getDynamicErrorType,
   parseDestResponse,
   processAxiosResponse,
+  getCompatibleStatusCode,
 };

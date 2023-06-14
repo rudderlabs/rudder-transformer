@@ -462,5 +462,96 @@
       "statusCode": 400,
       "error": "[TWITTER ADS]: Event - 'Home Page' do not have a corresponding eventId in configuration. Aborting"
     }
+  },
+  {
+    "description": "Track - event name with no corresponding eventId",
+    "input": {
+      "message": {
+        "type": "track",
+        "event": "Home Page",
+        "channel": "web",
+        "context": {
+          "source": "test",
+          "userAgent": "chrome",
+          "traits": {
+            "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+            "email": "abc@gmail.com",
+            "phone": "+1234589947",
+            "ge": "male",
+            "db": "19950715",
+            "lastname": "Ganguly",
+            "firstName": "Shrouti",
+            "address": {
+              "city": "Kolkata",
+              "state": "WB",
+              "zip": "700114",
+              "country": "IN"
+            }
+          },
+          "device": {
+            "advertisingId": "abc123"
+          },
+          "library": {
+            "name": "rudder-sdk-ruby-sync",
+            "version": "1.0.6"
+          }
+        },
+        "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
+        "timestamp": "2020-08-14T05:30:30.118Z",
+        "properties": {
+          "pixelId": "odr324tt",
+          "conversionTime": "2023-06-01T06:03:08.739Z",
+          "tax": 2,
+          "total": 27.5,
+          "coupon": "hasbros",
+          "revenue": 48,
+          "price": 25,
+          "quantity": 2,
+          "currency": "USD",
+          "priceCurrency": "USD",
+          "conversionId": "213123",
+          "numberItems": "2323",
+          "phone": "+919927455678",
+          "twclid": "543",
+          "shipping": 3,
+          "subtotal": 22.5,
+          "affiliation": "Google Store",
+          "checkout_id": "fksdjfsdjfisjf9sdfjsd9f",
+          "email": "abc@ax.com"
+        },
+        "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
+        "integrations": {
+          "All": true
+        }
+      },
+      "metadata": {
+        "secret": {
+          "consumerKey": "qwe",
+          "consumerSecret": "fdghv",
+          "accessToken": "yrdghfvhjvhj",
+          "accessTokenSecret": "453etyfghjvhgcdcghv"
+        }
+      },
+      "destination": {
+        "Config": {
+          "pixelId": "5343234",
+          "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK",
+          "twitterAdsEventNames": [
+            {
+              "rudderEventName": "  ",
+              "twitterEventId": "tw-324fdsf"
+            },
+            {
+              "rudderEventName": "Home Page Viewed",
+              "twitterEventId": "tw-324fdsf"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "[TWITTER ADS]: Event - 'Home Page' do not have a corresponding eventId in configuration. Aborting"
+    }
   }
 ]

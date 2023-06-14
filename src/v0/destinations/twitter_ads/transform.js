@@ -44,8 +44,9 @@ function buildResponse(message, requestJson, metadata, endpointUrl) {
     method: response.method,
     body: response.body.JSON
   };
+
   const oAuthObject = getOAuthFields(metadata);
-  let authHeader = getAuthHeaderForRequest(request, oAuthObject).Authorization;
+  const authHeader = getAuthHeaderForRequest(request, oAuthObject).Authorization;
   response.headers = {
     Authorization: authHeader,
     'Content-Type': JSON_MIME_TYPE,
@@ -65,7 +66,7 @@ function populateEventId(event, requestJson, destination) {
 
   if (eventNameToIdMappings) {
     eventNameToIdMappings.some(obj => {
-      if (obj.rudderEventName && obj.rudderEventName.trim() && obj.rudderEventName.trim().toLowerCase() === event.toString().toLowerCase()) {
+      if (obj.rudderEventName?.trim()?.toLowerCase() === event?.toString()?.toLowerCase()) {
         eventId = obj.twitterEventId;
         return true;
       }
@@ -80,10 +81,29 @@ function populateEventId(event, requestJson, destination) {
   return eventId;
 }
 
+function populateContents(requestJson) {
+  if (requestJson.contents) {
+    const transformedContents = requestJson.contents.map(obj => ({
+      ...(obj.id && { content_id: obj.id }),
+      ...(obj.groupId && { content_group_id: obj.groupId }),
+      ...(obj.name && { content_name: obj.name }),
+      ...(obj.price && { content_price: parseFloat(obj.price) }),
+      ...(obj.type && { content_type: obj.type }),
+      ...(obj.quantity && { num_items: parseInt(obj.quantity, 10) })
+    })).filter(tfObj => Object.keys(tfObj).length > 0);
+    if (transformedContents.length > 0) {
+      requestJson.contents = transformedContents;
+    }
+  }
+
+  return requestJson;
+
+}
+
 // process track call
 function processTrack(message, metadata, destination) {
 
-  const requestJson = constructPayload(message, mappingConfig[ConfigCategories.TRACK.name]);
+  let requestJson = constructPayload(message, mappingConfig[ConfigCategories.TRACK.name]);
 
   requestJson.event_id = requestJson.event_id || populateEventId(message.event, requestJson, destination);
 
@@ -111,19 +131,7 @@ function processTrack(message, metadata, destination) {
     identifiers.push({twclid: sha256(message.properties.twclid)});
   }
 
-  if (requestJson.contents) {
-    const transformedContents = requestJson.contents.map(obj => ({
-      ...(obj.id && { content_id: obj.id }),
-      ...(obj.groupId && { content_group_id: obj.groupId }),
-      ...(obj.name && { content_name: obj.name }),
-      ...(obj.price && { content_price: parseFloat(obj.price) }),
-      ...(obj.type && { content_type: obj.type }),
-      ...(obj.quantity && { num_items: parseInt(obj.quantity, 10) })
-    })).filter(tfObj => Object.keys(tfObj).length > 0);
-    if (transformedContents.length > 0) {
-      requestJson.contents = transformedContents;
-    }
-  }
+  requestJson = populateContents(requestJson);
 
   requestJson.identifiers = identifiers;
 

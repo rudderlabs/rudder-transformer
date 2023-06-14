@@ -67,8 +67,9 @@ function populateEventId(event, requestJson, destination) {
     eventNameToIdMappings.some(obj => {
       if (obj.rudderEventName && obj.rudderEventName.trim() && obj.rudderEventName.trim().toLowerCase() === event.toString().toLowerCase()) {
         eventId = obj.twitterEventId;
-        return eventId;
+        return true;
       }
+      return false;
     });
   }
 

@@ -2,23 +2,10 @@
 const { v5 } = require('uuid');
 const sha256 = require('sha256');
 const stats = require('../../../util/stats');
-const {
-  constructPayload,
-  extractCustomFields,
-  flattenJson,
-  generateUUID,
-  isDefinedAndNotNull,
-} = require('../../util');
+const { constructPayload, extractCustomFields, flattenJson, generateUUID, isDefinedAndNotNull, } = require('../../util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const logger = require('../../../logger');
-const {
-  lineItemsMappingJSON,
-  productMappingJSON,
-  LINE_ITEM_EXCLUSION_FIELDS,
-  PRODUCT_MAPPING_EXCLUSION_FIELDS,
-  SHOPIFY_TRACK_MAP,
-  SHOPIFY_ADMIN_ONLY_EVENTS,
-} = require('./config');
+const { lineItemsMappingJSON, productMappingJSON, LINE_ITEM_EXCLUSION_FIELDS, PRODUCT_MAPPING_EXCLUSION_FIELDS, SHOPIFY_TRACK_MAP, SHOPIFY_ADMIN_ONLY_EVENTS, } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 /**
  * query_parameters : { topic: ['<shopify_topic>'], ...}
@@ -36,7 +23,6 @@ const getShopifyTopic = (event) => {
   if (!topic || !Array.isArray(topic)) {
     throw new TransformationError('Invalid topic in query_parameters');
   }
-
   if (topic.length === 0) {
     throw new TransformationError('Topic not found');
   }
@@ -124,7 +110,7 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
     try {
       anonymousId = await RedisDB.getVal(`${cartToken}`, 'anonymousId');
     } catch (e) {
-      logger.debug(`Time: ${new Date()} {{SHOPIFY::}} anonymousId get call Failed due redis error ${e}`);
+      logger.debug(`{{SHOPIFY::}} anonymousId get call Failed due redis error ${e}`);
       stats.increment('shopify_redis_failures', {
         type: 'get',
         ...metricMetadata,
@@ -137,7 +123,7 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
       ...metricMetadata,
       event: message.event,
     });
-    /* if redis does not have the mapping for cartToken as key (null) 
+    /* if redis does not have the mapping for cartToken as key (null)
       or redis is down(undefined)
       we will set anonymousId as sha256(cartToken)
      */
@@ -157,41 +143,43 @@ const getSessionIdFromDB = async (message, metricMetadata) => {
   }
   let sessionId;
   try {
+    stats.increment('shopify_redis_calls', {
+      type: 'get',
+      ...metricMetadata,
+    });
     sessionId = await RedisDB.getVal(`${cartToken}`, 'sessionId');
+    if (sessionId === null) {
+      stats.increment('shopify_redis_no_val', {
+        ...metricMetadata,
+        event,
+      });
+    }
   } catch (e) {
-    logger.debug(`Time: ${new Date()} {{SHOPIFY::}} sessionId get call Failed due redis error ${e}`);
-
+    logger.debug(`{{SHOPIFY::}} sessionId get call Failed due redis error ${e}`);
     stats.increment('shopify_redis_failures', {
       type: 'get',
       ...metricMetadata,
     });
   }
-  stats.increment('shopify_redis_calls', {
-    type: 'get',
-    ...metricMetadata,
-  });
-  if (sessionId === null) {
-    stats.increment('shopify_redis_no_val', {
-      ...metricMetadata,
-      event,
-    });
-  }
   return sessionId;
 };
-
 /**
  * It checks if the event is valid or not based on previous cartItems
  * @param {*} inputEvent
  * @returns true if event is valid else false
  */
 const isValidCartEvent = (newCartItems, prevCartItems) => !(prevCartItems === newCartItems);
-
 const updateCartItemsInRedis = async (cartToken, newCartItemsHash, metricMetadata) => {
   const value = ['itemsHash', newCartItemsHash];
   try {
+    stats.increment('shopify_redis_calls', {
+      type: 'set',
+      ...metricMetadata,
+    });
     await RedisDB.setVal(`${cartToken}`, value);
-  } catch (e) {
-    logger.debug(`Time: ${new Date()} {{SHOPIFY::}} itemsHash set call Failed due redis error ${e}`);
+  }
+  catch (e) {
+    logger.debug(`{{SHOPIFY::}} itemsHash set call Failed due redis error ${e}`);
     stats.increment('shopify_redis_failures', {
       type: 'set',
       ...metricMetadata,
@@ -202,16 +190,21 @@ const checkAndUpdateCartItems = async (inputEvent, metricMetadata) => {
   const cartToken = inputEvent.token || inputEvent.id;
   let itemsHash;
   try {
+    stats.increment('shopify_redis_calls', {
+      type: 'get',
+      ...metricMetadata,
+    });
     itemsHash = await RedisDB.getVal(cartToken, 'itemsHash');
     if (!isDefinedAndNotNull(itemsHash)) {
       stats.increment('shopify_redis_no_val', {
         ...metricMetadata,
-        event: 'carts_update',
+        event: 'Cart Update',
       });
     }
-  } catch (e) {
+  }
+  catch (e) {
     // so if redis is down we will send the event to downstream destinations
-    logger.debug(`Time: ${new Date()} {{SHOPIFY::}} itemsHash get call Failed due redis error ${e}`);
+    logger.debug(`{{SHOPIFY::}} itemsHash get call Failed due redis error ${e}`);
     stats.increment('shopify_redis_failures', {
       type: 'get',
       ...metricMetadata,

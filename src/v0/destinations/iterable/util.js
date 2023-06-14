@@ -368,6 +368,7 @@ const processUpdateUserBatch = (chunk, registerDeviceOrBrowserEvents) => {
  */
 const batchUpdateUserEvents = (updateUserEvents, registerDeviceOrBrowserEvents) => {
   // Batching update user events
+  // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   const updateUserEventsChunks = _.chunk(updateUserEvents, IDENTIFY_MAX_BATCH_SIZE);
   return updateUserEventsChunks.reduce((batchedResponseList, chunk) => {
     const batchedResponse = processUpdateUserBatch(chunk, registerDeviceOrBrowserEvents);
@@ -398,6 +399,20 @@ const processCatalogBatch = (chunk) => {
   });
 
   const batchEventResponse = defaultBatchRequestConfig();
+  /**
+   * body format:
+      {
+        "documents": {
+            "test-1-item": {
+                "abc": "TestValue0"
+            },
+            "test-2-item": {
+                "abc": "TestValue1"
+            }
+        },
+        "replaceUploadedFieldsOnly": true
+      }
+   */
   batchEventResponse.batchedRequest.body.JSON = batchCatalogResponseList;
   const endPoint = chunk[0].message.endpoint;
 
@@ -418,6 +433,7 @@ const processCatalogBatch = (chunk) => {
  */
 const batchCatalogEvents = (catalogEvents) => {
   // Batching catalog events
+  // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   const catalogEventsChunks = _.chunk(catalogEvents, IDENTIFY_MAX_BATCH_SIZE);
   return catalogEventsChunks.reduce((batchedResponseList, chunk) => {
     const batchedResponse = processCatalogBatch(chunk);
@@ -464,6 +480,7 @@ const processTrackBatch = (chunk) => {
  */
 const batchTrackEvents = (trackEvents) => {
   // Batching track events
+  // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   const trackEventsChunks = _.chunk(trackEvents, TRACK_MAX_BATCH_SIZE);
   return trackEventsChunks.reduce((batchedResponseList, chunk) => {
     const batchedResponse = processTrackBatch(chunk);

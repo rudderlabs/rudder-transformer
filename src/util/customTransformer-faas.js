@@ -138,12 +138,7 @@ async function runOpenFaasUserTransform(
   // check and deploy faas function if not exists
   const functionName = generateFunctionName(userTransformation, libraryVersionIds, testMode);
   if (testMode) {
-    await setOpenFaasUserTransform(
-      userTransformation,
-      libraryVersionIds,
-      functionName,
-      testMode,
-    );
+    await setOpenFaasUserTransform(userTransformation, libraryVersionIds, functionName, testMode);
   }
 
   const invokeTime = new Date();

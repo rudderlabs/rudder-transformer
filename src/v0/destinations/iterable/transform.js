@@ -36,7 +36,6 @@ const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 function constructPayloadItem(message, category, destination) {
-  // const rawPayloadItemArr = [];
   let rawPayload = {};
 
   switch (category.action) {
@@ -161,7 +160,7 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.SCREEN;
       break;
     case EventType.TRACK:
-      event = message.event.toLowerCase();
+      event = message.event?.toLowerCase();
       category = getCategoryUsingEventName(event);
       break;
     case EventType.ALIAS:

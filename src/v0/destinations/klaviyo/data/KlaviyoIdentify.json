@@ -1,46 +1,46 @@
 [
   {
-    "destKey": "$id",
+    "destKey": "external_id",
     "sourceKeys": "userId",
     "required": false,
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "$email",
+    "destKey": "email",
     "sourceKeys": "email",
     "required": false,
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "$first_name",
+    "destKey": "first_name",
     "sourceKeys": "firstName",
     "required": false,
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "$last_name",
+    "destKey": "last_name",
     "sourceKeys": "lastName",
     "required": false,
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "$phone_number",
+    "destKey": "phone_number",
     "sourceKeys": "phone",
     "required": false,
     "sourceFromGenericMap": true
   },
   {
-    "destKey": "$title",
+    "destKey": "title",
     "sourceKeys": ["traits.title", "context.traits.title", "properties.title"],
     "required": false
   },
   {
-    "destKey": "$organization",
+    "destKey": "organization",
     "sourceKeys": ["traits.organization", "context.traits.organization", "properties.organization"],
     "required": false
   },
   {
-    "destKey": "$city",
+    "destKey": "location.city",
     "sourceKeys": [
       "traits.city",
       "traits.address.city",
@@ -51,7 +51,7 @@
     "required": false
   },
   {
-    "destKey": "$region",
+    "destKey": "location.region",
     "sourceKeys": [
       "traits.region",
       "traits.address.region",
@@ -62,7 +62,7 @@
     "required": false
   },
   {
-    "destKey": "$country",
+    "destKey": "location.country",
     "sourceKeys": [
       "traits.country",
       "traits.address.country",
@@ -73,23 +73,28 @@
     "required": false
   },
   {
-    "destKey": "$zip",
+    "destKey": "location.zip",
     "sourceKeys": [
       "traits.zip",
+      "traits.postalcode",
+      "traits.address.zip",
       "traits.address.postalcode",
       "context.traits.zip",
+      "context.traits.postalcode",
+      "context.traits.address.zip",
       "context.traits.address.postalcode",
-      "properties.zip"
+      "properties.zip",
+      "properties.postalcode"
     ],
     "required": false
   },
   {
-    "destKey": "$image",
+    "destKey": "image",
     "sourceKeys": ["traits.image", "context.traits.image", "properties.image"],
     "required": false
   },
   {
-    "destKey": "$timezone",
+    "destKey": "location.timezone",
     "sourceKeys": ["traits.timezone", "context.traits.timezone", "properties.timezone"],
     "required": false
   }

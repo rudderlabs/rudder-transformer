@@ -1,147 +1,138 @@
 [
   {
-    "request": {
-      "body": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
-        "headers": {
-          "Authorization": "Bearer dummy-access",
-          "Content-Type": "application/json",
-          "developer-token": "dummy-dev-token"
-        },
-        "params": {
-          "listId": "709078448",
-          "customerId": "7693729833"
-        },
-        "body": {
-          "JSON": {
-            "enablePartialFailure": true,
-            "operations": [
-              {
-                "create": {
-                  "userIdentifiers": [
-                    {
-                      "hashedEmail": "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
-                    },
-                    {
-                      "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
-                    },
-                    {
-                      "hashedEmail": "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
-                    },
-                    {
-                      "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
-                    },
-                    {
-                      "addressInfo": {
-                        "hashedFirstName": "e56d336922eaab3be8c1244dbaa713e134a8eba50ddbd4f50fd2fe18d72595cd"
-                      }
-                    }
-                  ]
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
+    "headers": {
+      "Authorization": "Bearer dummy-access",
+      "Content-Type": "application/json",
+      "developer-token": "dummy-dev-token"
+    },
+    "params": {
+      "destination": "google_adwords_remarketing_lists",
+      "listId": "709078448",
+      "customerId": "7693729833"
+    },
+    "body": {
+      "JSON": {
+        "enablePartialFailure": true,
+        "operations": [
+          {
+            "create": {
+              "userIdentifiers": [
+                {
+                  "hashedEmail": "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
+                },
+                {
+                  "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
+                },
+                {
+                  "hashedEmail": "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
+                },
+                {
+                  "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
+                },
+                {
+                  "addressInfo": {
+                    "hashedFirstName": "e56d336922eaab3be8c1244dbaa713e134a8eba50ddbd4f50fd2fe18d72595cd"
+                  }
                 }
-              }
-            ]
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      }
-    }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   },
   {
-    "request": {
-      "body": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/7693729834/offlineUserDataJobs",
-        "headers": {
-          "Authorization": "Bearer dummy-access",
-          "Content-Type": "application/json",
-          "developer-token": "dummy-dev-token"
-        },
-        "params": {
-          "listId": "709078448",
-          "customerId": "7693729833"
-        },
-        "body": {
-          "JSON": {
-            "enablePartialFailure": true,
-            "operations": [
-              {
-                "create": {
-                  "userIdentifiers": [
-                    {
-                      "hashedEmail": "abcd@testmail.com"
-                    }
-                  ]
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://googleads.googleapis.com/v13/customers/7693729834/offlineUserDataJobs",
+    "headers": {
+      "Authorization": "Bearer dummy-access",
+      "Content-Type": "application/json",
+      "developer-token": "dummy-dev-token"
+    },
+    "params": {
+      "listId": "709078448",
+      "customerId": "7693729833",
+      "destination": "google_adwords_remarketing_lists"
+    },
+    "body": {
+      "JSON": {
+        "enablePartialFailure": true,
+        "operations": [
+          {
+            "create": {
+              "userIdentifiers": [
+                {
+                  "hashedEmail": "abcd@testmail.com"
                 }
-              }
-            ]
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      }
-    }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   },
   {
-    "request": {
-      "body": {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
-        "headers": {
-          "Authorization": "Bearer dummy-access",
-          "Content-Type": "application/json",
-          "developer-token": "dummy-dev-token"
-        },
-        "params": {
-          "listId": "709078448",
-          "customerId": "7693729833"
-        },
-        "body": {
-          "JSON": {
-            "enablePartialFailure": true,
-            "operations": [
-              {
-                "remove": {
-                  "userIdentifiers": [
-                    {
-                      "hashedEmail": "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
-                    },
-                    {
-                      "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
-                    },
-                    {
-                      "hashedEmail": "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
-                    },
-                    {
-                      "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
-                    },
-                    {
-                      "addressInfo": {
-                        "hashedFirstName": "e56d336922eaab3be8c1244dbaa713e134a8eba50ddbd4f50fd2fe18d72595cd"
-                      }
-                    }
-                  ]
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://googleads.googleapis.com/v13/customers/7693729833/offlineUserDataJobs",
+    "headers": {
+      "Authorization": "Bearer dummy-access",
+      "Content-Type": "application/json",
+      "developer-token": "dummy-dev-token"
+    },
+    "params": {
+      "listId": "709078448",
+      "customerId": "7693729833",
+      "destination": "google_adwords_remarketing_lists"
+    },
+    "body": {
+      "JSON": {
+        "enablePartialFailure": true,
+        "operations": [
+          {
+            "remove": {
+              "userIdentifiers": [
+                {
+                  "hashedEmail": "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
+                },
+                {
+                  "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
+                },
+                {
+                  "hashedEmail": "85cc9fefa1eff1baab55d10df0cecff2acb25344867a5d0f96e1b1c5e2f10f05"
+                },
+                {
+                  "hashedPhoneNumber": "3c98400cbfaf690bf3601f538def8ff16f3b3bcd075b028fa28aa44ca09fec22"
+                },
+                {
+                  "addressInfo": {
+                    "hashedFirstName": "e56d336922eaab3be8c1244dbaa713e134a8eba50ddbd4f50fd2fe18d72595cd"
+                  }
                 }
-              }
-            ]
-          },
-          "JSON_ARRAY": {},
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      }
-    }
+              ]
+            }
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
   }
 ]

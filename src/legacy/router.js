@@ -33,7 +33,12 @@ const eventValidator = require('../util/eventValidation');
 const { getIntegrations } = require('../routes/utils');
 const { setupUserTransformHandler, validateCode } = require('../util/customTransformer');
 const { CommonUtils } = require('../util/common');
-const { RespStatusError, RetryRequestError, sendViolationMetrics } = require('../util/utils');
+const {
+  RespStatusError,
+  RetryRequestError,
+  sendViolationMetrics,
+  constructValidationErrors,
+} = require('../util/utils');
 const { isCdkV2Destination, getCdkV2TestThreshold } = require('../cdk/v2/utils');
 const { PlatformError } = require('../v0/util/errorTypes');
 const { getCachedWorkflowEngine, processCdkV2Workflow } = require('../cdk/v2/handler');
@@ -366,13 +371,12 @@ async function handleValidation(ctx) {
       const hv = await eventValidator.handleValidation(parsedEvent);
       sendViolationMetrics(hv.validationErrors, hv.dropEvent, metaTags);
       if (hv.dropEvent) {
-        const errMessage = `Error occurred while validating because : ${hv.violationType}`;
         respList.push({
           output: event.message,
           metadata: event.metadata,
           statusCode: 400,
           validationErrors: hv.validationErrors,
-          error: errMessage,
+          error: JSON.stringify(constructValidationErrors(hv.validationErrors)),
         });
         stats.counter('hv_violation_type', 1, {
           violationType: hv.violationType,
@@ -384,6 +388,7 @@ async function handleValidation(ctx) {
           metadata: event.metadata,
           statusCode: 200,
           validationErrors: hv.validationErrors,
+          error: JSON.stringify(constructValidationErrors(hv.validationErrors)),
         });
         stats.counter('hv_propagated_events', 1, {
           ...metaTags,
@@ -848,24 +853,23 @@ if (transformerTestModeEnabled) {
    * code: transfromation code
    * language
    * name
-   * testWithPublish: publish version or not
    */
   router.post('/transformation/sethandle', async (ctx) => {
     try {
       const { trRevCode, libraryVersionIDs = [] } = ctx.request.body;
-      const { code, versionId, language, testName, testWithPublish = false } = trRevCode || {};
+      const { code, versionId, language, testName } = trRevCode || {};
       if (!code || !language || !testName || (language === 'pythonfaas' && !versionId)) {
         throw new Error('Invalid Request. Missing parameters in transformation code block');
       }
 
-      logger.debug(`[CT] Setting up a transformation ${testName} with publish: ${testWithPublish}`);
+      logger.debug(`[CT] Setting up a transformation ${testName}`);
       if (!trRevCode.versionId) {
         trRevCode.versionId = 'testVersionId';
       }
       if (!trRevCode.workspaceId) {
         trRevCode.workspaceId = 'workspaceId';
       }
-      const res = await setupUserTransformHandler(trRevCode, libraryVersionIDs, testWithPublish);
+      const res = await setupUserTransformHandler(libraryVersionIDs, trRevCode);
       logger.debug(`[CT] Finished setting up transformation: ${testName}`);
       ctx.body = res;
     } catch (error) {

@@ -154,6 +154,10 @@ function getUserAttributesObject(message, mappingJson, destination) {
     return traits;
   }
 
+  if (!traits) {
+    return data;
+  }
+
   // reserved keys : already mapped through mappingJson
   const reservedKeys = [
     'address',
@@ -167,40 +171,35 @@ function getUserAttributesObject(message, mappingJson, destination) {
   ];
 
   // iterate over the destKeys and set the value if present
-  if (traits) {
-    Object.keys(mappingJson).forEach((destKey) => {
-      let value = get(traits, mappingJson[destKey]);
-      if (value || (value === null && reservedKeys.includes(destKey))) {
-        // handle gender special case
-        if (destKey === 'gender') {
-          value = formatGender(value);
-        }
-        if (destKey === 'email' && value !== null) {
-          value = value?.toLowerCase();
-        }
-        data[destKey] = value;
+  Object.keys(mappingJson).forEach((destKey) => {
+    let value = get(traits, mappingJson[destKey]);
+    if (value || (value === null && reservedKeys.includes(destKey))) {
+      // handle gender special case
+      if (destKey === 'gender') {
+        value = formatGender(value);
+      } else if (destKey === 'email' && value !== null) {
+        value = value?.toLowerCase();
       }
-    });
+      data[destKey] = value;
+    }
+  });
 
-    // iterate over rest of the traits properties
-    Object.keys(traits).forEach((traitKey) => {
-      // if traitKey is not reserved add the value to final output
-      if (!reservedKeys.includes(traitKey)) {
-        const value = get(traits, traitKey);
-        if (value !== undefined) {
-          data[traitKey] = value;
-        }
-      }
-    });
+  // iterate over rest of the traits properties
+  Object.keys(traits).forEach((traitKey) => {
+    // if traitKey is not reserved add the value to final output
+    const value = get(traits, traitKey);
+    if (!reservedKeys.includes(traitKey) && value !== undefined) {
+      data[traitKey] = value;
+    }
+  });
 
-    // populate data with custom attribute operations
-    populateCustomAttributesWithOperation(
-      traits,
-      data,
-      message.properties?.mergeObjectsUpdateOperation,
-      destination?.Config.enableNestedArrayOperations,
-    );
-  }
+  // populate data with custom attribute operations
+  populateCustomAttributesWithOperation(
+    traits,
+    data,
+    message.properties?.mergeObjectsUpdateOperation,
+    destination?.Config.enableNestedArrayOperations,
+  );
 
   return data;
 }

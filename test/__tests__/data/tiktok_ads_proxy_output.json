@@ -26,6 +26,8 @@
       "statTags": {
         "destType": "TIKTOK_ADS",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "aborted",
         "feature": "dataDelivery",
         "implementation": "native",
@@ -47,6 +49,8 @@
       "statTags": {
         "destType": "TIKTOK_ADS",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "aborted",
         "feature": "dataDelivery",
         "implementation": "native",
@@ -68,6 +72,48 @@
       "statTags": {
         "destType": "TIKTOK_ADS",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
+        "errorType": "throttled",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 502,
+      "message": "Request failed with status: 502",
+      "destinationResponse": {
+        "response": "<html>\r\n<head><title>502 Bad Gateway</title></head>\r\n<body bgcolor=\"white\">\r\n<center><h1>502 Bad Gateway</h1></center>\r\n<hr><center>nginx</center>\r\n</body>\r\n</html>\r\n",
+        "status": 502
+      },
+      "statTags": {
+        "destType": "TIKTOK_ADS",
+        "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
+        "errorType": "retryable",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      }
+    }
+  },
+  {
+    "output": {
+      "status": 500,
+      "message": "Request failed with status: 500",
+      "destinationResponse": {
+        "response": "[ECONNRESET] :: Connection reset by peer",
+        "status": 500
+      },
+      "statTags": {
+        "destType": "TIKTOK_ADS",
+        "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "retryable",
         "feature": "dataDelivery",
         "implementation": "native",

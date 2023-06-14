@@ -874,5 +874,57 @@
     },
     "files": {},
     "userId": "e6ab2c5e-1cda-34a9-g962-r2f62df18abc"
+  },
+  {
+    "body": {
+      "FORM": {},
+      "JSON": {
+        "external_id": [
+          "Randomuser2222"
+        ],
+        "phone": "5055077683",
+        "subscription_group_id": "1234",
+        "subscription_state": "subscribed"
+      },
+      "JSON_ARRAY": {},
+      "XML": {}
+    },
+    "endpoint": "https://rest.fra-01.braze.eu/subscription/status/set",
+    "files": {},
+    "headers": {
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "Content-Type": "application/json"
+    },
+    "method": "POST",
+    "params": {},
+    "type": "REST",
+    "version": "1"
+  },
+  {
+    "body": {
+      "FORM": {},
+      "JSON": {
+        "external_id": [
+          "Randomuser2222"
+        ],
+        "email": "abc@test.com",
+        "subscription_group_id": "1234",
+        "subscription_state": "unsubscribed"
+      },
+      "JSON_ARRAY": {},
+      "XML": {}
+    },
+    "endpoint": "https://rest.fra-01.braze.eu/subscription/status/set",
+    "files": {},
+    "headers": {
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256",
+      "Content-Type": "application/json"
+    },
+    "method": "POST",
+    "params": {},
+    "type": "REST",
+    "version": "1"
   }
 ]

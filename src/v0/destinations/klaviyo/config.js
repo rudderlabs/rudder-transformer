@@ -2,14 +2,17 @@ const { getMappingConfig } = require('../../util');
 
 const BASE_ENDPOINT = 'https://a.klaviyo.com';
 
+const MAX_BATCH_SIZE = 100;
+
 // TRACK and IDENTIFY DOCS: https://www.klaviyo.com/docs/http-api
 // LIST API [MEMBERSHIP/SUBSCRIBE] DOCS:https://www.klaviyo.com/docs/http-api
 
 const CONFIG_CATEGORIES = {
-  IDENTIFY: { name: 'KlaviyoIdentify', apiUrl: '/api/identify' },
-  SCREEN: { name: 'KlaviyoTrack', apiUrl: '/api/track' },
-  TRACK: { name: 'KlaviyoTrack', apiUrl: '/api/track' },
+  IDENTIFY: { name: 'KlaviyoIdentify', apiUrl: '/api/profiles' },
+  SCREEN: { name: 'KlaviyoTrack', apiUrl: '/api/events' },
+  TRACK: { name: 'KlaviyoTrack', apiUrl: '/api/events' },
   GROUP: { name: 'KlaviyoGroup' },
+  PROFILE: { name: 'KlaviyoProfile' },
   STARTED_CHECKOUT: { name: 'StartedCheckout' },
   VIEWED_PRODUCT: { name: 'ViewedProduct' },
   ADDED_TO_CART: { name: 'AddedToCart' },
@@ -57,6 +60,7 @@ const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
   BASE_ENDPOINT,
+  MAX_BATCH_SIZE,
   CONFIG_CATEGORIES,
   MAPPING_CONFIG,
   LIST_CONF,

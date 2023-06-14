@@ -1,0 +1,85 @@
+[
+  {
+    "destKey": "$email",
+    "sourceKeys": "email",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "$first_name",
+    "sourceKeys": "firstName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "$last_name",
+    "sourceKeys": "lastName",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "$phone_number",
+    "sourceKeys": "phone",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "$city",
+    "sourceKeys": [
+      "traits.city",
+      "traits.address.city",
+      "context.traits.city",
+      "context.traits.address.city",
+      "properties.city"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "$region",
+    "sourceKeys": [
+      "traits.region",
+      "traits.address.region",
+      "context.traits.region",
+      "context.traits.address.region",
+      "properties.region"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "$country",
+    "sourceKeys": [
+      "traits.country",
+      "traits.address.country",
+      "context.traits.country",
+      "context.traits.address.country",
+      "properties.country"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "$zip",
+    "sourceKeys": [
+      "traits.zip",
+      "traits.postalcode",
+      "traits.address.zip",
+      "traits.address.postalcode",
+      "context.traits.zip",
+      "context.traits.postalcode",
+      "context.traits.address.zip",
+      "context.traits.address.postalcode",
+      "properties.zip",
+      "properties.postalcode"
+    ],
+    "required": false
+  },
+  {
+    "destKey": "$consent",
+    "sourceKeys": ["context.traits.consent", "traits.consent", "properties.consent"],
+    "required": false
+  },
+  {
+    "destKey": "$image",
+    "sourceKeys": ["traits.image", "context.traits.image", "properties.image"],
+    "required": false
+  }
+]

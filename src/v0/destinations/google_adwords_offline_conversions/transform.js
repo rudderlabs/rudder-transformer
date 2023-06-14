@@ -1,12 +1,15 @@
-const { set } = require('lodash');
+const { set, get } = require('lodash');
 const moment = require('moment');
 const { EventType } = require('../../../constants');
 const {
   getHashFromArrayWithDuplicate,
   constructPayload,
   removeHyphens,
-  simpleProcessRouterDest,
   getHashFromArray,
+  handleRtTfSingleEventError,
+  defaultBatchRequestConfig,
+  getSuccessRespEvents,
+  checkInvalidRtTfEvents,
 } = require('../../util');
 const {
   CALL_CONVERSION,
@@ -134,9 +137,98 @@ const process = async (event) => {
   return response;
 };
 
+const getEventChunks = (event, storeSalesEvents, clickCallEvents) => {
+  const { message, metadata, destination } = event;
+  message.forEach((message) => {
+    if (message.body.JSON?.isStoreConversion) {
+      storeSalesEvents.push({ message, metadata, destination });
+    } else {
+      clickCallEvents.push(getSuccessRespEvents(message, [metadata], destination));
+    }
+  });
+  return { storeSalesEvents, clickCallEvents };
+};
+
+const batchEvents = (storeSalesEvents) => {
+  const batchEventResponse = defaultBatchRequestConfig();
+  batchEventResponse.metadatas = [];
+  set(batchEventResponse, 'batchedRequest.body.JSON', storeSalesEvents[0].message.body.JSON);
+  set(batchEventResponse, 'batchedRequest.body.JSON.addConversionPayload.operations', [
+    get(storeSalesEvents[0], 'message.body.JSON.addConversionPayload.operations'),
+  ]);
+  batchEventResponse.metadatas.push(storeSalesEvents[0].metadata);
+  const { params, headers, endpoint } = storeSalesEvents[0].message;
+  batchEventResponse.batchedRequest.params = params;
+  batchEventResponse.batchedRequest.headers = headers;
+  batchEventResponse.batchedRequest.endpoint = endpoint;
+  storeSalesEvents.forEach((storeSalesEvent, index) => {
+    // we are discarding the first event as it is already added
+    if (index === 0) {
+      return;
+    }
+    batchEventResponse.batchedRequest?.body?.JSON['addConversionPayload']?.operations?.push(
+      storeSalesEvent.message?.body?.JSON?.addConversionPayload?.operations,
+    );
+    batchEventResponse.metadatas.push(storeSalesEvent.metadata);
+    batchEventResponse.destination = storeSalesEvent.destination;
+  });
+
+  return [
+    getSuccessRespEvents(
+      batchEventResponse.batchedRequest,
+      batchEventResponse.metadatas,
+      batchEventResponse.destination,
+      true,
+    ),
+  ];
+};
+
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+
+  const storeSalesEvents = []; // list containing store sales events in batched format
+  const clickCallEvents = []; // list containing click and call events in batched format
+  const errorRespList = [];
+  await Promise.all(
+    inputs.map(async (event) => {
+      try {
+        if (event.message.statusCode) {
+          // already transformed event
+          getEventChunks(event, storeSalesEvents, clickCallEvents);
+        } else {
+          // if not transformed
+          getEventChunks(
+            {
+              message: await process(event),
+              metadata: event.metadata,
+              destination: event.destination,
+            },
+            storeSalesEvents,
+            clickCallEvents,
+          );
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+        errorRespList.push(errRespEvent);
+      }
+    }),
+  );
+  let storeSalesEventsBatchedResponseList = [];
+
+  if (storeSalesEvents.length > 0) {
+    storeSalesEventsBatchedResponseList = batchEvents(storeSalesEvents);
+  }
+
+  let batchedResponseList = [];
+  // appending all kinds of batches
+  batchedResponseList = batchedResponseList
+    .concat(storeSalesEventsBatchedResponseList)
+    .concat(clickCallEvents)
+    .concat(errorRespList);
+  return batchedResponseList;
 };
 
 module.exports = { process, processRouterDest };

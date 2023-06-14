@@ -1397,5 +1397,85 @@
     "files": {},
     "userId": 432,
     "statusCode": 200
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "JSON": {
+        "type": "page",
+        "data": {
+          "url": "www.rudderlabs.com",
+          "path": "/test",
+          "search": "abc",
+          "referrer": "Rudder",
+          "title": "Test Page"
+        },
+        "timestamp": 1571051718,
+        "name": "www.rudderlabs.com"
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
+    "userId": "12345",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "POST",
+    "statusCode": 200
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "JSON": {
+        "type": "page",
+        "data": {
+          "path": "/test",
+          "search": "abc",
+          "referrer": "Rudder",
+          "title": "Test Page"
+        },
+        "timestamp": 1571051718
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
+    "userId": "12345",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "POST",
+    "statusCode": 200
+  },
+  {
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "JSON": {
+        "type": "page",
+        "timestamp": 1571051718
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
+    "userId": "12345",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "POST",
+    "statusCode": 200
   }
 ]

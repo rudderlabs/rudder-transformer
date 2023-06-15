@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.32.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.32.1...v1.32.2) (2023-06-15)
+
+
+### Bug Fixes
+
+* **trackingplan:** correct drop event status for tracking plan events ([#2272](https://github.com/rudderlabs/rudder-transformer/issues/2272)) ([fd5ebb0](https://github.com/rudderlabs/rudder-transformer/commit/fd5ebb0767460a234dc74c354e95a0560a6dac75))
+
 ### [1.32.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.32.0...v1.32.1) (2023-06-14)
 
 

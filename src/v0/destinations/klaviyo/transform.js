@@ -99,8 +99,11 @@ const identifyRequestHandler = async (message, category, destination) => {
   // Update Profile
   const responseArray = [profileUpdateResponseBuilder(payload, profileId, category, privateApiKey)];
 
-  // check if user wants to subscribe profile or not
-  if (traitsInfo?.properties?.subscribe) {
+  // check if user wants to subscribe profile or not and listId is present or not
+  if (
+    traitsInfo?.properties?.subscribe &&
+    (traitsInfo.properties?.listId || destination.Config?.listId)
+  ) {
     responseArray.push(subscribeUserToList(message, traitsInfo, destination));
     return responseArray;
   }

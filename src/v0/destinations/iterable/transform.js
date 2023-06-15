@@ -145,7 +145,7 @@ const getCategory = (messageType, message) => {
 
 const process = (event) => {
   const { message, destination } = event;
-  const messageType = message.type.toLowerCase();
+  const messageType = message.type?.toLowerCase();
   const category = getCategory(messageType, message);
   const response = responseBuilder(message, category, destination);
 

@@ -338,5 +338,27 @@
     "object_type": "webhook",
     "metric": "failed",
     "timestamp": 1585746984
+  },
+  {
+    "data": {
+      "action_id": 37,
+      "broadcast_id": 9,
+      "customer_id": "0200102",
+      "identifiers": {
+        "id": "0200102"
+      },
+      "delivery_id": "RPILAgUBcRhIBqSfeiIwdIYJKxTY",
+      "href": "ciosas://product/2",
+      "link_id": 1,
+      "recipients": [
+        {
+          "device_id": "eeC2XC_NVPo:APA91bEYRSgmu-dAZcOWi7RzKBbT9gdY3WJACOpLQEMAmAOsChJMAZWirvSlSF3EuHxb7qdwlYeOyCWtbsnR14Vyx5nwBmg5J3SyPxfNn-ey1tNgXIj5UOq8IBk2VwzMApk-xzD4JJof"
+        }
+      ]
+    },
+    "event_id": "01E4V2SBHYK4TNTG8WKMP39G9S",
+    "object_type": "push",
+    "metric": "delivered",
+    "timestamp": 1585751830
   }
 ]

@@ -1015,4 +1015,13 @@ describe("Integration options", () => {
       });
     });
   });
+  describe("users", () => {
+    it("should skip users when skipUsersTable is set", () => {
+      const i = opInput("users");
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received).toEqual(opOutput("users", integrations[index]));
+      });
+    });
+  });
 });

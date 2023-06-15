@@ -4,7 +4,8 @@ const fetch = require("node-fetch", () => jest.fn());
 const {
   isEventTypeSupported,
   handleValidation,
-  violationTypes
+  violationTypes,
+  handleValidationErrors
 } = require("../../src/util/eventValidation");
 
 const trackingPlan = {
@@ -133,6 +134,105 @@ const eventTypesTestCases = [
     output: false
   }
 ];
+
+const validationErrorsTestCases = [
+  {
+    test: "single violation with drop setting",
+    metadata: {
+      mergedTpConfig: {
+        allowUnplannedEvents: "true",
+        unplannedProperties: "forward",
+        anyOtherViolation: "drop",
+        sendViolatedEventsTo: "procErrors",
+      },
+    },
+    validationErrors: [ { type: "Required-Missing" } ],
+    output: true
+  },
+  {
+    test: "single violation with drop setting",
+    metadata: {
+      mergedTpConfig: {
+        allowUnplannedEvents: "true",
+        unplannedProperties: "forward",
+        anyOtherViolation: "forward",
+        sendViolatedEventsTo: "procErrors",
+      },
+    },
+    validationErrors: [ { type: "Datatype-Mismatch" } ],
+    output: false
+  },
+  {
+    test: "multiple violations with drop setting in one of them",
+    metadata: {
+      mergedTpConfig: {
+        allowUnplannedEvents: "false",
+        unplannedProperties: "forward",
+        anyOtherViolation: "forward",
+        sendViolatedEventsTo: "procErrors",
+      },
+    },
+    validationErrors: [
+      { type: "Datatype-Mismatch" },
+      { type: "Unplanned-Event" },
+      { type: "Additional-Properties" }
+    ],
+    output: true
+  },
+  {
+    test: "multiple violations with drop setting in one of them",
+    metadata: {
+      mergedTpConfig: {
+        allowUnplannedEvents: "true",
+        unplannedProperties: "drop",
+        anyOtherViolation: "forward",
+        sendViolatedEventsTo: "procErrors",
+      },
+    },
+    validationErrors: [
+      { type: "Datatype-Mismatch" },
+      { type: "Unplanned-Event" },
+      { type: "Additional-Properties" }
+    ],
+    output: true
+  },
+  {
+    test: "multiple violations with forward setting for all",
+    metadata: {
+      mergedTpConfig: {
+        allowUnplannedEvents: "true",
+        unplannedProperties: "forward",
+        anyOtherViolation: "forward",
+        sendViolatedEventsTo: "procErrors",
+      },
+    },
+    validationErrors: [
+      { type: "Datatype-Mismatch" },
+      { type: "Unplanned-Event" },
+      { type: "Additional-Properties" }
+    ],
+    output: false
+  },
+  {
+    test: "multiple violations with drop setting in one of them and duplicate violation",
+    metadata: {
+      mergedTpConfig: {
+        allowUnplannedEvents: "true",
+        unplannedProperties: "drop",
+        anyOtherViolation: "forward",
+        sendViolatedEventsTo: "procErrors",
+      },
+    },
+    validationErrors: [
+      { type: "Datatype-Mismatch" },
+      { type: "Additional-Properties" },
+      { type: "Datatype-Mismatch" },
+      { type: "Required-missing" },
+    ],
+    output: true
+  }
+];
+
 const eventValidationTestCases = [
   {
     testCase: "Empty Source TP Config",
@@ -1285,6 +1385,15 @@ describe("Handle validation", () => {
       );
       expect(dropEvent).toEqual(testCase.output.dropEvent);
       expect(violationType).toEqual(testCase.output.violationType);
+    });
+  });
+});
+
+describe("HandleValidationErrors", () => {
+  validationErrorsTestCases.forEach(testCase => {
+    it(`should return dropEvent ${testCase.output} for ${testCase.test}`, () => {
+      const { dropEvent } = handleValidationErrors(testCase.validationErrors, testCase.metadata, false, 'None');
+      expect(dropEvent).toEqual(testCase.output);
     });
   });
 });

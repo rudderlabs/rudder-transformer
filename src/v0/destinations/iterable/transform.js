@@ -145,7 +145,11 @@ const getCategory = (messageType, message) => {
 
 const process = (event) => {
   const { message, destination } = event;
-  const messageType = message.type?.toLowerCase();
+  if (!message.type) {
+    throw new InstrumentationError('Event type is required');
+  }
+  
+  const messageType = message.type.toLowerCase();
   const category = getCategory(messageType, message);
   const response = responseBuilder(message, category, destination);
 
@@ -163,7 +167,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   }
 
   let transformedEvents = await Promise.all(
-    inputs.map(async (event) => {
+    inputs.map((event) => {
       try {
         if (event.message.statusCode) {
           // already transformed event
@@ -175,7 +179,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
         }
         // if not transformed
         const transformedPayloads = [];
-        let responses = await process(event);
+        let responses = process(event);
         responses = Array.isArray(responses) ? responses : [responses];
         responses.forEach((response) => {
           transformedPayloads.push({

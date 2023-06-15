@@ -344,7 +344,7 @@ const prepareAndSplitUpdateUserBatchesBasedOnPayloadSize = (
       size = jsonSize(get(event, 'message.body.JSON'));
     }
 
-    if (registerDeviceOrBrowserTokenEvents[event?.metadata?.jobId]) {
+    if (registerDeviceOrBrowserTokenEvents[event.metadata.jobId]) {
       const response = registerDeviceOrBrowserTokenEvents[event.metadata.jobId];
       nonBatchedRequests.push(response);
     }
@@ -577,7 +577,7 @@ const mapRegisterDeviceOrBrowserTokenEventsWithJobId = (events) => {
   const registerDeviceOrBrowserTokenEvents = {};
   events.forEach((event) => {
     const { data } = event;
-    registerDeviceOrBrowserTokenEvents[data?.metadata?.jobId] = data?.message;
+    registerDeviceOrBrowserTokenEvents[data.metadata.jobId] = data.message;
   });
   return registerDeviceOrBrowserTokenEvents;
 };

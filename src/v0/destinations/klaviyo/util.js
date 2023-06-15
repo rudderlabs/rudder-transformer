@@ -33,20 +33,25 @@ const { handleHttpRequest } = require('../../../adapters/network');
  */
 const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) => {
   let profileId;
-  const { httpResponse: resp } = await handleHttpRequest('post', endpoint, payload, requestOptions);
-  if (resp.response?.status === 201) {
-    profileId = resp.response?.data?.data?.id;
-  } else if (resp.response?.response?.status === 409) {
-    const { response } = resp.response;
-    profileId = response.data?.errors[0]?.meta?.duplicate_profile_id;
+  const { processedResponse: resp } = await handleHttpRequest(
+    'post',
+    endpoint,
+    payload,
+    requestOptions,
+  );
+  if (resp.status === 201) {
+    profileId = resp.response?.data?.id;
+  } else if (resp.status === 409) {
+    const { errors } = resp.response;
+    profileId = errors[0]?.meta?.duplicate_profile_id;
   } else {
     throw new NetworkError(
-      `Failed to create user due to ${resp.response?.data}`,
-      resp.response?.response?.status,
+      `Failed to create user due to ${JSON.stringify(resp.response)}`,
+      resp.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.response?.response?.status),
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.status),
       },
-      resp.response?.data,
+      `${JSON.stringify(resp.response)}`,
     );
   }
   return profileId;
@@ -135,6 +140,7 @@ const createCustomerProperties = (message) => {
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.PROFILE.name],
   );
+  customerProperties.$id = getFieldValueFromMessage(message, 'userId');
   customerProperties = removeUndefinedAndNullValues(customerProperties);
   return customerProperties;
 };

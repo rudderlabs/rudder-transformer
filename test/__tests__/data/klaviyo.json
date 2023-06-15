@@ -508,7 +508,8 @@
               },
               "profile": {
                 "$email": "utsab@rudderstack.com",
-                "$phone_number": "9112340375"
+                "$phone_number": "9112340375",
+                "$id": "sajal12"
               }
             }
           }
@@ -626,7 +627,8 @@
               },
               "profile": {
                 "$email": "utsab@rudderstack.com",
-                "$phone_number": "9112340375"
+                "$phone_number": "9112340375",
+                "$id": "sajal12"
               },
               "value": 3000
             }
@@ -875,7 +877,8 @@
               },
               "profile": {
                 "$email": "utsab@rudderstack.com",
-                "$phone_number": "9112340375"
+                "$phone_number": "9112340375",
+                "$id": "sajal12"
               },
               "properties": {
                 "ProductName": "test product",
@@ -1015,7 +1018,8 @@
               },
               "profile": {
                 "$email": "utsab@rudderstack.com",
-                "$phone_number": "9112340375"
+                "$phone_number": "9112340375",
+                "$id": "sajal12"
               },
               "properties": {
                 "$value": 12.12,

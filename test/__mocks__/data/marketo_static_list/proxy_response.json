@@ -22,6 +22,23 @@
         },
         {
           "id": 2,
+          "status": "added"
+        }
+      ],
+      "success": true
+    },
+    "status": 200
+  },
+  "https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=3&id=4": {
+    "data": {
+      "requestId": "12d3c#1846057dce2",
+      "result": [
+        {
+          "id": 1,
+          "status": "added"
+        },
+        {
+          "id": 4,
           "status": "skipped",
           "reasons": [
             {
@@ -31,6 +48,24 @@
           ]
         }
       ],
+      "success": true
+    },
+    "status": 200
+  },
+  "https://marketo_acct_id_success.mktorest.com/rest/v1/lists/1234/leads.json?id=5&id=6": {
+    "data": {
+      "requestId": "12d3c#1846057dce2",
+      "result": {
+        "id": 5,
+        "status": "skipped",
+        "reasons": [
+          {
+            "code": "1004",
+            "message": "Lead not found"
+          }
+        ]
+      },
+
       "success": true
     },
     "status": 200

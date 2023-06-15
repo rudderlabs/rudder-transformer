@@ -1,0 +1,45 @@
+[
+  {
+    "destKey": "event_id",
+    "sourceKeys": "properties.eventId",
+    "required": false
+  },
+  {
+    "destKey": "conversion_time",
+    "sourceKeys": "properties.conversionTime",
+    "required": false
+  },
+  {
+    "destKey": "number_items",
+    "sourceKeys": ["properties.quantity", "properties.numberItems"],
+    "metadata": {
+      "type": "toNumber"
+    },
+    "required": false
+  },
+  {
+    "destKey": "price_currency",
+    "sourceKeys": ["properties.currency"],
+    "required": false
+  },
+  {
+    "destKey": "value",
+    "sourceKeys": ["properties.value", "properties.price", "properties.revenue"],
+    "required": false
+  },
+  {
+    "destKey": "conversion_id",
+    "sourceKeys": "properties.conversionId",
+    "required": false
+  },
+  {
+    "destKey": "description",
+    "sourceKeys": "properties.description",
+    "required": false
+  },
+  {
+    "destKey": "contents",
+    "sourceKeys": "properties.contents",
+    "required": false
+  }
+]

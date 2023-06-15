@@ -34,7 +34,7 @@ function assertConfig(val, message) {
   }
 }
 
-function assertNetwork(response, message) {
+function assertHttpResp(response, message) {
   if (!isHttpStatusSuccess(response.status)) {
     throw new NetworkError(
       message,
@@ -51,5 +51,5 @@ module.exports = {
   isValidEventType,
   assert,
   assertConfig,
-  assertNetwork,
+  assertHttpResp,
 };

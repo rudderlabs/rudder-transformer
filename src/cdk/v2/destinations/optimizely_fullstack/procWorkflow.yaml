@@ -60,7 +60,7 @@ steps:
       const dataFileUrl = .destination.Config.dataFileUrl;
       const rawResponse = await $.handleHttpRequest("get", dataFileUrl);
       const processedResponse = rawResponse.processedResponse;
-      $.assertNetwork(processedResponse, "Data File Lookup Failed");
+      $.assertHttpResp(processedResponse, "Data File Lookup Failed");
       processedResponse.response
 
   - name: validateDateFileForTrackPageAndScreen
@@ -72,11 +72,7 @@ steps:
   - name: extractExperimentIds
     template: |
       const integrationObj = $.getIntegrationsObj(.message, "optimizely_fullstack");
-      {
-        "campaignId": integrationObj.campaignId,
-        "experimentId": integrationObj.experimentId,
-        "variationId": integrationObj.variationId
-      }
+      integrationObj ? integrationObj{["campaignId", "experimentId", "variationId"]};
 
   - name: validateInputForIdentify
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
@@ -298,9 +294,7 @@ steps:
   - name: buildResponseForProcessTransformation
     description: build response
     template: |
-      const messageType = $.outputs.messageType;
-      const payload = (messageType === {{$.EventType.IDENTIFY}} ? $.outputs.prepareIdentifyPayload:
-                      messageType === {{$.EventType.TRACK}} ? $.outputs.prepareTrackPayload: $.outputs.preparePageOrScreenPayload);
+      const payload = $.outputs.prepareIdentifyPayload || $.outputs.prepareTrackPayload || $.outputs.preparePageOrScreenPayload;
       const response = $.defaultRequestConfig();
       response.body.JSON = $.removeUndefinedAndNullValues(payload);
       response.endpoint = $.ENDPOINT;

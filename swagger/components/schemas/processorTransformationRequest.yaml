@@ -1,8 +1,6 @@
 title: Processor Transformation Request
 type: object
 properties:
-  request:
-    type: object
   message:
     type: object
   metadata:

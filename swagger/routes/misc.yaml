@@ -15,7 +15,7 @@
             type: object
             properties:
               credBucketDetails:
-                type: object
+                $ref: '../components/schemas/credBucketDetails.yaml'
     responses:
       200:
         description: Success

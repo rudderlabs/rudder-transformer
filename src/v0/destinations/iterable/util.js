@@ -208,25 +208,22 @@ const trackEventPayloadBuilder = (message, category) => {
  * @param {*} message
  * @returns
  */
-const prepareProductPayloadArray = (message) => {
-  const rawPayloadProductsArr = [];
-  const products = Array.isArray(message.properties?.products)
+const prepareItemsArrayPayload = (message) => {
+  const items = Array.isArray(message.properties?.products)
     ? message.properties.products
     : [message.properties];
 
-  products.forEach((product) => {
-    const productPayload = constructPayload(product, mappingConfig[ConfigCategory.PRODUCT.name]);
+  return items.map((item) => {
+    const itemPayload = constructPayload(item, mappingConfig[ConfigCategory.PRODUCT.name]);
 
-    if (productPayload.categories && typeof productPayload.categories === 'string') {
-      productPayload.categories = productPayload.categories.split(',');
+    if (itemPayload.categories && typeof itemPayload.categories === 'string') {
+      itemPayload.categories = itemPayload.categories.split(',');
     }
 
-    productPayload.price = parseFloat(productPayload.price);
-    productPayload.quantity = parseInt(productPayload.quantity, 10);
-    const productPayloadClone = { ...productPayload };
-    rawPayloadProductsArr.push(productPayloadClone);
+    itemPayload.price = parseFloat(itemPayload.price);
+    itemPayload.quantity = parseInt(itemPayload.quantity, 10);
+    return { ...itemPayload };
   });
-  return rawPayloadProductsArr;
 };
 
 /**
@@ -244,7 +241,7 @@ const purchaseEventPayloadBuilder = (message, category) => {
   rawPayload.user.preferUserId = true;
   rawPayload.user.mergeNestedObjects = true;
   rawPayload.total = parseFloat(rawPayload.total);
-  rawPayload.items = prepareProductPayloadArray(message);
+  rawPayload.items = prepareItemsArrayPayload(message);
   rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
   rawPayload.id = rawPayload.id ? rawPayload.id.toString() : undefined;
   rawPayload.campaignId = rawPayload.campaignId ? parseInt(rawPayload.campaignId, 10) : undefined;
@@ -267,7 +264,7 @@ const updateCartEventPayloadBuilder = (message) => {
 
   rawPayload.user.preferUserId = true;
   rawPayload.user.mergeNestedObjects = true;
-  rawPayload.items = prepareProductPayloadArray(message);
+  rawPayload.items = prepareItemsArrayPayload(message);
 
   return rawPayload;
 };

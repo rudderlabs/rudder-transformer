@@ -52,12 +52,12 @@ const validateMandatoryField = (payload) => {
  */
 const hasMultipleResponses = (message, category) => {
   const { context } = message;
-  return (
-    message.type === EventType.IDENTIFY &&
-    category === ConfigCategory.IDENTIFY &&
-    context &&
-    ((context.device && context.device.token) || (context.os && context.os.token))
-  );
+
+  const isIdentifyEvent = message.type === EventType.IDENTIFY;
+  const isIdentifyCategory = category === ConfigCategory.IDENTIFY;
+  const hasToken = context && (context.device?.token || context.os?.token);
+
+  return isIdentifyEvent && isIdentifyCategory && hasToken;
 };
 
 /**
@@ -167,19 +167,20 @@ const pageOrScreenEventPayloadBuilder = (message, destination, category) => {
 
 /**
  * Prepares page event payload
- * @param {*} message 
- * @param {*} destination 
- * @param {*} category 
- * @returns 
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} category
+ * @returns
  */
-const pageEventPayloadBuilder = (message, destination, category) => pageOrScreenEventPayloadBuilder(message, destination, category);
+const pageEventPayloadBuilder = (message, destination, category) =>
+  pageOrScreenEventPayloadBuilder(message, destination, category);
 
 /**
  * Prepares screen event payload
- * @param {*} message 
- * @param {*} destination 
- * @param {*} category 
- * @returns 
+ * @param {*} message
+ * @param {*} destination
+ * @param {*} category
+ * @returns
  */
 const screenEventPayloadBuilder = (message, destination, category) =>
   pageOrScreenEventPayloadBuilder(message, destination, category);

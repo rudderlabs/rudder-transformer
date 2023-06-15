@@ -23,7 +23,6 @@ const {
   removeUndefinedAndNullValues,
   getDestinationExternalIDInfoForRetl,
 } = require('../../util');
-const logger = require('../../../logger');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { mappingConfig, ConfigCategory } = require('./config');
 const { InstrumentationError } = require('../../util/errorTypes');
@@ -75,7 +74,7 @@ const constructPayloadItem = (message, category, destination) => {
       ).destinationExternalId;
       break;
     default:
-      logger.debug('not supported type');
+      return removeUndefinedAndNullValues(rawPayload);
   }
 
   return removeUndefinedAndNullValues(rawPayload);
@@ -109,8 +108,7 @@ const responseBuilder = (message, category, destination) => {
  */
 const responseBuilderForRegisterDeviceOrBrowserTokenEvents = (message, destination) => {
   const { device } = message.context;
-  const category =
-    device && device?.token ? ConfigCategory.IDENTIFY_DEVICE : ConfigCategory.IDENTIFY_BROWSER;
+  const category = device?.token ? ConfigCategory.IDENTIFY_DEVICE : ConfigCategory.IDENTIFY_BROWSER;
   return responseBuilder(message, category, destination);
 };
 

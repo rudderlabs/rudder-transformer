@@ -14,7 +14,7 @@ export class DynamicConfigParser {
     //  " {{message.traits.key  ||   \"email\" }} "
     //  " {{ message.traits.key || 1233 }} "
     const defFormat =
-      /^\s*{{\s*(?<path>[A-Za-z]\w*(?:\.[A-Za-z]\w*)+)\s*\|\|\s*(?<defaultVal>.*)\s*}}\s*$/;
+      /^\s*{{\s*(?<path>[A-Z_a-z](\w*\.[A-Z_a-z]\w*)+)+\s*\|\|\s*(?<defaultVal>.*)\s*}}\s*$/;
     const matResult = value.match(defFormat);
     if (matResult) {
       // Support "event.<obj1>.<key>" alias for "message.<obj1>.<key>"

@@ -45,8 +45,6 @@ function buildResponse(message, requestJson, metadata, endpointUrl) {
     body: response.body.JSON
   };
 
-  console.log(metadata,  ' <><><>');
-
   const oAuthObject = getOAuthFields(metadata);
   const authHeader = getAuthHeaderForRequest(request, oAuthObject).Authorization;
   response.headers = {

@@ -208,7 +208,7 @@ const trackEventPayloadBuilder = (message, category) => {
  * @param {*} message
  * @returns
  */
-const prepareItemsArrayPayload = (message) => {
+const prepareItemsPayload = (message) => {
   const items = Array.isArray(message.properties?.products)
     ? message.properties.products
     : [message.properties];
@@ -241,7 +241,7 @@ const purchaseEventPayloadBuilder = (message, category) => {
   rawPayload.user.preferUserId = true;
   rawPayload.user.mergeNestedObjects = true;
   rawPayload.total = parseFloat(rawPayload.total);
-  rawPayload.items = prepareItemsArrayPayload(message);
+  rawPayload.items = prepareItemsPayload(message);
   rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
   rawPayload.id = rawPayload.id ? rawPayload.id.toString() : undefined;
   rawPayload.campaignId = rawPayload.campaignId ? parseInt(rawPayload.campaignId, 10) : undefined;
@@ -264,7 +264,7 @@ const updateCartEventPayloadBuilder = (message) => {
 
   rawPayload.user.preferUserId = true;
   rawPayload.user.mergeNestedObjects = true;
-  rawPayload.items = prepareItemsArrayPayload(message);
+  rawPayload.items = prepareItemsPayload(message);
 
   return rawPayload;
 };

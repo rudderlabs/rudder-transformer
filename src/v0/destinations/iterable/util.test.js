@@ -1,9 +1,10 @@
 const {
+  pageEventPayloadBuilder,
   trackEventPayloadBuilder,
+  screenEventPayloadBuilder,
   purchaseEventPayloadBuilder,
   updateCartEventPayloadBuilder,
   updateUserEventPayloadBuilder,
-  pageOrScreenEventPayloadBuilder,
   registerDeviceTokenEventPayloadBuilder,
   registerBrowserTokenEventPayloadBuilder,
 } = require('./util');
@@ -208,7 +209,7 @@ describe('iterable utils test', () => {
       );
     });
   });
-  describe('Unit test cases for iterbale pageOrScreenEventPayloadBuilder', () => {
+  describe('Unit test cases for iterbale pageEventPayloadBuilder', () => {
     it('For trackAllPages', async () => {
       let destination = {
         Config: {
@@ -236,7 +237,7 @@ describe('iterable utils test', () => {
         userId: 'anonId',
       };
       expect(
-        pageOrScreenEventPayloadBuilder(
+        pageEventPayloadBuilder(
           { ...getTestMessage(), type: 'page' },
           destination,
           ConfigCategory.PAGE,
@@ -271,7 +272,7 @@ describe('iterable utils test', () => {
         userId: 'anonId',
       };
       expect(
-        pageOrScreenEventPayloadBuilder(
+        pageEventPayloadBuilder(
           { ...getTestMessage(), type: 'page' },
           destination,
           ConfigCategory.PAGE,
@@ -306,7 +307,7 @@ describe('iterable utils test', () => {
         userId: 'anonId',
       };
       expect(
-        pageOrScreenEventPayloadBuilder(
+        pageEventPayloadBuilder(
           { ...getTestMessage(), type: 'page' },
           destination,
           ConfigCategory.PAGE,
@@ -318,11 +319,10 @@ describe('iterable utils test', () => {
       let destination = {
         Config: {
           apiKey: '12345',
-          mapToSingleEvent: false,
+          mapToSingleEvent: true,
           trackAllPages: false,
           trackCategorisedPages: false,
           trackNamedPages: true,
-          mapToSingleEvent: true,
         },
         Enabled: true,
       };
@@ -342,7 +342,7 @@ describe('iterable utils test', () => {
         userId: 'anonId',
       };
       expect(
-        pageOrScreenEventPayloadBuilder(
+        pageEventPayloadBuilder(
           { ...getTestMessage(), type: 'page' },
           destination,
           ConfigCategory.PAGE,
@@ -358,7 +358,6 @@ describe('iterable utils test', () => {
           trackAllPages: false,
           trackCategorisedPages: false,
           trackNamedPages: true,
-          mapToSingleEvent: false,
         },
         Enabled: true,
       };
@@ -378,7 +377,7 @@ describe('iterable utils test', () => {
         userId: 'anonId',
       };
       expect(
-        pageOrScreenEventPayloadBuilder(
+        pageEventPayloadBuilder(
           { ...getTestMessage(), type: 'page' },
           destination,
           ConfigCategory.PAGE,
@@ -386,7 +385,7 @@ describe('iterable utils test', () => {
       ).toEqual(expectedOutput);
     });
   });
-  describe('Unit test cases for iterbale pageOrScreenEventPayloadBuilder', () => {
+  describe('Unit test cases for iterbale screenEventPayloadBuilder', () => {
     it('For trackAllPages', async () => {
       let destination = {
         Config: {
@@ -414,7 +413,7 @@ describe('iterable utils test', () => {
         userId: 'anonId',
       };
       expect(
-        pageOrScreenEventPayloadBuilder(
+        screenEventPayloadBuilder(
           { ...getTestMessage(), type: 'screen' },
           destination,
           ConfigCategory.SCREEN,
@@ -449,7 +448,7 @@ describe('iterable utils test', () => {
         userId: 'anonId',
       };
       expect(
-        pageOrScreenEventPayloadBuilder(
+        screenEventPayloadBuilder(
           { ...getTestMessage(), type: 'screen' },
           destination,
           ConfigCategory.SCREEN,
@@ -484,7 +483,7 @@ describe('iterable utils test', () => {
         userId: 'anonId',
       };
       expect(
-        pageOrScreenEventPayloadBuilder(
+        screenEventPayloadBuilder(
           { ...getTestMessage(), type: 'screen' },
           destination,
           ConfigCategory.SCREEN,
@@ -496,11 +495,10 @@ describe('iterable utils test', () => {
       let destination = {
         Config: {
           apiKey: '12345',
-          mapToSingleEvent: false,
+          mapToSingleEvent: true,
           trackAllPages: false,
           trackCategorisedPages: false,
           trackNamedPages: true,
-          mapToSingleEvent: true,
         },
         Enabled: true,
       };
@@ -520,7 +518,7 @@ describe('iterable utils test', () => {
         userId: 'anonId',
       };
       expect(
-        pageOrScreenEventPayloadBuilder(
+        screenEventPayloadBuilder(
           { ...getTestMessage(), type: 'screen' },
           destination,
           ConfigCategory.SCREEN,
@@ -536,7 +534,6 @@ describe('iterable utils test', () => {
           trackAllPages: false,
           trackCategorisedPages: false,
           trackNamedPages: true,
-          mapToSingleEvent: false,
         },
         Enabled: true,
       };
@@ -556,7 +553,7 @@ describe('iterable utils test', () => {
         userId: 'anonId',
       };
       expect(
-        pageOrScreenEventPayloadBuilder(
+        screenEventPayloadBuilder(
           { ...getTestMessage(), type: 'screen' },
           destination,
           ConfigCategory.SCREEN,

@@ -22,10 +22,10 @@ const testDataFile = fs.readFileSync(
 const testData = JSON.parse(testDataFile);
 
 // Router Test files
-// const routerTestDataFile = fs.readFileSync(
-//     path.resolve(__dirname, `./data/${integration}_router.json`)
-//   );
-// const routerTestData = JSON.parse(routerTestDataFile);
+const routerTestDataFile = fs.readFileSync(
+    path.resolve(__dirname, `./data/${integration}_router.json`)
+  );
+const routerTestData = JSON.parse(routerTestDataFile);
 
 describe(`${name} Tests`, () => {
   describe("Processor Tests", () => {
@@ -45,13 +45,18 @@ describe(`${name} Tests`, () => {
     });
   });
 
-  // describe("Router Tests", () => {
-  //   routerTestData.forEach(dataPoint => {
-  //     it("Payload", async () => {
-  //       const output = await transformer.processRouterDest(dataPoint.input);
-  //       expect(output).toEqual(dataPoint.output);
-  //     });
-  //   });
-  // });
+  describe("Router Tests", () => {
+    routerTestData.forEach(dataPoint => {
+      it("Optimizely fullstack router test case", async () => {
+        const output = await processCdkV2Workflow(
+          integration,
+          dataPoint.input,
+          tags.FEATURES.ROUTER
+        );
+        expect(output).toEqual(dataPoint.output);
+      });
+    });
+  });
+
 
 });

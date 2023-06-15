@@ -28,4 +28,4 @@ steps:
       )[]
   - name: finalPayload
     template: |
-      [...$.outputs.failedEvents, ...$.outputs.successfulEvents]
+      [...$.outputs.successfulEvents, ...$.outputs.failedEvents]

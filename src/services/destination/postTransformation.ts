@@ -123,7 +123,7 @@ export default class DestinationPostTransformationService {
     error: Object,
     metaTO: MetaTransferObject,
   ): DeliveryResponse {
-    const errObj = generateErrorObject(error, metaTO.errorDetails, true);
+    const errObj = generateErrorObject(error, metaTO.errorDetails, false);
     const resp = {
       status: errObj.status,
       message: errObj.message || '[Delivery] Error occured while processing payload',
@@ -141,7 +141,7 @@ export default class DestinationPostTransformationService {
     error: Object,
     metaTO: MetaTransferObject,
   ): UserDeletionResponse {
-    const errObj = generateErrorObject(error, metaTO.errorDetails, true);
+    const errObj = generateErrorObject(error, metaTO.errorDetails, false);
     // TODO: Add stat tags here
     const resp = {
       statusCode: errObj.status,

@@ -1375,10 +1375,10 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
 /**
  * Used for generating error response with stats from native and built errors
  */
-function generateErrorObject(error, defTags = {}, shouldBeRawErrorMessage = false) {
+function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = true) {
   let errObject = error;
   let errorMessage = error.message;
-  if (!shouldBeRawErrorMessage) {
+  if (shouldEnrichErrorMessage) {
     if (error.destinationResponse) {
       errorMessage = JSON.stringify({
         message: error.message,

@@ -198,10 +198,10 @@ async function validate(event) {
           rudderValidationError = {
             type: violationTypes.RequiredMissing,
             message: error.message,
+            property: error.params.missingProperty,
             meta: {
               instacePath: error.instancePath,
               schemaPath: error.schemaPath,
-              missingProperty: error.params.missingProperty,
             },
           };
           break;
@@ -218,7 +218,8 @@ async function validate(event) {
         case 'additionalProperties':
           rudderValidationError = {
             type: violationTypes.AdditionalProperties,
-            message: `${error.message} : ${error.params.additionalProperty}`,
+            message: `${error.message} '${error.params.additionalProperty}'`,
+            property: error.params.additionalProperty,
             meta: {
               instacePath: error.instancePath,
               schemaPath: error.schemaPath,
@@ -244,69 +245,82 @@ async function validate(event) {
   }
 }
 
-function handleValidationErrors(validationErrors, mergedTpConfig, curDropEvent, curViolationType) {
+function handleValidationErrors(validationErrors, metadata, curDropEvent, curViolationType) {
   let dropEvent = curDropEvent;
   let violationType = curViolationType;
+  const {
+    mergedTpConfig,
+    destinationId = 'Non-determininable',
+    destinationType = 'Non-determininable',
+  } = metadata;
   const violationsByType = new Set(validationErrors.map((err) => err.type));
-  // eslint-disable-next-line no-restricted-syntax
-  for (const [key, val] of Object.entries(mergedTpConfig)) {
-    // To have compatibility for config-backend, spread-sheet plugin and postman collection
-    // We are making everything to lower string and doing string comparison.
-    const value = val?.toString()?.toLowerCase();
-    // eslint-disable-next-line default-case
-    switch (key) {
-      case 'allowUnplannedEvents': {
-        const exists = violationsByType.has(violationTypes.UnplannedEvent);
-        if (value === 'false' && exists) {
-          dropEvent = true;
-          violationType = violationTypes.UnplannedEvent;
-          break;
-        }
-        if (!(value === 'true' || value === 'false')) {
-          logger.error(`Unknown option ${value} in ${key}"`);
-        }
-        break;
-      }
-      case 'unplannedProperties': {
-        const exists = violationsByType.has(violationTypes.AdditionalProperties);
-        if (value === 'drop' && exists) {
-          dropEvent = true;
-          violationType = violationTypes.AdditionalProperties;
-          break;
-        }
-        if (!(value === 'forward' || value === 'drop')) {
-          logger.error(`Unknown option ${value} in ${key}"`);
-        }
-        break;
-      }
-      case 'anyOtherViolation': {
-        const exists1 = violationsByType.has(violationTypes.UnknownViolation);
-        const exists2 = violationsByType.has(violationTypes.DatatypeMismatch);
-        const exists3 = violationsByType.has(violationTypes.RequiredMissing);
-        if (value === 'drop' && (exists1 || exists2 || exists3)) {
-          if (exists1) {
-            violationType = violationTypes.UnknownViolation;
-          } else if (exists2) {
-            violationType = violationTypes.DatatypeMismatch;
-          } else {
-            violationType = violationTypes.RequiredMissing;
-          }
-          dropEvent = true;
-          break;
-        }
-        if (!(value === 'forward' || value === 'drop')) {
-          logger.error(`Unknown option ${value} in ${key}"`);
-        }
-        break;
-      }
-      case 'sendViolatedEventsTo': {
-        if (value !== 'procerrors') {
-          logger.error(`Unknown option ${value} in ${key}"`);
-        }
-        break;
-      }
+
+  const handleUnknownOption = (value, key) => {
+    logger.error(
+      `Unknown option ${value} in ${key} for destId ${destinationId}, destType ${destinationType}`,
+    );
+  };
+
+  const handleAllowUnplannedEvents = (value) => {
+    if (!['true', 'false'].includes(value)) {
+      handleUnknownOption(value, 'allowUnplannedEvents');
+    } else if (value === 'false' && violationsByType.has(violationTypes.UnplannedEvent)) {
+      dropEvent = true;
+      violationType = violationTypes.UnplannedEvent;
     }
-  }
+  };
+
+  const handleUnplannedProperties = (value) => {
+    const exists = violationsByType.has(violationTypes.AdditionalProperties);
+    if (!['forward', 'drop'].includes(value)) {
+      handleUnknownOption(value, 'unplannedProperties');
+    } else if (value === 'drop' && exists) {
+      dropEvent = true;
+      violationType = violationTypes.AdditionalProperties;
+    }
+  };
+
+  const handleAnyOtherViolation = (value) => {
+    if (!['forward', 'drop'].includes(value)) {
+      handleUnknownOption(value, 'anyOtherViolation');
+      return;
+    }
+
+    const violationTypesToCheck = [
+      violationTypes.UnknownViolation,
+      violationTypes.DatatypeMismatch,
+      violationTypes.RequiredMissing,
+    ];
+
+    const existingViolationType = violationTypesToCheck.find((type) => violationsByType.has(type));
+
+    if (value === 'drop' && existingViolationType) {
+      dropEvent = true;
+      violationType = existingViolationType;
+    }
+  };
+
+  const handleSendViolatedEventsTo = (value) => {
+    if (value !== 'procerrors') {
+      handleUnknownOption(value, 'sendViolatedEventsTo');
+    }
+  };
+
+  const handlerMap = {
+    allowUnplannedEvents: handleAllowUnplannedEvents,
+    unplannedProperties: handleUnplannedProperties,
+    anyOtherViolation: handleAnyOtherViolation,
+    sendViolatedEventsTo: handleSendViolatedEventsTo,
+  };
+
+  Object.keys(mergedTpConfig).forEach((key) => {
+    if (handlerMap.hasOwnProperty(key)) {
+      const value = mergedTpConfig[key]?.toString()?.toLowerCase();
+      const handler = handlerMap[key];
+      handler(value);
+    }
+  });
+
   return { dropEvent, violationType };
 }
 
@@ -351,7 +365,7 @@ async function handleValidation(event) {
 
     ({ dropEvent, violationType } = handleValidationErrors(
       validationErrors,
-      mergedTpConfig,
+      event.metadata,
       dropEvent,
       violationType,
     ));
@@ -369,6 +383,7 @@ async function handleValidation(event) {
 
 module.exports = {
   handleValidation,
+  handleValidationErrors,
   validate,
   isEventTypeSupported,
   violationTypes,

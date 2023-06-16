@@ -2,6 +2,65 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.32.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.32.1...v1.32.2) (2023-06-15)
+
+
+### Bug Fixes
+
+* **trackingplan:** correct drop event status for tracking plan events ([#2272](https://github.com/rudderlabs/rudder-transformer/issues/2272)) ([fd5ebb0](https://github.com/rudderlabs/rudder-transformer/commit/fd5ebb0767460a234dc74c354e95a0560a6dac75))
+
+### [1.32.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.32.0...v1.32.1) (2023-06-14)
+
+
+### Bug Fixes
+
+* add support for external_id in track call and use processedResponse for axios calls ([377b240](https://github.com/rudderlabs/rudder-transformer/commit/377b240e53264c9503aa82d6d38787f42ce7e6e4))
+
+## [1.32.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.31.2...v1.32.0) (2023-06-12)
+
+
+### Features
+
+* update klaviyo api version ([#1981](https://github.com/rudderlabs/rudder-transformer/issues/1981)) ([dd69dbc](https://github.com/rudderlabs/rudder-transformer/commit/dd69dbc6cb55e2e1de9f8c762bb1d8907e347a8d))
+
+### Bug Fixes
+
+* add check for listId for subscribe ([#2263](https://github.com/rudderlabs/rudder-transformer/issues/2263)) ([36a6cad](https://github.com/rudderlabs/rudder-transformer/commit/36a6cad32b98a75c46ecc750c2e9bdac7bda9a2e))
+
+
+### [1.31.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.31.1...v1.31.2) (2023-06-08)
+
+
+### Bug Fixes
+
+* remove tls object ([67468b4](https://github.com/rudderlabs/rudder-transformer/commit/67468b4735aad9d603505ceadaa97798a86e67a3))
+
+### [1.31.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.31.0...v1.31.1) (2023-06-07)
+
+
+### Bug Fixes
+
+* **transformer:** test cases migration ([#2190](https://github.com/rudderlabs/rudder-transformer/issues/2190)) ([52019ac](https://github.com/rudderlabs/rudder-transformer/commit/52019acf6533931fc36ed7ae93ce79d71671bd2e))
+
+## [1.31.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.30.1...v1.31.0) (2023-06-05)
+
+
+### Features
+
+* add stats for bad events in fb_custom_audience ([#2192](https://github.com/rudderlabs/rudder-transformer/issues/2192)) ([8176874](https://github.com/rudderlabs/rudder-transformer/commit/8176874bd599c999a70a382577c7605a1d3b3695))
+* error enrichment to get clear error messages for facebook pixel ([#2018](https://github.com/rudderlabs/rudder-transformer/issues/2018)) ([0ee7c73](https://github.com/rudderlabs/rudder-transformer/commit/0ee7c7348e363ec542c5e8b63d43854f8c8672c2)), closes [#2233](https://github.com/rudderlabs/rudder-transformer/issues/2233)
+
+
+### Bug Fixes
+
+* **cdkv1:** error handling for cdkv1 destinations ([#2227](https://github.com/rudderlabs/rudder-transformer/issues/2227)) ([c3aedbf](https://github.com/rudderlabs/rudder-transformer/commit/c3aedbfe41c176c9791770cc52b1a4cb1dddbefe))
+* **customerio destination:** added fix for unhandled exception for pr… ([#2226](https://github.com/rudderlabs/rudder-transformer/issues/2226)) ([fde530f](https://github.com/rudderlabs/rudder-transformer/commit/fde530f542b4229220f93c09a5ac0bd2ef563507))
+* **hubspot  destination:** added fix for handling error when  hubspotPropertyMapResponse not present ([d1613b6](https://github.com/rudderlabs/rudder-transformer/commit/d1613b6ae275d7e884b21eccbf2a9391040d3ef1))
+* hubspot bugsnag error ([#2235](https://github.com/rudderlabs/rudder-transformer/issues/2235)) ([1d4df3a](https://github.com/rudderlabs/rudder-transformer/commit/1d4df3ab8f7deb89eaaec154500bd4c94350c551))
+* **hubspot destination:** add fix for handling  error case when properties are not sent in hubspot ([0225a28](https://github.com/rudderlabs/rudder-transformer/commit/0225a280f1efd051d2d732d633d1cbab7b0f37ea))
+* iterable bugsnag error ([#2234](https://github.com/rudderlabs/rudder-transformer/issues/2234)) ([b2b3b19](https://github.com/rudderlabs/rudder-transformer/commit/b2b3b1973ddd2e298befdcc30ac2b1be44023736))
+* sonarCloud code smells ([#2187](https://github.com/rudderlabs/rudder-transformer/issues/2187)) ([6646257](https://github.com/rudderlabs/rudder-transformer/commit/66462570823a08c21d55a519f59fbf19af0a54b9))
+
 ### [1.30.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.30.0...v1.30.1) (2023-05-31)
 
 ## [1.30.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.29.2...v1.30.0) (2023-05-30)

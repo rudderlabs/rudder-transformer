@@ -102,7 +102,6 @@ const ProxyRequest = async (request) => {
     `customers/${params.customerId}/conversionActions/${conversionActionId}`,
   );
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
-  // const response = await httpSend(requestBody);
   const { httpResponse: response } = await handleHttpRequest('constructor', requestBody);
   return response;
 };

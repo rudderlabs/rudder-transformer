@@ -19,6 +19,8 @@
       "statTags": {
         "destType": "MARKETO_STATIC_LIST",
         "errorCategory": "network",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "errorType": "retryable",
         "feature": "dataDelivery",
         "implementation": "native",
@@ -41,18 +43,42 @@
             },
             {
               "id": 2,
-              "status": "skipped",
-              "reasons": [
-                {
-                  "code": "1004",
-                  "message": "Lead not found"
-                }
-              ]
+              "status": "added"
             }
           ]
         },
         "status": 200
       }
+    }
+  },
+  {
+    "output": {
+      "destinationResponse": "",
+      "message": "Request failed during: during Marketo Static List Response Handling, error: [{\"code\":\"1004\",\"message\":\"Lead not found\"}]",
+      "statTags": {
+        "destType": "MARKETO_STATIC_LIST",
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      },
+      "status": 400
+    }
+  },
+  {
+    "output": {
+      "destinationResponse": "",
+      "message": "Request failed during: during Marketo Static List Response Handling, error: [{\"code\":\"1004\",\"message\":\"Lead not found\"}]",
+      "statTags": {
+        "destType": "MARKETO_STATIC_LIST",
+        "errorCategory": "dataValidation",
+        "errorType": "instrumentation",
+        "feature": "dataDelivery",
+        "implementation": "native",
+        "module": "destination"
+      },
+      "status": 400
     }
   }
 ]

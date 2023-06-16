@@ -48,7 +48,11 @@ const timestampRegex = new RegExp(
 function validTimestamp(input) {
   if (timestampRegex.test(input)) {
     // check if date value lies in between min time and max time. if not then it's not a valid timestamp
-    const dateInMs = Date.parse(new Date(input).toISOString());
+    const d = new Date(input)
+    if (isNaN(d)) {
+      return false
+    }
+    const dateInMs = Date.parse(d.toISOString());
     if (minTimeInMs <= dateInMs && dateInMs <= maxTimeInMs) {
       return true;
     }

@@ -27,7 +27,7 @@
     }
   },
   {
-    "description": "Missing Variation ID in integration object",
+    "description": "Identify call: Missing Variation ID in integration object",
     "input": {
       "message": {
         "type": "identify",
@@ -602,6 +602,127 @@
           "optimizely_fullstack": {
             "variationId": "test_variation_id_2"
           }
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campaign_id",
+          "experimentId": "test_experiment_id",
+          "trackKnownUsers": true,
+          "anonymizeIp": true,
+          "eventMapping": [
+            {
+              "from": "Product Searched",
+              "to": "Searched"
+            },
+            {
+              "from": "product_added",
+              "to": "Product Added"
+            }
+          ],
+          "attributeMapping": [
+            {
+              "from": "organization",
+              "to": "company"
+            },
+            {
+              "from": "fullName",
+              "to": "name"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://logx.optimizely.com/v1/events",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "account_id": "test_account_id",
+          "anonymize_ip": true,
+          "enrich_decisions": true,
+          "client_name": "RudderStack",
+          "client_version": "1.0.0",
+          "visitors": [
+            {
+              "visitor_id": "userId123",
+              "attributes": [
+                {
+                  "entity_id": "test_attribute_id_5",
+                  "key": "company",
+                  "type": "custom",
+                  "value": "RudderStack"
+                },
+                {
+                  "entity_id": "test_attribute_id_2",
+                  "key": "name",
+                  "type": "custom",
+                  "value": "John Doe"
+                }
+              ],
+              "snapshots": [
+                {
+                  "decisions": [],
+                  "events": [
+                    {
+                      "entity_id": "test_event_id_1",
+                      "key": "Product Added",
+                      "timestamp": 1676031367251,
+                      "uuid": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+                      "quantity": 2,
+                      "revenue": 12300,
+                      "tags": {
+                        "foo": "bar"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "session_id": "1685626914716"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Track call: Missing Variation ID in integration object ",
+    "input": {
+      "message": {
+        "type": "track",
+        "event": "product_added",
+        "userId": "userId123",
+        "channel": "web",
+        "context": {
+          "traits": {
+            "organization": "RudderStack",
+            "fullName": "John Doe"
+          },
+          "sessionId": 1685626914716
+        },
+        "rudderId": "5354b3f2-cb72-4355-a2b5-a298c3837c7d",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "properties": {
+          "foo": "bar",
+          "revenue": 123,
+          "quantity": 2
+        },
+        "anonymousId": "856365b8-da4b-4c13-9098-84df18559446",
+        "integrations": {
+          "All": true
         }
       },
       "destination": {

@@ -6,7 +6,6 @@
     parameters:
       - in: path
         name: version
-        description: The version of the destination
         required: true
         schema:
           type: string
@@ -66,7 +65,12 @@
         content:
           application/json:
             schema:
-              $ref: '../components/schemas/routerTransformationResponse.yaml'
+              type: object
+              properties:
+                output:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/routerTransformationResponse.yaml'
       400:
         description: Failure
         content:
@@ -113,7 +117,9 @@
         content:
           application/json:
             schema:
-              $ref: '../components/schemas/routerTransformationResponse.yaml'
+              type: array
+              items:
+                $ref: '../components/schemas/routerTransformationResponse.yaml'
       500:
         description: Failure
         content:

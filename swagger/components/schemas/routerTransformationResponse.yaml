@@ -1,4 +1,4 @@
-title: Processor Transformation Response
+title: Router Transformation Response
 type: object
 properties:
   batchedRequest:

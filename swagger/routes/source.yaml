@@ -3,12 +3,18 @@
     tags:
       - Source
     summary: Source Transformation
-    params:
-      properties:
-        version:
-          type: number
-      source:
-        type: string
+    parameters:
+      - in: path
+        name: version
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: source
+        description: The source identifier
+        required: true
+        schema:
+          type: string
     requestBody:
       content:
         application/json:

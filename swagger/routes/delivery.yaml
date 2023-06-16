@@ -6,7 +6,6 @@
     parameters:
       - in: path
         name: version
-        description: The version of the destination
         required: true
         schema:
           type: string
@@ -51,7 +50,6 @@
     parameters:
       - in: path
         name: version
-        description: The version of the destination
         required: true
         schema:
           type: string

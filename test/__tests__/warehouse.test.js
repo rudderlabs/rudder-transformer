@@ -17,6 +17,10 @@ const {
   fullEventColumnTypeByProvider
 } = require("../../src/warehouse/index.js");
 
+const {
+  validTimestamp
+} = require("../../src/warehouse/util.js");
+
 const version = "v0";
 const integrations = [
   "rs",
@@ -1024,4 +1028,59 @@ describe("Integration options", () => {
       });
     });
   });
+});
+
+describe("validTimestamp", () => {
+  const testCases = [
+    {
+      input: undefined,
+      expected: false,
+    },
+    {
+      input: '-0001-11-30T00:00:00+0000',
+      expected: false,
+    },
+    {
+      input: '-2023-06-14T05:23:59.244Z',
+      expected: false,
+    },
+    {
+      input: '+2023-06-14T05:23:59.244Z',
+      expected: false,
+    },
+    {
+      input: '2023-06-14T05:23:59.244Z',
+      expected: true,
+    },
+    {
+      input: '-1900-06-14T05:23:59.244Z',
+      expected: false,
+    },
+    {
+      input: 'abc',
+      expected: false,
+    },
+    {
+      input: '%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216%u002e%u002e%u2216Windows%u2216win%u002ein',
+      expected: false,
+    },
+    {
+      input: '',
+      expected: false,
+    },
+    {
+      input: '2023-06-14',
+      expected: true,
+    },
+    {
+      input: '05:23:59.244Z',
+      expected: false,
+    }
+  ]
+
+  for (const testCase of testCases) {
+    it(`should return ${testCase.expected} for ${testCase.input}`, () => {
+      expect(validTimestamp(testCase.input)).toEqual(testCase.expected);
+    });
+  }
 });

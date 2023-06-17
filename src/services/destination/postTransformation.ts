@@ -46,23 +46,23 @@ export default class DestinationPostTransformationService {
 
   public static handleProcessorTransformFailureEvents(
     error: Object,
-    metaTO: MetaTransferObject,
+    metaTo: MetaTransferObject,
   ): ProcessorTransformationResponse {
-    const errObj = generateErrorObject(error, metaTO.errorDetails);
+    const errObj = generateErrorObject(error, metaTo.errorDetails);
     const resp = {
-      metadata: metaTO.metadata,
+      metadata: metaTo.metadata,
       statusCode: errObj.status,
       error: errObj.message || '[Processor Transform] Error occurred while processing the payload.',
       statTags: errObj.statTags,
     } as ProcessorTransformationResponse;
-    ErrorReportingService.reportError(error, metaTO.errorContext, resp);
+    ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
 
   public static handleRouterTransformSuccessEvents(
     transformedPayloads: RouterTransformationResponse[],
     destHandler: any,
-    metaTO: MetaTransferObject,
+    metaTo: MetaTransferObject,
   ): RouterTransformationResponse[] {
     const resultantPayloads: RouterTransformationResponse[] = cloneDeep(transformedPayloads);
     resultantPayloads.forEach((resultantPayload) => {
@@ -81,7 +81,7 @@ export default class DestinationPostTransformationService {
       .forEach((resp) => {
         resp.statTags = {
           ...resp.statTags,
-          ...metaTO.errorDetails,
+          ...metaTo.errorDetails,
         };
       });
     return resultantPayloads;
@@ -89,41 +89,41 @@ export default class DestinationPostTransformationService {
 
   public static handleRouterTransformFailureEvents(
     error: Object,
-    metaTO: MetaTransferObject,
+    metaTo: MetaTransferObject,
   ): RouterTransformationResponse {
-    const errObj = generateErrorObject(error, metaTO.errorDetails);
+    const errObj = generateErrorObject(error, metaTo.errorDetails);
     const resp = {
-      metadata: metaTO.metadatas,
+      metadata: metaTo.metadatas,
       batched: false,
       statusCode: errObj.status,
       error: errObj.message || '[Router Transform] Error occurred while processing the payload.',
       statTags: errObj.statTags,
     } as RouterTransformationResponse;
-    ErrorReportingService.reportError(error, metaTO.errorContext, resp);
+    ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
 
   public static handleBatchTransformFailureEvents(
     error: Object,
-    metaTO: MetaTransferObject,
+    metaTo: MetaTransferObject,
   ): RouterTransformationResponse {
-    const errObj = generateErrorObject(error, metaTO.errorDetails);
+    const errObj = generateErrorObject(error, metaTo.errorDetails);
     const resp = {
-      metadata: metaTO.metadatas,
+      metadata: metaTo.metadatas,
       batched: false,
       statusCode: 500, // for batch we should consider code error hence keeping retryable
       error: errObj.message || '[Batch Transform] Error occurred while processing payload.',
       statTags: errObj.statTags,
     } as RouterTransformationResponse;
-    ErrorReportingService.reportError(error, metaTO.errorContext, resp);
+    ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
 
   public static handleDeliveryFailureEvents(
     error: Object,
-    metaTO: MetaTransferObject,
+    metaTo: MetaTransferObject,
   ): DeliveryResponse {
-    const errObj = generateErrorObject(error, metaTO.errorDetails, false);
+    const errObj = generateErrorObject(error, metaTo.errorDetails, false);
     const resp = {
       status: errObj.status,
       message: errObj.message || '[Delivery] Error occured while processing payload',
@@ -133,15 +133,15 @@ export default class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as DeliveryResponse;
-    ErrorReportingService.reportError(error, metaTO.errorContext, resp);
+    ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
 
   public static handleUserDeletionFailureEvents(
     error: Object,
-    metaTO: MetaTransferObject,
+    metaTo: MetaTransferObject,
   ): UserDeletionResponse {
-    const errObj = generateErrorObject(error, metaTO.errorDetails, false);
+    const errObj = generateErrorObject(error, metaTo.errorDetails, false);
     // TODO: Add stat tags here
     const resp = {
       statusCode: errObj.status,
@@ -150,7 +150,7 @@ export default class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as UserDeletionResponse;
-    ErrorReportingService.reportError(error, metaTO.errorContext, resp);
+    ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
 }

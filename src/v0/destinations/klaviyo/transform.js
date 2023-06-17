@@ -127,9 +127,6 @@ const trackRequestHandler = (message, category, destination) => {
     attributes.metric = { name: eventName };
     // using identify to create customer properties
     attributes.profile = createCustomerProperties(message);
-    if (!attributes.profile.$email && !attributes.profile.$phone_number) {
-      throw new InstrumentationError('email or phone is required for track call');
-    }
     const categ = CONFIG_CATEGORIES[eventMap];
     attributes.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
     attributes.properties = {

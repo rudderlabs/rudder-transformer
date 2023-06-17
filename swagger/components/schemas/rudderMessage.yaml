@@ -14,14 +14,21 @@ properties:
     type: object
   originalTimestamp:
     type: string
+    format: date-time
+    pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
   sentAt:
     type: string
+    format: date-time
+    pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
   timestamp:
     type: string
+    format: date-time
+    pattern: yyyy-MM-ddTHH:mm:ss.SSSZ
   event:
     type: string
   integrations:
     type: object
+    example: { 'All': true }
   messageId:
     type: string
   properties:

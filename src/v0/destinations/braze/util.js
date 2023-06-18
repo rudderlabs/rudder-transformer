@@ -326,17 +326,18 @@ function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type
     Accept: JSON_MIME_TYPE,
     Authorization: `Bearer ${destination.Config.restApiKey}`,
   };
-  for (let i = 0; i < arrayChunks.length; i += 1) {
+
+  for (let chunk of arrayChunks) {
     const response = defaultRequestConfig();
     if (type === 'merge') {
       response.endpoint = getAliasMergeEndPoint(getEndpointFromConfig(destination));
-      const merge_updates = arrayChunks[i];
+      const merge_updates = chunk;
       response.body.JSON = removeUndefinedAndNullValues({
         merge_updates
       });
     } else if (type === 'subscription') {
       response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
-      const subscription_groups = arrayChunks[i];
+      const subscription_groups = chunk;
       response.body.JSON = removeUndefinedAndNullValues({
         subscription_groups
       });

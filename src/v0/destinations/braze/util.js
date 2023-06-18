@@ -319,6 +319,36 @@ const processDeduplication = (userStore, payload, destinationId) => {
   return null;
 };
 
+function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type) {
+
+  const headers = {
+    'Content-Type': JSON_MIME_TYPE,
+    Accept: JSON_MIME_TYPE,
+    Authorization: `Bearer ${destination.Config.restApiKey}`,
+  };
+  for (let i = 0; i < arrayChunks.length; i += 1) {
+    const response = defaultRequestConfig();
+    if (type === 'merge') {
+      response.endpoint = getAliasMergeEndPoint(getEndpointFromConfig(destination));
+      const merge_updates = arrayChunks[i];
+      response.body.JSON = removeUndefinedAndNullValues({
+        merge_updates
+      });
+    } else if (type === 'subscription') {
+      response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
+      const subscription_groups = arrayChunks[i];
+      response.body.JSON = removeUndefinedAndNullValues({
+        subscription_groups
+      });
+    }
+    responseArray.push({
+      ...response,
+      headers,
+    });
+  }
+
+}
+
 const processBatch = (transformedEvents) => {
   const { destination } = transformedEvents[0];
   const attributesArray = [];
@@ -392,31 +422,8 @@ const processBatch = (transformedEvents) => {
     });
   }
 
-  for (let i = 0; i < subscriptionArrayChunks.length; i += 1) {
-    const response = defaultRequestConfig();
-    response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
-    const subscription_groups = subscriptionArrayChunks[i];
-    response.body.JSON = removeUndefinedAndNullValues({
-      subscription_groups
-    });
-    responseArray.push({
-      ...response,
-      headers,
-    });
-  }
-
-  for (let i = 0; i < mergeUsersArrayChunks.length; i += 1) {
-    const response = defaultRequestConfig();
-    response.endpoint = getAliasMergeEndPoint(getEndpointFromConfig(destination));
-    const merge_updates = mergeUsersArrayChunks[i];
-    response.body.JSON = removeUndefinedAndNullValues({
-      merge_updates
-    });
-    responseArray.push({
-      ...response,
-      headers,
-    });
-  }
+  prepareGroupAndAliasBatch(subscriptionArrayChunks, responseArray, destination, 'subscription');
+  prepareGroupAndAliasBatch(mergeUsersArrayChunks, responseArray, destination, 'merge');
 
   if (successMetadata.length > 0) {
     finalResponse.push({

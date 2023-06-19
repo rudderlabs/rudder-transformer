@@ -156,13 +156,28 @@ const isReservedWebCustomPrefixName = (event) => {
 /**
  * Validation for event name should only contain letters, numbers, and underscores and events name must start with a letter
  * Ref - https://support.google.com/analytics/answer/13316687?hl=en&ref_topic=13367860&sjid=16827682213264631791-NA
- * @param {*} eventName 
- * @returns 
+ * @param {*} eventName
+ * @returns
  */
-function isEventNameValid(eventName) {
+const isEventNameValid = (eventName) => {
   const pattern = /^[A-Za-z]\w*$/;
   return pattern.test(eventName);
-}
+};
+
+/**
+ * Regular expression to validate the user_property name
+ * @param {*} name
+ * @returns
+ */
+const isValidUserProperty = (key, value) => {
+  const namePattern = /^[A-Za-z]\w{0,23}$/;
+  return (
+    namePattern.test(key) &&
+    ((typeof value === 'string' && value.trim() !== '') ||
+      typeof value === 'number' ||
+      typeof value === 'boolean')
+  );
+};
 
 const GA4_ITEM_EXCLUSION = [
   'item_id',
@@ -322,7 +337,7 @@ const getGA4CustomParameters = (message, keys, exclusionFields, payload) => {
 /**
  * Validation for event name
  * Ref - https://support.google.com/analytics/answer/13316687?hl=en&ref_topic=13367860&sjid=16827682213264631791-NA
- * @param {*} event 
+ * @param {*} event
  */
 const validateEventName = (event) => {
   /**
@@ -336,17 +351,15 @@ const validateEventName = (event) => {
   }
 
   if (isReservedWebCustomPrefixName(event)) {
-    throw new InstrumentationError(
-      'Reserved custom prefix names are not allowed',
-    );
+    throw new InstrumentationError('Reserved custom prefix names are not allowed');
   }
 
-  if (!isEventNameValid(event)){
+  if (!isEventNameValid(event)) {
     throw new InstrumentationError(
       'Event name should only contain letters, numbers, and underscores and event name must start with a letter',
     );
   }
-}
+};
 
 module.exports = {
   isReservedEventName,
@@ -362,4 +375,5 @@ module.exports = {
   getGA4ExclusionList,
   getGA4CustomParameters,
   validateEventName,
+  isValidUserProperty,
 };

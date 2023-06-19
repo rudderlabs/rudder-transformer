@@ -11,6 +11,7 @@ const {
   isDefinedAndNotNull,
   getIntegrationsObj,
   isHybridModeEnabled,
+  flattenJson,
 } = require('../../util');
 const {
   InstrumentationError,
@@ -37,6 +38,7 @@ const {
   getGA4CustomParameters,
   GA4_PARAMETERS_EXCLUSION,
   validateEventName,
+  isValidUserProperty,
 } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -260,7 +262,7 @@ const responseBuilder = (message, { Config }) => {
 
     for (const key of userPropertiesKeys) {
       const value = userProperties[key];
-      if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+      if (isValidUserProperty(key, value)) {
         validatedUserProperties[key] = { value };
       }
     }

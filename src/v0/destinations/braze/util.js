@@ -18,6 +18,9 @@ const {
   getTrackEndPoint,
   getSubscriptionGroupEndPoint,
   getAliasMergeEndPoint,
+  SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,
+  ALIAS_BRAZE_MAX_REQ_COUNT,
+  TRACK_BRAZE_MAX_REQ_COUNT
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { isObject } = require('../../util');
@@ -327,7 +330,7 @@ function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type
     Authorization: `Bearer ${destination.Config.restApiKey}`,
   };
 
-  for (let chunk of arrayChunks) {
+  for (const chunk of arrayChunks) {
     const response = defaultRequestConfig();
     if (type === 'merge') {
       response.endpoint = getAliasMergeEndPoint(getEndpointFromConfig(destination));
@@ -385,19 +388,19 @@ const processBatch = (transformedEvents) => {
       successMetadata.push(...transformedEvent.metadata);
     }
   }
-  const attributeArrayChunks = _.chunk(attributesArray, 75);
-  const eventsArrayChunks = _.chunk(eventsArray, 75);
-  const purchaseArrayChunks = _.chunk(purchaseArray, 75);
-  const subscriptionArrayChunks = _.chunk(subscriptionsArray, 50);
-  const mergeUsersArrayChunks = _.chunk(mergeUsersArray, 50);
+  const attributeArrayChunks = _.chunk(attributesArray, TRACK_BRAZE_MAX_REQ_COUNT);
+  const eventsArrayChunks = _.chunk(eventsArray, TRACK_BRAZE_MAX_REQ_COUNT);
+  const purchaseArrayChunks = _.chunk(purchaseArray, TRACK_BRAZE_MAX_REQ_COUNT);
+  const subscriptionArrayChunks = _.chunk(subscriptionsArray, SUBSCRIPTION_BRAZE_MAX_REQ_COUNT);
+  const mergeUsersArrayChunks = _.chunk(mergeUsersArray, ALIAS_BRAZE_MAX_REQ_COUNT);
 
   const maxNumberOfRequest = Math.max(
     attributeArrayChunks.length,
     eventsArrayChunks.length,
     purchaseArrayChunks.length,
   );
-  let responseArray = [];
-  let finalResponse = [];
+  const responseArray = [];
+  const finalResponse = [];
   const headers = {
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,

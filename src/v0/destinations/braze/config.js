@@ -35,6 +35,9 @@ const TRACK_BRAZE_MAX_REQ_COUNT = 75;
 const IDENTIFY_BRAZE_MAX_REQ_COUNT = 50;
 // https://www.braze.com/docs/api/endpoints/user_data/post_user_delete/
 
+const ALIAS_BRAZE_MAX_REQ_COUNT = 50;
+const SUBSCRIPTION_BRAZE_MAX_REQ_COUNT = 50;
+
 const DEL_MAX_BATCH_SIZE = 50;
 const DESTINATION = 'braze';
 
@@ -67,4 +70,6 @@ module.exports = {
   CustomAttributeOperationTypes,
   DEL_MAX_BATCH_SIZE,
   BRAZE_NON_BILLABLE_ATTRIBUTES,
+  ALIAS_BRAZE_MAX_REQ_COUNT,
+  SUBSCRIPTION_BRAZE_MAX_REQ_COUNT
 };

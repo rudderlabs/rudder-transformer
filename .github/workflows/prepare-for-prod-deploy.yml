@@ -101,18 +101,24 @@ jobs:
           echo "Transformer: $TAG_NAME"
           echo "User Transformer: $UT_TAG_NAME"
 
-      - name: Store Base Branch
-        id: store_base_branch
+      - name: Clone Devops Repo
         run: |
-          branch_name="origin/master"
+          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
+
+      - name: Extract branch name
+        id: extract_branch_name
+        run: |
+          cd rudder-devops
+          branch_name=$(git rev-parse --abbrev-ref HEAD)
+          echo "branch_name=$branch_name"
+          echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
 
       - name: Update Helm Charts and Raise Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
-          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
           cd rudder-devops
-          git checkout -b shared-transformer-$TAG_NAME
+          git checkout -b shared-transformer-$TAG_NAME ${{steps.extract_branch_name.outputs.branch_name}}
 
           cd helm-charts/shared-services/per-az
           yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" values.blue-release.yaml
@@ -146,7 +152,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
           cd rudder-devops
-          git checkout -b hosted-transformer-$TAG_NAME ${{steps.store_base_branch.outputs.branch_name}}
+          git checkout -b hosted-transformer-$TAG_NAME ${{steps.extract_branch_name.outputs.branch_name}}
 
           cd customer-objects/multi-tenant-us
           yq eval -i ".spec.transformer.image.version=\"$TAG_NAME\"" hostedmtedmt.yaml

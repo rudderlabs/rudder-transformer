@@ -93,29 +93,6 @@ const GA4_RESERVED_USER_PROPERTY_EXCLUSION = [
   'first_open_after_install',
 ];
 
-/**
- * user property names cannot start with reserved prefixes
- * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_user_property_names
- * @param {*} userProperties
- */
-const removeReservedUserPropertyPrefixNames = (userProperties) => {
-  const reservedPrefixesNames = ['google_', 'ga_', 'firebase_'];
-
-  if (!userProperties) {
-    return;
-  }
-
-  Object.keys(userProperties).forEach((key) => {
-    const valFound = reservedPrefixesNames.some((prefix) => key.toLowerCase().startsWith(prefix));
-
-    // reject if found
-    if (valFound) {
-      // eslint-disable-next-line no-param-reassign
-      delete userProperties[key];
-    }
-  });
-};
-
 /* For custom events */
 /**
  * Reserved custom event names cannot be used (Web)
@@ -162,21 +139,6 @@ const isReservedWebCustomPrefixName = (event) => {
 const isEventNameValid = (eventName) => {
   const pattern = /^[A-Za-z]\w*$/;
   return pattern.test(eventName);
-};
-
-/**
- * Regular expression to validate the user_property name
- * @param {*} name
- * @returns
- */
-const isValidUserProperty = (key, value) => {
-  const namePattern = /^[A-Za-z]\w{0,23}$/;
-  return (
-    namePattern.test(key) &&
-    ((typeof value === 'string' && value.trim() !== '') ||
-      typeof value === 'number' ||
-      typeof value === 'boolean')
-  );
 };
 
 const GA4_ITEM_EXCLUSION = [
@@ -361,19 +323,75 @@ const validateEventName = (event) => {
   }
 };
 
+/**
+ * Function to verify user_property value type
+ * @param {*} value
+ * @returns
+ */
+const isValidValueType = (value) =>
+  (typeof value === 'string' && value.trim() !== '') ||
+  typeof value === 'number' ||
+  typeof value === 'boolean';
+
+/**
+ * Function to validate user_property name and it's value
+ * user_property name should start with alphabetic characters
+ * user_property name length should not more then 24 characters
+ * user_property name should not start with reserved prefixes
+ * user_property value should not null and empty
+ * user_property value type should either string, number or boolean
+ * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_parameter_names
+ * @param {*} name
+ * @returns
+ */
+const isValidUserProperty = (key, value) => {
+  const namePattern = /^[A-Za-z]\w{0,23}$/;
+  const reservedPrefixesNames = ['google_', 'ga_', 'firebase_'];
+
+  const isValidKey =
+    namePattern.test(key) &&
+    !reservedPrefixesNames.some((prefix) => key.toLowerCase().startsWith(prefix));
+
+  const isValidValue = isDefinedAndNotNull(value) && isValidValueType(value);
+
+  return isValidKey && isValidValue;
+};
+
+/**
+ * Function to validate and prepare user_properties
+ * @param {*} message
+ */
+const prepareUserProperties = (message) => {
+  const userProperties = extractCustomFields(
+    message,
+    {},
+    ['properties.user_properties', 'context.traits'],
+    GA4_RESERVED_USER_PROPERTY_EXCLUSION,
+  );
+
+  const validatedUserProperties = Object.entries(userProperties)
+    .filter(([key, value]) => isValidUserProperty(key, value))
+    .reduce((acc, [key, value]) => {
+      const userProperties = acc;
+      userProperties[key] = { value };
+      return userProperties;
+    }, {});
+
+  return validatedUserProperties;
+};
+
 module.exports = {
+  getItem,
+  getItemList,
+  validateEventName,
   isReservedEventName,
-  GA4_RESERVED_PARAMETER_EXCLUSION,
+  getGA4ExclusionList,
+  prepareUserProperties,
+  getGA4CustomParameters,
   GA4_PARAMETERS_EXCLUSION,
-  removeReservedParameterPrefixNames,
-  GA4_RESERVED_USER_PROPERTY_EXCLUSION,
-  removeReservedUserPropertyPrefixNames,
   isReservedWebCustomEventName,
   isReservedWebCustomPrefixName,
-  getItemList,
-  getItem,
-  getGA4ExclusionList,
-  getGA4CustomParameters,
-  validateEventName,
-  isValidUserProperty,
+  GA4_RESERVED_PARAMETER_EXCLUSION,
+  removeReservedParameterPrefixNames,
+  GA4_RESERVED_USER_PROPERTY_EXCLUSION,
 };

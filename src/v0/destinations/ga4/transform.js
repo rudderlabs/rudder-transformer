@@ -1,43 +1,40 @@
 const get = require('get-value');
 const { EventType } = require('../../../constants');
 const {
-  defaultPostRequestConfig,
-  constructPayload,
-  defaultRequestConfig,
-  extractCustomFields,
   isEmptyObject,
-  getDestinationExternalID,
-  removeUndefinedAndNullValues,
-  isDefinedAndNotNull,
+  constructPayload,
   getIntegrationsObj,
   isHybridModeEnabled,
+  isDefinedAndNotNull,
+  defaultRequestConfig,
+  defaultPostRequestConfig,
+  getDestinationExternalID,
+  removeUndefinedAndNullValues,
 } = require('../../util');
 const {
-  InstrumentationError,
   ConfigurationError,
+  InstrumentationError,
   UnsupportedEventError,
 } = require('../../util/errorTypes');
 const {
   ENDPOINT,
-  DEBUG_ENDPOINT,
-  trackCommonConfig,
   mappingConfig,
+  DEBUG_ENDPOINT,
   ConfigCategory,
+  trackCommonConfig,
   VALID_ITEM_OR_PRODUCT_PROPERTIES,
 } = require('./config');
 const {
-  isReservedEventName,
-  GA4_RESERVED_PARAMETER_EXCLUSION,
-  removeReservedParameterPrefixNames,
-  GA4_RESERVED_USER_PROPERTY_EXCLUSION,
-  removeReservedUserPropertyPrefixNames,
-  getItemList,
-  getGA4ExclusionList,
   getItem,
+  getItemList,
+  validateEventName,
+  isReservedEventName,
+  getGA4ExclusionList,
+  prepareUserProperties,
   getGA4CustomParameters,
   GA4_PARAMETERS_EXCLUSION,
-  validateEventName,
-  isValidUserProperty,
+  GA4_RESERVED_PARAMETER_EXCLUSION,
+  removeReservedParameterPrefixNames,
 } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -210,7 +207,7 @@ const responseBuilder = (message, { Config }) => {
     };
   } else {
     validateEventName(event);
-    
+
     payload.name = event;
 
     // all extra parameters passed is incorporated inside params
@@ -246,30 +243,11 @@ const responseBuilder = (message, { Config }) => {
     delete payload.params;
   }
 
-  // take GA4 user properties
-  let userProperties = {};
-  userProperties = extractCustomFields(
-    message,
-    userProperties,
-    ['properties.user_properties', 'context.traits'],
-    GA4_RESERVED_USER_PROPERTY_EXCLUSION,
-  );
-
+  // Prepare GA4 user properties
+  const userProperties = prepareUserProperties(message);
   if (!isEmptyObject(userProperties)) {
-    const userPropertiesKeys = Object.keys(userProperties);
-    const validatedUserProperties = {};
-
-    for (const key of userPropertiesKeys) {
-      const value = userProperties[key];
-      if (isValidUserProperty(key, value)) {
-        validatedUserProperties[key] = { value };
-      }
-    }
-
-    rawPayload.user_properties = validatedUserProperties;
+    rawPayload.user_properties = userProperties;
   }
-
-  removeReservedUserPropertyPrefixNames(rawPayload.user_properties);
 
   payload = removeUndefinedAndNullValues(payload);
   rawPayload = { ...rawPayload, events: [payload] };

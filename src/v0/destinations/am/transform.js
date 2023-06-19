@@ -528,6 +528,7 @@ function processSingleMessage(message, destination) {
 
   const messageType = message.type.toLowerCase();
   const CATEGORY_KEY = 'properties.category';
+  let { useUserDefinedPageEventName, userProvidedPageEventString } = destination.Config;
   switch (messageType) {
     case EventType.IDENTIFY:
       payloadObjectName = 'events'; // identify same as events
@@ -535,11 +536,7 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.IDENTIFY;
       break;
     case EventType.PAGE:
-
-      const { useUserDefinedPageEventName } = destination.Config;
-
       if (useUserDefinedPageEventName) {
-        let { userProvidedPageEventString } = destination.Config;
         evType = userProvidedPageEventString.trim() === "" ? message.name
             : userProvidedPageEventString.trim().replaceAll('$RUDDER_PAGE_NAME_VALUE', message.name);
       } else {

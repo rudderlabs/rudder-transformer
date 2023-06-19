@@ -101,6 +101,11 @@ jobs:
           echo "Transformer: $TAG_NAME"
           echo "User Transformer: $UT_TAG_NAME"
 
+      - name: Store Base Branch
+        id: store_base_branch
+        run: |
+          branch_name="origin/master"
+
       - name: Update Helm Charts and Raise Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
@@ -141,11 +146,12 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
           cd rudder-devops
-          git checkout -b hosted-transformer-$TAG_NAME origin/master
+          git checkout -b hosted-transformer-$TAG_NAME ${{steps.store_base_branch.outputs.branch_name}}
 
           cd customer-objects/multi-tenant-us
           yq eval -i ".spec.transformer.image.version=\"$TAG_NAME\"" hostedmtedmt.yaml
           yq eval -i ".spec.user_transformer.image.version=\"$TAG_NAME\"" hostedmtedmt.yaml
+          yq eval -i ".spec.transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" hostedmtedmt.yaml
           git add hostedmtedmt.yaml
 
           git commit -m "chore: upgrade hosted transformer to $TAG_NAME"

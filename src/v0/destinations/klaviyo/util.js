@@ -33,20 +33,25 @@ const { handleHttpRequest } = require('../../../adapters/network');
  */
 const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) => {
   let profileId;
-  const { httpResponse: resp } = await handleHttpRequest('post', endpoint, payload, requestOptions);
-  if (resp.response?.status === 201) {
-    profileId = resp.response?.data?.data?.id;
-  } else if (resp.response?.response?.status === 409) {
-    const { response } = resp.response;
-    profileId = response.data?.errors[0]?.meta?.duplicate_profile_id;
+  const { processedResponse: resp } = await handleHttpRequest(
+    'post',
+    endpoint,
+    payload,
+    requestOptions,
+  );
+  if (resp.status === 201) {
+    profileId = resp.response?.data?.id;
+  } else if (resp.status === 409) {
+    const { errors } = resp.response;
+    profileId = errors[0]?.meta?.duplicate_profile_id;
   } else {
     throw new NetworkError(
-      `Failed to create user due to ${resp.response?.data}`,
-      resp.response?.response?.status,
+      `Failed to create user due to ${JSON.stringify(resp.response)}`,
+      resp.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.response?.response?.status),
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.status),
       },
-      resp.response?.data,
+      `${JSON.stringify(resp.response)}`,
     );
   }
   return profileId;
@@ -129,32 +134,13 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
   return response;
 };
 
-/**
- * This function is used to check if the user needs to be subscribed or not.
- * Building and returning response array for subscribe endpoint (for subscribing)
- * @param {*} message
- * @param {*} traitsInfo
- * @param {*} destination
- * @returns
- */
-const checkForSubscribe = (message, traitsInfo, destination) => {
-  const responseArray = [];
-  if (
-    (traitsInfo.properties?.listId || destination.Config?.listId) &&
-    traitsInfo.properties?.subscribe === true
-  ) {
-    const subscribeResponse = subscribeUserToList(message, traitsInfo, destination);
-    responseArray.push(subscribeResponse);
-  }
-  return responseArray;
-};
-
 // This function is used for creating and returning customer properties using mapping json
 const createCustomerProperties = (message) => {
   let customerProperties = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.PROFILE.name],
   );
+  customerProperties.$id = getFieldValueFromMessage(message, 'userId');
   customerProperties = removeUndefinedAndNullValues(customerProperties);
   return customerProperties;
 };
@@ -271,7 +257,6 @@ const batchSubscribeEvents = (subscribeRespList) => {
 
 module.exports = {
   subscribeUserToList,
-  checkForSubscribe,
   createCustomerProperties,
   populateCustomFieldsFromTraits,
   generateBatchedPaylaodForArray,

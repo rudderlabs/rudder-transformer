@@ -99,8 +99,11 @@ const identifyRequestHandler = async (message, category, destination) => {
   // Update Profile
   const responseArray = [profileUpdateResponseBuilder(payload, profileId, category, privateApiKey)];
 
-  // check if user wants to subscribe profile or not
-  if (traitsInfo?.properties?.subscribe) {
+  // check if user wants to subscribe profile or not and listId is present or not
+  if (
+    traitsInfo?.properties?.subscribe &&
+    (traitsInfo.properties?.listId || destination.Config?.listId)
+  ) {
     responseArray.push(subscribeUserToList(message, traitsInfo, destination));
     return responseArray;
   }
@@ -124,9 +127,6 @@ const trackRequestHandler = (message, category, destination) => {
     attributes.metric = { name: eventName };
     // using identify to create customer properties
     attributes.profile = createCustomerProperties(message);
-    if (!attributes.profile.$email && !attributes.profile.$phone_number) {
-      throw new InstrumentationError('email or phone is required for track call');
-    }
     const categ = CONFIG_CATEGORIES[eventMap];
     attributes.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
     attributes.properties = {

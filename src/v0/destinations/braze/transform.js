@@ -445,13 +445,16 @@ function processGroup(message, destination) {
     const phone = getFieldValueFromMessage(message, 'phone');
     const email = getFieldValueFromMessage(message, 'email');
     if (phone) {
-      subscriptionGroup.phone = phone;
+      subscriptionGroup.phones = [phone];
     } else if (email) {
-      subscriptionGroup.email = email;
+      subscriptionGroup.emails = [email];
     }
+    const subscription_groups = [subscriptionGroup];
     const response = defaultRequestConfig();
     response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
-    response.body.JSON = removeUndefinedValues(subscriptionGroup);
+    response.body.JSON = removeUndefinedValues({
+      subscription_groups
+    });
     return {
       ...response,
       headers: {

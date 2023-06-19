@@ -528,7 +528,7 @@ function processSingleMessage(message, destination) {
 
   const messageType = message.type.toLowerCase();
   const CATEGORY_KEY = 'properties.category';
-  let { useUserDefinedPageEventName, userProvidedPageEventString } = destination.Config;
+  const { useUserDefinedPageEventName, userProvidedPageEventString } = destination.Config;
   switch (messageType) {
     case EventType.IDENTIFY:
       payloadObjectName = 'events'; // identify same as events

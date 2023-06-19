@@ -297,6 +297,13 @@ const combineBatchedAndNonBatchedEvents = (
   const batchedEvents =
     nonBatchedRequests.length > 0 ? [batchedRequest, ...nonBatchedRequests] : batchedRequest;
 
+  /**
+   * batchEventResponse = [
+   *   events: [{e1_e2_e3_batched}, {e1_non_batched}, {e2_non_batched}],
+   *   metadata: [m1,m2,m3],
+   *   destination: {}
+   * ]
+   */
   const batchEventResponse = {
     events: batchedEvents,
     metadata,
@@ -381,6 +388,22 @@ const processUpdateUserBatch = (chunk, registerDeviceOrBrowserTokenEvents) => {
     registerDeviceOrBrowserTokenEvents,
   );
 
+  /**
+   * batches = [
+   * {
+   *   users: [u1,u2,u3],
+   *   metadata: [m1,m2,m3],
+   *   nonBatchedRequests: [e1,e2],
+   *   destination: {}
+   * },
+   * {
+   *   users: [u4,u5],
+   *   metadata: [m4,m5],
+   *   nonBatchedRequests: [],
+   *   destination: {}
+   * },
+   * ]
+   */
   batches.forEach((batch) => {
     const batchEventResponse = defaultBatchRequestConfig();
     batchEventResponse.batchedRequest.body.JSON = { users: batch.users };
@@ -443,19 +466,19 @@ const processCatalogBatch = (chunk) => {
 
   const batchEventResponse = defaultBatchRequestConfig();
   /**
-   * body format:
+   * body will be in the format:
       {
         "documents": {
-            "test-1-item": {
-                "abc": "TestValue0"
+            "catalogId1": {
+                "catalog-name": "catalog-value"
             },
-            "test-2-item": {
-                "abc": "TestValue1"
+            "catalogId2": {
+                "catalog-name": "catalog-value"
             }
         },
         "replaceUploadedFieldsOnly": true
-      }
-   */
+      }   
+  */
   batchEventResponse.batchedRequest.body.JSON = batchCatalogResponseList;
   const endPoint = chunk[0].message.endpoint;
 
@@ -579,6 +602,12 @@ const mapRegisterDeviceOrBrowserTokenEventsWithJobId = (events) => {
     const { data } = event;
     registerDeviceOrBrowserTokenEvents[data.metadata.jobId] = data.message;
   });
+  /**
+   * registerDeviceOrBrowserTokenEvents = {
+   *     j1 : e1,
+   *     j2 : e2
+   * }
+   */
   return registerDeviceOrBrowserTokenEvents;
 };
 

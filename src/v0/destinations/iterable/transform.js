@@ -177,7 +177,38 @@ const processRouterDest = async (inputs, reqMetadata) => {
             destination: event.destination,
           };
         }
-        // if not transformed
+
+        /**
+         * If not transformed
+         * 
+         * responses = [e1_batched_event, e1_non_batched_event] or {e2}
+         * 
+         * transformedPayloads =
+         * [
+         *   {
+         *     message: e1_batched_message,
+         *     metadata: m1,
+         *     destination: {}
+         *   },
+         *   {
+         *     message: e1_non_batched_message,
+         *     metadata: m1,
+         *     destination: {}
+         *    }
+         * ]
+         * 
+         * or
+         * 
+         * transformedPayloads =
+         * [
+         *   {
+         *     message: e2_message,
+         *     metadata: m2,
+         *     destination: {}
+         *   }
+         * ]
+         */
+
         const transformedPayloads = [];
         let responses = process(event);
         responses = Array.isArray(responses) ? responses : [responses];
@@ -195,6 +226,10 @@ const processRouterDest = async (inputs, reqMetadata) => {
     }),
   );
 
+  /**
+   * Before flat map : transformedEvents = [{e1}, {e2}, [{e3}, {e4}, {e5}], {e6}]
+   * After flat map : transformedEvents = [{e1}, {e2}, {e3}, {e4}, {e5}, {e6}]
+   */
   transformedEvents = _.flatMap(transformedEvents);
   return filterEventsAndPrepareBatchRequests(transformedEvents);
 };

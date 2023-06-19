@@ -30,22 +30,27 @@
         content:
           application/json:
             schema:
-              $ref: '../components/schemas/processorTransformationResponse.yaml'
+              type: array
+              items:
+                $ref: '../components/schemas/processorTransformationResponse.yaml'
       400:
         description: Failure
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                metadata:
-                  $ref: '../components/schemas/metadata.yaml'
-                statusCode:
-                  type: number
-                error:
-                  type: string
-                statTags:
-                  type: object
+              type: array
+              items:
+                type: object
+                properties:
+                  metadata:
+                    $ref: '../components/schemas/metadata.yaml'
+                  statusCode:
+                    type: number
+                    example: 400
+                  error:
+                    type: string
+                  statTags:
+                    type: object
 
 /routerTransform:
   post:

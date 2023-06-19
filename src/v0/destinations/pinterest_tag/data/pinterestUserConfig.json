@@ -53,12 +53,18 @@
   {
     "destKey": "ct",
     "sourceKeys": ["traits.address.city", "context.traits.address.city"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toLower"
+    }
   },
   {
     "destKey": "st",
     "sourceKeys": ["traits.address.state", "context.traits.address.state"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toLower"
+    }
   },
   {
     "destKey": "zp",
@@ -68,7 +74,10 @@
   {
     "destKey": "country",
     "sourceKeys": ["traits.address.country", "context.traits.address.country"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toLower"
+    }
   },
   {
     "destKey": "hashed_maids",

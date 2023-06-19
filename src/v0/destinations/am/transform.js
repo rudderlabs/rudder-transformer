@@ -535,7 +535,17 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.IDENTIFY;
       break;
     case EventType.PAGE:
-      evType = `Viewed ${message.name || get(message, CATEGORY_KEY) || ''} Page`;
+
+      const { useUserDefinedPageEventName } = destination.Config;
+
+      if (useUserDefinedPageEventName) {
+        let { userProvidedPageEventString } = destination.Config;
+        evType = userProvidedPageEventString.trim() === "" ? message.name
+            : userProvidedPageEventString.trim().replaceAll('$RUDDER_PAGE_NAME_VALUE', message.name);
+      } else {
+        evType = `Viewed ${message.name || get(message, CATEGORY_KEY) || ''} Page`;
+      }
+
       message.properties = {
         ...message.properties,
         name: message.name || get(message, CATEGORY_KEY),

@@ -78,8 +78,10 @@ const identifyRequestHandler = async (message, category, destination) => {
   }
   const data = {
     type: 'profile',
-    attributes: propertyPayload,
-    properties: removeUndefinedAndNullValues(customPropertyPayload),
+    attributes: {
+      ...propertyPayload,
+      properties: removeUndefinedAndNullValues(customPropertyPayload),
+    },
   };
   const payload = {
     data: removeUndefinedAndNullValues(data),

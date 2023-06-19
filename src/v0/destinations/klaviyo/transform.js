@@ -70,6 +70,9 @@ const identifyRequestHandler = async (message, category, destination) => {
 
   propertyPayload = removeUndefinedAndNullValues(propertyPayload);
   if (enforceEmailAsPrimary) {
+    if (!propertyPayload.email && !propertyPayload.phone_number) {
+      throw new InstrumentationError('None of email and phone are present in the payload');
+    }
     delete propertyPayload.external_id;
     customPropertyPayload = {
       ...customPropertyPayload,
@@ -127,8 +130,6 @@ const trackRequestHandler = (message, category, destination) => {
     const eventName = eventNameMapping[event];
     const eventMap = jsonNameMapping[eventName];
     attributes.metric = { name: eventName };
-    // using identify to create customer properties
-    attributes.profile = createCustomerProperties(message);
     const categ = CONFIG_CATEGORIES[eventMap];
     attributes.properties = constructPayload(message.properties, MAPPING_CONFIG[categ.name]);
     attributes.properties = {
@@ -188,8 +189,9 @@ const trackRequestHandler = (message, category, destination) => {
       ...attributes.properties,
       ...populateCustomFieldsFromTraits(message),
     };
-    attributes.profile = createCustomerProperties(message);
   }
+  // Map user properties to profile object
+  attributes.profile = createCustomerProperties(message, destination.Config);
   if (message.timestamp) {
     attributes.time = message.timestamp;
   }

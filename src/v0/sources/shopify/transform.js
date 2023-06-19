@@ -207,22 +207,37 @@ const isIdentifierEvent = (event) => ['rudderIdentifier', 'rudderSessionIdentifi
 const processIdentifierEvent = async (event, metricMetadata) => {
   if (useRedisDatabase) {
     let value;
+    let field;
     if (event.event === 'rudderIdentifier') {
+      field = 'anonymousId';
       const lineItemshash = getHashLineItems(event.cart);
       value = ['anonymousId', event.anonymousId, 'itemsHash', lineItemshash];
-      // cart_token: {
-      //   anonymousId:"anon_id1",
-      //   lineItemshash:"0943gh34pg"
-      // }
+      stats.increment('shopify_redis_calls', {
+        type: 'set',
+        field: 'itemsHash',
+        ...metricMetadata,
+      });
+      /* cart_token: {
+           anonymousId: 'anon_id1',
+           lineItemshash: '0943gh34pg'
+          }
+      */
     } else {
+      field = 'sessionId';
       value = ['sessionId', event.sessionId];
-      // cart_token: {
-      //   anonymousId:"anon_id1",
-      //   lineItemshash:"90fg348fg83497u",
-      //   sessionId: "session_id1"
-      // }
+      /* cart_token: {
+          anonymousId:'anon_id1',
+          lineItemshash:'90fg348fg83497u',
+          sessionId: 'session_id1'
+         }
+       */
     }
     try {
+      stats.increment('shopify_redis_calls', {
+        type: 'set',
+        field,
+        ...metricMetadata,
+      });
       await RedisDB.setVal(`${event.cartToken}`, value);
     } catch (e) {
       logger.debug(`{{SHOPIFY::}} cartToken mapnv set call Failed due redis error ${e}`);
@@ -231,10 +246,7 @@ const processIdentifierEvent = async (event, metricMetadata) => {
         ...metricMetadata,
       });
     }
-    stats.increment('shopify_redis_calls', {
-      type: 'set',
-      ...metricMetadata,
-    });
+
   }
   const result = {
     outputToSource: {

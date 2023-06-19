@@ -105,6 +105,7 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
     let anonymousId;
     stats.increment('shopify_redis_calls', {
       type: 'get',
+      field: 'anonymousId',
       ...metricMetadata,
     });
     try {
@@ -121,6 +122,7 @@ const getAnonymousIdFromDb = async (message, metricMetadata) => {
     }
     stats.increment('shopify_redis_no_val', {
       ...metricMetadata,
+      field: 'anonymousId',
       event: message.event,
     });
     /* if redis does not have the mapping for cartToken as key (null)
@@ -145,12 +147,14 @@ const getSessionIdFromDB = async (message, metricMetadata) => {
   try {
     stats.increment('shopify_redis_calls', {
       type: 'get',
+      field: 'sessionId',
       ...metricMetadata,
     });
     sessionId = await RedisDB.getVal(`${cartToken}`, 'sessionId');
     if (sessionId === null) {
       stats.increment('shopify_redis_no_val', {
         ...metricMetadata,
+        field: 'sessionId',
         event,
       });
     }
@@ -174,6 +178,7 @@ const updateCartItemsInRedis = async (cartToken, newCartItemsHash, metricMetadat
   try {
     stats.increment('shopify_redis_calls', {
       type: 'set',
+      field: 'itemsHash',
       ...metricMetadata,
     });
     await RedisDB.setVal(`${cartToken}`, value);
@@ -192,12 +197,14 @@ const checkAndUpdateCartItems = async (inputEvent, metricMetadata) => {
   try {
     stats.increment('shopify_redis_calls', {
       type: 'get',
+      field: 'itemsHash',
       ...metricMetadata,
     });
     itemsHash = await RedisDB.getVal(cartToken, 'itemsHash');
     if (!isDefinedAndNotNull(itemsHash)) {
       stats.increment('shopify_redis_no_val', {
         ...metricMetadata,
+        field: 'itemshash',
         event: 'Cart Update',
       });
     }

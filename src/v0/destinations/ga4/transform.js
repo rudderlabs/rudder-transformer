@@ -11,7 +11,6 @@ const {
   isDefinedAndNotNull,
   getIntegrationsObj,
   isHybridModeEnabled,
-  flattenJson,
 } = require('../../util');
 const {
   InstrumentationError,

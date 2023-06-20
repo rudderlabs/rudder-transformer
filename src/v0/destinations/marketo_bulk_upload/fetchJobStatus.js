@@ -216,17 +216,17 @@ const responseHandler = async (event, type) => {
 
   /**
    * {
-	"failedKeys" : [jobID1,jobID3],
-	"failedReasons" : {
-		"jobID1" : "failure-reason-1",
-		"jobID3" : "failure-reason-2",
-	},
-	"warningKeys" : [jobID2,jobID4],
-	"warningReasons" : {
-		"jobID2" : "warning-reason-1",
-		"jobID4" : "warning-reason-2",
-	},
-	"succeededKeys" : [jobID5]
+  "failedKeys" : [jobID1,jobID3],
+  "failedReasons" : {
+    "jobID1" : "failure-reason-1",
+    "jobID3" : "failure-reason-2",
+  },
+  "warningKeys" : [jobID2,jobID4],
+  "warningReasons" : {
+    "jobID2" : "warning-reason-1",
+    "jobID4" : "warning-reason-2",
+  },
+  "succeededKeys" : [jobID5]
 }
    */
 
@@ -250,7 +250,7 @@ const responseHandler = async (event, type) => {
   const startTime = Date.now();
   for (const element of responseArr) {
     // split response by comma but ignore commas inside double quotes
-    const elemArr = element.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+    const elemArr = element.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
     const reasonMessage = elemArr.pop();
     // match response data with received data from server
     for (const key in data) {

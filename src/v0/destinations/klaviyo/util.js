@@ -15,7 +15,7 @@ const {
 
 const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES, MAX_BATCH_SIZE } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { NetworkError } = require('../../util/errorTypes');
+const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
@@ -135,12 +135,23 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
 };
 
 // This function is used for creating and returning customer properties using mapping json
-const createCustomerProperties = (message) => {
+const createCustomerProperties = (message, Config) => {
+  const { enforceEmailAsPrimary } = Config;
   let customerProperties = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.PROFILE.name],
   );
-  customerProperties.$id = getFieldValueFromMessage(message, 'userId');
+  if (!enforceEmailAsPrimary) {
+    customerProperties.$id = getFieldValueFromMessage(message, 'userId');
+  } else {
+    if (!customerProperties.$email && !customerProperties.$phone_number) {
+      throw new InstrumentationError('None of email and phone are present in the payload');
+    }
+    customerProperties = {
+      ...customerProperties,
+      _id: getFieldValueFromMessage(message, 'userId'),
+    };
+  }
   customerProperties = removeUndefinedAndNullValues(customerProperties);
   return customerProperties;
 };

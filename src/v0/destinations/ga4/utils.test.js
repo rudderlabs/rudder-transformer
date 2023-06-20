@@ -26,6 +26,8 @@ const userPropertyData = [
       company_naics_6sense: '5173',
       user_state: 'Ohio',
       usr_consent: null,
+      firebase_user_id: 'kdgMnP',
+      google_user_id: 'G-123456',
       company_domain: 'consulting.net',
       company_region: 'New Zealand',
       user_product_interests: {

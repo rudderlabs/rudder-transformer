@@ -83,6 +83,6 @@ jobs:
         with:
           source_branch: ${{ steps.create-release.outputs.branch_name }}
           destination_branch: 'main'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.PAT }}
           pr_title: 'chore(release): pull ${{ steps.create-release.outputs.branch_name }} into main'
           pr_body: ':crown: *An automated PR*'

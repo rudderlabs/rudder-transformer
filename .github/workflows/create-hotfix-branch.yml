@@ -18,6 +18,6 @@ jobs:
       - name: Create Branch
         uses: peterjgrainger/action-create-branch@v2.4.0
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
         with:
           branch: 'hotfix/${{ inputs.hotfix_name }}'

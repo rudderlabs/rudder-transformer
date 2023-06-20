@@ -305,6 +305,7 @@ const processGroupEvents = (message, type, destination) => {
           $set: {
             [groupKey]: groupKeyVal,
           },
+          $ip: get(message, 'context.ip'),
         };
 
         if (destination?.Config.identityMergeApi === 'simplified') {

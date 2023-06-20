@@ -33,7 +33,7 @@ function responseBuilderSimple(payload, message, destination) {
     endpoint = `${ENDPOINT}id${appleAppId}`;
   } else {
     throw new ConfigurationError(
-      'os name is required along with the respective appId eg. (os->android -> Android App Id is required) & (os->ios -> Apple App Id is required)',
+      'os name is required along with the respective appId eg. (os->android & Android App Id is required) or (os->ios & Apple App Id is required)',
     );
   }
   // if (androidAppId) {

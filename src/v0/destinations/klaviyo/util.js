@@ -143,16 +143,14 @@ const createCustomerProperties = (message, Config) => {
   );
   if (!enforceEmailAsPrimary) {
     customerProperties.$id = getFieldValueFromMessage(message, 'userId');
-  }
-  if (enforceEmailAsPrimary) {
+  } else {
     if (!customerProperties.$email && !customerProperties.$phone_number) {
       throw new InstrumentationError('None of email and phone are present in the payload');
-    } else {
-      customerProperties = {
-        ...customerProperties,
-        _id: getFieldValueFromMessage(message, 'userId'),
-      };
     }
+    customerProperties = {
+      ...customerProperties,
+      _id: getFieldValueFromMessage(message, 'userId'),
+    };
   }
   customerProperties = removeUndefinedAndNullValues(customerProperties);
   return customerProperties;

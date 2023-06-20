@@ -12,6 +12,8 @@ import {
 } from '../../types/index';
 import { generateErrorObject } from '../../v0/util';
 import ErrorReportingService from '../errorReporting';
+import tags from '../../v0/util/tags';
+import stats from '../../util/stats';
 
 export default class DestinationPostTransformationService {
   public static handleProcessorTransformSucessEvents(
@@ -63,6 +65,8 @@ export default class DestinationPostTransformationService {
     transformedPayloads: RouterTransformationResponse[],
     destHandler: any,
     metaTO: MetaTransferObject,
+    implementation: string,
+    destinationType: string,
   ): RouterTransformationResponse[] {
     const resultantPayloads: RouterTransformationResponse[] = cloneDeep(transformedPayloads);
     resultantPayloads.forEach((resultantPayload) => {
@@ -70,20 +74,33 @@ export default class DestinationPostTransformationService {
         resultantPayload.batchedRequest.userId = `${resultantPayload.batchedRequest.userId}`;
       }
     });
+
     if (destHandler?.processMetadataForRouter) {
       return resultantPayloads.map((resultantPayload) => {
         resultantPayload.metadata = destHandler.processMetadataForRouter(resultantPayload);
         return resultantPayload;
       });
     }
-    resultantPayloads
-      .filter((resp) => 'error' in resp && isObject(resp.statTags) && !isEmpty(resp.statTags))
-      .forEach((resp) => {
+
+    resultantPayloads.forEach((resp) => {
+      if ('error' in resp && isObject(resp.statTags) && !isEmpty(resp.statTags)) {
         resp.statTags = {
           ...resp.statTags,
           ...metaTO.errorDetails,
         };
-      });
+        stats.increment('event_transform_failure', metaTO.errorDetails);
+      } else {
+        stats.increment('event_transform_success', {
+          destType: destinationType,
+          module: tags.MODULES.DESTINATION,
+          implementation,
+          feature: tags.FEATURES.ROUTER,
+          destinationId: metaTO.metadata?.destinationId,
+          workspaceId: metaTO.metadata?.workspaceId,
+        });
+      }
+    });
+
     return resultantPayloads;
   }
 
@@ -100,6 +117,7 @@ export default class DestinationPostTransformationService {
       statTags: errObj.statTags,
     } as RouterTransformationResponse;
     ErrorReportingService.reportError(error, metaTO.errorContext, resp);
+    stats.increment('event_transform_failure', metaTO.errorDetails);
     return resp;
   }
 

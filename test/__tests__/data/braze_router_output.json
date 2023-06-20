@@ -53,9 +53,93 @@
             "FORM": {}
           },
           "files": {}
+        },
+        {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://rest.fra-01.braze.eu/v2/subscription/status/set",
+          "headers": {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+          },
+          "params": {},
+          "body": {
+            "JSON": {
+              "subscription_groups": [
+                {
+                  "external_id":  ["user123"],
+                  "phones":  ["5055077683"],
+                  "subscription_group_id": "c90f0fd2-2a02-4f2f-bf07-7e7d2c2ed2b1",
+                  "subscription_state": "subscribed"
+                },
+                {
+                  "external_id":  ["user877"],
+                  "phones":  ["5055077683"],
+                  "subscription_group_id": "58d0a278-b55b-4f10-b7d2-98d1c5dd4c30",
+                  "subscription_state": "subscribed"
+                }
+              ]
+            },
+            "XML": {},
+            "JSON_ARRAY": {},
+            "FORM": {}
+          },
+          "files": {}
+        },
+        {
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": "https://rest.fra-01.braze.eu/users/merge",
+          "headers": {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+          },
+          "params": {},
+          "body": {
+            "JSON": {
+              "merge_updates": [
+                {
+                  "identifier_to_keep": {
+                    "external_id": "dsafsdf"
+                  },
+                  "identifier_to_merge": {
+                    "external_id": "adsfsaf"
+                  }
+                },
+                {
+                  "identifier_to_keep": {
+                    "external_id": "dsafsdf2"
+                  },
+                  "identifier_to_merge": {
+                    "external_id": "adsfsaf2"
+                  }
+                }
+              ]
+            },
+            "XML": {},
+            "JSON_ARRAY": {},
+            "FORM": {}
+          },
+          "files": {}
         }
       ],
       "metadata": [
+        {
+          "jobId": 2
+        },
+        {
+          "jobId": 2
+        },
+        {
+          "jobId": 2
+        },
+        {
+          "jobId": 2
+        },
         {
           "jobId": 2
         },

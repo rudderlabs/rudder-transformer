@@ -120,23 +120,16 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
             destInputArray[0].metadata.workspaceId,
             tags.FEATURES.ROUTER,
           );
+          metaTo.metadata = destInputArray[0].metadata;
           try {
             const doRouterTransformationResponse: RouterTransformationResponse[] =
               await processCdkV2Workflow(destinationType, destInputArray, tags.FEATURES.ROUTER);
-
-            stats.increment('event_transform_success', {
-              destType: destinationType,
-              module: tags.MODULES.DESTINATION,
-              destinationId: destInputArray[0].metadata.destinationId,
-              workspaceId: destInputArray[0].metadata.workspaceId,
-              feature: tags.FEATURES.ROUTER,
-              implementation: tags.IMPLEMENTATIONS.CDK_V2,
-            });
-
             return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
               doRouterTransformationResponse,
               undefined,
               metaTo,
+              tags.IMPLEMENTATIONS.CDK_V2,
+              destinationType.toUpperCase(),
             );
           } catch (error: any) {
             metaTo.metadatas = destInputArray.map((input) => input.metadata);
@@ -145,9 +138,6 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
                 error,
                 metaTo,
               );
-
-            stats.increment('event_transform_failure', metaTo.errorDetails);
-
             return [erroredResp];
           }
         },

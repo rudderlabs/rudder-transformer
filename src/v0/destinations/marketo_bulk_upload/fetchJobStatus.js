@@ -250,7 +250,7 @@ const responseHandler = async (event, type) => {
   const startTime = Date.now();
   for (const element of responseArr) {
     // split response by comma but ignore commas inside double quotes
-    const elemArr = element.split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/);
+    const elemArr = element.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
     const reasonMessage = elemArr.pop();
     // match response data with received data from server
     for (const key in data) {

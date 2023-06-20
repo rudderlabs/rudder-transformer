@@ -1275,8 +1275,7 @@ function toTitleCase(payload) {
       .replace(/([a-z])(\d)/gi, '$1 $2')
       .replace(/(\d)([a-z])/gi, '$1 $2')
       .trim()
-      .replace(/(_)/g, ` `)
-      .replace(/\b\w/g, (match) => match.toUpperCase());
+      .replace(/(_)/g, ` `).replace(/(?:^|\s)(\w)/g, (match) => match.toUpperCase());
     newPayload[newKey] = value;
   });
   return newPayload;

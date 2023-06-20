@@ -5,7 +5,8 @@ function base64url(source) {
   let encodedSource = CryptoJS.enc.Base64.stringify(source);
 
   // Remove padding equal characters
-  encodedSource = encodedSource.replace(/=+$/, '');
+  // eslint-disable-next-line unicorn/better-regex
+  encodedSource = encodedSource.replace(/=++$/, ''); // we have user ++ to avoid backtracking leading to Denial Of service 
 
   // Replace characters according to base64url specifications
   encodedSource = encodedSource.replace(/\+/g, '-');

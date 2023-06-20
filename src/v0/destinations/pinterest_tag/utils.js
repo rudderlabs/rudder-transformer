@@ -31,31 +31,6 @@ const ecomEventMaps = [
 const USER_NON_ARRAY_PROPERTIES = ['client_user_agent', 'client_ip_address'];
 
 const getHashedValue = (key, value) => {
-  if (Array.isArray(value) && !USER_NON_ARRAY_PROPERTIES.includes(key)) {
-    switch (key) {
-      case 'em':
-      case 'ct':
-      case 'st':
-      case 'country':
-      case 'ln':
-      case 'fn':
-      case 'ge':
-        value = value.map((val) => val.toString().toLowerCase());
-        break;
-      case 'ph':
-      case 'zp':
-        // zip fields should only contain digits
-        value = value.map((val) => val.toString().replace(/\D/g, ''));
-        if (key === 'ph') {
-          // phone numbers should not contain leading zeros
-          value = value.map((val) => val.replace(/^0+/, ''));
-        }
-        break;
-      default:
-    }
-    value = value.map((val) => sha256(val));
-    return [...value];
-  }
   switch (key) {
     case 'em':
     case 'ct':
@@ -64,20 +39,30 @@ const getHashedValue = (key, value) => {
     case 'ln':
     case 'fn':
     case 'ge':
-      value = value.toString().toLowerCase();
+      value = Array.isArray(value)
+        ? value.map((val) => val.toString().toLowerCase())
+        : value.toString().toLowerCase();
       break;
     case 'ph':
+      // phone numbers should only contain digits & should not contain leading zeros
+      value = Array.isArray(value)
+        ? value.map((val) => val.toString().replace(/\D/g, '').replace(/^0+/, ''))
+        : value.toString().replace(/\D/g, '').replace(/^0+/, '');
+      break;
     case 'zp':
       // zip fields should only contain digits
-      value = value.toString().replace(/\D/g, '');
-      if (key === 'ph') {
-        // phone numbers should not contain leading zeros
-        value = value.replace(/^0+/, '');
-      }
+      value = Array.isArray(value)
+        ? value.map((val) => val.toString().replace(/\D/g, ''))
+        : value.toString().replace(/\D/g, '');
+      break;
+    case 'hashed_maids':
+    case 'external_id':
+      // no action needed on value
       break;
     default:
+      return String(value);
   }
-  return [sha256(value)];
+  return Array.isArray(value) ? value.map((val) => sha256(val)) : [sha256(value)];
 };
 
 /**
@@ -89,24 +74,7 @@ const getHashedValue = (key, value) => {
  */
 const processUserPayload = (userPayload) => {
   Object.keys(userPayload).forEach((key) => {
-    switch (key) {
-      case 'em':
-      case 'ph':
-      case 'zp':
-      case 'ct':
-      case 'st':
-      case 'country':
-      case 'ge':
-      case 'db':
-      case 'ln':
-      case 'fn':
-      case 'hashed_maids':
-      case 'external_id':
-        userPayload[key] = getHashedValue(key, userPayload[key]);
-        break;
-      default:
-        userPayload[key] = String(userPayload[key]);
-    }
+    userPayload[key] = getHashedValue(key, userPayload[key]);
   });
   return userPayload;
 };

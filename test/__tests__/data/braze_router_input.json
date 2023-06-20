@@ -131,6 +131,128 @@
         "type": "identify",
         "userId": ""
       }
+    },
+    {
+      "destination": {
+        "Config": {
+          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "prefixProperties": true,
+          "useNativeSDK": false,
+          "dataCenter": "us-01",
+          "enableSubscriptionGroupInGroupCall": true
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Braze",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "BRAZE"
+        },
+        "Enabled": true,
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "Name": "Braze",
+        "Transformations": []
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "56yrtsdfgbgxcb-22b4-401d-aae5-1b994be9a969",
+        "groupId": "c90f0fd2-2a02-4f2f-bf07-7e7d2c2ed2b1",
+        "traits": {
+          "phone": "5055077683",
+          "subscriptionState": "subscribed"
+        },
+        "userId": "user123",
+        "type": "group"
+      }
+    },
+    {
+      "destination": {
+        "Config": {
+          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "prefixProperties": true,
+          "useNativeSDK": false,
+          "dataCenter": "us-01",
+          "enableSubscriptionGroupInGroupCall": true
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Braze",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "BRAZE"
+        },
+        "Enabled": true,
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "Name": "Braze",
+        "Transformations": []
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "anonymousId": "dfgdfgdfg-22b4-401d-aae5-1b994be9a969",
+        "groupId": "58d0a278-b55b-4f10-b7d2-98d1c5dd4c30",
+        "traits": {
+          "phone": "5055077683",
+          "subscriptionState": "subscribed"
+        },
+        "userId": "user877",
+        "type": "group"
+      }
+    },
+    {
+      "destination": {
+        "Config": {
+          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "prefixProperties": true,
+          "useNativeSDK": false,
+          "dataCenter": "us-01",
+          "enableSubscriptionGroupInGroupCall": true
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Braze",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "BRAZE"
+        },
+        "Enabled": true,
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "Name": "Braze",
+        "Transformations": []
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "type": "alias",
+        "previousId": "adsfsaf",
+        "userId": "dsafsdf"
+      }
+    },
+    {
+      "destination": {
+        "Config": {
+          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "prefixProperties": true,
+          "useNativeSDK": false,
+          "dataCenter": "us-01",
+          "enableSubscriptionGroupInGroupCall": true
+        },
+        "DestinationDefinition": {
+          "DisplayName": "Braze",
+          "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+          "Name": "BRAZE"
+        },
+        "Enabled": true,
+        "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+        "Name": "Braze",
+        "Transformations": []
+      },
+      "metadata": {
+        "jobId": 2
+      },
+      "message": {
+        "type": "alias",
+        "previousId": "adsfsaf2",
+        "userId": "dsafsdf2"
+      }
     }
   ],
   "dedupEnabledRouterRequests": [

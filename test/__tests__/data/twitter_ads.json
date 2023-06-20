@@ -111,7 +111,7 @@
             {
               "number_items": 2,
               "price_currency": "USD",
-              "value": 25,
+              "value": "25",
               "conversion_id": "213123",
               "contents": [
                 {
@@ -287,7 +287,7 @@
           "total": 27.5,
           "coupon": "hasbros",
           "revenue": 48,
-          "price": 25,
+          "price": 25.55,
           "quantity": 2,
           "currency": "USD",
           "priceCurrency": "USD",
@@ -347,7 +347,7 @@
             {
               "number_items": 2,
               "price_currency": "USD",
-              "value": 25,
+              "value": "25.55",
               "conversion_id": "213123",
               "event_id": "429047995",
               "conversion_time": "2023-06-01T06:03:08.739Z",
@@ -666,7 +666,7 @@
             {
               "number_items": 2,
               "price_currency": "USD",
-              "value": 25,
+              "value": "25",
               "conversion_id": "213123",
               "contents": [
                 {

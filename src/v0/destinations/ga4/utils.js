@@ -328,10 +328,17 @@ const validateEventName = (event) => {
  * @param {*} value
  * @returns
  */
-const isValidValueType = (value) =>
-  (typeof value === 'string' && value.trim() !== '') ||
-  typeof value === 'number' ||
-  typeof value === 'boolean';
+const isValidValueType = (value) => {
+  if (typeof value === 'string') {
+    return value.trim() !== '' && value.trim().length <= 36;
+  }
+
+  if (typeof value === 'number') {
+    return value.toString().length <= 36;
+  }
+
+  return typeof value === 'boolean';
+};
 
 /**
  * Function to validate user_property name and it's value
@@ -340,16 +347,17 @@ const isValidValueType = (value) =>
  * user_property name should not start with reserved prefixes
  * user_property value should not null and empty
  * user_property value type should either string, number or boolean
+ * user_property value length should not more then 36 characters
  * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_parameter_names
  * @param {*} name
  * @returns
  */
 const isValidUserProperty = (key, value) => {
-  const namePattern = /^[A-Za-z]\w{0,23}$/;
+  const pattern = /^[A-Za-z]\w{0,23}$/;
   const reservedPrefixesNames = ['google_', 'ga_', 'firebase_'];
 
   const isValidKey =
-    namePattern.test(key) &&
+    pattern.test(key) &&
     !reservedPrefixesNames.some((prefix) => key.toLowerCase().startsWith(prefix));
 
   const isValidValue = isDefinedAndNotNull(value) && isValidValueType(value);

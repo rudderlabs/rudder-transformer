@@ -33,7 +33,16 @@
                 output:
                   $ref: '../components/schemas/deliveryResponse.yaml'
       400:
-        description: Failure
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                output:
+                  $ref: '../components/schemas/deliveryResponse.yaml'
+      500:
+        description: Internal Server Error
         content:
           application/json:
             schema:

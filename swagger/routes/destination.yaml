@@ -32,25 +32,28 @@
             schema:
               type: array
               items:
-                $ref: '../components/schemas/processorTransformationResponse.yaml'
-      400:
-        description: Failure
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: object
-                properties:
-                  metadata:
-                    $ref: '../components/schemas/metadata.yaml'
-                  statusCode:
-                    type: number
-                    example: 400
-                  error:
-                    type: string
-                  statTags:
-                    type: object
+                oneOf:
+                  - $ref: '../components/schemas/processorTransformationResponse.yaml'
+                  - type: object
+                    properties:
+                      metadata:
+                        $ref: '../components/schemas/metadata.yaml'
+                      statusCode:
+                        type: number
+                        example: 400
+                      error:
+                        type: string
+                      statTags:
+                        type: object
+            examples:
+              success:
+                summary: Processor Transformation Success
+                value:
+                  - $ref: '../components/examples/processor/success.yaml'
+              failure:
+                summary: Processor Transformation Failure
+                value:
+                  - $ref: '../components/examples/processor/failure.yaml'
 
 /routerTransform:
   post:
@@ -75,34 +78,37 @@
                 output:
                   type: array
                   items:
-                    $ref: '../components/schemas/routerTransformationResponse.yaml'
-      400:
-        description: Failure
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                output:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      metadata:
-                        type: array
-                        items:
-                          $ref: '../components/schemas/metadata.yaml'
-                      destination:
-                        $ref: '../components/schemas/destination.yaml'
-                      batched:
-                        type: boolean
-                        example: false
-                      statusCode:
-                        type: number
-                      error:
-                        type: string
-                      statTags:
-                        type: object
+                    anyOf:
+                      - $ref: '../components/schemas/routerTransformationResponse.yaml'
+                      - type: object
+                        properties:
+                          metadata:
+                            type: array
+                            items:
+                              $ref: '../components/schemas/metadata.yaml'
+                          destination:
+                            $ref: '../components/schemas/destination.yaml'
+                          batched:
+                            type: boolean
+                            example: false
+                          statusCode:
+                            type: number
+                            example: 400
+                          error:
+                            type: string
+                          statTags:
+                            type: object
+            examples:
+              success:
+                summary: Router Transformation Success
+                value:
+                  output:
+                    - $ref: '../components/examples/router/success.yaml'
+              failure:
+                summary: Router Transformation Failure
+                value:
+                  output:
+                    - $ref: '../components/examples/router/failure.yaml'
 
 /batch:
   post:
@@ -118,35 +124,38 @@
             $ref: '../components/schemas/routerTransformationRequest.yaml'
     responses:
       200:
-        description: Success
+        description: Success or Failure
         content:
           application/json:
             schema:
               type: array
               items:
-                $ref: '../components/schemas/routerTransformationResponse.yaml'
-      500:
-        description: Failure
-        content:
-          application/json:
-            schema:
-              type: array
-              items:
-                type: object
-                properties:
-                  metadata:
-                    type: array
-                    items:
-                      $ref: '../components/schemas/metadata.yaml'
-                  destination:
-                    $ref: '../components/schemas/destination.yaml'
-                  batched:
-                    type: boolean
-                    example: false
-                  statusCode:
-                    type: number
-                    example: 500
-                  error:
-                    type: string
-                  statTags:
-                    type: object
+                anyOf:
+                  - $ref: '../components/schemas/routerTransformationResponse.yaml'
+                  - type: object
+                    properties:
+                      metadata:
+                        type: array
+                        items:
+                          $ref: '../components/schemas/metadata.yaml'
+                      destination:
+                        $ref: '../components/schemas/destination.yaml'
+                      batched:
+                        type: boolean
+                        example: false
+                      statusCode:
+                        type: number
+                        example: 500
+                      error:
+                        type: string
+                      statTags:
+                        type: object
+            examples:
+              success:
+                summary: Batch Transformation Success
+                value:
+                  - $ref: '../components/examples/batch/success.yaml'
+              failure:
+                summary: Batch Transformation Failure
+                value:
+                  - $ref: '../components/examples/batch/failure.yaml'

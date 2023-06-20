@@ -1,33 +1,13 @@
 metadata:
-  - jobId: 5
+  - jobId: 1
 batched: false
 statusCode: 400
-error: message type identify is not supported
+error: Both userId and deviceId cannot be undefined
 statTags:
   errorCategory: dataValidation
   errorType: instrumentation
 destination:
-  ID: 1pYpzzvcn7AQ2W9GGIAZSsN6Mfq
-  Name: PINTEREST_TAG
+  ID: 'a'
+  url: 'a'
   Config:
-    tagId: '123456789'
-    advertiserId: '429047995'
-    appId: '429047995'
-    sendingUnHashedData: true
-    enableDeduplication: true
-    deduplicationKey: messageId
-    enhancedMatch: true
-    customProperties:
-      - properties: presentclass
-      - properties: presentgrade
-    eventsMapping:
-      - from: ABC Searched
-        to: WatchVideo
-      - from: ABC Searched
-        to: Signup
-      - from: User Signup
-        to: Signup
-      - from: User Created
-        to: Signup
-  Enabled: true
-  Transformations: []
+    residencyServer: 'EU'

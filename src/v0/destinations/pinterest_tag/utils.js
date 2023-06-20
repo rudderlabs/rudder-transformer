@@ -57,6 +57,7 @@ const getHashedValue = (key, value) => {
       break;
     case 'hashed_maids':
     case 'external_id':
+    case 'db':
       // no action needed on value
       break;
     default:

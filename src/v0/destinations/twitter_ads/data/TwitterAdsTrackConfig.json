@@ -25,6 +25,9 @@
   {
     "destKey": "value",
     "sourceKeys": ["properties.value", "properties.price", "properties.revenue"],
+    "metadata": {
+      "type": "toString"
+    },
     "required": false
   },
   {

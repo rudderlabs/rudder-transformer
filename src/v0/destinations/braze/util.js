@@ -16,6 +16,11 @@ const {
   BRAZE_NON_BILLABLE_ATTRIBUTES,
   CustomAttributeOperationTypes,
   getTrackEndPoint,
+  getSubscriptionGroupEndPoint,
+  getAliasMergeEndPoint,
+  SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,
+  ALIAS_BRAZE_MAX_REQ_COUNT,
+  TRACK_BRAZE_MAX_REQ_COUNT
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { isObject } = require('../../util');
@@ -317,6 +322,37 @@ const processDeduplication = (userStore, payload, destinationId) => {
   return null;
 };
 
+function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type) {
+
+  const headers = {
+    'Content-Type': JSON_MIME_TYPE,
+    Accept: JSON_MIME_TYPE,
+    Authorization: `Bearer ${destination.Config.restApiKey}`,
+  };
+
+  for (const chunk of arrayChunks) {
+    const response = defaultRequestConfig();
+    if (type === 'merge') {
+      response.endpoint = getAliasMergeEndPoint(getEndpointFromConfig(destination));
+      const merge_updates = chunk;
+      response.body.JSON = removeUndefinedAndNullValues({
+        merge_updates
+      });
+    } else if (type === 'subscription') {
+      response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
+      const subscription_groups = chunk;
+      response.body.JSON = removeUndefinedAndNullValues({
+        subscription_groups
+      });
+    }
+    responseArray.push({
+      ...response,
+      headers,
+    });
+  }
+
+}
+
 const processBatch = (transformedEvents) => {
   const { destination } = transformedEvents[0];
   const attributesArray = [];
@@ -324,11 +360,13 @@ const processBatch = (transformedEvents) => {
   const purchaseArray = [];
   const successMetadata = [];
   const failureResponses = [];
+  const subscriptionsArray = [];
+  const mergeUsersArray = [];
   for (const transformedEvent of transformedEvents) {
     if (!isHttpStatusSuccess(transformedEvent?.statusCode)) {
       failureResponses.push(transformedEvent);
     } else if (transformedEvent?.batchedRequest?.body?.JSON) {
-      const { attributes, events, purchases } = transformedEvent.batchedRequest.body.JSON;
+      const { attributes, events, purchases, subscription_groups, merge_updates } = transformedEvent.batchedRequest.body.JSON;
       if (Array.isArray(attributes)) {
         attributesArray.push(...attributes);
       }
@@ -338,12 +376,23 @@ const processBatch = (transformedEvents) => {
       if (Array.isArray(purchases)) {
         purchaseArray.push(...purchases);
       }
+
+      if (Array.isArray(subscription_groups)) {
+        subscriptionsArray.push(...subscription_groups);
+      }
+
+      if (Array.isArray(merge_updates)) {
+        mergeUsersArray.push(...merge_updates);
+      }
+
       successMetadata.push(...transformedEvent.metadata);
     }
   }
-  const attributeArrayChunks = _.chunk(attributesArray, 75);
-  const eventsArrayChunks = _.chunk(eventsArray, 75);
-  const purchaseArrayChunks = _.chunk(purchaseArray, 75);
+  const attributeArrayChunks = _.chunk(attributesArray, TRACK_BRAZE_MAX_REQ_COUNT);
+  const eventsArrayChunks = _.chunk(eventsArray, TRACK_BRAZE_MAX_REQ_COUNT);
+  const purchaseArrayChunks = _.chunk(purchaseArray, TRACK_BRAZE_MAX_REQ_COUNT);
+  const subscriptionArrayChunks = _.chunk(subscriptionsArray, SUBSCRIPTION_BRAZE_MAX_REQ_COUNT);
+  const mergeUsersArrayChunks = _.chunk(mergeUsersArray, ALIAS_BRAZE_MAX_REQ_COUNT);
 
   const maxNumberOfRequest = Math.max(
     attributeArrayChunks.length,
@@ -351,11 +400,13 @@ const processBatch = (transformedEvents) => {
     purchaseArrayChunks.length,
   );
   const responseArray = [];
+  const finalResponse = [];
   const headers = {
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
     Authorization: `Bearer ${destination.Config.restApiKey}`,
   };
+
   const endpoint = getTrackEndPoint(getEndpointFromConfig(destination));
   for (let i = 0; i < maxNumberOfRequest; i += 1) {
     const attributes = attributeArrayChunks[i];
@@ -374,7 +425,10 @@ const processBatch = (transformedEvents) => {
       headers,
     });
   }
-  const finalResponse = [];
+
+  prepareGroupAndAliasBatch(subscriptionArrayChunks, responseArray, destination, 'subscription');
+  prepareGroupAndAliasBatch(mergeUsersArrayChunks, responseArray, destination, 'merge');
+
   if (successMetadata.length > 0) {
     finalResponse.push({
       batchedRequest: responseArray,

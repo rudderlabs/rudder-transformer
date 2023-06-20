@@ -56,6 +56,7 @@ steps:
       "Please enable at one of them to send page/screen events to Optimizely.");
 
   - name: dataFile
+    description: Fetch the data file from the data file url
     template: |
       const dataFileUrl = .destination.Config.dataFileUrl;
       const rawResponse = await $.handleHttpRequest("get", dataFileUrl);
@@ -70,16 +71,19 @@ steps:
       $.assert(Array.isArray(availableEvents) && availableEvents.length > 0, "No events are present in the data file");
 
   - name: extractExperimentIds
+    description: Extract campaignId, experimentId and variationId from the integration object
     template: |
       const integrationObj = $.getIntegrationsObj(.message, "optimizely_fullstack");
       integrationObj ? integrationObj{["campaignId", "experimentId", "variationId"]};
 
   - name: validateInputForIdentify
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    description: Variation ID is required for identify call
     template: |
       $.assert($.outputs.extractExperimentIds.variationId, "Variation ID is not present in the integrations object");
 
   - name: commonPayload
+    description: Build the common payload for all the events
     template: |
       const commonPayload =
       {
@@ -92,6 +96,7 @@ steps:
       $.removeUndefinedAndNullValues(commonPayload);
 
   - name: getAttributes
+    description: Retrieves the attribute mapping from the webapp, obtains the attribute IDs from a data file, and prepares the attributes object based on the mapping and trait values.
     template: |
       let traits = .message.().(
         {{{{$.getGenericPaths("traits")}}}};
@@ -105,6 +110,7 @@ steps:
     condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
     steps:
       - name: decisions
+        description: Prepare the decisions array
         template: |
           [{
             "campaign_id": $.outputs.extractExperimentIds.campaignId || .destination.Config.campaignId, 
@@ -113,6 +119,7 @@ steps:
           }];
 
       - name: events
+        description: Prepare the events array. Where the event is "campaign_activated" for identify call
         template: |
           const timestamp = .message.().(
             {{{{$.getGenericPaths("timestamp")}}}};
@@ -125,6 +132,7 @@ steps:
           }];
 
       - name: visitors
+        description: Prepare the visitors array.
         template: |
           const snapshots = [{
             "decisions": $.outputs.prepareIdentifyPayload.decisions,
@@ -153,6 +161,7 @@ steps:
     condition: $.outputs.messageType === {{$.EventType.TRACK}}
     steps:
       - name: mappedEvent
+        description: This step retrieves the mapped event from the event mapping in webapp
         template: |
           const eventsMap = $.getHashFromArray(.destination.Config.eventMapping, 'from', 'to');
           const eventInLowerCase = .message.event.toLowerCase();
@@ -162,6 +171,7 @@ steps:
           mappedEvent;
 
       - name: optimizelyEvent
+        description: This step retrieves the event object from the data file for the mapped event
         template: |
           const availableEvents = $.outputs.dataFile.events;
           const eventFound = availableEvents.(){.key.toLowerCase() === $.outputs.prepareTrackPayload.mappedEvent.toLowerCase()};
@@ -170,6 +180,7 @@ steps:
           eventFound;
 
       - name: events
+        description: Prepare the events array with "id", "key" of the mapped event obtained from data file
         template: |
           const timestamp = .message.().(
             {{{{$.getGenericPaths("timestamp")}}}};
@@ -185,6 +196,7 @@ steps:
           }];
 
       - name: visitors
+        description: Prepare the visitors array, format "sessionId" in string and passing attributes only if present
         template: |
           const snapshots = [{
             "decisions": [],
@@ -214,6 +226,7 @@ steps:
     condition: $.outputs.messageType in [{{$.EventType.PAGE}}, {{$.EventType.SCREEN}}]
     steps:
       - name: mappedEvents
+        description: This step returns the mapped events based on the category, name of the page and Track Categorized Pages, Track Named Pages settings on webapp
         template: |
           const eventsMap = $.getHashFromArray(.destination.Config.pageMapping, 'from', 'to');
           const category = .message.properties.category.toLowerCase();
@@ -226,6 +239,7 @@ steps:
           mappedEvents;
 
       - name: optimizelyEvents
+        description: This step returns the events from the data file based on the mapped events
         template: |
           const mappedEvents = $.outputs.preparePageOrScreenPayload.mappedEvents;
           const availableEvents = $.outputs.dataFile.events;
@@ -241,6 +255,7 @@ steps:
           eventsFound;
 
       - name: events
+        description: Prepare the events array with "id", "key" of the mapped events obtained from data file
         template: |
           const optimizelyEvents = $.outputs.preparePageOrScreenPayload.optimizelyEvents;
           const timestamp = .message.().(
@@ -266,6 +281,7 @@ steps:
           events;
 
       - name: visitors
+        description: Prepare the visitors array, format "sessionId" in string and passing attributes only if present
         template: |
           const snapshots = [{
             "decisions": [],

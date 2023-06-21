@@ -52,5 +52,5 @@ jobs:
         if: always()
         uses: SonarSource/sonarcloud-github-action@v1.8
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

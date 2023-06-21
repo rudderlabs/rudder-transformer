@@ -1025,14 +1025,18 @@ async function handleProxyRequest(destination, ctx) {
     logger.error('Error occurred while completing proxy request:');
     logger.error(err);
 
-    const errObj = generateErrorObject(err, {
-      [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),
-      [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
-      [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
-      [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY,
-      [tags.TAG_NAMES.DESTINATION_ID]: metadata?.destinationId,
-      [tags.TAG_NAMES.WORKSPACE_ID]: metadata?.workspaceId,
-    });
+    const errObj = generateErrorObject(
+      err,
+      {
+        [tags.TAG_NAMES.DEST_TYPE]: destination.toUpperCase(),
+        [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+        [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
+        [tags.TAG_NAMES.FEATURE]: tags.FEATURES.DATA_DELIVERY,
+        [tags.TAG_NAMES.DESTINATION_ID]: metadata?.destinationId,
+        [tags.TAG_NAMES.WORKSPACE_ID]: metadata?.workspaceId,
+      },
+      false,
+    );
 
     response = {
       status: errObj.status,
@@ -1347,7 +1351,7 @@ const handleDeletionOfUsers = async (ctx) => {
           [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
           [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
           [tags.TAG_NAMES.FEATURE]: tags.FEATURES.USER_DELETION,
-        });
+        }, false);
 
         // adding the status to the request
         ctx.status = errObj.status;

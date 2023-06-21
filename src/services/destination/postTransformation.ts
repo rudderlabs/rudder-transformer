@@ -48,23 +48,23 @@ export default class DestinationPostTransformationService {
 
   public static handleProcessorTransformFailureEvents(
     error: Object,
-    metaTO: MetaTransferObject,
+    metaTo: MetaTransferObject,
   ): ProcessorTransformationResponse {
-    const errObj = generateErrorObject(error, metaTO.errorDetails);
+    const errObj = generateErrorObject(error, metaTo.errorDetails);
     const resp = {
-      metadata: metaTO.metadata,
+      metadata: metaTo.metadata,
       statusCode: errObj.status,
       error: errObj.message || '[Processor Transform] Error occurred while processing the payload.',
       statTags: errObj.statTags,
     } as ProcessorTransformationResponse;
-    ErrorReportingService.reportError(error, metaTO.errorContext, resp);
+    ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
 
   public static handleRouterTransformSuccessEvents(
     transformedPayloads: RouterTransformationResponse[],
     destHandler: any,
-    metaTO: MetaTransferObject,
+    metaTo: MetaTransferObject,
     implementation: string,
     destinationType: string,
   ): RouterTransformationResponse[] {
@@ -86,17 +86,17 @@ export default class DestinationPostTransformationService {
       if ('error' in resp && isObject(resp.statTags) && !isEmpty(resp.statTags)) {
         resp.statTags = {
           ...resp.statTags,
-          ...metaTO.errorDetails,
+          ...metaTo.errorDetails,
         };
-        stats.increment('event_transform_failure', metaTO.errorDetails);
+        stats.increment('event_transform_failure', metaTo.errorDetails);
       } else {
         stats.increment('event_transform_success', {
           destType: destinationType,
           module: tags.MODULES.DESTINATION,
           implementation,
           feature: tags.FEATURES.ROUTER,
-          destinationId: metaTO.metadata?.destinationId,
-          workspaceId: metaTO.metadata?.workspaceId,
+          destinationId: metaTo.metadata?.destinationId,
+          workspaceId: metaTo.metadata?.workspaceId,
         });
       }
     });
@@ -106,42 +106,42 @@ export default class DestinationPostTransformationService {
 
   public static handleRouterTransformFailureEvents(
     error: Object,
-    metaTO: MetaTransferObject,
+    metaTo: MetaTransferObject,
   ): RouterTransformationResponse {
-    const errObj = generateErrorObject(error, metaTO.errorDetails);
+    const errObj = generateErrorObject(error, metaTo.errorDetails);
     const resp = {
-      metadata: metaTO.metadatas,
+      metadata: metaTo.metadatas,
       batched: false,
       statusCode: errObj.status,
       error: errObj.message || '[Router Transform] Error occurred while processing the payload.',
       statTags: errObj.statTags,
     } as RouterTransformationResponse;
-    ErrorReportingService.reportError(error, metaTO.errorContext, resp);
-    stats.increment('event_transform_failure', metaTO.errorDetails);
+    ErrorReportingService.reportError(error, metaTo.errorContext, resp);
+    stats.increment('event_transform_failure', metaTo.errorDetails);
     return resp;
   }
 
   public static handleBatchTransformFailureEvents(
     error: Object,
-    metaTO: MetaTransferObject,
+    metaTo: MetaTransferObject,
   ): RouterTransformationResponse {
-    const errObj = generateErrorObject(error, metaTO.errorDetails);
+    const errObj = generateErrorObject(error, metaTo.errorDetails);
     const resp = {
-      metadata: metaTO.metadatas,
+      metadata: metaTo.metadatas,
       batched: false,
       statusCode: 500, // for batch we should consider code error hence keeping retryable
       error: errObj.message || '[Batch Transform] Error occurred while processing payload.',
       statTags: errObj.statTags,
     } as RouterTransformationResponse;
-    ErrorReportingService.reportError(error, metaTO.errorContext, resp);
+    ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
 
   public static handleDeliveryFailureEvents(
     error: Object,
-    metaTO: MetaTransferObject,
+    metaTo: MetaTransferObject,
   ): DeliveryResponse {
-    const errObj = generateErrorObject(error, metaTO.errorDetails);
+    const errObj = generateErrorObject(error, metaTo.errorDetails, false);
     const resp = {
       status: errObj.status,
       message: errObj.message || '[Delivery] Error occured while processing payload',
@@ -151,15 +151,15 @@ export default class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as DeliveryResponse;
-    ErrorReportingService.reportError(error, metaTO.errorContext, resp);
+    ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
 
   public static handleUserDeletionFailureEvents(
     error: Object,
-    metaTO: MetaTransferObject,
+    metaTo: MetaTransferObject,
   ): UserDeletionResponse {
-    const errObj = generateErrorObject(error, metaTO.errorDetails);
+    const errObj = generateErrorObject(error, metaTo.errorDetails, false);
     // TODO: Add stat tags here
     const resp = {
       statusCode: errObj.status,
@@ -168,7 +168,7 @@ export default class DestinationPostTransformationService {
         authErrorCategory: errObj.authErrorCategory,
       }),
     } as UserDeletionResponse;
-    ErrorReportingService.reportError(error, metaTO.errorContext, resp);
+    ErrorReportingService.reportError(error, metaTo.errorContext, resp);
     return resp;
   }
 }

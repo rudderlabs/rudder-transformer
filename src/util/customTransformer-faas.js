@@ -24,7 +24,7 @@ function generateFunctionName(userTransformation, libraryVersionIds, testMode) {
   const ids = [userTransformation.workspaceId, userTransformation.versionId].concat(
     (libraryVersionIds || []).sort(),
   );
-  const hash = crypto.createHash('md5').update(`${ids}`).digest('hex');
+  const hash = crypto.createHash('sha512').update(`${ids}`).digest('hex');
 
   return `fn-${userTransformation.workspaceId}-${hash}`.substring(0, 63).toLowerCase();
 }

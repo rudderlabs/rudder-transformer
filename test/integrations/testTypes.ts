@@ -1,31 +1,31 @@
-interface requestType {
+export interface requestType {
   method: string;
   body?: any;
   headers?: Record<string, string>;
   params?: Record<string, string>;
 }
 
-interface responseType {
+export interface responseType {
   status: number;
   body?: any;
   headers?: Record<string, string>;
 }
 
-interface inputType {
+export interface inputType {
   request: requestType;
   pathSuffix?: string;
 }
 
-interface outputType {
+export interface outputType {
   response?: responseType;
 }
 
-interface mockType {
+export interface mockType {
   request: requestType;
   response: responseType;
 }
 
-interface testCaseDataType {
+export interface TestCaseData {
   name: string;
   description: string;
   feature: string;

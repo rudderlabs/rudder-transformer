@@ -60,12 +60,13 @@ steps:
     description: Fetch the data file from the data file url
     template: |
       const dataFileUrl = .destination.Config.dataFileUrl;
-      const dataFileAccessToken = .destination.Config.dataFileAccessToken;
-      const rawResponse = .destination.Config.secureEnvironment ?  await $.handleHttpRequest("get", dataFileUrl, {
+      const options = .destination.Config.secureEnvironment ? {
         headers: {
-          "Authorization": "Bearer " + dataFileAccessToken
+         "Content-Type": "application/json",
+         "Authorization": "Bearer " + .destination.Config.dataFileAccessToken
         }
-      }) : await $.handleHttpRequest("get", dataFileUrl); 
+      };
+      const rawResponse = await $.handleHttpRequest("get", dataFileUrl, options);
       const processedResponse = rawResponse.processedResponse;
       $.assertHttpResp(processedResponse, "Data File Lookup Failed");
       processedResponse.response

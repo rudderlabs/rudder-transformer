@@ -37,6 +37,7 @@ steps:
       $.assertConfig(.destination.Config.experimentId, "Experiment ID is not present. Aborting");
       $.assertConfig(!(.destination.Config.trackKnownUsers && !(.message.userId)), "RudderStack will only track users associated with a userId when the trackKnownUsers setting is enabled");
       $.assertConfig(!(!.destination.Config.trackKnownUsers && !(.message.anonymousId)), "AnonymousId is required when trackKnownUsers setting is disabled");
+      $.assertConfig(!(.destination.Config.secureEnvironment && !(.destination.Config.dataFileAccessToken)), "Data File Access Token is not present for secure environment. Aborting");
 
   - name: messageType
     template: |
@@ -59,7 +60,12 @@ steps:
     description: Fetch the data file from the data file url
     template: |
       const dataFileUrl = .destination.Config.dataFileUrl;
-      const rawResponse = await $.handleHttpRequest("get", dataFileUrl);
+      const dataFileAccessToken = .destination.Config.dataFileAccessToken;
+      const rawResponse = .destination.Config.secureEnvironment ?  await $.handleHttpRequest("get", dataFileUrl, {
+        headers: {
+          "Authorization": "Bearer " + dataFileAccessToken
+        }
+      }) : await $.handleHttpRequest("get", dataFileUrl); 
       const processedResponse = rawResponse.processedResponse;
       $.assertHttpResp(processedResponse, "Data File Lookup Failed");
       processedResponse.response

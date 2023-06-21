@@ -42,9 +42,8 @@ function processTrack(message, factorsAIApiKey) {
 }
 
 // process Page Call
-function processPageAndGroup(message, factorsAIApiKey, eventType) {
-  const requestJson = eventType === EventType.PAGE ? constructPayload(message, mappingConfig[ConfigCategories.PAGE.name])
-      : constructPayload(message, mappingConfig[ConfigCategories.GROUP.name]);
+function processPageAndGroup(message, factorsAIApiKey, category) {
+  const requestJson = constructPayload(message, mappingConfig[category]);
   return buildResponse(requestJson, factorsAIApiKey);
 }
 
@@ -64,9 +63,9 @@ function process(event) {
     case EventType.TRACK:
       return processTrack(message, factorsAIApiKey);
     case EventType.PAGE:
-      return processPageAndGroup(message, factorsAIApiKey, EventType.PAGE);
+      return processPageAndGroup(message, factorsAIApiKey, ConfigCategories.PAGE.name);
     case EventType.GROUP:
-      return processPageAndGroup(message, factorsAIApiKey, EventType.GROUP);
+      return processPageAndGroup(message, factorsAIApiKey, ConfigCategories.GROUP.name);
     default:
       throw new InstrumentationError(`Message type ${messageType} is not supported`);
   }

@@ -1,7 +1,54 @@
 /* eslint-disable max-classes-per-file */
+const http = require("http");
+const https = require("https");
+const { Resolver } = require("dns").promises;
+
 const util = require('util');
 const logger = require('../logger');
 const stats = require('./stats');
+
+const resolver = new Resolver();
+// Cloudflare and Google dns
+resolver.setServers([
+  "1.1.1.1",
+  "8.8.8.8",
+]);
+
+const LOCALHOST_IP = "127.0.0.1";
+const LOCALHOST_URL = `http://localhost`;
+
+const staticLookup = () => async (hostname, _, cb) => {
+  console.log("staticLookup", hostname);
+  const ips = await resolver.resolve(hostname).catch((err) => {
+    console.log("Error resolving", hostname, err);
+    throw err;
+  });
+
+  console.log("Resolved", hostname, "to", ips);
+
+  if (ips.length === 0) {
+    throw new Error(`Unable to resolve ${hostname}`);
+  }
+
+  for (const ip of ips) {
+    if (ip.includes(LOCALHOST_IP)) {
+      throw new Error("Internal access is not allowed");
+    }
+  }
+
+  cb(null, ips[0], 4);
+};
+
+const staticDnsAgent = (scheme) => {
+  const httpModule = scheme === "http" ? http : https;
+  return new httpModule.Agent({ lookup: staticLookup() });
+};
+
+const blockLocalhostRequests = (url) => {
+  if (url?.includes(LOCALHOST_URL) || url?.includes(LOCALHOST_IP)) {
+    throw new Error("Localhost requests are not allowed");
+  }
+};
 
 class RespStatusError extends Error {
   constructor(message, statusCode) {
@@ -92,4 +139,6 @@ module.exports = {
   constructValidationErrors,
   sendViolationMetrics,
   logProcessInfo,
+  blockLocalhostRequests,
+  staticDnsAgent,
 };

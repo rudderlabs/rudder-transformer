@@ -79,11 +79,11 @@
                   "region": "Kanto",
                   "country": "JP",
                   "zip": "100-0001"
+                },
+                "properties": {
+                  "Flagged": false,
+                  "Residence": "Shibuya"
                 }
-              },
-              "properties": {
-                "Flagged": false,
-                "Residence": "Shibuya"
               },
               "id": "01GW3PHVY0MTCDGS0A1612HARX"
             }
@@ -123,11 +123,11 @@
                   "region": "Kanto",
                   "country": "JP",
                   "zip": "100-0001"
+                },
+                "properties": {
+                  "Flagged": false,
+                  "Residence": "Shibuya"
                 }
-              },
-              "properties": {
-                "Flagged": false,
-                "Residence": "Shibuya"
               },
               "id": "01GW3PHVY0MTCDGS0A1612HARX"
             }

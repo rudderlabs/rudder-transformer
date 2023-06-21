@@ -63,6 +63,8 @@
         "errorType": "instrumentation",
         "feature": "dataDelivery",
         "implementation": "native",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "module": "destination"
       },
       "status": 400
@@ -80,6 +82,8 @@
         "errorType": "instrumentation",
         "feature": "dataDelivery",
         "implementation": "native",
+        "destinationId": "Non-determininable",
+        "workspaceId": "Non-determininable",
         "module": "destination"
       },
       "status": 400

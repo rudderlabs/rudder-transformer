@@ -718,7 +718,8 @@
           "$distinct_id": "hjikl",
           "$set": {
             "company": ["testComp"]
-          }
+          },
+          "$ip": "0.0.0.0"
         }
       },
       "body": {
@@ -769,7 +770,8 @@
           "$distinct_id": "hjikl",
           "$set": {
             "company": ["testComp", "testComp1"]
-          }
+          },
+          "$ip": "0.0.0.0"
         }
       },
       "body": {
@@ -845,7 +847,8 @@
           "$distinct_id": "hjikl",
           "$set": {
             "company": ["testComp"]
-          }
+          },
+          "$ip": "0.0.0.0"
         }
       },
       "body": {
@@ -1710,7 +1713,8 @@
           "$set": {
             "groupId": ["testGroupId"]
           },
-          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "$ip": "0.0.0.0"
         }
       },
       "body": {
@@ -1991,7 +1995,8 @@
           "$distinct_id": "$device:anonId01",
           "$set": {
             "company": ["testComp"]
-          }
+          },
+          "$ip": "0.0.0.0"
         }
       },
       "body": {

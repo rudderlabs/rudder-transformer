@@ -529,17 +529,7 @@
           "accountId": "test_account_id",
           "campaignId": "test_campaign_id",
           "experimentId": "test_experiment_id",
-          "trackKnownUsers": false,
-          "attributeMapping": [
-            {
-              "from": "organization",
-              "to": "company"
-            },
-            {
-              "from": "fullName",
-              "to": "name"
-            }
-          ]
+          "trackKnownUsers": false
         }
       }
     },
@@ -562,20 +552,6 @@
           "visitors": [
             {
               "visitor_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
-              "attributes": [
-                {
-                  "entity_id": "test_attribute_id_5",
-                  "key": "company",
-                  "type": "custom",
-                  "value": "RudderStack"
-                },
-                {
-                  "entity_id": "test_attribute_id_2",
-                  "key": "name",
-                  "type": "custom",
-                  "value": "John Doe"
-                }
-              ],
               "snapshots": [
                 {
                   "decisions": [

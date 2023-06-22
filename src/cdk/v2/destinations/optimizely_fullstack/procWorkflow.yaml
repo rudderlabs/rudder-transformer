@@ -150,13 +150,14 @@ steps:
           const visitorId = .destination.Config.trackKnownUsers ? .message.userId : .message.anonymousId;
           const visitors = [{
             "visitor_id": visitorId,
-            "attributes": $.outputs.getAttributes,
             "snapshots": snapshots
           }];
           const sessionId = .message.().(
             {{{{$.getGenericPaths("sessionId")}}}};
           );
+          const attributes = $.outputs.getAttributes;
           sessionId ? visitors[0].session_id = String(sessionId);
+          attributes.length > 0 ? visitors[0].attributes = attributes
           visitors;
 
       - name: payload

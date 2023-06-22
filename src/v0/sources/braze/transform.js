@@ -40,6 +40,7 @@ const processEvent = (event) => {
 
     // set timestamp for the event
     if (event.time) {
+      // Braze is sending timestamp in seconds
       // Refer: https://www.braze.com/docs/user_guide/data_and_analytics/braze_currents/event_glossary/message_engagement_events
       const timestamp = parseInt(event.time, 10) * 1000;
       message.setProperty('timestamp', formatTimeStamp(timestamp, 'YYYY-MM-DD[T]HH:mm:ss.SSS[Z]'));

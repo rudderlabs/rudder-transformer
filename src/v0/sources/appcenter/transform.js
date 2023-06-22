@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const { generateUUID } = require('../../util');
 const Message = require('../message');
 
 const mappingJson = JSON.parse(fs.readFileSync(path.resolve(__dirname, './mapping.json'), 'utf-8'));
@@ -8,13 +9,6 @@ const { removeUndefinedAndNullValues } = require('../../util');
 
 const { TransformationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-
-const guidGenerator = () => {
-  const S4 = () =>
-    // eslint-disable-next-line no-bitwise
-    (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-  return `${S4() + S4()}-${S4()}-${S4()}-${S4()}-${S4()}${S4()}${S4()}`;
-};
 
 const processNormalEvent = (event) => {
   const message = new Message(`APPCENTER`);
@@ -43,7 +37,7 @@ const processNormalEvent = (event) => {
   message.setPropertiesV2(event, mappingJson);
 
   // app center does not has the concept of user but we need to set some random anonymousId in order to make the server accept the message
-  message.anonymousId = guidGenerator();
+  message.anonymousId = generateUUID();
   return message;
 };
 

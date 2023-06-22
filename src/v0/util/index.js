@@ -1375,10 +1375,20 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
 /**
  * Used for generating error response with stats from native and built errors
  */
-function generateErrorObject(error, defTags = {}) {
+function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = true) {
   let errObject = error;
+  let errorMessage = error.message;
+  if (shouldEnrichErrorMessage) {
+    if (error.destinationResponse) {
+      errorMessage = JSON.stringify({
+        message: error.message,
+        destinationResponse: error.destinationResponse,
+      });
+    }
+    errObject.message = errorMessage;
+  }
   if (!(error instanceof BaseError)) {
-    errObject = new TransformationError(error.message, getErrorStatusCode(error));
+    errObject = new TransformationError(errorMessage, getErrorStatusCode(error));
   }
 
   // Add higher level default tags

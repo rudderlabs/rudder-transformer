@@ -19,20 +19,27 @@ const LOCALHOST_URL = `http://localhost`;
 
 const staticLookup = () => async (hostname, _, cb) => {
   console.log("staticLookup", hostname);
-  const ips = await resolver.resolve(hostname).catch((err) => {
-    console.log("Error resolving", hostname, err);
-    throw err;
-  });
+
+  let ips;
+  try {
+    ips = await resolver.resolve(hostname);
+  } catch (error) {
+    cb(null, `unable to resolve IP address for ${hostname}`, 4)
+    return;
+  }
 
   console.log("Resolved", hostname, "to", ips);
 
   if (ips.length === 0) {
-    throw new Error(`Unable to resolve ${hostname}`);
+    // throw new Error(`Unable to resolve ${hostname}`);
+    cb(null, `resolved empty list of IP address for ${hostname}`, 4)
+    return;
   }
 
   for (const ip of ips) {
     if (ip.includes(LOCALHOST_IP)) {
-      throw new Error("Internal access is not allowed");
+      cb(null, `cannot use ${LOCALHOST_IP} as IP address`, 4)
+      return;
     }
   }
 

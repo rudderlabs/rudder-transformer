@@ -170,12 +170,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
-    let anonymousId;
-    if (useRedisDatabase) {
-      anonymousId = await getAnonymousIdFromDb(message, metricMetadata);
-    } else {
-      anonymousId = getAnonymousId(message);
-    }
+    const anonymousId = getAnonymousId(message, metricMetadata);
     if (isDefinedAndNotNull(anonymousId)) {
       message.setProperty('anonymousId', anonymousId);
     } else if (!message.userId) {

@@ -170,7 +170,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
-    const anonymousId = getAnonymousId(message, metricMetadata);
+    const anonymousId = await getAnonymousId(message, metricMetadata);
     if (isDefinedAndNotNull(anonymousId)) {
       message.setProperty('anonymousId', anonymousId);
     } else if (!message.userId) {

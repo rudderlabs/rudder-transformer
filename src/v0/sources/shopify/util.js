@@ -144,13 +144,13 @@ const getAnonymousIdFromDb = async (cartToken, message, metricMetadata) => {
 
 /**
  * This function retrieves anonymousId in folowing steps:
- * 1. Checks for rudderAnonymousId in note_atrributes
+ * 1. Checks for `rudderAnonymousId` in `note_atrributes`
  * 2. if redis is enabled checks in redis
- * 3. This means we don't have anonymousId and hence events can not be stitched and we check for cartToken
+ * 3. This means we don't have `anonymousId` and hence events CAN NOT be stitched and we check for cartToken
  *    a. if cartToken is available we return its hash value
  *    b. else we check if the event is an SHOPIFY_ADMIN_ONLY_EVENT 
- *       -> if true we return null;
- *       -> else we don't have any identifer (very edge case) we return random anonymousId
+ *       -> if true we return `null`;
+ *       -> else we don't have any identifer (very edge case) we return `random anonymousId`
  * @param {*} message 
  * @param {*} metricMetadata 
  * @returns 
@@ -169,14 +169,16 @@ const getAnonymousId = async (message, metricMetadata) => {
       if (useRedisDatabase) {
         anonymousId = await getAnonymousIdFromDb(cartToken, message, metricMetadata);
       }
-      // anonymousId not found from db as well
-      if (!isDefinedAndNotNull(anonymousId)) {
+      if (isDefinedAndNotNull(anonymousId)) {
         stats.increment('shopify_redis_success', {
           event: message.event,
           field: 'anonymousId',
           ...metricMetadata,
         });
-        // Hash the id and use it as anonymousId (limiting 256 -> 36 chars)
+      } else {
+        /* anonymousId not found from db as well
+        Hash the id and use it as anonymousId (limiting 256 -> 36 chars)
+        */
         anonymousId = v5(cartToken, v5.URL);
       }
     } else {
@@ -251,7 +253,6 @@ module.exports = {
   getProductsListFromLineItems,
   createPropertiesForEcomEvent,
   extractEmailFromPayload,
-  getAnonymousIdFromDb,
   getAnonymousId,
   checkAndUpdateCartItems,
   getHashLineItems,

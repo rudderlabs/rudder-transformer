@@ -17,16 +17,17 @@ const outputDataFile = fs.readFileSync(
 const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 
-// Source Code has randomm ID generation logic. Will take care of the
-// mocking the randomness later and skipping it for now
+/* Source Code has randomm ID generation logic.
+  For Some of the test cases deleting this random ID won't work as it getting hashed
+*/
 
 inputData.forEach((input, index) => {
   it(`${name} Tests: payload: ${index}`, async () => {
-    //     try {
-    //       const output = await transformer.process(input);
-    //       expect(output).toEqual(expectedData[index]);
-    //     } catch (error) {
-    //       expect(error.message).toEqual(expectedData[index].message);
-    //     }
+//     try {
+      const output = await transformer.process(input);
+//       expect(output).toEqual(expectedData[index]);
+//     } catch (error) {
+//       expect(error.message).toEqual(expectedData[index].message);
+//     }
   });
 });

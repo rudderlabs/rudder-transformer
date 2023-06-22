@@ -161,7 +161,6 @@ steps:
 
       - name: payload
         template: |
-          console.log("commonpayload: ", $.outputs.commonPayload);
           {
             ...$.outputs.commonPayload,
             "visitors": $.outputs.prepareIdentifyPayload.visitors

@@ -163,30 +163,30 @@ const getAnonymousId = async (message, metricMetadata) => {
     anonymousId = getRudderIdFromNoteAtrributes(noteAttributes, "rudderAnonymousId");
   }
   // falling back to cartToken mapping or its hash in case no rudderAnonymousId is found
-  if (!isDefinedAndNotNull(anonymousId)) {
-    const cartToken = getCartToken(message);
-    if (isDefinedAndNotNull(cartToken)) {
-      if (useRedisDatabase) {
-        anonymousId = await getAnonymousIdFromDb(cartToken, message, metricMetadata);
-      }
-      if (isDefinedAndNotNull(anonymousId)) {
-        stats.increment('shopify_redis_success', {
-          event: message.event,
-          field: 'anonymousId',
-          ...metricMetadata,
-        });
-      } else {
-        /* anonymousId not found from db as well
-        Hash the id and use it as anonymousId (limiting 256 -> 36 chars)
-        */
-        anonymousId = v5(cartToken, v5.URL);
-      }
-    } else {
-      if (SHOPIFY_ADMIN_ONLY_EVENTS.includes(message.event)) {
-        return null;
-      }
-      return generateUUID();
+  if (isDefinedAndNotNull(anonymousId)) {
+    return anonymousId;
+  }
+  const cartToken = getCartToken(message);
+  if (!isDefinedAndNotNull(cartToken)) {
+    if (SHOPIFY_ADMIN_ONLY_EVENTS.includes(message.event)) {
+      return null;
     }
+    return generateUUID();
+  }
+  if (useRedisDatabase) {
+    anonymousId = await getAnonymousIdFromDb(cartToken, message, metricMetadata);
+  }
+  if (isDefinedAndNotNull(anonymousId)) {
+    stats.increment('shopify_redis_success', {
+      event: message.event,
+      field: 'anonymousId',
+      ...metricMetadata,
+    });
+  } else {
+    /* anonymousId not found from db as well
+    Hash the id and use it as anonymousId (limiting 256 -> 36 chars)
+    */
+    anonymousId = v5(cartToken, v5.URL);
   }
   return anonymousId;
 };

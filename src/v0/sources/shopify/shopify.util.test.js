@@ -1,8 +1,10 @@
-const { it } = require('node:test');
+const { getShopifyTopic,
+  getAnonymousId,
+  checkAndUpdateCartItems,
+} = require('./util');
 jest.mock('ioredis', () => require('../../../../test/__mocks__/redis'));
 describe('Shopify Utils Test', () => {
   describe('Fetching Shopify Topic Test Cases', () => {
-    const { getShopifyTopic } = require('./util');
     it('Invalid Topic Test', () => {
       const input = {
         query_parameters: {},
@@ -60,7 +62,6 @@ describe('Shopify Utils Test', () => {
   });
 
   describe('Check for valid cart update event test cases', () => {
-    const { checkAndUpdateCartItems } = require('./util');
     it('Event containing token and nothing is retreived from redis', async () => {
       const input = {
         token: 'token_not_in_redis',
@@ -110,7 +111,6 @@ describe('Shopify Utils Test', () => {
   });
 
   describe(' Test Cases -> set AnonymousId without using Redis', () => {
-    const { getAnonymousId } = require('./util');
     it('Properties containing cartToken', async () => {
       const input = {
         event: 'Order Updated',
@@ -202,6 +202,12 @@ describe('Shopify Utils Test', () => {
         event: 'Order Paid',
         properties: {
           cart_token: 'shopify_test2',
+          note_attributes: [
+            {
+              name: "rudderUpdatedAt",
+              value: "RUDDER_UPDTD_AT"
+            }
+          ],
         },
       };
       const expectedOutput = 'anon_shopify_test2'; // fetched succesfully from redis

@@ -6,7 +6,6 @@ const {
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
   extractEmailFromPayload,
-  getAnonymousIdFromDb,
   getAnonymousId,
   checkAndUpdateCartItems,
   getHashLineItems,

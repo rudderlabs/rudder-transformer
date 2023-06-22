@@ -298,6 +298,12 @@
   {
     "description": "Track Call -> orders_updated with empty line_items",
     "input": {
+      "note_attributes": [
+        {
+          "name": "random",
+          "value": "RANDOM_VAL"
+        }
+      ],
       "id": "shopify_test2",
       "query_parameters": {
         "topic": [
@@ -345,6 +351,12 @@
       "properties": {
         "checkout_id": 36601802719507,
         "checkout_token": "checkout token",
+        "note_attributes": [
+          {
+            "name": "random",
+            "value": "RANDOM_VAL"
+          }
+        ],
         "client_details": {
           "accept_language": null,
           "browser_height": null,
@@ -711,6 +723,211 @@
         "updated_at": "2023-02-10T12:16:07.251Z"
       },
       "timestamp": "2023-02-10T12:16:07.251Z"
+    }
+  },
+  {
+    "description": "Track Call -> checkouts_update with rudderAnonymousId inside note_attributes",
+    "input": {
+      "note_attributes": [
+        {
+          "name": "rudderAnonymousId",
+          "value": "RUDDER_ANON_ID"
+        },
+        {
+          "name": "rudderUpdatedAt",
+          "value": "RUDDER_UPDTD_AT"
+        }
+      ],
+      "id": "shopify_test2",
+      "query_parameters": {
+        "topic": [
+          "checkouts_update"
+        ]
+      },
+      "cart_token": null,
+      "line_items": [
+        {
+          "id": 44323300999443,
+          "properties": null,
+          "quantity": 1,
+          "variant_id": 44323300999443,
+          "key": "44323300999443:ky",
+          "discounted_price": "30.00",
+          "discounts": [],
+          "gift_card": false,
+          "grams": 0,
+          "line_price": "30.00",
+          "original_line_price": "30.00",
+          "original_price": "30.00",
+          "price": "30.00",
+          "product_id": 8100575674643,
+          "sku": "",
+          "taxable": true,
+          "title": "Shirt 2 - LARGE",
+          "total_discount": "0.00",
+          "vendor": "testAnant",
+          "discounted_price_set": {
+            "shop_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            }
+          },
+          "line_price_set": {
+            "shop_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            }
+          },
+          "original_line_price_set": {
+            "shop_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            }
+          },
+          "price_set": {
+            "shop_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "30.0",
+              "currency_code": "GBP"
+            }
+          },
+          "total_discount_set": {
+            "shop_money": {
+              "amount": "0.0",
+              "currency_code": "GBP"
+            },
+            "presentment_money": {
+              "amount": "0.0",
+              "currency_code": "GBP"
+            }
+          }
+        }
+      ],
+      "note": null,
+      "updated_at": "2023-02-10T12:16:07.251Z",
+      "created_at": "2023-02-10T12:05:04.402Z"
+    },
+    "output": {
+      "context": {
+        "cart_token": null,
+        "library": {
+          "name": "RudderStack Shopify Cloud",
+          "version": "1.0.0"
+        },
+        "integration": {
+          "name": "SHOPIFY"
+        },
+        "topic": "checkouts_update"
+      },
+      "event": "Checkout Updated",
+      "integrations": {
+        "SHOPIFY": true
+      },
+      "type": "track",
+      "properties": {
+        "note_attributes": [
+          {
+            "name": "rudderAnonymousId",
+            "value": "RUDDER_ANON_ID"
+          },
+          {
+            "name": "rudderUpdatedAt",
+            "value": "RUDDER_UPDTD_AT"
+          }
+        ],
+        "order_id": "shopify_test2",
+        "created_at": "2023-02-10T12:05:04.402Z",
+        "products": [
+          {
+            "id": 44323300999443,
+            "properties": null,
+            "quantity": 1,
+            "variant": "44323300999443  ",
+            "key": "44323300999443:ky",
+            "discounted_price": "30.00",
+            "discounts": [],
+            "gift_card": false,
+            "grams": 0,
+            "line_price": "30.00",
+            "original_line_price": "30.00",
+            "original_price": "30.00",
+            "price": "30.00",
+            "product_id": 8100575674643,
+            "taxable": true,
+            "title": "Shirt 2 - LARGE",
+            "total_discount": "0.00",
+            "brand": "testAnant",
+            "discounted_price_set": {
+              "shop_money": {
+                "amount": "30.0",
+                "currency_code": "GBP"
+              },
+              "presentment_money": {
+                "amount": "30.0",
+                "currency_code": "GBP"
+              }
+            },
+            "line_price_set": {
+              "shop_money": {
+                "amount": "30.0",
+                "currency_code": "GBP"
+              },
+              "presentment_money": {
+                "amount": "30.0",
+                "currency_code": "GBP"
+              }
+            },
+            "original_line_price_set": {
+              "shop_money": {
+                "amount": "30.0",
+                "currency_code": "GBP"
+              },
+              "presentment_money": {
+                "amount": "30.0",
+                "currency_code": "GBP"
+              }
+            },
+            "price_set": {
+              "shop_money": {
+                "amount": "30.0",
+                "currency_code": "GBP"
+              },
+              "presentment_money": {
+                "amount": "30.0",
+                "currency_code": "GBP"
+              }
+            },
+            "total_discount_set": {
+              "shop_money": {
+                "amount": "0.0",
+                "currency_code": "GBP"
+              },
+              "presentment_money": {
+                "amount": "0.0",
+                "currency_code": "GBP"
+              }
+            }
+          }
+        ],
+        "updated_at": "2023-02-10T12:16:07.251Z"
+      },
+      "timestamp": "2023-02-10T12:16:07.251Z",
+      "anonymousId": "RUDDER_ANON_ID"
     }
   },
   {

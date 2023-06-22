@@ -5,6 +5,8 @@ bindings:
     exportAll: true
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
+  - name: removeUndefinedNullEmptyExclBoolInt
+    path: ../../../../v0/util
   - name: defaultRequestConfig
     path: ../../../../v0/util
   - name: getIntegrationsObj
@@ -100,7 +102,7 @@ steps:
         "enrich_decisions": .destination.Config.enrichDecisions || true,
         ...$.CLIENT_INFO
       }
-      $.removeUndefinedAndNullValues(commonPayload);
+      $.removeUndefinedNullEmptyExclBoolInt(commonPayload);
 
   - name: getAttributes
     description: Retrieves the attribute mapping from the webapp, obtains the attribute IDs from a data file, and prepares the attributes object based on the mapping and trait values.

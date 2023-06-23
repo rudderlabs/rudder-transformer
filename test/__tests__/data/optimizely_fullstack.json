@@ -1,58 +1,205 @@
 [
   {
-    "description": "Invalid Configuration (missing sdk key)",
+    "description": "Missing Data File URL",
     "input": {
       "message": {
-        "type": "track",
+        "type": "identify",
         "channel": "web",
-        "event": "Product Added",
         "properties": {},
         "context": {},
         "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
         "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
-        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "integrations": {
+          "All": true
+        }
       },
       "destination": {
         "Config": {
-          "baseUrl": "https://example.com",
-          "trackKnownUsers": false,
-          "nonInteraction": false,
-          "listen": false,
-          "trackCategorizedPages": true,
-          "trackNamedPages": true
+          "accountId": "test_account_id",
+          "campaignId": "test_campaign_id",
+          "experimentId": "test_experiment_id"
         }
       }
     },
     "output": {
-      "error": "SDK key is required"
+      "error": "Data File Url is not present. Aborting"
     }
   },
   {
-    "description": "Invalid Configuration (missing bsase url)",
+    "description": "Missing Data File Access Token for Secure Environment",
     "input": {
       "message": {
-        "type": "track",
+        "type": "identify",
         "channel": "web",
-        "event": "Product Added",
         "properties": {},
         "context": {},
         "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
         "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
-        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "123"
+          }
+        }
       },
       "destination": {
         "Config": {
-          "sdkKey": "test-sdk-key",
-          "trackKnownUsers": false,
-          "nonInteraction": false,
-          "listen": false,
-          "trackCategorizedPages": true,
-          "trackNamedPages": true
+          "accountId": "test_account_id",
+          "campaignId": "test_campaign_id",
+          "experimentId": "test_experiment_id",
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "secureEnvironment": true,
+          "dataFileAccessToken": ""
         }
       }
     },
     "output": {
-      "error": "Base url is required"
+      "error": "Data File Access Token is not present for secure environment. Aborting"
+    }
+  },
+  {
+    "description": "Identify call: Missing Variation ID in integration object",
+    "input": {
+      "message": {
+        "type": "identify",
+        "channel": "web",
+        "properties": {},
+        "context": {},
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "integrations": {
+          "All": true
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campagin_id",
+          "experimentId": "test_experiment_id"
+        }
+      }
+    },
+    "output": {
+      "error": "Variation ID is not present in the integrations object"
+    }
+  },
+  {
+    "description": "Missing Account ID",
+    "input": {
+      "message": {
+        "type": "identify",
+        "channel": "web",
+        "properties": {},
+        "context": {},
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "integrations": {
+          "All": true
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "campaignId": "test_campagin_id",
+          "experimentId": "test_experiment_id"
+        }
+      }
+    },
+    "output": {
+      "error": "Account ID is not present. Aborting"
+    }
+  },
+  {
+    "description": "Missing Campaign ID",
+    "input": {
+      "message": {
+        "type": "identify",
+        "channel": "web",
+        "properties": {},
+        "context": {},
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "integrations": {
+          "All": true
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "experimentId": "test_experiment_id"
+        }
+      }
+    },
+    "output": {
+      "error": "Campaign ID is not present. Aborting"
+    }
+  },
+  {
+    "description": "Missing Experiment ID",
+    "input": {
+      "message": {
+        "type": "identify",
+        "channel": "web",
+        "properties": {},
+        "context": {},
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "integrations": {
+          "All": true
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campagin_id"
+        }
+      }
+    },
+    "output": {
+      "error": "Experiment ID is not present. Aborting"
+    }
+  },
+  {
+    "description": "Page: Track Categorized Page and Track Named Pages toggle are disabled",
+    "input": {
+      "message": {
+        "type": "page",
+        "channel": "web",
+        "name": "Home",
+        "properties": {},
+        "context": {},
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "123"
+          }
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campagin_id",
+          "experimentId": "test_experiment_id",
+          "trackCategorizedPages": false,
+          "trackNamedPages": false
+        }
+      }
+    },
+    "output": {
+      "error": "Both 'Track Categorized Pages' and 'Track Named Pages' toggles are disabled in webapp. Please enable at one of them to send page/screen events to Optimizely."
     }
   },
   {
@@ -66,17 +213,20 @@
         "context": { "traits": { "firstName": "John", "age": 27 } },
         "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
         "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
-        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "optimizely_fullstack": {
+          "variationId": "123"
+        }
       },
       "destination": {
         "Config": {
-          "sdkKey": "test-sdk-key",
-          "baseUrl": "https://example.com",
-          "trackKnownUsers": true,
-          "nonInteraction": false,
-          "listen": false,
-          "trackCategorizedPages": true,
-          "trackNamedPages": true
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campagin_id",
+          "experimentId": "test_experiment_id",
+          "trackCategorizedPages": false,
+          "trackNamedPages": false,
+          "trackKnownUsers": true
         }
       }
     },
@@ -94,17 +244,20 @@
         "properties": { "price": 999, "quantity": 1 },
         "context": { "traits": { "firstName": "John", "age": 27 } },
         "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
-        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff"
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "123"
+          }
+        }
       },
       "destination": {
         "Config": {
-          "sdkKey": "test-sdk-key",
-          "baseUrl": "https://example.com",
-          "trackKnownUsers": false,
-          "nonInteraction": false,
-          "listen": false,
-          "trackCategorizedPages": true,
-          "trackNamedPages": true
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campagin_id",
+          "experimentId": "test_experiment_id"
         }
       }
     },
@@ -126,363 +279,1234 @@
       },
       "destination": {
         "Config": {
-          "sdkKey": "test-sdk-key",
-          "baseUrl": "https://example.com",
-          "trackKnownUsers": false,
-          "nonInteraction": false,
-          "listen": false,
-          "trackCategorizedPages": true,
-          "trackNamedPages": true
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campagin_id",
+          "experimentId": "test_experiment_id"
         }
       }
     },
     "output": {
-      "error": "Event name is required"
+      "error": "Event is not present. Aborting."
     }
   },
   {
-    "description": "Track call with userId",
+    "description": "Invalid data file url",
     "input": {
       "message": {
         "type": "track",
-        "channel": "web",
         "event": "Product Added",
-        "userId": "test123",
-        "properties": { "price": 999, "quantity": 1 },
-        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "channel": "web",
+        "properties": {},
+        "context": {},
         "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
         "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
         "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
       },
       "destination": {
         "Config": {
-          "sdkKey": "test-sdk-key",
-          "baseUrl": "https://example.com",
-          "trackKnownUsers": true,
-          "nonInteraction": false,
-          "listen": false,
-          "trackCategorizedPages": true,
-          "trackNamedPages": true
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/wrong_cdn.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campagin_id",
+          "experimentId": "test_experiment_id"
         }
       }
     },
     "output": {
-      "body": {
-        "FORM": {},
-        "JSON": {
-          "userId": "test123",
-          "userAttributes": { "firstName": "John", "age": 27 },
-          "eventTags": { "price": 999, "quantity": 1 }
-        },
-        "JSON_ARRAY": {},
-        "XML": {}
-      },
-      "endpoint": "https://example.com/v1/track?eventKey=Product%20Added",
-      "files": {},
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Optimizely-SDK-Key": "test-sdk-key"
-      },
-      "method": "POST",
-      "params": {},
-      "type": "REST",
-      "version": "1"
+      "error": "{\"message\":\"Data File Lookup Failed\",\"destinationResponse\":{\"response\":{\"code\":\"document_not_found\",\"message\":\"document_not_found\"},\"status\":404}}"
     }
   },
   {
-    "description": "Track call with anonymousId",
+    "description": "Invalid data file url",
     "input": {
       "message": {
         "type": "track",
-        "channel": "web",
         "event": "Product Added",
-        "properties": { "price": 999, "quantity": 1 },
-        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "channel": "web",
+        "properties": {},
+        "context": {},
         "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
         "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
-        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "123"
+          }
+        }
       },
       "destination": {
         "Config": {
-          "sdkKey": "test-sdk-key",
-          "baseUrl": "https://example.com",
-          "trackKnownUsers": false,
-          "nonInteraction": false,
-          "listen": false,
-          "trackCategorizedPages": true,
-          "trackNamedPages": true
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campagin_id",
+          "experimentId": "test_experiment_id"
         }
       }
     },
     "output": {
-      "body": {
-        "FORM": {},
-        "JSON": {
-          "userId": "97c46c81-3140-456d-b2a9-690d70aaca35",
-          "userAttributes": { "firstName": "John", "age": 27 },
-          "eventTags": { "price": 999, "quantity": 1 }
-        },
-        "JSON_ARRAY": {},
-        "XML": {}
-      },
-      "endpoint": "https://example.com/v1/track?eventKey=Product%20Added",
-      "files": {},
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Optimizely-SDK-Key": "test-sdk-key"
-      },
-      "method": "POST",
-      "params": {},
-      "type": "REST",
-      "version": "1"
+      "error": "No mapped event found for Product Added event. Make sure to map the event in 'RudderStack to Optimizely event mappings' setting"
     }
   },
   {
-    "description": "Page call with Track Categorized Pages is enabled",
+    "description": "Invalid data file url",
     "input": {
       "message": {
-        "type": "page",
+        "type": "track",
+        "event": "Product Added",
         "channel": "web",
-        "userId": "test123",
-        "category": "food",
-        "properties": {
-          "url": "https://www.google.com/",
-          "title": "Google home"
-        },
-        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "properties": {},
+        "context": {},
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
         "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
-        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "123"
+          }
+        }
       },
       "destination": {
         "Config": {
-          "sdkKey": "test-sdk-key",
-          "baseUrl": "https://example.com",
-          "trackKnownUsers": true,
-          "nonInteraction": false,
-          "listen": false,
-          "trackCategorizedPages": true,
-          "trackNamedPages": true
-        }
-      }
-    },
-    "output": [
-      {
-        "body": {
-          "FORM": {},
-          "JSON": {
-            "userId": "test123",
-            "userAttributes": { "firstName": "John", "age": 27 },
-            "eventTags": {
-              "url": "https://www.google.com/",
-              "title": "Google home"
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campagin_id",
+          "experimentId": "test_experiment_id",
+          "eventMapping": [
+            {
+              "from": "Product Added",
+              "to": "product_added"
             }
-          },
-          "JSON_ARRAY": {},
-          "XML": {}
-        },
-        "endpoint": "https://example.com/v1/track?eventKey=Viewed%20food%20page",
-        "files": {},
-        "headers": {
-          "Content-Type": "application/json",
-          "X-Optimizely-SDK-Key": "test-sdk-key"
-        },
-        "method": "POST",
-        "params": {},
-        "type": "REST",
-        "version": "1"
+          ]
+        }
       }
-    ]
+    },
+    "output": {
+      "error": "Mapped event product_added is not present in data file. Make sure event exists in Optimizely."
+    }
   },
   {
-    "description": "Page call with Track Named Pages is enabled",
+    "description": "Identify call (Decision Event) with userId",
     "input": {
       "message": {
-        "type": "page",
+        "type": "identify",
         "channel": "web",
-        "userId": "test123",
-        "name": "Thank You",
-        "properties": {
-          "url": "https://www.google.com/",
-          "title": "Google home"
+        "properties": {},
+        "context": {
+          "traits": {
+            "organization": "RudderStack",
+            "fullName": "John Doe",
+            "country": "US"
+          },
+          "sessionId": 1685626914716
         },
-        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
         "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
-        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "userId": "userId123",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "test_variation_id_1"
+          }
+        }
       },
       "destination": {
         "Config": {
-          "sdkKey": "test-sdk-key",
-          "baseUrl": "https://example.com",
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campaign_id",
+          "experimentId": "test_experiment_id",
           "trackKnownUsers": true,
-          "nonInteraction": false,
-          "listen": false,
+          "attributeMapping": [
+            {
+              "from": "organization",
+              "to": "company"
+            },
+            {
+              "from": "fullName",
+              "to": "name"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://logx.optimizely.com/v1/events",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "account_id": "test_account_id",
+          "anonymize_ip": false,
+          "enrich_decisions": true,
+          "client_name": "RudderStack",
+          "client_version": "1.0.0",
+          "visitors": [
+            {
+              "visitor_id": "userId123",
+              "attributes": [
+                {
+                  "entity_id": "test_attribute_id_5",
+                  "key": "company",
+                  "type": "custom",
+                  "value": "RudderStack"
+                },
+                {
+                  "entity_id": "test_attribute_id_2",
+                  "key": "name",
+                  "type": "custom",
+                  "value": "John Doe"
+                }
+              ],
+              "snapshots": [
+                {
+                  "decisions": [
+                    {
+                      "campaign_id": "test_campaign_id",
+                      "experiment_id": "test_experiment_id",
+                      "variation_id": "test_variation_id_1"
+                    }
+                  ],
+                  "events": [
+                    {
+                      "entity_id": "test_campaign_id",
+                      "type": "campaign_activated",
+                      "timestamp": 1676031367251,
+                      "uuid": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff"
+                    }
+                  ]
+                }
+              ],
+              "session_id": "1685626914716"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Identify call (Decision Event) with anonymousId",
+    "input": {
+      "message": {
+        "type": "identify",
+        "channel": "web",
+        "properties": {},
+        "context": {
+          "traits": {
+            "organization": "RudderStack",
+            "fullName": "John Doe",
+            "country": "US"
+          },
+          "sessionId": 1685626914716
+        },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "userId": "userId123",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "test_variation_id_1"
+          }
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campaign_id",
+          "experimentId": "test_experiment_id",
+          "trackKnownUsers": false
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://logx.optimizely.com/v1/events",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "account_id": "test_account_id",
+          "anonymize_ip": false,
+          "enrich_decisions": true,
+          "client_name": "RudderStack",
+          "client_version": "1.0.0",
+          "visitors": [
+            {
+              "visitor_id": "97c46c81-3140-456d-b2a9-690d70aaca35",
+              "snapshots": [
+                {
+                  "decisions": [
+                    {
+                      "campaign_id": "test_campaign_id",
+                      "experiment_id": "test_experiment_id",
+                      "variation_id": "test_variation_id_1"
+                    }
+                  ],
+                  "events": [
+                    {
+                      "entity_id": "test_campaign_id",
+                      "type": "campaign_activated",
+                      "timestamp": 1676031367251,
+                      "uuid": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff"
+                    }
+                  ]
+                }
+              ],
+              "session_id": "1685626914716"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Identify call (Decision Event) with projectId is empty",
+    "input": {
+      "message": {
+        "type": "identify",
+        "channel": "web",
+        "properties": {},
+        "context": {
+          "traits": {
+            "organization": "RudderStack",
+            "fullName": "John Doe",
+            "country": "US"
+          },
+          "sessionId": 1685626914716
+        },
+        "rudderId": "8f8fa6b5-8e24-489c-8e22-61f23f2e364f",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35",
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "userId": "userId123",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "test_variation_id_1"
+          }
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campaign_id",
+          "experimentId": "test_experiment_id",
+          "trackKnownUsers": true,
+          "projectId": "",
+          "attributeMapping": [
+            {
+              "from": "organization",
+              "to": "company"
+            },
+            {
+              "from": "fullName",
+              "to": "name"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://logx.optimizely.com/v1/events",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "account_id": "test_account_id",
+          "anonymize_ip": false,
+          "enrich_decisions": true,
+          "client_name": "RudderStack",
+          "client_version": "1.0.0",
+          "visitors": [
+            {
+              "visitor_id": "userId123",
+              "attributes": [
+                {
+                  "entity_id": "test_attribute_id_5",
+                  "key": "company",
+                  "type": "custom",
+                  "value": "RudderStack"
+                },
+                {
+                  "entity_id": "test_attribute_id_2",
+                  "key": "name",
+                  "type": "custom",
+                  "value": "John Doe"
+                }
+              ],
+              "snapshots": [
+                {
+                  "decisions": [
+                    {
+                      "campaign_id": "test_campaign_id",
+                      "experiment_id": "test_experiment_id",
+                      "variation_id": "test_variation_id_1"
+                    }
+                  ],
+                  "events": [
+                    {
+                      "entity_id": "test_campaign_id",
+                      "type": "campaign_activated",
+                      "timestamp": 1676031367251,
+                      "uuid": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff"
+                    }
+                  ]
+                }
+              ],
+              "session_id": "1685626914716"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Track call (Conversion event) with userId",
+    "input": {
+      "message": {
+        "type": "track",
+        "event": "product_added",
+        "userId": "userId123",
+        "channel": "web",
+        "context": {
+          "traits": {
+            "organization": "RudderStack",
+            "fullName": "John Doe"
+          },
+          "sessionId": 1685626914716
+        },
+        "rudderId": "5354b3f2-cb72-4355-a2b5-a298c3837c7d",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "properties": {
+          "foo": "bar",
+          "revenue": 123,
+          "quantity": 2
+        },
+        "anonymousId": "856365b8-da4b-4c13-9098-84df18559446",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "test_variation_id_2"
+          }
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campaign_id",
+          "experimentId": "test_experiment_id",
+          "trackKnownUsers": true,
+          "anonymizeIp": true,
+          "eventMapping": [
+            {
+              "from": "Product Searched",
+              "to": "Searched"
+            },
+            {
+              "from": "product_added",
+              "to": "Product Added"
+            }
+          ],
+          "attributeMapping": [
+            {
+              "from": "organization",
+              "to": "company"
+            },
+            {
+              "from": "fullName",
+              "to": "name"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://logx.optimizely.com/v1/events",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "account_id": "test_account_id",
+          "anonymize_ip": true,
+          "enrich_decisions": true,
+          "client_name": "RudderStack",
+          "client_version": "1.0.0",
+          "visitors": [
+            {
+              "visitor_id": "userId123",
+              "attributes": [
+                {
+                  "entity_id": "test_attribute_id_5",
+                  "key": "company",
+                  "type": "custom",
+                  "value": "RudderStack"
+                },
+                {
+                  "entity_id": "test_attribute_id_2",
+                  "key": "name",
+                  "type": "custom",
+                  "value": "John Doe"
+                }
+              ],
+              "snapshots": [
+                {
+                  "decisions": [],
+                  "events": [
+                    {
+                      "entity_id": "test_event_id_1",
+                      "key": "Product Added",
+                      "timestamp": 1676031367251,
+                      "uuid": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+                      "quantity": 2,
+                      "revenue": 12300,
+                      "tags": {
+                        "foo": "bar"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "session_id": "1685626914716"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Track call: Missing Variation ID in integration object ",
+    "input": {
+      "message": {
+        "type": "track",
+        "event": "product_added",
+        "userId": "userId123",
+        "channel": "web",
+        "context": {
+          "traits": {
+            "organization": "RudderStack",
+            "fullName": "John Doe"
+          },
+          "sessionId": 1685626914716
+        },
+        "rudderId": "5354b3f2-cb72-4355-a2b5-a298c3837c7d",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "properties": {
+          "foo": "bar",
+          "revenue": 123,
+          "quantity": 2
+        },
+        "anonymousId": "856365b8-da4b-4c13-9098-84df18559446",
+        "integrations": {
+          "All": true
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campaign_id",
+          "experimentId": "test_experiment_id",
+          "trackKnownUsers": true,
+          "anonymizeIp": true,
+          "eventMapping": [
+            {
+              "from": "Product Searched",
+              "to": "Searched"
+            },
+            {
+              "from": "product_added",
+              "to": "Product Added"
+            }
+          ],
+          "attributeMapping": [
+            {
+              "from": "organization",
+              "to": "company"
+            },
+            {
+              "from": "fullName",
+              "to": "name"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://logx.optimizely.com/v1/events",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "account_id": "test_account_id",
+          "anonymize_ip": true,
+          "enrich_decisions": true,
+          "client_name": "RudderStack",
+          "client_version": "1.0.0",
+          "visitors": [
+            {
+              "visitor_id": "userId123",
+              "attributes": [
+                {
+                  "entity_id": "test_attribute_id_5",
+                  "key": "company",
+                  "type": "custom",
+                  "value": "RudderStack"
+                },
+                {
+                  "entity_id": "test_attribute_id_2",
+                  "key": "name",
+                  "type": "custom",
+                  "value": "John Doe"
+                }
+              ],
+              "snapshots": [
+                {
+                  "decisions": [],
+                  "events": [
+                    {
+                      "entity_id": "test_event_id_1",
+                      "key": "Product Added",
+                      "timestamp": 1676031367251,
+                      "uuid": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+                      "quantity": 2,
+                      "revenue": 12300,
+                      "tags": {
+                        "foo": "bar"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "session_id": "1685626914716"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Track Categorized and Named Page",
+    "input": {
+      "message": {
+        "type": "page",
+        "name": "Meal",
+        "userId": "userId123",
+        "channel": "web",
+        "context": {
+          "traits": {
+            "organization": "RudderStack",
+            "fullName": "John Doe"
+          },
+          "sessionId": 1685626914716
+        },
+        "rudderId": "5354b3f2-cb72-4355-a2b5-a298c3837c7d",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "properties": {
+          "foo": "bar",
+          "category": "food"
+        },
+        "anonymousId": "856365b8-da4b-4c13-9098-84df18559446",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "test_variation_id_1"
+          }
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campaign_id",
+          "experimentId": "test_experiment_id",
+          "trackKnownUsers": true,
+          "anonymizeIp": true,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true,
+          "pageMapping": [
+            {
+              "from": "meal",
+              "to": "Viewed Meal Page"
+            },
+            {
+              "from": "food",
+              "to": "Product Added"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://logx.optimizely.com/v1/events",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "account_id": "test_account_id",
+          "anonymize_ip": true,
+          "enrich_decisions": true,
+          "client_name": "RudderStack",
+          "client_version": "1.0.0",
+          "visitors": [
+            {
+              "visitor_id": "userId123",
+              "snapshots": [
+                {
+                  "decisions": [],
+                  "events": [
+                    {
+                      "entity_id": "test_event_id_1",
+                      "key": "Product Added",
+                      "timestamp": 1676031367251,
+                      "uuid": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+                      "tags": {
+                        "foo": "bar",
+                        "category": "food"
+                      }
+                    },
+                    {
+                      "entity_id": "test_event_id_4",
+                      "key": "Viewed Meal page",
+                      "timestamp": 1676031367251,
+                      "uuid": "generated_uuid",
+                      "tags": {
+                        "foo": "bar",
+                        "category": "food"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "session_id": "1685626914716"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Track Categorized Page: trackCategorizedPages,trackNamedPages toggle are enabled and name is not provided",
+    "input": {
+      "message": {
+        "type": "page",
+        "userId": "userId123",
+        "channel": "web",
+        "context": {
+          "traits": {
+            "organization": "RudderStack",
+            "fullName": "John Doe"
+          },
+          "sessionId": 1685626914716
+        },
+        "rudderId": "5354b3f2-cb72-4355-a2b5-a298c3837c7d",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "properties": {
+          "foo": "bar",
+          "category": "food"
+        },
+        "anonymousId": "856365b8-da4b-4c13-9098-84df18559446",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "test_variation_id_1"
+          }
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campaign_id",
+          "experimentId": "test_experiment_id",
+          "trackKnownUsers": true,
+          "anonymizeIp": true,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true,
+          "pageMapping": [
+            {
+              "from": "meal",
+              "to": "Viewed Meal Page"
+            },
+            {
+              "from": "food",
+              "to": "Product Added"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://logx.optimizely.com/v1/events",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "account_id": "test_account_id",
+          "anonymize_ip": true,
+          "enrich_decisions": true,
+          "client_name": "RudderStack",
+          "client_version": "1.0.0",
+          "visitors": [
+            {
+              "visitor_id": "userId123",
+              "snapshots": [
+                {
+                  "decisions": [],
+                  "events": [
+                    {
+                      "entity_id": "test_event_id_1",
+                      "key": "Product Added",
+                      "timestamp": 1676031367251,
+                      "uuid": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+                      "tags": {
+                        "foo": "bar",
+                        "category": "food"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "session_id": "1685626914716"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Track Named Page: trackCategorizedPages,trackNamedPages toggle are enabled and category is not provided",
+    "input": {
+      "message": {
+        "type": "page",
+        "userId": "userId123",
+        "name": "Meal",
+        "channel": "web",
+        "context": {
+          "traits": {
+            "organization": "RudderStack",
+            "fullName": "John Doe"
+          },
+          "sessionId": 1685626914716
+        },
+        "rudderId": "5354b3f2-cb72-4355-a2b5-a298c3837c7d",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "properties": {
+          "foo": "bar"
+        },
+        "anonymousId": "856365b8-da4b-4c13-9098-84df18559446",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "test_variation_id_1"
+          }
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campaign_id",
+          "experimentId": "test_experiment_id",
+          "trackKnownUsers": true,
+          "anonymizeIp": true,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true,
+          "pageMapping": [
+            {
+              "from": "meal",
+              "to": "Viewed Meal Page"
+            },
+            {
+              "from": "food",
+              "to": "Product Added"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://logx.optimizely.com/v1/events",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "account_id": "test_account_id",
+          "anonymize_ip": true,
+          "enrich_decisions": true,
+          "client_name": "RudderStack",
+          "client_version": "1.0.0",
+          "visitors": [
+            {
+              "visitor_id": "userId123",
+              "snapshots": [
+                {
+                  "decisions": [],
+                  "events": [
+                    {
+                      "entity_id": "test_event_id_4",
+                      "key": "Viewed Meal page",
+                      "timestamp": 1676031367251,
+                      "uuid": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+                      "tags": {
+                        "foo": "bar"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "session_id": "1685626914716"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Track Named Page: trackCategorizedPages,trackNamedPages toggle are enabled and category mapping is wrong",
+    "input": {
+      "message": {
+        "type": "page",
+        "userId": "userId123",
+        "name": "Meal",
+        "channel": "web",
+        "context": {
+          "traits": {
+            "organization": "RudderStack",
+            "fullName": "John Doe"
+          },
+          "sessionId": 1685626914716
+        },
+        "rudderId": "5354b3f2-cb72-4355-a2b5-a298c3837c7d",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "properties": {
+          "foo": "bar"
+        },
+        "anonymousId": "856365b8-da4b-4c13-9098-84df18559446",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "test_variation_id_1"
+          }
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campaign_id",
+          "experimentId": "test_experiment_id",
+          "trackKnownUsers": true,
+          "anonymizeIp": true,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true,
+          "pageMapping": [
+            {
+              "from": "meal",
+              "to": "Viewed Meal Page"
+            },
+            {
+              "from": "food",
+              "to": "ABC"
+            }
+          ]
+        }
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://logx.optimizely.com/v1/events",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "account_id": "test_account_id",
+          "anonymize_ip": true,
+          "enrich_decisions": true,
+          "client_name": "RudderStack",
+          "client_version": "1.0.0",
+          "visitors": [
+            {
+              "visitor_id": "userId123",
+              "snapshots": [
+                {
+                  "decisions": [],
+                  "events": [
+                    {
+                      "entity_id": "test_event_id_4",
+                      "key": "Viewed Meal page",
+                      "timestamp": 1676031367251,
+                      "uuid": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+                      "tags": {
+                        "foo": "bar"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "session_id": "1685626914716"
+            }
+          ]
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Track Named Page: mapping is not provided for page name in webapp",
+    "input": {
+      "message": {
+        "type": "page",
+        "userId": "userId123",
+        "name": "Meal",
+        "channel": "web",
+        "context": {
+          "traits": {
+            "organization": "RudderStack",
+            "fullName": "John Doe"
+          },
+          "sessionId": 1685626914716
+        },
+        "rudderId": "5354b3f2-cb72-4355-a2b5-a298c3837c7d",
+        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "properties": {
+          "foo": "bar"
+        },
+        "anonymousId": "856365b8-da4b-4c13-9098-84df18559446",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "test_variation_id_1"
+          }
+        }
+      },
+      "destination": {
+        "Config": {
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campaign_id",
+          "experimentId": "test_experiment_id",
+          "trackKnownUsers": true,
+          "anonymizeIp": true,
           "trackCategorizedPages": false,
-          "trackNamedPages": true
+          "trackNamedPages": true,
+          "pageMapping": [
+            {
+              "from": "Home",
+              "to": "Viewed Home Page"
+            },
+            {
+              "from": "food",
+              "to": "Product Added"
+            }
+          ]
         }
       }
     },
-    "output": [
-      {
-        "body": {
-          "FORM": {},
-          "JSON": {
-            "userId": "test123",
-            "userAttributes": { "firstName": "John", "age": 27 },
-            "eventTags": {
-              "url": "https://www.google.com/",
-              "title": "Google home"
-            }
-          },
-          "JSON_ARRAY": {},
-          "XML": {}
-        },
-        "endpoint": "https://example.com/v1/track?eventKey=Viewed%20Thank%20You%20page",
-        "files": {},
-        "headers": {
-          "Content-Type": "application/json",
-          "X-Optimizely-SDK-Key": "test-sdk-key"
-        },
-        "method": "POST",
-        "params": {},
-        "type": "REST",
-        "version": "1"
-      }
-    ]
+    "output": {
+      "error": "No mapped event found for page call. Make sure to map the event in 'RudderStack Page Name/Category to Optimizely event mappings' setting"
+    }
   },
   {
-    "description": "Page call with both Track Categorized Pages and Track Named Pages toggles are enabled",
-    "input": {
-      "message": {
-        "type": "page",
-        "channel": "web",
-        "userId": "test123",
-        "category": "Docs",
-        "name": "Index",
-        "properties": {
-          "url": "https://www.google.com/",
-          "title": "Google home"
-        },
-        "context": { "traits": { "firstName": "John", "age": 27 } },
-        "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
-        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
-      },
-      "destination": {
-        "Config": {
-          "sdkKey": "test-sdk-key",
-          "baseUrl": "https://example.com",
-          "trackKnownUsers": true,
-          "nonInteraction": false,
-          "listen": false,
-          "trackCategorizedPages": true,
-          "trackNamedPages": true
-        }
-      }
-    },
-    "output": [
-      {
-        "body": {
-          "FORM": {},
-          "JSON": {
-            "userId": "test123",
-            "userAttributes": { "firstName": "John", "age": 27 },
-            "eventTags": {
-              "url": "https://www.google.com/",
-              "title": "Google home"
-            }
-          },
-          "JSON_ARRAY": {},
-          "XML": {}
-        },
-        "endpoint": "https://example.com/v1/track?eventKey=Viewed%20Docs%20page",
-        "files": {},
-        "headers": {
-          "Content-Type": "application/json",
-          "X-Optimizely-SDK-Key": "test-sdk-key"
-        },
-        "method": "POST",
-        "params": {},
-        "type": "REST",
-        "version": "1"
-      },
-      {
-        "body": {
-          "FORM": {},
-          "JSON": {
-            "userId": "test123",
-            "userAttributes": { "firstName": "John", "age": 27 },
-            "eventTags": {
-              "url": "https://www.google.com/",
-              "title": "Google home"
-            }
-          },
-          "JSON_ARRAY": {},
-          "XML": {}
-        },
-        "endpoint": "https://example.com/v1/track?eventKey=Viewed%20Index%20page",
-        "files": {},
-        "headers": {
-          "Content-Type": "application/json",
-          "X-Optimizely-SDK-Key": "test-sdk-key"
-        },
-        "method": "POST",
-        "params": {},
-        "type": "REST",
-        "version": "1"
-      }
-    ]
-  },
-  {
-    "description": "Screen call",
+    "description": "Track Categorized and Named Screen",
     "input": {
       "message": {
         "type": "screen",
+        "name": "Home",
+        "userId": "userId123",
         "channel": "web",
-        "userId": "test123",
-        "name": "Main",
-        "properties": {
-          "url": "https://www.google.com/",
-          "title": "Google Main"
+        "context": {
+          "traits": {
+            "organization": "RudderStack",
+            "fullName": "John Doe"
+          },
+          "sessionId": 1685626914716
         },
-        "context": { "traits": { "firstName": "John", "age": 27 } },
+        "rudderId": "5354b3f2-cb72-4355-a2b5-a298c3837c7d",
         "messageId": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
-        "anonymousId": "97c46c81-3140-456d-b2a9-690d70aaca35"
+        "timestamp": "2023-02-10T12:16:07.251Z",
+        "properties": {
+          "foo": "bar",
+          "category": "food"
+        },
+        "anonymousId": "856365b8-da4b-4c13-9098-84df18559446",
+        "integrations": {
+          "All": true,
+          "optimizely_fullstack": {
+            "variationId": "test_variation_id_1"
+          }
+        }
       },
       "destination": {
         "Config": {
-          "sdkKey": "test-sdk-key",
-          "baseUrl": "https://example.com",
+          "dataFileUrl": "https://cdn.optimizely.com/datafiles/abc.json",
+          "accountId": "test_account_id",
+          "campaignId": "test_campaign_id",
+          "experimentId": "test_experiment_id",
           "trackKnownUsers": true,
-          "nonInteraction": false,
-          "listen": false,
-          "trackCategorizedPages": false,
-          "trackNamedPages": true
+          "anonymizeIp": true,
+          "trackCategorizedPages": true,
+          "trackNamedPages": true,
+          "pageMapping": [
+            {
+              "from": "home",
+              "to": "Viewed Main Screen"
+            },
+            {
+              "from": "food",
+              "to": "Product Added"
+            }
+          ]
         }
       }
     },
     "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://logx.optimizely.com/v1/events",
+      "headers": {
+        "Content-Type": "application/json"
+      },
+      "params": {},
       "body": {
-        "FORM": {},
         "JSON": {
-          "userId": "test123",
-          "userAttributes": { "firstName": "John", "age": 27 },
-          "eventTags": {
-            "url": "https://www.google.com/",
-            "title": "Google Main"
-          }
+          "account_id": "test_account_id",
+          "anonymize_ip": true,
+          "enrich_decisions": true,
+          "client_name": "RudderStack",
+          "client_version": "1.0.0",
+          "visitors": [
+            {
+              "visitor_id": "userId123",
+              "snapshots": [
+                {
+                  "decisions": [],
+                  "events": [
+                    {
+                      "entity_id": "test_event_id_1",
+                      "key": "Product Added",
+                      "timestamp": 1676031367251,
+                      "uuid": "2116ef8c-efc3-4ca4-851b-02ee60dad6ff",
+                      "tags": {
+                        "foo": "bar",
+                        "category": "food"
+                      }
+                    },
+                    {
+                      "entity_id": "test_event_id_6",
+                      "key": "Viewed Main screen",
+                      "timestamp": 1676031367251,
+                      "uuid": "generated_uuid",
+                      "tags": {
+                        "foo": "bar",
+                        "category": "food"
+                      }
+                    }
+                  ]
+                }
+              ],
+              "session_id": "1685626914716"
+            }
+          ]
         },
         "JSON_ARRAY": {},
-        "XML": {}
+        "XML": {},
+        "FORM": {}
       },
-      "endpoint": "https://example.com/v1/track?eventKey=Viewed%20Main%20screen",
-      "files": {},
-      "headers": {
-        "Content-Type": "application/json",
-        "X-Optimizely-SDK-Key": "test-sdk-key"
-      },
-      "method": "POST",
-      "params": {},
-      "type": "REST",
-      "version": "1"
+      "files": {}
     }
   }
 ]

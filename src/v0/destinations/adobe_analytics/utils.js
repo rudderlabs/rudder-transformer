@@ -147,8 +147,13 @@ function rudderPropToDestMapWithDelimitter(mapping, delimMapping, message, prefi
           `${prefix} mapping properties variable is neither a string nor an array`,
         );
       }
+      
       if (typeof val === 'string') {
-        val = val.replace(/\s*,+\s*/g, delimMapping[key]);
+        /* following regex is used to find the one or more commas separated/padded by white spaces. 
+        Example: val = 'r15,faze90R' , 'r1v, bvp, pol'
+        */
+        val = val.replace(/\s*,+\s*/g, delimMapping[key]); 
+        // Above regex is good as for every comma with whitespace padding the no. of steps will increase by 4.  
       } else {
         val = val.join(delimMapping[key]);
       }

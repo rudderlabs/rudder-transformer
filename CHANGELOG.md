@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.32.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.32.2...v1.32.3) (2023-06-20)
+
+
+### Bug Fixes
+
+* add ip mapping for mix-panel group call ([#2281](https://github.com/rudderlabs/rudder-transformer/issues/2281)) ([607bb0e](https://github.com/rudderlabs/rudder-transformer/commit/607bb0ecb3f52383d906e546f6c3ff1c2081ea43))
+* add support for array of string values for userFields ([#2282](https://github.com/rudderlabs/rudder-transformer/issues/2282)) ([2d79801](https://github.com/rudderlabs/rudder-transformer/commit/2d798014c1242249590697b9b6e453816e64ff22))
+* correct mapping for properties object for identify call ([#2283](https://github.com/rudderlabs/rudder-transformer/issues/2283)) ([d046cd2](https://github.com/rudderlabs/rudder-transformer/commit/d046cd2b1d4b94f531d819bef8809e776a1885f6))
+* pinterest, mixpanel, klaviyo updates ([#2288](https://github.com/rudderlabs/rudder-transformer/issues/2288)) ([8a18b90](https://github.com/rudderlabs/rudder-transformer/commit/8a18b903e0ae76133a800e421dd731493219b410))
+
 ### [1.32.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.32.1...v1.32.2) (2023-06-15)
 
 

@@ -57,7 +57,7 @@ const blockLocalhostRequests = (url) => {
   }
 };
 
-const fetchWrapper = async (versionId, ...args) => {
+const fetchWithDnsWrapper = async (versionId, ...args) => {
   if (!DNS_RESOLVE_FETCH_HOST) {
     return await fetch(...args);
   }
@@ -160,5 +160,5 @@ module.exports = {
   constructValidationErrors,
   sendViolationMetrics,
   logProcessInfo,
-  fetchWrapper,
+  fetchWithDnsWrapper,
 };

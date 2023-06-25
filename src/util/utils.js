@@ -1,44 +1,44 @@
 /* eslint-disable max-classes-per-file */
-const http = require("http");
-const https = require("https");
-const { Resolver } = require("dns").promises;
+const http = require('http');
+const https = require('https');
+const { Resolver } = require('dns').promises;
+const fetch = require('node-fetch');
 
 const util = require('util');
 const logger = require('../logger');
 const stats = require('./stats');
 
+const DNS_RESOLVE_FETCH_HOST = process.env.DNS_RESOLVE_FETCH_HOST === 'true';
+
 const resolver = new Resolver();
 // Cloudflare and Google dns
-resolver.setServers([
-  "1.1.1.1",
-  "8.8.8.8",
-]);
+resolver.setServers(['1.1.1.1', '8.8.8.8']);
 
-const LOCALHOST_IP = "127.0.0.1";
+const LOCALHOST_IP = '127.0.0.1';
 const LOCALHOST_URL = `http://localhost`;
 
-const staticLookup = () => async (hostname, _, cb) => {
-  console.log("staticLookup", hostname);
-
+const staticLookup = (versionid) => async (hostname, _, cb) => {
   let ips;
+  const resolveStartTime = new Date();
   try {
     ips = await resolver.resolve(hostname);
   } catch (error) {
-    cb(null, `unable to resolve IP address for ${hostname}`, 4)
+    stats.timing('fetch_dns_resolve_time', resolveStartTime, { versionid, error: true });
+    logger.info(`unable to resolve IP address for ${hostname}`);
+    cb(null, `unable to resolve IP address for ${hostname}`, 4);
     return;
   }
-
-  console.log("Resolved", hostname, "to", ips);
+  stats.timing('fetch_dns_resolve_time', resolveStartTime, { versionid });
+  logger.info(`resolved ${hostname} to ${ips}`);
 
   if (ips.length === 0) {
-    // throw new Error(`Unable to resolve ${hostname}`);
-    cb(null, `resolved empty list of IP address for ${hostname}`, 4)
+    cb(null, `resolved empty list of IP address for ${hostname}`, 4);
     return;
   }
 
   for (const ip of ips) {
     if (ip.includes(LOCALHOST_IP)) {
-      cb(null, `cannot use ${LOCALHOST_IP} as IP address`, 4)
+      cb(null, `cannot use ${LOCALHOST_IP} as IP address`, 4);
       return;
     }
   }
@@ -46,15 +46,29 @@ const staticLookup = () => async (hostname, _, cb) => {
   cb(null, ips[0], 4);
 };
 
-const staticDnsAgent = (scheme) => {
-  const httpModule = scheme === "http" ? http : https;
-  return new httpModule.Agent({ lookup: staticLookup() });
+const staticDnsAgent = (scheme, versionId) => {
+  const httpModule = scheme === 'http' ? http : https;
+  return new httpModule.Agent({ lookup: staticLookup(versionId) });
 };
 
 const blockLocalhostRequests = (url) => {
   if (url?.includes(LOCALHOST_URL) || url?.includes(LOCALHOST_IP)) {
-    throw new Error("Localhost requests are not allowed");
+    throw new Error('Localhost requests are not allowed');
   }
+};
+
+const fetchWrapper = async (versionId, ...args) => {
+  if (!DNS_RESOLVE_FETCH_HOST) {
+    return await fetch(...args);
+  }
+
+  const fetchURL = args[0];
+  blockLocalhostRequests(fetchURL);
+  const fetchOptions = args[1] || {};
+  const schemeName = fetchURL.trim().startsWith('https') ? 'https' : 'http';
+  // assign resolved agent to fetch
+  fetchOptions.agent = staticDnsAgent(schemeName, versionId);
+  return await fetch(fetchURL, fetchOptions);
 };
 
 class RespStatusError extends Error {
@@ -146,6 +160,5 @@ module.exports = {
   constructValidationErrors,
   sendViolationMetrics,
   logProcessInfo,
-  blockLocalhostRequests,
-  staticDnsAgent,
+  fetchWrapper,
 };

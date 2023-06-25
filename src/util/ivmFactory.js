@@ -5,7 +5,7 @@ const _ = require('lodash');
 const { getLibraryCodeV1, getRudderLibByImportName } = require('./customTransforrmationsStore-v1');
 const logger = require('../logger');
 const stats = require('./stats');
-const { blockLocalhostRequests, staticDnsAgent } = require('./utils');
+const { fetchWrapper } = require('./utils');
 
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
@@ -167,7 +167,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
     new ivm.Reference(async (resolve, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetch(...args);
+        const res = await fetchWrapper(versionId, ...args);
         const data = await res.json();
         stats.timing('fetch_call_duration', fetchStartTime, { versionId });
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
@@ -182,15 +182,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
-        // const res = await fetch(...args);
-        console.log(args);
-        const fetchURL = args[0];
-        // blockLocalhostRequests(fetchURL);
-        const fetchOptions = args[1] || {};
-        const schemeName = fetchURL.trim().startsWith("https") ? "https" : "http";
-        fetchOptions.agent = staticDnsAgent(schemeName);
-        console.log(`Fetching ${fetchURL} with options ${JSON.stringify(fetchOptions)}`);
-        const res = await fetch(fetchURL, fetchOptions);
+        const res = await fetchWrapper(versionId, ...args);
         const headersContent = {};
         res.headers.forEach((value, header) => {
           headersContent[header] = value;

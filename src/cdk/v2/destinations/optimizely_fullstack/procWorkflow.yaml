@@ -1,0 +1,330 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: removeUndefinedNullEmptyExclBoolInt
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - name: getIntegrationsObj
+    path: ../../../../v0/util
+  - name: formatTimeStamp
+    path: ../../../../v0/util
+  - name: getFieldValueFromMessage
+    path: ../../../../v0/util
+  - name: getHashFromArray
+    path: ../../../../v0/util
+  - name: generateUUID
+    path: ../../../../v0/util
+  - name: handleHttpRequest
+    path: ../../../../adapters/network
+  - path: ./utils
+    exportAll: true
+  - path: ./config
+    exportAll: true
+
+steps:
+  - name: validateInput
+    template: |
+      let messageType = .message.type;
+      $.assert(.message.type, "message Type is not present. Aborting.");
+      $.assert(messageType in {{$.EventType.([.IDENTIFY, .TRACK, .PAGE, .SCREEN])}}, 
+        "message type " + messageType + " is not supported");
+      $.assertConfig(.destination.Config.dataFileUrl, "Data File Url is not present. Aborting");
+      $.assertConfig(.destination.Config.accountId, "Account ID is not present. Aborting");
+      $.assertConfig(.destination.Config.campaignId, "Campaign ID is not present. Aborting");
+      $.assertConfig(.destination.Config.experimentId, "Experiment ID is not present. Aborting");
+      $.assertConfig(!(.destination.Config.trackKnownUsers && !(.message.userId)), "RudderStack will only track users associated with a userId when the trackKnownUsers setting is enabled");
+      $.assertConfig(!(!.destination.Config.trackKnownUsers && !(.message.anonymousId)), "AnonymousId is required when trackKnownUsers setting is disabled");
+      $.assertConfig(!(.destination.Config.secureEnvironment && !(.destination.Config.dataFileAccessToken)), "Data File Access Token is not present for secure environment. Aborting");
+
+  - name: messageType
+    template: |
+      .message.type.toLowerCase()
+
+  - name: validateInputForTrack
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    template: |
+      $.assert(.message.event, "Event is not present. Aborting.")
+
+  - name: validateInputForPageAndScreen
+    condition: $.outputs.messageType in [{{$.EventType.PAGE}}, {{$.EventType.SCREEN}}]
+    template: |
+      $.assert(.message.name ?? .message.properties.category, "Name and Category are not present. Aborting.");
+      $.assertConfig(.destination.Config.trackCategorizedPages  || .destination.Config.trackNamedPages, 
+      "Both 'Track Categorized Pages' and 'Track Named Pages' toggles are disabled in webapp. " + 
+      "Please enable at one of them to send page/screen events to Optimizely.");
+
+  - name: dataFile
+    description: Fetch the data file from the data file url
+    template: |
+      const dataFileUrl = .destination.Config.dataFileUrl;
+      const options = .destination.Config.secureEnvironment ? {
+        headers: {
+         "Content-Type": "application/json",
+         "Authorization": "Bearer " + .destination.Config.dataFileAccessToken
+        }
+      };
+      const rawResponse = await $.handleHttpRequest("get", dataFileUrl, options);
+      const processedResponse = rawResponse.processedResponse;
+      $.assertHttpResp(processedResponse, "Data File Lookup Failed");
+      processedResponse.response
+
+  - name: validateDateFileForTrackPageAndScreen
+    condition: $.outputs.messageType in [ {{$.EventType.TRACK}}, {{$.EventType.PAGE}}, {{$.EventType.SCREEN}}]
+    template: |
+      const availableEvents = $.outputs.dataFile.events;
+      $.assert(Array.isArray(availableEvents) && availableEvents.length > 0, "No events are present in the data file");
+
+  - name: extractExperimentIds
+    description: Extract campaignId, experimentId and variationId from the integration object
+    template: |
+      const integrationObj = $.getIntegrationsObj(.message, "optimizely_fullstack");
+      integrationObj ? integrationObj{["campaignId", "experimentId", "variationId"]};
+
+  - name: validateInputForIdentify
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    description: Variation ID is required for identify call
+    template: |
+      $.assert($.outputs.extractExperimentIds.variationId, "Variation ID is not present in the integrations object");
+
+  - name: commonPayload
+    description: Build the common payload for all the events
+    template: |
+      const commonPayload =
+      {
+        "account_id": .destination.Config.accountId,
+        "project_id": .destination.Config.projectId,
+        "anonymize_ip": .destination.Config.anonymizeIp || false,
+        "enrich_decisions": .destination.Config.enrichDecisions || true,
+        ...$.CLIENT_INFO
+      }
+      $.removeUndefinedNullEmptyExclBoolInt(commonPayload);
+
+  - name: getAttributes
+    description: Retrieves the attribute mapping from the webapp, obtains the attribute IDs from a data file, and prepares the attributes object based on the mapping and trait values.
+    template: |
+      let traits = .message.().(
+        {{{{$.getGenericPaths("traits")}}}};
+      );
+      traits = $.removeUndefinedAndNullValues(traits);
+      const attributeMap = $.getHashFromArray(.destination.Config.attributeMapping, 'from', 'to', false);
+      const availableAttributes = $.outputs.dataFile.attributes;
+      const attributes = $.prepareAttributes(attributeMap, traits, availableAttributes);
+
+  - name: prepareIdentifyPayload
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    steps:
+      - name: decisions
+        description: Prepare the decisions array
+        template: |
+          [{
+            "campaign_id": $.outputs.extractExperimentIds.campaignId || .destination.Config.campaignId, 
+            "experiment_id": $.outputs.extractExperimentIds.experimentId || .destination.Config.experimentId, 
+            "variation_id": $.outputs.extractExperimentIds.variationId,
+          }];
+
+      - name: events
+        description: Prepare the events array. Where the event is "campaign_activated" for identify call
+        template: |
+          const timestamp = .message.().(
+            {{{{$.getGenericPaths("timestamp")}}}};
+          );
+          [{
+            "entity_id": $.outputs.extractExperimentIds.campaignId || .destination.Config.campaignId, 
+            "type": "campaign_activated", 
+            "timestamp": $.formatTimeStamp(timestamp),
+            "uuid": .message.messageId
+          }];
+
+      - name: visitors
+        description: Prepare the visitors array.
+        template: |
+          const snapshots = [{
+            "decisions": $.outputs.prepareIdentifyPayload.decisions,
+            "events": $.outputs.prepareIdentifyPayload.events
+          }];
+          const visitorId = .destination.Config.trackKnownUsers ? .message.userId : .message.anonymousId;
+          const visitors = [{
+            "visitor_id": visitorId,
+            "snapshots": snapshots
+          }];
+          const sessionId = .message.().(
+            {{{{$.getGenericPaths("sessionId")}}}};
+          );
+          const attributes = $.outputs.getAttributes;
+          sessionId ? visitors[0].session_id = String(sessionId);
+          attributes.length > 0 ? visitors[0].attributes = attributes
+          visitors;
+
+      - name: payload
+        template: |
+          {
+            ...$.outputs.commonPayload,
+            "visitors": $.outputs.prepareIdentifyPayload.visitors
+          };
+
+  - name: prepareTrackPayload
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    steps:
+      - name: mappedEvent
+        description: This step retrieves the mapped event from the event mapping in webapp
+        template: |
+          const eventsMap = $.getHashFromArray(.destination.Config.eventMapping, 'from', 'to');
+          const eventInLowerCase = .message.event.toLowerCase();
+          const mappedEvent = eventsMap[eventInLowerCase];
+          $.assert(mappedEvent, "No mapped event found for " + .message.event + 
+          " event. Make sure to map the event in 'RudderStack to Optimizely event mappings' setting");
+          mappedEvent;
+
+      - name: optimizelyEvent
+        description: This step retrieves the event object from the data file for the mapped event
+        template: |
+          const availableEvents = $.outputs.dataFile.events;
+          const eventFound = availableEvents.(){.key.toLowerCase() === $.outputs.prepareTrackPayload.mappedEvent.toLowerCase()};
+          $.assert(eventFound, "Mapped event " + $.outputs.prepareTrackPayload.mappedEvent + 
+          " is not present in data file. Make sure event exists in Optimizely.");
+          eventFound;
+
+      - name: events
+        description: Prepare the events array with "id", "key" of the mapped event obtained from data file
+        template: |
+          const timestamp = .message.().(
+            {{{{$.getGenericPaths("timestamp")}}}};
+          );
+          [{
+            "entity_id": $.outputs.prepareTrackPayload.optimizelyEvent.id,
+            "timestamp": $.formatTimeStamp(timestamp),
+            "key": $.outputs.prepareTrackPayload.optimizelyEvent.key,
+            "uuid": .message.messageId,
+            "quantity": .message.properties.quantity,
+            "revenue": .message.properties.revenue ? Math.floor(.message.properties.revenue * 100),
+            "tags": .message.properties{~["revenue", "quantity"]}
+          }];
+
+      - name: visitors
+        description: Prepare the visitors array, format "sessionId" in string and passing attributes only if present
+        template: |
+          const snapshots = [{
+            "decisions": [],
+            "events": $.outputs.prepareTrackPayload.events
+          }];
+          const visitorId = .destination.Config.trackKnownUsers ? .message.userId : .message.anonymousId;
+          const visitors = [{
+            "visitor_id": visitorId,
+            "snapshots": snapshots
+          }];
+           const sessionId = .message.().(
+            {{{{$.getGenericPaths("sessionId")}}}};
+          );
+          const attributes = $.outputs.getAttributes;
+          sessionId ? visitors[0].session_id = String(sessionId);
+          attributes.length > 0 ? visitors[0].attributes = attributes
+          visitors;
+
+      - name: payload
+        template: |
+          {
+             ...$.outputs.commonPayload,
+            "visitors": $.outputs.prepareTrackPayload.visitors
+          };
+
+  - name: preparePageOrScreenPayload
+    condition: $.outputs.messageType in [{{$.EventType.PAGE}}, {{$.EventType.SCREEN}}]
+    steps:
+      - name: mappedEvents
+        description: This step returns the mapped events based on the category, name of the page and Track Categorized Pages, Track Named Pages settings on webapp
+        template: |
+          const eventsMap = $.getHashFromArray(.destination.Config.pageMapping, 'from', 'to');
+          const category = .message.properties.category.toLowerCase();
+          const name = .message.name.toLowerCase();
+          const mappedEvents = [];
+          .destination.Config.trackCategorizedPages && eventsMap[category] ? mappedEvents.push(eventsMap[category]);
+          .destination.Config.trackNamedPages && eventsMap[name] ? mappedEvents.push(eventsMap[name]);
+          $.assert(mappedEvents.length > 0, "No mapped event found for " + $.outputs.messageType + 
+          " call. Make sure to map the event in 'RudderStack Page Name/Category to Optimizely event mappings' setting");
+          mappedEvents;
+
+      - name: optimizelyEvents
+        description: This step returns the events from the data file based on the mapped events
+        template: |
+          const mappedEvents = $.outputs.preparePageOrScreenPayload.mappedEvents;
+          const availableEvents = $.outputs.dataFile.events;
+          const eventsFound = [];
+          let event = availableEvents.(){.key.toLowerCase() === mappedEvents[0].toLowerCase()} 
+          event.id ? eventsFound.push(event);
+
+
+          event = availableEvents.(){.key.toLowerCase() === mappedEvents[1].toLowerCase()};
+          event.id ? eventsFound.push(event);
+
+          $.assert(eventsFound.length > 0, "Mapped events [" + mappedEvents.join(", ") + "] are not present in the data file. Make sure events exist in Optimizely.");
+          eventsFound;
+
+      - name: events
+        description: Prepare the events array with "id", "key" of the mapped events obtained from data file
+        template: |
+          const optimizelyEvents = $.outputs.preparePageOrScreenPayload.optimizelyEvents;
+          const timestamp = .message.().(
+            {{{{$.getGenericPaths("timestamp")}}}};
+          );
+          const events = [
+            {
+            "entity_id": optimizelyEvents[0].id,
+            "timestamp": $.formatTimeStamp(timestamp),
+            "key": optimizelyEvents[0].key,
+            "uuid": .message.messageId,
+            "tags": .message.properties
+            }
+          ];
+
+          optimizelyEvents.length > 1 ? events.push({
+            "entity_id": optimizelyEvents[1].id,
+            "timestamp": $.formatTimeStamp(timestamp),
+            "key": optimizelyEvents[1].key,
+            "uuid": $.generateUUID(),
+            "tags": .message.properties
+          });
+          events;
+
+      - name: visitors
+        description: Prepare the visitors array, format "sessionId" in string and passing attributes only if present
+        template: |
+          const snapshots = [{
+            "decisions": [],
+            "events": $.outputs.preparePageOrScreenPayload.events
+          }];
+          const visitorId = .destination.Config.trackKnownUsers ? .message.userId : .message.anonymousId;
+          const visitors = [{
+            "visitor_id": visitorId,
+            "snapshots": snapshots
+          }];
+          const sessionId = .message.().(
+            {{{{$.getGenericPaths("sessionId")}}}};
+          );
+          const attributes = $.outputs.getAttributes;
+          sessionId ? visitors[0].session_id = String(sessionId);
+          attributes.length > 0 ? visitors[0].attributes = attributes
+          visitors;
+
+      - name: payload
+        template: |
+          {
+            ...$.outputs.commonPayload,
+            "visitors": $.outputs.preparePageOrScreenPayload.visitors,
+          };
+
+  - name: buildResponseForProcessTransformation
+    description: build response
+    template: |
+      const payload = $.outputs.prepareIdentifyPayload || $.outputs.prepareTrackPayload || $.outputs.preparePageOrScreenPayload;
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.removeUndefinedAndNullValues(payload);
+      response.endpoint = $.ENDPOINT;
+      response.headers = {
+          "Content-Type": "application/json"
+        };
+      response;

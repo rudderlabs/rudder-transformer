@@ -25,12 +25,10 @@ steps:
     template: |
       const listArray = .message.properties.listData.add;
       const hashEmail = .destination.Config.hashEmail;
-      console.log("fdsfdsf", listArray@prop.listData);
-      console.log("aaa", hashEmail)
-      list = listArray.({
-          "hashedEmail" :  hashEmail ? $.SHA256(.email) : .email ,
-          "email": .email
-        })
+      listArray.({
+        "hashedEmail" :  hashEmail ? $.SHA256(.email) : .email ,
+        "email": .email
+      })[]
 
   - name: payload
     template: |

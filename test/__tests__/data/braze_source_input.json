@@ -5,7 +5,7 @@
         {
           "event_type": "users.messages.inappmessage.Click",
           "id": "a1234567-89ab-cdef-0123-456789abcdef",
-          "time": 1607988752551,
+          "time": 1607988752,
           "user": {
             "user_id": "0123456789abcdef01234567",
             "external_user_id": "user_id",

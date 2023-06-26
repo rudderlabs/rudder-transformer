@@ -8,8 +8,6 @@ const util = require('util');
 const logger = require('../logger');
 const stats = require('./stats');
 
-const DNS_RESOLVE_FETCH_HOST = process.env.DNS_RESOLVE_FETCH_HOST === 'true';
-
 const resolver = new Resolver();
 // Cloudflare and Google dns
 resolver.setServers(['1.1.1.1', '8.8.8.8']);
@@ -53,12 +51,12 @@ const staticDnsAgent = (scheme, versionId) => {
 
 const blockLocalhostRequests = (url) => {
   if (url?.includes(LOCALHOST_URL) || url?.includes(LOCALHOST_IP)) {
-    throw new Error('Localhost requests are not allowed');
+    throw new Error('localhost requests are not allowed');
   }
 };
 
 const fetchWithDnsWrapper = async (versionId, ...args) => {
-  if (!DNS_RESOLVE_FETCH_HOST) {
+  if (!(process.env.DNS_RESOLVE_FETCH_HOST === 'true')) {
     return await fetch(...args);
   }
 

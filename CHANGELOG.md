@@ -34,6 +34,7 @@ All notable changes to this project will be documented in this file. See [standa
 * marketo static list test cases ([#2277](https://github.com/rudderlabs/rudder-transformer/issues/2277)) ([2f9c7c9](https://github.com/rudderlabs/rudder-transformer/commit/2f9c7c9a804c49a72368e5fe4722c0dce73131ed))
 * **optimizely:** remove empty attributes array for identify call ([#2302](https://github.com/rudderlabs/rudder-transformer/issues/2302)) ([2361679](https://github.com/rudderlabs/rudder-transformer/commit/23616796ac3e987df7a7203f91b220467cfa86e1))
 * sonar cloud Issues ([#2270](https://github.com/rudderlabs/rudder-transformer/issues/2270)) ([b7abd1e](https://github.com/rudderlabs/rudder-transformer/commit/b7abd1ee40bfc2a40863a153745e630b82cd34fa))
+* **algolia:** objectIds not getting mapped properly during transformation using cdkv2 ([#2306](https://github.com/rudderlabs/rudder-transformer/issues/2306)) ([3e98cdd](https://github.com/rudderlabs/rudder-transformer/commit/3e98cdd8d6dd53a79009221242dd777c69208a0b))
 
 ### [1.32.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.32.2...v1.32.3) (2023-06-20)
 

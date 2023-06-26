@@ -717,7 +717,9 @@
           "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
           "$distinct_id": "hjikl",
           "$set": {
-            "company": ["testComp"]
+            "company": [
+              "testComp"
+            ]
           },
           "$ip": "0.0.0.0"
         }
@@ -769,7 +771,10 @@
           "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
           "$distinct_id": "hjikl",
           "$set": {
-            "company": ["testComp", "testComp1"]
+            "company": [
+              "testComp",
+              "testComp1"
+            ]
           },
           "$ip": "0.0.0.0"
         }
@@ -795,7 +800,10 @@
           "$group_key": "company",
           "$group_id": "testComp",
           "$set": {
-            "company": ["testComp", "testComp1"]
+            "company": [
+              "testComp",
+              "testComp1"
+            ]
           }
         }
       },
@@ -820,7 +828,10 @@
           "$group_key": "company",
           "$group_id": "testComp1",
           "$set": {
-            "company": ["testComp", "testComp1"]
+            "company": [
+              "testComp",
+              "testComp1"
+            ]
           }
         }
       },
@@ -846,7 +857,9 @@
           "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
           "$distinct_id": "hjikl",
           "$set": {
-            "company": ["testComp"]
+            "company": [
+              "testComp"
+            ]
           },
           "$ip": "0.0.0.0"
         }
@@ -1001,7 +1014,9 @@
           "$screen_width": 1080,
           "$wifi": true,
           "anonymousId": "5094f5704b9cf2b3",
-          "$android_devices": ["test_device_token"],
+          "$android_devices": [
+            "test_device_token"
+          ],
           "$os": "Android",
           "$android_model": "Android SDK built for x86",
           "$android_os_version": "8.1.0",
@@ -1036,7 +1051,10 @@
       "data": {
         "event": "$merge",
         "properties": {
-          "$distinct_ids": ["test_user_id", "5094f5704b9cf2b3"],
+          "$distinct_ids": [
+            "test_user_id",
+            "5094f5704b9cf2b3"
+          ],
           "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
         }
       }
@@ -1128,7 +1146,10 @@
       "data": {
         "event": "$merge",
         "properties": {
-          "$distinct_ids": ["test_user_id", "5094f5704b9cf2b3"],
+          "$distinct_ids": [
+            "test_user_id",
+            "5094f5704b9cf2b3"
+          ],
           "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
         }
       }
@@ -1711,7 +1732,9 @@
         "data": {
           "$distinct_id": "hjikl",
           "$set": {
-            "groupId": ["testGroupId"]
+            "groupId": [
+              "testGroupId"
+            ]
           },
           "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
           "$ip": "0.0.0.0"
@@ -1994,7 +2017,9 @@
           "$token": "apiToken123",
           "$distinct_id": "$device:anonId01",
           "$set": {
-            "company": ["testComp"]
+            "company": [
+              "testComp"
+            ]
           },
           "$ip": "0.0.0.0"
         }
@@ -2039,6 +2064,33 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$append": {
+            "$transactions": {
+              "$amount": 12.13,
+              "$time": "2022-09-05T07:46:20.290Z"
+            }
+          },
+          "$distinct_id": "39da706ec83d0e90",
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "39da706ec83d0e90"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
       "endpoint": "https://api.mixpanel.com/import/",
       "headers": {
         "Authorization": "Basic OTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1Njo="
@@ -2067,6 +2119,7 @@
             "distinct_id": "39da706ec83d0e90",
             "mp_device_model": "sdk_gphone64_arm64",
             "mp_lib": "com.rudderstack.android.sdk.core",
+            "revenue": 12.13,
             "time": null,
             "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
             "version": "1.0"
@@ -2084,6 +2137,33 @@
     }
   ],
   [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {
+        "data": {
+          "$append": {
+            "$transactions": {
+              "$amount": 23.45,
+              "$time": "2022-09-05T07:46:20.290Z"
+            }
+          },
+          "$distinct_id": "39da706ec83d0e90",
+          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
+        }
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "39da706ec83d0e90"
+    },
     {
       "version": "1",
       "type": "REST",
@@ -2117,6 +2197,7 @@
             "mp_device_model": "sdk_gphone64_arm64",
             "mp_lib": "com.rudderstack.android.sdk.core",
             "time": null,
+            "revenue": 23.45,
             "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
             "version": "1.0"
           }

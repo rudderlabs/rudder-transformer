@@ -4091,7 +4091,8 @@
       "messageId": "1662363980287-168cf720-6227-4b56-a98e-c49bdc7279e9",
       "properties": {
         "build": 4,
-        "version": "1.0"
+        "version": "1.0",
+        "revenue": 12.13
       },
       "anonymousId": "39da706ec83d0e90",
       "integrations": {
@@ -4172,7 +4173,8 @@
       "messageId": "1662363980287-168cf720-6227-4b56-a98e-c49bdc7279e9",
       "properties": {
         "build": 4,
-        "version": "1.0"
+        "version": "1.0",
+        "revenue": 23.45
       },
       "anonymousId": "39da706ec83d0e90",
       "integrations": {

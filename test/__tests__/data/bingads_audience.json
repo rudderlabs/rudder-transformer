@@ -60,7 +60,7 @@
               "hashedEmail": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
             }
           ],
-          "action": "ADD"
+          "action": "Add"
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -130,7 +130,7 @@
               "hashedEmail": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
             }
           ],
-          "action": "ADD"
+          "action": "Add"
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -393,7 +393,7 @@
                 "hashedEmail": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
               }
             ],
-            "action": "REMOVE"
+            "action": "Remove"
           },
           "JSON_ARRAY": {},
           "XML": {},
@@ -424,7 +424,7 @@
                 "hashedEmail": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
               }
             ],
-            "action": "REPLACE"
+            "action": "Replace"
           },
           "JSON_ARRAY": {},
           "XML": {},
@@ -491,7 +491,7 @@
               "email": "alex@email.com"
             }
           ],
-          "action": "ADD"
+          "action": "Add"
         },
         "JSON_ARRAY": {},
         "XML": {},

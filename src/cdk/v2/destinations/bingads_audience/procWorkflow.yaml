@@ -31,9 +31,9 @@ steps:
         })[]
       };
       const actionMap = {
-          add: "ADD",
-          remove: "REMOVE",
-          update: "REPLACE"
+          add: "Add",
+          remove: "Remove",
+          update: "Replace"
       };
       const listData = .message.properties.listData
       Object.keys(listData).map(function(action) {

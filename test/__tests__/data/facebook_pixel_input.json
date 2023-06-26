@@ -4038,7 +4038,7 @@
     },
     "message": {
       "type": "page",
-      "sentAt": "2023-06-26T09:18:55.681Z",
+      "sentAt": "2019-09-01T15:46:51.000Z",
       "userId": "user@19",
       "channel": "web",
       "context": {
@@ -4083,7 +4083,7 @@
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
       },
       "rudderId": "6bbfd003-c074-4ee9-8674-c132ded9ff04",
-      "timestamp": "2023-06-26T09:18:55.949Z",
+      "timestamp": "2019-09-01T15:46:51.000Z",
       "properties": {
         "url": "http://127.0.0.1:8888/",
         "path": "/",
@@ -4095,13 +4095,13 @@
         "referring_domain": "127.0.0.1:8888",
         "initial_referring_domain": ""
       },
-      "receivedAt": "2023-06-26T09:18:55.954Z",
+      "receivedAt": "2019-09-01T15:46:51.000Z",
       "request_ip": "49.206.54.243",
       "anonymousId": "700ab220-faad-4cdf-8484-63e4c6bce6fe",
       "integrations": {
         "All": true
       },
-      "originalTimestamp": "2023-06-26T09:18:55.676Z"
+      "originalTimestamp": "2019-09-01T15:46:51.000Z"
     }
   }
 ]

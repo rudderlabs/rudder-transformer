@@ -54,7 +54,7 @@ steps:
           template: |
             const products = .message.properties.products;
             const objectIDs = ~r products.objectId;
-            $.context.payload.objectIDs = objectIDs[:20];
+            $.context.payload.objectIDs = Array.isArray(objectIDs) ? objectIDs[:20]:$.context.payload.objectIDs;
 
   - name: validateDestPayload
     template: |

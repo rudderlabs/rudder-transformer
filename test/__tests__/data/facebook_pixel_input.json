@@ -1609,7 +1609,13 @@
         }
       },
       "context": {
-        "dataProcessingOptions": [["LDU"], 1, 1000],
+        "dataProcessingOptions": [
+          [
+            "LDU"
+          ],
+          1,
+          1000
+        ],
         "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
         "fbp": "fb.1.1554763741205.234567890",
         "fb_login_id": "fb_id",
@@ -1690,7 +1696,13 @@
         }
       },
       "context": {
-        "dataProcessingOptions": [["LDU"], 1, 1000],
+        "dataProcessingOptions": [
+          [
+            "LDU"
+          ],
+          1,
+          1000
+        ],
         "fbc": "fb.1.1554763741205.AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
         "fbp": "fb.1.1554763741205.234567890",
         "fb_login_id": "fb_id",
@@ -2524,7 +2536,10 @@
       "userId": "12345",
       "event": "order completed",
       "properties": {
-        "category": ["clothing", "fishing"],
+        "category": [
+          "clothing",
+          "fishing"
+        ],
         "order_id": "ruchiraorder1",
         "total": 99.99,
         "revenue": 12.24,
@@ -3964,6 +3979,129 @@
         ]
       },
       "Enabled": true
+    }
+  },
+  {
+    "metadata": {
+      "jobId": 12
+    },
+    "destination": {
+      "secretConfig": {},
+      "Config": {
+        "blacklistPiiProperties": [
+          {
+            "blacklistPiiProperties": "",
+            "blacklistPiiHash": false
+          }
+        ],
+        "pixelId": "12345555566",
+        "eventsToEvents": [
+          {
+            "from": "",
+            "to": ""
+          }
+        ],
+        "valueFieldIdentifier": "properties.price",
+        "advancedMapping": false,
+        "whitelistPiiProperties": [],
+        "limitedDataUSage": false,
+        "accessToken": "Asdkjhbriufkjrvknkjfkjhkjf",
+        "testDestination": false,
+        "testEventCode": "",
+        "standardPageCall": false,
+        "blacklistedEvents": [],
+        "whitelistedEvents": [],
+        "eventFilteringOption": "disable",
+        "removeExternalId": false,
+        "useUpdatedMapping": false,
+        "oneTrustCookieCategories": [],
+        "useNativeSDK": false,
+        "eventDelivery": false,
+        "eventDeliveryTS": 1686748039135
+      },
+      "liveEventsConfig": {
+        "eventDelivery": false,
+        "eventDeliveryTS": 1686748039135
+      },
+      "id": "destId1",
+      "workspaceId": "wsp2",
+      "transformations": [],
+      "isConnectionEnabled": true,
+      "isProcessorEnabled": true,
+      "name": "san-fb_pixel",
+      "enabled": true,
+      "deleted": false,
+      "createdAt": "2023-06-06T13:36:08.579Z",
+      "updatedAt": "2023-06-14T13:07:19.136Z",
+      "revisionId": "revId2",
+      "secretVersion": 3
+    },
+    "message": {
+      "type": "page",
+      "sentAt": "2023-06-26T09:18:55.681Z",
+      "userId": "user@19",
+      "channel": "web",
+      "context": {
+        "os": {
+          "name": "",
+          "version": ""
+        },
+        "app": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "dev-snapshot",
+          "namespace": "com.rudderlabs.javascript"
+        },
+        "page": {
+          "url": "http://127.0.0.1:8888/",
+          "path": "/",
+          "title": "Document",
+          "search": "",
+          "tab_url": "http://127.0.0.1:8888/",
+          "referrer": "http://127.0.0.1:8888/",
+          "initial_referrer": "$direct",
+          "referring_domain": "127.0.0.1:8888",
+          "initial_referring_domain": ""
+        },
+        "locale": "en-GB",
+        "screen": {
+          "width": 1728,
+          "height": 1117,
+          "density": 2,
+          "innerWidth": 547,
+          "innerHeight": 915
+        },
+        "traits": {
+          "name": false,
+          "source": "rudderstack"
+        },
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "dev-snapshot"
+        },
+        "campaign": {},
+        "sessionId": 1687769234506,
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+      },
+      "rudderId": "6bbfd003-c074-4ee9-8674-c132ded9ff04",
+      "timestamp": "2023-06-26T09:18:55.949Z",
+      "properties": {
+        "url": "http://127.0.0.1:8888/",
+        "path": "/",
+        "title": "Document",
+        "search": "",
+        "tab_url": "http://127.0.0.1:8888/",
+        "referrer": "http://127.0.0.1:8888/",
+        "initial_referrer": "$direct",
+        "referring_domain": "127.0.0.1:8888",
+        "initial_referring_domain": ""
+      },
+      "receivedAt": "2023-06-26T09:18:55.954Z",
+      "request_ip": "49.206.54.243",
+      "anonymousId": "700ab220-faad-4cdf-8484-63e4c6bce6fe",
+      "integrations": {
+        "All": true
+      },
+      "originalTimestamp": "2023-06-26T09:18:55.676Z"
     }
   }
 ]

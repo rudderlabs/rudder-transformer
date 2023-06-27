@@ -7,20 +7,21 @@ const stats = require('./stats');
 
 const userTransformTimeout = parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
 
-async function transform(isolatevm, events, extraParams={}) {
-  const transformationPayload = {};
-  transformationPayload.events = events;
-  transformationPayload.transformationType = isolatevm.fName;
-  transformationPayload.captureEmptyResponse = extraParams["captureEmptyResponse"] || false;
+async function transform(isolateVM, events, extraParams={}) {
+  const transformationPayload = {
+    events: events,
+    transformationType: isolateVM.fName,
+    captureEmptyResponse: extraParams['captureEmptyResponse'] || false,
+  };
   const executionPromise = new Promise(async (resolve, reject) => {
     const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto({
       transferIn: true,
     });
     try {
-      await isolatevm.bootstrapScriptResult.apply(
+      await isolateVM.bootstrapScriptResult.apply(
         undefined,
         [
-          isolatevm.fnRef,
+          isolateVM.fnRef,
           new ivm.Reference(resolve),
           new ivm.Reference(reject),
           sharedTransformationPayload,

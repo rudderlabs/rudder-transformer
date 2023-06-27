@@ -49,7 +49,8 @@ const urlDirectoryMap = {
   "api.profitwell.com": "profitwell",
   "ruddertest2.mautic.net": "mautic",
   "api.sendgrid.com": "sendgrid",
-  "api.sendinblue.com": "sendinblue"
+  "api.sendinblue.com": "sendinblue",
+  "api.criteo.com": "criteo_audience"
 };
 
 const fs = require("fs");

@@ -25,27 +25,31 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
   // if the response from destination is not a success case build an explicit error
   if (!isHttpStatusSuccess(status) && status >= 400) {
     const matchErrorCode = (errorCode) =>
-      response && Array.isArray(response) && response.some((resp) => resp.errorCode === errorCode);
+      response && Array.isArray(response) && response.some((resp) => resp?.errorCode === errorCode);
     if (status === 401 && authKey && matchErrorCode('INVALID_SESSION_ID')) {
       // checking for invalid/expired token errors and evicting cache in that case
       // rudderJobMetadata contains some destination info which is being used to evict the cache
       ACCESS_TOKEN_CACHE.del(authKey);
       throw new RetryableError(
-        `${DESTINATION} Request Failed - due to ${response[0].message}, (Retryable).${sourceMessage}`,
+        `${DESTINATION} Request Failed - due to "INVALID_SESSION_ID", (Retryable) ${sourceMessage}`,
         500,
         destResponse,
       );
     } else if (status === 403 && matchErrorCode('REQUEST_LIMIT_EXCEEDED')) {
       // If the error code is REQUEST_LIMIT_EXCEEDED, you’ve exceeded API request limits in your org.
       throw new ThrottledError(
-        `${DESTINATION} Request Failed - due to ${response[0].message}, (Throttled).${sourceMessage}`,
+        `${DESTINATION} Request Failed - due to "REQUEST_LIMIT_EXCEEDED", (Throttled) ${sourceMessage}`,
         destResponse,
       );
-    } else if (status === 503) {
+    } else if (status === 503 || status === 500) {
       // The salesforce server is unavailable to handle the request. Typically this occurs if the server is down
       // for maintenance or is currently overloaded.
       throw new RetryableError(
-        `${DESTINATION} Request Failed - due to ${response[0].message}, (Retryable).${sourceMessage}`,
+        `${DESTINATION} Request Failed - due to "${
+          response && Array.isArray(response) && response[0]?.message?.length > 0
+            ? response[0].message
+            : JSON.stringify(response)
+        }", (Retryable) ${sourceMessage}`,
         500,
         destResponse,
       );
@@ -55,9 +59,11 @@ const salesforceResponseHandler = (destResponse, sourceMessage, authKey) => {
     if (response && Array.isArray(response)) {
       errorMessage = response[0].message;
     }
-
+    // aborting for all other error codes
     throw new AbortedError(
-      `${DESTINATION} Request Failed: ${status} due to ${errorMessage}, (Aborted). ${sourceMessage}`,
+      `${DESTINATION} Request Failed: "${status}" due to "${
+        errorMessage || JSON.stringify(response)
+      }", (Aborted) ${sourceMessage}`,
       400,
       destResponse,
     );
@@ -91,15 +97,17 @@ const getAccessToken = async (destination) => {
     const { httpResponse, processedResponse } = await handleHttpRequest('post', authUrl, {});
     // If the request fails, throwing error.
     if (!httpResponse.success) {
-      const { error } = httpResponse.response.response.data;
+      salesforceResponseHandler(processedResponse, `:- authentication failed during fetching access token.`, accessTokenKey);
+    }
+    const token = httpResponse.response.data;
+    // If the httpResponse.success is true it will not come, It's an extra security for developer's.
+    if (!token.access_token || !token.instance_url) {
       salesforceResponseHandler(
-        processedResponse.response,
-        `access token could not be generated due to ${error}`,
-        undefined,
+        processedResponse,
+        `:- authentication failed could not retrieve authorization token.`,
         accessTokenKey,
       );
     }
-    const token = httpResponse.response.data;
     return {
       token: `Bearer ${token.access_token}`,
       instanceUrl: token.instance_url,

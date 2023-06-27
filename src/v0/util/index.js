@@ -23,6 +23,7 @@ const {
   BaseError,
   PlatformError,
   TransformationError,
+  OAuthSecretError,
 } = require('./errorTypes');
 const { client: errNotificationClient } = require('../../util/errorNotifier');
 // ========================================================================
@@ -742,7 +743,10 @@ const handleMetadataForValue = (value, metadata, destKey, integrationsObj = null
         formattedVal = formattedVal.replace('https://', '').replace('http://', '');
         break;
       case 'domainUrlV2': {
-        const url = new URL(formattedVal);
+        const url = isValidUrl(formattedVal);
+        if (!url) {
+          throw new InstrumentationError(`Invalid URL: ${formattedVal}`);
+        }
         formattedVal = url.hostname.replace('www.', '');
         break;
       }
@@ -977,7 +981,7 @@ function getDestinationExternalID(message, type) {
   }
 
   if (Array.isArray(externalIdArray)) {
-    externalIdArray.forEach(extIdObj => {
+    externalIdArray.forEach((extIdObj) => {
       if (extIdObj.type === type) {
         destinationExternalId = extIdObj.id;
       }
@@ -1666,8 +1670,10 @@ const validatePhoneWithCountryCode = (phone) => {
  * @returns
  */
 const isHybridModeEnabled = (Config) => {
-  const { useNativeSDK, useNativeSDKToSend } = Config;
-  return useNativeSDK && !useNativeSDKToSend;
+  if (isDefinedAndNotNull(Config.useNativeSDK) && isDefinedAndNotNull(Config.useNativeSDKToSend)) {
+    return Config.useNativeSDK && !Config.useNativeSDKToSend;
+  }
+  return false;
 };
 
 /**
@@ -1676,6 +1682,48 @@ const isHybridModeEnabled = (Config) => {
  * @returns lower case `type` field inside the Rudder message object
  */
 const getEventType = (message) => message?.type?.toLowerCase();
+
+// Set the user ID to an empty string for
+// all the falsy values (including 0 and false)
+// Otherwise, server panics while un-marshalling the response
+// while expecting only strings.
+const checkAndCorrectUserId = (statusCode, userId) => {
+  if (!userId) {
+    return '';
+  }
+  if (statusCode !== 400 && userId) {
+    return `${userId}`;
+  }
+  return userId;
+};
+
+/**
+ * Get access token to be bound to the event req headers
+ *
+ * **Note**:
+ * - the schema that we'd get in `metadata.secret` can be different
+ * for different destinations
+ * - useful only for OAuth destinations
+ *
+ * @param {Object} metadata
+ * @param {string} accessTokenKey
+ *  - represents the property name under which you have accessToken information in "metadata.secret" object
+ *  - property paths like data.t.accessToken, some.prop.access_token, prop.accessToken are not supported
+ * @returns
+ *  accesstoken information
+ * @example
+ *  getAccessToken(metadata, "access_token") ✅
+ *  getAccessToken(metadata, "prop.token") ❌
+ */
+const getAccessToken = (metadata, accessTokenKey) => {
+  // OAuth for this destination
+  const { secret } = metadata;
+  // we would need to verify if secret is present and also if the access token field is present in secret
+  if (!secret || !secret[accessTokenKey]) {
+    throw new OAuthSecretError("Empty/Invalid access token");
+  }
+  return secret[accessTokenKey];
+};
 
 // ========================================================================
 // EXPORTS
@@ -1771,4 +1819,6 @@ module.exports = {
   getEventReqMetadata,
   isHybridModeEnabled,
   getEventType,
+  checkAndCorrectUserId,
+  getAccessToken
 };

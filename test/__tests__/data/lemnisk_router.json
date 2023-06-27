@@ -1,0 +1,693 @@
+[
+    {
+        "description": "Lemnisk batch events",
+        "input": [
+            {
+                "message": {
+                    "anonymousId": "anon-id-new",
+                    "context": {
+                        "ip": "14.5.67.21",
+                        "library": {
+                            "name": "http"
+                        }
+                    },
+                    "type": "identify"
+                },
+                "destination": {
+                    "id": "2JAdls99p6UxoFNSKGwvh0aIt7E",
+                    "name": "Lemnisk Marketing Automation",
+                    "enabled": true,
+                    "Config": {
+                        "plWriteKey": "",
+                        "pl": "https://crux.lemnisk.co/v2/data",
+                        "passKey": "",
+                        "apiKey": "",
+                        "diapi": " ",
+                        "cloudMode": "web",
+                        "srcId": "",
+                        "diapiWriteKey": ""
+                    },
+                    "destinationDefinition": {
+                        "config": {
+                            "transformAt": "processor",
+                            "transformAtV1": "processor",
+                            "saveDestinationResponse": true,
+                            "includeKeys": [
+                                "apiKey",
+                                "passKey",
+                                "cloudMode",
+                                "diapi",
+                                "pl",
+                                "diapiWriteKey",
+                                "plWriteKey",
+                                "srcId"
+                            ],
+                            "excludeKeys": [],
+                            "supportedSourceTypes": [
+                                "android",
+                                "ios",
+                                "web",
+                                "unity",
+                                "amp",
+                                "cloud",
+                                "reactnative",
+                                "flutter",
+                                "cordova",
+                                "warehouse"
+                            ],
+                            "supportedMessageTypes": [
+                                "track",
+                                "identify",
+                                "page"
+                            ],
+                            "destConfig": {
+                                "defaultConfig": [
+                                    "apiKey",
+                                    "passKey",
+                                    "cloudMode",
+                                    "diapi",
+                                    "pl",
+                                    "diapiWriteKey",
+                                    "plWriteKey",
+                                    "deviceModeWriteKey",
+                                    "srcId"
+                                ]
+                            },
+                            "secretKeys": [
+                                "apiKey",
+                                "passKey",
+                                "plWriteKey",
+                                "diapiWriteKey"
+                            ]
+                        },
+                        "responseRules": null,
+                        "id": "1j9dYVEplxUC5swbXkpK9fYT7uk",
+                        "name": "LEMNISK_MARKETING_AUTOMATION",
+                        "displayName": "Lemnisk Marketing Automation",
+                        "createdAt": "2022-12-12T21:58:08.637Z"
+                    },
+                    "rootStore": null,
+                    "isProcessorEnabled": true
+                },
+                "metadata": {
+                    "jobId": 1
+                }
+            },
+            {
+                "message": {
+                    "anonymousId": "anon-id-new",
+                    "channel": "mobile",
+                    "context": {
+                        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+                    },
+                    "event": "Visited Home",
+                    "messageId": "1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb",
+                    "originalTimestamp": "2020-09-28T19:53:31.900Z",
+                    "traits": {
+                        "name": "Home | RudderStack",
+                        "url": "http://www.rudderstack.com"
+                    },
+                    "receivedAt": "2020-09-29T14:50:43.005+05:30",
+                    "sentAt": "2020-09-28T19:53:44.998Z",
+                    "timestamp": "2020-09-29T14:50:29.907+05:30",
+                    "type": "identify"
+                },
+                "destination": {
+                    "id": "2JAdls99p6UxoFNSKGwvh0aIt7E",
+                    "name": "Lemnisk Marketing Automation",
+                    "enabled": true,
+                    "Config": {
+                        "plWriteKey": "pl_writeKey",
+                        "pl": "http://10.11.36.17:8080/analyze/analyze.php",
+                        "passKey": "",
+                        "apiKey": "",
+                        "diapi": "",
+                        "cloudMode": "web",
+                        "srcId": "",
+                        "diapiWriteKey": ""
+                    },
+                    "destinationDefinition": {
+                        "config": {
+                            "transformAt": "processor",
+                            "transformAtV1": "processor",
+                            "saveDestinationResponse": true,
+                            "includeKeys": [
+                                "apiKey",
+                                "passKey",
+                                "cloudMode",
+                                "diapi",
+                                "pl",
+                                "diapiWriteKey",
+                                "plWriteKey",
+                                "srcId"
+                            ],
+                            "excludeKeys": [],
+                            "supportedSourceTypes": [
+                                "android",
+                                "ios",
+                                "web",
+                                "unity",
+                                "amp",
+                                "cloud",
+                                "reactnative",
+                                "flutter",
+                                "cordova",
+                                "warehouse"
+                            ],
+                            "supportedMessageTypes": [
+                                "track",
+                                "identify",
+                                "page"
+                            ],
+                            "destConfig": {
+                                "defaultConfig": [
+                                    "apiKey",
+                                    "passKey",
+                                    "cloudMode",
+                                    "diapi",
+                                    "pl",
+                                    "diapiWriteKey",
+                                    "plWriteKey",
+                                    "deviceModeWriteKey",
+                                    "srcId"
+                                ]
+                            },
+                            "secretKeys": [
+                                "apiKey",
+                                "passKey",
+                                "plWriteKey",
+                                "diapiWriteKey"
+                            ]
+                        },
+                        "responseRules": null,
+                        "id": "1j9dYVEplxUC5swbXkpK9fYT7uk",
+                        "name": "LEMNISK_MARKETING_AUTOMATION",
+                        "displayName": "Lemnisk Marketing Automation",
+                        "createdAt": "2022-12-12T21:58:08.637Z"
+                    },
+                    "rootStore": null,
+                    "isProcessorEnabled": true
+                },
+                "metadata": {
+                    "anonymousId": "12345",
+                    "destinationId": "1ZQVSU9SXNg6KYgZALaqjAO3PIL",
+                    "destinationType": "DISCORD",
+                    "jobId": 123,
+                    "messageId": "4aaecff2-a513-4bbf-9824-c471f4ac9777",
+                    "sourceId": "1YhwKyDcKstudlGxkeN5p2wgsrp"
+                }
+            },
+            {
+                "message": {
+                    "anonymousId": "anon-id-new",
+                    "channel": "mobile",
+                    "context": {
+                        "app": {
+                            "build": "4",
+                            "name": "RuddCDN"
+                        },
+                        "page": {
+                            "referrer": "google.com"
+                        },
+                        "device": {
+                            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+                            "name": "generic_x86_arm"
+                        },
+                        "library": {
+                            "name": "com.rudderstack.android.sdk.core",
+                            "version": "1.0.6"
+                        },
+                        "os": {
+                            "name": "Android",
+                            "version": "9"
+                        },
+                        "timezone": "Asia/Kolkata",
+                        "traits": {
+                            "customProp": "customValue"
+                        },
+                        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+                    },
+                    "event": "Visited Home",
+                    "messageId": "1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb",
+                    "originalTimestamp": "2020-09-28T19:53:31.900Z",
+                    "properties": {
+                        "title": "Home | RudderStack",
+                        "url": "http://www.rudderstack.com"
+                    },
+                    "receivedAt": "2020-09-29T14:50:43.005+05:30",
+                    "sentAt": "2020-09-28T19:53:44.998Z",
+                    "timestamp": "2020-09-29T14:50:29.907+05:30",
+                    "type": "track"
+                },
+                "destination": {
+                    "id": "2JAdls99p6UxoFNSKGwvh0aIt7E",
+                    "name": "Lemnisk Marketing Automation",
+                    "enabled": true,
+                    "Config": {
+                        "plWriteKey": "pl_writeKey",
+                        "pl": "http://10.11.36.17:8080/analyze/analyze.php",
+                        "passKey": "",
+                        "apiKey": "",
+                        "diapi": "",
+                        "cloudMode": "web",
+                        "srcId": "",
+                        "diapiWriteKey": ""
+                    },
+                    "destinationDefinition": {
+                        "config": {
+                            "transformAt": "processor",
+                            "transformAtV1": "processor",
+                            "saveDestinationResponse": true,
+                            "includeKeys": [
+                                "apiKey",
+                                "passKey",
+                                "cloudMode",
+                                "diapi",
+                                "pl",
+                                "diapiWriteKey",
+                                "plWriteKey",
+                                "srcId"
+                            ],
+                            "excludeKeys": [],
+                            "supportedSourceTypes": [
+                                "android",
+                                "ios",
+                                "web",
+                                "unity",
+                                "amp",
+                                "cloud",
+                                "reactnative",
+                                "flutter",
+                                "cordova",
+                                "warehouse"
+                            ],
+                            "supportedMessageTypes": [
+                                "track",
+                                "identify",
+                                "page"
+                            ],
+                            "destConfig": {
+                                "defaultConfig": [
+                                    "apiKey",
+                                    "passKey",
+                                    "cloudMode",
+                                    "diapi",
+                                    "pl",
+                                    "diapiWriteKey",
+                                    "plWriteKey",
+                                    "deviceModeWriteKey",
+                                    "srcId"
+                                ]
+                            },
+                            "secretKeys": [
+                                "apiKey",
+                                "passKey",
+                                "plWriteKey",
+                                "diapiWriteKey"
+                            ]
+                        },
+                        "responseRules": null,
+                        "id": "1j9dYVEplxUC5swbXkpK9fYT7uk",
+                        "name": "LEMNISK_MARKETING_AUTOMATION",
+                        "displayName": "Lemnisk Marketing Automation",
+                        "createdAt": "2022-12-12T21:58:08.637Z"
+                    },
+                    "rootStore": null,
+                    "isProcessorEnabled": true
+                },
+                "metadata": {
+                    "anonymousId": "00000000000000000000000000",
+                    "destinationId": "1ZQVSU9SXNg6KYgZALaqjAO3PIL",
+                    "destinationType": "DISCORD",
+                    "jobId": 129,
+                    "messageId": "8b8d5937-09bc-49dc-a35e-8cd6370575f8",
+                    "sourceId": "1YhwKyDcKstudlGxkeN5p2wgsrp"
+                }
+            }
+        ],
+        "output": [
+            {
+                "destination": {
+                    "id": "2JAdls99p6UxoFNSKGwvh0aIt7E",
+                    "name": "Lemnisk Marketing Automation",
+                    "enabled": true,
+                    "Config": {
+                        "plWriteKey": "",
+                        "pl": "https://crux.lemnisk.co/v2/data",
+                        "passKey": "",
+                        "apiKey": "",
+                        "diapi": " ",
+                        "cloudMode": "web",
+                        "srcId": "",
+                        "diapiWriteKey": ""
+                    },
+                    "destinationDefinition": {
+                        "config": {
+                            "transformAt": "processor",
+                            "transformAtV1": "processor",
+                            "saveDestinationResponse": true,
+                            "includeKeys": [
+                                "apiKey",
+                                "passKey",
+                                "cloudMode",
+                                "diapi",
+                                "pl",
+                                "diapiWriteKey",
+                                "plWriteKey",
+                                "srcId"
+                            ],
+                            "excludeKeys": [],
+                            "supportedSourceTypes": [
+                                "android",
+                                "ios",
+                                "web",
+                                "unity",
+                                "amp",
+                                "cloud",
+                                "reactnative",
+                                "flutter",
+                                "cordova",
+                                "warehouse"
+                            ],
+                            "supportedMessageTypes": [
+                                "track",
+                                "identify",
+                                "page"
+                            ],
+                            "destConfig": {
+                                "defaultConfig": [
+                                    "apiKey",
+                                    "passKey",
+                                    "cloudMode",
+                                    "diapi",
+                                    "pl",
+                                    "diapiWriteKey",
+                                    "plWriteKey",
+                                    "deviceModeWriteKey",
+                                    "srcId"
+                                ]
+                            },
+                            "secretKeys": [
+                                "apiKey",
+                                "passKey",
+                                "plWriteKey",
+                                "diapiWriteKey"
+                            ]
+                        },
+                        "responseRules": null,
+                        "id": "1j9dYVEplxUC5swbXkpK9fYT7uk",
+                        "name": "LEMNISK_MARKETING_AUTOMATION",
+                        "displayName": "Lemnisk Marketing Automation",
+                        "createdAt": "2022-12-12T21:58:08.637Z"
+                    },
+                    "rootStore": null,
+                    "isProcessorEnabled": true
+                },
+                "metadata": [
+                    {
+                        "jobId": 1
+                    }
+                ],
+                "statTags": {
+                    "errorCategory": "dataValidation",
+                    "errorType": "configuration"
+                },
+                "batched": false,
+                "statusCode": 400,
+                "error": "Configuration for Web Mode requires write key and region url"
+            },
+            {
+                "batchedRequest": {
+                    "version": "1",
+                    "type": "REST",
+                    "method": "POST",
+                    "endpoint": "http://10.11.36.17:8080/analyze/analyze.php",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "params": {},
+                    "body": {
+                        "JSON": {
+                            "type": "identify",
+                            "context": {
+                                "userAgent": {
+                                    "ua": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+                                }
+                            },
+                            "customerProperties": {
+                                "name": "Home | RudderStack",
+                                "url": "http://www.rudderstack.com"
+                            },
+                            "id": "anon-id-new",
+                            "userId": "anon-id-new",
+                            "messageId": "1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb",
+                            "originalTimestamp": "2020-09-28T19:53:31.900Z",
+                            "writeKey": "pl_writeKey"
+                        },
+                        "JSON_ARRAY": {},
+                        "XML": {},
+                        "FORM": {}
+                    },
+                    "files": {},
+                    "userId": "anon-id-new"
+                },
+                "destination": {
+                    "id": "2JAdls99p6UxoFNSKGwvh0aIt7E",
+                    "name": "Lemnisk Marketing Automation",
+                    "enabled": true,
+                    "Config": {
+                        "plWriteKey": "pl_writeKey",
+                        "pl": "http://10.11.36.17:8080/analyze/analyze.php",
+                        "passKey": "",
+                        "apiKey": "",
+                        "diapi": "",
+                        "cloudMode": "web",
+                        "srcId": "",
+                        "diapiWriteKey": ""
+                    },
+                    "destinationDefinition": {
+                        "config": {
+                            "transformAt": "processor",
+                            "transformAtV1": "processor",
+                            "saveDestinationResponse": true,
+                            "includeKeys": [
+                                "apiKey",
+                                "passKey",
+                                "cloudMode",
+                                "diapi",
+                                "pl",
+                                "diapiWriteKey",
+                                "plWriteKey",
+                                "srcId"
+                            ],
+                            "excludeKeys": [],
+                            "supportedSourceTypes": [
+                                "android",
+                                "ios",
+                                "web",
+                                "unity",
+                                "amp",
+                                "cloud",
+                                "reactnative",
+                                "flutter",
+                                "cordova",
+                                "warehouse"
+                            ],
+                            "supportedMessageTypes": [
+                                "track",
+                                "identify",
+                                "page"
+                            ],
+                            "destConfig": {
+                                "defaultConfig": [
+                                    "apiKey",
+                                    "passKey",
+                                    "cloudMode",
+                                    "diapi",
+                                    "pl",
+                                    "diapiWriteKey",
+                                    "plWriteKey",
+                                    "deviceModeWriteKey",
+                                    "srcId"
+                                ]
+                            },
+                            "secretKeys": [
+                                "apiKey",
+                                "passKey",
+                                "plWriteKey",
+                                "diapiWriteKey"
+                            ]
+                        },
+                        "responseRules": null,
+                        "id": "1j9dYVEplxUC5swbXkpK9fYT7uk",
+                        "name": "LEMNISK_MARKETING_AUTOMATION",
+                        "displayName": "Lemnisk Marketing Automation",
+                        "createdAt": "2022-12-12T21:58:08.637Z"
+                    },
+                    "rootStore": null,
+                    "isProcessorEnabled": true
+                },
+                "metadata": [
+                    {
+                        "anonymousId": "12345",
+                        "destinationId": "1ZQVSU9SXNg6KYgZALaqjAO3PIL",
+                        "destinationType": "DISCORD",
+                        "jobId": 123,
+                        "messageId": "4aaecff2-a513-4bbf-9824-c471f4ac9777",
+                        "sourceId": "1YhwKyDcKstudlGxkeN5p2wgsrp"
+                    }
+                ],
+                "batched": false,
+                "statusCode": 200
+            },
+            {
+                "batchedRequest": {
+                    "version": "1",
+                    "type": "REST",
+                    "method": "POST",
+                    "endpoint": "http://10.11.36.17:8080/analyze/analyze.php",
+                    "headers": {
+                        "Content-Type": "application/json"
+                    },
+                    "params": {},
+                    "body": {
+                        "JSON": {
+                            "type": "track",
+                            "context": {
+                                "app": {
+                                    "build": "4",
+                                    "name": "RuddCDN"
+                                },
+                                "page": {
+                                    "referrer": "google.com"
+                                },
+                                "device": {
+                                    "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+                                    "name": "generic_x86_arm"
+                                },
+                                "library": {
+                                    "name": "com.rudderstack.android.sdk.core",
+                                    "version": "1.0.6"
+                                },
+                                "os": {
+                                    "name": "Android",
+                                    "version": "9"
+                                },
+                                "timezone": "Asia/Kolkata",
+                                "traits": {
+                                    "customProp": "customValue"
+                                },
+                                "userAgent": {
+                                    "ua": "Dalvik/2.1.0 (Linux; U; Android 9; AOSP on IA Emulator Build/PSR1.180720.117)"
+                                }
+                            },
+                            "properties": {
+                                "title": "Home | RudderStack",
+                                "url": "http://www.rudderstack.com"
+                            },
+                            "event": "Visited Home",
+                            "id": "anon-id-new",
+                            "userId": "anon-id-new",
+                            "messageId": "1601322811899-d9c7dd00-50dc-4364-95c8-e89423eb3cfb",
+                            "originalTimestamp": "2020-09-28T19:53:31.900Z",
+                            "writeKey": "pl_writeKey"
+                        },
+                        "JSON_ARRAY": {},
+                        "XML": {},
+                        "FORM": {}
+                    },
+                    "files": {},
+                    "userId": "anon-id-new"
+                },
+                "destination": {
+                    "id": "2JAdls99p6UxoFNSKGwvh0aIt7E",
+                    "name": "Lemnisk Marketing Automation",
+                    "enabled": true,
+                    "Config": {
+                        "plWriteKey": "pl_writeKey",
+                        "pl": "http://10.11.36.17:8080/analyze/analyze.php",
+                        "passKey": "",
+                        "apiKey": "",
+                        "diapi": "",
+                        "cloudMode": "web",
+                        "srcId": "",
+                        "diapiWriteKey": ""
+                    },
+                    "destinationDefinition": {
+                        "config": {
+                            "transformAt": "processor",
+                            "transformAtV1": "processor",
+                            "saveDestinationResponse": true,
+                            "includeKeys": [
+                                "apiKey",
+                                "passKey",
+                                "cloudMode",
+                                "diapi",
+                                "pl",
+                                "diapiWriteKey",
+                                "plWriteKey",
+                                "srcId"
+                            ],
+                            "excludeKeys": [],
+                            "supportedSourceTypes": [
+                                "android",
+                                "ios",
+                                "web",
+                                "unity",
+                                "amp",
+                                "cloud",
+                                "reactnative",
+                                "flutter",
+                                "cordova",
+                                "warehouse"
+                            ],
+                            "supportedMessageTypes": [
+                                "track",
+                                "identify",
+                                "page"
+                            ],
+                            "destConfig": {
+                                "defaultConfig": [
+                                    "apiKey",
+                                    "passKey",
+                                    "cloudMode",
+                                    "diapi",
+                                    "pl",
+                                    "diapiWriteKey",
+                                    "plWriteKey",
+                                    "deviceModeWriteKey",
+                                    "srcId"
+                                ]
+                            },
+                            "secretKeys": [
+                                "apiKey",
+                                "passKey",
+                                "plWriteKey",
+                                "diapiWriteKey"
+                            ]
+                        },
+                        "responseRules": null,
+                        "id": "1j9dYVEplxUC5swbXkpK9fYT7uk",
+                        "name": "LEMNISK_MARKETING_AUTOMATION",
+                        "displayName": "Lemnisk Marketing Automation",
+                        "createdAt": "2022-12-12T21:58:08.637Z"
+                    },
+                    "rootStore": null,
+                    "isProcessorEnabled": true
+                },
+                "metadata": [
+                    {
+                        "anonymousId": "00000000000000000000000000",
+                        "destinationId": "1ZQVSU9SXNg6KYgZALaqjAO3PIL",
+                        "destinationType": "DISCORD",
+                        "jobId": 129,
+                        "messageId": "8b8d5937-09bc-49dc-a35e-8cd6370575f8",
+                        "sourceId": "1YhwKyDcKstudlGxkeN5p2wgsrp"
+                    }
+                ],
+                "batched": false,
+                "statusCode": 200
+            }
+        ]
+    }
+]

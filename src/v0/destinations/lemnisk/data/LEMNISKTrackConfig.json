@@ -1,0 +1,47 @@
+[
+  {
+    "destKey": "type",
+    "sourceKeys": "type",
+    "required": true
+  },
+  {
+    "destKey": "context",
+    "sourceKeys": "context",
+    "required": true,
+    "metadata": {
+      "defaultValue": {}
+    }
+  },
+  {
+    "destKey": "properties",
+    "sourceKeys": "properties",
+    "required": true
+  },
+  {
+    "destKey": "event",
+    "sourceKeys": "event",
+    "required": true
+  },
+  {
+    "destKey": "id",
+    "sourceKeys": ["userId","anonymousId"],
+    "required": true
+  },
+  {
+    "destKey": "userId",
+    "sourceKeys": "userId",
+    "sourceFromGenericMap": true,
+    "required": true
+  },
+  {
+    "destKey": "messageId",
+    "sourceKeys": "messageId",
+    "required": true
+  },
+  {
+    "destKey": "originalTimestamp",
+    "sourceKeys": "timestamp",
+    "sourceFromGenericMap": true,
+    "required": true
+  }
+]

@@ -104,7 +104,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
             try{
               let transformedOutput = await transformEvent(ev, metadata);
               if ((transformedOutput === null || transformedOutput === undefined) && captureEmptyResponse === true) {
-                transformedObject = {}; // set the returned object as empty.
+                transformedOutput = {}; // set the returned object as empty.
               } else {
                 return;
               }

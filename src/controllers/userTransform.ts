@@ -20,7 +20,7 @@ export default class UserTransformController {
 
     const events = ctx.request.body as ProcessorTransformationRequest[];
     const processedRespone: UserTransformationServiceResponse =
-        await UserTransformService.transformRoutine(events, ctx.query);
+        await UserTransformService.transformRoutine(events, ctx.query as Record<string, string>);
     ctx.body = processedRespone.transformedEvents;
     ControllerUtility.postProcess(ctx, processedRespone.retryStatus);
     logger.debug(

@@ -17,10 +17,10 @@ export default class UserTransformController {
       '(User transform - router:/customTransform ):: Request to transformer',
       JSON.stringify(ctx.request.body),
     );
-    const requestMetadata = MiscService.getRequestMetadata(ctx);
+
     const events = ctx.request.body as ProcessorTransformationRequest[];
     const processedRespone: UserTransformationServiceResponse =
-      await UserTransformService.transformRoutine(events);
+        await UserTransformService.transformRoutine(events, ctx.query);
     ctx.body = processedRespone.transformedEvents;
     ControllerUtility.postProcess(ctx, processedRespone.retryStatus);
     logger.debug(

@@ -68,9 +68,10 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
     code +
     `
     export async function transformWrapper(transformationPayload) {
-      let events = transformationPayload.events
-      let transformType = transformationPayload.transformationType
-      let outputEvents = []
+      let events = transformationPayload.events;
+      let transformType = transformationPayload.transformationType;
+      let captureEmptyResponse = transformationPayload.captureEmptyResponse || false;
+      let outputEvents = [];
       const eventMessages = events.map(event => event.message);
       const eventsMetadata = {};
       events.forEach(ev => {
@@ -102,8 +103,12 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
             const currMsgId = ev.messageId;
             try{
               let transformedOutput = await transformEvent(ev, metadata);
-              // if func returns null/undefined drop event
-              if (transformedOutput === null || transformedOutput === undefined) return;
+              if ((transformedOutput === null || transformedOutput === undefined) && captureEmptyResponse === true) {
+                transformedObject = {}; // set the returned object as empty.
+              } else {
+                return;
+              }
+              
               if (Array.isArray(transformedOutput)) {
                 const producedEvents = [];
                 const encounteredError = !transformedOutput.every(e => {

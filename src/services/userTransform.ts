@@ -16,6 +16,7 @@ import stats from '../util/stats';
 export default class UserTransformService {
   public static async transformRoutine(
     events: ProcessorTransformationRequest[],
+    queryParams: Record<string, string>={},
   ): Promise<UserTransformationServiceResponse> {
     const startTime = new Date();
     let retryStatus = 200;
@@ -78,6 +79,7 @@ export default class UserTransformService {
             eventsToProcess,
             transformationVersionId,
             librariesVersionIDs,
+            (queryParams.captureEmptyResponse === "true") as boolean,
           );
           transformedEvents.push(
             ...destTransformedEvents.map((ev) => {

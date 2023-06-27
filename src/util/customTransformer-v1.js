@@ -7,10 +7,11 @@ const stats = require('./stats');
 
 const userTransformTimeout = parseInt(process.env.USER_TRANSFORM_TIMEOUT || '600000', 10);
 
-async function transform(isolatevm, events) {
+async function transform(isolatevm, events, extraParams={}) {
   const transformationPayload = {};
   transformationPayload.events = events;
   transformationPayload.transformationType = isolatevm.fName;
+  transformationPayload.captureEmptyResponse = extraParams["captureEmptyResponse"] || false;
   const executionPromise = new Promise(async (resolve, reject) => {
     const sharedTransformationPayload = new ivm.ExternalCopy(transformationPayload).copyInto({
       transferIn: true,
@@ -53,6 +54,7 @@ async function userTransformHandlerV1(
   userTransformation,
   libraryVersionIds,
   testMode = false,
+  captureEmptyResponse = false,
 ) {
   /*
   Removing pool usage to address memory leaks
@@ -86,7 +88,7 @@ async function userTransformHandlerV1(
     let transformedEvents;
     // Destroy isolatevm in case of execution errors
     try {
-      transformedEvents = await transform(isolatevm, events);
+      transformedEvents = await transform(isolatevm, events, {captureEmptyResponse});
     } catch (err) {
       logger.error(`Error encountered while executing transformation: ${err.message}`);
       isolatevmFactory.destroy(isolatevm);

@@ -268,12 +268,13 @@ async function userTransformHandler(
   libraryVersionIDs,
   trRevCode = {},
   testMode = false,
+  captureEmptyResponse = false,
 ) {
   if (versionId) {
     const res = testMode ? trRevCode : await getTransformationCode(versionId);
     if (res) {
       // Events contain message and destination. We take the message part of event and run transformation on it.
-      // And put back the destination after transforrmation
+      // And put back the destination after transformation
       const eventMessages = events.map((event) => event.message);
       const eventsMetadata = {};
       events.forEach((ev) => {
@@ -287,6 +288,7 @@ async function userTransformHandler(
           events,
           testMode,
           libraryVersionIDs,
+          captureEmptyResponse,
         );
 
         if (result.error) {

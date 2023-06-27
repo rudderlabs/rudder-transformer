@@ -101,11 +101,22 @@ jobs:
           echo "Transformer: $TAG_NAME"
           echo "User Transformer: $UT_TAG_NAME"
 
+      - name: Clone Devops Repo
+        run: |
+          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
+
+      - name: Extract branch name
+        id: extract_branch_name
+        run: |
+          cd rudder-devops
+          branch_name=$(git rev-parse --abbrev-ref HEAD)
+          echo "branch_name=$branch_name"
+          echo "branch_name=$branch_name" >> $GITHUB_OUTPUT
+
       - name: Update Helm Charts and Raise Pull Request
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
-          git clone https://${{secrets.PAT}}@github.com/rudderlabs/rudder-devops.git
           cd rudder-devops
           git checkout -b shared-transformer-$TAG_NAME
 
@@ -114,7 +125,7 @@ jobs:
           yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" values.blue-release.yaml
           yq eval -i ".rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.blue-release.yaml
           git add values.blue-release.yaml
-          
+
           yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" values.enterprise.yaml
           yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" values.enterprise.yaml
           yq eval -i ".rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.enterprise.yaml
@@ -135,3 +146,21 @@ jobs:
           git push -u origin shared-transformer-$TAG_NAME
 
           hub pull-request -m "chore: upgrade shared transformers to $TAG_NAME"
+
+      - name: Update Helm Chart and Raise Pull Request For Hosted Transformer
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          cd rudder-devops
+          git checkout -b hosted-transformer-$TAG_NAME ${{steps.extract_branch_name.outputs.branch_name}}
+
+          cd customer-objects/multi-tenant-us
+          yq eval -i ".spec.transformer.image.version=\"$TAG_NAME\"" hostedmtedmt.yaml
+          yq eval -i ".spec.user_transformer.image.version=\"$TAG_NAME\"" hostedmtedmt.yaml
+          yq eval -i ".spec.transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" hostedmtedmt.yaml
+          git add hostedmtedmt.yaml
+
+          git commit -m "chore: upgrade hosted transformer to $TAG_NAME"
+          git push -u origin hosted-transformer-$TAG_NAME
+
+          hub pull-request -m "chore: upgrade hosted transformer to $TAG_NAME"

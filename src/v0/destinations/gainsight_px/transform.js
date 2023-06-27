@@ -64,6 +64,8 @@ const identifyResponseBuilder = async (message, { Config }) => {
     USER_EXCLUSION_FIELDS,
   );
 
+  customAttributes = removeUndefinedAndNullValues(customAttributes);
+
   const userCustomFieldsMap = getHashFromArray(Config.userAttributeMap, 'from', 'to', false);
   customAttributes = renameCustomFields(customAttributes, userCustomFieldsMap);
   payload = {

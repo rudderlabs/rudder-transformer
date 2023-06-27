@@ -15,6 +15,7 @@ const get = require('get-value');
 const uaParser = require('ua-parser-js');
 const moment = require('moment-timezone');
 const sha256 = require('sha256');
+const crypto = require('crypto');
 const logger = require('../../logger');
 const stats = require('../../util/stats');
 const { DestCanonicalNames, DestHandlerMap } = require('../../constants/destinationCanonicalNames');
@@ -1275,8 +1276,7 @@ function toTitleCase(payload) {
       .replace(/([a-z])(\d)/gi, '$1 $2')
       .replace(/(\d)([a-z])/gi, '$1 $2')
       .trim()
-      .replace(/(_)/g, ` `)
-      .replace(/(^\w)|(\s+\w)/g, (match) => match.toUpperCase());
+      .replace(/(_)/g, ` `).replace(/(?:^|\s)(\w)/g, (match) => match.toUpperCase());
     newPayload[newKey] = value;
   });
   return newPayload;
@@ -1375,10 +1375,20 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
 /**
  * Used for generating error response with stats from native and built errors
  */
-function generateErrorObject(error, defTags = {}) {
+function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = true) {
   let errObject = error;
+  let errorMessage = error.message;
+  if (shouldEnrichErrorMessage) {
+    if (error.destinationResponse) {
+      errorMessage = JSON.stringify({
+        message: error.message,
+        destinationResponse: error.destinationResponse,
+      });
+    }
+    errObject.message = errorMessage;
+  }
   if (!(error instanceof BaseError)) {
-    errObject = new TransformationError(error.message, getErrorStatusCode(error));
+    errObject = new TransformationError(errorMessage, getErrorStatusCode(error));
   }
 
   // Add higher level default tags
@@ -1412,18 +1422,9 @@ function isHttpStatusRetryable(status) {
  * @returns
  */
 function generateUUID() {
-  // Public Domain/MIT
-  let d = new Date().getTime();
-  if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
-    d += performance.now(); // use high-precision timer if available
-  }
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    // eslint-disable-next-line no-bitwise
-    const r = (d + Math.random() * 16) % 16 | 0;
-    d = Math.floor(d / 16);
-    // eslint-disable-next-line no-bitwise
-    return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
-  });
+  return crypto.randomUUID({ disableEntropyCache: true }); /* using disableEntropyCache as true to not cache the generated uuids. 
+  For more Info https://nodejs.org/api/crypto.html#cryptorandomuuidoptions:~:text=options%20%3CObject%3E-,disableEntropyCache,-%3Cboolean%3E%20By
+  */
 }
 
 const isOAuthDestination = (destination) => {

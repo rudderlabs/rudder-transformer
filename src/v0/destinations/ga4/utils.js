@@ -93,29 +93,6 @@ const GA4_RESERVED_USER_PROPERTY_EXCLUSION = [
   'first_open_after_install',
 ];
 
-/**
- * user property names cannot start with reserved prefixes
- * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_user_property_names
- * @param {*} userProperties
- */
-const removeReservedUserPropertyPrefixNames = (userProperties) => {
-  const reservedPrefixesNames = ['google_', 'ga_', 'firebase_'];
-
-  if (!userProperties) {
-    return;
-  }
-
-  Object.keys(userProperties).forEach((key) => {
-    const valFound = reservedPrefixesNames.some((prefix) => key.toLowerCase().startsWith(prefix));
-
-    // reject if found
-    if (valFound) {
-      // eslint-disable-next-line no-param-reassign
-      delete userProperties[key];
-    }
-  });
-};
-
 /* For custom events */
 /**
  * Reserved custom event names cannot be used (Web)
@@ -151,6 +128,17 @@ const isReservedWebCustomPrefixName = (event) => {
 
   // As soon as a single true is returned, .some() will itself return true and stop
   return reservedPrefixesNames.some((prefix) => event.toLowerCase().startsWith(prefix));
+};
+
+/**
+ * Validation for event name should only contain letters, numbers, and underscores and events name must start with a letter
+ * Ref - https://support.google.com/analytics/answer/13316687?hl=en&ref_topic=13367860&sjid=16827682213264631791-NA
+ * @param {*} eventName
+ * @returns
+ */
+const isEventNameValid = (eventName) => {
+  const pattern = /^[A-Za-z]\w*$/;
+  return pattern.test(eventName);
 };
 
 const GA4_ITEM_EXCLUSION = [
@@ -308,17 +296,110 @@ const getGA4CustomParameters = (message, keys, exclusionFields, payload) => {
   return payload.params;
 };
 
+/**
+ * Validation for event name
+ * Ref - https://support.google.com/analytics/answer/13316687?hl=en&ref_topic=13367860&sjid=16827682213264631791-NA
+ * @param {*} event
+ */
+const validateEventName = (event) => {
+  /**
+   * Event name should not use reserved prefixes and event names
+   * Event names are case sensitive
+   * Event name must start with alphabetic characters only
+   */
+
+  if (isReservedWebCustomEventName(event)) {
+    throw new InstrumentationError('Reserved custom event names are not allowed');
+  }
+
+  if (isReservedWebCustomPrefixName(event)) {
+    throw new InstrumentationError('Reserved custom prefix names are not allowed');
+  }
+
+  if (!isEventNameValid(event)) {
+    throw new InstrumentationError(
+      'Event name should only contain letters, numbers, and underscores and event name must start with a letter',
+    );
+  }
+};
+
+/**
+ * Function to verify user_property value type
+ * @param {*} value
+ * @returns
+ */
+const isValidValueType = (value) => {
+  if (typeof value === 'string') {
+    return value.trim() !== '' && value.trim().length <= 36;
+  }
+
+  if (typeof value === 'number') {
+    return value.toString().length <= 36;
+  }
+
+  return typeof value === 'boolean';
+};
+
+/**
+ * Function to validate user_property name and it's value
+ * user_property name should start with alphabetic characters
+ * user_property name length should not more then 24 characters
+ * user_property name should not start with reserved prefixes
+ * user_property value should not null and empty
+ * user_property value type should either string, number or boolean
+ * user_property value length should not more then 36 characters
+ * Ref - https://developers.google.com/analytics/devguides/collection/protocol/ga4/reference?client_type=gtag#reserved_parameter_names
+ * @param {*} name
+ * @returns
+ */
+const isValidUserProperty = (key, value) => {
+  const pattern = /^[A-Za-z]\w{0,23}$/;
+  const reservedPrefixesNames = ['google_', 'ga_', 'firebase_'];
+
+  const isValidKey =
+    pattern.test(key) &&
+    !reservedPrefixesNames.some((prefix) => key.toLowerCase().startsWith(prefix));
+
+  const isValidValue = isDefinedAndNotNull(value) && isValidValueType(value);
+
+  return isValidKey && isValidValue;
+};
+
+/**
+ * Function to validate and prepare user_properties
+ * @param {*} message
+ */
+const prepareUserProperties = (message) => {
+  const userProperties = extractCustomFields(
+    message,
+    {},
+    ['properties.user_properties', 'context.traits'],
+    GA4_RESERVED_USER_PROPERTY_EXCLUSION,
+  );
+
+  const validatedUserProperties = Object.entries(userProperties)
+    .filter(([key, value]) => isValidUserProperty(key, value))
+    .reduce((acc, [key, value]) => {
+      const userProperties = acc;
+      userProperties[key] = { value };
+      return userProperties;
+    }, {});
+
+  return validatedUserProperties;
+};
+
 module.exports = {
+  getItem,
+  getItemList,
+  validateEventName,
   isReservedEventName,
-  GA4_RESERVED_PARAMETER_EXCLUSION,
+  getGA4ExclusionList,
+  prepareUserProperties,
+  getGA4CustomParameters,
   GA4_PARAMETERS_EXCLUSION,
-  removeReservedParameterPrefixNames,
-  GA4_RESERVED_USER_PROPERTY_EXCLUSION,
-  removeReservedUserPropertyPrefixNames,
   isReservedWebCustomEventName,
   isReservedWebCustomPrefixName,
-  getItemList,
-  getItem,
-  getGA4ExclusionList,
-  getGA4CustomParameters,
+  GA4_RESERVED_PARAMETER_EXCLUSION,
+  removeReservedParameterPrefixNames,
+  GA4_RESERVED_USER_PROPERTY_EXCLUSION,
 };

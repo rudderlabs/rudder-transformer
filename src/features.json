@@ -54,6 +54,8 @@
     "TIKTOK_ADS_OFFLINE_EVENTS": true,
     "CRITEO_AUDIENCE": true,
     "CUSTOMERIO": true,
-    "BRAZE": true
+    "BRAZE": true,
+    "OPTIMIZELY_FULLSTACK": true,
+    "TWITTER_ADS": true
   }
 }

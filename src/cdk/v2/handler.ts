@@ -20,13 +20,16 @@ const defTags = {
   [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.CDK_V2,
 };
 
-const EMPTY_EXECUTION_BINDINGS: ExecutionBindings = {
-  outputs: {},
-  context: {},
-  setContext: (key: string, value: any) => {
-    EMPTY_EXECUTION_BINDINGS.context[key] = value;
-  },
-};
+export function getEmptyExecutionBindings() {
+  const context = {};
+  return {
+    outputs: {},
+    context,
+    setContext: (key: string, value: any) => {
+      context[key] = value;
+    },
+  };
+}
 
 export async function getWorkflowEngine(
   destName: string,
@@ -88,7 +91,7 @@ export function executeStep(
   workflowEngine: WorkflowEngine,
   stepName: string,
   input: any,
-  bindings: ExecutionBindings = EMPTY_EXECUTION_BINDINGS,
+  bindings: ExecutionBindings = getEmptyExecutionBindings(),
 ): Promise<StepOutput> {
   return workflowEngine.getStepExecutor(stepName).execute(input, bindings);
 }

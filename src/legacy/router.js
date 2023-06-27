@@ -32,7 +32,6 @@ const destProxyRoutes = require('./delivery');
 const eventValidator = require('../util/eventValidation');
 const { getIntegrations } = require('../routes/utils');
 const { setupUserTransformHandler, validateCode } = require('../util/customTransformer');
-const { CommonUtils } = require('../util/common');
 const {
   RespStatusError,
   RetryRequestError,
@@ -122,25 +121,8 @@ const enrichTransformedEvent = (transformedEvent) => ({
 /**
  * @deprecated this function is deprecated and will be removed in future release
  */
-async function handleV0Destination(destHandler, destType, inputArr, feature) {
-  const v0Result = {};
-  let v0Time = 0;
-  try {
-    const startTime = process.hrtime();
-    v0Result.output = await destHandler(...inputArr);
-    const diff = process.hrtime(startTime);
-    v0Time = diff[0] * NS_PER_SEC + diff[1];
-    // Comparison is happening in async and after return from here
-    // this object is getting modified so comparison was failing to
-    // avoid that we are cloning it.
-    return _.cloneDeep(v0Result.output);
-  } catch (error) {
-    v0Result.error = {
-      message: error.message,
-      statusCode: getErrorStatusCode(error),
-    };
-    throw error;
-  }
+function handleV0Destination(destHandler, inputArr) {
+  return destHandler(...inputArr);
 }
 /**
  * @deprecated this function is deprecated and will be removed in future release
@@ -189,12 +171,7 @@ async function handleDest(ctx, version, destination) {
           if (destHandler === null) {
             destHandler = getDestHandler(version, destination);
           }
-          respEvents = await handleV0Destination(
-            destHandler.process,
-            destination,
-            [parsedEvent],
-            tags.FEATURES.PROCESSOR,
-          );
+          respEvents = await handleV0Destination(destHandler.process, [parsedEvent]);
         }
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
@@ -392,12 +369,10 @@ async function routerHandleDest(ctx) {
     await Promise.all(
       Object.values(allDestEvents).map(async (destInputArray) => {
         const newDestInputArray = processDynamicConfig(destInputArray, 'router');
-        const listOutput = await handleV0Destination(
-          routerDestHandler.processRouterDest,
-          destType,
-          [newDestInputArray, { ...getCommonMetadata(ctx), ...getReqMetadata() }],
-          tags.FEATURES.ROUTER,
-        );
+        const listOutput = await handleV0Destination(routerDestHandler.processRouterDest, [
+          newDestInputArray,
+          { ...getCommonMetadata(ctx), ...getReqMetadata() },
+        ]);
         const hasProcMetadataForRouter = routerDestHandler.processMetadataForRouter;
         // enriching transformed event
         listOutput.forEach((listOut) => {

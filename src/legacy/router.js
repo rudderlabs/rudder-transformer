@@ -17,10 +17,8 @@ const {
   isNonFuncObject,
   getMetadata,
   generateErrorObject,
-  isHttpStatusSuccess,
   getErrorRespEvents,
   isCdkDestination,
-  getErrorStatusCode,
   checkAndCorrectUserId,
 } = require('../v0/util');
 const { processDynamicConfig } = require('../util/dynamicConfig');
@@ -32,16 +30,13 @@ const destProxyRoutes = require('./delivery');
 const eventValidator = require('../util/eventValidation');
 const { getIntegrations } = require('../routes/utils');
 const { setupUserTransformHandler, validateCode } = require('../util/customTransformer');
-const { CommonUtils } = require('../util/common');
 const {
   RespStatusError,
   RetryRequestError,
   sendViolationMetrics,
   constructValidationErrors,
 } = require('../util/utils');
-const { isCdkV2Destination, getCdkV2TestThreshold } = require('../cdk/v2/utils');
 const { PlatformError } = require('../v0/util/errorTypes');
-const { getCachedWorkflowEngine, processCdkV2Workflow } = require('../cdk/v2/handler');
 const { processCdkV1 } = require('../cdk/v1/handler');
 const { extractLibraries } = require('../util/customTransformer');
 const { getCompatibleStatusCode } = require('../adapters/utils/networkUtils');
@@ -58,7 +53,6 @@ const proxyTestModeEnabled =
 const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
   ? process.env.TRANSFORMER_TEST_MODE.toLowerCase() === 'true'
   : false;
-const NS_PER_SEC = 1e9;
 
 const router = new Router();
 
@@ -109,79 +103,6 @@ function getCommonMetadata(ctx) {
   };
 }
 
-async function getCdkV2Result(destName, event, feature) {
-  const cdkResult = {};
-  try {
-    cdkResult.output = await processCdkV2Workflow(destName, event, feature);
-  } catch (error) {
-    cdkResult.error = {
-      message: error.message,
-      statusCode: getErrorStatusCode(error),
-    };
-  }
-  return cdkResult;
-}
-
-async function compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time) {
-  try {
-    const envThreshold = parseFloat(process.env.CDK_LIVE_TEST || '0', 10);
-    let destThreshold = getCdkV2TestThreshold(inputArr[0]);
-    if (feature === tags.FEATURES.ROUTER) {
-      destThreshold = getCdkV2TestThreshold(inputArr[0][0]);
-    }
-    const liveTestThreshold = envThreshold * destThreshold;
-    if (
-      Number.isNaN(liveTestThreshold) ||
-      !liveTestThreshold ||
-      liveTestThreshold < Math.random()
-    ) {
-      return;
-    }
-    const startTime = process.hrtime();
-    const cdkResult = await getCdkV2Result(destType, inputArr[0], feature);
-    const diff = process.hrtime(startTime);
-    const cdkTime = diff[0] * NS_PER_SEC + diff[1];
-
-    stats.gauge('v0_transformation_time', v0Time, {
-      destType,
-      feature,
-    });
-    stats.gauge('cdk_transformation_time', cdkTime, {
-      destType,
-      feature,
-    });
-    const objectDiff = CommonUtils.objectDiff(v0Result, cdkResult);
-    if (Object.keys(objectDiff).length > 0) {
-      stats.counter('cdk_live_compare_test_failed', 1, { destType, feature });
-      logger.error(
-        `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff_keys=${JSON.stringify(
-          Object.keys(objectDiff),
-        )}`,
-      );
-      // logger.error(
-      //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, diff=${JSON.stringify(
-      //     objectDiff
-      //   )}`
-      // );
-      // logger.error(
-      //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, input=${JSON.stringify(
-      //     inputArr[0]
-      //   )}`
-      // );
-      // logger.error(
-      //   `[LIVE_COMPARE_TEST] failed for destType=${destType}, feature=${feature}, results=${JSON.stringify(
-      //     { v0: v0Result, cdk: cdkResult }
-      //   )}`
-      // );
-      return;
-    }
-    stats.counter('cdk_live_compare_test_success', 1, { destType, feature });
-  } catch (error) {
-    stats.counter('cdk_live_compare_test_errored', 1, { destType, feature });
-    logger.error(`[LIVE_COMPARE_TEST] errored for destType=${destType}, feature=${feature}`, error);
-  }
-}
-
 /**
  * Enriches the transformed event with more information
  * - userId stringification
@@ -197,31 +118,8 @@ const enrichTransformedEvent = (transformedEvent) => ({
 /**
  * @deprecated this function is deprecated and will be removed in future release
  */
-async function handleV0Destination(destHandler, destType, inputArr, feature) {
-  const v0Result = {};
-  let v0Time = 0;
-  try {
-    const startTime = process.hrtime();
-    v0Result.output = await destHandler(...inputArr);
-    const diff = process.hrtime(startTime);
-    v0Time = diff[0] * NS_PER_SEC + diff[1];
-    // Comparison is happening in async and after return from here
-    // this object is getting modified so comparison was failing to
-    // avoid that we are cloning it.
-    return _.cloneDeep(v0Result.output);
-  } catch (error) {
-    v0Result.error = {
-      message: error.message,
-      statusCode: getErrorStatusCode(error),
-    };
-    throw error;
-  } finally {
-    if (process.env.NODE_ENV === 'test') {
-      await compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time);
-    } else {
-      compareWithCdkV2(destType, inputArr, feature, v0Result, v0Time);
-    }
-  }
+function handleV0Destination(destHandler, inputArr) {
+  return destHandler(...inputArr);
 }
 /**
  * @deprecated this function is deprecated and will be removed in future release
@@ -264,24 +162,13 @@ async function handleDest(ctx, version, destination) {
         parsedEvent.request = { query: reqParams };
         parsedEvent = processDynamicConfig(parsedEvent);
         let respEvents;
-        if (isCdkV2Destination(parsedEvent)) {
-          respEvents = await processCdkV2Workflow(
-            destination,
-            parsedEvent,
-            tags.FEATURES.PROCESSOR,
-          );
-        } else if (isCdkDestination(parsedEvent)) {
+        if (isCdkDestination(parsedEvent)) {
           respEvents = await processCdkV1(destination, parsedEvent);
         } else {
           if (destHandler === null) {
             destHandler = getDestHandler(version, destination);
           }
-          respEvents = await handleV0Destination(
-            destHandler.process,
-            destination,
-            [parsedEvent],
-            tags.FEATURES.PROCESSOR,
-          );
+          respEvents = await handleV0Destination(destHandler.process, [parsedEvent]);
         }
         if (respEvents) {
           if (!Array.isArray(respEvents)) {
@@ -305,10 +192,7 @@ async function handleDest(ctx, version, destination) {
 
         let implementation = tags.IMPLEMENTATIONS.NATIVE;
         let errCtx = 'Processor Transformation';
-        if (isCdkV2Destination(event)) {
-          errCtx = `CDK V2 - ${errCtx}`;
-          implementation = tags.IMPLEMENTATIONS.CDK_V2;
-        } else if (isCdkDestination(event)) {
+        if (isCdkDestination(event)) {
           errCtx = `CDK - ${errCtx}`;
           implementation = tags.IMPLEMENTATIONS.CDK_V1;
         }
@@ -436,15 +320,6 @@ async function handleValidation(ctx) {
 }
 
 async function isValidRouterDest(event, destType) {
-  const isCdkV2Dest = isCdkV2Destination(event);
-  if (isCdkV2Dest) {
-    try {
-      await getCachedWorkflowEngine(destType, tags.FEATURES.ROUTER);
-      return true;
-    } catch (error) {
-      return false;
-    }
-  }
   try {
     const routerDestHandler = getDestHandler('v0', destType);
     return routerDestHandler?.processRouterDest !== undefined;
@@ -491,21 +366,10 @@ async function routerHandleDest(ctx) {
     await Promise.all(
       Object.values(allDestEvents).map(async (destInputArray) => {
         const newDestInputArray = processDynamicConfig(destInputArray, 'router');
-        let listOutput;
-        if (isCdkV2Destination(newDestInputArray[0])) {
-          listOutput = await processCdkV2Workflow(
-            destType,
-            newDestInputArray,
-            tags.FEATURES.ROUTER,
-          );
-        } else {
-          listOutput = await handleV0Destination(
-            routerDestHandler.processRouterDest,
-            destType,
-            [newDestInputArray, { ...getCommonMetadata(ctx), ...getReqMetadata() }],
-            tags.FEATURES.ROUTER,
-          );
-        }
+        const listOutput = await handleV0Destination(routerDestHandler.processRouterDest, [
+          newDestInputArray,
+          { ...getCommonMetadata(ctx), ...getReqMetadata() },
+        ]);
         const hasProcMetadataForRouter = routerDestHandler.processMetadataForRouter;
         // enriching transformed event
         listOutput.forEach((listOut) => {
@@ -1346,12 +1210,16 @@ const handleDeletionOfUsers = async (ctx) => {
           respList.push(response);
         }
       } catch (error) {
-        const errObj = generateErrorObject(error, {
-          [tags.TAG_NAMES.DEST_TYPE]: destType.toUpperCase(),
-          [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
-          [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
-          [tags.TAG_NAMES.FEATURE]: tags.FEATURES.USER_DELETION,
-        }, false);
+        const errObj = generateErrorObject(
+          error,
+          {
+            [tags.TAG_NAMES.DEST_TYPE]: destType.toUpperCase(),
+            [tags.TAG_NAMES.MODULE]: tags.MODULES.DESTINATION,
+            [tags.TAG_NAMES.IMPLEMENTATION]: tags.IMPLEMENTATIONS.NATIVE,
+            [tags.TAG_NAMES.FEATURE]: tags.FEATURES.USER_DELETION,
+          },
+          false,
+        );
 
         // adding the status to the request
         ctx.status = errObj.status;
@@ -1430,7 +1298,6 @@ module.exports = {
   fileUpload,
   pollStatus,
   getJobStatus,
-  processCdkV2Workflow,
   handleV0Destination,
   getDestHandler,
 };

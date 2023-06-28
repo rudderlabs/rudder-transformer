@@ -487,6 +487,12 @@ class Prometheus {
         labelNames: ['type', 'writeKey', 'source'],
       },
       {
+        name: 'shopify_redis_success',
+        help: 'shopify_redis_success',
+        type: 'counter',
+        labelNames: ['field', 'event', 'writeKey', 'source'],
+      },
+      {
         name: 'shopify_redis_no_val',
         help: 'shopify_redis_no_val',
         type: 'counter',

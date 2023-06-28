@@ -6,11 +6,10 @@ const {
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
   extractEmailFromPayload,
-  getAnonymousIdFromDb,
   getAnonymousId,
   checkAndUpdateCartItems,
   getHashLineItems,
-  getSessionIdFromDB
+  getSessionId
 } = require('./util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
@@ -171,14 +170,8 @@ const processEvent = async (inputEvent, metricMetadata) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
-    let anonymousId;
-    let sessionId;
-    if (useRedisDatabase) {
-      anonymousId = await getAnonymousIdFromDb(message, metricMetadata);
-      sessionId = await getSessionIdFromDB(message, metricMetadata);
-    } else {
-      anonymousId = getAnonymousId(message);
-    }
+    const anonymousId = await getAnonymousId(message, metricMetadata);
+    const sessionId = await getSessionId(message, metricMetadata);
     if (isDefinedAndNotNull(anonymousId)) {
       message.setProperty('anonymousId', anonymousId);
     } else if (!message.userId) {

@@ -59,7 +59,8 @@
               "email": "van@abc.com",
               "hashedEmail": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
             }
-          ]
+          ],
+          "action": "Add"
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -128,13 +129,56 @@
               "email": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c",
               "hashedEmail": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
             }
-          ]
+          ],
+          "action": "Add"
         },
         "JSON_ARRAY": {},
         "XML": {},
         "FORM": {}
       },
       "files": {}
+    }
+  },
+  {
+    "description": "Unsupported action type",
+    "input": {
+      "message": {
+        "userId": "user 1",
+        "type": "audiencelist",
+        "properties": {
+          "listData": {
+            "addition": [
+              {
+                "email": "alex@email.com"
+              },
+              {
+                "email": "amy@abc.com"
+              },
+              {
+                "email": "van@abc.com"
+              }
+            ]
+          }
+        },
+        "context": {
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z"
+      },
+      "destination": {
+        "Config": {
+          "customerAccountId": "89236978",
+          "customerId": "78678678",
+          "audienceId": "564567",
+          "hashEmail": true
+        }
+      }
+    },
+    "output": {
+      "error": "unsupported action type. Aborting message."
     }
   },
   {
@@ -295,7 +339,7 @@
                 "email": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
               }
             ],
-            "add": [
+            "update": [
               {
                 "email": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b"
               },
@@ -325,36 +369,70 @@
         }
       }
     },
-    "output": {
-      "version": "1",
-      "type": "REST",
-      "method": "POST",
-      "endpoint": "",
-      "headers": {},
-      "params": {},
-      "body": {
-        "JSON": {
-          "list": [
-            {
-              "email": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b",
-              "hashedEmail": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b"
-            },
-            {
-              "email": "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579",
-              "hashedEmail": "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579"
-            },
-            {
-              "email": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c",
-              "hashedEmail": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
-            }
-          ]
+    "output": [
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "list": [
+              {
+                "email": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b",
+                "hashedEmail": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b"
+              },
+              {
+                "email": "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579",
+                "hashedEmail": "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579"
+              },
+              {
+                "email": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c",
+                "hashedEmail": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
+              }
+            ],
+            "action": "Remove"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
         },
-        "JSON_ARRAY": {},
-        "XML": {},
-        "FORM": {}
+        "files": {}
       },
-      "files": {}
-    }
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {
+            "list": [
+              {
+                "email": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b",
+                "hashedEmail": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b"
+              },
+              {
+                "email": "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579",
+                "hashedEmail": "49eaeca26c878f268ad33af8cfa8194ca5b8b8e448b1c775bf9153a2de734579"
+              },
+              {
+                "email": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c",
+                "hashedEmail": "2048acfa84a01121060ca2fc8a673a76d427176dc37224d4408c21973bd90e5c"
+              }
+            ],
+            "action": "Replace"
+          },
+          "JSON_ARRAY": {},
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      }
+    ]
   },
   {
     "description": "Only single user data is present",
@@ -412,7 +490,8 @@
               "hashedEmail": "ac0f1baec38a9ef3cfcb56db981df7d9bab2568c7f53ef3776d1c059ec58e72b",
               "email": "alex@email.com"
             }
-          ]
+          ],
+          "action": "Add"
         },
         "JSON_ARRAY": {},
         "XML": {},

@@ -242,6 +242,13 @@ const getItem = (message, isItemsRequired) => {
   return items;
 };
 
+/**
+ * Returns items array for ga4 event payload
+ * @param {*} message 
+ * @param {*} item 
+ * @param {*} itemList 
+ * @returns 
+ */
 const getItemsArray = (message, item, itemList) => {
   let items = [];
   let mapRootLevelPropertiesToGA4ItemsArray = false;

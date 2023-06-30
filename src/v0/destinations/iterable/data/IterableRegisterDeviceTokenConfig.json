@@ -15,5 +15,11 @@
       "anonymousId"
     ],
     "required": false
+  },
+  {
+    "destKey": "preferUserId",
+    "sourceKeys": ["traits.preferUserId", "context.traits.preferUserId"],
+    "metadata": { "defaultValue": true },
+    "required": false
   }
 ]

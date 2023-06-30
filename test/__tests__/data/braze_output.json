@@ -879,17 +879,23 @@
     "body": {
       "FORM": {},
       "JSON": {
-        "external_id": [
-          "Randomuser2222"
-        ],
-        "phone": "5055077683",
-        "subscription_group_id": "1234",
-        "subscription_state": "subscribed"
+        "subscription_groups": [
+          {
+            "external_id": [
+              "Randomuser2222"
+            ],
+            "phones": [
+              "5055077683"
+            ],
+            "subscription_group_id": "1234",
+            "subscription_state": "subscribed"
+          }
+        ]
       },
       "JSON_ARRAY": {},
       "XML": {}
     },
-    "endpoint": "https://rest.fra-01.braze.eu/subscription/status/set",
+    "endpoint": "https://rest.fra-01.braze.eu/v2/subscription/status/set",
     "files": {},
     "headers": {
       "Accept": "application/json",
@@ -905,17 +911,19 @@
     "body": {
       "FORM": {},
       "JSON": {
-        "external_id": [
-          "Randomuser2222"
-        ],
-        "email": "abc@test.com",
-        "subscription_group_id": "1234",
-        "subscription_state": "unsubscribed"
+        "subscription_groups": [
+          {
+            "external_id": ["Randomuser2222"],
+            "emails": ["abc@test.com"],
+            "subscription_group_id": "1234",
+            "subscription_state": "unsubscribed"
+          }
+        ]
       },
       "JSON_ARRAY": {},
       "XML": {}
     },
-    "endpoint": "https://rest.fra-01.braze.eu/subscription/status/set",
+    "endpoint": "https://rest.fra-01.braze.eu/v2/subscription/status/set",
     "files": {},
     "headers": {
       "Accept": "application/json",

@@ -96,7 +96,8 @@
             "city": "Bangalore",
             "name": "manashi",
             "email": "manashi@website.com",
-            "country": "India"
+            "country": "India",
+            "preferUserId": false
           },
           "library": {
             "name": "analytics-node",
@@ -135,7 +136,7 @@
             "email": "manashi@website.com",
             "country": "India"
           },
-          "preferUserId": true,
+          "preferUserId": false,
           "mergeNestedObjects": true
         }
       },
@@ -1263,7 +1264,8 @@
             "type": "android"
           },
           "traits": {
-            "email": "ruchira@rudderlabs.com"
+            "email": "ruchira@rudderlabs.com",
+            "mergeNestedObjects": false
           },
           "library": {
             "name": "RudderLabs JavaScript SDK",
@@ -1324,7 +1326,7 @@
             },
             "userId": "123456",
             "preferUserId": true,
-            "mergeNestedObjects": true
+            "mergeNestedObjects": false
           },
           "XML": {},
           "JSON_ARRAY": {},

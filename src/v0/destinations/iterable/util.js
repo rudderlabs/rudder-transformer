@@ -87,7 +87,6 @@ const getCategoryUsingEventName = (message) => {
 const registerDeviceTokenEventPayloadBuilder = (message) => {
   const rawPayload = {
     ...constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY_DEVICE.name]),
-    preferUserId: true,
     device: {
       ...constructPayload(message, mappingConfig[ConfigCategory.DEVICE.name]),
       platform: isAppleFamily(message.context.device.type) ? 'APNS' : 'GCM',
@@ -119,12 +118,7 @@ const updateUserEventPayloadBuilder = (message, category) => {
   if (get(message, MappedToDestinationKey)) {
     addExternalIdToTraits(message);
   }
-
-  const rawPayload = {
-    ...constructPayload(message, mappingConfig[category.name]),
-    preferUserId: true,
-    mergeNestedObjects: true,
-  };
+  const rawPayload = constructPayload(message, mappingConfig[category.name]);
 
   validateMandatoryField(rawPayload);
   return rawPayload;
@@ -238,8 +232,6 @@ const purchaseEventPayloadBuilder = (message, category) => {
 
   validateMandatoryField(rawPayload.user);
 
-  rawPayload.user.preferUserId = true;
-  rawPayload.user.mergeNestedObjects = true;
   rawPayload.total = parseFloat(rawPayload.total);
   rawPayload.items = prepareItemsPayload(message);
   rawPayload.createdAt = new Date(rawPayload.createdAt).getTime();
@@ -261,9 +253,7 @@ const updateCartEventPayloadBuilder = (message) => {
   };
 
   validateMandatoryField(rawPayload.user);
-
-  rawPayload.user.preferUserId = true;
-  rawPayload.user.mergeNestedObjects = true;
+  
   rawPayload.items = prepareItemsPayload(message);
 
   return rawPayload;

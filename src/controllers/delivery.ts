@@ -10,7 +10,7 @@ import tags from '../v0/util/tags';
 
 export default class DeliveryController {
   public static async deliverToDestination(ctx: Context) {
-    logger.debug('Native(Delivery):: Request to transformer::', JSON.stringify(ctx.request.body));
+    logger.debug(`[${ctx.params.destination}] Native(Delivery):: Request to transformer::`, JSON.stringify(ctx.request.body));
     let deliveryResponse: DeliveryResponse;
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const event = ctx.request.body as ProcessorTransformationOutput;

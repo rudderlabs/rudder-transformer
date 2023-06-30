@@ -2033,5 +2033,9 @@
       "files": {},
       "userId": "anonId01"
     }
-  ]
+  ],
+  {
+    "statusCode": 400,
+    "message": "Group Key is not present. Aborting message"
+  }
 ]

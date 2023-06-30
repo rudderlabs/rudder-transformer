@@ -10,7 +10,7 @@ import tags from '../v0/util/tags';
 
 export default class DeliveryController {
   public static async deliverToDestination(ctx: Context) {
-    logger.debug(`[${ctx.params.destination}] Native(Delivery):: Request to transformer::`, JSON.stringify(ctx.request.body));
+    logger.info(`[${ctx.params.destination}] Native(Delivery):: Request to transformer::`, JSON.stringify(ctx.request.body));
     let deliveryResponse: DeliveryResponse;
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const event = ctx.request.body as ProcessorTransformationOutput;
@@ -33,12 +33,12 @@ export default class DeliveryController {
     }
     ctx.body = { output: deliveryResponse };
     ControllerUtility.deliveryPostProcess(ctx, deliveryResponse.status);
-    logger.debug('Native(Delivery):: Response from transformer::', JSON.stringify(ctx.body));
+    logger.info('Native(Delivery):: Response from transformer::', JSON.stringify(ctx.body));
     return ctx;
   }
 
   public static async testDestinationDelivery(ctx: Context) {
-    logger.debug(
+    logger.info(
       'Native(Delivery-Test):: Request to transformer::',
       JSON.stringify(ctx.request.body),
     );
@@ -57,7 +57,7 @@ export default class DeliveryController {
     );
     ctx.body = { output: response };
     ControllerUtility.postProcess(ctx);
-    logger.debug('Native(Delivery-Test):: Response from transformer::', JSON.stringify(ctx.body));
+    logger.info('Native(Delivery-Test):: Response from transformer::', JSON.stringify(ctx.body));
     return ctx;
   }
 }

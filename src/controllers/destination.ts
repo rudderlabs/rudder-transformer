@@ -20,7 +20,7 @@ export default class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
     const startTime = new Date();
     logger.debug(
-      `[${ctx.params.destination} ] Native(Process-Transform):: Requst to transformer::`,
+      'Native(Process-Transform):: Requst to transformer::',
       JSON.stringify(ctx.request.body),
     );
     let resplist: ProcessorTransformationResponse[];

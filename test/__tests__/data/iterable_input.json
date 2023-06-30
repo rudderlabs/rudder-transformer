@@ -47,7 +47,8 @@
           "city": "Bangalore",
           "name": "manashi",
           "email": "manashi@website.com",
-          "country": "India"
+          "country": "India",
+          "preferUserId": false
         },
         "library": {
           "name": "analytics-node",
@@ -636,7 +637,8 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "ruchira@rudderlabs.com"
+          "email": "ruchira@rudderlabs.com",
+          "mergeNestedObjects": false
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",

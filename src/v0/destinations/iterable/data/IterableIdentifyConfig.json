@@ -19,7 +19,10 @@
   {
     "destKey": "dataFields",
     "sourceKeys": ["traits", "context.traits"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "excludes": ["preferUserId", "mergeNestedObjects"]
+    }
   },
   {
     "destKey": "userId",

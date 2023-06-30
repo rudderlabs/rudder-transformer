@@ -19,7 +19,6 @@ steps:
       $.assert(typeof .message.event === "string", "event name should be a string")
 
   - name: preparePayload
-    debug: true
     template: |
       $.assert(.message.properties.index, 'Missing required value from "properties.index"');
       let eventTypeMap = $.eventTypeMapping(.destination.Config);
@@ -46,14 +45,12 @@ steps:
     steps:
       - name: populateForClickEvent
         condition: $.context.payload.eventType === "click"
-        debug: true
         template: |
           const products = .message.properties.products;
           $.context.payload.objectIDs = ~r products.objectId;
           $.context.payload.positions = ~r products.position;
         else:
           name: populateForOtherEvents
-          debug: true
           template: |
             const products = .message.properties.products;
             const objectIDs = ~r products.objectId;

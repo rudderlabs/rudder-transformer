@@ -19,7 +19,7 @@ import { DynamicConfigParser } from '../util/dynamicConfigParser';
 export default class DestinationController {
   public static async destinationTransformAtProcessor(ctx: Context) {
     const startTime = new Date();
-    logger.info(
+    logger.debug(
       `[${ctx.params.destination} ] Native(Process-Transform):: Requst to transformer::`,
       JSON.stringify(ctx.request.body),
     );
@@ -65,7 +65,7 @@ export default class DestinationController {
     }
     ctx.body = resplist;
     ControllerUtility.postProcess(ctx);
-    logger.info(
+    logger.debug(
       'Native(Process-Transform):: Response from transformer::',
       JSON.stringify(ctx.body),
     );
@@ -88,7 +88,7 @@ export default class DestinationController {
   }
 
   public static async destinationTransformAtRouter(ctx: Context) {
-    logger.info(
+    logger.debug(
       'Native(Router-Transform):: Requst to transformer::',
       JSON.stringify(ctx.request.body),
     );
@@ -134,7 +134,7 @@ export default class DestinationController {
       version: 'v0',
       ...metaTags,
     });
-    logger.info(
+    logger.debug(
       'Native(Router-Transform):: Response from transformer::',
       JSON.stringify(ctx.body),
     );
@@ -142,7 +142,7 @@ export default class DestinationController {
   }
 
   public static batchProcess(ctx: Context) {
-    logger.info(
+    logger.debug(
       'Native(Process-Transform-Batch):: Requst to transformer::',
       JSON.stringify(ctx.request.body),
     );
@@ -175,7 +175,7 @@ export default class DestinationController {
       ctx.body = [errResp];
     }
     ControllerUtility.postProcess(ctx);
-    logger.info(
+    logger.debug(
       'Native(Process-Transform-Batch):: Response from transformer::',
       JSON.stringify(ctx.body),
     );

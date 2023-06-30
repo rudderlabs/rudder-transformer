@@ -25,7 +25,6 @@ const identifyDeviceAction = (message) => {
   let rawPayload = {};
   rawPayload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY_DEVICE.name]);
   rawPayload.device = constructPayload(message, mappingConfig[ConfigCategory.DEVICE.name]);
-  rawPayload.preferUserId = true;
   if (isAppleFamily(message.context.device.type)) {
     rawPayload.device.platform = 'APNS';
   } else {
@@ -46,8 +45,6 @@ const identifyAction = (message, category) => {
     addExternalIdToTraits(message);
   }
   const rawPayload = constructPayload(message, mappingConfig[category.name]);
-  rawPayload.preferUserId = true;
-  rawPayload.mergeNestedObjects = true;
   validateMandatoryField(rawPayload);
   return rawPayload;
 };
@@ -135,8 +132,6 @@ const trackPurchaseAction = (message, category) => {
   rawPayload = constructPayload(message, mappingConfig[category.name]);
   rawPayload.user = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
   validateMandatoryField(rawPayload.user);
-  rawPayload.user.preferUserId = true;
-  rawPayload.user.mergeNestedObjects = true;
   rawPayload.items = message.properties.products;
   if (rawPayload.items && Array.isArray(rawPayload.items)) {
     rawPayload.items.forEach((el) => {
@@ -186,8 +181,6 @@ const updateCartAction = (message) => {
   const rawPayloadItemArr = [];
   rawPayload.user = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
   validateMandatoryField(rawPayload.user);
-  rawPayload.user.preferUserId = true;
-  rawPayload.user.mergeNestedObjects = true;
   if (rawPayload.items && Array.isArray(rawPayload.items)) {
     rawPayload.items.forEach((el) => {
       const element = constructPayload(el, mappingConfig[ConfigCategory.PRODUCT.name]);

@@ -47,7 +47,13 @@ const flattenMap = (collection) => _.flatMap(collection, (x) => x);
 // GENERIC UTLITY
 // ========================================================================
 
-const getEventTime = (message) => new Date(message.timestamp).toISOString();
+const getEventTime = (message) => {
+  try {
+    return new Date(message.timestamp).toISOString();
+  } catch (err) {
+    return new Date(message.originalTimestamp).toISOString();
+  }
+};
 
 const base64Convertor = (string) => Buffer.from(string).toString('base64');
 

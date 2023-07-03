@@ -26,27 +26,27 @@ export default interface DestinationService {
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
-    requestMetadata: Object,
+    requestMetadata: object,
   ): Promise<ProcessorTransformationResponse[]>;
 
   doRouterTransformation(
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    requestMetadata: Object,
+    requestMetadata: object,
   ): Promise<RouterTransformationResponse[]>;
 
   doBatchTransformation(
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    requestMetadata: Object,
+    requestMetadata: object,
   ): RouterTransformationResponse[];
 
   deliver(
     event: ProcessorTransformationOutput,
     destinationType: string,
-    requestMetadata: Object,
+    requestMetadata: object,
   ): Promise<DeliveryResponse>;
 
   processUserDeletion(

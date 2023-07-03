@@ -64,7 +64,7 @@ const deleteProfile = async (userAttributes, config) => {
 };
 
 const createDeletionTask = async (userAttributes, config) => {
-  const { token, gdprApiToken } = config;
+  const { token, gdprApiToken, dataResidency } = config;
 
   if (!gdprApiToken) {
     throw new ConfigurationError(
@@ -77,7 +77,7 @@ const createDeletionTask = async (userAttributes, config) => {
     'Content-Type': JSON_MIME_TYPE,
     Authorization: `Bearer ${gdprApiToken}`,
   };
-  const complianceType = config?.dataResidency === 'eu' ? 'GDPR' : 'CCPA';
+  const complianceType = dataResidency === 'eu' ? 'GDPR' : 'CCPA';
 
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.mixpanel.com/docs/privacy-security#create-a-deletion-task

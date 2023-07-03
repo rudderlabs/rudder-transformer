@@ -49,7 +49,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     events: ProcessorTransformationRequest[],
     destinationType: string,
     _version: string,
-    _requestMetadata: Object,
+    _requestMetadata: object,
   ): Promise<ProcessorTransformationResponse[]> {
     // TODO: Change the promise type
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
@@ -105,14 +105,14 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     events: RouterTransformationRequestData[],
     destinationType: string,
     _version: string,
-    _requestMetadata: Object,
+    _requestMetadata: object,
   ): Promise<RouterTransformationResponse[]> {
-    const allDestEvents: Object = groupBy(
+    const allDestEvents: object = groupBy(
       events,
       (ev: RouterTransformationRequestData) => ev.destination?.ID,
     );
     const response: RouterTransformationResponse[][] = await Promise.all(
-      Object.values(allDestEvents).map(
+      object.values(allDestEvents).map(
         async (destInputArray: RouterTransformationRequestData[]) => {
           const metaTo = this.getTags(
             destinationType,
@@ -150,7 +150,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
     _events: RouterTransformationRequestData[],
     _destinationType: string,
     _version: string,
-    _requestMetadata: Object,
+    _requestMetadata: object,
   ): RouterTransformationResponse[] {
     throw new TransformationError('CDKV2 Does not Implement Batch Transform Routine');
   }
@@ -158,7 +158,7 @@ export default class CDKV2DestinationService implements IntegrationDestinationSe
   public deliver(
     _event: ProcessorTransformationOutput,
     _destinationType: string,
-    _requestMetadata: Object,
+    _requestMetadata: object,
   ): Promise<DeliveryResponse> {
     throw new TransformationError('CDKV2 Does not Implement Delivery Routine');
   }

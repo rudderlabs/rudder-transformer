@@ -25,10 +25,10 @@ export default class NativeIntegrationSourceService implements IntegrationSource
   }
 
   public async sourceTransformRoutine(
-    sourceEvents: Object[],
+    sourceEvents: object[],
     sourceType: string,
     version: string,
-    _requestMetadata: Object,
+    _requestMetadata: object,
   ): Promise<SourceTransformationResponse[]> {
     const sourceHandler = FetchHandler.getSourceHandler(sourceType, version);
     const respList: SourceTransformationResponse[] = await Promise.all<any>(

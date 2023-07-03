@@ -48,7 +48,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     events: ProcessorTransformationRequest[],
     destinationType: string,
     version: string,
-    _requestMetadata: Object,
+    _requestMetadata: object,
   ): Promise<ProcessorTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     const respList: ProcessorTransformationResponse[][] = await Promise.all(
@@ -86,14 +86,14 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: string,
-    _requestMetadata: Object,
+    _requestMetadata: object,
   ): Promise<RouterTransformationResponse[]> {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
-    const allDestEvents: Object = groupBy(
+    const allDestEvents: object = groupBy(
       events,
       (ev: RouterTransformationRequestData) => ev.destination?.ID,
     );
-    const groupedEvents: RouterTransformationRequestData[][] = Object.values(allDestEvents);
+    const groupedEvents: RouterTransformationRequestData[][] = object.values(allDestEvents);
     const response: RouterTransformationResponse[][] = await Promise.all(
       groupedEvents.map(async (destInputArray: RouterTransformationRequestData[]) => {
         const metaTO = this.getTags(
@@ -130,17 +130,17 @@ export default class NativeIntegrationDestinationService implements IntegrationD
     events: RouterTransformationRequestData[],
     destinationType: string,
     version: any,
-    _requestMetadata: Object,
+    _requestMetadata: object,
   ): RouterTransformationResponse[] {
     const destHandler = FetchHandler.getDestHandler(destinationType, version);
     if (!destHandler.batch) {
       throw new Error(`${destinationType} does not implement batch`);
     }
-    const allDestEvents: Object = groupBy(
+    const allDestEvents: object = groupBy(
       events,
       (ev: RouterTransformationRequestData) => ev.destination?.ID,
     );
-    const groupedEvents: RouterTransformationRequestData[][] = Object.values(allDestEvents);
+    const groupedEvents: RouterTransformationRequestData[][] = object.values(allDestEvents);
     const response = groupedEvents.map((destEvents) => {
       try {
         const destBatchedRequests: RouterTransformationResponse[] = destHandler.batch(destEvents);
@@ -166,7 +166,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
   public async deliver(
     destinationRequest: ProcessorTransformationOutput,
     destinationType: string,
-    _requestMetadata: Object,
+    _requestMetadata: object,
   ): Promise<DeliveryResponse> {
     try {
       const networkHandler = networkHandlerFactory.getNetworkHandler(destinationType);

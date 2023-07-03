@@ -1,6 +1,5 @@
 import { Context } from 'koa';
 import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../../types/index';
-import { DynamicConfigParser } from '../../util/dynamicConfigParser';
 
 export default class PreTransformationDestinationService {
   public static preProcess(

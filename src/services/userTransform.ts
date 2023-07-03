@@ -19,7 +19,7 @@ export default class UserTransformService {
   ): Promise<UserTransformationServiceResponse> {
     const startTime = new Date();
     let retryStatus = 200;
-    const groupedEvents: Object = groupBy(
+    const groupedEvents: object = groupBy(
       events,
       (event: ProcessorTransformationRequest) =>
         `${event.metadata.destinationId}_${event.metadata.sourceId}`,

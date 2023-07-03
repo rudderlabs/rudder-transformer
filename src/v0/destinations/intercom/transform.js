@@ -96,7 +96,7 @@ function checkIfEmailOrUserIdPresent(message) {
 
 function attachUserAndCompany(message, Config) {
   const email = message.context?.traits?.email;
-  const { userId } = message;
+  const { userId, groupId, traits } = message;
   const requestBody = {};
   if (userId) {
     requestBody.user_id = userId;
@@ -105,10 +105,10 @@ function attachUserAndCompany(message, Config) {
     requestBody.email = email;
   }
   const companyObj = {
-    company_id: message.groupId,
+    company_id: groupId,
   };
-  if (message.traits?.name) {
-    companyObj.name = message.traits.name;
+  if (traits?.name) {
+    companyObj.name = traits.name;
   }
   requestBody.companies = [companyObj];
   const response = defaultRequestConfig();

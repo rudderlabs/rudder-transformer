@@ -19,23 +19,23 @@ export default class ServiceSelector {
     [INTEGRATION_SERVICE.NATIVE_SOURCE]: NativeIntegrationSourceService,
   };
 
-  private static isCdkDestination(destinationDefinitionConfig: Object) {
-    return !!destinationDefinitionConfig?.['cdkEnabled'];
+  private static isCdkDestination(destinationDefinitionConfig: object) {
+    return !!destinationDefinitionConfig?.cdkEnabled;
   }
 
-  private static isCdkV2Destination(destinationDefinitionConfig: Object) {
-    return Boolean(destinationDefinitionConfig?.['cdkV2Enabled']);
+  private static isCdkV2Destination(destinationDefinitionConfig: object) {
+    return Boolean(destinationDefinitionConfig?.cdkV2Enabled);
   }
 
-  private static isComparatorEnabled(destinationDefinitionConfig: Object): boolean {
+  private static isComparatorEnabled(destinationDefinitionConfig: object): boolean {
     return (
       process.env.COMPARATOR_ENABLED === 'true' &&
-      !!destinationDefinitionConfig['comparisonTestEnabeld']
+      !!destinationDefinitionConfig.comparisonTestEnabeld
     );
   }
 
-  private static getSecondaryServiceName(destinationDefinitionConfig: Object): string {
-    return destinationDefinitionConfig['comparisonService'];
+  private static getSecondaryServiceName(destinationDefinitionConfig: object): string {
+    return destinationDefinitionConfig.comparisonService;
   }
 
   private static fetchCachedService(serviceType: string) {
@@ -65,7 +65,7 @@ export default class ServiceSelector {
   private static getPrimaryDestinationService(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
-    const destinationDefinitionConfig: Object =
+    const destinationDefinitionConfig: object =
       events[0]?.destination?.DestinationDefinition?.Config;
     if (this.isCdkDestination(destinationDefinitionConfig)) {
       return this.fetchCachedService(INTEGRATION_SERVICE.CDK_V1_DEST);
@@ -76,6 +76,7 @@ export default class ServiceSelector {
     return this.fetchCachedService(INTEGRATION_SERVICE.NATIVE_DEST);
   }
 
+  // ts-ignore @typescript-eslint/no-unused-vars
   public static getSourceService(arg: unknown) {
     // Implement source event based descision logic for selecting service
   }

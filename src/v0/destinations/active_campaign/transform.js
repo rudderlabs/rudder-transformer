@@ -267,7 +267,7 @@ const customFieldProcessor = async (message, category, destination) => {
 
   const storedFields = Object.keys(fieldMap);
   const filteredFieldKeys = [];
-  fieldKeys.map((fieldKey) => {
+  fieldKeys.forEach((fieldKey) => {
     // If the field is present in fieldMap push it to filteredFieldKeys else ignore
     if (storedFields.includes(fieldKey)) {
       filteredFieldKeys.push(fieldKey);
@@ -281,7 +281,7 @@ const customFieldProcessor = async (message, category, destination) => {
   // Creating a field array list conating field id and field value which will be merged to the contact
   // Ref: https://developers.activecampaign.com/reference/sync-a-contacts-data
   const fieldsArrValues = [];
-  filteredFieldKeys.map((key) => {
+  filteredFieldKeys.forEach((key) => {
     let fPayload;
     if (Array.isArray(fieldInfo[key])) {
       fPayload = '||';
@@ -311,7 +311,7 @@ const customListProcessor = async (message, category, destination, contactId) =>
   // The list info is pushed into a list object array
   const listArr = [];
   if (Array.isArray(listInfo)) {
-    listInfo.map((list) => {
+    listInfo.forEach((list) => {
       listArr.push(list);
     });
   } else {
@@ -321,7 +321,7 @@ const customListProcessor = async (message, category, destination, contactId) =>
   // status information
   // Ref: https://developers.activecampaign.com/reference/update-list-status-for-contact/
   const promises = [];
-  listArr.map(async (li) => {
+  for (const li of listArr) {
     if (li.status === 'subscribe' || li.status === 'unsubscribe') {
       const endpoint = `${destination.Config.apiUrl}${category.mergeListWithContactUrl}`;
       const requestData = {
@@ -337,7 +337,7 @@ const customListProcessor = async (message, category, destination, contactId) =>
       const res = httpPOST(endpoint, requestData, requestOptions);
       promises.push(res);
     }
-  });
+  }
   const responses = await Promise.all(promises);
   responses.forEach((respItem) => {
     if (respItem.success === false) {

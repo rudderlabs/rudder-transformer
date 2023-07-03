@@ -153,7 +153,7 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   const successfulJobs = [];
   const MARKETO_FILE_PATH = getMarketoFilePath();
   startTime = Date.now();
-  messageArr.map((row) => {
+  messageArr.forEach((row) => {
     const csvSize = JSON.stringify(csv); // stringify and remove all "stringification" extra data
     const response = headerArr
       .map((fieldName) => JSON.stringify(Object.values(row)[0][fieldName], ''))

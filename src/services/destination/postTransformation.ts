@@ -47,7 +47,7 @@ export default class DestinationPostTransformationService {
   }
 
   public static handleProcessorTransformFailureEvents(
-    error: Object,
+    error: object,
     metaTo: MetaTransferObject,
   ): ProcessorTransformationResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails);
@@ -105,7 +105,7 @@ export default class DestinationPostTransformationService {
   }
 
   public static handleRouterTransformFailureEvents(
-    error: Object,
+    error: object,
     metaTo: MetaTransferObject,
   ): RouterTransformationResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails);
@@ -122,7 +122,7 @@ export default class DestinationPostTransformationService {
   }
 
   public static handleBatchTransformFailureEvents(
-    error: Object,
+    error: object,
     metaTo: MetaTransferObject,
   ): RouterTransformationResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails);
@@ -138,7 +138,7 @@ export default class DestinationPostTransformationService {
   }
 
   public static handleDeliveryFailureEvents(
-    error: Object,
+    error: object,
     metaTo: MetaTransferObject,
   ): DeliveryResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);
@@ -156,7 +156,7 @@ export default class DestinationPostTransformationService {
   }
 
   public static handleUserDeletionFailureEvents(
-    error: Object,
+    error: object,
     metaTo: MetaTransferObject,
   ): UserDeletionResponse {
     const errObj = generateErrorObject(error, metaTo.errorDetails, false);

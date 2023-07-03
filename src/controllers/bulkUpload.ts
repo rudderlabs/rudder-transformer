@@ -7,6 +7,7 @@ const getDestFileUploadHandler = (version, dest) =>
 const getPollStatusHandler = (version, dest) => require(`../${version}/destinations/${dest}/poll`);
 const getJobStatusHandler = (version, dest) =>
   require(`../${version}/destinations/${dest}/fetchJobStatus`);
+const ERROR_MESSAGE_PROCESSOR_STRING = 'Error occurred while processing payload.';
 
 const getCommonMetadata = (ctx) =>
   // TODO: Parse information such as
@@ -45,7 +46,7 @@ export const fileUpload = async (ctx) => {
   } catch (error: any) {
     response = {
       statusCode: error.response ? error.response.status : 400,
-      error: error.message || 'Error occurred while processing payload.',
+      error: error.message || ERROR_MESSAGE_PROCESSOR_STRING,
       metadata: error.response ? error.response.metadata : null,
     };
     errNotificationClient.notify(error, 'File Upload', {
@@ -90,7 +91,7 @@ export const pollStatus = async (ctx) => {
   } catch (error: any) {
     response = {
       statusCode: error.response?.status || 400,
-      error: error.message || 'Error occurred while processing payload.',
+      error: error.message || ERROR_MESSAGE_PROCESSOR_STRING,
     };
     errNotificationClient.notify(error, 'Poll Status', {
       ...response,
@@ -135,7 +136,7 @@ export const getWarnJobStatus = async (ctx) => {
   } catch (error: any) {
     response = {
       statusCode: error.response ? error.response.status : 400,
-      error: error.message || 'Error occurred while processing payload.',
+      error: error.message || ERROR_MESSAGE_PROCESSOR_STRING,
     };
     errNotificationClient.notify(error, 'Job Status', {
       ...response,
@@ -180,7 +181,7 @@ export const getFailedJobStatus = async (ctx) => {
   } catch (error: any) {
     response = {
       statusCode: error.response ? error.response.status : 400,
-      error: error.message || 'Error occurred while processing payload.',
+      error: error.message || ERROR_MESSAGE_PROCESSOR_STRING,
     };
     errNotificationClient.notify(error, 'Job Status', {
       ...response,

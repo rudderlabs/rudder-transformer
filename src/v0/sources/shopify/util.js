@@ -93,11 +93,11 @@ const extractEmailFromPayload = (event) => {
 };
 
 const getCartToken = (message) => {
-  const { event } = message;
+  const { event, properties } = message;
   if (event === SHOPIFY_TRACK_MAP.carts_update) {
-    return message.properties?.id || message.properties?.token;
+    return properties?.id || properties?.token;
   }
-  return message.properties?.cart_token || null;
+  return properties?.cart_token || null;
 };
 
 /**

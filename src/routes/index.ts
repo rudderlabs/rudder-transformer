@@ -19,7 +19,7 @@ dotenv.config();
 
 const enableSwagger = process.env.ENABLE_SWAGGER === 'true';
 
-export function applicationRoutes(app: Koa<any, {}>) {
+export function applicationRoutes(app: Koa<any, object>) {
   app.use(bulkUploadRoutes);
   app.use(proxyRoutes);
   app.use(destinationRoutes);

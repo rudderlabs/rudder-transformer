@@ -49,7 +49,9 @@ function getCategoryAndName(rudderEventName) {
       if (branchKey.toLowerCase() === rudderEventName.toLowerCase()) {
         requiredName = category.name[branchKey];
         requiredCategory = category;
+        return true;
       }
+      return false;
     });
     if (requiredName != null && requiredCategory != null) {
       return { evName: requiredName, category: requiredCategory };

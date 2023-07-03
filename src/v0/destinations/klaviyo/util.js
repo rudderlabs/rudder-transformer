@@ -20,6 +20,8 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
 
+const REVISION_CONSTANT = '2023-02-22';
+
 /**
  * This function calls the create user endpoint ref: https://developers.klaviyo.com/en/reference/create_profile
  * If the user doesn't exist, it creates a profile for the user and return 201 status code and the response which contains all the profile data
@@ -67,7 +69,7 @@ const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKe
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    revision: '2023-02-22',
+    revision: REVISION_CONSTANT,
   };
   identifyResponse.body.JSON = removeUndefinedAndNullValues(payload);
   return identifyResponse;
@@ -127,7 +129,7 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
     Authorization: `Klaviyo-API-Key ${privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    revision: '2023-02-22',
+    revision: REVISION_CONSTANT,
   };
   response.body.JSON = removeUndefinedAndNullValues(payload);
 
@@ -199,7 +201,7 @@ const generateBatchedPaylaodForArray = (events) => {
     Authorization: `Klaviyo-API-Key ${destination.Config.privateApiKey}`,
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
-    revision: '2023-02-22',
+    revision: REVISION_CONSTANT,
   };
 
   batchEventResponse = {

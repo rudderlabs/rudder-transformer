@@ -4,7 +4,7 @@ import ErrorReportingService from '../errorReporting';
 
 export default class PostTransformationSourceService {
   public static handleFailureEventsSource(
-    error: Object,
+    error: object,
     metaTO: MetaTransferObject,
   ): SourceTransformationResponse {
     const errObj = generateErrorObject(error, metaTO.errorDetails);

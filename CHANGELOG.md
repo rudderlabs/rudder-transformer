@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.34.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.33.0...v1.34.0) (2023-06-30)
+
+
+### Features
+
+* **iterable:** update addition of default value for some fields ([#2319](https://github.com/rudderlabs/rudder-transformer/issues/2319)) ([0dfb7b6](https://github.com/rudderlabs/rudder-transformer/commit/0dfb7b68388b3169a2cf054614e83c7411324157))
+
+
+### Bug Fixes
+
+* mixpanel group call ([#2318](https://github.com/rudderlabs/rudder-transformer/issues/2318)) ([2f78436](https://github.com/rudderlabs/rudder-transformer/commit/2f78436a7633a84020c66b53eca3770186458683))
+
 ## [1.33.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.32.3...v1.33.0) (2023-06-23)
 
 

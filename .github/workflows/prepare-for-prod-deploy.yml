@@ -156,7 +156,7 @@ jobs:
 
           cd customer-objects/multi-tenant-us
           yq eval -i ".spec.transformer.image.version=\"$TAG_NAME\"" hostedmtedmt.yaml
-          yq eval -i ".spec.user_transformer.image.version=\"$TAG_NAME\"" hostedmtedmt.yaml
+          yq eval -i ".spec.user_transformer.image.version=\"$UT_TAG_NAME\"" hostedmtedmt.yaml
           yq eval -i ".spec.transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" hostedmtedmt.yaml
           git add hostedmtedmt.yaml
 

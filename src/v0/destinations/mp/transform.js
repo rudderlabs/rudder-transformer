@@ -36,16 +36,16 @@ const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIE
  */
 const createUser = async (response) => {
   const url = response.endpoint;
-  const { params } = response;
-  const axiosResponse = await httpPOST(url, {}, { params });
+  const { payload } = response.body.JSON_ARRAY.batch;
+  const axiosResponse = await httpPOST(url, payload);
   return processAxiosResponse(axiosResponse);
 };
 
 const setImportCredentials = (destConfig) => {
   const endpoint =
     destConfig.dataResidency === 'eu' ? `${BASE_ENDPOINT_EU}/import/` : `${BASE_ENDPOINT}/import/`;
-  const headers = {};
-  const params = {};
+  const headers = { 'Content-Type': 'application/json' };
+  const params = { strict: destConfig.strictMode ? 1 : 0 };
   const { apiSecret, serviceAccountUserName, serviceAccountSecret, projectId } = destConfig;
   if (apiSecret) {
     headers.Authorization = `Basic ${base64Convertor(`${apiSecret}:`)}`;
@@ -62,14 +62,11 @@ const setImportCredentials = (destConfig) => {
   return { endpoint, headers, params };
 };
 
-const responseBuilderSimple = (parameters, message, eventType, destConfig) => {
+const responseBuilderSimple = (payload, message, eventType, destConfig) => {
   const response = defaultRequestConfig();
   response.method = defaultPostRequestConfig.requestMethod;
   response.userId = message.userId || message.anonymousId;
-  const encodedData = Buffer.from(JSON.stringify(removeUndefinedValues(parameters))).toString(
-    'base64',
-  );
-  response.params = { data: encodedData };
+  response.body.JSON_ARRAY = { batch: JSON.stringify([removeUndefinedValues(payload)]) };
   const { apiSecret, serviceAccountUserName, serviceAccountSecret, projectId, dataResidency } =
     destConfig;
   const duration = getTimeDifference(message.timestamp);
@@ -92,7 +89,10 @@ const responseBuilderSimple = (parameters, message, eventType, destConfig) => {
         const credentials = setImportCredentials(destConfig);
         response.endpoint = credentials.endpoint;
         response.headers = credentials.headers;
-        response.params.project_id = credentials.params?.projectId;
+        response.params = {
+          project_id: credentials.params?.projectId,
+          strict: credentials.params.strict,
+        };
         break;
       }
       break;
@@ -101,7 +101,10 @@ const responseBuilderSimple = (parameters, message, eventType, destConfig) => {
       const credentials = setImportCredentials(destConfig);
       response.endpoint = credentials.endpoint;
       response.headers = credentials.headers;
-      response.params.project_id = credentials.params?.projectId;
+      response.params = {
+        project_id: credentials.params?.projectId,
+        strict: credentials.params.strict,
+      };
       break;
     default:
       response.endpoint =
@@ -116,17 +119,17 @@ const processRevenueEvents = (message, destination, revenueValue) => {
     $time: getEventTime(message),
     $amount: revenueValue,
   };
-  const parameters = {
+  const payload = {
     $append: { $transactions: transactions },
     $token: destination.Config.token,
     $distinct_id: message.userId || message.anonymousId,
   };
 
   if (destination?.Config.identityMergeApi === 'simplified') {
-    parameters.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+    payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
   }
 
-  return responseBuilderSimple(parameters, message, 'revenue', destination.Config);
+  return responseBuilderSimple(payload, message, 'revenue', destination.Config);
 };
 
 const getEventValueForTrackEvent = (message, destination) => {
@@ -161,12 +164,12 @@ const getEventValueForTrackEvent = (message, destination) => {
     properties.$browser_version = browser.version;
   }
 
-  const parameters = {
+  const payload = {
     event: message.event,
     properties,
   };
 
-  return responseBuilderSimple(parameters, message, EventType.TRACK, destination.Config);
+  return responseBuilderSimple(payload, message, EventType.TRACK, destination.Config);
 };
 
 const processTrack = (message, destination) => {
@@ -209,7 +212,7 @@ const processIdentifyEvents = async (message, type, destination) => {
         createUserResponse.response,
       );
     }
-    const trackParameters = {
+    const trackPayload = {
       event: '$merge',
       properties: {
         $distinct_ids: [message.userId, message.anonymousId],
@@ -217,7 +220,7 @@ const processIdentifyEvents = async (message, type, destination) => {
       },
     };
     const identifyTrackResponse = responseBuilderSimple(
-      trackParameters,
+      trackPayload,
       message,
       'merge',
       destination.Config,
@@ -261,11 +264,11 @@ const processPageOrScreenEvents = (message, type, destination) => {
   }
 
   const eventName = type === 'page' ? 'Loaded a Page' : 'Loaded a Screen';
-  const parameters = {
+  const payload = {
     event: eventName,
     properties,
   };
-  return responseBuilderSimple(parameters, message, type, destination.Config);
+  return responseBuilderSimple(payload, message, type, destination.Config);
 };
 
 const processAliasEvents = (message, type, destination) => {
@@ -274,7 +277,7 @@ const processAliasEvents = (message, type, destination) => {
       'Either previous id or anonymous id should be present in alias payload',
     );
   }
-  const parameters = {
+  const payload = {
     event: '$create_alias',
     properties: {
       distinct_id: message.previousId || message.anonymousId,
@@ -282,7 +285,7 @@ const processAliasEvents = (message, type, destination) => {
       token: destination.Config.token,
     },
   };
-  return responseBuilderSimple(parameters, message, type, destination.Config);
+  return responseBuilderSimple(payload, message, type, destination.Config);
 };
 
 const processGroupEvents = (message, type, destination) => {
@@ -299,7 +302,7 @@ const processGroupEvents = (message, type, destination) => {
         groupKeyVal = [groupKeyVal];
       }
       if (groupKeyVal) {
-        const parameters = {
+        const payload = {
           $token: destination.Config.token,
           $distinct_id: message.userId || message.anonymousId,
           $set: {
@@ -309,14 +312,14 @@ const processGroupEvents = (message, type, destination) => {
         };
 
         if (destination?.Config.identityMergeApi === 'simplified') {
-          parameters.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+          payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
         }
 
-        const response = responseBuilderSimple(parameters, message, type, destination.Config);
+        const response = responseBuilderSimple(payload, message, type, destination.Config);
         returnValue.push(response);
 
         groupKeyVal.forEach((value) => {
-          const groupParameters = {
+          const groupPayload = {
             $token: destination.Config.token,
             $group_key: groupKey,
             $group_id: value,
@@ -326,7 +329,7 @@ const processGroupEvents = (message, type, destination) => {
           };
 
           const groupResponse = responseBuilderSimple(
-            groupParameters,
+            groupPayload,
             message,
             type,
             destination.Config,

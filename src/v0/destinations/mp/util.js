@@ -99,7 +99,7 @@ const createIdentifyResponse = (message, type, destination, responseBuilderSimpl
   // user payload created
   const properties = getTransformedJSON(message, mPIdentifyConfigJson, useNewMapping);
 
-  const parameters = {
+  const payload = {
     $set: properties,
     $token: token,
     $distinct_id: message.userId || message.anonymousId,
@@ -108,14 +108,14 @@ const createIdentifyResponse = (message, type, destination, responseBuilderSimpl
   };
 
   if (destination?.Config.identityMergeApi === 'simplified') {
-    parameters.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+    payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
   }
 
   if (message.context?.active === false) {
-    parameters.$ignore_time = true;
+    payload.$ignore_time = true;
   }
   // Creating the response to create user
-  return responseBuilderSimple(parameters, message, type, destination.Config);
+  return responseBuilderSimple(payload, message, type, destination.Config);
 };
 
 /**

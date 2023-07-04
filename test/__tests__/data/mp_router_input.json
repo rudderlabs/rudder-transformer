@@ -313,5 +313,89 @@
       "sentAt": "2020-01-24T06:29:02.363Z",
       "timestamp": "2020-01-24T11:59:02.402+05:30"
     }
+  },
+  {
+    "destination": {
+      "Config": {
+        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiSecret": "some_api_secret",
+        "prefixProperties": true,
+        "dataResidency": "eu",
+        "useNativeSDK": false,
+        "strictMode": true
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Mixpanel",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MP"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Mixpanel",
+      "Transformations": []
+    },
+    "metadata": {
+      "jobId": 2
+    },
+    "message": {
+      "anonymousId": "5094f5704b9cf2b3",
+      "channel": "mobile",
+      "context": {
+        "app": {
+          "build": "1",
+          "name": "LeanPlumIntegrationAndroid",
+          "namespace": "com.android.SampleLeanPlum",
+          "version": "1.0"
+        },
+        "device": {
+          "id": "5094f5704b9cf2b3",
+          "manufacturer": "Google",
+          "model": "Android SDK built for x86",
+          "name": "generic_x86",
+          "type": "ios",
+          "token": "test_device_token"
+        },
+        "library": {
+          "name": "com.rudderstack.android.sdk.core",
+          "version": "1.0.1-beta.1"
+        },
+        "locale": "en-US",
+        "network": {
+          "carrier": "Android",
+          "bluetooth": false,
+          "cellular": true,
+          "wifi": true
+        },
+        "os": {
+          "name": "iOS",
+          "version": "8.1.0"
+        },
+        "screen": {
+          "density": 420,
+          "height": 1794,
+          "width": 1080
+        },
+        "timezone": "Asia/Kolkata",
+        "traits": {
+          "anonymousId": "5094f5704b9cf2b3",
+          "userId": "test_user_id"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)"
+      },
+      "event": "MainActivity",
+      "integrations": {
+        "All": true
+      },
+      "userId": "test_user_id",
+      "messageId": "id2",
+      "properties": {
+        "name": "MainActivity",
+        "automatic": true
+      },
+      "originalTimestamp": "2020-03-12T09:05:03.421Z",
+      "type": "identify",
+      "sentAt": "2020-03-12T09:05:13.042Z"
+    }
   }
 ]

@@ -41,7 +41,12 @@ jobs:
       - name: Upload Coverage Reports to Codecov
         uses: codecov/codecov-action@v3.1.4
         with:
-          directory: ./reports
+          directory: ./reports/coverage
+      
+      - name: Upload Coverage Reports to Codecov
+        uses: codecov/codecov-action@v3.1.4
+        with:
+          directory: ./reports/ts-coverage
 
       - name: Fix filesystem paths in generated reports
         if: always()

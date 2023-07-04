@@ -1061,21 +1061,12 @@
       "method": "POST",
       "endpoint": "https://api.mixpanel.com/engage/",
       "headers": {},
-      "params": {
-        "data": {
-          "$append": {
-            "$transactions": {
-              "$amount": 12.13,
-              "$time": "2022-09-05T07:46:20.290Z"
-            }
-          },
-          "$distinct_id": "39da706ec83d0e90",
-          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
-        }
-      },
+      "params": {},
       "body": {
         "JSON": {},
-        "JSON_ARRAY": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$append\":{\"$transactions\":{\"$time\":\"2022-09-05T07:46:20.290Z\",\"$amount\":12.13}},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"39da706ec83d0e90\"}]"
+        },
         "XML": {},
         "FORM": {}
       },
@@ -1088,42 +1079,15 @@
       "method": "POST",
       "endpoint": "https://api.mixpanel.com/import/",
       "headers": {
-        "Authorization": "Basic OTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1Njo="
+        "Authorization": "Basic OTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1Njo=",
+        "Content-Type": "application/json"
       },
-      "params": {
-        "data": {
-          "event": "Application Installed",
-          "properties": {
-            "$app_build_number": "4",
-            "$app_version_string": "1.0",
-            "$bluetooth_enabled": true,
-            "$carrier": "T-Mobile",
-            "$device": "emu64a",
-            "$insert_id": "168cf720-6227-4b56-a98e-c49bdc7279e9",
-            "$manufacturer": "Google",
-            "$model": "sdk_gphone64_arm64",
-            "$os": "Android",
-            "$os_version": "12",
-            "$screen_dpi": 560,
-            "$screen_height": 2984,
-            "$screen_width": 1440,
-            "$session_id": "1662363980",
-            "$wifi": true,
-            "anonymousId": "39da706ec83d0e90",
-            "build": 4,
-            "distinct_id": "39da706ec83d0e90",
-            "mp_device_model": "sdk_gphone64_arm64",
-            "mp_lib": "com.rudderstack.android.sdk.core",
-            "revenue": 12.13,
-            "time": null,
-            "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-            "version": "1.0"
-          }
-        }
-      },
+      "params": { "strict": 0 },
       "body": {
         "JSON": {},
-        "JSON_ARRAY": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"event\":\"Application Installed\",\"properties\":{\"build\":4,\"version\":\"1.0\",\"revenue\":12.13,\"anonymousId\":\"39da706ec83d0e90\",\"$os\":\"Android\",\"$screen_height\":2984,\"$screen_width\":1440,\"$screen_dpi\":560,\"$carrier\":\"T-Mobile\",\"$os_version\":\"12\",\"$device\":\"emu64a\",\"$manufacturer\":\"Google\",\"$model\":\"sdk_gphone64_arm64\",\"mp_device_model\":\"sdk_gphone64_arm64\",\"$wifi\":true,\"$bluetooth_enabled\":true,\"mp_lib\":\"com.rudderstack.android.sdk.core\",\"$app_build_number\":\"4\",\"$app_version_string\":\"1.0\",\"$insert_id\":\"168cf720-6227-4b56-a98e-c49bdc7279e9\",\"$session_id\":\"1662363980\",\"token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"distinct_id\":\"39da706ec83d0e90\",\"time\":null}}]"
+        },
         "XML": {},
         "FORM": {}
       },
@@ -1138,21 +1102,12 @@
       "method": "POST",
       "endpoint": "https://api.mixpanel.com/engage/",
       "headers": {},
-      "params": {
-        "data": {
-          "$append": {
-            "$transactions": {
-              "$amount": 23.45,
-              "$time": "2022-09-05T07:46:20.290Z"
-            }
-          },
-          "$distinct_id": "39da706ec83d0e90",
-          "$token": "9432f11f70f8ce386f5110c8c924b3ec4f825256"
-        }
-      },
+      "params": {},
       "body": {
         "JSON": {},
-        "JSON_ARRAY": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$append\":{\"$transactions\":{\"$time\":\"2022-09-05T07:46:20.290Z\",\"$amount\":23.45}},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"39da706ec83d0e90\"}]"
+        },
         "XML": {},
         "FORM": {}
       },
@@ -1165,47 +1120,41 @@
       "method": "POST",
       "endpoint": "https://api.mixpanel.com/import/",
       "headers": {
-        "Authorization": "Basic OTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1Njo="
+        "Authorization": "Basic OTQzMmYxMWY3MGY4Y2UzODZmNTExMGM4YzkyNGIzZWM0ZjgyNTI1Njo=",
+        "Content-Type": "application/json"
       },
-      "params": {
-        "data": {
-          "event": "Application Installed",
-          "properties": {
-            "$app_build_number": "4",
-            "$app_version_string": "1.0",
-            "$bluetooth_enabled": true,
-            "$carrier": "T-Mobile",
-            "$device": "emu64a",
-            "$insert_id": "168cf720-6227-4b56-a98e-c49bdc7279e9",
-            "$manufacturer": "Google",
-            "$model": "sdk_gphone64_arm64",
-            "$os": "Android",
-            "$os_version": "12",
-            "$screen_dpi": 560,
-            "$screen_height": 2984,
-            "$screen_width": 1440,
-            "$session_id": "1662363980",
-            "$wifi": true,
-            "anonymousId": "39da706ec83d0e90",
-            "build": 4,
-            "distinct_id": "39da706ec83d0e90",
-            "mp_device_model": "sdk_gphone64_arm64",
-            "mp_lib": "com.rudderstack.android.sdk.core",
-            "time": null,
-            "revenue": 23.45,
-            "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-            "version": "1.0"
-          }
-        }
-      },
+      "params": { "strict": 0 },
       "body": {
         "JSON": {},
-        "JSON_ARRAY": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"event\":\"Application Installed\",\"properties\":{\"build\":4,\"version\":\"1.0\",\"revenue\":23.45,\"anonymousId\":\"39da706ec83d0e90\",\"$os\":\"Android\",\"$screen_height\":2984,\"$screen_width\":1440,\"$screen_dpi\":560,\"$carrier\":\"T-Mobile\",\"$os_version\":\"12\",\"$device\":\"emu64a\",\"$manufacturer\":\"Google\",\"$model\":\"sdk_gphone64_arm64\",\"mp_device_model\":\"sdk_gphone64_arm64\",\"$wifi\":true,\"$bluetooth_enabled\":true,\"mp_lib\":\"com.rudderstack.android.sdk.core\",\"$app_build_number\":\"4\",\"$app_version_string\":\"1.0\",\"$insert_id\":\"168cf720-6227-4b56-a98e-c49bdc7279e9\",\"$session_id\":\"1662363980\",\"token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"distinct_id\":\"39da706ec83d0e90\",\"time\":null}}]"
+        },
         "XML": {},
         "FORM": {}
       },
       "files": {},
       "userId": "39da706ec83d0e90"
     }
-  ]
+  ],
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api-eu.mixpanel.com/import/",
+    "headers": {
+      "Authorization": "Basic c29tZV9hcGlfc2VjcmV0Og==",
+      "Content-Type": "application/json"
+    },
+    "params": { "strict": 1 },
+    "body": {
+      "JSON": {},
+      "JSON_ARRAY": {
+        "batch": "[{\"event\":\"$merge\",\"properties\":{\"$distinct_ids\":[\"test_user_id\",\"5094f5704b9cf2b3\"],\"token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\"}}]"
+      },
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "test_user_id"
+  }
 ]

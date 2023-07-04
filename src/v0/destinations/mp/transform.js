@@ -36,8 +36,10 @@ const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIE
  */
 const createUser = async (response) => {
   const url = response.endpoint;
-  const { payload } = response.body.JSON_ARRAY.batch;
-  const axiosResponse = await httpPOST(url, payload);
+  const { batch: payload } = response.body.JSON_ARRAY;
+  const axiosResponse = await httpPOST(url, payload, {
+    headers: { 'Content-Type': 'application/json' },
+  });
   return processAxiosResponse(axiosResponse);
 };
 

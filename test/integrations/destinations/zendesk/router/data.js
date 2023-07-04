@@ -12,10 +12,10 @@ const data = [
             {
               destination: {
                 Config: {
-                  apiToken: 'kFLaFcndBR9YHFxNVp7kQ5xxLr9syLWoE8jwot60',
+                  apiToken: 'myDummyApiToken4',
                   createUsersAsVerified: true,
                   domain: 'rudderlabshelp',
-                  email: 'prabrisha@rudderlabs.com',
+                  email: 'myDummyUserName1',
                   password: 'myDummyPwd1',
                   removeUsersFromOrganization: true,
                   sendGroupCallsWithoutUserId: true,
@@ -26,7 +26,7 @@ const data = [
                   Name: 'ZENDESK',
                 },
                 Enabled: true,
-                ID: '1Z3zFXE6zwvNJBVOUzCuJxeO51P',
+                ID: 'xxxxxxxxxxxxxxxxxxxxxxxO51P',
                 Name: 'zendesk',
                 Transformations: [],
               },
@@ -96,8 +96,7 @@ const data = [
                   method: 'POST',
                   endpoint: 'https://rudderlabshelp.zendesk.com/api/v2/users/create_or_update.json',
                   headers: {
-                    Authorization:
-                      'Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=',
+                    Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
                     'Content-Type': 'application/json',
                     'X-Zendesk-Marketplace-Name': 'RudderStack',
                     'X-Zendesk-Marketplace-Organization-Id': '3339',
@@ -133,10 +132,10 @@ const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiToken: 'kFLaFcndBR9YHFxNVp7kQ5xxLr9syLWoE8jwot60',
+                  apiToken: 'myDummyApiToken4',
                   createUsersAsVerified: true,
                   domain: 'rudderlabshelp',
-                  email: 'prabrisha@rudderlabs.com',
+                  email: 'myDummyUserName1',
                   password: 'myDummyPwd1',
                   removeUsersFromOrganization: true,
                   sendGroupCallsWithoutUserId: true,
@@ -147,7 +146,7 @@ const data = [
                   Name: 'ZENDESK',
                 },
                 Enabled: true,
-                ID: '1Z3zFXE6zwvNJBVOUzCuJxeO51P',
+                ID: 'xxxxxxxxxxxxxxxxxxxxxxxO51P',
                 Name: 'zendesk',
                 Transformations: [],
               },
@@ -170,10 +169,10 @@ const data = [
             {
               destination: {
                 Config: {
-                  apiToken: 'kFLaFcndBR9YHFxNVp7kQ5xxLr9syLWoE8jwot60',
+                  apiToken: 'myDummyApiToken4',
                   createUsersAsVerified: true,
                   domain: 'rudderlabshelp',
-                  email: 'prabrisha@rudderlabs.com',
+                  email: 'myDummyUserName1',
                   password: 'myDummyPwd1',
                   removeUsersFromOrganization: true,
                   sendGroupCallsWithoutUserId: true,
@@ -184,7 +183,7 @@ const data = [
                   Name: 'ZENDESK',
                 },
                 Enabled: true,
-                ID: '1Z3zFXE6zwvNJBVOUzCuJxeO51P',
+                ID: 'xxxxxxxxxxxxxxxxxxxxxxxO51P',
                 Name: 'zendesk',
                 Transformations: [],
               },
@@ -259,8 +258,7 @@ const data = [
                 method: 'POST',
                 endpoint: 'https://rudderlabshelp.zendesk.com/api/v2/organization_memberships.json',
                 headers: {
-                  Authorization:
-                    'Basic cHJhYnJpc2hhQHJ1ZGRlcmxhYnMuY29tL3Rva2VuOmtGTGFGY25kQlI5WUhGeE5WcDdrUTV4eExyOXN5TFdvRThqd290NjA=',
+                  Authorization: 'Basic bXlEdW1teVVzZXJOYW1lMS90b2tlbjpteUR1bW15QXBpVG9rZW40',
                   'Content-Type': 'application/json',
                   'X-Zendesk-Marketplace-Name': 'RudderStack',
                   'X-Zendesk-Marketplace-Organization-Id': '3339',
@@ -290,10 +288,10 @@ const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiToken: 'kFLaFcndBR9YHFxNVp7kQ5xxLr9syLWoE8jwot60',
+                  apiToken: 'myDummyApiToken4',
                   createUsersAsVerified: true,
                   domain: 'rudderlabshelp',
-                  email: 'prabrisha@rudderlabs.com',
+                  email: 'myDummyUserName1',
                   password: 'myDummyPwd1',
                   removeUsersFromOrganization: true,
                   sendGroupCallsWithoutUserId: true,
@@ -304,7 +302,7 @@ const data = [
                   Name: 'ZENDESK',
                 },
                 Enabled: true,
-                ID: '1Z3zFXE6zwvNJBVOUzCuJxeO51P',
+                ID: 'xxxxxxxxxxxxxxxxxxxxxxxO51P',
                 Name: 'zendesk',
                 Transformations: [],
               },
@@ -340,7 +338,7 @@ const data = [
                   Name: 'ZENDESK',
                 },
                 Enabled: true,
-                ID: '1Z3zFXE6zwvNJBVOUzCuJxeO51P',
+                ID: 'xxxxxxxxxxxxxxxxxxxxxxxO51P',
                 Name: 'zendesk',
                 Transformations: [],
               },
@@ -419,7 +417,7 @@ const data = [
                   Name: 'ZENDESK',
                 },
                 Enabled: true,
-                ID: '1Z3zFXE6zwvNJBVOUzCuJxeO51P',
+                ID: 'xxxxxxxxxxxxxxxxxxxxxxxO51P',
                 Name: 'zendesk',
                 Transformations: [],
               },

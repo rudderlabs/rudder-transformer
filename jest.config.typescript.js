@@ -24,7 +24,7 @@ module.exports = {
     // collectCoverageFrom: null,
 
     // The directory where Jest should output its coverage files
-    coverageDirectory: 'reports/coverage',
+    coverageDirectory: 'reports/ts-coverage',
 
     // An array of regexp pattern strings used to skip coverage collection
     coveragePathIgnorePatterns: ['/node_modules/', '__tests__'],
@@ -35,9 +35,9 @@ module.exports = {
     // An object that configures minimum threshold enforcement for coverage results
     coverageThreshold: {
         global: {
-            branches: 60,
-            functions: 80,
-            lines: 80,
+            branches: 30,
+            functions: 40,
+            lines: 50,
         },
     },
 

@@ -37,7 +37,7 @@
     "test:js:ci": "npm run test:js -- --coverage --expand --maxWorkers=50%",
     "test:ts": "jest -c jest.config.typescript.js --detectOpenHandles",
     "test:ts:silent": "npm run test:ts -- --silent",
-    "test:ts:ci": "npm run test:ts -- --expand --maxWorkers=50%",
+    "test:ts:ci": "npm run test:ts -- --coverage --expand --maxWorkers=50%",
     "test:ut:integration": "jest \"user_transformation.integration.test.js\"  --detectOpenHandles --notify",
     "test:ut:integration:silent": "npm run test:ut:integration -- --silent",
     "test:ut:integration:ci": "npm run test:ut:integration -- --expand --maxWorkers=50%",

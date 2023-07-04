@@ -31,6 +31,7 @@ jobs:
       - name: Run Tests
         run: |
           npm run test:js:ci
+          npm run test:ts:ci
 
       - name: Run Lint Checks
         run: |
@@ -40,12 +41,13 @@ jobs:
       - name: Upload Coverage Reports to Codecov
         uses: codecov/codecov-action@v3.1.4
         with:
-          directory: ./reports/coverage
+          directory: ./reports
 
       - name: Fix filesystem paths in generated reports
         if: always()
         run: |
           sed -i 's+home/runner/work/rudder-transformer/rudder-transformer+/github/workspace+g' reports/coverage/lcov.info
+          sed -i 's+home/runner/work/rudder-transformer/rudder-transformer+/github/workspace+g' reports/ts-coverage/lcov.info
           sed -i 's+/home/runner/work/rudder-transformer/rudder-transformer+/github/workspace+g' reports/eslint.json
 
       - name: SonarCloud Scan

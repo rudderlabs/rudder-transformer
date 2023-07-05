@@ -749,5 +749,24 @@
       "errorCategory": "dataValidation",
       "errorType": "configuration"
     }
+  },
+  {
+    "body": {
+      "FORM": {
+        "data": [
+          "{\"user_data\":{\"external_id\":\"72fd46c9ecb386f6747664a3e1d524294a3d7a2c8ae4aeb22b1e578b75093635\",\"client_ip_address\":\"49.206.54.243\",\"client_user_agent\":\"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36\"},\"event_name\":\"PageView\",\"event_time\":1567352811,\"event_source_url\":\"http://127.0.0.1:8888/\",\"action_source\":\"website\",\"custom_data\":{\"url\":\"http://127.0.0.1:8888/\",\"path\":\"/\",\"title\":\"Document\",\"search\":\"\",\"tab_url\":\"http://127.0.0.1:8888/\",\"referrer\":\"http://127.0.0.1:8888/\",\"initial_referrer\":\"$direct\",\"referring_domain\":\"127.0.0.1:8888\",\"initial_referring_domain\":\"\"}}"
+        ]
+      },
+      "JSON": {},
+      "JSON_ARRAY": {},
+      "XML": {}
+    },
+    "endpoint": "https://graph.facebook.com/v16.0/12345555566/events?access_token=Asdkjhbriufkjrvknkjfkjhkjf",
+    "files": {},
+    "headers": {},
+    "method": "POST",
+    "params": {},
+    "type": "REST",
+    "version": "1"
   }
 ]

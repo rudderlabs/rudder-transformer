@@ -27,7 +27,6 @@ const staticLookup = (versionid) => async (hostname, _, cb) => {
     return;
   }
   stats.timing('fetch_dns_resolve_time', resolveStartTime, { versionid });
-  logger.info(`resolved ${hostname} to ${ips}`);
 
   if (ips.length === 0) {
     cb(null, `resolved empty list of IP address for ${hostname}`, RECORD_TYPE_A);

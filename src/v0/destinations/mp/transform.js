@@ -7,15 +7,28 @@ const {
   defaultRequestConfig,
   getBrowserInfo,
   getEventTime,
-  simpleProcessRouterDest,
   getTimeDifference,
   getValuesAsArrayFromConfig,
   isHttpStatusSuccess,
   removeUndefinedValues,
   toUnixTimestamp,
   getFieldValueFromMessage,
+  checkInvalidRtTfEvents,
+  handleRtTfSingleEventError,
+  batchMultiplexedEvents,
+  getSuccessRespEvents,
+  defaultBatchRequestConfig,
 } = require('../../util');
-const { ConfigCategory, mappingConfig, BASE_ENDPOINT, BASE_ENDPOINT_EU } = require('./config');
+const {
+  ConfigCategory,
+  mappingConfig,
+  BASE_ENDPOINT,
+  BASE_ENDPOINT_EU,
+  IMPORT_MAX_BATCH_SIZE,
+  TRACK_MAX_BATCH_SIZE,
+  ENGAGE_MAX_BATCH_SIZE,
+  GROUPS_MAX_BATCH_SIZE,
+} = require('./config');
 const { httpPOST } = require('../../../adapters/network');
 const {
   getDynamicErrorType,
@@ -188,11 +201,9 @@ const processTrack = (message, destination) => {
 
 const processIdentifyEvents = async (message, type, destination) => {
   let returnValue;
-
   // Creating the response to identify an user
   // https://developer.mixpanel.com/reference/profile-set
   returnValue = createIdentifyResponse(message, type, destination, responseBuilderSimple);
-
   if (
     destination.Config?.identityMergeApi !== 'simplified' &&
     message.userId &&
@@ -229,7 +240,6 @@ const processIdentifyEvents = async (message, type, destination) => {
     );
     returnValue = identifyTrackResponse;
   }
-
   return returnValue;
 };
 
@@ -243,7 +253,6 @@ const processPageOrScreenEvents = (message, type, destination) => {
     distinct_id: message.userId || message.anonymousId,
     time: toUnixTimestamp(message.timestamp),
   };
-
   if (destination.Config?.identityMergeApi === 'simplified') {
     properties = {
       ...properties,
@@ -252,7 +261,6 @@ const processPageOrScreenEvents = (message, type, destination) => {
       $user_id: message.userId,
     };
   }
-
   if (message.name) {
     properties.name = message.name;
   }
@@ -264,7 +272,6 @@ const processPageOrScreenEvents = (message, type, destination) => {
     properties.$browser = browser.name;
     properties.$browser_version = browser.version;
   }
-
   const eventName = type === 'page' ? 'Loaded a Page' : 'Loaded a Screen';
   const payload = {
     event: eventName,
@@ -312,14 +319,11 @@ const processGroupEvents = (message, type, destination) => {
           },
           $ip: get(message, 'context.ip'),
         };
-
         if (destination?.Config.identityMergeApi === 'simplified') {
           payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
         }
-
         const response = responseBuilderSimple(payload, message, type, destination.Config);
         returnValue.push(response);
-
         groupKeyVal.forEach((value) => {
           const groupPayload = {
             $token: destination.Config.token,
@@ -329,19 +333,16 @@ const processGroupEvents = (message, type, destination) => {
               ...message.traits,
             },
           };
-
           const groupResponse = responseBuilderSimple(
             groupPayload,
             message,
             type,
             destination.Config,
           );
-
           groupResponse.endpoint =
             destination.Config.dataResidency === 'eu'
               ? `${BASE_ENDPOINT_EU}/groups/`
               : `${BASE_ENDPOINT}/groups/`;
-
           returnValue.push(groupResponse);
         });
       }
@@ -349,11 +350,126 @@ const processGroupEvents = (message, type, destination) => {
   } else {
     throw new ConfigurationError('Group Key Settings is not configured');
   }
-
   if (returnValue.length === 0) {
     throw new InstrumentationError('Group Key is not present. Aborting message');
   }
   return returnValue;
+};
+
+const generateBatchedPayloadForArray = (events) => {
+  const { batchedRequest } = defaultBatchRequestConfig();
+  const batchResponseList = events.flatMap((event) => JSON.parse(event.body.JSON_ARRAY.batch));
+  batchedRequest.body.JSON_ARRAY = { batch: JSON.stringify(batchResponseList) };
+  batchedRequest.endpoint = events[0].endpoint;
+  batchedRequest.headers = events[0].headers;
+  batchedRequest.params = events[0].params;
+  return batchedRequest;
+};
+
+const batchEvents = (successRespList, maxBatchSize) => {
+  const batchResponseList = [];
+  const batchedEvents = batchMultiplexedEvents(successRespList, maxBatchSize);
+  batchedEvents.forEach((batch) => {
+    const batchedRequest = generateBatchedPayloadForArray(batch.events);
+    batchResponseList.push(
+      getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, true),
+    );
+  });
+  return batchResponseList;
+};
+
+const combineBatchRequestsWithSameJobIds = (batches) => {
+  const combinedRequests = {};
+
+  // Iterate over the response list
+  for (const batch of batches) {
+    const { metadata } = batch;
+
+    // Find any existing request with matching job IDs
+    const matchingBatchRequestWithSameJobId = Object.values(combinedRequests).find((request) => {
+      const existingJobIds = request.metadata.map((obj) => obj.jobId);
+      // Check if any of the job IDs in the existing request match the current batch's job IDs
+      return metadata.some((obj) => existingJobIds.includes(obj.jobId));
+    });
+
+    if (matchingBatchRequestWithSameJobId) {
+      // If a matching request is found, combine the unique metadata arrays and append the batchedRequest
+
+      // Filter out the metadata objects that are already present in the matching request
+      const uniqueMetadata = metadata.filter(
+        (obj) =>
+          !matchingBatchRequestWithSameJobId.metadata.some(
+            (existingObj) => existingObj.jobId === obj.jobId,
+          ),
+      );
+
+      // Append the unique metadata to the existing request's metadata array
+      matchingBatchRequestWithSameJobId.metadata.push(...uniqueMetadata);
+
+      // Combine the batchedRequest into an array
+
+      // Check if the existing request's batchedRequest is already an array
+      matchingBatchRequestWithSameJobId.batchedRequest = [
+        ...(Array.isArray(matchingBatchRequestWithSameJobId.batchedRequest)
+          ? matchingBatchRequestWithSameJobId.batchedRequest
+          : [matchingBatchRequestWithSameJobId.batchedRequest]),
+        batch.batchedRequest,
+      ];
+    } else {
+      // If no matching request is found, create a new entry for the current batch
+
+      // Generate a unique key for the combinedRequests object based on the job IDs
+      const jobIds = metadata.map((obj) => obj.jobId);
+      const key = jobIds.join('_');
+
+      // Create a new entry with the batchedRequest, metadata, and other properties
+      combinedRequests[key] = {
+        batchedRequest: batch.batchedRequest,
+        metadata,
+        destination: batch.destination,
+        batched: batch.batched,
+        statusCode: batch.statusCode,
+      };
+    }
+  }
+
+  // Convert the combinedRequests object into an array
+  const combinedRequestList = Object.values(combinedRequests);
+  return combinedRequestList;
+};
+
+const getEventChunks = (
+  event,
+  trackEventChunks,
+  importEventChunks,
+  engageEventChunks,
+  groupsEventChunks,
+) => {
+  const { destination, metadata } = event;
+  let { message } = event;
+  if (!Array.isArray(message)) {
+    message = [message];
+  }
+
+  if (Array.isArray(message)) {
+    message.forEach((msg) => {
+      // eslint-disable-next-line default-case
+      switch (true) {
+        case msg.endpoint.includes('track'):
+          trackEventChunks.push({ message: msg, destination, metadata });
+          break;
+        case msg.endpoint.includes('import'):
+          importEventChunks.push({ message: msg, destination, metadata });
+          break;
+        case msg.endpoint.includes('engage'):
+          engageEventChunks.push({ message: msg, destination, metadata });
+          break;
+        case msg.endpoint.includes('groups'):
+          groupsEventChunks.push({ message: msg, destination, metadata });
+          break;
+      }
+    });
+  }
 };
 
 const processSingleMessage = async (message, destination) => {
@@ -384,7 +500,6 @@ const processSingleMessage = async (message, destination) => {
       return processAliasEvents(message, message.type, destination);
     case EventType.GROUP:
       return processGroupEvents(clonedMessage, clonedMessage.type, destination);
-
     default:
       throw new InstrumentationError(`Event type ${clonedMessage.type} is not supported`);
   }
@@ -392,12 +507,86 @@ const processSingleMessage = async (message, destination) => {
 
 const process = async (event) => processSingleMessage(event.message, event.destination);
 
+const processAndChunkEvents = async (inputs, reqMetadata) => {
+  const importEventChunks = [];
+  const trackEventChunks = [];
+  const engageEventChunks = [];
+  const groupsEventChunks = [];
+  const batchErrorRespList = [];
+
+  await Promise.all(
+    inputs.map(async (event) => {
+      try {
+        if (event.message.statusCode) {
+          // already transformed event
+          getEventChunks(
+            event,
+            trackEventChunks,
+            importEventChunks,
+            engageEventChunks,
+            groupsEventChunks,
+          );
+        } else {
+          // if not transformed
+          getEventChunks(
+            {
+              message: await process(event),
+              metadata: event.metadata,
+              destination: event.destination,
+            },
+            trackEventChunks,
+            importEventChunks,
+            engageEventChunks,
+            groupsEventChunks,
+          );
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+        batchErrorRespList.push(errRespEvent);
+      }
+    }),
+  );
+
+  return {
+    trackEventChunks,
+    importEventChunks,
+    engageEventChunks,
+    groupsEventChunks,
+    batchErrorRespList,
+  };
+};
+
 // Documentation about how Mixpanel handles the utm parameters
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 // Ref: https://help.mixpanel.com/hc/en-us/articles/115004561786-Track-UTM-Tags
 const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+
+  const {
+    trackEventChunks,
+    importEventChunks,
+    engageEventChunks,
+    groupsEventChunks,
+    batchErrorRespList,
+  } = await processAndChunkEvents(inputs, reqMetadata);
+
+  const trackRespList = batchEvents(trackEventChunks, TRACK_MAX_BATCH_SIZE);
+  const importRespList = batchEvents(importEventChunks, IMPORT_MAX_BATCH_SIZE);
+  const engageRespList = batchEvents(engageEventChunks, ENGAGE_MAX_BATCH_SIZE);
+  const groupsRespList = batchEvents(groupsEventChunks, GROUPS_MAX_BATCH_SIZE);
+
+  let batchSuccessRespList = [
+    ...trackRespList,
+    ...importRespList,
+    ...engageRespList,
+    ...groupsRespList,
+  ];
+  batchSuccessRespList = combineBatchRequestsWithSameJobIds(batchSuccessRespList);
+
+  return [...batchSuccessRespList, ...batchErrorRespList];
 };
 
 module.exports = { process, processRouterDest };

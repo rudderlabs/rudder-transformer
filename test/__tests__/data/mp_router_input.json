@@ -1,5 +1,6 @@
 [
   {
+    "description": "Page call",
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
@@ -9,17 +10,18 @@
         "useOldMapping": true
       },
       "DestinationDefinition": {
-        "DisplayName": "Kiss Metrics",
+        "DisplayName": "Mixpanel",
         "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
-        "Name": "MIXPANEL"
+        "Name": "MP"
       },
       "Enabled": true,
       "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "Name": "Kiss Metrics",
+      "Name": "Mixpanel",
       "Transformations": []
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 1,
+      "additionalProp": 1
     },
     "message": {
       "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
@@ -82,6 +84,7 @@
     }
   },
   {
+    "description": "Identify call to create anonymous user profile",
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
@@ -91,17 +94,18 @@
         "useOldMapping": true
       },
       "DestinationDefinition": {
-        "DisplayName": "Kiss Metrics",
+        "DisplayName": "Mixpanel",
         "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
-        "Name": "MIXPANEL"
+        "Name": "MP"
       },
       "Enabled": true,
       "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
-      "Name": "Kiss Metrics",
+      "Name": "Mixpanel",
       "Transformations": []
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 2,
+      "additionalProp": 2
     },
     "message": {
       "anonymousId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
@@ -174,10 +178,20 @@
         "apiKey": "apiKey123",
         "token": "apiToken123",
         "identityMergeApi": "simplified"
-      }
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Mixpanel",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MP"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Mixpanel",
+      "Transformations": []
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 3,
+      "additionalProp": 3
     },
     "message": {
       "anonymousId": "anonId01",
@@ -252,10 +266,20 @@
         "token": "apiToken123",
         "prefixProperties": true,
         "identityMergeApi": "simplified"
-      }
+      },
+      "DestinationDefinition": {
+        "DisplayName": "Mixpanel",
+        "ID": "1WhbSZ6uA3H5ChVifHpfL2H6sie",
+        "Name": "MP"
+      },
+      "Enabled": true,
+      "ID": "1WhcOCGgj9asZu850HvugU2C3Aq",
+      "Name": "Mixpanel",
+      "Transformations": []
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 4,
+      "additionalProp": 4
     },
     "message": {
       "anonymousId": "anonId01",
@@ -305,7 +329,8 @@
       "userId": "userId01",
       "messageId": "id2",
       "properties": {
-        "name": "T-Shirt"
+        "name": "T-Shirt",
+        "revenue": 18.9
       },
       "type": "track",
       "originalTimestamp": "2020-01-24T06:29:02.362Z",
@@ -315,6 +340,7 @@
     }
   },
   {
+    "description": "Merge call with strict mode enabled",
     "destination": {
       "Config": {
         "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
@@ -336,7 +362,8 @@
       "Transformations": []
     },
     "metadata": {
-      "jobId": 2
+      "jobId": 5,
+      "additionalProp": 5
     },
     "message": {
       "anonymousId": "5094f5704b9cf2b3",

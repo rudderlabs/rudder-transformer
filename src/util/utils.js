@@ -14,6 +14,7 @@ resolver.setServers(['1.1.1.1', '8.8.8.8']);
 
 const LOCALHOST_IP = '127.0.0.1';
 const LOCALHOST_URL = `http://localhost`;
+const RECORD_TYPE_A = 4; // ipv4
 
 const staticLookup = (versionid) => async (hostname, _, cb) => {
   let ips;
@@ -22,26 +23,25 @@ const staticLookup = (versionid) => async (hostname, _, cb) => {
     ips = await resolver.resolve(hostname);
   } catch (error) {
     stats.timing('fetch_dns_resolve_time', resolveStartTime, { versionid, error: true });
-    logger.info(`unable to resolve IP address for ${hostname}`);
-    cb(null, `unable to resolve IP address for ${hostname}`, 4);
+    cb(null, `unable to resolve IP address for ${hostname}`, RECORD_TYPE_A);
     return;
   }
   stats.timing('fetch_dns_resolve_time', resolveStartTime, { versionid });
   logger.info(`resolved ${hostname} to ${ips}`);
 
   if (ips.length === 0) {
-    cb(null, `resolved empty list of IP address for ${hostname}`, 4);
+    cb(null, `resolved empty list of IP address for ${hostname}`, RECORD_TYPE_A);
     return;
   }
 
   for (const ip of ips) {
     if (ip.includes(LOCALHOST_IP)) {
-      cb(null, `cannot use ${LOCALHOST_IP} as IP address`, 4);
+      cb(null, `cannot use ${LOCALHOST_IP} as IP address`, RECORD_TYPE_A);
       return;
     }
   }
 
-  cb(null, ips[0], 4);
+  cb(null, ips[0], RECORD_TYPE_A);
 };
 
 const staticDnsAgent = (scheme, versionId) => {
@@ -55,15 +55,28 @@ const blockLocalhostRequests = (url) => {
   }
 };
 
+const getSchemeName = (url) => {
+  if (url.startsWith('https')) {
+    return 'https';
+  }
+  if (url.startsWith('http')) {
+    return 'http';
+  }
+  throw new Error(`invalid protocol, only http and https are supported`);
+};
+
 const fetchWithDnsWrapper = async (versionId, ...args) => {
   if (!(process.env.DNS_RESOLVE_FETCH_HOST === 'true')) {
     return await fetch(...args);
   }
 
-  const fetchURL = args[0];
+  if (args.length === 0) {
+    throw new Error('fetch url is required');
+  }
+  const fetchURL = args[0].trim();
   blockLocalhostRequests(fetchURL);
   const fetchOptions = args[1] || {};
-  const schemeName = fetchURL.trim().startsWith('https') ? 'https' : 'http';
+  const schemeName = getSchemeName(fetchURL);
   // assign resolved agent to fetch
   fetchOptions.agent = staticDnsAgent(schemeName, versionId);
   return await fetch(fetchURL, fetchOptions);

@@ -162,6 +162,34 @@ describe("User transformation fetch tests", () => {
     });
   });
 
+  it(`Simple async ${name} fetchV2 fail Test for V0 transformation with invalid protocol`, async () => {
+    const inputData = require(`./data/${integration}_input.json`);
+    const trRevCode = {
+      codeVersion: "0",
+      name,
+      code: `
+      async function transform(events) {
+        await Promise.all(events.map(async (event) => {
+          try {
+            const res = await fetchV2('tcp://abc.xyz.com/dummyUrl');
+            event.res = res.body;
+          } catch (err) {
+            event.errMsg = err.message;
+          }
+        }));
+        return events;
+      }
+      `
+    };
+    const errMsg = "invalid protocol, only http and https are supported";
+    
+    const output = await userTransformHandler(inputData, versionId, [], trRevCode, true);
+    
+    output.transformedEvents.forEach(ev => {
+      expect(ev.errMsg).toEqual(errMsg);
+    });
+  });
+
   it(`Simple v1 ${name} Test`, async () => {
     const inputData = require(`./data/${integration}_input.json`);
     const expectedData = require(`./data/${integration}_output.json`);
@@ -285,6 +313,33 @@ describe("User transformation fetch tests", () => {
     
     expect(mockResolver).toHaveBeenCalledTimes(inputData.length);
     expect(mockResolver).toHaveBeenCalledWith('abc.xyz.com');
+    output.transformedEvents.forEach(ev => {
+      expect(ev.errMsg).toEqual(errMsg);
+    });
+  });
+
+  it(`Simple async ${name} fetchV2 fail Test for V1 transformation with no arguments`, async () => {
+    const inputData = require(`./data/${integration}_input.json`);
+    const trRevCode = {
+      codeVersion: "1",
+      name,
+      versionId,
+      code: `
+        export async function transformEvent(event) {
+          try {
+            const res = await fetchV2();
+            event.res = res.body;
+          } catch (err) {
+            event.errMsg = err.message;
+          }
+          return event;
+        }
+      `
+    };
+    const errMsg = "fetch url is required";
+    
+    const output = await userTransformHandler(inputData, versionId, [], trRevCode, true);
+    
     output.transformedEvents.forEach(ev => {
       expect(ev.errMsg).toEqual(errMsg);
     });

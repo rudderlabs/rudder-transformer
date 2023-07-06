@@ -540,7 +540,7 @@ function processSingleMessage(message, destination) {
         let getMessagePath = userProvidedPageEventString.substring(userProvidedPageEventString.indexOf('{') + 2,
             userProvidedPageEventString.indexOf('}')).trim();
         evType = userProvidedPageEventString.trim() === "" ? message.name
-            : userProvidedPageEventString.trim().replaceAll(/{{([^}]*)}}/g, get(message, getMessagePath));
+            : userProvidedPageEventString.trim().replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
       } else {
         evType = `Viewed ${message.name || get(message, CATEGORY_KEY) || ''} Page`;
       }

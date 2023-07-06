@@ -40,7 +40,6 @@ const createUser = async (response) => {
   const axiosResponse = await httpPOST(url, payload, {
     headers: { 'Content-Type': 'application/json' },
   });
-  console.error(`[MP] Success:${axiosResponse.success} Raw HTTP response(for error):`, axiosResponse.response);
   return processAxiosResponse(axiosResponse);
 };
 

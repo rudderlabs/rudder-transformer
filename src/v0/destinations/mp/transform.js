@@ -9,7 +9,6 @@ const {
   getEventTime,
   getTimeDifference,
   getValuesAsArrayFromConfig,
-  isHttpStatusSuccess,
   removeUndefinedValues,
   toUnixTimestamp,
   getFieldValueFromMessage,
@@ -29,36 +28,15 @@ const {
   ENGAGE_MAX_BATCH_SIZE,
   GROUPS_MAX_BATCH_SIZE,
 } = require('./config');
-const { httpPOST } = require('../../../adapters/network');
-const {
-  getDynamicErrorType,
-  processAxiosResponse,
-} = require('../../../adapters/utils/networkUtils');
 const {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
   combineBatchRequestsWithSameJobIds,
 } = require('./util');
-const { InstrumentationError, NetworkError, ConfigurationError } = require('../../util/errorTypes');
-const tags = require('../../util/tags');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 // ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
-
-/**
- * This function is used to send the identify call to destination to create user,
- * when we need to merge the new user with anonymous user.
- * @param {*} response identify response from transformer
- * @returns
- */
-const createUser = async (response) => {
-  const url = response.endpoint;
-  const { batch: payload } = response.body.JSON_ARRAY;
-  const axiosResponse = await httpPOST(url, payload, {
-    headers: { 'Content-Type': 'application/json' },
-  });
-  return processAxiosResponse(axiosResponse);
-};
 
 const setImportCredentials = (destConfig) => {
   const endpoint =
@@ -204,10 +182,12 @@ const processTrack = (message, destination) => {
 };
 
 const processIdentifyEvents = async (message, type, destination) => {
-  let returnValue;
-  // Creating the response to identify an user
+  const returnValue = [];
+
+  // Creating the user profile
   // https://developer.mixpanel.com/reference/profile-set
-  returnValue = createIdentifyResponse(message, type, destination, responseBuilderSimple);
+  returnValue.push(createIdentifyResponse(message, type, destination, responseBuilderSimple));
+
   if (
     destination.Config?.identityMergeApi !== 'simplified' &&
     message.userId &&
@@ -215,20 +195,8 @@ const processIdentifyEvents = async (message, type, destination) => {
     isImportAuthCredentialsAvailable(destination)
   ) {
     // If userId and anonymousId both are present and required credentials for /import
-    // endpoint are available we are creating the merging response below
+    // endpoint are available then we are creating the merging response below
     // https://developer.mixpanel.com/reference/identity-merge
-    const createUserResponse = await createUser(returnValue);
-    const status = createUserResponse?.status || 400;
-    if (!isHttpStatusSuccess(status)) {
-      throw new NetworkError(
-        'Unable to create the user',
-        status,
-        {
-          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-        },
-        createUserResponse.response,
-      );
-    }
     const trackPayload = {
       event: '$merge',
       properties: {
@@ -242,7 +210,7 @@ const processIdentifyEvents = async (message, type, destination) => {
       'merge',
       destination.Config,
     );
-    returnValue = identifyTrackResponse;
+    returnValue.push(identifyTrackResponse);
   }
   return returnValue;
 };

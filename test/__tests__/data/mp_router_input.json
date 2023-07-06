@@ -3,11 +3,12 @@
     "description": "Page call",
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiSecret": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "useOldMapping": true
+        "useOldMapping": true,
+        "strictMode": true
       },
       "DestinationDefinition": {
         "DisplayName": "Mixpanel",
@@ -78,7 +79,7 @@
       "receivedAt": "2020-01-24T11:59:02.403+05:30",
       "request_ip": "[::1]:53708",
       "sentAt": "2020-01-24T06:29:02.359Z",
-      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "timestamp": "2023-07-06T11:59:02.402+05:30",
       "type": "page",
       "userId": "hjikl"
     }
@@ -87,11 +88,12 @@
     "description": "Identify call to create anonymous user profile",
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiSecret": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "prefixProperties": true,
         "useNativeSDK": false,
-        "useOldMapping": true
+        "useOldMapping": true,
+        "strictMode": true
       },
       "DestinationDefinition": {
         "DisplayName": "Mixpanel",
@@ -166,7 +168,7 @@
       "receivedAt": "2020-01-24T11:59:02.403+05:30",
       "request_ip": "[::1]:53709",
       "sentAt": "2020-01-24T06:29:02.363Z",
-      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "timestamp": "2023-07-06T11:59:02.402+05:30",
       "type": "identify",
       "userId": ""
     }
@@ -175,9 +177,10 @@
     "description": "Identify: append $device: to deviceId while creating the user when simplified id merge api is selected",
     "destination": {
       "Config": {
-        "apiKey": "apiKey123",
+        "apiSecret": "apiSecret123",
         "token": "apiToken123",
-        "identityMergeApi": "simplified"
+        "identityMergeApi": "simplified",
+        "strictMode": true
       },
       "DestinationDefinition": {
         "DisplayName": "Mixpanel",
@@ -254,7 +257,7 @@
       "receivedAt": "2020-01-24T11:59:02.403+05:30",
       "request_ip": "[::1]:53709",
       "sentAt": "2020-01-24T06:29:02.363Z",
-      "timestamp": "2020-01-24T11:59:02.402+05:30",
+      "timestamp": "2023-07-06T11:59:02.402+05:30",
       "type": "identify"
     }
   },
@@ -262,10 +265,11 @@
     "description": "Track: set device id and user id when simplified id merge api is selected",
     "destination": {
       "Config": {
-        "apiKey": "apiKey123",
+        "apiSecret": "apiSecret123",
         "token": "apiToken123",
         "prefixProperties": true,
-        "identityMergeApi": "simplified"
+        "identityMergeApi": "simplified",
+        "strictMode": true
       },
       "DestinationDefinition": {
         "DisplayName": "Mixpanel",
@@ -336,18 +340,16 @@
       "originalTimestamp": "2020-01-24T06:29:02.362Z",
       "receivedAt": "2020-01-24T11:59:02.403+05:30",
       "sentAt": "2020-01-24T06:29:02.363Z",
-      "timestamp": "2020-01-24T11:59:02.402+05:30"
+      "timestamp": "2023-07-06T11:59:02.402+05:30"
     }
   },
   {
     "description": "Merge call with strict mode enabled",
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiSecret": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
         "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "apiSecret": "some_api_secret",
         "prefixProperties": true,
-        "dataResidency": "eu",
         "useNativeSDK": false,
         "strictMode": true
       },

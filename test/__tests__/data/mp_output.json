@@ -89,24 +89,26 @@
     "files": {},
     "userId": "hjikl"
   },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$created\":\"2020-01-23T08:54:02.362Z\",\"$email\":\"mickey@disney.com\",\"$first_name\":\"Mickey\",\"$last_name\":\"Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$created\":\"2020-01-23T08:54:02.362Z\",\"$email\":\"mickey@disney.com\",\"$first_name\":\"Mickey\",\"$last_name\":\"Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
   [
     {
       "version": "1",
@@ -283,24 +285,26 @@
     "statusCode": 400,
     "message": "Group Key Settings is not configured"
   },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$firstName\":\"Mickey\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$firstName\":\"Mickey\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
   [
     {
       "version": "1",
@@ -471,45 +475,67 @@
       "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
     }
   ],
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api-eu.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$carrier\":\"Android\",\"$manufacturer\":\"Google\",\"$model\":\"Android SDK built for x86\",\"$screen_height\":1794,\"$screen_width\":1080,\"$wifi\":true,\"anonymousId\":\"5094f5704b9cf2b3\",\"$android_devices\":[\"test_device_token\"],\"$os\":\"Android\",\"$android_model\":\"Android SDK built for x86\",\"$android_os_version\":\"8.1.0\",\"$android_manufacturer\":\"Google\",\"$android_app_version\":\"1.0\",\"$android_app_version_code\":\"1.0\",\"$android_brand\":\"Google\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"5094f5704b9cf2b3\",\"$time\":null}]"
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$carrier\":\"Android\",\"$manufacturer\":\"Google\",\"$model\":\"Android SDK built for x86\",\"$screen_height\":1794,\"$screen_width\":1080,\"$wifi\":true,\"anonymousId\":\"5094f5704b9cf2b3\",\"$android_devices\":[\"test_device_token\"],\"$os\":\"Android\",\"$android_model\":\"Android SDK built for x86\",\"$android_os_version\":\"8.1.0\",\"$android_manufacturer\":\"Google\",\"$android_app_version\":\"1.0\",\"$android_app_version_code\":\"1.0\",\"$android_brand\":\"Google\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"5094f5704b9cf2b3\",\"$time\":null}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "5094f5704b9cf2b3"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api-eu.mixpanel.com/import/",
-    "headers": {
-      "Authorization": "Basic c29tZV9hcGlfc2VjcmV0Og==",
-      "Content-Type": "application/json"
-    },
-    "params": { "strict": 0 },
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"event\":\"$merge\",\"properties\":{\"$distinct_ids\":[\"test_user_id\",\"5094f5704b9cf2b3\"],\"token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\"}}]"
+      "files": {},
+      "userId": "5094f5704b9cf2b3"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$carrier\":\"Android\",\"$manufacturer\":\"Google\",\"$model\":\"Android SDK built for x86\",\"$screen_height\":1794,\"$screen_width\":1080,\"$wifi\":true,\"anonymousId\":\"5094f5704b9cf2b3\",\"userId\":\"test_user_id\",\"$ios_devices\":[\"test_device_token\"],\"$os\":\"iOS\",\"$ios_device_model\":\"Android SDK built for x86\",\"$ios_version\":\"8.1.0\",\"$ios_app_release\":\"1\",\"$ios_app_version\":\"1.0\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"test_user_id\",\"$time\":null}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
+      "files": {},
+      "userId": "test_user_id"
     },
-    "files": {},
-    "userId": "test_user_id"
-  },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/import/",
+      "headers": {
+        "Authorization": "Basic c29tZV9hcGlfc2VjcmV0Og==",
+        "Content-Type": "application/json"
+      },
+      "params": { "strict": 0 },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"event\":\"$merge\",\"properties\":{\"$distinct_ids\":[\"test_user_id\",\"5094f5704b9cf2b3\"],\"token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\"}}]"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "test_user_id"
+    }
+  ],
   {
     "version": "1",
     "type": "REST",
@@ -546,189 +572,227 @@
     "files": {},
     "userId": "1234abc"
   },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api-eu.mixpanel.com/import/",
-    "headers": {
-      "Authorization": "Basic c29tZV9hcGlfc2VjcmV0Og==",
-      "Content-Type": "application/json"
-    },
-    "params": { "strict": 0 },
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"event\":\"$merge\",\"properties\":{\"$distinct_ids\":[\"test_user_id\",\"5094f5704b9cf2b3\"],\"token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\"}}]"
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$carrier\":\"Android\",\"$manufacturer\":\"Google\",\"$model\":\"Android SDK built for x86\",\"$screen_height\":1794,\"$screen_width\":1080,\"$wifi\":true,\"anonymousId\":\"5094f5704b9cf2b3\",\"userId\":\"test_user_id\",\"createdat\":\"2020-01-23T08:54:02.362Z\",\"$ios_devices\":[\"test_device_token\"],\"$ios_device_model\":\"Android SDK built for x86\",\"$ios_app_release\":\"1\",\"$ios_app_version\":\"1.0\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"test_user_id\",\"$time\":null}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
+      "files": {},
+      "userId": "test_user_id"
     },
-    "files": {},
-    "userId": "test_user_id"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$firstName\":\"Mickey\",\"$lastName\":\"Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/import/",
+      "headers": {
+        "Authorization": "Basic c29tZV9hcGlfc2VjcmV0Og==",
+        "Content-Type": "application/json"
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$firstName\":\"Mickey\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+      "params": { "strict": 0 },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"event\":\"$merge\",\"properties\":{\"$distinct_ids\":[\"test_user_id\",\"5094f5704b9cf2b3\"],\"token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\"}}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$name\":\"Mickey Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$region\":\"US\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$firstName\":\"Mickey\",\"$lastName\":\"Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+      "files": {},
+      "userId": "test_user_id"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$firstName\":\"Mickey\",\"$lastName\":\"Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$firstName\":\"Mickey\",\"$lastName\":\"Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$firstName\":\"Mickey\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$name\":\"Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$firstName\":\"Mickey\",\"$lastName\":\"Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$name\":\"Mickey Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$region\":\"US\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$firstName\":\"Mickey\",\"$lastName\":\"Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$first_name\":\"Mickey\",\"$last_name\":\"Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$firstName\":\"Mickey\",\"$lastName\":\"Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$first_name\":\"Mickey\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$name\":\"Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$firstName\":\"Mickey\",\"$lastName\":\"Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$first_name\":\"Mickey\",\"$last_name\":\"Mouse\",\"$name\":\"Mickey Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$region\":\"US\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$first_name\":\"Mickey\",\"$last_name\":\"Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$first_name\":\"Mickey\",\"$last_name\":\"Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$first_name\":\"Mickey\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$first_name\":\"Mickey\",\"$last_name\":\"Mouse\",\"$name\":\"Mickey Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$region\":\"US\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$email\":\"mickey@disney.com\",\"$first_name\":\"Mickey\",\"$last_name\":\"Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
   {
     "statusCode": 400,
     "message": "Event timestamp is older than 5 days and no apisecret or service account credentials (i.e. username, secret and projectId) is provided in destination config"
@@ -768,50 +832,94 @@
     "statusCode": 400,
     "message": "Event type test is not supported"
   },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$created\":\"2020-01-23T08:54:02.362Z\",\"$email\":\"mickey@disney.com\",\"$first_name\":\"Mickey\",\"$last_name\":\"Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342,\"$ignore_time\":true}]"
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$created\":\"2020-01-23T08:54:02.362Z\",\"$email\":\"mickey@disney.com\",\"$first_name\":\"Mickey\",\"$last_name\":\"Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342,\"$ignore_time\":true}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$created\":\"2020-01-23T08:54:02.362Z\",\"$email\":\"mickey@disney.com\",\"$first_name\":\"Mickey\",\"$last_name\":\"Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$created\":\"2020-01-23T08:54:02.362Z\",\"$email\":\"mickey@disney.com\",\"$first_name\":\"Mickey\",\"$last_name\":\"Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
-  },
+      "files": {},
+      "userId": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca"
+    }
+  ],
   {
     "statusCode": 400,
     "message": "$geo_source value must be either null or 'reverse_geocoding' "
   },
-  {
-    "statusCode": 400,
-    "message": "Unable to create the user"
-  },
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$created\":\"2020-01-23T08:54:02.362Z\",\"$email\":\"mickey@disney.com\",\"$first_name\":\"Mickey\",\"$last_name\":\"Mouse\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"user1234\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "user1234"
+    },
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/import/",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic cnVkZGVyLmQyYTNmMS5tcC1zZXJ2aWNlLWFjY291bnQ6amF0cFF4Y2pNaDhlZXRrMXhySDNLalFJYnp5NGlYOGI="
+      },
+      "params": {
+        "project_id": "123456",
+        "strict": 0
+      },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"event\":\"$merge\",\"properties\":{\"$distinct_ids\":[\"user1234\",\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\"],\"token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\"}}]"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "user1234"
+    }
+  ],
   [
     {
       "version": "1",
@@ -916,42 +1024,46 @@
       "userId": "userId01"
     }
   ],
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$created\":\"2020-01-23T08:54:02.362Z\",\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$firstName\":\"Mickey\",\"$lastName\":\"Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"apiToken123\",\"$distinct_id\":\"userId01\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$created\":\"2020-01-23T08:54:02.362Z\",\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$firstName\":\"Mickey\",\"$lastName\":\"Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"apiToken123\",\"$distinct_id\":\"userId01\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "userId01"
-  },
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api.mixpanel.com/engage/",
-    "headers": {},
-    "params": {},
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"$set\":{\"$created\":\"2020-01-23T08:54:02.362Z\",\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$firstName\":\"Mickey\",\"$lastName\":\"Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"apiToken123\",\"$distinct_id\":\"$device:anonId01\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+      "files": {},
+      "userId": "userId01"
+    }
+  ],
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$created\":\"2020-01-23T08:54:02.362Z\",\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$firstName\":\"Mickey\",\"$lastName\":\"Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"apiToken123\",\"$distinct_id\":\"$device:anonId01\",\"$ip\":\"0.0.0.0\",\"$time\":1579847342}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
-    },
-    "files": {},
-    "userId": "anonId01"
-  },
+      "files": {},
+      "userId": "anonId01"
+    }
+  ],
   {
     "statusCode": 400,
     "message": "Event type 'alias' is not supported when 'Simplified ID merge' api is selected in webapp"
@@ -1136,25 +1248,45 @@
       "userId": "39da706ec83d0e90"
     }
   ],
-  {
-    "version": "1",
-    "type": "REST",
-    "method": "POST",
-    "endpoint": "https://api-eu.mixpanel.com/import/",
-    "headers": {
-      "Authorization": "Basic c29tZV9hcGlfc2VjcmV0Og==",
-      "Content-Type": "application/json"
-    },
-    "params": { "strict": 1 },
-    "body": {
-      "JSON": {},
-      "JSON_ARRAY": {
-        "batch": "[{\"event\":\"$merge\",\"properties\":{\"$distinct_ids\":[\"test_user_id\",\"5094f5704b9cf2b3\"],\"token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\"}}]"
+  [
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/engage/",
+      "headers": {},
+      "params": {},
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"$set\":{\"$carrier\":\"Android\",\"$manufacturer\":\"Google\",\"$model\":\"Android SDK built for x86\",\"$screen_height\":1794,\"$screen_width\":1080,\"$wifi\":true,\"anonymousId\":\"5094f5704b9cf2b3\",\"userId\":\"test_user_id\",\"$ios_devices\":[\"test_device_token\"],\"$os\":\"iOS\",\"$ios_device_model\":\"Android SDK built for x86\",\"$ios_version\":\"8.1.0\",\"$ios_app_release\":\"1\",\"$ios_app_version\":\"1.0\"},\"$token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\",\"$distinct_id\":\"test_user_id\",\"$time\":null}]"
+        },
+        "XML": {},
+        "FORM": {}
       },
-      "XML": {},
-      "FORM": {}
+      "files": {},
+      "userId": "test_user_id"
     },
-    "files": {},
-    "userId": "test_user_id"
-  }
+    {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api-eu.mixpanel.com/import/",
+      "headers": {
+        "Authorization": "Basic c29tZV9hcGlfc2VjcmV0Og==",
+        "Content-Type": "application/json"
+      },
+      "params": { "strict": 1 },
+      "body": {
+        "JSON": {},
+        "JSON_ARRAY": {
+          "batch": "[{\"event\":\"$merge\",\"properties\":{\"$distinct_ids\":[\"test_user_id\",\"5094f5704b9cf2b3\"],\"token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\"}}]"
+        },
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {},
+      "userId": "test_user_id"
+    }
+  ]
 ]

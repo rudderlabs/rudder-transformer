@@ -3835,7 +3835,7 @@
             "app_name": "RudderLabs JavaScript SDK",
             "app_version": "1.0.0",
             "language": "en-US",
-            "event_type": "My custom Page Name is ApplicationLoaded",
+            "event_type": "My custom Page Name is ApplicationLoaded . Custom Name.",
             "event_properties": {
               "path": "/destinations/amplitude",
               "referrer": "",

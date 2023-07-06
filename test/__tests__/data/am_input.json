@@ -4265,7 +4265,7 @@
       "Config": {
         "apiKey": "abcde",
         "useUserDefinedPageEventName": true,
-        "userProvidedPageEventString": "My custom Page Name is $RUDDER_PAGE_NAME_VALUE"
+        "userProvidedPageEventString": "My custom Page Name is {{ name }} . Custom Name."
       }
     }
   },
@@ -4337,7 +4337,7 @@
       "Config": {
         "apiKey": "abcde",
         "useUserDefinedPageEventName": true,
-        "userProvidedPageEventString": "$RUDDER_PAGE_NAME_VALUE"
+        "userProvidedPageEventString": "{{name}}"
       }
     }
   },

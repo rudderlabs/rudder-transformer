@@ -130,4 +130,68 @@ const isImportAuthCredentialsAvailable = (destination) =>
     destination.Config.serviceAccountUserName &&
     destination.Config.projectId);
 
-module.exports = { createIdentifyResponse, isImportAuthCredentialsAvailable };
+const combineBatchRequestsWithSameJobIds = (batches) => {
+  const combinedRequests = {};
+
+  // Iterate over the response list
+  for (const batch of batches) {
+    const { metadata } = batch;
+
+    // Find any existing request with matching job IDs
+    const matchingBatchRequestWithSameJobId = Object.values(combinedRequests).find((request) => {
+      const existingJobIds = request.metadata.map((obj) => obj.jobId);
+      // Check if any of the job IDs in the existing request match the current batch's job IDs
+      return metadata.some((obj) => existingJobIds.includes(obj.jobId));
+    });
+
+    if (matchingBatchRequestWithSameJobId) {
+      // If a matching request is found, combine the unique metadata arrays and append the batchedRequest
+
+      // Filter out the metadata objects that are already present in the matching request
+      const uniqueMetadata = metadata.filter(
+        (obj) =>
+          !matchingBatchRequestWithSameJobId.metadata.some(
+            (existingObj) => existingObj.jobId === obj.jobId,
+          ),
+      );
+
+      // Append the unique metadata to the existing request's metadata array
+      matchingBatchRequestWithSameJobId.metadata.push(...uniqueMetadata);
+
+      // Combine the batchedRequest into an array
+
+      // Check if the existing request's batchedRequest is already an array
+      matchingBatchRequestWithSameJobId.batchedRequest = [
+        ...(Array.isArray(matchingBatchRequestWithSameJobId.batchedRequest)
+          ? matchingBatchRequestWithSameJobId.batchedRequest
+          : [matchingBatchRequestWithSameJobId.batchedRequest]),
+        batch.batchedRequest,
+      ];
+    } else {
+      // If no matching request is found, create a new entry for the current batch
+
+      // Generate a unique key for the combinedRequests object based on the job IDs
+      const jobIds = metadata.map((obj) => obj.jobId);
+      const key = jobIds.join('_');
+
+      // Create a new entry with the batchedRequest, metadata, and other properties
+      combinedRequests[key] = {
+        batchedRequest: batch.batchedRequest,
+        metadata,
+        destination: batch.destination,
+        batched: batch.batched,
+        statusCode: batch.statusCode,
+      };
+    }
+  }
+
+  // Convert the combinedRequests object into an array
+  const combinedRequestList = Object.values(combinedRequests);
+  return combinedRequestList;
+};
+
+module.exports = {
+  createIdentifyResponse,
+  isImportAuthCredentialsAvailable,
+  combineBatchRequestsWithSameJobIds,
+};

@@ -65,7 +65,7 @@ const getSchemeName = (url) => {
 };
 
 const fetchWithDnsWrapper = async (versionId, ...args) => {
-  if (!(process.env.DNS_RESOLVE_FETCH_HOST === 'true')) {
+  if (process.env.DNS_RESOLVE_FETCH_HOST !== 'true') {
     return await fetch(...args);
   }
 

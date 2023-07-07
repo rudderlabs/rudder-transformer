@@ -761,7 +761,7 @@
       "JSON_ARRAY": {},
       "XML": {}
     },
-    "endpoint": "https://graph.facebook.com/v16.0/12345555566/events?access_token=Asdkjhbriufkjrvknkjfkjhkjf",
+    "endpoint": "https://graph.facebook.com/v17.0/12345555566/events?access_token=Asdkjhbriufkjrvknkjfkjhkjf",
     "files": {},
     "headers": {},
     "method": "POST",

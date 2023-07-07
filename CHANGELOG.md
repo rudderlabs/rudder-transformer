@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.35.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.34.1...v1.35.0) (2023-07-07)
+
+
+### Features
+
+* custom page event name amplitude ([#2284](https://github.com/rudderlabs/rudder-transformer/issues/2284)) ([01e5bf2](https://github.com/rudderlabs/rudder-transformer/commit/01e5bf24301c988b57ab456d2ad624686f20c05d))
+* factorsAI page and group call support ([#2289](https://github.com/rudderlabs/rudder-transformer/issues/2289)) ([51f9009](https://github.com/rudderlabs/rudder-transformer/commit/51f9009270c38dbe6bec76056bdae43f9921de93))
+
+
+### Bug Fixes
+
+* convert epoch timestamp into gaoc accepted format ([#2344](https://github.com/rudderlabs/rudder-transformer/issues/2344)) ([4247c74](https://github.com/rudderlabs/rudder-transformer/commit/4247c742d96c8fd91d593d9558974000f25dd3e2))
+* **facebook_pixel:** name conversion to string ([#2338](https://github.com/rudderlabs/rudder-transformer/issues/2338)) ([5530990](https://github.com/rudderlabs/rudder-transformer/commit/553099068835d3af24f28b983d58f9d8dacb80d2))
+* incorrect usage of histogram as counter ([#2335](https://github.com/rudderlabs/rudder-transformer/issues/2335)) ([654f0ad](https://github.com/rudderlabs/rudder-transformer/commit/654f0adca54357cedaa07235b3f18cebf9e403c3))
+* **iterable:** update addition of default value for some fields ([#2310](https://github.com/rudderlabs/rudder-transformer/issues/2310)) ([0f1ebba](https://github.com/rudderlabs/rudder-transformer/commit/0f1ebba73bbe760ae4d9d66f9f46fffb96ca27fc))
+* resolve develop main conflict ([#2327](https://github.com/rudderlabs/rudder-transformer/issues/2327)) ([1aea7cd](https://github.com/rudderlabs/rudder-transformer/commit/1aea7cde926a3d816a1924fcfea70839fd325f3c))
+
 ### [1.34.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.34.0...v1.34.1) (2023-07-07)
 
 

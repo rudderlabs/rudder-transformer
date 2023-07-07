@@ -116,7 +116,7 @@ jobs:
 
           cd ../../config-be-rudder-transformer
           yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" values.prod.yaml
-          yq eval -i ".config-be-user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.prod.yaml
+          yq eval -i ".config-be-rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.prod.yaml
           git add values.prod.yaml
 
           git commit -m "chore: upgrade shared transformers to $TAG_NAME"

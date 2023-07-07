@@ -313,7 +313,7 @@
       }
     },
     "output": {
-      "error": "{\"message\":\"Data File Lookup Failed\",\"destinationResponse\":{\"response\":{\"code\":\"document_not_found\",\"message\":\"document_not_found\"},\"status\":404}}"
+      "error": "Data File Lookup Failed"
     }
   },
   {

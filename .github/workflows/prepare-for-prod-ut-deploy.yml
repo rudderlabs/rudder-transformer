@@ -24,7 +24,6 @@ jobs:
     # Only merged pull requests from release candidate branches must trigger
     if: ((startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')) && github.event.pull_request.merged == true)
     outputs:
-      tag_name: ${{ steps.gen_tag_names.outputs.tag_name }}
       tag_name_ut: ${{ steps.gen_tag_names.outputs.tag_name_ut }}
     steps:
       - name: Checkout
@@ -39,17 +38,21 @@ jobs:
           echo "Tag Name: $tag_name"
           echo "tag_name=$tag_name" >> $GITHUB_OUTPUT
 
-  build-transformer-image:
-    name: Build Transformer Docker Image - Prod
+          tag_name_ut="ut-$tag_name"
+          echo "UT Tag Name: $tag_name_ut"
+          echo "tag_name_ut=$tag_name_ut" >> $GITHUB_OUTPUT
+
+  build-user-transformer-image:
+    name: Build User Transformer Docker Image - Prod
     # Only merged pull requests from release candidate branches must trigger
     if: ((startsWith(github.event.pull_request.head.ref, 'release/') || startsWith(github.event.pull_request.head.ref, 'hotfix-release/')) && github.event.pull_request.merged == true)
     needs: [generate-tag-names]
     uses: ./.github/workflows/build-push-docker-image.yml
     with:
-      build_tag: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }}
-      push_tags: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }},rudderstack/rudder-transformer:latest,rudderlabs/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name }},rudderlabs/rudder-transformer:latest
-      img_tag: ${{ needs.generate-tag-names.outputs.tag_name }}
-      dockerfile: Dockerfile
+      build_tag: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }}
+      push_tags: rudderstack/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }},rudderstack/rudder-transformer:ut-latest,rudderlabs/rudder-transformer:${{ needs.generate-tag-names.outputs.tag_name_ut }},rudderlabs/rudder-transformer:ut-latest
+      img_tag: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
+      dockerfile: Dockerfile-ut-func
       load_target: development
       push_target: production
     secrets:
@@ -58,9 +61,9 @@ jobs:
   create-pull-request:
     name: Update Helm Charts For Production and Create Pull Request
     runs-on: ubuntu-latest
-    needs: [generate-tag-names, build-transformer-image]
+    needs: [generate-tag-names, build-user-transformer-image]
     env:
-      TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name }}
+      UT_TAG_NAME: ${{ needs.generate-tag-names.outputs.tag_name_ut }}
       TF_IMAGE_REPOSITORY: rudderstack/rudder-transformer
     steps:
       - name: Checkout
@@ -77,7 +80,7 @@ jobs:
 
       - name: Print Docker Image Tags
         run: |
-          echo "Transformer: $TAG_NAME"
+          echo "User Transformer: $UT_TAG_NAME"
 
       - name: Clone Devops Repo
         run: |
@@ -96,47 +99,33 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
           cd rudder-devops
-          git checkout -b shared-transformer-$TAG_NAME
+          git checkout -b shared-user-transformer-$UT_TAG_NAME
 
           cd helm-charts/shared-services/per-az/environment/production
-          yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" production.yaml
-          yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" production.yaml
-          yq eval -i ".rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" production.yaml
-          git add production.yaml
-
-          yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" enterprise/enterprise.yaml
-          yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" enterprise/enterprise.yaml
-          yq eval -i ".rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" enterprise/enterprise.yaml
-          git add enterprise/enterprise.yaml
-
-          yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" multi-tenant/multi-tenant.yaml
-          yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" multi-tenant/multi-tenant.yaml
-          yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" multi-tenant/multi-tenant.yaml
-          git add multi-tenant/multi-tenant.yaml
 
           cd ../../config-be-rudder-transformer
-          yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" values.prod.yaml
-          yq eval -i ".config-be-rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.prod.yaml
+          yq eval -i ".config-be-user-transformer.image.tag=\"$UT_TAG_NAME\"" values.prod.yaml
+          yq eval -i ".config-be-user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.prod.yaml
           git add values.prod.yaml
 
-          git commit -m "chore: upgrade shared transformers to $TAG_NAME"
-          git push -u origin shared-transformer-$TAG_NAME
+          git commit -m "chore: upgrade shared user-transformers to $UT_TAG_NAME"
+          git push -u origin shared-user-transformer-$UT_TAG_NAME
 
-          hub pull-request -m "chore: upgrade shared transformers to $TAG_NAME"
+          hub pull-request -m "chore: upgrade shared user-transformers to $UT_TAG_NAME"
 
       - name: Update Helm Chart and Raise Pull Request For Hosted Transformer
         env:
           GITHUB_TOKEN: ${{ secrets.PAT }}
         run: |
           cd rudder-devops
-          git checkout -b hosted-transformer-$TAG_NAME ${{steps.extract_branch_name.outputs.branch_name}}
+          git checkout -b hosted-user-transformer-$UT_TAG_NAME ${{steps.extract_branch_name.outputs.branch_name}}
 
           cd customer-objects/multi-tenant-us
-          yq eval -i ".spec.transformer.image.version=\"$TAG_NAME\"" hostedmtedmt.yaml
+          yq eval -i ".spec.user_transformer.image.version=\"$UT_TAG_NAME\"" hostedmtedmt.yaml
           yq eval -i ".spec.transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" hostedmtedmt.yaml
           git add hostedmtedmt.yaml
 
-          git commit -m "chore: upgrade hosted transformer to $TAG_NAME"
-          git push -u origin hosted-transformer-$TAG_NAME
+          git commit -m "chore: upgrade hosted user-transformer to $UT_TAG_NAME"
+          git push -u origin hosted-user-transformer-$UT_TAG_NAME
 
-          hub pull-request -m "chore: upgrade hosted transformer to $TAG_NAME"  
+          hub pull-request -m "chore: upgrade hosted user-transformer to $UT_TAG_NAME"

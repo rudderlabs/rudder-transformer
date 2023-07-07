@@ -130,65 +130,56 @@ const isImportAuthCredentialsAvailable = (destination) =>
     destination.Config.serviceAccountUserName &&
     destination.Config.projectId);
 
-const combineBatchRequestsWithSameJobIds = (batches) => {
-  const combinedRequests = {};
+/**
+ * Combines batched requests with the same JobIds.
+ * @param {Array<Object>} batches - The array of batched request objects.
+ * @returns {Array<Object>} - The combined batched request objects with merged JobIds.
+ */
+function combineBatchRequestsWithSameJobIds(batches) {
+  const combinedBatches = [...batches];
+  const processedBatches = new Array(combinedBatches.length).fill(false);
 
-  // Iterate over the response list
-  for (const batch of batches) {
-    const { metadata } = batch;
+  // Iterate over each batch
+  combinedBatches.forEach((batch1, i) => {
+    if (processedBatches[i]) return;
 
-    // Find any existing request with matching job IDs
-    const matchingBatchRequestWithSameJobId = Object.values(combinedRequests).find((request) => {
-      const existingJobIds = request.metadata.map((obj) => obj.jobId);
-      // Check if any of the job IDs in the existing request match the current batch's job IDs
-      return metadata.some((obj) => existingJobIds.includes(obj.jobId));
-    });
+    // Check for common JobIds with other batches
+    combinedBatches
+      .filter((_, j) => i !== j && !processedBatches[j])
+      .forEach((batch2) => {
+        const metadata1 = batch1.metadata;
+        const metadata2 = batch2.metadata;
 
-    if (matchingBatchRequestWithSameJobId) {
-      // If a matching request is found, combine the unique metadata arrays and append the batchedRequest
+        // Check if there are common JobIds
+        const hasCommonJobId = metadata1.some((meta1) =>
+          metadata2.some((meta2) => meta1.jobId === meta2.jobId),
+        );
 
-      // Filter out the metadata objects that are already present in the matching request
-      const uniqueMetadata = metadata.filter(
-        (obj) =>
-          !matchingBatchRequestWithSameJobId.metadata.some(
-            (existingObj) => existingObj.jobId === obj.jobId,
-          ),
-      );
+        if (hasCommonJobId) {
+          // Merge batchedRequests arrays
+          batch1.batchedRequest = [
+            ...(Array.isArray(batch1.batchedRequest)
+              ? batch1.batchedRequest
+              : [batch1.batchedRequest]),
+            ...(Array.isArray(batch2.batchedRequest)
+              ? batch2.batchedRequest
+              : [batch2.batchedRequest]),
+          ];
 
-      // Append the unique metadata to the existing request's metadata array
-      matchingBatchRequestWithSameJobId.metadata.push(...uniqueMetadata);
+          // Mark the second batch as processed
+          processedBatches[combinedBatches.indexOf(batch2)] = true;
 
-      // Combine the batchedRequest into an array
+          const uniqueJobIds = new Set(metadata1.map((meta) => meta.jobId));
+          // Filter out duplicate JobIds from metadata2
+          const metadataToAdd = metadata2.filter((meta) => !uniqueJobIds.has(meta.jobId));
+          metadata1.push(...metadataToAdd);
+        }
+      });
+  });
 
-      // Check if the existing request's batchedRequest is already an array
-      matchingBatchRequestWithSameJobId.batchedRequest = [
-        ...(Array.isArray(matchingBatchRequestWithSameJobId.batchedRequest)
-          ? matchingBatchRequestWithSameJobId.batchedRequest
-          : [matchingBatchRequestWithSameJobId.batchedRequest]),
-        batch.batchedRequest,
-      ];
-    } else {
-      // If no matching request is found, create a new entry for the current batch
-
-      // Generate a unique key for the combinedRequests object based on the job IDs
-      const jobIds = metadata.map((obj) => obj.jobId);
-      const key = jobIds.join('_');
-
-      // Create a new entry with the batchedRequest, metadata, and other properties
-      combinedRequests[key] = {
-        batchedRequest: batch.batchedRequest,
-        metadata,
-        destination: batch.destination,
-        batched: batch.batched,
-        statusCode: batch.statusCode,
-      };
-    }
-  }
-
-  // Convert the combinedRequests object into an array
-  const combinedRequestList = Object.values(combinedRequests);
-  return combinedRequestList;
-};
+  // Filter out processed batches
+  return combinedBatches.filter((_, index) => !processedBatches[index]);
+}
 
 module.exports = {
   createIdentifyResponse,

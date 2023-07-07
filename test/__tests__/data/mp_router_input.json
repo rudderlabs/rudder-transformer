@@ -343,7 +343,6 @@
       "type": "identify"
     }
   },
-
   {
     "description": "Merge call with strict mode enabled",
     "destination": {

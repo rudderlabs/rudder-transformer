@@ -40,14 +40,24 @@ describe('Mixpanel utils test', () => {
         },
         {
           batchedRequest: {
-            endpoint: 'https://api.mixpanel.com/engage/',
+            endpoint: 'https://api.mixpanel.com/import/',
           },
           metadata: [
             {
-              jobId: 4,
+              jobId: 3,
             },
+          ],
+          batched: true,
+          statusCode: 200,
+          destination: destinationMock,
+        },
+        {
+          batchedRequest: {
+            endpoint: 'https://api.mixpanel.com/track/',
+          },
+          metadata: [
             {
-              jobId: 2,
+              jobId: 5,
             },
           ],
           batched: true,
@@ -60,7 +70,23 @@ describe('Mixpanel utils test', () => {
           },
           metadata: [
             {
-              jobId: 5,
+              jobId: 1,
+            },
+            {
+              jobId: 3,
+            },
+          ],
+          batched: true,
+          statusCode: 200,
+          destination: destinationMock,
+        },
+        {
+          batchedRequest: {
+            endpoint: 'https://api.mixpanel.com/import/',
+          },
+          metadata: [
+            {
+              jobId: 6,
             },
           ],
           batched: true,
@@ -68,22 +94,13 @@ describe('Mixpanel utils test', () => {
           destination: destinationMock,
         },
       ];
+
       const expectedOutput = [
         {
-          batchedRequest: {
-            endpoint: 'https://api.mixpanel.com/engage/',
-          },
-          metadata: [
-            {
-              jobId: 5,
-            },
-          ],
-          batched: true,
-          statusCode: 200,
-          destination: destinationMock,
-        },
-        {
           batchedRequest: [
+            {
+              endpoint: 'https://api.mixpanel.com/import/',
+            },
             {
               endpoint: 'https://api.mixpanel.com/track/',
             },
@@ -93,13 +110,39 @@ describe('Mixpanel utils test', () => {
           ],
           metadata: [
             {
+              jobId: 3,
+            },
+            {
               jobId: 1,
             },
             {
               jobId: 4,
             },
+          ],
+          batched: true,
+          statusCode: 200,
+          destination: destinationMock,
+        },
+        {
+          batchedRequest: {
+            endpoint: 'https://api.mixpanel.com/track/',
+          },
+          metadata: [
             {
-              jobId: 2,
+              jobId: 5,
+            },
+          ],
+          batched: true,
+          statusCode: 200,
+          destination: destinationMock,
+        },
+        {
+          batchedRequest: {
+            endpoint: 'https://api.mixpanel.com/import/',
+          },
+          metadata: [
+            {
+              jobId: 6,
             },
           ],
           batched: true,
@@ -110,7 +153,7 @@ describe('Mixpanel utils test', () => {
       expect(combineBatchRequestsWithSameJobIds(input)).toEqual(expectedOutput);
     });
 
-    it('Each batchRequest contains unique jobIds', async () => {
+    it('Each batchRequest contains unique jobIds (no event multiplexing)', async () => {
       const input = [
         {
           batchedRequest: {
@@ -155,7 +198,25 @@ describe('Mixpanel utils test', () => {
           destination: destinationMock,
         },
       ];
+
       const expectedOutput = [
+        {
+          batchedRequest: {
+            endpoint: 'https://api.mixpanel.com/track/',
+          },
+
+          metadata: [
+            {
+              jobId: 1,
+            },
+            {
+              jobId: 4,
+            },
+          ],
+          batched: true,
+          statusCode: 200,
+          destination: destinationMock,
+        },
         {
           batchedRequest: {
             endpoint: 'https://api.mixpanel.com/engage/',
@@ -176,23 +237,6 @@ describe('Mixpanel utils test', () => {
           metadata: [
             {
               jobId: 5,
-            },
-          ],
-          batched: true,
-          statusCode: 200,
-          destination: destinationMock,
-        },
-        {
-          batchedRequest: {
-            endpoint: 'https://api.mixpanel.com/track/',
-          },
-
-          metadata: [
-            {
-              jobId: 1,
-            },
-            {
-              jobId: 4,
             },
           ],
           batched: true,

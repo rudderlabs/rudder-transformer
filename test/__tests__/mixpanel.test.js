@@ -27,6 +27,18 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
+jest.mock(`../../src/${version}/destinations/${integration}/config`, () => {
+  const originalConfig = jest.requireActual(`../../src/${version}/destinations/${integration}/config`);
+  return {
+    ...originalConfig,
+    TRACK_MAX_BATCH_SIZE: 1,
+    IMPORT_MAX_BATCH_SIZE: 2,
+    ENGAGE_MAX_BATCH_SIZE: 3,
+    GROUPS_MAX_BATCH_SIZE: 1
+  };
+});
+
+
 describe(`${name} Tests`, () => {
   describe("Processor Tests", () => {
     inputData.forEach((input, index) => {

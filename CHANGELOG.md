@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.34.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.34.0...v1.34.1) (2023-07-07)
+
+
+### Bug Fixes
+
+* **iterable:** fix metadata format while batching ([#2345](https://github.com/rudderlabs/rudder-transformer/issues/2345)) ([256cb7e](https://github.com/rudderlabs/rudder-transformer/commit/256cb7ea042678443a6243d93d28c8bbaccacf32))
+
 ## [1.34.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.33.0...v1.34.0) (2023-06-30)
 
 

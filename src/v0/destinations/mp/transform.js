@@ -352,10 +352,10 @@ const batchEvents = (successRespList, maxBatchSize) => {
 
 const getEventChunks = (
   event,
-  trackEventChunks,
-  importEventChunks,
   engageEventChunks,
   groupsEventChunks,
+  trackEventChunks,
+  importEventChunks,
 ) => {
   const { destination, metadata } = event;
   let { message } = event;
@@ -367,17 +367,17 @@ const getEventChunks = (
     message.forEach((msg) => {
       // eslint-disable-next-line default-case
       switch (true) {
-        case msg.endpoint.includes('track'):
-          trackEventChunks.push({ message: msg, destination, metadata });
-          break;
-        case msg.endpoint.includes('import'):
-          importEventChunks.push({ message: msg, destination, metadata });
-          break;
         case msg.endpoint.includes('engage'):
           engageEventChunks.push({ message: msg, destination, metadata });
           break;
         case msg.endpoint.includes('groups'):
           groupsEventChunks.push({ message: msg, destination, metadata });
+          break;
+        case msg.endpoint.includes('track'):
+          trackEventChunks.push({ message: msg, destination, metadata });
+          break;
+        case msg.endpoint.includes('import'):
+          importEventChunks.push({ message: msg, destination, metadata });
           break;
       }
     });
@@ -420,10 +420,10 @@ const processSingleMessage = async (message, destination) => {
 const process = async (event) => processSingleMessage(event.message, event.destination);
 
 const processAndChunkEvents = async (inputs, reqMetadata) => {
-  const importEventChunks = [];
-  const trackEventChunks = [];
   const engageEventChunks = [];
   const groupsEventChunks = [];
+  const trackEventChunks = [];
+  const importEventChunks = [];
   const batchErrorRespList = [];
 
   await Promise.all(
@@ -433,10 +433,10 @@ const processAndChunkEvents = async (inputs, reqMetadata) => {
           // already transformed event
           getEventChunks(
             event,
-            trackEventChunks,
-            importEventChunks,
             engageEventChunks,
             groupsEventChunks,
+            trackEventChunks,
+            importEventChunks,
           );
         } else {
           // if not transformed
@@ -446,10 +446,10 @@ const processAndChunkEvents = async (inputs, reqMetadata) => {
               metadata: event.metadata,
               destination: event.destination,
             },
-            trackEventChunks,
-            importEventChunks,
             engageEventChunks,
             groupsEventChunks,
+            trackEventChunks,
+            importEventChunks,
           );
         }
       } catch (error) {
@@ -460,10 +460,10 @@ const processAndChunkEvents = async (inputs, reqMetadata) => {
   );
 
   return {
-    trackEventChunks,
-    importEventChunks,
     engageEventChunks,
     groupsEventChunks,
+    trackEventChunks,
+    importEventChunks,
     batchErrorRespList,
   };
 };
@@ -478,23 +478,23 @@ const processRouterDest = async (inputs, reqMetadata) => {
   }
 
   const {
-    trackEventChunks,
-    importEventChunks,
     engageEventChunks,
     groupsEventChunks,
+    trackEventChunks,
+    importEventChunks,
     batchErrorRespList,
   } = await processAndChunkEvents(inputs, reqMetadata);
 
-  const trackRespList = batchEvents(trackEventChunks, TRACK_MAX_BATCH_SIZE);
-  const importRespList = batchEvents(importEventChunks, IMPORT_MAX_BATCH_SIZE);
   const engageRespList = batchEvents(engageEventChunks, ENGAGE_MAX_BATCH_SIZE);
   const groupsRespList = batchEvents(groupsEventChunks, GROUPS_MAX_BATCH_SIZE);
+  const trackRespList = batchEvents(trackEventChunks, TRACK_MAX_BATCH_SIZE);
+  const importRespList = batchEvents(importEventChunks, IMPORT_MAX_BATCH_SIZE);
 
   let batchSuccessRespList = [
-    ...trackRespList,
-    ...importRespList,
     ...engageRespList,
     ...groupsRespList,
+    ...trackRespList,
+    ...importRespList,
   ];
   batchSuccessRespList = combineBatchRequestsWithSameJobIds(batchSuccessRespList);
 

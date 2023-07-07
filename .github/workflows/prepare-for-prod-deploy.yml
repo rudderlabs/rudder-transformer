@@ -116,9 +116,27 @@ jobs:
 
           cd ../../config-be-rudder-transformer
           yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" values.prod.yaml
+          yq eval -i ".config-be-user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.prod.yaml
           git add values.prod.yaml
 
           git commit -m "chore: upgrade shared transformers to $TAG_NAME"
           git push -u origin shared-transformer-$TAG_NAME
 
           hub pull-request -m "chore: upgrade shared transformers to $TAG_NAME"
+
+      - name: Update Helm Chart and Raise Pull Request For Hosted Transformer
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT }}
+        run: |
+          cd rudder-devops
+          git checkout -b hosted-transformer-$TAG_NAME ${{steps.extract_branch_name.outputs.branch_name}}
+
+          cd customer-objects/multi-tenant-us
+          yq eval -i ".spec.transformer.image.version=\"$TAG_NAME\"" hostedmtedmt.yaml
+          yq eval -i ".spec.transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" hostedmtedmt.yaml
+          git add hostedmtedmt.yaml
+
+          git commit -m "chore: upgrade hosted transformer to $TAG_NAME"
+          git push -u origin hosted-transformer-$TAG_NAME
+
+          hub pull-request -m "chore: upgrade hosted transformer to $TAG_NAME"  

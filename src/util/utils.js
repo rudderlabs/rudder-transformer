@@ -16,17 +16,17 @@ const LOCALHOST_IP = '127.0.0.1';
 const LOCALHOST_URL = `http://localhost`;
 const RECORD_TYPE_A = 4; // ipv4
 
-const staticLookup = (versionid) => async (hostname, _, cb) => {
+const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
   let ips;
   const resolveStartTime = new Date();
   try {
     ips = await resolver.resolve(hostname);
   } catch (error) {
-    stats.timing('fetch_dns_resolve_time', resolveStartTime, { versionid, error: true });
+    stats.timing('fetch_dns_resolve_time', resolveStartTime, { transformerVersionId, error: true });
     cb(null, `unable to resolve IP address for ${hostname}`, RECORD_TYPE_A);
     return;
   }
-  stats.timing('fetch_dns_resolve_time', resolveStartTime, { versionid });
+  stats.timing('fetch_dns_resolve_time', resolveStartTime, { transformerVersionId });
 
   if (ips.length === 0) {
     cb(null, `resolved empty list of IP address for ${hostname}`, RECORD_TYPE_A);
@@ -43,28 +43,24 @@ const staticLookup = (versionid) => async (hostname, _, cb) => {
   cb(null, ips[0], RECORD_TYPE_A);
 };
 
-const staticDnsAgent = (scheme, versionId) => {
+const httpAgentWithDnsLookup = (scheme, transformerVersionId) => {
   const httpModule = scheme === 'http' ? http : https;
-  return new httpModule.Agent({ lookup: staticLookup(versionId) });
+  return new httpModule.Agent({ lookup: staticLookup(transformerVersionId) });
 };
 
 const blockLocalhostRequests = (url) => {
-  if (url?.includes(LOCALHOST_URL) || url?.includes(LOCALHOST_IP)) {
+  if (url.includes(LOCALHOST_URL) || url.includes(LOCALHOST_IP)) {
     throw new Error('localhost requests are not allowed');
   }
 };
 
-const getSchemeName = (url) => {
-  if (url.startsWith('https')) {
-    return 'https';
+const blockInvalidProtocolRequests = (url) => {
+  if (!(url.startsWith('https') || url.startsWith('http'))) {
+    throw new Error(`invalid protocol, only http and https are supported`);
   }
-  if (url.startsWith('http')) {
-    return 'http';
-  }
-  throw new Error(`invalid protocol, only http and https are supported`);
 };
 
-const fetchWithDnsWrapper = async (versionId, ...args) => {
+const fetchWithDnsWrapper = async (transformerVersionId, ...args) => {
   if (process.env.DNS_RESOLVE_FETCH_HOST !== 'true') {
     return await fetch(...args);
   }
@@ -74,10 +70,11 @@ const fetchWithDnsWrapper = async (versionId, ...args) => {
   }
   const fetchURL = args[0].trim();
   blockLocalhostRequests(fetchURL);
+  blockInvalidProtocolRequests(fetchURL);
   const fetchOptions = args[1] || {};
-  const schemeName = getSchemeName(fetchURL);
+  const schemeName = fetchURL.startsWith('https') ? 'https' : 'http';
   // assign resolved agent to fetch
-  fetchOptions.agent = staticDnsAgent(schemeName, versionId);
+  fetchOptions.agent = httpAgentWithDnsLookup(schemeName, transformerVersionId);
   return await fetch(fetchURL, fetchOptions);
 };
 

@@ -34,6 +34,7 @@ const {
   combineBatchRequestsWithSameJobIds,
 } = require('./util');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
+const { CommonUtils } = require('../../../util/common');
 
 // ref: https://help.mixpanel.com/hc/en-us/articles/115004613766-Default-Properties-Collected-by-Mixpanel
 const mPEventPropertiesConfigJson = mappingConfig[ConfigCategory.EVENT_PROPERTIES.name];
@@ -350,40 +351,6 @@ const batchEvents = (successRespList, maxBatchSize) => {
   return batchResponseList;
 };
 
-const getEventChunks = (
-  event,
-  engageEventChunks,
-  groupsEventChunks,
-  trackEventChunks,
-  importEventChunks,
-) => {
-  const { destination, metadata } = event;
-  let { message } = event;
-  if (!Array.isArray(message)) {
-    message = [message];
-  }
-
-  if (Array.isArray(message)) {
-    message.forEach((msg) => {
-      // eslint-disable-next-line default-case
-      switch (true) {
-        case msg.endpoint.includes('engage'):
-          engageEventChunks.push({ message: msg, destination, metadata });
-          break;
-        case msg.endpoint.includes('groups'):
-          groupsEventChunks.push({ message: msg, destination, metadata });
-          break;
-        case msg.endpoint.includes('track'):
-          trackEventChunks.push({ message: msg, destination, metadata });
-          break;
-        case msg.endpoint.includes('import'):
-          importEventChunks.push({ message: msg, destination, metadata });
-          break;
-      }
-    });
-  }
-};
-
 const processSingleMessage = async (message, destination) => {
   const clonedMessage = { ...message };
   if (clonedMessage.userId) {
@@ -419,46 +386,62 @@ const processSingleMessage = async (message, destination) => {
 
 const process = async (event) => processSingleMessage(event.message, event.destination);
 
+const processEvents = async (inputs, reqMetadata) => {
+  return await Promise.all(
+    inputs.map(async (event) => {
+      try {
+        if (event.message.statusCode) {
+          // already transformed event
+          return { output: event }
+        } else {
+          return {
+            message: await process(event),
+            metadata: event.metadata,
+            destination: event.destination,
+          }
+        }
+      } catch (error) {
+        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+        return { error: errRespEvent }
+      }
+    })
+  );
+};
+
 const processAndChunkEvents = async (inputs, reqMetadata) => {
+  const processedEvents = await processEvents(inputs, reqMetadata);
   const engageEventChunks = [];
   const groupsEventChunks = [];
   const trackEventChunks = [];
   const importEventChunks = [];
   const batchErrorRespList = [];
-
-  await Promise.all(
-    inputs.map(async (event) => {
-      try {
-        if (event.message.statusCode) {
-          // already transformed event
-          getEventChunks(
-            event,
-            engageEventChunks,
-            groupsEventChunks,
-            trackEventChunks,
-            importEventChunks,
-          );
-        } else {
-          // if not transformed
-          getEventChunks(
-            {
-              message: await process(event),
-              metadata: event.metadata,
-              destination: event.destination,
-            },
-            engageEventChunks,
-            groupsEventChunks,
-            trackEventChunks,
-            importEventChunks,
-          );
+  processedEvents.forEach((result) => {
+    if (result.output) {
+      const event = result.output;
+      const { destination, metadata } = event;
+      let { message } = event;
+      message = CommonUtils.toArray(message);
+      message.forEach((msg) => {
+        // eslint-disable-next-line default-case
+        switch (true) {
+          case msg.endpoint.includes('engage'):
+            engageEventChunks.push({ message: msg, destination, metadata });
+            break;
+          case msg.endpoint.includes('groups'):
+            groupsEventChunks.push({ message: msg, destination, metadata });
+            break;
+          case msg.endpoint.includes('track'):
+            trackEventChunks.push({ message: msg, destination, metadata });
+            break;
+          case msg.endpoint.includes('import'):
+            importEventChunks.push({ message: msg, destination, metadata });
+            break;
         }
-      } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
-        batchErrorRespList.push(errRespEvent);
-      }
-    }),
-  );
-
+      });
+    } else if (result.error) {
+      batchErrorRespList.push(result.error);
+    }
+  });
   return {
     engageEventChunks,
     groupsEventChunks,

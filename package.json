@@ -66,7 +66,7 @@
     "component-each": "^0.2.6",
     "crypto": "^1.0.1",
     "crypto-js": "^4.1.1",
-    "dotenv": "^16.0.3",
+    "dotenv": "^16.3.0",
     "flat": "^5.0.2",
     "form-data": "^4.0.0",
     "get-value": "^3.0.1",

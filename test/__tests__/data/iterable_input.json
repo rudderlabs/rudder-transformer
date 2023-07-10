@@ -48,7 +48,8 @@
           "city": "Bangalore",
           "name": "manashi",
           "email": "manashi@website.com",
-          "country": "India"
+          "country": "India",
+          "preferUserId": false
         },
         "library": {
           "name": "analytics-node",

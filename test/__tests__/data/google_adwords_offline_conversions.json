@@ -78,7 +78,6 @@
           "userIdentifierSource": "FIRST_PARTY",
           "conversionEnvironment": "WEB",
           "gclid": "gclid",
-          "conversionDateTime": "2022-01-01 12:32:45-08:00",
           "conversionValue": "1",
           "currency": "GBP",
           "orderId": "PL-123QR"
@@ -206,7 +205,6 @@
             "userIdentifierSource": "FIRST_PARTY",
             "conversionEnvironment": "WEB",
             "gclid": "gclid",
-            "conversionDateTime": "2022-01-01 12:32:45-08:00",
             "conversionValue": "1",
             "currency": "GBP",
             "orderId": "PL-123QR"
@@ -242,8 +240,8 @@
                   }
                 ],
                 "conversionEnvironment": "WEB",
+                "conversionDateTime": "2019-10-14 11:15:18+00:00",
                 "gclid": "gclid",
-                "conversionDateTime": "2022-01-01 12:32:45-08:00",
                 "conversionValue": 1,
                 "currencyCode": "GBP",
                 "orderId": "PL-123QR"
@@ -309,7 +307,7 @@
         "event": "Promotion Clicked",
         "type": "track",
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
-        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "timestamp": 1675692865495,
         "anonymousId": "00000000000000000000000000",
         "userId": "12345",
         "properties": {
@@ -339,7 +337,6 @@
           "userIdentifierSource": "FIRST_PARTY",
           "conversionEnvironment": "WEB",
           "gclid": "gclid",
-          "conversionDateTime": "2022-01-01 12:32:45-08:00",
           "conversionValue": "1",
           "currency": "GBP",
           "orderId": "PL-123QR"
@@ -467,7 +464,6 @@
             "userIdentifierSource": "FIRST_PARTY",
             "conversionEnvironment": "WEB",
             "gclid": "gclid",
-            "conversionDateTime": "2022-01-01 12:32:45-08:00",
             "conversionValue": "1",
             "currency": "GBP",
             "orderId": "PL-123QR"
@@ -503,8 +499,8 @@
                   }
                 ],
                 "conversionEnvironment": "WEB",
+                "conversionDateTime": "2023-02-06 14:14:25+00:00",
                 "gclid": "gclid",
-                "conversionDateTime": "2022-01-01 12:32:45-08:00",
                 "conversionValue": 1,
                 "currencyCode": "GBP",
                 "orderId": "PL-123QR"
@@ -3905,6 +3901,7 @@
         },
         "event": "Product Clicked",
         "type": "track",
+        "timestamp": 1675692865495,
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "anonymousId": "00000000000000000000000000",
         "userId": "12345",
@@ -3915,7 +3912,6 @@
           "revenue": "100",
           "store_code": "store code",
           "gclid": "gclid",
-          "conversionDateTime": "2019-10-14T11:15:18.299Z",
           "product_id": "123445",
           "quantity": 123
         },
@@ -4021,7 +4017,7 @@
                       "store_code": "store code"
                     },
                     "transaction_amount_micros": "100000000",
-                    "transaction_date_time": "2019-10-14 11:15:18+00:00"
+                    "transaction_date_time": "2023-02-06 14:14:25+00:00"
                   },
                   "userIdentifiers": [
                     {
@@ -4060,7 +4056,7 @@
     ]
   },
   {
-    "description": "Store - using Phone as userIdentifier and loyaltyFraction not given",
+    "description": "Store - using Phone as userIdentifier and loyaltyFraction not given with timestamp in String format",
     "input": {
       "message": {
         "channel": "web",
@@ -4075,7 +4071,7 @@
         "event": "Product Clicked",
         "type": "track",
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
-        "originalTimestamp": "2019-10-14T11:15:18.299Z",
+        "timestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
         "userId": "12345",
         "properties": {

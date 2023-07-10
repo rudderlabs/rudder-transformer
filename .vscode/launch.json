@@ -19,7 +19,7 @@
       "name": "Launch TS",
       "program": "${workspaceFolder}/dist/src/index.js",
       "outFiles": ["${workspaceFolder}/dist/src/**/*.js"],
-      "runtimeExecutable": "/usr/local/bin/node"
+      "runtimeExecutable": "/Users/utsabchowdhury/.nvm/versions/node/v18.15.0/bin/node"
     },
     {
       "name": "benchmark",

@@ -13,7 +13,7 @@ import { applicationRoutes, addSwaggerRoutes } from './routes';
 import { RedisDB } from './util/redis/redisConnector';
 
 dotenv.config();
-const clusterEnabled = process.env.CLUSTER_ENABLED !== 'false';
+const clusterEnabled = process.env.CLUSTER_ENABLED === 'true';
 const useUpdatedRoutes = process.env.ENABLE_NEW_ROUTES !== 'false';
 const port = parseInt(process.env.PORT || '9090', 10);
 const metricsPort = parseInt(process.env.METRICS_PORT || '9091', 10);

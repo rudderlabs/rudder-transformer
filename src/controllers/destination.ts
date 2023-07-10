@@ -40,7 +40,7 @@ export default class DestinationController {
         events,
         ctx,
       ) as ProcessorTransformationRequest[];
-      events = DynamicConfigParser.process(events);
+      events = DynamicConfigParser.process(events) as ProcessorTransformationRequest[];
       resplist = await integrationService.doProcessorTransformation(
         events,
         destination,

@@ -1,3 +1,4 @@
+import dotenv from 'dotenv';
 import { ProcessorTransformationRequest, RouterTransformationRequestData } from '../types/index';
 import { INTEGRATION_SERVICE } from '../routes/utils/constants';
 import CDKV1DestinationService from '../services/destination/cdkV1Integration';
@@ -8,6 +9,9 @@ import SourceService from '../interfaces/SourceService';
 import NativeIntegrationSourceService from '../services/source/nativeIntegration';
 import { PlatformError } from '../v0/util/errorTypes';
 import ComparatorService from '../services/comparator';
+import PluginIntegrationService from '../services/destination/pluginIntegration';
+
+dotenv.config();
 
 export default class ServiceSelector {
   private static serviceMap: Map<string, any> = new Map();
@@ -17,6 +21,7 @@ export default class ServiceSelector {
     [INTEGRATION_SERVICE.CDK_V2_DEST]: CDKV2DestinationService,
     [INTEGRATION_SERVICE.NATIVE_DEST]: NativeIntegrationDestinationService,
     [INTEGRATION_SERVICE.NATIVE_SOURCE]: NativeIntegrationSourceService,
+    [INTEGRATION_SERVICE.PLUGIN_DEST]: PluginIntegrationService
   };
 
   private static isCdkDestination(destinationDefinitionConfig: Object) {
@@ -65,6 +70,12 @@ export default class ServiceSelector {
   private static getPrimaryDestinationService(
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
+
+    // Plugin Service selected by some condition
+    if(process.env.PLUGIN_SERVICE !== 'false') {
+      return this.fetchCachedService(INTEGRATION_SERVICE.PLUGIN_DEST);
+    }
+    // Legacy Services
     const destinationDefinitionConfig: Object =
       events[0]?.destination?.DestinationDefinition?.Config;
     if (this.isCdkDestination(destinationDefinitionConfig)) {

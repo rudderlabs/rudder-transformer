@@ -16,6 +16,8 @@ type ProcessorTransformationOutput = {
   metadata?: Metadata;
 };
 
+type TransformedOutput = ProcessorTransformationOutput;
+
 type Metadata = {
   sourceId: string;
   workspaceId: string;
@@ -101,17 +103,17 @@ type ProcessorTransformationResponse = {
   metadata: Metadata;
   statusCode: number;
   error?: string;
-  statTags: Object;
+  statTags?: Object;
 };
 
 type RouterTransformationResponse = {
-  batchedRequest?: ProcessorTransformationOutput;
+  batchedRequest?: ProcessorTransformationOutput | ProcessorTransformationOutput[];
   metadata: Metadata[];
   destination: Destination;
   batched: boolean;
   statusCode: number;
-  error: string;
-  statTags: Object;
+  error?: string;
+  statTags?: Object;
 };
 
 type SourceTransformationOutput = {
@@ -237,4 +239,5 @@ export {
   UserDeletionResponse,
   Destination,
   ComparatorInput,
+  TransformedOutput,
 };

@@ -289,7 +289,7 @@ function getEventChunks(event, identifyEventChunks, trackEventChunks, eventRespo
     const { message, metadata, destination } = event;
     const endpoint = get(message, 'endpoint');
     if (Array.isArray(message)) {
-      eventResponseList.push(getSuccessRespEvents(message, metadata, destination));
+      eventResponseList.push(getSuccessRespEvents(message, [metadata], destination));
     } else {
       const batchedResponse = defaultBatchRequestConfig();
       batchedResponse.batchedRequest.headers = message.headers;

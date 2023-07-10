@@ -5,6 +5,7 @@ const _ = require('lodash');
 const { getLibraryCodeV1, getRudderLibByImportName } = require('./customTransforrmationsStore-v1');
 const logger = require('../logger');
 const stats = require('./stats');
+const { fetchWithDnsWrapper } = require('./utils');
 
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
@@ -166,7 +167,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
     new ivm.Reference(async (resolve, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetch(...args);
+        const res = await fetchWithDnsWrapper(versionId, ...args);
         const data = await res.json();
         stats.timing('fetch_call_duration', fetchStartTime, { versionId });
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
@@ -181,7 +182,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetch(...args);
+        const res = await fetchWithDnsWrapper(versionId, ...args);
         const headersContent = {};
         res.headers.forEach((value, header) => {
           headersContent[header] = value;

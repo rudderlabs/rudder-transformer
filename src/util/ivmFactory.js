@@ -89,7 +89,13 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
       }
       switch(transformType) {
         case "transformBatch":
-          const transformedEventsBatch = await transformBatch(eventMessages, metadata);
+          let transformedEventsBatch;
+          try {
+            transformedEventsBatch = await transformBatch(eventMessages, metadata);
+          } catch (error) {
+            outputEvents.push({error: extractStackTrace(error.stack, [transformType]), metadata: {}});
+            return outputEvents;
+          }
           if (!Array.isArray(transformedEventsBatch)) {
             outputEvents.push({error: "returned events from transformBatch(event) is not an array", metadata: {}});
             break;

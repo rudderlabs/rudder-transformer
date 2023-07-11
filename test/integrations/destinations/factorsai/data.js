@@ -349,6 +349,204 @@ const data = [
       },
     },
   },
+  {
+    name: 'factorsai',
+    description: 'Group Call',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                factorsAIApiKey: 'sdgerghsdfhsdhsdh432141dfgdfsg',
+              },
+            },
+            message: {
+              "userId": "user123",
+              "groupId": "sdfgdfsgfsd-2a02-4f2f-bf07-7e7d2c2ed2b1",
+              "timestamp": "2023-06-20T15:47:56.362+05:30",
+              "traits": {
+                "company": "5055077684",
+                "type": "IT"
+              },
+              "messageId": "dfb1c919-64b7-4073-8960-ad61b70cc68a",
+              "type": "group"
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              "body": {
+                "XML": {},
+                "FORM": {},
+                "JSON": {
+                  "traits": {
+                    "company": "5055077684",
+                    "type": "IT"
+                  },
+                  "userId": "user123",
+                  "groupId": "sdfgdfsgfsd-2a02-4f2f-bf07-7e7d2c2ed2b1",
+                  "messageId": "dfb1c919-64b7-4073-8960-ad61b70cc68a",
+                  "timestamp": "2023-06-20T15:47:56.362+05:30"
+                },
+                "JSON_ARRAY": {}
+              },
+              "type": "REST",
+              "files": {},
+              "method": "POST",
+              "params": {},
+              "userId": "",
+              "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Basic c2RnZXJnaHNkZmhzZGhzZGg0MzIxNDFkZmdkZnNnOg=="
+              },
+              "version": "1",
+              "endpoint": "https://api.factors.ai/integrations/rudderstack_platform"
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'factorsai',
+    description: 'Page Call',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                factorsAIApiKey: 'sdgerghsdfhsdhsdh432141dfgdfsg',
+              },
+            },
+            message: {
+              "channel": "web",
+              "context": {
+                "app": {
+                  "build": "1.0.0",
+                  "name": "RudderLabs JavaScript SDK",
+                  "namespace": "com.rudderlabs.javascript",
+                  "version": "1.0.0"
+                },
+                "library": {
+                  "name": "RudderLabs JavaScript SDK",
+                  "version": "1.0.0"
+                },
+                "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+                "locale": "en-US",
+                "ip": "0.0.0.0",
+                "os": {
+                  "name": "",
+                  "version": ""
+                },
+                "screen": {
+                  "density": 2
+                }
+              },
+              "type": "page",
+              "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+              "timestamp": "2023-06-20T15:47:56.362+05:30",
+              "anonymousId": "00000000000000000000000000",
+              "userId": "12345",
+              "properties": {
+                "path": "/abc",
+                "referrer": "xyz",
+                "search": "def",
+                "title": "ghi",
+                "url": "jkl"
+              },
+              "integrations": {
+                "All": true
+              },
+              "name": "ApplicationLoaded"
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              "body": {
+                "XML": {},
+                "FORM": {},
+                "JSON": {
+                  "name": "ApplicationLoaded",
+                  "userId": "12345",
+                  "context": {
+                    "ip": "0.0.0.0",
+                    "os": {
+                      "name": "",
+                      "version": ""
+                    },
+                    "app": {
+                      "name": "RudderLabs JavaScript SDK",
+                      "build": "1.0.0",
+                      "version": "1.0.0",
+                      "namespace": "com.rudderlabs.javascript"
+                    },
+                    "locale": "en-US",
+                    "screen": {
+                      "density": 2
+                    },
+                    "library": {
+                      "name": "RudderLabs JavaScript SDK",
+                      "version": "1.0.0"
+                    },
+                    "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36"
+                  },
+                  "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+                  "timestamp": "2023-06-20T15:47:56.362+05:30",
+                  "properties": {
+                    "url": "jkl",
+                    "path": "/abc",
+                    "title": "ghi",
+                    "search": "def",
+                    "referrer": "xyz"
+                  },
+                  "anonymousId": "00000000000000000000000000"
+                },
+                "JSON_ARRAY": {}
+              },
+              "type": "REST",
+              "files": {},
+              "method": "POST",
+              "params": {},
+              "userId": "",
+              "headers": {
+                "Content-Type": "application/json",
+                "Authorization": "Basic c2RnZXJnaHNkZmhzZGhzZGg0MzIxNDFkZmdkZnNnOg=="
+              },
+              "version": "1",
+              "endpoint": "https://api.factors.ai/integrations/rudderstack_platform"
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
 ];
 
 module.exports = {

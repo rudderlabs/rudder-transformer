@@ -79,7 +79,10 @@
   {
     "destKey": "name",
     "sourceKeys": ["traits.name", "context.traits.name"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "destKey": "ct",

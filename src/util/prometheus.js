@@ -94,7 +94,7 @@ class Prometheus {
         logger.warn(
           `Prometheus: Summary metric ${name} not found in the registry. Creating a new one`,
         );
-        metric = this.newSummaryStat(name, '', Object.keys(tags));
+        metric = this.newSummaryStat(name, name, Object.keys(tags));
       }
       metric.observe(tags, value);
     } catch (e) {
@@ -109,7 +109,7 @@ class Prometheus {
         logger.warn(
           `Prometheus: Timing metric ${name} not found in the registry. Creating a new one`,
         );
-        metric = this.newHistogramStat(name, '', Object.keys(tags));
+        metric = this.newHistogramStat(name, name, Object.keys(tags));
       }
       metric.observe(tags, (new Date() - start) / 1000);
     } catch (e) {
@@ -124,7 +124,7 @@ class Prometheus {
         logger.warn(
           `Prometheus: Histogram metric ${name} not found in the registry. Creating a new one`,
         );
-        metric = this.newHistogramStat(name, '', Object.keys(tags));
+        metric = this.newHistogramStat(name, name, Object.keys(tags));
       }
       metric.observe(tags, value);
     } catch (e) {
@@ -143,7 +143,7 @@ class Prometheus {
         logger.warn(
           `Prometheus: Counter metric ${name} not found in the registry. Creating a new one`,
         );
-        metric = this.newCounterStat(name, '', Object.keys(tags));
+        metric = this.newCounterStat(name, name, Object.keys(tags));
       }
       metric.inc(tags, delta);
     } catch (e) {
@@ -158,7 +158,7 @@ class Prometheus {
         logger.warn(
           `Prometheus: Gauge metric ${name} not found in the registry. Creating a new one`,
         );
-        metric = this.newGaugeStat(name, '', Object.keys(tags));
+        metric = this.newGaugeStat(name, name, Object.keys(tags));
       }
       metric.set(tags, value);
     } catch (e) {

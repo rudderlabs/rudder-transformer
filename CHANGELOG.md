@@ -17,7 +17,7 @@ All notable changes to this project will be documented in this file. See [standa
 * **facebook_pixel:** name conversion to string ([#2338](https://github.com/rudderlabs/rudder-transformer/issues/2338)) ([5530990](https://github.com/rudderlabs/rudder-transformer/commit/553099068835d3af24f28b983d58f9d8dacb80d2))
 * incorrect usage of histogram as counter ([#2335](https://github.com/rudderlabs/rudder-transformer/issues/2335)) ([654f0ad](https://github.com/rudderlabs/rudder-transformer/commit/654f0adca54357cedaa07235b3f18cebf9e403c3))
 * **iterable:** update addition of default value for some fields ([#2310](https://github.com/rudderlabs/rudder-transformer/issues/2310)) ([0f1ebba](https://github.com/rudderlabs/rudder-transformer/commit/0f1ebba73bbe760ae4d9d66f9f46fffb96ca27fc))
-* resolve develop main conflict ([#2327](https://github.com/rudderlabs/rudder-transformer/issues/2327)) ([1aea7cd](https://github.com/rudderlabs/rudder-transformer/commit/1aea7cde926a3d816a1924fcfea70839fd325f3c))
+
 
 ### [1.34.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.34.0...v1.34.1) (2023-07-07)
 

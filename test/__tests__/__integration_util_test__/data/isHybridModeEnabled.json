@@ -1,0 +1,38 @@
+[
+  {
+    "description": "Should return false if both flags (useNativeSDK and useNativeSDKToSend) are not present",
+    "input": {},
+    "output": false
+  },
+  {
+    "description": "Should return false if useNativeSDKToSend is not present",
+    "input": {
+      "useNativeSDK": false
+    },
+    "output": false
+  },
+  {
+    "description": "Should return true if both flags (useNativeSDK and useNativeSDKToSend) are present and device mode is enabled",
+    "input": {
+      "useNativeSDK": true,
+      "useNativeSDKToSend": false
+    },
+    "output": true
+  },
+  {
+    "description": "Should return false if both flags (useNativeSDK and useNativeSDKToSend) are present and set to true",
+    "input": {
+      "useNativeSDK": true,
+      "useNativeSDKToSend": true
+    },
+    "output": false
+  },
+  {
+    "description": "Should return false if both flags (useNativeSDK and useNativeSDKToSend) are present but set to true",
+    "input": {
+      "useNativeSDK": false,
+      "useNativeSDKToSend": false
+    },
+    "output": false
+  }
+]

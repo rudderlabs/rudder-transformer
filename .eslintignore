@@ -15,3 +15,4 @@ src/logger.js
 src/util/eventValidations.js
 **/trackingPlan*
 src/v0/destinations/personalize/scripts/
+test/integrations/destinations/testTypes.d.ts

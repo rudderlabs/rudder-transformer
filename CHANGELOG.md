@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.35.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.35.0...v1.35.1) (2023-07-12)
+
+
+### Bug Fixes
+
+* **iterable:** add dashboard config ([47c8631](https://github.com/rudderlabs/rudder-transformer/commit/47c863106f3fdec5c58d41980c653f44b5dac240))
+* **iterable:** address comment ([8b83de6](https://github.com/rudderlabs/rudder-transformer/commit/8b83de6da6fd4373cc138f7db130514b676f982f))
+
 ## [1.35.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.34.1...v1.35.0) (2023-07-07)
 
 

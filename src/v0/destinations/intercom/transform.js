@@ -27,9 +27,9 @@ function getCompanyAttribute(company) {
       // the key is not in ReservedCompanyProperties
       if (!ReservedCompanyProperties.includes(key)) {
         const val = company[key];
-        if (!Array.isArray(val) && typeof val !== 'object') {
+        if (val !== Object(val)) {
           customAttributes[key] = val;
-        } else if (val !== null) {
+        } else {
           customAttributes[key] = JSON.stringify(val);
         }
       }
@@ -37,7 +37,7 @@ function getCompanyAttribute(company) {
 
     companiesList.push({
       company_id: company.id || md5(company.name),
-      custom_attributes: customAttributes,
+      custom_attributes: removeUndefinedAndNullValues(customAttributes),
       name: company.name,
       industry: company.industry,
     });

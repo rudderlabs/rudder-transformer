@@ -27,8 +27,10 @@ function getCompanyAttribute(company) {
       // the key is not in ReservedCompanyProperties
       if (!ReservedCompanyProperties.includes(key)) {
         const val = company[key];
-        if (val) {
+        if (!Array.isArray(val) && typeof val !== 'object') {
           customAttributes[key] = val;
+        } else if (val !== null) {
+          customAttributes[key] = JSON.stringify(val);
         }
       }
     });

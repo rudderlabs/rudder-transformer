@@ -102,19 +102,22 @@ jobs:
           yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" production.yaml
           yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" production.yaml
           yq eval -i ".rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" production.yaml
+          yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" production.yaml
           git add production.yaml
 
           yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" enterprise/enterprise.yaml
           yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" enterprise/enterprise.yaml
           yq eval -i ".rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" enterprise/enterprise.yaml
+          yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" enterprise/enterprise.yaml
           git add enterprise/enterprise.yaml
 
           yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" multi-tenant/multi-tenant.yaml
           yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" multi-tenant/multi-tenant.yaml
+          yq eval -i ".rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" multi-tenant/multi-tenant.yaml
           yq eval -i ".user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" multi-tenant/multi-tenant.yaml
           git add multi-tenant/multi-tenant.yaml
 
-          cd ../../config-be-rudder-transformer
+          cd ../../../../config-be-rudder-transformer
           yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" values.prod.yaml
           yq eval -i ".config-be-rudder-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.prod.yaml
           git add values.prod.yaml

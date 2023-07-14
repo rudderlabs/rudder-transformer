@@ -101,9 +101,8 @@ jobs:
           cd rudder-devops
           git checkout -b shared-user-transformer-$UT_TAG_NAME
 
-          cd helm-charts/shared-services/per-az/environment/production
+          cd helm-charts/config-be-rudder-transformer
 
-          cd ../../config-be-rudder-transformer
           yq eval -i ".config-be-user-transformer.image.tag=\"$UT_TAG_NAME\"" values.prod.yaml
           yq eval -i ".config-be-user-transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" values.prod.yaml
           git add values.prod.yaml
@@ -122,7 +121,7 @@ jobs:
 
           cd customer-objects/multi-tenant-us
           yq eval -i ".spec.user_transformer.image.version=\"$UT_TAG_NAME\"" hostedmtedmt.yaml
-          yq eval -i ".spec.transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" hostedmtedmt.yaml
+          yq eval -i ".spec.user_transformer.image.repository=\"$TF_IMAGE_REPOSITORY\"" hostedmtedmt.yaml
           git add hostedmtedmt.yaml
 
           git commit -m "chore: upgrade hosted user-transformer to $UT_TAG_NAME"

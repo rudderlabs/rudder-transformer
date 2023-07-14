@@ -40,13 +40,13 @@ function constructPayloadItem(message, category, destination) {
 
   switch (category.action) {
     case 'identifyDevice':
-      rawPayload = identifyDeviceAction(message);
+      rawPayload = identifyDeviceAction(message, destination.Config);
       break;
     case 'identifyBrowser':
       rawPayload = identifyBrowserAction(message);
       break;
     case 'identify':
-      rawPayload = identifyAction(message, category);
+      rawPayload = identifyAction(message, category, destination.Config);
       break;
     case 'page':
       rawPayload = pageAction(message, destination, category);
@@ -58,10 +58,10 @@ function constructPayloadItem(message, category, destination) {
       rawPayload = trackAction(message, category);
       break;
     case 'trackPurchase':
-      rawPayload = trackPurchaseAction(message, category);
+      rawPayload = trackPurchaseAction(message, category, destination.Config);
       break;
     case 'updateCart':
-      rawPayload = updateCartAction(message);
+      rawPayload = updateCartAction(message, destination.Config);
       break;
     case 'alias':
       rawPayload = constructPayload(message, mappingConfig[category.name]);

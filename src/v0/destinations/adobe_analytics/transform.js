@@ -46,7 +46,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   }
 
   // handle fallbackVisitorId
-  const { noFallbackVisitorId } = destinationConfig;
+  const { noFallbackVisitorId, pageEventsMapping, trackPageName } = destinationConfig;
   // 'AdobeFallbackVisitorId' should be the type of external id in the payload i.e "AdobeFallbackVisitorId": "value"
   if (!noFallbackVisitorId) {
     const fallbackVisitorId = getDestinationExternalID(message, 'AdobeFallbackVisitorId');
@@ -58,14 +58,16 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   // handle link values
   // default linktype to 'o', linkName to event name, linkURL to ctx.page.url if not passed in integrations object
   const adobeIntegrationsObject = getIntegrationsObj(message, 'adobe_analytics');
-  payload.linkType = adobeIntegrationsObject?.linkType || 'o';
-  payload.linkName = adobeIntegrationsObject?.linkName || event;
-  // setting linkname to page view for page calls
-  if (message.type === 'page') {
-    payload.linkName = 'page view';
+  if (!pageEventsMapping[event]) {
+    payload.linkType = adobeIntegrationsObject?.linkType || 'o';
+    payload.linkName = adobeIntegrationsObject?.linkName || event;
+    // setting linkname to page view for page calls
+    if (message.type === 'page') {
+      payload.linkName = 'page view';
+    }
+    payload.linkURL =
+      adobeIntegrationsObject?.linkURL || context?.page?.url || 'No linkURL provided';
   }
-  payload.linkURL = adobeIntegrationsObject?.linkURL || context?.page?.url || 'No linkURL provided';
-
   // handle hier
   if (overrideHiers) {
     Object.assign(payload, overrideHiers);
@@ -82,22 +84,23 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
 
   // handle pageName, pageUrl
   const contextPageUrl = context?.page?.url;
-  const { trackPageName } = destinationConfig;
-  const propertiesPageUrl = properties?.pageUrl;
-  const pageUrl = contextPageUrl || propertiesPageUrl;
-  if (isDefinedAndNotNullAndNotEmpty(pageUrl)) {
-    payload.pageUrl = pageUrl;
-  }
-  if (trackPageName) {
-    // better handling possible here, both error and implementation wise
-    const contextPageName = context?.page?.name;
-    const propertiesPageName = properties?.pageName;
-    const pageName = propertiesPageName || contextPageName;
-    if (isDefinedAndNotNullAndNotEmpty(pageName)) {
-      payload.pageName = pageName;
-    } else {
-      // pageName is defaulted to URL.
-      payload.pageName = pageUrl;
+  if (pageEventsMapping[event]) {
+    const propertiesPageUrl = properties?.pageUrl;
+    const pageUrl = contextPageUrl || propertiesPageUrl;
+    if (isDefinedAndNotNullAndNotEmpty(pageUrl)) {
+      payload.pageUrl = pageUrl;
+    }
+    if (trackPageName) {
+      // better handling possible here, both error and implementation wise
+      const contextPageName = context?.page?.name;
+      const propertiesPageName = properties?.pageName;
+      const pageName = propertiesPageName || contextPageName;
+      if (isDefinedAndNotNullAndNotEmpty(pageName)) {
+        payload.pageName = pageName;
+      } else {
+        // pageName is defaulted to URL.
+        payload.pageName = pageUrl;
+      }
     }
   }
 
@@ -371,6 +374,12 @@ const handleTrack = (message, destinationConfig) => {
         payload = processTrackEvent(
           message,
           destinationConfig.rudderEventsToAdobeEvents[event.toLowerCase()].trim(),
+          destinationConfig,
+        );
+      } else if (message?.properties?.overrideEventName) {
+        payload = processTrackEvent(
+          message,
+          message?.properties?.overrideEventName,
           destinationConfig,
         );
       } else {

@@ -2,6 +2,7 @@ const { EventType } = require('../../../constants');
 const {
   defaultRequestConfig,
   defaultPostRequestConfig,
+  getFieldValueFromMessage,
   removeUndefinedAndNullValues,
   simpleProcessRouterDest,
 } = require('../../util');
@@ -38,6 +39,14 @@ const identifyResponseBuilder = (message, destination) => {
   return responseBuilder(payload, API_URL, destination);
 };
 
+const groupResponseBuilder = (message, destination) => {
+  const groupId = getFieldValueFromMessage(message, 'groupId');
+  if (!groupId) {
+    throw new InstrumentationError('groupId is a required field for group events');
+  }
+  return responseBuilder(message, API_URL, destination);
+};
+
 const processEvent = (message, destination) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
@@ -54,6 +63,8 @@ const processEvent = (message, destination) => {
     case EventType.TRACK:
       response = responseBuilder(message, API_URL, destination);
       break;
+    case EventType.GROUP:
+      response = groupResponseBuilder(message, destination);
     default:
       throw new InstrumentationError(`Message type ${messageType} is not supported`);
   }

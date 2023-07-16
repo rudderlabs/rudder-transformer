@@ -46,7 +46,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   }
 
   // handle fallbackVisitorId
-  const { noFallbackVisitorId, pageEventsMapping, trackPageName } = destinationConfig;
+  const { noFallbackVisitorId, trackPageName } = destinationConfig;
   // 'AdobeFallbackVisitorId' should be the type of external id in the payload i.e "AdobeFallbackVisitorId": "value"
   if (!noFallbackVisitorId) {
     const fallbackVisitorId = getDestinationExternalID(message, 'AdobeFallbackVisitorId');

@@ -236,7 +236,7 @@ async function handleDest(ctx, version, destination) {
 async function handleValidation(ctx) {
   const requestStartTime = new Date();
   const events = ctx.request.body;
-  const requestSize = ctx.request.get('content-length');
+  const requestSize = Number(ctx.request.get('content-length'));
   const reqParams = ctx.request.query;
   const respList = [];
   const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};

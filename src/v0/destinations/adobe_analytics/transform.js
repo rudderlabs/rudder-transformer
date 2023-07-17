@@ -62,7 +62,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
   // handle link values
   // default linktype to 'o', linkName to event name, linkURL to ctx.page.url if not passed in integrations object
   const adobeIntegrationsObject = getIntegrationsObj(message, 'adobe_analytics');
-  if (!properties.overridePageView) {
+  if (!properties?.overridePageView) {
     payload.linkType = adobeIntegrationsObject?.linkType || 'o';
     payload.linkName = adobeIntegrationsObject?.linkName || event;
     // setting linkname to page view for page calls
@@ -88,7 +88,7 @@ const responseBuilderSimple = async (message, destinationConfig, basicPayload) =
 
   // handle pageName, pageUrl
   const contextPageUrl = context?.page?.url;
-  if (properties.overridePageView) {
+  if (properties?.overridePageView) {
     const propertiesPageUrl = properties?.pageUrl;
     const pageUrl = contextPageUrl || propertiesPageUrl;
     if (isDefinedAndNotNullAndNotEmpty(pageUrl)) {

@@ -47,7 +47,13 @@ const flattenMap = (collection) => _.flatMap(collection, (x) => x);
 // GENERIC UTLITY
 // ========================================================================
 
-const getEventTime = (message) => new Date(message.timestamp).toISOString();
+const getEventTime = (message) => {
+  try {
+    return new Date(message.timestamp).toISOString();
+  } catch (err) {
+    return new Date(message.originalTimestamp).toISOString();
+  }
+};
 
 const base64Convertor = (string) => Buffer.from(string).toString('base64');
 
@@ -1375,7 +1381,7 @@ const getErrorStatusCode = (error, defaultStatusCode = HTTP_STATUS_CODES.INTERNA
 /**
  * Used for generating error response with stats from native and built errors
  */
-function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = true) {
+function generateErrorObject(error, defTags = {}, shouldEnrichErrorMessage = false) {
   let errObject = error;
   let errorMessage = error.message;
   if (shouldEnrichErrorMessage) {

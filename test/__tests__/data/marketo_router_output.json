@@ -328,7 +328,7 @@
   {
     "batched": false,
     "statusCode": 400,
-    "error": "{\"message\":\"Request Failed for marketo, Lookup field 'userId' not found (Aborted).[Marketo Transformer]: During lead look up using email\",\"destinationResponse\":{\"response\":{\"requestId\":\"142e4#1835b117b76\",\"success\":false,\"errors\":[{\"code\":\"1006\",\"message\":\"Lookup field 'userId' not found\"}]},\"status\":200}}",
+    "error": "Request Failed for marketo, Lookup field 'userId' not found (Aborted).[Marketo Transformer]: During lead look up using email",
     "statTags": {
       "errorCategory": "network",
       "errorType": "aborted"
@@ -479,7 +479,7 @@
   {
     "batched": false,
     "statusCode": 400,
-    "error": "{\"message\":\"Error occurred [Marketo Transformer]: During lead look up using email -> some other problem\",\"destinationResponse\":{\"response\":{\"requestId\":\"142e4#1835b117b76\",\"success\":false,\"errors\":[{\"code\":\"random_marketo_code\",\"message\":\"some other problem\"}]},\"status\":200}}",
+    "error": "Error occurred [Marketo Transformer]: During lead look up using email -> some other problem",
     "statTags": {
       "errorCategory": "network",
       "errorType": "aborted",

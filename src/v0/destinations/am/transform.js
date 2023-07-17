@@ -528,6 +528,7 @@ function processSingleMessage(message, destination) {
 
   const messageType = message.type.toLowerCase();
   const CATEGORY_KEY = 'properties.category';
+  const { useUserDefinedPageEventName, userProvidedPageEventString } = destination.Config;
   switch (messageType) {
     case EventType.IDENTIFY:
       payloadObjectName = 'events'; // identify same as events
@@ -535,7 +536,23 @@ function processSingleMessage(message, destination) {
       category = ConfigCategory.IDENTIFY;
       break;
     case EventType.PAGE:
-      evType = `Viewed ${message.name || get(message, CATEGORY_KEY) || ''} Page`;
+      if (useUserDefinedPageEventName) {
+        const getMessagePath = userProvidedPageEventString
+          .substring(
+            userProvidedPageEventString.indexOf('{') + 2,
+            userProvidedPageEventString.indexOf('}'),
+          )
+          .trim();
+        evType =
+          userProvidedPageEventString.trim() === ''
+            ? message.name
+            : userProvidedPageEventString
+                .trim()
+                .replaceAll(/{{([^{}]+)}}/g, get(message, getMessagePath));
+      } else {
+        evType = `Viewed ${message.name || get(message, CATEGORY_KEY) || ''} Page`;
+      }
+
       message.properties = {
         ...message.properties,
         name: message.name || get(message, CATEGORY_KEY),

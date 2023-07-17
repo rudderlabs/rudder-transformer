@@ -64,6 +64,7 @@
     },
     "destination": {
       "Config": {
+        "preferUserId": false,
         "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
         "mapToSingleEvent": false,
         "trackAllPages": true,
@@ -637,8 +638,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "ruchira@rudderlabs.com",
-          "mergeNestedObjects": false
+          "email": "ruchira@rudderlabs.com"
         },
         "library": {
           "name": "RudderLabs JavaScript SDK",
@@ -671,6 +671,7 @@
     },
     "destination": {
       "Config": {
+        "mergeNestedObjects": false,
         "apiKey": "12345",
         "mapToSingleEvent": false,
         "trackAllPages": true,

@@ -11,24 +11,7 @@
         "body": {
           "JSON": {},
           "JSON_ARRAY": {
-            "batch": "[{\"$append\":{\"$transactions\":{\"$time\":\"2023-07-06T06:29:02.402Z\",\"$amount\":18.9}},\"$token\":\"test_api_token\",\"$distinct_id\":\"userId01\"},{\"$token\":\"test_api_token\",\"$distinct_id\":\"userId06\",\"$set\":{\"company\":[\"testComp\"]},\"$ip\":\"0.0.0.0\"},{\"$set\":{\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$firstName\":\"Mickey\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"test_api_token\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1688624942}]"
-          },
-          "XML": {},
-          "FORM": {}
-        },
-        "files": {}
-      },
-      {
-        "version": "1",
-        "type": "REST",
-        "method": "POST",
-        "endpoint": "https://api.mixpanel.com/groups/",
-        "headers": {},
-        "params": {},
-        "body": {
-          "JSON": {},
-          "JSON_ARRAY": {
-            "batch": "[{\"$token\":\"test_api_token\",\"$group_key\":\"company\",\"$group_id\":\"testComp\",\"$set\":{\"company\":\"testComp\"}}]"
+            "batch": "[{\"$append\":{\"$transactions\":{\"$time\":\"2023-07-06T06:29:02.402Z\",\"$amount\":18.9}},\"$token\":\"test_api_token\",\"$distinct_id\":\"userId01\"},{\"$set\":{\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$firstName\":\"Mickey\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"test_api_token\",\"$distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"$ip\":\"0.0.0.0\",\"$time\":1688624942},{\"$set\":{\"$created\":\"2020-01-23T08:54:02.362Z\",\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$firstName\":\"Mickey\",\"$lastName\":\"Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"test_api_token\",\"$distinct_id\":\"$device:anonId01\",\"$ip\":\"0.0.0.0\",\"$time\":1688624942}]"
           },
           "XML": {},
           "FORM": {}
@@ -64,12 +47,12 @@
         "additionalProp": 2
       },
       {
-        "jobId": 6,
-        "additionalProp": 6
-      },
-      {
         "jobId": 3,
         "additionalProp": 3
+      },
+      {
+        "jobId": 4,
+        "additionalProp": 4
       },
       {
         "jobId": 1,
@@ -109,7 +92,24 @@
         "body": {
           "JSON": {},
           "JSON_ARRAY": {
-            "batch": "[{\"$set\":{\"$created\":\"2020-01-23T08:54:02.362Z\",\"$email\":\"mickey@disney.com\",\"$country_code\":\"USA\",\"$city\":\"Disney\",\"$initial_referrer\":\"https://docs.rudderstack.com\",\"$initial_referring_domain\":\"docs.rudderstack.com\",\"$name\":\"Mickey Mouse\",\"$firstName\":\"Mickey\",\"$lastName\":\"Mouse\",\"$browser\":\"Chrome\",\"$browser_version\":\"79.0.3945.117\"},\"$token\":\"test_api_token\",\"$distinct_id\":\"$device:anonId01\",\"$ip\":\"0.0.0.0\",\"$time\":1688624942},{\"$set\":{\"$carrier\":\"Android\",\"$manufacturer\":\"Google\",\"$model\":\"Android SDK built for x86\",\"$screen_height\":1794,\"$screen_width\":1080,\"$wifi\":true,\"anonymousId\":\"5094f5704b9cf2b3\",\"userId\":\"test_user_id\",\"$ios_devices\":[\"test_device_token\"],\"$os\":\"iOS\",\"$ios_device_model\":\"Android SDK built for x86\",\"$ios_version\":\"8.1.0\",\"$ios_app_release\":\"1\",\"$ios_app_version\":\"1.0\"},\"$token\":\"test_api_token\",\"$distinct_id\":\"test_user_id\",\"$time\":null}]"
+            "batch": "[{\"$set\":{\"$carrier\":\"Android\",\"$manufacturer\":\"Google\",\"$model\":\"Android SDK built for x86\",\"$screen_height\":1794,\"$screen_width\":1080,\"$wifi\":true,\"anonymousId\":\"5094f5704b9cf2b3\",\"userId\":\"test_user_id\",\"$ios_devices\":[\"test_device_token\"],\"$os\":\"iOS\",\"$ios_device_model\":\"Android SDK built for x86\",\"$ios_version\":\"8.1.0\",\"$ios_app_release\":\"1\",\"$ios_app_version\":\"1.0\"},\"$token\":\"test_api_token\",\"$distinct_id\":\"test_user_id\",\"$time\":null},{\"$token\":\"test_api_token\",\"$distinct_id\":\"userId06\",\"$set\":{\"company\":[\"testComp\"]},\"$ip\":\"0.0.0.0\"}]"
+          },
+          "XML": {},
+          "FORM": {}
+        },
+        "files": {}
+      },
+      {
+        "version": "1",
+        "type": "REST",
+        "method": "POST",
+        "endpoint": "https://api.mixpanel.com/groups/",
+        "headers": {},
+        "params": {},
+        "body": {
+          "JSON": {},
+          "JSON_ARRAY": {
+            "batch": "[{\"$token\":\"test_api_token\",\"$group_key\":\"company\",\"$group_id\":\"testComp\",\"$set\":{\"company\":\"testComp\"}}]"
           },
           "XML": {},
           "FORM": {}
@@ -141,12 +141,12 @@
     ],
     "metadata": [
       {
-        "jobId": 4,
-        "additionalProp": 4
-      },
-      {
         "jobId": 5,
         "additionalProp": 5
+      },
+      {
+        "jobId": 6,
+        "additionalProp": 6
       }
     ],
     "batched": true,
@@ -155,7 +155,8 @@
       "Config": {
         "apiSecret": "test_api_secret",
         "token": "test_api_token",
-        "identityMergeApi": "simplified",
+        "prefixProperties": true,
+        "useNativeSDK": false,
         "strictMode": true
       },
       "DestinationDefinition": {

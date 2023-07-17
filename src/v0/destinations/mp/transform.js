@@ -386,27 +386,29 @@ const processSingleMessage = async (message, destination) => {
 
 const process = async (event) => processSingleMessage(event.message, event.destination);
 
-const processEvents = async (inputs, reqMetadata) => {
-  return await Promise.all(
+const processEvents = async (inputs, reqMetadata) =>
+  await Promise.all(
     inputs.map(async (event) => {
       try {
         if (event.message.statusCode) {
           // already transformed event
-          return { output: event }
-        } else {
-          return {
+          return { output: event };
+        }
+
+        // if not transformed
+        return {
+          output: {
             message: await process(event),
             metadata: event.metadata,
             destination: event.destination,
-          }
-        }
+          },
+        };
       } catch (error) {
         const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
-        return { error: errRespEvent }
+        return { error: errRespEvent };
       }
-    })
+    }),
   );
-};
 
 const processAndChunkEvents = async (inputs, reqMetadata) => {
   const processedEvents = await processEvents(inputs, reqMetadata);

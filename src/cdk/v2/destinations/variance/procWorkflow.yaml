@@ -1,0 +1,37 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+
+steps:
+  - name: preparepPayload
+    template: |
+      $.context.payload = .message;
+      $.context.payload.context = $.context.payload.context ?? {}
+      $.context.payload.context.ip = .message.context.ip ?? .message.request_ip
+
+  - name: buildResponse
+    description: In batchMode we return payload directly
+    condition: $.batchMode
+    template: $.context.payload
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        {
+          "body": {
+            "JSON": $.context.payload,
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": .destination.Config.webhookUrl,
+          "headers": {
+            "authorization": .destination.Config.authHeader,
+            "content-type": "application/json"
+          },
+          "userId": .message.anonymousId,
+          "params": {},
+          "files": {}
+        }

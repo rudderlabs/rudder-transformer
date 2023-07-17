@@ -34,6 +34,10 @@ const {
 const responseBuilderSimple = async (message, destinationConfig, basicPayload) => {
   let payload = constructPayload(message, commonConfig);
   const { event, context, properties } = message;
+  // set default value of properties.overridePageView to false if not provided
+  if (properties.overridePageView === undefined) {
+    properties.overridePageView = false;
+  }
   const { overrideEvars, overrideHiers, overrideLists, overrideCustomProperties } = properties;
   // handle contextData
   payload = handleContextData(payload, destinationConfig, message);

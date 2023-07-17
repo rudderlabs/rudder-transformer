@@ -1,0 +1,44 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.type in 
+        {{$.EventType.([.IDENTIFY, .TRACK, .GROUP])}}, 
+        "message type " + .message.type + " is not supported");
+  - name: preparePayload
+    template: |
+      $.context.payload = .message
+      $.context.payload.type = .message.type.toLowerCase();
+      $.context.payload.userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});
+      $.assert($.context.payload.userId, "userId is required");
+  - name: buildResponse
+    description: In batchMode we return payload directly
+    condition: $.batchMode
+    template: .message
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        {
+          "body": {
+            "JSON": .message,
+            "JSON_ARRAY": {},
+            "XML": {},
+            "FORM": {}
+          },
+          "version": "1",
+          "type": "REST",
+          "method": "POST",
+          "endpoint": 'https://incoming.userlist.com/rudderstack/events',
+          "statusCode": 200,
+          "headers": {
+            "Authorization": "Push " + .destination.Config.pushKey,
+            "Content-Type": "application/json"
+          },
+          "params": {},
+          "files": {}
+        }

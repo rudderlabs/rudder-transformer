@@ -7,9 +7,11 @@ steps:
   - name: validateInput
     template: |
       $.assert(.message.type, "message Type is not present. Aborting message.");
+       $.assert(.message.type in {{$.EventType.([.IDENTIFY, .TRACK])}}, 
+        "message type " + .message.type + " is not supported");
+  - name: setMessageType
+    template: |
       $.context.messageType = .message.type.toLowerCase();
-      $.assert($.context.messageType in {{$.EventType.([.IDENTIFY, .TRACK])}}, 
-        "message type " + $.context.messageType + " is not supported");
   - name: preparePayloadForIdentify
     condition: $.context.messageType === {{$.EventType.IDENTIFY}}
     template: |

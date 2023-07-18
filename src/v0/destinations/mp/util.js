@@ -9,6 +9,7 @@ const {
   getBrowserInfo,
   toUnixTimestamp,
 } = require('../../util');
+const { CommonUtils } = require('../../../util/common');
 const {
   ConfigCategory,
   MP_IDENTIFY_EXCLUSION_LIST,
@@ -134,7 +135,9 @@ const isImportAuthCredentialsAvailable = (destination) =>
  * Combines batched requests with the same JobIds.
  * @param {Array<Object>} batches - The array of batched request objects.
  * @returns {Array<Object>} - The combined batched request objects with merged JobIds.
+ *
  */
+
 function combineBatchRequestsWithSameJobIds(batches) {
   const combinedBatches = [...batches];
   const processedBatches = new Array(combinedBatches.length).fill(false);
@@ -181,8 +184,56 @@ function combineBatchRequestsWithSameJobIds(batches) {
   return combinedBatches.filter((_, index) => !processedBatches[index]);
 }
 
+function combineBatchRequestsWithSameJobIds2(batches) {
+  const mergedBatches = [];
+  const metadataMap = new Map();
+
+  batches.forEach((batch) => {
+    batch.batchedRequest = CommonUtils.toArray(batch.batchedRequest);
+    let existingBatch = null;
+
+    for (const metadataItem of batch.metadata) {
+      if (metadataMap.has(metadataItem.jobId)) {
+        existingBatch = metadataMap.get(metadataItem.jobId);
+        break;
+      }
+    }
+
+    if (existingBatch) {
+      // Merge metadata
+      batch.metadata.forEach((metadataItem) => {
+        if (!metadataMap.has(metadataItem.jobId)) {
+          metadataMap.set(metadataItem.jobId, existingBatch);
+        }
+        existingBatch.metadata.push(metadataItem);
+        existingBatch.batchedRequest.push(...batch.batchedRequest);
+      });
+    } else {
+      mergedBatches.push(batch);
+      batch.metadata.forEach((metadataItem) => {
+        metadataMap.set(metadataItem.jobId, batch);
+      });
+    }
+  });
+
+  // Remove duplicate metadata within each merged object
+  mergedBatches.forEach((batch) => {
+    const metadataMap = new Map();
+    batch.metadata = batch.metadata.filter((metadataItem) => {
+      if (!metadataMap.has(metadataItem.jobId)) {
+        metadataMap.set(metadataItem.jobId, true);
+        return true;
+      }
+      return false;
+    });
+  });
+
+  return mergedBatches;
+}
+
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
   combineBatchRequestsWithSameJobIds,
+  combineBatchRequestsWithSameJobIds2,
 };

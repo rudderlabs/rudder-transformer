@@ -69,7 +69,7 @@ export default class TrackingPlanservice {
       stats.counter('hv_events_count', events.length, {
         ...metaTags,
       });
-      stats.counter('hv_request_size', requestSize, {
+      stats.histogram('hv_request_size', requestSize, {
         ...metaTags,
       });
       stats.timing('hv_request_latency', requestStartTime, {

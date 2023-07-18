@@ -329,98 +329,60 @@ describe('Mixpanel utils test', () => {
       const expectedOutput = [
         {
           batchedRequest: [
-            { endpoint: 'https://api.mixpanel.com/track/' },
-            { endpoint: 'https://api.mixpanel.com/engage/' },
+            {
+              endpoint: 'https://api.mixpanel.com/track/',
+            },
+            {
+              endpoint: 'https://api.mixpanel.com/engage/',
+            },
+            {
+              endpoint: 'https://api.mixpanel.com/import/',
+            },
           ],
-          metadata: [{ jobId: 1 }, { jobId: 4 }, { jobId: 3 }],
+          metadata: [
+            {
+              jobId: 1,
+            },
+            {
+              jobId: 4,
+            },
+            {
+              jobId: 3,
+            },
+          ],
           batched: true,
           statusCode: 200,
-          destination: {
-            Config: {
-              token: 'test_api_token',
-              prefixProperties: true,
-              useNativeSDK: false,
-              useOldMapping: true,
-            },
-            DestinationDefinition: {
-              DisplayName: 'Mixpanel',
-              ID: 'test_destination_definition_id',
-              Name: 'MP',
-            },
-            Enabled: true,
-            ID: 'test_id',
-            Name: 'Mixpanel',
-            Transformations: [],
-          },
+          destination: destinationMock,
         },
         {
-          batchedRequest: [{ endpoint: 'https://api.mixpanel.com/import/' }],
-          metadata: [{ jobId: 3 }],
+          batchedRequest: [
+            {
+              endpoint: 'https://api.mixpanel.com/track/',
+            },
+          ],
+          metadata: [
+            {
+              jobId: 5,
+            },
+          ],
           batched: true,
           statusCode: 200,
-          destination: {
-            Config: {
-              token: 'test_api_token',
-              prefixProperties: true,
-              useNativeSDK: false,
-              useOldMapping: true,
-            },
-            DestinationDefinition: {
-              DisplayName: 'Mixpanel',
-              ID: 'test_destination_definition_id',
-              Name: 'MP',
-            },
-            Enabled: true,
-            ID: 'test_id',
-            Name: 'Mixpanel',
-            Transformations: [],
-          },
+          destination: destinationMock,
         },
         {
-          batchedRequest: [{ endpoint: 'https://api.mixpanel.com/track/' }],
-          metadata: [{ jobId: 5 }],
+          batchedRequest: [
+            {
+              endpoint: 'https://api.mixpanel.com/import/',
+            },
+          ],
+          metadata: [
+            {
+              jobId: 6,
+            },
+          ],
           batched: true,
           statusCode: 200,
-          destination: {
-            Config: {
-              token: 'test_api_token',
-              prefixProperties: true,
-              useNativeSDK: false,
-              useOldMapping: true,
-            },
-            DestinationDefinition: {
-              DisplayName: 'Mixpanel',
-              ID: 'test_destination_definition_id',
-              Name: 'MP',
-            },
-            Enabled: true,
-            ID: 'test_id',
-            Name: 'Mixpanel',
-            Transformations: [],
-          },
-        },
-        {
-          batchedRequest: [{ endpoint: 'https://api.mixpanel.com/import/' }],
-          metadata: [{ jobId: 6 }],
-          batched: true,
-          statusCode: 200,
-          destination: {
-            Config: {
-              token: 'test_api_token',
-              prefixProperties: true,
-              useNativeSDK: false,
-              useOldMapping: true,
-            },
-            DestinationDefinition: {
-              DisplayName: 'Mixpanel',
-              ID: 'test_destination_definition_id',
-              Name: 'MP',
-            },
-            Enabled: true,
-            ID: 'test_id',
-            Name: 'Mixpanel',
-            Transformations: [],
-          },
+          destination: destinationMock,
         },
       ];
       expect(combineBatchRequestsWithSameJobIds2(input)).toEqual(expectedOutput);

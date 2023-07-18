@@ -184,51 +184,59 @@ function combineBatchRequestsWithSameJobIds(batches) {
   return combinedBatches.filter((_, index) => !processedBatches[index]);
 }
 
-function combineBatchRequestsWithSameJobIds2(batches) {
-  const mergedBatches = [];
-  const metadataMap = new Map();
-
-  batches.forEach((batch) => {
-    batch.batchedRequest = CommonUtils.toArray(batch.batchedRequest);
-    let existingBatch = null;
-
-    for (const metadataItem of batch.metadata) {
-      if (metadataMap.has(metadataItem.jobId)) {
-        existingBatch = metadataMap.get(metadataItem.jobId);
-        break;
-      }
-    }
-
-    if (existingBatch) {
-      existingBatch.batchedRequest.push(...batch.batchedRequest);
-      // Merge metadata
-      batch.metadata.forEach((metadataItem) => {
-        if (!metadataMap.has(metadataItem.jobId)) {
-          metadataMap.set(metadataItem.jobId, existingBatch);
-        }
-        existingBatch.metadata.push(metadataItem);
-      });
-    } else {
-      mergedBatches.push(batch);
-      batch.metadata.forEach((metadataItem) => {
-        metadataMap.set(metadataItem.jobId, batch);
-      });
-    }
-  });
-
-  // Remove duplicate metadata within each merged object
-  mergedBatches.forEach((batch) => {
+function combineBatchRequestsWithSameJobIds2(inputBatches) {
+  function combineBatches(batches) {
+    const mergedBatches = [];
     const metadataMap = new Map();
-    batch.metadata = batch.metadata.filter((metadataItem) => {
-      if (!metadataMap.has(metadataItem.jobId)) {
-        metadataMap.set(metadataItem.jobId, true);
-        return true;
-      }
-      return false;
-    });
-  });
 
-  return mergedBatches;
+    batches.forEach((batch) => {
+      batch.batchedRequest = CommonUtils.toArray(batch.batchedRequest);
+      let existingBatch = null;
+
+      for (const metadataItem of batch.metadata) {
+        if (metadataMap.has(metadataItem.jobId)) {
+          existingBatch = metadataMap.get(metadataItem.jobId);
+          break;
+        }
+      }
+
+      if (existingBatch) {
+        existingBatch.batchedRequest.push(...batch.batchedRequest);
+        // Merge metadata
+        batch.metadata.forEach((metadataItem) => {
+          if (!metadataMap.has(metadataItem.jobId)) {
+            metadataMap.set(metadataItem.jobId, existingBatch);
+          }
+          existingBatch.metadata.push(metadataItem);
+        });
+      } else {
+        mergedBatches.push(batch);
+        batch.metadata.forEach((metadataItem) => {
+          metadataMap.set(metadataItem.jobId, batch);
+        });
+      }
+    });
+
+    // Remove duplicate metadata within each merged object
+    mergedBatches.forEach((batch) => {
+      const metadataMap = new Map();
+      batch.metadata = batch.metadata.filter((metadataItem) => {
+        if (!metadataMap.has(metadataItem.jobId)) {
+          metadataMap.set(metadataItem.jobId, true);
+          return true;
+        }
+        return false;
+      });
+    });
+
+    return mergedBatches;
+  }
+  // We need to run this twice because in first pass some batches might not get merged
+  // and in second pass they might get merged
+  // Example: [[{jobID:1}, {jobID:2}], [{jobID:3}], [{jobID:1}, {jobID:3}]]
+  // 1st pass: [[{jobID:1}, {jobID:2}, {jobID:3}], [{jobID:3}]]
+  // 2nd pass: [[{jobID:1}, {jobID:2}, {jobID:3}]]
+  return combineBatches(combineBatches(inputBatches));
 }
 
 module.exports = {

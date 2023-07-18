@@ -202,7 +202,9 @@
           {
             "company_id": "c0277b5c814453e5135f515f943d085a",
             "custom_attributes": {
-              "key1": "value1"
+              "key1": "value1",
+              "key3": "[\"value1\",\"value2\"]",
+              "key4": "{\"foo\":\"bar\"}"
             },
             "name": "Test Comp",
             "industry": "test industry"

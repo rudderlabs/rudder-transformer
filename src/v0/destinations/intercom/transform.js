@@ -27,15 +27,17 @@ function getCompanyAttribute(company) {
       // the key is not in ReservedCompanyProperties
       if (!ReservedCompanyProperties.includes(key)) {
         const val = company[key];
-        if (val) {
+        if (val !== Object(val)) {
           customAttributes[key] = val;
+        } else {
+          customAttributes[key] = JSON.stringify(val);
         }
       }
     });
 
     companiesList.push({
       company_id: company.id || md5(company.name),
-      custom_attributes: customAttributes,
+      custom_attributes: removeUndefinedAndNullValues(customAttributes),
       name: company.name,
       industry: company.industry,
     });

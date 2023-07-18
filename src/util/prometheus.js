@@ -654,6 +654,12 @@ class Prometheus {
         labelNames: ['versionId'],
       },
       {
+        name: 'fetch_dns_resolve_time',
+        help: 'fetch_dns_resolve_time',
+        type: 'histogram',
+        labelNames: ['transformerVersionId'],
+      },
+      {
         name: 'geo_call_duration',
         help: 'geo_call_duration',
         type: 'histogram',

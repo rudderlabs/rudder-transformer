@@ -331,7 +331,6 @@ describe('Mixpanel utils test', () => {
           batchedRequest: [
             { endpoint: 'https://api.mixpanel.com/track/' },
             { endpoint: 'https://api.mixpanel.com/engage/' },
-            { endpoint: 'https://api.mixpanel.com/engage/' },
           ],
           metadata: [{ jobId: 1 }, { jobId: 4 }, { jobId: 3 }],
           batched: true,

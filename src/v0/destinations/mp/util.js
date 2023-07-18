@@ -200,13 +200,13 @@ function combineBatchRequestsWithSameJobIds2(batches) {
     }
 
     if (existingBatch) {
+      existingBatch.batchedRequest.push(...batch.batchedRequest);
       // Merge metadata
       batch.metadata.forEach((metadataItem) => {
         if (!metadataMap.has(metadataItem.jobId)) {
           metadataMap.set(metadataItem.jobId, existingBatch);
         }
         existingBatch.metadata.push(metadataItem);
-        existingBatch.batchedRequest.push(...batch.batchedRequest);
       });
     } else {
       mergedBatches.push(batch);

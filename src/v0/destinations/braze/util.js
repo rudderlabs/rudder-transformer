@@ -1,4 +1,4 @@
-/* eslint-disable camelcase */
+/* eslint-disable */
 const _ = require('lodash');
 const get = require('get-value');
 const stats = require('../../../util/stats');

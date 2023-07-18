@@ -81,7 +81,7 @@ export default class ProfileService {
       const shouldGenerateLocally = !credBucketDetails.sendTo;
       logger.info('Before Heapsnapshot converted into a readable stream');
       let fileName = '';
-      let format = 'pb.gz';
+      format = 'pb.gz';
       let profile;
       if (format && format === 'v8') {
         const readable = v8.getHeapSnapshot();

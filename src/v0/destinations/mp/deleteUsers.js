@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { isHttpStatusSuccess } = require('../../util');
 const {
@@ -36,7 +36,7 @@ const deleteProfile = async (userAttributes, config) => {
 
   // batchEvents = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
   // ref : https://developer.mixpanel.com/reference/delete-profile
-  const batchEvents = _.chunk(data, DEL_MAX_BATCH_SIZE);
+  const batchEvents = lodash.chunk(data, DEL_MAX_BATCH_SIZE);
   await Promise.all(
     batchEvents.map(async (batchEvent) => {
       const { processedResponse: handledDelResponse } = await handleHttpRequest(

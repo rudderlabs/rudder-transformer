@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const lodash = require('lodash');
 const get = require('get-value');
 const {
   getCatalogEndpoint,
@@ -352,7 +352,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   if (identifyEventChunks.length > 0) {
     // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
     // transformed payload of (n) batch size
-    const identifyArrayChunks = _.chunk(identifyEventChunks, IDENTIFY_MAX_BATCH_SIZE);
+    const identifyArrayChunks = lodash.chunk(identifyEventChunks, IDENTIFY_MAX_BATCH_SIZE);
     identifyBatchedResponseList = batchEvents(identifyArrayChunks);
   }
   // batching TrackArrayChunks
@@ -360,7 +360,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   if (trackEventChunks.length > 0) {
     // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
     // transformed payload of (n) batch size
-    const trackArrayChunks = _.chunk(trackEventChunks, TRACK_MAX_BATCH_SIZE);
+    const trackArrayChunks = lodash.chunk(trackEventChunks, TRACK_MAX_BATCH_SIZE);
     trackBatchedResponseList = batchEvents(trackArrayChunks);
   }
   let batchedResponseList = [];

@@ -1,5 +1,5 @@
 const { defaultRequestConfig } = require('rudder-transformer-cdk/build/utils');
-const _ = require('lodash');
+const lodash = require('lodash');
 const { WhiteListedTraits } = require('../../../constants');
 
 const {
@@ -218,7 +218,7 @@ const generateBatchedPaylaodForArray = (events) => {
  * @returns
  */
 const groupSubsribeResponsesUsingListId = (subscribeResponseList) => {
-  const subscribeEventGroups = _.groupBy(
+  const subscribeEventGroups = lodash.groupBy(
     subscribeResponseList,
     (event) => event.message.body.JSON.data.attributes.list_id,
   );
@@ -229,7 +229,7 @@ const getBatchedResponseList = (subscribeEventGroups, identifyResponseList) => {
   let batchedResponseList = [];
   Object.keys(subscribeEventGroups).forEach((listId) => {
     // eventChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-    const eventChunks = _.chunk(subscribeEventGroups[listId], MAX_BATCH_SIZE);
+    const eventChunks = lodash.chunk(subscribeEventGroups[listId], MAX_BATCH_SIZE);
     const batchedResponse = eventChunks.map((chunk) => {
       const batchEventResponse = generateBatchedPaylaodForArray(chunk);
       return getSuccessRespEvents(

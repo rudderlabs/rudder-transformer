@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-const _ = require('lodash');
+const lodash = require('lodash');
 const { EventType } = require('../../../constants');
 const {
   defaultBatchRequestConfig,
@@ -54,7 +54,7 @@ const batchEvents = (eventsChunk) => {
   const batchedResponseList = [];
 
   // arrayChunks = [[e1,e2, ..batchSize], [e1,e2, ..batchSize], ...]
-  const arrayChunks = _.chunk(eventsChunk, MAX_ROWS_PER_REQUEST);
+  const arrayChunks = lodash.chunk(eventsChunk, MAX_ROWS_PER_REQUEST);
 
   // list of chunks [ [..], [..] ]
   arrayChunks.forEach((chunk) => {

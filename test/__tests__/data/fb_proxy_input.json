@@ -19,7 +19,7 @@
       },
       "JSON": {}
     },
-    "endpoint": "https://graph.facebook.com/v16.0/RudderFbApp/activities?access_token=invalid_access_token",
+    "endpoint": "https://graph.facebook.com/v17.0/RudderFbApp/activities?access_token=invalid_access_token",
     "files": {},
     "headers": {
       "x-forwarded-for": "1.2.3.4"
@@ -53,7 +53,7 @@
       },
       "JSON": {}
     },
-    "endpoint": "https://graph.facebook.com/v16.0/RudderFbApp/activities?access_token=my_access_token",
+    "endpoint": "https://graph.facebook.com/v17.0/RudderFbApp/activities?access_token=my_access_token",
     "files": {},
     "headers": {
       "x-forwarded-for": "1.2.3.4"
@@ -87,7 +87,7 @@
       },
       "JSON": {}
     },
-    "endpoint": "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=invalid_timestamp_correct_access_token",
+    "endpoint": "https://graph.facebook.com/v17.0/1234567891234567/events?access_token=invalid_timestamp_correct_access_token",
     "files": {},
     "headers": {
       "x-forwarded-for": "1.2.3.4"
@@ -105,7 +105,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=throttled_valid_access_token",
+    "endpoint": "https://graph.facebook.com/v17.0/1234567891234567/events?access_token=throttled_valid_access_token",
     "headers": {},
     "body": {
       "JSON": {},
@@ -131,7 +131,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://graph.facebook.com/v16.0/1234567891234567/events?access_token=invalid_account_id_valid_access_token",
+    "endpoint": "https://graph.facebook.com/v17.0/1234567891234567/events?access_token=invalid_account_id_valid_access_token",
     "headers": {},
     "body": {
       "JSON": {},

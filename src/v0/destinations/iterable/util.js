@@ -23,6 +23,30 @@ const { EventType, MappedToDestinationKey } = require('../../../constants');
 const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 /**
+ * Returns preferUserId param
+ * @param {*} config 
+ * @returns 
+ */
+const getPreferUserId = (config) => {
+  if (config.preferUserId !== undefined) {
+    return config.preferUserId;
+  }
+  return true;
+};
+
+/**
+ * Returns mergeNestedObjects param
+ * @param {*} config 
+ * @returns 
+ */
+const getMergeNestedObjects = (config) => {
+  if (config.mergeNestedObjects !== undefined) {
+    return config.mergeNestedObjects;
+  }
+  return true;
+};
+
+/**
  * Function to prepare catalog event endpoint
  * @param {*} category
  * @param {*} message
@@ -84,9 +108,10 @@ const getCategoryUsingEventName = (message) => {
  * @param {*} message
  * @returns
  */
-const registerDeviceTokenEventPayloadBuilder = (message) => {
+const registerDeviceTokenEventPayloadBuilder = (message, config) => {
   const rawPayload = {
     ...constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY_DEVICE.name]),
+    preferUserId: getPreferUserId(config),
     device: {
       ...constructPayload(message, mappingConfig[ConfigCategory.DEVICE.name]),
       platform: isAppleFamily(message.context.device.type) ? 'APNS' : 'GCM',
@@ -113,12 +138,15 @@ const registerBrowserTokenEventPayloadBuilder = (message) => {
  * @param {*} category
  * @returns
  */
-const updateUserEventPayloadBuilder = (message, category) => {
+const updateUserEventPayloadBuilder = (message, category, config) => {
   // If mapped to destination, Add externalId to traits
   if (get(message, MappedToDestinationKey)) {
     addExternalIdToTraits(message);
   }
   const rawPayload = constructPayload(message, mappingConfig[category.name]);
+
+  rawPayload.preferUserId = getPreferUserId(config);
+  rawPayload.mergeNestedObjects = getMergeNestedObjects(config);
 
   validateMandatoryField(rawPayload);
   return rawPayload;
@@ -226,9 +254,15 @@ const prepareItemsPayload = (message) => {
  * @param {*} category
  * @returns
  */
-const purchaseEventPayloadBuilder = (message, category) => {
-  const rawPayload = constructPayload(message, mappingConfig[category.name]);
-  rawPayload.user = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
+const purchaseEventPayloadBuilder = (message, category, config) => {
+  const rawPayload = {
+    ...constructPayload(message, mappingConfig[category.name]),
+    user: {
+      ...constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]),
+      preferUserId: getPreferUserId(config),
+      mergeNestedObjects: getMergeNestedObjects(config)
+    }
+  }
 
   validateMandatoryField(rawPayload.user);
 
@@ -247,13 +281,17 @@ const purchaseEventPayloadBuilder = (message, category) => {
  * @param {*} message
  * @returns
  */
-const updateCartEventPayloadBuilder = (message) => {
+const updateCartEventPayloadBuilder = (message, config) => {
   const rawPayload = {
-    user: constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]),
+    user: {
+      ...constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]),
+      preferUserId: getPreferUserId(config),
+      mergeNestedObjects: getMergeNestedObjects(config)
+    }
   };
 
   validateMandatoryField(rawPayload.user);
-  
+
   rawPayload.items = prepareItemsPayload(message);
 
   return rawPayload;

@@ -40,13 +40,13 @@ const constructPayloadItem = (message, category, destination) => {
 
   switch (category.action) {
     case 'identifyDevice':
-      rawPayload = registerDeviceTokenEventPayloadBuilder(message);
+      rawPayload = registerDeviceTokenEventPayloadBuilder(message, destination.Config);
       break;
     case 'identifyBrowser':
       rawPayload = registerBrowserTokenEventPayloadBuilder(message);
       break;
     case 'identify':
-      rawPayload = updateUserEventPayloadBuilder(message, category);
+      rawPayload = updateUserEventPayloadBuilder(message, category, destination.Config);
       break;
     case 'page':
       rawPayload = pageEventPayloadBuilder(message, destination, category);
@@ -58,10 +58,10 @@ const constructPayloadItem = (message, category, destination) => {
       rawPayload = trackEventPayloadBuilder(message, category);
       break;
     case 'trackPurchase':
-      rawPayload = purchaseEventPayloadBuilder(message, category);
+      rawPayload = purchaseEventPayloadBuilder(message, category, destination.Config);
       break;
     case 'updateCart':
-      rawPayload = updateCartEventPayloadBuilder(message);
+      rawPayload = updateCartEventPayloadBuilder(message, destination.Config);
       break;
     case 'alias':
       rawPayload = constructPayload(message, mappingConfig[category.name]);

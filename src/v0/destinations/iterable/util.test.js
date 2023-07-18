@@ -51,6 +51,17 @@ const getTestMessage = () => {
   return message;
 };
 
+const getTestConfig = () => {
+  let config = {
+    apiKey: '12345',
+    mapToSingleEvent: false,
+    trackAllPages: true,
+    trackCategorisedPages: false,
+    trackNamedPages: false,
+  };
+  return config;
+};
+
 const getTestEcommMessage = () => {
   let message = {
     event: 'testEventName',
@@ -115,7 +126,7 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(registerDeviceTokenEventPayloadBuilder(getTestMessage())).toEqual(expectedOutput);
+      expect(registerDeviceTokenEventPayloadBuilder(getTestMessage(), getTestConfig())).toEqual(expectedOutput);
     });
     it('For apple family device type', async () => {
       const fittingPayload = { ...getTestMessage() };
@@ -136,7 +147,7 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(registerDeviceTokenEventPayloadBuilder(fittingPayload)).toEqual(expectedOutput);
+      expect(registerDeviceTokenEventPayloadBuilder(fittingPayload, getTestConfig())).toEqual(expectedOutput);
     });
 
     it('For non apple family device type', async () => {
@@ -158,7 +169,7 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(registerDeviceTokenEventPayloadBuilder(fittingPayload)).toEqual(expectedOutput);
+      expect(registerDeviceTokenEventPayloadBuilder(fittingPayload, getTestConfig())).toEqual(expectedOutput);
     });
   });
   describe('Unit test cases for iterable registerBrowserTokenEventPayloadBuilder', () => {
@@ -182,7 +193,7 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(updateUserEventPayloadBuilder(getTestMessage(), ConfigCategory.IDENTIFY)).toEqual(
+      expect(updateUserEventPayloadBuilder(getTestMessage(), ConfigCategory.IDENTIFY, getTestConfig())).toEqual(
         expectedOutput,
       );
     });
@@ -204,7 +215,7 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(updateUserEventPayloadBuilder(fittingPayload, ConfigCategory.IDENTIFY)).toEqual(
+      expect(updateUserEventPayloadBuilder(fittingPayload, ConfigCategory.IDENTIFY, getTestConfig())).toEqual(
         expectedOutput,
       );
     });
@@ -627,7 +638,7 @@ describe('iterable utils test', () => {
         },
       };
       expect(
-        purchaseEventPayloadBuilder(getTestEcommMessage(), ConfigCategory.TRACK_PURCHASE),
+        purchaseEventPayloadBuilder(getTestEcommMessage(), ConfigCategory.TRACK_PURCHASE, getTestConfig()),
       ).toEqual(expectedOutput);
     });
 
@@ -696,7 +707,7 @@ describe('iterable utils test', () => {
           userId: 'userId',
         },
       };
-      expect(purchaseEventPayloadBuilder(fittingPayload, ConfigCategory.TRACK_PURCHASE)).toEqual(
+      expect(purchaseEventPayloadBuilder(fittingPayload, ConfigCategory.TRACK_PURCHASE, getTestConfig())).toEqual(
         expectedOutput,
       );
     });

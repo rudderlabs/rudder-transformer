@@ -123,10 +123,7 @@
   {
     "destKey": "conversions[0].conversionDateTime",
     "sourceKeys": ["properties.conversionDateTime", "timestamp", "originalTimestamp"],
-    "required": true,
-    "metadata": {
-      "type": "toString"
-    }
+    "required": true
   },
   {
     "destKey": "conversions[0].conversionValue",

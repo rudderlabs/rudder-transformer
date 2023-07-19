@@ -9,7 +9,6 @@ const {
   getBrowserInfo,
   toUnixTimestamp,
 } = require('../../util');
-const { CommonUtils } = require('../../../util/common');
 const {
   ConfigCategory,
   MP_IDENTIFY_EXCLUSION_LIST,

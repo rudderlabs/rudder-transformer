@@ -48,7 +48,7 @@ describe(`${name} Tests`, () => {
         try {
           const output = await processCdkV2Workflow(integration, input, tags.FEATURES.PROCESSOR);
           expect(output).toEqual(expected);
-        } catch (error) {
+        } catch (error: any) {
           expect(error.message).toEqual(expected.error);
         }
       });

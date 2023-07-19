@@ -5,24 +5,8 @@
     "required": false
   },
   {
-    "destKey": "preferUserId",
-    "sourceKeys": ["traits.preferUserId", "context.traits.preferUserId"],
-    "metadata": { "defaultValue": true },
-    "required": false
-  },
-  {
-    "destKey": "mergeNestedObjects",
-    "sourceKeys": ["traits.mergeNestedObjects", "context.traits.mergeNestedObjects"],
-    "metadata": { "defaultValue": true },
-    "required": false
-  },
-  {
     "destKey": "dataFields",
-    "sourceKeys": ["traits", "context.traits"],
-    "required": false,
-    "metadata": {
-      "excludes": ["preferUserId", "mergeNestedObjects"]
-    }
+    "sourceKeys": ["traits", "context.traits"]
   },
   {
     "destKey": "userId",

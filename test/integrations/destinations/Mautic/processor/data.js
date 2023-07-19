@@ -294,14 +294,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'email',
-                password: '',
-                subDomainName: 'testapi3',
-                userName: 'abcdef@gmail.com',
-              },
-            },
             error: 'Invalid password value specified in the destination configuration',
             statTags: {
               destType: 'MAUTIC',
@@ -369,15 +361,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'email',
-                password: 'abcdefghij1234',
-                domainName: '',
-                subDomainName: '',
-                userName: 'opiogfuebj',
-              },
-            },
             error: 'Please Provide either subDomain or Domain Name',
             statTags: {
               destType: 'MAUTIC',
@@ -664,14 +647,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'email',
-                password: 'abcdefghij1234',
-                subDomainName: 'testapi3',
-                userName: '',
-              },
-            },
             error: 'Invalid userName value specified in the destination configuration',
             statTags: {
               destType: 'MAUTIC',
@@ -733,14 +708,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'email',
-                password: '',
-                subDomainName: 'testapi3',
-                userName: 'abcdef@gmail.com',
-              },
-            },
             error: 'Invalid password value specified in the destination configuration',
             statTags: {
               destType: 'MAUTIC',
@@ -817,14 +784,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'email',
-                password: 'abcdefghij1234',
-                subDomainName: '',
-                userName: 'abcdef@gmail.com',
-              },
-            },
             error: 'Please Provide either subDomain or Domain Name',
             statTags: {
               destType: 'MAUTIC',
@@ -885,14 +844,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'email',
-                password: 'm3dG325C51C1RPq',
-                subDomainName: 'testapi3',
-                userName: 'abcdef@gmail.com',
-              },
-            },
             error: 'Event type is required',
             statTags: {
               destType: 'MAUTIC',
@@ -954,14 +905,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'email',
-                password: 'm3dG325C51C1RPq',
-                subDomainName: 'testapi3',
-                userName: 'anantjain45823@gmail.com',
-              },
-            },
             error: 'Event type "alias" is not supported',
             statTags: {
               destType: 'MAUTIC',
@@ -1019,14 +962,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'email',
-                password: 'abcdefghij1234',
-                subDomainName: 'testapi3',
-                userName: 'abcdef@gmail.com',
-              },
-            },
             error: 'Invalid entry for key title',
             statTags: {
               destType: 'MAUTIC',
@@ -1084,14 +1019,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'email',
-                password: 'abcdefghij1234',
-                subDomainName: 'testapi3',
-                userName: 'abcdef@gmail.com',
-              },
-            },
             error: 'The provided phone number is invalid',
             statTags: {
               destType: 'MAUTIC',
@@ -1153,14 +1080,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'email',
-                password: 'abcdefghij1234',
-                subDomainName: 'testapi3',
-                userName: 'abcdef@gmail.com',
-              },
-            },
             error: 'Invalid entry for key haspurchased',
             statTags: {
               destType: 'MAUTIC',
@@ -1218,14 +1137,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'email',
-                password: 'm3dG325C51C1RPq',
-                subDomainName: 'testapi3',
-                userName: 'anantjain45823@gmail.com',
-              },
-            },
             error: 'Invalid entry for key role',
             statTags: {
               destType: 'MAUTIC',
@@ -1287,14 +1198,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'email',
-                password: 'm3dG325C51C1RPq',
-                subDomainName: 'testapi3',
-                userName: 'anantjain45823@gmail.com',
-              },
-            },
             error: 'Invalid entry for key subscription_status',
             statTags: {
               destType: 'MAUTIC',
@@ -1344,14 +1247,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'email',
-                password: 'm3dG325C51C1RPq',
-                subDomainName: 'testapi3',
-                userName: 'anantjain45823@gmail.com',
-              },
-            },
             error: 'The provided email is invalid',
             statTags: {
               destType: 'MAUTIC',
@@ -1413,14 +1308,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'email',
-                password: 'm3dG325C51C1RPq',
-                subDomainName: 'testapi3',
-                userName: 'anantjain45823@gmail.com',
-              },
-            },
             error: 'Invalid entry for key prospect_or_customer',
             statTags: {
               destType: 'MAUTIC',
@@ -1694,14 +1581,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'lastName',
-                password: 'zzlOylGKJRKVr87',
-                subDomainName: 'testapi5',
-                userName: 'anant45823jain@gmail.com',
-              },
-            },
             error: '`groupId` is missing in the event',
             statTags: {
               destType: 'MAUTIC',
@@ -1866,14 +1745,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'lastName',
-                password: 'abcdefghij1234',
-                subDomainName: 'testapi5',
-                userName: 'abcdef@gmail.com',
-              },
-            },
             error: '`type` is missing in the traits',
             statTags: {
               destType: 'MAUTIC',
@@ -1925,14 +1796,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'lastName',
-                password: 'abcdefghij1234',
-                subDomainName: 'testapi5',
-                userName: 'abcdef@gmail.com',
-              },
-            },
             error:
               'Grouping type "alias" is not supported. Only "Segments", "Companies", and "Campaigns" are supported',
             statTags: {
@@ -2041,14 +1904,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'lastName',
-                password: 'zzlOylGKJRKVr87',
-                subDomainName: 'ruddertest2',
-                userName: 'anant45823jain@gmail.com',
-              },
-            },
             error: 'Found more than one contact on lookup',
             statTags: {
               destType: 'MAUTIC',
@@ -2099,14 +1954,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                lookUpField: 'lastName',
-                password: 'zzlOylGKJRKVr87',
-                subDomainName: 'ruddertest2',
-                userName: 'anant45823jain@gmail.com',
-              },
-            },
             error: 'Could not find any contact ID on lookup',
             statTags: {
               destType: 'MAUTIC',

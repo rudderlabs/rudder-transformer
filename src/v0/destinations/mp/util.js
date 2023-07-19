@@ -132,76 +132,65 @@ const isImportAuthCredentialsAvailable = (destination) =>
     destination.Config.projectId);
 
 /**
+ * Finds an existing batch based on metadata JobIds from the provided batch and metadataMap.
+ * @param {*} batch
+ * @param {*} metadataMap The map containing metadata items indexed by JobIds.
+ * @returns
+ */
+const findExistingBatch = (batch, metadataMap) => {
+  let existingBatch = null;
+
+  for (const metadataItem of batch.metadata) {
+    if (metadataMap.has(metadataItem.jobId)) {
+      existingBatch = metadataMap.get(metadataItem.jobId);
+      break;
+    }
+  }
+
+  return existingBatch;
+};
+
+/**
+ * Removes duplicate metadata within each merged batch object.
+ * @param {*} mergedBatches An array of merged batch objects.
+ */
+const removeDuplicateMetadata = (mergedBatches) => {
+  for (const batch of mergedBatches) {
+    const metadataSet = new Set();
+    batch.metadata = batch.metadata.filter((metadataItem) => {
+      if (!metadataSet.has(metadataItem.jobId)) {
+        metadataSet.add(metadataItem.jobId);
+        return true;
+      }
+      return false;
+    });
+  }
+};
+
+/**
  * Combines batched requests with the same JobIds.
- * @param {Array<Object>} batches - The array of batched request objects.
- * @returns {Array<Object>} - The combined batched request objects with merged JobIds.
+ * @param {*} inputBatches The array of batched request objects.
+ * @returns  The combined batched requests with merged JobIds.
  *
  */
-
-function combineBatchRequestsWithSameJobIds(batches) {
-  const combinedBatches = [...batches];
-  const processedBatches = new Array(combinedBatches.length).fill(false);
-
-  // Iterate over each batch
-  combinedBatches.forEach((batch1, i) => {
-    if (processedBatches[i]) return;
-
-    // Check for common JobIds with other batches
-    combinedBatches
-      .filter((_, j) => i !== j && !processedBatches[j])
-      .forEach((batch2) => {
-        const metadata1 = batch1.metadata;
-        const metadata2 = batch2.metadata;
-
-        // Check if there are common JobIds
-        const hasCommonJobId = metadata1.some((meta1) =>
-          metadata2.some((meta2) => meta1.jobId === meta2.jobId),
-        );
-
-        if (hasCommonJobId) {
-          // Merge batchedRequests arrays
-          batch1.batchedRequest = [
-            ...(Array.isArray(batch1.batchedRequest)
-              ? batch1.batchedRequest
-              : [batch1.batchedRequest]),
-            ...(Array.isArray(batch2.batchedRequest)
-              ? batch2.batchedRequest
-              : [batch2.batchedRequest]),
-          ];
-
-          // Mark the second batch as processed
-          processedBatches[combinedBatches.indexOf(batch2)] = true;
-
-          const uniqueJobIds = new Set(metadata1.map((meta) => meta.jobId));
-          // Filter out duplicate JobIds from metadata2
-          const metadataToAdd = metadata2.filter((meta) => !uniqueJobIds.has(meta.jobId));
-          metadata1.push(...metadataToAdd);
-        }
-      });
-  });
-
-  // Filter out processed batches
-  return combinedBatches.filter((_, index) => !processedBatches[index]);
-}
-
-function combineBatchRequestsWithSameJobIds2(inputBatches) {
-  function combineBatches(batches) {
+const combineBatchRequestsWithSameJobIds = (inputBatches) => {
+  const combineBatches = (batches) => {
+    const clonedBatches = [...batches];
     const mergedBatches = [];
     const metadataMap = new Map();
 
-    batches.forEach((batch) => {
-      batch.batchedRequest = CommonUtils.toArray(batch.batchedRequest);
-      let existingBatch = null;
-
-      for (const metadataItem of batch.metadata) {
-        if (metadataMap.has(metadataItem.jobId)) {
-          existingBatch = metadataMap.get(metadataItem.jobId);
-          break;
-        }
-      }
+    clonedBatches.forEach((batch) => {
+      const existingBatch = findExistingBatch(batch, metadataMap);
 
       if (existingBatch) {
-        existingBatch.batchedRequest.push(...batch.batchedRequest);
+        // Merge batchedRequests arrays
+        existingBatch.batchedRequest = [
+          ...(Array.isArray(existingBatch.batchedRequest)
+            ? existingBatch.batchedRequest
+            : [existingBatch.batchedRequest]),
+          ...(Array.isArray(batch.batchedRequest) ? batch.batchedRequest : [batch.batchedRequest]),
+        ];
+
         // Merge metadata
         batch.metadata.forEach((metadataItem) => {
           if (!metadataMap.has(metadataItem.jobId)) {
@@ -218,30 +207,20 @@ function combineBatchRequestsWithSameJobIds2(inputBatches) {
     });
 
     // Remove duplicate metadata within each merged object
-    mergedBatches.forEach((batch) => {
-      const metadataMap = new Map();
-      batch.metadata = batch.metadata.filter((metadataItem) => {
-        if (!metadataMap.has(metadataItem.jobId)) {
-          metadataMap.set(metadataItem.jobId, true);
-          return true;
-        }
-        return false;
-      });
-    });
+    removeDuplicateMetadata(mergedBatches);
 
     return mergedBatches;
-  }
+  };
   // We need to run this twice because in first pass some batches might not get merged
   // and in second pass they might get merged
   // Example: [[{jobID:1}, {jobID:2}], [{jobID:3}], [{jobID:1}, {jobID:3}]]
   // 1st pass: [[{jobID:1}, {jobID:2}, {jobID:3}], [{jobID:3}]]
   // 2nd pass: [[{jobID:1}, {jobID:2}, {jobID:3}]]
   return combineBatches(combineBatches(inputBatches));
-}
+};
 
 module.exports = {
   createIdentifyResponse,
   isImportAuthCredentialsAvailable,
   combineBatchRequestsWithSameJobIds,
-  combineBatchRequestsWithSameJobIds2,
 };

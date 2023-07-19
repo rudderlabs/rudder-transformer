@@ -32,19 +32,7 @@
             schema:
               type: array
               items:
-                oneOf:
-                  - $ref: '../components/schemas/processorTransformationResponse.yaml'
-                  - type: object
-                    properties:
-                      metadata:
-                        $ref: '../components/schemas/metadata.yaml'
-                      statusCode:
-                        type: number
-                        example: 400
-                      error:
-                        type: string
-                      statTags:
-                        type: object
+                $ref: '../components/schemas/processorTransformationResponse.yaml'
             examples:
               success:
                 summary: Processor Transformation Success
@@ -78,26 +66,7 @@
                 output:
                   type: array
                   items:
-                    anyOf:
-                      - $ref: '../components/schemas/routerTransformationResponse.yaml'
-                      - type: object
-                        properties:
-                          metadata:
-                            type: array
-                            items:
-                              $ref: '../components/schemas/metadata.yaml'
-                          destination:
-                            $ref: '../components/schemas/destination.yaml'
-                          batched:
-                            type: boolean
-                            example: false
-                          statusCode:
-                            type: number
-                            example: 400
-                          error:
-                            type: string
-                          statTags:
-                            type: object
+                    $ref: '../components/schemas/routerTransformationResponse.yaml'
             examples:
               success:
                 summary: Router Transformation Success
@@ -130,26 +99,7 @@
             schema:
               type: array
               items:
-                anyOf:
-                  - $ref: '../components/schemas/routerTransformationResponse.yaml'
-                  - type: object
-                    properties:
-                      metadata:
-                        type: array
-                        items:
-                          $ref: '../components/schemas/metadata.yaml'
-                      destination:
-                        $ref: '../components/schemas/destination.yaml'
-                      batched:
-                        type: boolean
-                        example: false
-                      statusCode:
-                        type: number
-                        example: 500
-                      error:
-                        type: string
-                      statTags:
-                        type: object
+                $ref: '../components/schemas/routerTransformationResponse.yaml'
             examples:
               success:
                 summary: Batch Transformation Success

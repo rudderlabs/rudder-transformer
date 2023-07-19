@@ -3,4 +3,5 @@ type: object
 properties:
   batch:
     type: array
-    $ref: './rudderMessage.yaml'
+    items:
+      $ref: './rudderMessage.yaml'

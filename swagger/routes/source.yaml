@@ -28,18 +28,18 @@
         content:
           application/json:
             schema:
-              $ref: '../components/schemas/sourceTransformationResponse.yaml'
-      400:
-        description: Failure
-        content:
-          application/json:
-            schema:
               type: object
-              properties:
-                statusCode:
-                  type: number
-                error:
-                  type: string
-                  example: '[Source Transform] Error occurred while processing payload.'
-                statTags:
-                  type: object
+              $ref: '../components/schemas/sourceTransformationResponse.yaml'
+            examples:
+              success:
+                summary: Source Transformation Success
+                value:
+                  output:
+                    - $ref: '../components/examples/source/success.yaml'
+              failure:
+                summary: Source Transformation Failure
+                value:
+                  - $ref: '../components/examples/source/failure.yaml'
+
+      500:
+        description: Failure

@@ -216,17 +216,17 @@ const responseHandler = async (event, type) => {
 
   /**
    * {
-	"failedKeys" : [jobID1,jobID3],
-	"failedReasons" : {
-		"jobID1" : "failure-reason-1",
-		"jobID3" : "failure-reason-2",
-	},
-	"warningKeys" : [jobID2,jobID4],
-	"warningReasons" : {
-		"jobID2" : "warning-reason-1",
-		"jobID4" : "warning-reason-2",
-	},
-	"succeededKeys" : [jobID5]
+  "failedKeys" : [jobID1,jobID3],
+  "failedReasons" : {
+    "jobID1" : "failure-reason-1",
+    "jobID3" : "failure-reason-2",
+  },
+  "warningKeys" : [jobID2,jobID4],
+  "warningReasons" : {
+    "jobID2" : "warning-reason-1",
+    "jobID4" : "warning-reason-2",
+  },
+  "succeededKeys" : [jobID5]
 }
    */
 

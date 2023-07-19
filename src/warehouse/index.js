@@ -527,13 +527,14 @@ function enhanceContextWithSourceDestInfo(message, metadata) {
 function processWarehouseMessage(message, options) {
   const utils = getVersionedUtils(options.whSchemaVersion);
   options.utils = utils;
-  /* 
+  /*
    * integration options example
     "integrations": {
       "RS": {
         "options": {
           "skipReservedKeywordsEscaping": true,
           "skipTracksTable": true,
+          "skipUsersTable": true,
           "useBlendoCasing": true,
           "jsonPaths": [ "array_col", "json_col" ]
         }
@@ -547,6 +548,7 @@ function processWarehouseMessage(message, options) {
   const responses = [];
   const eventType = message.type?.toLowerCase();
   const skipTracksTable = options.integrationOptions.skipTracksTable || false;
+  const skipUsersTable = options.integrationOptions.skipUsersTable || false;
   const skipReservedKeywordsEscaping =
     options.integrationOptions.skipReservedKeywordsEscaping || false;
 
@@ -870,6 +872,10 @@ function processWarehouseMessage(message, options) {
       if (_.toString(message.userId).trim() === '') {
         break;
       }
+      if (skipUsersTable) {
+        break;
+      }
+
       const usersEvent = { ...commonProps };
       const usersColumnTypes = {};
       setDataFromColumnMappingAndComputeColumnTypes(

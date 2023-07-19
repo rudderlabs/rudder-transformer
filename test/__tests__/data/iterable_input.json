@@ -47,7 +47,8 @@
           "city": "Bangalore",
           "name": "manashi",
           "email": "manashi@website.com",
-          "country": "India"
+          "country": "India",
+          "preferUserId": false
         },
         "library": {
           "name": "analytics-node",
@@ -63,6 +64,7 @@
     },
     "destination": {
       "Config": {
+        "preferUserId": false,
         "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
         "mapToSingleEvent": false,
         "trackAllPages": true,
@@ -669,6 +671,7 @@
     },
     "destination": {
       "Config": {
+        "mergeNestedObjects": false,
         "apiKey": "12345",
         "mapToSingleEvent": false,
         "trackAllPages": true,

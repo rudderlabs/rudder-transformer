@@ -4,7 +4,7 @@ import { S3Client } from '@aws-sdk/client-s3';
 import moment from 'moment';
 import v8 from 'v8';
 
-import pprof, { heap } from 'pprof';
+import pprof, { heap } from '@datadog/pprof';
 import { promisify } from 'util';
 import logger from '../logger';
 

@@ -12448,12 +12448,185 @@
     },
     "output": {
       "statusCode": 400,
-      "error": "Event name should only contain letters, numbers, and underscores and event name must start with a letter",
+      "error": "Event name must start with a letter and can only contain letters, numbers, and underscores",
       "statTags": {
         "destination": "ga4",
         "stage": "transform",
         "scope": "exception"
       }
+    }
+  },
+  {
+    "description": "(gtag) event having multiple empty array and object parameters",
+    "input": {
+      "message": {
+        "type": "track",
+        "event": "logIn",
+        "userId": "user@1",
+        "group_id": "group@1",
+        "anon_id": "78e95d6d-58c0-4237-b99e-2ef510b6d502",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "externalId": [
+            {
+              "type": "ga4AppInstanceId",
+              "id": "f0dd99b6f979fb551ce583373900f937"
+            },
+            {
+              "type": "ga4ClientId",
+              "id": "client_id"
+            }
+          ],
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "properties": {
+          "user_interest": "Moderate",
+          "company_interest": "",
+          "profile": [
+            {
+              "is_6qa": true,
+              "product": null,
+              "product_fit": "Moderate",
+              "product_stage": "Purchase",
+              "intent_score": 89,
+              "profile_score": 52,
+              "product_display$name": "rudderstack"
+            }
+          ],
+          "user_company": "Analytics consulting",
+          "user_account": "1",
+          "user_id_mappings": "330098|245252|461224|282599",
+          "company_naics_6sense": "5173",
+          "usr_consent": null,
+          "firebase_user_id": "kdgMnP",
+          "google_user_id": "G-123456",
+          "company_domain": "consulting.net",
+          "company_region": "New Zealand",
+          "user_product_interests": {
+            "ids": [],
+            "list": [
+              {
+                "id": 330098,
+                "name": []
+              },
+              {
+                "id": 245252,
+                "name": {}
+              }
+            ],
+            "names": []
+          },
+          "company_country": {},
+          "company_industry": "Business Analytics",
+          "company_revenue": "$5M - $10M",
+          "company_annual_revenue": "5568000",
+          "company_sic_description": "",
+          "company_naics_description": []
+        },
+        "integrations": {
+          "All": true
+        }
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6KET4",
+          "firebaseAppId": "",
+          "typesOfClient": "gtag",
+          "eventFilteringOption": "disable",
+          "connectionMode": "cloud",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
+        },
+        "Enabled": true
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "events": [
+            {
+              "name": "login",
+              "params": {
+                "company_annual_revenue": "5568000",
+                "company_domain": "consulting.net",
+                "company_industry": "Business Analytics",
+                "company_naics_6sense": "5173",
+                "company_region": "New Zealand",
+                "company_revenue": "$5M - $10M",
+                "engagement_time_msec": 1,
+                "profile_0_intent_score": 89,
+                "profile_0_is_6qa": true,
+                "profile_0_product_display$name": "rudderstack",
+                "profile_0_product_fit": "Moderate",
+                "profile_0_product_stage": "Purchase",
+                "profile_0_profile_score": 52,
+                "user_account": "1",
+                "user_company": "Analytics consulting",
+                "user_id_mappings": "330098|245252|461224|282599",
+                "user_interest": "Moderate",
+                "user_product_interests_list_0_id": 330098,
+                "user_product_interests_list_1_id": 245252
+              }
+            }
+          ],
+          "user_id": "user@1",
+          "client_id": "client_id",
+          "non_personalized_ads": true
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {
+        "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurement_id": "G-T40PE6KET4"
+      },
+      "headers": {
+        "HOST": "www.google-analytics.com",
+        "Content-Type": "application/json"
+      },
+      "version": "1",
+      "endpoint": "https://www.google-analytics.com/mp/collect"
     }
   }
 ]

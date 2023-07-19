@@ -5,6 +5,9 @@ bindings:
     path: ../../../../v0/util
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
 
 steps:
   - name: validateInput
@@ -23,12 +26,9 @@ steps:
       const flattenTraits = $.flattenJson(.message.traits ?? .message.context.traits);
       $.context.payload = .message.({
         ...flattenTraits,
-        first_name: .traits.firstName ?? .traits.firstname ??
-                    .context.traits.firstName ?? .context.traits.firstname,
-        last_name: .traits.lastName ?? .traits.lastname ??
-                    .context.traits.lastName ?? .context.traits.lastname,
-        user_id: .userId ?? .traits.userId ?? .traits.id ??
-                .context.traits.userId ?? .context.traits.id ?? anonymousId 
+        first_name: {{{{$.getGenericPaths("firstName")}}}},
+        last_name: {{{{$.getGenericPaths("lastName")}}}},
+        user_id: {{{{$.getGenericPaths("userId")}}}}
       })
     else:
       name: payloadForOthers
@@ -59,20 +59,11 @@ steps:
     else:
       name: buildResponseForProcessTransformation
       template: |
-        {
-          "body": {
-            "JSON": $.context.payload,
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": $.context.endpoint,
-          "headers": {
-            "Content-Type": "application/json"
-          },
-          "params": {},
-          "files": {}
-        }
+        const response = $.defaultRequestConfig();
+        response.body.JSON = $.context.payload;
+        response.endpoint = $.context.endpoint;
+        response.headers = {
+          "Content-Type": "application/json"
+        };
+        response
+

@@ -2,6 +2,8 @@ bindings:
   - name: EventType
     path: ../../../../constants
   - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
 
 steps:
   - name: validateInput
@@ -19,26 +21,15 @@ steps:
   - name: buildResponse
     description: In batchMode we return payload directly
     condition: $.batchMode
-    template: .message
+    template: $.context.payload
     else:
       name: buildResponseForProcessTransformation
       template: |
-        {
-          "body": {
-            "JSON": .message,
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": 'https://incoming.userlist.com/rudderstack/events',
-          "statusCode": 200,
-          "headers": {
-            "Authorization": "Push " + .destination.Config.pushKey,
-            "Content-Type": "application/json"
-          },
-          "params": {},
-          "files": {}
-        }
+        const response = $.defaultRequestConfig();
+        response.body.JSON = $.context.payload;
+        response.endpoint = "https://incoming.userlist.com/rudderstack/events";
+        response.headers = {
+          "Authorization": "Push " + .destination.Config.pushKey,
+          "Content-Type": "application/json"
+        };
+        response

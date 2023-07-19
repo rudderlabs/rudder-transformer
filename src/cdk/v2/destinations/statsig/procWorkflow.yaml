@@ -1,6 +1,8 @@
 bindings:
   - name: EventType
     path: ../../../../constants
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
 
 steps:
   - name: validateInput
@@ -16,21 +18,12 @@ steps:
     else:
       name: buildResponseForProcessTransformation
       template: |
-        {
-          "body": {
-            "JSON": .message,
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": 'https://api.statsig.com/v1/webhooks/rudderstack',
-          "headers": {
-            "STATSIG-API-KEY": .destination.Config.secretKey,
+        const response = $.defaultRequestConfig();
+        response.body.JSON = .message;
+        response.endpoint = "https://api.statsig.com/v1/webhooks/rudderstack";
+        response.headers = {
+          "STATSIG-API-KEY": .destination.Config.secretKey,
             "content-type": "application/json"
-          },
-          "params": {},
-          "files": {}
-        }
+        };
+        response
+

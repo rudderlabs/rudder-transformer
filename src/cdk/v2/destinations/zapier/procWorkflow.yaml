@@ -3,6 +3,8 @@ bindings:
     path: ../../../../constants
   - name: getHashFromArray
     path: ../../../../v0/util/index
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
 
 steps:
   - name: validateInput
@@ -35,20 +37,11 @@ steps:
     else:
       name: buildResponseForProcessTransformation
       template: |
-        {
-          "body": {
-            "JSON": .message,
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": $.context.endpoint,
-          "headers": {
-            "content-type": "application/json"
-          },
-          "params": {},
-          "files": {}
-        }
+        const response = $.defaultRequestConfig();
+        response.body.JSON = .message;
+        response.endpoint = $.context.endpoint;
+        response.headers = {
+          "content-type": "application/json"
+        };
+        response
+

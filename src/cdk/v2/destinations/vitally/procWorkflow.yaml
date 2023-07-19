@@ -1,6 +1,8 @@
 bindings:
   - name: EventType
     path: ../../../../constants
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
 
 steps:
   - name: validateInput
@@ -15,21 +17,11 @@ steps:
     else:
       name: buildResponseForProcessTransformation
       template: |
-        {
-          "body": {
-            "JSON": .message,
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": "https://api.vitally.io/rudderstack",
-          "headers": {
-            "authorization": "Basic " + .destination.Config.apiKeyVitally,
-            "content-type": "application/json"
-          },
-          "params": {},
-          "files": {}
-        }
+        const response = $.defaultRequestConfig();
+        response.body.JSON = .message;
+        response.endpoint = "https://api.vitally.io/rudderstack";
+        response.headers = {
+          "authorization": "Basic " + .destination.Config.apiKeyVitally,
+          "content-type": "application/json"
+        };
+        response

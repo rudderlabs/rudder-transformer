@@ -1,4 +1,4 @@
-const { validateEventName, prepareUserProperties } = require('./utils');
+const { validateEventName, prepareUserProperties, removeInvalidParams } = require('./utils');
 
 const userPropertyData = [
   {
@@ -90,7 +90,7 @@ const userPropertyData = [
 ];
 
 describe('Google Analytics 4 utils test', () => {
-  describe('Unite test cases for validateEventName', () => {
+  describe('validateEventName function tests', () => {
     it('Should throw an error as event name uses reserved prefixes', () => {
       try {
         const output = validateEventName('_ga_conversion');
@@ -115,7 +115,7 @@ describe('Google Analytics 4 utils test', () => {
         expect(output).toEqual('');
       } catch (error) {
         expect(error.message).toEqual(
-          'Event name should only contain letters, numbers, and underscores and event name must start with a letter',
+          'Event name must start with a letter and can only contain letters, numbers, and underscores',
         );
       }
     });
@@ -126,7 +126,7 @@ describe('Google Analytics 4 utils test', () => {
         expect(output).toEqual('');
       } catch (error) {
         expect(error.message).toEqual(
-          'Event name should only contain letters, numbers, and underscores and event name must start with a letter',
+          'Event name must start with a letter and can only contain letters, numbers, and underscores',
         );
       }
     });
@@ -137,7 +137,7 @@ describe('Google Analytics 4 utils test', () => {
         expect(output).toEqual('');
       } catch (error) {
         expect(error.message).toEqual(
-          'Event name should only contain letters, numbers, and underscores and event name must start with a letter',
+          'Event name must start with a letter and can only contain letters, numbers, and underscores',
         );
       }
     });
@@ -162,7 +162,7 @@ describe('Google Analytics 4 utils test', () => {
     });
   });
 
-  describe('Unit tests for prepareUserProperties', () => {
+  describe('prepareUserProperties function tests', () => {
     userPropertyData.forEach((dataPoint) => {
       it(`${dataPoint.description}`, () => {
         try {
@@ -172,6 +172,30 @@ describe('Google Analytics 4 utils test', () => {
           expect(error.message).toEqual(dataPoint.output.error);
         }
       });
+    });
+  });
+
+  describe('removeInvalidValues function tests', () => {
+    it('Should remove empty values except for "items"', () => {
+      const params = {
+        name: 'John',
+        age: 30,
+        email: '',
+        city: null,
+        items: [],
+        address: {},
+        phone: '123456789',
+      };
+
+      const expected = {
+        name: 'John',
+        items: [],
+        age: 30,
+        phone: '123456789',
+      };
+
+      const result = removeInvalidParams(params);
+      expect(result).toEqual(expected);
     });
   });
 });

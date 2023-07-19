@@ -1,6 +1,7 @@
 import { Context } from 'koa';
 import isEmpty from 'lodash/isEmpty';
-import { API_VERSION } from '../../routes/utils/constants';
+import get from 'get-value';
+import { API_VERSION, CHANNELS, RETL_TIMESTAMP } from '../../routes/utils/constants';
 import { getCompatibleStatusCode } from '../../adapters/utils/networkUtils';
 import {
   ProcessorTransformationRequest,
@@ -9,17 +10,17 @@ import {
 } from '../../types';
 import { getValueFromMessage } from '../../v0/util';
 import genericFieldMap from '../../v0/util/data/GenericFieldMapping.json';
-import { EventType } from '../../constants';
+import { EventType, MappedToDestinationKey } from '../../constants';
 
 export default class ControllerUtility {
   public static timestampValsMap: Record<string, string[]> = {
     [EventType.IDENTIFY]: [
-      'context.timestamp',
-      'context.traits.timestamp',
-      'traits.timestamp',
+      `context.${RETL_TIMESTAMP}`,
+      `context.traits.${RETL_TIMESTAMP}`,
+      `traits.${RETL_TIMESTAMP}`,
       ...genericFieldMap['timestamp'],
     ],
-    [EventType.TRACK]: ['properties.timestamp', ...genericFieldMap['timestamp']],
+    [EventType.TRACK]: [`properties.${RETL_TIMESTAMP}`, ...genericFieldMap['timestamp']],
   };
 
   private static getCompatibleStatusCode(status: number): number {
@@ -41,7 +42,8 @@ export default class ControllerUtility {
   ): Array<ProcessorTransformationRequest | RouterTransformationRequestData> {
     return events.map((event) => {
       const newMsg = { ...event.message } as RudderMessage;
-      if (newMsg.channel === 'sources') {
+      // RETL event & not VDM
+      if (newMsg.channel === CHANNELS.sources && !get(newMsg, MappedToDestinationKey)) {
         const timestampValsArr = ControllerUtility.timestampValsMap[newMsg.type];
         if (!Array.isArray(timestampValsArr) || isEmpty(timestampValsArr)) {
           return event;

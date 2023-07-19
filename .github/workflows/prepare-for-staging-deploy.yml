@@ -107,10 +107,10 @@ jobs:
           else
             git checkout -b $BRANCH_NAME
 
-            cd helm-charts/shared-services/per-az
-            yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
-            yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml
-            git add values.staging.yaml
+            cd helm-charts/shared-services/per-az/environment/staging
+            yq eval -i ".rudder-transformer.image.tag=\"$TAG_NAME\"" staging.yaml
+            yq eval -i ".user-transformer.image.tag=\"$TAG_NAME\"" staging.yaml
+            git add staging.yaml
 
             cd ../../config-be-rudder-transformer
             yq eval -i ".config-be-rudder-transformer.image.tag=\"$TAG_NAME\"" values.staging.yaml

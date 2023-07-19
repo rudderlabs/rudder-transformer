@@ -344,6 +344,10 @@ const processGroupEvents = (message, type, destination) => {
   } else {
     throw new ConfigurationError('Group Key Settings is not configured');
   }
+
+  if (returnValue.length === 0) {
+    throw new InstrumentationError('Group Key is not present. Aborting message');
+  }
   return returnValue;
 };
 

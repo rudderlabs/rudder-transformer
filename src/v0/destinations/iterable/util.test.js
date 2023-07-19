@@ -51,6 +51,17 @@ const getTestMessage = () => {
   return message;
 };
 
+const getTestConfig = () => {
+  let config = {
+    apiKey: '12345',
+    mapToSingleEvent: false,
+    trackAllPages: true,
+    trackCategorisedPages: false,
+    trackNamedPages: false,
+  };
+  return config;
+};
+
 const getTestEcommMessage = () => {
   let message = {
     event: 'testEventName',
@@ -115,7 +126,7 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(identifyDeviceAction(getTestMessage())).toEqual(expectedOutput);
+      expect(identifyDeviceAction(getTestMessage(), getTestConfig())).toEqual(expectedOutput);
     });
     it('For apple family device type', async () => {
       const fittingPayload = { ...getTestMessage() };
@@ -136,7 +147,7 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(identifyDeviceAction(fittingPayload)).toEqual(expectedOutput);
+      expect(identifyDeviceAction(fittingPayload, getTestConfig())).toEqual(expectedOutput);
     });
 
     it('For non apple family device type', async () => {
@@ -158,7 +169,7 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(identifyDeviceAction(fittingPayload)).toEqual(expectedOutput);
+      expect(identifyDeviceAction(fittingPayload, getTestConfig())).toEqual(expectedOutput);
     });
   });
   describe('Unit test cases for iterable identifyBrowserAction', () => {
@@ -182,7 +193,9 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(identifyAction(getTestMessage(), ConfigCategory.IDENTIFY)).toEqual(expectedOutput);
+      expect(identifyAction(getTestMessage(), ConfigCategory.IDENTIFY, getTestConfig())).toEqual(
+        expectedOutput,
+      );
     });
 
     it('flow check with externalId', async () => {
@@ -202,7 +215,9 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(identifyAction(fittingPayload, ConfigCategory.IDENTIFY)).toEqual(expectedOutput);
+      expect(identifyAction(fittingPayload, ConfigCategory.IDENTIFY, getTestConfig())).toEqual(
+        expectedOutput,
+      );
     });
   });
   describe('Unit test cases for iterbale pageAction', () => {
@@ -584,9 +599,9 @@ describe('iterable utils test', () => {
           userId: 'userId',
         },
       };
-      expect(trackPurchaseAction(getTestEcommMessage(), ConfigCategory.TRACK_PURCHASE)).toEqual(
-        expectedOutput,
-      );
+      expect(
+        trackPurchaseAction(getTestEcommMessage(), ConfigCategory.TRACK_PURCHASE, getTestConfig()),
+      ).toEqual(expectedOutput);
     });
 
     it('flow check with product array', async () => {
@@ -654,9 +669,9 @@ describe('iterable utils test', () => {
           userId: 'userId',
         },
       };
-      expect(trackPurchaseAction(fittingPayload, ConfigCategory.TRACK_PURCHASE)).toEqual(
-        expectedOutput,
-      );
+      expect(
+        trackPurchaseAction(fittingPayload, ConfigCategory.TRACK_PURCHASE, getTestConfig()),
+      ).toEqual(expectedOutput);
     });
   });
   describe('Unit test cases for iterable updateCartAction', () => {

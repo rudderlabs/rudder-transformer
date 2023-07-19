@@ -21,11 +21,25 @@ function validateMandatoryField(payload) {
   }
 }
 
-const identifyDeviceAction = (message) => {
+const getPreferUserId = (config) => {
+  if (config.preferUserId !== undefined) {
+    return config.preferUserId;
+  }
+  return true;
+};
+
+const getMergeNestedObjects = (config) => {
+  if (config.mergeNestedObjects !== undefined) {
+    return config.mergeNestedObjects;
+  }
+  return true;
+};
+
+const identifyDeviceAction = (message, config) => {
   let rawPayload = {};
   rawPayload = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY_DEVICE.name]);
   rawPayload.device = constructPayload(message, mappingConfig[ConfigCategory.DEVICE.name]);
-  rawPayload.preferUserId = true;
+  rawPayload.preferUserId = getPreferUserId(config);
   if (isAppleFamily(message.context.device.type)) {
     rawPayload.device.platform = 'APNS';
   } else {
@@ -40,14 +54,14 @@ const identifyBrowserAction = (message) => {
   return rawPayload;
 };
 
-const identifyAction = (message, category) => {
+const identifyAction = (message, category, config) => {
   // If mapped to destination, Add externalId to traits
   if (get(message, MappedToDestinationKey)) {
     addExternalIdToTraits(message);
   }
   const rawPayload = constructPayload(message, mappingConfig[category.name]);
-  rawPayload.preferUserId = true;
-  rawPayload.mergeNestedObjects = true;
+  rawPayload.preferUserId = getPreferUserId(config);
+  rawPayload.mergeNestedObjects = getMergeNestedObjects(config);
   validateMandatoryField(rawPayload);
   return rawPayload;
 };
@@ -129,14 +143,14 @@ const trackAction = (message, category) => {
   return rawPayload;
 };
 
-const trackPurchaseAction = (message, category) => {
+const trackPurchaseAction = (message, category, config) => {
   let rawPayload = {};
   const rawPayloadItemArr = [];
   rawPayload = constructPayload(message, mappingConfig[category.name]);
   rawPayload.user = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
   validateMandatoryField(rawPayload.user);
-  rawPayload.user.preferUserId = true;
-  rawPayload.user.mergeNestedObjects = true;
+  rawPayload.user.preferUserId = getPreferUserId(config);
+  rawPayload.user.mergeNestedObjects = getMergeNestedObjects(config);
   rawPayload.items = message.properties.products;
   if (rawPayload.items && Array.isArray(rawPayload.items)) {
     rawPayload.items.forEach((el) => {
@@ -179,15 +193,15 @@ const trackPurchaseAction = (message, category) => {
   return rawPayload;
 };
 
-const updateCartAction = (message) => {
+const updateCartAction = (message, config) => {
   const rawPayload = {
     items: message.properties.products,
   };
   const rawPayloadItemArr = [];
   rawPayload.user = constructPayload(message, mappingConfig[ConfigCategory.IDENTIFY.name]);
   validateMandatoryField(rawPayload.user);
-  rawPayload.user.preferUserId = true;
-  rawPayload.user.mergeNestedObjects = true;
+  rawPayload.user.preferUserId = getPreferUserId(config);
+  rawPayload.user.mergeNestedObjects = getMergeNestedObjects(config);
   if (rawPayload.items && Array.isArray(rawPayload.items)) {
     rawPayload.items.forEach((el) => {
       const element = constructPayload(el, mappingConfig[ConfigCategory.PRODUCT.name]);

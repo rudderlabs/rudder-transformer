@@ -18,7 +18,7 @@ const {
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
   SHOPIFY_TRACK_MAP,
   SHOPIFY_ADMIN_ONLY_EVENTS,
-  useRedisDatabase
+  useRedisDatabase,
 } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 
@@ -103,15 +103,15 @@ const getCartToken = (message) => {
 /**
  * This function checks and returns `rudderAnonymousId` from message if present
  * returns null if not present or found
- * @param {*} message 
+ * @param {*} message
  */
 const getRudderIdFromNoteAtrributes = (noteAttributes, field) => {
-  const rudderIdObj = noteAttributes.find(obj => obj.name === field);
+  const rudderIdObj = noteAttributes.find((obj) => obj.name === field);
   if (isDefinedAndNotNull(rudderIdObj)) {
     return rudderIdObj.value;
   }
   return null;
-}
+};
 /**
  * This function gets the anonymousId based on cart_token from redis
  * @param {*} message
@@ -123,14 +123,16 @@ const getAnonymousIdFromDb = async (cartToken, message, metricMetadata) => {
     type: 'get',
     ...metricMetadata,
   });
+  let failCount = 0;
   try {
     anonymousId = await RedisDB.getVal(`${cartToken}`, 'anonymousId');
   } catch (e) {
-    stats.increment('shopify_redis_failures', {
-      type: 'get',
-      ...metricMetadata,
-    });
+    failCount += 1;
   }
+  stats.counter('shopify_redis_failures', failCount, {
+    type: 'get',
+    ...metricMetadata,
+  });
   if (isDefinedAndNotNull(anonymousId)) {
     return anonymousId;
   }
@@ -148,19 +150,19 @@ const getAnonymousIdFromDb = async (cartToken, message, metricMetadata) => {
  * 2. if redis is enabled checks in redis
  * 3. This means we don't have `anonymousId` and hence events CAN NOT be stitched and we check for cartToken
  *    a. if cartToken is available we return its hash value
- *    b. else we check if the event is an SHOPIFY_ADMIN_ONLY_EVENT 
+ *    b. else we check if the event is an SHOPIFY_ADMIN_ONLY_EVENT
  *       -> if true we return `null`;
  *       -> else we don't have any identifer (very edge case) we return `random anonymousId`
- * @param {*} message 
- * @param {*} metricMetadata 
- * @returns 
+ * @param {*} message
+ * @param {*} metricMetadata
+ * @returns
  */
 const getAnonymousId = async (message, metricMetadata) => {
   let anonymousId;
   const noteAttributes = message.properties?.note_attributes;
   // Giving Priority to note_attributes to fetch rudderAnonymousId over Redis ue to better functionality
   if (isDefinedAndNotNull(noteAttributes)) {
-    anonymousId = getRudderIdFromNoteAtrributes(noteAttributes, "rudderAnonymousId");
+    anonymousId = getRudderIdFromNoteAtrributes(noteAttributes, 'rudderAnonymousId');
   }
   // falling back to cartToken mapping or its hash in case no rudderAnonymousId is found
   if (isDefinedAndNotNull(anonymousId)) {
@@ -213,8 +215,8 @@ const updateCartItemsInRedis = async (cartToken, newCartItemsHash, metricMetadat
  * This function checks for duplicate cart update event by checking the lineItems hash of previous cart update event
  * and comapre it with the received lineItems hash.
  * Also if redis is down or there is no lineItems hash for the given cartToken we be default take it as a valid cart update event
- * @param {*} inputEvent 
- * @param {*} metricMetadata 
+ * @param {*} inputEvent
+ * @param {*} metricMetadata
  * @returns boolean
  */
 const checkAndUpdateCartItems = async (inputEvent, metricMetadata) => {

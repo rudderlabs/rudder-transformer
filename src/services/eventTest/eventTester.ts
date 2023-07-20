@@ -2,6 +2,7 @@ import { sendToDestination, userTransformHandler } from '../../routerUtils';
 
 export default class EventTesterService {
   private static getDestHandler(version, destination) {
+    // eslint-disable-next-line global-require, import/no-dynamic-require
     return require(`../../${version}/destinations/${destination}/transform`);
   }
 
@@ -25,7 +26,7 @@ export default class EventTesterService {
 
   private static isSupportedContentType(contentType) {
     let supported = false;
-    const SUPPORTED_CONTENT_TYPES = .application/xml', 'application/json', 'text;
+    const SUPPORTED_CONTENT_TYPES = ['application/xml', 'application/json', 'text'];
     if (contentType) {
       SUPPORTED_CONTENT_TYPES.some((type) => {
         if (contentType.toLowerCase().includes(type)) {
@@ -57,7 +58,7 @@ export default class EventTesterService {
 
         if (stage.user_transform) {
           let librariesVersionIDs = [];
-          if (event.libraries) {
+          if (libraries) {
             librariesVersionIDs = events[0].libraries.map((library) => library.versionId);
           }
           const transformationVersionId =
@@ -129,17 +130,17 @@ export default class EventTesterService {
               const parsedResponse = await sendToDestination(dest, payload);
 
               let contentType = '';
-              let response = '';
+              let responsePayload = '';
               if (parsedResponse.headers) {
                 contentType = parsedResponse.headers['content-type'];
                 if (this.isSupportedContentType(contentType)) {
-                  response = parsedResponse.response;
+                  responsePayload = parsedResponse.responsePayload;
                 }
               } else if (parsedResponse.networkFailure) {
-                response = parsedResponse.response;
+                responsePayload = parsedResponse.responsePayload;
               }
 
-              destResponses.push(response);
+              destResponses.push(responsePayload);
               destResponseStatuses.push(parsedResponse.status);
 
               // TODO: Use updated handleResponseTransform function

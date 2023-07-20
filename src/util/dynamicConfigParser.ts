@@ -5,7 +5,7 @@ import { ProcessorTransformationRequest, RouterTransformationRequestData } from 
 const get = require('get-value');
 const unset = require('unset-value');
 
-export class DynamicConfigParser {
+export default class DynamicConfigParser {
   private static getDynamicConfigValue(
     event: ProcessorTransformationRequest | RouterTransformationRequestData,
     value: any,

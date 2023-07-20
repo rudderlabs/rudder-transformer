@@ -162,6 +162,7 @@ export default class UserTransformService {
       }
 
       logger.debug(`[CT] Test Input Events: ${JSON.stringify(events)}`);
+      // eslint-disable-next-line no-param-reassign
       trRevCode.versionId = 'testVersionId';
       response.body = await userTransformHandler()(
         events,

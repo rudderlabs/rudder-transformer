@@ -1,4 +1,4 @@
-/* eslint-disable max-classes-per-file */
+/* eslint-disable max-classes-per-file, @typescript-eslint/return-await */
 const http = require('http');
 const https = require('https');
 const { Resolver } = require('dns').promises;
@@ -33,6 +33,7 @@ const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
     return;
   }
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const ip of ips) {
     if (ip.includes(LOCALHOST_IP)) {
       cb(null, `cannot use ${LOCALHOST_IP} as IP address`, RECORD_TYPE_A);

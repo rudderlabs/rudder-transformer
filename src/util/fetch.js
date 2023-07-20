@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/return-await */
 const fetch = require('node-fetch');
 const HttpsProxyAgent = require('https-proxy-agent');
 const lodash = require('lodash');

@@ -1,3 +1,4 @@
+/* eslint-disable global-require, import/no-dynamic-require */
 import { client as errNotificationClient } from '../util/errorNotifier';
 import logger from '../logger';
 // TODO: To be refactored and redisgned
@@ -17,12 +18,23 @@ const getCommonMetadata = (ctx) =>
     namespace: 'Unknown',
     cluster: 'Unknown',
   });
+
+const getReqMetadata = () => {
+  try {
+    const reqBody = ctx.request.body;
+    return { destType: reqBody?.destType, importId: reqBody?.importId };
+  } catch (error) {
+    // Do nothing
+  }
+  return {};
+};
+
 export const fileUpload = async (ctx) => {
   logger.debug(
     'Native(Bulk-Upload): Request to transformer:: /fileUpload route',
     JSON.stringify(ctx.request.body),
   );
-  const getReqMetadata = () => {
+  const getReqMetadataFileUpload = () => {
     try {
       const reqBody = ctx.request.body;
       return { destType: reqBody?.destType };
@@ -52,7 +64,7 @@ export const fileUpload = async (ctx) => {
     errNotificationClient.notify(error, 'File Upload', {
       ...response,
       ...getCommonMetadata(ctx),
-      ...getReqMetadata(),
+      ...getReqMetadataFileUpload(),
     });
   }
   ctx.body = response;
@@ -68,15 +80,6 @@ export const pollStatus = async (ctx) => {
     'Native(Bulk-Upload): Request to transformer:: /pollStatus route',
     JSON.stringify(ctx.request.body),
   );
-  const getReqMetadata = () => {
-    try {
-      const reqBody = ctx.request.body;
-      return { destType: reqBody?.destType, importId: reqBody?.importId };
-    } catch (error) {
-      // Do nothing
-    }
-    return {};
-  };
 
   const { destType } = ctx.request.body;
   const destFileUploadHandler = getPollStatusHandler('v0', destType.toLowerCase());
@@ -112,15 +115,6 @@ export const getWarnJobStatus = async (ctx) => {
     'Native(Bulk-Upload): Request to transformer:: /getWarningJobs route',
     JSON.stringify(ctx.request.body),
   );
-  const getReqMetadata = () => {
-    try {
-      const reqBody = ctx.request.body;
-      return { destType: reqBody?.destType, importId: reqBody?.importId };
-    } catch (error) {
-      // Do nothing
-    }
-    return {};
-  };
 
   const { destType } = ctx.request.body;
   const destFileUploadHandler = getJobStatusHandler('v0', destType.toLowerCase());
@@ -157,15 +151,6 @@ export const getFailedJobStatus = async (ctx) => {
     'Native(Bulk-Upload): Request to transformer:: /getFailedJobs route',
     JSON.stringify(ctx.request.body),
   );
-  const getReqMetadata = () => {
-    try {
-      const reqBody = ctx.request.body;
-      return { destType: reqBody?.destType, importId: reqBody?.importId };
-    } catch (error) {
-      // Do nothing
-    }
-    return {};
-  };
 
   const { destType } = ctx.request.body;
   const destFileUploadHandler = getJobStatusHandler('v0', destType.toLowerCase());

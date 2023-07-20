@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import cloneDeep from 'lodash/cloneDeep';
 import isObject from 'lodash/isObject';
 import isEmpty from 'lodash/isEmpty';

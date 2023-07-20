@@ -139,11 +139,11 @@ const process = async (event) => {
 
 const getEventChunks = (event, storeSalesEvents, clickCallEvents) => {
   const { message, metadata, destination } = event;
-  message.forEach((message) => {
-    if (message.body.JSON?.isStoreConversion) {
-      storeSalesEvents.push({ message, metadata, destination });
+  message.forEach((msg) => {
+    if (msg.body.JSON?.isStoreConversion) {
+      storeSalesEvents.push({ msg, metadata, destination });
     } else {
-      clickCallEvents.push(getSuccessRespEvents(message, [metadata], destination));
+      clickCallEvents.push(getSuccessRespEvents(msg, [metadata], destination));
     }
   });
   return { storeSalesEvents, clickCallEvents };
@@ -166,7 +166,7 @@ const batchEvents = (storeSalesEvents) => {
     if (index === 0) {
       return;
     }
-    batchEventResponse.batchedRequest?.body?.JSON['addConversionPayload']?.operations?.push(
+    batchEventResponse.batchedRequest?.body?.JSON.addConversionPayload?.operations?.push(
       storeSalesEvent.message?.body?.JSON?.addConversionPayload?.operations,
     );
     batchEventResponse.metadatas.push(storeSalesEvent.metadata);

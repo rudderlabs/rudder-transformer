@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import IntegrationDestinationService from '../interfaces/DestinationService';
 import {
   DeliveryResponse,
@@ -81,6 +82,7 @@ export default class ComparatorService implements IntegrationDestinationService 
       return;
     }
 
+    // eslint-disable-next-line no-restricted-syntax
     for (const [index, element] of primaryResplist.entries()) {
       const objectDiff = CommonUtils.objectDiff(element, secondaryResplist[index]);
       if (object.keys(objectDiff).length > 0) {
@@ -129,6 +131,7 @@ export default class ComparatorService implements IntegrationDestinationService 
     }
 
     let hasComparisonFailed = false;
+    // eslint-disable-next-line no-restricted-syntax
     for (const [index, element] of primaryResplist.entries()) {
       const objectDiff = CommonUtils.objectDiff(element, secondaryResplist[index]);
       if (object.keys(objectDiff).length > 0) {

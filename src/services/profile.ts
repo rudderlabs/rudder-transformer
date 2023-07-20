@@ -22,6 +22,7 @@ heap.start(intervalBytes, stackDepth);
 
 export default class ProfileService {
   private static async promisifiedRead(readable: any) {
+    // eslint-disable-next-line no-new
     new Promise((resolve, reject) => {
       // Instructions for reading data
       const chunks: any[] = [];
@@ -81,11 +82,13 @@ export default class ProfileService {
       const shouldGenerateLocally = !credBucketDetails.sendTo;
       logger.info('Before Heapsnapshot converted into a readable stream');
       let fileName = '';
+      // eslint-disable-next-line no-param-reassign
       format = 'pb.gz';
       let profile;
       if (format && format === 'v8') {
         const readable = v8.getHeapSnapshot();
         snapshotReadableStream = await this.promisifiedRead(readable);
+        // eslint-disable-next-line no-param-reassign
         format = 'heapsnapshot';
       } else {
         profile = heap.profile();

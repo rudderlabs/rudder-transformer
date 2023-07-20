@@ -1,3 +1,4 @@
+/* eslint-disable class-methods-use-this */
 import groupBy from 'lodash/groupBy';
 import { processCdkV2Workflow } from '../../cdk/v2/handler';
 import IntegrationDestinationService from '../../interfaces/DestinationService';

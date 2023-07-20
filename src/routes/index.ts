@@ -30,7 +30,7 @@ export function applicationRoutes(app: Koa<any, object>) {
   app.use(userTransformRoutes);
 }
 
-export function addSwaggerRoutes(app: Koa<any, {}>) {
+export function addSwaggerRoutes(app: Koa<any, object>) {
   // Ading swagger routes, check swagger docs in http://localhost:9090/docs
   if (enableSwagger) {
     try {

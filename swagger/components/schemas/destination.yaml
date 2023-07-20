@@ -1,0 +1,20 @@
+title: Destination schema
+type: object
+properties:
+  ID:
+    type: string
+  Name:
+    type: string
+  DestinationDefinition:
+    $ref: './destinationDefinition.yaml'
+  Config:
+    type: object
+  Enabled:
+    type: boolean
+  WorkspaceID:
+    type: string
+  Transformations:
+    items:
+    $ref: './userTransformationInput.yaml'
+  RevisionID:
+    type: string

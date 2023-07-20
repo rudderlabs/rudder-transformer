@@ -42,17 +42,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf',
-                appSubdomain: 'commander',
-                userEvents: [{ rsEventName: 'login', userEventName: 'product viewed' }],
-                companyAttributesMapping: [
-                  { from: 'category', to: 'companycategory' },
-                  { from: 'owner', to: 'companyowner' },
-                ],
-              },
-            },
             error: 'Event type is required',
             statTags: {
               destType: 'USER',
@@ -112,9 +101,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: { apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf', appSubdomain: 'commander' },
-            },
             error: 'Event type trackuser is not supported',
             statTags: {
               destType: 'USER',
@@ -162,9 +148,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: { apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf', appSubdomain: 'commander' },
-            },
             error: 'Parameter event is required',
             statTags: {
               destType: 'USER',
@@ -231,9 +214,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: { apiKey: '262fbbda-b85b-48b8-a719-c2fceaf8afaf', appSubdomain: 'commander' },
-            },
             error: 'Parameter name is required',
             statTags: {
               destType: 'USER',

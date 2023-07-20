@@ -140,7 +140,6 @@ const data = [
               batchedRequest: {
                 version: '1',
                 type: 'REST',
-                userId: '',
                 method: 'GET',
                 endpoint: 'https://s2s.singular.net/api/v1/launch',
                 headers: {},
@@ -351,7 +350,6 @@ const data = [
               batchedRequest: {
                 version: '1',
                 type: 'REST',
-                userId: '',
                 method: 'GET',
                 endpoint: 'https://s2s.singular.net/api/v1/launch',
                 headers: {},
@@ -562,7 +560,6 @@ const data = [
               batchedRequest: {
                 version: '1',
                 type: 'REST',
-                userId: '',
                 method: 'GET',
                 endpoint: 'https://s2s.singular.net/api/v1/launch',
                 headers: {},
@@ -845,7 +842,6 @@ const data = [
               batchedRequest: {
                 version: '1',
                 type: 'REST',
-                userId: '',
                 method: 'GET',
                 endpoint: 'https://s2s.singular.net/api/v1/evt',
                 headers: {},

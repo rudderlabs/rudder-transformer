@@ -200,7 +200,6 @@ const data = [
                   },
                 ],
                 tableId: 'gc_table',
-                userId: '',
               },
               metadata: [
                 {

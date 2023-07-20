@@ -7,8 +7,6 @@ bindings:
     path: ../../../../v0/util
   - name: defaultRequestConfig
     path: ../../../../v0/util
-  - name: formatTimeStamp
-    path: ../../../../v0/util
   - path: ../../bindings/jsontemplate
   - path: ./config
 

@@ -327,7 +327,6 @@ const data = [
                   FORM: {},
                 },
                 files: {},
-                userId: '',
               },
               destination: {
                 ID: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
@@ -393,7 +392,6 @@ const data = [
                   FORM: {},
                 },
                 files: {},
-                userId: '',
               },
               destination: {
                 ID: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',

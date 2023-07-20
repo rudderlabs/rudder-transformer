@@ -6,6 +6,7 @@ const { getTransformationCodeV1 } = require('./customTransforrmationsStore-v1');
 const { UserTransformHandlerFactory } = require('./customTransformerFactory');
 const { parserForImport } = require('./parser');
 const stats = require('./stats');
+const { fetchWithDnsWrapper } = require('./utils');
 
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
@@ -39,7 +40,7 @@ async function runUserTransform(
     new ivm.Reference(async (resolve, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetch(...args);
+        const res = await fetchWithDnsWrapper(versionId, ...args);
         const data = await res.json();
         stats.timing('fetch_call_duration', fetchStartTime, { versionId });
         resolve.applyIgnored(undefined, [new ivm.ExternalCopy(data).copyInto()]);
@@ -54,7 +55,7 @@ async function runUserTransform(
     new ivm.Reference(async (resolve, reject, ...args) => {
       try {
         const fetchStartTime = new Date();
-        const res = await fetch(...args);
+        const res = await fetchWithDnsWrapper(versionId, ...args);
         const headersContent = {};
         res.headers.forEach((value, header) => {
           headersContent[header] = value;

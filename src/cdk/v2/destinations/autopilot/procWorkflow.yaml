@@ -2,25 +2,27 @@ bindings:
   - name: EventType
     path: ../../../../constants
   - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
 
 steps:
   - name: validateInput
     template: |
       $.assert(.message.type, "message Type is not present. Aborting message.");
+       $.assert(.message.type in {{$.EventType.([.IDENTIFY, .TRACK])}}, 
+        "message type " + .message.type + " is not supported");
+  - name: setMessageType
+    template: |
       $.context.messageType = .message.type.toLowerCase();
-      $.assert($.context.messageType in {{$.EventType.([.IDENTIFY, .TRACK])}}, 
-        "message type " + $.context.messageType + " is not supported");
   - name: preparePayloadForIdentify
     condition: $.context.messageType === {{$.EventType.IDENTIFY}}
     template: |
       $.context.endpoint = 'https://api2.autopilothq.com/v1/contact';
       const basePayload = .message.({
         Email: .traits.email ?? .context.traits.email,
-        FirstName: .traits.firstName ?? .context.traits.firstName 
-              ?? .traits.firstname ?? .context.traits.firstname,
-        LastName: .traits.lastName ?? .context.traits.lastName 
-              ?? .traits.lastname ?? .context.traits.lastname,
-        Phone: .traits.phone ?? .context.traits.phone,
+        FirstName: {{{{$.getGenericPaths("firstName")}}}},
+        LastName: {{{{$.getGenericPaths("lastName")}}}},
+        Phone: {{{{$.getGenericPaths("phone")}}}},
         Company: .traits.company.name ?? .context.traits.company.name,
         Status: .traits.status ?? .context.traits.status,
         LeadSource: .traits.LeadSource ?? .context.traits.LeadSource
@@ -34,7 +36,7 @@ steps:
   - name: preparePayloadForTrack
     condition: $.context.messageType === {{$.EventType.TRACK}}
     template: |
-      const contactIdOrEmail = .message.().(
+      const contactIdOrEmail = .message.(
         {{{{$.getGenericPaths("email")}}}};
       );
       $.assert(contactIdOrEmail, 'Email is required for track calls');
@@ -50,23 +52,13 @@ steps:
     else:
       name: buildResponseForProcessTransformation
       template: |
-        {
-          "body": {
-            "JSON": $.context.payload,
-            "JSON_ARRAY": {},
-            "XML": {},
-            "FORM": {}
-          },
-          "version": "1",
-          "type": "REST",
-          "method": "POST",
-          "endpoint": $.context.endpoint,
-          "headers": {
-            "Accept": "application/json",
-            "autopilotapikey": .destination.Config.apiKey,
-            "Content-Type": "application/json"
-          },
-          "params": {},
-          "files": {},
-          "userId": .message.anonymousId
+        const response = $.defaultRequestConfig();
+        response.body.JSON = $.context.payload;
+        response.userId = .message.anonymousId;
+        response.endpoint = $.context.endpoint;
+        response.headers = {
+          "Accept": "application/json",
+          "autopilotapikey": .destination.Config.apiKey,
+          "Content-Type": "application/json"
         }
+        response

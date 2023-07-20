@@ -85,7 +85,6 @@ const data = [
                 {
                   version: '1',
                   type: 'REST',
-                  userId: '',
                   method: 'POST',
                   endpoint:
                     'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
@@ -239,7 +238,6 @@ const data = [
                 {
                   version: '1',
                   type: 'REST',
-                  userId: '',
                   method: 'POST',
                   endpoint:
                     'https://api.serenytics.com/api/data_source/b646…/push/ad051d45f10a0c11a50f5c20af838e39ea9dcf12',
@@ -266,7 +264,6 @@ const data = [
                 {
                   version: '1',
                   type: 'REST',
-                  userId: '',
                   method: 'POST',
                   endpoint:
                     'https://api.serenytics.com/api/data_source/0714…/push/f48540d9b51fd5c88dffaad4e34cd0b56a525981',
@@ -293,7 +290,6 @@ const data = [
                 {
                   version: '1',
                   type: 'REST',
-                  userId: '',
                   method: 'POST',
                   endpoint:
                     'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
@@ -484,7 +480,6 @@ const data = [
                   JSON_ARRAY: {},
                 },
                 type: 'REST',
-                userId: '',
                 files: {},
                 method: 'POST',
                 params: {},

@@ -1,62 +1,69 @@
-const path = require("path");
-const Koa = require("koa");
-const bodyParser = require("koa-bodyparser");
+import { join } from "path";
+import Koa from "koa";
+import request from 'supertest';
+import bodyParser from "koa-bodyparser";
+import { createHttpTerminator } from 'http-terminator';
+import { TestCaseData } from './testTypes';
+import { applicationRoutes } from "../../src/routes/index";
+import { getTestDataFilePaths, getTestData } from "./testUtils";
+import tags from "../../src/v0/util/tags";
+import { Server } from "http";
 
-const { router } = require("../../src/legacy/router");
-const { getTestDataFilePaths, getTestData } = require("./testUtils");
-const tags = require("../../src/v0/util/tags");
-const supertest = require("supertest");
+let server: Server;
 
-// Initialize application
-const app = new Koa();
-app.use(
-  bodyParser({
-    jsonLimit: "200mb"
-  })
-);
-app.use(router.routes()).use(router.allowedMethods());
+beforeAll(async () => {
+  const app = new Koa();
+  app.use(
+    bodyParser({
+      jsonLimit: '200mb',
+    }),
+  );
+  applicationRoutes(app);
+  server = app.listen();
+});
+
+afterAll(async () => {
+  await createHttpTerminator({ server }).terminate();
+});
 
 const rootDir = __dirname;
 const allTestDataFilePaths = getTestDataFilePaths(rootDir);
 const DEFAULT_VERSION = "v0";
 
-const testRoute = async (route, tcData) => {
+const testRoute = async (route, tcData: TestCaseData) => {
   const inputReq = tcData.input.request;
-  let stHandler = supertest(app.callback());
   const { headers, params, body } = inputReq;
+  let testRequest: request.Test;
   switch (inputReq.method) {
     case "GET":
-      stHandler = stHandler.get(route);
+      testRequest = request(server).get(route);
       break;
     case "PUT":
-      stHandler = stHandler.put(route);
+      testRequest = request(server).put(route);
       break;
     case "DELETE":
-      stHandler = stHandler.delete(route);
+      testRequest = request(server).delete(route);
       break;
+
     default:
-      stHandler = stHandler.post(route);
+      testRequest = request(server).post(route);
       break;
   }
 
-  const response = await stHandler
-  .set(headers || {})
-  .query(params || {})
-  .send(body || "");
-
-  const outputResp = tcData.output.response;
+  const response = await testRequest.set(headers || {}).query(params || {}).send(body);
+  const outputResp = tcData.output.response || {} as any;
   expect(response.status).toEqual(outputResp.status);
 
   if (outputResp && outputResp.body) {
     expect(response.body).toEqual(outputResp.body);
   }
-  
+
   if (outputResp.headers !== undefined) {
     expect(response.headers).toEqual(outputResp.headers);
   }
 }
 
-const destinationTestHandler = async (tcData) => {
+const destinationTestHandler = async (tcData: TestCaseData) => {
   let route;
   switch (tcData.feature) {
     case tags.FEATURES.ROUTER:
@@ -66,32 +73,32 @@ const destinationTestHandler = async (tcData) => {
       route = `/batch`;
       break;
     case tags.FEATURES.DATA_DELIVERY:
-      route = `/${path.join(tcData.version || DEFAULT_VERSION, "destinations", tcData.name, "proxy")}`;
+      route = `/${join(tcData.version || DEFAULT_VERSION, "destinations", tcData.name, "proxy")}`;
       break;
     case tags.FEATURES.USER_DELETION:
       route = 'deleteUsers';
       break;
     case tags.FEATURES.PROCESSOR:
       // Processor transformation
-      route = `/${path.join(tcData.version || DEFAULT_VERSION, "destinations", tcData.name)}`;
+      route = `/${join(tcData.version || DEFAULT_VERSION, "destinations", tcData.name)}`;
       break;
     default:
       // Intentionally fail the test case
       expect(true).toEqual(false);
       break;
   }
-  route = path.join(route, tcData.input.pathSuffix);
+  route = join(route, tcData.input.pathSuffix || "");
   await testRoute(route, tcData);
 };
 
 const sourceTestHandler = async (tcData) => {
-  const route = `/${path.join(tcData.version || DEFAULT_VERSION, "sources", tcData.name, tcData.input.pathSuffix)}`;
+  const route = `/${join(tcData.version || DEFAULT_VERSION, "sources", tcData.name, tcData.input.pathSuffix)}`;
   await testRoute(route, tcData);
 };
 
 // Trigger the test suites
 describe.each(allTestDataFilePaths)("%s Tests", (testDataPath) => {
-  const testData = getTestData(testDataPath);
+  const testData: TestCaseData[] = getTestData(testDataPath);
   test.each(testData)('$name - $module - $feature -> $description', async (tcData) => {
     switch (tcData.module) {
       case tags.MODULES.DESTINATION:

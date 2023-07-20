@@ -1,0 +1,69 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - name: flattenJson
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.type in {{$.EventType.([.PAGE, .TRACK, .SCREEN, .IDENTIFY])}}, 
+        "message type " + .message.type + " is not supported");
+  - name: prepareContext
+    template: |
+      $.context.messageType = .message.type.toLowerCase();
+      $.context.endpoint = "https://api.lytics.io/collect/json/"+.destination.Config.stream +"?access_token="+.destination.Config.apiKey;
+      $.context.payload = {};
+  - name: identifyPayload
+    condition: $.context.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      const flattenTraits = $.flattenJson(.message.traits ?? .message.context.traits);
+      $.context.payload = .message.({
+        ...flattenTraits,
+        first_name: {{{{$.getGenericPaths("firstName")}}}},
+        last_name: {{{{$.getGenericPaths("lastName")}}}},
+        user_id: {{{{$.getGenericPaths("userId")}}}}
+      })
+    else:
+      name: payloadForOthers
+      template: |
+        const flattenProperties = $.flattenJson(.message.properties);
+        $.context.payload = .message.({
+          ...flattenProperties,
+          first_name: .properties.firstName ?? .properties.firstname,
+          last_name: .properties.lastName ?? .properties.lastname
+        })
+  - name: trackPayload
+    condition: $.context.messageType === {{$.EventType.TRACK}}
+    template: |
+      $.context.payload._e = .message.event;
+  - name: pageOrScreenPayload
+    condition: $.context.messageType === {{$.EventType.PAGE}} ||
+               $.context.messageType === {{$.EventType.SCREEN}}
+    template: |
+      $.context.payload.event = .message.name
+  - name: cleanPaylod
+    template: |
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+      $.context.payload = $.context.payload{~["firstname", "firstName", "lastname", "lastName"]};
+  - name: buildResponse
+    description: In batchMode we return payload directly
+    condition: $.batchMode
+    template: $.context.payload
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        const response = $.defaultRequestConfig();
+        response.body.JSON = $.context.payload;
+        response.endpoint = $.context.endpoint;
+        response.headers = {
+          "Content-Type": "application/json"
+        };
+        response
+

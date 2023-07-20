@@ -180,7 +180,6 @@ const data = [
                   FORM: {},
                 },
                 files: {},
-                userId: '',
               },
               metadata: [
                 {
@@ -441,7 +440,6 @@ const data = [
                   FORM: {},
                 },
                 files: {},
-                userId: '',
               },
               metadata: [
                 {

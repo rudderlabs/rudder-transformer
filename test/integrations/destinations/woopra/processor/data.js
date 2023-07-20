@@ -254,7 +254,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: { Config: { projectName: 'int.com' } },
             error: 'Message type group is not supported',
             statTags: {
               destType: 'WOOPRA',
@@ -298,7 +297,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: { Config: { projectName: 'int.com' } },
             error: 'Event Name can not be empty',
             statTags: {
               destType: 'WOOPRA',

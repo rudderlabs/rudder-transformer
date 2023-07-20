@@ -489,22 +489,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                advertiserId: '1234',
-                eventsToTrack: [
-                  {
-                    eventName: 'abc',
-                  },
-                  {
-                    eventName: 'prop2',
-                  },
-                  {
-                    eventName: 'prop3',
-                  },
-                ],
-              },
-            },
             error: 'Message type not supported',
             statTags: {
               destType: 'AWIN',
@@ -620,21 +604,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                eventsToTrack: [
-                  {
-                    eventName: 'abc',
-                  },
-                  {
-                    eventName: 'prop2',
-                  },
-                  {
-                    eventName: 'prop3',
-                  },
-                ],
-              },
-            },
             error: 'Advertiser Id is not present. Aborting message.',
             statTags: {
               destType: 'AWIN',
@@ -750,22 +719,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                advertiserId: '1234',
-                eventsToTrack: [
-                  {
-                    eventName: 'abc',
-                  },
-                  {
-                    eventName: 'prop2',
-                  },
-                  {
-                    eventName: 'prop3',
-                  },
-                ],
-              },
-            },
             error: 'Message Type is not present. Aborting message.',
             statTags: {
               destType: 'AWIN',
@@ -882,22 +835,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                advertiserId: '1234',
-                eventsToTrack: [
-                  {
-                    eventName: 'abc',
-                  },
-                  {
-                    eventName: 'prop2',
-                  },
-                  {
-                    eventName: 'prop3',
-                  },
-                ],
-              },
-            },
             error: "Event is not present in 'Events to Track' list. Aborting message.",
             statTags: {
               destType: 'AWIN',

@@ -118,9 +118,6 @@ Also checks if it is a standard event and sends properties only if it is mention
 @param whitelistPiiProperties -->
 [ { whitelistPiiProperties: 'email' } ] // sets email
 
-@param isStandard --> is standard if among the ecommerce spec of rudder other wise is not standard for simple track, identify and page calls
-false
-
 @param eventCustomProperties -->
 [ { eventCustomProperties: 'leadId' } ] // leadId if present will be set
 
@@ -131,7 +128,6 @@ const transformedPayloadData = (
   customData,
   blacklistPiiProperties,
   whitelistPiiProperties,
-  isStandard,
   integrationsObj,
 ) => {
   const defaultPiiProperties = [
@@ -155,33 +151,35 @@ const transformedPayloadData = (
   const finalBlacklistPiiProperties = blacklistPiiProperties || [];
   const finalWhitelistPiiProperties = whitelistPiiProperties || [];
   const customBlackListedPiiProperties = {};
-  const customWhiteListedProperties = {};
+
+  // create list of whitelisted properties
+  const customWhiteListedProperties = finalWhitelistPiiProperties.map(
+    (propObject) => propObject.whitelistPiiProperties,
+  );
+
+  // create map of blacklisted properties
   finalBlacklistPiiProperties.forEach((property) => {
     const singularConfigInstance = property;
     customBlackListedPiiProperties[singularConfigInstance.blacklistPiiProperties] =
       singularConfigInstance.blacklistPiiHash;
   });
 
-  finalWhitelistPiiProperties.forEach((property) => {
-    const singularConfigInstance = property;
-    customWhiteListedProperties[singularConfigInstance.whitelistPiiProperties] = true;
-  });
-
+  // remove properties which are default pii properties and not whitelisted
   Object.keys(clonedCustomData).forEach((eventProp) => {
     const isDefaultPiiProperty = defaultPiiProperties.includes(eventProp);
-    const isProperyWhiteListed = customWhiteListedProperties[eventProp] || false;
-    if (isDefaultPiiProperty && !isProperyWhiteListed) {
-      delete clonedCustomData[eventProp];
-    }
+    const isProperyWhiteListed = customWhiteListedProperties.includes(eventProp);
 
     if (Object.prototype.hasOwnProperty.call(customBlackListedPiiProperties, eventProp)) {
       if (customBlackListedPiiProperties[eventProp]) {
+        // if customBlackListedPiiProperty is marked to be hashed from UI
         clonedCustomData[eventProp] = integrationsObj?.hashed
           ? String(message.properties[eventProp])
           : sha256(String(message.properties[eventProp]));
-      } else {
+      } else if (isDefaultPiiProperty && !isProperyWhiteListed) {
         delete clonedCustomData[eventProp];
       }
+    } else if (isDefaultPiiProperty && !isProperyWhiteListed) {
+      delete clonedCustomData[eventProp];
     }
   });
 
@@ -510,6 +508,135 @@ const formingFinalResponse = (
   throw new TransformationError('Payload could not be constructed');
 };
 
+const blacklistPiiPropertiesMock = [
+  {
+    blacklistPiiProperties: 'BlacklistPiiPropertyHashTrue',
+    blacklistPiiHash: true,
+  },
+  {
+    blacklistPiiProperties: 'BlacklistPiiPropertyHashFalse',
+    blacklistPiiHash: false,
+  },
+  {
+    blacklistPiiProperties: 'BlacklistPiiPropertyHashTrueNonString',
+    blacklistPiiHash: true,
+  },
+  {
+    blacklistPiiProperties: 'BlacklistPiiPropertyHashFalseNonString',
+    blacklistPiiHash: false,
+  },
+  {
+    blacklistPiiProperties: 'firstName',
+    blacklistPiiHash: true,
+  },
+  {
+    blacklistPiiProperties: 'lastName',
+    blacklistPiiHash: false,
+  },
+];
+
+const whitelistPiiPropertiesMock = [
+  {
+    whitelistlistPiiProperties: 'customPiiPropertyWhiteHashFalse',
+  },
+  {
+    whitelistPiiProperties: 'customPiiPropertyWhiteHashTrue',
+  },
+  {
+    whitelistPiiProperties: 'email',
+  },
+  {
+    whitelistPiiProperties: 'nonPiiWhiteListedProperty',
+  },
+];
+
+// const blacklistPiiPropertiesMock = [
+//   {
+//     "blacklistPiiProperties": "",
+//   }
+// ]
+
+// const whitelistPiiPropertiesMock = [
+//   {
+//     "blacklistPiiProperties": "",
+//   }
+// ]
+
+function isDate(value) {
+  return value instanceof Date;
+}
+
+const buildPayLoad = (rudderElement) => {
+  const dateFields = [
+    'checkinDate',
+    'checkoutDate',
+    'departingArrivalDate',
+    'departingDepartureDate',
+    'returningArrivalDate',
+    'returningDepartureDate',
+    'travelEnd',
+    'travelStart',
+  ];
+  const defaultPiiProperties = [
+    'email',
+    'firstName',
+    'lastName',
+    'gender',
+    'city',
+    'country',
+    'phone',
+    'state',
+    'zip',
+    'birthday',
+  ];
+  const whitelistPiiProperties = whitelistPiiPropertiesMock || [];
+  const blacklistPiiProperties = blacklistPiiPropertiesMock || [];
+
+  /**
+   * shouldPropBeHashedMap = {
+   * <blacklisted_property_name>: <hash_required_boolean>,
+   * }
+   */
+
+  const shouldPropBeHashedMap = blacklistPiiProperties.reduce((acc, currProp) => {
+    acc[currProp.blacklistPiiProperties] = currProp.blacklistPiiHash;
+    return acc;
+  }, {});
+  // console.log(shouldPropBeHashedMap);
+  const whitelistPiiPropertiesNames = whitelistPiiProperties.map(
+    (propObject) => propObject.whitelistPiiProperties,
+  );
+
+  const { properties } = rudderElement.message;
+
+  const payload = Object.entries(properties).reduce((acc, [currPropName, currPropValue]) => {
+    const isPropertyPii =
+      defaultPiiProperties.includes(currPropName) ||
+      shouldPropBeHashedMap.hasOwnProperty(currPropName);
+
+    const isProperyWhiteListed = whitelistPiiPropertiesNames.includes(currPropName);
+
+    const isDateProp = dateFields.includes(currPropName) && isDate(currPropValue);
+
+    if (isDateProp) {
+      [acc[currPropName]] = currPropValue.toISOString().split('T');
+    }
+
+    if (shouldPropBeHashedMap[currPropName] && typeof currPropValue === 'string') {
+      acc[currPropName] = sha256(currPropValue).toString();
+    } else if ((!isPropertyPii || isProperyWhiteListed) && !isDateProp) {
+      acc[currPropName] = currPropValue;
+    } else {
+      console.log(
+        `[Facebook Pixel] PII Property '${currPropValue}' is neither hashed nor whitelisted and will be ignored`,
+      );
+    }
+
+    return acc;
+  }, {});
+  return payload;
+};
+
 module.exports = {
   deduceFbcParam,
   formatRevenue,
@@ -522,4 +649,7 @@ module.exports = {
   handleProductListViewed,
   handleOrder,
   formingFinalResponse,
+  buildPayLoad,
+  blacklistPiiPropertiesMock,
+  whitelistPiiPropertiesMock,
 };

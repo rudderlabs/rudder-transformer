@@ -190,7 +190,7 @@ describe('Shopify Utils Test', () => {
     // Doing the following to enable redis mid test case file execution
     process.env.USE_REDIS_DB = true;
     jest.resetModules();
-    const { getAnonymousId } = require('./util');
+    const { getAnonymousIdAndSessionId } = require('./util');
     it('Properties containing cartToken but failed due redisError', async () => {
       const input = {
         event: 'Order Paid',

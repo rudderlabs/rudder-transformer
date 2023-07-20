@@ -103,6 +103,6 @@
   },
   {
     "statusCode": 400,
-    "error": "message type tals is not supported"
+    "error": "message type Tals is not supported"
   }
 ]

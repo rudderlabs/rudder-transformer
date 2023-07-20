@@ -1,0 +1,242 @@
+[
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "abcd.zap-hook",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": "first",
+        "userId": "identified user id",
+        "type": "track",
+        "anonymousId": "anon-id-new",
+        "context": {
+          "traits": {
+            "trait1": "new-val"
+          },
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "properties": {
+          "abc": "123",
+          "key": {
+            "abc": 123
+          },
+          "array": [
+            {
+              "abc": 123
+            },
+            {
+              "def": 123
+            }
+          ]
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z",
+        "originalTimestamp": "2020-04-17T14:42:44.724Z",
+        "sentAt": "2020-04-17T14:42:44.724Z"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "def.zap-hook",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": "def",
+        "userId": "identified user id",
+        "type": "track",
+        "anonymousId": "anon-id-new",
+        "context": {
+          "traits": {
+            "trait1": "new-val"
+          },
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "properties": {
+          "abc": "123",
+          "key": {
+            "abc": 123
+          },
+          "array": [
+            {
+              "abc": 123
+            },
+            {
+              "def": 123
+            }
+          ]
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z",
+        "originalTimestamp": "2020-04-17T14:42:44.724Z",
+        "sentAt": "2020-04-17T14:42:44.724Z"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "page.zap-hook",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "name": "page_test",
+        "userId": "identified user id",
+        "type": "page",
+        "anonymousId": "anon-id-new",
+        "context": {
+          "traits": {
+            "trait1": "new-val"
+          },
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "properties": {
+          "abc": "123",
+          "key": {
+            "abc": 123
+          },
+          "array": [
+            {
+              "abc": 123
+            },
+            {
+              "def": 123
+            }
+          ]
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z",
+        "originalTimestamp": "2020-04-17T14:42:44.724Z",
+        "sentAt": "2020-04-17T14:42:44.724Z"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "screen.zap-hook",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "name": "screen_test",
+        "userId": "identified user id",
+        "type": "screen",
+        "anonymousId": "anon-id-new",
+        "context": {
+          "traits": {
+            "trait1": "new-val"
+          },
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "properties": {
+          "abc": "123",
+          "key": {
+            "abc": 123
+          },
+          "array": [
+            {
+              "abc": 123
+            },
+            {
+              "def": 123
+            }
+          ]
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z",
+        "originalTimestamp": "2020-04-17T14:42:44.724Z",
+        "sentAt": "2020-04-17T14:42:44.724Z"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "ghi.zap-hook",
+    "headers": {
+      "content-type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "event": "def",
+        "userId": "identified user id",
+        "type": "track",
+        "anonymousId": "anon-id-new",
+        "context": {
+          "traits": {
+            "trait1": "new-val"
+          },
+          "ip": "14.5.67.21",
+          "library": {
+            "name": "http"
+          }
+        },
+        "properties": {
+          "abc": "123",
+          "key": {
+            "abc": 123
+          },
+          "array": [
+            {
+              "abc": 123
+            },
+            {
+              "def": 123
+            }
+          ]
+        },
+        "timestamp": "2020-02-02T00:23:09.544Z",
+        "originalTimestamp": "2020-04-17T14:42:44.724Z",
+        "sentAt": "2020-04-17T14:42:44.724Z"
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {}
+  }
+]

@@ -76,6 +76,7 @@ export default class DestinationController {
     });
     stats.timing('dest_transform_request_latency', startTime, {
       destination,
+      type: 'processor',
       version,
       ...metaTags,
     });
@@ -88,6 +89,7 @@ export default class DestinationController {
   }
 
   public static async destinationTransformAtRouter(ctx: Context) {
+    const startTime = new Date();
     logger.debug(
       'Native(Router-Transform):: Requst to transformer::',
       JSON.stringify(ctx.request.body),
@@ -138,6 +140,12 @@ export default class DestinationController {
       'Native(Router-Transform):: Response from transformer::',
       JSON.stringify(ctx.body),
     );
+    stats.timing('dest_transform_request_latency', startTime, {
+      destination,
+      version: 'v0',
+      type: 'router',
+      ...metaTags,
+    });
     return ctx;
   }
 

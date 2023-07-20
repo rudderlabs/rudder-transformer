@@ -59,12 +59,9 @@ class Redis {
         }
     }
 
-    hget(key, internalKey) {
+    hgetall(key) {
         const obj = this.get(key);
-        if (obj === null) {
-            return null;
-        }
-        return obj[`${internalKey}`];
+        return obj;
     }
     multi() {
         return { hmset: this.hmset, set: this.set }

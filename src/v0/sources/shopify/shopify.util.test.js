@@ -1,5 +1,5 @@
 const { getShopifyTopic,
-  getAnonymousId,
+  getAnonymousIdAndSessionId,
   checkAndUpdateCartItems,
 } = require('./util');
 jest.mock('ioredis', () => require('../../../../test/__mocks__/redis'));
@@ -110,20 +110,20 @@ describe('Shopify Utils Test', () => {
     });
   });
 
-  describe(' Test Cases -> set AnonymousId without using Redis', () => {
-    it('Properties containing cartToken', async () => {
+  describe(' Test Cases -> set AnonymousId and sessionId without using Redis', () => {
+    it('Order Updated -> Properties containing cartToken', async () => {
       const input = {
         event: 'Order Updated',
         properties: {
           cart_token: '123',
         },
       };
-      const expectedOutput = 'b9b6607d-6974-594f-8e99-ac3de71c4d89';
-      const output = await getAnonymousId(input);
+      const expectedOutput = { "anonymousId": "b9b6607d-6974-594f-8e99-ac3de71c4d89", "sessionId": undefined };
+      const output = await getAnonymousIdAndSessionId(input,{},null);
       expect(output).toEqual(expectedOutput);
     });
 
-    it('Properties contain id for cart event', async () => {
+    it('Cart Update -> Properties contain `id` ', async () => {
       const input = {
         event: 'Cart Update',
         properties: {
@@ -131,8 +131,9 @@ describe('Shopify Utils Test', () => {
         },
       };
 
-      const expectedOutput = 'b9b6607d-6974-594f-8e99-ac3de71c4d89';
-      const output = await getAnonymousId(input);
+      const expectedOutput = { "anonymousId": "b9b6607d-6974-594f-8e99-ac3de71c4d89", "sessionId": undefined };
+      const output = await getAnonymousIdAndSessionId(input,{},null);
+
       expect(output).toEqual(expectedOutput);
     });
 
@@ -141,7 +142,8 @@ describe('Shopify Utils Test', () => {
         event: 'Customer Enabled',
         properties: {},
       };
-      const output = await getAnonymousId(input);
+
+      const output = await getAnonymousIdAndSessionId(input,{},null);
       expect(output).toEqual(output); // since it will be random
     });
 
@@ -152,12 +154,12 @@ describe('Shopify Utils Test', () => {
           order_id: 'Order_ID',
         },
       };
-      const expectedOutput = null;
-      const output = await getAnonymousId(input);
+      const expectedOutput = { "anonymousId": undefined, "sessionId": undefined };
+      const output = await getAnonymousIdAndSessionId(input,{},null);
       expect(output).toEqual(expectedOutput);
     });
 
-    it('Checkout Create -> rudderAnonymousId present in note_attributes', async () => {
+    it('Checkout Create -> rudderAnonymousId and rudderSessionId present in note_attributes', async () => {
       const input = {
         event: 'Checkout Create',
         properties: {
@@ -168,19 +170,23 @@ describe('Shopify Utils Test', () => {
               "value": "RUDDER_ANONYMOUSID"
             },
             {
+              "name": "rudderSessionId",
+              "value": "RUDDER_SESSIONID"
+            },
+            {
               "name": "rudderUpdatedAt",
               "value": "TIMESTAMP"
             }
           ],
         },
       };
-      const expectedOutput = "RUDDER_ANONYMOUSID";
-      const output = await getAnonymousId(input);
+      const expectedOutput = { "anonymousId": "RUDDER_ANONYMOUSID", "sessionId": "RUDDER_SESSIONID" };
+      const output = await getAnonymousIdAndSessionId(input,{},null);
       expect(output).toEqual(expectedOutput);
     });
   });
 
-  describe('set AnonymousId with Redis Test Cases', () => {
+  describe('set AnonymousId and sesssionId with Redis Test Cases', () => {
     // Doing the following to enable redis mid test case file execution
     process.env.USE_REDIS_DB = true;
     jest.resetModules();
@@ -192,12 +198,12 @@ describe('Shopify Utils Test', () => {
           cart_token: 'shopify_test2',
         },
       };
-      const expectedOutput = 'bcaf0473-fb11-562f-80a1-c83a35f053bc'; // cartToken hash
-      const output = await getAnonymousId(input);
+      const expectedOutput = { "anonymousId": "bcaf0473-fb11-562f-80a1-c83a35f053bc", "sessionId": undefined } // cartToken hashed
+      const output = await getAnonymousIdAndSessionId(input,{},null);
       expect(output).toEqual(expectedOutput);
     });
 
-    it('Properties containing cartToken and fetched anonymousId successfully', async () => {
+    it('Order Paid- > Properties containing cartToken and fetched anonymousId and sessionId successfully', async () => {
       const input = {
         event: 'Order Paid',
         properties: {
@@ -210,21 +216,21 @@ describe('Shopify Utils Test', () => {
           ],
         },
       };
-      const expectedOutput = 'anon_shopify_test2'; // fetched succesfully from redis
-      const output = await getAnonymousId(input);
+      const expectedOutput = { "anonymousId": "anon_shopify_test2", "sessionId": "session_id_2" }; // fetched succesfully from redis
+
+      const output = await getAnonymousIdAndSessionId(input,{},null);
       expect(output).toEqual(expectedOutput);
     });
 
-    it('Properties contain id for cart event and fetched anonymousId successfully', async () => {
+    it('Cart Update -> Properties contain id and fetched anonymousId successfully', async () => {
       const input = {
         event: 'Cart Update',
         properties: {
-          id: 'shopify_test2',
+          id: 'shopify_test_only_anon_id',
         },
       };
-
-      const expectedOutput = 'anon_shopify_test2';
-      const output = await getAnonymousId(input);
+      const expectedOutput = { "anonymousId": "anon_shopify_test_only_anon_id", "sessionId": undefined };
+      const output = await getAnonymousIdAndSessionId(input,{},null);
       expect(output).toEqual(expectedOutput);
     });
 
@@ -236,8 +242,9 @@ describe('Shopify Utils Test', () => {
         },
       };
 
-      const expectedOutput = '281a3e25-e603-5870-9cda-281c22940970';
-      const output = await getAnonymousId(input);
+      const expectedOutput = { "anonymousId": "281a3e25-e603-5870-9cda-281c22940970", "sessionId": undefined };
+
+      const output = await getAnonymousIdAndSessionId(input,{},null);
       expect(output).toEqual(expectedOutput);
     });
 
@@ -248,8 +255,9 @@ describe('Shopify Utils Test', () => {
           id: 'unstored_id',
         },
       };
-      const expectedOutput = null;
-      const output = await getAnonymousId(input);
+      const expectedOutput = { "anonymousId": undefined, "sessionId": undefined };
+
+      const output = await getAnonymousIdAndSessionId(input,{},null);
       expect(output).toEqual(expectedOutput);
     });
 
@@ -261,11 +269,12 @@ describe('Shopify Utils Test', () => {
         },
       };
       const expectedOutput = 'RANDOM_ANONYMOUS_ID'; // fetched succesfully from redis
-      const output = await getAnonymousId(input);
+
+      const output = await getAnonymousIdAndSessionId(input,{},null);
       expect('RANDOM_ANONYMOUS_ID').toEqual(expectedOutput);
     });
 
-    it('anonymousId fethced from note_attributes', async () => {
+    it('Only anonymousId fetched from note_attributes and no cartToken', async () => {
       const input = {
         event: 'Order Paid',
         properties: {
@@ -281,8 +290,9 @@ describe('Shopify Utils Test', () => {
           ],
         },
       };
-      const expectedOutput = 'RUDDER_ANON_ID'; // fetched succesfully from redis
-      const output = await getAnonymousId(input);
+      const expectedOutput = { "anonymousId": "RUDDER_ANON_ID", "sessionId": null }; // fetched succesfully from redis
+      const output = await getAnonymousIdAndSessionId(input,{},null);
+
       expect(output).toEqual(expectedOutput);
     });
   });

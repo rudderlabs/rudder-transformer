@@ -6,10 +6,10 @@ const {
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
   extractEmailFromPayload,
-  getAnonymousId,
+  getAnonymousIdAndSessionId,
   checkAndUpdateCartItems,
   getHashLineItems,
-  getSessionId
+  getDataFromRedis,
 } = require('./util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
@@ -125,6 +125,7 @@ const trackPayloadBuilder = (event, shopifyTopic) => {
 
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
+  let redisData;
   const event = _.cloneDeep(inputEvent);
   const shopifyTopic = getShopifyTopic(event);
   delete event.query_parameters;
@@ -141,7 +142,8 @@ const processEvent = async (inputEvent, metricMetadata) => {
       break;
     case 'carts_update':
       if (useRedisDatabase) {
-        const isValidEvent = await checkAndUpdateCartItems(inputEvent, metricMetadata);
+        redisData = await getDataFromRedis(event.id || event.token);
+        const isValidEvent = await checkAndUpdateCartItems(inputEvent, redisData, metricMetadata);
         if (!isValidEvent) {
           return NO_OPERATION_SUCCESS;
         }
@@ -170,8 +172,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
     }
   }
   if (message.type !== EventType.IDENTIFY) {
-    const anonymousId = await getAnonymousId(message, metricMetadata);
-    const sessionId = await getSessionId(message, metricMetadata);
+    const { anonymousId, sessionId } = await getAnonymousIdAndSessionId(message, metricMetadata, redisData);
     if (isDefinedAndNotNull(anonymousId)) {
       message.setProperty('anonymousId', anonymousId);
     } else if (!message.userId) {

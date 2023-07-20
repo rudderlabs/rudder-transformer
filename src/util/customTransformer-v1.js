@@ -97,8 +97,9 @@ async function userTransformHandlerV1(
     const isolateEndWallTime = calculateMsFromIvmTime(isolatevm.isolate.wallTime);
     const isolateEndCPUTime = calculateMsFromIvmTime(isolatevm.isolate.cpuTime);
 
-    stats.timing('isolate_wall_time', isolateEndWallTime - isolateStartWallTime, tags);
-    stats.timing('isolate_cpu_time', isolateEndCPUTime - isolateStartCPUTime, tags);
+    //TODO: fix "Value is not a valid number: NaN" error and uncomment
+    //stats.timing('isolate_wall_time', isolateEndWallTime - isolateStartWallTime, tags);
+    //stats.timing('isolate_cpu_time', isolateEndCPUTime - isolateStartCPUTime, tags);
 
     // Destroy the isolated vm resources created
     logger.debug(`Isolate VM being destroyed... `);

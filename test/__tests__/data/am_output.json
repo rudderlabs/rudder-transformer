@@ -3812,5 +3812,245 @@
   },
   {
     "error": "Either of user ID or device ID fields must be specified"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Chrome",
+            "os_version": "77.0.3865.90",
+            "device_model": "Mac",
+            "platform": "Web",
+            "device_id": "00000000000000000000000000",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "event_type": "My custom Page Name is ApplicationLoaded . Custom Name.",
+            "event_properties": {
+              "path": "/destinations/amplitude",
+              "referrer": "",
+              "search": "",
+              "title": "",
+              "url": "https://docs.rudderstack.com/destinations/amplitude",
+              "category": "destination",
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "name": "ApplicationLoaded"
+            },
+            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+            "ip": "1.1.1.1",
+            "event_id": 2,
+            "user_properties": {
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "email": "sayan@gmail.com",
+              "anonymousId": "12345"
+            },
+            "user_id": "12345",
+            "time": 1571051718299,
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Chrome",
+            "os_version": "77.0.3865.90",
+            "device_model": "Mac",
+            "platform": "Web",
+            "device_id": "00000000000000000000000000",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "event_type": "ApplicationLoaded",
+            "event_properties": {
+              "path": "/destinations/amplitude",
+              "referrer": "",
+              "search": "",
+              "title": "",
+              "url": "https://docs.rudderstack.com/destinations/amplitude",
+              "category": "destination",
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "name": "ApplicationLoaded"
+            },
+            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+            "ip": "1.1.1.1",
+            "event_id": 2,
+            "user_properties": {
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "email": "sayan@gmail.com",
+              "anonymousId": "12345"
+            },
+            "user_id": "12345",
+            "time": 1571051718299,
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Chrome",
+            "os_version": "77.0.3865.90",
+            "device_model": "Mac",
+            "platform": "Web",
+            "device_id": "00000000000000000000000000",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "event_type": "ApplicationLoaded",
+            "event_properties": {
+              "path": "/destinations/amplitude",
+              "referrer": "",
+              "search": "",
+              "title": "",
+              "url": "https://docs.rudderstack.com/destinations/amplitude",
+              "category": "destination",
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "name": "ApplicationLoaded"
+            },
+            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+            "ip": "1.1.1.1",
+            "event_id": 2,
+            "user_properties": {
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "email": "sayan@gmail.com",
+              "anonymousId": "12345"
+            },
+            "user_id": "12345",
+            "time": 1571051718299,
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://api2.amplitude.com/2/httpapi",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "api_key": "abcde",
+        "events": [
+          {
+            "os_name": "Chrome",
+            "os_version": "77.0.3865.90",
+            "device_model": "Mac",
+            "platform": "Web",
+            "device_id": "00000000000000000000000000",
+            "app_name": "RudderLabs JavaScript SDK",
+            "app_version": "1.0.0",
+            "language": "en-US",
+            "event_type": "Viewed Home Page event.",
+            "event_properties": {
+              "path": "/destinations/amplitude",
+              "referrer": "",
+              "search": "",
+              "title": "",
+              "url": "https://docs.rudderstack.com/destinations/amplitude",
+              "category": "destination",
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "name": "ApplicationLoaded"
+            },
+            "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+            "insert_id": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+            "ip": "1.1.1.1",
+            "event_id": 2,
+            "user_properties": {
+              "initial_referrer": "https://docs.rudderstack.com",
+              "initial_referring_domain": "docs.rudderstack.com",
+              "email": "sayan@gmail.com",
+              "anonymousId": "12345"
+            },
+            "user_id": "12345",
+            "time": 1571051718299,
+            "library": "rudderstack"
+          }
+        ],
+        "options": {
+          "min_id_length": 1
+        }
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "00000000000000000000000000"
   }
 ]

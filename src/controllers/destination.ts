@@ -143,7 +143,7 @@ export default class DestinationController {
     stats.timing('dest_transform_request_latency', startTime, {
       destination,
       version: 'v0',
-      feature: 'router',
+      feature: tags.FEATURES.ROUTER,
       ...metaTags,
     });
     return ctx;
@@ -190,7 +190,7 @@ export default class DestinationController {
     );
     stats.timing('dest_transform_request_latency', startTime, {
       destination,
-      feature: 'batch',
+      feature: tags.FEATURES.BATCH,
       version:"v0",
     });
     return ctx;

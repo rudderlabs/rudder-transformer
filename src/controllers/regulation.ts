@@ -49,7 +49,7 @@ export default class RegulationController {
       ctx.status = 500;
     }
     stats.timing('dest_transform_request_latency', startTime, {
-      feature: 'deleteUsers',
+      feature: tags.FEATURES.USER_DELETION,
       version:"v0",
     });
     return ctx;

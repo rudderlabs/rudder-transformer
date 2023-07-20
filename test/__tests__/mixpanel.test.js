@@ -16,34 +16,7 @@ const inputData = JSON.parse(inputDataFile);
 const expectedData = JSON.parse(outputDataFile);
 // 2020-01-24T06:29:02.358Z
 Date.now = jest.fn(() => new Date(Date.UTC(2020, 0, 25)).valueOf());
-inputData.forEach((input, index) => {
-  test(`${name} Tests: payload - ${index}`, async () => {
-    let output, expected;
-    try {
-      output = await transformer.process(input);
-      if (Array.isArray(output) && output.length >= 1) {
-        output.forEach(eachPayload => {
-          const decodedPayload = JSON.parse(
-            Buffer.from(
-              JSON.stringify(eachPayload.params.data),
-              "base64"
-            ).toString()
-          );
-          eachPayload.params.data = decodedPayload;
-        });
-      } else {
-        output.params.data = JSON.parse(
-          Buffer.from(JSON.stringify(output.params.data), "base64").toString()
-        );
-      }
-      expected = expectedData[index];
-    } catch (error) {
-      output = error.message;
-      expected = expectedData[index].message;
-    }
-    expect(output).toEqual(expected);
-  });
-});
+
 // Router Test Data
 const inputRouterDataFile = fs.readFileSync(
   path.resolve(__dirname, `./data/${integration}_router_input.json`)
@@ -54,35 +27,35 @@ const outputRouterDataFile = fs.readFileSync(
 const inputRouterData = JSON.parse(inputRouterDataFile);
 const expectedRouterData = JSON.parse(outputRouterDataFile);
 
+jest.mock(`../../src/${version}/destinations/${integration}/config`, () => {
+  const originalConfig = jest.requireActual(`../../src/${version}/destinations/${integration}/config`);
+  return {
+    ...originalConfig,
+    TRACK_MAX_BATCH_SIZE: 1,
+    IMPORT_MAX_BATCH_SIZE: 2,
+    ENGAGE_MAX_BATCH_SIZE: 3,
+    GROUPS_MAX_BATCH_SIZE: 1
+  };
+});
+
+
 describe(`${name} Tests`, () => {
-  describe("Router Tests", () => {
-    it("Payload", async () => {
-      const routerOutput = await transformer.processRouterDest(inputRouterData);
-      routerOutput.forEach(eachPayload => {
-        // when batched payload is an array itself
-        if (Array.isArray(eachPayload.batchedRequest)) {
-          const { batchedRequest } = eachPayload;
-          batchedRequest.forEach(request => {
-            const decodedPayload = JSON.parse(
-              Buffer.from(
-                JSON.stringify(request.params.data),
-                "base64"
-              ).toString()
-            );
-            // creating for one single batch array payload
-            request.params.data = decodedPayload;
-          });
-        } else {
-          // where batched request is a simple object
-          const decodedPayload = JSON.parse(
-            Buffer.from(
-              JSON.stringify(eachPayload.batchedRequest.params.data),
-              "base64"
-            ).toString()
-          );
-          eachPayload.batchedRequest.params.data = decodedPayload;
+  describe("Processor Tests", () => {
+    inputData.forEach((input, index) => {
+      it(`${name} - payload: ${index}`, async () => {
+        try {
+          const output = await transformer.process(input);
+          expect(output).toEqual(expectedData[index]);
+        } catch (error) {
+          expect(error.message).toEqual(expectedData[index].message);
         }
       });
+    });
+  });
+
+  describe("Router", () => {
+    it("Payload", async () => {
+      const routerOutput = await transformer.processRouterDest(inputRouterData);
       expect(routerOutput).toEqual(expectedRouterData);
     });
   });

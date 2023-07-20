@@ -76,7 +76,7 @@ export default class DestinationController {
     });
     stats.timing('dest_transform_request_latency', startTime, {
       destination,
-      type: 'processor',
+      feature: 'processor',
       version,
       ...metaTags,
     });
@@ -143,7 +143,7 @@ export default class DestinationController {
     stats.timing('dest_transform_request_latency', startTime, {
       destination,
       version: 'v0',
-      type: 'router',
+      feature: 'router',
       ...metaTags,
     });
     return ctx;
@@ -154,6 +154,7 @@ export default class DestinationController {
       'Native(Process-Transform-Batch):: Requst to transformer::',
       JSON.stringify(ctx.request.body),
     );
+    const startTime = new Date();
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
@@ -187,6 +188,11 @@ export default class DestinationController {
       'Native(Process-Transform-Batch):: Response from transformer::',
       JSON.stringify(ctx.body),
     );
+    stats.timing('dest_transform_request_latency', startTime, {
+      destination,
+      feature: 'batch',
+      version:"v0",
+    });
     return ctx;
   }
 }

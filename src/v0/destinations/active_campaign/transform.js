@@ -406,7 +406,7 @@ const screenRequestHandler = async (message, category, destination) => {
   // Ref - https://developers.activecampaign.com/reference/create-a-new-event-name-only
   if (!events.includes(message.event)) {
     // Create the event
-    endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint} `;
+    endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint}`;
     const requestData = {
       eventTrackingEvent: {
         name: message.event,

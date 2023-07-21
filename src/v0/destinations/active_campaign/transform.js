@@ -215,7 +215,7 @@ const customFieldProcessor = async (message, category, destination) => {
   // Step - 2
   // Get the existing field data from dest and store it in responseStaging
   // Ref - https://developers.activecampaign.com/reference/retrieve-fields
-  let endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100`;
+  let endpoint = `${destination.Config.apiUrl}${`${category.fieldEndPoint}?limit=100`}`;
   const requestOptions = {
     headers: {
       'Api-Token': destination.Config.apiKey,
@@ -509,7 +509,7 @@ const trackRequestHandler = async (message, category, destination) => {
   if (get(message, EVENT_DATA_KEY)) {
     payload.eventdata = get(message, EVENT_DATA_KEY);
   }
-  payload.visit = `{ "email": "${get(message, 'context.traits.email')}" } `;
+  payload.visit = `{ "email": "${get(message, 'context.traits.email')}"}`;
 
   return responseBuilderSimple(payload, category, destination);
 };

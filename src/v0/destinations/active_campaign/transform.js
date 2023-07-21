@@ -89,10 +89,10 @@ const customTagProcessor = async (message, category, destination, contactId) => 
   let requestOptions;
   let requestData;
   // Here we extract the tags which are to be mapped to the created contact from the message
-  const msgTags = get(message.context.traits, 'tags') || get(message.traits, 'tags');
+  const msgTags = get(message?.context?.traits, 'tags') || get(message?.traits, 'tags');
 
   // If no tags are sent in message return the contact from the method
-  if (!msgTags && !Array.isArray(msgTags)) {
+  if (!msgTags || !Array.isArray(msgTags)) {
     return;
   }
 
@@ -124,9 +124,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
     if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
       const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
       for (let i = 0; i < limit; i += 1) {
-        endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}?limit=100&offset=${
-          100 * (i + 1)
-        }`;
+        endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}?limit=100&offset=${100 * (i + 1)}`;
         requestOptions = {
           headers: getHeader(destination),
         };
@@ -146,12 +144,11 @@ const customTagProcessor = async (message, category, destination, contactId) => 
     // Step - 2
     // Check if tags already present then we push it to tagIds
     // the ones which are not stored we push it to tagsToBeCreated
-    msgTags.map((tag) => {
+    msgTags.forEach((tag) => {
       if (!storedTags[tag]) tagsToBeCreated.push(tag);
       else tagIds.push(storedTags[tag]);
     });
   }
-
   // Step - 3
   // Create tags if required - from tagsToBeCreated
   // Ref - https://developers.activecampaign.com/reference/create-a-new-tag
@@ -208,7 +205,7 @@ const customFieldProcessor = async (message, category, destination) => {
   const responseStaging = [];
   // Step - 1
   // Extract the custom field info from the message
-  const fieldInfo = get(message.context.traits, 'fieldInfo') || get(message.traits, 'fieldInfo');
+  const fieldInfo = get(message?.context?.traits, 'fieldInfo') || get(message.traits, 'fieldInfo');
 
   // If no field info is passed return from method with empty array
   if (!fieldInfo) {
@@ -234,9 +231,7 @@ const customFieldProcessor = async (message, category, destination) => {
   const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
   if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
     for (let i = 0; i < limit; i += 1) {
-      endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100&offset=${
-        100 * (i + 1)
-      }`;
+      endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100&offset=${100 * (i + 1)}`;
       const requestOpt = {
         headers: {
           'Api-Token': destination.Config.apiKey,
@@ -302,7 +297,7 @@ const customFieldProcessor = async (message, category, destination) => {
 
 const customListProcessor = async (message, category, destination, contactId) => {
   // Here we extract the list info from the message
-  const listInfo = get(message.context.traits, 'lists')
+  const listInfo = get(message?.context?.traits, 'lists')
     ? get(message.context.traits, 'lists')
     : get(message.traits, 'lists');
   if (!listInfo) {

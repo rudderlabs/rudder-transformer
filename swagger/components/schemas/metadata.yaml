@@ -1,0 +1,63 @@
+title: Metadata
+type: object
+properties:
+  sourceId:
+    type: string
+  workspaceId:
+    type: string
+  namespace:
+    type: string
+  instanceId:
+    type: string
+  sourceType:
+    type: string
+  sourceCategory:
+    type: string
+  trackingPlanId:
+    type: string
+  trackingPlanVersion:
+    type: number
+  sourceTpConfig:
+    type: object
+  mergedTpConfig:
+    type: object
+  destinationId:
+    type: string
+  jobRunId:
+    type: string
+  jobId:
+    type: number
+  sourceBatchId:
+    type: string
+  sourceJobId:
+    type: string
+  sourceJobRunId:
+    type: string
+  sourceTaskId:
+    type: string
+  sourceTaskRunId:
+    type: string
+  recordId:
+    type: object
+  destinationType:
+    type: string
+  messageId:
+    type: string
+  oauthAccessToken:
+    type: string
+  messageIds:
+    type: array
+    items:
+      type: string
+  rudderId:
+    type: string
+  receivedAt:
+    type: string
+  eventName:
+    type: string
+  eventType:
+    type: string
+  sourceDefinitionId:
+    type: string
+  destinationDefinitionId:
+    type: string

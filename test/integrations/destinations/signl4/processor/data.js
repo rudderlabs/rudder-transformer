@@ -465,23 +465,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 't1yurrb968zk',
-                s4ServiceValue: 'service',
-                s4ServiceProperty: '',
-                s4LocationValue: '67.3, 32.3',
-                s4LocationProperty: '',
-                s4AlertingScenarioValue: 'single_ack',
-                s4AlertingScenarioProperty: '',
-                s4ExternalIDValue: 'INC493933',
-                s4ExternalIDProperty: '',
-                s4StatusValue: 'new',
-                s4StatusProperty: '',
-                s4Filter: false,
-                eventToTitleMapping: [{ from: 'New Alert', to: 'Alert Created' }],
-              },
-            },
             error: 'Event is not present in the input payload',
             statTags: {
               destType: 'SIGNL4',
@@ -561,23 +544,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: '',
-                s4ServiceValue: 'service',
-                s4ServiceProperty: '',
-                s4LocationValue: '67.3, 32.3',
-                s4LocationProperty: '',
-                s4AlertingScenarioValue: 'single_ack',
-                s4AlertingScenarioProperty: '',
-                s4ExternalIDValue: 'INC493933',
-                s4ExternalIDProperty: '',
-                s4StatusValue: 'new',
-                s4StatusProperty: '',
-                s4Filter: false,
-                eventToTitleMapping: [{ from: 'New Alert', to: 'Alert Created' }],
-              },
-            },
             error: 'ApiKey is a required field',
             statTags: {
               destType: 'SIGNL4',
@@ -657,23 +623,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'urissi44sfgs',
-                s4ServiceValue: 'service',
-                s4ServiceProperty: '',
-                s4LocationValue: '67.3, 32.3',
-                s4LocationProperty: '',
-                s4AlertingScenarioValue: 'single_ack',
-                s4AlertingScenarioProperty: '',
-                s4ExternalIDValue: 'INC493933',
-                s4ExternalIDProperty: '',
-                s4StatusValue: 'new',
-                s4StatusProperty: '',
-                s4Filter: false,
-                eventToTitleMapping: [{ from: 'New Alert', to: 'Alert Created' }],
-              },
-            },
             error: 'Event type identify is not supported',
             statTags: {
               destType: 'SIGNL4',
@@ -753,23 +702,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'urissi44sfgs',
-                s4ServiceValue: 'service',
-                s4ServiceProperty: '',
-                s4LocationValue: '67.3, 32.3',
-                s4LocationProperty: '',
-                s4AlertingScenarioValue: 'single_ack',
-                s4AlertingScenarioProperty: '',
-                s4ExternalIDValue: 'INC493933',
-                s4ExternalIDProperty: '',
-                s4StatusValue: 'new',
-                s4StatusProperty: '',
-                s4Filter: false,
-                eventToTitleMapping: [{ from: 'New Alert', to: 'Alert Created' }],
-              },
-            },
             error: 'Event type is required',
             statTags: {
               destType: 'SIGNL4',

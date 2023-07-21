@@ -1,0 +1,11 @@
+title: Destination definition schema
+type: object
+properties:
+  ID:
+    type: string
+  Name:
+    type: string
+  DisplayName:
+    type: string
+  Config:
+    type: object

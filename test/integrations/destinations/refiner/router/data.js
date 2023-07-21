@@ -95,7 +95,6 @@ const data = [
                   'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 method: 'POST',
-                userId: '',
                 params: {},
                 type: 'REST',
                 version: '1',
@@ -241,7 +240,6 @@ const data = [
                 },
                 endpoint: 'https://api.refiner.io/v1/track',
                 files: {},
-                userId: '',
                 headers: {
                   Authorization: 'Bearer da70166e-05a4-4fa1-bb1c-da757fd036b4',
                   'Content-Type': 'application/x-www-form-urlencoded',
@@ -352,7 +350,6 @@ const data = [
                 method: 'POST',
                 params: {},
                 type: 'REST',
-                userId: '',
                 version: '1',
               },
               destination: {

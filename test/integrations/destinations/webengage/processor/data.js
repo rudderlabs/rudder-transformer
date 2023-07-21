@@ -60,13 +60,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
-                licenseCode: '3bjsjdbh7',
-                dataCenter: 'ind',
-              },
-            },
             error: 'Missing required value from "event"',
             statTags: {
               destType: 'WEBENGAGE',
@@ -1086,13 +1079,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
-                licenseCode: '3bjsjdbh7',
-                dataCenter: 'ind',
-              },
-            },
             error: 'Either one of userId or anonymousId is mandatory',
             statTags: {
               destType: 'WEBENGAGE',
@@ -1168,13 +1154,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
-                licenseCode: '3bjsjdbh7',
-                dataCenter: 'ind',
-              },
-            },
             error: 'Event type master is not supported',
             statTags: {
               destType: 'WEBENGAGE',
@@ -1249,13 +1228,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
-                licenseCode: '3bjsjdbh7',
-                dataCenter: 'ind',
-              },
-            },
             error: 'Event type is required',
             statTags: {
               destType: 'WEBENGAGE',
@@ -1330,13 +1302,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
-                licenseCode: '3bjsjdbh7',
-                dataCenter: 'standard',
-              },
-            },
             error: 'Event type is required',
             statTags: {
               destType: 'WEBENGAGE',
@@ -1981,13 +1946,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
-                licenseCode: '3bjsjdbh7',
-                dataCenter: 'ind',
-              },
-            },
             error: 'Timestamp must be ISO format (YYYY-MM-DD)',
             statTags: {
               destType: 'WEBENGAGE',
@@ -2064,13 +2022,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
-                licenseCode: '3bjsjdbh7',
-                dataCenter: 'ind',
-              },
-            },
             error: 'Missing required value from "event"',
             statTags: {
               destType: 'WEBENGAGE',
@@ -2161,13 +2112,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'ab7eb717-cdd8-tr63-a7f5-93339d7beelkd',
-                licenseCode: '3bjsjdbh7',
-                dataCenter: 'ind',
-              },
-            },
             error: 'birthday must be in this (YYYY-MM-DD) format',
             statTags: {
               destType: 'WEBENGAGE',

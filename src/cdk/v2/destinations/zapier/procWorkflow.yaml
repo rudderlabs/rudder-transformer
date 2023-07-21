@@ -1,0 +1,47 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - name: getHashFromArray
+    path: ../../../../v0/util/index
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.type in {{$.EventType.([.PAGE, .TRACK, .SCREEN])}}, 
+        "message type " + .message.type + " is not supported");
+  - name: prepareContext
+    template: |
+      $.context.messageType = .message.type.toLowerCase();
+      $.context.endpoint = .destination.Config.zapUrl;
+  - name: trackEndpoint
+    condition: $.context.messageType === {{$.EventType.TRACK}}
+    template: |
+      const trackEventsMap = $.getHashFromArray(.destination.Config.trackEventsToZap);
+      const eventName = .message.event;
+      (eventName && trackEventsMap[eventName]) ? 
+        ($.context.endpoint = trackEventsMap[eventName])
+    else:
+      name: endpointForOthers
+      template: |
+        const pageScreenEventsMap = $.getHashFromArray(.destination.Config.pageScreenEventsToZap);
+        const pageName = .message.name;
+        (pageName && pageScreenEventsMap[pageName]) ? 
+          ($.context.endpoint = pageScreenEventsMap[pageName])
+  - name: buildResponse
+    description: In batchMode we return payload directly
+    condition: $.batchMode
+    template: .message
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        const response = $.defaultRequestConfig();
+        response.body.JSON = .message;
+        response.endpoint = $.context.endpoint;
+        response.headers = {
+          "content-type": "application/json"
+        };
+        response
+

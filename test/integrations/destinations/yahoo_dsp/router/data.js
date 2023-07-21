@@ -121,7 +121,6 @@ const data = [
                   FORM: {},
                 },
                 files: {},
-                userId: '',
               },
               metadata: [
                 {

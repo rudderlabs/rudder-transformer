@@ -159,22 +159,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiToken: 'trengo_integration_test_api_token',
-                channelId: 'trengo_email_channel',
-                channelIdentifier: 'phone',
-                enableDedup: true,
-                eventTemplateMap: [
-                  { from: 'Product Purchased', to: '{{event}} from Rudderstack' },
-                  { from: 'checkedOut', to: 'Total cart value {{value}} shipped' },
-                  { from: 'Order Completed', to: 'Completed Order' },
-                  { from: 'Stress Test' },
-                  { from: 'Stress test2', to: '' },
-                  { from: 'Stress test3', to: '{event} Stress test' },
-                ],
-              },
-            },
             error:
               'LookupContact failed for term:null update failed, aborting as dedup option is enabled',
             statTags: {
@@ -352,22 +336,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiToken: 'trengo_integration_test_api_token',
-                channelId: 'trengo_phone_channel',
-                channelIdentifier: 'phone',
-                enableDedup: true,
-                eventTemplateMap: [
-                  { from: 'Product Purchased', to: '{{event}} from Rudderstack' },
-                  { from: 'checkedOut', to: 'Total cart value {{value}} shipped' },
-                  { from: 'Order Completed', to: 'Completed Order' },
-                  { from: 'Stress Test' },
-                  { from: 'Stress test2', to: '' },
-                  { from: 'Stress test3', to: '{event} Stress test' },
-                ],
-              },
-            },
             error:
               'LookupContact failed for term:99999666661 update failed, aborting as dedup option is enabled',
             statTags: {
@@ -450,22 +418,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiToken: 'trengo_integration_test_api_token',
-                channelId: 'trengo_phone_channel',
-                channelIdentifier: 'phone',
-                enableDedup: true,
-                eventTemplateMap: [
-                  { from: 'Product Purchased', to: '{{event}} from Rudderstack' },
-                  { from: 'checkedOut', to: 'Total cart value {{value}} shipped' },
-                  { from: 'Order Completed', to: 'Completed Order' },
-                  { from: 'Stress Test' },
-                  { from: 'Stress test2', to: '' },
-                  { from: 'Stress test3', to: '{event} Stress test' },
-                ],
-              },
-            },
             error: 'Inside lookupContact, duplicates present for identifier : 98765432100',
             statTags: {
               destType: 'TRENGO',
@@ -840,22 +792,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiToken: 'trengo_integration_test_api_token',
-                channelId: 'trengo_phone_channel',
-                channelIdentifier: 'phone',
-                enableDedup: false,
-                eventTemplateMap: [
-                  { from: 'Product Purchased', to: '{{event}} from Rudderstack' },
-                  { from: 'checkedOut', to: 'Total cart value {{value}} shipped' },
-                  { from: 'Order Completed', to: 'Completed Order' },
-                  { from: 'Stress Test' },
-                  { from: 'Stress test2', to: '' },
-                  { from: 'Stress test3', to: '{event} Stress test' },
-                ],
-              },
-            },
             error: 'Inside lookupContact, duplicates present for identifier : 98765432100',
             statTags: {
               destType: 'TRENGO',
@@ -1344,22 +1280,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiToken: 'trengo_integration_test_api_token',
-                channelId: 'trengo_phone_channel',
-                channelIdentifier: 'email',
-                enableDedup: false,
-                eventTemplateMap: [
-                  { from: 'Product Purchased', to: '{{event}} from Rudderstack' },
-                  { from: 'checkedOut', to: 'Total cart value {{value}} shipped' },
-                  { from: 'Order Completed', to: 'Completed Order' },
-                  { from: 'Stress Test' },
-                  { from: 'Stress test2', to: '' },
-                  { from: 'Stress test3', to: '{event} Stress test' },
-                ],
-              },
-            },
             error: 'Stress test4 is not present in Event-Map template keys, aborting event',
             statTags: {
               destType: 'TRENGO',

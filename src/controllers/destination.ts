@@ -51,8 +51,8 @@ export default class DestinationController {
       resplist = events.map((ev) => {
         const metaTO = integrationService.getTags(
           destination,
-          ev.metadata.destinationId,
-          ev.metadata.workspaceId,
+          ev.metadata?.destinationId,
+          ev.metadata?.workspaceId,
           tags.FEATURES.PROCESSOR,
         );
         metaTO.metadata = ev.metadata;
@@ -116,8 +116,8 @@ export default class DestinationController {
     } catch (error: any) {
       const metaTO = integrationService.getTags(
         destination,
-        events[0].metadata.destinationId,
-        events[0].metadata.workspaceId,
+        events[0].metadata?.destinationId,
+        events[0].metadata?.workspaceId,
         tags.FEATURES.ROUTER,
       );
       metaTO.metadatas = events.map((ev) => ev.metadata);

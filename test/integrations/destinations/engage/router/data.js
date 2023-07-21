@@ -69,7 +69,6 @@ const data = [
                     'Basic NDl1cjQ5MHJqZm8zNGdpMDR5MzhyOWdvOm44OWczODl5cjM4OWZnYmVmMHUycmZm',
                 },
                 params: {},
-                userId: '',
                 body: {
                   JSON: {
                     subscribed: true,
@@ -206,7 +205,6 @@ const data = [
                 type: 'REST',
                 files: {},
                 method: 'PUT',
-                userId: '',
                 params: {},
                 headers: {
                   'Content-Type': 'application/json',

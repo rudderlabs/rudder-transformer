@@ -259,11 +259,16 @@ const processAliasEvents = (message, type, destination) => {
       'Either previous id or anonymous id should be present in alias payload',
     );
   }
+
+  if (message.previousId === message.userId) {
+    throw new InstrumentationError('Previous id and user id should not be same');
+  }
+
   const payload = {
     event: '$create_alias',
     properties: {
-      distinct_id: message.previousId || message.anonymousId,
-      alias: message.userId,
+      distinct_id: message.userId,
+      alias: message.previousId || message.anonymousId,
       token: destination.Config.token,
     },
   };

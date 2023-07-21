@@ -82,11 +82,7 @@ const hasMultipleResponses = (message, category, config) => {
   const isIdentifyEvent = message.type === EventType.IDENTIFY;
   const isIdentifyCategory = category === ConfigCategory.IDENTIFY;
   const hasToken = context && (context.device?.token || context.os?.token);
-  let hasRegisterDeviceOrBrowserKey = false;
-
-  if (config.registerDeviceOrBrowserApiKey && !isEmpty(config.registerDeviceOrBrowserApiKey)) {
-    hasRegisterDeviceOrBrowserKey = true;
-  }
+  const hasRegisterDeviceOrBrowserKey = Boolean(config.registerDeviceOrBrowserApiKey);
 
   return isIdentifyEvent && isIdentifyCategory && hasToken && hasRegisterDeviceOrBrowserKey;
 };

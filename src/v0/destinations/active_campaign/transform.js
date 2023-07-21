@@ -440,7 +440,7 @@ const screenRequestHandler = async (message, category, destination) => {
   if (get(message, EVENT_DATA_KEY)) {
     payload.eventdata = get(message, EVENT_DATA_KEY);
   }
-  payload.visit = `{"email": "${get(message, 'context.traits.email')}" }`;
+  payload.visit = `{"email":"${get(message, 'context.traits.email')}"}`;
   return responseBuilderSimple(payload, category, destination);
 };
 
@@ -509,7 +509,7 @@ const trackRequestHandler = async (message, category, destination) => {
   if (get(message, EVENT_DATA_KEY)) {
     payload.eventdata = get(message, EVENT_DATA_KEY);
   }
-  payload.visit = `{ "email": "${get(message, 'context.traits.email')}"}`;
+  payload.visit = `{"email":"${get(message, 'context.traits.email')}"}`;
 
   return responseBuilderSimple(payload, category, destination);
 };

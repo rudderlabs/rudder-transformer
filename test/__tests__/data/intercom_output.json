@@ -6,7 +6,7 @@
     "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Authorization": "Bearer intercomApiKey",
       "Accept": "application/json",
       "Intercom-Version": "1.4"
     },
@@ -39,7 +39,7 @@
     "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Authorization": "Bearer intercomApiKey",
       "Accept": "application/json",
       "Intercom-Version": "1.4"
     },
@@ -71,7 +71,7 @@
     "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Authorization": "Bearer intercomApiKey",
       "Accept": "application/json",
       "Intercom-Version": "1.4"
     },
@@ -103,7 +103,7 @@
     "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Authorization": "Bearer intercomApiKey",
       "Accept": "application/json",
       "Intercom-Version": "1.4"
     },
@@ -139,7 +139,7 @@
     "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Authorization": "Bearer intercomApiKey",
       "Accept": "application/json",
       "Intercom-Version": "1.4"
     },
@@ -181,7 +181,7 @@
     "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Authorization": "Bearer intercomApiKey",
       "Accept": "application/json",
       "Intercom-Version": "1.4"
     },
@@ -225,7 +225,7 @@
     "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Authorization": "Bearer intercomApiKey",
       "Accept": "application/json",
       "Intercom-Version": "1.4"
     },
@@ -258,7 +258,7 @@
     "endpoint": "https://api.intercom.io/events",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Authorization": "Bearer intercomApiKey",
       "Accept": "application/json",
       "Intercom-Version": "1.4"
     },
@@ -290,7 +290,7 @@
     "endpoint": "https://api.intercom.io/events",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Authorization": "Bearer intercomApiKey",
       "Accept": "application/json",
       "Intercom-Version": "1.4"
     },
@@ -320,7 +320,7 @@
     "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Authorization": "Bearer intercomApiKey",
       "Accept": "application/json",
       "Intercom-Version": "1.4"
     },
@@ -351,7 +351,7 @@
     "endpoint": "https://api.intercom.io/users",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+      "Authorization": "Bearer intercomApiKey",
       "Accept": "application/json",
       "Intercom-Version": "1.4"
     },

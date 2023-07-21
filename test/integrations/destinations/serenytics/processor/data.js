@@ -450,34 +450,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                storageUrlAlias:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlGroup:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlPage:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlScreen:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlTrack:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                eventToStorageUrlMap: [
-                  {
-                    from: 'Order Completed',
-                    to: 'https://api.serenytics.com/api/data_source/b646…/push/ad051d45f10a0c11a50f5c20af838e39ea9dcf12',
-                  },
-                  {
-                    from: 'Order Completed',
-                    to: 'https://api.serenytics.com/api/data_source/0714…/push/f48540d9b51fd5c88dffaad4e34cd0b56a525981',
-                  },
-                  {
-                    from: 'Add to Cart',
-                    to: 'https://api.serenytics.com/api/data_source/f62c…/push/75c48822ca582a1322aa1d7586ce374a4736c313',
-                  },
-                ],
-              },
-            },
             error: 'Storage url for "IDENTIFY" is missing. Aborting!',
             statTags: {
               destType: 'SERENYTICS',
@@ -771,30 +743,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                storageUrlAlias:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlGroup:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlScreen:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                eventToStorageUrlMap: [
-                  {
-                    from: 'Order Completed',
-                    to: 'https://api.serenytics.com/api/data_source/b646…/push/ad051d45f10a0c11a50f5c20af838e39ea9dcf12',
-                  },
-                  {
-                    from: 'Order Completed',
-                    to: 'https://api.serenytics.com/api/data_source/0714…/push/f48540d9b51fd5c88dffaad4e34cd0b56a525981',
-                  },
-                  {
-                    from: 'Add to Cart',
-                    to: 'https://api.serenytics.com/api/data_source/f62c…/push/75c48822ca582a1322aa1d7586ce374a4736c313',
-                  },
-                ],
-              },
-            },
             error: 'Storage url for "PAGE" is missing. Aborting!',
             statTags: {
               destType: 'SERENYTICS',
@@ -872,22 +820,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                storageUrlAlias:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlGroup:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlIdentify:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlPage:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlScreen:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlTrack:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-              },
-            },
             error: 'Missing required value from "event"',
             statTags: {
               destType: 'SERENYTICS',
@@ -964,20 +896,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                storageUrlAlias:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlGroup:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlIdentify:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlPage:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlScreen:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-              },
-            },
             error: 'Storage url for "TRACK" is missing. Aborting!',
             statTags: {
               destType: 'SERENYTICS',
@@ -1205,34 +1123,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                storageUrlAlias:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlGroup:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlIdentify:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlPage:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlScreen:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                eventToStorageUrlMap: [
-                  {
-                    from: 'Order Completed',
-                    to: 'https://api.serenytics.com/api/data_source/b646…/push/ad051d45f10a0c11a50f5c20af838e39ea9dcf12',
-                  },
-                  {
-                    from: 'Order Completed',
-                    to: 'https://api.serenytics.com/api/data_source/0714…/push/f48540d9b51fd5c88dffaad4e34cd0b56a525981',
-                  },
-                  {
-                    from: 'Add to Cart',
-                    to: 'https://api.serenytics.com/api/data_source/f62c…/push/75c48822ca582a1322aa1d7586ce374a4736c313',
-                  },
-                ],
-              },
-            },
             error: 'Event type is required',
             statTags: {
               destType: 'SERENYTICS',
@@ -1297,18 +1187,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                storageUrlAlias:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlGroup:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlPage:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlTrack:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-              },
-            },
             error: 'Storage url for "SCREEN" is missing. Aborting!',
             statTags: {
               destType: 'SERENYTICS',
@@ -1593,16 +1471,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                storageUrlAlias:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlPage:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlTrack:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-              },
-            },
             error: 'Storage url for "GROUP" is missing. Aborting!',
             statTags: {
               destType: 'SERENYTICS',
@@ -1698,14 +1566,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                storageUrlPage:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-                storageUrlTrack:
-                  'https://api.serenytics.com/api/data_source/5dc8508e-0946-47fc-8ed8-f67307c407f1/push/997877c6358621beb1f86dc320ac822b9f069760',
-              },
-            },
             error: 'Storage url for "ALIAS" is missing. Aborting!',
             statTags: {
               destType: 'SERENYTICS',

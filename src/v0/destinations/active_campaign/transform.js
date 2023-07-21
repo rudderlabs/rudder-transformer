@@ -124,8 +124,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
     if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
       const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
       for (let i = 0; i < limit; i += 1) {
-endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}?limit=100&offset=${100 * (i + 1)}`
-          }`;
+        endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}?limit=100&offset=${100 * (i + 1)}`;
         requestOptions = {
           headers: getHeader(destination),
         };
@@ -156,7 +155,7 @@ endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}?limit=100&offset
   if (tagsToBeCreated.length > 0) {
     await Promise.all(
       tagsToBeCreated.map(async (tag) => {
-        endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}`;
+        endpoint = `${destination.Config.apiUrl}${category.tagEndPoint} `;
         requestData = {
           tag: {
             tag,
@@ -182,7 +181,7 @@ endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}?limit=100&offset
   // Ref - https://developers.activecampaign.com/reference/create-contact-tag
   const responsesArr = await Promise.all(
     tagIds.map(async (tagId) => {
-      endpoint = `${destination.Config.apiUrl}${category.mergeTagWithContactUrl}`;
+      endpoint = `${destination.Config.apiUrl}${category.mergeTagWithContactUrl} `;
       requestData = {
         contactTag: {
           contact: contactId,
@@ -216,7 +215,7 @@ const customFieldProcessor = async (message, category, destination) => {
   // Step - 2
   // Get the existing field data from dest and store it in responseStaging
   // Ref - https://developers.activecampaign.com/reference/retrieve-fields
-  let endpoint = `${destination.Config.apiUrl}${`${category.fieldEndPoint}?limit=100`}`;
+  let endpoint = `${destination.Config.apiUrl}${`${category.fieldEndPoint}?limit=100`} `;
   const requestOptions = {
     headers: {
       'Api-Token': destination.Config.apiKey,
@@ -232,8 +231,8 @@ const customFieldProcessor = async (message, category, destination) => {
   const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
   if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
     for (let i = 0; i < limit; i += 1) {
-      endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100&offset=${100 * (i + 1)
-        }`;
+      endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit = 100 & offset=${100 * (i + 1)
+        } `;
       const requestOpt = {
         headers: {
           'Api-Token': destination.Config.apiKey,
@@ -283,7 +282,7 @@ const customFieldProcessor = async (message, category, destination) => {
     if (Array.isArray(fieldInfo[key])) {
       fPayload = '||';
       fieldInfo[key].map((fv) => {
-        fPayload = `${fPayload}${fv}||`;
+        fPayload = `${fPayload}${fv}|| `;
       });
     } else {
       fPayload = fieldInfo[key];
@@ -320,7 +319,7 @@ const customListProcessor = async (message, category, destination, contactId) =>
   const promises = [];
   listArr.map(async (li) => {
     if (li.status === 'subscribe' || li.status === 'unsubscribe') {
-      const endpoint = `${destination.Config.apiUrl}${category.mergeListWithContactUrl}`;
+      const endpoint = `${destination.Config.apiUrl}${category.mergeListWithContactUrl} `;
       const requestData = {
         contactList: {
           list: li.id,
@@ -381,7 +380,7 @@ const screenRequestHandler = async (message, category, destination) => {
   // Retrieve All events from destination
   // https://developers.activecampaign.com/reference/list-all-event-types
   let res;
-  let endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint}`;
+  let endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint} `;
   const requestOptions = {
     headers: getHeader(destination),
   };
@@ -407,7 +406,7 @@ const screenRequestHandler = async (message, category, destination) => {
   // Ref - https://developers.activecampaign.com/reference/create-a-new-event-name-only
   if (!events.includes(message.event)) {
     // Create the event
-    endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint}`;
+    endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint} `;
     const requestData = {
       eventTrackingEvent: {
         name: message.event,
@@ -442,7 +441,7 @@ const screenRequestHandler = async (message, category, destination) => {
   if (get(message, EVENT_DATA_KEY)) {
     payload.eventdata = get(message, EVENT_DATA_KEY);
   }
-  payload.visit = `{"email":"${get(message, 'context.traits.email')}"}`;
+  payload.visit = `{ "email": "${get(message, 'context.traits.email')}" } `;
   return responseBuilderSimple(payload, category, destination);
 };
 
@@ -450,7 +449,7 @@ const trackRequestHandler = async (message, category, destination) => {
   // Need to check if the event with same name already exists if not need to create
   // Retrieve All events from destination
   // https://developers.activecampaign.com/reference/list-all-event-types
-  let endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint}`;
+  let endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint} `;
   const requestOptions = {
     headers: {
       'Api-Token': destination.Config.apiKey,
@@ -479,7 +478,7 @@ const trackRequestHandler = async (message, category, destination) => {
   // Ref - https://developers.activecampaign.com/reference/create-a-new-event-name-only
   if (!events.includes(message.event)) {
     // Create the event
-    endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint}`;
+    endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint} `;
     const requestData = {
       eventTrackingEvent: {
         name: message.event,
@@ -511,7 +510,7 @@ const trackRequestHandler = async (message, category, destination) => {
   if (get(message, EVENT_DATA_KEY)) {
     payload.eventdata = get(message, EVENT_DATA_KEY);
   }
-  payload.visit = `{"email":"${get(message, 'context.traits.email')}"}`;
+  payload.visit = `{ "email": "${get(message, 'context.traits.email')}" } `;
 
   return responseBuilderSimple(payload, category, destination);
 };

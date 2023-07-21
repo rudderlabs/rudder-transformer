@@ -192,7 +192,7 @@
         "phone": "9876543210",
         "signed_up_at": 1601493060,
         "last_seen_user_agent": "unknown",
-        "update_last_request_at": true,
+        "update_last_request_at": false,
         "custom_attributes": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
           "key1": "value1"

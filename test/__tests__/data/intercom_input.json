@@ -495,7 +495,8 @@
       "Config": {
         "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
-        "collectContext": false
+        "collectContext": false,
+        "updateLastRequestAt": false
       }
     }
   },

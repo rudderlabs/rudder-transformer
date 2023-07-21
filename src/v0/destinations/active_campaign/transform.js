@@ -380,7 +380,7 @@ const screenRequestHandler = async (message, category, destination) => {
   // Retrieve All events from destination
   // https://developers.activecampaign.com/reference/list-all-event-types
   let res;
-  let endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint} `;
+  let endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint}`;
   const requestOptions = {
     headers: getHeader(destination),
   };

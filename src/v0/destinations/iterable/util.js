@@ -71,9 +71,10 @@ const validateMandatoryField = (payload) => {
 
 /**
  * Check for register device and register browser events
- * @param {*} message
- * @param {*} category
- * @returns
+ * @param {*} message 
+ * @param {*} category 
+ * @param {*} config 
+ * @returns 
  */
 const hasMultipleResponses = (message, category, config) => {
   const { context } = message;

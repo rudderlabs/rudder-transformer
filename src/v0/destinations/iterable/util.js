@@ -2,6 +2,7 @@ const _ = require('lodash');
 const get = require('get-value');
 const jsonSize = require('json-size');
 const {
+  isEmpty,
   isAppleFamily,
   constructPayload,
   getSuccessRespEvents,
@@ -74,14 +75,19 @@ const validateMandatoryField = (payload) => {
  * @param {*} category
  * @returns
  */
-const hasMultipleResponses = (message, category) => {
+const hasMultipleResponses = (message, category, config) => {
   const { context } = message;
 
   const isIdentifyEvent = message.type === EventType.IDENTIFY;
   const isIdentifyCategory = category === ConfigCategory.IDENTIFY;
   const hasToken = context && (context.device?.token || context.os?.token);
+  let hasRegisterDeviceOrBrowserKey = false;
 
-  return isIdentifyEvent && isIdentifyCategory && hasToken;
+  if (config.registerDeviceOrBrowserApiKey && !isEmpty(config.registerDeviceOrBrowserApiKey)){
+    hasRegisterDeviceOrBrowserKey = true;
+  }
+
+  return isIdentifyEvent && isIdentifyCategory && hasToken && hasRegisterDeviceOrBrowserKey;
 };
 
 /**

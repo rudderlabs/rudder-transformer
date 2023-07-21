@@ -109,7 +109,9 @@ const responseBuilder = (message, category, destination) => {
 const responseBuilderForRegisterDeviceOrBrowserTokenEvents = (message, destination) => {
   const { device } = message.context;
   const category = device?.token ? ConfigCategory.IDENTIFY_DEVICE : ConfigCategory.IDENTIFY_BROWSER;
-  return responseBuilder(message, category, destination);
+  const response = responseBuilder(message, category, destination);
+  response.headers.api_key = destination.Config.registerDeviceOrBrowserApiKey;
+  return response;
 };
 
 /**
@@ -148,15 +150,13 @@ const process = (event) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
   }
-  
   const messageType = message.type.toLowerCase();
   const category = getCategory(messageType, message);
   const response = responseBuilder(message, category, destination);
 
-  if (hasMultipleResponses(message, category)) {
+  if (hasMultipleResponses(message, category, destination.Config)) {
     return [response, responseBuilderForRegisterDeviceOrBrowserTokenEvents(message, destination)];
   }
-
   return response;
 };
 

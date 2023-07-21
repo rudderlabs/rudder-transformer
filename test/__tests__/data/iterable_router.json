@@ -385,7 +385,8 @@
             "mapToSingleEvent": true,
             "trackAllPages": false,
             "trackCategorisedPages": true,
-            "trackNamedPages": true
+            "trackNamedPages": true,
+            "registerDeviceOrBrowserApiKey": "5678910"
           },
           "Enabled": true,
           "Transformations": [],
@@ -634,7 +635,8 @@
             "mapToSingleEvent": true,
             "trackAllPages": false,
             "trackCategorisedPages": true,
-            "trackNamedPages": true
+            "trackNamedPages": true,
+            "registerDeviceOrBrowserApiKey": "5678910"
           },
           "DestinationDefinition": {
             "Config": {
@@ -744,7 +746,7 @@
             "files": {},
             "headers": {
               "Content-Type": "application/json",
-              "api_key": "12345"
+              "api_key": "5678910"
             },
             "method": "POST",
             "params": {},

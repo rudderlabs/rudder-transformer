@@ -96,7 +96,7 @@
             "city": "Bangalore",
             "name": "manashi",
             "email": "manashi@website.com",
-            "country": "India"   
+            "country": "India"
           },
           "library": {
             "name": "analytics-node",
@@ -1069,7 +1069,8 @@
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
-          "trackNamedPages": false
+          "trackNamedPages": false,
+          "registerDeviceOrBrowserApiKey": "5678910"
         },
         "Enabled": true
       }
@@ -1108,7 +1109,7 @@
         "endpoint": "https://api.iterable.com/api/users/registerBrowserToken",
         "headers": {
           "Content-Type": "application/json",
-          "api_key": "12345"
+          "api_key": "5678910"
         },
         "params": {},
         "body": {
@@ -1182,7 +1183,8 @@
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
-          "trackNamedPages": false
+          "trackNamedPages": false,
+          "registerDeviceOrBrowserApiKey": "5678910"
         },
         "Enabled": true
       }
@@ -1221,7 +1223,7 @@
         "endpoint": "https://api.iterable.com/api/users/registerDeviceToken",
         "headers": {
           "Content-Type": "application/json",
-          "api_key": "12345"
+          "api_key": "5678910"
         },
         "params": {},
         "body": {
@@ -1301,7 +1303,8 @@
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
-          "trackNamedPages": false
+          "trackNamedPages": false,
+          "registerDeviceOrBrowserApiKey": "5678910"
         },
         "Enabled": true
       }
@@ -1340,7 +1343,7 @@
         "endpoint": "https://api.iterable.com/api/users/registerDeviceToken",
         "headers": {
           "Content-Type": "application/json",
-          "api_key": "12345"
+          "api_key": "5678910"
         },
         "params": {},
         "body": {
@@ -1817,7 +1820,8 @@
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
-          "trackNamedPages": false
+          "trackNamedPages": false,
+          "registerDeviceOrBrowserApiKey": "5678910"
         },
         "Enabled": true
       }
@@ -1856,7 +1860,7 @@
         "endpoint": "https://api.iterable.com/api/users/registerBrowserToken",
         "headers": {
           "Content-Type": "application/json",
-          "api_key": "12345"
+          "api_key": "5678910"
         },
         "params": {},
         "body": {
@@ -2386,7 +2390,8 @@
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
-          "trackNamedPages": false
+          "trackNamedPages": false,
+          "registerDeviceOrBrowserApiKey": "5678910"
         },
         "Enabled": true
       }
@@ -2425,7 +2430,7 @@
         "endpoint": "https://api.iterable.com/api/users/registerDeviceToken",
         "headers": {
           "Content-Type": "application/json",
-          "api_key": "12345"
+          "api_key": "5678910"
         },
         "params": {},
         "body": {

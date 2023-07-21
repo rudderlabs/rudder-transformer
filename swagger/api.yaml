@@ -12,9 +12,16 @@ servers:
 
 tags:
   - name: 'Miscellaneous'
+  - name: 'Destination'
+  - name: 'Bulk Upload'
+  - name: 'Delivery'
+  - name: 'Source'
+  - name: 'User Transform'
 
 paths:
   #Misc Routes
+  /heapdump:
+    $ref: './routes/misc.yaml#/~1heapdump'
   /health:
     $ref: './routes/misc.yaml#/~1health'
   /transformerBuildVersion:
@@ -25,3 +32,43 @@ paths:
     $ref: './routes/misc.yaml#/~1version'
   /features:
     $ref: './routes/misc.yaml#/~1features'
+
+  #Destination Routes
+  /{version}/destinations/{destination}:
+    $ref: './routes/destination.yaml#/~1{version}~1destinations~1{destination}'
+  /routerTransform:
+    $ref: './routes/destination.yaml#/~1routerTransform'
+  /batch:
+    $ref: './routes/destination.yaml#/~1batch'
+
+  #Bulk Upload Routes
+  /fileUpload:
+    $ref: './routes/bulkUpload.yaml#/~1fileUpload'
+  /pollStatus:
+    $ref: './routes/bulkUpload.yaml#/~1pollStatus'
+  /getFailedJobs:
+    $ref: './routes/bulkUpload.yaml#/~1getFailedJobs'
+  /getWarningJobs:
+    $ref: './routes/bulkUpload.yaml#/~1getWarningJobs'
+
+  #Delivery Routes
+  /{version}/destinations/{destination}/proxy:
+    $ref: './routes/delivery.yaml#/~1{version}~1destinations~1{destination}~1proxy'
+  /{version}/destinations/{destination}/proxyTest:
+    $ref: './routes/delivery.yaml#/~1{version}~1destinations~1{destination}~1proxyTest'
+
+  #Source Routes
+  /{version}/sources/{source}:
+    $ref: './routes/source.yaml#/~1{version}~1sources~1{source}'
+
+  #User Transform Routes
+  /customTransform:
+    $ref: './routes/userTransform.yaml#/~1customTransform'
+  /transformation/test:
+    $ref: './routes/userTransform.yaml#/~1transformation~1test'
+  /transformationLibrary/test:
+    $ref: './routes/userTransform.yaml#/~1transformationLibrary~1test'
+  /transformation/sethandle:
+    $ref: './routes/userTransform.yaml#/~1transformation~1sethandle'
+  /extractLibs:
+    $ref: './routes/userTransform.yaml#/~1extractLibs'

@@ -323,6 +323,12 @@
           "rudderstack"
         ]
       },
+      "shipping_address": {
+        "address1": "11 Rani Sankari Lane Patuapara Bhowanipore"
+      },
+      "billing_address": {
+        "address1": "11 Rani Sankari Lane Patuapara Bhowanipore"
+      },
       "admin_graphql_api_id": "gid://shopify/Fulfillment/4124667937024",
       "created_at": "2022-01-05T18:13:02+05:30",
       "destination": null,
@@ -540,6 +546,12 @@
         ]
       },
       "traits": {
+        "shippingAddress": {
+          "address1": "11 Rani Sankari Lane Patuapara Bhowanipore"
+        },
+        "billingAddress": {
+          "address1": "11 Rani Sankari Lane Patuapara Bhowanipore"
+        },
         "email": "test_person@email.com"
       }
     }

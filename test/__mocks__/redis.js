@@ -22,7 +22,7 @@ const getData = redisKey => {
 }
 let connectionRequestCount = 0;
 const getCallKeysForError = ["error", "shopifyGetAnonymousId", "shopifyGetSessionId", "shopify_test_get_items_fail"];
-const setCallKeysForError = ["error", "shopify_test_set_map_fail"];
+const setCallKeysForError = ["error", "shopify_test_set_map_fail", "shopify_test_set_redis_error"];
 class Redis {
     constructor(data) {
         this.host = data.host,

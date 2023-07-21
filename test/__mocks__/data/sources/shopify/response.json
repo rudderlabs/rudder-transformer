@@ -27,5 +27,8 @@
   },
   "shopify_test_only_anon_id": {
     "anonymousId": "anon_shopify_test_only_anon_id"
+  },
+  "shopify_test_set_redis_error": {
+    "itemsHash": "EMPTY"
   }
 }

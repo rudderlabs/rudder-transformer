@@ -108,6 +108,22 @@ describe('Shopify Utils Test', () => {
       const output = await checkAndUpdateCartItems(input);
       expect(output).toEqual(expectedOutput);
     });
+
+    it('Valid Cart Event but not able to set data due to redis error', async () => {
+      const input = {
+        id: 'shopify_test_set_redis_error',
+        line_items: [
+          {
+            prod_id: 'prod_1',
+            quantity: 1,
+          },
+        ],
+      };
+
+      const expectedOutput = true;
+      const output = await checkAndUpdateCartItems(input);
+      expect(output).toEqual(expectedOutput);
+    });
   });
 
   describe(' Test Cases -> set AnonymousId and sessionId without using Redis', () => {
@@ -119,7 +135,7 @@ describe('Shopify Utils Test', () => {
         },
       };
       const expectedOutput = { "anonymousId": "b9b6607d-6974-594f-8e99-ac3de71c4d89", "sessionId": undefined };
-      const output = await getAnonymousIdAndSessionId(input,{},null);
+      const output = await getAnonymousIdAndSessionId(input, {}, null);
       expect(output).toEqual(expectedOutput);
     });
 
@@ -132,7 +148,7 @@ describe('Shopify Utils Test', () => {
       };
 
       const expectedOutput = { "anonymousId": "b9b6607d-6974-594f-8e99-ac3de71c4d89", "sessionId": undefined };
-      const output = await getAnonymousIdAndSessionId(input,{},null);
+      const output = await getAnonymousIdAndSessionId(input, {}, null);
 
       expect(output).toEqual(expectedOutput);
     });
@@ -143,7 +159,7 @@ describe('Shopify Utils Test', () => {
         properties: {},
       };
 
-      const output = await getAnonymousIdAndSessionId(input,{},null);
+      const output = await getAnonymousIdAndSessionId(input, {}, null);
       expect(output).toEqual(output); // since it will be random
     });
 
@@ -155,7 +171,7 @@ describe('Shopify Utils Test', () => {
         },
       };
       const expectedOutput = { "anonymousId": undefined, "sessionId": undefined };
-      const output = await getAnonymousIdAndSessionId(input,{},null);
+      const output = await getAnonymousIdAndSessionId(input, {}, null);
       expect(output).toEqual(expectedOutput);
     });
 
@@ -181,7 +197,7 @@ describe('Shopify Utils Test', () => {
         },
       };
       const expectedOutput = { "anonymousId": "RUDDER_ANONYMOUSID", "sessionId": "RUDDER_SESSIONID" };
-      const output = await getAnonymousIdAndSessionId(input,{},null);
+      const output = await getAnonymousIdAndSessionId(input, {}, null);
       expect(output).toEqual(expectedOutput);
     });
   });
@@ -199,7 +215,7 @@ describe('Shopify Utils Test', () => {
         },
       };
       const expectedOutput = { "anonymousId": "bcaf0473-fb11-562f-80a1-c83a35f053bc", "sessionId": undefined } // cartToken hashed
-      const output = await getAnonymousIdAndSessionId(input,{},null);
+      const output = await getAnonymousIdAndSessionId(input, {}, null);
       expect(output).toEqual(expectedOutput);
     });
 
@@ -218,7 +234,7 @@ describe('Shopify Utils Test', () => {
       };
       const expectedOutput = { "anonymousId": "anon_shopify_test2", "sessionId": "session_id_2" }; // fetched succesfully from redis
 
-      const output = await getAnonymousIdAndSessionId(input,{},null);
+      const output = await getAnonymousIdAndSessionId(input, {}, null);
       expect(output).toEqual(expectedOutput);
     });
 
@@ -230,7 +246,7 @@ describe('Shopify Utils Test', () => {
         },
       };
       const expectedOutput = { "anonymousId": "anon_shopify_test_only_anon_id", "sessionId": undefined };
-      const output = await getAnonymousIdAndSessionId(input,{},null);
+      const output = await getAnonymousIdAndSessionId(input, {}, null);
       expect(output).toEqual(expectedOutput);
     });
 
@@ -244,7 +260,7 @@ describe('Shopify Utils Test', () => {
 
       const expectedOutput = { "anonymousId": "281a3e25-e603-5870-9cda-281c22940970", "sessionId": undefined };
 
-      const output = await getAnonymousIdAndSessionId(input,{},null);
+      const output = await getAnonymousIdAndSessionId(input, {}, null);
       expect(output).toEqual(expectedOutput);
     });
 
@@ -257,7 +273,7 @@ describe('Shopify Utils Test', () => {
       };
       const expectedOutput = { "anonymousId": undefined, "sessionId": undefined };
 
-      const output = await getAnonymousIdAndSessionId(input,{},null);
+      const output = await getAnonymousIdAndSessionId(input, {}, null);
       expect(output).toEqual(expectedOutput);
     });
 
@@ -270,7 +286,7 @@ describe('Shopify Utils Test', () => {
       };
       const expectedOutput = 'RANDOM_ANONYMOUS_ID'; // fetched succesfully from redis
 
-      const output = await getAnonymousIdAndSessionId(input,{},null);
+      const output = await getAnonymousIdAndSessionId(input, {}, null);
       expect('RANDOM_ANONYMOUS_ID').toEqual(expectedOutput);
     });
 
@@ -291,7 +307,7 @@ describe('Shopify Utils Test', () => {
         },
       };
       const expectedOutput = { "anonymousId": "RUDDER_ANON_ID", "sessionId": null }; // fetched succesfully from redis
-      const output = await getAnonymousIdAndSessionId(input,{},null);
+      const output = await getAnonymousIdAndSessionId(input, {}, null);
 
       expect(output).toEqual(expectedOutput);
     });

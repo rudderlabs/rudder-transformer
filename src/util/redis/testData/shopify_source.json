@@ -784,8 +784,8 @@
     },
     "output": {
       "anonymousId": "anon_shopify_test2",
-      "sessionId": "session_id_2",
       "context": {
+        "sessionId": "session_id_2",
         "cart_token": "shopify_test2",
         "library": {
           "name": "RudderStack Shopify Cloud",

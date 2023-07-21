@@ -179,7 +179,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
       message.setProperty('userId', 'shopify-admin');
     }
     if (isDefinedAndNotNull(sessionId)) {
-      message.setProperty('sessionId', sessionId);
+      message.setProperty('context.sessionId', sessionId);
     }
   }
   message.setProperty(`integrations.${INTEGERATION}`, true);

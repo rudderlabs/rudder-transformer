@@ -1,5 +1,4 @@
 const Redis = require('ioredis');
-const { isDefinedAndNotNull } = require('../../v0/util');
 const { RedisError } = require('../../v0/util/errorTypes');
 const log = require('../../logger');
 const stats = require('../stats');

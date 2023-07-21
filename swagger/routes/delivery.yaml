@@ -1,0 +1,118 @@
+/{version}/destinations/{destination}/proxy:
+  post:
+    tags:
+      - Delivery
+    summary: Destination processor transformation
+    parameters:
+      - in: path
+        name: version
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: destination
+        description: The destination identifier
+        required: true
+        schema:
+          type: string
+    requestBody:
+      description: Request Body
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/processorTransformationOutput.yaml'
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                output:
+                  $ref: '../components/schemas/deliveryResponse.yaml'
+      400:
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                output:
+                  $ref: '../components/schemas/deliveryResponse.yaml'
+      500:
+        description: Internal Server Error
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                output:
+                  $ref: '../components/schemas/deliveryResponse.yaml'
+
+/{version}/destinations/{destination}/proxyTest:
+  post:
+    tags:
+      - Delivery
+    summary: Destination processor transformation
+    parameters:
+      - in: path
+        name: version
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: destination
+        description: The destination identifier
+        required: true
+        schema:
+          type: string
+    requestBody:
+      description: Request Body
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/processorTransformationOutput.yaml'
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                output:
+                  type: object
+                  properties:
+                    destinationRequestPayload:
+                      type: object
+                    outputDiff:
+                      type: string
+                      example: Sample outputDiff value
+      400:
+        description: Failure
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                output:
+                  type: object
+                  properties:
+                    error:
+                      type: string
+                    statTags:
+                      type: object
+                    destType:
+                      type: string
+                    module:
+                      type: string
+                      example: destination
+                    feature:
+                      type: string
+                      example: dataDelivery
+                    message:
+                      type: string
+                      example: '[TransformerProxyTest] Error occurred while testing proxy for destination ("${destination}"): "${err.message}"'

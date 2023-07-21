@@ -71,7 +71,6 @@ const data = [
             {
               batchedRequest: {
                 version: '1',
-                userId: '',
                 type: 'REST',
                 method: 'POST',
                 endpoint: 'https://ruddertest2.mautic.net/api/contacts/new',
@@ -285,7 +284,6 @@ const data = [
                 version: '1',
                 type: 'REST',
                 method: 'POST',
-                userId: '',
                 endpoint: 'https://ruddertest2.mautic.net/api/segments/17/contact/246/add',
                 headers: {
                   'Content-Type': 'application/json',

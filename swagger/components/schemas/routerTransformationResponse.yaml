@@ -1,0 +1,35 @@
+title: Router Transformation Response
+type: object
+properties:
+  batchedRequest:
+    $ref: './processorTransformationOutput.yaml'
+  metadata:
+    items:
+      $ref: './metadata.yaml'
+  destination:
+    $ref: './destination.yaml'
+  batched:
+    type: boolean
+  statusCode:
+    type: number
+  error:
+    type: string
+  statTags:
+    type: object
+    properties:
+      errorCategory:
+        type: string
+      errorType:
+        type: string
+      destType:
+        type: string
+      module:
+        type: string
+      implementation:
+        type: string
+      feature:
+        type: string
+      destinationId:
+        type: string
+      workspaceId:
+        type: string

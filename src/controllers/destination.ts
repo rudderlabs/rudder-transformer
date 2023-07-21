@@ -76,7 +76,7 @@ export default class DestinationController {
     });
     stats.timing('dest_transform_request_latency', startTime, {
       destination,
-      feature: 'processor',
+      feature: tags.FEATURES.PROCESSOR,
       version,
       ...metaTags,
     });

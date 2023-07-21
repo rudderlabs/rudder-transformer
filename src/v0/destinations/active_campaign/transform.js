@@ -155,7 +155,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
   if (tagsToBeCreated.length > 0) {
     await Promise.all(
       tagsToBeCreated.map(async (tag) => {
-        endpoint = `${destination.Config.apiUrl}${category.tagEndPoint} `;
+        endpoint = `${destination.Config.apiUrl}${category.tagEndPoint}`;
         requestData = {
           tag: {
             tag,
@@ -181,7 +181,7 @@ const customTagProcessor = async (message, category, destination, contactId) => 
   // Ref - https://developers.activecampaign.com/reference/create-contact-tag
   const responsesArr = await Promise.all(
     tagIds.map(async (tagId) => {
-      endpoint = `${destination.Config.apiUrl}${category.mergeTagWithContactUrl} `;
+      endpoint = `${destination.Config.apiUrl}${category.mergeTagWithContactUrl}`;
       requestData = {
         contactTag: {
           contact: contactId,
@@ -215,7 +215,7 @@ const customFieldProcessor = async (message, category, destination) => {
   // Step - 2
   // Get the existing field data from dest and store it in responseStaging
   // Ref - https://developers.activecampaign.com/reference/retrieve-fields
-  let endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100 `;
+  let endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100`;
   const requestOptions = {
     headers: {
       'Api-Token': destination.Config.apiKey,
@@ -440,7 +440,7 @@ const screenRequestHandler = async (message, category, destination) => {
   if (get(message, EVENT_DATA_KEY)) {
     payload.eventdata = get(message, EVENT_DATA_KEY);
   }
-  payload.visit = `{ "email": "${get(message, 'context.traits.email')}" } `;
+  payload.visit = `{ "email": "${get(message, 'context.traits.email')}" }`;
   return responseBuilderSimple(payload, category, destination);
 };
 
@@ -448,7 +448,7 @@ const trackRequestHandler = async (message, category, destination) => {
   // Need to check if the event with same name already exists if not need to create
   // Retrieve All events from destination
   // https://developers.activecampaign.com/reference/list-all-event-types
-  let endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint} `;
+  let endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint}`;
   const requestOptions = {
     headers: {
       'Api-Token': destination.Config.apiKey,
@@ -477,7 +477,7 @@ const trackRequestHandler = async (message, category, destination) => {
   // Ref - https://developers.activecampaign.com/reference/create-a-new-event-name-only
   if (!events.includes(message.event)) {
     // Create the event
-    endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint} `;
+    endpoint = `${destination.Config.apiUrl}${category.getEventEndPoint}`;
     const requestData = {
       eventTrackingEvent: {
         name: message.event,

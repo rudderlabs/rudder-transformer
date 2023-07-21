@@ -319,7 +319,7 @@ const customListProcessor = async (message, category, destination, contactId) =>
   const promises = [];
   listArr.map(async (li) => {
     if (li.status === 'subscribe' || li.status === 'unsubscribe') {
-      const endpoint = `${destination.Config.apiUrl}${category.mergeListWithContactUrl} `;
+      const endpoint = `${destination.Config.apiUrl}${category.mergeListWithContactUrl}`;
       const requestData = {
         contactList: {
           list: li.id,

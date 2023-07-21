@@ -1291,6 +1291,6 @@
   ],
   {
     "statusCode": 400,
-    "message": "Previous id and user id should not be same"
+    "message": "One of previousId/anonymousId is same as userId"
   }
 ]

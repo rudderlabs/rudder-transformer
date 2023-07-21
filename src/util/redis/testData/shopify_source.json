@@ -697,6 +697,7 @@
     "description": "Track Call -> checkouts_update ",
     "input": {
       "id": "shopify_test2",
+      "user_id": "rudder01",
       "query_parameters": {
         "topic": [
           "checkouts_update"
@@ -783,6 +784,7 @@
       "created_at": "2023-02-10T12:05:04.402Z"
     },
     "output": {
+      "userId": "rudder01",
       "anonymousId": "anon_shopify_test2",
       "context": {
         "sessionId": "session_id_2",
@@ -805,6 +807,7 @@
         "created_at": "2023-02-10T12:05:04.402Z",
         "cart_token": "shopify_test2",
         "order_id": "shopify_test2",
+        "user_id": "rudder01",
         "products": [
           {
             "id": 44323300999443,

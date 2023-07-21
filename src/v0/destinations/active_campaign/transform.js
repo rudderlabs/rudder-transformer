@@ -145,12 +145,11 @@ const customTagProcessor = async (message, category, destination, contactId) => 
     // Step - 2
     // Check if tags already present then we push it to tagIds
     // the ones which are not stored we push it to tagsToBeCreated
-    msgTags.map((tag) => {
+    msgTags.forEach((tag) => {
       if (!storedTags[tag]) tagsToBeCreated.push(tag);
       else tagIds.push(storedTags[tag]);
     });
   }
-
   // Step - 3
   // Create tags if required - from tagsToBeCreated
   // Ref - https://developers.activecampaign.com/reference/create-a-new-tag

@@ -231,8 +231,7 @@ const customFieldProcessor = async (message, category, destination) => {
   const limit = Math.floor(parseInt(get(res, TOTAL_RECORDS_KEY), 10) / 100);
   if (parseInt(get(res, TOTAL_RECORDS_KEY), 10) > 100) {
     for (let i = 0; i < limit; i += 1) {
-      endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100&offset=${100 * (i + 1)}`
-        } `;
+      endpoint = `${destination.Config.apiUrl}${category.fieldEndPoint}?limit=100&offset=${100 * (i + 1)}`;
       const requestOpt = {
         headers: {
           'Api-Token': destination.Config.apiKey,
@@ -282,7 +281,7 @@ const customFieldProcessor = async (message, category, destination) => {
     if (Array.isArray(fieldInfo[key])) {
       fPayload = '||';
       fieldInfo[key].map((fv) => {
-        fPayload = `${fPayload}${fv}|| `;
+        fPayload = `${fPayload}${fv}||`;
       });
     } else {
       fPayload = fieldInfo[key];

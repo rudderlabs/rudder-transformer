@@ -94,8 +94,6 @@ const data = [
                   Authorization: 'Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf',
                 },
                 version: '1',
-
-                userId: '',
                 endpoint: 'https://commander.user.com/api/public/companies/21/add_member/',
               },
               metadata: [
@@ -222,8 +220,6 @@ const data = [
                   JSON_ARRAY: {},
                 },
                 type: 'REST',
-
-                userId: '',
                 files: {},
                 method: 'PUT',
                 params: {},

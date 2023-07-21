@@ -81,7 +81,6 @@ const data = [
                   JSON: {},
                   JSON_ARRAY: {},
                 },
-                userId: '',
                 type: 'REST',
                 files: {},
                 method: 'GET',
@@ -200,7 +199,6 @@ const data = [
                   JSON_ARRAY: {},
                 },
                 type: 'REST',
-                userId: '',
                 files: {},
                 method: 'GET',
                 params: {

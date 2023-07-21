@@ -445,9 +445,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Enabled: true,
-            },
             error: 'EventBridge: received empty config, dropping event',
             statTags: {
               destType: 'EVENTBRIDGE',

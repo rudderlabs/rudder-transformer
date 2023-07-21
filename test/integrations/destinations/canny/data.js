@@ -204,11 +204,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'FXLkLUEhGJyvmY4',
-              },
-            },
             error: 'Missing required value from "userIdOnly"',
             statTags: {
               destType: 'CANNY',
@@ -307,11 +302,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'FXLkLUEhGJyvmY4',
-              },
-            },
             error: 'Missing required value from "name"',
             statTags: {
               destType: 'CANNY',
@@ -410,11 +400,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'FXLkLUEhGJyvmY4',
-              },
-            },
             error: 'Message type not supported',
             statTags: {
               destType: 'CANNY',
@@ -513,11 +498,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: '',
-              },
-            },
             error: 'API Key is not present. Aborting message.',
             statTags: {
               destType: 'CANNY',
@@ -615,11 +595,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'api123',
-              },
-            },
             error: 'Message Type is not present. Aborting message.',
             statTags: {
               destType: 'CANNY',
@@ -1156,21 +1131,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'apikey123',
-                eventsToEvents: [
-                  {
-                    from: 'sample',
-                    to: 'createPost',
-                  },
-                  {
-                    from: 'sample2',
-                    to: 'createPost',
-                  },
-                ],
-              },
-            },
             error: 'Event name (sample3) is not present in the mapping',
             statTags: {
               destType: 'CANNY',
@@ -1284,25 +1244,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'apikey123',
-                eventsToEvents: [
-                  {
-                    from: 'sample',
-                    to: 'createPost',
-                  },
-                  {
-                    from: 'sample',
-                    to: 'createPost',
-                  },
-                  {
-                    from: 'sample',
-                    to: 'createPost',
-                  },
-                ],
-              },
-            },
             error: 'Event name is required',
             statTags: {
               destType: 'CANNY',
@@ -1404,12 +1345,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'apikey123',
-                eventsToEvents: [],
-              },
-            },
             error: 'Event name (abc) is not present in the mapping',
             statTags: {
               destType: 'CANNY',
@@ -1521,17 +1456,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'apikey123',
-                eventsToEvents: [
-                  {
-                    from: 'abc',
-                    to: 'createVote',
-                  },
-                ],
-              },
-            },
             error:
               'Missing required value from ["properties.postID","properties.postId","properties.post.id"]',
             statTags: {
@@ -1644,17 +1568,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'apikey123',
-                eventsToEvents: [
-                  {
-                    from: 'abc def',
-                    to: 'createPost',
-                  },
-                ],
-              },
-            },
             error:
               'Missing required value from ["properties.boardID","properties.boardId","properties.board.id"]',
             statTags: {
@@ -1767,17 +1680,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'apikey123',
-                eventsToEvents: [
-                  {
-                    from: 'abc def',
-                    to: 'createPost',
-                  },
-                ],
-              },
-            },
             error: 'Missing required value from "properties.title"',
             statTags: {
               destType: 'CANNY',
@@ -1889,17 +1791,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'apikey123',
-                eventsToEvents: [
-                  {
-                    from: 'abc def',
-                    to: 'createPost',
-                  },
-                ],
-              },
-            },
             error: 'Missing required value from "properties.details"',
             statTags: {
               destType: 'CANNY',

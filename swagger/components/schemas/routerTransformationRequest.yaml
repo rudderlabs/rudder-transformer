@@ -1,0 +1,18 @@
+title: Router Transformation Request
+type: object
+properties:
+  input:
+    type: array
+    items:
+      type: object
+      properties:
+        request:
+          type: object
+        message:
+          type: object
+        metadata:
+          $ref: './metadata.yaml'
+        destination:
+          $ref: './destination.yaml'
+  destType:
+    type: string

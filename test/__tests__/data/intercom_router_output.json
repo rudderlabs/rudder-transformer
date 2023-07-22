@@ -7,7 +7,7 @@
       "endpoint": "https://api.intercom.io/users",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "Authorization": "Bearer intercomApiKey",
         "Accept": "application/json",
         "Intercom-Version": "1.4"
       },
@@ -42,7 +42,7 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
       }
@@ -56,7 +56,7 @@
       "endpoint": "https://api.intercom.io/users",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "Authorization": "Bearer intercomApiKey",
         "Accept": "application/json",
         "Intercom-Version": "1.4"
       },
@@ -90,7 +90,7 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "dG9rOjFkNTY4NDk1X2E3OGFfNDBiM19hYjJkXzAyMDExY2Y3YzJjZjoxOjA=",
+        "apiKey": "intercomApiKey",
         "appId": "9e9cdea1-78fa-4829-a9b2-5d7f7e96d1a0",
         "collectContext": false
       }

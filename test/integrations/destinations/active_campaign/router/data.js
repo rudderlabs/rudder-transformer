@@ -141,7 +141,6 @@ const data = [
                 },
                 type: 'REST',
                 files: {},
-                userId: '',
                 method: 'POST',
                 params: {},
                 headers: {
@@ -272,7 +271,6 @@ const data = [
                 },
                 type: 'REST',
                 files: {},
-                userId: '',
                 method: 'POST',
                 params: {},
                 headers: {
@@ -320,7 +318,6 @@ const data = [
                 name: 'home',
                 type: 'page',
                 sentAt: '2023-01-10T22:31:10.954Z',
-                userId: '',
                 channel: 'web',
                 context: {
                   os: {

@@ -45,10 +45,11 @@ function getCompanyAttribute(company) {
   return companiesList;
 }
 
-function validateIdentify(message, payload) {
+function validateIdentify(message, payload, config) {
   const finalPayload = payload;
 
-  finalPayload.update_last_request_at = true;
+  finalPayload.update_last_request_at =
+    config.updateLastRequestAt !== undefined ? config.updateLastRequestAt : true;
   if (payload.user_id || payload.email) {
     if (payload.name === undefined || payload.name === '') {
       const firstName = getFieldValueFromMessage(message, 'firstName');
@@ -170,7 +171,9 @@ function validateAndBuildResponse(message, payload, category, destination) {
   const messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.IDENTIFY:
-      response.body.JSON = removeUndefinedAndNullValues(validateIdentify(message, payload));
+      response.body.JSON = removeUndefinedAndNullValues(
+        validateIdentify(message, payload, destination.Config),
+      );
       break;
     case EventType.TRACK:
       response.body.JSON = removeUndefinedAndNullValues(validateTrack(message, payload));

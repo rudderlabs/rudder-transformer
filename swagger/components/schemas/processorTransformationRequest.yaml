@@ -1,0 +1,13 @@
+title: Processor Transformation Request
+type: object
+properties:
+  message:
+    type: object
+  metadata:
+    $ref: './metadata.yaml'
+  destination:
+    $ref: './destination.yaml'
+  libraries:
+    type: array
+    items:
+      $ref: './userTransformationLibrary.yaml'

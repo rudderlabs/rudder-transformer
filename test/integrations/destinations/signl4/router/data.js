@@ -85,7 +85,6 @@ const data = [
               batchedRequest: {
                 version: '1',
                 type: 'REST',
-                userId: '',
                 method: 'POST',
                 endpoint: 'https://connect.signl4.com/webhook/t1yurrb968zk',
                 headers: {

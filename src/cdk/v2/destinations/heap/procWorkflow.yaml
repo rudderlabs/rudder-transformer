@@ -1,0 +1,62 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - name: flattenJson
+    path: ../../../../v0/util
+  - path: ../../bindings/jsontemplate
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+       $.assert(.message.type in {{$.EventType.([.IDENTIFY, .TRACK])}}, 
+        "message type " + .message.type + " is not supported");
+  - name: setMessageType
+    template: |
+      $.context.messageType = .message.type.toLowerCase()
+  - name: identifyPayload
+    condition: $.context.messageType === {{$.EventType.IDENTIFY}}
+    template: |
+      $.assert(.message.traits ?? .message.context.traits, "traits are required");
+      $.context.endpoint = 'https://heapanalytics.com/api/add_user_properties';
+      $.context.payload = .message.({
+        identity: {{{{$.getGenericPaths("userId")}}}},
+        properties: $.flattenJson(.traits ?? .context.traits){~["idempotencyKey"]},
+        app_id: ^.destination.Config.appId
+      })
+  - name: trackPayload
+    condition: $.context.messageType === {{$.EventType.TRACK}}
+    template: |
+      $.assert(.message.event, "event is required");
+      $.context.endpoint = 'https://heapanalytics.com/api/track';
+      $.context.payload = .message.({
+        identity: {{{{$.getGenericPaths("userId")}}}},
+        properties: $.flattenJson(.properties){~["idempotencyKey"]},
+        app_id: ^.destination.Config.appId,
+        event: .event,
+        timestamp: {{{{$.getGenericPaths("timestamp")}}}}
+      });
+      .message.properties.idempotencyKey ? 
+        ($.context.payload.idempotency_key = .message.properties.idempotencyKey);
+
+  - name: finalPayload
+    description: In batchMode we return payload directly
+    condition: $.batchMode
+    template: |
+      $.context.payload
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        const response = $.defaultRequestConfig();
+        response.body.JSON = $.context.payload;
+        response.userId = .message.anonymousId;
+        response.endpoint = $.context.endpoint;
+        response.headers = {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        };
+        response
+
+        

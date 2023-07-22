@@ -1,0 +1,111 @@
+/{version}/destinations/{destination}:
+  post:
+    tags:
+      - Destination
+    summary: Destination processor transformation
+    parameters:
+      - in: path
+        name: version
+        required: true
+        schema:
+          type: string
+      - in: path
+        name: destination
+        description: The destination identifier
+        required: true
+        schema:
+          type: string
+    requestBody:
+      description: Request Body
+      required: true
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '../components/schemas/processorTransformationRequest.yaml'
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../components/schemas/processorTransformationResponse.yaml'
+            examples:
+              success:
+                summary: Processor Transformation Success
+                value:
+                  - $ref: '../components/examples/processor/success.yaml'
+              failure:
+                summary: Processor Transformation Failure
+                value:
+                  - $ref: '../components/examples/processor/failure.yaml'
+
+/routerTransform:
+  post:
+    tags:
+      - Destination
+    summary: Destination router transformation
+    requestBody:
+      description: Request Body
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/routerTransformationRequest.yaml'
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                output:
+                  type: array
+                  items:
+                    $ref: '../components/schemas/routerTransformationResponse.yaml'
+            examples:
+              success:
+                summary: Router Transformation Success
+                value:
+                  output:
+                    - $ref: '../components/examples/router/success.yaml'
+              failure:
+                summary: Router Transformation Failure
+                value:
+                  output:
+                    - $ref: '../components/examples/router/failure.yaml'
+
+/batch:
+  post:
+    tags:
+      - Destination
+    summary: Destination router transformation
+    requestBody:
+      description: Request Body
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '../components/schemas/routerTransformationRequest.yaml'
+    responses:
+      200:
+        description: Success or Failure
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../components/schemas/routerTransformationResponse.yaml'
+            examples:
+              success:
+                summary: Batch Transformation Success
+                value:
+                  - $ref: '../components/examples/batch/success.yaml'
+              failure:
+                summary: Batch Transformation Failure
+                value:
+                  - $ref: '../components/examples/batch/failure.yaml'

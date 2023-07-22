@@ -52,8 +52,8 @@ export default class DestinationController {
       resplist = events.map((ev) => {
         const metaTO = integrationService.getTags(
           destination,
-          ev.metadata.destinationId,
-          ev.metadata.workspaceId,
+          ev.metadata?.destinationId,
+          ev.metadata?.workspaceId,
           tags.FEATURES.PROCESSOR,
         );
         metaTO.metadata = ev.metadata;
@@ -77,6 +77,7 @@ export default class DestinationController {
     });
     stats.timing('dest_transform_request_latency', startTime, {
       destination,
+      feature: tags.FEATURES.PROCESSOR,
       version,
       ...metaTags,
     });
@@ -89,6 +90,7 @@ export default class DestinationController {
   }
 
   public static async destinationTransformAtRouter(ctx: Context) {
+    const startTime = new Date();
     logger.debug(
       'Native(Router-Transform):: Requst to transformer::',
       JSON.stringify(ctx.request.body),
@@ -118,8 +120,8 @@ export default class DestinationController {
     } catch (error: any) {
       const metaTO = integrationService.getTags(
         destination,
-        events[0].metadata.destinationId,
-        events[0].metadata.workspaceId,
+        events[0].metadata?.destinationId,
+        events[0].metadata?.workspaceId,
         tags.FEATURES.ROUTER,
       );
       metaTO.metadatas = events.map((ev) => ev.metadata);
@@ -140,6 +142,12 @@ export default class DestinationController {
       'Native(Router-Transform):: Response from transformer::',
       JSON.stringify(ctx.body),
     );
+    stats.timing('dest_transform_request_latency', startTime, {
+      destination,
+      version: 'v0',
+      feature: tags.FEATURES.ROUTER,
+      ...metaTags,
+    });
     return ctx;
   }
 
@@ -148,6 +156,7 @@ export default class DestinationController {
       'Native(Process-Transform-Batch):: Requst to transformer::',
       JSON.stringify(ctx.request.body),
     );
+    const startTime = new Date();
     const requestMetadata = MiscService.getRequestMetadata(ctx);
     const routerRequest = ctx.request.body as RouterTransformationRequest;
     const destination = routerRequest.destType;
@@ -182,6 +191,11 @@ export default class DestinationController {
       'Native(Process-Transform-Batch):: Response from transformer::',
       JSON.stringify(ctx.body),
     );
+    stats.timing('dest_transform_request_latency', startTime, {
+      destination,
+      feature: tags.FEATURES.BATCH,
+      version:"v0",
+    });
     return ctx;
   }
 }

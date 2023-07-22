@@ -1,0 +1,27 @@
+bindings:
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: preparepPayload
+    template: |
+      $.context.payload = .message;
+      $.context.payload.context = $.context.payload.context ?? {}
+      $.context.payload.context.ip = .message.context.ip ?? .message.request_ip
+
+  - name: buildResponse
+    description: In batchMode we return payload directly
+    condition: $.batchMode
+    template: $.context.payload
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        const response = $.defaultRequestConfig();
+        response.body.JSON = $.context.payload;
+        response.endpoint = .destination.Config.webhookUrl;
+        response.userId = .message.anonymousId;
+        response.headers = {
+          "authorization": .destination.Config.authHeader,
+            "content-type": "application/json"
+        };
+        response

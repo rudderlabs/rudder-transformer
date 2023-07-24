@@ -199,17 +199,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                clientId: 'abcdeb8-f459-4cd6-b4c5-958b3d663242',
-                clientSecret: 'abcdePsz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFRdsfd',
-                audienceType: 'EMAIL',
-                accountId: '12444',
-                audienceId: '34893',
-                hashRequired: true,
-              },
-              ID: 'iwehr83843',
-            },
             error: 'Required property for email type audience is not available in an object',
             statTags: {
               destType: 'YAHOO_DSP',
@@ -542,17 +531,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                clientId: 'abcdeb8-f459-4cd6-b4c5-958b3d663242',
-                clientSecret: 'abcdePsz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFRdsfd',
-                audienceType: 'DEVICE_ID',
-                accountId: '12444',
-                audienceId: '34893',
-                hashRequired: true,
-              },
-              ID: 'iwehr83843',
-            },
             error:
               "seedListType is required for deviceId type audience and it should be any one of 'IDFA' and 'GPADVID'",
             statTags: {
@@ -649,18 +627,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                clientId: 'abcdeb8-f459-4cd6-b4c5-958b3d663242',
-                clientSecret: 'abcdePsz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFRdsfd',
-                audienceType: 'DEVICE_ID',
-                accountId: '12444',
-                audienceId: '34893',
-                hashRequired: true,
-                seedListType: 'IDFA',
-              },
-              ID: 'iwehr83843',
-            },
             error: 'Required property for deviceId type audience is not available in an object',
             statTags: {
               destType: 'YAHOO_DSP',
@@ -733,18 +699,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                clientId: 'abcdeb8-f459-4cd6-b4c5-958b3d663242',
-                clientSecret: 'abcdePsz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFRdsfd',
-                audienceType: 'DEVICEID',
-                accountId: '12444',
-                audienceId: '34893',
-                hashRequired: true,
-                seedListType: 'IDFA',
-              },
-              ID: 'iwehr83843',
-            },
             error: 'Audience Type DEVICEID is not supported',
             statTags: {
               destType: 'YAHOO_DSP',
@@ -844,17 +798,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
-                audienceType: 'EMAIL',
-                accountId: '12444',
-                audienceId: '34893',
-                hashRequired: true,
-              },
-              ID: 'iwehr83843',
-            },
             error: "The only supported operation for audience updation 'add' is not present",
             statTags: {
               destType: 'YAHOO_DSP',
@@ -954,17 +897,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
-                audienceType: 'EMAIL',
-                accountId: '12444',
-                audienceId: '34893',
-                hashRequired: true,
-              },
-              ID: 'iwehr83843',
-            },
             error: 'Event type track is not supported',
             statTags: {
               destType: 'YAHOO_DSP',
@@ -1063,17 +995,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                clientId: 'abcdef8-f49-4cd6-b4c5-958b3d66d431',
-                clientSecret: 'sjhdkhfrz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFR4rXQg',
-                audienceType: 'EMAIL',
-                accountId: '12444',
-                audienceId: '34893',
-                hashRequired: true,
-              },
-              ID: 'iwehr83843',
-            },
             error: 'Event type is required',
             statTags: {
               destType: 'YAHOO_DSP',
@@ -1129,18 +1050,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                clientId: 'abcdeb8-f459-4cd6-b4c5-958b3d663242',
-                clientSecret: 'abcdePsz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFRdsfd',
-                audienceType: 'POINT_OF_INTEREST',
-                accountId: '12444',
-                audienceId: '34893',
-                hashRequired: true,
-                seedListType: 'IDFA',
-              },
-              ID: 'iwehr83843',
-            },
             error: 'listData is not present inside properties. Aborting message',
             statTags: {
               destType: 'YAHOO_DSP',
@@ -1195,18 +1104,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                clientId: 'abcdeb8-f459-4cd6-b4c5-958b3d663242',
-                clientSecret: 'abcdePsz6yc9LrRRIPimE9h53jADLccXTykHCcA6eEoFRdsfd',
-                audienceType: 'POINT_OF_INTEREST',
-                accountId: '12444',
-                audienceId: '34893',
-                hashRequired: true,
-                seedListType: 'IDFA',
-              },
-              ID: 'iwehr83843',
-            },
             error: 'Message properties is not present. Aborting message',
             statTags: {
               destType: 'YAHOO_DSP',

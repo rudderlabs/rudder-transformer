@@ -95,7 +95,6 @@ const data = [
                 method: 'PATCH',
                 params: {},
                 type: 'REST',
-                userId: '',
                 version: '1',
               },
               destination: {

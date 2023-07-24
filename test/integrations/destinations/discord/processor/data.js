@@ -108,29 +108,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              ID: '1ZQVSU9SXNg6KYgZALaqjAO3PIL',
-              Name: 'test-Discord',
-              DestinationDefinition: {
-                ID: '1ZQUiJVMlmF7lfsdfXg7KXQnlLV',
-                Name: 'DISCORD',
-                DisplayName: 'Discord',
-                Config: {
-                  excludeKeys: [],
-                  includeKeys: [],
-                },
-              },
-              Config: {
-                eventChannelSettings: [],
-                eventTemplateSettings: [],
-                IdentifyTemplate: 'identified {{name}} with {{traits}}',
-                webhookUrl: 'https://abcd.com/efgh/89078/979868/98678',
-                whitelistedTraitsSettings: [],
-              },
-              Enabled: true,
-              Transformations: [],
-              IsProcessorEnabled: true,
-            },
             error: 'Event type page is not supported',
             metadata: {
               anonymousId: '4de817fb-7f8e-4e23-b9be-f6736dbda20f',

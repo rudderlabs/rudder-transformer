@@ -148,41 +148,25 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
-            }
-          ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "eventMerchEventToAdobeEvent": [
@@ -396,41 +380,25 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
-            }
-          ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "eventMerchEventToAdobeEvent": [
@@ -644,41 +612,25 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
-            }
-          ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "eventMerchEventToAdobeEvent": [
@@ -904,41 +856,25 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
-            }
-          ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "eventMerchEventToAdobeEvent": [
@@ -1175,41 +1111,25 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
-            }
-          ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "eventMerchEventToAdobeEvent": [
@@ -1443,41 +1363,25 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
-            }
-          ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "eventMerchEventToAdobeEvent": [
@@ -1702,41 +1606,25 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
-            }
-          ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "eventMerchEventToAdobeEvent": [
@@ -1904,26 +1792,6 @@
               "to": "initHeartbeat"
             }
           ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
-            }
-          ],
           "eventMerchProperties": [
             {
               "eventMerchProperties": "currencyMerch"
@@ -2014,25 +1882,30 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
+              "to": "2",
+              "delimiter": ","
             },
             {
               "from": "plan",
-              "to": "2"
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "contextDataMapping": [
@@ -2063,7 +1936,7 @@
         "JSON": {},
         "JSON_ARRAY": {},
         "XML": {
-          "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><campaign>sales campaign</campaign><channel>web</channel><ipaddress>127.0.0.1</ipaddress><language>en-US</language><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><referrer>https://www.google.com/search?q=estore+bestseller</referrer><contextData><roott01>roottval001</roott01></contextData><eVar6>RudderLabs JavaScript SDK</eVar6><eVar2>TEDxGROWTH</eVar2><linkType>o</linkType><linkName>Watched Video</linkName><linkURL>https://www.estore.com/best-seller/1</linkURL><timestamp>2020-01-09T10:01:53.558Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>event1</events><products/><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>"
+          "payload": "<?xml version=\"1.0\" encoding=\"utf-8\"?><request><browserHeight>1794</browserHeight><browserWidth>1080</browserWidth><campaign>sales campaign</campaign><channel>web</channel><ipaddress>127.0.0.1</ipaddress><language>en-US</language><userAgent>Dalvik/2.1.0 (Linux; U; Android 9; Android SDK built for x86 Build/PSR1.180720.075)</userAgent><referrer>https://www.google.com/search?q=estore+bestseller</referrer><contextData><roott01>roottval001</roott01></contextData><eVar6>RudderLabs JavaScript SDK</eVar6><eVar2>TEDxGROWTH</eVar2><linkType>o</linkType><linkName>Watched Video</linkName><linkURL>https://www.estore.com/best-seller/1</linkURL><prop2>growth</prop2><timestamp>2020-01-09T10:01:53.558Z</timestamp><marketingcloudorgid>mktcloudid001</marketingcloudorgid><events>event1</events><products/><reportSuiteID>footlockerrudderstackpoc</reportSuiteID></request>"
         },
         "FORM": {}
       },
@@ -2203,41 +2076,25 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
-            }
-          ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "eventMerchEventToAdobeEvent": [
@@ -2437,26 +2294,6 @@
               "to": "initHeartbeat"
             }
           ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
-            }
-          ],
           "eventMerchProperties": [
             {
               "eventMerchProperties": "currencyMerch"
@@ -2559,25 +2396,30 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
+              "to": "2",
+              "delimiter": ","
             },
             {
               "from": "plan",
-              "to": "2"
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "contextDataMapping": [
@@ -2733,26 +2575,6 @@
               "to": "initHeartbeat"
             }
           ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
-            }
-          ],
           "eventMerchProperties": [
             {
               "eventMerchProperties": "currencyMerch"
@@ -2851,11 +2673,13 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "hierMapping": [
@@ -2871,15 +2695,18 @@
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
+              "to": "2",
+              "delimiter": ","
             },
             {
               "from": "plan",
-              "to": "2"
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "contextDataMapping": [
@@ -3040,26 +2867,6 @@
               "to": "initHeartbeat"
             }
           ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
-            }
-          ],
           "eventMerchProperties": [
             {
               "eventMerchProperties": "currencyMerch"
@@ -3158,11 +2965,13 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "hierMapping": [
@@ -3178,15 +2987,18 @@
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
+              "to": "2",
+              "delimiter": ","
             },
             {
               "from": "plan",
-              "to": "2"
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "contextDataMapping": [
@@ -3348,26 +3160,6 @@
               "to": "initHeartbeat"
             }
           ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
-            }
-          ],
           "eventMerchProperties": [
             {
               "eventMerchProperties": "currencyMerch"
@@ -3470,11 +3262,13 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "hierMapping": [
@@ -3490,15 +3284,18 @@
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
+              "to": "2",
+              "delimiter": ","
             },
             {
               "from": "plan",
-              "to": "2"
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "contextDataMapping": [
@@ -3647,41 +3444,25 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
-            }
-          ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "eventMerchEventToAdobeEvent": [
@@ -3822,41 +3603,25 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
-            }
-          ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "eventMerchEventToAdobeEvent": [
@@ -4082,41 +3847,25 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
-            }
-          ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "eventMerchEventToAdobeEvent": [
@@ -4257,41 +4006,25 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
-            }
-          ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "eventMerchEventToAdobeEvent": [
@@ -4518,41 +4251,25 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
-            }
-          ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "eventMerchEventToAdobeEvent": [
@@ -4693,41 +4410,25 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
-            }
-          ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "eventMerchEventToAdobeEvent": [
@@ -4955,41 +4656,25 @@
           "listMapping": [
             {
               "from": "bikelist",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "carlist",
-              "to": "2"
-            }
-          ],
-          "listDelimiter": [
-            {
-              "from": "bikelist",
-              "to": ","
-            },
-            {
-              "from": "carlist",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "customPropsMapping": [
             {
               "from": "customprop1",
-              "to": "1"
+              "to": "1",
+              "delimiter": ","
             },
             {
               "from": "customprop2",
-              "to": "2"
-            }
-          ],
-          "propsDelimiter": [
-            {
-              "from": "customprop1",
-              "to": ","
-            },
-            {
-              "from": "customprop2",
-              "to": ","
+              "to": "2",
+              "delimiter": ","
             }
           ],
           "eventMerchEventToAdobeEvent": [

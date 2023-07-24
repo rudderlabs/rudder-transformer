@@ -179,13 +179,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
-                appKey: 'O2YARRI15I',
-                dataCenter: false,
-              },
-            },
             error: 'event name is required for track',
             statTags: {
               destType: 'AIRSHIP',
@@ -265,9 +258,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: { apiKey: '34d8efa09c5b048bbacc6af157f2e687', dataCenter: false },
-            },
             error: 'App Key is required for authorization for track events',
             statTags: {
               destType: 'AIRSHIP',
@@ -989,14 +979,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
-                appKey: 'O2YARRI15I',
-                appSecret: 'fhf',
-                dataCenter: true,
-              },
-            },
             error: 'For identify, tags or attributes properties are required under traits',
             statTags: {
               destType: 'AIRSHIP',
@@ -1593,14 +1575,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: '34d8efa09c5b048bbacc6af157f2e687',
-                appKey: 'O2YARRI15I',
-                appSecret: 'fhf',
-                dataCenter: true,
-              },
-            },
             error: 'For group, tags or attributes properties are required under traits',
             statTags: {
               destType: 'AIRSHIP',
@@ -1799,7 +1773,7 @@ const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: '25adacdcd8c4ef4442fbdc626fbcf331-us6',
+                apiKey: 'airshipApiKEy',
                 audienceId: 'df42a82d07',
                 datacenterId: 'us20',
               },
@@ -1873,22 +1847,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              ID: '1Tdi0lpXwSVwXG1lcdP2pXHKrJ6',
-              Name: 'Titli Ganguly',
-              DestinationDefinition: {
-                ID: '1SujZGrVEPqYmpUJcV4vSl9tfxn',
-                Name: 'MC',
-                DisplayName: 'MailChimp',
-              },
-              Config: {
-                apiKey: '25adacdcd8c4ef4442fbdc626fbcf331-us6',
-                audienceId: 'df42a82d07',
-                datacenterId: 'us20',
-              },
-              Enabled: true,
-              Transformations: [],
-            },
             error: 'message type page not supported',
             statTags: {
               destType: 'AIRSHIP',
@@ -2209,7 +2167,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: { Config: { dataCenter: false } },
             error: 'API Key is required for authorization for Identify events',
             statTags: {
               destType: 'AIRSHIP',
@@ -2265,7 +2222,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: { Config: { dataCenter: false } },
             error: 'API Key is required for authorization for group events',
             statTags: {
               destType: 'AIRSHIP',
@@ -2345,9 +2301,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: { appKey: '34d8efa09c5b048bbacc6af157f2e687', dataCenter: false },
-            },
             error: 'API Key is required for authorization for track events',
             statTags: {
               destType: 'AIRSHIP',

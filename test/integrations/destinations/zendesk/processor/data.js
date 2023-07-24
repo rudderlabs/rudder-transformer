@@ -69,26 +69,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiToken: 'myDummyApiToken4',
-                createUsersAsVerified: true,
-                domain: 'rudderlabshelp',
-                email: 'myDummyUserName1',
-                password: 'myDummyPwd1',
-                removeUsersFromOrganization: true,
-                sendGroupCallsWithoutUserId: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Zendesk',
-                ID: '1YknZ1ENqB8UurJQJE2VrEA61tr',
-                Name: 'ZENDESK',
-              },
-              Enabled: true,
-              ID: 'xxxxxxxxxxxxxxxxxxxxxxxO51P',
-              Name: 'zendesk',
-              Transformations: [],
-            },
             error: 'Missing required value from "name"',
             statTags: {
               destType: 'ZENDESK',
@@ -228,52 +208,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              ID: 'xxxXXXXXXXXXXXxxxxxxxxxorpz',
-              Name: 'Zendesk',
-              DestinationDefinition: {
-                ID: '1pvRK5OiIrZkhCbFISQY5e55hX1',
-                Name: 'ZENDESK',
-                DisplayName: 'Zendesk',
-                Config: {
-                  destConfig: {
-                    defaultConfig: [
-                      'email',
-                      'apiToken',
-                      'domain',
-                      'createUsersAsVerified',
-                      'sendGroupCallsWithoutUserId',
-                      'removeUsersFromOrganization',
-                    ],
-                  },
-                  excludeKeys: [],
-                  includeKeys: [],
-                  routerTransform: false,
-                  secretKeys: ['apiToken'],
-                  supportedSourceTypes: [
-                    'android',
-                    'ios',
-                    'web',
-                    'unity',
-                    'amp',
-                    'cloud',
-                    'reactnative',
-                  ],
-                },
-                ResponseRules: {},
-              },
-              Config: {
-                apiToken: 'myDummyApiToken3',
-                createUsersAsVerified: true,
-                domain: 'rudderlabshelp',
-                email: 'abhishek@rudder.com',
-                removeUsersFromOrganization: false,
-                sendGroupCallsWithoutUserId: false,
-              },
-              Enabled: true,
-              Transformations: [],
-              IsProcessorEnabled: true,
-            },
             error: 'email not found in traits.',
             statTags: {
               destType: 'ZENDESK',
@@ -1827,26 +1761,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiToken: 'myDummyApiToken2',
-                createUsersAsVerified: true,
-                domain: 'blendohelp',
-                email: 'myDummyUserName2',
-                password: 'myDummyPwd2',
-                removeUsersFromOrganization: true,
-                sendGroupCallsWithoutUserId: false,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Zendesk',
-                ID: '1YknZ1ENqB8UurJQJE2VrEA61tr',
-                Name: 'ZENDESK',
-              },
-              Enabled: true,
-              ID: 'xxxxxxxxxxxxxxxxxxxxxxxO51P',
-              Name: 'zendesk',
-              Transformations: [],
-            },
             error: 'UserId is a mandatory field for group',
             statTags: {
               destType: 'ZENDESK',
@@ -1937,26 +1851,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiToken: 'myDummyApiToken2',
-                createUsersAsVerified: true,
-                domain: 'blendohelp',
-                email: 'myDummyUserName2',
-                password: 'myDummyPwd2',
-                removeUsersFromOrganization: true,
-                sendGroupCallsWithoutUserId: true,
-              },
-              DestinationDefinition: {
-                DisplayName: 'Zendesk',
-                ID: '1YknZ1ENqB8UurJQJE2VrEA61tr',
-                Name: 'ZENDESK',
-              },
-              Enabled: true,
-              ID: 'xxxxxxxxxxxxxxxxxxxxxxxO51P',
-              Name: 'zendesk',
-              Transformations: [],
-            },
             error: 'Event type page is not supported',
             statTags: {
               destType: 'ZENDESK',
@@ -2479,18 +2373,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              ID: 'xxxXXXXXXXXXXXxxxxxxxxxorpz',
-              Name: 'Zendesk',
-              Config: {
-                apiToken: 'yPJwcLTFSsvIkFhY23SzittHoYADJQ7eKDoxNu4x',
-                createUsersAsVerified: true,
-                domain: 'rudderlabtest2',
-                email: 'rudderlabtest2@email.com',
-                removeUsersFromOrganization: false,
-                sendGroupCallsWithoutUserId: false,
-              },
-            },
             error:
               "Failed to fetch user with email: testemail2@email due to Couldn't find user: John Wick",
             statTags: {

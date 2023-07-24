@@ -19,21 +19,111 @@ const data = [
             },
             message: {
               channel: 'web',
-              context: {
-                app: {
-                  build: '1.0.0',
-                  name: 'RudderLabs JavaScript SDK',
-                  namespace: 'com.rudderlabs.javascript',
-                  version: '1.0.0',
+              messageId: '84e26acc-56a5-4835-8233-591137fca468',
+              session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
+              originalTimestamp: '2019-10-14T09:03:17.562Z',
+              anonymousId: 'anon_id',
+              userId: '123456',
+              type: 'identify',
+              traits: {
+                anonymousId: 'anon_id',
+                email: 'jamesDoe@gmail.com',
+                firstName: 'James',
+                lastName: 'Doe',
+                phone: '92374162212',
+                tags: 'Test_User',
+                fieldInfo: {
+                  Office: 'Trastkiv',
+                  Country: 'Russia',
+                  Likes: ['Potato', 'Onion'],
+                  Random: 'random',
                 },
-                library: { name: 'RudderLabs JavaScript SDK', version: '1.0.0' },
-                userAgent:
-                  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36',
-                locale: 'en-US',
-                ip: '0.0.0.0',
-                os: { name: '', version: '' },
-                screen: { density: 2 },
+                lists: [
+                  { id: 2, status: 'subscribe' },
+                  { id: 3, status: 'unsubscribe' },
+                  { id: 3, status: 'unsubscribexyz' },
+                ],
+                address: {
+                  city: 'kolkata',
+                  country: 'India',
+                  postalCode: 789223,
+                  state: 'WB',
+                  street: '',
+                },
               },
+              integrations: { All: true },
+              sentAt: '2019-10-14T09:03:22.563Z',
+            },
+          },
+        ],
+        method: 'POST',
+      },
+      pathSuffix: '',
+    },
+    output: {
+      response: {
+        status: 200,
+        body: [
+          {
+            output: {
+              version: '1',
+              type: 'REST',
+              method: 'POST',
+              endpoint: 'https://active.campaigns.rudder.com/api/3/contact/sync',
+              headers: {
+                'Content-Type': 'application/json',
+                'Api-Token':
+                  'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+              },
+              params: {},
+              body: {
+                JSON: {
+                  contact: {
+                    email: 'jamesDoe@gmail.com',
+                    phone: '92374162212',
+                    firstName: 'James',
+                    lastName: 'Doe',
+                    fieldValues: [
+                      { field: '0', value: 'Trastkiv' },
+                      { field: '1', value: 'Russia' },
+                      { field: '3', value: '||Potato||Onion||' },
+                      { field: '4', value: 'random' },
+                    ],
+                  },
+                },
+                JSON_ARRAY: {},
+                XML: {},
+                FORM: {},
+              },
+              files: {},
+              userId: '',
+            },
+            statusCode: 200,
+          },
+        ],
+      },
+    },
+  },
+  {
+    name: 'active_campaign',
+    description: 'Test 0',
+    feature: 'processor',
+    module: 'destination',
+    version: 'v0',
+    input: {
+      request: {
+        body: [
+          {
+            destination: {
+              Config: {
+                apiKey: 'fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1',
+                apiUrl: 'https://active.campaigns.rudder.com',
+                actid: '476550467',
+                eventKey: 'f8a866fddc721350fdc2fbbd2e5c43a6dddaaa03',
+              },
+            },
+            message: {
+              channel: 'web',
               messageId: '84e26acc-56a5-4835-8233-591137fca468',
               session_id: '3049dc4c-5a95-4ccd-a3e7-d74a7e411f22',
               originalTimestamp: '2019-10-14T09:03:17.562Z',

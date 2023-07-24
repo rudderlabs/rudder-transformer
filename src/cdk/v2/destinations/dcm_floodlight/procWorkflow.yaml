@@ -7,8 +7,6 @@ bindings:
     path: ../../../../v0/util
   - name: removeUndefinedAndNullValues
     path: ../../../../v0/util
-  - name: isEmptyObject
-    path: ../../../../v0/util
   - name: defaultRequestConfig
     path: ../../../../v0/util
   - path: ./utils

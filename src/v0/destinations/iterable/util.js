@@ -2,7 +2,6 @@ const _ = require('lodash');
 const get = require('get-value');
 const jsonSize = require('json-size');
 const {
-  isEmpty,
   isAppleFamily,
   constructPayload,
   getSuccessRespEvents,
@@ -117,7 +116,7 @@ const registerDeviceTokenEventPayloadBuilder = (message, config) => {
     preferUserId: getPreferUserId(config),
     device: {
       ...constructPayload(message, mappingConfig[ConfigCategory.DEVICE.name]),
-      platform: isAppleFamily(message.context.device.type) ? 'APNS' : 'GCM',
+      platform: isAppleFamily(message.context?.device?.type) ? 'APNS' : 'GCM',
     },
   };
 

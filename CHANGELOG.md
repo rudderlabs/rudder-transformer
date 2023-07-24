@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.35.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.35.2...v1.35.3) (2023-07-21)
+
+
+### Bug Fixes
+
+* upgrade cdkv1 to 1.4.10 ([#2386](https://github.com/rudderlabs/rudder-transformer/issues/2386)) ([5e3d497](https://github.com/rudderlabs/rudder-transformer/commit/5e3d4975bd376232d2b22cfa37bd5ad8ae68d7a3))
+
 ### [1.35.2](https://github.com/rudderlabs/rudder-transformer/compare/v1.35.1...v1.35.2) (2023-07-17)
 
 ### [1.35.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.35.0...v1.35.1) (2023-07-12)

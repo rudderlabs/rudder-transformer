@@ -28,6 +28,7 @@ RUN npm ci --no-audit --cache .npm
 COPY --chown=node:node . .
 RUN npm run build:ci -- --sourceMap false
 RUN npm run copy
+RUN npm run setup:swagger
 
 ENTRYPOINT ["/sbin/tini", "--"]
 

@@ -53,16 +53,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'da70166e-05a3-4fa2-bb1d-da757fd036b4',
-                blacklistedEvents: [{ eventName: '' }],
-                eventDelivery: true,
-                eventDeliveryTS: 1665474171943,
-                eventFilteringOption: 'disable',
-                whitelistedEvents: [{ eventName: '' }],
-              },
-            },
             error: 'Event type is required',
             statTags: {
               destType: 'REFINER',
@@ -133,16 +123,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'da70166e-05a3-4fa2-bb1d-da757fd036b4',
-                blacklistedEvents: [{ eventName: '' }],
-                eventDelivery: true,
-                eventDeliveryTS: 1665474171943,
-                eventFilteringOption: 'disable',
-                whitelistedEvents: [{ eventName: '' }],
-              },
-            },
             error: 'Event type "alias" is not supported',
             statTags: {
               destType: 'REFINER',
@@ -211,16 +191,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'da70166e-05a3-4fa2-bb1d-da757fd036b4',
-                blacklistedEvents: [{ eventName: '' }],
-                eventDelivery: true,
-                eventDeliveryTS: 1665474171943,
-                eventFilteringOption: 'disable',
-                whitelistedEvents: [{ eventName: '' }],
-              },
-            },
             error: 'At least one of `userId` or `email` is required',
             statTags: {
               destType: 'REFINER',
@@ -314,16 +284,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                apiKey: 'da70166e-05a3-4fa2-bb1d-da757fd036b4',
-                blacklistedEvents: [{ eventName: '' }],
-                eventDelivery: true,
-                eventDeliveryTS: 1665474171943,
-                eventFilteringOption: 'disable',
-                whitelistedEvents: [{ eventName: '' }],
-              },
-            },
             error: 'Event name is required',
             statTags: {
               destType: 'REFINER',

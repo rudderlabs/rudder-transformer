@@ -36,12 +36,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                publicKey: '49ur490rjfo34gi04y38r9go',
-                privateKey: 'n89g389yr389fgbef0u2rff',
-              },
-            },
             error: 'Neither externalId nor userId is available',
             statTags: {
               destType: 'ENGAGE',
@@ -535,16 +529,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              Config: {
-                publicKey: '49ur490rjfo34gi04y38r9go',
-                privateKey: 'n89g389yr389fgbef0u2rff',
-                listIds: [
-                  { listId: '9834trg3rgy3g08oi9893rgfb' },
-                  { listId: 'f39487tyh49go3h093gh2if2f2' },
-                ],
-              },
-            },
             error: 'engageID is required for remove operation.',
             statTags: {
               destType: 'ENGAGE',

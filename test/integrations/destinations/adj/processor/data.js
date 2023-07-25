@@ -229,37 +229,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
-              Name: 'ADJ',
-              DestinationDefinition: {
-                ID: '1i3DeZo6eSUKrS3KzDUqjbBPCDJ',
-                Name: 'ADJ',
-                DisplayName: 'Adjust',
-                Config: {
-                  destConfig: {
-                    android: ['useNativeSDK'],
-                    defaultConfig: ['appToken', 'customMappings', 'delay', 'environment'],
-                    ios: ['useNativeSDK'],
-                    reactnative: ['useNativeSDK'],
-                  },
-                  excludeKeys: [],
-                  includeKeys: ['appToken', 'customMappings', 'delay'],
-                  supportedSourceTypes: ['android', 'ios', 'reactnative', 'cloud'],
-                },
-              },
-              Config: {
-                appToken: 't1yurrb968zk',
-                customMappings: [
-                  { from: 'Application Installed', to: '3fdmll' },
-                  { from: 'First Investment', to: 'tf4gm5' },
-                ],
-                environment: true,
-              },
-              Enabled: true,
-              Transformations: [],
-              IsProcessorEnabled: true,
-            },
             error: 'Device type/id  not present',
             statTags: {
               destType: 'ADJ',
@@ -375,37 +344,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
-              Name: 'ADJ',
-              DestinationDefinition: {
-                ID: '1i3DeZo6eSUKrS3KzDUqjbBPCDJ',
-                Name: 'ADJ',
-                DisplayName: 'Adjust',
-                Config: {
-                  destConfig: {
-                    android: ['useNativeSDK'],
-                    defaultConfig: ['appToken', 'customMappings', 'delay', 'environment'],
-                    ios: ['useNativeSDK'],
-                    reactnative: ['useNativeSDK'],
-                  },
-                  excludeKeys: [],
-                  includeKeys: ['appToken', 'customMappings', 'delay'],
-                  supportedSourceTypes: ['android', 'ios', 'reactnative', 'cloud'],
-                },
-              },
-              Config: {
-                appToken: 't1yurrb968zk',
-                customMappings: [
-                  { from: 'Application Installed', to: '3fdmll' },
-                  { from: 'First Investment', to: 'tf4gm5' },
-                ],
-                environment: true,
-              },
-              Enabled: true,
-              Transformations: [],
-              IsProcessorEnabled: true,
-            },
             error: 'Device type not valid',
             statTags: {
               destType: 'ADJ',
@@ -652,37 +590,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
-              Name: 'ADJ',
-              DestinationDefinition: {
-                ID: '1i3DeZo6eSUKrS3KzDUqjbBPCDJ',
-                Name: 'ADJ',
-                DisplayName: 'Adjust',
-                Config: {
-                  destConfig: {
-                    android: ['useNativeSDK'],
-                    defaultConfig: ['appToken', 'customMappings', 'delay', 'environment'],
-                    ios: ['useNativeSDK'],
-                    reactnative: ['useNativeSDK'],
-                  },
-                  excludeKeys: [],
-                  includeKeys: ['appToken', 'customMappings', 'delay'],
-                  supportedSourceTypes: ['android', 'ios', 'reactnative', 'cloud'],
-                },
-              },
-              Config: {
-                appToken: 't1yurrb968zk',
-                customMappings: [
-                  { from: 'Application Installed', to: '3fdmll' },
-                  { from: 'First Investment', to: 'tf4gm5' },
-                ],
-                environment: true,
-              },
-              Enabled: true,
-              Transformations: [],
-              IsProcessorEnabled: true,
-            },
             error: 'No event token mapped for this event',
             statTags: {
               destType: 'ADJ',
@@ -798,37 +705,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
-              Name: 'ADJ',
-              DestinationDefinition: {
-                ID: '1i3DeZo6eSUKrS3KzDUqjbBPCDJ',
-                Name: 'ADJ',
-                DisplayName: 'Adjust',
-                Config: {
-                  destConfig: {
-                    android: ['useNativeSDK'],
-                    defaultConfig: ['appToken', 'customMappings', 'delay', 'environment'],
-                    ios: ['useNativeSDK'],
-                    reactnative: ['useNativeSDK'],
-                  },
-                  excludeKeys: [],
-                  includeKeys: ['appToken', 'customMappings', 'delay'],
-                  supportedSourceTypes: ['android', 'ios', 'reactnative', 'cloud'],
-                },
-              },
-              Config: {
-                appToken: 't1yurrb968zk',
-                customMappings: [
-                  { from: 'Application Installed', to: '3fdmll' },
-                  { from: 'First Investment', to: 'tf4gm5' },
-                ],
-                environment: true,
-              },
-              Enabled: true,
-              Transformations: [],
-              IsProcessorEnabled: true,
-            },
             error: 'Message type not supported',
             statTags: {
               destType: 'ADJ',
@@ -943,37 +819,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
-              Name: 'ADJ',
-              DestinationDefinition: {
-                ID: '1i3DeZo6eSUKrS3KzDUqjbBPCDJ',
-                Name: 'ADJ',
-                DisplayName: 'Adjust',
-                Config: {
-                  destConfig: {
-                    android: ['useNativeSDK'],
-                    defaultConfig: ['appToken', 'customMappings', 'delay', 'environment'],
-                    ios: ['useNativeSDK'],
-                    reactnative: ['useNativeSDK'],
-                  },
-                  excludeKeys: [],
-                  includeKeys: ['appToken', 'customMappings', 'delay'],
-                  supportedSourceTypes: ['android', 'ios', 'reactnative', 'cloud'],
-                },
-              },
-              Config: {
-                appToken: 't1yurrb968zk',
-                customMappings: [
-                  { from: 'Application Installed', to: '3fdmll' },
-                  { from: 'First Investment', to: 'tf4gm5' },
-                ],
-                environment: true,
-              },
-              Enabled: true,
-              Transformations: [],
-              IsProcessorEnabled: true,
-            },
             error: 'Message Type is not present. Aborting message.',
             statTags: {
               destType: 'ADJ',
@@ -1479,37 +1324,6 @@ const data = [
         status: 200,
         body: [
           {
-            destination: {
-              ID: '1i3Em7GMU9xVEiDlZUN8c88BMS9',
-              Name: 'ADJ',
-              DestinationDefinition: {
-                ID: '1i3DeZo6eSUKrS3KzDUqjbBPCDJ',
-                Name: 'ADJ',
-                DisplayName: 'Adjust',
-                Config: {
-                  destConfig: {
-                    android: ['useNativeSDK'],
-                    defaultConfig: ['appToken', 'customMappings', 'delay', 'environment'],
-                    ios: ['useNativeSDK'],
-                    reactnative: ['useNativeSDK'],
-                  },
-                  excludeKeys: [],
-                  includeKeys: ['appToken', 'customMappings', 'delay'],
-                  supportedSourceTypes: ['android', 'ios', 'reactnative', 'cloud'],
-                },
-              },
-              Config: {
-                appToken: 't1yurrb968zk',
-                customMappings: [
-                  { from: 'Application Installed', to: '3fdmll' },
-                  { from: 'First Investment', to: 'tf4gm5' },
-                ],
-                environment: true,
-              },
-              Enabled: true,
-              Transformations: [],
-              IsProcessorEnabled: true,
-            },
             error: 'Revenue is not in the correct format',
             statTags: {
               destType: 'ADJ',

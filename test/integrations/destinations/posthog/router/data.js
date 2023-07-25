@@ -73,7 +73,6 @@ const data = [
               batchedRequest: {
                 version: '1',
                 type: 'REST',
-                userId: '',
                 method: 'POST',
                 endpoint: 'https://app.posthog.com/batch',
                 headers: {
@@ -242,7 +241,6 @@ const data = [
               batchedRequest: {
                 version: '1',
                 type: 'REST',
-                userId: '',
                 method: 'POST',
                 endpoint: 'https://app.posthog.com/batch',
                 headers: {

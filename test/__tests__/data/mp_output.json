@@ -157,7 +157,7 @@
     "body": {
       "JSON": {},
       "JSON_ARRAY": {
-        "batch": "[{\"event\":\"$create_alias\",\"properties\":{\"distinct_id\":\"1234abc\",\"alias\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\"}}]"
+        "batch": "[{\"event\":\"$create_alias\",\"properties\":{\"distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"alias\":\"1234abc\",\"token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\"}}]"
       },
       "XML": {},
       "FORM": {}
@@ -564,7 +564,7 @@
     "body": {
       "JSON": {},
       "JSON_ARRAY": {
-        "batch": "[{\"event\":\"$create_alias\",\"properties\":{\"distinct_id\":\"1234abc\",\"alias\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\"}}]"
+        "batch": "[{\"event\":\"$create_alias\",\"properties\":{\"distinct_id\":\"e6ab2c5e-2cda-44a9-a962-e2f67df78bca\",\"alias\":\"1234abc\",\"token\":\"9432f11f70f8ce386f5110c8c924b3ec4f825256\"}}]"
       },
       "XML": {},
       "FORM": {}

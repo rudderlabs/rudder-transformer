@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.36.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.35.3...v1.36.0) (2023-07-21)
+
+
+### Features
+
+* add overridePageView support, separate link and page values ([#2370](https://github.com/rudderlabs/rudder-transformer/issues/2370)) ([99b3c87](https://github.com/rudderlabs/rudder-transformer/commit/99b3c878ceac946d68a30d76f56ed3f0dddf8b15))
+* **adobe:** listMapping, customPropsMapping fields got updated. Made changes to reflect the same ([#2385](https://github.com/rudderlabs/rudder-transformer/issues/2385)) ([a2723ed](https://github.com/rudderlabs/rudder-transformer/commit/a2723edfcb26f9b38165cef59ddf90647aacc3cc))
+* **intercom:** add config in dashboard to updateLastRequestAt ([#2379](https://github.com/rudderlabs/rudder-transformer/issues/2379)) ([068a38c](https://github.com/rudderlabs/rudder-transformer/commit/068a38c8d63011d1b358ab5fb7d42d791aff2c0b))
+* **mixpanel:** batching ([#2341](https://github.com/rudderlabs/rudder-transformer/issues/2341)) ([9a7d08c](https://github.com/rudderlabs/rudder-transformer/commit/9a7d08c76d0c3151b77f7e5012e2d0f3917f2dce)), closes [#2351](https://github.com/rudderlabs/rudder-transformer/issues/2351) [#2378](https://github.com/rudderlabs/rudder-transformer/issues/2378)
+* **mixpanel:** update alias mapping and add validation ([#2395](https://github.com/rudderlabs/rudder-transformer/issues/2395)) ([b6df9b0](https://github.com/rudderlabs/rudder-transformer/commit/b6df9b0edccfd704b3e952ea2b439e09b72ab2ea))
+* **new integration:** stormly cloud mode destination ([#2148](https://github.com/rudderlabs/rudder-transformer/issues/2148)) ([#2361](https://github.com/rudderlabs/rudder-transformer/issues/2361)) ([d84ece5](https://github.com/rudderlabs/rudder-transformer/commit/d84ece5c23219122abe3ecf74972a5c0c7f900b6))
+* onboard routes on swagger ([#2265](https://github.com/rudderlabs/rudder-transformer/issues/2265)) ([707cff0](https://github.com/rudderlabs/rudder-transformer/commit/707cff0f7bf575329b55951a33c0f666406e1a13))
+
+
+### Bug Fixes
+
+*  active campaign: message.context not sent and tags sent in non array format ([#2389](https://github.com/rudderlabs/rudder-transformer/issues/2389)) ([8bc9589](https://github.com/rudderlabs/rudder-transformer/commit/8bc9589c80cde6e3e2aa417904ce73106413b1a2))
+* correct path for staging PR deployment ([#2392](https://github.com/rudderlabs/rudder-transformer/issues/2392)) ([2e67625](https://github.com/rudderlabs/rudder-transformer/commit/2e67625b69e57b54c8f62f1f9a2db51110fd7f1b))
+* **ga4:** add validation for empty object, arrays, and string values from params ([#2315](https://github.com/rudderlabs/rudder-transformer/issues/2315)) ([a66810a](https://github.com/rudderlabs/rudder-transformer/commit/a66810af5e195648f5c27ff7162431dd4d191ec5))
+* **intercom:** add validation on customAttributes ([bd4f2cb](https://github.com/rudderlabs/rudder-transformer/commit/bd4f2cbd89f54d263c945e4da1533ff9a33a67aa))
+* **intercom:** add validation on customAttributes ([#2364](https://github.com/rudderlabs/rudder-transformer/issues/2364)) ([ddeae85](https://github.com/rudderlabs/rudder-transformer/commit/ddeae853fbb46a44c040eee30cb58a1ecf20bcb6))
+* padding added in gender field in fb destination ([#2380](https://github.com/rudderlabs/rudder-transformer/issues/2380)) ([c2617a7](https://github.com/rudderlabs/rudder-transformer/commit/c2617a7801684ea6c6728321fb04a4dc4f6b8bf2))
+* reject localhost requests from user transformer fetch calls ([#2298](https://github.com/rudderlabs/rudder-transformer/issues/2298)) ([6708c6c](https://github.com/rudderlabs/rudder-transformer/commit/6708c6c69e122e5fdfc16c4ed59a120be7a8b1e4))
+* remove potential active secrets ([#2387](https://github.com/rudderlabs/rudder-transformer/issues/2387)) ([38d6803](https://github.com/rudderlabs/rudder-transformer/commit/38d680369fcef0312a678fc0b39e9577d8fba6a7))
+
 ### [1.35.3](https://github.com/rudderlabs/rudder-transformer/compare/v1.35.2...v1.35.3) (2023-07-21)
 
 

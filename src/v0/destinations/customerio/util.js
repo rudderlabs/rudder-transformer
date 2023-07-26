@@ -203,11 +203,11 @@ const groupResponseBuilder = (message) => {
   if (!isDefinedAndNotNull(id)) {
     throw new InstrumentationError("No Identifier Found. Please provide userId or email.")
   }
+  let cioProperty = 'id';
   if (isEmail(id)) {
-    rawPayload.cio_relationships.push({ identifiers: { email: id } });
-  } else {
-    rawPayload.cio_relationships.push({ identifiers: { id } });
+    cioProperty = "email";
   }
+  rawPayload.cio_relationships.push({ identifiers: { [cioProperty]: id } });
   const requestConfig = defaultPostRequestConfig;
   const endpoint = OBJECT_EVENT_ENDPOINT;
 

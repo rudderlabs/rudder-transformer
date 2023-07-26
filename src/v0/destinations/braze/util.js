@@ -24,7 +24,7 @@ const {
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { isObject } = require('../../util');
-const { removeUndefinedValues } = require('../../util');
+const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
 
 const getEndpointFromConfig = (destination) => {
   // Init -- mostly for test cases
@@ -445,10 +445,39 @@ const processBatch = (transformedEvents) => {
   return finalResponse;
 };
 
+
+/**
+ * 
+ * @param {*} payload 
+ * @param {*} message 
+ * @returns payload along with appId that is supposed to be passed by the user via
+ * integrations object.
+ * format will be as below:
+ *  "integrations": {
+                "All": true,
+                "braze": {
+                    "appId": "123"
+                }
+            }
+    Ref: https://www.braze.com/docs/api/identifier_types/?tab=app%20ids
+ */
+    const addAppId = (payload, message) => {
+      const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+      if (integrationsObj?.appId) {
+        const { appId: appIdValue } = integrationsObj;
+        return {
+          ...payload,
+          app_id: String(appIdValue),
+        };
+      }
+      return { ...payload };
+    };
+
 module.exports = {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
   getEndpointFromConfig,
   processDeduplication,
   processBatch,
+  addAppId
 };

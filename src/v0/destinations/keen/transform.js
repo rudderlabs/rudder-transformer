@@ -95,7 +95,7 @@ function processTrack(message, destination) {
   properties.request_ip = getParsedIP(message);
 
   // add user-agent
-  properties.user_agent = context.userAgent;
+  properties.user_agent = context?.userAgent;
 
   addAddons(properties, destination.Config);
 

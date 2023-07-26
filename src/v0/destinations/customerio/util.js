@@ -10,6 +10,7 @@ const {
   getFieldValueFromMessage,
   defaultDeleteRequestConfig,
   isAppleFamily,
+  validateEmail
 } = require('../../util');
 
 const { EventType, SpecedTraits, TraitsMapping } = require('../../../constants');
@@ -158,6 +159,9 @@ const identifyResponseBuilder = (userId, message) => {
     set(rawPayload, 'anonymous_id', message.anonymousId);
   }
   const endpoint = IDENTITY_ENDPOINT.replace(':id', userId);
+  if (validateEmail(userId)) {
+    rawPayload.id = userId;
+  }
   const requestConfig = defaultPutRequestConfig;
 
   return { rawPayload, endpoint, requestConfig };

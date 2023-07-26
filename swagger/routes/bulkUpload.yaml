@@ -1,0 +1,174 @@
+/fileUpload:
+  post:
+    deprecated: true
+    tags:
+      - Bulk Upload
+    summary: File upload
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                statusCode:
+                  type: number
+                importId:
+                  type: string
+                pollURL:
+                  type: string
+                metadata:
+                  type: object
+                  properties:
+                    successfulJobs:
+                      type: array
+                      items:
+                        type: string
+                    unsuccessfulJobs:
+                      type: array
+                      items:
+                        type: string
+                    csvHeader:
+                      type: object
+      404:
+        description: DestType doesn't support bulk upload
+      500:
+        description: No import id received
+
+/pollStatus:
+  post:
+    deprecated: true
+    tags:
+      - Bulk Upload
+    summary: Check poll status
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                success:
+                  type: boolean
+                  example: true
+                statusCode:
+                  type: number
+                  example: 200
+                hasFailed:
+                  type: boolean
+                failedJobsURL:
+                  type: string
+                  example: /getFailedJobs
+                warningJobsURL:
+                  type: string
+                  example: /getWarningJobs
+                hasWarnings:
+                  type: boolean
+                errorResponse:
+                  type: object
+
+      404:
+        description: DestType doesn't support bulk upload
+      500:
+        description: No import id received
+
+/getFailedJobs:
+  post:
+    deprecated: true
+    tags:
+      - Bulk Upload
+    summary: Failed jobs
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              destType:
+                type: string
+              importId:
+                type: string
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                statusCode:
+                  type: number
+                  example: 200
+                metadata:
+                  type: object
+                  properties:
+                    failedKeys:
+                      type: array
+                      items:
+                        type: string
+                    failedReasons:
+                      type: object
+                    warningKeys:
+                      type: array
+                      items:
+                        type: string
+                    warningReasons:
+                      type: object
+                    succeededKeys:
+                      type: array
+                      items:
+                        type: string
+
+      404:
+        description: DestType doesn't support bulk upload
+
+/getWarningJobs:
+  post:
+    deprecated: true
+    tags:
+      - Bulk Upload
+    summary: Warning jobs
+    requestBody:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              destType:
+                type: string
+              importId:
+                type: string
+    responses:
+      200:
+        description: Success
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                statusCode:
+                  type: number
+                  example: 200
+                metadata:
+                  type: object
+                  properties:
+                    failedKeys:
+                      type: array
+                      items:
+                        type: string
+                    failedReasons:
+                      type: object
+                    warningKeys:
+                      type: array
+                      items:
+                        type: string
+                    warningReasons:
+                      type: object
+                    succeededKeys:
+                      type: array
+                      items:
+                        type: string
+      404:
+        description: DestType doesn't support bulk upload

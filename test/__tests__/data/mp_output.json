@@ -1288,5 +1288,9 @@
       "files": {},
       "userId": "test_user_id"
     }
-  ]
+  ],
+  {
+    "statusCode": 400,
+    "message": "One of previousId/anonymousId is same as userId"
+  }
 ]

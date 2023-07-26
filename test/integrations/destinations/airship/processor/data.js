@@ -1773,7 +1773,7 @@ const data = [
                 DisplayName: 'MailChimp',
               },
               Config: {
-                apiKey: '25adacdcd8c4ef4442fbdc626fbcf331-us6',
+                apiKey: 'airshipApiKEy',
                 audienceId: 'df42a82d07',
                 datacenterId: 'us20',
               },

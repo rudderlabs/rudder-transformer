@@ -69,7 +69,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "25adacdcd8c4ef4672fbdc626fbcf331-us6",
+        "apiKey": "apikey-usYY",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -87,7 +87,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "25adacdcd8c4ef4442fbdc626fbcf331-us6",
+        "apiKey": "apiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -150,7 +150,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "d966df2e59d105c00f13de330d94000b-us14",
+        "apiKey": "apikey",
         "audienceId": "ff21810ddc",
         "datacenterId": "us14"
       },
@@ -455,7 +455,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "d966df2e59d105c00f13de330d94000b-us14",
+        "apiKey": "apikey",
         "audienceId": "ff21810ddc",
         "datacenterId": "us14"
       },
@@ -480,7 +480,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "d966df2e59d105c00f13de330d94000b-us14",
+        "apiKey": "apikey",
         "audienceId": "ff21810ddc",
         "datacenterId": "us14"
       },

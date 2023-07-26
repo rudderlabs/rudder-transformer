@@ -254,15 +254,21 @@ const processPageOrScreenEvents = (message, type, destination) => {
 };
 
 const processAliasEvents = (message, type, destination) => {
-  if (!(message.previousId || message.anonymousId)) {
+  const aliasId = message.previousId || message.anonymousId;
+  if (!aliasId) {
     throw new InstrumentationError(
       'Either previous id or anonymous id should be present in alias payload',
     );
   }
+
+  if (aliasId === message.userId) {
+    throw new InstrumentationError('One of previousId/anonymousId is same as userId');
+  }
+
   const payload = {
     event: '$create_alias',
     properties: {
-      distinct_id: message.previousId || message.anonymousId,
+      distinct_id: aliasId,
       alias: message.userId,
       token: destination.Config.token,
     },

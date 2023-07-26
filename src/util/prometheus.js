@@ -580,7 +580,7 @@ class Prometheus {
         name: 'dest_transform_request_latency',
         help: 'dest_transform_request_latency',
         type: 'histogram',
-        labelNames: ['destination', 'version', 'sourceType', 'destinationType', 'k8_namespace'],
+        labelNames: ['destination', 'version', 'sourceType', 'destinationType', 'k8_namespace', 'feature'],
       },
       {
         name: 'user_transform_request_latency',

@@ -123,7 +123,11 @@ describe('Unit test cases for customerio groupResponseBuilder', () => {
           objectTypeId: 'obj1',
           timestamp: '2014-05-21T15:54:20Z',
         },
-        cio_relationships: [],
+        cio_relationships: [{
+          "identifiers": {
+            "email": "abc@test.com",
+          },
+        }],
         identifiers: { object_id: 'group1', object_type_id: 'obj1' },
         type: 'object',
       },

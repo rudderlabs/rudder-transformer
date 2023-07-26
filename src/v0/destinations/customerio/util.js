@@ -10,7 +10,8 @@ const {
   getFieldValueFromMessage,
   defaultDeleteRequestConfig,
   isAppleFamily,
-  validateEmail
+  isEmail,
+  isDefinedAndNotNull
 } = require('../../util');
 
 const { EventType, SpecedTraits, TraitsMapping } = require('../../../constants');
@@ -159,9 +160,6 @@ const identifyResponseBuilder = (userId, message) => {
     set(rawPayload, 'anonymous_id', message.anonymousId);
   }
   const endpoint = IDENTITY_ENDPOINT.replace(':id', userId);
-  if (validateEmail(userId)) {
-    rawPayload.id = userId;
-  }
   const requestConfig = defaultPutRequestConfig;
 
   return { rawPayload, endpoint, requestConfig };
@@ -201,10 +199,14 @@ const groupResponseBuilder = (message) => {
     attributes: payload.attributes || {},
     cio_relationships: [],
   };
-  if (payload.userId) {
-    rawPayload.cio_relationships.push({ identifiers: { id: payload.userId } });
-  } else if (payload.email) {
-    rawPayload.cio_relationships.push({ identifiers: { email: payload.email } });
+  const id = payload?.userId || payload?.email;
+  if (!isDefinedAndNotNull(id)) {
+    throw new InstrumentationError("No Identifier Found. Please provide userId or email.")
+  }
+  if (isEmail(id)) {
+    rawPayload.cio_relationships.push({ identifiers: { email: id } });
+  } else {
+    rawPayload.cio_relationships.push({ identifiers: { id } });
   }
   const requestConfig = defaultPostRequestConfig;
   const endpoint = OBJECT_EVENT_ENDPOINT;

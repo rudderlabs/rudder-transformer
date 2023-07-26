@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { BrazeDedupUtility } = require('./util');
+const { BrazeDedupUtility, addAppId } = require('./util');
 const { processBatch } = require('./util');
 const {
   removeUndefinedAndNullValues,
@@ -772,7 +772,6 @@ describe('processBatch', () => {
     expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(50); // First batch contains 25 subscription group
     expect(result[0].batchedRequest[4].body.JSON.merge_updates.length).toBe(50); // First batch contains 50 merge_updates
     expect(result[0].batchedRequest[5].body.JSON.merge_updates.length).toBe(50); // First batch contains 25 merge_updates
-
   });
 
   test('processBatch handles more than 75 attributes, events, and purchases with non uniform distribution', () => {
@@ -836,7 +835,7 @@ describe('processBatch', () => {
         Config: {
           restApiKey: 'restApiKey',
           dataCenter: 'eu',
-          enableSubscriptionGroupInGroupCall: true
+          enableSubscriptionGroupInGroupCall: true,
         },
       },
       statusCode: 200,
@@ -855,7 +854,7 @@ describe('processBatch', () => {
         Config: {
           restApiKey: 'restApiKey',
           dataCenter: 'eu',
-          enableSubscriptionGroupInGroupCall: true
+          enableSubscriptionGroupInGroupCall: true,
         },
       },
       statusCode: 200,
@@ -946,5 +945,43 @@ describe('processBatch', () => {
     expect(result[0].batchedRequest[0].body.JSON.purchases.length).toBe(successCount);
     expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack');
     expect(result[0].metadata.length).toBe(successCount);
+  });
+});
+
+describe('addAppId', () => {
+  it('test_no_integrations_object', () => {
+    const payload = { foo: 'bar' };
+    const message = {};
+    expect(addAppId(payload, message)).toEqual(payload);
+  });
+
+  it('test_no_braze_integration', () => {
+    const payload = { foo: 'bar' };
+    const message = { integrations: { All: true } };
+    expect(addAppId(payload, message)).toEqual(payload);
+  });
+
+  it('test_braze_integration_no_app_id', () => {
+    const payload = { foo: 'bar' };
+    const message = { integrations: { All: true, braze: {} } };
+    expect(addAppId(payload, message)).toEqual(payload);
+  });
+
+  it('test_braze_integration_with_app_id', () => {
+    const payload = { foo: 'bar' };
+    const message = { integrations: { All: true, braze: { appId: '123' } } };
+    expect(addAppId(payload, message)).toEqual({ ...payload, app_id: '123' });
+  });
+
+  it('test_invalid_app_id', () => {
+    const payload = { foo: 'bar' };
+    const message = { integrations: { All: true, braze: { appId: 123 } } };
+    expect(addAppId(payload, message)).toEqual({ ...payload, app_id: '123' });
+  });
+
+  it('test_invalid_app_id', () => {
+    const payload = { foo: 'bar' };
+    const message = { integrations: { All: true, braze: { appId: '' } } };
+    expect(addAppId(payload, message)).toEqual(payload);
   });
 });

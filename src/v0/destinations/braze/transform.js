@@ -6,6 +6,7 @@ const {
   CustomAttributeOperationUtil,
   processDeduplication,
   processBatch,
+  addAppId,
 } = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -401,6 +402,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
   payload.properties = properties;
 
   payload = setExternalIdOrAliasObject(payload, message);
+  payload = addAppId(payload, message);
   if (payload) {
     requestJson.events = [payload];
   }
@@ -453,7 +455,7 @@ function processGroup(message, destination) {
     const response = defaultRequestConfig();
     response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
     response.body.JSON = removeUndefinedValues({
-      subscription_groups
+      subscription_groups,
     });
     return {
       ...response,

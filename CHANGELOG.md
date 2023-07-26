@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.36.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.36.0...v1.36.1) (2023-07-26)
+
+
+### Bug Fixes
+
+* add changes for braze app id ([#2407](https://github.com/rudderlabs/rudder-transformer/issues/2407)) ([d37d9a1](https://github.com/rudderlabs/rudder-transformer/commit/d37d9a1599e2be9e2b864944e506dcc3eed5cd12))
+* facebook pixel parity with device mode ([#2406](https://github.com/rudderlabs/rudder-transformer/issues/2406)) ([b30dcc6](https://github.com/rudderlabs/rudder-transformer/commit/b30dcc6d68aa28a75587b67a049e1b35085f77e0))
+* for group call send email as identifier when userId is in email format ([#2404](https://github.com/rudderlabs/rudder-transformer/issues/2404)) ([91ccca2](https://github.com/rudderlabs/rudder-transformer/commit/91ccca2642a3db816c1483ca6ace619d1d458609))
+* keen bugsnag issue for null context passed ([#2405](https://github.com/rudderlabs/rudder-transformer/issues/2405)) ([c80bd2a](https://github.com/rudderlabs/rudder-transformer/commit/c80bd2acce54bb20c1ba5f265bc81994fcf0e24f))
+
 ## [1.36.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.35.3...v1.36.0) (2023-07-21)
 
 

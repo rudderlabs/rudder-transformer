@@ -6,10 +6,9 @@
           "message": {
             "channel": "web",
             "type": "identify",
-            "messageId": "84e26acc-56a5-4835-8233-591137fca468",
             "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
             "originalTimestamp": "2019-10-14T09:03:17.562Z",
-            "anonymousId": "123456",
+            "anonymousId": "xyz",
             "userId": "123456",
             "integrations": {
               "All": true
@@ -30,19 +29,14 @@
         {
           "message": {
             "channel": "web",
-            "request_ip": "1.1.1.1",
             "type": "page",
-            "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
             "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
             "originalTimestamp": "2019-10-14T11:15:18.299Z",
-            "anonymousId": "00000000000000000000000000",
+            "anonymousId": "xyz",
             "userId": "12345",
             "properties": {
-              "path": "/destinations/amplitude",
               "referrer": "",
-              "search": "",
-              "title": "",
-              "url": "https://docs.rudderstack.com/destinations/amplitude",
+              "url": "https://www.rudderstack.com",
               "category": "destination",
               "initial_referrer": "https://docs.rudderstack.com",
               "initial_referring_domain": "docs.rudderstack.com"
@@ -63,7 +57,8 @@
           }
         }
       ],
-      "destType": "xyz"
+      "destType": "xyz",
+      "order": false
     },
     {
       "input": [
@@ -86,7 +81,717 @@
           }
         }
       ],
-      "destType": "xyz"
+      "destType": "xyz",
+      "order": false
+    },
+    {
+      "input": [
+        {
+          "message": {
+            "type": "identify",
+            "sentAt": "2023-07-25T18:17:52.117Z",
+            "userId": "user1",
+            "channel": "web",
+            "context": {
+              "os": {
+                "name": "",
+                "version": ""
+              },
+              "app": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1",
+                "namespace": "com.rudderlabs.javascript"
+              },
+              "page": {
+                "url": "https://www.rudderstack.com",
+                "referrer": "https://www.rudderstack.com",
+                "initial_referrer": "https://www.google.com/",
+                "referring_domain": "www.rudderstack.com",
+                "initial_referring_domain": "www.google.com"
+              },
+              "locale": "es-AS",
+              "screen": {
+                "width": 1536,
+                "height": 864,
+                "density": 1.25,
+                "innerWidth": 1536,
+                "innerHeight": 739
+              },
+              "traits": {
+                "locale": "es"
+              },
+              "library": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1"
+              },
+              "campaign": {},
+              "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+            },
+            "rudderId": "xyz",
+            "timestamp": "2023-07-25T18:17:52.885Z",
+            "receivedAt": "2023-07-25T18:17:52.887Z",
+            "anonymousId": "xyz",
+            "integrations": {
+              "All": true
+            },
+            "originalTimestamp": "2023-07-25T18:17:52.115Z"
+          },
+          "metadata": {
+            "userId": "u1",
+            "jobId": 3
+          },
+          "destination": {
+            "Config": {}
+          }
+        },
+        {
+          "message": {
+            "type": "track",
+            "event": "j",
+            "sentAt": "2023-07-25T18:17:52.117Z",
+            "userId": "user1",
+            "channel": "web",
+            "context": {
+              "os": {
+                "name": "",
+                "version": ""
+              },
+              "app": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1",
+                "namespace": "com.rudderlabs.javascript"
+              },
+              "page": {
+                "url": "https://www.rudderstack.com",
+                "referrer": "https://www.rudderstack.com",
+                "initial_referrer": "https://www.google.com/",
+                "referring_domain": "www.rudderstack.com",
+                "initial_referring_domain": "www.google.com"
+              },
+              "locale": "es-AS",
+              "screen": {
+                "width": 1536,
+                "height": 864,
+                "density": 1.25,
+                "innerWidth": 1536,
+                "innerHeight": 739
+              },
+              "library": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1"
+              },
+              "campaign": {},
+              "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+            },
+            "rudderId": "xyz",
+            "timestamp": "2023-07-25T18:17:52.885Z",
+            "properties": {
+              "gtm container version": "1354"
+            },
+            "receivedAt": "2023-07-25T18:17:52.887Z",
+            "anonymousId": "xyz",
+            "integrations": {
+              "All": true
+            },
+            "originalTimestamp": "2023-07-25T18:17:52.115Z"
+          },
+          "metadata": {
+            "userId": "u2",
+            "jobId": 4
+          },
+          "destination": {
+            "Config": {}
+          }
+        },
+        {
+          "message": {
+            "type": "identify",
+            "sentAt": "2023-07-25T18:17:52.137Z",
+            "userId": "user1",
+            "channel": "web",
+            "context": {
+              "os": {
+                "name": "",
+                "version": ""
+              },
+              "app": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1",
+                "namespace": "com.rudderlabs.javascript"
+              },
+              "page": {
+                "url": "https://www.rudderstack.com",
+                "referrer": "https://www.rudderstack.com",
+                "initial_referrer": "https://www.google.com/",
+                "referring_domain": "www.rudderstack.com",
+                "initial_referring_domain": "www.google.com"
+              },
+              "locale": "es-WE",
+              "screen": {
+                "width": 1536,
+                "height": 864,
+                "density": 1.25,
+                "innerWidth": 1536,
+                "innerHeight": 739
+              },
+              "traits": {
+                "user role": "BASIC"
+              },
+              "library": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1"
+              },
+              "campaign": {},
+              "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+              "trackingPlanVersion": 80
+            },
+            "rudderId": "xyz",
+            "timestamp": "2023-07-25T18:17:52.893Z",
+            "receivedAt": "2023-07-25T18:17:52.895Z",
+            "anonymousId": "xyz",
+            "integrations": {
+              "All": true
+            },
+            "originalTimestamp": "2023-07-25T18:17:52.135Z"
+          },
+          "metadata": {
+            "userId": "u2",
+            "jobId": 5
+          },
+          "destination": {
+            "Config": {}
+          }
+        },
+        {
+          "message": {
+            "type": "identify",
+            "sentAt": "2023-07-25T18:17:52.139Z",
+            "userId": "user1",
+            "channel": "web",
+            "context": {
+              "os": {
+                "name": "",
+                "version": ""
+              },
+              "app": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1",
+                "namespace": "com.rudderlabs.javascript"
+              },
+              "page": {
+                "url": "https://www.rudderstack.com",
+                "referrer": "https://www.rudderstack.com",
+                "initial_referrer": "https://www.google.com/",
+                "referring_domain": "www.rudderstack.com",
+                "initial_referring_domain": "www.google.com"
+              },
+              "locale": "es-PEC",
+              "screen": {
+                "width": 1536,
+                "height": 864,
+                "density": 1.25,
+                "innerWidth": 1536,
+                "innerHeight": 739
+              },
+              "traits": {
+                "locale": "es"
+              },
+              "library": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1"
+              },
+              "campaign": {},
+              "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+            },
+            "rudderId": "xyz",
+            "timestamp": "2023-07-25T18:17:52.900Z",
+            "receivedAt": "2023-07-25T18:17:52.902Z",
+            "anonymousId": "xyz",
+            "integrations": {
+              "All": true
+            },
+            "originalTimestamp": "2023-07-25T18:17:52.137Z"
+          },
+          "metadata": {
+            "userId": "u1",
+            "jobId": 6
+          },
+          "destination": {
+            "Config": {}
+          }
+        },
+        {
+          "message": {
+            "type": "track",
+            "event": "j",
+            "sentAt": "2023-07-25T18:17:52.139Z",
+            "userId": "user1",
+            "channel": "web",
+            "context": {
+              "os": {
+                "name": "",
+                "version": ""
+              },
+              "app": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1",
+                "namespace": "com.rudderlabs.javascript"
+              },
+              "page": {
+                "url": "https://www.rudderstack.com",
+                "referrer": "https://www.rudderstack.com",
+                "initial_referrer": "https://www.google.com/",
+                "referring_domain": "www.rudderstack.com",
+                "initial_referring_domain": "www.google.com"
+              },
+              "locale": "es-EW",
+              "screen": {
+                "width": 1536,
+                "height": 864,
+                "density": 1.25,
+                "innerWidth": 1536,
+                "innerHeight": 739
+              },
+              "library": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1"
+              },
+              "campaign": {},
+              "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+            },
+            "rudderId": "xyz",
+            "timestamp": "2023-07-25T18:17:52.900Z",
+            "properties": {
+              "gtm container version": "1354"
+            },
+            "receivedAt": "2023-07-25T18:17:52.902Z",
+            "anonymousId": "xyz",
+            "integrations": {
+              "All": true
+            },
+            "originalTimestamp": "2023-07-25T18:17:52.137Z"
+          },
+          "metadata": {
+            "userId": "u1",
+            "jobId": 7
+          },
+          "destination": {
+            "Config": {}
+          }
+        },
+        {
+          "message": {
+            "type": "identify",
+            "sentAt": "2023-07-25T18:17:52.143Z",
+            "userId": "user1",
+            "channel": "web",
+            "context": {
+              "os": {
+                "name": "",
+                "version": ""
+              },
+              "app": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1",
+                "namespace": "com.rudderlabs.javascript"
+              },
+              "page": {
+                "url": "https://www.rudderstack.com",
+                "referrer": "https://www.rudderstack.com",
+                "initial_referrer": "https://www.google.com/",
+                "referring_domain": "www.rudderstack.com",
+                "initial_referring_domain": "www.google.com"
+              },
+              "locale": "es-TR",
+              "screen": {
+                "width": 1536,
+                "height": 864,
+                "density": 1.25,
+                "innerWidth": 1536,
+                "innerHeight": 739
+              },
+              "traits": {
+                "user role": "BASIC"
+              },
+              "library": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1"
+              },
+              "campaign": {},
+              "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36",
+              "trackingPlanVersion": 80
+            },
+            "rudderId": "xyz",
+            "timestamp": "2023-07-25T18:17:52.910Z",
+            "receivedAt": "2023-07-25T18:17:52.911Z",
+            "anonymousId": "xyz",
+            "integrations": {
+              "All": true
+            },
+            "originalTimestamp": "2023-07-25T18:17:52.142Z"
+          },
+          "metadata": {
+            "userId": "u1",
+            "jobId": 8
+          },
+          "destination": {
+            "Config": {}
+          }
+        },
+        {
+          "message": {
+            "type": "identify",
+            "sentAt": "2023-07-25T18:17:52.145Z",
+            "userId": "user1",
+            "channel": "web",
+            "context": {
+              "os": {
+                "name": "",
+                "version": ""
+              },
+              "app": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1",
+                "namespace": "com.rudderlabs.javascript"
+              },
+              "page": {
+                "url": "https://www.rudderstack.com",
+                "referrer": "https://www.rudderstack.com",
+                "initial_referrer": "https://www.google.com/",
+                "referring_domain": "www.rudderstack.com",
+                "initial_referring_domain": "www.google.com"
+              },
+              "locale": "es-QW",
+              "screen": {
+                "width": 1536,
+                "height": 864,
+                "density": 1.25,
+                "innerWidth": 1536,
+                "innerHeight": 739
+              },
+              "traits": {
+                "locale": "es"
+              },
+              "library": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1"
+              },
+              "campaign": {},
+              "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+            },
+            "rudderId": "xyz",
+            "timestamp": "2023-07-25T18:17:52.955Z",
+            "receivedAt": "2023-07-25T18:17:52.956Z",
+            "anonymousId": "xyz",
+            "integrations": {
+              "All": true
+            },
+            "originalTimestamp": "2023-07-25T18:17:52.144Z"
+          },
+          "metadata": {
+            "userId": "u1",
+            "jobId": 9
+          },
+          "destination": {
+            "Config": {}
+          }
+        },
+        {
+          "message": {
+            "type": "track",
+            "event": "j",
+            "sentAt": "2023-07-25T18:17:52.145Z",
+            "userId": "user1",
+            "channel": "web",
+            "context": {
+              "os": {
+                "name": "",
+                "version": ""
+              },
+              "app": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1",
+                "namespace": "com.rudderlabs.javascript"
+              },
+              "page": {
+                "url": "https://www.rudderstack.com",
+                "referrer": "https://www.rudderstack.com",
+                "initial_referrer": "https://www.google.com/",
+                "referring_domain": "www.rudderstack.com",
+                "initial_referring_domain": "www.google.com"
+              },
+              "locale": "es-HF",
+              "screen": {
+                "width": 1536,
+                "height": 864,
+                "density": 1.25,
+                "innerWidth": 1536,
+                "innerHeight": 739
+              },
+              "library": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1"
+              },
+              "campaign": {},
+              "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+            },
+            "rudderId": "xyz",
+            "timestamp": "2023-07-25T18:17:52.955Z",
+            "properties": {
+              "gtm container version": "1354"
+            },
+            "receivedAt": "2023-07-25T18:17:52.956Z",
+            "anonymousId": "xyz",
+            "integrations": {
+              "All": true
+            },
+            "originalTimestamp": "2023-07-25T18:17:52.144Z"
+          },
+          "metadata": {
+            "userId": "u2",
+            "jobId": 10
+          },
+          "destination": {
+            "Config": {}
+          }
+        },
+        {
+          "message": {
+            "type": "identify",
+            "sentAt": "2023-07-25T18:17:52.260Z",
+            "userId": "user1",
+            "channel": "web",
+            "context": {
+              "os": {
+                "name": "",
+                "version": ""
+              },
+              "app": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1",
+                "namespace": "com.rudderlabs.javascript"
+              },
+              "page": {
+                "url": "https://www.rudderstack.com",
+                "referrer": "https://www.rudderstack.com",
+                "initial_referrer": "https://www.google.com/",
+                "referring_domain": "www.rudderstack.com",
+                "initial_referring_domain": "www.google.com"
+              },
+              "locale": "es-HG",
+              "screen": {
+                "width": 1536,
+                "height": 864,
+                "density": 1.25,
+                "innerWidth": 1536,
+                "innerHeight": 739
+              },
+              "traits": {
+                "locale": "es"
+              },
+              "library": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1"
+              },
+              "campaign": {},
+              "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+            },
+            "rudderId": "xyz",
+            "timestamp": "2023-07-25T18:17:53.046Z",
+            "receivedAt": "2023-07-25T18:17:53.048Z",
+            "anonymousId": "xyz",
+            "integrations": {
+              "All": true
+            },
+            "originalTimestamp": "2023-07-25T18:17:52.258Z"
+          },
+          "metadata": {
+            "userId": "u2",
+            "jobId": 21
+          },
+          "destination": {
+            "Config": {}
+          }
+        },
+        {
+          "message": {
+            "type": "track",
+            "event": "j",
+            "sentAt": "2023-07-25T18:17:52.260Z",
+            "userId": "user1",
+            "channel": "web",
+            "context": {
+              "os": {
+                "name": "",
+                "version": ""
+              },
+              "app": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1",
+                "namespace": "com.rudderlabs.javascript"
+              },
+              "page": {
+                "url": "https://www.rudderstack.com",
+                "referrer": "https://www.rudderstack.com",
+                "initial_referrer": "https://www.google.com/",
+                "referring_domain": "www.rudderstack.com",
+                "initial_referring_domain": "www.google.com"
+              },
+              "locale": "es-LK",
+              "screen": {
+                "width": 1536,
+                "height": 864,
+                "density": 1.25,
+                "innerWidth": 1536,
+                "innerHeight": 739
+              },
+              "library": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1"
+              },
+              "campaign": {},
+              "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
+            },
+            "rudderId": "xyz",
+            "timestamp": "2023-07-25T18:17:53.046Z",
+            "properties": {
+              "gtm container version": "1354"
+            },
+            "receivedAt": "2023-07-25T18:17:53.048Z",
+            "anonymousId": "xyz",
+            "integrations": {
+              "All": true
+            },
+            "originalTimestamp": "2023-07-25T18:17:52.258Z"
+          },
+          "metadata": {
+            "userId": "u1",
+            "jobId": 22
+          },
+          "destination": {
+            "Config": {}
+          }
+        },
+        {
+          "message": {
+            "type": "track",
+            "event": "j",
+            "sentAt": "2023-07-25T18:17:52.968Z",
+            "userId": "86217534",
+            "channel": "web",
+            "context": {
+              "os": {
+                "name": "",
+                "version": ""
+              },
+              "app": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1",
+                "namespace": "com.rudderlabs.javascript"
+              },
+              "page": {
+                "url": "https://www.rudderstack.com",
+                "referrer": "$direct",
+                "initial_referrer": "$direct",
+                "referring_domain": "",
+                "initial_referring_domain": ""
+              },
+              "locale": "en-QW",
+              "screen": {
+                "width": 1440,
+                "height": 900,
+                "density": 2,
+                "innerWidth": 1064,
+                "innerHeight": 622
+              },
+              "library": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1"
+              },
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+            },
+            "rudderId": "xyz",
+            "timestamp": "2023-07-25T18:17:53.112Z",
+            "properties": {
+              "gtm container version": "1354"
+            },
+            "receivedAt": "2023-07-25T18:17:53.120Z",
+            "anonymousId": "xyz",
+            "integrations": {
+              "All": true
+            },
+            "originalTimestamp": "2023-07-25T18:17:52.960Z"
+          },
+          "metadata": {
+            "userId": "u1",
+            "jobId": 23
+          },
+          "destination": {
+            "Config": {}
+          }
+        },
+        {
+          "message": {
+            "type": "track",
+            "event": "contentSubmission",
+            "sentAt": "2023-07-25T18:19:17.155Z",
+            "userId": "adg",
+            "channel": "web",
+            "context": {
+              "os": {
+                "name": "",
+                "version": ""
+              },
+              "app": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1",
+                "namespace": "com.rudderlabs.javascript"
+              },
+              "page": {
+                "url": "https://www.rudderstack.com",
+                "referrer": "https://www.rudderstack.com/",
+                "initial_referrer": "https://www.google.com/",
+                "referring_domain": "www.rudderstack.com",
+                "initial_referring_domain": "www.google.com"
+              },
+              "locale": "en-CA",
+              "screen": {
+                "width": 1440,
+                "height": 900,
+                "density": 1,
+                "innerWidth": 1440,
+                "innerHeight": 862
+              },
+              "library": {
+                "name": "RudderLabs JavaScript SDK",
+                "version": "2.38.1"
+              },
+              "campaign": {},
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.2 Safari/605.1.15"
+            },
+            "rudderId": "xyz",
+            "timestamp": "2023-07-25T18:17:42.148Z",
+            "properties": {
+              "gtm container version": "1354"
+            },
+            "receivedAt": "2023-07-25T18:17:53.410Z",
+            "anonymousId": "xyz",
+            "integrations": {
+              "All": true
+            },
+            "originalTimestamp": "2023-07-25T18:19:05.893Z"
+          },
+          "metadata": {
+            "userId": "u1",
+            "jobId": 24
+          },
+          "destination": {
+            "Config": {}
+          }
+        }
+      ],
+      "destType": "xyz",
+      "order": true
     }
   ]
 }

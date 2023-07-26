@@ -28,7 +28,7 @@
   },
   {
     "destKey": "email",
-    "sourceKeys": ["context.traits.email", "properties.email", "traits.email"],
+    "sourceKeys": ["context.traits.email", "properties.email", "traits.email", "context.externalId.0.id"],
     "required": false
   },
   {

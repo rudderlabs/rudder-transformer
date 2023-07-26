@@ -6,6 +6,7 @@ const {
   CustomAttributeOperationUtil,
   processDeduplication,
   processBatch,
+  addAppId,
 } = require('./util');
 const tags = require('../../util/tags');
 const { EventType, MappedToDestinationKey } = require('../../../constants');
@@ -401,6 +402,7 @@ function processTrackEvent(messageType, message, destination, mappingJson, proce
   payload.properties = properties;
 
   payload = setExternalIdOrAliasObject(payload, message);
+  payload = addAppId(payload, message);
   if (payload) {
     requestJson.events = [payload];
   }

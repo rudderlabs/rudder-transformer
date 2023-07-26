@@ -881,12 +881,8 @@
       "JSON": {
         "subscription_groups": [
           {
-            "external_id": [
-              "Randomuser2222"
-            ],
-            "phones": [
-              "5055077683"
-            ],
+            "external_id": ["Randomuser2222"],
+            "phones": ["5055077683"],
             "subscription_group_id": "1234",
             "subscription_state": "subscribed"
           }
@@ -934,5 +930,38 @@
     "params": {},
     "type": "REST",
     "version": "1"
+  },
+  {
+    "version": "1",
+    "type": "REST",
+    "method": "POST",
+    "endpoint": "https://rest.fra-01.braze.eu/users/track",
+    "headers": {
+      "Content-Type": "application/json",
+      "Accept": "application/json",
+      "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+    },
+    "params": {},
+    "body": {
+      "JSON": {
+        "partner": "RudderStack",
+        "events": [
+          {
+            "name": "braze revenue test",
+            "time": "2020-01-24T11:59:02.403+05:30",
+            "properties": {
+              "revenue": 50
+            },
+            "external_id": "mickeyMouse",
+            "app_id": "123"
+          }
+        ]
+      },
+      "JSON_ARRAY": {},
+      "XML": {},
+      "FORM": {}
+    },
+    "files": {},
+    "userId": "mickeyMouse"
   }
 ]

@@ -1529,8 +1529,5 @@
     "type": "REST",
     "method": "POST",
     "statusCode": 200
-  },
-  {
-    "message": "No Identifier Found. Please provide userId or email."
   }
 ]

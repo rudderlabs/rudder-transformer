@@ -10,7 +10,7 @@ const {
   getFieldValueFromMessage,
   defaultDeleteRequestConfig,
   isAppleFamily,
-  isEmail,
+  validateEmail,
   isDefinedAndNotNull
 } = require('../../util');
 
@@ -200,11 +200,8 @@ const groupResponseBuilder = (message) => {
     cio_relationships: [],
   };
   const id = payload?.userId || payload?.email;
-  if (!isDefinedAndNotNull(id)) {
-    throw new InstrumentationError("No Identifier Found. Please provide userId or email.")
-  }
   let cioProperty = 'id';
-  if (isEmail(id)) {
+  if (validateEmail(id)) {
     cioProperty = "email";
   }
   rawPayload.cio_relationships.push({ identifiers: { [cioProperty]: id } });

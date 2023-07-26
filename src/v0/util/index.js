@@ -1746,8 +1746,6 @@ const validatePhoneWithCountryCode = (phone) => {
   const regex = /^\+(?:[\d{] ?){6,14}\d$/;
   return !!regex.test(phone);
 };
-const isEmail = inputString => validateEmail(inputString)
-
 
 /**
  * checks for hybrid mode
@@ -1974,7 +1972,6 @@ module.exports = {
   getDestAuthCacheInstance,
   refinePayload,
   validateEmail,
-  isEmail,
   validatePhoneWithCountryCode,
   getEventReqMetadata,
   isHybridModeEnabled,

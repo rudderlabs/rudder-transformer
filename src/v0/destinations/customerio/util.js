@@ -204,7 +204,9 @@ const groupResponseBuilder = (message) => {
   if (validateEmail(id)) {
     cioProperty = "email";
   }
-  rawPayload.cio_relationships.push({ identifiers: { [cioProperty]: id } });
+  if (isDefinedAndNotNull(id)){
+    rawPayload.cio_relationships.push({ identifiers: { [cioProperty]: id } });
+  }
   const requestConfig = defaultPostRequestConfig;
   const endpoint = OBJECT_EVENT_ENDPOINT;
 

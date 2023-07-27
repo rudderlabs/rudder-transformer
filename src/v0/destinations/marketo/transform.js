@@ -466,7 +466,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
       throw new UnauthorizedError('Authorization failed');
     }
   } catch (error) {
-    logger.error('Router Transformation problem:');
+    logger.error('Router Transformation problem:', error);
     const errObj = generateErrorObject(error);
     logger.error(errObj);
     const respEvents = getErrorRespEvents(

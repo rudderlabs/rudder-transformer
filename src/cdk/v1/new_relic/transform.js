@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 const { isBoolean } = require('lodash');
 const { Utils } = require('rudder-transformer-cdk');
 

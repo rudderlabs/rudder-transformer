@@ -772,7 +772,6 @@ describe('processBatch', () => {
     expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(50); // First batch contains 25 subscription group
     expect(result[0].batchedRequest[4].body.JSON.merge_updates.length).toBe(50); // First batch contains 50 merge_updates
     expect(result[0].batchedRequest[5].body.JSON.merge_updates.length).toBe(50); // First batch contains 25 merge_updates
-
   });
 
   test('processBatch handles more than 75 attributes, events, and purchases with non uniform distribution', () => {
@@ -836,7 +835,7 @@ describe('processBatch', () => {
         Config: {
           restApiKey: 'restApiKey',
           dataCenter: 'eu',
-          enableSubscriptionGroupInGroupCall: true
+          enableSubscriptionGroupInGroupCall: true,
         },
       },
       statusCode: 200,
@@ -855,7 +854,7 @@ describe('processBatch', () => {
         Config: {
           restApiKey: 'restApiKey',
           dataCenter: 'eu',
-          enableSubscriptionGroupInGroupCall: true
+          enableSubscriptionGroupInGroupCall: true,
         },
       },
       statusCode: 200,

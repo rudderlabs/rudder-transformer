@@ -1,6 +1,6 @@
 [
   {
-    "success": true,
+    "Complete": true,
     "statusCode": 200,
     "hasFailed": false,
     "failedJobsURL": "/getFailedJobs",

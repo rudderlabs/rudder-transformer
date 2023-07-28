@@ -149,7 +149,7 @@ const responseHandler = async (event) => {
     }
   }
   const response = {
-    success,
+    Complete: success,
     statusCode,
     hasFailed,
     failedJobsURL,

@@ -268,8 +268,8 @@ const processAliasEvents = (message, type, destination) => {
   const payload = {
     event: '$create_alias',
     properties: {
-      distinct_id: message.userId,
-      alias: aliasId,
+      distinct_id: aliasId,
+      alias: message.userId,
       token: destination.Config.token,
     },
   };

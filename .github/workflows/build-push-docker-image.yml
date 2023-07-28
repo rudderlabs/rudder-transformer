@@ -73,7 +73,6 @@ jobs:
           tags: ${{ inputs.push_tags }}
           platforms: |
             linux/amd64
-            linux/arm64
           build-args: |
             version=${{ inputs.img_tag }}
             GIT_COMMIT_SHA=${{ github.sha }}

@@ -8,11 +8,7 @@ const util = require('util');
 const logger = require('../logger');
 const stats = require('./stats');
 
-const defaultServers = ['1.1.1.1', '8.8.8.8'];
-const dnsServers = process.env.DNS_SERVERS ? process.env.DNS_SERVERS.split(',') : defaultServers;
 const resolver = new Resolver();
-// Cloudflare and Google dns
-resolver.setServers(dnsServers);
 
 const LOCALHOST_IP = '127.0.0.1';
 const LOCALHOST_URL = `http://localhost`;

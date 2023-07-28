@@ -315,10 +315,10 @@ const processDeduplication = (userStore, payload, destinationId) => {
     isDefinedAndNotNullAndNotEmpty(dedupedAttributePayload) &&
     Object.keys(dedupedAttributePayload).some((key) => !['external_id', 'user_alias'].includes(key))
   ) {
-    stats.increment('braze_deduped_users_count', { destinationId });
+    stats.increment('braze_deduped_users_count', { destination_id: destinationId });
     return dedupedAttributePayload;
   }
-  stats.increment('braze_dedup_and_drop_count', { destinationId });
+  stats.increment('braze_dedup_and_drop_count', { destination_id: destinationId });
   return null;
 };
 

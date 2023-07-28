@@ -455,7 +455,7 @@ function processGroup(message, destination) {
     const response = defaultRequestConfig();
     response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
     response.body.JSON = removeUndefinedValues({
-      subscription_groups
+      subscription_groups,
     });
     return {
       ...response,

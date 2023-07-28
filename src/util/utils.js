@@ -20,7 +20,7 @@ const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
   try {
     ips = await resolver.resolve(hostname);
   } catch (error) {
-    stats.timing('fetch_dns_resolve_time', resolveStartTime, { transformerVersionId, error: true });
+    stats.timing('fetch_dns_resolve_time', resolveStartTime, { transformerVersionId, error: "true" });
     cb(null, `unable to resolve IP address for ${hostname}`, RECORD_TYPE_A);
     return;
   }

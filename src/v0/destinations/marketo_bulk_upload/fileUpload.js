@@ -173,7 +173,7 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   if (csv.length > 1) {
     startTime = Date.now();
     fs.writeFileSync(MARKETO_FILE_PATH, csv.join('\n'));
-    const readStream = fs.createReadStream(MARKETO_FILE_PATH);
+    const readStream = fs.readFileSync(MARKETO_FILE_PATH);
     fs.unlinkSync(MARKETO_FILE_PATH);
     endTime = Date.now();
     requestTime = endTime - startTime;

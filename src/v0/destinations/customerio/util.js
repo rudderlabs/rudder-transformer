@@ -237,7 +237,7 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
   // DEVICE registration
   const isDeviceRelatedEvent = isdeviceRelatedEventName(evName, destination);
   if (isDeviceRelatedEvent && userId && token) {
-    const timestamp = message.timestamp || message.originalTimestamp;
+    const timestamp = message.originalTimestamp;
     const devProps = {
       ...message.properties,
       id: token,

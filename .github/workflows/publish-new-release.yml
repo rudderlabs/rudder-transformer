@@ -50,6 +50,10 @@ jobs:
 
       - name: Tag & Create GitHub Release
         id: create_release
+        uses: nick-fields/retry@v2
+        with:
+          timeout_minutes: 10
+          max_attempts: 3
         env:
           HUSKY: 0
           GITHUB_TOKEN: ${{ secrets.PAT }}
@@ -63,6 +67,7 @@ jobs:
 
       - name: Pull Changes Into develop Branch
         uses: repo-sync/pull-request@v2.12.1
+        if: always()
         with:
           source_branch: 'main'
           destination_branch: 'develop'

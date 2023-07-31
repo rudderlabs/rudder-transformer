@@ -310,10 +310,10 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
             status: 500,
             state: 'Retryable',
           });
-          throw new RetryableError(resp.response.response.statusText || FILE_UPLOAD_ERR_MSG, 500, {
-            successfulJobs,
-            unsuccessfulJobs,
-          });
+          return {
+            statusCode: 500,
+            FailedReason: 'No import id received',
+          };
         }
       }
     }

@@ -118,8 +118,6 @@ Also checks if it is a standard event and sends properties only if it is mention
 @param whitelistPiiProperties -->
 [ { whitelistPiiProperties: 'email' } ] // sets email
 
-@param isStandard --> is standard if among the ecommerce spec of rudder other wise is not standard for simple track, identify and page calls
-false
 
 @param eventCustomProperties -->
 [ { eventCustomProperties: 'leadId' } ] // leadId if present will be set
@@ -131,7 +129,6 @@ const transformedPayloadData = (
   customData,
   blacklistPiiProperties,
   whitelistPiiProperties,
-  isStandard,
   integrationsObj,
 ) => {
   const defaultPiiProperties = [
@@ -155,33 +152,35 @@ const transformedPayloadData = (
   const finalBlacklistPiiProperties = blacklistPiiProperties || [];
   const finalWhitelistPiiProperties = whitelistPiiProperties || [];
   const customBlackListedPiiProperties = {};
-  const customWhiteListedProperties = {};
+
+  // create list of whitelisted properties
+  const customWhiteListedProperties = finalWhitelistPiiProperties.map(
+    (propObject) => propObject.whitelistPiiProperties,
+  );
+
+  // create map of blacklisted properties
   finalBlacklistPiiProperties.forEach((property) => {
     const singularConfigInstance = property;
     customBlackListedPiiProperties[singularConfigInstance.blacklistPiiProperties] =
       singularConfigInstance.blacklistPiiHash;
   });
 
-  finalWhitelistPiiProperties.forEach((property) => {
-    const singularConfigInstance = property;
-    customWhiteListedProperties[singularConfigInstance.whitelistPiiProperties] = true;
-  });
-
+  // remove properties which are default pii properties and not whitelisted
   Object.keys(clonedCustomData).forEach((eventProp) => {
     const isDefaultPiiProperty = defaultPiiProperties.includes(eventProp);
-    const isProperyWhiteListed = customWhiteListedProperties[eventProp] || false;
-    if (isDefaultPiiProperty && !isProperyWhiteListed) {
-      delete clonedCustomData[eventProp];
-    }
+    const isProperyWhiteListed = customWhiteListedProperties.includes(eventProp);
 
     if (Object.prototype.hasOwnProperty.call(customBlackListedPiiProperties, eventProp)) {
       if (customBlackListedPiiProperties[eventProp]) {
+        // if customBlackListedPiiProperty is marked to be hashed from UI
         clonedCustomData[eventProp] = integrationsObj?.hashed
           ? String(message.properties[eventProp])
           : sha256(String(message.properties[eventProp]));
-      } else {
+      } else if (isDefaultPiiProperty && !isProperyWhiteListed) {
         delete clonedCustomData[eventProp];
       }
+    } else if (isDefaultPiiProperty && !isProperyWhiteListed) {
+      delete clonedCustomData[eventProp];
     }
   });
 

@@ -547,8 +547,14 @@ class Prometheus {
 
       // Histograms
       {
+        name: 'outgoing_request_latency',
+        help: 'Outgoing HTTP requests duration in seconds',
+        type: 'histogram',
+        labelNames: ['type', 'integration'],
+      },
+      {
         name: 'http_request_duration',
-        help: 'Summary of HTTP requests duration in seconds',
+        help: 'Incoming HTTP requests duration in seconds',
         type: 'histogram',
         labelNames: ['method', 'route', 'code'],
       },
@@ -580,7 +586,14 @@ class Prometheus {
         name: 'dest_transform_request_latency',
         help: 'dest_transform_request_latency',
         type: 'histogram',
-        labelNames: ['destination', 'version', 'sourceType', 'destinationType', 'k8_namespace', 'feature'],
+        labelNames: [
+          'destination',
+          'version',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'feature',
+        ],
       },
       {
         name: 'user_transform_request_latency',

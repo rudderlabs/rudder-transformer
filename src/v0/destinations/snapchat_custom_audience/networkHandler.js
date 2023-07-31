@@ -56,7 +56,10 @@ const scAudienceProxyRequest = async (request) => {
     headers,
     method,
   };
-  const response = await httpSend(requestOptions);
+  const response = await httpSend(requestOptions, {
+    type: 'proxy',
+    integration: 'snapchat_custom_audience',
+  });
   return response;
 };
 

@@ -88,7 +88,10 @@ const getConversionActionId = async (headers, params) => {
     const requestOptions = {
       headers,
     };
-    let searchStreamResponse = await httpPOST(endpoint, data, requestOptions);
+    let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
+      integration: 'google_adwords_offline_conversions',
+      type: 'transformation',
+    });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
     if (!isHttpStatusSuccess(searchStreamResponse.status)) {
       throw new AbortedError(

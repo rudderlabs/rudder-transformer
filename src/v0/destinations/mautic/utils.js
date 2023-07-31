@@ -176,6 +176,10 @@ const searchContactIds = async (message, Config, baseUrl) => {
   let searchContactsResponse = await httpGET(
     createAxiosUrl(field, fieldValue, baseUrl),
     requestOptions,
+    {
+      integration: 'mautic',
+      type: 'transformation',
+    },
   );
   searchContactsResponse = processAxiosResponse(searchContactsResponse);
   if (searchContactsResponse.status !== 200) {

@@ -37,6 +37,10 @@ const fetchFieldSchema = async (config) => {
         access_token: accessToken,
       },
     },
+    {
+      integration: 'marketo_bulk_upload',
+      type: 'transformation',
+    },
   );
   if (
     fieldSchemaMapping &&
@@ -217,6 +221,10 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
         `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
         formReq,
         requestOptions,
+        {
+          integration: 'marketo_bulk_upload',
+          type: 'transformation',
+        },
       );
       const endTime = Date.now();
       const requestTime = endTime - startTime;

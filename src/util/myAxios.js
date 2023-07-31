@@ -1,0 +1,62 @@
+const axios = require('axios');
+const stats = require('./stats');
+
+const fireLatencyStat = (startTime, statTags) => {
+  const integration = statTags.integration ? statTags.integration : '';
+  const type = statTags.type ? statTags.type : '';
+  stats.timing('outgoing_request_latency', startTime, {
+    type,
+    integration,
+  });
+};
+
+const send = async (options, statTags = {}) => {
+  const startTime = new Date();
+  const response = await axios(options);
+  fireLatencyStat(startTime, statTags);
+  return response;
+};
+
+const get = async (url, options, statTags = {}) => {
+  const startTime = new Date();
+  const response = await axios.get(url, options);
+  fireLatencyStat(startTime, statTags);
+  return response;
+};
+
+const del = async (url, options, statTags = {}) => {
+  const startTime = new Date();
+  const response = await axios.delete(url, options);
+  fireLatencyStat(startTime, statTags);
+  return response;
+};
+
+const post = async (url, data, options, statTags = {}) => {
+  const startTime = new Date();
+  const response = await axios.post(url, data, options);
+  fireLatencyStat(startTime, statTags);
+  return response;
+};
+
+const put = async (url, data, options, statTags = {}) => {
+  const startTime = new Date();
+  const response = await axios.put(url, data, options);
+  fireLatencyStat(startTime, statTags);
+  return response;
+};
+
+const patch = async (url, data, options, statTags = {}) => {
+  const startTime = new Date();
+  const response = await axios.patch(url, data, options);
+  fireLatencyStat(startTime, statTags);
+  return response;
+};
+
+module.exports = {
+  send,
+  get,
+  del,
+  post,
+  put,
+  patch,
+};

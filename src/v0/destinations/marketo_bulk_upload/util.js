@@ -25,7 +25,15 @@ const getMarketoFilePath = () => MARKETO_FILE_PATH;
 const getAccessToken = async (config) => {
   const { clientId, clientSecret, munchkinId } = config;
   const url = `https://${munchkinId}.mktorest.com/identity/oauth/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`;
-  const resp = await httpGET(url);
+  // TODO: request options not sent. Is it okay?
+  const resp = await httpGET(
+    url,
+    {},
+    {
+      integration: 'marketo_bulk_upload',
+      type: 'transformation',
+    },
+  );
   const ACCESS_TOKEN_FETCH_ERR_MSG = 'Error during fetching access token';
   if (resp.success) {
     if (resp.response && resp.response.data && resp.response.data.access_token) {

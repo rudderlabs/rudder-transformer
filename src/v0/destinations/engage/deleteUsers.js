@@ -36,7 +36,14 @@ const userDeletionHandler = async (userAttributes, config) => {
       if (ua.userId) {
         const endpoint = `${BASE_URL.replace('uid', ua.userId)}`;
         // eslint-disable-next-line no-await-in-loop
-        const response = await httpDELETE(endpoint, { headers });
+        const response = await httpDELETE(
+          endpoint,
+          { headers },
+          {
+            integration: 'engage',
+            type: 'deleteUsers',
+          },
+        );
         const handledDelResponse = processAxiosResponse(response);
         if (!isHttpStatusSuccess(handledDelResponse.status)) {
           throw new NetworkError(

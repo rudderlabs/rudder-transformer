@@ -4,10 +4,10 @@
 const _ = require('lodash');
 const http = require('http');
 const https = require('https');
-const axios = require('axios');
 const log = require('../logger');
 const { removeUndefinedValues } = require('../v0/util');
 const { processAxiosResponse } = require('./utils/networkUtils');
+const myAxios = require('../util/myAxios');
 
 const MAX_CONTENT_LENGTH = parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 100000000;
 const MAX_BODY_LENGTH = parseInt(process.env.MAX_BODY_LENGTH, 10) || 100000000;
@@ -46,7 +46,7 @@ const networkClientConfigs = {
  * @param {*} options
  * @returns
  */
-const httpSend = async (options) => {
+const httpSend = async (options, statTags = {}) => {
   let clientResponse;
   // here the options argument K-Vs will take priority over requestOptions
   const requestOptions = {
@@ -55,8 +55,9 @@ const httpSend = async (options) => {
     maxContentLength: MAX_CONTENT_LENGTH,
     maxBodyLength: MAX_BODY_LENGTH,
   };
+
   try {
-    const response = await axios(requestOptions);
+    const response = await myAxios.send(requestOptions, statTags);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
@@ -72,10 +73,10 @@ const httpSend = async (options) => {
  *
  * handles http GET requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpGET = async (url, options) => {
+const httpGET = async (url, options, statTags = {}) => {
   let clientResponse;
   try {
-    const response = await axios.get(url, options);
+    const response = await myAxios.get(url, options, statTags);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
@@ -91,10 +92,10 @@ const httpGET = async (url, options) => {
  *
  * handles http DELETE requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpDELETE = async (url, options) => {
+const httpDELETE = async (url, options, statTags = {}) => {
   let clientResponse;
   try {
-    const response = await axios.delete(url, options);
+    const response = await myAxios.del(url, options, statTags);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
@@ -111,10 +112,10 @@ const httpDELETE = async (url, options) => {
  *
  * handles http POST requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpPOST = async (url, data, options) => {
+const httpPOST = async (url, data, options, statTags = {}) => {
   let clientResponse;
   try {
-    const response = await axios.post(url, data, options);
+    const response = await myAxios.post(url, data, options, statTags);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
@@ -131,10 +132,10 @@ const httpPOST = async (url, data, options) => {
  *
  * handles http PUT requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpPUT = async (url, data, options) => {
+const httpPUT = async (url, data, options, statTags = {}) => {
   let clientResponse;
   try {
-    const response = await axios.put(url, data, options);
+    const response = await myAxios.put(url, data, options, statTags);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
@@ -151,10 +152,10 @@ const httpPUT = async (url, data, options) => {
  *
  * handles http PATCH requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpPATCH = async (url, data, options) => {
+const httpPATCH = async (url, data, options, statTags = {}) => {
   let clientResponse;
   try {
-    const response = await axios.patch(url, data, options);
+    const response = await myAxios.patch(url, data, options, statTags);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
@@ -260,7 +261,7 @@ const proxyRequest = async (request) => {
     headers,
     method,
   };
-  const response = await httpSend(requestOptions);
+  const response = await httpSend(requestOptions, { type: 'proxy' });
   return response;
 };
 

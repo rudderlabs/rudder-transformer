@@ -30,9 +30,9 @@ function process(event) {
 
   const { timestamp } = event;
   if (isDefinedAndNotNull(timestamp) && moment(timestamp).isValid()) {
-    const ts = new Date(timestamp * 1000).toISOString();
-    message.setProperty('originalTimestamp', ts);
-    message.setProperty('sentAt', ts);
+    const validTimestamp = new Date(timestamp * 1000).toISOString();
+    message.setProperty('originalTimestamp', validTimestamp);
+    message.setProperty('sentAt', validTimestamp);
   }
 
 

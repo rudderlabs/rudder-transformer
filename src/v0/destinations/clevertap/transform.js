@@ -29,7 +29,7 @@ const { InstrumentationError, TransformationError } = require('../../util/errorT
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const TIMESTAMP_KEY_PATH = 'context.traits.ts';
-const MAX_BATCH_SIZE = 2;
+const MAX_BATCH_SIZE = 1000;
 
 /*
 Following behavior is expected when "enableObjectIdMapping" is enabled

@@ -45,6 +45,45 @@
               },
               "type": "event",
               "identity": "anon-id-new"
+            },
+            {
+              "type": "profile",
+              "profileData": {
+                "Email": "martinjr101@gmail.com",
+                "Name": "Martin Junior",
+                "Phone": "+919374162212",
+                "Gender": "M",
+                "DOB": "1614775793",
+                "Customer Type": "Prime",
+                "graduate": true,
+                "msg_push": true,
+                "msgSms": true,
+                "msgemail": true,
+                "msgwhatsapp": false,
+                "custom_tags": "[\"Test_User\",\"Interested_User\",\"DIY_Hobby\"]",
+                "custom_mappings": "{\"Office\":\"Trastkiv\",\"Country\":\"Russia\"}",
+                "address": "{\"city\":\"kolkata\",\"country\":\"India\",\"postalCode\":789223,\"state\":\"WB\",\"street\":\"\"}"
+              },
+              "identity": "martinjr101"
+            },
+            {
+              "evtName": "product added",
+              "evtData": {
+                "product_id": "123",
+                "sku": "F15",
+                "category": "Games",
+                "name": "Game",
+                "brand": "Gamepro",
+                "variant": "111",
+                "price": 13.49,
+                "quantity": 11,
+                "coupon": "DISC21",
+                "position": 1,
+                "url": "https://www.website.com/product/path",
+                "image_url": "https://www.website.com/product/path.png"
+              },
+              "type": "event",
+              "identity": "martinjr101"
             }
           ]
         },
@@ -60,6 +99,12 @@
       },
       {
         "jobId": 2
+      },
+      {
+        "jobId": 3
+      },
+      {
+        "jobId": 4
       }
     ],
     "batched": false,

@@ -38,8 +38,8 @@ const fetchFieldSchema = async (config) => {
       },
     },
     {
-      integration: 'marketo_bulk_upload',
-      type: 'transformation',
+      destType: 'marketo_bulk_upload',
+      feature: 'transformation',
     },
   );
   if (
@@ -222,8 +222,8 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
         formReq,
         requestOptions,
         {
-          integration: 'marketo_bulk_upload',
-          type: 'transformation',
+          destType: 'marketo_bulk_upload',
+          feature: 'transformation',
         },
       );
       const endTime = Date.now();

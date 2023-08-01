@@ -36,8 +36,8 @@ const userDeletionHandler = async (userAttributes, config) => {
         },
       };
       const resp = await httpPOST(url, data, requestOptions, {
-        integration: 'intercom',
-        type: 'deleteUsers',
+        destType: 'intercom',
+        feature: 'deleteUsers',
       });
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status) && handledDelResponse.status !== 404) {

@@ -215,8 +215,8 @@ const retrieveCustomFields = async (listId, apiToken) => {
     },
   };
   const customFieldsResponse = await httpGET(endpoint, requestOptions, {
-    integration: 'clickup',
-    type: 'transformation',
+    destType: 'clickup',
+    feature: 'transformation',
   });
   const processedCustomFieldsResponse = processAxiosResponse(customFieldsResponse);
 

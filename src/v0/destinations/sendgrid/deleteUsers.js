@@ -83,8 +83,8 @@ const userDeletionHandler = async (userAttributes, config) => {
     batchEndpoints.map(async (batchEndpoint) => {
       endpoint = batchEndpoint;
       const deletionResponse = await httpDELETE(endpoint, requestOptions, {
-        integration: 'sendgrid',
-        type: 'deleteUsers',
+        destType: 'sendgrid',
+        feature: 'deleteUsers',
       });
       const handledDelResponse = processAxiosResponse(deletionResponse);
 

@@ -44,8 +44,8 @@ const getAccessToken = async (destination) => {
       method: 'POST',
     };
     const wootricAuthResponse = await httpPOST(request.url, request.data, request.header, {
-      integration: 'woodtric',
-      type: 'transformation',
+      destType: 'woodtric',
+      feature: 'transformation',
     });
     const processedAuthResponse = processAxiosResponse(wootricAuthResponse);
     // If the request fails, throwing error.
@@ -96,8 +96,8 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
   };
 
   const userResponse = await httpGET(endpoint, requestOptions, {
-    integration: 'wootric',
-    type: 'transformation',
+    destType: 'wootric',
+    feature: 'transformation',
   });
   const processedUserResponse = processAxiosResponse(userResponse);
 

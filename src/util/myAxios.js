@@ -2,11 +2,11 @@ const axios = require('axios');
 const stats = require('./stats');
 
 const fireLatencyStat = (startTime, statTags) => {
-  const integration = statTags.integration ? statTags.integration : '';
-  const type = statTags.type ? statTags.type : '';
+  const destType = statTags.destType ? statTags.destType : '';
+  const feature = statTags.feature ? statTags.feature : '';
   stats.timing('outgoing_request_latency', startTime, {
-    type,
-    integration,
+    feature,
+    destType,
   });
 };
 

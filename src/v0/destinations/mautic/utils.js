@@ -177,8 +177,8 @@ const searchContactIds = async (message, Config, baseUrl) => {
     createAxiosUrl(field, fieldValue, baseUrl),
     requestOptions,
     {
-      integration: 'mautic',
-      type: 'transformation',
+      destType: 'mautic',
+      feature: 'transformation',
     },
   );
   searchContactsResponse = processAxiosResponse(searchContactsResponse);

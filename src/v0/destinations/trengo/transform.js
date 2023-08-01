@@ -90,7 +90,7 @@ const lookupContact = async (term, destination) => {
           Authorization: `Bearer ${destination.Config.apiToken}`,
         },
       },
-      { integration: 'trengo', type: 'transformation' },
+      { destType: 'trengo', feature: 'transformation' },
     );
   } catch (err) {
     // check if exists err.response && err.response.status else 500

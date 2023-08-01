@@ -40,8 +40,8 @@ const userDeletionHandler = async (userAttributes, config) => {
           endpoint,
           { headers },
           {
-            integration: 'engage',
-            type: 'deleteUsers',
+            destType: 'engage',
+            feature: 'deleteUsers',
           },
         );
         const handledDelResponse = processAxiosResponse(response);

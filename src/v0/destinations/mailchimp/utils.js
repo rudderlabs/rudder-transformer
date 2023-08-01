@@ -163,7 +163,7 @@ const checkIfMailExists = async (apiKey, datacenterId, audienceId, email) => {
           Authorization: `Basic ${basicAuth}`,
         },
       },
-      { integration: 'mailchimp', type: 'transformation' },
+      { destType: 'mailchimp', feature: 'transformation' },
     );
     if (response?.data?.contact_id) {
       userStatus.exists = true;
@@ -194,7 +194,7 @@ const checkIfDoubleOptIn = async (apiKey, datacenterId, audienceId) => {
           Authorization: `Basic ${basicAuth}`,
         },
       },
-      { integration: 'mailchimp', type: 'transformation' },
+      { destType: 'mailchimp', feature: 'transformation' },
     );
   } catch (error) {
     const status = error.status || 400;

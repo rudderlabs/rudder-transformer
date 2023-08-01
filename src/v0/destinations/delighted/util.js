@@ -61,7 +61,7 @@ const userValidity = async (channel, Config, userId) => {
         },
         params: paramsdata,
       },
-      { integration: 'delighted', type: 'transformation' },
+      { destType: 'delighted', feature: 'transformation' },
     );
     if (response && response.data && response.status === 200 && Array.isArray(response.data)) {
       return response.data.length > 0;

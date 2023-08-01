@@ -39,8 +39,8 @@ const retrieveUserId = async (apiKey, message) => {
     requestBody.userID = `${userId}`;
   }
   const response = await httpPOST(url, qs.stringify(requestBody), header, {
-    integration: 'canny',
-    type: 'transformation',
+    destType: 'canny',
+    feature: 'transformation',
   });
   logger.debug(response);
   // If the request fails, throwing error.

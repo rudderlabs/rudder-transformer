@@ -20,8 +20,8 @@ const getPollStatus = async (event) => {
   const pollUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`;
   const startTime = Date.now();
   const pollStatus = await httpGET(pollUrl, requestOptions, {
-    integration: 'marketo_bulk_upload',
-    type: 'transformation',
+    destType: 'marketo_bulk_upload',
+    feature: 'transformation',
   });
   const endTime = Date.now();
   const requestTime = endTime - startTime;

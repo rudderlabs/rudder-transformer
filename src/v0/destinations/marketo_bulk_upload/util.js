@@ -30,8 +30,8 @@ const getAccessToken = async (config) => {
     url,
     {},
     {
-      integration: 'marketo_bulk_upload',
-      type: 'transformation',
+      destType: 'marketo_bulk_upload',
+      feature: 'transformation',
     },
   );
   const ACCESS_TOKEN_FETCH_ERR_MSG = 'Error during fetching access token';

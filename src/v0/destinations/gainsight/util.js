@@ -18,7 +18,7 @@ const searchGroup = async (groupName, Config) => {
           'Content-Type': JSON_MIME_TYPE,
         },
       },
-      { integration: 'gainsight', type: 'transformation' },
+      { destType: 'gainsight', feature: 'transformation' },
     );
   } catch (error) {
     let errMessage = '';
@@ -52,7 +52,7 @@ const createGroup = async (payload, Config) => {
           'Content-Type': JSON_MIME_TYPE,
         },
       },
-      { integration: 'gainsight', type: 'transformation' },
+      { destType: 'gainsight', feature: 'transformation' },
     );
   } catch (error) {
     let errMessage = '';
@@ -89,7 +89,7 @@ const updateGroup = async (payload, Config) => {
           keys: 'Name',
         },
       },
-      { integration: 'gainsight', type: 'transformation' },
+      { destType: 'gainsight', feature: 'transformation' },
     );
   } catch (error) {
     let errMessage = '';

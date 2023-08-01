@@ -34,8 +34,8 @@ const createJob = async (endpoint, customerId, listId, headers, method) => {
     method,
   };
   const response = await httpSend(jobCreatingRequest, {
-    integration: 'google_adwords_remarketing_lists',
-    type: 'proxy',
+    destType: 'google_adwords_remarketing_lists',
+    feature: 'proxy',
   });
   return response;
 };
@@ -57,8 +57,8 @@ const addUserToJob = async (endpoint, headers, method, jobId, body) => {
     method,
   };
   const response = await httpSend(secondRequest, {
-    integration: 'google_adwords_remarketing_lists',
-    type: 'proxy',
+    destType: 'google_adwords_remarketing_lists',
+    feature: 'proxy',
   });
   return response;
 };
@@ -78,8 +78,8 @@ const runTheJob = async (endpoint, headers, method, jobId) => {
     method,
   };
   const response = await httpSend(thirdRequest, {
-    integration: 'google_adwords_remarketing_lists',
-    type: 'proxy',
+    destType: 'google_adwords_remarketing_lists',
+    feature: 'proxy',
   });
   return response;
 };

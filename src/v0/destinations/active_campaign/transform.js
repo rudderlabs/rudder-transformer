@@ -64,8 +64,8 @@ const syncContact = async (contactPayload, category, destination) => {
     headers: getHeader(destination),
   };
   const res = await httpPOST(endpoint, requestData, requestOptions, {
-    integration: 'active_campaign',
-    type: 'transformation',
+    destType: 'active_campaign',
+    feature: 'transformation',
   });
   if (res.success === false) {
     errorHandler(res.response, 'Failed to create new contact');
@@ -107,8 +107,8 @@ const customTagProcessor = async (message, category, destination, contactId) => 
     headers: getHeader(destination),
   };
   res = await httpGET(endpoint, requestOptions, {
-    integration: 'active_campaign',
-    type: 'transformation',
+    destType: 'active_campaign',
+    feature: 'transformation',
   });
   if (res.success === false) {
     errorHandler(res.response, 'Failed to fetch already created tags');
@@ -137,8 +137,8 @@ const customTagProcessor = async (message, category, destination, contactId) => 
           headers: getHeader(destination),
         };
         const resp = httpGET(endpoint, requestOptions, {
-          integration: 'active_campaign',
-          type: 'transformation',
+          destType: 'active_campaign',
+          feature: 'transformation',
         });
         promises.push(resp);
       }
@@ -178,8 +178,8 @@ const customTagProcessor = async (message, category, destination, contactId) => 
           headers: getHeader(destination),
         };
         res = await httpPOST(endpoint, requestData, requestOptions, {
-          integration: 'active_campaign',
-          type: 'transformation',
+          destType: 'active_campaign',
+          feature: 'transformation',
         });
         if (res.success === false) {
           errorHandler(res.response, 'Failed to create new tag');
@@ -206,8 +206,8 @@ const customTagProcessor = async (message, category, destination, contactId) => 
         headers: getHeader(destination),
       };
       res = httpPOST(endpoint, requestData, requestOptions, {
-        integration: 'active_campaign',
-        type: 'transformation',
+        destType: 'active_campaign',
+        feature: 'transformation',
       });
       return res;
     }),
@@ -239,8 +239,8 @@ const customFieldProcessor = async (message, category, destination) => {
     },
   };
   const res = await httpGET(endpoint, requestOptions, {
-    integration: 'active_campaign',
-    type: 'transformation',
+    destType: 'active_campaign',
+    feature: 'transformation',
   });
   if (res.success === false) {
     errorHandler(res.response, 'Failed to get existing field data');
@@ -260,8 +260,8 @@ const customFieldProcessor = async (message, category, destination) => {
         },
       };
       const resp = httpGET(endpoint, requestOpt, {
-        integration: 'active_campaign',
-        type: 'transformation',
+        destType: 'active_campaign',
+        feature: 'transformation',
       });
       promises.push(resp);
     }
@@ -355,8 +355,8 @@ const customListProcessor = async (message, category, destination, contactId) =>
         headers: getHeader(destination),
       };
       const res = httpPOST(endpoint, requestData, requestOptions, {
-        integration: 'active_campaign',
-        type: 'transformation',
+        destType: 'active_campaign',
+        feature: 'transformation',
       });
       promises.push(res);
     }
@@ -412,8 +412,8 @@ const screenRequestHandler = async (message, category, destination) => {
     headers: getHeader(destination),
   };
   res = await httpGET(endpoint, requestOptions, {
-    integration: 'active_campaign',
-    type: 'transformation',
+    destType: 'active_campaign',
+    feature: 'transformation',
   });
   if (res.success === false) {
     errorHandler(res.response, 'Failed to retrieve events');
@@ -446,8 +446,8 @@ const screenRequestHandler = async (message, category, destination) => {
       headers: getHeader(destination),
     };
     res = await httpPOST(endpoint, requestData, requestOpt, {
-      integration: 'active_campaign',
-      type: 'transformation',
+      destType: 'active_campaign',
+      feature: 'transformation',
     });
     if (res.success === false) {
       errorHandler(res.response, 'Failed to create event');
@@ -489,8 +489,8 @@ const trackRequestHandler = async (message, category, destination) => {
     },
   };
   let res = await httpGET(endpoint, requestOptions, {
-    integration: 'active_campaign',
-    type: 'transformation',
+    destType: 'active_campaign',
+    feature: 'transformation',
   });
 
   if (res.success === false) {
@@ -524,8 +524,8 @@ const trackRequestHandler = async (message, category, destination) => {
       headers: getHeader(destination),
     };
     res = await httpPOST(endpoint, requestData, requestOpt, {
-      integration: 'active_campaign',
-      type: 'transformation',
+      destType: 'active_campaign',
+      feature: 'transformation',
     });
     if (res.response?.status !== 201) {
       throw new NetworkError(

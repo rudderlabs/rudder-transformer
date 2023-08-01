@@ -89,8 +89,8 @@ const getConversionActionId = async (headers, params) => {
       headers,
     };
     let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
-      integration: 'google_adwords_offline_conversions',
-      type: 'transformation',
+      destType: 'google_adwords_offline_conversions',
+      feature: 'transformation',
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
     if (!isHttpStatusSuccess(searchStreamResponse.status)) {

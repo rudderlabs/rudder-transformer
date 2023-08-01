@@ -98,8 +98,8 @@ const getProperties = async (destination) => {
       },
     };
     hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions, {
-      integration: 'hs',
-      type: 'transformation',
+      destType: 'hs',
+      feature: 'transformation',
     });
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   } else {
@@ -110,8 +110,8 @@ const getProperties = async (destination) => {
       url,
       {},
       {
-        integration: 'hs',
-        type: 'transformation',
+        destType: 'hs',
+        feature: 'transformation',
       },
     );
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
@@ -348,8 +348,8 @@ const searchContacts = async (message, destination) => {
       requestData,
       requestOptions,
       {
-        integration: 'hs',
-        type: 'transformation',
+        destType: 'hs',
+        feature: 'transformation',
       },
     );
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
@@ -357,8 +357,8 @@ const searchContacts = async (message, destination) => {
     // API Key
     const url = `${IDENTIFY_CRM_SEARCH_CONTACT}?hapikey=${Config.apiKey}`;
     searchContactsResponse = await httpPOST(url, requestData, {
-      integration: 'hs',
-      type: 'transformation',
+      destType: 'hs',
+      feature: 'transformation',
     });
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
   }
@@ -515,12 +515,12 @@ const getExistingData = async (inputs, destination) => {
     searchResponse =
       Config.authorizationType === 'newPrivateAppApi'
         ? await httpPOST(url, requestData, requestOptions, {
-            integration: 'hs',
-            type: 'transformation',
+            destType: 'hs',
+            feature: 'transformation',
           })
         : await httpPOST(url, requestData, {
-            integration: 'hs',
-            type: 'transformation',
+            destType: 'hs',
+            feature: 'transformation',
           });
     searchResponse = processAxiosResponse(searchResponse);
 

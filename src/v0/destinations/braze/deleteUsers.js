@@ -42,8 +42,8 @@ const userDeletionHandler = async (userAttributes, config) => {
       };
 
       const resp = await httpPOST(endPoint, data, requestOptions, {
-        integration: 'braze',
-        type: 'deleteUsers',
+        destType: 'braze',
+        feature: 'deleteUsers',
       });
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status) && handledDelResponse.status !== 404) {

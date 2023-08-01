@@ -135,8 +135,8 @@ const getAccessToken = async (destination) => {
       method: 'POST',
     };
     const dspAuthorisationData = await httpPOST(request.url, request.data, request.header, {
-      integration: 'yahoo_dsp',
-      type: 'transformation',
+      destType: 'yahoo_dsp',
+      feature: 'transformation',
     });
     // If the request fails, throwing error.
     if (dspAuthorisationData.success === false) {

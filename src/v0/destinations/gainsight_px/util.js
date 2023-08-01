@@ -56,7 +56,7 @@ const objectExists = async (id, Config, objectType) => {
           'Content-Type': JSON_MIME_TYPE,
         },
       },
-      { integration: 'gainsight_px', type: 'transformation' },
+      { destType: 'gainsight_px', feature: 'transformation' },
     );
     if (response && response.status === 200) {
       return { success: true, err: null };
@@ -88,7 +88,7 @@ const createAccount = async (payload, Config) => {
           'Content-Type': JSON_MIME_TYPE,
         },
       },
-      { integration: 'gainsight_px', type: 'transformation' },
+      { destType: 'gainsight_px', feature: 'transformation' },
     );
     if (response && response.status === 201) {
       return { success: true, err: null };
@@ -121,7 +121,7 @@ const updateAccount = async (accountId, payload, Config) => {
           'Content-Type': JSON_MIME_TYPE,
         },
       },
-      { integration: 'gainsight_px', type: 'transformation' },
+      { destType: 'gainsight_px', feature: 'transformation' },
     );
     if (response && response.status === 204) {
       return { success: true, err: null };

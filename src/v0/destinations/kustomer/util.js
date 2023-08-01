@@ -139,7 +139,7 @@ const fetchKustomer = async (url, destination) => {
           Authorization: `Bearer ${destination.Config.apiKey}`,
         },
       },
-      { integration: 'kustomer', type: 'transformation' },
+      { destType: 'kustomer', feature: 'transformation' },
     );
   } catch (err) {
     if (err.response) {

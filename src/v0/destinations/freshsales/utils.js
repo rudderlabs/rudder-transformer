@@ -45,8 +45,8 @@ const createUpdateAccount = async (payload, Config) => {
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrlAccount}`;
   let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions, {
-    integration: 'freshsales',
-    type: 'transformation',
+    destType: 'freshsales',
+    feature: 'transformation',
   });
   accountResponse = processAxiosResponse(accountResponse);
   if (accountResponse.status !== 200 && accountResponse.status !== 201) {
@@ -88,8 +88,8 @@ const getUserAccountDetails = async (payload, userEmail, Config) => {
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}?include=sales_accounts`;
   let userSalesAccountResponse = await httpPOST(endPoint, userPayload, requestOptions, {
-    integration: 'freshsales',
-    type: 'transformation',
+    destType: 'freshsales',
+    feature: 'transformation',
   });
   userSalesAccountResponse = processAxiosResponse(userSalesAccountResponse);
   if (userSalesAccountResponse.status !== 200 && userSalesAccountResponse.status !== 201) {
@@ -143,8 +143,8 @@ const getContactsDetails = async (userEmail, Config) => {
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
   let userResponse = await httpPOST(endPoint, userPayload, requestOptions, {
-    integration: 'freshsales',
-    type: 'transformation',
+    destType: 'freshsales',
+    feature: 'transformation',
   });
   userResponse = processAxiosResponse(userResponse);
   if (userResponse.status !== 200 && userResponse.status !== 201) {
@@ -233,8 +233,8 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
   // with sales activity name
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.SALES_ACTIVITY.baseUrlListAll}`;
   let salesActivityResponse = await httpGET(endPoint, requestOptions, {
-    integration: 'freshsales',
-    type: 'transformation',
+    destType: 'freshsales',
+    feature: 'transformation',
   });
   salesActivityResponse = processAxiosResponse(salesActivityResponse);
   if (salesActivityResponse.status !== 200) {
@@ -312,8 +312,8 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
   }
   const endPoint = `https://${Config.domain}${LIFECYCLE_STAGE_ENDPOINT}`;
   let lifeCycleStagesResponse = await httpGET(endPoint, requestOptions, {
-    integration: 'freshsales',
-    type: 'transformation',
+    destType: 'freshsales',
+    feature: 'transformation',
   });
   lifeCycleStagesResponse = processAxiosResponse(lifeCycleStagesResponse);
   if (lifeCycleStagesResponse.status !== 200) {

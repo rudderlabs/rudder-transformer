@@ -39,8 +39,8 @@ const userDeletionHandler = async (userAttributes, config) => {
         headers,
       };
       const resp = await httpPOST(url, data, requestOptions, {
-        integration: 'am',
-        type: 'deleteUsers',
+        destType: 'am',
+        feature: 'deleteUsers',
       });
       const handledDelResponse = processAxiosResponse(resp);
       if (!isHttpStatusSuccess(handledDelResponse.status)) {

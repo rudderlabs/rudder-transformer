@@ -49,8 +49,8 @@ const userDeletionHandler = async (userAttributes, config) => {
         headers,
       },
       {
-        integration: 'clevertap',
-        type: 'deleteUsers',
+        destType: 'clevertap',
+        feature: 'deleteUsers',
       },
     );
     const handledDelResponse = processAxiosResponse(deletionResponse);

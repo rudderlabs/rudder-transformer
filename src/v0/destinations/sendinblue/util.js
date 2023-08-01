@@ -58,8 +58,8 @@ const checkIfContactExists = async (identifier, apiKey) => {
     headers: prepareHeader(apiKey),
   };
   const contactDetailsResponse = await httpGET(endpoint, requestOptions, {
-    integration: 'sendinblue',
-    type: 'transformation',
+    destType: 'sendinblue',
+    feature: 'transformation',
   });
 
   const processedContactDetailsResponse = processAxiosResponse(contactDetailsResponse);

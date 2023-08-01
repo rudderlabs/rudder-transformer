@@ -188,8 +188,8 @@ const getBoardDetails = async (url, boardID, apiToken) => {
       },
     },
     {
-      integration: 'monday',
-      type: 'transformation',
+      destType: 'monday',
+      feature: 'transformation',
     },
   );
   const boardDetailsResponse = processAxiosResponse(clientResponse);

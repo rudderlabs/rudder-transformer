@@ -78,8 +78,8 @@ const userDeletionHandler = async (userAttributes, config, rudderDestInfo) => {
           headers: userDeleteRequest.headers,
         },
         {
-          integration: 'ga',
-          type: 'deleteUsers',
+          destType: 'ga',
+          feature: 'deleteUsers',
         },
       );
       // process the response to know about refreshing scenario

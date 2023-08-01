@@ -46,8 +46,8 @@ const createJob = async (endpoint, headers, payload) => {
     payload,
     { headers },
     {
-      integration: 'google_adwords_offline_conversions',
-      type: 'proxy',
+      destType: 'google_adwords_offline_conversions',
+      feature: 'proxy',
     },
   );
   createJobResponse = processAxiosResponse(createJobResponse);
@@ -70,8 +70,8 @@ const addConversionToJob = async (endpoint, headers, jobId, payload) => {
     payload,
     { headers },
     {
-      integration: 'google_adwords_offline_conversions',
-      type: 'proxy',
+      destType: 'google_adwords_offline_conversions',
+      feature: 'proxy',
     },
   );
   addConversionToJobResponse = processAxiosResponse(addConversionToJobResponse);
@@ -93,8 +93,8 @@ const runTheJob = async (endpoint, headers, payload, jobId) => {
     payload,
     { headers },
     {
-      integration: 'google_adwords_offline_conversions',
-      type: 'proxy',
+      destType: 'google_adwords_offline_conversions',
+      feature: 'proxy',
     },
   );
   return executeJobResponse;
@@ -119,8 +119,8 @@ const getConversionCustomVariable = async (headers, params) => {
       headers,
     };
     let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
-      integration: 'google_adwords_offline_conversions',
-      type: 'proxy',
+      destType: 'google_adwords_offline_conversions',
+      feature: 'proxy',
     });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
     if (!isHttpStatusSuccess(searchStreamResponse.status)) {
@@ -235,8 +235,8 @@ const ProxyRequest = async (request) => {
 
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
   const response = await httpSend(requestBody, {
-    type: 'proxy',
-    integration: 'gogole_adwords_offline_conversions',
+    feature: 'proxy',
+    destType: 'gogole_adwords_offline_conversions',
   });
   return response;
 };

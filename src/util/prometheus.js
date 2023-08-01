@@ -550,7 +550,7 @@ class Prometheus {
         name: 'outgoing_request_latency',
         help: 'Outgoing HTTP requests duration in seconds',
         type: 'histogram',
-        labelNames: ['type', 'integration'],
+        labelNames: ['feature', 'destType'],
       },
       {
         name: 'http_request_duration',

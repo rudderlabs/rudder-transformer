@@ -38,8 +38,8 @@ const createUpdateCompany = async (companyPayload, Config) => {
       },
     },
     {
-      integration: 'custify',
-      type: 'transformation',
+      destType: 'custify',
+      feature: 'transformation',
     },
   );
   const processedCompanyResponse = processAxiosResponse(companyResponse);

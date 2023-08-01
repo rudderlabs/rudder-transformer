@@ -39,7 +39,7 @@ const getToken = async (clientId, clientSecret, subdomain) => {
       {
         'Content-Type': JSON_MIME_TYPE,
       },
-      { integration: 'sfmc', type: 'transformation' },
+      { destType: 'sfmc', feature: 'transformation' },
     );
     if (resp && resp.data) {
       return resp.data.access_token;

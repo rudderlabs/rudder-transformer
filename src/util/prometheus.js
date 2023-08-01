@@ -484,19 +484,13 @@ class Prometheus {
         name: 'shopify_redis_calls',
         help: 'shopify_redis_calls',
         type: 'counter',
-        labelNames: ['type', 'writeKey', 'source'],
-      },
-      {
-        name: 'shopify_redis_success',
-        help: 'shopify_redis_success',
-        type: 'counter',
-        labelNames: ['field', 'event', 'writeKey', 'source'],
+        labelNames: ['type', 'writeKey', 'source', 'field'],
       },
       {
         name: 'shopify_redis_no_val',
         help: 'shopify_redis_no_val',
         type: 'counter',
-        labelNames: ['event', 'writeKey', 'source'],
+        labelNames: [ 'writeKey', 'source'],
       },
       {
         name: 'events_to_process',

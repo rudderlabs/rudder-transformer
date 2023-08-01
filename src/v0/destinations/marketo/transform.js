@@ -69,6 +69,7 @@ const getAuthToken = async (formattedDestination) =>
         },
       },
     );
+    logger.error("Marketo: Calling Response Handler")
     const data = marketoResponseHandler(clientResponse, 'During fetching auth token');
     if (data) {
       stats.increment(FETCH_TOKEN_METRIC, { status: 'success' });
@@ -116,6 +117,7 @@ const createOrUpdateLead = async (formattedDestination, token, userId, anonymous
         },
       },
     );
+    logger.error("Marketo: creating lead and calling response handler");
     const data = getResponseHandlerData(
       clientResponse,
       '[Marketo Transformer]: During lookup lead',
@@ -147,6 +149,7 @@ const lookupLeadUsingEmail = async (formattedDestination, token, email) =>
         headers: { Authorization: `Bearer ${token}` },
       },
     );
+    logger.error("Marketo: lookup call using email");
     const data = getResponseHandlerData(
       clientResponse,
       '[Marketo Transformer]: During lead look up using email',
@@ -181,6 +184,7 @@ const lookupLeadUsingId = async (formattedDestination, token, userId, anonymousI
         headers: { Authorization: `Bearer ${token}` },
       },
     );
+    logger.error("Marketo: lookup call using id");
     const data = getResponseHandlerData(
       clientResponse,
       '[Marketo Transformer]: During lead look up using userId',
@@ -459,6 +463,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
   }
   let token;
   try {
+    logger.error("Marketo: Getting Auth Token")
     token = await getAuthToken(formatConfig(inputs[0].destination));
 
     // If token is null track/identify calls cannot be executed.

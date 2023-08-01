@@ -101,7 +101,7 @@ const responseHandler = async (event) => {
   let success;
   let statusCode;
   let hasFailed;
-  let failedJobsURL;
+  let FailedJobURLs;
   let hasWarnings;
   let warningJobsURL;
   let error;
@@ -135,7 +135,7 @@ const responseHandler = async (event) => {
         success = true;
         statusCode = 200;
         hasFailed = numOfRowsFailed > 0;
-        failedJobsURL = '/getFailedJobs';
+        FailedJobURLs = '/getFailedJobs';
         warningJobsURL = '/getWarningJobs';
         hasWarnings = numOfRowsWithWarning > 0;
       } else if (status === 'Importing' || status === 'Queued') {
@@ -155,7 +155,7 @@ const responseHandler = async (event) => {
     statusCode,
     hasFailed,
     InProgress,
-    failedJobsURL,
+    FailedJobURLs,
     hasWarnings,
     warningJobsURL,
     error,

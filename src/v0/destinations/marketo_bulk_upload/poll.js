@@ -104,7 +104,8 @@ const responseHandler = async (event) => {
   let failedJobsURL;
   let hasWarnings;
   let warningJobsURL;
-  let errorResponse;
+  let error;
+  let InProgress = false;
   // Server expects :
   /**
   *
@@ -139,11 +140,12 @@ const responseHandler = async (event) => {
         hasWarnings = numOfRowsWithWarning > 0;
       } else if (status === 'Importing' || status === 'Queued') {
         success = false;
+        InProgress = false;
       }
     } else {
       success = false;
       statusCode = 400;
-      errorResponse = pollResp.data.errors
+      error = pollResp.data.errors
         ? pollResp.data.errors[0].message
         : 'Error in importing jobs';
     }
@@ -152,10 +154,11 @@ const responseHandler = async (event) => {
     Complete: success,
     statusCode,
     hasFailed,
+    InProgress,
     failedJobsURL,
     hasWarnings,
     warningJobsURL,
-    errorResponse,
+    error,
   };
   return removeUndefinedValues(response);
 };

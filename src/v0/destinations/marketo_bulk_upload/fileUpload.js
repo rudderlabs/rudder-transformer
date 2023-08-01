@@ -301,19 +301,21 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
               status: 500,
               state: 'Retryable',
             });
-            throw new ThrottledError(resp.response.response.statusText || FILE_UPLOAD_ERR_MSG, {
-              successfulJobs,
-              unsuccessfulJobs,
-            });
+            throw new ThrottledError(
+              resp.response.response.statusText || resp.response.data.errors[0].message || FILE_UPLOAD_ERR_MSG, 
+              500, 
+              { successfulJobs, unsuccessfulJobs },
+            );
           }
           stats.increment(UPLOAD_FILE, {
             status: 500,
             state: 'Retryable',
           });
-          return {
-            statusCode: 500,
-            FailedReason: 'No import id received',
-          };
+          throw new RetryableError(
+            resp.response.response.statusText || resp.response.data.errors[0].message || FILE_UPLOAD_ERR_MSG,
+             500, 
+             { successfulJobs,unsuccessfulJobs },
+          );
         }
       }
     }
@@ -354,7 +356,6 @@ const responseHandler = async (input, config) => {
     const response = {
       statusCode: 200,
       importId,
-      pollURL: '/pollStatus',
     };
     const csvHeader = getHeaderFields(config, fieldSchemaNames).toString();
     response.metadata = { successfulJobs, unsuccessfulJobs, csvHeader };
@@ -365,10 +366,10 @@ const responseHandler = async (input, config) => {
     status: 500,
     state: 'Retryable',
   });
-  throw new RetryableError('No import id received', 500, {
-    successfulJobs,
-    unsuccessfulJobs,
-  });
+  return {
+    statusCode: 500,
+    FailedReason: 'No import id received',
+  };
 };
 const processFileData = async (event) => {
   const { input, config } = event;

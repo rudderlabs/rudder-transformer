@@ -3,6 +3,7 @@
     "Complete": true,
     "statusCode": 200,
     "hasFailed": false,
+    "InProgress": false,
     "failedJobsURL": "/getFailedJobs",
     "hasWarnings": false,
     "warningJobsURL": "/getWarningJobs"

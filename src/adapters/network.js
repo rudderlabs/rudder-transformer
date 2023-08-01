@@ -4,10 +4,11 @@
 const _ = require('lodash');
 const http = require('http');
 const https = require('https');
+const axios = require('axios');
 const log = require('../logger');
+const stats = require('../util/stats');
 const { removeUndefinedValues } = require('../v0/util');
 const { processAxiosResponse } = require('./utils/networkUtils');
-const myAxios = require('../util/myAxios');
 
 const MAX_CONTENT_LENGTH = parseInt(process.env.MAX_CONTENT_LENGTH, 10) || 100000000;
 const MAX_BODY_LENGTH = parseInt(process.env.MAX_BODY_LENGTH, 10) || 100000000;
@@ -41,6 +42,15 @@ const networkClientConfigs = {
   httpsAgent: new https.Agent({ keepAlive: true }),
 };
 
+const fireLatencyStat = (startTime, statTags) => {
+  const integration = statTags.integration ? statTags.integration : '';
+  const type = statTags.type ? statTags.type : '';
+  stats.timing('outgoing_request_latency', startTime, {
+    type,
+    integration,
+  });
+};
+
 /**
  * sends an http request with underlying client, expects request options
  * @param {*} options
@@ -56,11 +66,14 @@ const httpSend = async (options, statTags = {}) => {
     maxBodyLength: MAX_BODY_LENGTH,
   };
 
+  const startTime = new Date();
   try {
-    const response = await myAxios.send(requestOptions, statTags);
+    const response = await axios(requestOptions);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireLatencyStat(startTime, statTags);
   }
   return clientResponse;
 };
@@ -75,11 +88,15 @@ const httpSend = async (options, statTags = {}) => {
  */
 const httpGET = async (url, options, statTags = {}) => {
   let clientResponse;
+
+  const startTime = new Date();
   try {
-    const response = await myAxios.get(url, options, statTags);
+    const response = await axios.get(url, options);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireLatencyStat(startTime, statTags);
   }
   return clientResponse;
 };
@@ -94,11 +111,15 @@ const httpGET = async (url, options, statTags = {}) => {
  */
 const httpDELETE = async (url, options, statTags = {}) => {
   let clientResponse;
+
+  const startTime = new Date();
   try {
-    const response = await myAxios.del(url, options, statTags);
+    const response = await axios.delete(url, options);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireLatencyStat(startTime, statTags);
   }
   return clientResponse;
 };
@@ -114,11 +135,15 @@ const httpDELETE = async (url, options, statTags = {}) => {
  */
 const httpPOST = async (url, data, options, statTags = {}) => {
   let clientResponse;
+
+  const startTime = new Date();
   try {
-    const response = await myAxios.post(url, data, options, statTags);
+    const response = await axios.post(url, data, options);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireLatencyStat(startTime, statTags);
   }
   return clientResponse;
 };
@@ -134,11 +159,15 @@ const httpPOST = async (url, data, options, statTags = {}) => {
  */
 const httpPUT = async (url, data, options, statTags = {}) => {
   let clientResponse;
+
+  const startTime = new Date();
   try {
-    const response = await myAxios.put(url, data, options, statTags);
+    const response = await axios.put(url, data, options);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireLatencyStat(startTime, statTags);
   }
   return clientResponse;
 };
@@ -154,11 +183,15 @@ const httpPUT = async (url, data, options, statTags = {}) => {
  */
 const httpPATCH = async (url, data, options, statTags = {}) => {
   let clientResponse;
+
+  const startTime = new Date();
   try {
-    const response = await myAxios.patch(url, data, options, statTags);
+    const response = await axios.patch(url, data, options);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireLatencyStat(startTime, statTags);
   }
   return clientResponse;
 };

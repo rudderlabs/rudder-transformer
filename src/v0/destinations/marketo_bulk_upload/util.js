@@ -25,7 +25,6 @@ const getMarketoFilePath = () => MARKETO_FILE_PATH;
 const getAccessToken = async (config) => {
   const { clientId, clientSecret, munchkinId } = config;
   const url = `https://${munchkinId}.mktorest.com/identity/oauth/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`;
-  // TODO: request options not sent. Is it okay?
   const resp = await httpGET(
     url,
     {},

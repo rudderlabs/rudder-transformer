@@ -105,7 +105,6 @@ const getProperties = async (destination) => {
   } else {
     // API Key (hapikey)
     const url = `${CONTACT_PROPERTY_MAP_ENDPOINT}?hapikey=${Config.apiKey}`;
-    // TODO: request options is not passed here. Is that okay?
     hubspotPropertyMapResponse = await httpGET(
       url,
       {},

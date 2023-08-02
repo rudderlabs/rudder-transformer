@@ -110,10 +110,11 @@ const responseHandler = async (event) => {
   /**
   *
   * {
-    "success": true,
+    "Complete": true,
     "statusCode": 200,
     "hasFailed": true,
-    "failedJobsURL": "<some-url>", // transformer URL
+    "InProgress": false,
+    "FailedJobURLs": "<some-url>", // transformer URL
     "hasWarnings": false,
     "warningJobsURL": "<some-url>", // transformer URL
     } // Succesful Upload
@@ -140,14 +141,12 @@ const responseHandler = async (event) => {
         hasWarnings = numOfRowsWithWarning > 0;
       } else if (status === 'Importing' || status === 'Queued') {
         success = false;
-        InProgress = false;
+        InProgress = true;
       }
     } else {
       success = false;
-      statusCode = 400;
-      error = pollResp.data.errors
-        ? pollResp.data.errors[0].message
-        : 'Error in importing jobs';
+      statusCode = 500;
+      error = pollResp.data.errors ? pollResp.data.errors[0].message : 'Error in importing jobs';
     }
   }
   const response = {

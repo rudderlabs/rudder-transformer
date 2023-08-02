@@ -302,8 +302,11 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
               state: 'Retryable',
             });
             throw new ThrottledError(
-              resp.response.response.statusText || resp.response.data.errors[0].message || FILE_UPLOAD_ERR_MSG, 
-              500, 
+              resp.response.response.statusText ||
+                resp.response.statusText ||
+                resp.response.data.errors[0].message ||
+                FILE_UPLOAD_ERR_MSG,
+              500,
               { successfulJobs, unsuccessfulJobs },
             );
           }
@@ -312,9 +315,11 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
             state: 'Retryable',
           });
           throw new RetryableError(
-            resp.response.response.statusText || resp.response.data.errors[0].message || FILE_UPLOAD_ERR_MSG,
-             500, 
-             { successfulJobs,unsuccessfulJobs },
+            resp.response.response.statusText ||
+              resp.response.data.errors[0].message ||
+              FILE_UPLOAD_ERR_MSG,
+            500,
+            { successfulJobs, unsuccessfulJobs },
           );
         }
       }

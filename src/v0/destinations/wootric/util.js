@@ -44,7 +44,7 @@ const getAccessToken = async (destination) => {
       method: 'POST',
     };
     const wootricAuthResponse = await httpPOST(request.url, request.data, request.header, {
-      destType: 'woodtric',
+      destType: 'wootric',
       feature: 'transformation',
     });
     const processedAuthResponse = processAxiosResponse(wootricAuthResponse);

@@ -20,11 +20,11 @@ const {
   getAliasMergeEndPoint,
   SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,
   ALIAS_BRAZE_MAX_REQ_COUNT,
-  TRACK_BRAZE_MAX_REQ_COUNT
+  TRACK_BRAZE_MAX_REQ_COUNT,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { isObject } = require('../../util');
-const { removeUndefinedValues } = require('../../util');
+const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
 
 const getEndpointFromConfig = (destination) => {
   // Init -- mostly for test cases
@@ -315,15 +315,14 @@ const processDeduplication = (userStore, payload, destinationId) => {
     isDefinedAndNotNullAndNotEmpty(dedupedAttributePayload) &&
     Object.keys(dedupedAttributePayload).some((key) => !['external_id', 'user_alias'].includes(key))
   ) {
-    stats.increment('braze_deduped_users_count', { destinationId });
+    stats.increment('braze_deduped_users_count', { destination_id: destinationId });
     return dedupedAttributePayload;
   }
-  stats.increment('braze_dedup_and_drop_count', { destinationId });
+  stats.increment('braze_dedup_and_drop_count', { destination_id: destinationId });
   return null;
 };
 
 function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type) {
-
   const headers = {
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
@@ -336,13 +335,13 @@ function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type
       response.endpoint = getAliasMergeEndPoint(getEndpointFromConfig(destination));
       const merge_updates = chunk;
       response.body.JSON = removeUndefinedAndNullValues({
-        merge_updates
+        merge_updates,
       });
     } else if (type === 'subscription') {
       response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
       const subscription_groups = chunk;
       response.body.JSON = removeUndefinedAndNullValues({
-        subscription_groups
+        subscription_groups,
       });
     }
     responseArray.push({
@@ -350,7 +349,6 @@ function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type
       headers,
     });
   }
-
 }
 
 const processBatch = (transformedEvents) => {
@@ -366,7 +364,8 @@ const processBatch = (transformedEvents) => {
     if (!isHttpStatusSuccess(transformedEvent?.statusCode)) {
       failureResponses.push(transformedEvent);
     } else if (transformedEvent?.batchedRequest?.body?.JSON) {
-      const { attributes, events, purchases, subscription_groups, merge_updates } = transformedEvent.batchedRequest.body.JSON;
+      const { attributes, events, purchases, subscription_groups, merge_updates } =
+        transformedEvent.batchedRequest.body.JSON;
       if (Array.isArray(attributes)) {
         attributesArray.push(...attributes);
       }
@@ -445,10 +444,38 @@ const processBatch = (transformedEvents) => {
   return finalResponse;
 };
 
+/**
+ * 
+ * @param {*} payload 
+ * @param {*} message 
+ * @returns payload along with appId that is supposed to be passed by the user via
+ * integrations object.
+ * format will be as below:
+ *  "integrations": {
+                "All": true,
+                "braze": {
+                    "appId": "123"
+                }
+            }
+    Ref: https://www.braze.com/docs/api/identifier_types/?tab=app%20ids
+ */
+const addAppId = (payload, message) => {
+  const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+  if (integrationsObj?.appId) {
+    const { appId: appIdValue } = integrationsObj;
+    return {
+      ...payload,
+      app_id: String(appIdValue),
+    };
+  }
+  return { ...payload };
+};
+
 module.exports = {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
   getEndpointFromConfig,
   processDeduplication,
   processBatch,
+  addAppId,
 };

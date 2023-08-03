@@ -175,7 +175,7 @@
         },
         "metadata": {
           "jobId": 1,
-          "userId": 1
+          "userId": "1"
         },
         "destination": {
           "Config": {
@@ -220,7 +220,7 @@
         },
         "metadata": {
           "jobId": 2,
-          "userId": 2
+          "userId": "2"
         },
         "destination": {
           "Config": {
@@ -282,7 +282,7 @@
         },
         "metadata": {
           "jobId": 3,
-          "userId": 3
+          "userId": "3"
         },
         "destination": {
           "Config": {
@@ -339,7 +339,7 @@
         },
         "metadata": {
           "jobId": 4,
-          "userId": 4
+          "userId": "4"
         },
         "destination": {
           "ID": "1zia9wKshXt80YksLmUdJnr7IHI",
@@ -475,7 +475,7 @@
         },
         "metadata": {
           "jobId": 5,
-          "userId": 5
+          "userId": "5"
         },
         "destination": {
           "Config": {
@@ -512,7 +512,7 @@
         },
         "metadata": {
           "jobId": 6,
-          "userId": 6
+          "userId": "6"
         },
         "destination": {
           "Config": {
@@ -550,7 +550,7 @@
         },
         "metadata": {
           "jobId": 7,
-          "userId": 7
+          "userId": "7"
         },
         "destination": {
           "Config": {
@@ -589,7 +589,7 @@
         },
         "metadata": {
           "jobId": 8,
-          "userId": 8
+          "userId": "8"
         },
         "destination": {
           "Config": {
@@ -699,7 +699,7 @@
         "metadata": [
           {
             "jobId": 2,
-            "userId": 2
+            "userId": "2"
           }
         ],
         "statusCode": 200
@@ -783,7 +783,7 @@
         "metadata": [
           {
             "jobId": 4,
-            "userId": 4
+            "userId": "4"
           }
         ],
         "statusCode": 200
@@ -858,15 +858,15 @@
         "metadata": [
           {
             "jobId": 1,
-            "userId": 1
+            "userId": "1"
           },
           {
             "jobId": 3,
-            "userId": 3
+            "userId": "3"
           },
           {
             "jobId": 6,
-            "userId": 6
+            "userId": "6"
           }
         ],
         "statusCode": 200
@@ -940,7 +940,7 @@
         "metadata": [
           {
             "jobId": 5,
-            "userId": 5
+            "userId": "5"
           }
         ],
         "statusCode": 200
@@ -981,7 +981,7 @@
         "metadata": [
           {
             "jobId": 8,
-            "userId": 8
+            "userId": "8"
           }
         ],
         "statusCode": 200
@@ -1002,7 +1002,7 @@
         "metadata": [
           {
             "jobId": 7,
-            "userId": 7
+            "userId": "7"
           }
         ],
         "statTags": {

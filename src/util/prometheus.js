@@ -664,7 +664,7 @@ class Prometheus {
         name: 'fetch_dns_resolve_time',
         help: 'fetch_dns_resolve_time',
         type: 'histogram',
-        labelNames: ['transformerVersionId'],
+        labelNames: ['transformerVersionId', 'error'],
       },
       {
         name: 'geo_call_duration',

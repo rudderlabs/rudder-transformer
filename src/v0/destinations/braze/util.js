@@ -158,6 +158,10 @@ const BrazeDedupUtility = {
             },
             timeout: 10 * 1000,
           },
+          {
+            destType: 'braze',
+            feature: 'transformation',
+          },
         );
         stats.counter('braze_lookup_failure_count', 1, {
           http_status: lookUpResponse.status,
@@ -445,9 +449,9 @@ const processBatch = (transformedEvents) => {
 };
 
 /**
- * 
- * @param {*} payload 
- * @param {*} message 
+ *
+ * @param {*} payload
+ * @param {*} message
  * @returns payload along with appId that is supposed to be passed by the user via
  * integrations object.
  * format will be as below:

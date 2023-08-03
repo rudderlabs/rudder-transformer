@@ -111,6 +111,10 @@ async function getSaleforceIdForRecord(
     {
       headers: { Authorization: authorizationData.token },
     },
+    {
+      destType: 'salesforce',
+      feature: 'transformation',
+    },
   );
   if (processedsfSearchResponse.status !== 200) {
     salesforceResponseHandler(
@@ -207,6 +211,10 @@ async function getSalesforceIdFromPayload(message, authorizationData, destinatio
       leadQueryUrl,
       {
         headers: { Authorization: authorizationData.token },
+      },
+      {
+        destType: 'salesforce',
+        feature: 'transformation',
       },
     );
 

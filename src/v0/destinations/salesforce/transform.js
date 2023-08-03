@@ -126,6 +126,12 @@ async function getSaleforceIdForRecord(
   const searchRecord = processedsfSearchResponse.response?.searchRecords?.find(
     (rec) => rec[identifierType] === identifierValue,
   );
+  if (!searchRecord) {
+    throw new InstrumentationError(
+      `:- SALESFORCE SEARCH BY ID: No record found for ${identifierType} ${identifierValue}`,
+      destination.ID,
+    );
+  }
   return searchRecord?.Id;
 }
 

@@ -166,22 +166,22 @@ const processRouterDest = async (inputs, reqMetadata) => {
     return errorRespEvents;
   }
 
-  const groupedEvents = _.groupBy(inputs, (event) => event.metadata.rudderId);
-  const eventsArrays = Object.values(groupedEvents);
+  const eventsPerUser = _.groupBy(inputs, (event) => event.metadata.rudderId);
+  const eachUserEvents = Object.values(eventsPerUser);
 
-  const singleEventArray = [];
-  const multipleEventsArray = [];
+  const uniqueEventsPerUser = [];
+  const multipleEventsPerUser = [];
 
   // Separate events into singleEventArray and multipleEventsArray based on length
-  eventsArrays.forEach((eventsArray) => {
-    if (eventsArray.length === 1) {
-      singleEventArray.push(...eventsArray);
-    } else if (eventsArray.length > 1) {
-      multipleEventsArray.push(eventsArray);
+  eachUserEvents.forEach((userEventsArray) => {
+    if (userEventsArray.length === 1) {
+      uniqueEventsPerUser.push(...userEventsArray);
+    } else if (userEventsArray.length > 1) {
+      multipleEventsPerUser.push(userEventsArray);
     }
   });
 
-  const events = [singleEventArray, ...multipleEventsArray];
+  const events = [uniqueEventsPerUser, ...multipleEventsPerUser];
 
   const response = await Promise.all(
     events.map(async (listOfEvents) => {

@@ -13,7 +13,7 @@
             "new_field2": "GB"
           },
           "channel": "sources",
-          "rudderId": "3d51640c-ab09-42c1-b7b2-db6ab433b35e",
+          "userId": "3d51640c-ab09-42c1-b7b2-db6ab433b35e",
           "context": {
             "sources": {
               "version": "feat.SupportForTrack",
@@ -60,7 +60,7 @@
             "new_field2": "GB1"
           },
           "channel": "sources",
-          "rudderId": "3d51640c-ab09-42c1-b7b2-db6ab433b35e",
+          "userId": "3d51640c-ab09-42c1-b7b2-db6ab433b35e",
           "context": {
             "sources": {
               "version": "feat.SupportForTrack",
@@ -177,7 +177,7 @@
         },
         "metadata": {
           "jobId": 1,
-          "rudderId": 1
+          "userId": 1
         },
         "destination": {
           "Config": {
@@ -222,7 +222,7 @@
         },
         "metadata": {
           "jobId": 2,
-          "rudderId": 2
+          "userId": 2
         },
         "destination": {
           "Config": {
@@ -284,7 +284,7 @@
         },
         "metadata": {
           "jobId": 3,
-          "rudderId": 3
+          "userId": 3
         },
         "destination": {
           "Config": {
@@ -341,7 +341,7 @@
         },
         "metadata": {
           "jobId": 4,
-          "rudderId": 4
+          "userId": 4
         },
         "destination": {
           "ID": "1zia9wKshXt80YksLmUdJnr7IHI",
@@ -477,7 +477,7 @@
         },
         "metadata": {
           "jobId": 5,
-          "rudderId": 5
+          "userId": 5
         },
         "destination": {
           "Config": {
@@ -514,7 +514,7 @@
         },
         "metadata": {
           "jobId": 6,
-          "rudderId": 6
+          "userId": 6
         },
         "destination": {
           "Config": {
@@ -552,7 +552,7 @@
         },
         "metadata": {
           "jobId": 7,
-          "rudderId": 7
+          "userId": 7
         },
         "destination": {
           "Config": {
@@ -591,7 +591,7 @@
         },
         "metadata": {
           "jobId": 8,
-          "rudderId": 8
+          "userId": 8
         },
         "destination": {
           "Config": {
@@ -701,7 +701,7 @@
         "metadata": [
           {
             "jobId": 2,
-            "rudderId": 2
+            "userId": 2
           }
         ],
         "statusCode": 200
@@ -785,7 +785,7 @@
         "metadata": [
           {
             "jobId": 4,
-            "rudderId": 4
+            "userId": 4
           }
         ],
         "statusCode": 200
@@ -860,15 +860,15 @@
         "metadata": [
           {
             "jobId": 1,
-            "rudderId": 1
+            "userId": 1
           },
           {
             "jobId": 3,
-            "rudderId": 3
+            "userId": 3
           },
           {
             "jobId": 6,
-            "rudderId": 6
+            "userId": 6
           }
         ],
         "statusCode": 200
@@ -942,7 +942,7 @@
         "metadata": [
           {
             "jobId": 5,
-            "rudderId": 5
+            "userId": 5
           }
         ],
         "statusCode": 200
@@ -983,7 +983,7 @@
         "metadata": [
           {
             "jobId": 8,
-            "rudderId": 8
+            "userId": 8
           }
         ],
         "statusCode": 200
@@ -1004,7 +1004,7 @@
         "metadata": [
           {
             "jobId": 7,
-            "rudderId": 7
+            "userId": 7
           }
         ],
         "statTags": {

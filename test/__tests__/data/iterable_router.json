@@ -13,7 +13,6 @@
             "new_field2": "GB"
           },
           "channel": "sources",
-          "userId": "3d51640c-ab09-42c1-b7b2-db6ab433b35e",
           "context": {
             "sources": {
               "version": "feat.SupportForTrack",
@@ -60,7 +59,6 @@
             "new_field2": "GB1"
           },
           "channel": "sources",
-          "userId": "3d51640c-ab09-42c1-b7b2-db6ab433b35e",
           "context": {
             "sources": {
               "version": "feat.SupportForTrack",

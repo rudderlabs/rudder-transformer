@@ -172,12 +172,12 @@
             "sendtime": "2020-01-01",
             "sendlocation": "akashdeep@gmail.com"
           },
-          "rudderId": 1,
           "anonymousId": "abcdeeeeeeeexxxx102",
           "originalTimestamp": "2020-08-28T16:26:06.468Z"
         },
         "metadata": {
-          "jobId": 1
+          "jobId": 1,
+          "rudderId": 1
         },
         "destination": {
           "Config": {
@@ -217,12 +217,12 @@
             "nodeVersion": "10.22.0"
           },
           "messageId": "node-cc3ef811f686139ee527b806ee0129ef-163a3a88-266f-447e-8cce-34a8f42f8dcd",
-          "rudderId": 2,
           "anonymousId": "abcdeeeeeeeexxxx102",
           "originalTimestamp": "2020-08-28T16:26:06.462Z"
         },
         "metadata": {
-          "jobId": 2
+          "jobId": 2,
+          "rudderId": 2
         },
         "destination": {
           "Config": {
@@ -265,7 +265,6 @@
           },
           "type": "page",
           "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
-          "rudderId": 3,
           "originalTimestamp": "2019-10-14T11:15:18.299Z",
           "anonymousId": "00000000000000000000000000",
           "userId": "12345",
@@ -284,7 +283,8 @@
           "sentAt": "2019-10-14T11:15:53.296Z"
         },
         "metadata": {
-          "jobId": 3
+          "jobId": 3,
+          "rudderId": 3
         },
         "destination": {
           "Config": {
@@ -326,7 +326,6 @@
           "receivedAt": "2021-10-28T14:03:46.567Z",
           "recordId": "8",
           "request_ip": "10.1.94.92",
-          "rudderId": 4,
           "sentAt": "2021-10-28T14:03:50.503Z",
           "timestamp": "2021-10-28T14:03:46.566Z",
           "traits": {
@@ -341,7 +340,8 @@
           "userId": "lynnanderson@smith.net"
         },
         "metadata": {
-          "jobId": 4
+          "jobId": 4,
+          "rudderId": 4
         },
         "destination": {
           "ID": "1zia9wKshXt80YksLmUdJnr7IHI",
@@ -438,7 +438,6 @@
           "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
           "originalTimestamp": "2019-10-14T11:15:18.299Z",
           "anonymousId": "00000000000000000000000000",
-          "rudderId": 5,
           "userId": "12345",
           "properties": {
             "campaignId": "1",
@@ -477,7 +476,8 @@
           "sentAt": "2019-10-14T11:15:53.296Z"
         },
         "metadata": {
-          "jobId": 5
+          "jobId": 5,
+          "rudderId": 5
         },
         "destination": {
           "Config": {
@@ -504,7 +504,6 @@
             "nodeVersion": "10.22.0"
           },
           "messageId": "node-6f62b91e789a636929ca38aed01c5f6e-103c720d-81bd-4742-98d6-d45a65aed23e",
-          "rudderId": 6,
           "properties": {
             "url": "https://dominos.com",
             "title": "Pizza",
@@ -514,7 +513,8 @@
           "originalTimestamp": "2020-08-28T16:26:06.468Z"
         },
         "metadata": {
-          "jobId": 6
+          "jobId": 6,
+          "rudderId": 6
         },
         "destination": {
           "Config": {
@@ -547,12 +547,12 @@
             "referrer": "https://google.com"
           },
           "anonymousId": "abcdeeeeeeeexxxx102",
-          "rudderId": 7,
           "originalTimestamp": "2020-08-28T16:26:06.468Z",
           "userId": "user@1"
         },
         "metadata": {
-          "jobId": 7
+          "jobId": 7,
+          "rudderId": 7
         },
         "destination": {
           "Config": {
@@ -587,11 +587,11 @@
           "userId": "new@email.com",
           "previousId": "old@email.com",
           "anonymousId": "abcdeeeeeeeexxxx102",
-          "rudderId": 8,
           "originalTimestamp": "2020-08-28T16:26:06.468Z"
         },
         "metadata": {
-          "jobId": 8
+          "jobId": 8,
+          "rudderId": 8
         },
         "destination": {
           "Config": {
@@ -700,7 +700,8 @@
         },
         "metadata": [
           {
-            "jobId": 2
+            "jobId": 2,
+            "rudderId": 2
           }
         ],
         "statusCode": 200
@@ -783,7 +784,8 @@
         },
         "metadata": [
           {
-            "jobId": 4
+            "jobId": 4,
+            "rudderId": 4
           }
         ],
         "statusCode": 200
@@ -857,13 +859,16 @@
         },
         "metadata": [
           {
-            "jobId": 1
+            "jobId": 1,
+            "rudderId": 1
           },
           {
-            "jobId": 3
+            "jobId": 3,
+            "rudderId": 3
           },
           {
-            "jobId": 6
+            "jobId": 6,
+            "rudderId": 6
           }
         ],
         "statusCode": 200
@@ -936,7 +941,8 @@
         },
         "metadata": [
           {
-            "jobId": 5
+            "jobId": 5,
+            "rudderId": 5
           }
         ],
         "statusCode": 200
@@ -976,7 +982,8 @@
         },
         "metadata": [
           {
-            "jobId": 8
+            "jobId": 8,
+            "rudderId": 8
           }
         ],
         "statusCode": 200
@@ -996,7 +1003,8 @@
         "error": "Invalid page call",
         "metadata": [
           {
-            "jobId": 7
+            "jobId": 7,
+            "rudderId": 7
           }
         ],
         "statTags": {

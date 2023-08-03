@@ -166,9 +166,22 @@ const processRouterDest = async (inputs, reqMetadata) => {
     return errorRespEvents;
   }
 
-  const groupedEvents = _.groupBy(inputs, (event) => event.message.rudderId);
-  const hasMultipleEvents = Object.values(groupedEvents).some((events) => events.length > 1);
-  const events = hasMultipleEvents ? Object.values(groupedEvents) : [inputs];
+  const groupedEvents = _.groupBy(inputs, (event) => event.metadata.rudderId);
+  const eventsArrays = Object.values(groupedEvents);
+
+  const singleEventArray = [];
+  const multipleEventsArray = [];
+
+  // Separate events into singleEventArray and multipleEventsArray based on length
+  eventsArrays.forEach((eventsArray) => {
+    if (eventsArray.length === 1) {
+      singleEventArray.push(...eventsArray);
+    } else if (eventsArray.length > 1) {
+      multipleEventsArray.push(eventsArray);
+    }
+  });
+
+  const events = [singleEventArray, ...multipleEventsArray];
 
   const response = await Promise.all(
     events.map(async (listOfEvents) => {

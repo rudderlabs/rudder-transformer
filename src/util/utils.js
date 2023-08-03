@@ -157,6 +157,22 @@ function logProcessInfo() {
   logger.error(`Process info: `, util.inspect(processInfo(), false, null, true));
 }
 
+// stringLiterals expected to be an array of strings. A line in trace should contain
+// atleast one string in the stringLiterals array for lastMatchingIndex to be updated appropriately.
+const extractStackTraceUptoLastSubstringMatch = (trace, stringLiterals) => {
+  const traceLines = trace.split('\n');
+  let lastRelevantIndex = 0;
+
+  for(let i = traceLines.length - 1; i >= 0; i -= 1) {
+    if (stringLiterals.some(str => traceLines[i].includes(str))) {
+      lastRelevantIndex = i;
+      break;
+    }
+  }
+
+  return traceLines.slice(0, lastRelevantIndex + 1).join("\n");
+};
+
 module.exports = {
   RespStatusError,
   RetryRequestError,
@@ -165,5 +181,6 @@ module.exports = {
   constructValidationErrors,
   sendViolationMetrics,
   logProcessInfo,
+  extractStackTraceUptoLastSubstringMatch,
   fetchWithDnsWrapper,
 };

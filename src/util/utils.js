@@ -9,8 +9,6 @@ const logger = require('../logger');
 const stats = require('./stats');
 
 const resolver = new Resolver();
-// Cloudflare and Google dns
-resolver.setServers(['1.1.1.1', '8.8.8.8']);
 
 const LOCALHOST_IP = '127.0.0.1';
 const LOCALHOST_URL = `http://localhost`;
@@ -22,7 +20,7 @@ const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
   try {
     ips = await resolver.resolve(hostname);
   } catch (error) {
-    stats.timing('fetch_dns_resolve_time', resolveStartTime, { transformerVersionId, error: true });
+    stats.timing('fetch_dns_resolve_time', resolveStartTime, { transformerVersionId, error: 'true' });
     cb(null, `unable to resolve IP address for ${hostname}`, RECORD_TYPE_A);
     return;
   }

@@ -233,6 +233,10 @@ async function processIdentify(message, destination) {
         Authorization: `Bearer ${destination.Config.restApiKey}`,
       },
     },
+    {
+      destType: 'braze',
+      feature: 'transformation',
+    },
   );
   if (!isHttpStatusSuccess(brazeIdentifyResp.status)) {
     throw new NetworkError(

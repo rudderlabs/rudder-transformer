@@ -305,6 +305,7 @@ describe('dedup utility tests', () => {
           },
           timeout: 10000,
         },
+        { destType: 'braze', feature: 'transformation' },
       );
     });
 

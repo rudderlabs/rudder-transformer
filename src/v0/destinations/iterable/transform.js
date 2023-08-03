@@ -166,7 +166,7 @@ const processRouterDest = async (inputs, reqMetadata) => {
     return errorRespEvents;
   }
 
-  const eventsPerUser = _.groupBy(inputs, (event) => event.metadata.rudderId);
+  const eventsPerUser = _.groupBy(inputs, (event) => event.metadata.userId);
   const eachUserEvents = Object.values(eventsPerUser);
 
   const uniqueEventsPerUser = [];

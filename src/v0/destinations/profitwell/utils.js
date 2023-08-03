@@ -182,7 +182,10 @@ const getSubscriptionHistory = async (endpoint, options) => {
     ...options,
   };
 
-  const res = await httpGET(endpoint, requestOptions);
+  const res = await httpGET(endpoint, requestOptions, {
+    destType: 'profitwell',
+    feature: 'transformation',
+  });
   return res;
 };
 

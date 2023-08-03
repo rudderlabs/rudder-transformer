@@ -23,7 +23,10 @@ const deleteUser = async (endpoint, body, identityType, identityValue) => {
   body.submitted_time = new Date().toISOString();
   body.subject_identities[0].identity_type = identityType;
   body.subject_identities[0].identity_value = identityValue;
-  const response = await httpPOST(endpoint, body);
+  const response = await httpPOST(endpoint, body, {
+    destType: 'af',
+    feature: 'deleteUsers',
+  });
   const handledDelResponse = processAxiosResponse(response);
   if (!isHttpStatusSuccess(handledDelResponse.status)) {
     throw new NetworkError(

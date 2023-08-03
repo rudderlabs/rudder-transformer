@@ -41,7 +41,15 @@ const getAuthErrCategory = (status) => {
 
 const createJob = async (endpoint, headers, payload) => {
   const endPoint = `${endpoint}:create`;
-  let createJobResponse = await httpPOST(endPoint, payload, { headers });
+  let createJobResponse = await httpPOST(
+    endPoint,
+    payload,
+    { headers },
+    {
+      destType: 'google_adwords_offline_conversions',
+      feature: 'proxy',
+    },
+  );
   createJobResponse = processAxiosResponse(createJobResponse);
   const { response, status } = createJobResponse;
   if (!isHttpStatusSuccess(status)) {
@@ -57,7 +65,15 @@ const createJob = async (endpoint, headers, payload) => {
 
 const addConversionToJob = async (endpoint, headers, jobId, payload) => {
   const endPoint = `${endpoint}/${jobId}:addOperations`;
-  let addConversionToJobResponse = await httpPOST(endPoint, payload, { headers });
+  let addConversionToJobResponse = await httpPOST(
+    endPoint,
+    payload,
+    { headers },
+    {
+      destType: 'google_adwords_offline_conversions',
+      feature: 'proxy',
+    },
+  );
   addConversionToJobResponse = processAxiosResponse(addConversionToJobResponse);
   if (!isHttpStatusSuccess(addConversionToJobResponse.status)) {
     throw new AbortedError(
@@ -72,7 +88,15 @@ const addConversionToJob = async (endpoint, headers, jobId, payload) => {
 
 const runTheJob = async (endpoint, headers, payload, jobId) => {
   const endPoint = `${endpoint}/${jobId}:run`;
-  const executeJobResponse = await httpPOST(endPoint, payload, { headers });
+  const executeJobResponse = await httpPOST(
+    endPoint,
+    payload,
+    { headers },
+    {
+      destType: 'google_adwords_offline_conversions',
+      feature: 'proxy',
+    },
+  );
   return executeJobResponse;
 };
 
@@ -94,7 +118,10 @@ const getConversionCustomVariable = async (headers, params) => {
     const requestOptions = {
       headers,
     };
-    let searchStreamResponse = await httpPOST(endpoint, data, requestOptions);
+    let searchStreamResponse = await httpPOST(endpoint, data, requestOptions, {
+      destType: 'google_adwords_offline_conversions',
+      feature: 'proxy',
+    });
     searchStreamResponse = processAxiosResponse(searchStreamResponse);
     if (!isHttpStatusSuccess(searchStreamResponse.status)) {
       throw new NetworkError(
@@ -173,7 +200,7 @@ const ProxyRequest = async (request) => {
     return thirdResponse;
   }
   // fetch conversionAction
-  // httpPOST -> axios.post()
+  // httpPOST -> myAxios.post()
   if (params?.event) {
     const conversionActionId = await getConversionActionId(headers, params);
     set(body.JSON, 'conversions.0.conversionAction', conversionActionId);
@@ -207,7 +234,10 @@ const ProxyRequest = async (request) => {
   }
 
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
-  const response = await httpSend(requestBody);
+  const response = await httpSend(requestBody, {
+    feature: 'proxy',
+    destType: 'gogole_adwords_offline_conversions',
+  });
   return response;
 };
 

@@ -114,10 +114,10 @@ const marketoApplicationErrorHandler = (marketoResponse, sourceMessage, destinat
           ]
         }
     ]
-  } 
- * 
- * @param {*} marketoResponse 
- * @param {*} sourceMessage 
+  }
+ *
+ * @param {*} marketoResponse
+ * @param {*} sourceMessage
  */
 const nestedResponseHandler = (marketoResponse, sourceMessage) => {
   const checkStatus = (res) => {
@@ -219,7 +219,10 @@ const marketoResponseHandler = (
  * @returns { response, status }
  */
 const sendGetRequest = async (url, options) => {
-  const clientResponse = await httpGET(url, options);
+  const clientResponse = await httpGET(url, options, {
+    destType: 'marketo',
+    feature: 'transformation',
+  });
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;
 };
@@ -231,7 +234,10 @@ const sendGetRequest = async (url, options) => {
  * @returns { response, status }
  */
 const sendPostRequest = async (url, data, options) => {
-  const clientResponse = await httpPOST(url, data, options);
+  const clientResponse = await httpPOST(url, data, options, {
+    destType: 'marketo',
+    feature: 'transformation',
+  });
   const processedResponse = processAxiosResponse(clientResponse);
   return processedResponse;
 };

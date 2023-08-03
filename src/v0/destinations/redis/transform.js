@@ -36,6 +36,23 @@ const process = (event) => {
   const { prefix } = destination.Config;
   const keyPrefix = isEmpty(prefix) ? '' : `${prefix.trim()}:`;
 
+  if (message.context && message.context.sources && message.context.sources.entity && message.context.sources.profiles_model) {
+    const profilesEntity = message.context.sources.entity;
+    const profilesModel = message.context.sources.profiles_model;
+    const hmap = {
+      key: `${profilesEntity}:${_.toString(message.userId)}`,
+      fields: "",
+      field: profilesModel,
+    }
+    const fields = {};
+    fields[profilesModel] = JSON.stringify(message.traits);
+    hmap.fields = fields;
+    return {
+      message: hmap,
+      userId: message.userId,
+    }
+  }
+
   const hmap = {
     key: `${keyPrefix}user:${_.toString(message.userId)}`,
     fields: {},

@@ -1,14 +1,12 @@
 [![codecov](https://codecov.io/gh/rudderlabs/rudder-transformer/branch/develop/graph/badge.svg?token=G24OON85SB)](https://codecov.io/gh/rudderlabs/rudder-transformer)
 
 # RudderStack Transformer
-
 RudderStack Transformer is a service which transforms the RudderStack events to destination-specific singular events. This feature is released under
 under the [MIT license](https://github.com/rudderlabs/rudder-transformer/blob/main/LICENSE.md).
 
 ## Transformer Setup
 
 ### Docker
-
 If you want to run the RudderStack Transformer inside a Docker container, follow these steps:
 
 1. Clone this repository

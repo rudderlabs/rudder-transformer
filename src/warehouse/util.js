@@ -48,9 +48,9 @@ const timestampRegex = new RegExp(
 function validTimestamp(input) {
   if (timestampRegex.test(input)) {
     // check if date value lies in between min time and max time. if not then it's not a valid timestamp
-    const d = new Date(input)
+    const d = new Date(input);
     if (isNaN(d)) {
-      return false
+      return false;
     }
     const dateInMs = Date.parse(d.toISOString());
     if (minTimeInMs <= dateInMs && dateInMs <= maxTimeInMs) {
@@ -89,7 +89,7 @@ const getCloudRecordID = (message, fallbackValue) => {
 const getRecordIDForExtract = (message) => {
   const { recordId } = message;
   if (typeof recordId === 'object' || isBlank(recordId)) {
-    throw new Error('recordId cannot be empty for cloud sources events');
+    throw new PlatformError('recordId cannot be empty for cloud sources events');
   }
   return recordId;
 };

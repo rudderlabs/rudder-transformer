@@ -5,10 +5,10 @@ import { TestCaseData } from './testTypes';
 export const getTestDataFilePaths = (dirPath): string[] => {
   const dirEntries = readdirSync(dirPath);
   const testDataFilePaths: string[] = [];
-  dirEntries.forEach(dEntry => {
+  dirEntries.forEach((dEntry) => {
     const dEntryPath = join(dirPath, dEntry);
     const stats = statSync(dEntryPath);
-    if (stats.isFile() && dEntry.toLowerCase() === "data.js") {
+    if (stats.isFile() && dEntry.toLowerCase() === 'data.ts') {
       testDataFilePaths.push(dEntryPath);
     } else if (stats.isDirectory()) {
       testDataFilePaths.push(...getTestDataFilePaths(dEntryPath));
@@ -18,5 +18,5 @@ export const getTestDataFilePaths = (dirPath): string[] => {
 };
 
 export const getTestData = (filePath): TestCaseData[] => {
-  return require(filePath).data as TestCaseData[]
-}
+  return require(filePath).data as TestCaseData[];
+};

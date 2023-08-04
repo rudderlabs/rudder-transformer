@@ -326,7 +326,7 @@ function getPurchaseObjs(message) {
         }
         let purchaseObj = addMandatoryPurchaseProperties(
           productId,
-          price,
+          parseFloat(price),
           currencyCode || prodCur,
           quantity,
           message.timestamp,

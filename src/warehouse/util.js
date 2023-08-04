@@ -3,7 +3,7 @@ const get = require('get-value');
 
 const v0 = require('./v0/util');
 const v1 = require('./v1/util');
-const { PlatformError } = require('../v0/util/errorTypes');
+const { PlatformError, InstrumentationError } = require('../v0/util/errorTypes');
 
 const minTimeInMs = Date.parse('0001-01-01T00:00:00Z');
 const maxTimeInMs = Date.parse('9999-12-31T23:59:59.999Z');
@@ -89,7 +89,7 @@ const getCloudRecordID = (message, fallbackValue) => {
 const getRecordIDForExtract = (message) => {
   const { recordId } = message;
   if (typeof recordId === 'object' || isBlank(recordId)) {
-    throw new PlatformError('recordId cannot be empty for cloud sources events');
+    throw new InstrumentationError('recordId cannot be empty for cloud sources events');
   }
   return recordId;
 };

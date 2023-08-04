@@ -4,7 +4,6 @@
 
 RudderStack Transformer is a service which transforms the RudderStack events to destination-specific singular events. This feature is released under
 under the [MIT license](https://github.com/rudderlabs/rudder-transformer/blob/main/LICENSE.md).
-
 ## Transformer Setup
 
 ### Docker

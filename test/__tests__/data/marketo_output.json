@@ -125,6 +125,10 @@
     "error": "Request Failed for marketo, Access Token Expired (Retryable).During fetching auth token"
   },
   {
+    "statusCode": 500,
+    "error": "Request Failed for marketo, Access Token Expired (Retryable).During fetching auth token"
+  },
+  {
     "statusCode": 400,
     "error": "Invalid traits value for Marketo"
   },

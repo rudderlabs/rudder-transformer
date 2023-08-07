@@ -1,5 +1,8 @@
 [
   {
+    "message": "apiKey not found in Configs"
+  },
+  {
     "body": {
       "XML": {},
       "JSON_ARRAY": {},
@@ -1054,7 +1057,7 @@
           "from_background": false,
           "id": "deviceToken",
           "platform": "ios",
-          "last_used": 1641808826
+          "last_used": 1641828138
         }
       },
       "JSON_ARRAY": {},

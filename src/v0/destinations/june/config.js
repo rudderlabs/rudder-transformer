@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const BASE_ENDPOINT = 'https://api.june.so/api';
+const BASE_ENDPOINT = 'https://api.june.so/sdk';
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: {
@@ -18,13 +18,18 @@ const CONFIG_CATEGORIES = {
     type: 'group',
     endpoint: `${BASE_ENDPOINT}/group`,
   },
+  PAGE: {
+    name: 'JunePageConfig',
+    type: 'page',
+    endpoint: `${BASE_ENDPOINT}/page`,
+  }
 };
 
 const MAPPING_CONFIG = getMappingConfig(CONFIG_CATEGORIES, __dirname);
 
 module.exports = {
   BASE_ENDPOINT,
-  CONFIG_CATEGORIES,
   MAPPING_CONFIG,
+  CONFIG_CATEGORIES,
   DESTINATION: 'JUNE',
 };

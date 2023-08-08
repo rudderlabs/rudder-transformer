@@ -1,4 +1,4 @@
-const axios = require('axios');
+const myAxios = require('../../../util/myAxios');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const { getValueFromMessage } = require('../../util');
 const {
@@ -52,13 +52,17 @@ const userValidity = async (channel, Config, userId) => {
   const basicAuth = Buffer.from(Config.apiKey).toString('base64');
   let response;
   try {
-    response = await axios.get(`${ENDPOINT}`, {
-      headers: {
-        Authorization: `Basic ${basicAuth}`,
-        'Content-Type': JSON_MIME_TYPE,
+    response = await myAxios.get(
+      `${ENDPOINT}`,
+      {
+        headers: {
+          Authorization: `Basic ${basicAuth}`,
+          'Content-Type': JSON_MIME_TYPE,
+        },
+        params: paramsdata,
       },
-      params: paramsdata,
-    });
+      { destType: 'delighted', feature: 'transformation' },
+    );
     if (response && response.data && response.status === 200 && Array.isArray(response.data)) {
       return response.data.length > 0;
     }

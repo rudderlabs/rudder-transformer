@@ -3,7 +3,7 @@ const get = require('get-value');
 
 const v0 = require('./v0/util');
 const v1 = require('./v1/util');
-const { PlatformError } = require('../v0/util/errorTypes');
+const { PlatformError, InstrumentationError } = require('../v0/util/errorTypes');
 
 const minTimeInMs = Date.parse('0001-01-01T00:00:00Z');
 const maxTimeInMs = Date.parse('9999-12-31T23:59:59.999Z');
@@ -48,9 +48,9 @@ const timestampRegex = new RegExp(
 function validTimestamp(input) {
   if (timestampRegex.test(input)) {
     // check if date value lies in between min time and max time. if not then it's not a valid timestamp
-    const d = new Date(input)
+    const d = new Date(input);
     if (isNaN(d)) {
-      return false
+      return false;
     }
     const dateInMs = Date.parse(d.toISOString());
     if (minTimeInMs <= dateInMs && dateInMs <= maxTimeInMs) {
@@ -89,7 +89,7 @@ const getCloudRecordID = (message, fallbackValue) => {
 const getRecordIDForExtract = (message) => {
   const { recordId } = message;
   if (typeof recordId === 'object' || isBlank(recordId)) {
-    throw new Error('recordId cannot be empty for cloud sources events');
+    throw new InstrumentationError('recordId cannot be empty for cloud sources events');
   }
   return recordId;
 };

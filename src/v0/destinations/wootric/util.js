@@ -43,7 +43,10 @@ const getAccessToken = async (destination) => {
       }),
       method: 'POST',
     };
-    const wootricAuthResponse = await httpPOST(request.url, request.data, request.header);
+    const wootricAuthResponse = await httpPOST(request.url, request.data, request.header, {
+      destType: 'wootric',
+      feature: 'transformation',
+    });
     const processedAuthResponse = processAxiosResponse(wootricAuthResponse);
     // If the request fails, throwing error.
     if (processedAuthResponse.status !== 200) {
@@ -92,7 +95,10 @@ const retrieveUserDetails = async (endUserId, externalId, accessToken) => {
     },
   };
 
-  const userResponse = await httpGET(endpoint, requestOptions);
+  const userResponse = await httpGET(endpoint, requestOptions, {
+    destType: 'wootric',
+    feature: 'transformation',
+  });
   const processedUserResponse = processAxiosResponse(userResponse);
 
   if (processedUserResponse.status === 200) {

@@ -51,6 +51,10 @@ const getConversionActionId = async (method, headers, params) => {
     const { processedResponse: gaecConversionActionIdResponse } = await handleHttpRequest(
       'constructor',
       requestBody,
+      {
+        destType: 'google_adwords_enhanced_conversions',
+        feature: 'proxy',
+      },
     );
     if (!isHttpStatusSuccess(gaecConversionActionIdResponse.status)) {
       throw new NetworkError(
@@ -102,7 +106,10 @@ const ProxyRequest = async (request) => {
     `customers/${params.customerId}/conversionActions/${conversionActionId}`,
   );
   const requestBody = { url: endpoint, data: body.JSON, headers, method };
-  const { httpResponse: response } = await handleHttpRequest('constructor', requestBody);
+  const { httpResponse: response } = await handleHttpRequest('constructor', requestBody, {
+    destType: 'google_adwords_enhanced_conversions',
+    feature: 'proxy',
+  });
   return response;
 };
 

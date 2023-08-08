@@ -36,7 +36,10 @@ const getFailedJobStatus = async (event) => {
   };
   const failedLeadUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/failures.json`;
   const startTime = Date.now();
-  const resp = await httpGET(failedLeadUrl, requestOptions);
+  const resp = await httpGET(failedLeadUrl, requestOptions, {
+    destType: 'marketo_bulk_upload',
+    feature: 'transformation',
+  });
   const endTime = Date.now();
   const requestTime = endTime - startTime;
 
@@ -129,7 +132,10 @@ const getWarningJobStatus = async (event) => {
   };
   const startTime = Date.now();
   const warningJobStatusUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/warnings.json`;
-  const resp = await httpGET(warningJobStatusUrl, requestOptions);
+  const resp = await httpGET(warningJobStatusUrl, requestOptions, {
+    destType: 'marketo_bulk_upload',
+    feature: 'transformation',
+  });
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   stats.gauge('marketo_bulk_upload_fetch_job_time', requestTime);

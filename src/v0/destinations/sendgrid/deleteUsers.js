@@ -62,7 +62,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   /**
    * There is no Id per batch limit mentioned or found through trial and error method
    * But we have a limit of the url length that is not specified in the doc but found through trial and error method
-   * which on excceding the limit throws following error 
+   * which on excceding the limit throws following error
    * <html>
     <head>
       <title>414 Request-URI Too Large</title>
@@ -82,7 +82,10 @@ const userDeletionHandler = async (userAttributes, config) => {
   await Promise.all(
     batchEndpoints.map(async (batchEndpoint) => {
       endpoint = batchEndpoint;
-      const deletionResponse = await httpDELETE(endpoint, requestOptions);
+      const deletionResponse = await httpDELETE(endpoint, requestOptions, {
+        destType: 'sendgrid',
+        feature: 'deleteUsers',
+      });
       const handledDelResponse = processAxiosResponse(deletionResponse);
 
       if (!isHttpStatusSuccess(handledDelResponse.status)) {

@@ -4,7 +4,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -64,7 +64,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -124,7 +124,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -192,7 +192,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -253,7 +253,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -315,7 +315,9 @@
         "FORM": {},
         "JSON": {
           "context": {
-            "ad": { "callback": "123ATXSfe" },
+            "ad": {
+              "callback": "123ATXSfe"
+            },
             "ip": "13.57.97.131",
             "page": {
               "referrer": "http://demo.mywebsite.com",
@@ -355,7 +357,7 @@
         "JSON_ARRAY": {},
         "XML": {}
       },
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "files": {},
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
@@ -372,7 +374,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -450,7 +452,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -509,7 +511,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -569,7 +571,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -611,7 +613,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -680,7 +682,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -740,7 +742,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -800,7 +802,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -861,7 +863,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -922,7 +924,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -982,7 +984,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -1040,7 +1042,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -1109,7 +1111,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -1169,7 +1171,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -1229,7 +1231,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -1289,7 +1291,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -1349,7 +1351,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -1412,7 +1414,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"
@@ -1476,7 +1478,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://business-api.tiktok.com/open_api/v1.2/pixel/track/",
+      "endpoint": "https://business-api.tiktok.com/open_api/v1.3/pixel/track/",
       "headers": {
         "Access-Token": "1234ac663758946dfea3520b394bbac511b371f7",
         "Content-Type": "application/json"

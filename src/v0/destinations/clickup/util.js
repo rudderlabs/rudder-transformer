@@ -214,7 +214,10 @@ const retrieveCustomFields = async (listId, apiToken) => {
       Authorization: apiToken,
     },
   };
-  const customFieldsResponse = await httpGET(endpoint, requestOptions);
+  const customFieldsResponse = await httpGET(endpoint, requestOptions, {
+    destType: 'clickup',
+    feature: 'transformation',
+  });
   const processedCustomFieldsResponse = processAxiosResponse(customFieldsResponse);
 
   if (processedCustomFieldsResponse.status !== 200) {

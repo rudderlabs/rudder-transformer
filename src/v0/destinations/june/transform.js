@@ -46,6 +46,12 @@ const trackResponseBuilder = (message, destination) => {
   return responseBuilder(payload, endpoint, destination);
 };
 
+const genericResponseBuilder = (message, destination, category) => {
+  const { endpoint, name } = CONFIG_CATEGORIES[category];
+  const payload = constructPayload(message, MAPPING_CONFIG[name]);
+  return responseBuilder(payload, endpoint, destination);
+}
+
 const processEvent = (message, destination) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
@@ -55,28 +61,16 @@ const processEvent = (message, destination) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      {
-        const { endpoint, name } = CONFIG_CATEGORIES.IDENTIFY;
-        const payload = constructPayload(message, MAPPING_CONFIG[name]);
-        response = responseBuilder(payload, endpoint, destination);
-      }
+      response = genericResponseBuilder(message, destination, 'IDENTIFY');
       break;
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);
       break;
     case EventType.PAGE:
-      {
-        const { endpoint, name } = CONFIG_CATEGORIES.PAGE;
-        const payload = constructPayload(message, MAPPING_CONFIG[name]);
-        response = responseBuilder(payload, endpoint, destination);
-      }
+      response = genericResponseBuilder(message, destination, 'PAGE');
       break;
     case EventType.GROUP:
-      {
-        const { endpoint, name } = CONFIG_CATEGORIES.GROUP;
-        const payload = constructPayload(message, MAPPING_CONFIG[name]);
-        response = responseBuilder(payload, endpoint, destination);
-      }
+      response = genericResponseBuilder(message, destination, 'GROUP');
       break;
     default:
       throw new InstrumentationError(`Event type "${messageType}" is not supported`);

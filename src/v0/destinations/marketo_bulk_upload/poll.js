@@ -60,7 +60,8 @@ const getPollStatus = async (event) => {
           state: 'Abortable',
         });
         throw new AbortedError(
-          pollStatus.response.data.errors[0].message || POLL_STATUS_ERR_MSG,
+          pollStatus.response.data.errors[0].message ||
+          POLL_STATUS_ERR_MSG,
           400,
           pollStatus,
         );
@@ -71,7 +72,9 @@ const getPollStatus = async (event) => {
           state: 'Retryable',
         });
         throw new ThrottledError(
-          pollStatus.response.data.errors[0].message || POLL_STATUS_ERR_MSG,
+          pollStatus.response.data.errors[0].message ||
+          POLL_STATUS_ERR_MSG,
+          500,
           pollStatus,
         );
       }
@@ -81,7 +84,10 @@ const getPollStatus = async (event) => {
         state: 'Retryable',
       });
       throw new RetryableError(
-        pollStatus.response.response.statusText || 'Error during polling status',
+        pollStatus?.response?.response?.statusText ||
+        pollStatus?.response?.statusText ||
+        pollStatus?.response?.data?.errors[0]?.message ||
+        'Error during polling status',
         500,
         pollStatus,
       );
@@ -144,6 +150,7 @@ const responseHandler = async (event) => {
         InProgress = true;
       }
     } else {
+      // status is failed
       success = false;
       statusCode = 500;
       error = pollResp.data.errors ? pollResp.data.errors[0].message : 'Error in importing jobs';

@@ -281,7 +281,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
                 state: 'Retryable',
               });
               throw new RetryableError(
-                resp.response.data.errors[0].message || FILE_UPLOAD_ERR_MSG,
+                `${resp.response.data.errors[0].message} Uploaded`|| FILE_UPLOAD_ERR_MSG,
                 500,
                 { successfulJobs, unsuccessfulJobs },
               );

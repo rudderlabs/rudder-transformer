@@ -78,7 +78,7 @@ const getFailedJobStatus = async (event) => {
           state: 'Abortable',
         });
         throw new AbortedError(
-          resp.response.response.statusText || FAILURE_JOB_STATUS_ERR_MSG,
+          resp.response.response.statusText || resp.response.statusText|| FAILURE_JOB_STATUS_ERR_MSG,
           400,
           resp,
         );

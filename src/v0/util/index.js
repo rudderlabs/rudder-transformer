@@ -1022,7 +1022,7 @@ function getDestinationExternalID(message, type) {
 
   if (Array.isArray(externalIdArray)) {
     externalIdArray.forEach((extIdObj) => {
-      if (extIdObj.type === type) {
+      if (extIdObj?.type === type) {
         destinationExternalId = extIdObj.id;
       }
     });
@@ -1282,7 +1282,8 @@ function toTitleCase(payload) {
       .replace(/([a-z])(\d)/gi, '$1 $2')
       .replace(/(\d)([a-z])/gi, '$1 $2')
       .trim()
-      .replace(/(_)/g, ` `).replace(/(?:^|\s)(\w)/g, (match) => match.toUpperCase());
+      .replace(/(_)/g, ` `)
+      .replace(/(?:^|\s)(\w)/g, (match) => match.toUpperCase());
     newPayload[newKey] = value;
   });
   return newPayload;
@@ -1428,7 +1429,9 @@ function isHttpStatusRetryable(status) {
  * @returns
  */
 function generateUUID() {
-  return crypto.randomUUID({ disableEntropyCache: true }); /* using disableEntropyCache as true to not cache the generated uuids. 
+  return crypto.randomUUID({
+    disableEntropyCache: true,
+  }); /* using disableEntropyCache as true to not cache the generated uuids. 
   For more Info https://nodejs.org/api/crypto.html#cryptorandomuuidoptions:~:text=options%20%3CObject%3E-,disableEntropyCache,-%3Cboolean%3E%20By
   */
 }

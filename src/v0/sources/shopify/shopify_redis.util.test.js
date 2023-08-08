@@ -3,6 +3,23 @@ jest.mock('ioredis', () => require('../../../../test/__mocks__/redis'));
 describe('Shopify Utils Test', () => {
 
     describe('Check for valid cart update event test cases', () => {
+        it('Event containing token and nothing is retreived from redis and less than req. time difference between created_at and uadated_at', async () => {
+            const input = {
+                "query_parameters": {
+                    "topic": [
+                        "carts_update"
+                    ]
+                },
+                "id": "cartTokenTest1",
+                "line_items": [],
+                "note": null,
+                "updated_at": "2023-02-10T12:05:07.251Z",
+                "created_at": "2023-02-10T12:05:04.402Z"
+            };
+            const expectedOutput = false;
+            const output = await checkAndUpdateCartItems(input);
+            expect(output).toEqual(expectedOutput);
+        });
         it('Event containing token and nothing is retreived from redis', async () => {
             const input = {
                 token: 'token_not_in_redis',

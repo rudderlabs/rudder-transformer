@@ -97,12 +97,22 @@ const getProperties = async (destination) => {
         Authorization: `Bearer ${Config.accessToken}`,
       },
     };
-    hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions);
+    hubspotPropertyMapResponse = await httpGET(CONTACT_PROPERTY_MAP_ENDPOINT, requestOptions, {
+      destType: 'hs',
+      feature: 'transformation',
+    });
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   } else {
     // API Key (hapikey)
     const url = `${CONTACT_PROPERTY_MAP_ENDPOINT}?hapikey=${Config.apiKey}`;
-    hubspotPropertyMapResponse = await httpGET(url);
+    hubspotPropertyMapResponse = await httpGET(
+      url,
+      {},
+      {
+        destType: 'hs',
+        feature: 'transformation',
+      },
+    );
     hubspotPropertyMapResponse = processAxiosResponse(hubspotPropertyMapResponse);
   }
 
@@ -336,12 +346,19 @@ const searchContacts = async (message, destination) => {
       IDENTIFY_CRM_SEARCH_CONTACT,
       requestData,
       requestOptions,
+      {
+        destType: 'hs',
+        feature: 'transformation',
+      },
     );
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
   } else {
     // API Key
     const url = `${IDENTIFY_CRM_SEARCH_CONTACT}?hapikey=${Config.apiKey}`;
-    searchContactsResponse = await httpPOST(url, requestData);
+    searchContactsResponse = await httpPOST(url, requestData, {
+      destType: 'hs',
+      feature: 'transformation',
+    });
     searchContactsResponse = processAxiosResponse(searchContactsResponse);
   }
 
@@ -496,8 +513,14 @@ const getExistingData = async (inputs, destination) => {
         : `${endpoint}?hapikey=${Config.apiKey}`;
     searchResponse =
       Config.authorizationType === 'newPrivateAppApi'
-        ? await httpPOST(url, requestData, requestOptions)
-        : await httpPOST(url, requestData);
+        ? await httpPOST(url, requestData, requestOptions, {
+            destType: 'hs',
+            feature: 'transformation',
+          })
+        : await httpPOST(url, requestData, {
+            destType: 'hs',
+            feature: 'transformation',
+          });
     searchResponse = processAxiosResponse(searchResponse);
 
     if (searchResponse.status !== 200) {

@@ -1,6 +1,6 @@
 const get = require('get-value');
 const set = require('set-value');
-const axios = require('axios');
+const myAxios = require('../../../util/myAxios');
 
 const { EventType } = require('../../../constants');
 const {
@@ -98,7 +98,10 @@ const payloadBuilderforUpdatingEmail = async (userId, headers, userEmail, baseEn
   const url = `${baseEndpoint}users/${userId}/identities`;
   const config = { headers };
   try {
-    const res = await httpGET(url, config);
+    const res = await httpGET(url, config, {
+      destType: 'zendesk',
+      feature: 'transformation',
+    });
     if (res?.response?.data?.count > 0) {
       const { identities } = res.response.data;
       if (identities && Array.isArray(identities)) {
@@ -127,28 +130,33 @@ async function createUserFields(url, config, newFields, fieldJson) {
   let fieldData;
   // removing trailing 's' from fieldJson
   const fieldJsonSliced = fieldJson.slice(0, -1);
-  await Promise.all(newFields.map(async (field) => {
-    // create payload for each new user field
-    fieldData = {
-      [fieldJsonSliced]: {
-        title: field,
-        active: true,
-        key: field,
-        description: field,
-      },
-    };
+  await Promise.all(
+    newFields.map(async (field) => {
+      // create payload for each new user field
+      fieldData = {
+        [fieldJsonSliced]: {
+          title: field,
+          active: true,
+          key: field,
+          description: field,
+        },
+      };
 
-    try {
-      const response = await axios.post(url, fieldData, config);
-      if (response.status !== 201) {
-        logger.debug(`${NAME}:: Failed to create User Field : `, field);
+      try {
+        const response = await myAxios.post(url, fieldData, config, {
+          destType: 'zendesk',
+          feature: 'transformation',
+        });
+        if (response.status !== 201) {
+          logger.debug(`${NAME}:: Failed to create User Field : `, field);
+        }
+      } catch (error) {
+        if (error.response && error.response.status !== 422) {
+          logger.debug(`${NAME}:: Cannot create User field `, field, error);
+        }
       }
-    } catch (error) {
-      if (error.response && error.response.status !== 422) {
-        logger.debug(`${NAME}:: Cannot create User field `, field, error);
-      }
-    }
-  }));
+    }),
+  );
 }
 
 async function checkAndCreateUserFields(
@@ -164,7 +172,10 @@ async function checkAndCreateUserFields(
   const config = { headers };
 
   try {
-    const response = await axios.get(url, config);
+    const response = await myAxios.get(url, config, {
+      destType: 'zendesk',
+      feature: 'transformation',
+    });
     const fields = get(response.data, fieldJson);
     if (response.data && fields) {
       // get existing user_fields and concatenate them with default fields
@@ -238,7 +249,10 @@ const getUserIdByExternalId = async (message, headers, baseEndpoint) => {
   const config = { headers };
 
   try {
-    const resp = await httpGET(url, config);
+    const resp = await httpGET(url, config, {
+      destType: 'zendesk',
+      feature: 'transformation',
+    });
 
     if (resp?.response?.data?.count > 0) {
       const zendeskUserId = get(resp, 'response.data.users.0.id');
@@ -265,7 +279,10 @@ async function getUserId(message, headers, baseEndpoint, type) {
   const config = { headers };
 
   try {
-    const resp = await axios.get(url, config);
+    const resp = await myAxios.get(url, config, {
+      destType: 'zendesk',
+      feature: 'transformation',
+    });
     if (!resp || !resp.data || resp.data.count === 0) {
       logger.debug(`${NAME}:: User not found`);
       return undefined;
@@ -286,7 +303,10 @@ async function isUserAlreadyAssociated(userId, orgId, headers, baseEndpoint) {
   const url = `${baseEndpoint}/users/${userId}/organization_memberships.json`;
   const config = { headers };
   try {
-    const response = await axios.get(url, config);
+    const response = await myAxios.get(url, config, {
+      destType: 'zendesk',
+      feature: 'transformation',
+    });
     if (response?.data?.organization_memberships?.[0]?.organization_id === orgId) {
       return true;
     }
@@ -315,7 +335,10 @@ async function createUser(message, headers, destinationConfig, baseEndpoint, typ
   const payload = { user: userObject };
 
   try {
-    const resp = await axios.post(url, payload, config);
+    const resp = await myAxios.post(url, payload, config, {
+      destType: 'zendesk',
+      feature: 'transformation',
+    });
 
     if (!resp.data || !resp.data.user || !resp.data.user.id) {
       logger.debug(`${NAME}:: Couldn't create User: ${name}`);
@@ -393,7 +416,10 @@ async function createOrganization(message, category, headers, destinationConfig,
   const config = { headers };
 
   try {
-    const resp = await axios.post(url, payload, config);
+    const resp = await myAxios.post(url, payload, config, {
+      destType: 'zendesk',
+      feature: 'transformation',
+    });
 
     if (!resp.data || !resp.data.organization) {
       logger.debug(`${NAME}:: Couldn't create Organization: ${message.traits.name}`);
@@ -458,7 +484,10 @@ async function processIdentify(message, destinationConfig, headers, baseEndpoint
       const membershipUrl = `${baseEndpoint}users/${userId}/organization_memberships.json`;
       try {
         const config = { headers };
-        const response = await axios.get(membershipUrl, config);
+        const response = await myAxios.get(membershipUrl, config, {
+          destType: 'zendesk',
+          feature: 'transformation',
+        });
         if (
           response.data &&
           response.data.organization_memberships &&
@@ -502,7 +531,10 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
   const url = `${baseEndpoint}users/search.json?query=${userEmail}`;
   const config = { headers };
   try {
-    const userResponse = await axios.get(url, config);
+    const userResponse = await myAxios.get(url, config, {
+      destType: 'zendesk',
+      feature: 'transformation',
+    });
     if (!get(userResponse, 'data.users.0.id') || userResponse.data.count === 0) {
       const { zendeskUserId, email } = await createUser(
         message,

@@ -71,9 +71,17 @@ const userDeletionHandler = async (userAttributes, config, rudderDestInfo) => {
   const userDeleteRequests = prepareDeleteRequest(userAttributes, config, rudderDestInfo);
   await Promise.all(
     userDeleteRequests.map(async (userDeleteRequest) => {
-      const response = await httpPOST(GA_USER_DELETION_ENDPOINT, userDeleteRequest.body, {
-        headers: userDeleteRequest.headers,
-      });
+      const response = await httpPOST(
+        GA_USER_DELETION_ENDPOINT,
+        userDeleteRequest.body,
+        {
+          headers: userDeleteRequest.headers,
+        },
+        {
+          destType: 'ga',
+          feature: 'deleteUsers',
+        },
+      );
       // process the response to know about refreshing scenario
       return gaResponseHandler(response);
     }),

@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const BASE_ENDPOINT = 'https://api.june.so/sdk';
+const BASE_ENDPOINT = 'https://api.june.so/api';
 
 const CONFIG_CATEGORIES = {
   IDENTIFY: {

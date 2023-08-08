@@ -33,13 +33,6 @@ const responseBuilder = (payload, endpoint, destination) => {
   throw new TransformationError('Something went wrong while constructing the payload');
 };
 
-// ref :- https://www.june.so/docs/tracking/http-api/identify
-const identifyResponseBuilder = (message, destination) => {
-  const { endpoint, name } = CONFIG_CATEGORIES.IDENTIFY;
-  const payload = constructPayload(message, MAPPING_CONFIG[name]);
-  return responseBuilder(payload, endpoint, destination);
-};
-
 // ref :- https://www.june.so/docs/tracking/http-api/track
 const trackResponseBuilder = (message, destination) => {
   const { endpoint, name } = CONFIG_CATEGORIES.TRACK;
@@ -53,25 +46,6 @@ const trackResponseBuilder = (message, destination) => {
   return responseBuilder(payload, endpoint, destination);
 };
 
-/**
- * Ref : https://www.june.so/docs/tracking/http-api/page
- * @param {*} message
- * @param {*} destination
- * @returns
- */
-const pageResponseBuilder = (message, destination) => {
-  const { endpoint, name } = CONFIG_CATEGORIES.PAGE;
-  const payload = constructPayload(message, MAPPING_CONFIG[name]);
-  return responseBuilder(payload, endpoint, destination);
-};
-
-// ref :- https://www.june.so/docs/tracking/http-api/group
-const groupResponseBuilder = (message, destination) => {
-  const { endpoint, name } = CONFIG_CATEGORIES.GROUP;
-  const payload = constructPayload(message, MAPPING_CONFIG[name]);
-  return responseBuilder(payload, endpoint, destination);
-};
-
 const processEvent = (message, destination) => {
   if (!message.type) {
     throw new InstrumentationError('Event type is required');
@@ -81,16 +55,28 @@ const processEvent = (message, destination) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = identifyResponseBuilder(message, destination);
+      {
+        const { endpoint, name } = CONFIG_CATEGORIES.IDENTIFY;
+        const payload = constructPayload(message, MAPPING_CONFIG[name]);
+        response = responseBuilder(payload, endpoint, destination);
+      }
       break;
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);
       break;
     case EventType.PAGE:
-      response = pageResponseBuilder(message, destination);
+      {
+        const { endpoint, name } = CONFIG_CATEGORIES.PAGE;
+        const payload = constructPayload(message, MAPPING_CONFIG[name]);
+        response = responseBuilder(payload, endpoint, destination);
+      }
       break;
     case EventType.GROUP:
-      response = groupResponseBuilder(message, destination);
+      {
+        const { endpoint, name } = CONFIG_CATEGORIES.GROUP;
+        const payload = constructPayload(message, MAPPING_CONFIG[name]);
+        response = responseBuilder(payload, endpoint, destination);
+      }
       break;
     default:
       throw new InstrumentationError(`Event type "${messageType}" is not supported`);

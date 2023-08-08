@@ -74,7 +74,7 @@
             "JSON_ARRAY": {},
             "XML": {}
           },
-          "endpoint": "https://api.june.so/sdk/identify",
+          "endpoint": "https://api.june.so/api/identify",
           "files": {},
           "headers": {
             "Authorization": "Basic 93EMyDLvfpbRxxYn",

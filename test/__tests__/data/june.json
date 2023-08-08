@@ -56,7 +56,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://api.june.so/sdk/identify",
+      "endpoint": "https://api.june.so/api/identify",
       "headers": {
         "Content-Type": "application/json",
         "Authorization": "Basic 93EMyDLvfpbRxxYn"
@@ -138,7 +138,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://api.june.so/sdk/track",
+      "endpoint": "https://api.june.so/api/track",
       "headers": {
         "Content-Type": "application/json",
         "Authorization": "Basic 93EMyDLvfpbRxxYn"
@@ -187,7 +187,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://api.june.so/sdk/track",
+      "endpoint": "https://api.june.so/api/track",
       "headers": {
         "Content-Type": "application/json",
         "Authorization": "Basic 93EMyDLvfpbRxxYn"
@@ -237,7 +237,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://api.june.so/sdk/track",
+      "endpoint": "https://api.june.so/api/track",
       "headers": {
         "Content-Type": "application/json",
         "Authorization": "Basic 93EMyDLvfpbRxxYn"
@@ -303,7 +303,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://api.june.so/sdk/track",
+      "endpoint": "https://api.june.so/api/track",
       "headers": {
         "Content-Type": "application/json",
         "Authorization": "Basic 93EMyDLvfpbRxxYn"
@@ -363,7 +363,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://api.june.so/sdk/group",
+      "endpoint": "https://api.june.so/api/group",
       "headers": {
         "Content-Type": "application/json",
         "Authorization": "Basic 93EMyDLvfpbRxxYn"
@@ -457,7 +457,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://api.june.so/sdk/page",
+      "endpoint": "https://api.june.so/api/page",
       "headers": {
         "Content-Type": "application/json",
         "Authorization": "Basic 123456"

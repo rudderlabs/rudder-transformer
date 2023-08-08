@@ -22,6 +22,8 @@ All notable changes to this project will be documented in this file. See [standa
 * **tiktok_ads:** format productId to string data type ([#2434](https://github.com/rudderlabs/rudder-transformer/issues/2434)) ([792a2aa](https://github.com/rudderlabs/rudder-transformer/commit/792a2aab0678ffce1809ef11d7a1de0d6b7864be))
 * **transformation:** return retryable error when faas service exists … ([#2427](https://github.com/rudderlabs/rudder-transformer/issues/2427)) ([3b536d9](https://github.com/rudderlabs/rudder-transformer/commit/3b536d972d93261f20b9b43228d79ade5858c2f3))
 * update images to fix integration tests ([#2417](https://github.com/rudderlabs/rudder-transformer/issues/2417)) ([e3df6dc](https://github.com/rudderlabs/rudder-transformer/commit/e3df6dc878455b320a78fae5e52d39a66f236e98))
+* heap timestamp mapping ([#2451](https://github.com/rudderlabs/rudder-transformer/pull/2451)) ([713fcc2](https://github.com/rudderlabs/rudder-transformer/commit/713fcc22e20608b719aac2861323049511788398))
+* **tiktok_ads:** format products array product ids to string ([#2445](https://github.com/rudderlabs/rudder-transformer/pull/2445)) ([4524547](https://github.com/rudderlabs/rudder-transformer/commit/4524547ed8328bf3099a8b907003313c7dc14659))
 
 ### [1.36.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.36.0...v1.36.1) (2023-07-26)
 

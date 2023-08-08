@@ -229,7 +229,11 @@ const checkAndUpdateCartItems = async (inputEvent, redisData, metricMetadata) =>
     await updateCartItemsInRedis(cartToken, newCartItemsHash, metricMetadata);
   } else {
     const { created_at, updated_at } = inputEvent;
-    if (Date.parse(updated_at) - Date.parse(created_at) < maxTimeToIdentifyRSGeneratedCall && inputEvent?.line_items?.length === 0) {
+    const timeDifference = Date.parse(updated_at) - Date.parse(created_at);
+    const isTimeWithinThreshold = timeDifference < maxTimeToIdentifyRSGeneratedCall;
+    const isLineItemsEmpty = inputEvent?.line_items?.length === 0;
+
+    if (isTimeWithinThreshold && isLineItemsEmpty) {
       return false;
     }
   }

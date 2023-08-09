@@ -2264,7 +2264,7 @@
         "eventId": "1616318632825_357",
         "products": [
           {
-            "product_id": "123",
+            "product_id": 123,
             "sku": "G-32",
             "name": "Monopoly",
             "price": 14,
@@ -2275,7 +2275,7 @@
             "image_url": "https://www.website.com/product/path.jpg"
           },
           {
-            "product_id": "345",
+            "product_id": 345,
             "sku": "F-32",
             "name": "UNO",
             "price": 3.45,

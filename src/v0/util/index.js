@@ -1016,11 +1016,12 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
 const getDestinationExternalID = (message, type) => {
   const { context } = message;
   const externalIdArray = context?.externalId || [];
-  let destinationExternalId = null;
+  let externalIdObj;
   if (Array.isArray(externalIdArray)) {
-    destinationExternalId = externalIdArray.find((extIdObj) => extIdObj?.type === type);
+    externalIdObj = externalIdArray.find((extIdObj) => extIdObj?.type === type);
   }
-  return destinationExternalId ? destinationExternalId.id : null;
+  const destinationExternalId = externalIdObj ? externalIdObj.id : null;
+  return destinationExternalId;
 };
 
 // Get id, identifierType and object type from externalId for rETL

@@ -1013,22 +1013,15 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
 //   }
 // }
 // to get destination specific external id passed in context.
-function getDestinationExternalID(message, type) {
-  let externalIdArray = null;
+const getDestinationExternalID = (message, type) => {
+  const { context } = message;
+  const externalIdArray = context?.externalId || [];
   let destinationExternalId = null;
-  if (message.context && message.context.externalId) {
-    externalIdArray = message.context.externalId;
-  }
-
   if (Array.isArray(externalIdArray)) {
-    externalIdArray.forEach((extIdObj) => {
-      if (extIdObj?.type === type) {
-        destinationExternalId = extIdObj.id;
-      }
-    });
+    destinationExternalId = externalIdArray.find((extIdObj) => extIdObj?.type === type);
   }
-  return destinationExternalId;
-}
+  return destinationExternalId ? destinationExternalId.id : null;
+};
 
 // Get id, identifierType and object type from externalId for rETL
 // type will be of the form: <DESTINATION-NAME>-<object>

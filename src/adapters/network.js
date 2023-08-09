@@ -6,6 +6,7 @@ const http = require('http');
 const https = require('https');
 const axios = require('axios');
 const log = require('../logger');
+const stats = require('../util/stats');
 const { removeUndefinedValues } = require('../v0/util');
 const { processAxiosResponse } = require('./utils/networkUtils');
 
@@ -41,12 +42,21 @@ const networkClientConfigs = {
   httpsAgent: new https.Agent({ keepAlive: true }),
 };
 
+const fireLatencyStat = (startTime, statTags) => {
+  const destType = statTags.destType ? statTags.destType : '';
+  const feature = statTags.feature ? statTags.feature : '';
+  stats.timing('outgoing_request_latency', startTime, {
+    feature,
+    destType,
+  });
+};
+
 /**
  * sends an http request with underlying client, expects request options
  * @param {*} options
  * @returns
  */
-const httpSend = async (options) => {
+const httpSend = async (options, statTags = {}) => {
   let clientResponse;
   // here the options argument K-Vs will take priority over requestOptions
   const requestOptions = {
@@ -55,11 +65,15 @@ const httpSend = async (options) => {
     maxContentLength: MAX_CONTENT_LENGTH,
     maxBodyLength: MAX_BODY_LENGTH,
   };
+
+  const startTime = new Date();
   try {
     const response = await axios(requestOptions);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireLatencyStat(startTime, statTags);
   }
   return clientResponse;
 };
@@ -72,13 +86,17 @@ const httpSend = async (options) => {
  *
  * handles http GET requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpGET = async (url, options) => {
+const httpGET = async (url, options, statTags = {}) => {
   let clientResponse;
+
+  const startTime = new Date();
   try {
     const response = await axios.get(url, options);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireLatencyStat(startTime, statTags);
   }
   return clientResponse;
 };
@@ -91,13 +109,17 @@ const httpGET = async (url, options) => {
  *
  * handles http DELETE requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpDELETE = async (url, options) => {
+const httpDELETE = async (url, options, statTags = {}) => {
   let clientResponse;
+
+  const startTime = new Date();
   try {
     const response = await axios.delete(url, options);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireLatencyStat(startTime, statTags);
   }
   return clientResponse;
 };
@@ -111,13 +133,17 @@ const httpDELETE = async (url, options) => {
  *
  * handles http POST requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpPOST = async (url, data, options) => {
+const httpPOST = async (url, data, options, statTags = {}) => {
   let clientResponse;
+
+  const startTime = new Date();
   try {
     const response = await axios.post(url, data, options);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireLatencyStat(startTime, statTags);
   }
   return clientResponse;
 };
@@ -131,13 +157,17 @@ const httpPOST = async (url, data, options) => {
  *
  * handles http PUT requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpPUT = async (url, data, options) => {
+const httpPUT = async (url, data, options, statTags = {}) => {
   let clientResponse;
+
+  const startTime = new Date();
   try {
     const response = await axios.put(url, data, options);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireLatencyStat(startTime, statTags);
   }
   return clientResponse;
 };
@@ -151,13 +181,17 @@ const httpPUT = async (url, data, options) => {
  *
  * handles http PATCH requests returns promise as a response throws error in case of non 2XX statuses
  */
-const httpPATCH = async (url, data, options) => {
+const httpPATCH = async (url, data, options, statTags = {}) => {
   let clientResponse;
+
+  const startTime = new Date();
   try {
     const response = await axios.patch(url, data, options);
     clientResponse = { success: true, response };
   } catch (err) {
     clientResponse = { success: false, response: err };
+  } finally {
+    fireLatencyStat(startTime, statTags);
   }
   return clientResponse;
 };
@@ -260,7 +294,7 @@ const proxyRequest = async (request) => {
     headers,
     method,
   };
-  const response = await httpSend(requestOptions);
+  const response = await httpSend(requestOptions, { feature: 'proxy' });
   return response;
 };
 

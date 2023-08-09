@@ -313,7 +313,7 @@
   },
   {
     "statusCode": 400,
-    "message": "Invalid Order Completed event"
+    "message": "Invalid Order Completed event: Message properties and product at index: 0 is missing currency"
   },
   {
     "version": "1",

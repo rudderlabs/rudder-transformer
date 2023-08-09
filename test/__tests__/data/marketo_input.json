@@ -372,6 +372,64 @@
       "anonymousId": "anon_id_success",
       "channel": "mobile",
       "context": {
+        "traits": {
+          "anonymousId": "anon_id_success"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)"
+      },
+      "event": "Product Clicked",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "id1",
+      "properties": {
+        "name": "Test Product"
+      },
+      "originalTimestamp": "2020-12-17T21:00:59.176Z",
+      "userId": "user_id_success",
+      "type": "track",
+      "sentAt": "2020-03-12T09:05:03.421Z"
+    },
+    "destination": {
+      "ID": "1mMy5cqbtfuaKZv1IhVQKnBerte",
+      "Config": {
+        "accountId": "marketo_acct_id_token_failure",
+        "clientId": "marketo_acct_id_token_failure",
+        "clientSecret": "marketo_acct_id_token_failure",
+        "trackAnonymousEvents": false,
+        "customActivityEventMap": [
+          {
+            "from": "Product Clicked",
+            "to": "100001"
+          }
+        ],
+        "customActivityPropertyMap": [
+          {
+            "from": "name",
+            "to": "productName"
+          }
+        ],
+        "customActivityPrimaryKeyMap": [
+          {
+            "from": "Product Clicked",
+            "to": "name"
+          }
+        ],
+        "leadTraitMapping": [
+          {
+            "from": "leadScore",
+            "to": "customLeadScore"
+          }
+        ],
+        "createIfNotExist": true
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "anon_id_success",
+      "channel": "mobile",
+      "context": {
         "app": {
           "build": "1",
           "name": "TestAppName",

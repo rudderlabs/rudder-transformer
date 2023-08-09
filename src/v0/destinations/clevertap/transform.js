@@ -383,7 +383,7 @@ const processEvent = (message, destination) => {
 
 const process = (event) => processEvent(event.message, event.destination);
 
-const processRouterDest = async (inputs, reqMetadata) => {
+const processRouterDest = (inputs, reqMetadata) => {
   // const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
   // return respList;
   const errorRespEvents = checkInvalidRtTfEvents(inputs);
@@ -398,12 +398,12 @@ const processRouterDest = async (inputs, reqMetadata) => {
   inputs.forEach((event) => {
     try {
       let resp = event.message;
-      if (!event.message.statusCode) {
+      if (!event?.message?.statusCode) {
         // already transformed event
         resp = process(event);
       }
       eventsChunk.push({
-        message: Array.isArray(resp) ? resp[0] : resp,
+        message: Array.isArray(resp) ? [...resp] : resp,
         metadata: event.metadata,
         destination: event.destination,
       });

@@ -7,11 +7,17 @@ function generateClevertapBatchedPayload(events, destination) {
   const { batchedRequest } = defaultBatchRequestConfig();
 
   // Batch event into dest batch structure
-  const batchResponseList = events.map((ev) => ev?.body?.JSON?.d[0]);
+  const batchResponseList = [];
+  const eventArray = Object.values(events);
+
+  eventArray.forEach((ev) => {
+    batchResponseList.push(ev?.body?.JSON?.d[0]);
+  });
 
   batchedRequest.body.JSON = {
     d: batchResponseList,
   };
+  batchedRequest.batched = true;
 
   batchedRequest.endpoint = getEndpoint(destination.Config);
   batchedRequest.headers = {

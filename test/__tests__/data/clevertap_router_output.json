@@ -4,6 +4,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
+      "batched": true,
       "endpoint": "https://api.clevertap.com/1/upload",
       "headers": {
         "X-CleverTap-Account-Id": "476550467",
@@ -16,10 +17,11 @@
           "d": [
             {
               "type": "profile",
+              "ts": 1571043797,
               "profileData": {
-                "Email": "jamesDoe@gmail.com",
-                "Name": "James Doe",
-                "Phone": "92374162212",
+                "Email": "dummyuser@gmail.com",
+                "Name": "Dummy User",
+                "Phone": "98765434210",
                 "Gender": "M",
                 "Employed": true,
                 "DOB": "1614775793",
@@ -35,55 +37,24 @@
                 "custom_mappings": "{\"Office\":\"Trastkiv\",\"Country\":\"Russia\"}",
                 "address": "{\"city\":\"kolkata\",\"country\":\"India\",\"postalCode\":789223,\"state\":\"WB\",\"street\":\"\"}"
               },
-              "identity": "anon_id"
+              "objectId": "anon_id"
             },
             {
-              "evtName": "Web Page Viewed: Rudder",
+              "type": "token",
+              "tokenData": {
+                "id": "frfsgvrwe:APfdsafsgdfsgghfgfgjkhfsfgdhjhbvcvnetry767456fxsasdf",
+                "type": "fcm"
+              },
+              "objectId": "anon_id"
+            },
+            {
+              "evtName": "Random",
               "evtData": {
-                "title": "Home",
-                "path": "/"
+                "country_region": "India",
+                "test": "abc"
               },
               "type": "event",
-              "identity": "anon-id-new"
-            },
-            {
-              "type": "profile",
-              "profileData": {
-                "Email": "martinjr101@gmail.com",
-                "Name": "Martin Junior",
-                "Phone": "+919374162212",
-                "Gender": "M",
-                "DOB": "1614775793",
-                "Customer Type": "Prime",
-                "graduate": true,
-                "msg_push": true,
-                "msgSms": true,
-                "msgemail": true,
-                "msgwhatsapp": false,
-                "custom_tags": "[\"Test_User\",\"Interested_User\",\"DIY_Hobby\"]",
-                "custom_mappings": "{\"Office\":\"Trastkiv\",\"Country\":\"Russia\"}",
-                "address": "{\"city\":\"kolkata\",\"country\":\"India\",\"postalCode\":789223,\"state\":\"WB\",\"street\":\"\"}"
-              },
-              "identity": "martinjr101"
-            },
-            {
-              "evtName": "product added",
-              "evtData": {
-                "product_id": "123",
-                "sku": "F15",
-                "category": "Games",
-                "name": "Game",
-                "brand": "Gamepro",
-                "variant": "111",
-                "price": 13.49,
-                "quantity": 11,
-                "coupon": "DISC21",
-                "position": 1,
-                "url": "https://www.website.com/product/path",
-                "image_url": "https://www.website.com/product/path.png"
-              },
-              "type": "event",
-              "identity": "martinjr101"
+              "objectId": "cd3a4439-7df0-4475-acb9-6659c7c4dfe3"
             }
           ]
         },
@@ -99,12 +70,6 @@
       },
       {
         "jobId": 2
-      },
-      {
-        "jobId": 3
-      },
-      {
-        "jobId": 4
       }
     ],
     "batched": false,
@@ -113,7 +78,8 @@
       "Config": {
         "passcode": "fbee74a147828e2932c701d19dc1f2dcfa4ac0048be3aa3a88d427090a59dc1c0fa002f1",
         "accountId": "476550467",
-        "trackAnonymous": true
+        "trackAnonymous": true,
+        "enableObjectIdMapping": true
       }
     }
   }

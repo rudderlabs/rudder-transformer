@@ -21,6 +21,8 @@ const getData = redisKey => {
     }
 }
 let connectionRequestCount = 0;
+const getCallKeysForError = ["error", "shopifyGetAnonymousId", "shopifyGetSessionId", "shopify_test_get_items_fail"];
+const setCallKeysForError = ["error", "shopify_test_set_map_fail", "shopify_test_set_redis_error"];
 class Redis {
     constructor(data) {
         this.host = data.host,
@@ -33,7 +35,7 @@ class Redis {
     };
 
     get(key) {
-        if (key === "error") {
+        if (getCallKeysForError.includes(key)) {
             throw new Error("Connection is Closed");
         }
         const mockData = getData(key);
@@ -45,7 +47,7 @@ class Redis {
     }
 
     set(key, value) {
-        if (key === "error") {
+        if (setCallKeysForError.includes(key)) {
             throw new Error("Connection is Closed");
         }
         return {
@@ -57,17 +59,17 @@ class Redis {
         }
     }
 
-    hget(key, internalKey) {
+    hgetall(key) {
         const obj = this.get(key);
-        if (obj === null) {
-            return null;
-        }
-        return obj[`${internalKey}`];
+        return obj;
     }
     multi() {
         return { hmset: this.hmset, set: this.set }
     };
     hmset(key, value) {
+        if (setCallKeysForError.includes(key)) {
+            throw new Error("Connection is Closed");
+        }
         return {
             expire: (key, expiryTime) => {
                 return {

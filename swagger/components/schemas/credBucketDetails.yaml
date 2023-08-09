@@ -1,0 +1,18 @@
+title: Cred Bucket Details Schema
+type: object
+properties:
+  sendTo:
+    type: string
+    example: aws
+  accessKeyId:
+    type: string
+    example: <AWS_ACCESS_KEY>
+  secretAccessKey:
+    type: string
+    example: <AWS_SECRET_ACCESS_KEY>
+  bucket:
+    type: string
+    example: <S3_BUCKET_NAME>
+  region:
+    type: string
+    example: <AWS_REGION>

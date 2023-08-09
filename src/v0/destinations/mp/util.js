@@ -99,7 +99,7 @@ const createIdentifyResponse = (message, type, destination, responseBuilderSimpl
   // user payload created
   const properties = getTransformedJSON(message, mPIdentifyConfigJson, useNewMapping);
 
-  const parameters = {
+  const payload = {
     $set: properties,
     $token: token,
     $distinct_id: message.userId || message.anonymousId,
@@ -108,14 +108,14 @@ const createIdentifyResponse = (message, type, destination, responseBuilderSimpl
   };
 
   if (destination?.Config.identityMergeApi === 'simplified') {
-    parameters.$distinct_id = message.userId || `$device:${message.anonymousId}`;
+    payload.$distinct_id = message.userId || `$device:${message.anonymousId}`;
   }
 
   if (message.context?.active === false) {
-    parameters.$ignore_time = true;
+    payload.$ignore_time = true;
   }
   // Creating the response to create user
-  return responseBuilderSimple(parameters, message, type, destination.Config);
+  return responseBuilderSimple(payload, message, type, destination.Config);
 };
 
 /**
@@ -130,4 +130,96 @@ const isImportAuthCredentialsAvailable = (destination) =>
     destination.Config.serviceAccountUserName &&
     destination.Config.projectId);
 
-module.exports = { createIdentifyResponse, isImportAuthCredentialsAvailable };
+/**
+ * Finds an existing batch based on metadata JobIds from the provided batch and metadataMap.
+ * @param {*} batch
+ * @param {*} metadataMap The map containing metadata items indexed by JobIds.
+ * @returns
+ */
+const findExistingBatch = (batch, metadataMap) => {
+  let existingBatch = null;
+
+  for (const metadataItem of batch.metadata) {
+    if (metadataMap.has(metadataItem.jobId)) {
+      existingBatch = metadataMap.get(metadataItem.jobId);
+      break;
+    }
+  }
+
+  return existingBatch;
+};
+
+/**
+ * Removes duplicate metadata within each merged batch object.
+ * @param {*} mergedBatches An array of merged batch objects.
+ */
+const removeDuplicateMetadata = (mergedBatches) => {
+  for (const batch of mergedBatches) {
+    const metadataSet = new Set();
+    batch.metadata = batch.metadata.filter((metadataItem) => {
+      if (!metadataSet.has(metadataItem.jobId)) {
+        metadataSet.add(metadataItem.jobId);
+        return true;
+      }
+      return false;
+    });
+  }
+};
+
+/**
+ * Combines batched requests with the same JobIds.
+ * @param {*} inputBatches The array of batched request objects.
+ * @returns  The combined batched requests with merged JobIds.
+ *
+ */
+const combineBatchRequestsWithSameJobIds = (inputBatches) => {
+  const combineBatches = (batches) => {
+    const clonedBatches = [...batches];
+    const mergedBatches = [];
+    const metadataMap = new Map();
+
+    clonedBatches.forEach((batch) => {
+      const existingBatch = findExistingBatch(batch, metadataMap);
+
+      if (existingBatch) {
+        // Merge batchedRequests arrays
+        existingBatch.batchedRequest = [
+          ...(Array.isArray(existingBatch.batchedRequest)
+            ? existingBatch.batchedRequest
+            : [existingBatch.batchedRequest]),
+          ...(Array.isArray(batch.batchedRequest) ? batch.batchedRequest : [batch.batchedRequest]),
+        ];
+
+        // Merge metadata
+        batch.metadata.forEach((metadataItem) => {
+          if (!metadataMap.has(metadataItem.jobId)) {
+            metadataMap.set(metadataItem.jobId, existingBatch);
+          }
+          existingBatch.metadata.push(metadataItem);
+        });
+      } else {
+        mergedBatches.push(batch);
+        batch.metadata.forEach((metadataItem) => {
+          metadataMap.set(metadataItem.jobId, batch);
+        });
+      }
+    });
+
+    // Remove duplicate metadata within each merged object
+    removeDuplicateMetadata(mergedBatches);
+
+    return mergedBatches;
+  };
+  // We need to run this twice because in first pass some batches might not get merged
+  // and in second pass they might get merged
+  // Example: [[{jobID:1}, {jobID:2}], [{jobID:3}], [{jobID:1}, {jobID:3}]]
+  // 1st pass: [[{jobID:1}, {jobID:2}, {jobID:3}], [{jobID:3}]]
+  // 2nd pass: [[{jobID:1}, {jobID:2}, {jobID:3}]]
+  return combineBatches(combineBatches(inputBatches));
+};
+
+module.exports = {
+  createIdentifyResponse,
+  isImportAuthCredentialsAvailable,
+  combineBatchRequestsWithSameJobIds,
+};

@@ -1,0 +1,40 @@
+metadata:
+  sourceId: '27O0bmEEx3GgfmEhZHUcPwJQVWC'
+  workspaceId: '27O0bhB6p5ehfOWeeZlOSsSDTLg'
+  namespace: ''
+  instanceId: '1'
+  sourceType: 'HTTP'
+  sourceCategory: ''
+  trackingPlanId: ''
+  trackingPlanVersion: 0
+  sourceTpConfig: null
+  mergedTpConfig: null
+  destinationId: '2JIqVoWNvSOHa9ppKOqSo4hPuc0'
+  jobRunId: ''
+  jobId: 1
+  sourceBatchId: ''
+  sourceJobId: ''
+  sourceJobRunId: ''
+  sourceTaskId: ''
+  sourceTaskRunId: ''
+  recordId: null
+  destinationType: 'PINTEREST_TAG'
+  messageId: 'cededd59-671c-4a2e-a89a-6461ed662ab9'
+  oauthAccessToken: ''
+  messageIds: null
+  rudderId: '<<>>anon-id<<>>testUser'
+  receivedAt: '2023-01-01T14:15:41.731+05:30'
+  eventName: 'Product Viewed'
+  eventType: 'track'
+  sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591'
+  destinationDefinitionId: ''
+statusCode: 400
+error: Random is not mapped in UI. Make sure to map the event in UI or enable the 'send as custom event' setting
+statTags:
+  errorCategory: 'platform'
+  implementation: 'cdkV2'
+  destType: 'PINTEREST_TAG'
+  module: 'destination'
+  feature: 'processor'
+  destinationId: '2JIqVoWNvSOHa9ppKOqSo4hPuc0'
+  workspaceId: '27O0bhB6p5ehfOWeeZlOSsSDTLg'

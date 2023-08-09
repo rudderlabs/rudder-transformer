@@ -1,5 +1,4 @@
 const Redis = require('ioredis');
-const { isDefinedAndNotNull } = require('../../v0/util');
 const { RedisError } = require('../../v0/util/errorTypes');
 const log = require('../../logger');
 const stats = require('../stats');
@@ -77,20 +76,12 @@ const RedisDB = {
    * key2: {internalKey2:val2},
    * }
    */
-  async getVal(hashKey, key, isObjExpected = true) {
+  async getVal(hashKey, isObjExpected = true) {
     try {
       await this.checkAndConnectConnection(); // check if redis is connected and if not, connect
       let redisVal;
       if (isObjExpected === true) {
-        redisVal = await this.client.hget(hashKey, key);
-        if (isDefinedAndNotNull(redisVal)) {
-          try {
-            return JSON.parse(redisVal);
-          } catch (e) {
-            // do nothing
-            return redisVal;
-          }
-        }
+        redisVal = await this.client.hgetall(hashKey);
         return redisVal;
       }
       return this.client.get(hashKey);

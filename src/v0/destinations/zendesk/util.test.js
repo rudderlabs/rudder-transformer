@@ -14,4 +14,8 @@ describe('getSourceName utility test', () => {
   it('source name is not configured in config', () => {
     expect('Rudder').toEqual(getSourceName({}));
   });
+
+  it('empty source name is passed in config', () => {
+    expect('Rudder').toEqual(getSourceName({ sourceName: '' }));
+  });
 });

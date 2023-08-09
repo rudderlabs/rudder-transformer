@@ -170,7 +170,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
   ): Promise<DeliveryResponse> {
     try {
       const networkHandler = networkHandlerFactory.getNetworkHandler(destinationType);
-      const rawProxyResponse = await networkHandler.proxy(destinationRequest);
+      const rawProxyResponse = await networkHandler.proxy(destinationRequest, destinationType);
       const processedProxyResponse = networkHandler.processAxiosResponse(rawProxyResponse);
       return networkHandler.responseHandler(
         {

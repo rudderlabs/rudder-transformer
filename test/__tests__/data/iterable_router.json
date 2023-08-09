@@ -13,6 +13,7 @@
             "new_field2": "GB"
           },
           "channel": "sources",
+          "rudderId": "3d51640c-ab09-42c1-b7b2-db6ab433b35e",
           "context": {
             "sources": {
               "version": "feat.SupportForTrack",
@@ -59,6 +60,7 @@
             "new_field2": "GB1"
           },
           "channel": "sources",
+          "rudderId": "3d51640c-ab09-42c1-b7b2-db6ab433b35e",
           "context": {
             "sources": {
               "version": "feat.SupportForTrack",
@@ -174,8 +176,7 @@
           "originalTimestamp": "2020-08-28T16:26:06.468Z"
         },
         "metadata": {
-          "jobId": 1,
-          "userId": "1"
+          "jobId": 1
         },
         "destination": {
           "Config": {
@@ -219,8 +220,7 @@
           "originalTimestamp": "2020-08-28T16:26:06.462Z"
         },
         "metadata": {
-          "jobId": 2,
-          "userId": "2"
+          "jobId": 2
         },
         "destination": {
           "Config": {
@@ -281,8 +281,7 @@
           "sentAt": "2019-10-14T11:15:53.296Z"
         },
         "metadata": {
-          "jobId": 3,
-          "userId": "3"
+          "jobId": 3
         },
         "destination": {
           "Config": {
@@ -324,6 +323,7 @@
           "receivedAt": "2021-10-28T14:03:46.567Z",
           "recordId": "8",
           "request_ip": "10.1.94.92",
+          "rudderId": "c0f6843e-e3d6-4946-9752-fa339fbadef2",
           "sentAt": "2021-10-28T14:03:50.503Z",
           "timestamp": "2021-10-28T14:03:46.566Z",
           "traits": {
@@ -338,8 +338,7 @@
           "userId": "lynnanderson@smith.net"
         },
         "metadata": {
-          "jobId": 4,
-          "userId": "4"
+          "jobId": 4
         },
         "destination": {
           "ID": "1zia9wKshXt80YksLmUdJnr7IHI",
@@ -474,8 +473,7 @@
           "sentAt": "2019-10-14T11:15:53.296Z"
         },
         "metadata": {
-          "jobId": 5,
-          "userId": "5"
+          "jobId": 5
         },
         "destination": {
           "Config": {
@@ -511,8 +509,7 @@
           "originalTimestamp": "2020-08-28T16:26:06.468Z"
         },
         "metadata": {
-          "jobId": 6,
-          "userId": "6"
+          "jobId": 6
         },
         "destination": {
           "Config": {
@@ -549,8 +546,7 @@
           "userId": "user@1"
         },
         "metadata": {
-          "jobId": 7,
-          "userId": "7"
+          "jobId": 7
         },
         "destination": {
           "Config": {
@@ -588,8 +584,7 @@
           "originalTimestamp": "2020-08-28T16:26:06.468Z"
         },
         "metadata": {
-          "jobId": 8,
-          "userId": "8"
+          "jobId": 8
         },
         "destination": {
           "Config": {
@@ -698,8 +693,7 @@
         },
         "metadata": [
           {
-            "jobId": 2,
-            "userId": "2"
+            "jobId": 2
           }
         ],
         "statusCode": 200
@@ -782,8 +776,7 @@
         },
         "metadata": [
           {
-            "jobId": 4,
-            "userId": "4"
+            "jobId": 4
           }
         ],
         "statusCode": 200
@@ -857,16 +850,13 @@
         },
         "metadata": [
           {
-            "jobId": 1,
-            "userId": "1"
+            "jobId": 1
           },
           {
-            "jobId": 3,
-            "userId": "3"
+            "jobId": 3
           },
           {
-            "jobId": 6,
-            "userId": "6"
+            "jobId": 6
           }
         ],
         "statusCode": 200
@@ -939,8 +929,7 @@
         },
         "metadata": [
           {
-            "jobId": 5,
-            "userId": "5"
+            "jobId": 5
           }
         ],
         "statusCode": 200
@@ -980,8 +969,7 @@
         },
         "metadata": [
           {
-            "jobId": 8,
-            "userId": "8"
+            "jobId": 8
           }
         ],
         "statusCode": 200
@@ -1001,8 +989,7 @@
         "error": "Invalid page call",
         "metadata": [
           {
-            "jobId": 7,
-            "userId": "7"
+            "jobId": 7
           }
         ],
         "statTags": {

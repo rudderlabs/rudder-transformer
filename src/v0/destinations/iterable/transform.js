@@ -166,94 +166,72 @@ const processRouterDest = async (inputs, reqMetadata) => {
     return errorRespEvents;
   }
 
-  const eventsPerUser = _.groupBy(inputs, (event) => event.metadata.userId);
-  const eachUserEvents = Object.values(eventsPerUser);
+  let transformedEvents = await Promise.all(
+    inputs.map((event) => {
+      try {
+        if (event.message.statusCode) {
+          // already transformed event
+          return {
+            message: event.message,
+            metadata: event.metadata,
+            destination: event.destination,
+          };
+        }
 
-  const uniqueEventsPerUser = [];
-  const multipleEventsPerUser = [];
+        /**
+         * If not transformed
+         * 
+         * responses = [e1_batched_event, e1_non_batched_event] or {e2}
+         * 
+         * transformedPayloads =
+         * [
+         *   {
+         *     message: e1_batched_message,
+         *     metadata: m1,
+         *     destination: {}
+         *   },
+         *   {
+         *     message: e1_non_batched_message,
+         *     metadata: m1,
+         *     destination: {}
+         *    }
+         * ]
+         * 
+         * or
+         * 
+         * transformedPayloads =
+         * [
+         *   {
+         *     message: e2_message,
+         *     metadata: m2,
+         *     destination: {}
+         *   }
+         * ]
+         */
 
-  // Separate events into singleEventArray and multipleEventsArray based on length
-  eachUserEvents.forEach((userEventsArray) => {
-    if (userEventsArray.length === 1) {
-      uniqueEventsPerUser.push(...userEventsArray);
-    } else if (userEventsArray.length > 1) {
-      multipleEventsPerUser.push(userEventsArray);
-    }
-  });
-
-  const events = [uniqueEventsPerUser, ...multipleEventsPerUser];
-
-  const response = await Promise.all(
-    events.map(async (listOfEvents) => {
-      let transformedPayloads = await Promise.all(
-        listOfEvents.map(async (event) => {
-          try {
-            if (event.message.statusCode) {
-              // already transformed event
-              return {
-                message: event.message,
-                metadata: event.metadata,
-                destination: event.destination,
-              };
-            }
-
-            /**
-             * If not transformed
-             *
-             * responses = [e1_batched_event, e1_non_batched_event] or {e2}
-             *
-             * transformedPayloads =
-             * [
-             *   {
-             *     message: e1_batched_message,
-             *     metadata: m1,
-             *     destination: {}
-             *   },
-             *   {
-             *     message: e1_non_batched_message,
-             *     metadata: m1,
-             *     destination: {}
-             *    }
-             * ]
-             *
-             * or
-             *
-             * transformedPayloads =
-             * [
-             *   {
-             *     message: e2_message,
-             *     metadata: m2,
-             *     destination: {}
-             *   }
-             * ]
-             */
-
-            const responses = process(event);
-            const transformedPayloads = Array.isArray(responses) ? responses : [responses];
-            return transformedPayloads.map((response) => ({
-              message: response,
-              metadata: event.metadata,
-              destination: event.destination,
-            }));
-          } catch (error) {
-            return handleRtTfSingleEventError(event, error, reqMetadata);
-          }
-        }),
-      );
-
-      /**
-       * Before flat map : transformedPayloads = [{e1}, {e2}, [{e3}, {e4}, {e5}], {e6}]
-       * After flat map : transformedPayloads = [{e1}, {e2}, {e3}, {e4}, {e5}, {e6}]
-       */
-      transformedPayloads = _.flatMap(transformedPayloads);
-      return filterEventsAndPrepareBatchRequests(transformedPayloads);
+        const transformedPayloads = [];
+        let responses = process(event);
+        responses = Array.isArray(responses) ? responses : [responses];
+        responses.forEach((response) => {
+          transformedPayloads.push({
+            message: response,
+            metadata: event.metadata,
+            destination: event.destination,
+          });
+        });
+        return transformedPayloads;
+      } catch (error) {
+        return handleRtTfSingleEventError(event, error, reqMetadata);
+      }
     }),
   );
 
-  // Flatten the response array containing batched events from multiple groups
-  const allBatchedEvents = _.flatMap(response);
-
-  return allBatchedEvents;
+  /**
+   * Before flat map : transformedEvents = [{e1}, {e2}, [{e3}, {e4}, {e5}], {e6}]
+   * After flat map : transformedEvents = [{e1}, {e2}, {e3}, {e4}, {e5}, {e6}]
+   */
+  transformedEvents = _.flatMap(transformedEvents);
+  return filterEventsAndPrepareBatchRequests(transformedEvents);
 };
 
 module.exports = { process, processRouterDest };

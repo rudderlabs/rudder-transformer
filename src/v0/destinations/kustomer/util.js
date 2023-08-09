@@ -1,8 +1,8 @@
 /* eslint-disable eqeqeq */
-const axios = require('axios');
 const _ = require('lodash');
 const set = require('set-value');
 const get = require('get-value');
+const myAxios = require('../../../util/myAxios');
 const { BASE_ENDPOINT } = require('./config');
 const { getType, isDefinedAndNotNull, isObject } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
@@ -132,11 +132,15 @@ const handleResponse = (response) => {
 const fetchKustomer = async (url, destination) => {
   let response;
   try {
-    response = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${destination.Config.apiKey}`,
+    response = await myAxios.get(
+      url,
+      {
+        headers: {
+          Authorization: `Bearer ${destination.Config.apiKey}`,
+        },
       },
-    });
+      { destType: 'kustomer', feature: 'transformation' },
+    );
   } catch (err) {
     if (err.response) {
       return handleResponse(err.response);

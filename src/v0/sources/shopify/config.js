@@ -101,6 +101,8 @@ const SUPPORTED_TRACK_EVENTS = [
   'orders_paid',
   'orders_partially_fullfilled',
 ];
+
+const maxTimeToIdentifyRSGeneratedCall = 10000; // in ms
 const useRedisDatabase = process.env.USE_REDIS_DB === 'true' || false;
 
 module.exports = {
@@ -117,4 +119,5 @@ module.exports = {
   SHOPIFY_TRACK_MAP,
   useRedisDatabase,
   SHOPIFY_ADMIN_ONLY_EVENTS,
+  maxTimeToIdentifyRSGeneratedCall
 };

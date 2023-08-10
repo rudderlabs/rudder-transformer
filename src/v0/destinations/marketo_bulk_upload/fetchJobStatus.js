@@ -78,7 +78,9 @@ const getFailedJobStatus = async (event) => {
           state: 'Abortable',
         });
         throw new AbortedError(
-          resp.response.response.statusText || resp.response.statusText|| FAILURE_JOB_STATUS_ERR_MSG,
+          resp.response.response.statusText ||
+            resp.response.statusText ||
+            FAILURE_JOB_STATUS_ERR_MSG,
           400,
           resp,
         );
@@ -232,7 +234,7 @@ const responseHandler = async (event, type) => {
 
   const responseStatus =
     type === 'fail' ? await getFailedJobStatus(event) : await getWarningJobStatus(event);
-  const responseArr = responseStatus.data.split('\n');
+  const responseArr = responseStatus.data.split('\n'); // responseArr = ['field1,field2,Import Failure Reason', 'val1,val2,reason',...]
   const { input, metadata } = event;
   let headerArr;
   if (metadata && metadata.csvHeader) {
@@ -241,6 +243,8 @@ const responseHandler = async (event, type) => {
     throw new PlatformError('No csvHeader in metadata');
   }
   const data = {};
+  // create a map of job_id and data sent from server
+  // {<jobId>: '<param-val1>,<param-val2>'}
   input.forEach((i) => {
     const response = headerArr.map((fieldName) => Object.values(i)[0][fieldName]).join(',');
     data[i.metadata.job_id] = response;
@@ -248,14 +252,17 @@ const responseHandler = async (event, type) => {
   const unsuccessfulJobIdsArr = [];
   const reasons = {};
   const startTime = Date.now();
+  // match marketo response data with received data from server
   for (const element of responseArr) {
     // split response by comma but ignore commas inside double quotes
     const elemArr = element.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-    const reasonMessage = elemArr.pop();
-    // match response data with received data from server
+    // ref :
+    // https://developers.marketo.com/rest-api/bulk-import/bulk-custom-object-import/#:~:text=Now%20we%E2%80%99ll%20make%20Get%20Import%20Custom%20Object%20Failures%20endpoint%20call%20to%20get%20additional%20failure%20detail%3A
+    const reasonMessage = elemArr.pop(); // get the column named "Import Failure Reason"
     for (const key in data) {
       if (data.hasOwnProperty(key)) {
         const val = data[key];
+        // match response data with received data from server
         if (val === `${elemArr.join()}`) {
           // add job keys if warning/failure
 

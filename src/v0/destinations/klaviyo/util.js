@@ -47,18 +47,26 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
     profileId = resp.response?.data?.id;
   } else if (resp.status === 409) {
     const { errors } = resp.response;
-    profileId = errors[0]?.meta?.duplicate_profile_id;
-  } else {
-    throw new NetworkError(
-      `Failed to create user due to ${JSON.stringify(resp.response)}`,
-      resp.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.status),
-      },
-      `${JSON.stringify(resp.response)}`,
-    );
+    profileId = errors?.[0]?.meta?.duplicate_profile_id;
   }
-  return profileId;
+
+  if (profileId) {
+    return profileId;
+  }
+
+  let statusCode = resp.status;
+  if (resp.status === 201 || resp.status === 409) {
+    statusCode = 500;
+  }
+
+  throw new NetworkError(
+    `Failed to create user due to ${JSON.stringify(resp.response)}`,
+    statusCode,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(statusCode),
+    },
+    `${JSON.stringify(resp.response)}`,
+  );
 };
 
 const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKey) => {

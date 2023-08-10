@@ -56,6 +56,7 @@
     "CUSTOMERIO": true,
     "BRAZE": true,
     "OPTIMIZELY_FULLSTACK": true,
-    "TWITTER_ADS": true
+    "TWITTER_ADS": true,
+    "CLEVERTAP": true
   }
 }

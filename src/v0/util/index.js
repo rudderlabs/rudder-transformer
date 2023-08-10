@@ -1013,22 +1013,16 @@ const constructPayload = (message, mappingJson, destinationName = null) => {
 //   }
 // }
 // to get destination specific external id passed in context.
-function getDestinationExternalID(message, type) {
-  let externalIdArray = null;
-  let destinationExternalId = null;
-  if (message.context && message.context.externalId) {
-    externalIdArray = message.context.externalId;
-  }
-
+const getDestinationExternalID = (message, type) => {
+  const { context } = message;
+  const externalIdArray = context?.externalId || [];
+  let externalIdObj;
   if (Array.isArray(externalIdArray)) {
-    externalIdArray.forEach((extIdObj) => {
-      if (extIdObj.type === type) {
-        destinationExternalId = extIdObj.id;
-      }
-    });
+    externalIdObj = externalIdArray.find((extIdObj) => extIdObj?.type === type);
   }
+  const destinationExternalId = externalIdObj ? externalIdObj.id : null;
   return destinationExternalId;
-}
+};
 
 // Get id, identifierType and object type from externalId for rETL
 // type will be of the form: <DESTINATION-NAME>-<object>
@@ -1282,7 +1276,8 @@ function toTitleCase(payload) {
       .replace(/([a-z])(\d)/gi, '$1 $2')
       .replace(/(\d)([a-z])/gi, '$1 $2')
       .trim()
-      .replace(/(_)/g, ` `).replace(/(?:^|\s)(\w)/g, (match) => match.toUpperCase());
+      .replace(/(_)/g, ` `)
+      .replace(/(?:^|\s)(\w)/g, (match) => match.toUpperCase());
     newPayload[newKey] = value;
   });
   return newPayload;
@@ -1428,7 +1423,9 @@ function isHttpStatusRetryable(status) {
  * @returns
  */
 function generateUUID() {
-  return crypto.randomUUID({ disableEntropyCache: true }); /* using disableEntropyCache as true to not cache the generated uuids. 
+  return crypto.randomUUID({
+    disableEntropyCache: true,
+  }); /* using disableEntropyCache as true to not cache the generated uuids. 
   For more Info https://nodejs.org/api/crypto.html#cryptorandomuuidoptions:~:text=options%20%3CObject%3E-,disableEntropyCache,-%3Cboolean%3E%20By
   */
 }

@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-const axios = require('axios');
+const myAxios = require('../../../util/myAxios');
 const { EventType } = require('../../../constants');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG, ENDPOINTS } = require('./config');
 const {
@@ -29,7 +29,7 @@ const CONTACT_KEY_KEY = 'Contact Key';
 
 const getToken = async (clientId, clientSecret, subdomain) => {
   try {
-    const resp = await axios.post(
+    const resp = await myAxios.post(
       `https://${subdomain}.${ENDPOINTS.GET_TOKEN}`,
       {
         grant_type: 'client_credentials',
@@ -39,6 +39,7 @@ const getToken = async (clientId, clientSecret, subdomain) => {
       {
         'Content-Type': JSON_MIME_TYPE,
       },
+      { destType: 'sfmc', feature: 'transformation' },
     );
     if (resp && resp.data) {
       return resp.data.access_token;

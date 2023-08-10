@@ -1,0 +1,80 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - name: flattenJson
+    path: ../../../../v0/util
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+  - path: ../../bindings/jsontemplate
+  - path: ./config
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.type === {{$.EventType.TRACK}}, 
+        "message type " + .message.type + " is not supported");
+  - name: prepareContext
+    template: |
+      $.context.messageType = .message.type.toLowerCase();
+      const baseEndpoint = .destination.Config.dataCenter === 'eu' ? 
+        "https://insights-collector.eu01.nr-data.net/v1/accounts/" :
+        "https://insights-collector.newrelic.com/v1/accounts/";
+      $.context.endpoint = baseEndpoint + .destination.Config.accountId + "/events";
+  - name: preparePayload
+    template: |
+      const flattenProperties = $.flattenJson(.message.properties);
+      $.context.payload = .message.({
+        ...flattenProperties,
+        event: .event,
+        timestamp: $.toSeconds({{{{$.getGenericPaths("timestamp")}}}})
+      });
+  - name: sendUserInfo
+    condition: .destination.Config.sendUserIdanonymousId
+    template: |
+      $.context.payload.userId = .message.({{{{$.getGenericPaths("userIdOnly")}}}});
+      $.context.payload.anonymousId = .message.anonymousId;
+  - name: sendDeviceInfo
+    condition: .destination.Config.sendDeviceContext
+    template: |
+      $.context.payload = {
+        ...$.context.payload,
+        ...$.flattenJson(.message.context)
+      }
+  - name: handleReservedWords
+    template: |
+      $.context.payload = $.context.payload.{~['accountId', 'appId', 'eventType']};
+      const keys = Object.keys($.context.payload);
+      const newPayload = {};
+      const newKeyValArray = keys@key.(
+        const newKey = key in $.reservedNrqlWords ?
+          "'" + key + "'" : key;
+        const value = $.context.payload[key];
+        const newValue = typeof value === "boolean" ?
+          value.toString() : value;
+        newPayload[newKey] = newValue;
+      );
+      $.context.payload = newPayload;
+  - name: eventType
+    template: |
+      $.context.payload.eventType = .destination.Config.customEventType || "rudderstack";
+  - name: cleanPayload
+    template: |
+      $.context.payload = $.removeUndefinedAndNullValues($.context.payload);
+  - name: buildResponse
+    description: In batchMode we return payload directly
+    condition: $.batchMode
+    template: $.context.payload
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        const response = $.defaultRequestConfig();
+        response.body.JSON = $.context.payload;
+        response.endpoint = $.context.endpoint;
+        response.headers = {
+          "Content-Type": "application/json",
+          "Api-Key": .destination.Config.insertKey
+        };
+        response

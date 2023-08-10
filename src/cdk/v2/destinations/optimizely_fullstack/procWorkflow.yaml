@@ -11,8 +11,6 @@ bindings:
     path: ../../../../v0/util
   - name: getIntegrationsObj
     path: ../../../../v0/util
-  - name: formatTimeStamp
-    path: ../../../../v0/util
   - name: getFieldValueFromMessage
     path: ../../../../v0/util
   - name: getHashFromArray
@@ -136,7 +134,7 @@ steps:
           [{
             "entity_id": $.outputs.extractExperimentIds.campaignId || .destination.Config.campaignId, 
             "type": "campaign_activated", 
-            "timestamp": $.formatTimeStamp(timestamp),
+            "timestamp": $.toMilliseconds(timestamp),
             "uuid": .message.messageId
           }];
 
@@ -197,7 +195,7 @@ steps:
           );
           [{
             "entity_id": $.outputs.prepareTrackPayload.optimizelyEvent.id,
-            "timestamp": $.formatTimeStamp(timestamp),
+            "timestamp": $.toMilliseconds(timestamp),
             "key": $.outputs.prepareTrackPayload.optimizelyEvent.key,
             "uuid": .message.messageId,
             "quantity": .message.properties.quantity,
@@ -274,7 +272,7 @@ steps:
           const events = [
             {
             "entity_id": optimizelyEvents[0].id,
-            "timestamp": $.formatTimeStamp(timestamp),
+            "timestamp": $.toMilliseconds(timestamp),
             "key": optimizelyEvents[0].key,
             "uuid": .message.messageId,
             "tags": .message.properties
@@ -283,7 +281,7 @@ steps:
 
           optimizelyEvents.length > 1 ? events.push({
             "entity_id": optimizelyEvents[1].id,
-            "timestamp": $.formatTimeStamp(timestamp),
+            "timestamp": $.toMilliseconds(timestamp),
             "key": optimizelyEvents[1].key,
             "uuid": $.generateUUID(),
             "tags": .message.properties

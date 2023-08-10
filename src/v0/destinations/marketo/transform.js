@@ -214,7 +214,10 @@ const getLeadId = async (message, formattedDestination, token) => {
   //     "identifierType": "email",
   //     "type": "MARKETO-{object}"
   //   }
-  let leadId = getDestinationExternalIDInfoForRetl(message, 'MARKETO').destinationExternalId;
+  let leadId;
+  if (get(message, MappedToDestinationKey)) {
+    leadId = getDestinationExternalIDInfoForRetl(message, 'MARKETO').destinationExternalId;
+  }
   if (!leadId) {
     leadId = getDestinationExternalID(message, 'marketoLeadId');
   }

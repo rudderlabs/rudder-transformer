@@ -1421,11 +1421,30 @@ describe("Python transformations", () => {
     expect(axios.get).toHaveBeenCalledTimes(0);
   });
 
-  it("Setting up function - retry request", async () => {
+  it("Setting up function - retry request on faas function deployement exists", async () => {
     const trRevCode = pyTrRevCode(randomID());
 
     axios.post.mockRejectedValue({
-      response: { status: 500, data: "already exists" }
+      response: { status: 500, data: 'unable create Deployment: deployments.apps "fn-ast" already exists' }
+    });
+
+    await expect(async () => {
+      await setupUserTransformHandler([], trRevCode);
+    }).rejects.toThrow(RetryRequestError);
+
+    // function gets cached on already exists error
+    const funcName = pyfaasFuncName(trRevCode.workspaceId, trRevCode.versionId);
+    const expectedData = { success: true, publishedVersion: funcName };
+
+    const output = await setupUserTransformHandler([], trRevCode);
+    expect(output).toEqual(expectedData);
+  });
+
+  it("Setting up function - retry request on faas function service exists", async () => {
+    const trRevCode = pyTrRevCode(randomID());
+
+    axios.post.mockRejectedValue({
+      response: { status: 400, data: 'failed create Service: services "fn-function" already exists' }
     });
 
     await expect(async () => {

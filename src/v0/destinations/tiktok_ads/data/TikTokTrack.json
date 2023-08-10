@@ -37,7 +37,10 @@
   {
     "destKey": "properties.content_id",
     "sourceKeys": ["properties.product_id", "properties.productId"],
-    "required": false
+    "required": false,
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "destKey": "properties.content_type",

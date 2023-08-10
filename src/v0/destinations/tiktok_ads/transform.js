@@ -19,6 +19,7 @@ const {
   handleRtTfSingleEventError,
   batchMultiplexedEvents,
 } = require('../../util');
+const { getContents } = require('./util');
 const {
   trackMapping,
   TRACK_ENDPOINT,
@@ -32,28 +33,6 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const USER_EMAIL_KEY_PATH = 'context.user.email';
 const USER_PHONE_NUMBER_KEY_PATH = 'context.user.phone_number';
-
-const getContents = (message) => {
-  const contents = [];
-  const { properties } = message;
-  const { products, content_type, contentType } = properties;
-  if (products && Array.isArray(products) && products.length > 0) {
-    products.forEach((product) => {
-      const singleProduct = {
-        content_type:
-          product.contentType || contentType || product.content_type || content_type || 'product',
-        content_id: product.product_id,
-        content_category: product.category,
-        content_name: product.name,
-        price: product.price,
-        quantity: product.quantity,
-        description: product.description,
-      };
-      contents.push(removeUndefinedAndNullValues(singleProduct));
-    });
-  }
-  return contents;
-};
 
 const checkContentType = (contents, contentType) => {
   if (Array.isArray(contents)) {

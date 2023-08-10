@@ -224,7 +224,6 @@ export const data = [
         },
         method: 'POST',
       },
-      pathSuffix: '',
     },
     output: {
       response: {

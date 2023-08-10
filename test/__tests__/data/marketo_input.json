@@ -372,6 +372,64 @@
       "anonymousId": "anon_id_success",
       "channel": "mobile",
       "context": {
+        "traits": {
+          "anonymousId": "anon_id_success"
+        },
+        "userAgent": "Dalvik/2.1.0 (Linux; U; Android 8.1.0; Android SDK built for x86 Build/OSM1.180201.007)"
+      },
+      "event": "Product Clicked",
+      "integrations": {
+        "All": true
+      },
+      "messageId": "id1",
+      "properties": {
+        "name": "Test Product"
+      },
+      "originalTimestamp": "2020-12-17T21:00:59.176Z",
+      "userId": "user_id_success",
+      "type": "track",
+      "sentAt": "2020-03-12T09:05:03.421Z"
+    },
+    "destination": {
+      "ID": "1mMy5cqbtfuaKZv1IhVQKnBerte",
+      "Config": {
+        "accountId": "marketo_acct_id_token_failure",
+        "clientId": "marketo_acct_id_token_failure",
+        "clientSecret": "marketo_acct_id_token_failure",
+        "trackAnonymousEvents": false,
+        "customActivityEventMap": [
+          {
+            "from": "Product Clicked",
+            "to": "100001"
+          }
+        ],
+        "customActivityPropertyMap": [
+          {
+            "from": "name",
+            "to": "productName"
+          }
+        ],
+        "customActivityPrimaryKeyMap": [
+          {
+            "from": "Product Clicked",
+            "to": "name"
+          }
+        ],
+        "leadTraitMapping": [
+          {
+            "from": "leadScore",
+            "to": "customLeadScore"
+          }
+        ],
+        "createIfNotExist": true
+      }
+    }
+  },
+  {
+    "message": {
+      "anonymousId": "anon_id_success",
+      "channel": "mobile",
+      "context": {
         "app": {
           "build": "1",
           "name": "TestAppName",
@@ -1059,6 +1117,94 @@
           }
         ]
       }
+    }
+  },
+  {
+    "message": {
+      "channel": "sources",
+      "context": {
+        "externalId": [
+          {
+            "id": "lynnanderson@smith.net",
+            "identifierType": "email",
+            "type": "MARKETO-new_user"
+          }
+        ],
+        "traits": {
+          "marketoGUID": "23",
+          "administrative_unit": "Minnesota",
+          "am_pm": "AM",
+          "boolean": true,
+          "firstname": "Jacqueline",
+          "pPower": "AM",
+          "userId": "Jacqueline"
+        },
+        "sources": {
+          "batch_id": "f5f240d0-0acb-46e0-b043-57fb0aabbadd",
+          "job_id": "1zAj94bEy8komdqnYtSoDp0VmGs/Syncher",
+          "job_run_id": "c5tar6cqgmgmcjvupdhg",
+          "task_id": "tt_10_rows_check",
+          "task_run_id": "c5tar6cqgmgmcjvupdi0",
+          "version": "release.v1.6.8"
+        }
+      },
+      "messageId": "2f052f7c-f694-4849-a7ed-a432f7ffa0a4",
+      "originalTimestamp": "2021-10-28T14:03:50.503Z",
+      "receivedAt": "2021-10-28T14:03:46.567Z",
+      "recordId": "8",
+      "request_ip": "10.1.94.92",
+      "rudderId": "c0f6843e-e3d6-4946-9752-fa339fbadef2",
+      "sentAt": "2021-10-28T14:03:50.503Z",
+      "timestamp": "2021-10-28T14:03:46.566Z",
+      "type": "identify",
+      "userId": "dummyMail@dummyDomain.com"
+    },
+    "destination": {
+      "ID": "1zia9wKshXt80YksLmUdJnr7IHI",
+      "Name": "test_marketo",
+      "DestinationDefinition": {
+        "ID": "1iVQvTRMsPPyJzwol0ifH93QTQ6",
+        "Name": "MARKETO",
+        "DisplayName": "Marketo",
+        "Config": {
+          "destConfig": {
+            "defaultConfig": []
+          },
+          "excludeKeys": [],
+          "includeKeys": [],
+          "saveDestinationResponse": true,
+          "secretKeys": [],
+          "supportedMessageTypes": ["identify", "page", "screen", "track"],
+          "supportedSourceTypes": [
+            "android",
+            "ios",
+            "web",
+            "unity",
+            "amp",
+            "cloud",
+            "warehouse",
+            "reactnative",
+            "flutter",
+            "cordova"
+          ],
+          "supportsVisualMapper": true,
+          "transformAt": "processor",
+          "transformAtV1": "processor"
+        },
+        "ResponseRules": null
+      },
+      "Config": {
+        "clientId": "marketo_client_id_success",
+        "clientSecret": "marketo_client_secret_success",
+        "accountId": "marketo_acct_id_success"
+      },
+      "Enabled": true,
+      "Transformations": [],
+      "IsProcessorEnabled": true
+    },
+    "libraries": [],
+    "request": {
+      "query": {}
     }
   }
 ]

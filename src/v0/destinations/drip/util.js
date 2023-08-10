@@ -1,4 +1,4 @@
-const axios = require('axios');
+const myAxios = require('../../../util/myAxios');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const logger = require('../../../logger');
 const { constructPayload, isDefinedAndNotNull } = require('../../util');
@@ -23,12 +23,16 @@ const userExists = async (Config, id) => {
   const basicAuth = Buffer.from(Config.apiKey).toString('base64');
   let response;
   try {
-    response = await axios.get(`${ENDPOINT}/v2/${Config.accountId}/subscribers/${id}`, {
-      headers: {
-        Authorization: `Basic ${basicAuth}`,
-        'Content-Type': JSON_MIME_TYPE,
+    response = await myAxios.get(
+      `${ENDPOINT}/v2/${Config.accountId}/subscribers/${id}`,
+      {
+        headers: {
+          Authorization: `Basic ${basicAuth}`,
+          'Content-Type': JSON_MIME_TYPE,
+        },
       },
-    });
+      { destType: 'drip', feature: 'transformation' },
+    );
     if (response && response.status) {
       return response.status === 200;
     }
@@ -57,7 +61,7 @@ const userExists = async (Config, id) => {
 
 const createUpdateUser = async (finalpayload, Config, basicAuth) => {
   try {
-    const response = await axios.post(
+    const response = await myAxios.post(
       `${ENDPOINT}/v2/${Config.accountId}/subscribers`,
       finalpayload,
       {
@@ -66,6 +70,7 @@ const createUpdateUser = async (finalpayload, Config, basicAuth) => {
           'Content-Type': JSON_MIME_TYPE,
         },
       },
+      { destType: 'drip', feature: 'transformation' },
     );
     if (response) {
       return response.status === 200 || response.status === 201;

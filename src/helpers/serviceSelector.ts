@@ -84,7 +84,7 @@ export default class ServiceSelector {
     events: ProcessorTransformationRequest[] | RouterTransformationRequestData[],
   ): DestinationService {
     const destinationDefinition = events[0]?.destination?.DestinationDefinition;
-    const destinationDefinitionConfig = destinationDefinition.Config;
+    const destinationDefinitionConfig = destinationDefinition?.Config;
     const primaryService = this.getPrimaryDestinationService(events);
     if (!this.isComparatorEnabled(destinationDefinitionConfig)) {
       return primaryService;

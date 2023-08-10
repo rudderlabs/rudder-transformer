@@ -221,7 +221,7 @@
           "files": {}
         }
       ],
-      "metadata": { "jobId": 5 },
+      "metadata": [{ "jobId": 5 }],
       "batched": false,
       "statusCode": 200,
       "destination": {

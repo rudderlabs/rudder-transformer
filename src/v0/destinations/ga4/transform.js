@@ -1,42 +1,40 @@
 const get = require('get-value');
 const { EventType } = require('../../../constants');
 const {
-  defaultPostRequestConfig,
-  constructPayload,
-  defaultRequestConfig,
-  extractCustomFields,
   isEmptyObject,
-  getDestinationExternalID,
-  removeUndefinedAndNullValues,
-  isDefinedAndNotNull,
+  constructPayload,
   getIntegrationsObj,
   isHybridModeEnabled,
+  isDefinedAndNotNull,
+  defaultRequestConfig,
+  defaultPostRequestConfig,
+  getDestinationExternalID,
+  removeUndefinedAndNullValues,
 } = require('../../util');
 const {
-  InstrumentationError,
   ConfigurationError,
+  InstrumentationError,
   UnsupportedEventError,
 } = require('../../util/errorTypes');
 const {
   ENDPOINT,
-  DEBUG_ENDPOINT,
-  trackCommonConfig,
   mappingConfig,
+  DEBUG_ENDPOINT,
   ConfigCategory,
+  trackCommonConfig,
   VALID_ITEM_OR_PRODUCT_PROPERTIES,
 } = require('./config');
 const {
+  getItemsArray,
+  validateEventName,
+  removeInvalidParams,
   isReservedEventName,
-  GA4_RESERVED_PARAMETER_EXCLUSION,
-  removeReservedParameterPrefixNames,
-  GA4_RESERVED_USER_PROPERTY_EXCLUSION,
-  removeReservedUserPropertyPrefixNames,
-  getItemList,
   getGA4ExclusionList,
-  getItem,
+  prepareUserProperties,
   getGA4CustomParameters,
   GA4_PARAMETERS_EXCLUSION,
-  validateEventName,
+  GA4_RESERVED_PARAMETER_EXCLUSION,
+  removeReservedParameterPrefixNames,
 } = require('./utils');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -121,21 +119,10 @@ const responseBuilder = (message, { Config }) => {
     payload.name = evConfigEvent;
     payload.params = constructPayload(message, mappingConfig[name]);
 
-    let mapRootLevelPropertiesToGA4ItemsArray;
-    if (itemList && item) {
-      payload.params.items = getItemList(message, itemList === 'YES');
+    const { items, mapRootLevelPropertiesToGA4ItemsArray } = getItemsArray(message, item, itemList)
 
-      if (!(payload.params.items && payload.params.items.length > 0)) {
-        mapRootLevelPropertiesToGA4ItemsArray = true;
-        payload.params.items = getItem(message, item === 'YES');
-      }
-    } else if (item) {
-      // item
-      payload.params.items = getItem(message, item === 'YES');
-      mapRootLevelPropertiesToGA4ItemsArray = true;
-    } else if (itemList) {
-      // itemList
-      payload.params.items = getItemList(message, itemList === 'YES');
+    if (items.length > 0) {
+      payload.params.items = items;
     }
 
     // excluding event + root-level properties which are already mapped
@@ -209,7 +196,7 @@ const responseBuilder = (message, { Config }) => {
     };
   } else {
     validateEventName(event);
-    
+
     payload.name = event;
 
     // all extra parameters passed is incorporated inside params
@@ -238,27 +225,18 @@ const responseBuilder = (message, { Config }) => {
   }
 
   if (payload.params) {
-    payload.params = removeUndefinedAndNullValues(payload.params);
+    payload.params = removeInvalidParams(removeUndefinedAndNullValues(payload.params));
   }
 
   if (isEmptyObject(payload.params)) {
     delete payload.params;
   }
 
-  // take GA4 user properties
-  let userProperties = {};
-  userProperties = extractCustomFields(
-    message,
-    userProperties,
-    ['properties.user_properties'],
-    GA4_RESERVED_USER_PROPERTY_EXCLUSION,
-  );
-
+  // Prepare GA4 user properties
+  const userProperties = prepareUserProperties(message);
   if (!isEmptyObject(userProperties)) {
     rawPayload.user_properties = userProperties;
   }
-
-  removeReservedUserPropertyPrefixNames(rawPayload.user_properties);
 
   payload = removeUndefinedAndNullValues(payload);
   rawPayload = { ...rawPayload, events: [payload] };

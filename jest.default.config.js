@@ -38,6 +38,7 @@ module.exports = {
       branches: 60,
       functions: 80,
       lines: 80,
+      statements: 80,
     },
   },
 
@@ -148,7 +149,12 @@ module.exports = {
   // testLocationInResults: false,
 
   // The glob patterns Jest uses to detect test files
-  testMatch: ['**/__tests__/**/*.(test).[j]s?(x)', '**/integrations/**/*.(test).[j]s?(x)'],
+  testMatch: [
+    '**/__tests__/**/*.(test).[j]s?(x)',
+    '**/integrations/**/*.(test).[j]s?(x)',
+    '**/util/**/*.(test).[j]s?(x)',
+    '**/*.(test).[j]s?(x)',
+  ],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
   testPathIgnorePatterns: ['/node_modules/', 'user_transformation.integration.test.js'],

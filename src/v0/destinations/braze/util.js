@@ -20,11 +20,12 @@ const {
   getAliasMergeEndPoint,
   SUBSCRIPTION_BRAZE_MAX_REQ_COUNT,
   ALIAS_BRAZE_MAX_REQ_COUNT,
-  TRACK_BRAZE_MAX_REQ_COUNT
+  TRACK_BRAZE_MAX_REQ_COUNT,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { isObject } = require('../../util');
 const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 const getEndpointFromConfig = (destination) => {
   // Init -- mostly for test cases
@@ -157,6 +158,10 @@ const BrazeDedupUtility = {
               Authorization: `Bearer ${destination.Config.restApiKey}`,
             },
             timeout: 10 * 1000,
+          },
+          {
+            destType: 'braze',
+            feature: 'transformation',
           },
         );
         stats.counter('braze_lookup_failure_count', 1, {
@@ -315,15 +320,14 @@ const processDeduplication = (userStore, payload, destinationId) => {
     isDefinedAndNotNullAndNotEmpty(dedupedAttributePayload) &&
     Object.keys(dedupedAttributePayload).some((key) => !['external_id', 'user_alias'].includes(key))
   ) {
-    stats.increment('braze_deduped_users_count', { destinationId });
+    stats.increment('braze_deduped_users_count', { destination_id: destinationId });
     return dedupedAttributePayload;
   }
-  stats.increment('braze_dedup_and_drop_count', { destinationId });
+  stats.increment('braze_dedup_and_drop_count', { destination_id: destinationId });
   return null;
 };
 
 function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type) {
-
   const headers = {
     'Content-Type': JSON_MIME_TYPE,
     Accept: JSON_MIME_TYPE,
@@ -336,13 +340,13 @@ function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type
       response.endpoint = getAliasMergeEndPoint(getEndpointFromConfig(destination));
       const merge_updates = chunk;
       response.body.JSON = removeUndefinedAndNullValues({
-        merge_updates
+        merge_updates,
       });
     } else if (type === 'subscription') {
       response.endpoint = getSubscriptionGroupEndPoint(getEndpointFromConfig(destination));
       const subscription_groups = chunk;
       response.body.JSON = removeUndefinedAndNullValues({
-        subscription_groups
+        subscription_groups,
       });
     }
     responseArray.push({
@@ -350,7 +354,6 @@ function prepareGroupAndAliasBatch(arrayChunks, responseArray, destination, type
       headers,
     });
   }
-
 }
 
 const processBatch = (transformedEvents) => {
@@ -366,7 +369,8 @@ const processBatch = (transformedEvents) => {
     if (!isHttpStatusSuccess(transformedEvent?.statusCode)) {
       failureResponses.push(transformedEvent);
     } else if (transformedEvent?.batchedRequest?.body?.JSON) {
-      const { attributes, events, purchases, subscription_groups, merge_updates } = transformedEvent.batchedRequest.body.JSON;
+      const { attributes, events, purchases, subscription_groups, merge_updates } =
+        transformedEvent.batchedRequest.body.JSON;
       if (Array.isArray(attributes)) {
         attributesArray.push(...attributes);
       }
@@ -445,11 +449,10 @@ const processBatch = (transformedEvents) => {
   return finalResponse;
 };
 
-
 /**
- * 
- * @param {*} payload 
- * @param {*} message 
+ *
+ * @param {*} payload
+ * @param {*} message
  * @returns payload along with appId that is supposed to be passed by the user via
  * integrations object.
  * format will be as below:
@@ -461,17 +464,158 @@ const processBatch = (transformedEvents) => {
             }
     Ref: https://www.braze.com/docs/api/identifier_types/?tab=app%20ids
  */
-    const addAppId = (payload, message) => {
-      const integrationsObj = getIntegrationsObj(message, 'BRAZE');
-      if (integrationsObj?.appId) {
-        const { appId: appIdValue } = integrationsObj;
-        return {
-          ...payload,
-          app_id: String(appIdValue),
-        };
-      }
-      return { ...payload };
+const addAppId = (payload, message) => {
+  const integrationsObj = getIntegrationsObj(message, 'BRAZE');
+  if (integrationsObj?.appId) {
+    const { appId: appIdValue } = integrationsObj;
+    return {
+      ...payload,
+      app_id: String(appIdValue),
     };
+  }
+  return { ...payload };
+};
+
+function setExternalId(payload, message) {
+  const externalId = getDestinationExternalID(message, 'brazeExternalId') || message.userId;
+  if (externalId) {
+    payload.external_id = externalId;
+  }
+  return payload;
+}
+
+function setAliasObjectWithAnonId(payload, message) {
+  if (message.anonymousId) {
+    payload.user_alias = {
+      alias_name: message.anonymousId,
+      alias_label: 'rudder_id',
+    };
+  }
+  return payload;
+}
+
+function setExternalIdOrAliasObject(payload, message) {
+  const userId = getFieldValueFromMessage(message, 'userIdOnly');
+  if (userId || getDestinationExternalID(message, 'brazeExternalId')) {
+    return setExternalId(payload, message);
+  }
+
+  // eslint-disable-next-line no-underscore-dangle
+  payload._update_existing_only = false;
+  return setAliasObjectWithAnonId(payload, message);
+}
+
+function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity, timestamp) {
+  return {
+    product_id: productId,
+    price,
+    currency: currencyCode,
+    quantity,
+    time: timestamp,
+  };
+}
+
+function getPurchaseObjs(message) {
+  // ref:https://www.braze.com/docs/api/objects_filters/purchase_object/
+  const validateForPurchaseEvent = (message) => {
+    const { properties } = message;
+    const timestamp = getFieldValueFromMessage(message, 'timestamp');
+    if (!properties) {
+      throw new InstrumentationError(
+        'Invalid Order Completed event: Properties object is missing in the message',
+      );
+    }
+    const { products, currency: currencyCode } = properties;
+    if (!products) {
+      throw new InstrumentationError(
+        'Invalid Order Completed event: Products array is missing in the message',
+      );
+    }
+
+    if (!Array.isArray(products)) {
+      throw new InstrumentationError('Invalid Order Completed event: Products is not an array');
+    }
+
+    if (products.length === 0) {
+      throw new InstrumentationError('Invalid Order Completed event: Products array is empty');
+    }
+
+    if (!timestamp) {
+      throw new InstrumentationError(
+        'Invalid Order Completed event: Timestamp is missing in the message',
+      );
+    }
+
+    products.forEach((product) => {
+      const productId = product.product_id || product.sku;
+      const { price, quantity, currency: prodCurrencyCode } = product;
+      if (!isDefinedAndNotNull(productId)) {
+        throw new InstrumentationError(
+          `Invalid Order Completed event: Product Id is missing for product at index: ${products.indexOf(
+            product,
+          )}`,
+        );
+      }
+      if (!isDefinedAndNotNull(price)) {
+        throw new InstrumentationError(
+          `Invalid Order Completed event: Price is missing for product at index: ${products.indexOf(
+            product,
+          )}`,
+        );
+      }
+      if (Number.isNaN(price)) {
+        throw new InstrumentationError(
+          `Invalid Order Completed event: Price is not a number for product at index: ${products.indexOf(
+            product,
+          )}`,
+        );
+      }
+      if (!isDefinedAndNotNull(quantity)) {
+        throw new InstrumentationError(
+          `Invalid Order Completed event: Quantity is missing for product at index: ${products.indexOf(
+            product,
+          )}`,
+        );
+      }
+      if (Number.isNaN(quantity)) {
+        throw new InstrumentationError(
+          `Invalid Order Completed event: Quantity is not a number for product at index: ${products.indexOf(
+            product,
+          )}`,
+        );
+      }
+      if (!isDefinedAndNotNull(currencyCode) && !isDefinedAndNotNull(prodCurrencyCode)) {
+        throw new InstrumentationError(
+          `Invalid Order Completed event: Message properties and product at index: ${products.indexOf(
+            product,
+          )} is missing currency`,
+        );
+      }
+    });
+  };
+  validateForPurchaseEvent(message);
+
+  const { products, currency: currencyCode } = message.properties;
+  const timestamp = getFieldValueFromMessage(message, 'timestamp');
+  const purchaseObjs = [];
+
+  // we have to make a separate purchase object for each product
+  products.forEach((product) => {
+    const productId = product.product_id || product.sku;
+    const { price, quantity, currency: prodCur } = product;
+    let purchaseObj = addMandatoryPurchaseProperties(
+      String(productId),
+      parseFloat(price),
+      currencyCode || prodCur,
+      parseInt(quantity, 10),
+      timestamp,
+    );
+    purchaseObj = setExternalIdOrAliasObject(purchaseObj, message);
+    purchaseObjs.push(purchaseObj);
+  });
+
+  return purchaseObjs;
+}
 
 module.exports = {
   BrazeDedupUtility,
@@ -479,5 +623,10 @@ module.exports = {
   getEndpointFromConfig,
   processDeduplication,
   processBatch,
-  addAppId
+  addAppId,
+  getPurchaseObjs,
+  setExternalIdOrAliasObject,
+  setExternalId,
+  setAliasObjectWithAnonId,
+  addMandatoryPurchaseProperties,
 };

@@ -64,8 +64,8 @@ jobs:
             --set ceScaling=true \
             --set async=false \
             --set openfaasImagePullPolicy=IfNotPresent \
-            --set gateway.image=ghcr.io/openfaas/gateway:0.23.2 \
-            --set faasnetes.image=ghcr.io/openfaas/faas-netes:0.15.2
+            --set gateway.image=rudderlabs/rudder-openfaas-gateway:0.25.2 \
+            --set faasnetes.image=rudderlabs/rudder-openfaas-faas-netes:0.15.4
 
       - name: Wait for deployment "gateway" rollout
         run: kubectl rollout status deploy/gateway --timeout 120s -n openfaas

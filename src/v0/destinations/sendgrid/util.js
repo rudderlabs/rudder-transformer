@@ -438,7 +438,10 @@ const fetchCustomFields = async (destination) => {
     };
     const endpoint = 'https://api.sendgrid.com/v3/marketing/field_definitions';
 
-    const resonse = await httpGET(endpoint, requestOptions);
+    const resonse = await httpGET(endpoint, requestOptions, {
+      destType: 'sendgrid',
+      feature: 'transformation',
+    });
     const processedResponse = processAxiosResponse(resonse);
     if (isHttpStatusSuccess(processedResponse.status)) {
       const { custom_fields: customFields } = processedResponse.response;

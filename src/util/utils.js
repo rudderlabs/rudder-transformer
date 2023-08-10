@@ -9,8 +9,6 @@ const logger = require('../logger');
 const stats = require('./stats');
 
 const resolver = new Resolver();
-// Cloudflare and Google dns
-resolver.setServers(['1.1.1.1', '8.8.8.8']);
 
 const LOCALHOST_IP = '127.0.0.1';
 const LOCALHOST_URL = `http://localhost`;
@@ -22,7 +20,7 @@ const staticLookup = (transformerVersionId) => async (hostname, _, cb) => {
   try {
     ips = await resolver.resolve(hostname);
   } catch (error) {
-    stats.timing('fetch_dns_resolve_time', resolveStartTime, { transformerVersionId, error: true });
+    stats.timing('fetch_dns_resolve_time', resolveStartTime, { transformerVersionId, error: 'true' });
     cb(null, `unable to resolve IP address for ${hostname}`, RECORD_TYPE_A);
     return;
   }
@@ -159,6 +157,22 @@ function logProcessInfo() {
   logger.error(`Process info: `, util.inspect(processInfo(), false, null, true));
 }
 
+// stringLiterals expected to be an array of strings. A line in trace should contain
+// atleast one string in the stringLiterals array for lastMatchingIndex to be updated appropriately.
+const extractStackTraceUptoLastSubstringMatch = (trace, stringLiterals) => {
+  const traceLines = trace.split('\n');
+  let lastRelevantIndex = 0;
+
+  for(let i = traceLines.length - 1; i >= 0; i -= 1) {
+    if (stringLiterals.some(str => traceLines[i].includes(str))) {
+      lastRelevantIndex = i;
+      break;
+    }
+  }
+
+  return traceLines.slice(0, lastRelevantIndex + 1).join("\n");
+};
+
 module.exports = {
   RespStatusError,
   RetryRequestError,
@@ -167,5 +181,6 @@ module.exports = {
   constructValidationErrors,
   sendViolationMetrics,
   logProcessInfo,
+  extractStackTraceUptoLastSubstringMatch,
   fetchWithDnsWrapper,
 };

@@ -11,7 +11,7 @@ const {
   defaultDeleteRequestConfig,
   isAppleFamily,
   validateEmail,
-  isDefinedAndNotNull
+  isDefinedAndNotNull,
 } = require('../../util');
 
 const { EventType, SpecedTraits, TraitsMapping } = require('../../../constants');
@@ -202,9 +202,9 @@ const groupResponseBuilder = (message) => {
   const id = payload?.userId || payload?.email;
   let cioProperty = 'id';
   if (validateEmail(id)) {
-    cioProperty = "email";
+    cioProperty = 'email';
   }
-  if (isDefinedAndNotNull(id)){
+  if (isDefinedAndNotNull(id)) {
     rawPayload.cio_relationships.push({ identifiers: { [cioProperty]: id } });
   }
   const requestConfig = defaultPostRequestConfig;

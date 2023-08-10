@@ -63,7 +63,10 @@ const syncContact = async (contactPayload, category, destination) => {
   const requestOptions = {
     headers: getHeader(destination),
   };
-  const res = await httpPOST(endpoint, requestData, requestOptions);
+  const res = await httpPOST(endpoint, requestData, requestOptions, {
+    destType: 'active_campaign',
+    feature: 'transformation',
+  });
   if (res.success === false) {
     errorHandler(res.response, 'Failed to create new contact');
   }
@@ -103,7 +106,10 @@ const customTagProcessor = async (message, category, destination, contactId) => 
   requestOptions = {
     headers: getHeader(destination),
   };
-  res = await httpGET(endpoint, requestOptions);
+  res = await httpGET(endpoint, requestOptions, {
+    destType: 'active_campaign',
+    feature: 'transformation',
+  });
   if (res.success === false) {
     errorHandler(res.response, 'Failed to fetch already created tags');
   }
@@ -128,7 +134,10 @@ const customTagProcessor = async (message, category, destination, contactId) => 
         requestOptions = {
           headers: getHeader(destination),
         };
-        const resp = httpGET(endpoint, requestOptions);
+        const resp = httpGET(endpoint, requestOptions, {
+          destType: 'active_campaign',
+          feature: 'transformation',
+        });
         promises.push(resp);
       }
       const results = await Promise.all(promises);
@@ -166,7 +175,10 @@ const customTagProcessor = async (message, category, destination, contactId) => 
         requestOptions = {
           headers: getHeader(destination),
         };
-        res = await httpPOST(endpoint, requestData, requestOptions);
+        res = await httpPOST(endpoint, requestData, requestOptions, {
+          destType: 'active_campaign',
+          feature: 'transformation',
+        });
         if (res.success === false) {
           errorHandler(res.response, 'Failed to create new tag');
           // For each tags successfully created the response id is pushed to tagIds
@@ -191,7 +203,10 @@ const customTagProcessor = async (message, category, destination, contactId) => 
       requestOptions = {
         headers: getHeader(destination),
       };
-      res = httpPOST(endpoint, requestData, requestOptions);
+      res = httpPOST(endpoint, requestData, requestOptions, {
+        destType: 'active_campaign',
+        feature: 'transformation',
+      });
       return res;
     }),
   );
@@ -221,7 +236,10 @@ const customFieldProcessor = async (message, category, destination) => {
       'Api-Token': destination.Config.apiKey,
     },
   };
-  const res = await httpGET(endpoint, requestOptions);
+  const res = await httpGET(endpoint, requestOptions, {
+    destType: 'active_campaign',
+    feature: 'transformation',
+  });
   if (res.success === false) {
     errorHandler(res.response, 'Failed to get existing field data');
   }
@@ -237,7 +255,10 @@ const customFieldProcessor = async (message, category, destination) => {
           'Api-Token': destination.Config.apiKey,
         },
       };
-      const resp = httpGET(endpoint, requestOpt);
+      const resp = httpGET(endpoint, requestOpt, {
+        destType: 'active_campaign',
+        feature: 'transformation',
+      });
       promises.push(resp);
     }
     const results = await Promise.all(promises);
@@ -329,7 +350,10 @@ const customListProcessor = async (message, category, destination, contactId) =>
       const requestOptions = {
         headers: getHeader(destination),
       };
-      const res = httpPOST(endpoint, requestData, requestOptions);
+      const res = httpPOST(endpoint, requestData, requestOptions, {
+        destType: 'active_campaign',
+        feature: 'transformation',
+      });
       promises.push(res);
     }
   });
@@ -383,7 +407,10 @@ const screenRequestHandler = async (message, category, destination) => {
   const requestOptions = {
     headers: getHeader(destination),
   };
-  res = await httpGET(endpoint, requestOptions);
+  res = await httpGET(endpoint, requestOptions, {
+    destType: 'active_campaign',
+    feature: 'transformation',
+  });
   if (res.success === false) {
     errorHandler(res.response, 'Failed to retrieve events');
   }
@@ -414,7 +441,10 @@ const screenRequestHandler = async (message, category, destination) => {
     const requestOpt = {
       headers: getHeader(destination),
     };
-    res = await httpPOST(endpoint, requestData, requestOpt);
+    res = await httpPOST(endpoint, requestData, requestOpt, {
+      destType: 'active_campaign',
+      feature: 'transformation',
+    });
     if (res.success === false) {
       errorHandler(res.response, 'Failed to create event');
     }
@@ -454,7 +484,10 @@ const trackRequestHandler = async (message, category, destination) => {
       'Api-Token': destination.Config.apiKey,
     },
   };
-  let res = await httpGET(endpoint, requestOptions);
+  let res = await httpGET(endpoint, requestOptions, {
+    destType: 'active_campaign',
+    feature: 'transformation',
+  });
 
   if (res.success === false) {
     errorHandler(res.response, 'Failed to retrieve events');
@@ -486,7 +519,10 @@ const trackRequestHandler = async (message, category, destination) => {
     const requestOpt = {
       headers: getHeader(destination),
     };
-    res = await httpPOST(endpoint, requestData, requestOpt);
+    res = await httpPOST(endpoint, requestData, requestOpt, {
+      destType: 'active_campaign',
+      feature: 'transformation',
+    });
     if (res.response?.status !== 201) {
       throw new NetworkError(
         'Unable to create event. Aborting',

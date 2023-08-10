@@ -484,19 +484,13 @@ class Prometheus {
         name: 'shopify_redis_calls',
         help: 'shopify_redis_calls',
         type: 'counter',
-        labelNames: ['type', 'writeKey', 'source'],
-      },
-      {
-        name: 'shopify_redis_success',
-        help: 'shopify_redis_success',
-        type: 'counter',
-        labelNames: ['field', 'event', 'writeKey', 'source'],
+        labelNames: ['type', 'writeKey', 'source', 'field'],
       },
       {
         name: 'shopify_redis_no_val',
         help: 'shopify_redis_no_val',
         type: 'counter',
-        labelNames: ['event', 'writeKey', 'source'],
+        labelNames: [ 'writeKey', 'source'],
       },
       {
         name: 'events_to_process',
@@ -547,8 +541,14 @@ class Prometheus {
 
       // Histograms
       {
+        name: 'outgoing_request_latency',
+        help: 'Outgoing HTTP requests duration in seconds',
+        type: 'histogram',
+        labelNames: ['feature', 'destType'],
+      },
+      {
         name: 'http_request_duration',
-        help: 'Summary of HTTP requests duration in seconds',
+        help: 'Incoming HTTP requests duration in seconds',
         type: 'histogram',
         labelNames: ['method', 'route', 'code'],
       },
@@ -580,7 +580,14 @@ class Prometheus {
         name: 'dest_transform_request_latency',
         help: 'dest_transform_request_latency',
         type: 'histogram',
-        labelNames: ['destination', 'version', 'sourceType', 'destinationType', 'k8_namespace', 'feature'],
+        labelNames: [
+          'destination',
+          'version',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'feature',
+        ],
       },
       {
         name: 'user_transform_request_latency',
@@ -657,7 +664,7 @@ class Prometheus {
         name: 'fetch_dns_resolve_time',
         help: 'fetch_dns_resolve_time',
         type: 'histogram',
-        labelNames: ['transformerVersionId'],
+        labelNames: ['transformerVersionId', 'error'],
       },
       {
         name: 'geo_call_duration',

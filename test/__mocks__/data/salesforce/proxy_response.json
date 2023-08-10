@@ -68,5 +68,28 @@
       },
       "status": 503
     }
+  },
+  "https://rudderstack.my.salesforce.com/services/data/v50.0/parameterizedSearch/?q=external_id&sobject=object_name&in=External_ID__c&object_name.fields=id,External_ID__c": {
+    "response": {
+      "searchRecords": [
+        {
+          "attributes": {
+            "type": "object_name",
+            "url": "/services/data/v50.0/sobjects/object_name/a0J75100002w97gEAA"
+          },
+          "Id": "a0J75100002w97gEAA",
+          "External_ID__c": "external_id"
+        },
+        {
+          "attributes": {
+            "type": "object_name",
+            "url": "/services/data/v50.0/sobjects/object_name/a0J75200002w9ZsEAI"
+          },
+          "Id": "a0J75200002w9ZsEAI",
+          "External_ID__c": "external_id TEST"
+        }
+      ]
+    },
+    "status": 200
   }
 }

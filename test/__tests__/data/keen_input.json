@@ -2,6 +2,44 @@
   {
     "message": {
       "channel": "web",
+      "type": "page",
+      "context": null,
+      "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
+      "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
+      "originalTimestamp": "2019-10-14T11:15:18.299Z",
+      "anonymousId": "00000000000000000000000000",
+      "userId": "12345",
+      "properties": {
+        "path": "/test",
+        "referrer": "Rudder",
+        "search": "abc",
+        "title": "Test Page",
+        "url": "www.rudderlabs.com"
+      },
+      "traits": {
+        "email": "test@gmail.com",
+        "anonymousId": "anon-id"
+      },
+      "integrations": {
+        "All": true
+      },
+      "name": "ApplicationLoaded",
+      "sentAt": "2019-10-14T11:15:53.296Z"
+    },
+    "destination": {
+      "Config": {
+        "projectID": "abcde",
+        "writeKey": "xyz",
+        "ipAddon": true,
+        "uaAddon": true,
+        "urlAddon": true,
+        "referrerAddon": true
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
       "context": {
         "app": {
           "build": "1.0.0",
@@ -70,7 +108,6 @@
       }
     }
   },
-
   {
     "message": {
       "channel": "web",

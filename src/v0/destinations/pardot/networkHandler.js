@@ -20,8 +20,8 @@ const { NetworkError } = require('../../util/errorTypes');
     },
     "err": "A CRM connector was detected"
   }
- * 
- * 
+ *
+ *
  */
 
 const getAuthErrCategory = (code) => {
@@ -113,7 +113,10 @@ const pardotProxyRequest = async (request) => {
     headers,
     method,
   };
-  const response = await httpSend(requestOptions);
+  const response = await httpSend(requestOptions, {
+    feature: 'proxy',
+    destType: 'pardot',
+  });
   return response;
 };
 

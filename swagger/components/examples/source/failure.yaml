@@ -1,0 +1,8 @@
+statusCode: 400
+error: '[Source Transform] Error occurred while processing payload.'
+statTags:
+  errorCategory: 'transformation'
+  module: 'source'
+  implementation: 'native'
+  destinationId: 'Non determinable'
+  workspaceId: 'Non determinable'

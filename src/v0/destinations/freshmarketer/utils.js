@@ -46,7 +46,10 @@ const createUpdateAccount = async (payload, Config) => {
     sales_account: payload,
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrlAccount}`;
-  let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions);
+  let accountResponse = await httpPOST(endPoint, payloadBody, requestOptions, {
+    destType: 'freshmarketer',
+    feature: 'transformation',
+  });
   accountResponse = processAxiosResponse(accountResponse);
   if (accountResponse.status !== 200 && accountResponse.status !== 201) {
     const errMessage = accountResponse.response.errors?.message || '';
@@ -87,7 +90,10 @@ const getUserAccountDetails = async (payload, userEmail, Config) => {
     },
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}?include=sales_accounts`;
-  let userSalesAccountResponse = await httpPOST(endPoint, userPayload, requestOptions);
+  let userSalesAccountResponse = await httpPOST(endPoint, userPayload, requestOptions, {
+    destType: 'freshmarketer',
+    feature: 'transformation',
+  });
   userSalesAccountResponse = processAxiosResponse(userSalesAccountResponse);
   if (userSalesAccountResponse.status !== 200 && userSalesAccountResponse.status !== 201) {
     const errMessage = userSalesAccountResponse.response.errors?.message || '';
@@ -133,7 +139,10 @@ const createOrUpdateListDetails = async (listName, Config) => {
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.GROUP.baseUrlList}`;
   // fetch all lists
-  let listResponse = await httpGET(endPoint, requestOptions);
+  let listResponse = await httpGET(endPoint, requestOptions, {
+    destType: 'freshmarketer',
+    feature: 'transformation',
+  });
   listResponse = processAxiosResponse(listResponse);
   if (listResponse.status !== 200) {
     const errMessage = listResponse.response.errors?.message || '';
@@ -149,7 +158,10 @@ const createOrUpdateListDetails = async (listName, Config) => {
     }
   }
   // create list with listname
-  listResponse = await httpPOST(endPoint, { name: listName }, requestOptions);
+  listResponse = await httpPOST(endPoint, { name: listName }, requestOptions, {
+    destType: 'freshmarketer',
+    feature: 'transformation',
+  });
   listResponse = processAxiosResponse(listResponse);
   if (listResponse.status !== 200) {
     const errMessage = listResponse.response.errors?.message || '';
@@ -220,7 +232,10 @@ const getContactsDetails = async (userEmail, Config) => {
     },
   };
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.IDENTIFY.baseUrl}`;
-  let userResponse = await httpPOST(endPoint, userPayload, requestOptions);
+  let userResponse = await httpPOST(endPoint, userPayload, requestOptions, {
+    destType: 'freshmarketer',
+    feature: 'transformation',
+  });
   userResponse = processAxiosResponse(userResponse);
   if (userResponse.status !== 200 && userResponse.status !== 201) {
     const errMessage = userResponse.response.errors?.message || '';
@@ -290,7 +305,10 @@ const UpdateContactWithLifeCycleStage = async (message, Config) => {
     return response;
   }
   const endPoint = `https://${Config.domain}${LIFECYCLE_STAGE_ENDPOINT}`;
-  let lifeCycleStagesResponse = await httpGET(endPoint, requestOptions);
+  let lifeCycleStagesResponse = await httpGET(endPoint, requestOptions, {
+    destType: 'freshmarketer',
+    feature: 'transformation',
+  });
   lifeCycleStagesResponse = processAxiosResponse(lifeCycleStagesResponse);
   if (lifeCycleStagesResponse.status !== 200) {
     const errMessage = lifeCycleStagesResponse.response.errors?.message || '';
@@ -372,7 +390,10 @@ const UpdateContactWithSalesActivity = async (payload, message, Config) => {
   }
   // with sales activity name
   const endPoint = `https://${Config.domain}${CONFIG_CATEGORIES.SALES_ACTIVITY.baseUrlListAll}`;
-  let salesActivityResponse = await httpGET(endPoint, requestOptions);
+  let salesActivityResponse = await httpGET(endPoint, requestOptions, {
+    destType: 'freshmarketer',
+    feature: 'transformation',
+  });
   salesActivityResponse = processAxiosResponse(salesActivityResponse);
   if (salesActivityResponse.status !== 200) {
     const errMessage = salesActivityResponse.response.errors?.message || '';

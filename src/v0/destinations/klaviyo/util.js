@@ -38,6 +38,10 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
     endpoint,
     payload,
     requestOptions,
+    {
+      destType: 'klaviyo',
+      feature: 'transformation',
+    },
   );
   if (resp.status === 201) {
     profileId = resp.response?.data?.id;

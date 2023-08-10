@@ -3,6 +3,7 @@ const fetch = require('node-fetch');
 const _ = require('lodash');
 
 const { getLibraryCodeV1, getRudderLibByImportName } = require('./customTransforrmationsStore-v1');
+const { extractStackTraceUptoLastSubstringMatch } = require('./utils');
 const logger = require('../logger');
 const stats = require('./stats');
 const { fetchWithDnsWrapper } = require('./utils');
@@ -10,6 +11,8 @@ const { fetchWithDnsWrapper } = require('./utils');
 const ISOLATE_VM_MEMORY = parseInt(process.env.ISOLATE_VM_MEMORY || '128', 10);
 const RUDDER_LIBRARY_REGEX = /^@rs\/[A-Za-z]+\/v[0-9]{1,3}$/;
 const GEOLOCATION_TIMEOUT_IN_MS = parseInt(process.env.GEOLOCATION_TIMEOUT_IN_MS || '1000', 10);
+
+const SUPPORTED_FUNC_NAMES = ['transformEvent', 'transformBatch'];
 
 const isolateVmMem = ISOLATE_VM_MEMORY;
 async function evaluateModule(isolate, context, moduleCode) {
@@ -19,8 +22,8 @@ async function evaluateModule(isolate, context, moduleCode) {
   return true;
 }
 
-async function loadModule(isolateInternal, contextInternal, moduleCode) {
-  const module = await isolateInternal.compileModule(moduleCode);
+async function loadModule(isolateInternal, contextInternal, moduleName, moduleCode) {
+  const module = await isolateInternal.compileModule(moduleCode, { filename: `library ${moduleName}` });
   await module.instantiate(contextInternal, () => {});
   return module;
 }
@@ -86,7 +89,13 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
       }
       switch(transformType) {
         case "transformBatch":
-          const transformedEventsBatch = await transformBatch(eventMessages, metadata);
+          let transformedEventsBatch;
+          try {
+            transformedEventsBatch = await transformBatch(eventMessages, metadata);
+          } catch (error) {
+            outputEvents.push({error: extractStackTrace(error.stack, [transformType]), metadata: {}});
+            return outputEvents;
+          }
           if (!Array.isArray(transformedEventsBatch)) {
             outputEvents.push({error: "returned events from transformBatch(event) is not an array", metadata: {}});
             break;
@@ -128,7 +137,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
               return;
             } catch (error) {
               // Handling the errors in versionedRouter.js
-              return outputEvents.push({error: error.toString(), metadata: eventsMetadata[currMsgId] || {}});
+              return outputEvents.push({error: extractStackTrace(error.stack, [transformType]), metadata: eventsMetadata[currMsgId] || {}});
             }
           }));
           break;
@@ -146,7 +155,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
   await Promise.all(
     Object.entries(librariesMap).map(async ([moduleName, moduleCode]) => {
       compiledModules[moduleName] = {
-        module: await loadModule(isolate, context, moduleCode),
+        module: await loadModule(isolate, context, moduleName, moduleCode),
       };
     }),
   );
@@ -247,6 +256,10 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
     }
   });
 
+  await jail.set('extractStackTrace', function(trace, stringLiterals) {
+    return extractStackTraceUptoLastSubstringMatch(trace, stringLiterals);
+  });
+
   const bootstrap = await isolate.compileScript(
     'new ' +
       `
@@ -333,7 +346,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
   // Now we can execute the script we just compiled:
   const bootstrapScriptResult = await bootstrap.run(context);
   // const customScript = await isolate.compileScript(`${library} ;\n; ${code}`);
-  const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`);
+  const customScriptModule = await isolate.compileModule(`${codeWithWrapper}`, { filename: 'base transformation' });
   await customScriptModule.instantiate(context, async (spec) => {
     if (librariesMap[spec]) {
       return compiledModules[spec].module;
@@ -345,11 +358,10 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
   });
   await customScriptModule.evaluate();
 
-  const supportedFuncNames = ['transformEvent', 'transformBatch'];
   const supportedFuncs = {};
 
   await Promise.all(
-    supportedFuncNames.map(async (sName) => {
+    SUPPORTED_FUNC_NAMES.map(async (sName) => {
       const funcRef = await customScriptModule.namespace.get(sName, {
         reference: true,
       });
@@ -362,7 +374,7 @@ async function createIvm(code, libraryVersionIds, versionId, secrets, testMode) 
   const availableFuncNames = Object.keys(supportedFuncs);
   if (availableFuncNames.length !== 1) {
     throw new Error(
-      `Expected one of ${supportedFuncNames}. Found ${Object.values(availableFuncNames)}`,
+      `Expected one of ${SUPPORTED_FUNC_NAMES}. Found ${Object.values(availableFuncNames)}`,
     );
   }
 
@@ -415,4 +427,5 @@ async function getFactory(code, libraryVersionIds, versionId, secrets, testMode)
 module.exports = {
   getFactory,
   compileUserLibrary,
+  SUPPORTED_FUNC_NAMES,
 };

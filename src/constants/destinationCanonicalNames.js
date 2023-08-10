@@ -123,6 +123,15 @@ const DestCanonicalNames = {
   ],
   vitally: ['vitally', 'Vitally', 'VITALLY'],
   courier: ['Courier', 'courier', 'COURIER'],
+  TWITTER_ADS: [
+    'twitter ads',
+    'twitter Manager',
+    'TWITTER ADS',
+    'twitterADS',
+    'twitter_ads',
+    'TWITTER_ADS',
+  ],
+  BRAZE: ['BRAZE', 'Braze', 'braze'],
 };
 
 module.exports = { DestHandlerMap, DestCanonicalNames };

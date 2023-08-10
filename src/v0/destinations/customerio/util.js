@@ -10,6 +10,8 @@ const {
   getFieldValueFromMessage,
   defaultDeleteRequestConfig,
   isAppleFamily,
+  validateEmail,
+  isDefinedAndNotNull,
 } = require('../../util');
 
 const { EventType, SpecedTraits, TraitsMapping } = require('../../../constants');
@@ -197,10 +199,13 @@ const groupResponseBuilder = (message) => {
     attributes: payload.attributes || {},
     cio_relationships: [],
   };
-  if (payload.userId) {
-    rawPayload.cio_relationships.push({ identifiers: { id: payload.userId } });
-  } else if (payload.email) {
-    rawPayload.cio_relationships.push({ identifiers: { email: payload.email } });
+  const id = payload?.userId || payload?.email;
+  let cioProperty = 'id';
+  if (validateEmail(id)) {
+    cioProperty = 'email';
+  }
+  if (isDefinedAndNotNull(id)) {
+    rawPayload.cio_relationships.push({ identifiers: { [cioProperty]: id } });
   }
   const requestConfig = defaultPostRequestConfig;
   const endpoint = OBJECT_EVENT_ENDPOINT;

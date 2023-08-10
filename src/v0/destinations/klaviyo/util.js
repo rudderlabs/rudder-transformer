@@ -15,7 +15,7 @@ const {
 
 const { BASE_ENDPOINT, MAPPING_CONFIG, CONFIG_CATEGORIES, MAX_BATCH_SIZE } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { NetworkError } = require('../../util/errorTypes');
+const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
@@ -33,20 +33,29 @@ const { handleHttpRequest } = require('../../../adapters/network');
  */
 const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) => {
   let profileId;
-  const { httpResponse: resp } = await handleHttpRequest('post', endpoint, payload, requestOptions);
-  if (resp.response?.status === 201) {
-    profileId = resp.response?.data?.data?.id;
-  } else if (resp.response?.response?.status === 409) {
-    const { response } = resp.response;
-    profileId = response.data?.errors[0]?.meta?.duplicate_profile_id;
+  const { processedResponse: resp } = await handleHttpRequest(
+    'post',
+    endpoint,
+    payload,
+    requestOptions,
+    {
+      destType: 'klaviyo',
+      feature: 'transformation',
+    },
+  );
+  if (resp.status === 201) {
+    profileId = resp.response?.data?.id;
+  } else if (resp.status === 409) {
+    const { errors } = resp.response;
+    profileId = errors[0]?.meta?.duplicate_profile_id;
   } else {
     throw new NetworkError(
-      `Failed to create user due to ${resp.response?.data}`,
-      resp.response?.response?.status,
+      `Failed to create user due to ${JSON.stringify(resp.response)}`,
+      resp.status,
       {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.response?.response?.status),
+        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.status),
       },
-      resp.response?.data,
+      `${JSON.stringify(resp.response)}`,
     );
   }
   return profileId;
@@ -130,11 +139,23 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
 };
 
 // This function is used for creating and returning customer properties using mapping json
-const createCustomerProperties = (message) => {
+const createCustomerProperties = (message, Config) => {
+  const { enforceEmailAsPrimary } = Config;
   let customerProperties = constructPayload(
     message,
     MAPPING_CONFIG[CONFIG_CATEGORIES.PROFILE.name],
   );
+  if (!enforceEmailAsPrimary) {
+    customerProperties.$id = getFieldValueFromMessage(message, 'userId');
+  } else {
+    if (!customerProperties.$email && !customerProperties.$phone_number) {
+      throw new InstrumentationError('None of email and phone are present in the payload');
+    }
+    customerProperties = {
+      ...customerProperties,
+      _id: getFieldValueFromMessage(message, 'userId'),
+    };
+  }
   customerProperties = removeUndefinedAndNullValues(customerProperties);
   return customerProperties;
 };

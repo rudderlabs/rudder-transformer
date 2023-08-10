@@ -6656,7 +6656,9 @@
           "timestamp_micros": 1650950229000000,
           "non_personalized_ads": true,
           "user_properties": {
-            "price": "19"
+            "price": {
+              "value": "19"
+            }
           },
           "events": [
             {
@@ -7012,7 +7014,9 @@
           "timestamp_micros": 1650950229000000,
           "non_personalized_ads": true,
           "user_properties": {
-            "price": "100"
+            "price": {
+              "value": "100"
+            }
           },
           "events": [
             {
@@ -10939,7 +10943,11 @@
             "city": "kolkata",
             "district": "24pgs"
           },
-          "categoryLevels": ["Furniture", "Bedroom Furniture", "Dressers & Chests"],
+          "categoryLevels": [
+            "Furniture",
+            "Bedroom Furniture",
+            "Dressers & Chests"
+          ],
           "products": [
             {
               "product_id": "1234",
@@ -10947,7 +10955,11 @@
                 "colour": "red",
                 "shape": "rectangle"
               },
-              "productLevels": ["test1", "test2", "test3"]
+              "productLevels": [
+                "test1",
+                "test2",
+                "test3"
+              ]
             }
           ]
         },
@@ -11497,6 +11509,11 @@
             }
           ],
           "user_id": "user@1",
+          "user_properties": {
+            "campaign": {
+              "value": "advertizing"
+            }
+          },
           "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "non_personalized_ads": true
         },
@@ -11604,6 +11621,11 @@
             }
           ],
           "user_id": "user@1",
+          "user_properties": {
+            "campaign": {
+              "value": "advertizing"
+            }
+          },
           "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "non_personalized_ads": true
         },
@@ -11714,6 +11736,11 @@
             }
           ],
           "user_id": "user@1",
+          "user_properties": {
+            "campaign": {
+              "value": "advertizing"
+            }
+          },
           "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "non_personalized_ads": true
         },
@@ -11778,9 +11805,6 @@
             "tab_url": "https://www.rudderstack.com/",
             "title": "Document",
             "url": "https://www.rudderstack.com/"
-          },
-          "traits": {
-            "campaign": "advertizing"
           },
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
         },
@@ -11951,6 +11975,11 @@
             }
           ],
           "user_id": "user@1",
+          "user_properties": {
+            "campaign": {
+              "value": "advertizing"
+            }
+          },
           "client_id": "554581488.1683172875",
           "non_personalized_ads": true
         },
@@ -12064,6 +12093,11 @@
             }
           ],
           "user_id": "user@1",
+          "user_properties": {
+            "campaign": {
+              "value": "advertizing"
+            }
+          },
           "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
           "non_personalized_ads": true
         },
@@ -12200,94 +12234,399 @@
       "files": {}
     }
   },
-    {
-      "description": "[Error]: (gtag) event name starts with numbers",
-      "input": {
-        "message": {
-          "channel": "web",
-          "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
-          "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
-          "context": {
-            "app": {
-              "build": "1.0.0",
-              "name": "RudderLabs JavaScript SDK",
-              "namespace": "com.rudderlabs.javascript",
-              "version": "1.0.0"
-            },
-            "device": {
-              "adTrackingEnabled": "false",
-              "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
-              "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
-              "manufacturer": "Google",
-              "model": "AOSP on IA Emulator",
-              "name": "generic_x86_arm",
-              "type": "ios",
-              "attTrackingStatus": 3
-            },
-            "ip": "0.0.0.0",
-            "library": {
-              "name": "RudderLabs JavaScript SDK",
-              "version": "1.0.0"
-            },
-            "locale": "en-US",
-            "os": {
-              "name": "iOS",
-              "version": "14.4.1"
-            },
-            "screen": {
-              "density": 2
-            },
-            "externalId": [
-              {
-                "type": "ga4AppInstanceId",
-                "id": "f0dd99b6f979fb551ce583373900f937"
-              },
-              {
-                "type": "ga4ClientId",
-                "id": "client_id"
-              }
+  {
+    "description": "(gtag) sign_up event with all data types of user_properties",
+    "input": {
+      "message": {
+        "userId": "user@1",
+        "channel": "web",
+        "anonymousId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "traits": {
+            "campaign": "advertizing",
+            "name": "rudder",
+            "age": 45,
+            "hobby": [
+              "dancing",
+              "singing",
+              "reading"
             ],
-            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+            "enableEURegion": false,
+            "isEnterpriseUser": {
+              "value": false
+            }
           },
-          "type": "track",
-          "event": "1234_sign_up",
-          "properties": {
-            "total": "10"
-          },
-          "integrations": {
-            "All": true
-          }
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
         },
-        "destination": {
-          "Config": {
-            "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
-            "measurementId": "G-T40PE6KET4",
-            "firebaseAppId": "",
-            "typesOfClient": "gtag",
-            "eventFilteringOption": "disable",
-            "connectionMode": "cloud",
-            "blacklistedEvents": [
-              {
-                "eventName": ""
-              }
-            ],
-            "whitelistedEvents": [
-              {
-                "eventName": ""
-              }
-            ]
-          },
-          "Enabled": true
+        "type": "track",
+        "event": "sign_up",
+        "properties": {
+          "method": "google"
+        },
+        "integrations": {
+          "All": true
         }
       },
-      "output": {
-        "statusCode": 400,
-        "error": "Event name should only contain letters, numbers, and underscores and event name must start with a letter",
-        "statTags": {
-          "destination": "ga4",
-          "stage": "transform",
-          "scope": "exception"
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWKGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6BET4",
+          "firebaseAppId": "",
+          "typesOfClient": "gtag",
+          "eventFilteringOption": "disable",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
+        },
+        "Enabled": true
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "events": [
+            {
+              "name": "sign_up",
+              "params": {
+                "method": "google",
+                "engagement_time_msec": 1
+              }
+            }
+          ],
+          "user_id": "user@1",
+          "client_id": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+          "user_properties": {
+            "age": {
+              "value": 45
+            },
+            "name": {
+              "value": "rudder"
+            },
+            "campaign": {
+              "value": "advertizing"
+            },
+            "enableEURegion": {
+              "value": false
+            }
+          },
+          "non_personalized_ads": true
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {
+        "api_secret": "QyWKGHj8QhG2L4ePAPiXCA",
+        "measurement_id": "G-T40PE6BET4"
+      },
+      "headers": {
+        "HOST": "www.google-analytics.com",
+        "Content-Type": "application/json"
+      },
+      "version": "1",
+      "endpoint": "https://www.google-analytics.com/mp/collect"
+    }
+  },
+  {
+    "description": "[Error]: (gtag) event name starts with numbers",
+    "input": {
+      "message": {
+        "channel": "web",
+        "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
+        "anonymousId": "ea5cfab2-3961-4d8a-8187-3d1858c99090",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "externalId": [
+            {
+              "type": "ga4AppInstanceId",
+              "id": "f0dd99b6f979fb551ce583373900f937"
+            },
+            {
+              "type": "ga4ClientId",
+              "id": "client_id"
+            }
+          ],
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "type": "track",
+        "event": "1234_sign_up",
+        "properties": {
+          "total": "10"
+        },
+        "integrations": {
+          "All": true
         }
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6KET4",
+          "firebaseAppId": "",
+          "typesOfClient": "gtag",
+          "eventFilteringOption": "disable",
+          "connectionMode": "cloud",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
+        },
+        "Enabled": true
+      }
+    },
+    "output": {
+      "statusCode": 400,
+      "error": "Event name must start with a letter and can only contain letters, numbers, and underscores",
+      "statTags": {
+        "destination": "ga4",
+        "stage": "transform",
+        "scope": "exception"
       }
     }
+  },
+  {
+    "description": "(gtag) event having multiple empty array and object parameters",
+    "input": {
+      "message": {
+        "type": "track",
+        "event": "logIn",
+        "userId": "user@1",
+        "group_id": "group@1",
+        "anon_id": "78e95d6d-58c0-4237-b99e-2ef510b6d502",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "device": {
+            "adTrackingEnabled": "false",
+            "advertisingId": "T0T0T072-5e28-45a1-9eda-ce22a3e36d1a",
+            "id": "3f034872-5e28-45a1-9eda-ce22a3e36d1a",
+            "manufacturer": "Google",
+            "model": "AOSP on IA Emulator",
+            "name": "generic_x86_arm",
+            "type": "ios",
+            "attTrackingStatus": 3
+          },
+          "ip": "0.0.0.0",
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "locale": "en-US",
+          "os": {
+            "name": "iOS",
+            "version": "14.4.1"
+          },
+          "screen": {
+            "density": 2
+          },
+          "externalId": [
+            {
+              "type": "ga4AppInstanceId",
+              "id": "f0dd99b6f979fb551ce583373900f937"
+            },
+            {
+              "type": "ga4ClientId",
+              "id": "client_id"
+            }
+          ],
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36"
+        },
+        "properties": {
+          "user_interest": "Moderate",
+          "company_interest": "",
+          "profile": [
+            {
+              "is_6qa": true,
+              "product": null,
+              "product_fit": "Moderate",
+              "product_stage": "Purchase",
+              "intent_score": 89,
+              "profile_score": 52,
+              "product_display$name": "rudderstack"
+            }
+          ],
+          "user_company": "Analytics consulting",
+          "user_account": "1",
+          "user_id_mappings": "330098|245252|461224|282599",
+          "company_naics_6sense": "5173",
+          "usr_consent": null,
+          "firebase_user_id": "kdgMnP",
+          "google_user_id": "G-123456",
+          "company_domain": "consulting.net",
+          "company_region": "New Zealand",
+          "user_product_interests": {
+            "ids": [],
+            "list": [
+              {
+                "id": 330098,
+                "name": []
+              },
+              {
+                "id": 245252,
+                "name": {}
+              }
+            ],
+            "names": []
+          },
+          "company_country": {},
+          "company_industry": "Business Analytics",
+          "company_revenue": "$5M - $10M",
+          "company_annual_revenue": "5568000",
+          "company_sic_description": "",
+          "company_naics_description": []
+        },
+        "integrations": {
+          "All": true
+        }
+      },
+      "destination": {
+        "Config": {
+          "apiSecret": "QyWIGHj8QhG2L4ePAPiXCA",
+          "measurementId": "G-T40PE6KET4",
+          "firebaseAppId": "",
+          "typesOfClient": "gtag",
+          "eventFilteringOption": "disable",
+          "connectionMode": "cloud",
+          "blacklistedEvents": [
+            {
+              "eventName": ""
+            }
+          ],
+          "whitelistedEvents": [
+            {
+              "eventName": ""
+            }
+          ]
+        },
+        "Enabled": true
+      }
+    },
+    "output": {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "events": [
+            {
+              "name": "login",
+              "params": {
+                "company_annual_revenue": "5568000",
+                "company_domain": "consulting.net",
+                "company_industry": "Business Analytics",
+                "company_naics_6sense": "5173",
+                "company_region": "New Zealand",
+                "company_revenue": "$5M - $10M",
+                "engagement_time_msec": 1,
+                "profile_0_intent_score": 89,
+                "profile_0_is_6qa": true,
+                "profile_0_product_display$name": "rudderstack",
+                "profile_0_product_fit": "Moderate",
+                "profile_0_product_stage": "Purchase",
+                "profile_0_profile_score": 52,
+                "user_account": "1",
+                "user_company": "Analytics consulting",
+                "user_id_mappings": "330098|245252|461224|282599",
+                "user_interest": "Moderate",
+                "user_product_interests_list_0_id": 330098,
+                "user_product_interests_list_1_id": 245252
+              }
+            }
+          ],
+          "user_id": "user@1",
+          "client_id": "client_id",
+          "non_personalized_ads": true
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {
+        "api_secret": "QyWIGHj8QhG2L4ePAPiXCA",
+        "measurement_id": "G-T40PE6KET4"
+      },
+      "headers": {
+        "HOST": "www.google-analytics.com",
+        "Content-Type": "application/json"
+      },
+      "version": "1",
+      "endpoint": "https://www.google-analytics.com/mp/collect"
+    }
+  }
 ]

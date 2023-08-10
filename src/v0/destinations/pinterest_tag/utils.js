@@ -30,6 +30,42 @@ const ecomEventMaps = [
 
 const USER_NON_ARRAY_PROPERTIES = ['client_user_agent', 'client_ip_address'];
 
+const getHashedValue = (key, value) => {
+  switch (key) {
+    case 'em':
+    case 'ct':
+    case 'st':
+    case 'country':
+    case 'ln':
+    case 'fn':
+    case 'ge':
+      value = Array.isArray(value)
+        ? value.map((val) => val.toString().toLowerCase())
+        : value.toString().toLowerCase();
+      break;
+    case 'ph':
+      // phone numbers should only contain digits & should not contain leading zeros
+      value = Array.isArray(value)
+        ? value.map((val) => val.toString().replace(/\D/g, '').replace(/^0+/, ''))
+        : value.toString().replace(/\D/g, '').replace(/^0+/, '');
+      break;
+    case 'zp':
+      // zip fields should only contain digits
+      value = Array.isArray(value)
+        ? value.map((val) => val.toString().replace(/\D/g, ''))
+        : value.toString().replace(/\D/g, '');
+      break;
+    case 'hashed_maids':
+    case 'external_id':
+    case 'db':
+      // no action needed on value
+      break;
+    default:
+      return String(value);
+  }
+  return Array.isArray(value) ? value.map((val) => sha256(val)) : [sha256(value)];
+};
+
 /**
  *
  * @param {*} userPayload Payload mapped from user fields
@@ -38,37 +74,8 @@ const USER_NON_ARRAY_PROPERTIES = ['client_user_agent', 'client_ip_address'];
  * Ref: https://s.pinimg.com/ct/docs/conversions_api/dist/v3.html
  */
 const processUserPayload = (userPayload) => {
-  let formatValue = '';
   Object.keys(userPayload).forEach((key) => {
-    switch (key) {
-      case 'em':
-        formatValue = userPayload[key].toString().toLowerCase();
-        userPayload[key] = [sha256(formatValue)];
-        break;
-      case 'ph':
-      case 'zp':
-        // zip fields should only contain digits
-        formatValue = userPayload[key].toString().replace(/\D/g, '');
-        if (key === 'ph') {
-          // phone numbers should not contain leading zeros
-          formatValue = formatValue.replace(/^0+/, '');
-        }
-        userPayload[key] = [sha256(formatValue)];
-        break;
-      case 'ct':
-      case 'st':
-      case 'country':
-      case 'ge':
-      case 'db':
-      case 'ln':
-      case 'fn':
-      case 'hashed_maids':
-      case 'external_id':
-        userPayload[key] = [sha256(userPayload[key])];
-        break;
-      default:
-        userPayload[key] = String(userPayload[key]);
-    }
+    userPayload[key] = getHashedValue(key, userPayload[key]);
   });
   return userPayload;
 };
@@ -286,7 +293,11 @@ const processHashedUserPayload = (userPayload, message) => {
   const processedHashedUserPayload = {};
   Object.keys(userPayload).forEach((key) => {
     if (!USER_NON_ARRAY_PROPERTIES.includes(key)) {
-      processedHashedUserPayload[key] = [userPayload[key]];
+      if (Array.isArray(userPayload[key])) {
+        processedHashedUserPayload[key] = [...userPayload[key]];
+      } else {
+        processedHashedUserPayload[key] = [userPayload[key]];
+      }
     } else {
       processedHashedUserPayload[key] = userPayload[key];
     }
@@ -294,7 +305,9 @@ const processHashedUserPayload = (userPayload, message) => {
   // multiKeyMap will works on only specific values like m, male, MALE, f, F, Female
   // if hashed data is sent from the user, it is directly set over here
   const gender = message.traits?.gender || message.context?.traits?.gender;
-  if (gender) {
+  if (gender && Array.isArray(gender)) {
+    processedHashedUserPayload.ge = [...gender];
+  } else if (gender) {
     processedHashedUserPayload.ge = [gender];
   }
   return processedHashedUserPayload;

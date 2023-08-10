@@ -25,12 +25,12 @@ jobs:
           echo "release_version=$version" >> $GITHUB_OUTPUT
 
       - name: Checkout
-        uses: actions/checkout@v3.5.2
+        uses: actions/checkout@v3.5.3
         with:
           fetch-depth: 0
 
       - name: Setup Node
-        uses: actions/setup-node@v3.6.0
+        uses: actions/setup-node@v3.7.0
         with:
           node-version-file: '.nvmrc'
           cache: 'npm'
@@ -50,6 +50,7 @@ jobs:
 
       - name: Tag & Create GitHub Release
         id: create_release
+        continue-on-error: true
         env:
           HUSKY: 0
           GITHUB_TOKEN: ${{ secrets.PAT }}
@@ -66,7 +67,7 @@ jobs:
         with:
           source_branch: 'main'
           destination_branch: 'develop'
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.PAT }}
           pr_title: 'chore(release): pull main into develop post release v${{ steps.extract-version.outputs.release_version }}'
           pr_body: ':crown: *An automated PR*'
 
@@ -76,7 +77,7 @@ jobs:
         with:
           branches: 'release/*'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
 
       - name: Delete Hotfix Release Branch
         uses: koj-co/delete-merged-action@master
@@ -84,7 +85,7 @@ jobs:
         with:
           branches: 'hotfix-release/*'
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
 
       - name: Notify Slack Channel
         id: slack

@@ -69,7 +69,6 @@ describe(`Redis Class Get Tests`, () => {
   const data = JSON.parse(testDataFile);
   data.forEach((dataPoint, index) => {
     it(`${index}. Redis Get- ${dataPoint.description}`, async () => {
-      let isObjExpected;
       try {
         const output = await RedisDB.getVal(dataPoint.input.value, (isObjExpected = false));
         expect(output).toEqual(dataPoint.output);

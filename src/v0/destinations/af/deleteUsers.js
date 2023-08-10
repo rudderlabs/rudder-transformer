@@ -23,7 +23,10 @@ const deleteUser = async (endpoint, body, identityType, identityValue) => {
   body.submitted_time = new Date().toISOString();
   body.subject_identities[0].identity_type = identityType;
   body.subject_identities[0].identity_value = identityValue;
-  const response = await httpPOST(endpoint, body);
+  const response = await httpPOST(endpoint, body, {
+    destType: 'af',
+    feature: 'deleteUsers',
+  });
   const handledDelResponse = processAxiosResponse(response);
   if (!isHttpStatusSuccess(handledDelResponse.status)) {
     throw new NetworkError(
@@ -57,7 +60,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   if (config.statusCallbackUrls) {
     const statusCallbackUrlsArray = config.statusCallbackUrls.split(',');
     const filteredStatusCallbackUrlsArray = statusCallbackUrlsArray.filter((statusCallbackUrl) => {
-      const URLRegex = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w!#$&'()*+,./:;=?@[\]~-]+$/;
+      const URLRegex = /^(https?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w!#$&'()*+,/:;=?@[\]~-]+$/;
       return statusCallbackUrl.match(URLRegex);
     });
     if (filteredStatusCallbackUrlsArray.length > 3) {

@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { BrazeDedupUtility } = require('./util');
+const { BrazeDedupUtility, addAppId, getPurchaseObjs } = require('./util');
 const { processBatch } = require('./util');
 const {
   removeUndefinedAndNullValues,
@@ -305,6 +305,7 @@ describe('dedup utility tests', () => {
           },
           timeout: 10000,
         },
+        { destType: 'braze', feature: 'transformation' },
       );
     });
 
@@ -726,7 +727,7 @@ describe('dedup utility tests', () => {
 });
 
 describe('processBatch', () => {
-  test('processBatch handles more than 75 attributes, events, and purchases', () => {
+  test('processBatch handles more than 75 attributes, events, purchases, subscription_groups and merge users', () => {
     // Create input data with more than 75 attributes, events, and purchases
     const transformedEvents = [];
     for (let i = 0; i < 100; i++) {
@@ -734,7 +735,8 @@ describe('processBatch', () => {
         destination: {
           Config: {
             restApiKey: 'restApiKey',
-            dataCenter: 'eu',
+            dataCenter: 'US-03',
+            enableSubscriptionGroupInGroupCall: true,
           },
         },
         statusCode: 200,
@@ -744,6 +746,8 @@ describe('processBatch', () => {
               attributes: [{ id: i, name: 'test', xyz: 'abc' }],
               events: [{ id: i, event: 'test', xyz: 'abc' }],
               purchases: [{ id: i, purchase: 'test', xyz: 'abc' }],
+              subscription_groups: [{ id: i, group: 'test', xyz: 'abc' }],
+              merge_updates: [{ id: i, alias: 'test', xyz: 'abc' }],
             },
           },
         },
@@ -756,7 +760,7 @@ describe('processBatch', () => {
 
     // Assert that the response is as expected
     expect(result.length).toBe(1); // One successful batched request and one failure response
-    expect(result[0].batchedRequest.length).toBe(2); // Two batched requests
+    expect(result[0].batchedRequest.length).toBe(6); // Two batched requests
     expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack'); // Verify partner name
     expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(75); // First batch contains 75 attributes
     expect(result[0].batchedRequest[0].body.JSON.events.length).toBe(75); // First batch contains 75 events
@@ -765,6 +769,10 @@ describe('processBatch', () => {
     expect(result[0].batchedRequest[1].body.JSON.attributes.length).toBe(25); // Second batch contains remaining 25 attributes
     expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(25); // Second batch contains remaining 25 events
     expect(result[0].batchedRequest[1].body.JSON.purchases.length).toBe(25); // Second batch contains remaining 25 purchases
+    expect(result[0].batchedRequest[2].body.JSON.subscription_groups.length).toBe(50); // First batch contains 50 subscription group
+    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(50); // First batch contains 25 subscription group
+    expect(result[0].batchedRequest[4].body.JSON.merge_updates.length).toBe(50); // First batch contains 50 merge_updates
+    expect(result[0].batchedRequest[5].body.JSON.merge_updates.length).toBe(50); // First batch contains 25 merge_updates
   });
 
   test('processBatch handles more than 75 attributes, events, and purchases with non uniform distribution', () => {
@@ -823,17 +831,57 @@ describe('processBatch', () => {
       metadata: [{ job_id: 280 + i }],
     }));
 
+    const transformedEventsSet4 = new Array(70).fill(0).map((_, i) => ({
+      destination: {
+        Config: {
+          restApiKey: 'restApiKey',
+          dataCenter: 'eu',
+          enableSubscriptionGroupInGroupCall: true,
+        },
+      },
+      statusCode: 200,
+      batchedRequest: {
+        body: {
+          JSON: {
+            subscription_groups: [{ id: i, group: 'test', xyz: 'abc' }],
+          },
+        },
+      },
+      metadata: [{ job_id: 280 + i }],
+    }));
+
+    const transformedEventsSet5 = new Array(40).fill(0).map((_, i) => ({
+      destination: {
+        Config: {
+          restApiKey: 'restApiKey',
+          dataCenter: 'eu',
+          enableSubscriptionGroupInGroupCall: true,
+        },
+      },
+      statusCode: 200,
+      batchedRequest: {
+        body: {
+          JSON: {
+            merge_updates: [{ id: i, alias: 'test', xyz: 'abc' }],
+          },
+        },
+      },
+      metadata: [{ job_id: 280 + i }],
+    }));
+
     // Call the processBatch function
     const result = processBatch([
       ...transformedEventsSet1,
       ...transformedEventsSet2,
       ...transformedEventsSet3,
+      ...transformedEventsSet4,
+      ...transformedEventsSet5,
     ]);
 
     // Assert that the response is as expected
     expect(result.length).toBe(1); // One successful batched request and one failure response
-    expect(result[0].metadata.length).toBe(380); // Check the total length is same as input jobs (120 + 160 + 100)
-    expect(result[0].batchedRequest.length).toBe(3); // Two batched requests
+    expect(result[0].metadata.length).toBe(490); // Check the total length is same as input jobs (120 + 160 + 100 + 70 +40)
+    expect(result[0].batchedRequest.length).toBe(6); // Two batched requests
     expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack'); // Verify partner name
     expect(result[0].batchedRequest[0].body.JSON.attributes.length).toBe(75); // First batch contains 75 attributes
     expect(result[0].batchedRequest[0].body.JSON.events.length).toBe(75); // First batch contains 75 events
@@ -843,6 +891,9 @@ describe('processBatch', () => {
     expect(result[0].batchedRequest[1].body.JSON.events.length).toBe(45); // Second batch contains remaining 45 events
     expect(result[0].batchedRequest[1].body.JSON.purchases.length).toBe(75); // Second batch contains remaining 75 purchases
     expect(result[0].batchedRequest[2].body.JSON.purchases.length).toBe(10); // Third batch contains remaining 10 purchases
+    expect(result[0].batchedRequest[3].body.JSON.subscription_groups.length).toBe(50); // First batch contains 50 subscription group
+    expect(result[0].batchedRequest[4].body.JSON.subscription_groups.length).toBe(20); // First batch contains 20 subscription group
+    expect(result[0].batchedRequest[5].body.JSON.merge_updates.length).toBe(40); // First batch contains 50 merge_updates
   });
 
   test('check success and failure scenarios both for processBatch', () => {
@@ -895,5 +946,277 @@ describe('processBatch', () => {
     expect(result[0].batchedRequest[0].body.JSON.purchases.length).toBe(successCount);
     expect(result[0].batchedRequest[0].body.JSON.partner).toBe('RudderStack');
     expect(result[0].metadata.length).toBe(successCount);
+  });
+});
+
+describe('addAppId', () => {
+  it('test_no_integrations_object', () => {
+    const payload = { foo: 'bar' };
+    const message = {};
+    expect(addAppId(payload, message)).toEqual(payload);
+  });
+
+  it('test_no_braze_integration', () => {
+    const payload = { foo: 'bar' };
+    const message = { integrations: { All: true } };
+    expect(addAppId(payload, message)).toEqual(payload);
+  });
+
+  it('test_braze_integration_no_app_id', () => {
+    const payload = { foo: 'bar' };
+    const message = { integrations: { All: true, braze: {} } };
+    expect(addAppId(payload, message)).toEqual(payload);
+  });
+
+  it('test_braze_integration_with_app_id', () => {
+    const payload = { foo: 'bar' };
+    const message = { integrations: { All: true, braze: { appId: '123' } } };
+    expect(addAppId(payload, message)).toEqual({ ...payload, app_id: '123' });
+  });
+
+  it('test_invalid_app_id', () => {
+    const payload = { foo: 'bar' };
+    const message = { integrations: { All: true, braze: { appId: 123 } } };
+    expect(addAppId(payload, message)).toEqual({ ...payload, app_id: '123' });
+  });
+
+  it('test_invalid_app_id', () => {
+    const payload = { foo: 'bar' };
+    const message = { integrations: { All: true, braze: { appId: '' } } };
+    expect(addAppId(payload, message)).toEqual(payload);
+  });
+});
+
+describe('getPurchaseObjs', () => {
+  test('a single valid product with all required properties', () => {
+    const purchaseObjs = getPurchaseObjs({
+      properties: { products: [{ product_id: '123', price: 10.99, quantity: 2 }], currency: 'USD' },
+      timestamp: '2023-08-04T12:34:56Z',
+      anonymousId: 'abc',
+    });
+    expect(purchaseObjs).toEqual([
+      {
+        product_id: '123',
+        price: 10.99,
+        quantity: 2,
+        currency: 'USD',
+        time: '2023-08-04T12:34:56Z',
+        _update_existing_only: false,
+        user_alias: {
+          alias_label: 'rudder_id',
+          alias_name: 'abc',
+        },
+      },
+    ]);
+  });
+
+  test('multiple valid products with all required properties', () => {
+    const purchaseObjs = getPurchaseObjs({
+      properties: {
+        products: [
+          { product_id: '123', price: 10.99, quantity: 2 },
+          { product_id: '456', price: 5.49, quantity: 1 },
+        ],
+        currency: 'EUR',
+      },
+      timestamp: '2023-08-04T12:34:56Z',
+      anonymousId: 'abc',
+    });
+    expect(purchaseObjs).toEqual([
+      {
+        product_id: '123',
+        price: 10.99,
+        quantity: 2,
+        currency: 'EUR',
+        time: '2023-08-04T12:34:56Z',
+        _update_existing_only: false,
+        user_alias: {
+          alias_label: 'rudder_id',
+          alias_name: 'abc',
+        },
+      },
+      {
+        product_id: '456',
+        price: 5.49,
+        quantity: 1,
+        currency: 'EUR',
+        time: '2023-08-04T12:34:56Z',
+        _update_existing_only: false,
+        user_alias: {
+          alias_label: 'rudder_id',
+          alias_name: 'abc',
+        },
+      },
+    ]);
+  });
+
+  test('single product with missing product_id property', () => {
+    try {
+      getPurchaseObjs({
+        properties: { products: [{ price: 10.99, quantity: 2 }], currency: 'USD' },
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
+      });
+    } catch (e) {
+      expect(e.message).toEqual(
+        'Invalid Order Completed event: Product Id is missing for product at index: 0',
+      );
+    }
+  });
+
+  test('single product with missing price property', () => {
+    try {
+      getPurchaseObjs({
+        properties: { products: [{ product_id: '123', quantity: 2 }], currency: 'USD' },
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
+      });
+    } catch (e) {
+      expect(e.message).toEqual(
+        'Invalid Order Completed event: Price is missing for product at index: 0',
+      );
+    }
+  });
+
+  test('single product with missing quantity property', () => {
+    try {
+      getPurchaseObjs({
+        properties: { products: [{ product_id: '123', price: 10.99 }], currency: 'USD' },
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
+      });
+    } catch (e) {
+      expect(e.message).toEqual(
+        'Invalid Order Completed event: Quantity is missing for product at index: 0',
+      );
+    }
+  });
+
+  test('single product with missing currency property', () => {
+    try {
+      getPurchaseObjs({
+        properties: { products: [{ product_id: '123', price: 10.99, quantity: 2 }] },
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
+      });
+    } catch (e) {
+      expect(e.message).toEqual(
+        'Invalid Order Completed event: Message properties and product at index: 0 is missing currency',
+      );
+    }
+  });
+
+  test('single product with missing timestamp property', () => {
+    try {
+      getPurchaseObjs({
+        properties: {
+          products: [{ product_id: '123', price: 10.99, quantity: 2 }],
+          currency: 'USD',
+        },
+        anonymousId: 'abc',
+      });
+    } catch (e) {
+      expect(e.message).toEqual(
+        'Invalid Order Completed event: Timestamp is missing in the message',
+      );
+    }
+  });
+
+  test('single product with NaN price', () => {
+    try {
+      getPurchaseObjs({
+        properties: {
+          products: [{ product_id: '123', price: 'abc', quantity: 2 }],
+          currency: 'USD',
+        },
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
+      });
+    } catch (e) {
+      expect(e.message).toEqual(
+        'Invalid Order Completed event: Price is not a number for product at index: 0',
+      );
+    }
+  });
+
+  test('single product with NaN quantity', () => {
+    try {
+      getPurchaseObjs({
+        properties: {
+          products: [{ product_id: '123', price: 10.99, quantity: 'abc' }],
+          currency: 'USD',
+        },
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
+      });
+    } catch (e) {
+      expect(e.message).toEqual(
+        'Invalid Order Completed event: Quantity is not a number for product at index: 0',
+      );
+    }
+  });
+
+  // Test case for a single product with valid currency property
+  test('single product with valid currency property', () => {
+    const purchaseObjs = getPurchaseObjs({
+      properties: {
+        products: [{ product_id: '123', price: 10.99, quantity: 2 }],
+        currency: 'USD',
+      },
+      timestamp: '2023-08-04T12:34:56Z',
+      anonymousId: 'abc',
+    });
+    expect(purchaseObjs).toEqual([
+      {
+        product_id: '123',
+        price: 10.99,
+        quantity: 2,
+        currency: 'USD',
+        time: '2023-08-04T12:34:56Z',
+        _update_existing_only: false,
+        user_alias: {
+          alias_label: 'rudder_id',
+          alias_name: 'abc',
+        },
+      },
+    ]);
+  });
+
+  test('products not being an array', () => {
+    try {
+      getPurchaseObjs({
+        properties: { products: { product_id: '123', price: 10.99, quantity: 2 } },
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
+      });
+    } catch (e) {
+      expect(e.message).toEqual('Invalid Order Completed event: Products is not an array');
+    }
+  });
+
+  test('empty products array', () => {
+    try {
+      getPurchaseObjs({
+        properties: { products: [], currency: 'USD' },
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
+      });
+    } catch (e) {
+      expect(e.message).toEqual('Invalid Order Completed event: Products array is empty');
+    }
+  });
+
+  test('message.properties being undefined', () => {
+    try {
+      getPurchaseObjs({
+        properties: undefined,
+        timestamp: '2023-08-04T12:34:56Z',
+        anonymousId: 'abc',
+      });
+    } catch (e) {
+      expect(e.message).toEqual(
+        'Invalid Order Completed event: Properties object is missing in the message',
+      );
+    }
   });
 });

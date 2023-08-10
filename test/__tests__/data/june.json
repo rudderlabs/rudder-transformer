@@ -65,6 +65,7 @@
       "body": {
         "JSON": {
           "userId": "5136633649",
+          "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
           "traits": {
             "name": "John Doe",
             "email": "johndoe@gmail.com",
@@ -146,6 +147,7 @@
       "body": {
         "JSON": {
           "userId": "5136633649",
+          "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
           "event": "Product Reviewed",
           "properties": {
             "review_id": "12345",
@@ -194,6 +196,7 @@
       "body": {
         "JSON": {
           "userId": "5136633649",
+          "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
           "event": "Product Reviewed",
           "timestamp": "2022-01-20T13:39:21.032Z"
         },
@@ -243,6 +246,7 @@
       "body": {
         "JSON": {
           "userId": "5136633649",
+          "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
           "event": "Product Reviewed",
           "properties": {
             "review_id": "12345",
@@ -309,6 +313,7 @@
         "JSON": {
           "userId": "5136633649",
           "event": "Product Reviewed",
+          "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
           "properties": {
             "review_id": "12345",
             "product_id": "123",
@@ -367,6 +372,7 @@
       "body": {
         "JSON": {
           "userId": "5136633649",
+          "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
           "groupId": "9230AUbd2138h",
           "traits": {
             "name": "Initech",
@@ -377,6 +383,122 @@
             "currency": "USD"
           },
           "timestamp": "2022-01-20T13:39:21.032Z"
+        },
+        "JSON_ARRAY": {},
+        "XML": {},
+        "FORM": {}
+      },
+      "files": {}
+    }
+  },
+  {
+    "description": "Page call with properties",
+    "input": {
+      "destination": {
+        "Config": {
+          "apiKey": "123456"
+        },
+        "ID": "june123"
+      },
+      "message": {
+        "type": "page",
+        "userId": "5136633649",
+        "context": {
+          "app": {
+            "build": "1.0.0",
+            "name": "RudderLabs JavaScript SDK",
+            "namespace": "com.rudderlabs.javascript",
+            "version": "1.0.0"
+          },
+          "traits": {
+            "email": "rudderTest@gmail.com",
+            "anonymousId": "12345"
+          },
+          "library": {
+            "name": "RudderLabs JavaScript SDK",
+            "version": "1.0.0"
+          },
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+          "locale": "en-US",
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 2
+          },
+          "page": {
+            "path": "/destinations/amplitude",
+            "referrer": "",
+            "search": "",
+            "title": "",
+            "url": "https://docs.rudderstack.com/destinations/amplitude",
+            "category": "destination",
+            "initial_referrer": "https://docs.rudderstack.com",
+            "initial_referring_domain": "docs.rudderstack.com"
+          }
+        },
+        "properties": {
+          "path": "/destinations/amplitude",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "https://docs.rudderstack.com/destinations/amplitude",
+          "category": "destination",
+          "initial_referrer": "https://docs.rudderstack.com",
+          "initial_referring_domain": "docs.rudderstack.com"
+        },
+        "rudderId": "553b5522-c575-40a7-8072-9741c5f9a647",
+        "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+        "originalTimestamp": "2023-08-06T13:39:21.032Z"
+      }
+    },
+    "output": {
+      "version": "1",
+      "type": "REST",
+      "method": "POST",
+      "endpoint": "https://api.june.so/api/page",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Basic 123456"
+      },
+      "params": {},
+      "body": {
+        "JSON": {
+          "userId": "5136633649",
+          "anonymousId": "bf412108-0357-4330-b119-7305e767823c",
+          "properties": {
+            "path": "/destinations/amplitude",
+            "referrer": "",
+            "search": "",
+            "title": "",
+            "url": "https://docs.rudderstack.com/destinations/amplitude",
+            "category": "destination",
+            "initial_referrer": "https://docs.rudderstack.com",
+            "initial_referring_domain": "docs.rudderstack.com"
+          },
+          "context": {
+            "app": {
+              "build": "1.0.0",
+              "name": "RudderLabs JavaScript SDK",
+              "namespace": "com.rudderlabs.javascript",
+              "version": "1.0.0"
+            },
+            "library": {
+              "name": "RudderLabs JavaScript SDK",
+              "version": "1.0.0"
+            },
+            "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
+            "locale": "en-US",
+            "os": {
+              "name": "",
+              "version": ""
+            },
+            "screen": {
+              "density": 2
+            }
+          },
+          "timestamp": "2023-08-06T13:39:21.032Z"
         },
         "JSON_ARRAY": {},
         "XML": {},

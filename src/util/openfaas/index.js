@@ -11,6 +11,7 @@ const { RetryRequestError, RespStatusError } = require('../utils');
 
 const FAAS_BASE_IMG = process.env.FAAS_BASE_IMG || 'rudderlabs/openfaas-flask:main';
 const FAAS_MAX_PODS_IN_TEXT = process.env.FAAS_MAX_PODS_IN_TEXT || '40';
+const FAAS_MIN_PODS_IN_TEXT = process.env.FAAS_MIN_PODS_IN_TEXT || '1';
 const FAAS_REQUESTS_CPU = process.env.FAAS_REQUESTS_CPU || '0.5';
 const FAAS_REQUESTS_MEMORY = process.env.FAAS_REQUESTS_MEMORY || '140Mi';
 const FAAS_LIMITS_CPU = process.env.FAAS_LIMITS_CPU || FAAS_REQUESTS_CPU;
@@ -128,6 +129,7 @@ const deployFaasFunction = async (functionName, code, versionId, libraryVersionI
         'openfaas-fn': 'true',
         'parent-component': 'openfaas',
         'com.openfaas.scale.max': FAAS_MAX_PODS_IN_TEXT,
+        'com.openfaas.scale.min': FAAS_MIN_PODS_IN_TEXT,
       },
       annotations: {
         'prometheus.io.scrape': 'true',
@@ -147,8 +149,8 @@ const deployFaasFunction = async (functionName, code, versionId, libraryVersionI
   } catch (error) {
     logger.error(`[Faas] Error while deploying ${functionName}: ${error.message}`);
     // To handle concurrent create requests,
-    // throw retry error if already exists so that request can be retried
-    if (error.statusCode === 500 && error.message.includes('already exists')) {
+    // throw retry error if deployment or service already exists so that request can be retried
+    if ((error.statusCode === 500 || error.statusCode === 400) && error.message.includes('already exists')) {
       setFunctionInCache(functionName);
       throw new RetryRequestError(`${functionName} already exists`);
     }

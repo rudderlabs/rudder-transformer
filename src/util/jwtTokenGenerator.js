@@ -6,7 +6,6 @@ function base64url(source) {
 
   // Remove padding equal characters
   encodedSource = encodedSource.replace(/=+$/, '');
-
   // Replace characters according to base64url specifications
   encodedSource = encodedSource.replace(/\+/g, '-');
   encodedSource = encodedSource.replace(/\//g, '_');

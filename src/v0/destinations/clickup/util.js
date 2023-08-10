@@ -56,7 +56,7 @@ const validateEmail = (email) => {
  * @param {*} url
  */
 const validateUrl = (url) => {
-  const regex = /^(http(s)?:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w!#$&'()*+,./:;=?@[\]~-]+$/;
+  const regex = /^(https?:\/\/)[\w.-]+(?:\.[\w.-]+)+[\w!#$&'()*+,/:;=?@[\]~-]+$/;
   if (!regex.test(url)) {
     throw new InstrumentationError('The provided url is invalid');
   }
@@ -214,7 +214,10 @@ const retrieveCustomFields = async (listId, apiToken) => {
       Authorization: apiToken,
     },
   };
-  const customFieldsResponse = await httpGET(endpoint, requestOptions);
+  const customFieldsResponse = await httpGET(endpoint, requestOptions, {
+    destType: 'clickup',
+    feature: 'transformation',
+  });
   const processedCustomFieldsResponse = processAxiosResponse(customFieldsResponse);
 
   if (processedCustomFieldsResponse.status !== 200) {

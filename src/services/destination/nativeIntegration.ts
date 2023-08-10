@@ -65,8 +65,8 @@ export default class NativeIntegrationDestinationService implements IntegrationD
         } catch (error: any) {
           const metaTO = this.getTags(
             destinationType,
-            event.metadata.destinationId,
-            event.metadata.workspaceId,
+            event.metadata?.destinationId,
+            event.metadata?.workspaceId,
             tags.FEATURES.PROCESSOR,
           );
           metaTO.metadata = event.metadata;
@@ -98,17 +98,20 @@ export default class NativeIntegrationDestinationService implements IntegrationD
       groupedEvents.map(async (destInputArray: RouterTransformationRequestData[]) => {
         const metaTO = this.getTags(
           destinationType,
-          destInputArray[0].metadata.destinationId,
-          destInputArray[0].metadata.workspaceId,
+          destInputArray[0].metadata?.destinationId,
+          destInputArray[0].metadata?.workspaceId,
           tags.FEATURES.ROUTER,
         );
         try {
           const doRouterTransformationResponse: RouterTransformationResponse[] =
             await destHandler.processRouterDest(destInputArray);
+          metaTO.metadata = destInputArray[0].metadata;
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
             doRouterTransformationResponse,
             destHandler,
             metaTO,
+            tags.IMPLEMENTATIONS.NATIVE,
+            destinationType.toUpperCase(),
           );
         } catch (error: any) {
           metaTO.metadatas = destInputArray.map((input) => input.metadata);

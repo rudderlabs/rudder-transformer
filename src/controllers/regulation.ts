@@ -3,6 +3,7 @@ import logger from '../logger';
 import { UserDeletionRequest, UserDeletionResponse } from '../types';
 import ServiceSelector from '../helpers/serviceSelector';
 import tags from '../v0/util/tags';
+import stats from '../util/stats';
 import PostTransformationDestinationService from '../services/destination/postTransformation';
 
 // TODO: refactor this class to new format
@@ -12,7 +13,7 @@ export default class RegulationController {
       'Native(Process-Transform):: Requst to transformer::',
       JSON.stringify(ctx.request.body),
     );
-
+    const startTime = new Date();
     let rudderDestInfo: any;
     try {
       const rudderDestInfoHeader = ctx.get('x-rudder-dest-info');
@@ -47,6 +48,10 @@ export default class RegulationController {
       ctx.body = [{ error, statusCode: 500 }] as UserDeletionResponse[];
       ctx.status = 500;
     }
+    stats.timing('dest_transform_request_latency', startTime, {
+      feature: tags.FEATURES.USER_DELETION,
+      version:"v0",
+    });
     return ctx;
   }
 }

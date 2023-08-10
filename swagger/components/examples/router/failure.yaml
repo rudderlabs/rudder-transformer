@@ -1,0 +1,130 @@
+metadata:
+  - sourceId: '27O0bmEEx3GgfmEhZHUcPwJQVWC'
+    workspaceId: '27O0bhB6p5ehfOWeeZlOSsSDTLg'
+    namespace: ''
+    instanceId: '1'
+    sourceType: 'HTTP'
+    sourceCategory: ''
+    trackingPlanId: ''
+    trackingPlanVersion: 0
+    sourceTpConfig: null
+    mergedTpConfig: null
+    destinationId: '2JIqVoWNvSOHa9ppKOqSo4hPuc0'
+    jobRunId: ''
+    jobId: 1
+    sourceBatchId: ''
+    sourceJobId: ''
+    sourceJobRunId: ''
+    sourceTaskId: ''
+    sourceTaskRunId: ''
+    recordId: null
+    destinationType: 'PINTEREST_TAG'
+    messageId: 'cededd59-671c-4a2e-a89a-6461ed662ab9'
+    oauthAccessToken: ''
+    messageIds: null
+    rudderId: '<<>>anon-id<<>>testUser'
+    receivedAt: '2023-01-01T14:15:41.731+05:30'
+    eventName: 'Product Viewed'
+    eventType: 'track'
+    sourceDefinitionId: '1b6gJdqOPOCadT3cddw8eidV591'
+    destinationDefinitionId: ''
+destination:
+  ID: '2JIqVoWNvSOHa9ppKOqSo4hPuc0'
+  Name: 'Pinterest-test'
+  DestinationDefinition:
+    ID: '1s0w2bMAleYngscZRgH1ExynlpT'
+    Name: 'PINTEREST_TAG'
+    DisplayName: 'Pinterest Tag'
+    Config:
+      cdkV2TestThreshold: 1
+      cdkV2Enabled: true
+      destConfig:
+        defaultConfig:
+          - 'tagId'
+          - 'appId'
+          - 'advertiserId'
+          - 'sendingUnHashedData'
+          - 'enableDeduplication'
+          - 'deduplicationKey'
+          - 'customProperties'
+          - 'eventsMapping'
+          - 'enhancedMatch'
+          - 'blacklistedEvents'
+          - 'whitelistedEvents'
+          - 'eventFilteringOption'
+        web:
+          - 'useNativeSDK'
+          - 'oneTrustCookieCategories'
+      excludeKeys: []
+      includeKeys:
+        - 'tagId'
+        - 'advertiserId'
+        - 'appId'
+        - 'customProperties'
+        - 'eventsMapping'
+        - 'enhancedMatch'
+        - 'enableDeduplication'
+        - 'deduplicationKey'
+        - 'blacklistedEvents'
+        - 'whitelistedEvents'
+        - 'oneTrustCookieCategories'
+        - 'eventFilteringOption'
+      saveDestinationResponse: false
+      secretKeys: []
+      supportedSourceTypes:
+        - 'android'
+        - 'ios'
+        - 'web'
+        - 'unity'
+        - 'amp'
+        - 'cloud'
+        - 'warehouse'
+        - 'reactnative'
+        - 'flutter'
+        - 'cordova'
+      transformAt: 'router'
+      transformAtV1: 'router'
+    ResponseRules: {}
+  Config:
+    advertiserId: 'advertiserId123'
+    appId: ''
+    apiVersion: 'newApi'
+    adAccountId: 'accountId123'
+    conversionToken: 'conversionToken123'
+    sendAsCustomEvent: false
+    blacklistedEvents:
+      - eventName: ''
+    customProperties:
+      - properties: ''
+    deduplicationKey: ''
+    enableDeduplication: false
+    enhancedMatch: false
+    eventFilteringOption: 'disable'
+    eventsMapping:
+      - from: 'Product Added'
+        to: 'AddToCart'
+      - from: 'Product Viewed'
+        to: 'ViewCategory'
+      - from: 'Product Seen'
+        to: 'PageVisit'
+    sendingUnHashedData: true
+    tagId: 'Techno@2020'
+    whitelistedEvents:
+      - eventName: ''
+  Enabled: true
+  WorkspaceID: '27O0bhB6p5ehfOWeeZlOSsSDTLg'
+  Transformations: []
+  IsProcessorEnabled: true
+  RevisionID: '2JgW8QPyFsDvodPYShZ29XH3sKB'
+batched: false
+statusCode: 400
+error: "Random is not mapped in UI. Make sure to map the event in UI or enable the 'send as custom event' setting"
+statTags:
+  errorCategory: 'dataValidation'
+  errorType: 'configuration'
+  destType: 'PINTEREST_TAG'
+  module: 'destination'
+  implementation: 'cdkV2'
+  feature: 'router'
+  destinationId: '2JIqVoWNvSOHa9ppKOqSo4hPuc0'
+  workspaceId: '27O0bhB6p5ehfOWeeZlOSsSDTLg'

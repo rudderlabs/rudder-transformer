@@ -1,0 +1,24 @@
+title: Source Transformation Response
+type: object
+properties:
+  output:
+    $ref: './sourceTransformationOutput.yaml'
+  error:
+    type: string
+  statusCode:
+    type: number
+  outputToSource:
+    type: object
+  statTags:
+    type: object
+    properties:
+      errorCategory:
+        type: string
+      module:
+        type: string
+      implementation:
+        type: string
+      destinationId:
+        type: string
+      workspaceId:
+        type: string

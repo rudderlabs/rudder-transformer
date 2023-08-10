@@ -1,0 +1,29 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    template: |
+      $.assert(.message.type, "message Type is not present. Aborting message.");
+      $.assert(.message.type in 
+        {{$.EventType.([.IDENTIFY, .TRACK, .GROUP, .PAGE, .ALIAS, .SCREEN])}}, 
+        "message type " + .message.type + " is not supported");
+  - name: buildResponse
+    description: In batchMode we return payload directly
+    condition: $.batchMode
+    template: .message
+    else:
+      name: buildResponseForProcessTransformation
+      template: |
+        const response = $.defaultRequestConfig();
+        response.body.JSON = .message;
+        response.endpoint = "https://api.statsig.com/v1/webhooks/rudderstack";
+        response.headers = {
+          "STATSIG-API-KEY": .destination.Config.secretKey,
+            "content-type": "application/json"
+        };
+        response
+

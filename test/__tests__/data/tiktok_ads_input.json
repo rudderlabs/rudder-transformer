@@ -748,7 +748,6 @@
       }
     }
   },
-
   {
     "message": {
       "anonymousId": "21e13f4bc7ceddad",
@@ -2176,7 +2175,7 @@
         ],
         "products": [
           {
-            "product_id": "123",
+            "product_id": 123,
             "sku": "G-32",
             "name": "Monopoly",
             "price": 14,

@@ -19,7 +19,10 @@ const getPollStatus = async (event) => {
   };
   const pollUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`;
   const startTime = Date.now();
-  const pollStatus = await httpGET(pollUrl, requestOptions);
+  const pollStatus = await httpGET(pollUrl, requestOptions, {
+    destType: 'marketo_bulk_upload',
+    feature: 'transformation',
+  });
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   const POLL_STATUS_ERR_MSG = 'Could not poll status';

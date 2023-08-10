@@ -28,7 +28,10 @@ const userDeletionHandler = async (userAttributes, config) => {
     },
   };
 
-  const deletionResponse = await httpDELETE(requestUrl, requestOptions);
+  const deletionResponse = await httpDELETE(requestUrl, requestOptions, {
+    destType: 'custify',
+    feature: 'deleteUsers',
+  });
   const processedDeletionRequest = processAxiosResponse(deletionResponse);
   if (processedDeletionRequest.status !== 200 && processedDeletionRequest.status !== 404) {
     throw new NetworkError(

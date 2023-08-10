@@ -187,6 +187,10 @@ const getBoardDetails = async (url, boardID, apiToken) => {
         Authorization: `${apiToken}`,
       },
     },
+    {
+      destType: 'monday',
+      feature: 'transformation',
+    },
   );
   const boardDetailsResponse = processAxiosResponse(clientResponse);
   if (boardDetailsResponse.status !== 200) {

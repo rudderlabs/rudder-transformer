@@ -50,6 +50,7 @@ jobs:
 
       - name: Tag & Create GitHub Release
         id: create_release
+        continue-on-error: true
         env:
           HUSKY: 0
           GITHUB_TOKEN: ${{ secrets.PAT }}

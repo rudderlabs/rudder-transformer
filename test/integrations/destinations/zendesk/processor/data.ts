@@ -465,6 +465,7 @@ export const data = [
                 password: 'myDummyPwd1',
                 removeUsersFromOrganization: true,
                 sendGroupCallsWithoutUserId: true,
+                sourceName: 'abc',
               },
               DestinationDefinition: {
                 DisplayName: 'Zendesk',
@@ -536,12 +537,12 @@ export const data = [
                   event: {
                     description: 'test-track-event124',
                     type: 'test-track-event124',
-                    source: 'Rudder',
+                    source: 'abc',
                     properties: { test_prop: 'test_prop_value_124' },
                   },
                   profile: {
                     type: 'test-track-event124',
-                    source: 'Rudder',
+                    source: 'abc',
                     identifiers: [{ type: 'email', value: 'example124@email.com' }],
                   },
                 },

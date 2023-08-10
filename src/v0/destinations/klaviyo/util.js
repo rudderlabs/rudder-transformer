@@ -56,6 +56,7 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
 
   let statusCode = resp.status;
   if (resp.status === 201 || resp.status === 409) {
+    // retryable error if the profile id is not found in the response
     statusCode = 500;
   }
 

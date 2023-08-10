@@ -21,8 +21,8 @@ function generateClevertapBatchedPayload(events, destination) {
 
   batchedRequest.endpoint = getEndpoint(destination.Config);
   batchedRequest.headers = {
-    'X-CleverTap-Account-Id': destination.Config.accountId,
-    'X-CleverTap-Passcode': destination.Config.passcode,
+    'X-CleverTap-Account-Id': destination?.Config?.accountId,
+    'X-CleverTap-Passcode': destination?.Config?.passcode,
     'Content-Type': JSON_MIME_TYPE,
   };
 

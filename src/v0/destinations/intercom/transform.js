@@ -15,6 +15,7 @@ const {
   getFieldValueFromMessage,
   addExternalIdToTraits,
   simpleProcessRouterDest,
+  flattenJson,
 } = require('../../util');
 const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -81,13 +82,15 @@ function validateTrack(message, payload) {
   if (payload.user_id || payload.email) {
     const metadata = {};
     if (message.properties) {
-      Object.keys(message.properties).forEach((key) => {
-        const val = message.properties[key];
+      const flattenedProperties = flattenJson(message.properties);
+      Object.keys(flattenedProperties).forEach((key) => {
+        const val = flattenedProperties[key];
         if (val && typeof val !== 'object' && !Array.isArray(val)) {
           metadata[key] = val;
         }
       });
     }
+
     return { ...payload, metadata };
   }
   throw new InstrumentationError('Email or userId is mandatory');
@@ -142,12 +145,14 @@ function buildCustomAttributes(message, payload) {
   ];
 
   if (traits) {
-    Object.keys(traits).forEach((key) => {
+    const flattenedTraits = flattenJson(traits);
+    Object.keys(flattenedTraits).forEach((key) => {
       if (!companyReservedKeys.includes(key) && key !== 'userId') {
-        customAttributes[key] = traits[key];
+        customAttributes[key] = flattenedTraits[key];
       }
     });
   }
+
 
   if (Object.keys(customAttributes).length > 0) {
     finalPayload.custom_attributes = customAttributes;

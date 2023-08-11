@@ -47,9 +47,7 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
     profileId = resp.response?.data?.id;
   } else if (resp.status === 409) {
     const { errors } = resp.response;
-    if (errors && Array.isArray(errors)) {
-      profileId = errors?.[0]?.meta?.duplicate_profile_id;
-    }
+    profileId = errors?.[0]?.meta?.duplicate_profile_id;
   }
 
   if (profileId) {

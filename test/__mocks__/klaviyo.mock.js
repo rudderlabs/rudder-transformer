@@ -9,9 +9,11 @@ const klaviyoPostRequestHandler = (url, payload) => {
     case 'https://a.klaviyo.com/api/profiles':
       return {
         status: 201,
-        data: {data: {
-          id: '01GW3PHVY0MTCDGS0A1612HARX',
-        },}
+        data: {
+          data: {
+            id: '01GW3PHVY0MTCDGS0A1612HARX',
+          },
+        }
       };
     default:
       return new Promise((resolve, reject) => {

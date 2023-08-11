@@ -47,7 +47,9 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
     profileId = resp.response?.data?.id;
   } else if (resp.status === 409) {
     const { errors } = resp.response;
-    profileId = errors?.[0]?.meta?.duplicate_profile_id;
+    if (errors && Array.isArray(errors)) {
+      profileId = errors?.[0]?.meta?.duplicate_profile_id;
+    }
   }
 
   if (profileId) {
@@ -110,10 +112,10 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
     }
 
     if (subscribeConsentArr.includes('email')) {
-      channels.email = [...(channels.email || []), 'MARKETING'];
+      channels.email = ['MARKETING'];
     }
     if (subscribeConsentArr.includes('sms')) {
-      channels.sms = [...(channels.sms || []), 'MARKETING'];
+      channels.sms = ['MARKETING'];
     }
     subscriptionObj.channels = channels;
   }

@@ -315,7 +315,9 @@
         "FORM": {},
         "JSON": {
           "context": {
-            "ad": { "callback": "123ATXSfe" },
+            "ad": {
+              "callback": "123ATXSfe"
+            },
             "ip": "13.57.97.131",
             "page": {
               "referrer": "http://demo.mywebsite.com",

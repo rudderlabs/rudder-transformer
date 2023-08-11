@@ -60,6 +60,16 @@ const identifyRequestHandler = async (message, category, destination) => {
   const traitsInfo = getFieldValueFromMessage(message, 'traits');
   let propertyPayload = constructPayload(message, MAPPING_CONFIG[category.name]);
   // Extract other K-V property from traits about user custom properties
+
+  const traitsInfo = getFieldValueFromMessage(message, 'traits');
+  
+  // Flatten traits and context.traits
+  if (message.traits) {
+    message.traits = flattenJson(message.traits, '.', 'normal', false);
+  }
+  if (message.context && message.context.traits) {
+    message.context.traits = flattenJson(message.context.traits, '.', 'normal', false);
+  }
   let customPropertyPayload = {};
   customPropertyPayload = extractCustomFields(
     message,
@@ -126,6 +136,7 @@ const trackRequestHandler = (message, category, destination) => {
   let event = get(message, 'event');
   event = event ? event.trim().toLowerCase() : event;
   let attributes = {};
+  
   if (ecomEvents.includes(event) && message.properties) {
     const eventName = eventNameMapping[event];
     const eventMap = jsonNameMapping[eventName];

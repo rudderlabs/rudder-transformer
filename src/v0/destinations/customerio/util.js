@@ -236,10 +236,11 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
   // DEVICE registration
   const isDeviceRelatedEvent = isdeviceRelatedEventName(evName, destination);
   if (isDeviceRelatedEvent && userId && token) {
+    const timestamp = message.timestamp || message.originalTimestamp;
     const devProps = {
       ...message.properties,
       id: token,
-      last_used: Math.floor(new Date(message.originalTimestamp).getTime() / 1000),
+      last_used: Math.floor(new Date(timestamp).getTime() / 1000),
     };
     const deviceType = get(message, 'context.device.type');
     if (deviceType) {

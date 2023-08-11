@@ -97,7 +97,7 @@
     "parse-static-imports": "^1.1.0",
     "prom-client": "^14.2.0",
     "qs": "^6.11.1",
-    "rudder-transformer-cdk": "^1.4.10",
+    "rudder-transformer-cdk": "^1.4.11",
     "rudder-workflow-engine": "^0.4.7",
     "set-value": "^4.1.0",
     "sha256": "^0.2.0",

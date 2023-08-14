@@ -15,7 +15,9 @@ const {
   getFieldValueFromMessage,
   addExternalIdToTraits,
   simpleProcessRouterDest,
+  flattenJson,
 } = require('../../util');
+const { separateReservedAndRestMetadata } = require('./util');
 const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -69,6 +71,7 @@ function validateIdentify(message, payload, config) {
       ReservedTraitsProperties.forEach((trait) => {
         delete finalPayload.custom_attributes[trait];
       });
+      finalPayload.custom_attributes = flattenJson(finalPayload.custom_attributes);
     }
 
     return finalPayload;
@@ -76,21 +79,18 @@ function validateIdentify(message, payload, config) {
   throw new InstrumentationError('Email or userId is mandatory');
 }
 
-function validateTrack(message, payload) {
-  // pass only string, number, boolean properties
-  if (payload.user_id || payload.email) {
-    const metadata = {};
-    if (message.properties) {
-      Object.keys(message.properties).forEach((key) => {
-        const val = message.properties[key];
-        if (val && typeof val !== 'object' && !Array.isArray(val)) {
-          metadata[key] = val;
-        }
-      });
-    }
-    return { ...payload, metadata };
+function validateTrack(payload) {
+  if (!payload.user_id && !payload.email) {
+    throw new InstrumentationError('Email or userId is mandatory');
   }
-  throw new InstrumentationError('Email or userId is mandatory');
+  // pass only string, number, boolean properties
+  if (payload.metadata) {
+    // reserved metadata contains JSON objects that does not requires flattening
+    const { reservedMetadata, restMetadata } = separateReservedAndRestMetadata(payload.metadata);
+    return { ...payload, metadata: { ...reservedMetadata, ...flattenJson(restMetadata) } };
+  }
+
+  return payload;
 }
 
 function checkIfEmailOrUserIdPresent(message) {
@@ -150,7 +150,7 @@ function buildCustomAttributes(message, payload) {
   }
 
   if (Object.keys(customAttributes).length > 0) {
-    finalPayload.custom_attributes = customAttributes;
+    finalPayload.custom_attributes = flattenJson(customAttributes);
   }
 
   return finalPayload;
@@ -176,7 +176,7 @@ function validateAndBuildResponse(message, payload, category, destination) {
       );
       break;
     case EventType.TRACK:
-      response.body.JSON = removeUndefinedAndNullValues(validateTrack(message, payload));
+      response.body.JSON = removeUndefinedAndNullValues(validateTrack(payload));
       break;
     case EventType.GROUP: {
       response.body.JSON = removeUndefinedAndNullValues(buildCustomAttributes(message, payload));

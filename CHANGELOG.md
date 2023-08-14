@@ -2,6 +2,33 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.38.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.37.0...v1.38.0) (2023-08-14)
+
+
+### Features
+
+* add commander options to run one dest tests cases ([#2443](https://github.com/rudderlabs/rudder-transformer/issues/2443)) ([cbcfeef](https://github.com/rudderlabs/rudder-transformer/commit/cbcfeef10fb5352de3d948c268fc57e36d05aff5))
+* **june:** added page call support ([#2476](https://github.com/rudderlabs/rudder-transformer/issues/2476)) ([c7d086b](https://github.com/rudderlabs/rudder-transformer/commit/c7d086b427931639bcc85fb723e0c63486d5acc0))
+* return relevant stack trace as error from ivm ([#2314](https://github.com/rudderlabs/rudder-transformer/issues/2314)) ([c908fc9](https://github.com/rudderlabs/rudder-transformer/commit/c908fc9ae904089749270267a842c9a6933d922c))
+* sessionId stitching ([#2204](https://github.com/rudderlabs/rudder-transformer/issues/2204)) ([40105f5](https://github.com/rudderlabs/rudder-transformer/commit/40105f504414fb6a832d953a6faedb2f283aa09b))
+* **zendesk:** add source field mapping ([#2455](https://github.com/rudderlabs/rudder-transformer/issues/2455)) ([#2475](https://github.com/rudderlabs/rudder-transformer/issues/2475)) ([a94bf1a](https://github.com/rudderlabs/rudder-transformer/commit/a94bf1a0b65fa5bd00fce752943e9b91f757fbbb))
+
+
+### Bug Fixes
+
+*  stat labels ([#2412](https://github.com/rudderlabs/rudder-transformer/issues/2412)) ([4d87931](https://github.com/rudderlabs/rudder-transformer/commit/4d879314766728a158445dfc6ceccd01972c289f))
+* continue on git action failure to next steps ([#2429](https://github.com/rudderlabs/rudder-transformer/issues/2429)) ([d9ecf29](https://github.com/rudderlabs/rudder-transformer/commit/d9ecf2958a524a862eb7cecb06d5f02372a1bbde))
+* customerIO source bugsnag issue for invalid timestamp ([#2413](https://github.com/rudderlabs/rudder-transformer/issues/2413)) ([d543f22](https://github.com/rudderlabs/rudder-transformer/commit/d543f220559ee5068c89f661f9096291256b0c2c))
+* handle marketo auth token response when expires_in is 0 sec  ([#2432](https://github.com/rudderlabs/rudder-transformer/issues/2432)) ([a4d4367](https://github.com/rudderlabs/rudder-transformer/commit/a4d4367eba0b63a0c13b3267bbfc12ba66b19be4))
+* **INT-256:** handling non float price input for braze purchase events ([#2431](https://github.com/rudderlabs/rudder-transformer/issues/2431)) ([f65ef89](https://github.com/rudderlabs/rudder-transformer/commit/f65ef8922387bee427f27ab7f82bafe10bc68a06))
+* **INT-296:** add destType labels for proxy destinations ([#2456](https://github.com/rudderlabs/rudder-transformer/issues/2456)) ([da80ce7](https://github.com/rudderlabs/rudder-transformer/commit/da80ce7696dfaf78fcd4ce4c245efdf305484e99))
+* **intercom:** flatten metadata and custom attributes ([#2474](https://github.com/rudderlabs/rudder-transformer/issues/2474)) ([ec60141](https://github.com/rudderlabs/rudder-transformer/commit/ec601411b3b218ce32261369627653f66f393893))
+* rETL timestamp order ([#2343](https://github.com/rudderlabs/rudder-transformer/issues/2343)) ([d949664](https://github.com/rudderlabs/rudder-transformer/commit/d9496648fdda324351fae36c9b44d7cef69f346a))
+* **tiktok_ads:** format productId to string data type ([#2434](https://github.com/rudderlabs/rudder-transformer/issues/2434)) ([792a2aa](https://github.com/rudderlabs/rudder-transformer/commit/792a2aab0678ffce1809ef11d7a1de0d6b7864be))
+* **transformation:** return retryable error when faas service exists … ([#2427](https://github.com/rudderlabs/rudder-transformer/issues/2427)) ([3b536d9](https://github.com/rudderlabs/rudder-transformer/commit/3b536d972d93261f20b9b43228d79ade5858c2f3))
+* update images to fix integration tests ([#2417](https://github.com/rudderlabs/rudder-transformer/issues/2417)) ([e3df6dc](https://github.com/rudderlabs/rudder-transformer/commit/e3df6dc878455b320a78fae5e52d39a66f236e98))
+* valid cart_update event extra check ([#2448](https://github.com/rudderlabs/rudder-transformer/issues/2448)) ([ec80855](https://github.com/rudderlabs/rudder-transformer/commit/ec808555ab82aa83957190e551c8106b570b3e3b))
+
 ## [1.37.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.36.1...v1.37.0) (2023-08-04)
 
 

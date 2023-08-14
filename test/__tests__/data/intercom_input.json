@@ -1187,5 +1187,46 @@
         "collectContext": false
       }
     }
+  },
+  {
+    "message": {
+      "groupId": "test_company_id_wdasda",
+      "context": {
+        "traits": {
+          "email": "testUser@test.com"
+        }
+      },
+      "traits": {
+        "employees": 450,
+        "plan": "basic",
+        "email": "test@test.com",
+        "name": "rudderUpdate",
+        "size": "50",
+        "industry": "IT",
+        "website": "url",
+        "monthlySpend": "2131231",
+        "remoteCreatedAt": "1683017572",
+        "key1": "val1",
+        "key2": {
+          "a": "a",
+          "b": "b"
+        },
+        "key3": [1, 2, 3],
+        "key4": null
+      },
+      "anonymousId": "anonId",
+      "integrations": {
+        "All": true
+      },
+      "type": "group"
+    },
+    "destination": {
+      "Config": {
+        "apiKey": "abcd=",
+        "appId": "asdasdasd",
+        "collectContext": false,
+        "sendAnonymousId": true
+      }
+    }
   }
 ]

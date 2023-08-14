@@ -5,7 +5,11 @@
     "sourceFromGenericMap": true,
     "required": false
   },
-
+  {
+    "destKey": "anonymousId",
+    "sourceKeys": "anonymousId",
+    "required": false
+  },
   {
     "destKey": "groupId",
     "sourceKeys": "groupId",
@@ -25,6 +29,20 @@
     "required": false,
     "metadata": {
       "excludes": ["groupId"]
+    }
+  },
+  {
+    "destKey": "context",
+    "sourceKeys": "context",
+    "required": false,
+    "metadata": {
+      "excludes": [
+        "page",
+        "traits",
+        "sessionId",
+        "sessionStart",
+        "consentManagement"
+      ]
     }
   }
 ]

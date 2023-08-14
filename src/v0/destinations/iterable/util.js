@@ -740,11 +740,11 @@ const filterEventsAndPrepareBatchRequests = (transformedEvents) => {
  * @param {Array} inputs - An array of events
  * @returns {Array} - An array of batches
  */
-const orderEvents = (inputs) => {
+const batchEvents = (inputs) => {
   const batches = [];
   let currentInputsArray = inputs;
   while (currentInputsArray.length > 0) {
-    const updatedInputsArray = [];
+    const remainingInputsArray = [];
     const userOrderTracker = {};
     const event = currentInputsArray.shift();
     const messageType = event.message.type;
@@ -755,21 +755,19 @@ const orderEvents = (inputs) => {
       if (currentMessageType === messageType && !userOrderTracker[currentUser]) {
         batch.push(currentInput);
       } else {
-        updatedInputsArray.push(currentInput);
+        remainingInputsArray.push(currentInput);
         userOrderTracker[currentUser] = true;
       }
     })
-    if (batch.length > 0) {
-      batches.push(batch);
-    }
-    currentInputsArray = updatedInputsArray;
+    batches.push(batch);
+    currentInputsArray = remainingInputsArray;
   }
 
   return batches;
 }
 
 module.exports = {
-  orderEvents,
+  batchEvents,
   getCatalogEndpoint,
   hasMultipleResponses,
   pageEventPayloadBuilder,

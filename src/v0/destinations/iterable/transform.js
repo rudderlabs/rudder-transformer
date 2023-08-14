@@ -1,7 +1,7 @@
 const _ = require('lodash');
 const get = require('get-value');
 const {
-  orderEvents,
+  batchEvents,
   getCatalogEndpoint,
   hasMultipleResponses,
   pageEventPayloadBuilder,
@@ -167,9 +167,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
     return errorRespEvents;
   }
 
-  const orderedEvents = orderEvents(inputs);
+  const batchedEvents = batchEvents(inputs);
   const response = await Promise.all(
-    orderedEvents.map(async (listOfEvents) => {
+    batchedEvents.map(async (listOfEvents) => {
       let transformedPayloads = await Promise.all(
         listOfEvents.map(async (event) => {
           try {

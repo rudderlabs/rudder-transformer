@@ -1,5 +1,5 @@
 const {
-  orderEvents,
+  batchEvents,
   pageEventPayloadBuilder,
   trackEventPayloadBuilder,
   screenEventPayloadBuilder,
@@ -200,7 +200,7 @@ const orderEventsFuncData = [
 describe('Order Event Tests', () => {
   it('Order Event func tests', () => {
     orderEventsFuncData.forEach((data) => {
-      expect(orderEvents(data.inputs)).toEqual(data.output);
+      expect(batchEvents(data.inputs)).toEqual(data.output);
     })
   });
 });

@@ -48,7 +48,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PROD_TOKEN }}
 
       - name: Build Docker Image
-        uses: docker/build-push-action@v4.1.0
+        uses: docker/build-push-action@v4.1.1
         with:
           context: .
           file: ${{ inputs.dockerfile }}
@@ -64,7 +64,7 @@ jobs:
           docker run ${{ inputs.build_tag }} npm run test:ts:ci
 
       - name: Build and Push Multi-platform Images
-        uses: docker/build-push-action@v4.1.0
+        uses: docker/build-push-action@v4.1.1
         with:
           context: .
           file: ${{ inputs.dockerfile }}

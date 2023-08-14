@@ -1,4 +1,5 @@
 const {
+  orderEvents,
   pageEventPayloadBuilder,
   trackEventPayloadBuilder,
   screenEventPayloadBuilder,
@@ -107,6 +108,103 @@ const getTestEcommMessage = () => {
   return message;
 };
 
+const orderEventsFuncData = [
+  {
+    inputs: [
+      { message: { type: 'identify' }, metadata: { userId: '1' } },
+      { message: { type: 'track' }, metadata: { userId: '1' } },
+      { message: { type: 'identify' }, metadata: { userId: '2' } },
+      { message: { type: 'track' }, metadata: { userId: '2' } },
+      { message: { type: 'track' }, metadata: { userId: '2' } },
+      { message: { type: 'identify' }, metadata: { userId: '3' } },
+      { message: { type: 'track' }, metadata: { userId: '3' } },
+      { message: { type: 'identify' }, metadata: { userId: '4' } },
+      { message: { type: 'track' }, metadata: { userId: '4' } },
+      { message: { type: 'identify' }, metadata: { userId: '5' } },
+      { message: { type: 'track' }, metadata: { userId: '5' } },
+      { message: { type: 'identify' }, metadata: { userId: '5' } },
+      { message: { type: 'identify' }, metadata: { userId: '6' } },
+      { message: { type: 'identify' }, metadata: { userId: '6' } },
+      { message: { type: 'identify' }, metadata: { userId: '6' } },
+    ],
+    output: [
+      [
+        { message: { type: 'identify' }, metadata: { userId: '1' } },
+        { message: { type: 'identify' }, metadata: { userId: '2' } },
+        { message: { type: 'identify' }, metadata: { userId: '3' } },
+        { message: { type: 'identify' }, metadata: { userId: '4' } },
+        { message: { type: 'identify' }, metadata: { userId: '5' } },
+        { message: { type: 'identify' }, metadata: { userId: '6' } },
+        { message: { type: 'identify' }, metadata: { userId: '6' } },
+        { message: { type: 'identify' }, metadata: { userId: '6' } },
+      ],
+      [
+        { message: { type: 'track' }, metadata: { userId: '1' } },
+        { message: { type: 'track' }, metadata: { userId: '2' } },
+        { message: { type: 'track' }, metadata: { userId: '2' } },
+        { message: { type: 'track' }, metadata: { userId: '3' } },
+        { message: { type: 'track' }, metadata: { userId: '4' } },
+        { message: { type: 'track' }, metadata: { userId: '5' } },
+      ],
+      [
+        { message: { type: 'identify' }, metadata: { userId: '5' } },
+      ]
+    ]
+  },
+  {
+    inputs: [
+      { message: { type: 'track' }, metadata: { userId: '3' } },
+      { message: { type: 'identify' }, metadata: { userId: '3' } },
+      { message: { type: 'identify' }, metadata: { userId: '1' } },
+      { message: { type: 'track' }, metadata: { userId: '1' } },
+      { message: { type: 'identify' }, metadata: { userId: '5' } },
+      { message: { type: 'track' }, metadata: { userId: '5' } },
+      { message: { type: 'identify' }, metadata: { userId: '5' } },
+      { message: { type: 'identify' }, metadata: { userId: '2' } },
+      { message: { type: 'track' }, metadata: { userId: '2' } },
+      { message: { type: 'track' }, metadata: { userId: '2' } },
+      { message: { type: 'track' }, metadata: { userId: '4' } },
+      { message: { type: 'identify' }, metadata: { userId: '4' } },
+      { message: { type: 'identify' }, metadata: { userId: '6' } },
+      { message: { type: 'identify' }, metadata: { userId: '6' } },
+      { message: { type: 'identify' }, metadata: { userId: '6' } },
+    ],
+    output: [
+      [
+        { message: { type: 'track' }, metadata: { userId: '3' } },
+        { message: { type: 'track' }, metadata: { userId: '4' } },
+      ],
+      [
+        { message: { type: 'identify' }, metadata: { userId: '3' } },
+        { message: { type: 'identify' }, metadata: { userId: '1' } },
+        { message: { type: 'identify' }, metadata: { userId: '5' } },
+        { message: { type: 'identify' }, metadata: { userId: '2' } },
+        { message: { type: 'identify' }, metadata: { userId: '4' } },
+        { message: { type: 'identify' }, metadata: { userId: '6' } },
+        { message: { type: 'identify' }, metadata: { userId: '6' } },
+        { message: { type: 'identify' }, metadata: { userId: '6' } },
+      ],
+      [
+        { message: { type: 'track' }, metadata: { userId: '1' } },
+        { message: { type: 'track' }, metadata: { userId: '5' } },
+        { message: { type: 'track' }, metadata: { userId: '2' } },
+        { message: { type: 'track' }, metadata: { userId: '2' } },
+      ],
+      [
+        { message: { type: 'identify' }, metadata: { userId: '5' } },
+      ]
+    ]
+  }
+]
+
+describe('Order Event Tests', () => {
+  it('Order Event func tests', () => {
+    orderEventsFuncData.forEach((data) => {
+      expect(orderEvents(data.inputs)).toEqual(data.output);
+    })
+  });
+});
+
 describe('iterable utils test', () => {
   describe('Unit test cases for iterable registerDeviceTokenEventPayloadBuilder', () => {
     it('for no device type', async () => {
@@ -126,7 +224,9 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(registerDeviceTokenEventPayloadBuilder(getTestMessage(), getTestConfig())).toEqual(expectedOutput);
+      expect(registerDeviceTokenEventPayloadBuilder(getTestMessage(), getTestConfig())).toEqual(
+        expectedOutput,
+      );
     });
     it('For apple family device type', async () => {
       const fittingPayload = { ...getTestMessage() };
@@ -147,7 +247,9 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(registerDeviceTokenEventPayloadBuilder(fittingPayload, getTestConfig())).toEqual(expectedOutput);
+      expect(registerDeviceTokenEventPayloadBuilder(fittingPayload, getTestConfig())).toEqual(
+        expectedOutput,
+      );
     });
 
     it('For non apple family device type', async () => {
@@ -169,7 +271,9 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(registerDeviceTokenEventPayloadBuilder(fittingPayload, getTestConfig())).toEqual(expectedOutput);
+      expect(registerDeviceTokenEventPayloadBuilder(fittingPayload, getTestConfig())).toEqual(
+        expectedOutput,
+      );
     });
   });
   describe('Unit test cases for iterable registerBrowserTokenEventPayloadBuilder', () => {
@@ -193,9 +297,9 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(updateUserEventPayloadBuilder(getTestMessage(), ConfigCategory.IDENTIFY, getTestConfig())).toEqual(
-        expectedOutput,
-      );
+      expect(
+        updateUserEventPayloadBuilder(getTestMessage(), ConfigCategory.IDENTIFY, getTestConfig()),
+      ).toEqual(expectedOutput);
     });
 
     it('flow check with externalId', async () => {
@@ -215,9 +319,9 @@ describe('iterable utils test', () => {
         preferUserId: true,
         userId: 'anonId',
       };
-      expect(updateUserEventPayloadBuilder(fittingPayload, ConfigCategory.IDENTIFY, getTestConfig())).toEqual(
-        expectedOutput,
-      );
+      expect(
+        updateUserEventPayloadBuilder(fittingPayload, ConfigCategory.IDENTIFY, getTestConfig()),
+      ).toEqual(expectedOutput);
     });
   });
   describe('Unit test cases for iterbale pageEventPayloadBuilder', () => {
@@ -638,7 +742,11 @@ describe('iterable utils test', () => {
         },
       };
       expect(
-        purchaseEventPayloadBuilder(getTestEcommMessage(), ConfigCategory.TRACK_PURCHASE, getTestConfig()),
+        purchaseEventPayloadBuilder(
+          getTestEcommMessage(),
+          ConfigCategory.TRACK_PURCHASE,
+          getTestConfig(),
+        ),
       ).toEqual(expectedOutput);
     });
 
@@ -707,9 +815,9 @@ describe('iterable utils test', () => {
           userId: 'userId',
         },
       };
-      expect(purchaseEventPayloadBuilder(fittingPayload, ConfigCategory.TRACK_PURCHASE, getTestConfig())).toEqual(
-        expectedOutput,
-      );
+      expect(
+        purchaseEventPayloadBuilder(fittingPayload, ConfigCategory.TRACK_PURCHASE, getTestConfig()),
+      ).toEqual(expectedOutput);
     });
   });
   describe('Unit test cases for iterable updateCartEventPayloadBuilder', () => {

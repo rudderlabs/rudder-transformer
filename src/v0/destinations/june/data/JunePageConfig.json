@@ -19,7 +19,7 @@
     {
         "destKey": "properties",
         "sourceKeys": "properties",
-        "required": false,
+        "required": true,
         "metadata": {
             "excludes": [
                 "groupId"

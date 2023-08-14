@@ -1,5 +1,8 @@
 [
   {
+    "message": "apiKey not found in Configs"
+  },
+  {
     "body": {
       "XML": {},
       "JSON_ARRAY": {},
@@ -873,7 +876,7 @@
           "from_background": false,
           "id": "deviceToken",
           "platform": "ios",
-          "last_used": 1641808826
+          "last_used": 1641827130
         }
       },
       "JSON_ARRAY": {},
@@ -925,7 +928,7 @@
           "from_background": false,
           "id": "deviceToken",
           "platform": "ios",
-          "last_used": 1641808826
+          "last_used": 1641827490
         }
       },
       "JSON_ARRAY": {},
@@ -951,7 +954,7 @@
           "from_background": false,
           "id": "deviceToken",
           "platform": "ios",
-          "last_used": 1641808826
+          "last_used": 1641827692
         }
       },
       "JSON_ARRAY": {},
@@ -976,7 +979,7 @@
         "device": {
           "id": "deviceToken",
           "platform": "ios",
-          "last_used": 1641808826
+          "last_used": 1641827855
         }
       },
       "JSON_ARRAY": {},
@@ -1002,7 +1005,7 @@
           "from_background": false,
           "id": "deviceToken",
           "platform": "ios",
-          "last_used": 1641808826
+          "last_used": 1641827945
         }
       },
       "JSON_ARRAY": {},
@@ -1054,7 +1057,7 @@
           "from_background": false,
           "id": "deviceToken",
           "platform": "ios",
-          "last_used": 1641808826
+          "last_used": 1641828138
         }
       },
       "JSON_ARRAY": {},
@@ -1080,7 +1083,7 @@
           "from_background": false,
           "id": "deviceToken",
           "platform": "ios",
-          "last_used": 1641808826
+          "last_used": 1641828223
         }
       },
       "JSON_ARRAY": {},
@@ -1105,7 +1108,7 @@
         "device": {
           "id": "deviceToken",
           "platform": "ios",
-          "last_used": 1641808826
+          "last_used": 1641828303
         }
       },
       "JSON_ARRAY": {},
@@ -1131,7 +1134,7 @@
           "from_background": false,
           "id": "deviceToken",
           "platform": "ios",
-          "last_used": 1641808826
+          "last_used": 1641827490
         }
       },
       "JSON_ARRAY": {},

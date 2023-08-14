@@ -127,15 +127,7 @@ async function getSaleforceIdForRecord(
   const searchRecord = processedsfSearchResponse.response?.searchRecords?.find(
     (rec) => rec[identifierType] === identifierValue,
   );
-  if (!searchRecord) {
-    logger.error(
-      `[SALESFORCE] URL for fetching searchRecord: /services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id,${identifierType}`,
-    );
-    throw new InstrumentationError(
-      `:- SALESFORCE SEARCH BY ID: No record found for ${identifierType} ${identifierValue}`,
-      destination.ID,
-    );
-  }
+
   return searchRecord?.Id;
 }
 

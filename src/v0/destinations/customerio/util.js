@@ -1,7 +1,7 @@
 const get = require('get-value');
 const set = require('set-value');
 const truncate = require('truncate-utf8-bytes');
-const { MAX_BATCH_SIZE } = require('./config');
+const { MAX_BATCH_SIZE, configFieldsToCheck } = require('./config');
 const logger = require('../../../logger');
 const {
   constructPayload,
@@ -30,7 +30,7 @@ const {
   DEVICE_REGISTER_ENDPOINT,
 } = require('./config');
 
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const deviceRelatedEventNames = [
   'Application Installed',
@@ -99,6 +99,7 @@ const isdeviceRelatedEventName = (eventName, destination) =>
   deviceRelatedEventNames.includes(eventName) ||
   destination?.Config?.deviceTokenEventName === eventName;
 
+// https://customer.io/docs/api/track/#operation/identify
 const identifyResponseBuilder = (userId, message) => {
   const rawPayload = {};
   // if userId is not there simply drop the payload
@@ -236,13 +237,14 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
   // DEVICE registration
   const isDeviceRelatedEvent = isdeviceRelatedEventName(evName, destination);
   if (isDeviceRelatedEvent && userId && token) {
+    const timestamp = message.timestamp || message.originalTimestamp;
     const devProps = {
       ...message.properties,
       id: token,
-      last_used: Math.floor(new Date(message.originalTimestamp).getTime() / 1000),
+      last_used: Math.floor(new Date(timestamp).getTime() / 1000),
     };
     const deviceType = get(message, 'context.device.type');
-    if (deviceType) {
+    if (deviceType && typeof deviceType === "string") {
       // Ref - https://www.customer.io/docs/api/#operation/add_device
       // supported platform are "ios", "android"
       devProps.platform = isAppleFamily(deviceType) ? 'ios' : deviceType.toLowerCase();
@@ -295,6 +297,15 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
   return { rawPayload, endpoint, requestConfig };
 };
 
+const validateConfigFields = destination => {
+  const { Config } = destination;
+  configFieldsToCheck.forEach(configProperty => {
+    if (!isDefinedAndNotNull(Config[configProperty])) {
+      throw new ConfigurationError(`${configProperty} not found in Configs`);
+    }
+  });
+};
+
 module.exports = {
   getEventChunks,
   identifyResponseBuilder,
@@ -303,4 +314,5 @@ module.exports = {
   defaultResponseBuilder,
   populateSpecedTraits,
   isdeviceRelatedEventName,
+  validateConfigFields
 };

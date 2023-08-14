@@ -151,16 +151,14 @@ const removeUndefinedNullValuesAndEmptyObjectArray = (obj) => {
       .filter((item) => isDefinedAndNotNull(item));
     return cleanedArray.length === 0 ? null : cleanedArray;
   }
-  if (typeof obj === 'object') {
+  if (obj && typeof obj === 'object') {
     const data = {};
-    for (const key in obj) {
-      if (obj.hasOwnProperty(key)) {
-        const value = removeUndefinedNullValuesAndEmptyObjectArray(obj[key]);
-        if (isDefinedAndNotNull(value)) {
-          data[key] = value;
-        }
+    Object.entries(obj).forEach(([key, value]) => {
+      const cleanedValue = removeUndefinedNullValuesAndEmptyObjectArray(value);
+      if (isDefinedAndNotNull(cleanedValue)) {
+        data[key] = cleanedValue;
       }
-    }
+    });
     return Object.keys(data).length === 0 ? null : data;
   }
   return obj;

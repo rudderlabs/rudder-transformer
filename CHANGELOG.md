@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.38.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.37.0...v1.38.0) (2023-08-14)
+
+
+### Features
+
+* **june:** added page call support ([#2476](https://github.com/rudderlabs/rudder-transformer/issues/2476)) ([c7d086b](https://github.com/rudderlabs/rudder-transformer/commit/c7d086b427931639bcc85fb723e0c63486d5acc0))
+* **zendesk:** add source field mapping ([#2455](https://github.com/rudderlabs/rudder-transformer/issues/2455)) ([#2475](https://github.com/rudderlabs/rudder-transformer/issues/2475)) ([a94bf1a](https://github.com/rudderlabs/rudder-transformer/commit/a94bf1a0b65fa5bd00fce752943e9b91f757fbbb))
+
+
+### Bug Fixes
+
+* **INT-296:** add destType labels for proxy destinations ([#2456](https://github.com/rudderlabs/rudder-transformer/issues/2456)) ([da80ce7](https://github.com/rudderlabs/rudder-transformer/commit/da80ce7696dfaf78fcd4ce4c245efdf305484e99))
+* **intercom:** flatten metadata and custom attributes ([#2474](https://github.com/rudderlabs/rudder-transformer/issues/2474)) ([ec60141](https://github.com/rudderlabs/rudder-transformer/commit/ec601411b3b218ce32261369627653f66f393893))
+* valid cart_update event extra check ([#2448](https://github.com/rudderlabs/rudder-transformer/issues/2448)) ([ec80855](https://github.com/rudderlabs/rudder-transformer/commit/ec808555ab82aa83957190e551c8106b570b3e3b))
+
 ## [1.37.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.36.1...v1.37.0) (2023-08-04)
 
 

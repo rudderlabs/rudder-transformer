@@ -22,7 +22,16 @@
         "user_id": "test_user_id_1",
         "custom_attributes": {
           "anonymousId": "58b21c2d-f8d5-4410-a2d0-b268a26b7e33",
-          "key1": "value1"
+          "key1": "value1",
+          "address.city": "Kolkata",
+          "address.state": "West Bengal",
+          "originalArray[0].nested_field": "nested value",
+          "originalArray[0].tags[0]": "tag_1",
+          "originalArray[0].tags[1]": "tag_2",
+          "originalArray[0].tags[2]": "tag_3",
+          "originalArray[1].nested_field": "nested value",
+          "originalArray[1].tags[0]": "tag_1",
+          "originalArray[2].nested_field": "nested value"
         }
       },
       "XML": {},
@@ -160,7 +169,9 @@
           {
             "company_id": "company_id",
             "custom_attributes": {
-              "key1": "value1"
+              "key1": "value1",
+              "key2": "{\"a\":\"a\"}",
+              "key3": "[1,2,3]"
             },
             "name": "Test Comp",
             "industry": "test industry"
@@ -273,7 +284,27 @@
           "property1": 1,
           "property2": "test",
           "property3": true,
-          "property4": "2020-10-05T09:09:03.731Z"
+          "property4": "2020-10-05T09:09:03.731Z",
+          "property5.property1": 1,
+          "property5.property2": "test",
+          "property5.property3.subProp1.a": "a",
+          "property5.property3.subProp1.b": "b",
+          "property5.property3.subProp2[0]": "a",
+          "property5.property3.subProp2[1]": "b",
+          "properties6": null,
+          "revenue": {
+            "amount": 1232,
+            "currency": "inr",
+            "test": 123
+          },
+          "price": {
+            "amount": 3000,
+            "currency": "USD"
+          },
+          "article": {
+            "url": "https://example.org/ab1de.html",
+            "value": "the dude abides"
+          }
         }
       },
       "XML": {},
@@ -299,8 +330,7 @@
       "JSON": {
         "email": "test_1@test.com",
         "event_name": "Test Event 2",
-        "created": 1601493061,
-        "metadata": {}
+        "created": 1601493061
       },
       "XML": {},
       "JSON_ARRAY": {},

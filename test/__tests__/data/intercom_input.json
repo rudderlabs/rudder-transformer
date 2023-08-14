@@ -47,7 +47,24 @@
           "userId": "test_user_id_1",
           "email": "test_1@test.com",
           "phone": "9876543210",
-          "key1": "value1"
+          "key1": "value1",
+          "address": {
+            "city": "Kolkata",
+            "state": "West Bengal"
+          },
+          "originalArray": [
+            {
+              "nested_field": "nested value",
+              "tags": ["tag_1", "tag_2", "tag_3"]
+            },
+            {
+              "nested_field": "nested value",
+              "tags": ["tag_1"]
+            },
+            {
+              "nested_field": "nested value"
+            }
+          ]
         },
         "userAgent": "unknown"
       },
@@ -397,7 +414,11 @@
             "name": "Test Comp",
             "id": "company_id",
             "industry": "test industry",
-            "key1": "value1"
+            "key1": "value1",
+            "key2": {
+              "a": "a"
+            },
+            "key3": [1, 2, 3]
           }
         },
         "userAgent": "unknown"
@@ -474,7 +495,9 @@
             "key1": "value1",
             "key2": null,
             "key3": ["value1", "value2"],
-            "key4": { "foo": "bar" }
+            "key4": {
+              "foo": "bar"
+            }
           }
         },
         "userAgent": "unknown"
@@ -634,12 +657,28 @@
         "property5": {
           "property1": 1,
           "property2": "test",
-          "property3": true,
-          "property4": "test",
-          "property5": true,
-          "property6": true
+          "property3": {
+            "subProp1": {
+              "a": "a",
+              "b": "b"
+            },
+            "subProp2": ["a", "b"]
+          }
         },
-        "property6": null
+        "properties6": null,
+        "revenue": {
+          "amount": 1232,
+          "currency": "inr",
+          "test": 123
+        },
+        "price": {
+          "amount": 3000,
+          "currency": "USD"
+        },
+        "article": {
+          "url": "https://example.org/ab1de.html",
+          "value": "the dude abides"
+        }
       },
       "event": "Test Event 2",
       "integrations": {

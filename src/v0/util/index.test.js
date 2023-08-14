@@ -11,6 +11,7 @@ const functionNames = [
   'getErrorStatusCode',
   'extractCustomFields',
   'batchMultiplexedEvents',
+  'removeUndefinedNullValuesAndEmptyObjectArray',
 ];
 
 // Names of the utility functions to test which expects multiple arguments as values and not objects

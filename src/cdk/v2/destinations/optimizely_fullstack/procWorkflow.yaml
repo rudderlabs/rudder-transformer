@@ -62,7 +62,6 @@ steps:
       const dataFileUrl = .destination.Config.dataFileUrl;
       const options = .destination.Config.secureEnvironment ? {
         headers: {
-         "Content-Type": "application/json",
          "Authorization": "Bearer " + .destination.Config.dataFileAccessToken
         }
       };

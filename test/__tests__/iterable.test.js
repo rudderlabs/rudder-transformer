@@ -24,8 +24,8 @@ jest.mock(`../../src/${version}/destinations/${integration}/config`, () => {
   const originalConfig = jest.requireActual(`../../src/${version}/destinations/${integration}/config`);
   return {
     ...originalConfig,
-    IDENTIFY_MAX_BATCH_SIZE: 2,
-    IDENTIFY_MAX_BODY_SIZE_IN_BYTES: 250
+    IDENTIFY_MAX_BATCH_SIZE: 6,
+    IDENTIFY_MAX_BODY_SIZE_IN_BYTES: 4000
   };
 });
 

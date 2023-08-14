@@ -366,7 +366,6 @@ const prepareAndSplitUpdateUserBatchesBasedOnPayloadSize = (
 
   chunk.forEach((event) => {
     size += jsonSize(get(event, 'message.body.JSON'));
-
     if (size > IDENTIFY_MAX_BODY_SIZE_IN_BYTES) {
       batches.push({
         users: usersChunk,
@@ -734,7 +733,43 @@ const filterEventsAndPrepareBatchRequests = (transformedEvents) => {
   return prepareBatchRequests(filteredEvents);
 };
 
+/**
+ * Groups events with the same message type together in batches.
+ * Each batch contains events that have the same message type and are from different users.
+ * 
+ * @param {Array} inputs - An array of events
+ * @returns {Array} - An array of batches
+ */
+const orderEvents = (inputs) => {
+  const batches = [];
+  let currentInputsArray = inputs;
+  while (currentInputsArray.length > 0) {
+    const updatedInputsArray = [];
+    const userOrderTracker = {};
+    const event = currentInputsArray.shift();
+    const messageType = event.message.type;
+    const batch = [event];
+    currentInputsArray.forEach((currentInput) => {
+      const currentMessageType = currentInput.message.type;
+      const currentUser = currentInput.metadata.userId;
+      if (currentMessageType === messageType && !userOrderTracker[currentUser]) {
+        batch.push(currentInput);
+      } else {
+        updatedInputsArray.push(currentInput);
+        userOrderTracker[currentUser] = true;
+      }
+    })
+    if (batch.length > 0) {
+      batches.push(batch);
+    }
+    currentInputsArray = updatedInputsArray;
+  }
+
+  return batches;
+}
+
 module.exports = {
+  orderEvents,
   getCatalogEndpoint,
   hasMultipleResponses,
   pageEventPayloadBuilder,

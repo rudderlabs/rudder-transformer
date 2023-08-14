@@ -1,6 +1,7 @@
 const _ = require('lodash');
 const get = require('get-value');
 const {
+  orderEvents,
   getCatalogEndpoint,
   hasMultipleResponses,
   pageEventPayloadBuilder,
@@ -166,25 +167,9 @@ const processRouterDest = async (inputs, reqMetadata) => {
     return errorRespEvents;
   }
 
-  const eventsPerUser = _.groupBy(inputs, (event) => event.metadata.userId);
-  const eachUserEvents = Object.values(eventsPerUser);
-
-  const uniqueEventsPerUser = [];
-  const multipleEventsPerUser = [];
-
-  // Separate events into singleEventArray and multipleEventsArray based on length
-  eachUserEvents.forEach((userEventsArray) => {
-    if (userEventsArray.length === 1) {
-      uniqueEventsPerUser.push(...userEventsArray);
-    } else if (userEventsArray.length > 1) {
-      multipleEventsPerUser.push(userEventsArray);
-    }
-  });
-
-  const events = [uniqueEventsPerUser, ...multipleEventsPerUser];
-
+  const orderedEvents = orderEvents(inputs);
   const response = await Promise.all(
-    events.map(async (listOfEvents) => {
+    orderedEvents.map(async (listOfEvents) => {
       let transformedPayloads = await Promise.all(
         listOfEvents.map(async (event) => {
           try {

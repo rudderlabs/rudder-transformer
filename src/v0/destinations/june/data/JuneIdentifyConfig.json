@@ -6,6 +6,11 @@
     "required": true
   },
   {
+    "destKey": "anonymousId",
+    "sourceKeys": "anonymousId",
+    "required": false
+  },
+  {
     "destKey": "timestamp",
     "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,
@@ -16,5 +21,19 @@
     "sourceKeys": "traits",
     "sourceFromGenericMap": true,
     "required": false
+  },
+  {
+    "destKey": "context",
+    "sourceKeys": "context",
+    "required": false,
+    "metadata": {
+      "excludes": [
+        "page",
+        "traits",
+        "sessionId",
+        "sessionStart",
+        "consentManagement"
+      ]
+    }
   }
 ]

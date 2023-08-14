@@ -1,18 +1,23 @@
-const { EventType } = require('../../../constants');
 const {
+  isEmptyObject,
+  constructPayload,
   defaultRequestConfig,
   simpleProcessRouterDest,
-  constructPayload,
-  removeUndefinedAndNullValues,
   defaultPostRequestConfig,
   getDestinationExternalID,
+  removeUndefinedAndNullValues,
 } = require('../../util');
+const { EventType } = require('../../../constants');
+const { JSON_MIME_TYPE } = require('../../util/constant');
 const { CONFIG_CATEGORIES, MAPPING_CONFIG } = require('./config');
 const { TransformationError, InstrumentationError } = require('../../util/errorTypes');
-const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const responseBuilder = (payload, endpoint, destination) => {
-  if (payload) {
+  const destPayload = payload;
+  if (destPayload) {
+    if (isEmptyObject(destPayload.context)) {
+      delete destPayload.context;
+    }
     const response = defaultRequestConfig();
     const { apiKey } = destination.Config;
     response.endpoint = endpoint;
@@ -21,21 +26,14 @@ const responseBuilder = (payload, endpoint, destination) => {
       Authorization: `Basic ${apiKey}`,
     };
     response.method = defaultPostRequestConfig.requestMethod;
-    response.body.JSON = removeUndefinedAndNullValues(payload);
+    response.body.JSON = removeUndefinedAndNullValues(destPayload);
     return response;
   }
   // fail-safety for developer error
   throw new TransformationError('Something went wrong while constructing the payload');
 };
 
-// ref :- https://www.june.so/docs/api#:~:text=Copy-,Identifying%20users,-You%20can%20use
-const identifyResponseBuilder = (message, destination) => {
-  const { endpoint, name } = CONFIG_CATEGORIES.IDENTIFY;
-  const payload = constructPayload(message, MAPPING_CONFIG[name]);
-  return responseBuilder(payload, endpoint, destination);
-};
-
-// ref :- https://www.june.so/docs/api#:~:text=Copy-,Send%20track%20events,-In%20order%20to
+// ref :- https://www.june.so/docs/tracking/http-api/track
 const trackResponseBuilder = (message, destination) => {
   const { endpoint, name } = CONFIG_CATEGORIES.TRACK;
   const groupId = getDestinationExternalID(message, 'juneGroupId') || message.properties?.groupId;
@@ -48,12 +46,11 @@ const trackResponseBuilder = (message, destination) => {
   return responseBuilder(payload, endpoint, destination);
 };
 
-// ref :- https://www.june.so/docs/api#:~:text=Copy-,Identifying%20companies,-(optional)
-const groupResponseBuilder = (message, destination) => {
-  const { endpoint, name } = CONFIG_CATEGORIES.GROUP;
+const genericResponseBuilder = (message, destination, category) => {
+  const { endpoint, name } = CONFIG_CATEGORIES[category];
   const payload = constructPayload(message, MAPPING_CONFIG[name]);
   return responseBuilder(payload, endpoint, destination);
-};
+}
 
 const processEvent = (message, destination) => {
   if (!message.type) {
@@ -64,13 +61,16 @@ const processEvent = (message, destination) => {
   let response;
   switch (messageType) {
     case EventType.IDENTIFY:
-      response = identifyResponseBuilder(message, destination);
+      response = genericResponseBuilder(message, destination, 'IDENTIFY');
       break;
     case EventType.TRACK:
       response = trackResponseBuilder(message, destination);
       break;
+    case EventType.PAGE:
+      response = genericResponseBuilder(message, destination, 'PAGE');
+      break;
     case EventType.GROUP:
-      response = groupResponseBuilder(message, destination);
+      response = genericResponseBuilder(message, destination, 'GROUP');
       break;
     default:
       throw new InstrumentationError(`Event type "${messageType}" is not supported`);

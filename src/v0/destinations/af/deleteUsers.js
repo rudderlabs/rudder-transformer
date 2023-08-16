@@ -77,6 +77,8 @@ const userDeletionHandler = async (userAttributes, config) => {
     }
     body.status_callback_urls = filteredStatusCallbackUrlsArray;
   }
+
+  // Reference: https://support.appsflyer.com/hc/en-us/articles/11332840660625-OpenDSR-API
   const endpoint = `https://hq1.appsflyer.com/api/gdpr/v1/opendsr_request`;
   await Promise.all(
     userAttributes.map(async (ua) => {

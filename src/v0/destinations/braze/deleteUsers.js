@@ -25,7 +25,7 @@ const userDeletionHandler = async (userAttributes, config) => {
   const endpointPath = '/users/delete'; // TODO: to handle for destinations dynamically by extracting from endpoint
   const dataCenterArr = dataCenter.trim().split('-');
   if (dataCenterArr[0].toLowerCase() === 'eu') {
-    endPoint = 'https://rest.fra-01.braze.eu//users/delete';
+    endPoint = 'https://rest.fra-01.braze.eu/users/delete';
   } else {
     endPoint = `https://rest.iad-${dataCenterArr[1]}.braze.com/users/delete`;
   }

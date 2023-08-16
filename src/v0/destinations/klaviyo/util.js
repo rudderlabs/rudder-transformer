@@ -19,6 +19,7 @@ const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
+const { client: errNotificationClient } = require("../../../util/errorNotifier");
 
 /**
  * This function calls the create user endpoint ref: https://developers.klaviyo.com/en/reference/create_profile
@@ -57,6 +58,7 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
   let statusCode = resp.status;
   if (resp.status === 201 || resp.status === 409) {
     // retryable error if the profile id is not found in the response
+    errNotificationClient.notify(NetworkError, "Profile Id not Found in the response", JSON.stringify(resp.response))
     statusCode = 500;
   }
 

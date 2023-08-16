@@ -58,7 +58,7 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
   let statusCode = resp.status;
   if (resp.status === 201 || resp.status === 409) {
     // retryable error if the profile id is not found in the response
-    errNotificationClient.notify(NetworkError, "Profile Id not Found in the response", JSON.stringify(resp.response))
+    errNotificationClient.notify(new Error("Klaviyo: ProfileId not found"), "Profile Id not Found in the response", JSON.stringify(resp.response))
     statusCode = 500;
   }
 

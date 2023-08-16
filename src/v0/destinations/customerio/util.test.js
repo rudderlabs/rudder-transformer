@@ -21,6 +21,21 @@ const getTestMessage = () => {
   };
   return message;
 };
+const getIdentifyTestMessage = () => {
+  let message = {
+    anonymousId: 'anonId',
+    traits: {
+      name: 'rudder',
+      address: {
+        city: 'kolkata',
+        country: 'India',
+      },
+      createdAt: '2014-05-21T15:54:20Z',
+      timestamp: '2014-05-21T15:54:20Z',
+    },
+  };
+  return message;
+};
 
 const getGroupTestMessage = () => {
   let message = {
@@ -95,6 +110,14 @@ describe('Unit test cases for customerio identifyResponseBuilder', () => {
       requestConfig: { requestFormat: 'JSON', requestMethod: 'PUT' },
     };
     expect(identifyResponseBuilder('user1', getTestMessage())).toEqual(expectedOutput);
+  });
+  it('No Identifier to send for Identify Call', async () => {
+    let expectedOutput = "userId or email is not present";
+    try {
+      identifyResponseBuilder(null, getIdentifyTestMessage())
+    } catch (error) {
+      expect(error.message).toEqual(expectedOutput);
+    }
   });
 });
 

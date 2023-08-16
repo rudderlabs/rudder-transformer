@@ -1,5 +1,27 @@
 [
   {
+    "body": {
+      "XML": {},
+      "JSON_ARRAY": {},
+      "JSON": {
+        "email": "updated_email@example.com",
+        "id": "updated-id-value"
+      },
+      "FORM": {}
+    },
+    "files": {},
+    "endpoint": "https://track.customer.io/api/v1/customers/cio_1234",
+    "userId": "cio_1234",
+    "headers": {
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+    },
+    "version": "1",
+    "params": {},
+    "type": "REST",
+    "method": "PUT",
+    "statusCode": 200
+  },
+  {
     "message": "apiKey not found in Configs"
   },
   {

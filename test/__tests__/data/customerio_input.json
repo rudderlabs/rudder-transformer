@@ -2,6 +2,28 @@
   {
     "message": {
       "channel": "web",
+      "type": "identify",
+      "userId": "cio_1234",
+      "integrations": {
+        "All": true
+      },
+      "traits": {
+        "email": "updated_email@example.com",
+        "id": "updated-id-value"
+      },
+      "sentAt": "2019-10-14T09:03:22.563Z"
+    },
+    "destination": {
+      "Config": {
+        "datacenterEU": false,
+        "siteID": "46be54768e7d49ab2628",
+        "apiKey": "19f0f734e3bb87a44596"
+      }
+    }
+  },
+  {
+    "message": {
+      "channel": "web",
       "context": {
         "app": {
           "build": "1.0.0",

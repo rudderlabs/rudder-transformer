@@ -115,6 +115,22 @@ describe('Unit test cases for customerio aliasResponseBuilder', () => {
     };
     expect(aliasResponseBuilder({ previousId: "abc@test.com" }, "user1")).toEqual(expectedOutput);
   });
+  it('Merging happending with userId as email and present one as id', async () => {
+    let expectedOutput = {
+      endpoint: 'https://track.customer.io/api/v1/merge_customers',
+      rawPayload: { secondary: { id: 'user1' }, primary: { email: "abc@test.com" } },
+      requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
+    };
+    expect(aliasResponseBuilder({ previousId: "user1" }, "abc@test.com")).toEqual(expectedOutput);
+  });
+  it('Merging happending with userId as email and present one as id', async () => {
+    let expectedOutput = {
+      endpoint: 'https://track.customer.io/api/v1/merge_customers',
+      rawPayload: { secondary: { email: 'user1@test.com' }, primary: { email: "abc@test.com" } },
+      requestConfig: { requestFormat: 'JSON', requestMethod: 'POST' },
+    };
+    expect(aliasResponseBuilder({ previousId: "user1@test.com" }, "abc@test.com")).toEqual(expectedOutput);
+  });
 });
 
 describe('Unit test cases for customerio groupResponseBuilder', () => {

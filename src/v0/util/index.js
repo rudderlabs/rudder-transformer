@@ -144,21 +144,24 @@ const removeUndefinedNullEmptyExclBoolInt = (obj) => _.pickBy(obj, isDefinedNotN
  * @param {*} obj
  * @returns
  */
-const removeUndefinedNullValuesAndEmptyObjectArray = (obj) => {
+const removeUndefinedNullValuesAndEmptyObjectArray = (obj, isTopLevel = true) => {
   if (Array.isArray(obj)) {
     const cleanedArray = obj
-      .map((item) => removeUndefinedNullValuesAndEmptyObjectArray(item))
+      .map((item) => removeUndefinedNullValuesAndEmptyObjectArray(item, false))
       .filter((item) => isDefinedAndNotNull(item));
     return cleanedArray.length === 0 ? null : cleanedArray;
   }
   if (obj && typeof obj === 'object') {
     const data = {};
     Object.entries(obj).forEach(([key, value]) => {
-      const cleanedValue = removeUndefinedNullValuesAndEmptyObjectArray(value);
+      const cleanedValue = removeUndefinedNullValuesAndEmptyObjectArray(value, false);
       if (isDefinedAndNotNull(cleanedValue)) {
         data[key] = cleanedValue;
       }
     });
+    if (isTopLevel) {
+      return Object.keys(data).length === 0 ? {} : data;
+    }
     return Object.keys(data).length === 0 ? null : data;
   }
   return obj;

@@ -26,6 +26,7 @@ const {
 const { getAccessToken, salesforceResponseHandler } = require('./utils');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { InstrumentationError, NetworkInstrumentationError } = require('../../util/errorTypes');
+const logger = require('../../../logger');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 // Basic response builder
@@ -104,7 +105,7 @@ async function getSaleforceIdForRecord(
   identifierValue,
   destination,
 ) {
-  const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id`;
+  const objSearchUrl = `${authorizationData.instanceUrl}/services/data/v${SF_API_VERSION}/parameterizedSearch/?q=${identifierValue}&sobject=${objectType}&in=${identifierType}&${objectType}.fields=id,${identifierType}`;
   const { processedResponse: processedsfSearchResponse } = await handleHttpRequest(
     'get',
     objSearchUrl,
@@ -123,7 +124,11 @@ async function getSaleforceIdForRecord(
       destination.ID,
     );
   }
-  return get(processedsfSearchResponse.response, 'searchRecords.0.Id');
+  const searchRecord = processedsfSearchResponse.response?.searchRecords?.find(
+    (rec) => rec[identifierType] === identifierValue,
+  );
+
+  return searchRecord?.Id;
 }
 
 // Check for externalId field under context and look for probable Salesforce objects

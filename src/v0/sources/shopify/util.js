@@ -13,6 +13,7 @@ const {
   SHOPIFY_TRACK_MAP,
   SHOPIFY_ADMIN_ONLY_EVENTS,
   useRedisDatabase,
+  maxTimeToIdentifyRSGeneratedCall
 } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 
@@ -226,6 +227,15 @@ const checkAndUpdateCartItems = async (inputEvent, redisData, metricMetadata) =>
       return false;
     }
     await updateCartItemsInRedis(cartToken, newCartItemsHash, metricMetadata);
+  } else {
+    const { created_at, updated_at } = inputEvent;
+    const timeDifference = Date.parse(updated_at) - Date.parse(created_at);
+    const isTimeWithinThreshold = timeDifference < maxTimeToIdentifyRSGeneratedCall;
+    const isLineItemsEmpty = inputEvent?.line_items?.length === 0;
+
+    if (isTimeWithinThreshold && isLineItemsEmpty) {
+      return false;
+    }
   }
   return true;
 };

@@ -5,7 +5,11 @@
     "sourceFromGenericMap": true,
     "required": true
   },
-
+  {
+    "destKey": "anonymousId",
+    "sourceKeys": "anonymousId",
+    "required": false
+  },
   {
     "destKey": "event",
     "sourceKeys": "event",
@@ -24,5 +28,19 @@
     "sourceKeys": "timestamp",
     "sourceFromGenericMap": true,
     "required": true
+  },
+  {
+    "destKey": "context",
+    "sourceKeys": "context",
+    "required": false,
+    "metadata": {
+      "excludes": [
+        "page",
+        "traits",
+        "sessionId",
+        "sessionStart",
+        "consentManagement"
+      ]
+    }
   }
 ]

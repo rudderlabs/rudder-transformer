@@ -23,6 +23,7 @@ const {
   isEmptyObject,
   getEventType,
 } = require('../../util');
+const { getSourceName } = require('./util');
 const logger = require('../../../logger');
 const { httpGET } = require('../../../adapters/network');
 const {
@@ -563,16 +564,17 @@ async function processTrack(message, destinationConfig, headers, baseEndpoint) {
     );
   }
 
+  const sourceName = getSourceName(destinationConfig);
   const eventObject = {
     description: message.event,
     type: message.event,
-    source: 'Rudder',
+    source: sourceName,
     properties: message.properties,
   };
 
   const profileObject = {
     type: message.event,
-    source: 'Rudder',
+    source: sourceName,
     identifiers: [{ type: 'email', value: userEmail }],
   };
 

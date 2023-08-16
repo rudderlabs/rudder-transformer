@@ -18,12 +18,18 @@ const {
   removeUndefinedAndNullValues,
   toUnixTimestamp,
   isAppleFamily,
-  simpleProcessRouterDest,
+  handleRtTfSingleEventError,
+  batchMultiplexedEvents,
+  getSuccessRespEvents,
+  checkInvalidRtTfEvents,
 } = require('../../util');
+const { generateClevertapBatchedPayload } = require('./utils');
+
 const { InstrumentationError, TransformationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const TIMESTAMP_KEY_PATH = 'context.traits.ts';
+const MAX_BATCH_SIZE = 1000;
 
 /*
 Following behavior is expected when "enableObjectIdMapping" is enabled
@@ -377,9 +383,48 @@ const processEvent = (message, destination) => {
 
 const process = (event) => processEvent(event.message, event.destination);
 
-const processRouterDest = async (inputs, reqMetadata) => {
-  const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
-  return respList;
+const processRouterDest = (inputs, reqMetadata) => {
+  // const respList = await simpleProcessRouterDest(inputs, process, reqMetadata);
+  // return respList;
+  const errorRespEvents = checkInvalidRtTfEvents(inputs);
+  if (errorRespEvents.length > 0) {
+    return errorRespEvents;
+  }
+
+  const eventsChunk = [];
+  const errorRespList = [];
+  // const { destination } = inputs[0];
+
+  inputs.forEach((event) => {
+    try {
+      let resp = event.message;
+      if (!event?.message?.statusCode) {
+        // already transformed event
+        resp = process(event);
+      }
+      eventsChunk.push({
+        message: Array.isArray(resp) ? [...resp] : resp,
+        metadata: event.metadata,
+        destination: event.destination,
+      });
+    } catch (error) {
+      const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
+      errorRespList.push(errRespEvent);
+    }
+  });
+
+  const batchResponseList = [];
+  if (eventsChunk.length > 0) {
+    const batchedEvents = batchMultiplexedEvents(eventsChunk, MAX_BATCH_SIZE);
+    batchedEvents.forEach((batch) => {
+      const batchedRequest = generateClevertapBatchedPayload(batch.events, batch.destination);
+      batchResponseList.push(
+        getSuccessRespEvents(batchedRequest, batch.metadata, batch.destination, reqMetadata),
+      );
+    });
+  }
+
+  return [...batchResponseList, ...errorRespList];
 };
 
 module.exports = { process, processRouterDest };

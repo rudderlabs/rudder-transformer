@@ -25,6 +25,7 @@ const {
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { isObject } = require('../../util');
 const { removeUndefinedValues, getIntegrationsObj } = require('../../util');
+const { InstrumentationError } = require('../../util/errorTypes');
 
 const getEndpointFromConfig = (destination) => {
   // Init -- mostly for test cases
@@ -475,6 +476,147 @@ const addAppId = (payload, message) => {
   return { ...payload };
 };
 
+function setExternalId(payload, message) {
+  const externalId = getDestinationExternalID(message, 'brazeExternalId') || message.userId;
+  if (externalId) {
+    payload.external_id = externalId;
+  }
+  return payload;
+}
+
+function setAliasObjectWithAnonId(payload, message) {
+  if (message.anonymousId) {
+    payload.user_alias = {
+      alias_name: message.anonymousId,
+      alias_label: 'rudder_id',
+    };
+  }
+  return payload;
+}
+
+function setExternalIdOrAliasObject(payload, message) {
+  const userId = getFieldValueFromMessage(message, 'userIdOnly');
+  if (userId || getDestinationExternalID(message, 'brazeExternalId')) {
+    return setExternalId(payload, message);
+  }
+
+  // eslint-disable-next-line no-underscore-dangle
+  payload._update_existing_only = false;
+  return setAliasObjectWithAnonId(payload, message);
+}
+
+function addMandatoryPurchaseProperties(productId, price, currencyCode, quantity, timestamp) {
+  return {
+    product_id: productId,
+    price,
+    currency: currencyCode,
+    quantity,
+    time: timestamp,
+  };
+}
+
+function getPurchaseObjs(message) {
+  // ref:https://www.braze.com/docs/api/objects_filters/purchase_object/
+  const validateForPurchaseEvent = (message) => {
+    const { properties } = message;
+    const timestamp = getFieldValueFromMessage(message, 'timestamp');
+    if (!properties) {
+      throw new InstrumentationError(
+        'Invalid Order Completed event: Properties object is missing in the message',
+      );
+    }
+    const { products, currency: currencyCode } = properties;
+    if (!products) {
+      throw new InstrumentationError(
+        'Invalid Order Completed event: Products array is missing in the message',
+      );
+    }
+
+    if (!Array.isArray(products)) {
+      throw new InstrumentationError('Invalid Order Completed event: Products is not an array');
+    }
+
+    if (products.length === 0) {
+      throw new InstrumentationError('Invalid Order Completed event: Products array is empty');
+    }
+
+    if (!timestamp) {
+      throw new InstrumentationError(
+        'Invalid Order Completed event: Timestamp is missing in the message',
+      );
+    }
+
+    products.forEach((product) => {
+      const productId = product.product_id || product.sku;
+      const { price, quantity, currency: prodCurrencyCode } = product;
+      if (!isDefinedAndNotNull(productId)) {
+        throw new InstrumentationError(
+          `Invalid Order Completed event: Product Id is missing for product at index: ${products.indexOf(
+            product,
+          )}`,
+        );
+      }
+      if (!isDefinedAndNotNull(price)) {
+        throw new InstrumentationError(
+          `Invalid Order Completed event: Price is missing for product at index: ${products.indexOf(
+            product,
+          )}`,
+        );
+      }
+      if (Number.isNaN(price)) {
+        throw new InstrumentationError(
+          `Invalid Order Completed event: Price is not a number for product at index: ${products.indexOf(
+            product,
+          )}`,
+        );
+      }
+      if (!isDefinedAndNotNull(quantity)) {
+        throw new InstrumentationError(
+          `Invalid Order Completed event: Quantity is missing for product at index: ${products.indexOf(
+            product,
+          )}`,
+        );
+      }
+      if (Number.isNaN(quantity)) {
+        throw new InstrumentationError(
+          `Invalid Order Completed event: Quantity is not a number for product at index: ${products.indexOf(
+            product,
+          )}`,
+        );
+      }
+      if (!isDefinedAndNotNull(currencyCode) && !isDefinedAndNotNull(prodCurrencyCode)) {
+        throw new InstrumentationError(
+          `Invalid Order Completed event: Message properties and product at index: ${products.indexOf(
+            product,
+          )} is missing currency`,
+        );
+      }
+    });
+  };
+  validateForPurchaseEvent(message);
+
+  const { products, currency: currencyCode } = message.properties;
+  const timestamp = getFieldValueFromMessage(message, 'timestamp');
+  const purchaseObjs = [];
+
+  // we have to make a separate purchase object for each product
+  products.forEach((product) => {
+    const productId = product.product_id || product.sku;
+    const { price, quantity, currency: prodCur } = product;
+    let purchaseObj = addMandatoryPurchaseProperties(
+      String(productId),
+      parseFloat(price),
+      currencyCode || prodCur,
+      parseInt(quantity, 10),
+      timestamp,
+    );
+    purchaseObj = setExternalIdOrAliasObject(purchaseObj, message);
+    purchaseObjs.push(purchaseObj);
+  });
+
+  return purchaseObjs;
+}
+
 module.exports = {
   BrazeDedupUtility,
   CustomAttributeOperationUtil,
@@ -482,4 +624,9 @@ module.exports = {
   processDeduplication,
   processBatch,
   addAppId,
+  getPurchaseObjs,
+  setExternalIdOrAliasObject,
+  setExternalId,
+  setAliasObjectWithAnonId,
+  addMandatoryPurchaseProperties,
 };

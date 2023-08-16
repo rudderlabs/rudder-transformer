@@ -175,7 +175,19 @@ const marketoResponseHandler = (
   }
   if (isHttpStatusSuccess(status)) {
     // for authentication requests
-    if (response && response.access_token && response.expires_in) {
+    if (response && response.access_token) {
+        /* This scenario will handle the case when we get the foloowing response
+    status: 200  
+    respnse: {"access_token":"86e6c440-1c2e-4a67-8b0d-53496bfaa510:sj","token_type":"bearer","expires_in":0,"scope":"CDP@cvent.com"}
+    wherein "expires_in":0 denotes that we should refresh the accessToken but its not expired yet. 
+    */
+      if(response.expires_in === 0) {
+      throw new RetryableError(
+        `Request Failed for ${destination}, Access Token Expired (Retryable).${sourceMessage}`,
+        500,
+        response,
+      );
+      }
       return response;
     }
     // marketo application level success

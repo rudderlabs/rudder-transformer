@@ -1,5 +1,69 @@
 [
   {
+    "description": "No Message type",
+    "input": {
+      "message": {
+        "userId": "test@123",
+        "context": {
+          "traits": {
+            "email": "test@rudderstack.com",
+            "username": "Samle_putUserName",
+            "firstName": "uday"
+          }
+        },
+        "integrations": {
+          "All": true,
+          "user.com": {
+            "lookup": "email"
+          }
+        }
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "607287ffadf52c4888101870b9e71c52",
+          "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
+        }
+      }
+    },
+    "output": {
+      "error": "Event type is required"
+    }
+  },
+  {
+    "description": "Unsupported Type",
+    "input": {
+      "message": {
+        "userId": "test@123",
+        "type": "trackUser",
+        "context": {
+          "traits": {
+            "email": "test@rudderstack.com",
+            "firstName": "test",
+            "lastName": "rudderstack",
+            "age": 15,
+            "gender": "male",
+            "status": "user",
+            "city": "Kalkata",
+            "country": "india",
+            "tags": [
+              "productuser"
+            ],
+            "phone": "9225467887"
+          }
+        }
+      },
+      "destination": {
+        "Config": {
+          "apiKey": "607287ffadf52c4888101870b9e71c52",
+          "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
+        }
+      }
+    },
+    "output": {
+      "error": "Event type \"trackuser\" is not supported"
+    }
+  },
+  {
     "description": "Identify call without userId",
     "input": {
       "destination": {

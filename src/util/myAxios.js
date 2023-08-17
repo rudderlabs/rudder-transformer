@@ -9,7 +9,11 @@ const {
 
 const send = async (options, statTags = {}) => {
   const res = await httpSend(options, statTags);
-  return res?.response;
+  if (res.success) {
+    return res.response;
+  }
+
+  throw res.response;
 };
 
 const get = async (url, options, statTags = {}) => {

@@ -1,7 +1,7 @@
 const get = require('get-value');
 const set = require('set-value');
 const truncate = require('truncate-utf8-bytes');
-const { MAX_BATCH_SIZE } = require('./config');
+const { MAX_BATCH_SIZE, configFieldsToCheck } = require('./config');
 const logger = require('../../../logger');
 const {
   constructPayload,
@@ -11,7 +11,6 @@ const {
   defaultDeleteRequestConfig,
   isAppleFamily,
   validateEmail,
-  isDefinedAndNotNull,
 } = require('../../util');
 
 const { EventType, SpecedTraits, TraitsMapping } = require('../../../constants');
@@ -30,7 +29,7 @@ const {
   DEVICE_REGISTER_ENDPOINT,
 } = require('./config');
 
-const { InstrumentationError } = require('../../util/errorTypes');
+const { InstrumentationError, ConfigurationError } = require('../../util/errorTypes');
 
 const deviceRelatedEventNames = [
   'Application Installed',
@@ -99,11 +98,13 @@ const isdeviceRelatedEventName = (eventName, destination) =>
   deviceRelatedEventNames.includes(eventName) ||
   destination?.Config?.deviceTokenEventName === eventName;
 
+// https://customer.io/docs/api/track/#operation/identify
 const identifyResponseBuilder = (userId, message) => {
   const rawPayload = {};
   // if userId is not there simply drop the payload
-  if (!userId) {
-    throw new InstrumentationError('userId not present');
+  const id = userId || getFieldValueFromMessage(message, "email");
+  if (!id) {
+    throw new InstrumentationError('userId or email is not present');
   }
 
   // populate speced traits
@@ -159,7 +160,7 @@ const identifyResponseBuilder = (userId, message) => {
   if (message?.anonymousId) {
     set(rawPayload, 'anonymous_id', message.anonymousId);
   }
-  const endpoint = IDENTITY_ENDPOINT.replace(':id', userId);
+  const endpoint = IDENTITY_ENDPOINT.replace(':id', id);
   const requestConfig = defaultPutRequestConfig;
 
   return { rawPayload, endpoint, requestConfig };
@@ -172,12 +173,20 @@ const aliasResponseBuilder = (message, userId) => {
   }
   const endpoint = MERGE_USER_ENDPOINT;
   const requestConfig = defaultPostRequestConfig;
+  let cioProperty = 'id';
+  if (validateEmail(userId)) {
+    cioProperty = 'email';
+  }
+  let prev_cioProperty = 'id';
+  if (validateEmail(message.previousId)) {
+    prev_cioProperty = 'email';
+  }
   const rawPayload = {
     primary: {
-      id: userId,
+      [cioProperty]: userId,
     },
     secondary: {
-      id: message.previousId,
+      [prev_cioProperty]: message.previousId,
     },
   };
 
@@ -204,7 +213,7 @@ const groupResponseBuilder = (message) => {
   if (validateEmail(id)) {
     cioProperty = 'email';
   }
-  if (isDefinedAndNotNull(id)) {
+  if (id) {
     rawPayload.cio_relationships.push({ identifiers: { [cioProperty]: id } });
   }
   const requestConfig = defaultPostRequestConfig;
@@ -220,29 +229,31 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
   let requestConfig = defaultPostRequestConfig;
   // any other event type except identify
   const token = get(message, 'context.device.token');
-
+  const id = userId || getFieldValueFromMessage(message, "email");
   // use this if only top level keys are to be sent
   // DEVICE DELETE from CustomerIO
   const isDeviceDeleteEvent = deviceDeleteRelatedEventName === evName;
   if (isDeviceDeleteEvent) {
-    if (!userId || !token) {
-      throw new InstrumentationError('userId or device_token not present');
+
+    if (!id || !token) {
+      throw new InstrumentationError('userId/email or device_token not present');
     }
-    endpoint = DEVICE_DELETE_ENDPOINT.replace(':id', userId).replace(':device_id', token);
+    endpoint = DEVICE_DELETE_ENDPOINT.replace(':id', id).replace(':device_id', token);
     requestConfig = defaultDeleteRequestConfig;
     return { rawPayload, endpoint, requestConfig };
   }
 
   // DEVICE registration
   const isDeviceRelatedEvent = isdeviceRelatedEventName(evName, destination);
-  if (isDeviceRelatedEvent && userId && token) {
+  if (isDeviceRelatedEvent && id && token) {
+    const timestamp = message.timestamp || message.originalTimestamp;
     const devProps = {
       ...message.properties,
       id: token,
-      last_used: Math.floor(new Date(message.originalTimestamp).getTime() / 1000),
+      last_used: Math.floor(new Date(timestamp).getTime() / 1000),
     };
     const deviceType = get(message, 'context.device.type');
-    if (deviceType) {
+    if (deviceType && typeof deviceType === "string") {
       // Ref - https://www.customer.io/docs/api/#operation/add_device
       // supported platform are "ios", "android"
       devProps.platform = isAppleFamily(deviceType) ? 'ios' : deviceType.toLowerCase();
@@ -265,11 +276,11 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
     }
   }
 
-  if (userId) {
+  if (id) {
     endpoint =
       isDeviceRelatedEvent && token
-        ? DEVICE_REGISTER_ENDPOINT.replace(':id', userId)
-        : USER_EVENT_ENDPOINT.replace(':id', userId);
+        ? DEVICE_REGISTER_ENDPOINT.replace(':id', id)
+        : USER_EVENT_ENDPOINT.replace(':id', id);
   } else {
     endpoint = ANON_EVENT_ENDPOINT;
     // CustomerIO supports 100byte of event name for anonymous users
@@ -295,6 +306,15 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
   return { rawPayload, endpoint, requestConfig };
 };
 
+const validateConfigFields = destination => {
+  const { Config } = destination;
+  configFieldsToCheck.forEach(configProperty => {
+    if (!Config[configProperty]) {
+      throw new ConfigurationError(`${configProperty} not found in Configs`);
+    }
+  });
+};
+
 module.exports = {
   getEventChunks,
   identifyResponseBuilder,
@@ -303,4 +323,5 @@ module.exports = {
   defaultResponseBuilder,
   populateSpecedTraits,
   isdeviceRelatedEventName,
+  validateConfigFields
 };

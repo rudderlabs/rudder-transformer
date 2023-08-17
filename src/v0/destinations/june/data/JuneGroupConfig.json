@@ -46,5 +46,19 @@
         "consentManagement"
       ]
     }
+  },
+  {
+    "destKey": "context",
+    "sourceKeys": "context",
+    "required": false,
+    "metadata": {
+      "excludes": [
+        "page",
+        "traits",
+        "sessionId",
+        "sessionStart",
+        "consentManagement"
+      ]
+    }
   }
 ]

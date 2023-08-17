@@ -285,7 +285,7 @@ const prepareProxyRequest = (request) => {
  * @param {*} request
  * @returns
  */
-const proxyRequest = async (request) => {
+const proxyRequest = async (request, destType) => {
   const { endpoint, data, method, params, headers } = prepareProxyRequest(request);
   const requestOptions = {
     url: endpoint,
@@ -294,7 +294,7 @@ const proxyRequest = async (request) => {
     headers,
     method,
   };
-  const response = await httpSend(requestOptions, { feature: 'proxy' });
+  const response = await httpSend(requestOptions, { feature: 'proxy', destType });
   return response;
 };
 

@@ -1,4 +1,5 @@
 import groupBy from 'lodash/groupBy';
+import cloneDeep from 'lodash/cloneDeep'
 import IntegrationDestinationService from '../../interfaces/DestinationService';
 import {
   DeliveryResponse,
@@ -93,7 +94,6 @@ export default class NativeIntegrationDestinationService implements IntegrationD
       events,
       (ev: RouterTransformationRequestData) => ev.destination?.ID,
     );
-    console.log(JSON.stringify(allDestEvents));
     const groupedEvents: RouterTransformationRequestData[][] = Object.values(allDestEvents);
     const response: RouterTransformationResponse[][] = await Promise.all(
       groupedEvents.map(async (destInputArray: RouterTransformationRequestData[]) => {
@@ -105,7 +105,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
         );
         try {
           const doRouterTransformationResponse: RouterTransformationResponse[] =
-            await destHandler.processRouterDest(destInputArray);
+            await destHandler.processRouterDest(cloneDeep(destInputArray));
           metaTO.metadata = destInputArray[0].metadata;
           return DestinationPostTransformationService.handleRouterTransformSuccessEvents(
             doRouterTransformationResponse,

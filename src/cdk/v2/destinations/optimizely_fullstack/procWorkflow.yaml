@@ -179,7 +179,7 @@ steps:
         template: |
           const availableEvents = $.outputs.dataFile.events;
           const eventFound = availableEvents.(){.key.toLowerCase() === $.outputs.prepareTrackPayload.mappedEvent.toLowerCase()};
-          $.assert(eventFound, "Mapped event " + $.outputs.prepareTrackPayload.mappedEvent + 
+          $.assert(eventFound, "Event " + "'" + $.outputs.prepareTrackPayload.mappedEvent + "'"+ 
           " is not present in data file. Make sure event exists in Optimizely.");
           eventFound;
 
@@ -254,7 +254,7 @@ steps:
           event = availableEvents.(){.key.toLowerCase() === mappedEvents[1].toLowerCase()};
           event.id ? eventsFound.push(event);
 
-          $.assert(eventsFound.length > 0, "Mapped events [" + mappedEvents.join(", ") + "] are not present in the data file. Make sure events exist in Optimizely.");
+          $.assert(eventsFound.length > 0, "Events [" + mappedEvents.join(", ") + "] are not present in the data file. Make sure events exist in Optimizely.");
           eventsFound;
 
       - name: events

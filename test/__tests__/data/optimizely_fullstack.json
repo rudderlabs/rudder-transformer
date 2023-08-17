@@ -367,7 +367,7 @@
       }
     },
     "output": {
-      "error": "Mapped event product_added is not present in data file. Make sure event exists in Optimizely."
+      "error": "Event 'product_added' is not present in data file. Make sure event exists in Optimizely."
     }
   },
   {
@@ -1558,7 +1558,7 @@
       }
     },
     "output": {
-      "error": "Mapped events [meal] are not present in the data file. Make sure events exist in Optimizely."
+      "error": "Events [meal] are not present in the data file. Make sure events exist in Optimizely."
     }
   },
   {

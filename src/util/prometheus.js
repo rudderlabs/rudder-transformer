@@ -417,7 +417,7 @@ class Prometheus {
         name: 'marketo_bulk_upload_polling',
         help: 'marketo_bulk_upload_polling',
         type: 'counter',
-        labelNames: ['status', 'state'],
+        labelNames: ['status', 'state', 'requestTime'],
       },
       {
         name: 'marketo_fetch_token',
@@ -490,7 +490,7 @@ class Prometheus {
         name: 'shopify_redis_no_val',
         help: 'shopify_redis_no_val',
         type: 'counter',
-        labelNames: [ 'writeKey', 'source'],
+        labelNames: ['writeKey', 'source'],
       },
       {
         name: 'events_to_process',
@@ -537,6 +537,42 @@ class Prometheus {
         help: 'cdk_transformation_time',
         type: 'gauge',
         labelNames: ['destType', 'feature'],
+      },
+      {
+        name: 'marketo_bulk_upload_create_header_time',
+        help: 'marketo_bulk_upload_create_header_time',
+        type: 'gauge',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_create_csvloop_time',
+        help: 'marketo_bulk_upload_create_csvloop_time',
+        type: 'gauge',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_create_file_time',
+        help: 'marketo_bulk_upload_create_file_time',
+        type: 'gauge',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_upload_file_size',
+        help: 'marketo_bulk_upload_upload_file_size',
+        type: 'gauge',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_upload_file_succJobs',
+        help: 'marketo_bulk_upload_upload_file_succJobs',
+        type: 'gauge',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_upload_file_unsuccJobs',
+        help: 'marketo_bulk_upload_upload_file_unsuccJobs',
+        type: 'gauge',
+        labelNames: [],
       },
 
       // Histograms

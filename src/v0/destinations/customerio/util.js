@@ -11,7 +11,6 @@ const {
   defaultDeleteRequestConfig,
   isAppleFamily,
   validateEmail,
-  isDefinedAndNotNull,
 } = require('../../util');
 
 const { EventType, SpecedTraits, TraitsMapping } = require('../../../constants');
@@ -103,8 +102,9 @@ const isdeviceRelatedEventName = (eventName, destination) =>
 const identifyResponseBuilder = (userId, message) => {
   const rawPayload = {};
   // if userId is not there simply drop the payload
-  if (!userId) {
-    throw new InstrumentationError('userId not present');
+  const id = userId || getFieldValueFromMessage(message, "email");
+  if (!id) {
+    throw new InstrumentationError('userId or email is not present');
   }
 
   // populate speced traits
@@ -160,7 +160,7 @@ const identifyResponseBuilder = (userId, message) => {
   if (message?.anonymousId) {
     set(rawPayload, 'anonymous_id', message.anonymousId);
   }
-  const endpoint = IDENTITY_ENDPOINT.replace(':id', userId);
+  const endpoint = IDENTITY_ENDPOINT.replace(':id', id);
   const requestConfig = defaultPutRequestConfig;
 
   return { rawPayload, endpoint, requestConfig };
@@ -173,12 +173,20 @@ const aliasResponseBuilder = (message, userId) => {
   }
   const endpoint = MERGE_USER_ENDPOINT;
   const requestConfig = defaultPostRequestConfig;
+  let cioProperty = 'id';
+  if (validateEmail(userId)) {
+    cioProperty = 'email';
+  }
+  let prev_cioProperty = 'id';
+  if (validateEmail(message.previousId)) {
+    prev_cioProperty = 'email';
+  }
   const rawPayload = {
     primary: {
-      id: userId,
+      [cioProperty]: userId,
     },
     secondary: {
-      id: message.previousId,
+      [prev_cioProperty]: message.previousId,
     },
   };
 
@@ -205,7 +213,7 @@ const groupResponseBuilder = (message) => {
   if (validateEmail(id)) {
     cioProperty = 'email';
   }
-  if (isDefinedAndNotNull(id)) {
+  if (id) {
     rawPayload.cio_relationships.push({ identifiers: { [cioProperty]: id } });
   }
   const requestConfig = defaultPostRequestConfig;
@@ -221,22 +229,23 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
   let requestConfig = defaultPostRequestConfig;
   // any other event type except identify
   const token = get(message, 'context.device.token');
-
+  const id = userId || getFieldValueFromMessage(message, "email");
   // use this if only top level keys are to be sent
   // DEVICE DELETE from CustomerIO
   const isDeviceDeleteEvent = deviceDeleteRelatedEventName === evName;
   if (isDeviceDeleteEvent) {
-    if (!userId || !token) {
-      throw new InstrumentationError('userId or device_token not present');
+
+    if (!id || !token) {
+      throw new InstrumentationError('userId/email or device_token not present');
     }
-    endpoint = DEVICE_DELETE_ENDPOINT.replace(':id', userId).replace(':device_id', token);
+    endpoint = DEVICE_DELETE_ENDPOINT.replace(':id', id).replace(':device_id', token);
     requestConfig = defaultDeleteRequestConfig;
     return { rawPayload, endpoint, requestConfig };
   }
 
   // DEVICE registration
   const isDeviceRelatedEvent = isdeviceRelatedEventName(evName, destination);
-  if (isDeviceRelatedEvent && userId && token) {
+  if (isDeviceRelatedEvent && id && token) {
     const timestamp = message.timestamp || message.originalTimestamp;
     const devProps = {
       ...message.properties,
@@ -267,11 +276,11 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
     }
   }
 
-  if (userId) {
+  if (id) {
     endpoint =
       isDeviceRelatedEvent && token
-        ? DEVICE_REGISTER_ENDPOINT.replace(':id', userId)
-        : USER_EVENT_ENDPOINT.replace(':id', userId);
+        ? DEVICE_REGISTER_ENDPOINT.replace(':id', id)
+        : USER_EVENT_ENDPOINT.replace(':id', id);
   } else {
     endpoint = ANON_EVENT_ENDPOINT;
     // CustomerIO supports 100byte of event name for anonymous users
@@ -300,7 +309,7 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
 const validateConfigFields = destination => {
   const { Config } = destination;
   configFieldsToCheck.forEach(configProperty => {
-    if (!isDefinedAndNotNull(Config[configProperty])) {
+    if (!Config[configProperty]) {
       throw new ConfigurationError(`${configProperty} not found in Configs`);
     }
   });

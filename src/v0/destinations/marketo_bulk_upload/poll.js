@@ -85,9 +85,9 @@ const getPollStatus = async (event) => {
         state: 'Retryable',
       });
       throw new RetryableError(
-        pollStatus?.response?.response?.statusText ||
+        pollStatus?.response?.data?.errors[0]?.message ||
+          pollStatus?.response?.response?.statusText ||
           pollStatus?.response?.statusText ||
-          pollStatus?.response?.data?.errors[0]?.message ||
           'Error during polling status',
         500,
         pollStatus,

@@ -46,6 +46,13 @@ const getFailedJobStatus = async (event) => {
   stats.gauge('marketo_bulk_upload_fetch_job_time', requestTime);
   if (resp.success) {
     if (resp.response && resp.response.data) {
+      if (resp.response.data?.success === false) {
+        throw new RetryableError(
+          resp.response.data.errors[0].message || resp.response.statusText,
+          500,
+          resp,
+        );
+      }
       stats.increment(JOB_STATUS_ACTIVITY, {
         status: 200,
         state: 'Success',
@@ -143,6 +150,13 @@ const getWarningJobStatus = async (event) => {
   stats.gauge('marketo_bulk_upload_fetch_job_time', requestTime);
   if (resp.success) {
     if (resp.response && resp.response.data) {
+      if (resp.response.data?.success === false) {
+        throw new RetryableError(
+          resp.response.data.errors[0].message || resp.response.statusText,
+          500,
+          resp,
+        );
+      }
       stats.increment(JOB_STATUS_ACTIVITY, {
         status: 200,
         state: 'Success',
@@ -240,7 +254,7 @@ const responseHandler = async (event, type) => {
 
   const responseStatus =
     type === 'fail' ? await getFailedJobStatus(event) : await getWarningJobStatus(event);
-  const responseArr = responseStatus.data.split('\n'); // responseArr = ['field1,field2,Import Failure Reason', 'val1,val2,reason',...]
+  const responseArr = responseStatus.data.toString().split('\n'); // responseArr = ['field1,field2,Import Failure Reason', 'val1,val2,reason',...]
   const { input, metadata } = event;
   let headerArr;
   if (metadata && metadata.csvHeader) {

@@ -2294,7 +2294,7 @@
         "All": true
       },
       "messageId": "1641808826-28d23237-f4f0-4f65-baa2-99141e422a8f",
-      "originalTimestamp": "2022-01-10T10:00:26.513Z",
+      "timestamp": "2022-01-10T10:00:26.513Z",
       "properties": {
         "from_background": false
       },
@@ -2800,7 +2800,7 @@
         "All": true
       },
       "messageId": "1641808826-28d23237-f4f0-4f65-baa2-99141e422a8f",
-      "originalTimestamp": "2022-01-10T10:00:26.513Z",
+      "timestamp": "2022-01-10T10:00:26.513Z",
       "receivedAt": "2022-01-10T20:47:36.180+05:30",
       "request_ip": "[::1]",
       "rudderId": "0aef312c-0dc0-4a49-b613-4f33fb4e9b46",

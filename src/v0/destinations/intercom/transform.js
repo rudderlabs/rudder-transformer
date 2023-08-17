@@ -93,13 +93,13 @@ function validateTrack(payload) {
   return payload;
 }
 
-function checkIfEmailOrUserIdPresent(message, Config) {
+const checkIfEmailOrUserIdPresent = (message, Config) => {
   let user_id = message.userId;
   if (Config.sendAnonymousId && !user_id) {
     user_id = message.anonymousId;
   }
   return !!(user_id || message.context?.traits?.email);
-}
+};
 
 function attachUserAndCompany(message, Config) {
   const email = message.context?.traits?.email;

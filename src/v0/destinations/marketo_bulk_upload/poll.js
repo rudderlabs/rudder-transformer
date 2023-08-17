@@ -63,8 +63,7 @@ const getPollStatus = async (event) => {
           state: 'Abortable',
         });
         throw new AbortedError(
-          pollStatus.response.data.errors[0].message ||
-          POLL_STATUS_ERR_MSG,
+          pollStatus.response.data.errors[0].message || POLL_STATUS_ERR_MSG,
           400,
           pollStatus,
         );
@@ -75,8 +74,7 @@ const getPollStatus = async (event) => {
           state: 'Retryable',
         });
         throw new ThrottledError(
-          pollStatus.response.data.errors[0].message ||
-          POLL_STATUS_ERR_MSG,
+          pollStatus.response.data.errors[0].message || POLL_STATUS_ERR_MSG,
           500,
           pollStatus,
         );
@@ -88,9 +86,9 @@ const getPollStatus = async (event) => {
       });
       throw new RetryableError(
         pollStatus?.response?.response?.statusText ||
-        pollStatus?.response?.statusText ||
-        pollStatus?.response?.data?.errors[0]?.message ||
-        'Error during polling status',
+          pollStatus?.response?.statusText ||
+          pollStatus?.response?.data?.errors[0]?.message ||
+          'Error during polling status',
         500,
         pollStatus,
       );
@@ -107,8 +105,8 @@ const getPollStatus = async (event) => {
 const responseHandler = async (event) => {
   const pollResp = await getPollStatus(event);
   let pollSuccess;
-  let success;
-  let statusCode;
+  let success = false;
+  let statusCode = 500;
   let hasFailed;
   let FailedJobURLs;
   let hasWarnings;

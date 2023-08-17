@@ -93,6 +93,7 @@ export default class NativeIntegrationDestinationService implements IntegrationD
       events,
       (ev: RouterTransformationRequestData) => ev.destination?.ID,
     );
+    console.log(JSON.stringify(allDestEvents));
     const groupedEvents: RouterTransformationRequestData[][] = Object.values(allDestEvents);
     const response: RouterTransformationResponse[][] = await Promise.all(
       groupedEvents.map(async (destInputArray: RouterTransformationRequestData[]) => {

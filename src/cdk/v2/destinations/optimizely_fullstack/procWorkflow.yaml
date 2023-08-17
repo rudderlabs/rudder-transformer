@@ -35,8 +35,8 @@ steps:
       $.assertConfig(.destination.Config.accountId, "Account ID is not present. Aborting");
       $.assertConfig(.destination.Config.campaignId, "Campaign ID is not present. Aborting");
       $.assertConfig(.destination.Config.experimentId, "Experiment ID is not present. Aborting");
-      $.assertConfig(!(.destination.Config.trackKnownUsers && !(.message.userId)), "RudderStack will only track users associated with a userId when the trackKnownUsers setting is enabled");
-      $.assertConfig(!(!.destination.Config.trackKnownUsers && !(.message.anonymousId)), "AnonymousId is required when trackKnownUsers setting is disabled");
+      $.assertConfig(!(.destination.Config.trackKnownUsers && !(.message.userId)), "UserId is required for event tracking when the 'Track Known Users' setting is enabled. Please include a 'userId' in your event payload");
+      $.assertConfig(!(!.destination.Config.trackKnownUsers && !(.message.anonymousId)), "AnonymousId is required when 'Track Known Users' setting is disabled");
       $.assertConfig(!(.destination.Config.secureEnvironment && !(.destination.Config.dataFileAccessToken)), "Data File Access Token is not present for secure environment. Aborting");
 
   - name: messageType

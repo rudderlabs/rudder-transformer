@@ -119,6 +119,14 @@ describe('Unit test cases for customerio identifyResponseBuilder', () => {
       expect(error.message).toEqual(expectedOutput);
     }
   });
+  it('No Identifier to send for Identify Call', async () => {
+    let expectedOutput = "userId or email is not present";
+    try {
+      identifyResponseBuilder('', getIdentifyTestMessage())
+    } catch (error) {
+      expect(error.message).toEqual(expectedOutput);
+    }
+  });
 });
 
 describe('Unit test cases for customerio aliasResponseBuilder', () => {

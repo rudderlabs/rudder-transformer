@@ -11,7 +11,6 @@ const {
   defaultDeleteRequestConfig,
   isAppleFamily,
   validateEmail,
-  isDefinedAndNotNull,
 } = require('../../util');
 
 const { EventType, SpecedTraits, TraitsMapping } = require('../../../constants');
@@ -104,7 +103,7 @@ const identifyResponseBuilder = (userId, message) => {
   const rawPayload = {};
   // if userId is not there simply drop the payload
   const id = userId || getFieldValueFromMessage(message, "email");
-  if (!isDefinedAndNotNull(id)) {
+  if (!id) {
     throw new InstrumentationError('userId or email is not present');
   }
 
@@ -169,7 +168,7 @@ const identifyResponseBuilder = (userId, message) => {
 
 const aliasResponseBuilder = (message, userId) => {
   // ref : https://customer.io/docs/api/#operation/merge
-  if (!isDefinedAndNotNull(userId) && !isDefinedAndNotNull(message.previousId)) {
+  if (!userId && !message.previousId) {
     throw new InstrumentationError('Both userId and previousId is mandatory for merge operation');
   }
   const endpoint = MERGE_USER_ENDPOINT;
@@ -214,7 +213,7 @@ const groupResponseBuilder = (message) => {
   if (validateEmail(id)) {
     cioProperty = 'email';
   }
-  if (isDefinedAndNotNull(id)) {
+  if (id) {
     rawPayload.cio_relationships.push({ identifiers: { [cioProperty]: id } });
   }
   const requestConfig = defaultPostRequestConfig;
@@ -236,7 +235,7 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
   const isDeviceDeleteEvent = deviceDeleteRelatedEventName === evName;
   if (isDeviceDeleteEvent) {
 
-    if (!isDefinedAndNotNull(id) || !isDefinedAndNotNull(token)) {
+    if (!id || !token) {
       throw new InstrumentationError('userId/email or device_token not present');
     }
     endpoint = DEVICE_DELETE_ENDPOINT.replace(':id', id).replace(':device_id', token);
@@ -277,7 +276,7 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
     }
   }
 
-  if (isDefinedAndNotNull(id)) {
+  if (id) {
     endpoint =
       isDeviceRelatedEvent && token
         ? DEVICE_REGISTER_ENDPOINT.replace(':id', id)
@@ -310,7 +309,7 @@ const defaultResponseBuilder = (message, evName, userId, evType, destination, me
 const validateConfigFields = destination => {
   const { Config } = destination;
   configFieldsToCheck.forEach(configProperty => {
-    if (!isDefinedAndNotNull(Config[configProperty])) {
+    if (!Config[configProperty]) {
       throw new ConfigurationError(`${configProperty} not found in Configs`);
     }
   });

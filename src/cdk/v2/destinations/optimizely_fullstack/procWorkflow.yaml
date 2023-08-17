@@ -172,10 +172,7 @@ steps:
         template: |
           const eventsMap = $.getHashFromArray(.destination.Config.eventMapping, 'from', 'to');
           const eventInLowerCase = .message.event.toLowerCase();
-          const mappedEvent = eventsMap[eventInLowerCase];
-          $.assert(mappedEvent, "No mapped event found for " + .message.event + 
-          " event. Make sure to map the event in 'RudderStack to Optimizely event mappings' setting");
-          mappedEvent;
+          const mappedEvent = eventsMap[eventInLowerCase] || eventInLowerCase;
 
       - name: optimizelyEvent
         description: This step retrieves the event object from the data file for the mapped event
@@ -239,8 +236,8 @@ steps:
           const category = .message.properties.category.toLowerCase();
           const name = .message.name.toLowerCase();
           const mappedEvents = [];
-          .destination.Config.trackCategorizedPages && eventsMap[category] ? mappedEvents.push(eventsMap[category]);
-          .destination.Config.trackNamedPages && eventsMap[name] ? mappedEvents.push(eventsMap[name]);
+          .destination.Config.trackCategorizedPages && (eventsMap[category] || category) ? mappedEvents.push(eventsMap[category] || category);
+          .destination.Config.trackNamedPages && (eventsMap[name] || name) ? mappedEvents.push(eventsMap[name] || name);
           $.assert(mappedEvents.length > 0, "No mapped event found for " + $.outputs.messageType + 
           " call. Make sure to map the event in 'RudderStack Page Name/Category to Optimizely event mappings' setting");
           mappedEvents;
@@ -253,7 +250,6 @@ steps:
           const eventsFound = [];
           let event = availableEvents.(){.key.toLowerCase() === mappedEvents[0].toLowerCase()} 
           event.id ? eventsFound.push(event);
-
 
           event = availableEvents.(){.key.toLowerCase() === mappedEvents[1].toLowerCase()};
           event.id ? eventsFound.push(event);

@@ -7,11 +7,20 @@ const klaviyoPostRequestHandler = (url, payload) => {
       //resolve with status 200
       return { data: payload, status: 200 };
     case 'https://a.klaviyo.com/api/profiles':
+      if (payload.data.attributes.email === "utsab3@rudderstack.com") {
+        return {
+          status: 409,
+          data: {
+          }
+        };
+      }
       return {
         status: 201,
-        data: {data: {
-          id: '01GW3PHVY0MTCDGS0A1612HARX',
-        },}
+        data: {
+          data: {
+            id: '01GW3PHVY0MTCDGS0A1612HARX',
+          },
+        }
       };
     default:
       return new Promise((resolve, reject) => {

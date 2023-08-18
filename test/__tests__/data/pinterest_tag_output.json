@@ -8,7 +8,9 @@
       "headers": {
         "Content-Type": "application/json"
       },
-      "params": {},
+      "params": {
+        "test": true
+      },
       "body": {
         "JSON": {
           "action_source": "web",

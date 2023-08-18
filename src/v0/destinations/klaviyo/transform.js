@@ -89,7 +89,7 @@ const identifyRequestHandler = async (message, category, destination) => {
   };
   // if flattenProperties is enabled from UI, flatten the user properties
   data.attributes.properties = flattenProperties
-    ? flattenJson(data.attributes.properties, undefined, undefined, false)
+    ? flattenJson(data.attributes.properties, '.', 'normal', false)
     : data.attributes.properties;
   const payload = {
     data: removeUndefinedAndNullValues(data),
@@ -198,7 +198,7 @@ const trackRequestHandler = (message, category, destination) => {
   }
   // if flattenProperties is enabled from UI, flatten the event properties
   attributes.properties = flattenProperties
-    ? flattenJson(attributes.properties, undefined, undefined, false)
+    ? flattenJson(attributes.properties, '.', 'normal', false)
     : attributes.properties;
   // Map user properties to profile object
   attributes.profile = createCustomerProperties(message, destination.Config);

@@ -884,7 +884,10 @@
           "vicePresdentInfo": {
             "PreviouslVicePresident": true,
             "YearElected": 1801,
-            "VicePresidents": ["Aaron Burr", "George Clinton"]
+            "VicePresidents": [
+              ["Aaron", "Burr"],
+              ["George", "Clinton"]
+            ]
           }
         },
         "anonymousId": "9c6bd77ea9da3e68",
@@ -916,8 +919,10 @@
               },
               "properties": {
                 "vicePresdentInfo.PreviouslVicePresident": true,
-                "vicePresdentInfo.VicePresidents[0]": "Aaron Burr",
-                "vicePresdentInfo.VicePresidents[1]": "George Clinton",
+                "vicePresdentInfo.VicePresidents[0][0]": "Aaron",
+                "vicePresdentInfo.VicePresidents[0][1]": "Burr",
+                "vicePresdentInfo.VicePresidents[1][0]": "George",
+                "vicePresdentInfo.VicePresidents[1][1]": "Clinton",
                 "vicePresdentInfo.YearElected": 1801,
                 "age": "22"
               },

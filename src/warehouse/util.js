@@ -16,7 +16,7 @@ const isObject = (value) => {
 };
 
 const isValidJsonPathKey = (eventType, key, val, level, jsonKeys = {}) => {
-  return eventType === 'track' && jsonKeys[key] === level;
+  return jsonKeys[key] === level;
 };
 
 const isBlank = (value) => {

@@ -208,7 +208,12 @@ function setDataFromInputAndComputeColumnTypes(
 ) {
   if (!input || !isObject(input)) return;
   Object.keys(input).forEach((key) => {
-    if (isValidJsonPathKey(eventType, `${prefix + key}`, input[key], level, options.jsonKeys)) {
+    let jsonLevel = level
+    if (prefix?.startsWith('context_')) {
+        jsonLevel = level + 1
+    }
+
+    if (isValidJsonPathKey(eventType, `${prefix + key}`, input[key], jsonLevel, options.jsonKeys)) {
       if (isBlank(input[key])) {
         return;
       }

@@ -30,7 +30,10 @@ const integrations = [
   "snowflake",
   "mssql",
   "azure_synapse",
-  "s3_datalake"
+  "deltalake",
+  "azure_datalake",
+  "s3_datalake",
+  "gcs_datalake",
 ];
 const transformers = integrations.map(integration =>
   require(`../../src/${version}/destinations/${integration}/transform`)
@@ -1019,12 +1022,53 @@ describe("Integration options", () => {
       });
     });
   });
-  describe("users", () => {
+
+  describe("identifies", () => {
     it("should skip users when skipUsersTable is set", () => {
-      const i = opInput("users");
+      const i = opInput("identifies");
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
-        expect(received).toEqual(opOutput("users", integrations[index]));
+        expect(received).toEqual(opOutput("identifies", integrations[index]));
+      });
+    });
+  });
+
+  describe("screens", () => {
+    it("should honour json paths", () => {
+      const i = opInput("screens");
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received).toEqual(opOutput("screens", integrations[index]));
+      });
+    });
+  });
+
+  describe("pages", () => {
+    it("should honour json paths", () => {
+      const i = opInput("pages");
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received).toEqual(opOutput("pages", integrations[index]));
+      });
+    });
+  });
+
+  describe("aliases", () => {
+    it("should honour json paths", () => {
+      const i = opInput("aliases");
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received).toEqual(opOutput("aliases", integrations[index]));
+      });
+    });
+  });
+
+  describe("groups", () => {
+    it("should honour json paths", () => {
+      const i = opInput("groups");
+      transformers.forEach((transformer, index) => {
+        const received = transformer.process(i);
+        expect(received).toEqual(opOutput("groups", integrations[index]));
       });
     });
   });

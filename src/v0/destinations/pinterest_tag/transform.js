@@ -31,7 +31,7 @@ const {
 const { InstrumentationError } = require('../../util/errorTypes');
 
 const responseBuilderSimple = (finalPayload, { Config }) => {
-  const { apiVersion = API_VERSION.v3, adAccountId, conversionToken } = Config;
+  const { apiVersion = API_VERSION.v3, adAccountId, conversionToken, sendAsTestEvent } = Config;
   const response = defaultRequestConfig();
   response.endpoint = ENDPOINT;
   response.method = defaultPostRequestConfig.requestMethod;
@@ -44,6 +44,11 @@ const responseBuilderSimple = (finalPayload, { Config }) => {
     response.headers = {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${conversionToken}`,
+    };
+  }
+  if (sendAsTestEvent) {
+    response.params = {
+      test: true,
     };
   }
 

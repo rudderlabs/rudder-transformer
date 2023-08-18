@@ -19,6 +19,7 @@ const { NetworkError, InstrumentationError } = require('../../util/errorTypes');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const tags = require('../../util/tags');
 const { handleHttpRequest } = require('../../../adapters/network');
+const { client: errNotificationClient } = require("../../../util/errorNotifier");
 
 /**
  * This function calls the create user endpoint ref: https://developers.klaviyo.com/en/reference/create_profile
@@ -47,18 +48,28 @@ const getIdFromNewOrExistingProfile = async (endpoint, payload, requestOptions) 
     profileId = resp.response?.data?.id;
   } else if (resp.status === 409) {
     const { errors } = resp.response;
-    profileId = errors[0]?.meta?.duplicate_profile_id;
-  } else {
-    throw new NetworkError(
-      `Failed to create user due to ${JSON.stringify(resp.response)}`,
-      resp.status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.status),
-      },
-      `${JSON.stringify(resp.response)}`,
-    );
+    profileId = errors?.[0]?.meta?.duplicate_profile_id;
   }
-  return profileId;
+
+  if (profileId) {
+    return profileId;
+  }
+
+  let statusCode = resp.status;
+  if (resp.status === 201 || resp.status === 409) {
+    // retryable error if the profile id is not found in the response
+    errNotificationClient.notify(new Error("Klaviyo: ProfileId not found"), "Profile Id not Found in the response", JSON.stringify(resp.response))
+    statusCode = 500;
+  }
+
+  throw new NetworkError(
+    `Failed to create user due to ${JSON.stringify(resp.response)}`,
+    statusCode,
+    {
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(statusCode),
+    },
+    `${JSON.stringify(resp.response)}`,
+  );
 };
 
 const profileUpdateResponseBuilder = (payload, profileId, category, privateApiKey) => {
@@ -101,10 +112,10 @@ const subscribeUserToList = (message, traitsInfo, destination) => {
     }
 
     if (subscribeConsentArr.includes('email')) {
-      channels.email = [...(channels.email || []), 'MARKETING'];
+      channels.email = ['MARKETING'];
     }
     if (subscribeConsentArr.includes('sms')) {
-      channels.sms = [...(channels.sms || []), 'MARKETING'];
+      channels.sms = ['MARKETING'];
     }
     subscriptionObj.channels = channels;
   }

@@ -41,7 +41,7 @@ export default class DestinationController {
         ctx,
       ) as ProcessorTransformationRequest[];
       const timestampCorrectEvents = ControllerUtility.handleTimestampInEvents(events);
-      events = DynamicConfigParser.process(timestampCorrectEvents);
+      events = DynamicConfigParser.process(timestampCorrectEvents) as ProcessorTransformationRequest[];
       resplist = await integrationService.doProcessorTransformation(
         events,
         destination,

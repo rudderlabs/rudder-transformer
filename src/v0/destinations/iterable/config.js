@@ -5,18 +5,18 @@ const BASE_URL = 'https://api.iterable.com/api/';
 const ConfigCategory = {
   IDENTIFY_BROWSER: {
     name: 'IterableRegisterBrowserTokenConfig',
+    action: 'identifyBrowser',
+    endpoint: `${BASE_URL}users/registerBrowserToken`,
   },
   IDENTIFY_DEVICE: {
     name: 'IterableRegisterDeviceTokenConfig',
+    action: 'identifyDevice',
+    endpoint: `${BASE_URL}users/registerDeviceToken`,
   },
   IDENTIFY: {
     name: 'IterableIdentifyConfig',
     action: 'identify',
-    actionDevice: 'identifyDevice',
-    actionBrowser: 'identifyBrowser',
     endpoint: `${BASE_URL}users/update`,
-    endpointDevice: `${BASE_URL}users/registerDeviceToken`,
-    endpointBrowser: `${BASE_URL}users/registerBrowserToken`,
   },
   PAGE: {
     name: 'IterablePageConfig',
@@ -64,17 +64,22 @@ const ConfigCategory = {
     endpoint: `${BASE_URL}catalogs`,
   },
 };
+
 const mappingConfig = getMappingConfig(ConfigCategory, __dirname);
+
 const IDENTIFY_MAX_BATCH_SIZE = 1000;
-const TRACK_MAX_BATCH_SIZE = 8000;
+const IDENTIFY_MAX_BODY_SIZE_IN_BYTES = 4000000;
 const IDENTIFY_BATCH_ENDPOINT = 'https://api.iterable.com/api/users/bulkUpdate';
+
+const TRACK_MAX_BATCH_SIZE = 8000;
 const TRACK_BATCH_ENDPOINT = 'https://api.iterable.com/api/events/trackBulk';
 
 module.exports = {
-  ConfigCategory,
   mappingConfig,
-  IDENTIFY_BATCH_ENDPOINT,
+  ConfigCategory,
   TRACK_BATCH_ENDPOINT,
-  IDENTIFY_MAX_BATCH_SIZE,
   TRACK_MAX_BATCH_SIZE,
+  IDENTIFY_MAX_BATCH_SIZE,
+  IDENTIFY_BATCH_ENDPOINT,
+  IDENTIFY_MAX_BODY_SIZE_IN_BYTES,
 };

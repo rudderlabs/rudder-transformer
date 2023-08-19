@@ -3,7 +3,6 @@ const { getFuncTestData } = require('../../../test/testHelper');
 
 // Names of the utility functions to test
 const functionNames = [
-  'flattenJson',
   'getDestinationExternalID',
   'isHybridModeEnabled',
   'handleSourceKeysOperation',
@@ -15,7 +14,11 @@ const functionNames = [
 ];
 
 // Names of the utility functions to test which expects multiple arguments as values and not objects
-const functionNamesExpectingMultipleArguments = ['checkAndCorrectUserId', 'formatValues'];
+const functionNamesExpectingMultipleArguments = [
+  'checkAndCorrectUserId',
+  'formatValues',
+  'flattenJson',
+];
 
 describe('Utility Functions Tests', () => {
   describe.each(functionNames)('%s Tests', (funcName) => {

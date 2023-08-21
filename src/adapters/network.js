@@ -46,9 +46,11 @@ const networkClientConfigs = {
 const fireLatencyStat = (startTime, statTags) => {
   const destType = statTags.destType ? statTags.destType : '';
   const feature = statTags.feature ? statTags.feature : '';
+  const endpointPath = statTags.endpointPath ? statTags.endpointPath : '';
   stats.timing('outgoing_request_latency', startTime, {
     feature,
     destType,
+    endpointPath,
   });
 };
 

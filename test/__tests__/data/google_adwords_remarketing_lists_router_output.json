@@ -51,7 +51,8 @@
           "access_token": "abcd1234",
           "refresh_token": "efgh5678",
           "developer_token": "ijkl9101"
-        }
+        },
+        "jobId": 1
       }
     ],
     "batched": false,
@@ -110,7 +111,8 @@
           "access_token": "abcd1234",
           "refresh_token": "efgh5678",
           "developer_token": "ijkl9101"
-        }
+        },
+        "jobId": 2
       }
     ],
     "batched": false,
@@ -180,7 +182,8 @@
           "access_token": "abcd1234",
           "refresh_token": "efgh5678",
           "developer_token": "ijkl9101"
-        }
+        },
+        "jobId": 3
       }
     ],
     "batched": false,
@@ -293,7 +296,8 @@
           "access_token": "abcd1234",
           "refresh_token": "efgh5678",
           "developer_token": "ijkl9101"
-        }
+        },
+        "jobId": 4
       }
     ],
     "batched": false,

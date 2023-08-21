@@ -295,7 +295,7 @@ export const data = [
                 traits: {
                   name: 'Shehan Study',
                   category: 'SampleIdentify',
-                  email: 'chandra+r1@rudderlabs.com',
+                  email: 'c@rudderlabs.com',
                   plan: 'Open source',
                   logins: 5,
                   createdAt: 1599264000,
@@ -387,7 +387,7 @@ export const data = [
                     $set: {
                       name: 'Shehan Study',
                       category: 'SampleIdentify',
-                      email: 'chandra+r1@rudderlabs.com',
+                      email: 'c@rudderlabs.com',
                       plan: 'Open source',
                       logins: 5,
                       createdAt: 1599264000,
@@ -821,7 +821,7 @@ export const data = [
                 traits: {
                   name: 'Shehan Study',
                   category: 'SampleIdentify',
-                  email: 'chandra+r1@rudderlabs.com',
+                  email: 'c@rudderlabs.com',
                   plan: 'Open source',
                   logins: 5,
                   createdAt: 1599264000,
@@ -913,7 +913,7 @@ export const data = [
                     $set: {
                       name: 'Shehan Study',
                       category: 'SampleIdentify',
-                      email: 'chandra+r1@rudderlabs.com',
+                      email: 'c@rudderlabs.com',
                       plan: 'Open source',
                       logins: 5,
                       createdAt: 1599264000,
@@ -1018,7 +1018,7 @@ export const data = [
                 traits: {
                   name: 'Shehan Study',
                   category: 'SampleIdentify',
-                  email: 'chandra+r1@rudderlabs.com',
+                  email: 'c@rudderlabs.com',
                   plan: 'Open source',
                   logins: 5,
                   createdAt: 1599264000,
@@ -1110,7 +1110,7 @@ export const data = [
                     $set: {
                       name: 'Shehan Study',
                       category: 'SampleIdentify',
-                      email: 'chandra+r1@rudderlabs.com',
+                      email: 'c@rudderlabs.com',
                       plan: 'Open source',
                       logins: 5,
                       createdAt: 1599264000,
@@ -1216,7 +1216,7 @@ export const data = [
                 traits: {
                   name: 'Shehan Study',
                   category: 'SampleIdentify',
-                  email: 'chandra+r@rudderlabs.com',
+                  email: 'c@rudderlabs.com',
                   plan: 'Open source',
                   logins: 5,
                   createdAt: 1599264000,
@@ -1286,7 +1286,7 @@ export const data = [
                     $set: {
                       name: 'Shehan Study',
                       category: 'SampleIdentify',
-                      email: 'chandra+r@rudderlabs.com',
+                      email: 'c@rudderlabs.com',
                       plan: 'Open source',
                       logins: 5,
                       createdAt: 1599264000,
@@ -1356,7 +1356,7 @@ export const data = [
                 traits: {
                   name: 'Shehan Study',
                   category: 'SampleIdentify',
-                  email: 'chandra+r@rudderlabs.com',
+                  email: 'c@rudderlabs.com',
                   plan: 'Open source',
                   logins: 5,
                   createdAt: 1599264000,
@@ -1416,7 +1416,7 @@ export const data = [
                     $set: {
                       name: 'Shehan Study',
                       category: 'SampleIdentify',
-                      email: 'chandra+r@rudderlabs.com',
+                      email: 'c@rudderlabs.com',
                       plan: 'Open source',
                       logins: 5,
                       createdAt: 1599264000,

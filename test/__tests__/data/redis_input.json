@@ -369,7 +369,7 @@
       "Transformations": []
     },
     "metadata": {
-      "workspace_id": "some-workspace-id"
+      "workspaceId": "some-workspace-id"
     },
     "message": {
       "userId": "some-user-id",
@@ -384,9 +384,6 @@
           "profiles_entity": "some-entity",
           "profiles_id_type": "some-id-type"
         }
-      },
-      "integrations": {
-        "All": true
       },
       "traits": {
         "MODEL_ID": "1691755780",

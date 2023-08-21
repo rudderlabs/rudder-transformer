@@ -1,0 +1,39 @@
+bindings:
+  - name: EventType
+    path: ../../../../constants
+  - path: ../../bindings/jsontemplate
+    exportAll: true
+  - path: ./config
+  - name: removeUndefinedAndNullValues
+    path: ../../../../v0/util
+  - name: defaultRequestConfig
+    path: ../../../../v0/util
+
+steps:
+  - name: validateInput
+    template: |
+      let messageType = .message.type;
+      $.assert(messageType, "message Type is not present. Aborting message.");
+      $.assert(.message.type.toLowerCase() ==='identify', "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
+      $.assert(.message.traits, "Message traits is not present. Aborting message.");
+
+  - name: prepareIdentifiersResponse
+    description: |
+      Populate traits
+    template: |
+      const identifierKey = .message.context.externalId[0].identifierType
+      let traits = .message.traits
+      traits.C_EmailAddress = .message.userId
+      let payload = {
+        identifierFieldName : identifierKey,
+        data: traits[]
+      }
+
+  - name: buildResponseForProcessTransformation
+    description: build response
+    template: |
+      $.outputs.prepareIdentifiersResponse@payload.(
+        const response = $.defaultRequestConfig();
+        response.body.JSON = payload;
+        response
+      )

@@ -28,7 +28,7 @@ const isSubEventTypeProfiles = (message) => {
     return false;
   }
   const { sources } = context;
-  return sources?.profiles_entity && sources?.profiles_id_type && sources?.profiles_model;
+  return sources.profiles_entity && sources.profiles_id_type && sources.profiles_model;
 };
 
 const transforrmSubEventTypeProfiles = (message, workspaceId) => {

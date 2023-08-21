@@ -2,78 +2,83 @@
   {
     "description": "Should return flattened JSON if the input contains array of objects",
     "input": {
-      "checkout_id": "what is checkout id here??",
-      "coupon": "APPARELSALE",
-      "currency": "GBP",
-      "order_id": "transactionId",
-      "products": [
-        {
-          "brand": "",
-          "category": "Merch",
-          "currency": "GBP",
-          "image_url": "https://www.example.com/product/bacon-jam.jpg",
-          "name": "Food/Drink",
-          "position": 1,
-          "price": 3,
-          "product_id": "product-bacon-jam",
-          "quantity": 2,
-          "sku": "sku-1",
-          "typeOfProduct": "Food",
-          "url": "https://www.example.com/product/bacon-jam",
-          "value": 6,
-          "variant": "Extra topped"
-        },
-        {
-          "brand": "Levis",
-          "category": "Merch",
-          "currency": "GBP",
-          "image_url": "https://www.example.com/product/t-shirt.jpg",
-          "name": "T-Shirt",
-          "position": 2,
-          "price": 12.99,
-          "product_id": "product-t-shirt",
-          "quantity": 1,
-          "sku": "sku-2",
-          "typeOfProduct": "Shirt",
-          "url": "https://www.example.com/product/t-shirt",
-          "value": 12.99,
-          "variant": "White"
-        },
-        {
-          "brand": "Levis",
-          "category": "Merch",
-          "coupon": "APPARELSALE",
-          "currency": "GBP",
-          "image_url": "https://www.example.com/product/offer-t-shirt.jpg",
-          "name": "T-Shirt-on-offer",
-          "position": 1,
-          "price": 12.99,
-          "product_id": "offer-t-shirt",
-          "quantity": 1,
-          "sku": "sku-3",
-          "typeOfProduct": "Shirt",
-          "url": "https://www.example.com/product/offer-t-shirt",
-          "value": 12.99,
-          "variant": "Black"
-        }
-      ],
-      "category": "some category",
-      "originalArray": [
-        {
-          "nested_field": "nested value",
-          "tags": ["tag_1", "tag_2", "tag_3"]
-        },
-        {
-          "nested_field": "nested value",
-          "tags": ["tag_1"]
-        },
-        {
-          "nested_field": "nested value"
-        }
-      ],
-      "revenue": 31.98,
-      "shipping": 4,
-      "value": 31.98
+      "data": {
+        "checkout_id": "what is checkout id here??",
+        "coupon": "APPARELSALE",
+        "currency": "GBP",
+        "order_id": "transactionId",
+        "products": [
+          {
+            "brand": "",
+            "category": "Merch",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/bacon-jam.jpg",
+            "name": "Food/Drink",
+            "position": 1,
+            "price": 3,
+            "product_id": "product-bacon-jam",
+            "quantity": 2,
+            "sku": "sku-1",
+            "typeOfProduct": "Food",
+            "url": "https://www.example.com/product/bacon-jam",
+            "value": 6,
+            "variant": "Extra topped"
+          },
+          {
+            "brand": "Levis",
+            "category": "Merch",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/t-shirt.jpg",
+            "name": "T-Shirt",
+            "position": 2,
+            "price": 12.99,
+            "product_id": "product-t-shirt",
+            "quantity": 1,
+            "sku": "sku-2",
+            "typeOfProduct": "Shirt",
+            "url": "https://www.example.com/product/t-shirt",
+            "value": 12.99,
+            "variant": "White"
+          },
+          {
+            "brand": "Levis",
+            "category": "Merch",
+            "coupon": "APPARELSALE",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/offer-t-shirt.jpg",
+            "name": "T-Shirt-on-offer",
+            "position": 1,
+            "price": 12.99,
+            "product_id": "offer-t-shirt",
+            "quantity": 1,
+            "sku": "sku-3",
+            "typeOfProduct": "Shirt",
+            "url": "https://www.example.com/product/offer-t-shirt",
+            "value": 12.99,
+            "variant": "Black"
+          }
+        ],
+        "category": "some category",
+        "originalArray": [
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1"]
+          },
+          {
+            "nested_field": "nested value"
+          }
+        ],
+        "revenue": 31.98,
+        "shipping": 4,
+        "value": 31.98
+      },
+      "separator": ".",
+      "mode": "normal",
+      "flattenArrays": true
     },
     "output": {
       "checkout_id": "what is checkout id here??",
@@ -139,103 +144,108 @@
   {
     "description": "Should return flattened JSON if the input contains array of objects containing arrays",
     "input": {
-      "checkout_id": "what is checkout id here??",
-      "coupon": "APPARELSALE",
-      "currency": "GBP",
-      "order_id": "transactionId",
-      "category": "some category",
-      "originalArray": [
-        {
-          "nested_field": "nested value",
-          "tags": ["tag_1", "tag_2", "tag_3"]
-        },
-        {
-          "nested_field": "nested value",
-          "tags": ["tag_1", "tag_2", "tag_3"]
-        },
-        {
-          "nested_field": "nested value",
-          "tags": ["tag_1", "tag_2", "tag_3"]
-        },
-        {
-          "nested_field": "nested value",
-          "tags": ["tag_1", "tag_2", "tag_3"]
-        },
-        {
-          "nested_field": "nested value",
-          "tags": ["tag_1", "tag_2", "tag_3"]
-        },
-        {
-          "nested_field": "nested value",
-          "tags": ["tag_1", "tag_2", "tag_3"]
-        },
-        {
-          "nested_field": "nested value",
-          "tags": ["tag_1", "tag_2", "tag_3"]
-        },
-        {
-          "nested_field": "nested value",
-          "tags": ["tag_1", "tag_2", "tag_3"]
-        },
-        {
-          "nested_field": "nested value",
-          "tags": ["tag_1", "tag_2", "tag_3"]
-        }
-      ],
-      "products": [
-        {
-          "brand": "",
-          "category": "Merch",
-          "currency": "GBP",
-          "image_url": "https://www.example.com/product/bacon-jam.jpg",
-          "name": "Food/Drink",
-          "position": 1,
-          "price": 3,
-          "product_id": "product-bacon-jam",
-          "quantity": 2,
-          "sku": "sku-1",
-          "typeOfProduct": "Food",
-          "url": "https://www.example.com/product/bacon-jam",
-          "value": 6,
-          "variant": "Extra topped"
-        },
-        {
-          "brand": "Levis",
-          "category": "Merch",
-          "currency": "GBP",
-          "image_url": "https://www.example.com/product/t-shirt.jpg",
-          "name": "T-Shirt",
-          "position": 2,
-          "price": 12.99,
-          "product_id": "product-t-shirt",
-          "quantity": 1,
-          "sku": "sku-2",
-          "typeOfProduct": "Shirt",
-          "url": "https://www.example.com/product/t-shirt",
-          "value": 12.99,
-          "variant": "White"
-        },
-        {
-          "brand": "Levis",
-          "category": "Merch",
-          "coupon": "APPARELSALE",
-          "currency": "GBP",
-          "image_url": "https://www.example.com/product/offer-t-shirt.jpg",
-          "name": "T-Shirt-on-offer",
-          "position": 1,
-          "price": 12.99,
-          "product_id": "offer-t-shirt",
-          "quantity": 1,
-          "sku": "sku-3",
-          "typeOfProduct": "Shirt",
-          "url": "https://www.example.com/product/offer-t-shirt",
-          "value": 12.99,
-          "variant": "Black"
-        }
-      ],
-      "revenue": 31.98,
-      "shipping": 4,
-      "value": 31.98
+      "data": {
+        "checkout_id": "what is checkout id here??",
+        "coupon": "APPARELSALE",
+        "currency": "GBP",
+        "order_id": "transactionId",
+        "category": "some category",
+        "originalArray": [
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          }
+        ],
+        "products": [
+          {
+            "brand": "",
+            "category": "Merch",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/bacon-jam.jpg",
+            "name": "Food/Drink",
+            "position": 1,
+            "price": 3,
+            "product_id": "product-bacon-jam",
+            "quantity": 2,
+            "sku": "sku-1",
+            "typeOfProduct": "Food",
+            "url": "https://www.example.com/product/bacon-jam",
+            "value": 6,
+            "variant": "Extra topped"
+          },
+          {
+            "brand": "Levis",
+            "category": "Merch",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/t-shirt.jpg",
+            "name": "T-Shirt",
+            "position": 2,
+            "price": 12.99,
+            "product_id": "product-t-shirt",
+            "quantity": 1,
+            "sku": "sku-2",
+            "typeOfProduct": "Shirt",
+            "url": "https://www.example.com/product/t-shirt",
+            "value": 12.99,
+            "variant": "White"
+          },
+          {
+            "brand": "Levis",
+            "category": "Merch",
+            "coupon": "APPARELSALE",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/offer-t-shirt.jpg",
+            "name": "T-Shirt-on-offer",
+            "position": 1,
+            "price": 12.99,
+            "product_id": "offer-t-shirt",
+            "quantity": 1,
+            "sku": "sku-3",
+            "typeOfProduct": "Shirt",
+            "url": "https://www.example.com/product/offer-t-shirt",
+            "value": 12.99,
+            "variant": "Black"
+          }
+        ],
+        "revenue": 31.98,
+        "shipping": 4,
+        "value": 31.98
+      },
+      "separator": ".",
+      "mode": "normal",
+      "flattenArrays": true
     },
     "output": {
       "category": "some category",
@@ -330,78 +340,83 @@
   {
     "description": "Should return flattened JSON and preserve the arrays order if the input contains array of objects containing arrays",
     "input": {
-      "checkout_id": "what is checkout id here??",
-      "coupon": "APPARELSALE",
-      "currency": "GBP",
-      "order_id": "transactionId",
-      "products": [
-        {
-          "brand": "",
-          "category": "Merch",
-          "currency": "GBP",
-          "image_url": "https://www.example.com/product/bacon-jam.jpg",
-          "name": "Food/Drink",
-          "position": 1,
-          "price": 3,
-          "product_id": "product-bacon-jam",
-          "quantity": 2,
-          "sku": "sku-1",
-          "typeOfProduct": "Food",
-          "url": "https://www.example.com/product/bacon-jam",
-          "value": 6,
-          "variant": "Extra topped"
-        },
-        {
-          "brand": "Levis",
-          "category": "Merch",
-          "currency": "GBP",
-          "image_url": "https://www.example.com/product/t-shirt.jpg",
-          "name": "T-Shirt",
-          "position": 2,
-          "price": 12.99,
-          "product_id": "product-t-shirt",
-          "quantity": 1,
-          "sku": "sku-2",
-          "typeOfProduct": "Shirt",
-          "url": "https://www.example.com/product/t-shirt",
-          "value": 12.99,
-          "variant": "White"
-        },
-        {
-          "brand": "Levis",
-          "category": "Merch",
-          "coupon": "APPARELSALE",
-          "currency": "GBP",
-          "image_url": "https://www.example.com/product/offer-t-shirt.jpg",
-          "name": "T-Shirt-on-offer",
-          "position": 1,
-          "price": 12.99,
-          "product_id": "offer-t-shirt",
-          "quantity": 1,
-          "sku": "sku-3",
-          "typeOfProduct": "Shirt",
-          "url": "https://www.example.com/product/offer-t-shirt",
-          "value": 12.99,
-          "variant": "Black"
-        }
-      ],
-      "category": "some category",
-      "originalArray": [
-        {
-          "nested_field": "nested value",
-          "tags": ["tag_1", "tag_2", "tag_3"]
-        },
-        {
-          "nested_field": "nested value",
-          "tags": ["tag_1"]
-        },
-        {
-          "nested_field": "nested value"
-        }
-      ],
-      "revenue": 31.98,
-      "shipping": 4,
-      "value": 31.98
+      "data": {
+        "checkout_id": "what is checkout id here??",
+        "coupon": "APPARELSALE",
+        "currency": "GBP",
+        "order_id": "transactionId",
+        "products": [
+          {
+            "brand": "",
+            "category": "Merch",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/bacon-jam.jpg",
+            "name": "Food/Drink",
+            "position": 1,
+            "price": 3,
+            "product_id": "product-bacon-jam",
+            "quantity": 2,
+            "sku": "sku-1",
+            "typeOfProduct": "Food",
+            "url": "https://www.example.com/product/bacon-jam",
+            "value": 6,
+            "variant": "Extra topped"
+          },
+          {
+            "brand": "Levis",
+            "category": "Merch",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/t-shirt.jpg",
+            "name": "T-Shirt",
+            "position": 2,
+            "price": 12.99,
+            "product_id": "product-t-shirt",
+            "quantity": 1,
+            "sku": "sku-2",
+            "typeOfProduct": "Shirt",
+            "url": "https://www.example.com/product/t-shirt",
+            "value": 12.99,
+            "variant": "White"
+          },
+          {
+            "brand": "Levis",
+            "category": "Merch",
+            "coupon": "APPARELSALE",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/offer-t-shirt.jpg",
+            "name": "T-Shirt-on-offer",
+            "position": 1,
+            "price": 12.99,
+            "product_id": "offer-t-shirt",
+            "quantity": 1,
+            "sku": "sku-3",
+            "typeOfProduct": "Shirt",
+            "url": "https://www.example.com/product/offer-t-shirt",
+            "value": 12.99,
+            "variant": "Black"
+          }
+        ],
+        "category": "some category",
+        "originalArray": [
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1"]
+          },
+          {
+            "nested_field": "nested value"
+          }
+        ],
+        "revenue": 31.98,
+        "shipping": 4,
+        "value": 31.98
+      },
+      "separator": ".",
+      "mode": "normal",
+      "flattenArrays": true
     },
     "output": {
       "checkout_id": "what is checkout id here??",
@@ -467,42 +482,47 @@
   {
     "description": "Should return flattened JSON if the input contains objects and simple fields (of all data types)",
     "input": {
-      "timezone": "Asia/Kolkata",
-      "app": {
-        "build": "1.0.0",
-        "name": "RudderLabs JavaScript SDK",
-        "namespace": "com.rudderlabs.javascript",
-        "version": "1.1.6"
-      },
-      "library": {
-        "name": "RudderLabs JavaScript SDK",
-        "version": "1.1.6"
-      },
-      "locale": "en-GB",
-      "os": {
-        "name": "",
-        "version": 2.3
-      },
-      "page": {
-        "path": "/testing/script-test.html",
-        "referrer": "",
-        "search": "",
-        "title": "",
-        "url": "http://localhost:3243/testing/script-test.html"
-      },
-      "screen": {
-        "density": 2
-      },
-      "traits": {
-        "company": {
-          "id": "abc123"
+      "data": {
+        "timezone": "Asia/Kolkata",
+        "app": {
+          "build": "1.0.0",
+          "name": "RudderLabs JavaScript SDK",
+          "namespace": "com.rudderlabs.javascript",
+          "version": "1.1.6"
         },
-        "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-        "email": "ruchira@gmail.com",
-        "name": "Ruchira Moitra",
-        "plan": "Enterprise"
+        "library": {
+          "name": "RudderLabs JavaScript SDK",
+          "version": "1.1.6"
+        },
+        "locale": "en-GB",
+        "os": {
+          "name": "",
+          "version": 2.3
+        },
+        "page": {
+          "path": "/testing/script-test.html",
+          "referrer": "",
+          "search": "",
+          "title": "",
+          "url": "http://localhost:3243/testing/script-test.html"
+        },
+        "screen": {
+          "density": 2
+        },
+        "traits": {
+          "company": {
+            "id": "abc123"
+          },
+          "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
+          "email": "ruchira@gmail.com",
+          "name": "Ruchira Moitra",
+          "plan": "Enterprise"
+        },
+        "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
       },
-      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
+      "separator": ".",
+      "mode": "normal",
+      "flattenArrays": true
     },
     "output": {
       "app.build": "1.0.0",
@@ -527,6 +547,408 @@
       "traits.name": "Ruchira Moitra",
       "traits.plan": "Enterprise",
       "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.80 Safari/537.36"
+    }
+  },
+  {
+    "description": "Should return flattened JSON if the input contains array of objects - except array of non objects",
+    "input": {
+      "data": {
+        "checkout_id": "what is checkout id here??",
+        "coupon": "APPARELSALE",
+        "currency": "GBP",
+        "order_id": "transactionId",
+        "products": [
+          {
+            "brand": "",
+            "category": "Merch",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/bacon-jam.jpg",
+            "name": "Food/Drink",
+            "position": 1,
+            "price": 3,
+            "product_id": "product-bacon-jam",
+            "quantity": 2,
+            "sku": "sku-1",
+            "typeOfProduct": "Food",
+            "url": "https://www.example.com/product/bacon-jam",
+            "value": 6,
+            "variant": "Extra topped"
+          },
+          {
+            "brand": "Levis",
+            "category": "Merch",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/t-shirt.jpg",
+            "name": "T-Shirt",
+            "position": 2,
+            "price": 12.99,
+            "product_id": "product-t-shirt",
+            "quantity": 1,
+            "sku": "sku-2",
+            "typeOfProduct": "Shirt",
+            "url": "https://www.example.com/product/t-shirt",
+            "value": 12.99,
+            "variant": "White"
+          },
+          {
+            "brand": "Levis",
+            "category": "Merch",
+            "coupon": "APPARELSALE",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/offer-t-shirt.jpg",
+            "name": "T-Shirt-on-offer",
+            "position": 1,
+            "price": 12.99,
+            "product_id": "offer-t-shirt",
+            "quantity": 1,
+            "sku": "sku-3",
+            "typeOfProduct": "Shirt",
+            "url": "https://www.example.com/product/offer-t-shirt",
+            "value": 12.99,
+            "variant": "Black"
+          }
+        ],
+        "category": "some category",
+        "originalArray": [
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1"]
+          },
+          {
+            "nested_field": "nested value"
+          }
+        ],
+        "revenue": 31.98,
+        "shipping": 4,
+        "value": 31.98
+      },
+      "separator": ".",
+      "mode": "normal",
+      "flattenArrays": false
+    },
+    "output": {
+      "checkout_id": "what is checkout id here??",
+      "coupon": "APPARELSALE",
+      "currency": "GBP",
+      "order_id": "transactionId",
+      "products[0].brand": "",
+      "products[0].category": "Merch",
+      "products[0].currency": "GBP",
+      "products[0].image_url": "https://www.example.com/product/bacon-jam.jpg",
+      "products[0].name": "Food/Drink",
+      "products[0].position": 1,
+      "products[0].price": 3,
+      "products[0].product_id": "product-bacon-jam",
+      "products[0].quantity": 2,
+      "products[0].sku": "sku-1",
+      "products[0].typeOfProduct": "Food",
+      "products[0].url": "https://www.example.com/product/bacon-jam",
+      "products[0].value": 6,
+      "products[0].variant": "Extra topped",
+      "products[1].brand": "Levis",
+      "products[1].category": "Merch",
+      "products[1].currency": "GBP",
+      "products[1].image_url": "https://www.example.com/product/t-shirt.jpg",
+      "products[1].name": "T-Shirt",
+      "products[1].position": 2,
+      "products[1].price": 12.99,
+      "products[1].product_id": "product-t-shirt",
+      "products[1].quantity": 1,
+      "products[1].sku": "sku-2",
+      "products[1].typeOfProduct": "Shirt",
+      "products[1].url": "https://www.example.com/product/t-shirt",
+      "products[1].value": 12.99,
+      "products[1].variant": "White",
+      "products[2].brand": "Levis",
+      "products[2].category": "Merch",
+      "products[2].coupon": "APPARELSALE",
+      "products[2].currency": "GBP",
+      "products[2].image_url": "https://www.example.com/product/offer-t-shirt.jpg",
+      "products[2].name": "T-Shirt-on-offer",
+      "products[2].position": 1,
+      "products[2].price": 12.99,
+      "products[2].product_id": "offer-t-shirt",
+      "products[2].quantity": 1,
+      "products[2].sku": "sku-3",
+      "products[2].typeOfProduct": "Shirt",
+      "products[2].url": "https://www.example.com/product/offer-t-shirt",
+      "products[2].value": 12.99,
+      "products[2].variant": "Black",
+      "revenue": 31.98,
+      "shipping": 4,
+      "value": 31.98,
+      "originalArray[0].nested_field": "nested value",
+      "originalArray[0].tags": ["tag_1", "tag_2", "tag_3"],
+      "originalArray[1].nested_field": "nested value",
+      "originalArray[1].tags": ["tag_1"],
+      "originalArray[2].nested_field": "nested value",
+      "category": "some category"
+    }
+  },
+  {
+    "description": "Should return flattened JSON if the input contains array of objects containing arrays - except array of non objects",
+    "input": {
+      "data": {
+        "checkout_id": "what is checkout id here??",
+        "coupon": "APPARELSALE",
+        "currency": "GBP",
+        "order_id": "transactionId",
+        "category": "some category",
+        "originalArray": [
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          }
+        ],
+        "products": [
+          {
+            "brand": "",
+            "category": "Merch",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/bacon-jam.jpg",
+            "name": "Food/Drink",
+            "position": 1,
+            "price": 3,
+            "product_id": "product-bacon-jam",
+            "quantity": 2,
+            "sku": "sku-1",
+            "typeOfProduct": "Food",
+            "url": "https://www.example.com/product/bacon-jam",
+            "value": 6,
+            "variant": "Extra topped"
+          },
+          {
+            "brand": "Levis",
+            "category": "Merch",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/t-shirt.jpg",
+            "name": "T-Shirt",
+            "position": 2,
+            "price": 12.99,
+            "product_id": "product-t-shirt",
+            "quantity": 1,
+            "sku": "sku-2",
+            "typeOfProduct": "Shirt",
+            "url": "https://www.example.com/product/t-shirt",
+            "value": 12.99,
+            "variant": "White"
+          },
+          {
+            "brand": "Levis",
+            "category": "Merch",
+            "coupon": "APPARELSALE",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/offer-t-shirt.jpg",
+            "name": "T-Shirt-on-offer",
+            "position": 1,
+            "price": 12.99,
+            "product_id": "offer-t-shirt",
+            "quantity": 1,
+            "sku": "sku-3",
+            "typeOfProduct": "Shirt",
+            "url": "https://www.example.com/product/offer-t-shirt",
+            "value": 12.99,
+            "variant": "Black"
+          }
+        ],
+        "revenue": 31.98,
+        "shipping": 4,
+        "value": 31.98
+      },
+      "separator": ".",
+      "mode": "normal",
+      "flattenArrays": false
+    },
+    "output": {
+      "category": "some category",
+      "originalArray[0].nested_field": "nested value",
+      "originalArray[0].tags": ["tag_1", "tag_2", "tag_3"],
+      "originalArray[1].nested_field": "nested value",
+      "originalArray[1].tags": ["tag_1", "tag_2", "tag_3"],
+      "originalArray[2].nested_field": "nested value",
+      "originalArray[2].tags": ["tag_1", "tag_2", "tag_3"],
+      "originalArray[3].nested_field": "nested value",
+      "originalArray[3].tags": ["tag_1", "tag_2", "tag_3"],
+      "originalArray[4].nested_field": "nested value",
+      "originalArray[4].tags": ["tag_1", "tag_2", "tag_3"],
+      "originalArray[5].nested_field": "nested value",
+      "originalArray[5].tags": ["tag_1", "tag_2", "tag_3"],
+      "originalArray[6].nested_field": "nested value",
+      "originalArray[6].tags": ["tag_1", "tag_2", "tag_3"],
+      "originalArray[7].nested_field": "nested value",
+      "originalArray[7].tags": ["tag_1", "tag_2", "tag_3"],
+      "originalArray[8].nested_field": "nested value",
+      "originalArray[8].tags": ["tag_1", "tag_2", "tag_3"],
+      "checkout_id": "what is checkout id here??",
+      "coupon": "APPARELSALE",
+      "currency": "GBP",
+      "order_id": "transactionId",
+      "products[0].brand": "",
+      "products[0].category": "Merch",
+      "products[0].currency": "GBP",
+      "products[0].image_url": "https://www.example.com/product/bacon-jam.jpg",
+      "products[0].name": "Food/Drink",
+      "products[0].position": 1,
+      "products[0].price": 3,
+      "products[0].product_id": "product-bacon-jam",
+      "products[0].quantity": 2,
+      "products[0].sku": "sku-1",
+      "products[0].typeOfProduct": "Food",
+      "products[0].url": "https://www.example.com/product/bacon-jam",
+      "products[0].value": 6,
+      "products[0].variant": "Extra topped",
+      "products[1].brand": "Levis",
+      "products[1].category": "Merch",
+      "products[1].currency": "GBP",
+      "products[1].image_url": "https://www.example.com/product/t-shirt.jpg",
+      "products[1].name": "T-Shirt",
+      "products[1].position": 2,
+      "products[1].price": 12.99,
+      "products[1].product_id": "product-t-shirt",
+      "products[1].quantity": 1,
+      "products[1].sku": "sku-2",
+      "products[1].typeOfProduct": "Shirt",
+      "products[1].url": "https://www.example.com/product/t-shirt",
+      "products[1].value": 12.99,
+      "products[1].variant": "White",
+      "products[2].brand": "Levis",
+      "products[2].category": "Merch",
+      "products[2].coupon": "APPARELSALE",
+      "products[2].currency": "GBP",
+      "products[2].image_url": "https://www.example.com/product/offer-t-shirt.jpg",
+      "products[2].name": "T-Shirt-on-offer",
+      "products[2].position": 1,
+      "products[2].price": 12.99,
+      "products[2].product_id": "offer-t-shirt",
+      "products[2].quantity": 1,
+      "products[2].sku": "sku-3",
+      "products[2].typeOfProduct": "Shirt",
+      "products[2].url": "https://www.example.com/product/offer-t-shirt",
+      "products[2].value": 12.99,
+      "products[2].variant": "Black",
+      "revenue": 31.98,
+      "shipping": 4,
+      "value": 31.98
+    }
+  },
+  {
+    "description": "Should return flattened JSON and preserve the arrays order if the input contains array of objects containing arrays - except array of non objects",
+    "input": {
+      "data": {
+        "checkout_id": "what is checkout id here??",
+        "coupon": "APPARELSALE",
+        "currency": "GBP",
+        "order_id": "transactionId",
+        "products": [
+          {
+            "brand": "",
+            "category": "Merch",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/bacon-jam.jpg",
+            "name": "Food/Drink",
+            "quantity": 2,
+            "value": 6
+          },
+          {
+            "brand": "Levis",
+            "category": "Merch",
+            "currency": "GBP",
+            "image_url": "https://www.example.com/product/t-shirt.jpg",
+            "name": "T-Shirt",
+            "price": 12.99
+          }
+        ],
+        "category": "some category",
+        "originalArray": [
+          {
+            "nested_field": "nested value",
+            "tags": ["tag_1", "tag_2", "tag_3"]
+          },
+          {
+            "nested_field": "nested value",
+            "tags": [
+              {
+                "tag": ["tag_1"],
+                "tag2": "tag_2"
+              }
+            ]
+          },
+          {
+            "nested_field": "nested value"
+          }
+        ],
+        "revenue": 31.98,
+        "shipping": 4,
+        "value": 31.98
+      },
+      "separator": ".",
+      "mode": "normal",
+      "flattenArrays": false
+    },
+    "output": {
+      "checkout_id": "what is checkout id here??",
+      "coupon": "APPARELSALE",
+      "currency": "GBP",
+      "order_id": "transactionId",
+      "products[0].brand": "",
+      "products[0].category": "Merch",
+      "products[0].currency": "GBP",
+      "products[0].image_url": "https://www.example.com/product/bacon-jam.jpg",
+      "products[0].name": "Food/Drink",
+      "products[0].quantity": 2,
+      "products[0].value": 6,
+      "products[1].brand": "Levis",
+      "products[1].category": "Merch",
+      "products[1].currency": "GBP",
+      "products[1].image_url": "https://www.example.com/product/t-shirt.jpg",
+      "products[1].name": "T-Shirt",
+      "products[1].price": 12.99,
+      "revenue": 31.98,
+      "shipping": 4,
+      "value": 31.98,
+      "originalArray[0].nested_field": "nested value",
+      "originalArray[0].tags": ["tag_1", "tag_2", "tag_3"],
+      "originalArray[1].nested_field": "nested value",
+      "originalArray[1].tags[0].tag": ["tag_1"],
+      "originalArray[1].tags[0].tag2": "tag_2",
+      "originalArray[2].nested_field": "nested value",
+      "category": "some category"
     }
   }
 ]

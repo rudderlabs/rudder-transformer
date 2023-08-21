@@ -1012,7 +1012,7 @@ describe("Integration options", () => {
     it("should generate two events for every track call", () => {
       const i = opInput("track");
       transformers.forEach((transformer, index) => {
-        const { jsonPaths } = i.destination.Config;
+        const {jsonPaths} = i.destination.Config;
         if (integrations[index] === "postgres") {
           delete i.destination.Config.jsonPaths;
         }
@@ -1023,54 +1023,70 @@ describe("Integration options", () => {
     });
   });
 
-  describe("identifies", () => {
+  describe("users", () => {
     it("should skip users when skipUsersTable is set", () => {
-      const i = opInput("identifies");
+      const i = opInput("users");
       transformers.forEach((transformer, index) => {
         const received = transformer.process(i);
-        expect(received).toEqual(opOutput("identifies", integrations[index]));
+        expect(received).toEqual(opOutput("users", integrations[index]));
       });
     });
   });
 
-  describe("screens", () => {
-    it("should honour json paths", () => {
-      const i = opInput("screens");
-      transformers.forEach((transformer, index) => {
-        const received = transformer.process(i);
-        expect(received).toEqual(opOutput("screens", integrations[index]));
-      });
-    });
-  });
+  describe("json paths", () => {
+    const output = (config, provider) => {
+      switch (provider) {
+        case "rs":
+          return _.cloneDeep(config.output.rs);
+        case "bq":
+          return _.cloneDeep(config.output.bq);
+        case "postgres":
+          return _.cloneDeep(config.output.postgres);
+        case "snowflake":
+          return _.cloneDeep(config.output.snowflake);
+        default:
+          return _.cloneDeep(config.output.default);
+      }
+    }
 
-  describe("pages", () => {
-    it("should honour json paths", () => {
-      const i = opInput("pages");
-      transformers.forEach((transformer, index) => {
-        const received = transformer.process(i);
-        expect(received).toEqual(opOutput("pages", integrations[index]));
-      });
-    });
-  });
+    const testCases = [
+      {
+        eventType: "aliases",
+      },
+      {
+        eventType: "groups",
+      },
+      {
+        eventType: "identifies",
+      },
+      {
+        eventType: "pages",
+      },
+      {
+        eventType: "screens",
+      },
+      {
+        eventType: "tracks",
+      },
+    ];
 
-  describe("aliases", () => {
-    it("should honour json paths", () => {
-      const i = opInput("aliases");
+    for (const testCase of testCases) {
       transformers.forEach((transformer, index) => {
-        const received = transformer.process(i);
-        expect(received).toEqual(opOutput("aliases", integrations[index]));
-      });
-    });
-  });
+        it(`new ${testCase.eventType} for ${integrations[index]}`, () => {
+          const config = require("./data/warehouse/integrations/jsonpaths/new/" + testCase.eventType);
+          const input = _.cloneDeep(config.input);
+          const received = transformer.process(input);
+          expect(received).toEqual(output(config, integrations[index]));
+        })
 
-  describe("groups", () => {
-    it("should honour json paths", () => {
-      const i = opInput("groups");
-      transformers.forEach((transformer, index) => {
-        const received = transformer.process(i);
-        expect(received).toEqual(opOutput("groups", integrations[index]));
+        it(`legacy ${testCase.eventType} for ${integrations[index]}`, () => {
+          const config = require("./data/warehouse/integrations/jsonpaths/legacy/" + testCase.eventType);
+          const input = _.cloneDeep(config.input);
+          const received = transformer.process(input);
+          expect(received).toEqual(output(config, integrations[index]));
+        })
       });
-    });
+    }
   });
 });
 

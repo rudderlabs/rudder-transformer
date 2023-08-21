@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.14.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.13.0...v1.14.0) (2023-08-21)
+
+
+### Features
+
+* **transformation:** adding rudder libraries support ([#1817](https://github.com/rudderlabs/rudder-transformer/issues/1817)) ([1c91d22](https://github.com/rudderlabs/rudder-transformer/commit/1c91d22795b142a90011e35cf85d1a4ac8eaa545))
+
+
+### Bug Fixes
+
+* **integration:** Algolia  in CDK v2 now errors out for non string event names ([#1867](https://github.com/rudderlabs/rudder-transformer/issues/1867)) ([5be8891](https://github.com/rudderlabs/rudder-transformer/commit/5be88917270a9fb1c28fdd7f547e9a017aacf56d))
+* logger import ([#1874](https://github.com/rudderlabs/rudder-transformer/issues/1874)) ([7ff1b4a](https://github.com/rudderlabs/rudder-transformer/commit/7ff1b4a11fe530de45dacce1da7bf0d58d4b38fd))
+
 ## [1.13.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.12.0...v1.13.0) (2023-02-15)
 
 

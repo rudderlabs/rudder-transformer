@@ -574,6 +574,12 @@ class Prometheus {
         type: 'gauge',
         labelNames: [],
       },
+      {
+        name: 'marketo_bulk_upload_upload_file_time',
+        help: 'marketo_bulk_upload_upload_file_time',
+        type: 'gauge',
+        labelNames: [],
+      },
 
       // Histograms
       {

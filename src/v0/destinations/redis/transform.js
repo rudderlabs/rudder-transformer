@@ -24,7 +24,7 @@ const processValues = (obj) => {
 const isSubEventTypeProfiles = (message) => {
   // check if profiles_model, profiles_entity, profiles_id_type are present in message.context.sources
   const { context } = message;
-  if (!context || !context.sources) {
+  if (!context?.sources) {
     return false;
   }
   const { sources } = context;
@@ -62,7 +62,7 @@ const process = (event) => {
   const keyPrefix = isEmpty(prefix) ? '' : `${prefix.trim()}:`;
 
   if (isSubEventTypeProfiles(message)) {
-    const workspaceId = metadata?.workspace_id;
+    const { workspaceId } = metadata;
     return transforrmSubEventTypeProfiles(message, workspaceId);
   }
 

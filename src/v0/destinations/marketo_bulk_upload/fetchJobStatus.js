@@ -36,10 +36,6 @@ const getFailedJobStatus = async (event) => {
   };
   const failedLeadUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/failures.json`;
   const startTime = Date.now();
-  // const resp = await httpGET(failedLeadUrl, requestOptions, {
-  //   destType: 'marketo_bulk_upload',
-  //   feature: 'transformation',
-  // });
   const { processedResponse: resp } = await handleHttpRequest(
     'get',
     failedLeadUrl,

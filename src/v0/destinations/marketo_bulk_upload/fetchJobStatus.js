@@ -7,7 +7,7 @@ const {
   RETRYABLE_CODES,
   JOB_STATUS_ACTIVITY,
 } = require('./util');
-const { httpGET } = require('../../../adapters/network');
+const { httpGET, handleHttpRequest } = require('../../../adapters/network');
 const {
   AbortedError,
   RetryableError,
@@ -36,17 +36,26 @@ const getFailedJobStatus = async (event) => {
   };
   const failedLeadUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/failures.json`;
   const startTime = Date.now();
-  const resp = await httpGET(failedLeadUrl, requestOptions, {
-    destType: 'marketo_bulk_upload',
-    feature: 'transformation',
-  });
+  // const resp = await httpGET(failedLeadUrl, requestOptions, {
+  //   destType: 'marketo_bulk_upload',
+  //   feature: 'transformation',
+  // });
+  const { processedResponse: resp } = await handleHttpRequest(
+    'get',
+    failedLeadUrl,
+    requestOptions,
+    {
+      destType: 'marketo_bulk_upload',
+      feature: 'transformation',
+    },
+  );
   const endTime = Date.now();
   const requestTime = endTime - startTime;
 
-  stats.gauge('marketo_bulk_upload_fetch_job_time', requestTime);
-  if (resp.success) {
-    if (resp.response && resp.response.data) {
-      if (resp.response.data?.success === false) {
+  stats.histogram('marketo_bulk_upload_fetch_job_time', requestTime);
+  if (resp.status === 200) {
+    if (resp.response) {
+      if (resp.response?.success === false) {
         throw new RetryableError(
           resp.response.data.errors[0].message || resp.response.statusText,
           500,
@@ -141,13 +150,22 @@ const getWarningJobStatus = async (event) => {
   };
   const startTime = Date.now();
   const warningJobStatusUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/warnings.json`;
-  const resp = await httpGET(warningJobStatusUrl, requestOptions, {
-    destType: 'marketo_bulk_upload',
-    feature: 'transformation',
-  });
+  // const resp = await httpGET(warningJobStatusUrl, requestOptions, {
+  //   destType: 'marketo_bulk_upload',
+  //   feature: 'transformation',
+  // });
+  const { processedResponse: resp } = await handleHttpRequest(
+    'get',
+    warningJobStatusUrl,
+    requestOptions,
+    {
+      destType: 'marketo_bulk_upload',
+      feature: 'transformation',
+    },
+  );
   const endTime = Date.now();
   const requestTime = endTime - startTime;
-  stats.gauge('marketo_bulk_upload_fetch_job_time', requestTime);
+  stats.histogram('marketo_bulk_upload_fetch_job_time', requestTime);
   if (resp.success) {
     if (resp.response && resp.response.data) {
       if (resp.response.data?.success === false) {
@@ -307,7 +325,7 @@ const responseHandler = async (event, type) => {
   const succeededKeys = successfulJobIdsArr;
   const endTime = Date.now();
   const requestTime = endTime - startTime;
-  stats.gauge('marketo_bulk_upload_fetch_job_create_response_time', requestTime);
+  stats.histogram('marketo_bulk_upload_fetch_job_create_response_time', requestTime);
   const response = {
     statusCode: 200,
     metadata: {

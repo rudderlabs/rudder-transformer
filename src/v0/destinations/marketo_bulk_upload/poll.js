@@ -1,6 +1,6 @@
 const { removeUndefinedValues } = require('../../util');
 const { getAccessToken, ABORTABLE_CODES, THROTTLED_CODES, POLL_ACTIVITY } = require('./util');
-const { httpGET } = require('../../../adapters/network');
+const { httpGET, handleHttpRequest } = require('../../../adapters/network');
 const stats = require('../../../util/stats');
 const { AbortedError, ThrottledError, RetryableError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
@@ -19,17 +19,25 @@ const getPollStatus = async (event) => {
   };
   const pollUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`;
   const startTime = Date.now();
-  const pollStatus = await httpGET(pollUrl, requestOptions, {
-    destType: 'marketo_bulk_upload',
-    feature: 'transformation',
-  });
+  // const pollStatus = await httpGET(pollUrl, requestOptions, {
+  //   destType: 'marketo_bulk_upload',
+  //   feature: 'transformation',
+  // });
+  const { processedResponse: pollStatus } = await handleHttpRequest(
+    'get',
+    pollUrl,
+    requestOptions,
+    {
+      destType: 'marketo_bulk_upload',
+      feature: 'transformation',
+    },
+  );
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   const POLL_STATUS_ERR_MSG = 'Could not poll status';
-  if (pollStatus.success) {
-    if (pollStatus.response && pollStatus.response.data.success) {
-      stats.increment(POLL_ACTIVITY, {
-        requestTime,
+  if (pollStatus.status === 200) {
+    if (pollStatus.response && pollStatus.response.success) {
+      stats.counter(POLL_ACTIVITY, {
         status: 200,
         state: 'Success',
       });
@@ -57,8 +65,7 @@ const getPollStatus = async (event) => {
           pollStatus.response.data.errors[0].code <= 1077) ||
           ABORTABLE_CODES.includes(pollStatus.response.data.errors[0].code))
       ) {
-        stats.increment(POLL_ACTIVITY, {
-          requestTime,
+        stats.counter(POLL_ACTIVITY, {
           status: 400,
           state: 'Abortable',
         });
@@ -68,8 +75,7 @@ const getPollStatus = async (event) => {
           pollStatus,
         );
       } else if (THROTTLED_CODES.includes(pollStatus.response.data.errors[0].code)) {
-        stats.increment(POLL_ACTIVITY, {
-          requestTime,
+        stats.counter(POLL_ACTIVITY, {
           status: 500,
           state: 'Retryable',
         });
@@ -79,8 +85,7 @@ const getPollStatus = async (event) => {
           pollStatus,
         );
       }
-      stats.increment(POLL_ACTIVITY, {
-        requestTime,
+      stats.counter(POLL_ACTIVITY, {
         status: 500,
         state: 'Retryable',
       });
@@ -94,8 +99,7 @@ const getPollStatus = async (event) => {
       );
     }
   }
-  stats.increment(POLL_ACTIVITY, {
-    requestTime,
+  stats.counter(POLL_ACTIVITY, {
     status: 400,
     state: 'Abortable',
   });

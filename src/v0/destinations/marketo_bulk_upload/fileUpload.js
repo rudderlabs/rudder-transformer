@@ -14,7 +14,7 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
-const { httpPOST, httpGET } = require('../../../adapters/network');
+const { httpPOST, httpGET, handleHttpRequest } = require('../../../adapters/network');
 const {
   RetryableError,
   AbortedError,
@@ -30,7 +30,20 @@ const fetchFieldSchema = async (config) => {
   let fieldArr = [];
   const fieldSchemaNames = [];
   const accessToken = await getAccessToken(config);
-  const fieldSchemaMapping = await httpGET(
+  // const fieldSchemaMapping = await httpGET(
+  //   `https://${config.munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
+  //   {
+  //     params: {
+  //       access_token: accessToken,
+  //     },
+  //   },
+  //   {
+  //     destType: 'marketo_bulk_upload',
+  //     feature: 'transformation',
+  //   },
+  // );
+  const { processedResponse: fieldSchemaMapping } = await handleHttpRequest(
+    'get',
     `https://${config.munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
     {
       params: {
@@ -42,17 +55,18 @@ const fetchFieldSchema = async (config) => {
       feature: 'transformation',
     },
   );
+
+
   if (
     fieldSchemaMapping &&
-    fieldSchemaMapping.success &&
-    fieldSchemaMapping.response.data &&
-    fieldSchemaMapping.response.data.result.length > 0 &&
-    fieldSchemaMapping.response.data.result[0]
+    fieldSchemaMapping?.status === 200 &&
+    fieldSchemaMapping?.response?.result.length > 0 &&
+    fieldSchemaMapping?.response?.result[0]
   ) {
     fieldArr =
-      fieldSchemaMapping.response.data.result &&
-      Array.isArray(fieldSchemaMapping.response.data.result)
-        ? fieldSchemaMapping.response.data.result[0].fields
+      fieldSchemaMapping.response.result &&
+      Array.isArray(fieldSchemaMapping.response.result)
+        ? fieldSchemaMapping.response.result[0].fields
         : [];
     fieldArr.forEach((field) => {
       fieldSchemaNames.push(field.name);
@@ -152,7 +166,7 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   csv.push(headerArr.toString());
   endTime = Date.now();
   requestTime = endTime - startTime;
-  stats.gauge('marketo_bulk_upload_create_header_time', requestTime);
+  stats.histogram('marketo_bulk_upload_create_header_time', requestTime);
   const unsuccessfulJobs = [];
   const successfulJobs = [];
   const MARKETO_FILE_PATH = getMarketoFilePath();
@@ -172,7 +186,7 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   });
   endTime = Date.now();
   requestTime = endTime - startTime;
-  stats.gauge('marketo_bulk_upload_create_csvloop_time', requestTime);
+  stats.histogram('marketo_bulk_upload_create_csvloop_time', requestTime);
   const fileSize = Buffer.from(csv.join('\n')).length;
   if (csv.length > 1) {
     startTime = Date.now();
@@ -181,8 +195,8 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
     fs.unlinkSync(MARKETO_FILE_PATH);
     endTime = Date.now();
     requestTime = endTime - startTime;
-    stats.gauge('marketo_bulk_upload_create_file_time', requestTime);
-    stats.gauge('marketo_bulk_upload_upload_file_size', fileSize);
+    stats.histogram('marketo_bulk_upload_create_file_time', requestTime);
+    stats.histogram('marketo_bulk_upload_upload_file_size', fileSize);
 
     return { readStream, successfulJobs, unsuccessfulJobs };
   }
@@ -217,7 +231,17 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
         };
       }
       const startTime = Date.now();
-      const resp = await httpPOST(
+      // const resp = await httpPOST(
+      //   `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
+      //   formReq,
+      //   requestOptions,
+      //   {
+      //     destType: 'marketo_bulk_upload',
+      //     feature: 'transformation',
+      //   },
+      // );
+      const { processedResponse: resp } = await handleHttpRequest(
+        'post',
         `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
         formReq,
         requestOptions,
@@ -228,8 +252,8 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
       );
       const endTime = Date.now();
       const requestTime = endTime - startTime;
-      stats.gauge('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
-      stats.gauge('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
+      stats.counter('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
+      stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
       if (resp.success) {
         /**
          *
@@ -246,14 +270,12 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
           }
         */
         if (
-          resp.response &&
-          resp.response.data.success &&
-          resp.response.data.result.length > 0 &&
-          resp.response.data.result[0] &&
-          resp.response.data.result[0].importId
+          resp?.response?.status === 200 &&
+          resp?.response?.result.length > 0 &&
+          resp?.response?.result[0]?.importId
         ) {
           const { importId } = await resp.response.data.result[0];
-          stats.gauge('marketo_bulk_upload_upload_file_time', requestTime);
+          stats.histogram('marketo_bulk_upload_upload_file_time', requestTime);
 
           stats.increment(UPLOAD_FILE, {
             status: 200,

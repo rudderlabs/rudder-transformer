@@ -538,48 +538,6 @@ class Prometheus {
         type: 'gauge',
         labelNames: ['destType', 'feature'],
       },
-      {
-        name: 'marketo_bulk_upload_create_header_time',
-        help: 'marketo_bulk_upload_create_header_time',
-        type: 'gauge',
-        labelNames: [],
-      },
-      {
-        name: 'marketo_bulk_upload_create_csvloop_time',
-        help: 'marketo_bulk_upload_create_csvloop_time',
-        type: 'gauge',
-        labelNames: [],
-      },
-      {
-        name: 'marketo_bulk_upload_create_file_time',
-        help: 'marketo_bulk_upload_create_file_time',
-        type: 'gauge',
-        labelNames: [],
-      },
-      {
-        name: 'marketo_bulk_upload_upload_file_size',
-        help: 'marketo_bulk_upload_upload_file_size',
-        type: 'gauge',
-        labelNames: [],
-      },
-      {
-        name: 'marketo_bulk_upload_upload_file_succJobs',
-        help: 'marketo_bulk_upload_upload_file_succJobs',
-        type: 'gauge',
-        labelNames: [],
-      },
-      {
-        name: 'marketo_bulk_upload_upload_file_unsuccJobs',
-        help: 'marketo_bulk_upload_upload_file_unsuccJobs',
-        type: 'gauge',
-        labelNames: [],
-      },
-      {
-        name: 'marketo_bulk_upload_upload_file_time',
-        help: 'marketo_bulk_upload_upload_file_time',
-        type: 'gauge',
-        labelNames: [],
-      },
 
       // Histograms
       {
@@ -807,6 +765,18 @@ class Prometheus {
         labelNames: ['http_status', 'destination_id'],
       },
       {
+        name: 'marketo_bulk_upload_upload_file_succJobs',
+        help: 'marketo_bulk_upload_upload_file_succJobs',
+        type: 'counter',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_upload_file_unsuccJobs',
+        help: 'marketo_bulk_upload_upload_file_unsuccJobs',
+        type: 'counter',
+        labelNames: [],
+      },
+      {
         name: 'braze_lookup_time',
         help: 'braze look-up time',
         type: 'histogram',
@@ -891,6 +861,49 @@ class Prometheus {
         labelNames: ['processSessions'],
         buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
       },
+      {
+        name: 'marketo_bulk_upload_create_header_time',
+        help: 'marketo_bulk_upload_create_header_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_fetch_job_time',
+        help: 'marketo_bulk_upload_fetch_job_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_fetch_job_create_response_time',
+        help: 'marketo_bulk_upload_fetch_job_create_response_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_create_header_time',
+        help: 'marketo_bulk_upload_create_header_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_create_file_time',
+        help: 'marketo_bulk_upload_create_file_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_upload_file_time',
+        help: 'marketo_bulk_upload_upload_file_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'marketo_bulk_upload_create_csvloop_time',
+        help: 'marketo_bulk_upload_create_csvloop_time',
+        type: 'histogram',
+        labelNames: [],
+      },
+
     ];
 
     metrics.forEach((metric) => {

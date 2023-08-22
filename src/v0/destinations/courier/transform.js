@@ -65,6 +65,7 @@ const processEvent = (message, destination) => {
       break;
     case EventType.GROUP:
       response = groupResponseBuilder(message, destination);
+      break;
     default:
       throw new InstrumentationError(`Message type ${messageType} is not supported`);
   }

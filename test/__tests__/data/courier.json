@@ -247,6 +247,7 @@
         "userId": "user123",
         "type": "group",
         "groupId": "group321",
+        "messageId": "3c0abc14-96a2-4aed-9dfc-ee463832cc24",
         "traits": {
           "subscribe": true
         },
@@ -268,12 +269,12 @@
           "context": {
             "ip": "8.8.8.8"
           },
-          "event": "trackTest",
-          "properties": {
-            "activity": "checkout"
+          "traits": {
+            "subscribe": true
           },
-          "userId": "userIdTest",
-          "type": "track",
+          "userId": "user123",
+          "type": "group",
+          "groupId": "group321",
           "messageId": "3c0abc14-96a2-4aed-9dfc-ee463832cc24",
           "timestamp": "2023-07-14T00:21:34.208Z"
         },

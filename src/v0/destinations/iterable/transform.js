@@ -1,315 +1,165 @@
 const _ = require('lodash');
 const get = require('get-value');
 const {
+  batchEvents,
   getCatalogEndpoint,
-  identifyDeviceAction,
-  identifyBrowserAction,
-  identifyAction,
-  pageAction,
-  screenAction,
-  trackAction,
-  trackPurchaseAction,
-  updateCartAction,
+  hasMultipleResponses,
+  pageEventPayloadBuilder,
+  trackEventPayloadBuilder,
+  screenEventPayloadBuilder,
+  getCategoryUsingEventName,
+  purchaseEventPayloadBuilder,
+  updateCartEventPayloadBuilder,
+  updateUserEventPayloadBuilder,
+  filterEventsAndPrepareBatchRequests,
+  registerDeviceTokenEventPayloadBuilder,
+  registerBrowserTokenEventPayloadBuilder,
 } = require('./util');
-const { EventType, MappedToDestinationKey } = require('../../../constants');
 const {
-  ConfigCategory,
-  mappingConfig,
-  IDENTIFY_BATCH_ENDPOINT,
-  TRACK_BATCH_ENDPOINT,
-  IDENTIFY_MAX_BATCH_SIZE,
-  TRACK_MAX_BATCH_SIZE,
-} = require('./config');
-const {
-  removeUndefinedValues,
-  defaultPostRequestConfig,
-  defaultBatchRequestConfig,
-  defaultRequestConfig,
   constructPayload,
-  getSuccessRespEvents,
-  handleRtTfSingleEventError,
+  defaultRequestConfig,
   checkInvalidRtTfEvents,
+  defaultPostRequestConfig,
+  handleRtTfSingleEventError,
+  removeUndefinedAndNullValues,
   getDestinationExternalIDInfoForRetl,
 } = require('../../util');
-const logger = require('../../../logger');
-const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { mappingConfig, ConfigCategory } = require('./config');
+const { InstrumentationError } = require('../../util/errorTypes');
+const { EventType, MappedToDestinationKey } = require('../../../constants');
 
-function constructPayloadItem(message, category, destination) {
+/**
+ * Common payload builder function for all events
+ * @param {*} message
+ * @param {*} category
+ * @param {*} destination
+ * @returns
+ */
+const constructPayloadItem = (message, category, destination) => {
   let rawPayload = {};
 
   switch (category.action) {
     case 'identifyDevice':
-      rawPayload = identifyDeviceAction(message, destination.Config);
+      rawPayload = registerDeviceTokenEventPayloadBuilder(message, destination.Config);
       break;
     case 'identifyBrowser':
-      rawPayload = identifyBrowserAction(message);
+      rawPayload = registerBrowserTokenEventPayloadBuilder(message);
       break;
     case 'identify':
-      rawPayload = identifyAction(message, category, destination.Config);
+      rawPayload = updateUserEventPayloadBuilder(message, category, destination.Config);
       break;
     case 'page':
-      rawPayload = pageAction(message, destination, category);
+      rawPayload = pageEventPayloadBuilder(message, destination, category);
       break;
     case 'screen':
-      rawPayload = screenAction(message, destination, category);
+      rawPayload = screenEventPayloadBuilder(message, destination, category);
       break;
     case 'track':
-      rawPayload = trackAction(message, category);
+      rawPayload = trackEventPayloadBuilder(message, category);
       break;
     case 'trackPurchase':
-      rawPayload = trackPurchaseAction(message, category, destination.Config);
+      rawPayload = purchaseEventPayloadBuilder(message, category, destination.Config);
       break;
     case 'updateCart':
-      rawPayload = updateCartAction(message, destination.Config);
+      rawPayload = updateCartEventPayloadBuilder(message, destination.Config);
       break;
     case 'alias':
       rawPayload = constructPayload(message, mappingConfig[category.name]);
       break;
     case 'catalogs':
       rawPayload = constructPayload(message, mappingConfig[category.name]);
+      rawPayload.catalogId = getDestinationExternalIDInfoForRetl(
+        message,
+        'ITERABLE',
+      ).destinationExternalId;
       break;
     default:
-      logger.debug('not supported type');
+      return removeUndefinedAndNullValues(rawPayload);
   }
 
-  return removeUndefinedValues(rawPayload);
-}
+  return removeUndefinedAndNullValues(rawPayload);
+};
 
-function responseBuilderSimple(message, category, destination) {
+/**
+ * Common response builder function for all events
+ * @param {*} message
+ * @param {*} category
+ * @param {*} destination
+ * @returns
+ */
+const responseBuilder = (message, category, destination) => {
   const response = defaultRequestConfig();
   response.endpoint =
     category.action === 'catalogs' ? getCatalogEndpoint(category, message) : category.endpoint;
   response.method = defaultPostRequestConfig.requestMethod;
   response.body.JSON = constructPayloadItem(message, category, destination);
-  // adding operation to understand what type of event will be sent in batch
-  if (category.action === 'catalogs') {
-    response.operation = 'catalogs';
-  }
   response.headers = {
     'Content-Type': JSON_MIME_TYPE,
     api_key: destination.Config.apiKey,
   };
   return response;
-}
+};
 
-function responseBuilderSimpleForIdentify(message, category, destination) {
-  const response = defaultRequestConfig();
-  const { os, device } = message.context;
-
-  if (device) {
-    response.endpoint = category.endpointDevice;
-    response.body.JSON = constructPayloadItem(
-      message,
-      { ...category, action: category.actionDevice },
-      destination,
-    );
-  } else if (os) {
-    response.endpoint = category.endpointBrowser;
-    response.body.JSON = constructPayloadItem(
-      message,
-      { ...category, action: category.actionBrowser },
-      destination,
-    );
-  }
-
-  response.headers = {
-    'Content-Type': JSON_MIME_TYPE,
-    api_key: destination.Config.apiKey,
-  };
+/**
+ * Function to build response for register device and register browser events
+ * @param {*} message
+ * @param {*} destination
+ * @returns
+ */
+const responseBuilderForRegisterDeviceOrBrowserTokenEvents = (message, destination) => {
+  const { device } = message.context;
+  const category = device?.token ? ConfigCategory.IDENTIFY_DEVICE : ConfigCategory.IDENTIFY_BROWSER;
+  const response = responseBuilder(message, category, destination);
+  response.headers.api_key = destination.Config.registerDeviceOrBrowserApiKey;
   return response;
-}
+};
 
-function getCategoryUsingEventName(event) {
-  let category;
-  switch (event) {
-    case 'order completed':
-      category = ConfigCategory.TRACK_PURCHASE;
-      break;
-    case 'product added':
-    case 'product removed':
-      category = ConfigCategory.UPDATE_CART;
-      break;
-    default:
-      category = ConfigCategory.TRACK;
-  }
-  return category;
-}
+/**
+ * Function to find category value
+ * @param {*} messageType
+ * @param {*} message
+ * @returns
+ */
+const getCategory = (messageType, message) => {
+  const eventType = messageType.toLowerCase();
 
-function processSingleMessage(message, destination) {
-  const messageType = message.type.toLowerCase();
-  let category = {};
-  let event;
-  switch (messageType) {
+  switch (eventType) {
     case EventType.IDENTIFY:
       if (
         get(message, MappedToDestinationKey) &&
         getDestinationExternalIDInfoForRetl(message, 'ITERABLE').objectType !== 'users'
       ) {
-        // catagory will be catalog for any other object other than users
-        // DOC: https://support.iterable.com/hc/en-us/articles/360033214932-Catalog-Overview
-        category = ConfigCategory.CATALOG;
-      } else {
-        category = ConfigCategory.IDENTIFY;
+        return ConfigCategory.CATALOG;
       }
-      break;
+      return ConfigCategory.IDENTIFY;
     case EventType.PAGE:
-      category = ConfigCategory.PAGE;
-      break;
+      return ConfigCategory.PAGE;
     case EventType.SCREEN:
-      category = ConfigCategory.SCREEN;
-      break;
+      return ConfigCategory.SCREEN;
     case EventType.TRACK:
-      event = message.event?.toLowerCase();
-      category = getCategoryUsingEventName(event);
-      break;
+      return getCategoryUsingEventName(message);
     case EventType.ALIAS:
-      category = ConfigCategory.ALIAS;
-      break;
+      return ConfigCategory.ALIAS;
     default:
-      throw new InstrumentationError(`Message type ${messageType} not supported`);
+      throw new InstrumentationError(`Message type ${eventType} not supported`);
   }
-  const response = responseBuilderSimple(message, category, destination);
+};
 
-  if (
-    message.type === EventType.IDENTIFY &&
-    message.context &&
-    ((message.context.device && message.context.device.token) ||
-      (message.context.os && message.context.os.token))
-  ) {
-    return [response, responseBuilderSimpleForIdentify(message, category, destination)];
+const process = (event) => {
+  const { message, destination } = event;
+  if (!message.type) {
+    throw new InstrumentationError('Event type is required');
   }
+  const messageType = message.type.toLowerCase();
+  const category = getCategory(messageType, message);
+  const response = responseBuilder(message, category, destination);
 
+  if (hasMultipleResponses(message, category, destination.Config)) {
+    return [response, responseBuilderForRegisterDeviceOrBrowserTokenEvents(message, destination)];
+  }
   return response;
-}
-
-function process(event) {
-  return processSingleMessage(event.message, event.destination);
-}
-
-function batchEvents(arrayChunks) {
-  const batchedResponseList = [];
-
-  // list of chunks [ [..], [..] ]
-  arrayChunks.forEach((chunk) => {
-    const batchResponseList = [];
-    const metadatas = [];
-    // DOC: https://api.iterable.com/api/docs#catalogs_bulkUpdateCatalogItems
-    const batchCatalogResponseList = {
-      documents: {},
-      replaceUploadedFieldsOnly: true,
-    };
-
-    // extracting destination
-    // from the first event in a batch
-    const { destination } = chunk[0];
-    const { apiKey } = destination.Config;
-
-    let batchEventResponse = defaultBatchRequestConfig();
-
-    // Batch event into dest batch structure
-    chunk.forEach((ev) => {
-      if (chunk[0].message.operation === 'catalogs') {
-        // body will be in the format:
-        //   {
-        //     "documents": {
-        //         "test-1-item": {
-        //             "abc": "TestValue"
-        //         },
-        //         "test-2-item": {
-        //             "abc": "TestValue1"
-        //         }
-        //     },
-        //     "replaceUploadedFieldsOnly": true
-        // }
-        batchCatalogResponseList.documents[ev.message.endpoint.split('/').pop()] = get(
-          ev,
-          'message.body.JSON.update',
-        );
-      }
-      batchResponseList.push(get(ev, 'message.body.JSON'));
-      metadatas.push(ev.metadata);
-    });
-    // batching into identify batch structure
-    if (chunk[0].message.operation === 'catalogs') {
-      batchEventResponse.batchedRequest.body.JSON = batchCatalogResponseList;
-      batchEventResponse.batchedRequest.endpoint = chunk[0].message.endpoint.substr(
-        0,
-        chunk[0].message.endpoint.lastIndexOf('/'),
-      );
-    } else if (chunk[0].message.endpoint.includes('/api/users')) {
-      batchEventResponse.batchedRequest.body.JSON = {
-        users: batchResponseList,
-      };
-      batchEventResponse.batchedRequest.endpoint = IDENTIFY_BATCH_ENDPOINT;
-    } else {
-      // batching into track batch structure
-      batchEventResponse.batchedRequest.body.JSON = {
-        events: batchResponseList,
-      };
-      batchEventResponse.batchedRequest.endpoint = TRACK_BATCH_ENDPOINT;
-    }
-
-    batchEventResponse.batchedRequest.headers = {
-      'Content-Type': JSON_MIME_TYPE,
-      api_key: apiKey,
-    };
-
-    batchEventResponse = {
-      ...batchEventResponse,
-      metadata: metadatas,
-      destination,
-    };
-    batchedResponseList.push(
-      getSuccessRespEvents(
-        batchEventResponse.batchedRequest,
-        batchEventResponse.metadata,
-        batchEventResponse.destination,
-        true,
-      ),
-    );
-  });
-
-  return batchedResponseList;
-}
-
-function getEventChunks(event, identifyEventChunks, trackEventChunks, eventResponseList) {
-  // Categorizing identify and track type of events
-  // Checking if it is identify type event
-  if (
-    event.message.endpoint === ConfigCategory.IDENTIFY.endpoint ||
-    event.message.operation === 'catalogs'
-  ) {
-    identifyEventChunks.push(event);
-  } else if (event.message?.endpoint?.includes('api/events/track')) {
-    // Checking if it is track type of event
-    trackEventChunks.push(event);
-  } else {
-    // any other type of event
-    const { message, metadata, destination } = event;
-    const endpoint = get(message, 'endpoint');
-    if (Array.isArray(message)) {
-      eventResponseList.push(getSuccessRespEvents(message, [metadata], destination));
-    } else {
-      const batchedResponse = defaultBatchRequestConfig();
-      batchedResponse.batchedRequest.headers = message.headers;
-      batchedResponse.batchedRequest.endpoint = endpoint;
-      batchedResponse.batchedRequest.body = message.body;
-      batchedResponse.batchedRequest.params = message.params;
-      batchedResponse.batchedRequest.method = defaultPostRequestConfig.requestMethod;
-      batchedResponse.metadata = [metadata];
-      batchedResponse.destination = destination;
-
-      eventResponseList.push(
-        getSuccessRespEvents(
-          batchedResponse.batchedRequest,
-          batchedResponse.metadata,
-          batchedResponse.destination,
-        ),
-      );
-    }
-  }
-}
+};
 
 const processRouterDest = async (inputs, reqMetadata) => {
   const errorRespEvents = checkInvalidRtTfEvents(inputs);
@@ -317,60 +167,78 @@ const processRouterDest = async (inputs, reqMetadata) => {
     return errorRespEvents;
   }
 
-  const identifyEventChunks = []; // list containing identify events in batched format
-  const trackEventChunks = []; // list containing track events in batched format
-  const eventResponseList = []; // list containing other events in batched format
-  const errorRespList = [];
-  await Promise.all(
-    inputs.map(async (event) => {
-      try {
-        if (event.message.statusCode) {
-          // already transformed event
-          getEventChunks(event, identifyEventChunks, trackEventChunks, eventResponseList);
-        } else {
-          // if not transformed
-          getEventChunks(
-            {
-              message: await process(event),
+  const batchedEvents = batchEvents(inputs);
+  const response = await Promise.all(
+    batchedEvents.map(async (listOfEvents) => {
+      let transformedPayloads = await Promise.all(
+        listOfEvents.map(async (event) => {
+          try {
+            if (event.message.statusCode) {
+              // already transformed event
+              return {
+                message: event.message,
+                metadata: event.metadata,
+                destination: event.destination,
+              };
+            }
+
+            /**
+             * If not transformed
+             *
+             * responses = [e1_batched_event, e1_non_batched_event] or {e2}
+             *
+             * transformedPayloads =
+             * [
+             *   {
+             *     message: e1_batched_message,
+             *     metadata: m1,
+             *     destination: {}
+             *   },
+             *   {
+             *     message: e1_non_batched_message,
+             *     metadata: m1,
+             *     destination: {}
+             *    }
+             * ]
+             *
+             * or
+             *
+             * transformedPayloads =
+             * [
+             *   {
+             *     message: e2_message,
+             *     metadata: m2,
+             *     destination: {}
+             *   }
+             * ]
+             */
+
+            const responses = process(event);
+            const transformedPayloads = Array.isArray(responses) ? responses : [responses];
+            return transformedPayloads.map((response) => ({
+              message: response,
               metadata: event.metadata,
               destination: event.destination,
-            },
-            identifyEventChunks,
-            trackEventChunks,
-            eventResponseList,
-          );
-        }
-      } catch (error) {
-        const errRespEvent = handleRtTfSingleEventError(event, error, reqMetadata);
-        errorRespList.push(errRespEvent);
-      }
+            }));
+          } catch (error) {
+            return handleRtTfSingleEventError(event, error, reqMetadata);
+          }
+        }),
+      );
+
+      /**
+       * Before flat map : transformedPayloads = [{e1}, {e2}, [{e3}, {e4}, {e5}], {e6}]
+       * After flat map : transformedPayloads = [{e1}, {e2}, {e3}, {e4}, {e5}, {e6}]
+       */
+      transformedPayloads = _.flatMap(transformedPayloads);
+      return filterEventsAndPrepareBatchRequests(transformedPayloads);
     }),
   );
 
-  // batching identifyArrayChunks
-  let identifyBatchedResponseList = [];
-  if (identifyEventChunks.length > 0) {
-    // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-    // transformed payload of (n) batch size
-    const identifyArrayChunks = _.chunk(identifyEventChunks, IDENTIFY_MAX_BATCH_SIZE);
-    identifyBatchedResponseList = batchEvents(identifyArrayChunks);
-  }
-  // batching TrackArrayChunks
-  let trackBatchedResponseList = [];
-  if (trackEventChunks.length > 0) {
-    // arrayChunks = [[e1,e2,e3,..batchSize],[e1,e2,e3,..batchSize]..]
-    // transformed payload of (n) batch size
-    const trackArrayChunks = _.chunk(trackEventChunks, TRACK_MAX_BATCH_SIZE);
-    trackBatchedResponseList = batchEvents(trackArrayChunks);
-  }
-  let batchedResponseList = [];
-  // appending all kinds of batches
-  batchedResponseList = batchedResponseList
-    .concat(identifyBatchedResponseList)
-    .concat(trackBatchedResponseList)
-    .concat(eventResponseList);
+  // Flatten the response array containing batched events from multiple groups
+  const allBatchedEvents = _.flatMap(response);
 
-  return [...batchedResponseList, ...errorRespList];
+  return allBatchedEvents;
 };
 
 module.exports = { process, processRouterDest };

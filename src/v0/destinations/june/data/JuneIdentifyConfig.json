@@ -18,8 +18,10 @@
   },
   {
     "destKey": "traits",
-    "sourceKeys": "traits",
-    "sourceFromGenericMap": true,
+    "sourceKeys": [
+      "context.traits",
+      "traits"
+    ],
     "required": false
   },
   {

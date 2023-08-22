@@ -28,7 +28,9 @@
     "sourceFromGenericMap": true,
     "required": false,
     "metadata": {
-      "excludes": ["groupId"]
+      "excludes": [
+        "groupId"
+      ]
     }
   },
   {

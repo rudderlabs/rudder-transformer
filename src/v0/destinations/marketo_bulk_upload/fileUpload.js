@@ -337,10 +337,10 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
   } catch (err) {
     // TODO check the tags
     stats.increment(UPLOAD_FILE, {
-      status: err.response?.status || 400,
+      status: err?.status || 400,
       errorMessage: err.message || FILE_UPLOAD_ERR_MSG,
     });
-    const status = err.response?.status || 400;
+    const status = err?.status || 400;
     throw new NetworkError(
       err.message || FILE_UPLOAD_ERR_MSG,
       status,

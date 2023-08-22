@@ -7,7 +7,7 @@ const {
   RETRYABLE_CODES,
   JOB_STATUS_ACTIVITY,
 } = require('./util');
-const { httpGET, handleHttpRequest } = require('../../../adapters/network');
+const { handleHttpRequest } = require('../../../adapters/network');
 const {
   AbortedError,
   RetryableError,
@@ -57,7 +57,7 @@ const getFailedJobStatus = async (event) => {
     if (resp.response) {
       if (resp.response?.success === false) {
         throw new RetryableError(
-          resp.response.data.errors[0].message || resp.response.statusText,
+          resp.response.errors[0].message || resp.response.statusText,
           500,
           resp,
         );
@@ -76,40 +76,40 @@ const getFailedJobStatus = async (event) => {
   }
   if (resp.response) {
     if (
-      ABORTABLE_CODES.includes(resp.response.code) ||
-      (resp.response.code >= 400 && resp.response.code <= 499)
+      ABORTABLE_CODES.includes(resp.response.errors[0].code) ||
+      (resp.response.errors[0].code >= 400 && resp.response.errors[0].code <= 499)
     ) {
       stats.increment(JOB_STATUS_ACTIVITY, {
         status: 400,
         state: 'Abortable',
       });
-      throw new AbortedError(resp.response.code, 400, resp);
-    } else if (RETRYABLE_CODES.includes(resp.response.code)) {
+      throw new AbortedError(resp.response.errors[0].message, 400, resp);
+    } else if (RETRYABLE_CODES.includes(resp.response.errors[0].code)) {
       stats.increment(JOB_STATUS_ACTIVITY, {
         status: 500,
         state: 'Retryable',
       });
-      throw new RetryableError(resp.response.code, 500, resp);
+      throw new RetryableError(resp.response.errors[0].message, 500, resp);
     } else if (resp.response.response) {
-      if (ABORTABLE_CODES.includes(resp.response.response.status)) {
+      if (ABORTABLE_CODES.includes(resp.response.errors[0].code)) {
         stats.increment(JOB_STATUS_ACTIVITY, {
           status: 400,
           state: 'Abortable',
         });
         throw new AbortedError(
-          resp.response.response.statusText ||
+          resp.response.errors[0].message ||
             resp.response.statusText ||
             FAILURE_JOB_STATUS_ERR_MSG,
           400,
           resp,
         );
-      } else if (THROTTLED_CODES.includes(resp.response.response.status)) {
+      } else if (THROTTLED_CODES.includes(resp.response.errors[0].code)) {
         stats.increment(JOB_STATUS_ACTIVITY, {
           status: 500,
           state: 'Retryable',
         });
         throw new ThrottledError(
-          resp.response.response.statusText || FAILURE_JOB_STATUS_ERR_MSG,
+          resp.response.errors[0].message || FAILURE_JOB_STATUS_ERR_MSG,
           resp,
         );
       }
@@ -118,7 +118,7 @@ const getFailedJobStatus = async (event) => {
         state: 'Retryable',
       });
       throw new RetryableError(
-        resp.response.response.statusText || FAILURE_JOB_STATUS_ERR_MSG,
+        resp.response.errors[0].message || FAILURE_JOB_STATUS_ERR_MSG,
         500,
         resp,
       );
@@ -167,10 +167,10 @@ const getWarningJobStatus = async (event) => {
   const requestTime = endTime - startTime;
   stats.histogram('marketo_bulk_upload_fetch_job_time', requestTime);
   if (resp.success) {
-    if (resp.response && resp.response.data) {
-      if (resp.response.data?.success === false) {
+    if (resp.response) {
+      if (resp.response?.success === false) {
         throw new RetryableError(
-          resp.response.data.errors[0].message || resp.response.statusText,
+          resp.response.errors[0].message || resp.response.statusText,
           500,
           resp,
         );
@@ -189,38 +189,38 @@ const getWarningJobStatus = async (event) => {
   }
   if (resp.response) {
     if (
-      ABORTABLE_CODES.includes(resp.response.code) ||
-      (resp.response.code >= 400 && resp.response.code <= 499)
+      ABORTABLE_CODES.includes(resp.response.errors[0].code) ||
+      (resp.response.errors[0].code >= 400 && resp.response.errors[0].code <= 499)
     ) {
       stats.increment(JOB_STATUS_ACTIVITY, {
         status: 400,
         state: 'Abortable',
       });
-      throw new AbortedError(resp.response.code, 400, resp);
-    } else if (RETRYABLE_CODES.includes(resp.response.code)) {
+      throw new AbortedError(resp.response.errors[0].message, 400, resp);
+    } else if (RETRYABLE_CODES.includes(resp.response.errors[0].code)) {
       stats.increment(JOB_STATUS_ACTIVITY, {
         status: 500,
         state: 'Retryable',
       });
-      throw new RetryableError(resp.response.code, 500, resp);
+      throw new RetryableError(resp.response.errors[0].message, 500, resp);
     } else if (resp.response.response) {
-      if (ABORTABLE_CODES.includes(resp.response.response.status)) {
+      if (ABORTABLE_CODES.includes(resp.response.errors[0].code)) {
         stats.increment(JOB_STATUS_ACTIVITY, {
           status: 400,
           state: 'Abortable',
         });
         throw new AbortedError(
-          resp.response.response.statusText || WARNING_JOB_STATUS_ERR_MSG,
+          resp.response.errors[0].message || WARNING_JOB_STATUS_ERR_MSG,
           400,
           resp,
         );
-      } else if (THROTTLED_CODES.includes(resp.response.response.status)) {
+      } else if (THROTTLED_CODES.includes(resp.response.errors[0].code)) {
         stats.increment(JOB_STATUS_ACTIVITY, {
           status: 500,
           state: 'Retryable',
         });
         throw new ThrottledError(
-          resp.response.response.statusText || WARNING_JOB_STATUS_ERR_MSG,
+          resp.response.errors[0].message || WARNING_JOB_STATUS_ERR_MSG,
           resp,
         );
       }
@@ -230,7 +230,7 @@ const getWarningJobStatus = async (event) => {
         state: 'Retryable',
       });
       throw new RetryableError(
-        resp.response.response.statusText || WARNING_JOB_STATUS_ERR_MSG,
+        resp.response.errors[0].message || WARNING_JOB_STATUS_ERR_MSG,
         500,
         resp,
       );
@@ -272,7 +272,7 @@ const responseHandler = async (event, type) => {
 
   const responseStatus =
     type === 'fail' ? await getFailedJobStatus(event) : await getWarningJobStatus(event);
-  const responseArr = responseStatus.data.toString().split('\n'); // responseArr = ['field1,field2,Import Failure Reason', 'val1,val2,reason',...]
+  const responseArr = responseStatus.toString().split('\n'); // responseArr = ['field1,field2,Import Failure Reason', 'val1,val2,reason',...]
   const { input, metadata } = event;
   let headerArr;
   if (metadata && metadata.csvHeader) {

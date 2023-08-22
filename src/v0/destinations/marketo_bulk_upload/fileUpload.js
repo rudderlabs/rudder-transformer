@@ -14,7 +14,7 @@ const {
   removeUndefinedAndNullValues,
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
-const { httpPOST, httpGET, handleHttpRequest } = require('../../../adapters/network');
+const {handleHttpRequest } = require('../../../adapters/network');
 const {
   RetryableError,
   AbortedError,
@@ -30,18 +30,6 @@ const fetchFieldSchema = async (config) => {
   let fieldArr = [];
   const fieldSchemaNames = [];
   const accessToken = await getAccessToken(config);
-  // const fieldSchemaMapping = await httpGET(
-  //   `https://${config.munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
-  //   {
-  //     params: {
-  //       access_token: accessToken,
-  //     },
-  //   },
-  //   {
-  //     destType: 'marketo_bulk_upload',
-  //     feature: 'transformation',
-  //   },
-  // );
   const { processedResponse: fieldSchemaMapping } = await handleHttpRequest(
     'get',
     `https://${config.munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
@@ -59,7 +47,7 @@ const fetchFieldSchema = async (config) => {
 
   if (
     fieldSchemaMapping &&
-    fieldSchemaMapping?.status === 200 &&
+    fieldSchemaMapping?.response?.success &&
     fieldSchemaMapping?.response?.result.length > 0 &&
     fieldSchemaMapping?.response?.result[0]
   ) {
@@ -71,10 +59,10 @@ const fetchFieldSchema = async (config) => {
     fieldArr.forEach((field) => {
       fieldSchemaNames.push(field.name);
     });
-  } else if (fieldSchemaMapping.response.error) {
-    const status = fieldSchemaMapping?.response?.status || 400;
+  } else if (fieldSchemaMapping.response.errors) {
+    const status = fieldSchemaMapping?.response?.status || 500; // what happens if response is {code: '601', message: 'Access token invalid'}
     throw new NetworkError(
-      `${fieldSchemaMapping.response.error}`,
+      `${fieldSchemaMapping.response.errors[0].message}`,
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
@@ -82,7 +70,7 @@ const fetchFieldSchema = async (config) => {
       fieldSchemaMapping,
     );
   } else {
-    throw new AbortedError('Failed to fetch Marketo Field Schema', 400, fieldSchemaMapping);
+    throw new AbortedError('Failed to fetch Marketo Field Schema', 500, fieldSchemaMapping);
   }
   return { fieldSchemaNames, accessToken };
 };
@@ -231,15 +219,6 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
         };
       }
       const startTime = Date.now();
-      // const resp = await httpPOST(
-      //   `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
-      //   formReq,
-      //   requestOptions,
-      //   {
-      //     destType: 'marketo_bulk_upload',
-      //     feature: 'transformation',
-      //   },
-      // );
       const { processedResponse: resp } = await handleHttpRequest(
         'post',
         `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
@@ -254,7 +233,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
       const requestTime = endTime - startTime;
       stats.counter('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
       stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
-      if (resp.success) {
+      if (resp.status === 200) {
         /**
          *
           {
@@ -270,11 +249,11 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
           }
         */
         if (
-          resp?.response?.status === 200 &&
+          resp?.response?.success &&
           resp?.response?.result.length > 0 &&
           resp?.response?.result[0]?.importId
         ) {
-          const { importId } = await resp.response.data.result[0];
+          const { importId } = await resp.response.result[0];
           stats.histogram('marketo_bulk_upload_upload_file_time', requestTime);
 
           stats.increment(UPLOAD_FILE, {
@@ -283,10 +262,10 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
           });
           return { importId, successfulJobs, unsuccessfulJobs };
         }
-        if (resp.response && resp.response.data) {
+        if (resp.response) {
           if (
-            resp.response.data.errors[0] &&
-            resp.response.data.errors[0].message ===
+            resp.response.errors[0] &&
+            resp.response.errors[0].message ===
               'There are 10 imports currently being processed. Please try again later'
           ) {
             stats.increment(UPLOAD_FILE, {
@@ -294,24 +273,24 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
               state: 'Retryable',
             });
             throw new RetryableError(
-              resp.response.data.errors[0].message || FILE_UPLOAD_ERR_MSG,
+              resp.response.errors[0].message || FILE_UPLOAD_ERR_MSG,
               500,
               { successfulJobs, unsuccessfulJobs },
             );
           }
           if (
-            resp.response.data.errors[0] &&
-            ((resp.response.data.errors[0].code >= 1000 &&
-              resp.response.data.errors[0].code <= 1077) ||
-              ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code))
+            resp.response.errors[0] &&
+            ((resp.response.errors[0].code >= 1000 &&
+              resp.response.errors[0].code <= 1077) ||
+              ABORTABLE_CODES.indexOf(resp.response.errors[0].code))
           ) {
-            if (resp.response.data.errors[0].message === 'Empty file') {
+            if (resp.response.errors[0].message === 'Empty file') {
               stats.increment(UPLOAD_FILE, {
                 status: 500,
                 state: 'Retryable',
               });
               throw new RetryableError(
-                `${resp.response.data.errors[0].message} Uploaded`|| FILE_UPLOAD_ERR_MSG,
+                `${resp.response.errors[0].message} Uploaded`|| FILE_UPLOAD_ERR_MSG,
                 500,
                 { successfulJobs, unsuccessfulJobs },
               );
@@ -322,11 +301,11 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
               state: 'Abortable',
             });
             throw new AbortedError(
-              resp.response.data.errors[0].message || FILE_UPLOAD_ERR_MSG,
+              resp.response.errors[0].message || FILE_UPLOAD_ERR_MSG,
               400,
               { successfulJobs, unsuccessfulJobs },
             );
-          } else if (THROTTLED_CODES.indexOf(resp.response.data.errors[0].code)) {
+          } else if (THROTTLED_CODES.indexOf(resp.response.errors[0].code)) {
             stats.increment(UPLOAD_FILE, {
               status: 500,
               state: 'Retryable',
@@ -334,7 +313,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
             throw new ThrottledError(
               resp.response.response.statusText ||
                 resp.response.statusText ||
-                resp.response.data.errors[0].message ||
+                resp.response.errors[0].message ||
                 FILE_UPLOAD_ERR_MSG,
               500,
               { successfulJobs, unsuccessfulJobs },
@@ -346,7 +325,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
           });
           throw new RetryableError(
             resp.response.response.statusText ||
-              resp.response.data.errors[0].message ||
+              resp.response.errors[0].message ||
               FILE_UPLOAD_ERR_MSG,
             500,
             { successfulJobs, unsuccessfulJobs },

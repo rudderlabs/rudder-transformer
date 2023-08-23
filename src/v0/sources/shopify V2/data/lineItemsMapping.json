@@ -1,7 +1,10 @@
 [
   {
     "sourceKeys": "product_id",
-    "destKey": "product_id"
+    "destKey": "product_id",
+    "metadata": {
+      "type": "toString"
+    }
   },
   {
     "sourceKeys": "sku",
@@ -13,7 +16,10 @@
   },
   {
     "sourceKeys": "price",
-    "destKey": "price"
+    "destKey": "price",
+    "metadata": {
+      "type": "toNumber"
+    }
   },
   {
     "sourceKeys": "vendor",
@@ -22,5 +28,9 @@
   {
     "sourceKeys": "quantity",
     "destKey": "quantity"
+  },
+  {
+    "sourceKeys": "variant_title",
+    "destKey": "variant"
   }
 ]

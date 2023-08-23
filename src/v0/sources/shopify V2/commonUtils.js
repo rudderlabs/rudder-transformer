@@ -6,10 +6,10 @@ const { RedisDB } = require('../../../util/redis/redisConnector');
 const logger = require('../../../logger');
 const {
   lineItemsMappingJSON,
-  productMappingJSON,
   LINE_ITEM_EXCLUSION_FIELDS,
-  PRODUCT_MAPPING_EXCLUSION_FIELDS,
+  PROPERTIES_MAPPING_EXCLUSION_FIELDS,
   SHOPIFY_TRACK_MAP,
+  RUDDER_ECOM_MAP,
 } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 
@@ -74,11 +74,6 @@ const getHashLineItems = (cart) => {
   return 'EMPTY';
 };
 
-const getVariantString = (lineItem) => {
-  const { variant_id, variant_price, variant_title } = lineItem;
-  return `${variant_id || ''} ${variant_price || ''} ${variant_title || ''}`;
-};
-
 const getProductsListFromLineItems = (lineItems) => {
   if (!lineItems || lineItems.length === 0) {
     return [];
@@ -87,18 +82,21 @@ const getProductsListFromLineItems = (lineItems) => {
   lineItems.forEach((lineItem) => {
     const product = constructPayload(lineItem, lineItemsMappingJSON);
     extractCustomFields(lineItem, product, 'root', LINE_ITEM_EXCLUSION_FIELDS);
-    product.variant = getVariantString(lineItem);
     products.push(product);
   });
   return products;
 };
 
-const createPropertiesForEcomEvent = (message) => {
-  const { line_items: lineItems } = message;
-  const productsList = getProductsListFromLineItems(lineItems);
-  const mappedPayload = constructPayload(message, productMappingJSON);
-  extractCustomFields(message, mappedPayload, 'root', PRODUCT_MAPPING_EXCLUSION_FIELDS);
-  mappedPayload.products = productsList;
+const createPropertiesForEcomEvent = (message, shopifyTopic) => {
+  const mappedPayload = constructPayload(message, RUDDER_ECOM_MAP[shopifyTopic].mapping);
+
+  extractCustomFields(message, mappedPayload, 'root', PROPERTIES_MAPPING_EXCLUSION_FIELDS);
+  if (RUDDER_ECOM_MAP[shopifyTopic].lineItems) {
+    const { line_items: lineItems } = message;
+    const productsList = getProductsListFromLineItems(lineItems);
+    mappedPayload.products = productsList;
+  }
+
   return mappedPayload;
 };
 

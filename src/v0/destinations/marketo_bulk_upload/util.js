@@ -60,7 +60,7 @@ const getAccessToken = async (config) => {
       throw new RetryableError(resp.response.code, 500, resp);
     } // handle for abortable codes
     else if (resp.response.errors) {
-      if (ABORTABLE_CODES.includes(resp.response.errors[0].code)) {
+      if (ABORTABLE_CODES.includes(resp.response?.errors[0]?.code)) {
         throw new AbortedError(
           resp.response.errors[0].message ||
             resp.response.response.statusText ||
@@ -69,7 +69,7 @@ const getAccessToken = async (config) => {
           resp,
         );
       } // handle for throttled codes
-      else if (THROTTLED_CODES.includes(resp.response.errors[0].code)) {
+      else if (THROTTLED_CODES.includes(resp.response?.errors[0]?.code)) {
         throw new ThrottledError(
           resp.response.errors[0].message ||
             resp.response.response.statusText ||
@@ -138,7 +138,7 @@ Sample Successful Poll response structure:
         state: 'Abortable',
       });
       throw new AbortedError(
-        pollStatus.response.errors[0].message || POLL_STATUS_ERR_MSG,
+        pollStatus.response?.errors[0]?.message || POLL_STATUS_ERR_MSG,
         400,
         pollStatus,
       );
@@ -159,8 +159,6 @@ Sample Successful Poll response structure:
     });
     throw new RetryableError(
       pollStatus.response?.errors[0]?.message ||
-        pollStatus.response?.response?.statusText ||
-        pollStatus.response?.statusText ||
         'Error during polling status',
       500,
       pollStatus,

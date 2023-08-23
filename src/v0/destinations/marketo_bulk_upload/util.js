@@ -26,21 +26,16 @@ const JOB_STATUS_ACTIVITY = 'marketo_bulk_upload_get_job_status';
 const FETCH_FAILURE_JOB_STATUS_ERR_MSG = 'Could not fetch failure job status';
 const FETCH_WARNING_JOB_STATUS_ERR_MSG = 'Could not fetch warning job status';
 
-
 const getMarketoFilePath = () => MARKETO_FILE_PATH;
 // Fetch access token from client id and client secret
 // DOC: https://developers.marketo.com/rest-api/authentication/
 const getAccessToken = async (config) => {
   const { clientId, clientSecret, munchkinId } = config;
   const url = `https://${munchkinId}.mktorest.com/identity/oauth/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`;
-  const { processedResponse: resp } = await handleHttpRequest(
-    'get',
-    url,
-    {
-      destType: 'marketo_bulk_upload',
-      feature: 'transformation',
-    },
-  );
+  const { processedResponse: resp } = await handleHttpRequest('get', url, {
+    destType: 'marketo_bulk_upload',
+    feature: 'transformation',
+  });
   const ACCESS_TOKEN_FETCH_ERR_MSG = 'Error during fetching access token';
   if (resp.status === 200) {
     if (resp.response && resp.response.access_token) {
@@ -58,10 +53,7 @@ const getAccessToken = async (config) => {
   // sample response : {response: '[ENOTFOUND] :: DNS lookup failed', status: 400}
   if (resp.response) {
     // handle for abortable codes
-    if (
-      ABORTABLE_CODES.includes(resp.response) ||
-      (resp.code >= 400 && resp.code <= 499)
-    ) {
+    if (ABORTABLE_CODES.includes(resp.response) || (resp.code >= 400 && resp.code <= 499)) {
       throw new AbortedError(resp.response, 400, resp);
     } // handle for retryable codes
     else if (RETRYABLE_CODES.includes(resp.response)) {
@@ -71,8 +63,8 @@ const getAccessToken = async (config) => {
       if (ABORTABLE_CODES.includes(resp.response.errors[0].code)) {
         throw new AbortedError(
           resp.response.errors[0].message ||
-          resp.response.response.statusText ||
-          ACCESS_TOKEN_FETCH_ERR_MSG,
+            resp.response.response.statusText ||
+            ACCESS_TOKEN_FETCH_ERR_MSG,
           400,
           resp,
         );
@@ -80,28 +72,20 @@ const getAccessToken = async (config) => {
       else if (THROTTLED_CODES.includes(resp.response.errors[0].code)) {
         throw new ThrottledError(
           resp.response.errors[0].message ||
-          resp.response.response.statusText ||
-          ACCESS_TOKEN_FETCH_ERR_MSG,
+            resp.response.response.statusText ||
+            ACCESS_TOKEN_FETCH_ERR_MSG,
           resp,
         );
       }
       // Assuming none we should retry the remaining errors
-      throw new RetryableError(
-        resp.response ||
-        ACCESS_TOKEN_FETCH_ERR_MSG,
-        500,
-        resp,
-      );
+      throw new RetryableError(resp.response || ACCESS_TOKEN_FETCH_ERR_MSG, 500, resp);
     }
     throw new NetworkError('Could not retrieve authorization token');
   }
   throw new NetworkError('Could not retrieve authorization token');
 };
 
-
-
 const handlePollResponse = (pollStatus) => {
-
   const response = null;
 
   // TODO: handle record level poll status
@@ -175,21 +159,20 @@ Sample Successful Poll response structure:
     });
     throw new RetryableError(
       pollStatus.response?.errors[0]?.message ||
-      pollStatus.response?.response?.statusText ||
-      pollStatus.response?.statusText ||
-      'Error during polling status',
+        pollStatus.response?.response?.statusText ||
+        pollStatus.response?.statusText ||
+        'Error during polling status',
       500,
       pollStatus,
     );
   }
 
   return response;
-
-}
+};
 
 const handleFetchJobStatusResponse = (resp, type) => {
-  console.log(JSON.stringify(resp))
-  const response = null
+  console.log(JSON.stringify(resp));
+  const response = null;
   /*
   successful response :
   {
@@ -238,18 +221,21 @@ const handleFetchJobStatusResponse = (resp, type) => {
     } else {
       throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
     }
-
   }
-  return response;
-}
+  if (type === 'fail') {
+    throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 400, resp);
+  } else {
+    throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
+  }
+};
 
 /**
- * 
- * @param {*} resp 
- * @param {*} successfulJobs 
- * @param {*} unsuccessfulJobs 
- * @param {*} requestTime 
- * @returns handles the response of getImportId axios call and returns final parameters: 
+ *
+ * @param {*} resp
+ * @param {*} successfulJobs
+ * @param {*} unsuccessfulJobs
+ * @param {*} requestTime
+ * @returns handles the response of getImportId axios call and returns final parameters:
  * importId, successfulJobs, unsuccessfulJobs
  */
 const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, requestTime) => {
@@ -299,22 +285,23 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
   if (resp.response) {
     if (
       resp.response?.errors[0]?.message ===
-      'There are 10 imports currently being processed. Please try again later' ||
+        'There are 10 imports currently being processed. Please try again later' ||
       resp.response?.errors[0]?.message === 'Empty file'
     ) {
       stats.increment(UPLOAD_FILE, {
         status: 500,
         state: 'Retryable',
       });
-      throw new RetryableError(
-        resp.response?.errors[0]?.message || FILE_UPLOAD_ERR_MSG,
-        500,
-        { importId, successfulJobs, unsuccessfulJobs },
-      );
+      throw new RetryableError(resp.response?.errors[0]?.message || FILE_UPLOAD_ERR_MSG, 500, {
+        importId,
+        successfulJobs,
+        unsuccessfulJobs,
+      });
     } else if (
       resp.response.errors[0] &&
       ((resp.response?.errors[0]?.code >= 1000 &&
-        resp.response?.errors[0]?.code <= 1077 && resp.response?.errors[0]?.code !== 1003) ||
+        resp.response?.errors[0]?.code <= 1077 &&
+        resp.response?.errors[0]?.code !== 1003) ||
         ABORTABLE_CODES.indexOf(resp.response?.errors[0]?.code))
     ) {
       // for empty file the code is 1003 and that should be retried
@@ -322,24 +309,25 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
         status: 400,
         state: 'Abortable',
       });
-      throw new AbortedError(
-        resp.response.errors[0].message || FILE_UPLOAD_ERR_MSG,
-        400,
-        { importId, successfulJobs, unsuccessfulJobs },
-      );
-    } else if (THROTTLED_CODES.indexOf(resp.response.errors[0].code) ||
-      resp.response?.errors[0]?.code !== 615) {
+      throw new AbortedError(resp.response.errors[0].message || FILE_UPLOAD_ERR_MSG, 400, {
+        importId,
+        successfulJobs,
+        unsuccessfulJobs,
+      });
+    } else if (
+      THROTTLED_CODES.indexOf(resp.response.errors[0].code) ||
+      resp.response?.errors[0]?.code !== 615
+    ) {
       // for more than 10 concurrent uses the code is 615 and that should be retried
       stats.increment(UPLOAD_FILE, {
         status: 500,
         state: 'Retryable',
       });
-      throw new ThrottledError(
-        resp.response?.errors[0]?.message ||
-        FILE_UPLOAD_ERR_MSG,
-        500,
-        { importId, successfulJobs, unsuccessfulJobs },
-      );
+      throw new ThrottledError(resp.response?.errors[0]?.message || FILE_UPLOAD_ERR_MSG, 500, {
+        importId,
+        successfulJobs,
+        unsuccessfulJobs,
+      });
     }
     // by default every thing will be retried
     stats.increment(UPLOAD_FILE, {
@@ -347,9 +335,7 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
       state: 'Retryable',
     });
     throw new RetryableError(
-      resp.response.response.statusText ||
-      resp.response.errors[0].message ||
-      FILE_UPLOAD_ERR_MSG,
+      resp.response.response.statusText || resp.response.errors[0].message || FILE_UPLOAD_ERR_MSG,
       500,
       { importId, successfulJobs, unsuccessfulJobs },
     );
@@ -358,10 +344,7 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
   // By default importId is null
 
   return { importId, successfulJobs, unsuccessfulJobs };
-
-}
-
-
+};
 
 module.exports = {
   getAccessToken,
@@ -375,5 +358,5 @@ module.exports = {
   JOB_STATUS_ACTIVITY,
   handlePollResponse,
   handleFetchJobStatusResponse,
-  handleFileUploadResponse
+  handleFileUploadResponse,
 };

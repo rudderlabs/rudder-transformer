@@ -52,7 +52,7 @@
   },
   {
     "statusCode": 400,
-    "error": "Empty file Uploaded",
+    "error": "Empty file",
     "metadata": null
   },
   {

@@ -3,11 +3,10 @@ const FormData = require('form-data');
 const fs = require('fs');
 const {
   getAccessToken,
-  ABORTABLE_CODES,
-  THROTTLED_CODES,
   MARKETO_FILE_SIZE,
   getMarketoFilePath,
   UPLOAD_FILE,
+  handleFileUploadResponse
 } = require('./util');
 const {
   getHashFromArray,
@@ -16,9 +15,7 @@ const {
 } = require('../../util');
 const {handleHttpRequest } = require('../../../adapters/network');
 const {
-  RetryableError,
   AbortedError,
-  ThrottledError,
   NetworkError,
   ConfigurationError,
 } = require('../../util/errorTypes');
@@ -43,8 +40,6 @@ const fetchFieldSchema = async (config) => {
       feature: 'transformation',
     },
   );
-
-
   if (
     fieldSchemaMapping &&
     fieldSchemaMapping?.response?.success &&
@@ -192,6 +187,7 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
 };
 
 const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
+  const importId = null // by default importId is null
   const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
     input,
     config,
@@ -234,106 +230,10 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
       stats.counter('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
       stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
       if (resp.status === 200) {
-        /**
-         *
-          {
-              "requestId": "d01f#15d672f8560",
-              "result": [
-                  {
-                      "batchId": 3404,
-                      "importId": "3404",
-                      "status": "Queued"
-                  }
-              ],
-              "success": true
-          }
-        */
-        if (
-          resp?.response?.success &&
-          resp?.response?.result.length > 0 &&
-          resp?.response?.result[0]?.importId
-        ) {
-          const { importId } = await resp.response.result[0];
-          stats.histogram('marketo_bulk_upload_upload_file_time', requestTime);
-
-          stats.increment(UPLOAD_FILE, {
-            status: 200,
-            state: 'Success',
-          });
-          return { importId, successfulJobs, unsuccessfulJobs };
-        }
-        if (resp.response) {
-          if (
-            resp.response.errors[0] &&
-            resp.response.errors[0].message ===
-              'There are 10 imports currently being processed. Please try again later'
-          ) {
-            stats.increment(UPLOAD_FILE, {
-              status: 500,
-              state: 'Retryable',
-            });
-            throw new RetryableError(
-              resp.response.errors[0].message || FILE_UPLOAD_ERR_MSG,
-              500,
-              { successfulJobs, unsuccessfulJobs },
-            );
-          }
-          if (
-            resp.response.errors[0] &&
-            ((resp.response.errors[0].code >= 1000 &&
-              resp.response.errors[0].code <= 1077) ||
-              ABORTABLE_CODES.indexOf(resp.response.errors[0].code))
-          ) {
-            if (resp.response.errors[0].message === 'Empty file') {
-              stats.increment(UPLOAD_FILE, {
-                status: 500,
-                state: 'Retryable',
-              });
-              throw new RetryableError(
-                `${resp.response.errors[0].message} Uploaded`|| FILE_UPLOAD_ERR_MSG,
-                500,
-                { successfulJobs, unsuccessfulJobs },
-              );
-            }
-
-            stats.increment(UPLOAD_FILE, {
-              status: 400,
-              state: 'Abortable',
-            });
-            throw new AbortedError(
-              resp.response.errors[0].message || FILE_UPLOAD_ERR_MSG,
-              400,
-              { successfulJobs, unsuccessfulJobs },
-            );
-          } else if (THROTTLED_CODES.indexOf(resp.response.errors[0].code)) {
-            stats.increment(UPLOAD_FILE, {
-              status: 500,
-              state: 'Retryable',
-            });
-            throw new ThrottledError(
-              resp.response.response.statusText ||
-                resp.response.statusText ||
-                resp.response.errors[0].message ||
-                FILE_UPLOAD_ERR_MSG,
-              500,
-              { successfulJobs, unsuccessfulJobs },
-            );
-          }
-          stats.increment(UPLOAD_FILE, {
-            status: 500,
-            state: 'Retryable',
-          });
-          throw new RetryableError(
-            resp.response.response.statusText ||
-              resp.response.errors[0].message ||
-              FILE_UPLOAD_ERR_MSG,
-            500,
-            { successfulJobs, unsuccessfulJobs },
-          );
-        }
+       return handleFileUploadResponse (resp, successfulJobs,unsuccessfulJobs, requestTime)
       }
     }
-    return { successfulJobs, unsuccessfulJobs };
+    return { importId, successfulJobs, unsuccessfulJobs };
   } catch (err) {
     // TODO check the tags
     stats.increment(UPLOAD_FILE, {
@@ -352,6 +252,12 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
   }
 };
 
+/**
+ * 
+ * @param {*} input 
+ * @param {*} config 
+ * @returns returns the final response of fileUpload.js
+ */
 const responseHandler = async (input, config) => {
   /**
   {
@@ -375,7 +281,7 @@ const responseHandler = async (input, config) => {
     response.metadata = { successfulJobs, unsuccessfulJobs, csvHeader };
     return response;
   }
-
+  // if importId is returned null
   stats.increment(UPLOAD_FILE, {
     status: 500,
     state: 'Retryable',

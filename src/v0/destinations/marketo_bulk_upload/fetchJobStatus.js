@@ -2,25 +2,19 @@
 /* eslint-disable no-prototype-builtins */
 const {
   getAccessToken,
-  ABORTABLE_CODES,
-  THROTTLED_CODES,
-  RETRYABLE_CODES,
   JOB_STATUS_ACTIVITY,
 } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const {
   AbortedError,
-  RetryableError,
-  ThrottledError,
   PlatformError,
 } = require('../../util/errorTypes');
 const stats = require('../../../util/stats');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const {handleFetchJobStatusResponse} = require('./util');
 
 const FETCH_FAILURE_JOB_STATUS_ERR_MSG = 'Could not fetch failure job status';
-const FAILURE_JOB_STATUS_ERR_MSG = 'Error during fetching failure job status';
 const FETCH_WARNING_JOB_STATUS_ERR_MSG = 'Could not fetch warning job status';
-const WARNING_JOB_STATUS_ERR_MSG = 'Error during fetching warning job status';
 
 const getFailedJobStatus = async (event) => {
   const { config, importId } = event;
@@ -49,87 +43,15 @@ const getFailedJobStatus = async (event) => {
   const requestTime = endTime - startTime;
 
   stats.histogram('marketo_bulk_upload_fetch_job_time', requestTime);
-  if (resp.status === 200) {
-    if (resp.response) {
-      if (resp.response?.success === false) {
-        throw new RetryableError(
-          resp.response.errors[0].message || resp.response.statusText,
-          500,
-          resp,
-        );
-      }
-      stats.increment(JOB_STATUS_ACTIVITY, {
-        status: 200,
-        state: 'Success',
-      });
-      return resp.response;
-    }
+  try {
+    return handleFetchJobStatusResponse(resp, "fail")
+  } catch (err) {
     stats.increment(JOB_STATUS_ACTIVITY, {
       status: 400,
       state: 'Abortable',
     });
     throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 400, resp);
   }
-  if (resp.response) {
-    if (
-      ABORTABLE_CODES.includes(resp.response.errors[0].code) ||
-      (resp.response.errors[0].code >= 400 && resp.response.errors[0].code <= 499)
-    ) {
-      stats.increment(JOB_STATUS_ACTIVITY, {
-        status: 400,
-        state: 'Abortable',
-      });
-      throw new AbortedError(resp.response.errors[0].message, 400, resp);
-    } else if (RETRYABLE_CODES.includes(resp.response.errors[0].code)) {
-      stats.increment(JOB_STATUS_ACTIVITY, {
-        status: 500,
-        state: 'Retryable',
-      });
-      throw new RetryableError(resp.response.errors[0].message, 500, resp);
-    } else if (resp.response.response) {
-      if (ABORTABLE_CODES.includes(resp.response.errors[0].code)) {
-        stats.increment(JOB_STATUS_ACTIVITY, {
-          status: 400,
-          state: 'Abortable',
-        });
-        throw new AbortedError(
-          resp.response.errors[0].message ||
-            resp.response.statusText ||
-            FAILURE_JOB_STATUS_ERR_MSG,
-          400,
-          resp,
-        );
-      } else if (THROTTLED_CODES.includes(resp.response.errors[0].code)) {
-        stats.increment(JOB_STATUS_ACTIVITY, {
-          status: 500,
-          state: 'Retryable',
-        });
-        throw new ThrottledError(
-          resp.response.errors[0].message || FAILURE_JOB_STATUS_ERR_MSG,
-          resp,
-        );
-      }
-      stats.increment(JOB_STATUS_ACTIVITY, {
-        status: 500,
-        state: 'Retryable',
-      });
-      throw new RetryableError(
-        resp.response.errors[0].message || FAILURE_JOB_STATUS_ERR_MSG,
-        500,
-        resp,
-      );
-    }
-    stats.increment(JOB_STATUS_ACTIVITY, {
-      status: 400,
-      state: 'Abortable',
-    });
-    throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 400, resp);
-  }
-  stats.increment(JOB_STATUS_ACTIVITY, {
-    status: 400,
-    state: 'Abortable',
-  });
-  throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 400, resp);
 };
 
 const getWarningJobStatus = async (event) => {
@@ -146,10 +68,6 @@ const getWarningJobStatus = async (event) => {
   };
   const startTime = Date.now();
   const warningJobStatusUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/warnings.json`;
-  // const resp = await httpGET(warningJobStatusUrl, requestOptions, {
-  //   destType: 'marketo_bulk_upload',
-  //   feature: 'transformation',
-  // });
   const { processedResponse: resp } = await handleHttpRequest(
     'get',
     warningJobStatusUrl,
@@ -162,86 +80,16 @@ const getWarningJobStatus = async (event) => {
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   stats.histogram('marketo_bulk_upload_fetch_job_time', requestTime);
-  if (resp.success) {
-    if (resp.response) {
-      if (resp.response?.success === false) {
-        throw new RetryableError(
-          resp.response.errors[0].message || resp.response.statusText,
-          500,
-          resp,
-        );
-      }
-      stats.increment(JOB_STATUS_ACTIVITY, {
-        status: 200,
-        state: 'Success',
-      });
-      return resp.response;
-    }
+  try {
+    return handleFetchJobStatusResponse(resp, "warn")
+  } catch (err) {
     stats.increment(JOB_STATUS_ACTIVITY, {
       status: 400,
       state: 'Abortable',
     });
     throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
   }
-  if (resp.response) {
-    if (
-      ABORTABLE_CODES.includes(resp.response.errors[0].code) ||
-      (resp.response.errors[0].code >= 400 && resp.response.errors[0].code <= 499)
-    ) {
-      stats.increment(JOB_STATUS_ACTIVITY, {
-        status: 400,
-        state: 'Abortable',
-      });
-      throw new AbortedError(resp.response.errors[0].message, 400, resp);
-    } else if (RETRYABLE_CODES.includes(resp.response.errors[0].code)) {
-      stats.increment(JOB_STATUS_ACTIVITY, {
-        status: 500,
-        state: 'Retryable',
-      });
-      throw new RetryableError(resp.response.errors[0].message, 500, resp);
-    } else if (resp.response.response) {
-      if (ABORTABLE_CODES.includes(resp.response.errors[0].code)) {
-        stats.increment(JOB_STATUS_ACTIVITY, {
-          status: 400,
-          state: 'Abortable',
-        });
-        throw new AbortedError(
-          resp.response.errors[0].message || WARNING_JOB_STATUS_ERR_MSG,
-          400,
-          resp,
-        );
-      } else if (THROTTLED_CODES.includes(resp.response.errors[0].code)) {
-        stats.increment(JOB_STATUS_ACTIVITY, {
-          status: 500,
-          state: 'Retryable',
-        });
-        throw new ThrottledError(
-          resp.response.errors[0].message || WARNING_JOB_STATUS_ERR_MSG,
-          resp,
-        );
-      }
 
-      stats.increment(JOB_STATUS_ACTIVITY, {
-        status: 500,
-        state: 'Retryable',
-      });
-      throw new RetryableError(
-        resp.response.errors[0].message || WARNING_JOB_STATUS_ERR_MSG,
-        500,
-        resp,
-      );
-    }
-    stats.increment(JOB_STATUS_ACTIVITY, {
-      status: 400,
-      state: 'Abortable',
-    });
-    throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
-  }
-  stats.increment(JOB_STATUS_ACTIVITY, {
-    status: 400,
-    state: 'Abortable',
-  });
-  throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
 };
 
 const responseHandler = async (event, type) => {

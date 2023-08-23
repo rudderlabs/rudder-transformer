@@ -1,8 +1,8 @@
 const { removeUndefinedValues } = require('../../util');
-const { getAccessToken, ABORTABLE_CODES, THROTTLED_CODES, POLL_ACTIVITY } = require('./util');
+const { getAccessToken,POLL_ACTIVITY, handlePollResponse } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const stats = require('../../../util/stats');
-const { AbortedError, ThrottledError, RetryableError } = require('../../util/errorTypes');
+const { RetryableError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
 const getPollStatus = async (event) => {
@@ -31,75 +31,15 @@ const getPollStatus = async (event) => {
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   const POLL_STATUS_ERR_MSG = 'Could not poll status';
+    
   if (pollStatus.status === 200) {
-    if (pollStatus.response && pollStatus.response.success) {
-      stats.counter(POLL_ACTIVITY, {
-        status: 200,
-        state: 'Success',
-      });
-      return pollStatus.response;
-    }
-    // DOC: https://developers.marketo.com/rest-api/error-codes/
-    if (pollStatus.response) {
-      // Abortable jobs
-      // Errors from polling come as
-      /**
-       * {
-    "requestId": "e42b#14272d07d78",
-    "success": false,
-    "errors": [
-        {
-            "code": "601",
-            "message": "Unauthorized"
-        }
-    ]
-}
-       */
-      if (
-        pollStatus.response.errors[0] &&
-        ((pollStatus.response.errors[0].code >= 1000 &&
-          pollStatus.response.errors[0].code <= 1077) ||
-          ABORTABLE_CODES.includes(pollStatus.response.errors[0].code))
-      ) {
-        stats.counter(POLL_ACTIVITY, {
-          status: 400,
-          state: 'Abortable',
-        });
-        throw new AbortedError(
-          pollStatus.response.errors[0].message || POLL_STATUS_ERR_MSG,
-          400,
-          pollStatus,
-        );
-      } else if (THROTTLED_CODES.includes(pollStatus.response.errors[0].code)) {
-        stats.counter(POLL_ACTIVITY, {
-          status: 500,
-          state: 'Retryable',
-        });
-        throw new ThrottledError(
-          pollStatus.response.errors[0].message || POLL_STATUS_ERR_MSG,
-          500,
-          pollStatus,
-        );
-      }
-      stats.counter(POLL_ACTIVITY, {
-        status: 500,
-        state: 'Retryable',
-      });
-      throw new RetryableError(
-        pollStatus?.response?.errors[0]?.message ||
-          pollStatus?.response?.response?.statusText ||
-          pollStatus?.response?.statusText ||
-          'Error during polling status',
-        500,
-        pollStatus,
-      );
-    }
+    return handlePollResponse(pollStatus)
   }
   stats.counter(POLL_ACTIVITY, {
-    status: 400,
-    state: 'Abortable',
+    status: 500,
+    state: 'Retryable',
   });
-  throw new AbortedError(POLL_STATUS_ERR_MSG, 400, pollStatus);
+  throw new RetryableError(POLL_STATUS_ERR_MSG, 500, pollStatus);
 };
 
 const responseHandler = async (event) => {
@@ -138,6 +78,9 @@ const responseHandler = async (event) => {
   if (pollResp) {
     pollSuccess = pollResp.success;
     if (pollSuccess) {
+      // As marketo lead import API or bulk API does not support record level error response we are considering 
+      // file level errors only. 
+      // ref: https://nation.marketo.com/t5/ideas/support-error-code-in-record-level-in-lead-bulk-api/idi-p/262191
       const { status, numOfRowsFailed, numOfRowsWithWarning } = pollResp.result[0];
       if (status === 'Complete') {
         success = true;

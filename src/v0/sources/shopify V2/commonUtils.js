@@ -9,11 +9,11 @@ const {
   productMappingJSON,
   LINE_ITEM_EXCLUSION_FIELDS,
   PRODUCT_MAPPING_EXCLUSION_FIELDS,
-  SHOPIFY_TRACK_MAP
+  SHOPIFY_TRACK_MAP,
 } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 
-const getCartToken = message => {
+const getCartToken = (message) => {
   const { event } = message;
   if (event === SHOPIFY_TRACK_MAP.carts_update) {
     return message.properties?.id || message.properties?.token;
@@ -35,8 +35,7 @@ const getDataFromRedis = async (key, metricMetadata) => {
       });
     }
     return redisData;
-  }
-  catch (e) {
+  } catch (e) {
     logger.debug(`{{SHOPIFY::}} Get call Failed due redis error ${e}`);
     stats.increment('shopify_redis_failures', {
       type: 'get',
@@ -116,7 +115,6 @@ const extractEmailFromPayload = (event) => {
   });
   return email;
 };
-
 
 module.exports = {
   getCartToken,

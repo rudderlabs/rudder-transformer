@@ -47,6 +47,12 @@ const flattenMap = (collection) => _.flatMap(collection, (x) => x);
 // GENERIC UTLITY
 // ========================================================================
 
+const getEndpointPath = (endpoint) => {
+  // extract the path details from the whole endpoint url passed
+  const url = new URL(endpoint);
+  return url.pathname.replace(/^\/+/, '');
+};
+
 const getEventTime = (message) => {
   try {
     return new Date(message.timestamp).toISOString();
@@ -1945,6 +1951,7 @@ module.exports = {
   getDestinationExternalIDInfoForRetl,
   getDestinationExternalIDObjectForRetl,
   getDeviceModel,
+  getEndpointPath,
   getErrorRespEvents,
   getEventTime,
   getFieldValueFromMessage,

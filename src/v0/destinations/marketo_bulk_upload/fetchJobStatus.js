@@ -1,25 +1,20 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-prototype-builtins */
-const {
-  getAccessToken,
-  JOB_STATUS_ACTIVITY,
-} = require('./util');
+const { getAccessToken, JOB_STATUS_ACTIVITY } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
-const {
-  AbortedError,
-  PlatformError,
-} = require('../../util/errorTypes');
+const { AbortedError, PlatformError } = require('../../util/errorTypes');
 const stats = require('../../../util/stats');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const {handleFetchJobStatusResponse} = require('./util');
+const { handleFetchJobStatusResponse } = require('./util');
 
 const FETCH_FAILURE_JOB_STATUS_ERR_MSG = 'Could not fetch failure job status';
 const FETCH_WARNING_JOB_STATUS_ERR_MSG = 'Could not fetch warning job status';
 
-const getFailedJobStatus = async (event) => {
+const getJobsStatus = async (event, type) => {
   const { config, importId } = event;
   const accessToken = await getAccessToken(config);
   const { munchkinId } = config;
+  let url;
   // Get status of each lead for failed leads
   // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#failures
   const requestOptions = {
@@ -28,68 +23,33 @@ const getFailedJobStatus = async (event) => {
       Authorization: `Bearer ${accessToken}`,
     },
   };
-  const failedLeadUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/failures.json`;
+  if (event === 'fail') {
+    url = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/failures.json`;
+  } else {
+    url = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/warnings.json`;
+  }
   const startTime = Date.now();
-  const { processedResponse: resp } = await handleHttpRequest(
-    'get',
-    failedLeadUrl,
-    requestOptions,
-    {
-      destType: 'marketo_bulk_upload',
-      feature: 'transformation',
-    },
-  );
+  const { processedResponse: resp } = await handleHttpRequest('get', url, requestOptions, {
+    destType: 'marketo_bulk_upload',
+    feature: 'transformation',
+  });
   const endTime = Date.now();
   const requestTime = endTime - startTime;
 
   stats.histogram('marketo_bulk_upload_fetch_job_time', requestTime);
   try {
-    return handleFetchJobStatusResponse(resp, "fail")
+    return handleFetchJobStatusResponse(resp, 'fail');
   } catch (err) {
     stats.increment(JOB_STATUS_ACTIVITY, {
       status: 400,
       state: 'Abortable',
     });
-    throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 400, resp);
+    if (type === 'fail') {
+      throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 400, resp);
+    } else {
+      throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
+    }
   }
-};
-
-const getWarningJobStatus = async (event) => {
-  const { config, importId } = event;
-  const accessToken = await getAccessToken(config);
-  const { munchkinId } = config;
-  // Get status of each lead for warning leads
-  // DOC: https://developers.marketo.com/rest-api/bulk-import/bulk-lead-import/#warnings
-  const requestOptions = {
-    headers: {
-      'Content-Type': JSON_MIME_TYPE,
-      Authorization: `Bearer ${accessToken}`,
-    },
-  };
-  const startTime = Date.now();
-  const warningJobStatusUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/warnings.json`;
-  const { processedResponse: resp } = await handleHttpRequest(
-    'get',
-    warningJobStatusUrl,
-    requestOptions,
-    {
-      destType: 'marketo_bulk_upload',
-      feature: 'transformation',
-    },
-  );
-  const endTime = Date.now();
-  const requestTime = endTime - startTime;
-  stats.histogram('marketo_bulk_upload_fetch_job_time', requestTime);
-  try {
-    return handleFetchJobStatusResponse(resp, "warn")
-  } catch (err) {
-    stats.increment(JOB_STATUS_ACTIVITY, {
-      status: 400,
-      state: 'Abortable',
-    });
-    throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
-  }
-
 };
 
 const responseHandler = async (event, type) => {
@@ -115,7 +75,7 @@ const responseHandler = async (event, type) => {
    */
 
   const responseStatus =
-    type === 'fail' ? await getFailedJobStatus(event) : await getWarningJobStatus(event);
+    type === 'fail' ? await getJobsStatus(event, 'fail') : await getJobsStatus(event, 'warn');
   const responseArr = responseStatus.toString().split('\n'); // responseArr = ['field1,field2,Import Failure Reason', 'val1,val2,reason',...]
   const { input, metadata } = event;
   let headerArr;

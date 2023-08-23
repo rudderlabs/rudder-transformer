@@ -171,8 +171,6 @@ Sample Successful Poll response structure:
 };
 
 const handleFetchJobStatusResponse = (resp, type) => {
-  console.log(JSON.stringify(resp));
-  const response = null;
   /*
   successful response :
   {

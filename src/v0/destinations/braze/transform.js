@@ -80,7 +80,7 @@ function getIdentifyPayload(message) {
   let payload = {};
   payload = setAliasObjectWithAnonId(payload, message);
   payload = setExternalId(payload, message);
-  return { aliases_to_identify: [payload] };
+  return { aliases_to_identify: [payload], merge_behavior: "merge" };
 }
 
 function populateCustomAttributesWithOperation(

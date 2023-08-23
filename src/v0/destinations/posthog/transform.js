@@ -83,6 +83,10 @@ const responseBuilderSimple = (message, category, destination) => {
     throw new TransformationError(ErrorMessage.FailedToConstructPayload);
   }
 
+  if (!payload.timestamp && isDefinedAndNotNull(payload.properties?.timestamp)) {
+    payload.timestamp = payload.properties.timestamp
+  }
+
   payload.properties = {
     ...generatePropertyDefination(message),
     ...payload.properties,

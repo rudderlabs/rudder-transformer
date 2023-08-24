@@ -7,14 +7,13 @@ const logger = require('../../../logger');
 const {
   lineItemsMappingJSON,
   LINE_ITEM_EXCLUSION_FIELDS,
-  PROPERTIES_MAPPING_EXCLUSION_FIELDS,
-  SHOPIFY_TRACK_MAP,
   RUDDER_ECOM_MAP,
+  ECOM_MAPPING_JSON,
 } = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 
 const getCartToken = (message, shopifyTopic) => {
-  if (shopifyTopic === "carts_update") {
+  if (shopifyTopic === 'carts_update') {
     return message.properties?.id || message.properties?.token;
   }
   return message.properties?.cart_token || null;
@@ -93,12 +92,15 @@ const getProductsListFromLineItems = (lineItems) => {
 };
 /**
  * This function creates the ecom event specific payload through mapping jsons
- * @param {*} message 
- * @param {*} shopifyTopic 
+ * @param {*} message
+ * @param {*} shopifyTopic
  * @returns mapped payload for an ecom event
  */
 const createPropertiesForEcomEvent = (message, shopifyTopic) => {
-  const mappedPayload = constructPayload(message, RUDDER_ECOM_MAP[shopifyTopic].mapping);
+  const mappedPayload = constructPayload(
+    message,
+    ECOM_MAPPING_JSON[RUDDER_ECOM_MAP[shopifyTopic].name],
+  );
   // extractCustomFields(message, mappedPayload, 'root', PROPERTIES_MAPPING_EXCLUSION_FIELDS);
   if (RUDDER_ECOM_MAP[shopifyTopic].lineItems) {
     const { line_items: lineItems } = message;

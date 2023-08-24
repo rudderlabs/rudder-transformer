@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const { EventType } = require('../../../constants');
+const { getMappingConfig } = require('../../util');
 
 const INTEGERATION = 'SHOPIFY';
 
@@ -19,22 +20,22 @@ const IDENTIFY_TOPICS = ['customers_create', 'customers_update'];
 const RUDDER_ECOM_MAP = {
   checkouts_create: {
     event: 'Checkout Started',
-    mapping: 'CheckoutStartedConfig.json',
+    name: 'CheckoutStartedConfig',
     lineItems: true,
   },
   // Shopify checkout_update topic mapped with RudderStack Checkout Step Viewed, Checkout Step Completed and Payment Info Entered events
-  checkout_step_viewed: { event: 'Checkout Step Viewed', mapping: 'CheckoutStepViewedConfig.json' },
+  checkout_step_viewed: { event: 'Checkout Step Viewed', name: 'CheckoutStepViewedConfig' },
   checkout_step_completed: {
     event: 'Checkout Step Completed',
-    mapping: 'CheckoutStepCompletedConfig.json',
+    name: 'CheckoutStepCompletedConfig',
   },
-  payment_info_entered: { event: 'Payment Info Entered', mapping: 'PaymentInfoEnteredConfig.json' },
-  orders_updated: { event: 'Order Updated', mapping: 'OrderUpdatedConfig.json', lineItems: true },
-  carts_update: { event: 'Cart Updated', mapping: 'CartsUpdatedConfig.json' }, // This will split into Product Added and Product Removed,
-  orders_paid: { event: 'Order Completed', mapping: 'OrderCompletedConfig.json', lineItems: true },
+  payment_info_entered: { event: 'Payment Info Entered', name: 'PaymentInfoEnteredConfig' },
+  orders_updated: { event: 'Order Updated', name: 'OrderUpdatedConfig', lineItems: true },
+  // carts_update: { event: 'Cart Updated', name: 'CartsUpdatedConfig' }, // This will split into Product Added and Product Removed,
+  orders_paid: { event: 'Order Completed', name: 'OrderCompletedConfig', lineItems: true },
   orders_cancelled: {
     event: 'Order Cancelled',
-    mapping: 'OrderCancelledConfig.json',
+    name: 'OrderCancelledConfig',
     lineItems: true,
   },
 };
@@ -61,7 +62,6 @@ const SHOPIFY_NON_ECOM_TRACK_MAP = {
   orders_create: 'Order Created',
 };
 
-
 const identifyMappingJSON = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, 'data', 'identifyMapping.json')),
 );
@@ -73,6 +73,8 @@ const propertiesMappingJSON = JSON.parse(
 const lineItemsMappingJSON = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, 'data', 'lineItemsMapping.json')),
 );
+
+const ECOM_MAPPING_JSON = getMappingConfig(RUDDER_ECOM_MAP, __dirname);
 
 const MAPPING_CATEGORIES = {
   [EventType.IDENTIFY]: identifyMappingJSON,
@@ -87,7 +89,7 @@ const LINE_ITEM_EXCLUSION_FIELDS = [
   'vendor',
   'quantity',
   'variant_title',
-  'variant_id'
+  'variant_id',
 ];
 
 const PROPERTIES_MAPPING_EXCLUSION_FIELDS = [
@@ -118,4 +120,5 @@ module.exports = {
   SHOPIFY_NON_ECOM_TRACK_MAP,
   SHOPIFY_ADMIN_ONLY_EVENTS,
   maxTimeToIdentifyRSGeneratedCall,
+  ECOM_MAPPING_JSON,
 };

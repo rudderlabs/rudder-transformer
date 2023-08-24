@@ -3,7 +3,6 @@ const {
   RUDDER_ECOM_MAP,
   NO_OPERATION_SUCCESS,
   SHOPIFY_TO_RUDDER_ECOM_EVENTS_MAP,
-  MAPPING_CATEGORIES,
   maxTimeToIdentifyRSGeneratedCall,
   INTEGERATION,
   SHOPIFY_NON_ECOM_TRACK_MAP,
@@ -18,7 +17,7 @@ const {
   getHashLineItems,
   createPropertiesForEcomEvent,
   getProductsListFromLineItems,
-  extractEmailFromPayload
+  extractEmailFromPayload,
 } = require('./commonUtils');
 const logger = require('../../../logger');
 const { removeUndefinedAndNullValues } = require('../../util');
@@ -29,7 +28,7 @@ const trackLayer = {
     message.setEventType(EventType.TRACK);
     message.setEventName(RUDDER_ECOM_MAP[shopifyTopic].event);
 
-    let properties = createPropertiesForEcomEvent(event);
+    let properties = createPropertiesForEcomEvent(event, shopifyTopic);
     properties = removeUndefinedAndNullValues(properties);
     message.properties = properties;
     if (event.updated_at) {
@@ -43,9 +42,9 @@ const trackLayer = {
 
   /**
    * This function builds the payload for general track events i.e. non-ecom events
-   * @param {*} event 
-   * @param {*} shopifyTopic 
-   * @returns 
+   * @param {*} event
+   * @param {*} shopifyTopic
+   * @returns
    */
   trackPayloadBuilder(event, shopifyTopic) {
     const message = new Message(INTEGERATION);
@@ -134,8 +133,8 @@ const trackLayer = {
 
   /**
    * This function will update the cart state in redis
-   * @param {*} updatedCartState 
-   * @param {*} cart_token 
+   * @param {*} updatedCartState
+   * @param {*} cart_token
    */
   // async updateCartState(updatedCartState, cart_token) {
   //   await RedisDB.setVal(`${cart_token}`, updatedCartState);
@@ -143,8 +142,8 @@ const trackLayer = {
   /**
    * This function return the updated event name for carts_update event based on previous cart state
    * And updates the state of cart in redis as well
-   * @param {*} event 
-   * @param {*} redisData 
+   * @param {*} event
+   * @param {*} redisData
    */
   // checkForProductAddedOrRemovedAndUpdate(event, redisData) {
   //   const { productsListInfo } = redisData;
@@ -164,15 +163,15 @@ const trackLayer = {
 
   /**
    * This function handles the event from shopify side which is mapped to rudder ecom event based upon the contents of payload.
-   * @param {*} event 
-   * @param {*} eventName 
-   * @param {*} redisData 
+   * @param {*} event
+   * @param {*} eventName
+   * @param {*} redisData
    * @returns the updated name of the payload
    */
   getUpdatedEventName(event, eventName, redisData) {
     let updatedEventName;
 
-    if (eventName === "carts_update") {
+    if (eventName === 'carts_update') {
       this.checkForProductAddedOrRemovedAndUpdate(event, redisData);
     }
     /* This function will check for cart_update if its is due Product Added or Product Removed and
@@ -223,6 +222,6 @@ const trackLayer = {
     payload = enrichPayload.enrichTrackPayloads(event, payload);
     payload = idResolutionLayer.resolveId(event, payload, redisData, metricMetadata);
     return payload;
-  }
+  },
 };
 module.exports = { trackLayer };

@@ -3,7 +3,7 @@ const fs = require('fs');
 const { EventType } = require('../../../constants');
 const { getMappingConfig } = require('../../util');
 
-const INTEGERATION = 'SHOPIFY';
+const INTEGRATION = 'SHOPIFY';
 
 const NO_OPERATION_SUCCESS = {
   outputToSource: {
@@ -84,12 +84,11 @@ const MAPPING_CATEGORIES = {
 const LINE_ITEM_EXCLUSION_FIELDS = [
   'product_id',
   'sku',
-  'name',
+  'title',
   'price',
   'vendor',
   'quantity',
-  'variant_title',
-  'variant_id',
+  'variant_title'
 ];
 
 const PROPERTIES_MAPPING_EXCLUSION_FIELDS = [
@@ -109,7 +108,7 @@ module.exports = {
   NO_OPERATION_SUCCESS,
   identifierEvents,
   IDENTIFY_TOPICS,
-  INTEGERATION,
+  INTEGRATION,
   SHOPIFY_TO_RUDDER_ECOM_EVENTS_MAP,
   MAPPING_CATEGORIES,
   RUDDER_ECOM_MAP,

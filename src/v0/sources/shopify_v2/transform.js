@@ -8,7 +8,7 @@ const { identifyLayer } = require('./identifyEventsLayer');
 const { trackLayer } = require('./trackEventsLayer');
 const { identifierEventLayer } = require('./identifierEventsUtils');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
-const { IDENTIFY_TOPICS, INTEGERATION } = require('./config');
+const { IDENTIFY_TOPICS, INTEGRATION } = require('./config');
 
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
@@ -29,7 +29,7 @@ const processEvent = async (inputEvent, metricMetadata) => {
   if (message.outputToSource) {
     return message;
   }
-  message.setProperty(`integrations.${INTEGERATION}`, true);
+  message.setProperty(`integrations.${INTEGRATION}`, true);
   message.setProperty('context.library', {
     name: 'RudderStack Shopify Cloud',
     version: '1.0.0',

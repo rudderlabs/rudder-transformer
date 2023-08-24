@@ -1,13 +1,13 @@
 const Message = require('../message');
 const { EventType } = require('../../../constants');
 const {
-    INTEGERATION,
+    INTEGRATION,
     MAPPING_CATEGORIES
 } = require('./config');
 
 const identifyLayer = {
     identifyPayloadBuilder(event) {
-        const message = new Message(INTEGERATION);
+        const message = new Message(INTEGRATION);
         message.setEventType(EventType.IDENTIFY);
         message.setPropertiesV2(event, MAPPING_CATEGORIES[EventType.IDENTIFY]);
         if (event.updated_at) {

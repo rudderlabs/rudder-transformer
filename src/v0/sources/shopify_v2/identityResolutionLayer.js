@@ -4,7 +4,7 @@ const { EventType } = require('../../../constants');
 const {
     SHOPIFY_ADMIN_ONLY_EVENTS,
     useRedisDatabase,
-    INTEGERATION
+    INTEGRATION
 } = require('./config');
 const { getCartToken, getDataFromRedis, extractEmailFromPayload } = require('./commonUtils');
 const { generateUUID, isDefinedAndNotNull } = require('../../util');

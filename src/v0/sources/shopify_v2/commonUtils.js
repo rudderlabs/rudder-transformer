@@ -72,10 +72,6 @@ const getHashLineItems = (cart) => {
   return 'EMPTY';
 };
 
-const getVariantString = (lineItem) => {
-  const { variant_id, variant_price, variant_title } = lineItem;
-  return `${variant_id || ''} ${variant_price || ''} ${variant_title || ''}`;
-};
 
 const getProductsListFromLineItems = (lineItems) => {
   if (!lineItems || lineItems.length === 0) {
@@ -85,7 +81,6 @@ const getProductsListFromLineItems = (lineItems) => {
   lineItems.forEach((lineItem) => {
     const product = constructPayload(lineItem, lineItemsMappingJSON);
     extractCustomFields(lineItem, product, 'root', LINE_ITEM_EXCLUSION_FIELDS);
-    product.variant = getVariantString(lineItem);
     products.push(product);
   });
   return products;

@@ -11,8 +11,8 @@
     "destKey": "sku"
   },
   {
-    "sourceKeys": "name",
-    "destKey": "title"
+    "sourceKeys": "title",
+    "destKey": "name"
   },
   {
     "sourceKeys": "price",

@@ -4,7 +4,7 @@ const {
   NO_OPERATION_SUCCESS,
   SHOPIFY_TO_RUDDER_ECOM_EVENTS_MAP,
   maxTimeToIdentifyRSGeneratedCall,
-  INTEGERATION,
+  INTEGRATION,
   SHOPIFY_NON_ECOM_TRACK_MAP,
 } = require('./config');
 const { RedisDB } = require('../../../util/redis/redisConnector');
@@ -24,7 +24,7 @@ const { removeUndefinedAndNullValues } = require('../../util');
 
 const trackLayer = {
   ecomPayloadBuilder(event, shopifyTopic) {
-    const message = new Message(INTEGERATION);
+    const message = new Message(INTEGRATION);
     message.setEventType(EventType.TRACK);
     message.setEventName(RUDDER_ECOM_MAP[shopifyTopic].event);
 
@@ -36,7 +36,7 @@ const trackLayer = {
       // converting shopify updated_at timestamp to rudder timestamp format
       message.setTimestamp(new Date(event.updated_at).toISOString());
     }
-    enrichPayload.setExtraNonEcomProperties(message, event, shopifyTopic);
+    // enrichPayload.setExtraNonEcomProperties(message, event, shopifyTopic);
     return message;
   },
 
@@ -47,7 +47,7 @@ const trackLayer = {
    * @returns
    */
   trackPayloadBuilder(event, shopifyTopic) {
-    const message = new Message(INTEGERATION);
+    const message = new Message(INTEGRATION);
     message.setEventType(EventType.TRACK);
     message.setEventName(SHOPIFY_NON_ECOM_TRACK_MAP[shopifyTopic]);
     const excludedKeys = [

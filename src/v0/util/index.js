@@ -560,18 +560,18 @@ const handleSourceKeysOperation = ({ message, operationObject }) => {
     case 'additionInArray': {
       result = 0;
       const { propertyKey, arrayKey } = args[0];
-      const arrayValues = _.get(message, arrayKey);
-      if (_.isArray(arrayValues)) {
-        result = arrayValues.reduce((acc, item) => acc + _.get(item, propertyKey, 0), 0);
+      const arrayValues = get(message, arrayKey);
+      if (_.isArray(arrayValues) && isNotEmpty(arrayValues)) {
+        result = arrayValues.reduce((acc, item) => acc + get(item, propertyKey, 0), 0);
         return result;
       }
       return null;
     }
     case 'concatenationInArray': {
       const { propertyKey, arrayKey } = args[0];
-      const concatArray = _.get(message, arrayKey);
-      if (_.isArray(concatArray)) {
-        result = concatArray.map((item) => _.get(item, propertyKey, '')).join(', ');
+      const arrayValues = get(message, arrayKey);
+      if (_.isArray(arrayValues) && isNotEmpty(arrayValues)) {
+        result = arrayValues.map((item) => get(item, propertyKey, '')).join(', ');
         return result;
       }
       return null;

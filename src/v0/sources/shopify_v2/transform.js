@@ -19,11 +19,11 @@ const processEvent = async (inputEvent, metricMetadata) => {
   if (IDENTIFY_TOPICS.includes(shopifyTopic)) {
     message = identifyLayer.identifyPayloadBuilder(shopifyEvent);
   } else {
-    const cartToken = getCartToken(message);
+    const cartToken = getCartToken(shopifyEvent, shopifyTopic);
     if (isDefinedAndNotNull(cartToken)) {
       redisData = await getDataFromRedis(cartToken, metricMetadata);
     }
-    message = trackLayer.processtrackEvent(shopifyEvent, redisData, metricMetadata);
+    message = await trackLayer.processTrackEvent(shopifyEvent, shopifyTopic, redisData, metricMetadata);
   }
   // check for if message is NO_OPERATION_SUCCESS Payload
   if (message.outputToSource) {

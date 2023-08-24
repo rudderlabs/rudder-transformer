@@ -14,16 +14,12 @@ const NO_OPERATION_SUCCESS = {
 
 const identifierEvents = ['rudderIdentifier', 'rudderSessionIdentifier'];
 
-const IDENTIFY_TOPICS = {
-  CUSTOMERS_CREATE: 'customers_create',
-  CUSTOMERS_UPDATE: 'customers_update',
-};
+const IDENTIFY_TOPICS = ['customers_create', 'customers_update'];
 
 const RUDDER_ECOM_MAP = {
-  // TOBEUPDATED:
   checkouts_create: {
     event: 'Checkout Started',
-    name: 'CheckoutStartedConfig.json',
+    mapping: 'CheckoutStartedConfig.json',
     lineItems: true,
   },
   // Shopify checkout_update topic mapped with RudderStack Checkout Step Viewed, Checkout Step Completed and Payment Info Entered events
@@ -52,9 +48,8 @@ const SHOPIFY_ADMIN_ONLY_EVENTS = ['Order Deleted', 'Fulfillments Create', 'Fulf
  * track events not belonging to this map or ecom events will
  * be discarded.
  */
-const SHOPIFY_TRACK_MAP = {
+const SHOPIFY_NON_ECOM_TRACK_MAP = {
   checkouts_delete: 'Checkout Deleted',
-  carts_update: 'Cart Update',
   customers_enable: 'Customer Enabled',
   customers_disable: 'Customer Disabled',
   fulfillments_create: 'Fulfillments Create',
@@ -65,6 +60,7 @@ const SHOPIFY_TRACK_MAP = {
   orders_partially_fullfilled: 'Order Partially Fulfilled',
   orders_create: 'Order Created',
 };
+
 
 const identifyMappingJSON = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, 'data', 'identifyMapping.json')),
@@ -81,7 +77,6 @@ const lineItemsMappingJSON = JSON.parse(
 const MAPPING_CATEGORIES = {
   [EventType.IDENTIFY]: identifyMappingJSON,
   [EventType.TRACK]: propertiesMappingJSON,
-  // update it for every ECOM ma[ong and genera mapping]
 };
 
 const LINE_ITEM_EXCLUSION_FIELDS = [
@@ -92,6 +87,7 @@ const LINE_ITEM_EXCLUSION_FIELDS = [
   'vendor',
   'quantity',
   'variant_title',
+  'variant_id'
 ];
 
 const PROPERTIES_MAPPING_EXCLUSION_FIELDS = [
@@ -119,7 +115,7 @@ module.exports = {
   propertiesMappingJSON,
   LINE_ITEM_EXCLUSION_FIELDS,
   PROPERTIES_MAPPING_EXCLUSION_FIELDS,
-  SHOPIFY_TRACK_MAP,
+  SHOPIFY_NON_ECOM_TRACK_MAP,
   SHOPIFY_ADMIN_ONLY_EVENTS,
   maxTimeToIdentifyRSGeneratedCall,
 };

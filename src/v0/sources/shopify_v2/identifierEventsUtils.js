@@ -52,5 +52,6 @@ const identifierEventLayer = {
     }
     return NO_OPERATION_SUCCESS;
   }
-}
-module.exports(identifierEventLayer)
+};
+
+module.exports = { identifierEventLayer };

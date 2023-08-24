@@ -21,8 +21,33 @@ const processValues = (obj) => {
   });
 };
 
+const isSubEventTypeProfiles = (message) => {
+  // check if profiles_model, profiles_entity, profiles_id_type are present in message.context.sources
+  const { context } = message;
+  if (!context?.sources) {
+    return false;
+  }
+  const { sources } = context;
+  return sources.profiles_entity && sources.profiles_id_type && sources.profiles_model;
+};
+
+const transforrmSubEventTypeProfiles = (message, workspaceId) => {
+  // form the hash
+  const hash = `${workspaceId}:${message.context.sources.profiles_entity}:${message.context.sources.profiles_id_type}:${message.userId}`;
+  const key = `${message.context.sources.profiles_model}`;
+  const value = JSON.stringify(message.traits);
+  return {
+    message: {
+      hash,
+      key,
+      value,
+    },
+    userId: message.userId,
+  };
+};
+
 const process = (event) => {
-  const { message, destination } = event;
+  const { message, destination, metadata } = event;
   const messageType = message && message.type && message.type.toLowerCase();
 
   if (messageType !== EventType.IDENTIFY) {
@@ -35,6 +60,11 @@ const process = (event) => {
 
   const { prefix } = destination.Config;
   const keyPrefix = isEmpty(prefix) ? '' : `${prefix.trim()}:`;
+
+  if (isSubEventTypeProfiles(message)) {
+    const { workspaceId } = metadata;
+    return transforrmSubEventTypeProfiles(message, workspaceId);
+  }
 
   const hmap = {
     key: `${keyPrefix}user:${_.toString(message.userId)}`,

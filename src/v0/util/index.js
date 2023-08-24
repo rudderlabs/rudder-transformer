@@ -243,7 +243,7 @@ const getValueFromPropertiesOrTraits = ({ message, key }) => {
 };
 
 // function to flatten a json
-function flattenJson(data, separator = '.', mode = 'normal') {
+function flattenJson(data, separator = '.', mode = 'normal', flattenArrays = true) {
   const result = {};
 
   // a recursive function to loop through the array of the data
@@ -252,15 +252,20 @@ function flattenJson(data, separator = '.', mode = 'normal') {
     if (Object(cur) !== cur) {
       result[prop] = cur;
     } else if (Array.isArray(cur)) {
-      for (i = 0; i < cur.length; i += 1) {
-        if (mode === 'strict') {
-          recurse(cur[i], `${prop}${separator}${i}`);
-        } else {
-          recurse(cur[i], `${prop}[${i}]`);
+      if (flattenArrays || typeof cur?.[0] === 'object') {
+        for (i = 0; i < cur.length; i += 1) {
+          if (mode === 'strict') {
+            recurse(cur[i], `${prop}${separator}${i}`);
+          } else {
+            recurse(cur[i], `${prop}[${i}]`);
+          }
         }
-      }
-      if (cur.length === 0) {
-        result[prop] = [];
+        if (cur.length === 0) {
+          result[prop] = [];
+        }
+      } else {
+        // to not flatten the array of non-object (string, booleans, numbers)
+        result[prop] = cur;
       }
     } else {
       let isEmptyFlag = true;
@@ -271,7 +276,6 @@ function flattenJson(data, separator = '.', mode = 'normal') {
       if (isEmptyFlag && prop) result[prop] = {};
     }
   }
-
   recurse(data, '');
   return result;
 }

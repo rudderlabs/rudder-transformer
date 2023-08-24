@@ -689,7 +689,7 @@
           {
             "country": "India",
             "dob": "01/01/1971",
-            "email": "anuj.kumar@gmail.com",
+            "email": "a@gmail.com",
             "first_name": "anuj",
             "gender": "M",
             "home_city": "Mathura",
@@ -728,7 +728,7 @@
           {
             "country": "India",
             "dob": "01/01/1971",
-            "email": "anuj.kumar@gmail.com",
+            "email": "a@gmail.com",
             "first_name": "anuj",
             "gender": null,
             "home_city": "Mathura",
@@ -805,7 +805,7 @@
         "attributes": [
           {
             "dob": "01/01/1971",
-            "email": "anil.kumar@hotmail.com",
+            "email": "a@hotmail.com",
             "first_name": "anil",
             "gender": null,
             "image_url": "https://i.kym-cdn.com/entries/icons/mobile/000/034/772/anuj-1.jpg",

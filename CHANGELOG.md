@@ -2,6 +2,42 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.39.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.38.0...v1.39.0) (2023-08-20)
+
+
+### Features
+
+* add remove empty values at all level utility ([#2459](https://github.com/rudderlabs/rudder-transformer/issues/2459)) ([39e5ef9](https://github.com/rudderlabs/rudder-transformer/commit/39e5ef995e53af7b60f51223e5c423548bc5140c))
+* add support for test events for Pinterest tag ([#2460](https://github.com/rudderlabs/rudder-transformer/issues/2460)) ([a975eeb](https://github.com/rudderlabs/rudder-transformer/commit/a975eeb9573b88454fb2dba32225601d218c9e40))
+* **INT-162:** adding email as fallback to userId ([#2487](https://github.com/rudderlabs/rudder-transformer/issues/2487)) ([9dc8ecb](https://github.com/rudderlabs/rudder-transformer/commit/9dc8ecbdd4d359a1dbd5c0f37c5bdf469ed1f96a))
+* **INT-262:** added page call support ([#2446](https://github.com/rudderlabs/rudder-transformer/issues/2446)) ([b774172](https://github.com/rudderlabs/rudder-transformer/commit/b774172e781707e52498e2c384010500db4f7486))
+* **INT-319:** update deletion support to v2 token authorization ([#2486](https://github.com/rudderlabs/rudder-transformer/issues/2486)) ([34661b9](https://github.com/rudderlabs/rudder-transformer/commit/34661b9a74ca1e29112afb3fd2b0d3111f509fe5))
+* **iterable:** refactored destination code ([#2390](https://github.com/rudderlabs/rudder-transformer/issues/2390)) ([1ca6602](https://github.com/rudderlabs/rudder-transformer/commit/1ca66021cd9a48d987bc3ddb56e35cc7093222f3)), closes [#2424](https://github.com/rudderlabs/rudder-transformer/issues/2424) [#2477](https://github.com/rudderlabs/rudder-transformer/issues/2477)
+* onboard batching support for clevertap ([#2418](https://github.com/rudderlabs/rudder-transformer/issues/2418)) ([27af06f](https://github.com/rudderlabs/rudder-transformer/commit/27af06fb4710058bf4ecbfebe7420c8121e36fe1))
+* **optimizely:** add event name as fallback ([#2490](https://github.com/rudderlabs/rudder-transformer/issues/2490)) ([999595e](https://github.com/rudderlabs/rudder-transformer/commit/999595eaa0c255ce69dc0becea7b85e4aebc68ee))
+* **zendesk:** add source field mapping ([#2455](https://github.com/rudderlabs/rudder-transformer/issues/2455)) ([0fcc00a](https://github.com/rudderlabs/rudder-transformer/commit/0fcc00aa82677a62eccea7cbd23661c370c87f28))
+
+
+### Bug Fixes
+
+* add error notifier ([6a99e61](https://github.com/rudderlabs/rudder-transformer/commit/6a99e61bfc9a3b78bf142b57dd344d1643ae6d3e))
+* add error notifier ([a84755a](https://github.com/rudderlabs/rudder-transformer/commit/a84755a62c3fd61421e3e0f10689c9e1848a8a66))
+* add mock for test ([dd9b2d4](https://github.com/rudderlabs/rudder-transformer/commit/dd9b2d497c8371821eef0a56e876c0aa03df9a86))
+* add optional chaining and refactor get externalId util ([#2454](https://github.com/rudderlabs/rudder-transformer/issues/2454)) ([d4a8501](https://github.com/rudderlabs/rudder-transformer/commit/d4a8501f1d325a83abeb516bc3158be0988f6f9f))
+* add response handling and simplify code ([8728c30](https://github.com/rudderlabs/rudder-transformer/commit/8728c307cec8689eb65b68e986dd386cefd5bffc))
+* **intercom:** group call ([#2484](https://github.com/rudderlabs/rudder-transformer/issues/2484)) ([1f9bda7](https://github.com/rudderlabs/rudder-transformer/commit/1f9bda7cb4f425c40112a1bfb847d93f0e64f724))
+* klaviyo error handling ([3db6305](https://github.com/rudderlabs/rudder-transformer/commit/3db630585f112a36f1163c5e7922135cae48b019))
+* klaviyo error handling ([#2466](https://github.com/rudderlabs/rudder-transformer/issues/2466)) ([1c8ee9f](https://github.com/rudderlabs/rudder-transformer/commit/1c8ee9fe5010982468f6af232b411d60856f63c0))
+* **klaviyo:** flatten properties if flattenProperties setting enabled from UI ([#2491](https://github.com/rudderlabs/rudder-transformer/issues/2491)) ([1091981](https://github.com/rudderlabs/rudder-transformer/commit/1091981ee0fdd5d8bc26f2a0eb4811d6d4ba9de5))
+* **marketo:** add check for rETL events during getting leadId ([#2457](https://github.com/rudderlabs/rudder-transformer/issues/2457)) ([a416405](https://github.com/rudderlabs/rudder-transformer/commit/a41640599c648b84a545f3845625a3668c844bc6))
+* optimizely get datafile call ([#2469](https://github.com/rudderlabs/rudder-transformer/issues/2469)) ([3f4a811](https://github.com/rudderlabs/rudder-transformer/commit/3f4a811d3cc932598ba8843feece95b1f22f78fb))
+* parameterizedSearch to return the exact match ([#2428](https://github.com/rudderlabs/rudder-transformer/issues/2428)) ([183b7b6](https://github.com/rudderlabs/rudder-transformer/commit/183b7b61ae6595bae1c1a67c263a5f8fefc78631))
+* pr conflicts ([#2483](https://github.com/rudderlabs/rudder-transformer/issues/2483)) ([9837b51](https://github.com/rudderlabs/rudder-transformer/commit/9837b51a931dd9b82e8290ac6a3c6f8d2699db14))
+* prioritize timestamp over original timestamp ([#2462](https://github.com/rudderlabs/rudder-transformer/issues/2462)) ([49dc36a](https://github.com/rudderlabs/rudder-transformer/commit/49dc36a8bd459dcb8a923d5cd4b46d2e4d090749))
+* remove unnecessary condition ([9407d27](https://github.com/rudderlabs/rudder-transformer/commit/9407d279c413a2eb5b614d1b5cce870c2b869bed))
+* salesforce upsert when identifier is not present ([#2468](https://github.com/rudderlabs/rudder-transformer/issues/2468)) ([8a18de4](https://github.com/rudderlabs/rudder-transformer/commit/8a18de42a174b8939377e4a738510c04044600d6))
+* **splitio:** remove empty objects/ array properties ([#2488](https://github.com/rudderlabs/rudder-transformer/issues/2488)) ([378854f](https://github.com/rudderlabs/rudder-transformer/commit/378854f3b0f86383db016359e324e52ff37c49fe))
+
 ## [1.38.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.37.0...v1.38.0) (2023-08-14)
 
 

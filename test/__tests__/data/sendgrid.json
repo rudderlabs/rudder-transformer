@@ -27,7 +27,7 @@
           "eventDeliveryTS": 1668424218224,
           "eventNamesSettings": [{ "event": "open" }],
           "footer": false,
-          "fromEmail": "ankitcingh93@gmail.com",
+          "fromEmail": "a@g.com",
           "fromName": "",
           "ganalytics": false,
           "group": "",
@@ -94,7 +94,7 @@
           "eventDeliveryTS": 1668424218224,
           "eventNamesSettings": [{ "event": "open" }],
           "footer": false,
-          "fromEmail": "ankitcingh93@gmail.com",
+          "fromEmail": "a@g.com",
           "fromName": "",
           "ganalytics": false,
           "group": "",
@@ -188,7 +188,7 @@
           "eventDeliveryTS": 1668424218224,
           "eventNamesSettings": [{ "event": "open" }],
           "footer": false,
-          "fromEmail": "ankitcingh93@gmail.com",
+          "fromEmail": "a@g.com",
           "fromName": "",
           "ganalytics": false,
           "group": "",
@@ -311,7 +311,7 @@
             {
               "to": [
                 {
-                  "email": "ankitcingh93@gmail.com"
+                  "email": "a@g.com"
                 },
                 {
                   "name": "hello"
@@ -347,7 +347,7 @@
             {
               "to": [
                 {
-                  "email": "ankitcingh93@gmail.com"
+                  "email": "a@g.com"
                 }
               ],
               "subject": "hey there"
@@ -427,7 +427,7 @@
             {
               "to": [
                 {
-                  "email": "ankitcingh93@gmail.com"
+                  "email": "a@g.com"
                 },
                 {
                   "name": "hello"
@@ -463,7 +463,7 @@
             {
               "to": [
                 {
-                  "email": "ankitcingh93@gmail.com"
+                  "email": "a@g.com"
                 }
               ],
               "subject": "hey there"
@@ -545,7 +545,7 @@
             {
               "to": [
                 {
-                  "email": "ankitcingh93@gmail.com"
+                  "email": "a@g.com"
                 },
                 {
                   "name": "hello"
@@ -581,7 +581,7 @@
             {
               "to": [
                 {
-                  "email": "ankitcingh93@gmail.com"
+                  "email": "a@g.com"
                 }
               ],
               "subject": "hey there"
@@ -667,7 +667,7 @@
             {
               "to": [
                 {
-                  "email": "ankitcingh93@gmail.com"
+                  "email": "a@g.com"
                 },
                 {
                   "name": "hello"
@@ -754,7 +754,7 @@
             {
               "to": [
                 {
-                  "email": "ankitcingh93@gmail.com"
+                  "email": "a@g.com"
                 },
                 {
                   "name": "hello"
@@ -790,7 +790,7 @@
             {
               "to": [
                 {
-                  "email": "ankitcingh93@gmail.com"
+                  "email": "a@g.com"
                 }
               ],
               "subject": "hey there"
@@ -891,7 +891,7 @@
             {
               "to": [
                 {
-                  "email": "ankitcingh93@gmail.com"
+                  "email": "a@g.com"
                 },
                 {
                   "name": "hello"
@@ -927,7 +927,7 @@
             {
               "to": [
                 {
-                  "email": "ankitcingh93@gmail.com"
+                  "email": "a@g.com"
                 }
               ],
               "subject": "hey there"
@@ -1032,7 +1032,7 @@
             {
               "to": [
                 {
-                  "email": "ankitcingh93@gmail.com"
+                  "email": "a@g.com"
                 },
                 {
                   "name": "hello"
@@ -1068,7 +1068,7 @@
             {
               "to": [
                 {
-                  "email": "ankitcingh93@gmail.com"
+                  "email": "a@g.com"
                 }
               ],
               "subject": "hey there"

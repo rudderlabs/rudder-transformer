@@ -94,7 +94,7 @@ class Prometheus {
         logger.warn(
           `Prometheus: Summary metric ${name} not found in the registry. Creating a new one`,
         );
-        metric = this.newSummaryStat(name, '', Object.keys(tags));
+        metric = this.newSummaryStat(name, name, Object.keys(tags));
       }
       metric.observe(tags, value);
     } catch (e) {
@@ -109,7 +109,7 @@ class Prometheus {
         logger.warn(
           `Prometheus: Timing metric ${name} not found in the registry. Creating a new one`,
         );
-        metric = this.newHistogramStat(name, '', Object.keys(tags));
+        metric = this.newHistogramStat(name, name, Object.keys(tags));
       }
       metric.observe(tags, (new Date() - start) / 1000);
     } catch (e) {
@@ -124,7 +124,7 @@ class Prometheus {
         logger.warn(
           `Prometheus: Histogram metric ${name} not found in the registry. Creating a new one`,
         );
-        metric = this.newHistogramStat(name, '', Object.keys(tags));
+        metric = this.newHistogramStat(name, name, Object.keys(tags));
       }
       metric.observe(tags, value);
     } catch (e) {
@@ -143,7 +143,7 @@ class Prometheus {
         logger.warn(
           `Prometheus: Counter metric ${name} not found in the registry. Creating a new one`,
         );
-        metric = this.newCounterStat(name, '', Object.keys(tags));
+        metric = this.newCounterStat(name, name, Object.keys(tags));
       }
       metric.inc(tags, delta);
     } catch (e) {
@@ -158,7 +158,7 @@ class Prometheus {
         logger.warn(
           `Prometheus: Gauge metric ${name} not found in the registry. Creating a new one`,
         );
-        metric = this.newGaugeStat(name, '', Object.keys(tags));
+        metric = this.newGaugeStat(name, name, Object.keys(tags));
       }
       metric.set(tags, value);
     } catch (e) {
@@ -484,19 +484,13 @@ class Prometheus {
         name: 'shopify_redis_calls',
         help: 'shopify_redis_calls',
         type: 'counter',
-        labelNames: ['type', 'writeKey', 'source'],
-      },
-      {
-        name: 'shopify_redis_success',
-        help: 'shopify_redis_success',
-        type: 'counter',
-        labelNames: ['field', 'event', 'writeKey', 'source'],
+        labelNames: ['type', 'writeKey', 'source', 'field'],
       },
       {
         name: 'shopify_redis_no_val',
         help: 'shopify_redis_no_val',
         type: 'counter',
-        labelNames: ['event', 'writeKey', 'source'],
+        labelNames: ['writeKey', 'source'],
       },
       {
         name: 'events_to_process',
@@ -547,8 +541,14 @@ class Prometheus {
 
       // Histograms
       {
+        name: 'outgoing_request_latency',
+        help: 'Outgoing HTTP requests duration in seconds',
+        type: 'histogram',
+        labelNames: ['feature', 'destType', 'endpointPath'],
+      },
+      {
         name: 'http_request_duration',
-        help: 'Summary of HTTP requests duration in seconds',
+        help: 'Incoming HTTP requests duration in seconds',
         type: 'histogram',
         labelNames: ['method', 'route', 'code'],
       },
@@ -580,7 +580,14 @@ class Prometheus {
         name: 'dest_transform_request_latency',
         help: 'dest_transform_request_latency',
         type: 'histogram',
-        labelNames: ['destination', 'version', 'sourceType', 'destinationType', 'k8_namespace'],
+        labelNames: [
+          'destination',
+          'version',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+          'feature',
+        ],
       },
       {
         name: 'user_transform_request_latency',
@@ -652,6 +659,12 @@ class Prometheus {
         help: 'fetch_call_duration',
         type: 'histogram',
         labelNames: ['versionId'],
+      },
+      {
+        name: 'fetch_dns_resolve_time',
+        help: 'fetch_dns_resolve_time',
+        type: 'histogram',
+        labelNames: ['transformerVersionId', 'error'],
       },
       {
         name: 'geo_call_duration',

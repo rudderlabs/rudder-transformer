@@ -28,12 +28,20 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
  * @api https://docs.custify.com/#tag/Company/paths/~1company/post
  */
 const createUpdateCompany = async (companyPayload, Config) => {
-  const companyResponse = await httpPOST(ConfigCategory.GROUP_COMPANY.endpoint, companyPayload, {
-    headers: {
-      'Content-Type': JSON_MIME_TYPE,
-      Authorization: `Bearer ${Config.apiKey}`,
+  const companyResponse = await httpPOST(
+    ConfigCategory.GROUP_COMPANY.endpoint,
+    companyPayload,
+    {
+      headers: {
+        'Content-Type': JSON_MIME_TYPE,
+        Authorization: `Bearer ${Config.apiKey}`,
+      },
     },
-  });
+    {
+      destType: 'custify',
+      feature: 'transformation',
+    },
+  );
   const processedCompanyResponse = processAxiosResponse(companyResponse);
   if (!isHttpStatusSuccess(processedCompanyResponse.status)) {
     const errMessage = JSON.stringify(processedCompanyResponse.response) || '';

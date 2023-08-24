@@ -187,6 +187,14 @@ steps:
   - name: payload
     template: |
       $.outputs.eventNames.().({...$.outputs.basePayload, event_name: .})[]
+    
+  - name: checkSendTestEventConfig
+    description: |
+      If sendTestEvent is enabled, we send test event to the destination
+      ref: https://help.pinterest.com/en/business/article/track-conversions-with-the-conversions-api
+    template: |
+        ^.destination.Config.sendAsTestEvent ? {"test": true} : {}
+        
 
   - name: buildResponseForBatchMode
     description: In batchMode we return payload directly
@@ -213,7 +221,7 @@ steps:
         "headers": {
           "Content-Type": "application/json"
         },
-        "params": {},
+        "params": $.outputs.checkSendTestEventConfig,
         "files": {}
       })[]
     else:
@@ -235,6 +243,6 @@ steps:
             "Content-Type": "application/json",
              Authorization: "Bearer " + ^.destination.Config.conversionToken,
           },
-          "params": {},
+          "params": $.outputs.checkSendTestEventConfig,
           "files": {}
         })[]

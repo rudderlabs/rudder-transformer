@@ -1,4 +1,4 @@
-const axios = require('axios');
+const myAxios = require('../../../util/myAxios');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const logger = require('../../../logger');
 const { ConfigurationError, RetryableError, NetworkError } = require('../../util/errorTypes');
@@ -9,7 +9,7 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 const searchGroup = async (groupName, Config) => {
   let resp;
   try {
-    resp = await axios.post(
+    resp = await myAxios.post(
       `${ENDPOINTS.groupSearchEndpoint(Config.domain)}`,
       getLookupPayload(groupName),
       {
@@ -18,6 +18,7 @@ const searchGroup = async (groupName, Config) => {
           'Content-Type': JSON_MIME_TYPE,
         },
       },
+      { destType: 'gainsight', feature: 'transformation' },
     );
   } catch (error) {
     let errMessage = '';
@@ -40,7 +41,7 @@ const searchGroup = async (groupName, Config) => {
 const createGroup = async (payload, Config) => {
   let resp;
   try {
-    resp = await axios.post(
+    resp = await myAxios.post(
       `${ENDPOINTS.groupCreateEndpoint(Config.domain)}`,
       {
         records: [payload],
@@ -51,6 +52,7 @@ const createGroup = async (payload, Config) => {
           'Content-Type': JSON_MIME_TYPE,
         },
       },
+      { destType: 'gainsight', feature: 'transformation' },
     );
   } catch (error) {
     let errMessage = '';
@@ -73,7 +75,7 @@ const createGroup = async (payload, Config) => {
 const updateGroup = async (payload, Config) => {
   let resp;
   try {
-    resp = await axios.put(
+    resp = await myAxios.put(
       `${ENDPOINTS.groupUpdateEndpoint(Config.domain)}`,
       {
         records: [payload],
@@ -87,6 +89,7 @@ const updateGroup = async (payload, Config) => {
           keys: 'Name',
         },
       },
+      { destType: 'gainsight', feature: 'transformation' },
     );
   } catch (error) {
     let errMessage = '';

@@ -8,5 +8,10 @@ const INTEGRATION_SERVICE = {
   NATIVE_SOURCE: 'native_source',
   PLUGIN_DEST: 'plugin_dest',
 };
+const CHANNELS= {
+  sources: 'sources'
+};
 
-module.exports = { SUPPORTED_VERSIONS, API_VERSION, INTEGRATION_SERVICE };
+const RETL_TIMESTAMP = 'timestamp';
+
+module.exports = { SUPPORTED_VERSIONS, API_VERSION, INTEGRATION_SERVICE, CHANNELS, RETL_TIMESTAMP };

@@ -21,6 +21,8 @@ const CONFIG_CATEGORIES = {
   },
 };
 
+const configFieldsToCheck = ['siteID', 'apiKey'];
+
 const MAX_BATCH_SIZE = 1000;
 const DEFAULT_OBJECT_ACTION = 'identify';
 const OBJECT_ACTIONS = ['identify', 'delete', 'add_relationships', 'delete_relationships'];
@@ -40,4 +42,5 @@ module.exports = {
   DEFAULT_OBJECT_ACTION,
   DEVICE_DELETE_ENDPOINT,
   DEVICE_REGISTER_ENDPOINT,
+  configFieldsToCheck,
 };

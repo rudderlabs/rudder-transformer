@@ -28,5 +28,9 @@
     "metadata": {
       "type": "secondTimestamp"
     }
+  },
+  {
+    "destKey": "metadata",
+    "sourceKeys": "properties"
   }
 ]

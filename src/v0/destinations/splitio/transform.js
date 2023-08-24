@@ -7,6 +7,7 @@ const {
 const { EventType } = require('../../../constants');
 const {
   removeUndefinedAndNullValues,
+  removeUndefinedNullValuesAndEmptyObjectArray,
   defaultPostRequestConfig,
   defaultRequestConfig,
   constructPayload,
@@ -40,7 +41,7 @@ function responseBuilderSimple(payload, category, destination) {
 function populateOutputProperty(inputObject) {
   const outputProperty = {};
   Object.keys(inputObject).forEach((key) => {
-    if (!KEY_CHECK_LIST.includes(key) && !Array.isArray(inputObject[key])) {
+    if (!KEY_CHECK_LIST.includes(key)) {
       outputProperty[key] = inputObject[key];
     }
   });
@@ -93,7 +94,9 @@ function prepareResponse(message, destination, category) {
     outputPayload.environmentName = environment;
   }
   outputPayload.trafficTypeName = trafficType;
-  outputPayload.properties = flattenJson(bufferProperty);
+  outputPayload.properties = removeUndefinedNullValuesAndEmptyObjectArray(
+    flattenJson(bufferProperty),
+  );
 
   return outputPayload;
 }

@@ -15,7 +15,9 @@ const {
   getFieldValueFromMessage,
   addExternalIdToTraits,
   simpleProcessRouterDest,
+  flattenJson,
 } = require('../../util');
+const { separateReservedAndRestMetadata } = require('./util');
 const { InstrumentationError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 
@@ -27,15 +29,17 @@ function getCompanyAttribute(company) {
       // the key is not in ReservedCompanyProperties
       if (!ReservedCompanyProperties.includes(key)) {
         const val = company[key];
-        if (val) {
+        if (val !== Object(val)) {
           customAttributes[key] = val;
+        } else {
+          customAttributes[key] = JSON.stringify(val);
         }
       }
     });
 
     companiesList.push({
       company_id: company.id || md5(company.name),
-      custom_attributes: customAttributes,
+      custom_attributes: removeUndefinedAndNullValues(customAttributes),
       name: company.name,
       industry: company.industry,
     });
@@ -43,10 +47,11 @@ function getCompanyAttribute(company) {
   return companiesList;
 }
 
-function validateIdentify(message, payload) {
+function validateIdentify(message, payload, config) {
   const finalPayload = payload;
 
-  finalPayload.update_last_request_at = true;
+  finalPayload.update_last_request_at =
+    config.updateLastRequestAt !== undefined ? config.updateLastRequestAt : true;
   if (payload.user_id || payload.email) {
     if (payload.name === undefined || payload.name === '') {
       const firstName = getFieldValueFromMessage(message, 'firstName');
@@ -66,6 +71,7 @@ function validateIdentify(message, payload) {
       ReservedTraitsProperties.forEach((trait) => {
         delete finalPayload.custom_attributes[trait];
       });
+      finalPayload.custom_attributes = flattenJson(finalPayload.custom_attributes);
     }
 
     return finalPayload;
@@ -73,33 +79,37 @@ function validateIdentify(message, payload) {
   throw new InstrumentationError('Email or userId is mandatory');
 }
 
-function validateTrack(message, payload) {
-  // pass only string, number, boolean properties
-  if (payload.user_id || payload.email) {
-    const metadata = {};
-    if (message.properties) {
-      Object.keys(message.properties).forEach((key) => {
-        const val = message.properties[key];
-        if (val && typeof val !== 'object' && !Array.isArray(val)) {
-          metadata[key] = val;
-        }
-      });
-    }
-    return { ...payload, metadata };
+function validateTrack(payload) {
+  if (!payload.user_id && !payload.email) {
+    throw new InstrumentationError('Email or userId is mandatory');
   }
-  throw new InstrumentationError('Email or userId is mandatory');
+  // pass only string, number, boolean properties
+  if (payload.metadata) {
+    // reserved metadata contains JSON objects that does not requires flattening
+    const { reservedMetadata, restMetadata } = separateReservedAndRestMetadata(payload.metadata);
+    return { ...payload, metadata: { ...reservedMetadata, ...flattenJson(restMetadata) } };
+  }
+
+  return payload;
 }
 
-function checkIfEmailOrUserIdPresent(message) {
-  return !!(message.userId || message.context?.traits?.email);
-}
+const checkIfEmailOrUserIdPresent = (message, Config) => {
+  let user_id = message.userId;
+  if (Config.sendAnonymousId && !user_id) {
+    user_id = message.anonymousId;
+  }
+  return !!(user_id || message.context?.traits?.email);
+};
 
 function attachUserAndCompany(message, Config) {
   const email = message.context?.traits?.email;
-  const { userId } = message;
+  const { userId, anonymousId } = message;
   const requestBody = {};
   if (userId) {
     requestBody.user_id = userId;
+  }
+  if (Config.sendAnonymousId && !userId) {
+    requestBody.user_id = anonymousId;
   }
   if (email) {
     requestBody.email = email;
@@ -147,7 +157,7 @@ function buildCustomAttributes(message, payload) {
   }
 
   if (Object.keys(customAttributes).length > 0) {
-    finalPayload.custom_attributes = customAttributes;
+    finalPayload.custom_attributes = flattenJson(customAttributes);
   }
 
   return finalPayload;
@@ -168,15 +178,17 @@ function validateAndBuildResponse(message, payload, category, destination) {
   const messageType = message.type.toLowerCase();
   switch (messageType) {
     case EventType.IDENTIFY:
-      response.body.JSON = removeUndefinedAndNullValues(validateIdentify(message, payload));
+      response.body.JSON = removeUndefinedAndNullValues(
+        validateIdentify(message, payload, destination.Config),
+      );
       break;
     case EventType.TRACK:
-      response.body.JSON = removeUndefinedAndNullValues(validateTrack(message, payload));
+      response.body.JSON = removeUndefinedAndNullValues(validateTrack(payload));
       break;
     case EventType.GROUP: {
       response.body.JSON = removeUndefinedAndNullValues(buildCustomAttributes(message, payload));
       respList.push(response);
-      if (checkIfEmailOrUserIdPresent(message)) {
+      if (checkIfEmailOrUserIdPresent(message, destination.Config)) {
         const attachUserAndCompanyResponse = attachUserAndCompany(message, destination.Config);
         attachUserAndCompanyResponse.userId = message.anonymousId;
         respList.push(attachUserAndCompanyResponse);
@@ -220,7 +232,7 @@ function processSingleMessage(message, destination) {
   } else {
     payload = constructPayload(message, MappingConfig[category.name]);
   }
-  if (sendAnonymousId && !payload.user_id) {
+  if (category !== ConfigCategory.GROUP && sendAnonymousId && !payload.user_id) {
     payload.user_id = message.anonymousId;
   }
   return validateAndBuildResponse(message, payload, category, destination);

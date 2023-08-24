@@ -44,6 +44,10 @@ const deleteProfile = async (userAttributes, config) => {
         endpoint,
         batchEvent,
         { headers },
+        {
+          destType: 'mp',
+          feature: 'deleteUsers',
+        },
       );
       if (!isHttpStatusSuccess(handledDelResponse.status)) {
         throw new NetworkError(
@@ -93,6 +97,10 @@ const createDeletionTask = async (userAttributes, config) => {
         endpoint,
         request,
         { headers },
+        {
+          destType: 'mp',
+          feature: 'deleteUsers',
+        },
       );
       if (!isHttpStatusSuccess(handledDelResponse.status)) {
         throw new NetworkError(

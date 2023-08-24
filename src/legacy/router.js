@@ -25,7 +25,6 @@ const { processDynamicConfig } = require('../util/dynamicConfig');
 const { DestHandlerMap } = require('../constants/destinationCanonicalNames');
 const { userTransformHandler } = require('../routerUtils');
 const networkHandlerFactory = require('../adapters/networkHandlerFactory');
-const profilingRouter = require('./profiling');
 const destProxyRoutes = require('./delivery');
 const eventValidator = require('../util/eventValidation');
 const { getIntegrations } = require('../routes/utils');
@@ -57,9 +56,6 @@ const transformerTestModeEnabled = process.env.TRANSFORMER_TEST_MODE
 const router = new Router();
 
 const PAYLOAD_PROC_ERR_MSG = 'Error occurred while processing payload';
-
-// Router for assistance in profiling
-router.use(profilingRouter);
 
 /**
  * @deprecated this function is deprecated and will be removed in future release
@@ -240,7 +236,7 @@ async function handleDest(ctx, version, destination) {
 async function handleValidation(ctx) {
   const requestStartTime = new Date();
   const events = ctx.request.body;
-  const requestSize = ctx.request.get('content-length');
+  const requestSize = Number(ctx.request.get('content-length'));
   const reqParams = ctx.request.query;
   const respList = [];
   const metaTags = events[0].metadata ? getMetadata(events[0].metadata) : {};

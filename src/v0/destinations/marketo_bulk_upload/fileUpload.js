@@ -7,6 +7,7 @@ const {
   handleFileUploadResponse,
   handleCommonErrorResponse,
 } = require('./util');
+const { isHttpStatusSuccess } = require('../../util');
 const { MARKETO_FILE_SIZE, UPLOAD_FILE } = require('./config');
 const {
   getHashFromArray,
@@ -14,7 +15,7 @@ const {
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { AbortedError, NetworkError, ConfigurationError } = require('../../util/errorTypes');
+const { AbortedError, NetworkError, ConfigurationError, RetryableError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const stats = require('../../../util/stats');
@@ -128,7 +129,7 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   if (Object.keys(headerArr).length === 0) {
     throw new ConfigurationError(
       'Faulty configuration. Please map your traits to Marketo column fields',
-    ); // TODO: correct error message
+    );
   }
   const csv = [];
   csv.push(headerArr.toString());
@@ -214,9 +215,8 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
       const requestTime = endTime - startTime;
       stats.counter('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
       stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
-      if (resp.status !== 200) {
-        // use function for httpsuccess
-        // throw error
+      if (!isHttpStatusSuccess(resp.status)) {
+        throw new RetryableError(FILE_UPLOAD_ERR_MSG, 500);
       }
       return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime);
     }

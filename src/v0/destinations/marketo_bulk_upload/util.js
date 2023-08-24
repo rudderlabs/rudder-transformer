@@ -26,6 +26,35 @@ const {
 
 const getMarketoFilePath = () => MARKETO_FILE_PATH;
 
+/**
+ * Handles common error responses returned from API calls.
+ * Checks the error code and throws the appropriate error object based on the code.
+ *
+ * @param {object} resp - The response object containing the error information.
+ * @param {string} OpErrorMessage - The error message to be used if the error code is not recognized.
+ * @param {string} OpActivity - The activity name for tracking purposes.
+ * @throws {AbortedError} - If the error code is abortable.
+ * @throws {ThrottledError} - If the error code is within the range of throttled codes.
+ * @throws {RetryableError} - If the error code is neither abortable nor throttled.
+ *
+ * @example
+ * const resp = {
+ *   response: {
+ *     errors: [
+ *       {
+ *         code: "1003",
+ *         message: "Empty File"
+ *       }
+ *     ]
+ *   }
+ * };
+ *
+ * try {
+ *   handleCommonErrorResponse(resp, "Error message", "Activity");
+ * } catch (error) {
+ *   console.log(error);
+ * }
+ */
 const handleCommonErrorResponse = (resp, OpErrorMessage, OpActivity) => {
   if (
     resp.response?.errors.length > 0 &&

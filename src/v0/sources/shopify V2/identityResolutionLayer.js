@@ -95,15 +95,4 @@ const idResolutionLayer = {
         return updatedMessage;
     }
 }
-const enrichPayload = {
-    setExtraProperties(message, event, fieldsToBeIgnored = []) {
-        const updatedMessage = message;
-        Object.keys(event).forEach((key => {
-            if (!fieldsToBeIgnored.includes(key)) {
-                updatedMessage.properties[`${key}`] = event[key];
-            }
-        }))
-        return updatedMessage;
-    }
-}
-module.exports = { enrichPayload };
+module.exports = { idResolutionLayer };

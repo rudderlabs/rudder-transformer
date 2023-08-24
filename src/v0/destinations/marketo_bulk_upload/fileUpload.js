@@ -71,7 +71,7 @@ const getHeaderFields = (config, fieldSchemaNames) => {
   return Object.keys(columnField);
 };
 
-const getFileData = async (inputEvents, config, fieldSchemaNames) => {
+const getFileData = async (inputEvents, config, headerArr) => {
   const input = inputEvents;
   const messageArr = [];
   let startTime;
@@ -88,7 +88,7 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
     messageArr.push(data);
   });
 
-  const headerArr = getHeaderFields(config, fieldSchemaNames);
+  // const headerArr = getHeaderFields(config, fieldSchemaNames);
 
   if (isDefinedAndNotNullAndNotEmpty(config.deDuplicationField)) {
     // dedup starts
@@ -126,11 +126,11 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
     // dedup ends
   }
 
-  if (Object.keys(headerArr).length === 0) {
-    throw new ConfigurationError(
-      'Faulty configuration. Please map your traits to Marketo column fields',
-    );
-  }
+  // if (Object.keys(headerArr).length === 0) {
+  //   throw new ConfigurationError(
+  //     'Faulty configuration. Please map your traits to Marketo column fields',
+  //   );
+  // }
   const csv = [];
   csv.push(headerArr.toString());
   endTime = Date.now();
@@ -172,12 +172,12 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   return { successfulJobs, unsuccessfulJobs };
 };
 
-const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
+const getImportID = async (input, config, fieldSchemaNames, accessToken, csvHeader) => {
   const importId = null; // by default importId is null
   const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
     input,
     config,
-    fieldSchemaNames,
+    csvHeader
   );
   const FILE_UPLOAD_ERR_MSG = 'Could not upload file';
   try {
@@ -259,18 +259,25 @@ const responseHandler = async (input, config) => {
       'Could not find any field schema corresponding to your marketo account. Aborting.',
     );
   }
+  const headerForCsv = getHeaderFields(config, fieldSchemaNames);
+  if (Object.keys(headerForCsv).length === 0) {
+    throw new ConfigurationError(
+      'Faulty configuration. Please map your traits to Marketo column fields',
+    );
+  }
   const { importId, successfulJobs, unsuccessfulJobs } = await getImportID(
     input,
     config,
     fieldSchemaNames,
     accessToken,
+    headerForCsv
   );
   if (importId) {
     const response = {
       statusCode: 200,
       importId,
     };
-    const csvHeader = getHeaderFields(config, fieldSchemaNames).toString();
+    const csvHeader = headerForCsv.toString()
     response.metadata = { successfulJobs, unsuccessfulJobs, csvHeader };
     return response;
   }

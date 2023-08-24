@@ -1,0 +1,68 @@
+[
+  {
+    "sourceKeys": "id",
+    "destKey": "order_id",
+    "metadata": {
+      "type": "toString"
+    }
+  },
+  {
+    "sourceKeys": "total_price",
+    "destKey": "value",
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "sourceKeys": "subtotal_price",
+    "destKey": "revenue",
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "sourceKeys": {
+      "operation": "additionInArray",
+      "args": [
+        {
+          "propertyKey": "price",
+          "arrayKey": "shipping_lines"
+        }
+      ]
+    },
+    "destKey": "shipping",
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "sourceKeys": "total_tax",
+    "destKey": "tax",
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "sourceKeys": "total_discounts",
+    "destKey": "discount",
+    "metadata": {
+      "type": "toNumber"
+    }
+  },
+  {
+    "sourceKeys": {
+      "operation": "concatenationInArray",
+      "args": [
+        {
+          "propertyKey": "code",
+          "arrayKey": "discount_codes"
+        }
+      ]
+    },
+    "destKey": "coupon"
+  },
+  {
+    "sourceKeys": "currency",
+    "destKey": "currency"
+  }
+]

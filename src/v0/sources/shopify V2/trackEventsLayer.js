@@ -4,7 +4,6 @@ const {
   NO_OPERATION_SUCCESS,
   SHOPIFY_TO_RUDDER_ECOM_EVENTS_MAP,
   MAPPING_CATEGORIES,
-  NON_ECOM_SUPPORTED_EVENTS,
   maxTimeToIdentifyRSGeneratedCall,
   INTEGERATION,
   SHOPIFY_TRACK_MAP,
@@ -25,7 +24,7 @@ const trackLayer = {
   ecomPayloadBuilder(event, shopifyTopic) {
     const message = new Message(INTEGERATION);
     message.setEventType(EventType.TRACK);
-    message.setEventName(RUDDER_ECOM_MAP[shopifyTopic]);
+    message.setEventName(RUDDER_ECOM_MAP[shopifyTopic].event);
 
     let properties = createPropertiesForEcomEvent(event);
     properties = removeUndefinedAndNullValues(properties);
@@ -162,6 +161,16 @@ const trackLayer = {
     /* This function will check for cart_update if its is due Product Added or Product Removed and
         for checkout_update which step is completed or started
         */
+
+    if (eventName === 'checkouts_update') {
+      if (event.completed_at) {
+        updatedEventName = 'checkout_step_completed';
+      } else if (!event.gateway) {
+        updatedEventName = 'payment_info_entered';
+      }
+      updatedEventName = 'checkout_step_viewed';
+    }
+
     return updatedEventName;
   },
 
@@ -179,7 +188,7 @@ const trackLayer = {
     }
     if (Object.keys(RUDDER_ECOM_MAP).includes(updatedEventName)) {
       payload = this.ecomPayloadBuilder(event, updatedEventName);
-    } else if (NON_ECOM_SUPPORTED_EVENTS.includes(eventName)) {
+    } else if (Object.keys(SHOPIFY_TRACK_MAP).includes(updatedEventName)) {
       payload = this.trackPayloadBuilder(event, updatedEventName);
     } else {
       stats.increment('invalid_shopify_event', {

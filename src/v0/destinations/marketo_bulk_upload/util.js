@@ -26,38 +26,10 @@ const {
 
 const getMarketoFilePath = () => MARKETO_FILE_PATH;
 
-/**
- * Handles common error responses returned from API calls.
- * Checks the error code and throws the appropriate error object based on the code.
- *
- * @param {object} resp - The response object containing the error information.
- * @param {string} OpErrorMessage - The error message to be used if the error code is not recognized.
- * @param {string} OpActivity - The activity name for tracking purposes.
- * @throws {AbortedError} - If the error code is abortable.
- * @throws {ThrottledError} - If the error code is within the range of throttled codes.
- * @throws {RetryableError} - If the error code is neither abortable nor throttled.
- *
- * @example
- * const resp = {
- *   response: {
- *     errors: [
- *       {
- *         code: "1003",
- *         message: "Empty File"
- *       }
- *     ]
- *   }
- * };
- *
- * try {
- *   handleCommonErrorResponse(resp, "Error message", "Activity");
- * } catch (error) {
- *   console.log(error);
- * }
- */
 const handleCommonErrorResponse = (resp, OpErrorMessage, OpActivity) => {
   if (
-    resp.response.errors[0] &&
+    resp.response?.errors.length > 0 &&
+    resp.response?.errors[0] &&
     ((resp.response?.errors[0]?.code >= 1000 && resp.response?.errors[0]?.code <= 1077) ||
       (ABORTABLE_CODES.includes(resp.response?.errors[0]?.code)))
   ) {
@@ -66,8 +38,8 @@ const handleCommonErrorResponse = (resp, OpErrorMessage, OpActivity) => {
       status: 400,
       state: 'Abortable',
     });
-    throw new AbortedError(resp.response.errors[0].message || OpErrorMessage, 400);
-  } else if (THROTTLED_CODES.includes(resp.response.errors[0].code) ) {
+    throw new AbortedError(resp.response?.errors[0]?.message || OpErrorMessage, 400);
+  } else if (THROTTLED_CODES.includes(resp.response?.errors[0]?.code) ) {
     // for more than 10 concurrent uses the code is 615 and that should be retried
     stats.increment(OpActivity, {
       status: 500,
@@ -80,7 +52,7 @@ const handleCommonErrorResponse = (resp, OpErrorMessage, OpActivity) => {
     status: 500,
     state: 'Retryable',
   });
-  throw new RetryableError(resp.response.errors[0].message || OpErrorMessage, 500);
+  throw new RetryableError(resp.response?.errors[0]?.message || OpErrorMessage, 500);
 };
 // Fetch access token from client id and client secret
 // DOC: https://developers.marketo.com/rest-api/authentication/
@@ -100,7 +72,7 @@ const getAccessToken = async (config) => {
         throw new AbortedError(resp.response, 400, resp);
       } // handle for retryable codes
       else if (RETRYABLE_CODES.includes(resp.response)) {
-        throw new RetryableError(resp.response.code, 500, resp);
+        throw new RetryableError(resp.response?.code, 500, resp);
       } // handle for abortable codes
       else if (resp.response.errors) {
         handleCommonErrorResponse(resp, ACCESS_TOKEN_FETCH_ERR_MSG, FETCH_ACCESS_TOKEN);
@@ -265,8 +237,8 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
    */
   if (resp.response?.errors) {
     if (
-      resp.response.errors[0]?.code === 1003 ||
-      resp.response.errors[0]?.code === 615
+      resp.response.errors[0]?.code === '1003' ||
+      resp.response.errors[0]?.code === '615'
     ) {
       // code handling not only strings
       stats.increment(UPLOAD_FILE, {
@@ -317,4 +289,5 @@ module.exports = {
   handleFetchJobStatusResponse,
   handleFileUploadResponse,
   getMarketoFilePath,
+  handleCommonErrorResponse
 };

@@ -4,27 +4,43 @@ const {
   getDataFromRedis,
   getCartToken
 } = require('./commonUtils');
-const { enrichmentLayer } = require('./enrichmentLayer');
 const { identifyLayer } = require('./identifyEventsLayer');
 const { trackLayer } = require('./trackEventsLayer');
 const { identifierEventLayer } = require('./identifierEventsUtils');
-const { removeUndefinedAndNullValues } = require('../../util');
-const { IDENTIFY_TOPICS } = require('./config');
+const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
+const { IDENTIFY_TOPICS, INTEGERATION } = require('./config');
 
 const processEvent = async (inputEvent, metricMetadata) => {
   let message;
-  let redisData;
-  const event = _.cloneDeep(inputEvent);
-  const shopifyTopic = getShopifyTopic(event);
-  delete event.query_parameters;
+  let redisData = null;
+  const shopifyEvent = _.cloneDeep(inputEvent);
+  const shopifyTopic = getShopifyTopic(shopifyEvent);
+  delete shopifyEvent.query_parameters;
   if (IDENTIFY_TOPICS.includes(shopifyTopic)) {
-    message = identifyLayer.identifyPayloadBuilder(event);
+    message = identifyLayer.identifyPayloadBuilder(shopifyEvent);
   } else {
     const cartToken = getCartToken(message);
-    redisData = await getDataFromRedis(cartToken, metricMetadata);
-    message = trackLayer.processtrackEvent(event, redisData, metricMetadata);
+    if (isDefinedAndNotNull(cartToken)) {
+      redisData = await getDataFromRedis(cartToken, metricMetadata);
+    }
+    message = trackLayer.processtrackEvent(shopifyEvent, redisData, metricMetadata);
   }
-  message = enrichmentLayer.enrichMessage(event, message, redisData, metricMetadata);
+  // check for if message is NO_OPERATION_SUCCESS Payload
+  if (message.outputToSource) {
+    return message;
+  }
+  message.setProperty(`integrations.${INTEGERATION}`, true);
+  message.setProperty('context.library', {
+    name: 'RudderStack Shopify Cloud',
+    version: '1.0.0',
+  });
+  message.setProperty('context.topic', shopifyTopic);
+  // attaching cart, checkout and order tokens in context object
+  message.setProperty(`context.cart_token`, shopifyEvent.cart_token);
+  message.setProperty(`context.checkout_token`, shopifyEvent.checkout_token);
+  if (shopifyTopic === 'orders_updated') {
+    message.setProperty(`context.order_token`, shopifyEvent.token);
+  }
   message = removeUndefinedAndNullValues(message);
   return message;
 };

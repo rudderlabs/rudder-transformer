@@ -37,7 +37,6 @@ const fetchFieldSchema = async (config, accessToken) => {
     },
   );
   if (
-    fieldSchemaMapping &&
     fieldSchemaMapping?.response?.success &&
     fieldSchemaMapping?.response?.result.length > 0 &&
     fieldSchemaMapping?.response?.result[0]
@@ -88,8 +87,6 @@ const getFileData = async (inputEvents, config, headerArr) => {
     messageArr.push(data);
   });
 
-  // const headerArr = getHeaderFields(config, fieldSchemaNames);
-
   if (isDefinedAndNotNullAndNotEmpty(config.deDuplicationField)) {
     // dedup starts
     // Time Complexity = O(n2)
@@ -126,11 +123,6 @@ const getFileData = async (inputEvents, config, headerArr) => {
     // dedup ends
   }
 
-  // if (Object.keys(headerArr).length === 0) {
-  //   throw new ConfigurationError(
-  //     'Faulty configuration. Please map your traits to Marketo column fields',
-  //   );
-  // }
   const csv = [];
   csv.push(headerArr.toString());
   endTime = Date.now();
@@ -140,7 +132,7 @@ const getFileData = async (inputEvents, config, headerArr) => {
   const successfulJobs = [];
   const MARKETO_FILE_PATH = getMarketoFilePath();
   startTime = Date.now();
-  messageArr.map((row) => {
+  messageArr.forEach((row) => {
     const csvSize = JSON.stringify(csv); // stringify and remove all "stringification" extra data
     const response = headerArr
       .map((fieldName) => JSON.stringify(Object.values(row)[0][fieldName], ''))
@@ -151,7 +143,6 @@ const getFileData = async (inputEvents, config, headerArr) => {
     } else {
       unsuccessfulJobs.push(Object.keys(row)[0]);
     }
-    return response;
   });
   endTime = Date.now();
   requestTime = endTime - startTime;

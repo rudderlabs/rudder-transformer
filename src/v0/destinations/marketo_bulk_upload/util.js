@@ -59,7 +59,7 @@ const handleCommonErrorResponse = (resp, OpErrorMessage, OpActivity) => {
   if (
     resp.response.errors[0] &&
     ((resp.response?.errors[0]?.code >= 1000 && resp.response?.errors[0]?.code <= 1077) ||
-      ABORTABLE_CODES.indexOf(resp.response?.errors[0]?.code))
+      (ABORTABLE_CODES.includes(resp.response?.errors[0]?.code)))
   ) {
     // for empty file the code is 1003 and that should be retried
     stats.increment(OpActivity, {
@@ -67,7 +67,7 @@ const handleCommonErrorResponse = (resp, OpErrorMessage, OpActivity) => {
       state: 'Abortable',
     });
     throw new AbortedError(resp.response.errors[0].message || OpErrorMessage, 400);
-  } else if (THROTTLED_CODES.indexOf(resp.response.errors[0].code)) {
+  } else if (THROTTLED_CODES.includes(resp.response.errors[0].code) ) {
     // for more than 10 concurrent uses the code is 615 and that should be retried
     stats.increment(OpActivity, {
       status: 500,

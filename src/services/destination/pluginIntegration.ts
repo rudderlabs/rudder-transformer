@@ -1,4 +1,4 @@
-import TransformationError from 'rudderstack-integration-api/build/errorDefinitions/transformationError';
+import TransformationError from 'rs-integration-lib/build/errorDefinitions/transformationError';
 import PluginAdapter from '../../helpers/pluginAdaper';
 import {
   DeliveryResponse,

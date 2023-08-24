@@ -1,10 +1,5 @@
-import {
-  IntegrationConfig,
-  RudderStackEvent,
-  Integration,
-  Destination,
-} from 'rudderstack-integration-api';
-import Salesforce from 'rudderstack-salesforce-integration';
+import { IntegrationConfig, RudderStackEvent, Integration, Destination } from 'rs-integration-lib';
+import { Webhook } from 'rudder-integrations-store';
 import groupBy from 'lodash/groupBy';
 import {
   Metadata,
@@ -33,7 +28,7 @@ export default class PluginAdapter {
 
     switch (integrationName) {
       case 'salesforce': {
-        const salesforce = new Salesforce(integrationConfig);
+        const salesforce = new Webhook(integrationConfig);
         this.pluginCache.set(integrationName, salesforce);
         return salesforce;
       }

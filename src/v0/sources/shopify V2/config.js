@@ -91,8 +91,6 @@ const LINE_ITEM_EXCLUSION_FIELDS = [
   'price',
   'vendor',
   'quantity',
-  'variant_id',
-  'variant_price',
   'variant_title',
 ];
 

@@ -24,7 +24,7 @@ const getJobsStatus = async (event, type) => {
       Authorization: `Bearer ${accessToken}`,
     },
   };
-  if (event === 'fail') {
+  if (type === 'fail') {
     url = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/failures.json`;
   } else {
     url = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${importId}/warnings.json`;
@@ -53,6 +53,15 @@ const getJobsStatus = async (event, type) => {
   }
 };
 
+  /**
+   * Handles the response from the server based on the provided type.
+   * Retrieves the job status using the getJobsStatus function and processes the response data.
+   * Matches the response data with the data received from the server.
+   * Returns a response object containing the failed keys, failed reasons, warning keys, warning reasons, and succeeded keys.
+   * @param {Object} event - An object containing the input data and metadata.
+   * @param {string} type - A string indicating the type of job status to retrieve ("fail" or "warn").
+   * @returns {Object} - A response object with the failed keys, failed reasons, warning keys, warning reasons, and succeeded keys.
+   */
 const responseHandler = async (event, type) => {
   let failedKeys = [];
   let failedReasons = {};
@@ -80,7 +89,7 @@ const responseHandler = async (event, type) => {
   const responseArr = responseStatus.toString().split('\n'); // responseArr = ['field1,field2,Import Failure Reason', 'val1,val2,reason',...]
   const { input, metadata } = event;
   let headerArr;
-  if (metadata && metadata.csvHeader) {
+  if (metadata?.csvHeader) {
     headerArr = metadata.csvHeader.split(',');
   } else {
     throw new PlatformError('No csvHeader in metadata');
@@ -102,18 +111,15 @@ const responseHandler = async (event, type) => {
     // ref :
     // https://developers.marketo.com/rest-api/bulk-import/bulk-custom-object-import/#:~:text=Now%20we%E2%80%99ll%20make%20Get%20Import%20Custom%20Object%20Failures%20endpoint%20call%20to%20get%20additional%20failure%20detail%3A
     const reasonMessage = elemArr.pop(); // get the column named "Import Failure Reason"
-    for (const key in data) {
-      if (data.hasOwnProperty(key)) {
-        const val = data[key];
-        // match response data with received data from server
-        if (val === `${elemArr.join()}`) {
-          // add job keys if warning/failure
 
-          if (!unsuccessfulJobIdsArr.includes(key)) {
-            unsuccessfulJobIdsArr.push(key);
-          }
-          reasons[key] = reasonMessage;
+    for (const [key, val] of Object.entries(data)) {
+      // joining the parameter values sent from marketo match it with received data from server
+      if (val === `${elemArr.join()}`) {
+        // add job keys if warning/failure
+        if (!unsuccessfulJobIdsArr.includes(key)) {
+          unsuccessfulJobIdsArr.push(key);
         }
+        reasons[key] = reasonMessage;
       }
     }
   }

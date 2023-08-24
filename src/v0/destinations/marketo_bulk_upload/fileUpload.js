@@ -36,6 +36,7 @@ const fetchFieldSchema = async (config, accessToken) => {
       feature: 'transformation',
     },
   );
+  // TODO: handle errors first
   if (
     fieldSchemaMapping?.response?.success &&
     fieldSchemaMapping?.response?.result.length > 0 &&
@@ -163,7 +164,7 @@ const getFileData = async (inputEvents, config, headerArr) => {
   return { successfulJobs, unsuccessfulJobs };
 };
 
-const getImportID = async (input, config, fieldSchemaNames, accessToken, csvHeader) => {
+const getImportID = async (input, config, accessToken, csvHeader) => {
   const importId = null; // by default importId is null
   const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
     input,
@@ -207,7 +208,7 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken, csvHead
       stats.counter('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
       stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
       if (!isHttpStatusSuccess(resp.status)) {
-        throw new RetryableError(FILE_UPLOAD_ERR_MSG, 500);
+        throw new RetryableError(FILE_UPLOAD_ERR_MSG,resp.status );
       }
       return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime);
     }
@@ -259,7 +260,6 @@ const responseHandler = async (input, config) => {
   const { importId, successfulJobs, unsuccessfulJobs } = await getImportID(
     input,
     config,
-    fieldSchemaNames,
     accessToken,
     headerForCsv
   );

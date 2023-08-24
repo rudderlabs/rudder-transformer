@@ -110,14 +110,14 @@ const getAccessToken = async (config) => {
     throw new NetworkError('Could not retrieve authorization token');
   }
 
-  if (resp.response && resp.response.access_token) {
+  if ( resp.response?.access_token) {
     return resp.response.access_token;
   }
   throw new NetworkError(
     'Could not retrieve authorisation token',
-    resp.status,
+     500 ,
     {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.status),
+      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500),
     },
     resp,
   );
@@ -168,7 +168,7 @@ const handlePollResponse = (pollStatus) => {
       ]
     }
   */
-  if (pollStatus.response && pollStatus.response.success) {
+  if ( pollStatus?.response?.success) {
     stats.counter(POLL_ACTIVITY, {
       status: 200,
       state: 'Success',
@@ -263,20 +263,17 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
         ]
     }
    */
-  if (resp.response.errors) {
+  if (resp.response?.errors) {
     if (
-      resp.response?.errors[0]?.message ===
-        'There are 10 imports currently being processed. Please try again later' ||
-      resp.response?.errors[0]?.message === 'Empty file' ||
-      resp.response?.errors[0]?.code === 1003 ||
-      resp.response?.errors[0]?.code === 615
+      resp.response.errors[0]?.code === 1003 ||
+      resp.response.errors[0]?.code === 615
     ) {
       // code handling not only strings
       stats.increment(UPLOAD_FILE, {
         status: 500,
         state: 'Retryable',
       });
-      throw new RetryableError(resp.response?.errors[0]?.message || FILE_UPLOAD_ERR_MSG, 500);
+      throw new RetryableError(resp.response.errors[0]?.message || FILE_UPLOAD_ERR_MSG, 500);
     } else {
       handleCommonErrorResponse(resp, FILE_UPLOAD_ERR_MSG, UPLOAD_FILE);
     }

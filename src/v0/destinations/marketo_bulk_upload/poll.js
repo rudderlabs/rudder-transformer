@@ -33,7 +33,7 @@ const getPollStatus = async (event) => {
   const requestTime = endTime - startTime;
   const POLL_STATUS_ERR_MSG = 'Could not poll status';
 
-  if (pollStatus.status === 200) {
+  if (pollStatus.status === 200) { // TODO: use isSuccessHttp // TODO: make it opposite
     return handlePollResponse(pollStatus);
   }
   stats.counter(POLL_ACTIVITY, {
@@ -44,16 +44,15 @@ const getPollStatus = async (event) => {
 };
 
 const responseHandler = async (event) => {
-  const pollResp = await getPollStatus(event);
-  let pollSuccess;
   let success = false;
   let statusCode = 500;
   let hasFailed;
   let FailedJobURLs;
   let hasWarnings;
-  let warningJobsURL;
+  let WarningJobsURLs;
   let error;
   let InProgress = false;
+  const pollResp = await getPollStatus(event);
   // Server expects :
   /**
   *
@@ -64,7 +63,7 @@ const responseHandler = async (event) => {
     "InProgress": false,
     "FailedJobURLs": "<some-url>", // transformer URL
     "hasWarnings": false,
-    "warningJobsURL": "<some-url>", // transformer URL
+    "WarningJobsURLs": "<some-url>", // transformer URL
     } // Succesful Upload
     {
         "success": false,
@@ -77,8 +76,6 @@ const responseHandler = async (event) => {
 
   */
   if (pollResp) {
-    pollSuccess = pollResp.success;
-    if (pollSuccess) {
       // As marketo lead import API or bulk API does not support record level error response we are considering
       // file level errors only.
       // ref: https://nation.marketo.com/t5/ideas/support-error-code-in-record-level-in-lead-bulk-api/idi-p/262191
@@ -88,18 +85,12 @@ const responseHandler = async (event) => {
         statusCode = 200;
         hasFailed = numOfRowsFailed > 0;
         FailedJobURLs = '/getFailedJobs';
-        warningJobsURL = '/getWarningJobs';
+        WarningJobsURLs = '/getWarningJobs';
         hasWarnings = numOfRowsWithWarning > 0;
       } else if (status === 'Importing' || status === 'Queued') {
         success = false;
         InProgress = true;
-      }
-    } else {
-      // status is failed
-      success = false;
-      statusCode = 500;
-      error = pollResp.errors ? pollResp.errors[0].message : 'Error in importing jobs';
-    }
+      } 
   }
   const response = {
     Complete: success,
@@ -108,7 +99,7 @@ const responseHandler = async (event) => {
     InProgress,
     FailedJobURLs,
     hasWarnings,
-    warningJobsURL,
+    WarningJobsURLs,
     error,
   };
   return removeUndefinedValues(response);

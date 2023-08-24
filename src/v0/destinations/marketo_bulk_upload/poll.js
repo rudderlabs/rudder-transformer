@@ -1,4 +1,4 @@
-const { removeUndefinedValues } = require('../../util');
+const { removeUndefinedValues, isHttpStatusSuccess } = require('../../util');
 const { getAccessToken, handlePollResponse } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const stats = require('../../../util/stats');
@@ -33,14 +33,14 @@ const getPollStatus = async (event) => {
   const requestTime = endTime - startTime;
   const POLL_STATUS_ERR_MSG = 'Could not poll status';
 
-  if (pollStatus.status === 200) { // TODO: use isSuccessHttp // TODO: make it opposite
-    return handlePollResponse(pollStatus);
+  if (!isHttpStatusSuccess(pollStatus.status)) {
+    stats.counter(POLL_ACTIVITY, {
+      status: 500,
+      state: 'Retryable',
+    });
+    throw new RetryableError(POLL_STATUS_ERR_MSG, 500, pollStatus);
   }
-  stats.counter(POLL_ACTIVITY, {
-    status: 500,
-    state: 'Retryable',
-  });
-  throw new RetryableError(POLL_STATUS_ERR_MSG, 500, pollStatus);
+  return handlePollResponse(pollStatus);
 };
 
 const responseHandler = async (event) => {
@@ -48,8 +48,8 @@ const responseHandler = async (event) => {
   let statusCode = 500;
   let hasFailed;
   let FailedJobURLs;
-  let hasWarnings;
-  let WarningJobsURLs;
+  let HasWarning;
+  let WarningJobURLs;
   let error;
   let InProgress = false;
   const pollResp = await getPollStatus(event);
@@ -62,8 +62,8 @@ const responseHandler = async (event) => {
     "hasFailed": true,
     "InProgress": false,
     "FailedJobURLs": "<some-url>", // transformer URL
-    "hasWarnings": false,
-    "WarningJobsURLs": "<some-url>", // transformer URL
+    "HasWarning": false,
+    "WarningJobURLs": "<some-url>", // transformer URL
     } // Succesful Upload
     {
         "success": false,
@@ -76,30 +76,28 @@ const responseHandler = async (event) => {
 
   */
   if (pollResp) {
-      // As marketo lead import API or bulk API does not support record level error response we are considering
-      // file level errors only.
-      // ref: https://nation.marketo.com/t5/ideas/support-error-code-in-record-level-in-lead-bulk-api/idi-p/262191
-      const { status, numOfRowsFailed, numOfRowsWithWarning } = pollResp.result[0];
-      if (status === 'Complete') {
-        success = true;
-        statusCode = 200;
-        hasFailed = numOfRowsFailed > 0;
-        FailedJobURLs = '/getFailedJobs';
-        WarningJobsURLs = '/getWarningJobs';
-        hasWarnings = numOfRowsWithWarning > 0;
-      } else if (status === 'Importing' || status === 'Queued') {
-        success = false;
-        InProgress = true;
-      } 
+    // As marketo lead import API or bulk API does not support record level error response we are considering
+    // file level errors only.
+    // ref: https://nation.marketo.com/t5/ideas/support-error-code-in-record-level-in-lead-bulk-api/idi-p/262191
+    const { status, numOfRowsFailed, numOfRowsWithWarning } = pollResp.result[0];
+    if (status === 'Complete') {
+      success = true;
+      statusCode = 200;
+      hasFailed = numOfRowsFailed > 0;
+      HasWarning = numOfRowsWithWarning > 0;
+    } else if (status === 'Importing' || status === 'Queued') {
+      success = false;
+      InProgress = true;
+    }
   }
   const response = {
     Complete: success,
     statusCode,
     hasFailed,
     InProgress,
-    FailedJobURLs,
-    hasWarnings,
-    WarningJobsURLs,
+    FailedJobURLs: hasFailed ? '/getFailedJobs' : undefined,
+    HasWarning,
+    WarningJobURLs: HasWarning ? '/getWarningJobs' : undefined,
     error,
   };
   return removeUndefinedValues(response);

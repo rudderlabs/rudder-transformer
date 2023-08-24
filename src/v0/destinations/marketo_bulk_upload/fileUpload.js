@@ -15,7 +15,12 @@ const {
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { AbortedError, NetworkError, ConfigurationError, RetryableError } = require('../../util/errorTypes');
+const {
+  AbortedError,
+  NetworkError,
+  ConfigurationError,
+  RetryableError,
+} = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const stats = require('../../../util/stats');
@@ -36,8 +41,10 @@ const fetchFieldSchema = async (config, accessToken) => {
       feature: 'transformation',
     },
   );
-  // TODO: handle errors first
-  if (
+
+  if (fieldSchemaMapping.response.errors) {
+    handleCommonErrorResponse(fieldSchemaMapping);
+  } else if (
     fieldSchemaMapping?.response?.success &&
     fieldSchemaMapping?.response?.result.length > 0 &&
     fieldSchemaMapping?.response?.result[0]
@@ -49,8 +56,6 @@ const fetchFieldSchema = async (config, accessToken) => {
     fieldArr.forEach((field) => {
       fieldSchemaNames.push(field.name);
     });
-  } else if (fieldSchemaMapping.response.errors) {
-    handleCommonErrorResponse(fieldSchemaMapping);
   } else {
     throw new AbortedError('Failed to fetch Marketo Field Schema', 500, fieldSchemaMapping);
   }
@@ -78,7 +83,6 @@ const getFileData = async (inputEvents, config, headerArr) => {
   let endTime;
   let requestTime;
   startTime = Date.now();
-  // TODO: check if server is sending empty events.
 
   input.forEach((i) => {
     const inputData = i;
@@ -169,7 +173,7 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
   const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
     input,
     config,
-    csvHeader
+    csvHeader,
   );
   const FILE_UPLOAD_ERR_MSG = 'Could not upload file';
   try {
@@ -208,7 +212,7 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
       stats.counter('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
       stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
       if (!isHttpStatusSuccess(resp.status)) {
-        throw new RetryableError(FILE_UPLOAD_ERR_MSG,resp.status );
+        throw new RetryableError(FILE_UPLOAD_ERR_MSG, resp.status);
       }
       return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime);
     }
@@ -261,14 +265,14 @@ const responseHandler = async (input, config) => {
     input,
     config,
     accessToken,
-    headerForCsv
+    headerForCsv,
   );
   if (importId) {
     const response = {
       statusCode: 200,
       importId,
     };
-    const csvHeader = headerForCsv.toString()
+    const csvHeader = headerForCsv.toString();
     response.metadata = { successfulJobs, unsuccessfulJobs, csvHeader };
     return response;
   }

@@ -4,9 +4,7 @@
     "statusCode": 200,
     "hasFailed": false,
     "InProgress": false,
-    "FailedJobURLs": "/getFailedJobs",
-    "hasWarnings": false,
-    "WarningJobsURLs": "/getWarningJobs"
+    "HasWarning": false
   },
   {
     "statusCode": 400,

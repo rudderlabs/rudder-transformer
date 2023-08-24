@@ -7,6 +7,7 @@ const { AbortedError, PlatformError } = require('../../util/errorTypes');
 const stats = require('../../../util/stats');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { handleFetchJobStatusResponse } = require('./util');
+const { removeUndefinedValues } = require('../../util');
 
 const FETCH_FAILURE_JOB_STATUS_ERR_MSG = 'Could not fetch failure job status';
 const FETCH_WARNING_JOB_STATUS_ERR_MSG = 'Could not fetch warning job status';
@@ -39,7 +40,7 @@ const getJobsStatus = async (event, type) => {
 
   stats.histogram('marketo_bulk_upload_fetch_job_time', requestTime);
   try {
-    return handleFetchJobStatusResponse(resp, 'fail');
+    return handleFetchJobStatusResponse(resp, type);
   } catch (err) {
     stats.increment(JOB_STATUS_ACTIVITY, {
       status: 400,
@@ -53,20 +54,18 @@ const getJobsStatus = async (event, type) => {
   }
 };
 
-  /**
-   * Handles the response from the server based on the provided type.
-   * Retrieves the job status using the getJobsStatus function and processes the response data.
-   * Matches the response data with the data received from the server.
-   * Returns a response object containing the failed keys, failed reasons, warning keys, warning reasons, and succeeded keys.
-   * @param {Object} event - An object containing the input data and metadata.
-   * @param {string} type - A string indicating the type of job status to retrieve ("fail" or "warn").
-   * @returns {Object} - A response object with the failed keys, failed reasons, warning keys, warning reasons, and succeeded keys.
-   */
+/**
+ * Handles the response from the server based on the provided type.
+ * Retrieves the job status using the getJobsStatus function and processes the response data.
+ * Matches the response data with the data received from the server.
+ * Returns a response object containing the failed keys, failed reasons, warning keys, warning reasons, and succeeded keys.
+ * @param {Object} event - An object containing the input data and metadata.
+ * @param {string} type - A string indicating the type of job status to retrieve ("fail" or "warn").
+ * @returns {Object} - A response object with the failed keys, failed reasons, warning keys, warning reasons, and succeeded keys.
+ */
 const responseHandler = async (event, type) => {
   let failedKeys = [];
-  let failedReasons = {};
   let warningKeys = [];
-  let warningReasons = {};
 
   /**
    * {
@@ -128,10 +127,8 @@ const responseHandler = async (event, type) => {
 
   if (type === 'fail') {
     failedKeys = unsuccessfulJobIdsArr;
-    failedReasons = reasons;
   } else if (type === 'warn') {
     warningKeys = unsuccessfulJobIdsArr;
-    warningReasons = reasons;
   }
   const succeededKeys = successfulJobIdsArr;
   const endTime = Date.now();
@@ -141,13 +138,13 @@ const responseHandler = async (event, type) => {
     statusCode: 200,
     metadata: {
       failedKeys,
-      failedReasons,
+      failedReasons: type === 'fail' ? reasons : undefined,
       warningKeys,
-      warningReasons,
+      warningReasons: type === 'warn' ? reasons : undefined,
       succeededKeys,
     },
   };
-  return response;
+  return removeUndefinedValues(response);
 };
 
 const processJobStatus = async (event, type) => {

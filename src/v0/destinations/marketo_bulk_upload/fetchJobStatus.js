@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable no-prototype-builtins */
-const { getAccessToken, JOB_STATUS_ACTIVITY } = require('./util');
+const { getAccessToken } = require('./util');
+const { JOB_STATUS_ACTIVITY } = require('./config');
 const { handleHttpRequest } = require('../../../adapters/network');
 const { AbortedError, PlatformError } = require('../../util/errorTypes');
 const stats = require('../../../util/stats');

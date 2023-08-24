@@ -3,30 +3,25 @@ const FormData = require('form-data');
 const fs = require('fs');
 const {
   getAccessToken,
-  MARKETO_FILE_SIZE,
   getMarketoFilePath,
-  UPLOAD_FILE,
-  handleFileUploadResponse
+  handleFileUploadResponse,
+  handleCommonErrorResponse,
 } = require('./util');
+const { MARKETO_FILE_SIZE, UPLOAD_FILE } = require('./config');
 const {
   getHashFromArray,
   removeUndefinedAndNullValues,
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
-const {handleHttpRequest } = require('../../../adapters/network');
-const {
-  AbortedError,
-  NetworkError,
-  ConfigurationError,
-} = require('../../util/errorTypes');
+const { handleHttpRequest } = require('../../../adapters/network');
+const { AbortedError, NetworkError, ConfigurationError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const stats = require('../../../util/stats');
 
-const fetchFieldSchema = async (config) => {
+const fetchFieldSchema = async (config, accessToken) => {
   let fieldArr = [];
   const fieldSchemaNames = [];
-  const accessToken = await getAccessToken(config);
   const { processedResponse: fieldSchemaMapping } = await handleHttpRequest(
     'get',
     `https://${config.munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
@@ -47,41 +42,28 @@ const fetchFieldSchema = async (config) => {
     fieldSchemaMapping?.response?.result[0]
   ) {
     fieldArr =
-      fieldSchemaMapping.response.result &&
-      Array.isArray(fieldSchemaMapping.response.result)
+      fieldSchemaMapping.response.result && Array.isArray(fieldSchemaMapping.response.result)
         ? fieldSchemaMapping.response.result[0].fields
         : [];
     fieldArr.forEach((field) => {
       fieldSchemaNames.push(field.name);
     });
   } else if (fieldSchemaMapping.response.errors) {
-    const status = fieldSchemaMapping?.response?.status || 500; // what happens if response is {code: '601', message: 'Access token invalid'}
-    throw new NetworkError(
-      `${fieldSchemaMapping.response.errors[0].message}`,
-      status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      },
-      fieldSchemaMapping,
-    );
+    handleCommonErrorResponse(fieldSchemaMapping);
   } else {
     throw new AbortedError('Failed to fetch Marketo Field Schema', 500, fieldSchemaMapping);
   }
-  return { fieldSchemaNames, accessToken };
+  return { fieldSchemaNames };
 };
 
 const getHeaderFields = (config, fieldSchemaNames) => {
   const { columnFieldsMapping } = config;
 
   columnFieldsMapping.forEach((colField) => {
-    if (fieldSchemaNames) {
-      if (!fieldSchemaNames.includes(colField.to)) {
-        throw new ConfigurationError(
-          `The field ${colField.to} is not present in Marketo Field Schema. Aborting`,
-        );
-      }
-    } else {
-      throw new ConfigurationError('Marketo Field Schema is Empty. Aborting');
+    if (!fieldSchemaNames.includes(colField.to)) {
+      throw new ConfigurationError(
+        `The field ${colField.to} is not present in Marketo Field Schema. Aborting`,
+      );
     }
   });
   const columnField = getHashFromArray(columnFieldsMapping, 'to', 'from', false);
@@ -95,6 +77,7 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   let endTime;
   let requestTime;
   startTime = Date.now();
+  // TODO: check if server is sending empty events.
 
   input.forEach((i) => {
     const inputData = i;
@@ -143,7 +126,9 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
   }
 
   if (Object.keys(headerArr).length === 0) {
-    throw new ConfigurationError('Header fields not present');
+    throw new ConfigurationError(
+      'Faulty configuration. Please map your traits to Marketo column fields',
+    ); // TODO: correct error message
   }
   const csv = [];
   csv.push(headerArr.toString());
@@ -187,7 +172,7 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
 };
 
 const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
-  const importId = null // by default importId is null
+  const importId = null; // by default importId is null
   const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
     input,
     config,
@@ -229,9 +214,11 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
       const requestTime = endTime - startTime;
       stats.counter('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
       stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
-      if (resp.status === 200) {
-       return handleFileUploadResponse (resp, successfulJobs,unsuccessfulJobs, requestTime)
+      if (resp.status !== 200) {
+        // use function for httpsuccess
+        // throw error
       }
+      return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime);
     }
     return { importId, successfulJobs, unsuccessfulJobs };
   } catch (err) {
@@ -253,19 +240,25 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
 };
 
 /**
- * 
- * @param {*} input 
- * @param {*} config 
+ *
+ * @param {*} input
+ * @param {*} config
  * @returns returns the final response of fileUpload.js
  */
 const responseHandler = async (input, config) => {
+  const accessToken = await getAccessToken(config);
   /**
   {
     "importId" : <some-id>,
     "pollURL" : <some-url-to-poll-status>,
   }
   */
-  const { fieldSchemaNames, accessToken } = await fetchFieldSchema(config);
+  const { fieldSchemaNames } = await fetchFieldSchema(config, accessToken);
+  if (!fieldSchemaNames) {
+    throw new ConfigurationError(
+      'Could not find any field schema corresponding to your marketo account. Aborting.',
+    );
+  }
   const { importId, successfulJobs, unsuccessfulJobs } = await getImportID(
     input,
     config,

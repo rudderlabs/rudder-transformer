@@ -1,9 +1,10 @@
 const { removeUndefinedValues } = require('../../util');
-const { getAccessToken,POLL_ACTIVITY, handlePollResponse } = require('./util');
+const { getAccessToken, handlePollResponse } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const stats = require('../../../util/stats');
 const { RetryableError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { POLL_ACTIVITY } = require('./config');
 
 const getPollStatus = async (event) => {
   const accessToken = await getAccessToken(event.config);
@@ -31,9 +32,9 @@ const getPollStatus = async (event) => {
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   const POLL_STATUS_ERR_MSG = 'Could not poll status';
-    
+
   if (pollStatus.status === 200) {
-    return handlePollResponse(pollStatus)
+    return handlePollResponse(pollStatus);
   }
   stats.counter(POLL_ACTIVITY, {
     status: 500,
@@ -78,8 +79,8 @@ const responseHandler = async (event) => {
   if (pollResp) {
     pollSuccess = pollResp.success;
     if (pollSuccess) {
-      // As marketo lead import API or bulk API does not support record level error response we are considering 
-      // file level errors only. 
+      // As marketo lead import API or bulk API does not support record level error response we are considering
+      // file level errors only.
       // ref: https://nation.marketo.com/t5/ideas/support-error-code-in-record-level-in-lead-bulk-api/idi-p/262191
       const { status, numOfRowsFailed, numOfRowsWithWarning } = pollResp.result[0];
       if (status === 'Complete') {

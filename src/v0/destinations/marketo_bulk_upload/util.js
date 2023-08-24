@@ -13,7 +13,6 @@ const {
   ABORTABLE_CODES,
   RETRYABLE_CODES,
   THROTTLED_CODES,
-  MARKETO_FILE_SIZE,
   POLL_ACTIVITY,
   UPLOAD_FILE,
   JOB_STATUS_ACTIVITY,
@@ -27,6 +26,35 @@ const {
 
 const getMarketoFilePath = () => MARKETO_FILE_PATH;
 
+/**
+ * Handles common error responses returned from API calls.
+ * Checks the error code and throws the appropriate error object based on the code.
+ *
+ * @param {object} resp - The response object containing the error information.
+ * @param {string} OpErrorMessage - The error message to be used if the error code is not recognized.
+ * @param {string} OpActivity - The activity name for tracking purposes.
+ * @throws {AbortedError} - If the error code is abortable.
+ * @throws {ThrottledError} - If the error code is within the range of throttled codes.
+ * @throws {RetryableError} - If the error code is neither abortable nor throttled.
+ *
+ * @example
+ * const resp = {
+ *   response: {
+ *     errors: [
+ *       {
+ *         code: "1003",
+ *         message: "Empty File"
+ *       }
+ *     ]
+ *   }
+ * };
+ *
+ * try {
+ *   handleCommonErrorResponse(resp, "Error message", "Activity");
+ * } catch (error) {
+ *   console.log(error);
+ * }
+ */
 const handleCommonErrorResponse = (resp, OpErrorMessage, OpActivity) => {
   if (
     resp.response.errors[0] &&
@@ -94,7 +122,15 @@ const getAccessToken = async (config) => {
     resp,
   );
 };
-
+ /**
+   * Handles the response of a polling operation.
+   * Checks for any errors in the response and calls the `handleCommonErrorResponse` function to handle them.
+   * If the response is successful, increments the stats and returns the response.
+   * Otherwise, returns null.
+   *
+   * @param {object} pollStatus - The response object from the polling operation.
+   * @returns {object|null} - The response object if the polling operation was successful, otherwise null.
+   */
 const handlePollResponse = (pollStatus) => {
   const response = null;
   // DOC: https://developers.marketo.com/rest-api/error-codes/
@@ -114,23 +150,24 @@ const handlePollResponse = (pollStatus) => {
            */
     handleCommonErrorResponse(pollStatus, POLL_STATUS_ERR_MSG, POLL_ACTIVITY);
   }
+
   /*
-Sample Successful Poll response structure:
- {
- "requestId":"8136#146daebc2ed",
- "success":true,
- "result":[
-     {
-         "batchId":<batch-id>,
-         "status":"Complete",
-         "numOfLeadsProcessed":2,
-         "numOfRowsFailed":1,
-         "numOfRowsWithWarning":0,
-         "message":"Import completed with errors, 2 records imported (2 members), 1 failed"
-     }
- ]
- }
-*/
+    Sample Successful Poll response structure:
+    {
+      "requestId":"8136#146daebc2ed",
+      "success":true,
+      "result":[
+          {
+              "batchId":<batch-id>,
+              "status":"Complete",
+              "numOfLeadsProcessed":2,
+              "numOfRowsFailed":1,
+              "numOfRowsWithWarning":0,
+              "message":"Import completed with errors, 2 records imported (2 members), 1 failed"
+          }
+      ]
+    }
+  */
   if (pollStatus.response && pollStatus.response.success) {
     stats.counter(POLL_ACTIVITY, {
       status: 200,
@@ -200,13 +237,15 @@ const handleFetchJobStatusResponse = (resp, type) => {
 };
 
 /**
+ * Handles the response received after a file upload request.
+ * Checks for errors in the response and throws appropriate error objects based on the error codes.
+ * If the response indicates a successful upload, extracts the importId and returns it along with other job details.
  *
- * @param {*} resp
- * @param {*} successfulJobs
- * @param {*} unsuccessfulJobs
- * @param {*} requestTime
- * @returns handles the response of getImportId axios call and returns final parameters:
- * importId, successfulJobs, unsuccessfulJobs
+ * @param {object} resp - The response object received after a file upload request.
+ * @param {array} successfulJobs - An array to store details of successful jobs.
+ * @param {array} unsuccessfulJobs - An array to store details of unsuccessful jobs.
+ * @param {number} requestTime - The time taken for the request in milliseconds.
+ * @returns {object} - An object containing the importId, successfulJobs, and unsuccessfulJobs.
  */
 const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, requestTime) => {
   const importId = null;

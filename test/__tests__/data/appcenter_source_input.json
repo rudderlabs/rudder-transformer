@@ -1,8 +1,8 @@
 [
   {
-    "text": "Hello from your Anant-test app in App Center!",
+    "text": "Hello from your abc-test app in App Center!",
     "sent_at": "2023-01-02T07: 53: 28.3117824Z",
-    "url": "https://appcenter.ms/users/anant-rudderstack.com/apps/Anant-test"
+    "url": "https://appcenter.ms/users/abc-rudderstack.com/apps/abc-test"
   },
   {
     "app_name": "MSAppCenterTesting",

@@ -56,7 +56,7 @@
             "city": "Surat",
             "phone": "+91 9557645345",
             "lastName": "test",
-            "firstName": "mihir",
+            "firstName": "rudder",
             "state": "Gujarat"
           }
         }
@@ -121,10 +121,10 @@
           "traits": {
             "age": "25",
             "city": "Surat",
-            "email": "testmihir@gmail.com",
+            "email": "test@rudderlabs.com",
             "phone": "+91 9557645345",
             "lastName": "test",
-            "firstName": "mihir",
+            "firstName": "rudder",
             "state": "Gujarat"
           }
         }
@@ -136,9 +136,9 @@
         "FORM": {},
         "JSON": {
           "contactDetails": {
-            "email": "testmihir@gmail.com",
+            "email": "test@rudderlabs.com",
             "last_name": "test",
-            "first_name": "mihir",
+            "first_name": "rudder",
             "phone_number": "+91 9557645345",
             "custom_fields": {}
           },
@@ -214,11 +214,11 @@
           "traits": {
             "age": "25",
             "city": "Surat",
-            "name": "mihir test",
-            "email": "testmihir@gmail.com",
+            "name": "rudder test",
+            "email": "test@rudderlabs.com",
             "phone": "+91 9557645345",
             "lastName": "test",
-            "firstName": "mihir",
+            "firstName": "rudder",
             "state": "Gujarat"
           }
         }
@@ -230,13 +230,13 @@
         "FORM": {},
         "JSON": {
           "contactDetails": {
-            "email": "testmihir@gmail.com",
+            "email": "test@rudderlabs.com",
             "last_name": "test",
-            "first_name": "mihir",
-            "unique_name": "mihir test",
+            "first_name": "rudder",
+            "unique_name": "rudder test",
             "phone_number": "+91 9557645345",
             "custom_fields": {
-              "w1_T": "mihir test"
+              "w1_T": "rudder test"
             }
           },
           "contactListIds": ""

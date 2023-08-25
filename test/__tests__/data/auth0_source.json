@@ -45,8 +45,8 @@
               "ip": "35.166.202.113",
               "auth": {
                 "user": {
-                  "name": "Bhalala Mihir",
-                  "email": "bhalalamark@gmail.com",
+                  "name": "rudder test",
+                  "email": "test@rudderlabs.com",
                   "user_id": "auth0|*****"
                 },
                 "strategy": "jwt",
@@ -294,8 +294,8 @@
               "ip": "35.166.202.113",
               "auth": {
                 "user": {
-                  "name": "Bhalala Mihir",
-                  "email": "bhalalamark@gmail.com",
+                  "name": "rudder test",
+                  "email": "test@rudderlabs.com",
                   "user_id": "auth0|*****"
                 },
                 "strategy": "jwt",
@@ -497,8 +497,8 @@
               "ip": "35.167.74.121",
               "auth": {
                 "user": {
-                  "name": "Bhalala Mihir",
-                  "email": "bhalalamark@gmail.com",
+                  "name": "rudder test",
+                  "email": "test@rudderlabs.com",
                   "user_id": "google-oauth2|123456"
                 },
                 "strategy": "jwt",
@@ -552,8 +552,8 @@
               "ip": "35.167.74.121",
               "auth": {
                 "user": {
-                  "name": "Bhalala Mihir",
-                  "email": "bhalalamark@gmail.com",
+                  "name": "rudder test",
+                  "email": "test@rudderlabs.com",
                   "user_id": "google-oauth2|123456"
                 },
                 "strategy": "jwt",
@@ -604,8 +604,8 @@
               "ip": "35.160.3.103",
               "auth": {
                 "user": {
-                  "name": "Bhalala Mihir",
-                  "email": "bhalalamark@gmail.com",
+                  "name": "rudder test",
+                  "email": "test@rudderlabs.com",
                   "user_id": "google-oauth2|123456"
                 },
                 "strategy": "jwt",
@@ -863,8 +863,8 @@
               "ip": "35.160.3.103",
               "auth": {
                 "user": {
-                  "name": "Bhalala Mihir",
-                  "email": "bhalalamark@gmail.com",
+                  "name": "rudder test",
+                  "email": "test@rudderlabs.com",
                   "user_id": "google-oauth2|123456"
                 },
                 "strategy": "jwt",

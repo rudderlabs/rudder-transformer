@@ -381,6 +381,7 @@ export const data = [
                 XML: {},
                 FORM: {},
                 JSON: {
+                  type: 'group',
                   traits: {
                     company: '5055077684',
                     type: 'IT',
@@ -482,6 +483,7 @@ export const data = [
                 XML: {},
                 FORM: {},
                 JSON: {
+                  type: 'page',
                   name: 'ApplicationLoaded',
                   userId: '12345',
                   context: {

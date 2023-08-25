@@ -292,7 +292,7 @@
           "taxable": true,
           "title": "Shirt 2 - LARGE",
           "total_discount": "0.00",
-          "vendor": "testAnant",
+          "vendor": "testRudderlabs",
           "discounted_price_set": {
             "shop_money": {
               "amount": "30.0",
@@ -394,7 +394,7 @@
             "taxable": true,
             "title": "Shirt 2 - LARGE",
             "total_discount": "0.00",
-            "brand": "testAnant",
+            "brand": "testRudderlabs",
             "discounted_price_set": {
               "shop_money": {
                 "amount": "30.0",
@@ -561,7 +561,7 @@
           "quantity": 1,
           "sku": "",
           "variant_title": null,
-          "vendor": "testAnant",
+          "vendor": "testRudderlabs",
           "fulfillment_service": "manual",
           "product_id": 8100634689811,
           "requires_shipping": true,
@@ -650,7 +650,7 @@
             "price": "9.54",
             "taxable": true,
             "total_discount": "0.00",
-            "brand": "testAnant",
+            "brand": "testRudderlabs",
             "fulfillable_quantity": 0,
             "fulfillment_service": "manual",
             "fulfillment_status": "fulfilled",
@@ -726,7 +726,7 @@
           "taxable": true,
           "title": "Shirt 2 - LARGE",
           "total_discount": "0.00",
-          "vendor": "testAnant",
+          "vendor": "testRudderlabs",
           "discounted_price_set": {
             "shop_money": {
               "amount": "30.0",
@@ -828,7 +828,7 @@
             "token": "shopify_test2",
             "title": "Shirt 2 - LARGE",
             "total_discount": "0.00",
-            "brand": "testAnant",
+            "brand": "testRudderlabs",
             "discounted_price_set": {
               "shop_money": {
                 "amount": "30.0",
@@ -927,7 +927,7 @@
           "taxable": true,
           "title": "Shirt 2 - LARGE",
           "total_discount": "0.00",
-          "vendor": "testAnant",
+          "vendor": "testRudderlabs",
           "discounted_price_set": {
             "shop_money": {
               "amount": "30.0",
@@ -1033,7 +1033,7 @@
             "taxable": true,
             "title": "Shirt 2 - LARGE",
             "total_discount": "0.00",
-            "brand": "testAnant",
+            "brand": "testRudderlabs",
             "discounted_price_set": {
               "shop_money": {
                 "amount": "30.0",
@@ -1122,7 +1122,7 @@
           "taxable": true,
           "title": "Shirt 2 - LARGE",
           "total_discount": "0.00",
-          "vendor": "testAnant",
+          "vendor": "testRudderlabs",
           "discounted_price_set": {
             "shop_money": {
               "amount": "30.0",
@@ -1218,7 +1218,7 @@
             "taxable": true,
             "title": "Shirt 2 - LARGE",
             "total_discount": "0.00",
-            "brand": "testAnant",
+            "brand": "testRudderlabs",
             "discounted_price_set": {
               "shop_money": {
                 "amount": "30.0",
@@ -1403,7 +1403,7 @@
           "taxable": true,
           "title": "Shirt 2 - LARGE",
           "total_discount": "0.00",
-          "vendor": "testAnant",
+          "vendor": "testRudderlabs",
           "discounted_price_set": {
             "shop_money": {
               "amount": "30.0",
@@ -1502,7 +1502,7 @@
             "token": "shopify_test2",
             "title": "Shirt 2 - LARGE",
             "total_discount": "0.00",
-            "brand": "testAnant",
+            "brand": "testRudderlabs",
             "discounted_price_set": {
               "shop_money": {
                 "amount": "30.0",

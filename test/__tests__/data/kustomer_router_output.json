@@ -12,9 +12,9 @@
       "params": {},
       "body": {
         "JSON": {
-          "name": "Utsab Chowdhury",
-          "externalId": "utsabc",
-          "username": "utsabc47",
+          "name": "test Rudderlabs",
+          "externalId": "testc",
+          "username": "testc47",
           "company": "Rudderstack",
           "signedUpAt": "2015-04-17T12:37:42.146Z",
           "lastActivityAt": "2016-04-17T12:37:42.146Z",
@@ -29,22 +29,22 @@
               "verified": true,
               "userid": "100",
               "type": "twitter",
-              "username": "@utsabc",
-              "url": "http://twitter.com/utsabc"
+              "username": "@testc",
+              "url": "http://twitter.com/testc"
             },
             {
               "verified": false,
               "userid": "200",
               "type": "facebook",
-              "username": "utsabc",
-              "url": "http://facebook.com/utsabc"
+              "username": "testc",
+              "url": "http://facebook.com/testc"
             }
           ],
           "birthdayAt": "2005-01-01T23:28:56.782Z",
           "emails": [
             {
               "type": "home",
-              "email": "utsab@rudderstack.com"
+              "email": "test@rudderstack.com"
             }
           ],
           "phones": [

@@ -150,7 +150,7 @@
     "message": {
       "type": "identify",
       "sentAt": "2021-05-18T06:58:57.186Z",
-      "userId": "pravesh.choudhary@yara.com",
+      "userId": "test.rudderlabs@yara.com",
       "channel": "web",
       "context": {
         "os": {
@@ -181,8 +181,8 @@
           "density": 2
         },
         "traits": {
-          "name": "Pravesh Choudhary",
-          "email": "pravesh.choudhary@yara.com",
+          "name": "test rudderlabs",
+          "email": "test.rudderlabs@yara.com",
           "userId": "1sWVaQTxoVwjvShC0295E6OqMaP",
           "first_login": false,
           "workspaceId": "1jWrHYPjNGSHbvKwzow0ZFPIQll",

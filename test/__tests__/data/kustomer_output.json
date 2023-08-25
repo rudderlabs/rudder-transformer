@@ -11,9 +11,9 @@
     "params": {},
     "body": {
       "JSON": {
-        "name": "Utsab Chowdhury",
-        "externalId": "utsabc",
-        "username": "utsabc47",
+        "name": "Test Rudderlabs",
+        "externalId": "Testc",
+        "username": "Testc47",
         "company": "Rudderstack",
         "signedUpAt": "2015-04-17T12:37:42.146Z",
         "lastActivityAt": "2016-04-17T12:37:42.146Z",
@@ -28,22 +28,22 @@
             "verified": true,
             "userid": "100",
             "type": "twitter",
-            "username": "@utsabc",
-            "url": "http://twitter.com/utsabc"
+            "username": "@Testc",
+            "url": "http://twitter.com/Testc"
           },
           {
             "verified": false,
             "userid": "200",
             "type": "facebook",
-            "username": "utsabc",
-            "url": "http://facebook.com/utsabc"
+            "username": "Testc",
+            "url": "http://facebook.com/Testc"
           }
         ],
         "birthdayAt": "2005-01-01T23:28:56.782Z",
         "emails": [
           {
             "type": "home",
-            "email": "utsab@rudderstack.com"
+            "email": "test@rudderstack.com"
           }
         ],
         "phones": [
@@ -118,7 +118,7 @@
     "body": {
       "JSON": {
         "identity": {
-          "externalId": "utsabc"
+          "externalId": "Testc"
         },
         "event": {
           "name": "Screen-Viewed-Test-Event-Screen",
@@ -315,7 +315,7 @@
     "body": {
       "JSON": {
         "identity": {
-          "externalId": "utsabc"
+          "externalId": "Testc"
         },
         "event": {
           "name": "Screen-Viewed",
@@ -344,9 +344,9 @@
     "params": {},
     "body": {
       "JSON": {
-        "name": "Utsab Chowdhury",
-        "externalId": "utsabc",
-        "username": "utsabc47",
+        "name": "Test Rudderlabs",
+        "externalId": "Testc",
+        "username": "Testc47",
         "company": "Rudderstack",
         "signedUpAt": "2015-04-17T12:37:42.146Z",
         "lastActivityAt": "2016-04-17T12:37:42.146Z",
@@ -361,22 +361,22 @@
             "verified": true,
             "userid": "100",
             "type": "twitter",
-            "username": "@utsabc",
-            "url": "http://twitter.com/utsabc"
+            "username": "@Testc",
+            "url": "http://twitter.com/Testc"
           },
           {
             "verified": false,
             "userid": "200",
             "type": "facebook",
-            "username": "utsabc",
-            "url": "http://facebook.com/utsabc"
+            "username": "Testc",
+            "url": "http://facebook.com/Testc"
           }
         ],
         "birthdayAt": "2005-01-01T23:28:56.782Z",
         "emails": [
           {
             "type": "home",
-            "email": "utsab@rudderstack.com"
+            "email": "test@rudderstack.com"
           }
         ],
         "phones": [
@@ -415,9 +415,9 @@
     "params": {},
     "body": {
       "JSON": {
-        "name": "Utsab Chowdhury",
-        "externalId": "utsabc",
-        "username": "utsabc47",
+        "name": "Test Rudderlabs",
+        "externalId": "Testc",
+        "username": "Testc47",
         "company": "Rudderstack",
         "signedUpAt": "2015-04-17T12:37:42.146Z",
         "lastActivityAt": "2016-04-17T12:37:42.146Z",
@@ -432,22 +432,22 @@
             "verified": true,
             "userid": "100",
             "type": "twitter",
-            "username": "@utsabc",
-            "url": "http://twitter.com/utsabc"
+            "username": "@Testc",
+            "url": "http://twitter.com/Testc"
           },
           {
             "verified": false,
             "userid": "200",
             "type": "facebook",
-            "username": "utsabc",
-            "url": "http://facebook.com/utsabc"
+            "username": "Testc",
+            "url": "http://facebook.com/Testc"
           }
         ],
         "birthdayAt": "2005-01-01T23:28:56.782Z",
         "emails": [
           {
             "type": "home",
-            "email": "utsab@rudderstack.com"
+            "email": "test@rudderstack.com"
           }
         ],
         "phones": [
@@ -486,9 +486,9 @@
     "params": {},
     "body": {
       "JSON": {
-        "name": "Utsab Chowdhury",
-        "externalId": "utsabc",
-        "username": "utsabc47",
+        "name": "Test Rudderlabs",
+        "externalId": "Testc",
+        "username": "Testc47",
         "company": "Rudderstack",
         "signedUpAt": "2015-04-17T12:37:42.146Z",
         "lastActivityAt": "2016-04-17T12:37:42.146Z",
@@ -503,22 +503,22 @@
             "verified": true,
             "userid": "100",
             "type": "twitter",
-            "username": "@utsabc",
-            "url": "http://twitter.com/utsabc"
+            "username": "@Testc",
+            "url": "http://twitter.com/Testc"
           },
           {
             "verified": false,
             "userid": "200",
             "type": "facebook",
-            "username": "utsabc",
-            "url": "http://facebook.com/utsabc"
+            "username": "Testc",
+            "url": "http://facebook.com/Testc"
           }
         ],
         "birthdayAt": "2005-01-01T23:28:56.782Z",
         "emails": [
           {
             "type": "home",
-            "email": "utsab@rudderstack.com"
+            "email": "test@rudderstack.com"
           }
         ],
         "phones": [
@@ -558,7 +558,7 @@
     "body": {
       "JSON": {
         "identity": {
-          "externalId": "utsabc"
+          "externalId": "Testc"
         },
         "event": {
           "name": "Screen-Viewed",

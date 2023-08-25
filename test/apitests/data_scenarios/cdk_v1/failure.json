@@ -6,10 +6,10 @@
         "channel": "offline",
         "context": {
           "traits": {
-            "email": "utsab.c97@gmail.com",
-            "firstName": "utsab",
+            "email": "test.c97@gmail.com",
+            "firstName": "test",
             "gender": "Male",
-            "lastName": "chowdhury",
+            "lastName": "Rudderlabs",
             "phone": "+919830311522"
           }
         },

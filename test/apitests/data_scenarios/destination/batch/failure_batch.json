@@ -349,11 +349,11 @@
                   "event_type": "Product Added",
                   "session_id": -1,
                   "user_properties": {
-                    "email": "utsab.c97@gmail.com",
+                    "email": "test.c97@gmail.com",
                     "phone": "+919830311522",
                     "gender": "Male",
-                    "lastName": "chowdhury",
-                    "firstName": "utsab"
+                    "lastName": "Rudderlabs",
+                    "firstName": "test"
                   },
                   "event_properties": {
                     "sku": "F15",
@@ -425,11 +425,11 @@
                       "event_type": "Product Added",
                       "session_id": -1,
                       "user_properties": {
-                        "email": "utsab.c97@gmail.com",
+                        "email": "test.c97@gmail.com",
                         "phone": "+919830311522",
                         "gender": "Male",
-                        "lastName": "chowdhury",
-                        "firstName": "utsab"
+                        "lastName": "Rudderlabs",
+                        "firstName": "test"
                       },
                       "event_properties": {
                         "sku": "F15",
@@ -706,11 +706,11 @@
                   "event_type": "Product Viewed",
                   "session_id": -1,
                   "user_properties": {
-                    "email": "utsab.c97@gmail.com",
+                    "email": "test.c97@gmail.com",
                     "phone": "+919830311522",
                     "gender": "Male",
-                    "lastName": "chowdhury",
-                    "firstName": "utsab"
+                    "lastName": "Rudderlabs",
+                    "firstName": "test"
                   },
                   "event_properties": {
                     "sku": "F15",
@@ -782,11 +782,11 @@
                       "event_type": "Product Viewed",
                       "session_id": -1,
                       "user_properties": {
-                        "email": "utsab.c97@gmail.com",
+                        "email": "test.c97@gmail.com",
                         "phone": "+919830311522",
                         "gender": "Male",
-                        "lastName": "chowdhury",
-                        "firstName": "utsab"
+                        "lastName": "Rudderlabs",
+                        "firstName": "test"
                       },
                       "event_properties": {
                         "sku": "F15",
@@ -1087,11 +1087,11 @@
                     "event_type": "Product Added",
                     "session_id": -1,
                     "user_properties": {
-                      "email": "utsab.c97@gmail.com",
+                      "email": "test.c97@gmail.com",
                       "phone": "+919830311522",
                       "gender": "Male",
-                      "lastName": "chowdhury",
-                      "firstName": "utsab"
+                      "lastName": "Rudderlabs",
+                      "firstName": "test"
                     },
                     "event_properties": {
                       "sku": "F15",
@@ -1207,11 +1207,11 @@
                 "event_type": "Product Viewed",
                 "session_id": -1,
                 "user_properties": {
-                  "email": "utsab.c97@gmail.com",
+                  "email": "test.c97@gmail.com",
                   "phone": "+919830311522",
                   "gender": "Male",
-                  "lastName": "chowdhury",
-                  "firstName": "utsab"
+                  "lastName": "Rudderlabs",
+                  "firstName": "test"
                 },
                 "event_properties": {
                   "sku": "F15",
@@ -1381,11 +1381,11 @@
                       "event_type": "Product Viewed",
                       "session_id": -1,
                       "user_properties": {
-                        "email": "utsab.c97@gmail.com",
+                        "email": "test.c97@gmail.com",
                         "phone": "+919830311522",
                         "gender": "Male",
-                        "lastName": "chowdhury",
-                        "firstName": "utsab"
+                        "lastName": "Rudderlabs",
+                        "firstName": "test"
                       },
                       "event_properties": {
                         "sku": "F15",

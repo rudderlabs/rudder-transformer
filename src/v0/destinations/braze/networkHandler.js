@@ -8,6 +8,7 @@ const {
 const { DESTINATION } = require('./config');
 const { NetworkError } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
+const stats = require('../../../util/stats');
 
 const responseHandler = (destinationResponse, _dest) => {
   const message = `Request for ${DESTINATION} Processed Successfully`;
@@ -23,6 +24,15 @@ const responseHandler = (destinationResponse, _dest) => {
       destinationResponse,
     );
   }
+
+  // Partial errors
+  if (!!response &&
+    response.message === 'success' &&
+    response.errors &&
+    response.errors.length > 0){
+      stats.increment('braze_partial_failure')
+    }
+
   // application level errors
   if (
     !!response &&

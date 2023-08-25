@@ -3,7 +3,9 @@
 // Ref - https://support.google.com/campaignmanager/answer/2823222?hl=en
 const stringifyValues = (data) => {
   Object.keys(data).forEach((key) => {
-    data[key] = JSON.stringify(data[key]);
+    if (typeof data[key] !== 'string') {
+      data[key] = JSON.stringify(data[key]);
+    }
   });
   return data;
 };

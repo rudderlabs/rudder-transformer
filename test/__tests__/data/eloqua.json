@@ -53,7 +53,7 @@
           "identifierFieldName": "C_EmailAddress",
           "data": {
             "C_FirstName": "Test User",
-            "C_patient_id1": 1,
+            "C_patient_id1": "1",
             "C_MobilePhone": "+008822773355",
             "C_City": "Scranton",
             "C_date_of_birth_1life1": "22/12/01",
@@ -208,7 +208,7 @@
           "identifierFieldName": "C_EmailAddress",
           "data": {
             "C_FirstName": "Test User",
-            "C_patient_id1": 1,
+            "C_patient_id1": "1",
             "C_MobilePhone": "+008822773355",
             "C_City": "Scranton",
             "C_date_of_birth_1life1": "22/12/01",
@@ -277,7 +277,7 @@
           "identifierFieldName": "contactID1",
           "data": {
             "key11": "Test User",
-            "key21": 1,
+            "key21": "1",
             "contactID11": "+008822773355",
             "contactID1": "testUser1234@keeptesting.com"
           },

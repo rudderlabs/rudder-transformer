@@ -8,6 +8,7 @@ bindings:
     path: ../../../../v0/util
   - name: defaultRequestConfig
     path: ../../../../v0/util
+  - path: ./utils
 
 steps:
   - name: validateInput
@@ -24,6 +25,7 @@ steps:
       const identifierKey = .message.context.externalId[0].identifierType
       const objectId = .message.context.externalId[0].type.split('-')[1].toString()
       let data = .message.traits || .message.properties
+      data = $.stringifyValues(data)
       data[identifierKey] = .message.userId
       let payload = {
         identifierFieldName : identifierKey,
@@ -40,4 +42,3 @@ steps:
         response.body.JSON = payload;
         response
       )
-

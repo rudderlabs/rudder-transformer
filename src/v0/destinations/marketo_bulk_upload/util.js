@@ -57,10 +57,10 @@ const getMarketoFilePath = () => MARKETO_FILE_PATH;
  */
 const handleCommonErrorResponse = (resp, OpErrorMessage, OpActivity) => {
   if (
-    resp.response?.errors.length > 0 &&
+    resp.response?.errors?.length > 0 &&
     resp.response?.errors[0] &&
     ((resp.response?.errors[0]?.code >= 1000 && resp.response?.errors[0]?.code <= 1077) ||
-      (ABORTABLE_CODES.includes(resp.response?.errors[0]?.code)))
+      ABORTABLE_CODES.includes(resp.response?.errors[0]?.code))
   ) {
     // for empty file the code is 1003 and that should be retried
     stats.increment(OpActivity, {
@@ -68,7 +68,7 @@ const handleCommonErrorResponse = (resp, OpErrorMessage, OpActivity) => {
       state: 'Abortable',
     });
     throw new AbortedError(resp.response?.errors[0]?.message || OpErrorMessage, 400);
-  } else if (THROTTLED_CODES.includes(resp.response?.errors[0]?.code) ) {
+  } else if (THROTTLED_CODES.includes(resp.response?.errors[0]?.code)) {
     // for more than 10 concurrent uses the code is 615 and that should be retried
     stats.increment(OpActivity, {
       status: 500,
@@ -111,33 +111,32 @@ const getAccessToken = async (config) => {
     throw new NetworkError('Could not retrieve authorization token');
   }
 
-  if ( resp.response?.access_token) {
+  if (resp.response?.access_token) {
     return resp.response.access_token;
   }
   throw new NetworkError(
     'Could not retrieve authorisation token',
-     500 ,
+    500,
     {
       [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500),
     },
     resp,
   );
 };
- /**
-   * Handles the response of a polling operation.
-   * Checks for any errors in the response and calls the `handleCommonErrorResponse` function to handle them.
-   * If the response is successful, increments the stats and returns the response.
-   * Otherwise, returns null.
-   *
-   * @param {object} pollStatus - The response object from the polling operation.
-   * @returns {object|null} - The response object if the polling operation was successful, otherwise null.
-   */
+/**
+ * Handles the response of a polling operation.
+ * Checks for any errors in the response and calls the `handleCommonErrorResponse` function to handle them.
+ * If the response is successful, increments the stats and returns the response.
+ * Otherwise, returns null.
+ *
+ * @param {object} pollStatus - The response object from the polling operation.
+ * @returns {object|null} - The response object if the polling operation was successful, otherwise null.
+ */
 const handlePollResponse = (pollStatus) => {
-  const response = null;
   // DOC: https://developers.marketo.com/rest-api/error-codes/
   if (pollStatus.response.errors) {
     /* Sample error response for poll is:
-          
+
             {
               "requestId": "e42b#14272d07d78",
               "success": false,
@@ -169,7 +168,7 @@ const handlePollResponse = (pollStatus) => {
       ]
     }
   */
-  if ( pollStatus?.response?.success) {
+  if (pollStatus?.response?.success) {
     stats.counter(POLL_ACTIVITY, {
       status: 200,
       state: 'Success',
@@ -177,7 +176,7 @@ const handlePollResponse = (pollStatus) => {
     return pollStatus.response;
   }
 
-  return response;
+  return null;
 };
 
 const handleFetchJobStatusResponse = (resp, type) => {
@@ -211,10 +210,10 @@ const handleFetchJobStatusResponse = (resp, type) => {
   /*
   successful response :
   {
-    response: 'city,  email,Import Failure ReasonChennai,s…a,Value for lookup field 'email' not found', 
+    response: 'city,  email,Import Failure ReasonChennai,s…a,Value for lookup field 'email' not found',
     status: 200
   }
- 
+
 */
   if (isHttpStatusSuccess(resp.status)) {
     if (resp.response?.success === false) {
@@ -252,7 +251,7 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
   const importId = null;
 
   /*
-    For unsuccessful response 
+    For unsuccessful response
     {
         "requestId": "e42b#14272d07d78",
         "success": false,
@@ -265,11 +264,7 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
     }
    */
   if (resp.response?.errors) {
-    if (
-      resp.response.errors[0]?.code === '1003' ||
-      resp.response.errors[0]?.code === '615'
-    ) {
-      // code handling not only strings
+    if (resp.response?.errors[0]?.code === '1003' || resp.response?.errors[0]?.code === '615') {
       stats.increment(UPLOAD_FILE, {
         status: 500,
         state: 'Retryable',
@@ -295,9 +290,9 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
     }
   */
   if (
-    resp?.response?.success &&
-    resp?.response?.result.length > 0 &&
-    resp?.response?.result[0]?.importId
+    resp.response?.success &&
+    resp.response?.result?.length > 0 &&
+    resp.response?.result[0]?.importId
   ) {
     const { importId } = resp.response.result[0];
     stats.histogram('marketo_bulk_upload_upload_file_time', requestTime);
@@ -318,5 +313,5 @@ module.exports = {
   handleFetchJobStatusResponse,
   handleFileUploadResponse,
   getMarketoFilePath,
-  handleCommonErrorResponse
+  handleCommonErrorResponse,
 };

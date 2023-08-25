@@ -57,7 +57,7 @@ const fetchFieldSchema = async (config, accessToken) => {
       fieldSchemaNames.push(field.name);
     });
   } else {
-    throw new AbortedError('Failed to fetch Marketo Field Schema', 500, fieldSchemaMapping);
+    throw new RetryableError('Failed to fetch Marketo Field Schema', 500, fieldSchemaMapping);
   }
   return { fieldSchemaNames };
 };
@@ -212,20 +212,19 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
       stats.counter('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
       stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
       if (!isHttpStatusSuccess(resp.status)) {
-        throw new RetryableError(FILE_UPLOAD_ERR_MSG, resp.status);
+        throw new NetworkError('Unable to upload file', resp.status); // TODO check other parameters
       }
       return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime);
     }
     return { importId, successfulJobs, unsuccessfulJobs };
   } catch (err) {
-    // TODO check the tags
     stats.increment(UPLOAD_FILE, {
-      status: err?.status || 400,
-      errorMessage: err.message || FILE_UPLOAD_ERR_MSG,
+      status: err?.status || 500,
+      errorMessage: err?.message || FILE_UPLOAD_ERR_MSG,
     });
-    const status = err?.status || 400;
+    const status = err?.status || 500;
     throw new NetworkError(
-      err.message || FILE_UPLOAD_ERR_MSG,
+      err?.message || FILE_UPLOAD_ERR_MSG,
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
@@ -250,7 +249,7 @@ const responseHandler = async (input, config) => {
   }
   */
   const { fieldSchemaNames } = await fetchFieldSchema(config, accessToken);
-  if (!fieldSchemaNames) {
+  if (fieldSchemaNames.length <= 0) {
     throw new ConfigurationError(
       'Could not find any field schema corresponding to your marketo account. Aborting.',
     );

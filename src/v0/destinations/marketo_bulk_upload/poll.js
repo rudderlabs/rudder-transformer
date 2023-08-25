@@ -2,11 +2,12 @@ const { removeUndefinedValues, isHttpStatusSuccess } = require('../../util');
 const { getAccessToken, handlePollResponse } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const stats = require('../../../util/stats');
-const { RetryableError } = require('../../util/errorTypes');
+const { NetworkError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { POLL_ACTIVITY } = require('./config');
 
 const getPollStatus = async (event) => {
+  // TODO fetch from cache
   const accessToken = await getAccessToken(event.config);
   const { munchkinId } = event.config;
 
@@ -19,7 +20,6 @@ const getPollStatus = async (event) => {
     },
   };
   const pollUrl = `https://${munchkinId}.mktorest.com/bulk/v1/leads/batch/${event.importId}.json`;
-  const startTime = Date.now();
   const { processedResponse: pollStatus } = await handleHttpRequest(
     'get',
     pollUrl,
@@ -29,16 +29,14 @@ const getPollStatus = async (event) => {
       feature: 'transformation',
     },
   );
-  const endTime = Date.now();
-  const requestTime = endTime - startTime;
   const POLL_STATUS_ERR_MSG = 'Could not poll status';
 
   if (!isHttpStatusSuccess(pollStatus.status)) {
     stats.counter(POLL_ACTIVITY, {
-      status: 500,
+      status: pollStatus.status,
       state: 'Retryable',
     });
-    throw new RetryableError(POLL_STATUS_ERR_MSG, 500, pollStatus);
+    throw new NetworkError(POLL_STATUS_ERR_MSG, pollStatus.status); // TODO check other parameters
   }
   return handlePollResponse(pollStatus);
 };
@@ -47,9 +45,7 @@ const responseHandler = async (event) => {
   let success = false;
   let statusCode = 500;
   let hasFailed;
-  let FailedJobURLs;
   let HasWarning;
-  let WarningJobURLs;
   let error;
   let InProgress = false;
   const pollResp = await getPollStatus(event);

@@ -64,22 +64,22 @@ const getJobsStatus = async (event, type) => {
  * @returns {Object} - A response object with the failed keys, failed reasons, warning keys, warning reasons, and succeeded keys.
  */
 const responseHandler = async (event, type) => {
-  let failedKeys = [];
-  let warningKeys = [];
+  let FailedKeys = [];
+  let WarningKeys = [];
 
   /**
    * {
-  "failedKeys" : [jobID1,jobID3],
-  "failedReasons" : {
+  "FailedKeys" : [jobID1,jobID3],
+  "FailedReasons" : {
     "jobID1" : "failure-reason-1",
     "jobID3" : "failure-reason-2",
   },
-  "warningKeys" : [jobID2,jobID4],
-  "warningReasons" : {
+  "WarningKeys" : [jobID2,jobID4],
+  "WarningReasons" : {
     "jobID2" : "warning-reason-1",
     "jobID4" : "warning-reason-2",
   },
-  "succeededKeys" : [jobID5]
+  "SucceededKeys" : [jobID5]
 }
    */
 
@@ -126,22 +126,22 @@ const responseHandler = async (event, type) => {
   const successfulJobIdsArr = Object.keys(data).filter((x) => !unsuccessfulJobIdsArr.includes(x));
 
   if (type === 'fail') {
-    failedKeys = unsuccessfulJobIdsArr;
+    FailedKeys = unsuccessfulJobIdsArr.map((strJobId) => parseInt(strJobId, 10));
   } else if (type === 'warn') {
-    warningKeys = unsuccessfulJobIdsArr;
+    WarningKeys = unsuccessfulJobIdsArr.map((strJobId) => parseInt(strJobId, 10));
   }
-  const succeededKeys = successfulJobIdsArr;
+  const SucceededKeys = successfulJobIdsArr.map((strJobId) => parseInt(strJobId, 10));
   const endTime = Date.now();
   const requestTime = endTime - startTime;
   stats.histogram('marketo_bulk_upload_fetch_job_create_response_time', requestTime);
   const response = {
     statusCode: 200,
     metadata: {
-      failedKeys,
-      failedReasons: type === 'fail' ? reasons : undefined,
-      warningKeys,
-      warningReasons: type === 'warn' ? reasons : undefined,
-      succeededKeys,
+      FailedKeys,
+      FailedReasons: type === 'fail' ? reasons : undefined,
+      WarningKeys,
+      WarningReasons: type === 'warn' ? reasons : undefined,
+      SucceededKeys,
     },
   };
   return removeUndefinedValues(response);

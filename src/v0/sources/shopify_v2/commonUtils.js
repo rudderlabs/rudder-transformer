@@ -60,7 +60,7 @@ const getShopifyTopic = (event) => {
 };
 
 const getHashLineItems = (cart) => {
-  if (cart && cart?.line_items && cart.line_items.length > 0) {
+  if (cart?.line_items?.length > 0) {
     return sha256(JSON.stringify(cart.line_items));
   }
   return 'EMPTY';

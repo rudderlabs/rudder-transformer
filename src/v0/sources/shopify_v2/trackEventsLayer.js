@@ -15,11 +15,7 @@ const { enrichPayload } = require('./enrichmentLayer');
 const Message = require('../message');
 const { EventType } = require('../../../constants');
 const stats = require('../../../util/stats');
-const {
-  createPropertiesForEcomEvent,
-  getProductsListFromLineItems,
-  extractEmailFromPayload,
-} = require('./commonUtils');
+const { extractEmailFromPayload } = require('./commonUtils');
 const {
   removeUndefinedAndNullValues,
   constructPayload,
@@ -45,10 +41,9 @@ const trackLayer = {
       message,
       ECOM_MAPPING_JSON[RUDDER_ECOM_MAP[shopifyTopic].name],
     );
-    // extractCustomFields(message, mappedPayload, 'root', PROPERTIES_MAPPING_EXCLUSION_FIELDS);
     if (RUDDER_ECOM_MAP[shopifyTopic].lineItems) {
       const { line_items: lineItems } = message;
-      const productsList = getProductsListFromLineItems(lineItems);
+      const productsList = this.getProductsListFromLineItems(lineItems);
       mappedPayload.products = productsList;
     }
 
@@ -66,7 +61,7 @@ const trackLayer = {
     message.setEventType(EventType.TRACK);
     message.setEventName(RUDDER_ECOM_MAP[shopifyTopic].event);
 
-    let properties = createPropertiesForEcomEvent(event, shopifyTopic);
+    let properties = this.createPropertiesForEcomEvent(event, shopifyTopic);
     properties = removeUndefinedAndNullValues(properties);
     message.properties = properties;
     if (event.updated_at) {
@@ -106,7 +101,7 @@ const trackLayer = {
     message.properties = { ...message.properties, ...properties };
     // eslint-disable-next-line camelcase
     const { line_items: lineItems } = event;
-    const productsList = getProductsListFromLineItems(lineItems); // mapping of line_items will be done here
+    const productsList = this.getProductsListFromLineItems(lineItems); // mapping of line_items will be done here
     message.setProperty('properties.products', productsList);
     return message;
   },
@@ -219,14 +214,13 @@ const trackLayer = {
     */
 
     if (eventName === 'checkouts_update') {
+      updatedEventName = 'checkout_step_viewed';
       if (event.completed_at) {
         updatedEventName = 'checkout_step_completed';
       } else if (!event.gateway) {
         updatedEventName = 'payment_info_entered';
       }
-      updatedEventName = 'checkout_step_viewed';
     }
-
     return updatedEventName;
   },
 

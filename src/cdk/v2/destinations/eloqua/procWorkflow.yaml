@@ -14,19 +14,22 @@ steps:
     template: |
       let messageType = .message.type;
       $.assert(messageType, "message Type is not present. Aborting message.");
-      $.assert(.message.type.toLowerCase() ==='identify', "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
-      $.assert(.message.traits, "Message traits is not present. Aborting message.");
+      $.assert(.message.type.toLowerCase() ==='identify' || .message.type.toLowerCase() ==='track', "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
+      $.assert(.message.traits || .message.properties, "Message traits/properties not present. Aborting message.");
 
   - name: prepareIdentifiersResponse
     description: |
       Populate traits
     template: |
       const identifierKey = .message.context.externalId[0].identifierType
-      let traits = .message.traits
-      traits.C_EmailAddress = .message.userId
+      const objectId = .message.context.externalId[0].type.split('-')[1].toString()
+      let data = .message.traits || .message.properties
+      data[identifierKey] = .message.userId
       let payload = {
         identifierFieldName : identifierKey,
-        data: traits[]
+        data: data,
+        mapDataCardsSourceField: identifierKey,
+        customObjectId: objectId
       }
 
   - name: buildResponseForProcessTransformation
@@ -37,3 +40,4 @@ steps:
         response.body.JSON = payload;
         response
       )
+

@@ -74,7 +74,7 @@
     "version": "1",
     "type": "REST",
     "method": "PUT",
-    "endpoint": "https://api.kustomerapp.com/v1/customers/annodD?replace=false",
+    "endpoint": "https://api.kustomerapp.com/v1/customers/58210c3db0f09110006b7953?replace=false",
     "headers": {
       "Content-Type": "application/json",
       "Authorization": "Bearer dummyAPIkey"
@@ -83,15 +83,9 @@
     "body": {
       "JSON": {
         "name": "Ano Domeni",
-        "externalId": "annodD",
+        "externalId": "58210c3db0f09110006b7953",
         "locale": "en-US",
         "birthdayAt": "2005-01-01T23:28:56.782Z",
-        "emails": [
-          {
-            "type": "home",
-            "email": "ano@rudderstack.com"
-          }
-        ],
         "phones": [
           {
             "type": "home",

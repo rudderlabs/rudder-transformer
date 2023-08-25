@@ -1,6 +1,6 @@
 [
   {
-    "sourceKeys": "order_id",
+    "sourceKeys": "id",
     "destKey": "order_id",
     "metadata": {
       "type": "toString"

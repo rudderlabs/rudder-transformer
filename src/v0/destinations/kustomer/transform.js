@@ -85,6 +85,10 @@ const constructKustomerPayload = (message, category, email) => {
 // type of events.
 const responseBuilderSimple = async (message, category, destination) => {
   let payload = {};
+
+  // Reference for base endpoint
+  // https://developer.kustomer.com/kustomer-api-docs/reference/getting-started-with-kustomer-api#using-the-kustomer-api
+
   const BASE_ENDPOINT = destination.Config.baseEndpoint || DEFAULT_BASE_ENDPOINT;
   let targetUrl;
   let storedState = {

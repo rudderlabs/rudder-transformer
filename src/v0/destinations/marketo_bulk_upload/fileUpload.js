@@ -3,34 +3,33 @@ const FormData = require('form-data');
 const fs = require('fs');
 const {
   getAccessToken,
-  ABORTABLE_CODES,
-  THROTTLED_CODES,
-  MARKETO_FILE_SIZE,
   getMarketoFilePath,
-  UPLOAD_FILE,
+  handleFileUploadResponse,
+  handleCommonErrorResponse,
 } = require('./util');
+const { isHttpStatusSuccess } = require('../../util');
+const { MARKETO_FILE_SIZE, UPLOAD_FILE } = require('./config');
 const {
   getHashFromArray,
   removeUndefinedAndNullValues,
   isDefinedAndNotNullAndNotEmpty,
 } = require('../../util');
-const { httpPOST, httpGET } = require('../../../adapters/network');
+const { handleHttpRequest } = require('../../../adapters/network');
 const {
-  RetryableError,
   AbortedError,
-  ThrottledError,
   NetworkError,
   ConfigurationError,
+  RetryableError,
 } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const stats = require('../../../util/stats');
 
-const fetchFieldSchema = async (config) => {
+const fetchFieldSchema = async (config, accessToken) => {
   let fieldArr = [];
   const fieldSchemaNames = [];
-  const accessToken = await getAccessToken(config);
-  const fieldSchemaMapping = await httpGET(
+  const { processedResponse: fieldSchemaMapping } = await handleHttpRequest(
+    'get',
     `https://${config.munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
     {
       params: {
@@ -42,56 +41,42 @@ const fetchFieldSchema = async (config) => {
       feature: 'transformation',
     },
   );
-  if (
-    fieldSchemaMapping &&
-    fieldSchemaMapping.success &&
-    fieldSchemaMapping.response.data &&
-    fieldSchemaMapping.response.data.result.length > 0 &&
-    fieldSchemaMapping.response.data.result[0]
+
+  if (fieldSchemaMapping.response.errors) {
+    handleCommonErrorResponse(fieldSchemaMapping);
+  } else if (
+    fieldSchemaMapping?.response?.success &&
+    fieldSchemaMapping?.response?.result.length > 0 &&
+    fieldSchemaMapping?.response?.result[0]
   ) {
     fieldArr =
-      fieldSchemaMapping.response.data.result &&
-      Array.isArray(fieldSchemaMapping.response.data.result)
-        ? fieldSchemaMapping.response.data.result[0].fields
+      fieldSchemaMapping.response.result && Array.isArray(fieldSchemaMapping.response.result)
+        ? fieldSchemaMapping.response.result[0].fields
         : [];
     fieldArr.forEach((field) => {
       fieldSchemaNames.push(field.name);
     });
-  } else if (fieldSchemaMapping.response.error) {
-    const status = fieldSchemaMapping?.response?.status || 400;
-    throw new NetworkError(
-      `${fieldSchemaMapping.response.error}`,
-      status,
-      {
-        [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
-      },
-      fieldSchemaMapping,
-    );
   } else {
-    throw new AbortedError('Failed to fetch Marketo Field Schema', 400, fieldSchemaMapping);
+    throw new AbortedError('Failed to fetch Marketo Field Schema', 500, fieldSchemaMapping);
   }
-  return { fieldSchemaNames, accessToken };
+  return { fieldSchemaNames };
 };
 
 const getHeaderFields = (config, fieldSchemaNames) => {
   const { columnFieldsMapping } = config;
 
   columnFieldsMapping.forEach((colField) => {
-    if (fieldSchemaNames) {
-      if (!fieldSchemaNames.includes(colField.to)) {
-        throw new ConfigurationError(
-          `The field ${colField.to} is not present in Marketo Field Schema. Aborting`,
-        );
-      }
-    } else {
-      throw new ConfigurationError('Marketo Field Schema is Empty. Aborting');
+    if (!fieldSchemaNames.includes(colField.to)) {
+      throw new ConfigurationError(
+        `The field ${colField.to} is not present in Marketo Field Schema. Aborting`,
+      );
     }
   });
   const columnField = getHashFromArray(columnFieldsMapping, 'to', 'from', false);
   return Object.keys(columnField);
 };
 
-const getFileData = async (inputEvents, config, fieldSchemaNames) => {
+const getFileData = async (inputEvents, config, headerArr) => {
   const input = inputEvents;
   const messageArr = [];
   let startTime;
@@ -106,8 +91,6 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
     data[jobId] = inputData.message;
     messageArr.push(data);
   });
-
-  const headerArr = getHeaderFields(config, fieldSchemaNames);
 
   if (isDefinedAndNotNullAndNotEmpty(config.deDuplicationField)) {
     // dedup starts
@@ -145,19 +128,16 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
     // dedup ends
   }
 
-  if (Object.keys(headerArr).length === 0) {
-    throw new ConfigurationError('Header fields not present');
-  }
   const csv = [];
   csv.push(headerArr.toString());
   endTime = Date.now();
   requestTime = endTime - startTime;
-  stats.gauge('marketo_bulk_upload_create_header_time', requestTime);
+  stats.histogram('marketo_bulk_upload_create_header_time', requestTime);
   const unsuccessfulJobs = [];
   const successfulJobs = [];
   const MARKETO_FILE_PATH = getMarketoFilePath();
   startTime = Date.now();
-  messageArr.map((row) => {
+  messageArr.forEach((row) => {
     const csvSize = JSON.stringify(csv); // stringify and remove all "stringification" extra data
     const response = headerArr
       .map((fieldName) => JSON.stringify(Object.values(row)[0][fieldName], ''))
@@ -168,11 +148,10 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
     } else {
       unsuccessfulJobs.push(Object.keys(row)[0]);
     }
-    return response;
   });
   endTime = Date.now();
   requestTime = endTime - startTime;
-  stats.gauge('marketo_bulk_upload_create_csvloop_time', requestTime);
+  stats.histogram('marketo_bulk_upload_create_csvloop_time', requestTime);
   const fileSize = Buffer.from(csv.join('\n')).length;
   if (csv.length > 1) {
     startTime = Date.now();
@@ -181,19 +160,20 @@ const getFileData = async (inputEvents, config, fieldSchemaNames) => {
     fs.unlinkSync(MARKETO_FILE_PATH);
     endTime = Date.now();
     requestTime = endTime - startTime;
-    stats.gauge('marketo_bulk_upload_create_file_time', requestTime);
-    stats.gauge('marketo_bulk_upload_upload_file_size', fileSize);
+    stats.histogram('marketo_bulk_upload_create_file_time', requestTime);
+    stats.histogram('marketo_bulk_upload_upload_file_size', fileSize);
 
     return { readStream, successfulJobs, unsuccessfulJobs };
   }
   return { successfulJobs, unsuccessfulJobs };
 };
 
-const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
+const getImportID = async (input, config, accessToken, csvHeader) => {
+  const importId = null; // by default importId is null
   const { readStream, successfulJobs, unsuccessfulJobs } = await getFileData(
     input,
     config,
-    fieldSchemaNames,
+    csvHeader,
   );
   const FILE_UPLOAD_ERR_MSG = 'Could not upload file';
   try {
@@ -217,7 +197,8 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
         };
       }
       const startTime = Date.now();
-      const resp = await httpPOST(
+      const { processedResponse: resp } = await handleHttpRequest(
+        'post',
         `https://${munchkinId}.mktorest.com/bulk/v1/leads.json`,
         formReq,
         requestOptions,
@@ -228,118 +209,21 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
       );
       const endTime = Date.now();
       const requestTime = endTime - startTime;
-      stats.gauge('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
-      stats.gauge('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
-      if (resp.success) {
-        /**
-         *
-          {
-              "requestId": "d01f#15d672f8560",
-              "result": [
-                  {
-                      "batchId": 3404,
-                      "importId": "3404",
-                      "status": "Queued"
-                  }
-              ],
-              "success": true
-          }
-        */
-        if (
-          resp.response &&
-          resp.response.data.success &&
-          resp.response.data.result.length > 0 &&
-          resp.response.data.result[0] &&
-          resp.response.data.result[0].importId
-        ) {
-          const { importId } = await resp.response.data.result[0];
-          stats.gauge('marketo_bulk_upload_upload_file_time', requestTime);
-
-          stats.increment(UPLOAD_FILE, {
-            status: 200,
-            state: 'Success',
-          });
-          return { importId, successfulJobs, unsuccessfulJobs };
-        }
-        if (resp.response && resp.response.data) {
-          if (
-            resp.response.data.errors[0] &&
-            resp.response.data.errors[0].message ===
-              'There are 10 imports currently being processed. Please try again later'
-          ) {
-            stats.increment(UPLOAD_FILE, {
-              status: 500,
-              state: 'Retryable',
-            });
-            throw new RetryableError(
-              resp.response.data.errors[0].message || FILE_UPLOAD_ERR_MSG,
-              500,
-              { successfulJobs, unsuccessfulJobs },
-            );
-          }
-          if (
-            resp.response.data.errors[0] &&
-            ((resp.response.data.errors[0].code >= 1000 &&
-              resp.response.data.errors[0].code <= 1077) ||
-              ABORTABLE_CODES.indexOf(resp.response.data.errors[0].code))
-          ) {
-            if (resp.response.data.errors[0].message === 'Empty file') {
-              stats.increment(UPLOAD_FILE, {
-                status: 500,
-                state: 'Retryable',
-              });
-              throw new RetryableError(
-                `${resp.response.data.errors[0].message} Uploaded`|| FILE_UPLOAD_ERR_MSG,
-                500,
-                { successfulJobs, unsuccessfulJobs },
-              );
-            }
-
-            stats.increment(UPLOAD_FILE, {
-              status: 400,
-              state: 'Abortable',
-            });
-            throw new AbortedError(
-              resp.response.data.errors[0].message || FILE_UPLOAD_ERR_MSG,
-              400,
-              { successfulJobs, unsuccessfulJobs },
-            );
-          } else if (THROTTLED_CODES.indexOf(resp.response.data.errors[0].code)) {
-            stats.increment(UPLOAD_FILE, {
-              status: 500,
-              state: 'Retryable',
-            });
-            throw new ThrottledError(
-              resp.response.response.statusText ||
-                resp.response.statusText ||
-                resp.response.data.errors[0].message ||
-                FILE_UPLOAD_ERR_MSG,
-              500,
-              { successfulJobs, unsuccessfulJobs },
-            );
-          }
-          stats.increment(UPLOAD_FILE, {
-            status: 500,
-            state: 'Retryable',
-          });
-          throw new RetryableError(
-            resp.response.response.statusText ||
-              resp.response.data.errors[0].message ||
-              FILE_UPLOAD_ERR_MSG,
-            500,
-            { successfulJobs, unsuccessfulJobs },
-          );
-        }
+      stats.counter('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
+      stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
+      if (!isHttpStatusSuccess(resp.status)) {
+        throw new RetryableError(FILE_UPLOAD_ERR_MSG, resp.status);
       }
+      return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime);
     }
-    return { successfulJobs, unsuccessfulJobs };
+    return { importId, successfulJobs, unsuccessfulJobs };
   } catch (err) {
     // TODO check the tags
     stats.increment(UPLOAD_FILE, {
-      status: err.response?.status || 400,
+      status: err?.status || 400,
       errorMessage: err.message || FILE_UPLOAD_ERR_MSG,
     });
-    const status = err.response?.status || 400;
+    const status = err?.status || 400;
     throw new NetworkError(
       err.message || FILE_UPLOAD_ERR_MSG,
       status,
@@ -351,30 +235,48 @@ const getImportID = async (input, config, fieldSchemaNames, accessToken) => {
   }
 };
 
+/**
+ *
+ * @param {*} input
+ * @param {*} config
+ * @returns returns the final response of fileUpload.js
+ */
 const responseHandler = async (input, config) => {
+  const accessToken = await getAccessToken(config);
   /**
   {
     "importId" : <some-id>,
     "pollURL" : <some-url-to-poll-status>,
   }
   */
-  const { fieldSchemaNames, accessToken } = await fetchFieldSchema(config);
+  const { fieldSchemaNames } = await fetchFieldSchema(config, accessToken);
+  if (!fieldSchemaNames) {
+    throw new ConfigurationError(
+      'Could not find any field schema corresponding to your marketo account. Aborting.',
+    );
+  }
+  const headerForCsv = getHeaderFields(config, fieldSchemaNames);
+  if (Object.keys(headerForCsv).length === 0) {
+    throw new ConfigurationError(
+      'Faulty configuration. Please map your traits to Marketo column fields',
+    );
+  }
   const { importId, successfulJobs, unsuccessfulJobs } = await getImportID(
     input,
     config,
-    fieldSchemaNames,
     accessToken,
+    headerForCsv,
   );
   if (importId) {
     const response = {
       statusCode: 200,
       importId,
     };
-    const csvHeader = getHeaderFields(config, fieldSchemaNames).toString();
+    const csvHeader = headerForCsv.toString();
     response.metadata = { successfulJobs, unsuccessfulJobs, csvHeader };
     return response;
   }
-
+  // if importId is returned null
   stats.increment(UPLOAD_FILE, {
     status: 500,
     state: 'Retryable',

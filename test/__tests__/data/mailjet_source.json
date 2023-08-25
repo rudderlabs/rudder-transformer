@@ -6,7 +6,7 @@
       "time": 1664443614,
       "MessageID": 94857068804950690,
       "Message_GUID": "54d6cdec-f659-4547-8926-13d9c4126b82",
-      "email": "bhalalamark@gmail.com",
+      "email": "test@rudderlabs.com",
       "mj_campaign_id": 108760,
       "mj_contact_id": 399962859,
       "customcampaign": "mj.nl=58424",
@@ -21,7 +21,7 @@
         "context": {
           "library": { "name": "unknown", "version": "unknown" },
           "integration": { "name": "MailJet" },
-          "traits": { "email": "bhalalamark@gmail.com" },
+          "traits": { "email": "test@rudderlabs.com" },
           "ip": "66.249.84.231",
           "userAgent": "Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)",
           "externalId": [{ "type": "mailjetContactId", "id": 399962859 }]
@@ -36,7 +36,7 @@
           "Payload": ""
         },
         "originalTimestamp": "2022-09-29T09:26:54.000Z",
-        "userId": "9c51bf2b379a4c773b1eaa9732405b86"
+        "userId": "9df8639cadb21c23584d641b58bc503b"
       }
     }
   },
@@ -47,7 +47,7 @@
       "time": 1664444171,
       "MessageID": 55169098999352350,
       "Message_GUID": "447d7eab-3335-4aba-9a51-09454bc14b81",
-      "email": "anant@mailjet.com",
+      "email": "test@rudderlabs.com",
       "mj_campaign_id": 108892,
       "mj_contact_id": 373142816,
       "customcampaign": "mj.nl=58486",
@@ -61,7 +61,7 @@
         "context": {
           "library": { "name": "unknown", "version": "unknown" },
           "integration": { "name": "MailJet" },
-          "traits": { "email": "anant@mailjet.com" },
+          "traits": { "email": "test@rudderlabs.com" },
           "externalId": [{ "type": "mailjetContactId", "id": 373142816 }]
         },
         "integrations": { "MailJet": false },
@@ -72,7 +72,7 @@
           "mj_campaign_id": 108892
         },
         "originalTimestamp": "2022-09-29T09:36:11.000Z",
-        "userId": "40551363d7812758a04abd72a8cab645"
+        "userId": "9df8639cadb21c23584d641b58bc503b"
       }
     }
   },
@@ -116,7 +116,7 @@
       "time": 1664444170,
       "MessageID": 56013522696710744,
       "Message_GUID": "dbe4f0a3-4a5a-4784-a724-a9794d3c0444",
-      "email": "gaurav@mailjet.com",
+      "email": "test@rudderlabs.com",
       "mj_campaign_id": 108892,
       "mj_contact_id": 373142182,
       "customcampaign": "mj.nl=58486",
@@ -130,7 +130,7 @@
         "context": {
           "library": { "name": "unknown", "version": "unknown" },
           "integration": { "name": "MailJet" },
-          "traits": { "email": "gaurav@mailjet.com" },
+          "traits": { "email": "test@rudderlabs.com" },
           "externalId": [{ "type": "mailjetContactId", "id": 373142182 }]
         },
         "integrations": { "MailJet": false },
@@ -141,7 +141,7 @@
           "mj_campaign_id": 108892
         },
         "originalTimestamp": "2022-09-29T09:36:10.000Z",
-        "userId": "13f24125295a86d4dcc765a28664e910"
+        "userId": "9df8639cadb21c23584d641b58bc503b"
       }
     }
   }

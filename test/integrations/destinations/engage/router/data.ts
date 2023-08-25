@@ -132,9 +132,9 @@ export const data = [
                 },
                 originalTimestamp: '2020-09-28T19:53:31.900Z',
                 traits: {
-                  firstName: 'Anant',
-                  lastName: 'jain',
-                  email: 'anant@r.com',
+                  firstName: 'Test',
+                  lastName: 'Rudderlabs',
+                  email: 'Test@r.com',
                   hasPurchased: 'yes',
                   address: {
                     Home: {
@@ -192,11 +192,11 @@ export const data = [
                       title: 'Mr',
                       hasPurchased: 'yes',
                     },
-                    email: 'anant@r.com',
+                    email: 'Test@r.com',
                     lists: ['100c983ry8934hf3094yfh348gf1', '4r40hfio3rbfln'],
-                    last_name: 'jain',
+                    last_name: 'Rudderlabs',
                     created_at: '2020-09-29T14:50:29.907+05:30',
-                    first_name: 'Anant',
+                    first_name: 'Test',
                   },
                   JSON_ARRAY: {},
                 },

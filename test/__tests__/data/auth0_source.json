@@ -46,7 +46,7 @@
               "auth": {
                 "user": {
                   "name": "rudder test",
-                  "email": "bhalalamark@gmail.com",
+                  "email": "test@rudderlabs.com",
                   "user_id": "auth0|*****"
                 },
                 "strategy": "jwt",
@@ -295,7 +295,7 @@
               "auth": {
                 "user": {
                   "name": "rudder test",
-                  "email": "bhalalamark@gmail.com",
+                  "email": "test@rudderlabs.com",
                   "user_id": "auth0|*****"
                 },
                 "strategy": "jwt",
@@ -498,7 +498,7 @@
               "auth": {
                 "user": {
                   "name": "rudder test",
-                  "email": "bhalalamark@gmail.com",
+                  "email": "test@rudderlabs.com",
                   "user_id": "google-oauth2|123456"
                 },
                 "strategy": "jwt",
@@ -553,7 +553,7 @@
               "auth": {
                 "user": {
                   "name": "rudder test",
-                  "email": "bhalalamark@gmail.com",
+                  "email": "test@rudderlabs.com",
                   "user_id": "google-oauth2|123456"
                 },
                 "strategy": "jwt",
@@ -605,7 +605,7 @@
               "auth": {
                 "user": {
                   "name": "rudder test",
-                  "email": "bhalalamark@gmail.com",
+                  "email": "test@rudderlabs.com",
                   "user_id": "google-oauth2|123456"
                 },
                 "strategy": "jwt",
@@ -864,7 +864,7 @@
               "auth": {
                 "user": {
                   "name": "rudder test",
-                  "email": "bhalalamark@gmail.com",
+                  "email": "test@rudderlabs.com",
                   "user_id": "google-oauth2|123456"
                 },
                 "strategy": "jwt",

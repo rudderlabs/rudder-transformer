@@ -45,7 +45,7 @@
               "ip": "35.166.202.113",
               "auth": {
                 "user": {
-                  "name": "Bhalala Mihir",
+                  "name": "rudder test",
                   "email": "bhalalamark@gmail.com",
                   "user_id": "auth0|*****"
                 },
@@ -294,7 +294,7 @@
               "ip": "35.166.202.113",
               "auth": {
                 "user": {
-                  "name": "Bhalala Mihir",
+                  "name": "rudder test",
                   "email": "bhalalamark@gmail.com",
                   "user_id": "auth0|*****"
                 },
@@ -497,7 +497,7 @@
               "ip": "35.167.74.121",
               "auth": {
                 "user": {
-                  "name": "Bhalala Mihir",
+                  "name": "rudder test",
                   "email": "bhalalamark@gmail.com",
                   "user_id": "google-oauth2|123456"
                 },
@@ -552,7 +552,7 @@
               "ip": "35.167.74.121",
               "auth": {
                 "user": {
-                  "name": "Bhalala Mihir",
+                  "name": "rudder test",
                   "email": "bhalalamark@gmail.com",
                   "user_id": "google-oauth2|123456"
                 },
@@ -604,7 +604,7 @@
               "ip": "35.160.3.103",
               "auth": {
                 "user": {
-                  "name": "Bhalala Mihir",
+                  "name": "rudder test",
                   "email": "bhalalamark@gmail.com",
                   "user_id": "google-oauth2|123456"
                 },
@@ -863,7 +863,7 @@
               "ip": "35.160.3.103",
               "auth": {
                 "user": {
-                  "name": "Bhalala Mihir",
+                  "name": "rudder test",
                   "email": "bhalalamark@gmail.com",
                   "user_id": "google-oauth2|123456"
                 },

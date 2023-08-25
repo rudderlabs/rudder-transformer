@@ -117,7 +117,7 @@
     }
   },
   {
-    "description": "Track Call -> anonymoudId Stitching failed due redis error ",
+    "description": "Track Call -> anonymousId Stitching failed due redis error ",
     "input": {
       "cart_token": "shopifyGetAnonymousId",
       "query_parameters": {

@@ -1,33 +1,41 @@
 const path = require('path');
 const fs = require('fs');
-const { RUDDER_ECOM_MAP, MAPPING_CATEGORIES, EventType } = require('./config');
+const { RUDDER_ECOM_MAP, PROPERTIES_MAPPING_EXCLUSION_FIELDS } = require('./config');
+const logger = require('../../../logger');
 
 const enrichPayload = {
-    setExtraNonEcomProperties(message, event, shopifyTopic) {
-        const updatedMessage = message;
-        const fieldsToBeIgnored = Object.keys(JSON.parse(fs.readFileSync(path.resolve(__dirname, 'data', RUDDER_ECOM_MAP[shopifyTopic].mapping))));
-        Object.keys(event).forEach((key => {
-            if (!fieldsToBeIgnored.includes(key)) {
-                updatedMessage.properties[`${key}`] = event[key];
-            }
-        }))
-        return updatedMessage;
-    },
-    enrichTrackPayloads(event, payload) {
-        // Map Customer details if present customer,ship_Add,bill,userId
-        if (event.customer) {
-            payload.setPropertiesV2(event.customer, MAPPING_CATEGORIES[EventType.IDENTIFY]);
+  /**
+   * This event sets the extra properties for an ecomm event that are not mapped in ecom mapping jsons
+   * @param {*} message
+   * @param {*} event
+   * @param {*} shopifyTopic
+   * @returns
+   */
+  setExtraNonEcomProperties(message, event, shopifyTopic) {
+    const updatedMessage = message;
+    try {
+      const mappingFields = JSON.parse(
+        fs.readFileSync(
+          path.resolve(__dirname, 'data', `${RUDDER_ECOM_MAP[shopifyTopic].name}.json`),
+        ),
+      );
+      const fieldsToBeIgnored = [
+        ...PROPERTIES_MAPPING_EXCLUSION_FIELDS,
+        ...mappingFields.map((item) => item.sourceKeys),
+      ];
+
+      Object.keys(event).forEach((key) => {
+        if (!fieldsToBeIgnored.includes(key)) {
+          updatedMessage.properties[`${key}`] = event[key];
         }
-        if (event.shipping_address) {
-            payload.setProperty('traits.shippingAddress', event.shipping_address);
-        }
-        if (event.billing_address) {
-            payload.setProperty('traits.billingAddress', event.billing_address);
-        }
-        if (!payload.userId && event.user_id) {
-            payload.setProperty('userId', event.user_id);
-        }
-        return payload;
+      });
+    } catch (e) {
+      logger.debug(
+        `${shopifyTopic} is either not an ecom event or does not have mapping json-> ${e}`,
+      );
+      return updatedMessage;
     }
-}
+    return updatedMessage;
+  },
+};
 module.exports = { enrichPayload };

@@ -184,7 +184,7 @@
         "SHOPIFY": true
       },
       "type": "identify",
-      "userId": 5747017285820,
+      "userId": "5747017285820",
       "traits": {
         "email": "anuraj@rudderstack.com",
         "firstName": "Anuraj",
@@ -356,6 +356,7 @@
             "province_code": "WB",
             "zip": "700052"
           },
+          "variant_title": "variant title",
           "price": "5000.00",
           "price_set": {
             "presentment_money": {
@@ -406,7 +407,6 @@
           },
           "variant_id": 42211160228096,
           "variant_inventory_management": "shopify",
-          "variant_title": "",
           "vendor": "rudderstack-store"
         }
       ],
@@ -474,7 +474,7 @@
           {
             "product_id": "7510929801472",
             "sku": "15",
-            "title": "p1",
+            "name": "p1",
             "price": 5000.00,
             "brand": "rudderstack-store",
             "quantity": 1,
@@ -541,7 +541,9 @@
               }
             },
             "variant_inventory_management": "shopify",
-            "variant": "42211160228096  "
+            "variant": "variant title",
+            "variant_id": 42211160228096,
+            "variant_name": "p1"
           }
         ]
       },

@@ -1,12 +1,14 @@
 const _ = require('lodash');
+const get = require('get-value');
 const {
   getShopifyTopic,
   getDataFromRedis,
-  getCartToken
+  getCartToken,
+  extractEmailFromPayload,
 } = require('./commonUtils');
 const { identifyLayer } = require('./identifyEventsLayer');
 const { trackLayer } = require('./trackEventsLayer');
-const { identifierEventLayer } = require('./identifierEventsUtils');
+const { identifierEventLayer } = require('./identifierEventsLayer');
 const { removeUndefinedAndNullValues, isDefinedAndNotNull } = require('../../util');
 const { IDENTIFY_TOPICS, INTEGRATION } = require('./config');
 
@@ -23,11 +25,25 @@ const processEvent = async (inputEvent, metricMetadata) => {
     if (isDefinedAndNotNull(cartToken)) {
       redisData = await getDataFromRedis(cartToken, metricMetadata);
     }
-    message = await trackLayer.processTrackEvent(shopifyEvent, shopifyTopic, redisData, metricMetadata);
+    message = await trackLayer.processTrackEvent(
+      shopifyEvent,
+      shopifyTopic,
+      redisData,
+      metricMetadata,
+    );
   }
   // check for if message is NO_OPERATION_SUCCESS Payload
   if (message.outputToSource) {
     return message;
+  }
+  if (message.userId) {
+    message.userId = String(message.userId);
+  }
+  if (!get(message, 'traits.email')) {
+    const email = extractEmailFromPayload(shopifyEvent);
+    if (email) {
+      message.setProperty('traits.email', email);
+    }
   }
   message.setProperty(`integrations.${INTEGRATION}`, true);
   message.setProperty('context.library', {
@@ -56,6 +72,5 @@ const process = async (event) => {
   const response = await processEvent(event, metricMetadata);
   return response;
 };
-
 
 exports.process = process;

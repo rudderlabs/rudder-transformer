@@ -1,22 +1,16 @@
 /* eslint-disable camelcase */
 const sha256 = require('sha256');
 const stats = require('../../../util/stats');
-const { constructPayload, extractCustomFields, flattenJson } = require('../../util');
+const { flattenJson } = require('../../util');
 const { RedisDB } = require('../../../util/redis/redisConnector');
 const logger = require('../../../logger');
-const {
-  lineItemsMappingJSON,
-  LINE_ITEM_EXCLUSION_FIELDS,
-  RUDDER_ECOM_MAP,
-  ECOM_MAPPING_JSON,
-} = require('./config');
 const { TransformationError } = require('../../util/errorTypes');
 
 const getCartToken = (message, shopifyTopic) => {
   if (shopifyTopic === 'carts_update') {
-    return message.properties?.id || message.properties?.token;
+    return message.id || message.token || message.properties?.id || message.properties?.token;
   }
-  return message.properties?.cart_token || null;
+  return message.cart_token || message.properties?.cart_token || null;
 };
 
 const getDataFromRedis = async (key, metricMetadata) => {
@@ -72,40 +66,6 @@ const getHashLineItems = (cart) => {
   return 'EMPTY';
 };
 
-
-const getProductsListFromLineItems = (lineItems) => {
-  if (!lineItems || lineItems.length === 0) {
-    return [];
-  }
-  const products = [];
-  lineItems.forEach((lineItem) => {
-    const product = constructPayload(lineItem, lineItemsMappingJSON);
-    extractCustomFields(lineItem, product, 'root', LINE_ITEM_EXCLUSION_FIELDS);
-    products.push(product);
-  });
-  return products;
-};
-/**
- * This function creates the ecom event specific payload through mapping jsons
- * @param {*} message
- * @param {*} shopifyTopic
- * @returns mapped payload for an ecom event
- */
-const createPropertiesForEcomEvent = (message, shopifyTopic) => {
-  const mappedPayload = constructPayload(
-    message,
-    ECOM_MAPPING_JSON[RUDDER_ECOM_MAP[shopifyTopic].name],
-  );
-  // extractCustomFields(message, mappedPayload, 'root', PROPERTIES_MAPPING_EXCLUSION_FIELDS);
-  if (RUDDER_ECOM_MAP[shopifyTopic].lineItems) {
-    const { line_items: lineItems } = message;
-    const productsList = getProductsListFromLineItems(lineItems);
-    mappedPayload.products = productsList;
-  }
-
-  return mappedPayload;
-};
-
 const extractEmailFromPayload = (event) => {
   const flattenedPayload = flattenJson(event);
   let email;
@@ -123,8 +83,6 @@ const extractEmailFromPayload = (event) => {
 module.exports = {
   getCartToken,
   getShopifyTopic,
-  getProductsListFromLineItems,
-  createPropertiesForEcomEvent,
   extractEmailFromPayload,
   getHashLineItems,
   getDataFromRedis,

@@ -142,7 +142,7 @@ async function runOpenFaasUserTransform(
   }
 
   const invokeTime = new Date();
-  stats.counter('events_to_process', events.length, tags);
+
   const result = await executeFaasFunction(
     functionName,
     events,
@@ -157,6 +157,7 @@ async function runOpenFaasUserTransform(
     ),
     testMode,
   );
+  stats.counter('events_to_process', events.length, tags);
   stats.timing('run_time', invokeTime, tags);
   return result;
 }

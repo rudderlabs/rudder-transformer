@@ -8,7 +8,11 @@ import {
   UserTransformationResponse,
   UserTransformationServiceResponse,
 } from '../types/index';
-import { RespStatusError, RetryRequestError, extractStackTraceUptoLastSubstringMatch } from '../util/utils';
+import {
+  RespStatusError,
+  RetryRequestError,
+  extractStackTraceUptoLastSubstringMatch,
+} from '../util/utils';
 import { getMetadata, isNonFuncObject } from '../v0/util';
 import { SUPPORTED_FUNC_NAMES } from '../util/ivmFactory';
 import logger from '../logger';
@@ -20,6 +24,7 @@ export default class UserTransformService {
   ): Promise<UserTransformationServiceResponse> {
     const startTime = new Date();
     let retryStatus = 200;
+    let status = 200;
     const groupedEvents: Object = groupBy(
       events,
       (event: ProcessorTransformationRequest) =>
@@ -107,11 +112,12 @@ export default class UserTransformService {
           );
         } catch (error: any) {
           logger.error(error);
-          let status = 400;
+          status = 400;
           const errorString = error.toString();
           if (error instanceof RetryRequestError) {
             // entire request needs to be retried i.e. request to transformer needs be retried
             retryStatus = error.statusCode;
+            status = error.statusCode;
           }
           if (error instanceof RespStatusError) {
             status = error.statusCode;
@@ -140,7 +146,7 @@ export default class UserTransformService {
         }
         stats.timing('user_transform_request_latency', startTime, {});
         stats.counter('user_transform_requests', 1, {});
-        stats.histogram('user_transform_output_events', transformedEvents.length, {});
+        stats.histogram('user_transform_output_events', transformedEvents.length, { status });
         return transformedEvents;
       }),
     );
@@ -175,7 +181,9 @@ export default class UserTransformService {
       response.status = 200;
     } catch (error: any) {
       response.status = 400;
-      response.body = { error: extractStackTraceUptoLastSubstringMatch(error.stack, SUPPORTED_FUNC_NAMES) };
+      response.body = {
+        error: extractStackTraceUptoLastSubstringMatch(error.stack, SUPPORTED_FUNC_NAMES),
+      };
     }
     return response;
   }

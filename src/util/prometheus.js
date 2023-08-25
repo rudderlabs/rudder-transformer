@@ -253,7 +253,14 @@ class Prometheus {
         name: 'user_transform_errors',
         help: 'user_transform_errors',
         type: 'counter',
-        labelNames: ['l1', 'l2'],
+        labelNames: [
+          'transformationVersionId',
+          'type',
+          'status',
+          'sourceType',
+          'destinationType',
+          'k8_namespace',
+        ],
       },
       {
         name: 'c2',
@@ -846,7 +853,7 @@ class Prometheus {
         name: 'user_transform_output_events',
         help: 'user_transform_output_events',
         type: 'histogram',
-        labelNames: ['processSessions'],
+        labelNames: ['processSessions', 'status'],
         buckets: [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200],
       },
     ];

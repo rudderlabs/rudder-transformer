@@ -1,7 +1,7 @@
 [
   {
     "sourceKeys": "id",
-    "destKey": "order_id",
+    "destKey": "checkout_id",
     "metadata": {
       "type": "toString"
     }

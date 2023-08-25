@@ -66,10 +66,6 @@ const identifyMappingJSON = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, 'data', 'identifyMapping.json')),
 );
 
-const propertiesMappingJSON = JSON.parse(
-  fs.readFileSync(path.resolve(__dirname, 'data', 'propertiesMapping.json')),
-);
-
 const lineItemsMappingJSON = JSON.parse(
   fs.readFileSync(path.resolve(__dirname, 'data', 'lineItemsMapping.json')),
 );
@@ -78,7 +74,6 @@ const ECOM_MAPPING_JSON = getMappingConfig(RUDDER_ECOM_MAP, __dirname);
 
 const MAPPING_CATEGORIES = {
   [EventType.IDENTIFY]: identifyMappingJSON,
-  [EventType.TRACK]: propertiesMappingJSON,
 };
 
 const LINE_ITEM_EXCLUSION_FIELDS = [
@@ -114,7 +109,6 @@ module.exports = {
   MAPPING_CATEGORIES,
   RUDDER_ECOM_MAP,
   lineItemsMappingJSON,
-  propertiesMappingJSON,
   LINE_ITEM_EXCLUSION_FIELDS,
   PROPERTIES_MAPPING_EXCLUSION_FIELDS,
   SHOPIFY_NON_ECOM_TRACK_MAP,

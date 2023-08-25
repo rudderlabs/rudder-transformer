@@ -23,10 +23,10 @@
         "listData": {
           "add": [
             {
-              "email": "sudip@abc.com",
+              "email": "test@abc.com",
               "phone": "@09432457768",
-              "firstName": "sudip",
-              "lastName": "paul",
+              "firstName": "test",
+              "lastName": "rudderlabs",
               "country": "US",
               "postalCode": "1245"
             }

@@ -25,10 +25,10 @@
           "listData": {
             "add": [
               {
-                "email": "sudip@abc.com",
+                "email": "test@abc.com",
                 "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -61,7 +61,7 @@
             "users": [
               {
                 "schema": ["EMAIL_SHA256"],
-                "data": [["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"]]
+                "data": [["d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"]]
               }
             ]
           },
@@ -99,10 +99,10 @@
           "listData": {
             "remove": [
               {
-                "email": "938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c",
+                "email": "d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419",
                 "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -136,7 +136,7 @@
               {
                 "id": "123",
                 "schema": ["EMAIL_SHA256"],
-                "data": [["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"]]
+                "data": [["d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"]]
               }
             ]
           },
@@ -174,20 +174,20 @@
           "listData": {
             "add": [
               {
-                "email": "sudip@abc.com",
+                "email": "test@abc.com",
                 "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
             ],
             "remove": [
               {
-                "email": "sudip@abc.com",
+                "email": "test@abc.com",
                 "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -220,7 +220,7 @@
             "users": [
               {
                 "schema": ["EMAIL_SHA256"],
-                "data": [["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"]]
+                "data": [["d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"]]
               }
             ]
           },
@@ -246,7 +246,7 @@
               {
                 "id": "123",
                 "schema": ["EMAIL_SHA256"],
-                "data": [["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"]]
+                "data": [["d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"]]
               }
             ]
           },
@@ -284,10 +284,10 @@
           "listData": {
             "add": [
               {
-                "email": "sudip@abc.com",
+                "email": "test@abc.com",
                 "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               },
@@ -329,7 +329,7 @@
               {
                 "schema": ["EMAIL_SHA256"],
                 "data": [
-                  ["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"],
+                  ["d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"],
                   ["445f6f4b062809de065cfbb4b56bfeedc550842887237e792d4ce23df9b172e0"]
                 ]
               }
@@ -369,10 +369,10 @@
           "listData": {
             "remove": [
               {
-                "email": "sudip@abc.com",
+                "email": "test@abc.com",
                 "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               },
@@ -415,7 +415,7 @@
                 "id": "123",
                 "schema": ["EMAIL_SHA256"],
                 "data": [
-                  ["938758751f5af66652a118e26503af824404bc13acd1cb7642ddff99916f0e1c"],
+                  ["d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"],
                   ["445f6f4b062809de065cfbb4b56bfeedc550842887237e792d4ce23df9b172e0"]
                 ]
               }
@@ -675,15 +675,15 @@
               {
                 "email": "",
                 "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               },
               {
                 "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -733,15 +733,15 @@
               {
                 "email": "abcd@abc.com",
                 "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               },
               {
                 "phone": "@09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -813,10 +813,10 @@
           "listData": {
             "add": [
               {
-                "email": "sudip@abc.com",
+                "email": "test@abc.com",
                 "phone": "09432457768",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -887,11 +887,11 @@
           "listData": {
             "add": [
               {
-                "email": "sudip@abc.com",
+                "email": "test@abc.com",
                 "phone": "09432457768",
                 "mobileId": "1334",
-                "firstName": "sudip",
-                "lastName": "paul",
+                "firstName": "test",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }

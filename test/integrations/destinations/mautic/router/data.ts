@@ -76,7 +76,7 @@ export const data = [
                 endpoint: 'https://ruddertest2.mautic.net/api/contacts/new',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ==',
+                  Authorization: 'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206bTNkRzMyNUM1MUMxUlBx',
                 },
                 params: {},
                 body: {
@@ -287,7 +287,7 @@ export const data = [
                 endpoint: 'https://ruddertest2.mautic.net/api/segments/17/contact/246/add',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ==',
+                  Authorization: 'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206bTNkRzMyNUM1MUMxUlBx',
                 },
                 params: {},
                 body: {

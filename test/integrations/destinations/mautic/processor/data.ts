@@ -444,7 +444,7 @@ export const data = [
               endpoint: 'https://ruddertest2.mautic.net/api/contacts/new',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ==',
+                Authorization: 'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206bTNkRzMyNUM1MUMxUlBx',
               },
               params: {},
               body: {
@@ -548,7 +548,7 @@ export const data = [
               endpoint: 'https://ruddertest2.mautic.net/api/contacts/247/edit',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YW5hbnRqYWluNDU4MjNAZ21haWwuY29tOm0zZEczMjVDNTFDMVJQcQ==',
+                Authorization: 'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206bTNkRzMyNUM1MUMxUlBx',
               },
               params: {},
               body: {
@@ -1522,7 +1522,7 @@ export const data = [
               endpoint: 'https://testapi5.mautic.net/api/contacts/246/edit',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw==',
+                Authorization: 'Basic VGVzdDQ1ODIzUnVkZGVybGFic0BnbWFpbC5jb206enpsT3lsR0tKUktWcjg3',
               },
               params: {},
               body: {
@@ -1638,7 +1638,7 @@ export const data = [
               endpoint: 'https://testapi5.mautic.net/api/segments/17/contact/246/remove',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw==',
+                Authorization: 'Basic VGVzdDQ1ODIzUnVkZGVybGFic0BnbWFpbC5jb206enpsT3lsR0tKUktWcjg3',
               },
               params: {},
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
@@ -1695,7 +1695,7 @@ export const data = [
               endpoint: 'https://testapi5.mautic.net/api/segments/17/contact/246/add',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw==',
+                Authorization: 'Basic VGVzdDQ1ODIzUnVkZGVybGFic0BnbWFpbC5jb206enpsT3lsR0tKUktWcjg3',
               },
               params: {},
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },
@@ -1853,7 +1853,7 @@ export const data = [
               endpoint: 'https://ruddertest2.mautic.net/api/companies/20/contact/247/add',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Basic YW5hbnQ0NTgyM2phaW5AZ21haWwuY29tOnp6bE95bEdLSlJLVnI4Nw==',
+                Authorization: 'Basic VGVzdDQ1ODIzUnVkZGVybGFic0BnbWFpbC5jb206enpsT3lsR0tKUktWcjg3',
               },
               params: {},
               body: { JSON: {}, JSON_ARRAY: {}, XML: {}, FORM: {} },

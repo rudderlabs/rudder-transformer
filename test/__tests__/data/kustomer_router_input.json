@@ -69,7 +69,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyAPIkey",
         "genericPage": false,
         "genericScreen": false
       }
@@ -121,7 +121,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyAPIkey",
         "genericPage": false,
         "genericScreen": false
       }
@@ -173,7 +173,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyAPIkey",
         "baseEndpoint": "https://api.prod2.kustomerapp.com",
         "genericPage": false,
         "genericScreen": false

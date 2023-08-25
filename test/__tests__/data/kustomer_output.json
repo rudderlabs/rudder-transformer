@@ -6,7 +6,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/customers",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyAPIkey"
     },
     "params": {},
     "body": {
@@ -77,7 +77,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/customers/annodD?replace=false",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyAPIkey"
     },
     "params": {},
     "body": {
@@ -112,7 +112,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyAPIkey"
     },
     "params": {},
     "body": {
@@ -142,7 +142,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyAPIkey"
     },
     "params": {},
     "body": {
@@ -177,7 +177,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyAPIkey"
     },
     "params": {},
     "body": {
@@ -213,7 +213,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyAPIkey"
     },
     "params": {},
     "body": {
@@ -244,7 +244,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyAPIkey"
     },
     "params": {},
     "body": {
@@ -275,7 +275,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyAPIkey"
     },
     "params": {},
     "body": {
@@ -309,7 +309,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyAPIkey"
     },
     "params": {},
     "body": {
@@ -339,7 +339,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/customers",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyAPIkey"
     },
     "params": {},
     "body": {
@@ -410,7 +410,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/customers",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyAPIkey"
     },
     "params": {},
     "body": {
@@ -481,7 +481,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/customers/abcd1234?replace=false",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyAPIkey"
     },
     "params": {},
     "body": {
@@ -552,7 +552,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyAPIkey"
     },
     "params": {},
     "body": {
@@ -582,7 +582,7 @@
     "endpoint": "https://api.prod2.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyAPIkey"
     },
     "params": {},
     "body": {

@@ -11,6 +11,10 @@
     "destKey": "sku"
   },
   {
+    "sourceKeys": "name",
+    "destKey": "variant_name"
+  },
+  {
     "sourceKeys": "title",
     "destKey": "name"
   },

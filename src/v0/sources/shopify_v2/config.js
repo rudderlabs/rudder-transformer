@@ -84,11 +84,12 @@ const MAPPING_CATEGORIES = {
 const LINE_ITEM_EXCLUSION_FIELDS = [
   'product_id',
   'sku',
+  'name',
   'title',
   'price',
   'vendor',
   'quantity',
-  'variant_title'
+  'variant_title',
 ];
 
 const PROPERTIES_MAPPING_EXCLUSION_FIELDS = [

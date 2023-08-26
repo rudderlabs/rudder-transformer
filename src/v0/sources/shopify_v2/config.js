@@ -40,7 +40,7 @@ const RUDDER_ECOM_MAP = {
   },
 };
 
-const SHOPIFY_TO_RUDDER_ECOM_EVENTS_MAP = ['Cart Update', 'Checkout Updated'];
+const SHOPIFY_TO_RUDDER_ECOM_EVENTS_MAP = ['carts_update', 'checkouts_update'];
 
 const SHOPIFY_ADMIN_ONLY_EVENTS = ['Order Deleted', 'Fulfillments Create', 'Fulfillments Update'];
 
@@ -88,10 +88,6 @@ const LINE_ITEM_EXCLUSION_FIELDS = [
 ];
 
 const PROPERTIES_MAPPING_EXCLUSION_FIELDS = [
-  'id',
-  'total_price',
-  'total_tax',
-  'currency',
   'line_items',
   'customer',
   'shipping_address',

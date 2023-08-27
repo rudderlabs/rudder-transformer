@@ -11,6 +11,9 @@ bindings:
   - path: ./utils
 
 steps:
+  - name: messageType
+    template: |
+      .message.type.toLowerCase()
   - name: validateInput
     template: |
       let messageType = .message.type;
@@ -18,27 +21,38 @@ steps:
       $.assert(.message.type.toLowerCase() ==='identify' || .message.type.toLowerCase() ==='track', "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
       $.assert(.message.traits || .message.properties, "Message traits/properties not present. Aborting message.");
 
-  - name: prepareIdentifiersResponse
+  - name: prepareCommonResponse
     description: |
       Populate traits
     template: |
       const identifierKey = .message.context.externalId[0].identifierType
-      const objectId = .message.context.externalId[0].type.split('-')[1].toString()
       let data = .message.traits || .message.properties
       data = $.stringifyValues(data)
       data[identifierKey] = .message.userId
-      let payload = {
-        identifierFieldName : identifierKey,
-        data: data,
-        mapDataCardsSourceField: identifierKey,
-        customObjectId: objectId
+      data
+  - name: prepareIdentifyResponse
+    condition: $.outputs.messageType === {{$.EventType.IDENTIFY}}
+    description: |
+      Populate traits
+    template: |
+      {
+        identifierFieldName : .message.context.externalId[0].identifierType,
+        data: $.outputs.prepareCommonResponse
       }
-
+  - name: prepareTrackResponse
+    condition: $.outputs.messageType === {{$.EventType.TRACK}}
+    description: |
+      Populate traits
+    template: |
+      {
+        identifierFieldName : .message.context.externalId[0].identifierType,
+        data: $.outputs.prepareCommonResponse,
+        mapDataCardsSourceField: .message.context.externalId[0].identifierType,
+        customObjectId: .message.context.externalId[0].type.split('-')[1].toString()
+      }
   - name: buildResponseForProcessTransformation
     description: build response
     template: |
-      $.outputs.prepareIdentifiersResponse@payload.(
-        const response = $.defaultRequestConfig();
-        response.body.JSON = payload;
-        response
-      )
+      const response = $.defaultRequestConfig();
+      response.body.JSON = $.outputs.prepareIdentifyResponse@payload || $.outputs.prepareTrackResponse@payload;
+      response

@@ -58,9 +58,7 @@
             "C_City": "Scranton",
             "C_date_of_birth_1life1": "22/12/01",
             "C_EmailAddress": "testUser1234@keeptesting.com"
-          },
-          "customObjectId": "contacts",
-          "mapDataCardsSourceField": "C_EmailAddress"
+          }
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -213,9 +211,7 @@
             "C_City": "Scranton",
             "C_date_of_birth_1life1": "22/12/01",
             "C_EmailAddress": "testUser1234@keeptesting.com"
-          },
-          "customObjectId": "contacts",
-          "mapDataCardsSourceField": "C_EmailAddress"
+          }
         },
         "JSON_ARRAY": {},
         "XML": {},
@@ -225,7 +221,7 @@
     }
   },
   {
-    "description": "identify payload pass",
+    "description": "track payload pass",
     "input": {
       "message": {
         "type": "track",

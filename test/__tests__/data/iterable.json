@@ -25,7 +25,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": false,
           "trackCategorisedPages": true,
@@ -65,7 +65,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": false,
           "trackCategorisedPages": true,
@@ -112,7 +112,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -144,7 +144,7 @@
       "method": "POST",
       "params": {},
       "headers": {
-        "api_key": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "api_key": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "version": "1",
@@ -178,7 +178,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -208,7 +208,7 @@
       "method": "POST",
       "params": {},
       "headers": {
-        "api_key": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "api_key": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "version": "1",
@@ -249,7 +249,7 @@
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
+        "userId": "dummyApiKey",
         "properties": {
           "path": "/abc",
           "referrer": "",
@@ -266,7 +266,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": false,
           "trackCategorisedPages": true,
@@ -282,7 +282,7 @@
       "endpoint": "https://api.iterable.com/api/events/track",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -296,7 +296,7 @@
             "url": "",
             "category": "test-category"
           },
-          "userId": "12345",
+          "userId": "dummyApiKey",
           "eventName": "ApplicationLoaded page",
           "createdAt": 1571051718299
         },
@@ -341,7 +341,7 @@
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
+        "userId": "dummyApiKey",
         "properties": {
           "path": "/abc",
           "referrer": "",
@@ -360,7 +360,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": true,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -376,7 +376,7 @@
       "endpoint": "https://api.iterable.com/api/events/track",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -392,7 +392,7 @@
             "campaignId": "123456",
             "templateId": "1213458"
           },
-          "userId": "12345",
+          "userId": "dummyApiKey",
           "eventName": "Loaded a Page",
           "createdAt": 1571051718299,
           "campaignId": 123456,
@@ -439,7 +439,7 @@
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
+        "userId": "dummyApiKey",
         "properties": {
           "path": "/abc",
           "referrer": "",
@@ -456,7 +456,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": false,
           "trackCategorisedPages": false,
@@ -472,7 +472,7 @@
       "endpoint": "https://api.iterable.com/api/events/track",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -486,7 +486,7 @@
             "url": "",
             "name": "test-name"
           },
-          "userId": "12345",
+          "userId": "dummyApiKey",
           "eventName": "ApplicationLoaded page",
           "createdAt": 1571051718299
         },
@@ -531,7 +531,7 @@
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
+        "userId": "dummyApiKey",
         "properties": {
           "path": "/abc",
           "referrer": "",
@@ -547,7 +547,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -563,7 +563,7 @@
       "endpoint": "https://api.iterable.com/api/events/track",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -576,7 +576,7 @@
             "title": "",
             "url": ""
           },
-          "userId": "12345",
+          "userId": "dummyApiKey",
           "eventName": "ApplicationLoaded page",
           "createdAt": 1571051718299
         },
@@ -621,7 +621,7 @@
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
+        "userId": "dummyApiKey",
         "properties": {
           "path": "/abc",
           "referrer": "",
@@ -638,7 +638,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": false,
           "trackCategorisedPages": true,
@@ -654,7 +654,7 @@
       "endpoint": "https://api.iterable.com/api/events/track",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -668,7 +668,7 @@
             "url": "",
             "category": "test-category"
           },
-          "userId": "12345",
+          "userId": "dummyApiKey",
           "eventName": "ApplicationLoaded screen",
           "createdAt": 1571051718299
         },
@@ -713,7 +713,7 @@
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
+        "userId": "dummyApiKey",
         "properties": {
           "path": "/abc",
           "referrer": "",
@@ -732,7 +732,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": true,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -748,7 +748,7 @@
       "endpoint": "https://api.iterable.com/api/events/track",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -764,7 +764,7 @@
             "campaignId": "123456",
             "templateId": "1213458"
           },
-          "userId": "12345",
+          "userId": "dummyApiKey",
           "eventName": "Loaded a Screen",
           "createdAt": 1571051718299,
           "campaignId": 123456,
@@ -811,7 +811,7 @@
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
+        "userId": "dummyApiKey",
         "properties": {
           "path": "/abc",
           "referrer": "",
@@ -828,7 +828,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": false,
           "trackCategorisedPages": false,
@@ -844,7 +844,7 @@
       "endpoint": "https://api.iterable.com/api/events/track",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -858,7 +858,7 @@
             "url": "",
             "name": "test-name"
           },
-          "userId": "12345",
+          "userId": "dummyApiKey",
           "eventName": "ApplicationLoaded screen",
           "createdAt": 1571051718299
         },
@@ -903,7 +903,7 @@
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
+        "userId": "dummyApiKey",
         "properties": {
           "path": "/abc",
           "referrer": "",
@@ -919,7 +919,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -935,7 +935,7 @@
       "endpoint": "https://api.iterable.com/api/events/track",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -948,7 +948,7 @@
             "title": "",
             "url": ""
           },
-          "userId": "12345",
+          "userId": "dummyApiKey",
           "eventName": "ApplicationLoaded screen",
           "createdAt": 1571051718299
         },
@@ -1005,7 +1005,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -1065,7 +1065,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -1083,7 +1083,7 @@
         "endpoint": "https://api.iterable.com/api/users/update",
         "headers": {
           "Content-Type": "application/json",
-          "api_key": "12345"
+          "api_key": "dummyApiKey"
         },
         "params": {},
         "body": {
@@ -1179,7 +1179,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -1197,7 +1197,7 @@
         "endpoint": "https://api.iterable.com/api/users/update",
         "headers": {
           "Content-Type": "application/json",
-          "api_key": "12345"
+          "api_key": "dummyApiKey"
         },
         "params": {},
         "body": {
@@ -1298,7 +1298,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mergeNestedObjects": false,
           "mapToSingleEvent": false,
           "trackAllPages": true,
@@ -1317,7 +1317,7 @@
         "endpoint": "https://api.iterable.com/api/users/update",
         "headers": {
           "Content-Type": "application/json",
-          "api_key": "12345"
+          "api_key": "dummyApiKey"
         },
         "params": {},
         "body": {
@@ -1400,7 +1400,7 @@
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
+        "userId": "dummyApiKey",
         "properties": {
           "campaignId": "1",
           "templateId": "0",
@@ -1439,7 +1439,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -1455,7 +1455,7 @@
       "endpoint": "https://api.iterable.com/api/commerce/updateCart",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -1465,7 +1465,7 @@
             "dataFields": {
               "email": "sayan@gmail.com"
             },
-            "userId": "12345",
+            "userId": "dummyApiKey",
             "preferUserId": true,
             "mergeNestedObjects": true
           },
@@ -1474,10 +1474,7 @@
               "id": "507f1f77bcf86cd799439011",
               "sku": "45790-32",
               "name": "Monopoly: 3rd Edition",
-              "categories": [
-                "cars",
-                "auto"
-              ],
+              "categories": ["cars", "auto"],
               "price": 19,
               "quantity": 2,
               "imageUrl": "https://www.example.com/product/path.jpg",
@@ -1487,9 +1484,7 @@
               "id": "507f1f77bcf86cd7994390112",
               "sku": "45790-322",
               "name": "Monopoly: 3rd Edition2",
-              "categories": [
-                "Cars2"
-              ],
+              "categories": ["Cars2"],
               "price": 192,
               "quantity": 22,
               "imageUrl": "https://www.example.com/product/path.jpg2",
@@ -1539,7 +1534,7 @@
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
+        "userId": "dummyApiKey",
         "properties": {
           "orderId": 10000,
           "total": "1000",
@@ -1578,7 +1573,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -1594,7 +1589,7 @@
       "endpoint": "https://api.iterable.com/api/commerce/trackPurchase",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -1639,7 +1634,7 @@
             "dataFields": {
               "email": "sayan@gmail.com"
             },
-            "userId": "12345",
+            "userId": "dummyApiKey",
             "preferUserId": true,
             "mergeNestedObjects": true
           },
@@ -1648,9 +1643,7 @@
               "id": "507f1f77bcf86cd799439011",
               "sku": "45790-32",
               "name": "Monopoly: 3rd Edition",
-              "categories": [
-                "Cars"
-              ],
+              "categories": ["Cars"],
               "price": 19,
               "quantity": 2,
               "imageUrl": "https://www.example.com/product/path.jpg",
@@ -1660,9 +1653,7 @@
               "id": "507f1f77bcf86cd7994390112",
               "sku": "45790-322",
               "name": "Monopoly: 3rd Edition2",
-              "categories": [
-                "Cars2"
-              ],
+              "categories": ["Cars2"],
               "price": 192,
               "quantity": 22,
               "imageUrl": "https://www.example.com/product/path.jpg2",
@@ -1710,7 +1701,7 @@
         "messageId": "ec5481b6-a926-4d2e-b293-0b3a77c4d3be",
         "originalTimestamp": "2019-10-14T11:15:18.300Z",
         "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
+        "userId": "dummyApiKey",
         "event": "test track event GA3",
         "properties": {
           "email": "ruchira@rudderlabs.com",
@@ -1727,7 +1718,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -1743,7 +1734,7 @@
       "endpoint": "https://api.iterable.com/api/events/track",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -1757,7 +1748,7 @@
             "user_actual_id": 12345,
             "email": "ruchira@rudderlabs.com"
           },
-          "userId": "12345",
+          "userId": "dummyApiKey",
           "eventName": "test track event GA3",
           "createdAt": 1571051718300,
           "campaignId": 1,
@@ -1816,7 +1807,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -1834,7 +1825,7 @@
         "endpoint": "https://api.iterable.com/api/users/update",
         "headers": {
           "Content-Type": "application/json",
-          "api_key": "12345"
+          "api_key": "dummyApiKey"
         },
         "params": {},
         "body": {
@@ -1918,7 +1909,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -1952,7 +1943,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": false,
           "trackCategorisedPages": true,
@@ -2143,12 +2134,7 @@
             "includeKeys": [],
             "saveDestinationResponse": true,
             "secretKeys": [],
-            "supportedMessageTypes": [
-              "identify",
-              "page",
-              "screen",
-              "track"
-            ],
+            "supportedMessageTypes": ["identify", "page", "screen", "track"],
             "supportedSourceTypes": [
               "android",
               "ios",
@@ -2168,7 +2154,7 @@
           "ResponseRules": null
         },
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": true,
           "trackAllPages": false,
           "trackCategorisedPages": true,
@@ -2190,7 +2176,7 @@
       "endpoint": "https://api.iterable.com/api/users/update",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -2274,12 +2260,7 @@
             "includeKeys": [],
             "saveDestinationResponse": true,
             "secretKeys": [],
-            "supportedMessageTypes": [
-              "identify",
-              "page",
-              "screen",
-              "track"
-            ],
+            "supportedMessageTypes": ["identify", "page", "screen", "track"],
             "supportedSourceTypes": [
               "android",
               "ios",
@@ -2299,7 +2280,7 @@
           "ResponseRules": null
         },
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": true,
           "trackAllPages": false,
           "trackCategorisedPages": true,
@@ -2321,7 +2302,7 @@
       "endpoint": "https://api.iterable.com/api/users/update",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -2386,7 +2367,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -2404,7 +2385,7 @@
         "endpoint": "https://api.iterable.com/api/users/update",
         "headers": {
           "Content-Type": "application/json",
-          "api_key": "12345"
+          "api_key": "dummyApiKey"
         },
         "params": {},
         "body": {
@@ -2480,7 +2461,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": false,
           "trackCategorisedPages": true,
@@ -2504,7 +2485,7 @@
       "method": "POST",
       "params": {},
       "headers": {
-        "api_key": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "api_key": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "version": "1",
@@ -2538,7 +2519,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": false,
           "trackCategorisedPages": true,
@@ -2578,7 +2559,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": false,
           "trackCategorisedPages": true,
@@ -2626,7 +2607,7 @@
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
+        "userId": "dummyApiKey",
         "properties": {
           "campaignId": "1",
           "templateId": "0",
@@ -2639,11 +2620,7 @@
               "name": "Monopoly: 3rd Edition",
               "price": "19",
               "position": "1",
-              "category": [
-                "bikes",
-                "cars",
-                "motors"
-              ],
+              "category": ["bikes", "cars", "motors"],
               "url": "https://www.example.com/product/path",
               "image_url": "https://www.example.com/product/path.jpg",
               "quantity": "2"
@@ -2655,11 +2632,7 @@
               "price": "192",
               "quantity": 22,
               "position": "12",
-              "category": [
-                "Bikes2",
-                "cars2",
-                "motors2"
-              ],
+              "category": ["Bikes2", "cars2", "motors2"],
               "url": "https://www.example.com/product/path2",
               "image_url": "https://www.example.com/product/path.jpg2"
             }
@@ -2673,7 +2646,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -2689,7 +2662,7 @@
       "endpoint": "https://api.iterable.com/api/commerce/updateCart",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -2699,7 +2672,7 @@
             "dataFields": {
               "email": "john@gmail.com"
             },
-            "userId": "12345",
+            "userId": "dummyApiKey",
             "preferUserId": true,
             "mergeNestedObjects": true
           },
@@ -2708,11 +2681,7 @@
               "id": "507f1f77bcf86cd799439011",
               "sku": "45790-32",
               "name": "Monopoly: 3rd Edition",
-              "categories": [
-                "bikes",
-                "cars",
-                "motors"
-              ],
+              "categories": ["bikes", "cars", "motors"],
               "price": 19,
               "quantity": 2,
               "imageUrl": "https://www.example.com/product/path.jpg",
@@ -2722,11 +2691,7 @@
               "id": "507f1f77bcf86cd7994390112",
               "sku": "45790-322",
               "name": "Monopoly: 3rd Edition2",
-              "categories": [
-                "Bikes2",
-                "cars2",
-                "motors2"
-              ],
+              "categories": ["Bikes2", "cars2", "motors2"],
               "price": 192,
               "quantity": 22,
               "imageUrl": "https://www.example.com/product/path.jpg2",
@@ -2776,7 +2741,7 @@
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
+        "userId": "dummyApiKey",
         "properties": {
           "campaignId": "1",
           "templateId": "0",
@@ -2815,7 +2780,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -2831,7 +2796,7 @@
       "endpoint": "https://api.iterable.com/api/commerce/updateCart",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -2841,7 +2806,7 @@
             "dataFields": {
               "email": "sayan@gmail.com"
             },
-            "userId": "12345",
+            "userId": "dummyApiKey",
             "preferUserId": true,
             "mergeNestedObjects": true
           },
@@ -2850,11 +2815,7 @@
               "id": "507f1f77bcf86cd799439011",
               "sku": "45790-32",
               "name": "Monopoly: 3rd Edition",
-              "categories": [
-                "shirts",
-                "pants",
-                "trousers"
-              ],
+              "categories": ["shirts", "pants", "trousers"],
               "price": 19,
               "quantity": 2,
               "imageUrl": "https://www.example.com/product/path.jpg",
@@ -2864,9 +2825,7 @@
               "id": "507f1f77bcf86cd7994390112",
               "sku": "45790-322",
               "name": "Monopoly: 3rd Edition2",
-              "categories": [
-                "Cars2"
-              ],
+              "categories": ["Cars2"],
               "price": 192,
               "quantity": 22,
               "imageUrl": "https://www.example.com/product/path.jpg2",
@@ -2916,7 +2875,7 @@
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
+        "userId": "dummyApiKey",
         "properties": {
           "campaignId": "1",
           "templateId": "0",
@@ -2940,7 +2899,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "12345",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -2956,7 +2915,7 @@
       "endpoint": "https://api.iterable.com/api/commerce/updateCart",
       "headers": {
         "Content-Type": "application/json",
-        "api_key": "12345"
+        "api_key": "dummyApiKey"
       },
       "params": {},
       "body": {
@@ -2966,7 +2925,7 @@
             "dataFields": {
               "email": "sayan@gmail.com"
             },
-            "userId": "12345",
+            "userId": "dummyApiKey",
             "preferUserId": true,
             "mergeNestedObjects": true
           },
@@ -2975,9 +2934,7 @@
               "id": "507f1f77bcf86cd7994390112",
               "sku": "45790-322",
               "name": "Monopoly: 3rd Edition2",
-              "categories": [
-                "Cars2"
-              ],
+              "categories": ["Cars2"],
               "price": 192,
               "quantity": 22,
               "imageUrl": "https://www.example.com/product/path.jpg2",
@@ -3035,7 +2992,7 @@
         "messageId": "5e10d13a-bf9a-44bf-b884-43a9e591ea71",
         "originalTimestamp": "2019-10-14T11:15:18.299Z",
         "anonymousId": "00000000000000000000000000",
-        "userId": "12345",
+        "userId": "dummyApiKey",
         "properties": {
           "product_id": 1234,
           "name": "Shoes",
@@ -3084,7 +3041,7 @@
             "dataFields": {
               "email": "sayan@gmail.com"
             },
-            "userId": "12345",
+            "userId": "dummyApiKey",
             "preferUserId": true,
             "mergeNestedObjects": true
           },
@@ -3130,7 +3087,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -3159,7 +3116,7 @@
       "method": "POST",
       "params": {},
       "headers": {
-        "api_key": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "api_key": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "version": "1",
@@ -3193,7 +3150,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "62d12498c37c4fd8a1a546c2d35c2f60",
+          "apiKey": "dummyApiKey",
           "mapToSingleEvent": false,
           "trackAllPages": true,
           "trackCategorisedPages": false,
@@ -3222,7 +3179,7 @@
       "method": "POST",
       "params": {},
       "headers": {
-        "api_key": "62d12498c37c4fd8a1a546c2d35c2f60",
+        "api_key": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "version": "1",

@@ -7,7 +7,7 @@
       "endpoint": "https://api.kustomerapp.com/v1/customers",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer WJqij952gdy251"
+        "Authorization": "Bearer dummyApiKey"
       },
       "params": {},
       "body": {
@@ -80,7 +80,7 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyApiKey",
         "genericPage": false,
         "genericScreen": false
       }
@@ -94,7 +94,7 @@
       "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Bearer WJqij952gdy251"
+        "Authorization": "Bearer dummyApiKey"
       },
       "params": {},
       "body": {
@@ -127,7 +127,7 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyApiKey",
         "genericPage": false,
         "genericScreen": false
       }

@@ -11,7 +11,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -33,7 +33,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -86,7 +86,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -108,7 +108,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -141,7 +141,7 @@ export const data = [
               endpoint: 'https://api.in.webengage.com/v1/accounts/3bjsjdbh7/events',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -161,7 +161,7 @@ export const data = [
                     discount: 1.5,
                     coupon: 'ImagePro',
                     currency: 'USD',
-                    fetch_token: '123asd23',
+                    fetch_token: 'dummyFetchToken',
                     product_id: '123',
                     products: {
                       sku: 'G-32',
@@ -202,7 +202,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -224,7 +224,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -256,7 +256,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -276,7 +276,7 @@ export const data = [
                     discount: 1.5,
                     coupon: 'ImagePro',
                     currency: 'USD',
-                    fetch_token: '123asd23',
+                    fetch_token: 'dummyFetchToken',
                     product_id: '123',
                     products: {
                       sku: 'G-32',
@@ -318,7 +318,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -340,7 +340,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -372,7 +372,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -392,7 +392,7 @@ export const data = [
                     discount: 1.5,
                     coupon: 'ImagePro',
                     currency: 'USD',
-                    fetch_token: '123asd23',
+                    fetch_token: 'dummyFetchToken',
                     product_id: '123',
                     products: {
                       sku: 'G-32',
@@ -434,7 +434,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -456,7 +456,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -489,7 +489,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -509,7 +509,7 @@ export const data = [
                     discount: 1.5,
                     coupon: 'ImagePro',
                     currency: 'USD',
-                    fetch_token: '123asd23',
+                    fetch_token: 'dummyFetchToken',
                     product_id: '123',
                     products: {
                       sku: 'G-32',
@@ -552,7 +552,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -574,7 +574,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -633,7 +633,7 @@ export const data = [
                     product_id: '123',
                     affiliation: 'Apple Store',
                     checkout_id: '12345',
-                    fetch_token: '123asd23',
+                    fetch_token: 'dummyFetchToken',
                   },
                   eventName: 'Order Completed',
                   eventTime: '2021-09-01T15:46:51+0000',
@@ -645,7 +645,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
                 'Content-Type': 'application/json',
               },
               version: '1',
@@ -670,7 +670,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -692,7 +692,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -751,7 +751,7 @@ export const data = [
                     product_id: '123',
                     affiliation: 'Apple Store',
                     checkout_id: '12345',
-                    fetch_token: '123asd23',
+                    fetch_token: 'dummyFetchToken',
                   },
                   eventName: 'Order Completed',
                   eventTime: '2021-09-01T15:46:51+0000',
@@ -763,7 +763,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
                 'Content-Type': 'application/json',
               },
               version: '1',
@@ -788,7 +788,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -809,7 +809,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -868,7 +868,7 @@ export const data = [
                     product_id: '123',
                     affiliation: 'Apple Store',
                     checkout_id: '12345',
-                    fetch_token: '123asd23',
+                    fetch_token: 'dummyFetchToken',
                   },
                   eventName: 'Viewed Games home screen',
                   eventTime: '2021-09-01T15:46:51+0000',
@@ -880,7 +880,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
                 'Content-Type': 'application/json',
               },
               version: '1',
@@ -905,7 +905,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -926,7 +926,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -959,7 +959,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -979,7 +979,7 @@ export const data = [
                     discount: 1.5,
                     coupon: 'ImagePro',
                     currency: 'USD',
-                    fetch_token: '123asd23',
+                    fetch_token: 'dummyFetchToken',
                     product_id: '123',
                     products: {
                       sku: 'G-32',
@@ -1022,7 +1022,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -1042,7 +1042,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -1096,7 +1096,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -1116,7 +1116,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -1170,7 +1170,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -1189,7 +1189,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -1243,7 +1243,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'standard',
               },
@@ -1262,7 +1262,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -1316,7 +1316,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'standard',
               },
@@ -1337,7 +1337,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -1370,7 +1370,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -1391,7 +1391,7 @@ export const data = [
                     discount: 1.5,
                     coupon: 'ImagePro',
                     currency: 'USD',
-                    fetch_token: '123asd23',
+                    fetch_token: 'dummyFetchToken',
                     product_id: '123',
                     products: {
                       sku: 'G-32',
@@ -1433,7 +1433,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'standard',
               },
@@ -1454,7 +1454,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -1486,7 +1486,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -1506,7 +1506,7 @@ export const data = [
                     discount: 1.5,
                     coupon: 'ImagePro',
                     currency: 'USD',
-                    fetch_token: '123asd23',
+                    fetch_token: 'dummyFetchToken',
                     product_id: '123',
                     products: {
                       sku: 'G-32',
@@ -1548,7 +1548,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -1632,7 +1632,7 @@ export const data = [
               method: 'POST',
               params: {},
               headers: {
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
                 'Content-Type': 'application/json',
               },
               version: '1',
@@ -1657,7 +1657,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -1724,7 +1724,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -1764,7 +1764,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -1835,7 +1835,7 @@ export const data = [
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -1878,7 +1878,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -1901,7 +1901,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -1954,7 +1954,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },
@@ -1976,7 +1976,7 @@ export const data = [
                 discount: 1.5,
                 coupon: 'ImagePro',
                 currency: 'USD',
-                fetch_token: '123asd23',
+                fetch_token: 'dummyFetchToken',
                 product_id: '123',
                 products: {
                   sku: 'G-32',
@@ -2029,7 +2029,7 @@ export const data = [
           {
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 licenseCode: '3bjsjdbh7',
                 dataCenter: 'ind',
               },

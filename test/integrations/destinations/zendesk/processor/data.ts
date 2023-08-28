@@ -2233,7 +2233,7 @@ export const data = [
               ID: 'xxxXXXXXXXXXXXxxxxxxxxxorpz',
               Name: 'Zendesk',
               Config: {
-                apiToken: 'yPJwcLTFSsvIkFhY23SzittHoYADJQ7eKDoxNu4x',
+                apiToken: 'dummyApiToken',
                 createUsersAsVerified: true,
                 domain: 'rudderlabtest1',
                 email: 'rudderlabtest1@email.com',
@@ -2278,8 +2278,7 @@ export const data = [
               endpoint: 'https://rudderlabtest1.zendesk.com/api/v2/users/900113780483/events',
               files: {},
               headers: {
-                Authorization:
-                  'Basic cnVkZGVybGFidGVzdDFAZW1haWwuY29tL3Rva2VuOnlQSndjTFRGU3N2SWtGaFkyM1N6aXR0SG9ZQURKUTdlS0RveE51NHg=',
+                Authorization: 'Basic cnVkZGVybGFidGVzdDFAZW1haWwuY29tL3Rva2VuOmR1bW15QXBpVG9rZW4=',
                 'Content-Type': 'application/json',
                 'X-Zendesk-Marketplace-App-Id': '263241',
                 'X-Zendesk-Marketplace-Name': 'RudderStack',
@@ -2337,7 +2336,7 @@ export const data = [
               ID: 'xxxXXXXXXXXXXXxxxxxxxxxorpz',
               Name: 'Zendesk',
               Config: {
-                apiToken: 'yPJwcLTFSsvIkFhY23SzittHoYADJQ7eKDoxNu4x',
+                apiToken: 'dummyApiToken',
                 createUsersAsVerified: true,
                 domain: 'rudderlabtest2',
                 email: 'rudderlabtest2@email.com',

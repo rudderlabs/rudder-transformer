@@ -70,7 +70,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -128,7 +128,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -177,7 +177,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -226,7 +226,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   }

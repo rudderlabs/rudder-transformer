@@ -90,7 +90,7 @@ export const data = [
                 'https://dspapi.admanagerplus.yahoo.com/traffic/audiences/email_address/34893',
               headers: {
                 'X-Auth-Method': 'OAuth2',
-                'X-Auth-Token': 'fb8c05c9-3a32-409a-9993-3f53d307fe75',
+                'X-Auth-Token': 'testAuthToken',
                 'Content-Type': 'application/json',
               },
               params: {},
@@ -301,7 +301,7 @@ export const data = [
               method: 'PUT',
               endpoint: 'https://dspapi.admanagerplus.yahoo.com/traffic/audiences/device_id/34893',
               headers: {
-                'X-Auth-Token': 'fb8c05c9-3a32-409a-9993-3f53d307fe75',
+                'X-Auth-Token': 'testAuthToken',
                 'X-Auth-Method': 'OAuth2',
                 'Content-Type': 'application/json',
               },
@@ -419,7 +419,7 @@ export const data = [
               endpoint:
                 'https://dspapi.admanagerplus.yahoo.com/traffic/audiences/customsegments/34893',
               headers: {
-                'X-Auth-Token': 'fb8c05c9-3a32-409a-9993-3f53d307fe75',
+                'X-Auth-Token': 'testAuthToken',
                 'X-Auth-Method': 'OAuth2',
                 'Content-Type': 'application/json',
               },

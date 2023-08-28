@@ -4,7 +4,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "FXLkLUEhGJyvmY4"
+          "apiKey": "dummyApiKey"
         }
       },
       "message": {
@@ -73,7 +73,7 @@
       "method": "POST",
       "endpoint": "https://api.mailmodo.com/api/v1/addEvent",
       "headers": {
-        "mmApiKey": "FXLkLUEhGJyvmY4",
+        "mmApiKey": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -239,7 +239,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "FXLkLUEhGJyvmY4",
+          "apiKey": "dummyApiKey",
           "listName": "abcdef"
         }
       },
@@ -276,7 +276,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "FXLkLUEhGJyvmY4",
+          "apiKey": "dummyApiKey",
           "listName": ""
         }
       },
@@ -310,7 +310,7 @@
       "method": "POST",
       "endpoint": "https://api.mailmodo.com/api/v1/addToList/batch",
       "headers": {
-        "mmApiKey": "FXLkLUEhGJyvmY4",
+        "mmApiKey": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -335,7 +335,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "FXLkLUEhGJyvmY4",
+          "apiKey": "dummyApiKey",
           "listName": "abcdef"
         }
       },
@@ -369,7 +369,7 @@
       "method": "POST",
       "endpoint": "https://api.mailmodo.com/api/v1/addToList/batch",
       "headers": {
-        "mmApiKey": "FXLkLUEhGJyvmY4",
+        "mmApiKey": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -394,7 +394,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "FXLkLUEhGJyvmY4",
+          "apiKey": "dummyApiKey",
           "listName": "abcdef"
         }
       },
@@ -431,7 +431,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "FXLkLUEhGJyvmY4",
+          "apiKey": "dummyApiKey",
           "listName": "abcdef"
         }
       },
@@ -470,7 +470,7 @@
       "method": "POST",
       "endpoint": "https://api.mailmodo.com/api/v1/addToList/batch",
       "headers": {
-        "mmApiKey": "FXLkLUEhGJyvmY4",
+        "mmApiKey": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -506,7 +506,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "FXLkLUEhGJyvmY4",
+          "apiKey": "dummyApiKey",
           "listName": "abcdef"
         }
       },
@@ -541,7 +541,7 @@
       "method": "POST",
       "endpoint": "https://api.mailmodo.com/api/v1/addToList/batch",
       "headers": {
-        "mmApiKey": "FXLkLUEhGJyvmY4",
+        "mmApiKey": "dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},

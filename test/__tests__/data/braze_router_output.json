@@ -10,7 +10,7 @@
           "headers": {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "Authorization": "Bearer testApiKey"
+            "Authorization": "Bearer dummyApiKey"
           },
           "params": {},
           "body": {
@@ -62,7 +62,7 @@
           "headers": {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "Authorization": "Bearer testApiKey"
+            "Authorization": "Bearer dummyApiKey"
           },
           "params": {},
           "body": {
@@ -96,7 +96,7 @@
           "headers": {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "Authorization": "Bearer testApiKey"
+            "Authorization": "Bearer dummyApiKey"
           },
           "params": {},
           "body": {
@@ -151,7 +151,7 @@
       "statusCode": 200,
       "destination": {
         "Config": {
-          "restApiKey": "testApiKey",
+          "restApiKey": "dummyApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "eu-01"
@@ -179,7 +179,7 @@
           "headers": {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "Authorization": "Bearer testApiKey"
+            "Authorization": "Bearer dummyApiKey"
           },
           "params": {},
           "body": {
@@ -265,7 +265,7 @@
           "enableSubscriptionGroupInGroupCall": false,
           "eventFilteringOption": "disable",
           "oneTrustCookieCategories": [],
-          "restApiKey": "testApiKey",
+          "restApiKey": "dummyApiKey",
           "supportDedup": true,
           "trackAnonymousUser": true,
           "whitelistedEvents": []

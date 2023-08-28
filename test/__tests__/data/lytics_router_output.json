@@ -4,7 +4,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://api.lytics.io/collect/json/default?access_token=11111122702j2a2U2K2C7H",
+      "endpoint": "https://api.lytics.io/collect/json/default?access_token=dummyApiKey",
       "headers": {
         "Content-Type": "application/json"
       },
@@ -78,7 +78,7 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "11111122702j2a2U2K2C7H",
+        "apiKey": "dummyApiKey",
         "stream": "default"
       },
       "Enabled": true,
@@ -91,7 +91,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://api.lytics.io/collect/json/default?access_token=11111122702j2a2U2K2C7H",
+      "endpoint": "https://api.lytics.io/collect/json/default?access_token=dummyApiKey",
       "headers": {
         "Content-Type": "application/json"
       },
@@ -120,7 +120,7 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "11111122702j2a2U2K2C7H",
+        "apiKey": "dummyApiKey",
         "stream": "default"
       },
       "Enabled": true,

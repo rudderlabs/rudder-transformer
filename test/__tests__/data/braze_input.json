@@ -2,7 +2,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "dataCenter": "us-01"
@@ -66,7 +66,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "dataCenter": "us-01"
@@ -122,7 +122,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -182,7 +182,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -246,7 +246,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "dataCenter": "eu-01"
@@ -310,7 +310,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "dataCenter": "us-01"
@@ -372,7 +372,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "enableNestedArrayOperations": false
@@ -440,7 +440,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -607,7 +607,7 @@
     },
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -672,7 +672,7 @@
     },
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -690,7 +690,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "dataCenter": "us-01"
@@ -758,7 +758,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -853,7 +853,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -948,7 +948,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "enableNestedArrayOperations": true
@@ -1061,7 +1061,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "enableNestedArrayOperations": true
@@ -1168,7 +1168,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "dataCenter": "us-01"
@@ -1235,7 +1235,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "dataCenter": "us-01"
@@ -1302,7 +1302,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "dataCenter": "US-03"
@@ -1353,7 +1353,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "dataCenter": "US-03"
@@ -1403,7 +1403,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "dataCenter": "US-03"
@@ -1453,7 +1453,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "dataCenter": "us-01"
@@ -1521,7 +1521,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "dataCenter": "us-01"
@@ -1663,7 +1663,7 @@
     },
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "enableSubscriptionGroupInGroupCall": true
@@ -1731,7 +1731,7 @@
     },
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "enableSubscriptionGroupInGroupCall": true
@@ -1750,7 +1750,7 @@
   {
     "destination": {
       "Config": {
-        "restApiKey": "testApiKey",
+        "restApiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },

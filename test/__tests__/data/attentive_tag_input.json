@@ -26,7 +26,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "241654"
       }
     }
@@ -97,7 +97,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -134,7 +134,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "241654"
       }
     }
@@ -213,7 +213,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -292,7 +292,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -372,7 +372,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -452,7 +452,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -522,7 +522,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -601,7 +601,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -639,7 +639,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "241654"
       }
     }
@@ -716,7 +716,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -795,7 +795,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -874,7 +874,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -954,7 +954,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }
@@ -991,7 +991,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "241654"
       }
     }
@@ -1054,7 +1054,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "240654"
       }
     }

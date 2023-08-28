@@ -2,7 +2,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -73,7 +73,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -112,7 +112,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -175,7 +175,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -231,7 +231,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -287,7 +287,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -334,7 +334,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -380,7 +380,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyApiKey",
         "genericPage": true
       }
     },
@@ -430,7 +430,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyApiKey",
         "genericScreen": true
       }
     },
@@ -494,7 +494,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -566,7 +566,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -643,7 +643,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -726,7 +726,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyApiKey",
         "genericScreen": true
       }
     },

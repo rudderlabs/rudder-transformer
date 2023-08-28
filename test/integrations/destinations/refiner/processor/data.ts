@@ -34,7 +34,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'da70166e-05a3-4fa2-bb1d-da757fd036b4',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665474171943,
@@ -103,7 +103,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'da70166e-05a3-4fa2-bb1d-da757fd036b4',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665474171943,
@@ -170,7 +170,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'da70166e-05a3-4fa2-bb1d-da757fd036b4',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665474171943,
@@ -262,7 +262,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'da70166e-05a3-4fa2-bb1d-da757fd036b4',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665474171943,
@@ -331,7 +331,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665475307930,
@@ -357,7 +357,7 @@ export const data = [
               endpoint: 'https://api.refiner.io/v1/identify-user',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -452,7 +452,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665475307930,
@@ -484,7 +484,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
               },
               version: '1',
               endpoint: 'https://api.refiner.io/v1/track',
@@ -526,7 +526,7 @@ export const data = [
             destination: {
               Config: {
                 accountAttributesMapping: [{ from: 'email', to: 'businessEmail' }],
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665476456112,
@@ -552,7 +552,7 @@ export const data = [
               endpoint: 'https://api.refiner.io/v1/identify-user',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -621,7 +621,7 @@ export const data = [
             destination: {
               Config: {
                 accountAttributesMapping: [{ from: 'email', to: 'businessEmail' }],
-                apiKey: 'testApiKey',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665476456112,
@@ -653,7 +653,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Bearer testApiKey',
+                Authorization: 'Bearer dummyApiKey',
               },
               version: '1',
               endpoint: 'https://api.refiner.io/v1/track',

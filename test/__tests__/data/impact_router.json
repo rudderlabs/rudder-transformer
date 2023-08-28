@@ -5,7 +5,7 @@
         "destination": {
           "Config": {
             "accountSID": "dfsgertrtff3erfc34rfwf",
-            "apiKey": "fghsdfgegvcergfvfdfsag",
+            "apiKey": "dummyApiKey",
             "campaignId": "23224",
             "impactAppId": "2323",
             "eventTypeId": "56446",
@@ -126,7 +126,7 @@
         "destination": {
           "Config": {
             "accountSID": "dfsgertrtff3erfc34rfwf",
-            "apiKey": "fghsdfgegvcergfvfdfsag",
+            "apiKey": "dummyApiKey",
             "campaignId": "23224",
             "impactAppId": "2323",
             "eventTypeId": "56446",
@@ -183,7 +183,7 @@
           "params": {},
           "headers": {
             "Content-Type": "application/x-www-form-urlencoded",
-            "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+            "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpkdW1teUFwaUtleQ=="
           },
           "version": "1",
           "endpoint": "https://trkapi.impact.com/PageLoad"
@@ -198,7 +198,7 @@
         "destination": {
           "Config": {
             "accountSID": "dfsgertrtff3erfc34rfwf",
-            "apiKey": "fghsdfgegvcergfvfdfsag",
+            "apiKey": "dummyApiKey",
             "campaignId": "23224",
             "impactAppId": "2323",
             "eventTypeId": "56446",
@@ -259,7 +259,7 @@
             "params": {},
             "headers": {
               "Content-Type": "application/x-www-form-urlencoded",
-              "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpmZ2hzZGZnZWd2Y2VyZ2Z2ZmRmc2Fn"
+              "Authorization": "Basic ZGZzZ2VydHJ0ZmYzZXJmYzM0cmZ3ZjpkdW1teUFwaUtleQ=="
             },
             "version": "1",
             "endpoint": "https://api.impact.com/Advertisers/dfsgertrtff3erfc34rfwf/Conversions"
@@ -275,7 +275,7 @@
         "destination": {
           "Config": {
             "accountSID": "dfsgertrtff3erfc34rfwf",
-            "apiKey": "fghsdfgegvcergfvfdfsag",
+            "apiKey": "dummyApiKey",
             "campaignId": "23224",
             "impactAppId": "2323",
             "eventTypeId": "56446",

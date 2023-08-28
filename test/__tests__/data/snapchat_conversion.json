@@ -62,7 +62,7 @@
       "destination": {
         "Config": {
           "pixelId": "68e3dab0-3282-49ef10931dbf3",
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0."
+          "apiKey": "dummyApiKey"
         }
       }
     },
@@ -72,7 +72,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -157,7 +157,7 @@
       "destination": {
         "Config": {
           "pixelId": "68e3dab0-3282-49ef10931dbf3",
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0."
+          "apiKey": "dummyApiKey"
         }
       }
     },
@@ -227,7 +227,7 @@
       "destination": {
         "Config": {
           "pixelId": "68e3dab0-3282-49ef10931dbf3",
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0."
+          "apiKey": "dummyApiKey"
         }
       }
     },
@@ -296,7 +296,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0."
+          "apiKey": "dummyApiKey"
         }
       }
     },
@@ -366,7 +366,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer"
         }
       }
@@ -377,7 +377,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -462,7 +462,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer"
         }
       }
@@ -533,7 +533,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f"
         }
@@ -605,7 +605,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -618,7 +618,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -713,7 +713,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -726,7 +726,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -822,7 +822,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -835,7 +835,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -932,7 +932,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -945,7 +945,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1034,7 +1034,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -1047,7 +1047,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1140,7 +1140,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -1153,7 +1153,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1245,7 +1245,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -1258,7 +1258,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1346,7 +1346,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -1359,7 +1359,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1446,7 +1446,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -1459,7 +1459,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1548,7 +1548,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -1561,7 +1561,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1650,7 +1650,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -1663,7 +1663,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1752,7 +1752,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -1765,7 +1765,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1855,7 +1855,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -1868,7 +1868,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1959,7 +1959,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -1972,7 +1972,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -2061,7 +2061,7 @@
       "destination": {
         "Config": {
           "pixelId": "68e3dab0-3282-49ef10931dbf3",
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0."
+          "apiKey": "dummyApiKey"
         }
       }
     },
@@ -2071,7 +2071,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -2159,7 +2159,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -2172,7 +2172,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -2262,7 +2262,7 @@
       "destination": {
         "Config": {
           "pixelId": "68e3dab0-3282-49ef10931dbf3",
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "rudderEventsToSnapEvents": [
             {
               "from": "ProdSearched",
@@ -2279,7 +2279,7 @@
         "method": "POST",
         "endpoint": "https://tr.snapchat.com/v2/conversion",
         "headers": {
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "Authorization": "Bearer dummyApiKey",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -2366,7 +2366,7 @@
       "destination": {
         "Config": {
           "pixelId": "68e3dab0-3282-49ef10931dbf3",
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "rudderEventsToSnapEvents": []
         }
       }
@@ -2432,7 +2432,7 @@
       "destination": {
         "Config": {
           "pixelId": "68e3dab0-3282-49ef10931dbf3",
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "rudderEventsToSnapEvents": [
             {
               "from": "Product_Added_To_Cart",
@@ -2449,7 +2449,7 @@
         "method": "POST",
         "endpoint": "https://tr.snapchat.com/v2/conversion",
         "headers": {
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "Authorization": "Bearer dummyApiKey",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -2530,7 +2530,7 @@
       "destination": {
         "Config": {
           "pixelId": "68e3dab0-3282-49ef10931dbf3",
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "rudderEventsToSnapEvents": [
             {
               "from": "Product Added To Cart",
@@ -2547,7 +2547,7 @@
         "method": "POST",
         "endpoint": "https://tr.snapchat.com/v2/conversion",
         "headers": {
-          "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "Authorization": "Bearer dummyApiKey",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -2644,7 +2644,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -2657,7 +2657,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -2754,7 +2754,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+          "apiKey": "dummyApiKey",
           "pixelId": "dihfnjrnerneknrenrjenjer",
           "appId": "dhfeih44f",
           "snapAppId": "hfhdhfd"
@@ -2767,7 +2767,7 @@
       "method": "POST",
       "endpoint": "https://tr.snapchat.com/v2/conversion",
       "headers": {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0.",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},

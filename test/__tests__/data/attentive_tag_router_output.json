@@ -6,7 +6,7 @@
       "method": "POST",
       "endpoint": "https://api.attentivemobile.com/v1/subscriptions/unsubscribe",
       "headers": {
-        "Authorization": "Bearer testApiKey",
+        "Authorization": "Bearer dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -32,7 +32,7 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "241654"
       }
     }

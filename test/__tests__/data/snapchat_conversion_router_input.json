@@ -62,7 +62,7 @@
     "destination": {
       "Config": {
         "pixelId": "68e3dab0-3282-49ef10931dbf3",
-        "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0."
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -129,7 +129,7 @@
     "destination": {
       "Config": {
         "pixelId": "68e3dab0-3282-49ef10931dbf3",
-        "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0."
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -196,7 +196,7 @@
     "destination": {
       "Config": {
         "pixelId": "68e3dab0-3282-49ef10931dbf3",
-        "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyU0hNQUNQcm9kIiwidHlwIjoiSldUIn0."
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -305,7 +305,7 @@
     "destination": {
       "Config": {
         "pixelId": "jashdfkjas-3282-49ef1093alsjkdhfjadksf",
-        "apiKey": "eyJhbGciOiJIUzI1NiIsImtpZCI6IkNhbnZhc1MyUlkjhhadfkasdfkhkasdfkj.eyJhdWQiOiJjYW52YXMtY2FudmFzYXBpIiwiaXNzIjoiY2FudmFzLXMyc3Rva2VuIiwibmJmIjoxNjU5MDc3ODA4LCJzdWIiOiJjMmRkMmNkOC02NTQ3LTRiMDAtOTBlZS0xZDZkMzUxN2EwOWN-UFJPRFVDVElPTn45MzZiMTg4My0zNTUyLTQxNTQtOWQyMy00NjZkNGRjN2UxNmIifQ.XdQwpR7qIjH4WMujDWzZSbOIBcZtKwreBWjTPNIiHD.",
+        "apiKey": "dummyApiKey",
         "appId": "jahsdfjk-5487-asdfa-9957-7c74eb8d3e80",
         "snapAppId": "",
         "enableDeduplication": false,

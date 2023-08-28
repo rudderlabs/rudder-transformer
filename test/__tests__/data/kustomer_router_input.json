@@ -69,7 +69,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyApiKey",
         "genericPage": false,
         "genericScreen": false
       }
@@ -121,7 +121,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyApiKey",
         "genericPage": false,
         "genericScreen": false
       }

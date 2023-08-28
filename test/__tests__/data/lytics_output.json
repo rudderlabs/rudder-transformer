@@ -3,7 +3,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.lytics.io/collect/json/default?access_token=11111122702j2a2U2K2C7H",
+    "endpoint": "https://api.lytics.io/collect/json/default?access_token=dummyApiKey",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -72,7 +72,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.lytics.io/collect/json/default?access_token=11111122702j2a2U2K2C7H",
+    "endpoint": "https://api.lytics.io/collect/json/default?access_token=dummyApiKey",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -96,7 +96,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.lytics.io/collect/json/default?access_token=11111122702j2a2U2K2C7H",
+    "endpoint": "https://api.lytics.io/collect/json/default?access_token=dummyApiKey",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -120,7 +120,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.lytics.io/collect/json/default?access_token=11111122702j2a2U2K2C7H",
+    "endpoint": "https://api.lytics.io/collect/json/default?access_token=dummyApiKey",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -144,7 +144,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.lytics.io/collect/json/default?access_token=11111122702j2a2U2K2C7H",
+    "endpoint": "https://api.lytics.io/collect/json/default?access_token=dummyApiKey",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -168,7 +168,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.lytics.io/collect/json/default?access_token=11111122702j2a2U2K2C7H",
+    "endpoint": "https://api.lytics.io/collect/json/default?access_token=dummyApiKey",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -200,7 +200,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.lytics.io/collect/json/default?access_token=11111122702j2a2U2K2C7H",
+    "endpoint": "https://api.lytics.io/collect/json/default?access_token=dummyApiKey",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -269,7 +269,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.lytics.io/collect/json/default?access_token=11111122702j2a2U2K2C7H",
+    "endpoint": "https://api.lytics.io/collect/json/default?access_token=dummyApiKey",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -293,7 +293,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.lytics.io/collect/json/default?access_token=11111122702j2a2U2K2C7H",
+    "endpoint": "https://api.lytics.io/collect/json/default?access_token=dummyApiKey",
     "headers": {
       "Content-Type": "application/json"
     },
@@ -317,7 +317,7 @@
     "version": "1",
     "type": "REST",
     "method": "POST",
-    "endpoint": "https://api.lytics.io/collect/json/default?access_token=11111122702j2a2U2K2C7H",
+    "endpoint": "https://api.lytics.io/collect/json/default?access_token=dummyApiKey",
     "headers": {
       "Content-Type": "application/json"
     },

@@ -4,7 +4,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa66ttyyewQ",
+          "apiKey": "dummyApiKey",
           "domain": "rudderstack-476952domain3105"
         }
       },
@@ -82,7 +82,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa66ttyyewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://rudderstack-476952domain3105.myfreshworks.com/crm/sales/api/contacts/upsert"
@@ -93,7 +93,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa66ttyyewQ",
+          "apiKey": "dummyApiKey",
           "domain": "rudderstack-476952domain3105"
         }
       },
@@ -171,7 +171,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa66ttyyewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://rudderstack-476952domain3105.myfreshworks.com/crm/sales/api/contacts/upsert"
@@ -182,7 +182,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa66ttyyewQ",
+          "apiKey": "dummyApiKey",
           "domain": "rudderstack-476952domain3105"
         }
       },
@@ -247,7 +247,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa66ttyyewQ",
+          "apiKey": "dummyApiKey",
           "domain": "rudderstack-476952domain3105"
         }
       },
@@ -311,7 +311,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOarudder",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       },
@@ -410,7 +410,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOarudder"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/contacts/upsert"
@@ -421,7 +421,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOarudder",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       },
@@ -490,7 +490,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocwQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       },
@@ -557,7 +557,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocwQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       },
@@ -626,7 +626,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       },
@@ -706,7 +706,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/sales_accounts/upsert"
@@ -759,7 +759,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -842,7 +842,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -926,7 +926,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -1018,7 +1018,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -1049,7 +1049,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/sales_activities"
@@ -1126,7 +1126,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -1137,7 +1137,7 @@
       "method": "POST",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/contacts/upsert",
       "headers": {
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ",
+        "Authorization": "Token token=dummyApiKey",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -1227,7 +1227,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -1314,7 +1314,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -1405,7 +1405,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -1495,7 +1495,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -1585,7 +1585,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -1615,7 +1615,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/sales_activities"
@@ -1695,7 +1695,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -1725,7 +1725,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/sales_activities"
@@ -1756,7 +1756,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -1787,7 +1787,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -1824,7 +1824,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -1891,7 +1891,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -1911,7 +1911,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/lists/70000059716/add_contacts"
@@ -1936,7 +1936,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -1975,7 +1975,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -2042,7 +2042,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -2062,7 +2062,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/lists/70000058627/add_contacts"
@@ -2144,7 +2144,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -2231,7 +2231,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -2256,7 +2256,7 @@
       "params": {},
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ"
+        "Authorization": "Token token=dummyApiKey"
       },
       "version": "1",
       "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/contacts/upsert"
@@ -2333,7 +2333,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder"
         }
       }
@@ -2426,7 +2426,7 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "ugHZRFZjdLOa0W6ocJQewQ",
+          "apiKey": "dummyApiKey",
           "domain": "domain-rudder",
           "rudderEventsToFreshmarketerEvents": [
             {
@@ -2472,7 +2472,7 @@
         "params": {},
         "headers": {
           "Content-Type": "application/json",
-          "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ"
+          "Authorization": "Token token=dummyApiKey"
         },
         "version": "1",
         "endpoint": "https://domain-rudder.myfreshworks.com/crm/sales/api/sales_activities"
@@ -2497,7 +2497,7 @@
 
         "params": {},
         "headers": {
-          "Authorization": "Token token=ugHZRFZjdLOa0W6ocJQewQ",
+          "Authorization": "Token token=dummyApiKey",
           "Content-Type": "application/json"
         },
         "version": "1",

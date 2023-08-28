@@ -117,7 +117,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "11111122702j2a2U2K2C7H",
+        "apiKey": "dummyApiKey",
         "stream": "default"
       },
       "Enabled": true,
@@ -183,7 +183,7 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "11111122702j2a2U2K2C7H",
+        "apiKey": "dummyApiKey",
         "stream": "default"
       },
       "Enabled": true,

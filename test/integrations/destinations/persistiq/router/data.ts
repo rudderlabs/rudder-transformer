@@ -44,7 +44,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: 'testApiKey',
+                  apiKey: 'dummyApiKey',
                   persistIqAttributesMapping: [
                     {
                       from: 'useroccupation',
@@ -90,7 +90,7 @@ export const data = [
                 },
                 endpoint: 'https://api.persistiq.com/v1/leads/lel1c5u1wuk8',
                 files: {},
-                headers: { 'x-api-key': 'testApiKey' },
+                headers: { 'x-api-key': 'dummyApiKey' },
                 method: 'PATCH',
                 params: {},
                 type: 'REST',
@@ -98,7 +98,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: 'testApiKey',
+                  apiKey: 'dummyApiKey',
                   persistIqAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                 },
               },

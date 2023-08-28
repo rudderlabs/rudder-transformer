@@ -3,7 +3,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "testApiKey",
+          "restApiKey": "dummyApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "eu-01"
@@ -70,7 +70,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "testApiKey",
+          "restApiKey": "dummyApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "us-01"
@@ -135,7 +135,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "testApiKey",
+          "restApiKey": "dummyApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "us-01",
@@ -168,7 +168,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "testApiKey",
+          "restApiKey": "dummyApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "us-01",
@@ -201,7 +201,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "testApiKey",
+          "restApiKey": "dummyApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "us-01",
@@ -229,7 +229,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "testApiKey",
+          "restApiKey": "dummyApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "us-01",
@@ -268,7 +268,7 @@
           "enableSubscriptionGroupInGroupCall": false,
           "eventFilteringOption": "disable",
           "oneTrustCookieCategories": [],
-          "restApiKey": "testApiKey",
+          "restApiKey": "dummyApiKey",
           "supportDedup": true,
           "trackAnonymousUser": true,
           "whitelistedEvents": []
@@ -346,7 +346,7 @@
           "enableSubscriptionGroupInGroupCall": false,
           "eventFilteringOption": "disable",
           "oneTrustCookieCategories": [],
-          "restApiKey": "testApiKey",
+          "restApiKey": "dummyApiKey",
           "supportDedup": true,
           "trackAnonymousUser": true,
           "whitelistedEvents": []

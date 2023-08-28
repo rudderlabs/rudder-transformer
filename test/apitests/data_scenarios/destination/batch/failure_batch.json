@@ -28,7 +28,7 @@
                   }
                 }
               ],
-              "api_key": "Techno@2020",
+              "api_key": "dummyApiKey",
               "options": {
                 "min_id_length": 1
               }
@@ -92,7 +92,7 @@
                       }
                     }
                   ],
-                  "api_key": "Techno@2020",
+                  "api_key": "dummyApiKey",
                   "options": {
                     "min_id_length": 1
                   }
@@ -283,7 +283,7 @@
             "ResponseRules": null
           },
           "Config": {
-            "apiKey": "Techno@2020",
+            "apiKey": "dummyApiKey",
             "apiSecret": "",
             "blacklistedEvents": [
               {
@@ -371,7 +371,7 @@
                   }
                 }
               ],
-              "api_key": "Techno@2020",
+              "api_key": "dummyApiKey",
               "options": {
                 "min_id_length": 1
               }
@@ -447,7 +447,7 @@
                       }
                     }
                   ],
-                  "api_key": "Techno@2020",
+                  "api_key": "dummyApiKey",
                   "options": {
                     "min_id_length": 1
                   }
@@ -638,7 +638,7 @@
             "ResponseRules": null
           },
           "Config": {
-            "apiKey": "Techno@2020",
+            "apiKey": "dummyApiKey",
             "apiSecret": "",
             "blacklistedEvents": [
               {
@@ -728,7 +728,7 @@
                   }
                 }
               ],
-              "api_key": "Techno@2020",
+              "api_key": "dummyApiKey",
               "options": {
                 "min_id_length": 1
               }
@@ -804,7 +804,7 @@
                       }
                     }
                   ],
-                  "api_key": "Techno@2020",
+                  "api_key": "dummyApiKey",
                   "options": {
                     "min_id_length": 1
                   }
@@ -995,7 +995,7 @@
             "ResponseRules": null
           },
           "Config": {
-            "apiKey": "Techno@2020",
+            "apiKey": "dummyApiKey",
             "apiSecret": "",
             "blacklistedEvents": [
               {
@@ -1109,7 +1109,7 @@
                     }
                   }
                 ],
-                "api_key": "Techno@2020",
+                "api_key": "dummyApiKey",
                 "options": {
                   "min_id_length": 1
                 }
@@ -1229,7 +1229,7 @@
                 }
               }
             ],
-            "api_key": "Techno@2020"
+            "api_key": "dummyApiKey"
           },
           "JSON_ARRAY": {}
         },
@@ -1291,7 +1291,7 @@
                       }
                     }
                   ],
-                  "api_key": "Techno@2020",
+                  "api_key": "dummyApiKey",
                   "options": {
                     "min_id_length": 1
                   }
@@ -1403,7 +1403,7 @@
                       }
                     }
                   ],
-                  "api_key": "Techno@2020",
+                  "api_key": "dummyApiKey",
                   "options": {
                     "min_id_length": 1
                   }
@@ -1595,7 +1595,7 @@
           "ResponseRules": null
         },
         "Config": {
-          "apiKey": "Techno@2020",
+          "apiKey": "dummyApiKey",
           "apiSecret": "",
           "blacklistedEvents": [
             {

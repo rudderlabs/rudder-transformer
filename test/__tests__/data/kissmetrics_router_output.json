@@ -13,7 +13,7 @@
           "Page-search": "",
           "Page-title": "",
           "Page-url": "http://localhost/tests/html/index2.html",
-          "_k": "testApiKey",
+          "_k": "dummyApiKey",
           "_p": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
           "_n": "Loaded a Page",
           "_t": "1579847342",
@@ -44,7 +44,7 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -72,7 +72,7 @@
           "country": "India",
           "email": "sayan@disney.com",
           "firstname": "Sayan",
-          "_k": "testApiKey",
+          "_k": "dummyApiKey",
           "_p": "e6ab2c5e-2cda-44a9-a962-e2f67df78bca",
           "_t": "1579847342",
           "_d": 1
@@ -102,7 +102,7 @@
     "statusCode": 200,
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },

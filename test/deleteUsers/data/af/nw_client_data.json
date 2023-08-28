@@ -3,7 +3,7 @@
     {
       "type": "post",
       "reqParams": [
-        "https://hq1.appsflyer.com/gdpr/opengdpr_requests?api_token=c81aaf36-8323-4bb6-b5a8-06b310e34f3c",
+        "https://hq1.appsflyer.com/gdpr/opengdpr_requests?api_token=dummyApiToken",
         {
           "subject_request_type": "erasure",
           "subject_identities": {
@@ -36,7 +36,7 @@
     {
       "type": "post",
       "reqParams": [
-        "https://hq1.appsflyer.com/gdpr/opengdpr_requests?api_token=c81aaf36-8323-4bb6-b5a8-06b310e34f3c",
+        "https://hq1.appsflyer.com/gdpr/opengdpr_requests?api_token=dummyApiToken",
         {
           "subject_request_type": "erasure",
           "subject_identities": {

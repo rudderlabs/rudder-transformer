@@ -1731,7 +1731,7 @@ export const data = [
           {
             destination: {
               Config: {
-                teamApiKey: 'phc_HiQkvGt9vktokentokentokenTN',
+                teamApiKey: 'testTeamApiKey',
                 yourInstance: 'https://app.posthog.com',
               },
             },
@@ -1832,7 +1832,7 @@ export const data = [
                 JSON: {
                   type: 'capture',
                   event: 'Product Brought',
-                  api_key: 'phc_HiQkvGt9vktokentokentokenTN',
+                  api_key: 'testTeamApiKey',
                   messageId: 'e4408cb8-16dd-41e9-a313-a7a9cdc4bac5',
                   properties: {
                     $ip: '0.0.0.0',

@@ -2,9 +2,9 @@
   {
     "metadata": {
       "secret": {
-        "access_token": "abcd1234",
-        "refresh_token": "efgh5678",
-        "developer_token": "ijkl9101"
+        "access_token": "dummyAccessToken",
+        "refresh_token": "dummyRefreshToken",
+        "developer_token": "dummyDeveloperToken"
       }
     },
     "destination": {

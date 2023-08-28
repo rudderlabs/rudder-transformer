@@ -63,7 +63,8 @@
               "price": 200,
               "quantity": 11,
               "id": "4"
-            }]
+            }
+          ]
         },
         "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
         "integrations": {
@@ -74,8 +75,8 @@
         "secret": {
           "consumerKey": "qwe",
           "consumerSecret": "fdghv",
-          "accessToken": "yrdghfvhjvhj",
-          "accessTokenSecret": "453etyfghjvhgcdcghv"
+          "accessToken": "dummyAccessToken",
+          "accessTokenSecret": "testAccessTokenSecret"
         }
       },
       "destination": {
@@ -101,7 +102,7 @@
       "method": "POST",
       "endpoint": "https://ads-api.twitter.com/12/measurement/conversions/5343234",
       "headers": {
-        "Authorization": "OAuth oauth_consumer_key=\"qwe\", oauth_nonce=\"V1kMh028kZLLhfeYozuL0B45Pcx6LvuW\", oauth_signature=\"Di4cuoGv4PnCMMEeqfWTcqhvdwc%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1685603652\", oauth_token=\"yrdghfvhjvhj\", oauth_version=\"1.0\"",
+        "Authorization": "OAuth oauth_consumer_key=\"qwe\", oauth_nonce=\"V1kMh028kZLLhfeYozuL0B45Pcx6LvuW\", oauth_signature=\"Di4cuoGv4PnCMMEeqfWTcqhvdwc%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1685603652\", oauth_token=\"dummyAccessToken\", oauth_version=\"1.0\"",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -120,7 +121,7 @@
                   "content_id": "12"
                 },
                 {
-                  "content_price": 200.00,
+                  "content_price": 200.0,
                   "num_items": 11,
                   "content_id": "4"
                 }
@@ -210,8 +211,8 @@
         "secret": {
           "consumerKey": "qwe",
           "consumerSecret": "fdghv",
-          "accessToken": "yrdghfvhjvhj",
-          "accessTokenSecret": "453etyfghjvhgcdcghv"
+          "accessToken": "dummyAccessToken",
+          "accessTokenSecret": "testAccessTokenSecret"
         }
       },
       "destination": {
@@ -231,7 +232,7 @@
         }
       }
     },
-    "output" : {
+    "output": {
       "statusCode": 400,
       "error": "[TWITTER ADS]: one of twclid, phone or email must be present in properties.",
       "statTags": {
@@ -310,8 +311,8 @@
         "secret": {
           "consumerKey": "qwe",
           "consumerSecret": "fdghv",
-          "accessToken": "yrdghfvhjvhj",
-          "accessTokenSecret": "453etyfghjvhgcdcghv"
+          "accessToken": "dummyAccessToken",
+          "accessTokenSecret": "testAccessTokenSecret"
         }
       },
       "destination": {
@@ -337,7 +338,7 @@
       "method": "POST",
       "endpoint": "https://ads-api.twitter.com/12/measurement/conversions/odr324tt",
       "headers": {
-        "Authorization": "OAuth oauth_consumer_key=\"qwe\", oauth_nonce=\"V1kMh028kZLLhfeYozuL0B45Pcx6LvuW\", oauth_signature=\"Di4cuoGv4PnCMMEeqfWTcqhvdwc%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1685603652\", oauth_token=\"yrdghfvhjvhj\", oauth_version=\"1.0\"",
+        "Authorization": "OAuth oauth_consumer_key=\"qwe\", oauth_nonce=\"V1kMh028kZLLhfeYozuL0B45Pcx6LvuW\", oauth_signature=\"Di4cuoGv4PnCMMEeqfWTcqhvdwc%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1685603652\", oauth_token=\"dummyAccessToken\", oauth_version=\"1.0\"",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -437,8 +438,8 @@
         "secret": {
           "consumerKey": "qwe",
           "consumerSecret": "fdghv",
-          "accessToken": "yrdghfvhjvhj",
-          "accessTokenSecret": "453etyfghjvhgcdcghv"
+          "accessToken": "dummyAccessToken",
+          "accessTokenSecret": "testAccessTokenSecret"
         }
       },
       "destination": {
@@ -528,8 +529,8 @@
         "secret": {
           "consumerKey": "qwe",
           "consumerSecret": "fdghv",
-          "accessToken": "yrdghfvhjvhj",
-          "accessTokenSecret": "453etyfghjvhgcdcghv"
+          "accessToken": "dummyAccessToken",
+          "accessTokenSecret": "testAccessTokenSecret"
         }
       },
       "destination": {
@@ -618,7 +619,8 @@
               "price": 200,
               "quantity": 11,
               "id": "4"
-            }]
+            }
+          ]
         },
         "anonymousId": "50be5c78-6c3f-4b60-be84-97805a316fb1",
         "integrations": {
@@ -629,8 +631,8 @@
         "secret": {
           "consumerKey": "qwe",
           "consumerSecret": "fdghv",
-          "accessToken": "yrdghfvhjvhj",
-          "accessTokenSecret": "453etyfghjvhgcdcghv"
+          "accessToken": "dummyAccessToken",
+          "accessTokenSecret": "testAccessTokenSecret"
         }
       },
       "destination": {
@@ -656,7 +658,7 @@
       "method": "POST",
       "endpoint": "https://ads-api.twitter.com/12/measurement/conversions/5343234",
       "headers": {
-        "Authorization": "OAuth oauth_consumer_key=\"qwe\", oauth_nonce=\"V1kMh028kZLLhfeYozuL0B45Pcx6LvuW\", oauth_signature=\"Di4cuoGv4PnCMMEeqfWTcqhvdwc%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1685603652\", oauth_token=\"yrdghfvhjvhj\", oauth_version=\"1.0\"",
+        "Authorization": "OAuth oauth_consumer_key=\"qwe\", oauth_nonce=\"V1kMh028kZLLhfeYozuL0B45Pcx6LvuW\", oauth_signature=\"Di4cuoGv4PnCMMEeqfWTcqhvdwc%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1685603652\", oauth_token=\"dummyAccessToken\", oauth_version=\"1.0\"",
         "Content-Type": "application/json"
       },
       "params": {},
@@ -675,7 +677,7 @@
                   "content_id": "12"
                 },
                 {
-                  "content_price": 200.00,
+                  "content_price": 200.0,
                   "num_items": 11,
                   "content_id": "4"
                 }

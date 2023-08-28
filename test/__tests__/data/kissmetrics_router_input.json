@@ -2,7 +2,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -73,7 +73,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },

@@ -2,7 +2,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "testApiKey",
+        "apiKey": "dummyApiKey",
         "signUpSourceId": "241654"
       }
     },

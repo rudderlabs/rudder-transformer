@@ -102,7 +102,7 @@ export const data = [
                   'https://dspapi.admanagerplus.yahoo.com/traffic/audiences/email_address/34893',
                 headers: {
                   'X-Auth-Method': 'OAuth2',
-                  'X-Auth-Token': 'fb8c05c9-3a32-409a-9993-3f53d307fe75',
+                  'X-Auth-Token': 'testAuthToken',
                   'Content-Type': 'application/json',
                 },
                 params: {},

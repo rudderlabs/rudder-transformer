@@ -171,7 +171,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -252,7 +252,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -329,7 +329,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -418,7 +418,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -499,7 +499,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "EU"
@@ -580,7 +580,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "IND"
@@ -661,7 +661,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "AMA"
@@ -741,7 +741,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "IND"
@@ -822,7 +822,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "IND"
@@ -1003,7 +1003,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -1146,7 +1146,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -1235,7 +1235,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -1400,7 +1400,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -1567,7 +1567,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -1608,7 +1608,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"
@@ -1648,7 +1648,7 @@
       },
       "Config": {
         "apiId": "W0ZHNMPI2O4KHJ48ZILZACRA",
-        "apiKey": "uuHMnX66ctEdjD__bjlSCO0O",
+        "apiKey": "dummyApiKey",
         "eventDelivery": false,
         "eventDeliveryTS": 1602757086384,
         "region": "US"

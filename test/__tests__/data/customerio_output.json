@@ -13,7 +13,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/cio_1234",
     "userId": "cio_1234",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -47,7 +47,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/123456",
     "userId": "123456",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -82,7 +82,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/test@gmail.com",
     "userId": "123456",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -112,7 +112,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -140,7 +140,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -168,7 +168,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/sayan@gmail.com/events",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -197,7 +197,7 @@
     "endpoint": "https://track.customer.io/api/v1/events",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -226,7 +226,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -245,7 +245,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices/abcxyz",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -264,7 +264,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices/somel",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -283,7 +283,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/sayan@gmail.com/devices/somel",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -315,7 +315,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/sayan@gmail.com/devices",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -344,7 +344,7 @@
     "endpoint": "https://track.customer.io/api/v1/events",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -372,7 +372,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -400,7 +400,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -428,7 +428,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -456,7 +456,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -475,7 +475,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/devices/sample_device_token",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -505,7 +505,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/123456",
     "userId": "123456",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -535,7 +535,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -563,7 +563,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -591,7 +591,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/sayan@gmail.com/events",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -620,7 +620,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/events",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -649,7 +649,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -668,7 +668,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices/abcxyz",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -687,7 +687,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices/somel",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -719,7 +719,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/sayan@gmail.com/devices",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -748,7 +748,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/events",
     "userId": "c82cbdff-e5be-4009-ac78-cdeea09ab4b1",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -776,7 +776,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -804,7 +804,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -832,7 +832,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -860,7 +860,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -879,7 +879,7 @@
     "endpoint": "https://track-eu.customer.io/api/v1/customers/12345/devices/sample_device_token",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -893,7 +893,7 @@
     "method": "POST",
     "endpoint": "https://track.customer.io/api/v1/events",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "params": {},
     "body": {
@@ -922,7 +922,7 @@
     "method": "POST",
     "endpoint": "https://track.customer.io/api/v1/customers/sayan@gmail.com/events",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "params": {},
     "body": {
@@ -950,7 +950,7 @@
     "method": "POST",
     "endpoint": "https://track.customer.io/api/v1/events",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "params": {},
     "body": {
@@ -979,7 +979,7 @@
     "method": "POST",
     "endpoint": "https://track.customer.io/api/v1/customers/sayan@gmail.com/events",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "params": {},
     "body": {
@@ -1031,7 +1031,7 @@
     "method": "PUT",
     "endpoint": "https://track-eu.customer.io/api/v1/customers/ruchira-user-id-100",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "params": {},
     "body": {
@@ -1715,7 +1715,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -1743,7 +1743,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},
@@ -1765,7 +1765,7 @@
     "endpoint": "https://track.customer.io/api/v1/customers/12345/events",
     "userId": "12345",
     "headers": {
-      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6MTlmMGY3MzRlM2JiODdhNDQ1OTY="
+      "Authorization": "Basic NDZiZTU0NzY4ZTdkNDlhYjI2Mjg6ZHVtbXlBcGlLZXk="
     },
     "version": "1",
     "params": {},

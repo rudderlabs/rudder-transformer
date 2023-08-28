@@ -6,7 +6,7 @@ const sampleEvents = {
     input: {
       destination: {
         Config: {
-          restApiKey: "testApiKey",
+          restApiKey: "dummyApiKey",
           prefixProperties: true,
           useNativeSDK: false
         },
@@ -484,7 +484,7 @@ const sampleEvents = {
     input: {
       destination: {
         Config: {
-          restApiKey: "testApiKey",
+          restApiKey: "dummyApiKey",
           prefixProperties: true,
           useNativeSDK: false
         },
@@ -996,7 +996,7 @@ const sampleEvents = {
       },
       destination: {
         Config: {
-          restApiKey: "testApiKey",
+          restApiKey: "dummyApiKey",
           prefixProperties: true,
           useNativeSDK: false
         },
@@ -1722,7 +1722,7 @@ const sampleEvents = {
     input: {
       destination: {
         Config: {
-          apiKey: "testApiKey",
+          apiKey: "dummyApiKey",
           prefixProperties: true,
           useNativeSDK: false
         },
@@ -1986,7 +1986,7 @@ const sampleEvents = {
     input: {
       destination: {
         Config: {
-          restApiKey: "testApiKey",
+          restApiKey: "dummyApiKey",
           prefixProperties: true,
           useNativeSDK: false
         },

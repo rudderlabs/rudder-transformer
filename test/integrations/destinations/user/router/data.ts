@@ -44,7 +44,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: 'testApiKey',
+                  apiKey: 'dummyApiKey',
                   appSubdomain: 'commander',
                   userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                   userEvents: [
@@ -90,7 +90,7 @@ export const data = [
                 headers: {
                   Accept: '*/*;version=2',
                   'Content-Type': 'application/json',
-                  Authorization: 'Token testApiKey',
+                  Authorization: 'Token dummyApiKey',
                 },
                 version: '1',
                 endpoint: 'https://commander.user.com/api/public/companies/21/add_member/',
@@ -104,7 +104,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'testApiKey',
+                  apiKey: 'dummyApiKey',
                   appSubdomain: 'commander',
                   userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                   userEvents: [
@@ -169,7 +169,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: 'testApiKey',
+                  apiKey: 'dummyApiKey',
                   appSubdomain: 'commander',
                   userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                   userEvents: [
@@ -224,7 +224,7 @@ export const data = [
                 headers: {
                   Accept: '*/*;version=2',
                   'Content-Type': 'application/json',
-                  Authorization: 'Token testApiKey',
+                  Authorization: 'Token dummyApiKey',
                 },
                 version: '1',
                 endpoint: 'https://commander.user.com/api/public/users/59/',
@@ -238,7 +238,7 @@ export const data = [
               statusCode: 200,
               destination: {
                 Config: {
-                  apiKey: 'testApiKey',
+                  apiKey: 'dummyApiKey',
                   appSubdomain: 'commander',
                   userAttributesMapping: [{ from: 'useroccupation', to: 'occupation' }],
                   userEvents: [

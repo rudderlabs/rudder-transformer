@@ -28,7 +28,7 @@
                   }
                 }
               ],
-              "api_key": "a99702eb473e89c1352300172c142c77",
+              "api_key": "dummyApiKey",
               "options": {
                 "min_id_length": 1
               }
@@ -92,7 +92,7 @@
                       }
                     }
                   ],
-                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "api_key": "dummyApiKey",
                   "options": {
                     "min_id_length": 1
                   }
@@ -283,7 +283,7 @@
             "ResponseRules": null
           },
           "Config": {
-            "apiKey": "a99702eb473e89c1352300172c142c77",
+            "apiKey": "dummyApiKey",
             "apiSecret": "",
             "blacklistedEvents": [
               {
@@ -373,7 +373,7 @@
                   }
                 }
               ],
-              "api_key": "a99702eb473e89c1352300172c142c77",
+              "api_key": "dummyApiKey",
               "options": {
                 "min_id_length": 1
               }
@@ -449,7 +449,7 @@
                       }
                     }
                   ],
-                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "api_key": "dummyApiKey",
                   "options": {
                     "min_id_length": 1
                   }
@@ -640,7 +640,7 @@
             "ResponseRules": null
           },
           "Config": {
-            "apiKey": "a99702eb473e89c1352300172c142c77",
+            "apiKey": "dummyApiKey",
             "apiSecret": "",
             "blacklistedEvents": [
               {
@@ -730,7 +730,7 @@
                   }
                 }
               ],
-              "api_key": "a99702eb473e89c1352300172c142c77",
+              "api_key": "dummyApiKey",
               "options": {
                 "min_id_length": 1
               }
@@ -806,7 +806,7 @@
                       }
                     }
                   ],
-                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "api_key": "dummyApiKey",
                   "options": {
                     "min_id_length": 1
                   }
@@ -997,7 +997,7 @@
             "ResponseRules": null
           },
           "Config": {
-            "apiKey": "a99702eb473e89c1352300172c142c77",
+            "apiKey": "dummyApiKey",
             "apiSecret": "",
             "blacklistedEvents": [
               {
@@ -1141,7 +1141,7 @@
                 }
               }
             ],
-            "api_key": "a99702eb473e89c1352300172c142c77"
+            "api_key": "dummyApiKey"
           },
           "JSON_ARRAY": {}
         },
@@ -1203,7 +1203,7 @@
                       }
                     }
                   ],
-                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "api_key": "dummyApiKey",
                   "options": {
                     "min_id_length": 1
                   }
@@ -1315,7 +1315,7 @@
                       }
                     }
                   ],
-                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "api_key": "dummyApiKey",
                   "options": {
                     "min_id_length": 1
                   }
@@ -1427,7 +1427,7 @@
                       }
                     }
                   ],
-                  "api_key": "a99702eb473e89c1352300172c142c77",
+                  "api_key": "dummyApiKey",
                   "options": {
                     "min_id_length": 1
                   }
@@ -1619,7 +1619,7 @@
           "ResponseRules": null
         },
         "Config": {
-          "apiKey": "a99702eb473e89c1352300172c142c77",
+          "apiKey": "dummyApiKey",
           "apiSecret": "",
           "blacklistedEvents": [
             {

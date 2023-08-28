@@ -4,9 +4,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -52,7 +52,7 @@
         "method": "POST",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -78,9 +78,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -126,7 +126,7 @@
         "method": "DELETE",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -153,9 +153,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -211,7 +211,7 @@
         "method": "POST",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -236,7 +236,7 @@
         "method": "DELETE",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -263,9 +263,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -319,7 +319,7 @@
         "method": "POST",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -348,9 +348,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -404,7 +404,7 @@
         "method": "DELETE",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -434,9 +434,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -485,9 +485,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -535,9 +535,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -571,9 +571,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -610,9 +610,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -652,9 +652,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -710,9 +710,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -765,7 +765,7 @@
         "method": "DELETE",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -792,9 +792,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -840,7 +840,7 @@
         "method": "POST",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -866,9 +866,9 @@
     "input": {
       "metadata": {
         "secret": {
-          "access_token": "abcd1234",
-          "refresh_token": "efgh5678",
-          "developer_token": "ijkl9101"
+          "access_token": "dummyAccessToken",
+          "refresh_token": "dummyRefreshToken",
+          "developer_token": "dummyDeveloperToken"
         }
       },
       "destination": {
@@ -915,7 +915,7 @@
         "method": "POST",
         "endpoint": "https://adsapi.snapchat.com/v1/segments/123/users",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyAccessToken",
           "Content-Type": "application/json"
         },
         "params": {},

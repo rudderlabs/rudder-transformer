@@ -144,7 +144,7 @@ export default class UserTransformService {
             ...metaTags,
           });
         }
-        stats.timing('user_transform_request_latency', startTime, {});
+        stats.timing('user_transform_request_latency', startTime, { status });
         stats.counter('user_transform_requests', 1, {});
         stats.histogram('user_transform_output_events', transformedEvents.length, { status });
         return transformedEvents;

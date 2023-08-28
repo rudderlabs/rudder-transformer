@@ -600,7 +600,7 @@ class Prometheus {
         name: 'user_transform_request_latency',
         help: 'user_transform_request_latency',
         type: 'histogram',
-        labelNames: ['processSessions'],
+        labelNames: ['processSessions', 'status'],
       },
       {
         name: 'user_transform_function_latency',

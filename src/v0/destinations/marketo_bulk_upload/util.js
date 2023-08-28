@@ -32,10 +32,10 @@ const authCache = new Cache(AUTH_CACHE_TTL);
 const getMarketoFilePath = () =>
   `${__dirname}/uploadFile/${Date.now()}_marketo_bulk_upload_${generateUUID()}.csv`;
 
-  const getAccessTokenCacheKey = (config) => {
-    const { munchkinId, clientId, clientSecret } = config;
-    return `${munchkinId}-${clientId}-${clientSecret}`;
-  };
+const getAccessTokenCacheKey = (config) => {
+  const { munchkinId, clientId, clientSecret } = config;
+  return `${munchkinId}-${clientId}-${clientSecret}`;
+};
 
 /**
  * Handles common error responses returned from API calls.
@@ -67,8 +67,8 @@ const getMarketoFilePath = () =>
  * }
  */
 const handleCommonErrorResponse = (resp, OpErrorMessage, OpActivity, config) => {
-   // checking for invalid/expired token errors and evicting cache in that case
-      // rudderJobMetadata contains some destination info which is being used to evict the cache
+  // checking for invalid/expired token errors and evicting cache in that case
+  // rudderJobMetadata contains some destination info which is being used to evict the cache
   if (
     authCache &&
     resp.response?.errors &&
@@ -125,7 +125,7 @@ const getAccessToken = async (config) =>
     if (!isHttpStatusSuccess(resp.status)) {
       throw new NetworkError(
         'Could not retrieve authorisation token',
-        500,
+        400,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.status),
         },
@@ -215,15 +215,15 @@ const handlePollResponse = (pollStatus, config) => {
 
 const handleFetchJobStatusResponse = (resp, type, config) => {
   if (resp.response?.errors) {
-       // checking for invalid/expired token errors and evicting cache in that case
-      // rudderJobMetadata contains some destination info which is being used to evict the cache
-  if (
-    authCache &&
-    resp.response?.errors?.length > 0 &&
-    resp.response?.errors.some((errorObj) => errorObj.code === '601' || errorObj.code === '602')
-  ) {
-    authCache.del(getAccessTokenCacheKey(config));
-  }
+    // checking for invalid/expired token errors and evicting cache in that case
+    // rudderJobMetadata contains some destination info which is being used to evict the cache
+    if (
+      authCache &&
+      resp.response?.errors?.length > 0 &&
+      resp.response?.errors.some((errorObj) => errorObj.code === '601' || errorObj.code === '602')
+    ) {
+      authCache.del(getAccessTokenCacheKey(config));
+    }
     if (
       ABORTABLE_CODES.includes(resp.response?.errors[0]?.code) ||
       (resp.response?.errors[0]?.code >= 400 && resp.response?.errors[0]?.code <= 499)

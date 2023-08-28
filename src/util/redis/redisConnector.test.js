@@ -3,7 +3,7 @@ const path = require('path');
 const version = 'v0';
 const { RedisDB } = require('./redisConnector');
 jest.mock('ioredis', () => require('../../../test/__mocks__/redis'));
-const sourcesList = ['shopify'];
+const sourcesList = ['shopify', 'shopify_v2'];
 process.env.USE_REDIS_DB = 'true';
 
 const timeoutPromise = () =>

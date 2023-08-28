@@ -92,16 +92,16 @@ const isFunctionDeployed = (functionName) => {
 
 const setFunctionInCache = (functionName) => {
   const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
+  if (funcList.includes(functionName)) return;
   const funcListSet = new Set(funcList);
-  if (funcListSet.has(functionName)) return;
   funcListSet.add(functionName);
   functionListCache.set(FUNC_LIST_KEY, Array.from(funcListSet));
 };
 
 const removeFunctionFromCache = (functionName) => {
   const funcList = functionListCache.get(FUNC_LIST_KEY) || [];
+  if (!funcList.includes(functionName)) return;
   const funcListSet = new Set(funcList);
-  if (!funcListSet.has(functionName)) return;
   funcListSet.delete(functionName);
   functionListCache.set(FUNC_LIST_KEY, Array.from(funcListSet));
 };

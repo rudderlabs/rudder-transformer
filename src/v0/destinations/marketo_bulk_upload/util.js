@@ -32,6 +32,11 @@ const authCache = new Cache(AUTH_CACHE_TTL);
 const getMarketoFilePath = () =>
   `${__dirname}/uploadFile/${Date.now()}_marketo_bulk_upload_${generateUUID()}.csv`;
 
+  const getAccessTokenCacheKey = (config) => {
+    const { munchkinId, clientId, clientSecret } = config;
+    return `${munchkinId}-${clientId}-${clientSecret}`;
+  };
+
 /**
  * Handles common error responses returned from API calls.
  * Checks the error code and throws the appropriate error object based on the code.
@@ -61,7 +66,17 @@ const getMarketoFilePath = () =>
  *   console.log(error);
  * }
  */
-const handleCommonErrorResponse = (resp, OpErrorMessage, OpActivity) => {
+const handleCommonErrorResponse = (resp, OpErrorMessage, OpActivity, config) => {
+   // checking for invalid/expired token errors and evicting cache in that case
+      // rudderJobMetadata contains some destination info which is being used to evict the cache
+  if (
+    authCache &&
+    resp.response?.errors &&
+    resp.response?.errors?.length > 0 &&
+    resp.response?.errors.some((errorObj) => errorObj.code === '601' || errorObj.code === '602')
+  ) {
+    authCache.del(getAccessTokenCacheKey(config));
+  }
   if (
     resp.response?.errors?.length > 0 &&
     resp.response?.errors[0] &&
@@ -96,11 +111,6 @@ const getAccessTokenURL = (config) => {
   return url;
 };
 
-const getAccessTokenCacheKey = (config) => {
-  const { munchkinId, clientId, clientSecret } = config;
-  return `${munchkinId}-${clientId}-${clientSecret}`;
-};
-
 // Fetch access token from client id and client secret
 // DOC: https://developers.marketo.com/rest-api/authentication/
 const getAccessToken = async (config) =>
@@ -123,17 +133,7 @@ const getAccessToken = async (config) =>
       );
     }
     if (resp.response?.success === false) {
-      // checking for invalid/expired token errors and evicting cache in that case
-      // rudderJobMetadata contains some destination info which is being used to evict the cache
-      if (
-        authCache &&
-        resp.response?.errors &&
-        resp.response?.errors?.length > 0 &&
-        resp.response?.errors.some((errorObj) => errorObj.code === '601' || errorObj.code === '602')
-      ) {
-        authCache.del(getAccessTokenCacheKey(config));
-      }
-      handleCommonErrorResponse(resp, ACCESS_TOKEN_FETCH_ERR_MSG, FETCH_ACCESS_TOKEN);
+      handleCommonErrorResponse(resp, ACCESS_TOKEN_FETCH_ERR_MSG, FETCH_ACCESS_TOKEN, config);
     }
 
     // when access token is present
@@ -163,7 +163,7 @@ const getAccessToken = async (config) =>
  * @param {object} pollStatus - The response object from the polling operation.
  * @returns {object|null} - The response object if the polling operation was successful, otherwise null.
  */
-const handlePollResponse = (pollStatus) => {
+const handlePollResponse = (pollStatus, config) => {
   // DOC: https://developers.marketo.com/rest-api/error-codes/
   if (pollStatus.response.errors) {
     /* Sample error response for poll is:
@@ -179,7 +179,7 @@ const handlePollResponse = (pollStatus) => {
                   ]
               }
            */
-    handleCommonErrorResponse(pollStatus, POLL_STATUS_ERR_MSG, POLL_ACTIVITY);
+    handleCommonErrorResponse(pollStatus, POLL_STATUS_ERR_MSG, POLL_ACTIVITY, config);
   }
 
   /*
@@ -213,8 +213,17 @@ const handlePollResponse = (pollStatus) => {
   return null;
 };
 
-const handleFetchJobStatusResponse = (resp, type) => {
+const handleFetchJobStatusResponse = (resp, type, config) => {
   if (resp.response?.errors) {
+       // checking for invalid/expired token errors and evicting cache in that case
+      // rudderJobMetadata contains some destination info which is being used to evict the cache
+  if (
+    authCache &&
+    resp.response?.errors?.length > 0 &&
+    resp.response?.errors.some((errorObj) => errorObj.code === '601' || errorObj.code === '602')
+  ) {
+    authCache.del(getAccessTokenCacheKey(config));
+  }
     if (
       ABORTABLE_CODES.includes(resp.response?.errors[0]?.code) ||
       (resp.response?.errors[0]?.code >= 400 && resp.response?.errors[0]?.code <= 499)
@@ -277,7 +286,7 @@ const handleFetchJobStatusResponse = (resp, type) => {
  * @param {number} requestTime - The time taken for the request in milliseconds.
  * @returns {object} - An object containing the importId, successfulJobs, and unsuccessfulJobs.
  */
-const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, requestTime) => {
+const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, requestTime, config) => {
   const importId = null;
 
   /*
@@ -301,7 +310,7 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
       });
       throw new RetryableError(resp.response.errors[0]?.message || FILE_UPLOAD_ERR_MSG, 500);
     } else {
-      handleCommonErrorResponse(resp, FILE_UPLOAD_ERR_MSG, UPLOAD_FILE);
+      handleCommonErrorResponse(resp, FILE_UPLOAD_ERR_MSG, UPLOAD_FILE, config);
     }
   }
 

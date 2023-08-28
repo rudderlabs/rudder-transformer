@@ -224,7 +224,7 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
       if (!isHttpStatusSuccess(resp.status)) {
         throw new NetworkError('Unable to upload file', resp.status);
       }
-      return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime);
+      return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime, config);
     }
     return { importId, successfulJobs, unsuccessfulJobs };
   } catch (err) {

@@ -44,7 +44,7 @@ const getJobsStatus = async (event, type) => {
 
   stats.histogram('marketo_bulk_upload_fetch_job_time', requestTime);
   try {
-    return handleFetchJobStatusResponse(resp, type);
+    return handleFetchJobStatusResponse(resp, type, config);
   } catch (err) {
     stats.increment(JOB_STATUS_ACTIVITY, {
       status: 500,

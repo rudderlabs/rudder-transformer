@@ -43,7 +43,7 @@ const getPollStatus = async (event) => {
     });
     throw new NetworkError(POLL_STATUS_ERR_MSG, pollStatus.status);
   }
-  return handlePollResponse(pollStatus);
+  return handlePollResponse(pollStatus, event.config);
 };
 
 const responseHandler = async (event) => {

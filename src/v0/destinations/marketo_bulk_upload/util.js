@@ -6,7 +6,7 @@ const {
   NetworkError,
 } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
-const { isHttpStatusSuccess } = require('../../util');
+const { isHttpStatusSuccess, generateUUID } = require('../../util');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const stats = require('../../../util/stats');
 const {
@@ -16,15 +16,21 @@ const {
   POLL_ACTIVITY,
   UPLOAD_FILE,
   JOB_STATUS_ACTIVITY,
-  MARKETO_FILE_PATH,
   FETCH_ACCESS_TOKEN,
   POLL_STATUS_ERR_MSG,
   FILE_UPLOAD_ERR_MSG,
   FETCH_FAILURE_JOB_STATUS_ERR_MSG,
   FETCH_WARNING_JOB_STATUS_ERR_MSG,
+  ACCESS_TOKEN_FETCH_ERR_MSG,
 } = require('./config');
+const Cache = require('../../util/cache');
 
-const getMarketoFilePath = () => MARKETO_FILE_PATH;
+const { AUTH_CACHE_TTL } = require('../../util/constant');
+
+const authCache = new Cache(AUTH_CACHE_TTL);
+
+const getMarketoFilePath = () =>
+  `${__dirname}/uploadFile/${Date.now()}_marketo_bulk_upload_${generateUUID()}.csv`;
 
 /**
  * Handles common error responses returned from API calls.
@@ -83,46 +89,71 @@ const handleCommonErrorResponse = (resp, OpErrorMessage, OpActivity) => {
   });
   throw new RetryableError(resp.response?.errors[0]?.message || OpErrorMessage, 500);
 };
-// Fetch access token from client id and client secret
-// DOC: https://developers.marketo.com/rest-api/authentication/
-const getAccessToken = async (config) => {
+
+const getAccessTokenURL = (config) => {
   const { clientId, clientSecret, munchkinId } = config;
   const url = `https://${munchkinId}.mktorest.com/identity/oauth/token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`;
-  const { processedResponse: resp } = await handleHttpRequest('get', url, {
-    destType: 'marketo_bulk_upload',
-    feature: 'transformation',
-  });
-  const ACCESS_TOKEN_FETCH_ERR_MSG = 'Error during fetching access token';
-  // sample response : {response: '[ENOTFOUND] :: DNS lookup failed', status: 400}
-  if (!isHttpStatusSuccess(resp.status)) {
-    if (resp.response) {
-      // handle for abortable codes
-      if (ABORTABLE_CODES.includes(resp.response) || (resp.code >= 400 && resp.code <= 499)) {
-        throw new AbortedError(resp.response, 400, resp);
-      } // handle for retryable codes
-      else if (RETRYABLE_CODES.includes(resp.response)) {
-        throw new RetryableError(resp.response?.code, 500, resp);
-      } // handle for abortable codes
-      else if (resp.response.errors) {
-        handleCommonErrorResponse(resp, ACCESS_TOKEN_FETCH_ERR_MSG, FETCH_ACCESS_TOKEN);
-      }
-      throw new NetworkError('Could not retrieve authorization token');
-    }
-    throw new NetworkError('Could not retrieve authorization token');
-  }
-
-  if (resp.response?.access_token) {
-    return resp.response.access_token;
-  }
-  throw new NetworkError(
-    'Could not retrieve authorisation token',
-    500,
-    {
-      [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(500),
-    },
-    resp,
-  );
+  return url;
 };
+
+const getAccessTokenCacheKey = (config) => {
+  const { munchkinId, clientId, clientSecret } = config;
+  return `${munchkinId}-${clientId}-${clientSecret}`;
+};
+
+// Fetch access token from client id and client secret
+// DOC: https://developers.marketo.com/rest-api/authentication/
+const getAccessToken = async (config) =>
+  authCache.get(getAccessTokenCacheKey(config), async () => {
+    const url = getAccessTokenURL(config);
+    const { processedResponse: resp } = await handleHttpRequest('get', url, {
+      destType: 'marketo_bulk_upload',
+      feature: 'transformation',
+    });
+
+    // sample response : {response: '[ENOTFOUND] :: DNS lookup failed', status: 400}
+    if (!isHttpStatusSuccess(resp.status)) {
+      throw new NetworkError(
+        'Could not retrieve authorisation token',
+        500,
+        {
+          [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.status),
+        },
+        resp,
+      );
+    }
+    if (resp.response?.success === false) {
+      // checking for invalid/expired token errors and evicting cache in that case
+      // rudderJobMetadata contains some destination info which is being used to evict the cache
+      if (
+        authCache &&
+        resp.response?.errors &&
+        resp.response?.errors?.length > 0 &&
+        resp.response?.errors.some((errorObj) => errorObj.code === '601' || errorObj.code === '602')
+      ) {
+        authCache.del(getAccessTokenCacheKey(config));
+      }
+      handleCommonErrorResponse(resp, ACCESS_TOKEN_FETCH_ERR_MSG, FETCH_ACCESS_TOKEN);
+    }
+
+    // when access token is present
+    if (resp.response.access_token) {
+      /* This scenario will handle the case when we get the foloowing response
+      status: 200  
+      respnse: {"access_token":"<dummy-access-token>","token_type":"bearer","expires_in":0,"scope":"dummy@scope.com"}
+      wherein "expires_in":0 denotes that we should refresh the accessToken but its not expired yet. 
+      */
+      if (resp.response?.expires_in === 0) {
+        throw new RetryableError(
+          `Request Failed for marketo_bulk_upload, Access Token Expired (Retryable).`,
+          500,
+        );
+      }
+      return resp.response.access_token;
+    }
+    return null;
+  });
+
 /**
  * Handles the response of a polling operation.
  * Checks for any errors in the response and calls the `handleCommonErrorResponse` function to handle them.
@@ -168,12 +199,15 @@ const handlePollResponse = (pollStatus) => {
       ]
     }
   */
-  if (pollStatus?.response?.success) {
+  if (pollStatus.response?.success) {
     stats.counter(POLL_ACTIVITY, {
       status: 200,
       state: 'Success',
     });
-    return pollStatus.response;
+
+    if (pollStatus.response?.result?.length > 0) {
+      return pollStatus.response;
+    }
   }
 
   return null;
@@ -189,13 +223,13 @@ const handleFetchJobStatusResponse = (resp, type) => {
         status: 400,
         state: 'Abortable',
       });
-      throw new AbortedError(resp.response.errors[0].message, 400, resp);
+      throw new AbortedError(resp.response.errors[0]?.message, 400, resp);
     } else if (RETRYABLE_CODES.includes(resp.response?.errors[0]?.code)) {
       stats.increment(JOB_STATUS_ACTIVITY, {
         status: 500,
         state: 'Retryable',
       });
-      throw new RetryableError(resp.response?.errors[0]?.message, 500, resp);
+      throw new RetryableError(resp.response.errors[0]?.message, 500, resp);
     }
     stats.increment(JOB_STATUS_ACTIVITY, {
       status: 400,
@@ -217,11 +251,7 @@ const handleFetchJobStatusResponse = (resp, type) => {
 */
   if (isHttpStatusSuccess(resp.status)) {
     if (resp.response?.success === false) {
-      throw new RetryableError(
-        resp.response?.errors[0].message || resp.response?.statusText,
-        500,
-        resp,
-      );
+      throw new RetryableError(JSON.stringify(resp.response?.errors), 500, resp);
     }
     stats.increment(JOB_STATUS_ACTIVITY, {
       status: 200,

@@ -16,10 +16,10 @@ const {
 } = require('../../util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const {
-  AbortedError,
   NetworkError,
   ConfigurationError,
   RetryableError,
+  UnauthorizedError,
 } = require('../../util/errorTypes');
 const tags = require('../../util/tags');
 const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
@@ -28,6 +28,7 @@ const stats = require('../../../util/stats');
 const fetchFieldSchema = async (config, accessToken) => {
   let fieldArr = [];
   const fieldSchemaNames = [];
+  // ref: https://developers.marketo.com/rest-api/endpoint-reference/endpoint-index/#:~:text=Describe%20Lead2,leads/describe2.json
   const { processedResponse: fieldSchemaMapping } = await handleHttpRequest(
     'get',
     `https://${config.munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
@@ -45,16 +46,16 @@ const fetchFieldSchema = async (config, accessToken) => {
   if (fieldSchemaMapping.response.errors) {
     handleCommonErrorResponse(fieldSchemaMapping);
   } else if (
-    fieldSchemaMapping?.response?.success &&
-    fieldSchemaMapping?.response?.result.length > 0 &&
-    fieldSchemaMapping?.response?.result[0]
+    fieldSchemaMapping.response?.success &&
+    fieldSchemaMapping.response?.result.length > 0 &&
+    fieldSchemaMapping.response?.result[0]
   ) {
     fieldArr =
       fieldSchemaMapping.response.result && Array.isArray(fieldSchemaMapping.response.result)
-        ? fieldSchemaMapping.response.result[0].fields
+        ? fieldSchemaMapping.response.result[0]?.fields
         : [];
     fieldArr.forEach((field) => {
-      fieldSchemaNames.push(field.name);
+      fieldSchemaNames.push(field?.name);
     });
   } else {
     throw new RetryableError('Failed to fetch Marketo Field Schema', 500, fieldSchemaMapping);
@@ -75,7 +76,16 @@ const getHeaderFields = (config, fieldSchemaNames) => {
   const columnField = getHashFromArray(columnFieldsMapping, 'to', 'from', false);
   return Object.keys(columnField);
 };
-
+/**
+ * Processes input data to create a CSV file and returns the file data along with successful and unsuccessful job IDs.
+ * The file name is made unique with combination of UUID and current timestamp to avoid any overrides. It also has a
+ * maximum size limit of 10MB . The events that could be accomodated inside the file is marked as successful and the
+ * rest are marked as unsuccessful. Also the file is deleted when reading is complete.
+ * @param {Array} inputEvents - An array of input events.
+ * @param {Object} config - destination config
+ * @param {Array} headerArr - An array of header fields.
+ * @returns {Object} - An object containing the file stream, successful job IDs, and unsuccessful job IDs.
+ */
 const getFileData = async (inputEvents, config, headerArr) => {
   const input = inputEvents;
   const messageArr = [];
@@ -212,19 +222,19 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
       stats.counter('marketo_bulk_upload_upload_file_succJobs', successfulJobs.length);
       stats.counter('marketo_bulk_upload_upload_file_unsuccJobs', unsuccessfulJobs.length);
       if (!isHttpStatusSuccess(resp.status)) {
-        throw new NetworkError('Unable to upload file', resp.status); // TODO check other parameters
+        throw new NetworkError('Unable to upload file', resp.status);
       }
       return handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime);
     }
     return { importId, successfulJobs, unsuccessfulJobs };
   } catch (err) {
     stats.increment(UPLOAD_FILE, {
-      status: err?.status || 500,
+      status: err.status || 500,
       errorMessage: err?.message || FILE_UPLOAD_ERR_MSG,
     });
-    const status = err?.status || 500;
+    const status = err.status || 500;
     throw new NetworkError(
-      err?.message || FILE_UPLOAD_ERR_MSG,
+      err.message || FILE_UPLOAD_ERR_MSG,
       status,
       {
         [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(status),
@@ -242,6 +252,10 @@ const getImportID = async (input, config, accessToken, csvHeader) => {
  */
 const responseHandler = async (input, config) => {
   const accessToken = await getAccessToken(config);
+  // If token is null
+  if (!accessToken) {
+    throw new UnauthorizedError('Authorization failed');
+  }
   /**
   {
     "importId" : <some-id>,
@@ -266,6 +280,8 @@ const responseHandler = async (input, config) => {
     accessToken,
     headerForCsv,
   );
+
+  // if upload is successful
   if (importId) {
     const response = {
       statusCode: 200,

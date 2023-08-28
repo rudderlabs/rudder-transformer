@@ -3,7 +3,7 @@
 const { getAccessToken } = require('./util');
 const { JOB_STATUS_ACTIVITY } = require('./config');
 const { handleHttpRequest } = require('../../../adapters/network');
-const { AbortedError, PlatformError } = require('../../util/errorTypes');
+const { AbortedError, PlatformError, UnauthorizedError } = require('../../util/errorTypes');
 const stats = require('../../../util/stats');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { handleFetchJobStatusResponse } = require('./util');
@@ -15,6 +15,10 @@ const FETCH_WARNING_JOB_STATUS_ERR_MSG = 'Could not fetch warning job status';
 const getJobsStatus = async (event, type) => {
   const { config, importId } = event;
   const accessToken = await getAccessToken(config);
+  // If token is null
+  if (!accessToken) {
+    throw new UnauthorizedError('Authorization failed');
+  }
   const { munchkinId } = config;
   let url;
   // Get status of each lead for failed leads
@@ -43,13 +47,13 @@ const getJobsStatus = async (event, type) => {
     return handleFetchJobStatusResponse(resp, type);
   } catch (err) {
     stats.increment(JOB_STATUS_ACTIVITY, {
-      status: 400,
-      state: 'Abortable',
+      status: 500,
+      state: 'Retryable',
     });
     if (type === 'fail') {
-      throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 400, resp);
+      throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 500, resp);
     } else {
-      throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
+      throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 500, resp);
     }
   }
 };
@@ -148,6 +152,7 @@ const responseHandler = async (event, type) => {
 };
 
 const processJobStatus = async (event, type) => {
+  console.log('Processing job status');
   const resp = await responseHandler(event, type);
   return resp;
 };

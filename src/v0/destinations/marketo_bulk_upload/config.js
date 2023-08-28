@@ -1,4 +1,4 @@
-const ABORTABLE_CODES = ['ENOTFOUND', 'ECONNREFUSED', '601','603', '605', '609', '610'];
+const ABORTABLE_CODES = ['ENOTFOUND', 'ECONNREFUSED', '601', '603', '605', '609', '610'];
 const RETRYABLE_CODES = ['EADDRINUSE', 'ECONNRESET', 'ETIMEDOUT', '713', '602', '604', '611'];
 const THROTTLED_CODES = ['502', '606', '607', '608', '615'];
 
@@ -16,6 +16,7 @@ const FILE_UPLOAD_ERR_MSG = 'Could not upload file';
 const JOB_STATUS_ACTIVITY = 'marketo_bulk_upload_get_job_status';
 const FETCH_FAILURE_JOB_STATUS_ERR_MSG = 'Could not fetch failure job status';
 const FETCH_WARNING_JOB_STATUS_ERR_MSG = 'Could not fetch warning job status';
+const ACCESS_TOKEN_FETCH_ERR_MSG = 'Error during fetching access token';
 
 module.exports = {
   ABORTABLE_CODES,
@@ -31,4 +32,5 @@ module.exports = {
   FILE_UPLOAD_ERR_MSG,
   FETCH_FAILURE_JOB_STATUS_ERR_MSG,
   FETCH_WARNING_JOB_STATUS_ERR_MSG,
+  ACCESS_TOKEN_FETCH_ERR_MSG,
 };

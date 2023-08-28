@@ -2,13 +2,18 @@ const { removeUndefinedValues, isHttpStatusSuccess } = require('../../util');
 const { getAccessToken, handlePollResponse } = require('./util');
 const { handleHttpRequest } = require('../../../adapters/network');
 const stats = require('../../../util/stats');
-const { NetworkError } = require('../../util/errorTypes');
+const { NetworkError, UnauthorizedError } = require('../../util/errorTypes');
 const { JSON_MIME_TYPE } = require('../../util/constant');
 const { POLL_ACTIVITY } = require('./config');
 
 const getPollStatus = async (event) => {
   // TODO fetch from cache
   const accessToken = await getAccessToken(event.config);
+
+  // If token is null
+  if (!accessToken) {
+    throw new UnauthorizedError('Authorization failed');
+  }
   const { munchkinId } = event.config;
 
   // To see the status of the import job polling is done
@@ -36,7 +41,7 @@ const getPollStatus = async (event) => {
       status: pollStatus.status,
       state: 'Retryable',
     });
-    throw new NetworkError(POLL_STATUS_ERR_MSG, pollStatus.status); // TODO check other parameters
+    throw new NetworkError(POLL_STATUS_ERR_MSG, pollStatus.status);
   }
   return handlePollResponse(pollStatus);
 };

@@ -125,7 +125,7 @@ const getAccessToken = async (config) =>
     if (!isHttpStatusSuccess(resp.status)) {
       throw new NetworkError(
         'Could not retrieve authorisation token',
-        400,
+        resp.status,
         {
           [tags.TAG_NAMES.ERROR_TYPE]: getDynamicErrorType(resp.status),
         },

@@ -2,8 +2,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -80,8 +80,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -159,8 +159,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -220,8 +220,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -286,8 +286,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -344,8 +344,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "useNewMapping": true
@@ -429,8 +429,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -506,8 +506,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -579,8 +579,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -685,8 +685,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -800,8 +800,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -912,8 +912,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -1024,8 +1024,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -1089,8 +1089,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -1161,8 +1161,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "groupKeySettings": [
@@ -1234,8 +1234,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "groupKeySettings": [
@@ -1307,8 +1307,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "usenativesdk": false,
         "dataResidency": "eu",
@@ -1381,8 +1381,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "dataResidency": "eu",
         "useNativeSDK": false
@@ -1489,8 +1489,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "dataResidency": "eu",
         "useNativeSDK": false
@@ -1566,8 +1566,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "apiSecret": "some_api_secret",
         "prefixProperties": true,
         "dataResidency": "eu",
@@ -1646,8 +1646,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -1721,8 +1721,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -1794,8 +1794,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "apiSecret": "some_api_secret",
         "prefixProperties": true,
         "dataResidency": "eu",
@@ -1871,8 +1871,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -1945,8 +1945,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -2018,8 +2018,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -2096,8 +2096,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },
@@ -2175,8 +2175,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "useNewMapping": false
@@ -2253,8 +2253,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "useNewMapping": true
@@ -2328,8 +2328,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "useNewMapping": true
@@ -2402,8 +2402,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "useNewMapping": true
@@ -2481,8 +2481,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "useNewMapping": true
@@ -2562,8 +2562,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "useNewMapping": false
@@ -2657,8 +2657,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "useNewMapping": true
@@ -2753,8 +2753,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "apiSecret": "some_api_secret",
         "prefixProperties": true,
         "dataResidency": "eu",
@@ -2834,8 +2834,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "apiSecret": "someApiSecret",
         "useNativeSDK": false
@@ -2905,8 +2905,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "apiSecret": "someApiSecret",
         "useNativeSDK": false
@@ -2976,8 +2976,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "useNewMapping": true
@@ -3062,8 +3062,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "useNewMapping": true
@@ -3148,8 +3148,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "useNewMapping": true
@@ -3236,8 +3236,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "serviceAccountUserName": "rudder.d2a3f1.mp-service-account",
         "serviceAccountSecret": "jatpQxcjMh8eetk1xrH3KjQIbzy4iX8b",
         "projectId": "123456",
@@ -3384,9 +3384,9 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "apiSecret": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "apiSecret": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "useNewMapping": true
@@ -3464,9 +3464,9 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "apiSecret": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "apiSecret": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "useNewMapping": true
@@ -3485,8 +3485,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "groupKeySettings": [
@@ -4041,8 +4041,8 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "groupKeySettings": [
@@ -4173,9 +4173,9 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "apiSecret": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "apiSecret": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "useNewMapping": true
@@ -4255,9 +4255,9 @@
     },
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "apiSecret": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "apiSecret": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false,
         "useNewMapping": true
@@ -4277,8 +4277,8 @@
     "description": "Track: with strict mode enabled",
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "apiSecret": "some_api_secret",
         "prefixProperties": true,
         "dataResidency": "eu",
@@ -4359,8 +4359,8 @@
     "description": "Alias: with same previousId and userId",
     "destination": {
       "Config": {
-        "apiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
-        "token": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+        "apiKey": "testApiKey",
+        "token": "testApiKey",
         "prefixProperties": true,
         "useNativeSDK": false
       },

@@ -54,7 +54,7 @@
           "traits": {
             "age": "25",
             "city": "Surat",
-            "phone": "+91 9557645345",
+            "phone": "+91 9876543210",
             "lastName": "test",
             "firstName": "rudder",
             "state": "Gujarat"
@@ -122,7 +122,7 @@
             "age": "25",
             "city": "Surat",
             "email": "test@rudderlabs.com",
-            "phone": "+91 9557645345",
+            "phone": "+91 9876543210",
             "lastName": "test",
             "firstName": "rudder",
             "state": "Gujarat"
@@ -139,7 +139,7 @@
             "email": "test@rudderlabs.com",
             "last_name": "test",
             "first_name": "rudder",
-            "phone_number": "+91 9557645345",
+            "phone_number": "+91 9876543210",
             "custom_fields": {}
           },
           "contactListIds": "list111"
@@ -216,7 +216,7 @@
             "city": "Surat",
             "name": "rudder test",
             "email": "test@rudderlabs.com",
-            "phone": "+91 9557645345",
+            "phone": "+91 9876543210",
             "lastName": "test",
             "firstName": "rudder",
             "state": "Gujarat"
@@ -234,7 +234,7 @@
             "last_name": "test",
             "first_name": "rudder",
             "unique_name": "rudder test",
-            "phone_number": "+91 9557645345",
+            "phone_number": "+91 9876543210",
             "custom_fields": {
               "w1_T": "rudder test"
             }

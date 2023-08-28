@@ -10,7 +10,7 @@
             "firstName": "test",
             "gender": "Male",
             "lastName": "Rudderlabs",
-            "phone": "+919830311522"
+            "phone": "+919876543210"
           }
         },
         "event": "Product Added",
@@ -218,7 +218,7 @@
             "firstName": "test",
             "gender": "Male",
             "lastName": "Rudderlabs",
-            "phone": "+919830311522"
+            "phone": "+919876543210"
           }
         },
         "event": "Product Viewed",
@@ -343,7 +343,7 @@
                 "firstName": "test",
                 "gender": "Male",
                 "lastName": "Rudderlabs",
-                "phone": "+919830311522"
+                "phone": "+919876543210"
               },
               "ip": "[::1]"
             },
@@ -503,7 +503,7 @@
                 "firstName": "test",
                 "gender": "Male",
                 "lastName": "Rudderlabs",
-                "phone": "+919830311522"
+                "phone": "+919876543210"
               },
               "ip": "[::1]"
             },

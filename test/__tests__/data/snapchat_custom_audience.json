@@ -26,7 +26,7 @@
             "add": [
               {
                 "email": "test@abc.com",
-                "phone": "@09432457768",
+                "phone": "@09876543210",
                 "firstName": "test",
                 "lastName": "rudderlabs",
                 "country": "US",
@@ -100,7 +100,7 @@
             "remove": [
               {
                 "email": "d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419",
-                "phone": "@09432457768",
+                "phone": "@09876543210",
                 "firstName": "test",
                 "lastName": "rudderlabs",
                 "country": "US",
@@ -175,7 +175,7 @@
             "add": [
               {
                 "email": "test@abc.com",
-                "phone": "@09432457768",
+                "phone": "@09876543210",
                 "firstName": "test",
                 "lastName": "rudderlabs",
                 "country": "US",
@@ -185,7 +185,7 @@
             "remove": [
               {
                 "email": "test@abc.com",
-                "phone": "@09432457768",
+                "phone": "@09876543210",
                 "firstName": "test",
                 "lastName": "rudderlabs",
                 "country": "US",
@@ -285,7 +285,7 @@
             "add": [
               {
                 "email": "test@abc.com",
-                "phone": "@09432457768",
+                "phone": "@09876543210",
                 "firstName": "test",
                 "lastName": "rudderlabs",
                 "country": "US",
@@ -293,7 +293,7 @@
               },
               {
                 "email": "rohith@abc.com",
-                "phone": "@09432457768",
+                "phone": "@09876543210",
                 "firstName": "rohith",
                 "lastName": "kaza",
                 "country": "US",
@@ -370,7 +370,7 @@
             "remove": [
               {
                 "email": "test@abc.com",
-                "phone": "@09432457768",
+                "phone": "@09876543210",
                 "firstName": "test",
                 "lastName": "rudderlabs",
                 "country": "US",
@@ -378,7 +378,7 @@
               },
               {
                 "email": "rohith@abc.com",
-                "phone": "@09432457768",
+                "phone": "@09876543210",
                 "firstName": "rohith",
                 "lastName": "kaza",
                 "country": "US",
@@ -456,7 +456,7 @@
             "add": [
               {
                 "email": "rohith@abc.com",
-                "phone": "@09432457768",
+                "phone": "@09876543210",
                 "firstName": "rohith",
                 "lastName": "kaza",
                 "country": "US",
@@ -506,7 +506,7 @@
             "add": [
               {
                 "email": "rohith@abc.com",
-                "phone": "@09432457768",
+                "phone": "@09876543210",
                 "firstName": "rohith",
                 "lastName": "kaza",
                 "country": "US",
@@ -674,14 +674,14 @@
             "remove": [
               {
                 "email": "",
-                "phone": "@09432457768",
+                "phone": "@09876543210",
                 "firstName": "test",
                 "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               },
               {
-                "phone": "@09432457768",
+                "phone": "@09876543210",
                 "firstName": "test",
                 "lastName": "rudderlabs",
                 "country": "US",
@@ -732,14 +732,14 @@
             "remove": [
               {
                 "email": "abcd@abc.com",
-                "phone": "@09432457768",
+                "phone": "@09876543210",
                 "firstName": "test",
                 "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               },
               {
-                "phone": "@09432457768",
+                "phone": "@09876543210",
                 "firstName": "test",
                 "lastName": "rudderlabs",
                 "country": "US",
@@ -814,7 +814,7 @@
             "add": [
               {
                 "email": "test@abc.com",
-                "phone": "09432457768",
+                "phone": "09876543210",
                 "firstName": "test",
                 "lastName": "rudderlabs",
                 "country": "US",
@@ -849,7 +849,7 @@
             "users": [
               {
                 "schema": ["PHONE_SHA256"],
-                "data": [["0dcd4be87427e008a16adbdc2b2c15a14accf485dd451314dcecfb902c51c686"]]
+                "data": [["7619ee8cea49187f309616e30ecf54be072259b43760f1f550a644945d5572f2"]]
               }
             ]
           },
@@ -888,7 +888,7 @@
             "add": [
               {
                 "email": "test@abc.com",
-                "phone": "09432457768",
+                "phone": "09876543210",
                 "mobileId": "1334",
                 "firstName": "test",
                 "lastName": "rudderlabs",

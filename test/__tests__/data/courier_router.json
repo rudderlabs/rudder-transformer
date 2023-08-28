@@ -15,7 +15,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "test-api-key"
+            "apiKey": "testApiKey"
           }
         },
         "metadata": {
@@ -57,7 +57,7 @@
           "method": "POST",
           "endpoint": "https://api.courier.com/inbound/rudderstack",
           "headers": {
-            "Authorization": "Bearer test-api-key",
+            "Authorization": "Bearer testApiKey",
             "Content-Type": "application/json"
           },
           "params": {},
@@ -81,7 +81,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "test-api-key"
+            "apiKey": "testApiKey"
           }
         },
         "metadata": [

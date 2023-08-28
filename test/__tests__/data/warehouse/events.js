@@ -6,7 +6,7 @@ const sampleEvents = {
     input: {
       destination: {
         Config: {
-          restApiKey: "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          restApiKey: "testApiKey",
           prefixProperties: true,
           useNativeSDK: false
         },
@@ -484,7 +484,7 @@ const sampleEvents = {
     input: {
       destination: {
         Config: {
-          restApiKey: "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          restApiKey: "testApiKey",
           prefixProperties: true,
           useNativeSDK: false
         },
@@ -996,7 +996,7 @@ const sampleEvents = {
       },
       destination: {
         Config: {
-          restApiKey: "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          restApiKey: "testApiKey",
           prefixProperties: true,
           useNativeSDK: false
         },
@@ -1722,7 +1722,7 @@ const sampleEvents = {
     input: {
       destination: {
         Config: {
-          apiKey: "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          apiKey: "testApiKey",
           prefixProperties: true,
           useNativeSDK: false
         },
@@ -1986,7 +1986,7 @@ const sampleEvents = {
     input: {
       destination: {
         Config: {
-          restApiKey: "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          restApiKey: "testApiKey",
           prefixProperties: true,
           useNativeSDK: false
         },

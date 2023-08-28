@@ -43,7 +43,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: 'da70166e-05a4-4fa1-bb1c-da757fd036b4',
+                  apiKey: 'testApiKey',
                   blacklistedEvents: [{ eventName: '' }],
                   eventDelivery: true,
                   eventDeliveryTS: 1665475307930,
@@ -90,7 +90,7 @@ export const data = [
                 endpoint: 'https://api.refiner.io/v1/identify-user',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer da70166e-05a4-4fa1-bb1c-da757fd036b4',
+                  Authorization: 'Bearer testApiKey',
                   'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 method: 'POST',
@@ -100,7 +100,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: 'da70166e-05a4-4fa1-bb1c-da757fd036b4',
+                  apiKey: 'testApiKey',
                   blacklistedEvents: [{ eventName: '' }],
                   eventDelivery: true,
                   eventDeliveryTS: 1665475307930,
@@ -202,7 +202,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: 'da70166e-05a4-4fa1-bb1c-da757fd036b4',
+                  apiKey: 'testApiKey',
                   blacklistedEvents: [{ eventName: '' }],
                   eventDelivery: true,
                   eventDeliveryTS: 1665475307930,
@@ -239,7 +239,7 @@ export const data = [
                 endpoint: 'https://api.refiner.io/v1/track',
                 files: {},
                 headers: {
-                  Authorization: 'Bearer da70166e-05a4-4fa1-bb1c-da757fd036b4',
+                  Authorization: 'Bearer testApiKey',
                   'Content-Type': 'application/x-www-form-urlencoded',
                 },
                 method: 'POST',
@@ -249,7 +249,7 @@ export const data = [
               },
               destination: {
                 Config: {
-                  apiKey: 'da70166e-05a4-4fa1-bb1c-da757fd036b4',
+                  apiKey: 'testApiKey',
                   blacklistedEvents: [{ eventName: '' }],
                   eventDelivery: true,
                   eventDeliveryTS: 1665475307930,

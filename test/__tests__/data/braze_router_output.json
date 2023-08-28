@@ -10,7 +10,7 @@
           "headers": {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+            "Authorization": "Bearer testApiKey"
           },
           "params": {},
           "body": {
@@ -62,7 +62,7 @@
           "headers": {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+            "Authorization": "Bearer testApiKey"
           },
           "params": {},
           "body": {
@@ -96,7 +96,7 @@
           "headers": {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "Authorization": "Bearer 9432f11f70f8ce386f5110c8c924b3ec4f825256"
+            "Authorization": "Bearer testApiKey"
           },
           "params": {},
           "body": {
@@ -151,7 +151,7 @@
       "statusCode": 200,
       "destination": {
         "Config": {
-          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "restApiKey": "testApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "eu-01"
@@ -179,7 +179,7 @@
           "headers": {
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "Authorization": "Bearer 0066a73e-d9b3-4d1f-b17d-8cf410505e36"
+            "Authorization": "Bearer testApiKey"
           },
           "params": {},
           "body": {
@@ -265,7 +265,7 @@
           "enableSubscriptionGroupInGroupCall": false,
           "eventFilteringOption": "disable",
           "oneTrustCookieCategories": [],
-          "restApiKey": "0066a73e-d9b3-4d1f-b17d-8cf410505e36",
+          "restApiKey": "testApiKey",
           "supportDedup": true,
           "trackAnonymousUser": true,
           "whitelistedEvents": []

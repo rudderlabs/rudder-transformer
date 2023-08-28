@@ -3,7 +3,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "restApiKey": "testApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "eu-01"
@@ -70,7 +70,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "restApiKey": "testApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "us-01"
@@ -135,7 +135,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "restApiKey": "testApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "us-01",
@@ -168,7 +168,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "restApiKey": "testApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "us-01",
@@ -201,7 +201,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "restApiKey": "testApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "us-01",
@@ -229,7 +229,7 @@
     {
       "destination": {
         "Config": {
-          "restApiKey": "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          "restApiKey": "testApiKey",
           "prefixProperties": true,
           "useNativeSDK": false,
           "dataCenter": "us-01",
@@ -268,7 +268,7 @@
           "enableSubscriptionGroupInGroupCall": false,
           "eventFilteringOption": "disable",
           "oneTrustCookieCategories": [],
-          "restApiKey": "0066a73e-d9b3-4d1f-b17d-8cf410505e36",
+          "restApiKey": "testApiKey",
           "supportDedup": true,
           "trackAnonymousUser": true,
           "whitelistedEvents": []
@@ -346,7 +346,7 @@
           "enableSubscriptionGroupInGroupCall": false,
           "eventFilteringOption": "disable",
           "oneTrustCookieCategories": [],
-          "restApiKey": "0066a73e-d9b3-4d1f-b17d-8cf410505e36",
+          "restApiKey": "testApiKey",
           "supportDedup": true,
           "trackAnonymousUser": true,
           "whitelistedEvents": []

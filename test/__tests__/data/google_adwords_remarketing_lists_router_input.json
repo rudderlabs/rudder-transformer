@@ -30,7 +30,7 @@
           "add": [
             {
               "email": "test@abc.com",
-              "phone": "@09432457768",
+              "phone": "@09876543210",
               "firstName": "test",
               "lastName": "rudderlabs",
               "country": "US",
@@ -80,7 +80,7 @@
           "add": [
             {
               "email": "test@abc.com",
-              "phone": "@09432457768",
+              "phone": "@09876543210",
               "firstName": "test",
               "lastName": "rudderlabs",
               "country": "US",
@@ -131,7 +131,7 @@
           "remove": [
             {
               "email": "test@abc.com",
-              "phone": "@09432457768",
+              "phone": "@09876543210",
               "firstName": "test",
               "lastName": "rudderlabs",
               "country": "US",
@@ -181,7 +181,7 @@
           "remove": [
             {
               "email": "test@abc.com",
-              "phone": "@09432457768",
+              "phone": "@09876543210",
               "firstName": "test",
               "lastName": "rudderlabs",
               "country": "US",
@@ -191,7 +191,7 @@
           "add": [
             {
               "email": "test@abc.com",
-              "phone": "@09432457768",
+              "phone": "@09876543210",
               "firstName": "test",
               "lastName": "rudderlabs",
               "country": "US",

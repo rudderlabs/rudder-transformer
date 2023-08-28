@@ -36,7 +36,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "262fbbda-b85b-48b8-a719-c2fceaf8afaf",
+            "apiKey": "testApiKey",
             "appSubdomain": "commander",
             "userAttributesMapping": [{ "from": "useroccupation", "to": "occupation" }],
             "userEvents": [
@@ -86,7 +86,7 @@
         },
         "destination": {
           "Config": {
-            "apiKey": "262fbbda-b85b-48b8-a719-c2fceaf8afaf",
+            "apiKey": "testApiKey",
             "appSubdomain": "commander",
             "userAttributesMapping": [{ "from": "useroccupation", "to": "occupation" }],
             "userEvents": [
@@ -123,7 +123,7 @@
           "headers": {
             "Accept": "*/*;version=2",
             "Content-Type": "application/json",
-            "Authorization": "Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf"
+            "Authorization": "Token testApiKey"
           },
           "version": "1",
           "endpoint": "https://commander.user.com/api/public/companies/21/add_member/"
@@ -137,7 +137,7 @@
         "statusCode": 200,
         "destination": {
           "Config": {
-            "apiKey": "262fbbda-b85b-48b8-a719-c2fceaf8afaf",
+            "apiKey": "testApiKey",
             "appSubdomain": "commander",
             "userAttributesMapping": [{ "from": "useroccupation", "to": "occupation" }],
             "userEvents": [
@@ -181,7 +181,7 @@
           "headers": {
             "Accept": "*/*;version=2",
             "Content-Type": "application/json",
-            "Authorization": "Token 262fbbda-b85b-48b8-a719-c2fceaf8afaf"
+            "Authorization": "Token testApiKey"
           },
           "version": "1",
           "endpoint": "https://commander.user.com/api/public/users/59/"
@@ -195,7 +195,7 @@
         "statusCode": 200,
         "destination": {
           "Config": {
-            "apiKey": "262fbbda-b85b-48b8-a719-c2fceaf8afaf",
+            "apiKey": "testApiKey",
             "appSubdomain": "commander",
             "userAttributesMapping": [{ "from": "useroccupation", "to": "occupation" }],
             "userEvents": [

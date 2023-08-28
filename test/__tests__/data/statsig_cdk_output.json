@@ -477,7 +477,7 @@
           "traits": {
             "name": "Shehan Study",
             "category": "SampleIdentify",
-            "email": "c@rudderlabs.com",
+            "email": "test@rudderstack.com",
             "plan": "Open source",
             "logins": 5,
             "createdAt": 1599264000
@@ -558,8 +558,13 @@
           "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
           "locale": "en-US",
           "ip": "0.0.0.0",
-          "os": { "name": "", "version": "" },
-          "screen": { "density": 2 }
+          "os": {
+            "name": "",
+            "version": ""
+          },
+          "screen": {
+            "density": 2
+          }
         },
         "messageId": "84e26acc-56a5-4835-8233-591137fca468",
         "session_id": "3049dc4c-5a95-4ccd-a3e7-d74a7e411f22",
@@ -569,7 +574,7 @@
         "type": "group",
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "city": "kolkata",
             "country": "India",
@@ -578,7 +583,9 @@
             "street": ""
           }
         },
-        "integrations": { "All": true },
+        "integrations": {
+          "All": true
+        },
         "sentAt": "2019-10-14T09:03:22.563Z"
       },
       "FORM": {}

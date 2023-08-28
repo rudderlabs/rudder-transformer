@@ -19,7 +19,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "country": "India",
             "postalCode": 712136,
@@ -57,7 +57,7 @@
       },
       "traits": {
         "anonymousId": "123456",
-        "email": "sayan@gmail.com",
+        "email": "test@rudderstack.com",
         "city": "kolkata",
         "address": {
           "country": "India",
@@ -116,7 +116,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "country": "India",
             "postalCode": 712136,
@@ -154,7 +154,7 @@
       },
       "traits": {
         "anonymousId": "123456",
-        "email": "sayan@gmail.com",
+        "email": "test@rudderstack.com",
         "city": "kolkata",
         "address": {
           "country": "India",
@@ -200,7 +200,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "city": "kolkata",
             "country": "India",
@@ -266,7 +266,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -333,7 +333,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -405,7 +405,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -502,7 +502,7 @@
       },
       "traits": {
         "anonymousId": "123456",
-        "email": "sayan@gmail.com",
+        "email": "test@rudderstack.com",
         "address": {
           "city": "kolkata",
           "country": "India",
@@ -642,7 +642,7 @@
         "traits": {
           "name": "Shehan Study",
           "category": "SampleIdentify",
-          "email": "c@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "plan": "Open source",
           "logins": 5,
           "createdAt": 1599264000
@@ -723,7 +723,7 @@
         "traits": {
           "name": "Shehan Study",
           "category": "SampleIdentify",
-          "email": "c@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "plan": "Open source",
           "logins": 5,
           "createdAt": 1599264000
@@ -804,7 +804,7 @@
         "traits": {
           "name": "Shehan Study",
           "category": "SampleIdentify",
-          "email": "c@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "plan": "Open source",
           "logins": 5,
           "createdAt": 1599264000
@@ -871,7 +871,7 @@
         "traits": {
           "name": "Shehan Study",
           "category": "SampleIdentify",
-          "email": "c@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "plan": "Open source",
           "logins": 5,
           "createdAt": 1599264000
@@ -2854,7 +2854,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "city": "kolkata",
             "country": "India",
@@ -3031,7 +3031,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "rohith@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "country": "India",
             "postalCode": 712136,
@@ -3069,7 +3069,7 @@
       },
       "traits": {
         "anonymousId": "123456",
-        "email": "rohith@gmail.com",
+        "email": "test@rudderstack.com",
         "city": "kolkata",
         "address": {
           "country": "India",
@@ -3117,7 +3117,7 @@
         "traits": {
           "name": "Shehan Study",
           "category": "SampleIdentify",
-          "email": "c@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "plan": "Open source",
           "logins": 5,
           "createdAt": 1599264000
@@ -3199,7 +3199,7 @@
         "traits": {
           "name": "Shehan Study",
           "category": "SampleIdentify",
-          "email": "c@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "plan": "Open source",
           "logins": 5,
           "createdAt": 1599264000
@@ -3478,7 +3478,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "country": "India",
             "postalCode": 712136,
@@ -3516,7 +3516,7 @@
       },
       "traits": {
         "anonymousId": "123456",
-        "email": "sayan@gmail.com",
+        "email": "test@rudderstack.com",
         "city": "kolkata",
         "address": {
           "country": "India",
@@ -3572,7 +3572,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "country": "India",
             "postalCode": 712136,
@@ -3610,7 +3610,7 @@
       },
       "traits": {
         "anonymousId": "123456",
-        "email": "sayan@gmail.com",
+        "email": "test@rudderstack.com",
         "city": "kolkata",
         "address": {
           "country": "India",
@@ -3659,7 +3659,7 @@
         "traits": {
           "name": "Shehan Study",
           "category": "SampleIdentify",
-          "email": "c@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "plan": "Open source",
           "logins": 5,
           "createdAt": 1599264000
@@ -3771,7 +3771,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -3843,7 +3843,7 @@
         "traits": {
           "name": "Shehan Study",
           "category": "SampleIdentify",
-          "email": "c@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "plan": "Open source",
           "logins": 5,
           "createdAt": 1599264000
@@ -3985,7 +3985,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "country": "India",
             "postalCode": 712136,
@@ -4024,7 +4024,7 @@
       },
       "traits": {
         "anonymousId": "123456",
-        "email": "sayan@gmail.com",
+        "email": "test@rudderstack.com",
         "city": "kolkata",
         "address": {
           "country": "India",
@@ -4131,7 +4131,7 @@
         "traits": {
           "name": "Shehan Study",
           "category": "SampleIdentify",
-          "email": "c@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "plan": "Open source",
           "logins": 5,
           "createdAt": 1599264000
@@ -4208,7 +4208,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -4280,7 +4280,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -4352,7 +4352,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -4424,7 +4424,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {

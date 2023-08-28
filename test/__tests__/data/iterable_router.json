@@ -9,7 +9,7 @@
           "messageId": "9ad41366-8060-4c9f-b181-f6bea67d5469",
           "originalTimestamp": "2022-09-27T11:13:03.777Z",
           "traits": {
-            "ruchira": "donaldbaker@ellis.com",
+            "rudderstack": "donaldbaker@ellis.com",
             "new_field2": "GB"
           },
           "channel": "sources",
@@ -26,7 +26,7 @@
             "externalId": [
               {
                 "id": "Tiffany",
-                "type": "ITERABLE-test-ruchira",
+                "type": "ITERABLE-test-rudderstack",
                 "identifierType": "itemId"
               }
             ]
@@ -55,7 +55,7 @@
           "messageId": "9ad41366-8060-4c9f-b181-f6bea67d5469",
           "originalTimestamp": "2022-09-27T11:13:03.777Z",
           "traits": {
-            "ruchira": "abc@ellis.com",
+            "rudderstack": "abc@ellis.com",
             "new_field2": "GB1"
           },
           "channel": "sources",
@@ -72,7 +72,7 @@
             "externalId": [
               {
                 "id": "ABC",
-                "type": "ITERABLE-test-ruchira",
+                "type": "ITERABLE-test-rudderstack",
                 "identifierType": "itemId"
               }
             ]
@@ -101,7 +101,7 @@
           "version": "1",
           "type": "REST",
           "method": "POST",
-          "endpoint": "https://api.iterable.com/api/catalogs/test-ruchira/items",
+          "endpoint": "https://api.iterable.com/api/catalogs/test-rudderstack/items",
           "headers": {
             "Content-Type": "application/json",
             "api_key": "dummyApiKey"
@@ -111,11 +111,11 @@
             "JSON": {
               "documents": {
                 "Tiffany": {
-                  "ruchira": "donaldbaker@ellis.com",
+                  "rudderstack": "donaldbaker@ellis.com",
                   "new_field2": "GB"
                 },
                 "ABC": {
-                  "ruchira": "abc@ellis.com",
+                  "rudderstack": "abc@ellis.com",
                   "new_field2": "GB1"
                 }
               },

@@ -13,7 +13,7 @@
       "params": {},
       "body": {
         "JSON": {
-          "customer_id": "ruchu123",
+          "customer_id": "rudder123",
           "type": "event",
           "actions": [
             {
@@ -84,7 +84,11 @@
       "files": {},
       "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5"
     },
-    "metadata": [{ "jobId": 1 }],
+    "metadata": [
+      {
+        "jobId": 1
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -95,7 +99,9 @@
         "Name": "MOENGAGE",
         "DisplayName": "MoEngage",
         "Config": {
-          "destConfig": { "defaultConfig": ["apiId", "apiKey", "region"] },
+          "destConfig": {
+            "defaultConfig": ["apiId", "apiKey", "region"]
+          },
           "excludeKeys": [],
           "includeKeys": [],
           "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]
@@ -127,11 +133,11 @@
       "params": {},
       "body": {
         "JSON": {
-          "customer_id": "ruchu123",
+          "customer_id": "rudder123",
           "type": "customer",
           "attributes": {
-            "name": "Ruchira Moitra",
-            "email": "ruchira@gmail.com",
+            "name": "Rudder Test",
+            "email": "rudderTest@gmail.com",
             "created_time": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
             "company.id": "abc123",
             "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
@@ -145,7 +151,11 @@
       "files": {},
       "userId": "4eb021e9-a2af-4926-ae82-fe996d12f3c5"
     },
-    "metadata": [{ "jobId": 2 }],
+    "metadata": [
+      {
+        "jobId": 2
+      }
+    ],
     "batched": false,
     "statusCode": 200,
     "destination": {
@@ -156,7 +166,9 @@
         "Name": "MOENGAGE",
         "DisplayName": "MoEngage",
         "Config": {
-          "destConfig": { "defaultConfig": ["apiId", "apiKey", "region"] },
+          "destConfig": {
+            "defaultConfig": ["apiId", "apiKey", "region"]
+          },
           "excludeKeys": [],
           "includeKeys": [],
           "supportedSourceTypes": ["android", "ios", "web", "unity", "amp", "cloud", "reactnative"]

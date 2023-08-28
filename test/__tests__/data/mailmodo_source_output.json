@@ -275,7 +275,7 @@
     "type": "track"
   },
   {
-    "anonymousId": "d6a9d06e8a464324d448003ff0467d971a55ca2950e11fc51faaec4e2850ecc6",
+    "anonymousId": "1c5e54849f5c711ce38fa60716fbbe44bff478f9ca250897b39cdfc2438cd1bd",
     "context": {
       "integration": {
         "name": "Mailmodo",
@@ -286,7 +286,7 @@
         "version": "unknown"
       },
       "traits": {
-        "email": "rohithkaza@rudderstack.com",
+        "email": "test@rudderstack.com",
         "first_name": "abcda"
       }
     },

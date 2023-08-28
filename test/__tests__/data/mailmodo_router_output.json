@@ -14,9 +14,9 @@
             {
               "email": "test@abc.com",
               "data": {
-                "name": "Rohith Kumar Kaza",
-                "first_name": "Rohith",
-                "last_name": "Kaza",
+                "name": "Rudder Test",
+                "first_name": "Test",
+                "last_name": "Rudderlabs",
                 "age": 21,
                 "phone": "9876543210",
                 "trait1": "new-val"

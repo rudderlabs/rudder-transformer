@@ -79,11 +79,11 @@
     "params": {},
     "body": {
       "JSON": {
-        "user_id": "ruchu123",
+        "user_id": "rudder123",
         "company.id": "abc123",
         "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-        "email": "ruchira@gmail.com",
-        "name": "Ruchira Moitra",
+        "email": "rudderTest@gmail.com",
+        "name": "Rudder Test",
         "plan": "Enterprise"
       },
       "XML": {},
@@ -103,11 +103,11 @@
     "params": {},
     "body": {
       "JSON": {
-        "user_id": "ruchu123",
+        "user_id": "rudder123",
         "company.id": "abc123",
         "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-        "email": "ruchira@gmail.com",
-        "name": "Ruchira Moitra",
+        "email": "rudderTest@gmail.com",
+        "name": "Rudder Test",
         "plan": "Enterprise"
       },
       "XML": {},
@@ -127,11 +127,11 @@
     "params": {},
     "body": {
       "JSON": {
-        "user_id": "ruchu123",
+        "user_id": "rudder123",
         "company.id": "abc123",
         "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-        "email": "ruchira@gmail.com",
-        "name": "Ruchira Moitra",
+        "email": "rudderTest@gmail.com",
+        "name": "Rudder Test",
         "plan": "Enterprise"
       },
       "XML": {},
@@ -151,11 +151,11 @@
     "params": {},
     "body": {
       "JSON": {
-        "user_id": "ruchu123",
+        "user_id": "rudder123",
         "company.id": "abc123",
         "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-        "email": "ruchira@gmail.com",
-        "name": "Ruchira Moitra",
+        "email": "rudderTest@gmail.com",
+        "name": "Rudder Test",
         "plan": "Enterprise"
       },
       "XML": {},
@@ -175,11 +175,11 @@
     "params": {},
     "body": {
       "JSON": {
-        "user_id": "ruchu123",
+        "user_id": "rudder123",
         "company.id": "abc123",
         "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-        "email": "ruchira@gmail.com",
-        "name": "Ruchira Moitra",
+        "email": "rudderTest@gmail.com",
+        "name": "Rudder Test",
         "plan": "Enterprise"
       },
       "XML": {},
@@ -324,14 +324,14 @@
     "params": {},
     "body": {
       "JSON": {
-        "user_id": "ruchu123",
+        "user_id": "rudder123",
         "company.id": "abc123",
         "createdAt": "Thu Mar 24 2016 17:46:45 GMT+0000 (UTC)",
-        "email": "ruchira@gmail.com",
-        "name": "Ruchira Moitra",
+        "email": "rudderTest@gmail.com",
+        "name": "Rudder Test",
         "plan": "Enterprise",
-        "first_name": "Ruchira",
-        "last_name": "Moitra"
+        "first_name": "Rudderstack",
+        "last_name": "Test"
       },
       "JSON_ARRAY": {},
       "XML": {},

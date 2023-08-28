@@ -85,9 +85,9 @@
       },
       "traits": {
         "email": "test@abc.com",
-        "name": "Rohith Kumar Kaza",
-        "firstName": "Rohith",
-        "lastName": "Kaza",
+        "name": "Rudder Test",
+        "firstName": "Test",
+        "lastName": "Rudderlabs",
         "age": 21,
         "phone": "9876543210"
       },

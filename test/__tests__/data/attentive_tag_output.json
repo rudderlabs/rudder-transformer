@@ -70,7 +70,7 @@
     "body": {
       "JSON": {
         "user": {
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "externalIdentifiers": {
             "clientUserId": "144",
             "shopifyId": "143",
@@ -117,7 +117,7 @@
       "JSON": {
         "user": {
           "phone": "+16465053911",
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "externalIdentifiers": {
             "clientUserId": "144",
             "shopifyId": "143",
@@ -160,7 +160,7 @@
       "JSON": {
         "user": {
           "phone": "+16465053911",
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "externalIdentifiers": {
             "clientUserId": "144",
             "shopifyId": "143",
@@ -203,7 +203,7 @@
       "JSON": {
         "user": {
           "phone": "+16465053911",
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "externalIdentifiers": {
             "clientUserId": "144",
             "shopifyId": "224",

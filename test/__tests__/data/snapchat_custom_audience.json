@@ -292,10 +292,10 @@
                 "postalCode": "1245"
               },
               {
-                "email": "rohith@abc.com",
+                "email": "test@rudderstack.com",
                 "phone": "@09876543210",
-                "firstName": "rohith",
-                "lastName": "kaza",
+                "firstName": "rudderlabs",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -330,7 +330,7 @@
                 "schema": ["EMAIL_SHA256"],
                 "data": [
                   ["d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"],
-                  ["445f6f4b062809de065cfbb4b56bfeedc550842887237e792d4ce23df9b172e0"]
+                  ["1c5e54849f5c711ce38fa60716fbbe44bff478f9ca250897b39cdfc2438cd1bd"]
                 ]
               }
             ]
@@ -377,10 +377,10 @@
                 "postalCode": "1245"
               },
               {
-                "email": "rohith@abc.com",
+                "email": "test@rudderstack.com",
                 "phone": "@09876543210",
-                "firstName": "rohith",
-                "lastName": "kaza",
+                "firstName": "rudderlabs",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -416,7 +416,7 @@
                 "schema": ["EMAIL_SHA256"],
                 "data": [
                   ["d3142c8f9c9129484daf28df80cc5c955791efed5e69afabb603bc8cb9ffd419"],
-                  ["445f6f4b062809de065cfbb4b56bfeedc550842887237e792d4ce23df9b172e0"]
+                  ["1c5e54849f5c711ce38fa60716fbbe44bff478f9ca250897b39cdfc2438cd1bd"]
                 ]
               }
             ]
@@ -455,10 +455,10 @@
           "listData": {
             "add": [
               {
-                "email": "rohith@abc.com",
+                "email": "test@rudderstack.com",
                 "phone": "@09876543210",
-                "firstName": "rohith",
-                "lastName": "kaza",
+                "firstName": "rudderlabs",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }
@@ -505,10 +505,10 @@
           "listData": {
             "add": [
               {
-                "email": "rohith@abc.com",
+                "email": "test@rudderstack.com",
                 "phone": "@09876543210",
-                "firstName": "rohith",
-                "lastName": "kaza",
+                "firstName": "rudderlabs",
+                "lastName": "rudderlabs",
                 "country": "US",
                 "postalCode": "1245"
               }

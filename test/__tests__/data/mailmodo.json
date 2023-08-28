@@ -450,9 +450,9 @@
         },
         "traits": {
           "email": "testabc2@abcd.com",
-          "name": "Rohith Kumar Kaza",
-          "firstName": "Rohith",
-          "lastName": "Kaza",
+          "name": "Rudder Test",
+          "firstName": "Test",
+          "lastName": "Rudderlabs",
           "age": 21,
           "phone": "9876543210",
           "address": {
@@ -482,9 +482,9 @@
               "email": "testabc2@abcd.com",
               "data": {
                 "age": 21,
-                "first_name": "Rohith",
-                "last_name": "Kaza",
-                "name": "Rohith Kumar Kaza",
+                "first_name": "Test",
+                "last_name": "Rudderlabs",
+                "name": "Rudder Test",
                 "phone": "9876543210",
                 "trait1": "new-val",
                 "city": "Vijayawada",
@@ -525,9 +525,9 @@
         },
         "traits": {
           "email": "testabc2@abcd.com",
-          "name": "Rohith Kumar Kaza",
-          "firstName": "Rohith",
-          "lastName": "Kaza",
+          "name": "Rudder Test",
+          "firstName": "Test",
+          "lastName": "Rudderlabs",
           "age": 21,
           "phone": "9876543210",
           "address": "welcome to home"
@@ -553,9 +553,9 @@
               "email": "testabc2@abcd.com",
               "data": {
                 "age": 21,
-                "first_name": "Rohith",
-                "last_name": "Kaza",
-                "name": "Rohith Kumar Kaza",
+                "first_name": "Test",
+                "last_name": "Rudderlabs",
+                "name": "Rudder Test",
                 "phone": "9876543210",
                 "trait1": "new-val",
                 "address1": "welcome to home"

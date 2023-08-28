@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.39.1](https://github.com/rudderlabs/rudder-transformer/compare/v1.39.0...v1.39.1) (2023-08-28)
+
+
+### Bug Fixes
+
+* faas pods creation failure due to caching ([9b88c30](https://github.com/rudderlabs/rudder-transformer/commit/9b88c309856698e479858cfe78a0c0166a312f47))
+
 ## [1.39.0](https://github.com/rudderlabs/rudder-transformer/compare/v1.38.0...v1.39.0) (2023-08-20)
 
 

@@ -2,7 +2,7 @@
   {
     "metadata": [
       {
-        "jobId": 2
+        "jobId": 1
       }
     ],
     "destination": {
@@ -95,7 +95,7 @@
               "Screen Height": 860,
               "Screen Width": 1280,
               "Email": "tonmoy@rudderstack.com",
-              "Name": "Tonmoy Malik"
+              "Name": "Tonmoy Labs"
             }
           },
           "XML": {},

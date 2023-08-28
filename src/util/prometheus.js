@@ -741,6 +741,12 @@ class Prometheus {
         labelNames: [],
       },
       {
+        name: 'braze_partial_failure',
+        help: 'braze_partial_failure',
+        type: 'counter',
+        labelNames: [],
+      },
+      {
         name: 'braze_deduped_users_count',
         help: 'braze deduped users count',
         type: 'counter',

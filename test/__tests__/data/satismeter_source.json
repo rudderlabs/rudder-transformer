@@ -64,7 +64,7 @@
         "score": -100,
         "user": {
           "id": "63766fbb7ac7b72676145338",
-          "name": "Anant Doe",
+          "name": "John Doe",
           "email": "john@doe.com",
           "userId": "No response",
           "deleted": false,
@@ -78,7 +78,7 @@
               "key2": "V2"
             },
             "email": "john@doe.com",
-            "name": "Anant Doe"
+            "name": "John Doe"
           }
         },
         "device": {
@@ -106,7 +106,7 @@
           "key2": "V2"
         },
         "email": "john@doe.com",
-        "name": "Anant Doe"
+        "name": "John Doe"
       },
       "campaign": {
         "id": "6373271b764986ebee62bfca",
@@ -129,7 +129,7 @@
             "key2": "V2"
           },
           "email": "john@doe.com",
-          "name": "Anant Doe",
+          "name": "John Doe",
           "userDeleted": false
         },
         "locale": "en",
@@ -285,7 +285,7 @@
         "category": "detractor",
         "score": -100,
         "user": {
-          "name": "Anant Doe",
+          "name": "John Doe",
           "email": "john@doe.com",
           "deleted": false,
           "groups": {
@@ -298,7 +298,7 @@
               "key2": "V2"
             },
             "email": "john@doe.com",
-            "name": "Anant Doe"
+            "name": "John Doe"
           }
         },
         "device": {
@@ -326,7 +326,7 @@
           "key2": "V2"
         },
         "email": "john@doe.com",
-        "name": "Anant Doe"
+        "name": "John Doe"
       },
       "campaign": {
         "id": "6373271b764986ebee62bfca",
@@ -349,7 +349,7 @@
             "key2": "V2"
           },
           "email": "john@doe.com",
-          "name": "Anant Doe",
+          "name": "John Doe",
           "userDeleted": false
         },
         "locale": "en",

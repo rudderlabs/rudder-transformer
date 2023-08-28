@@ -1191,7 +1191,7 @@
             "city": "Mathura",
             "country": "India"
           },
-          "email": "anuj.kumar@gmail.com",
+          "email": "a@gmail.com",
           "phone": "9988123321",
           "firstName": "anuj",
           "lastName": "kumar",
@@ -1258,7 +1258,7 @@
             "city": "Mathura",
             "country": "India"
           },
-          "email": "anuj.kumar@gmail.com",
+          "email": "a@gmail.com",
           "phone": "9988123321",
           "firstName": "anuj",
           "lastName": "kumar",
@@ -1477,7 +1477,7 @@
       "channel": "web",
       "context": {
         "traits": {
-          "email": "ANIL.KUMAR@HOTMAIL.COM",
+          "email": "A@HOTMAIL.COM",
           "phone": "9988123321",
           "firstName": "anil",
           "lastName": "kumar",

@@ -1751,7 +1751,7 @@ export const data = [
           {
             destination: {
               ID: '1Tdi0lpXwSVwXG1lcdP2pXHKrJ6',
-              Name: 'Titli Ganguly',
+              Name: 'Titli Test',
               DestinationDefinition: {
                 ID: '1SujZGrVEPqYmpUJcV4vSl9tfxn',
                 Name: 'MC',

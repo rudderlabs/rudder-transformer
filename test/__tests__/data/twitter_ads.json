@@ -81,7 +81,7 @@
       },
       "destination": {
         "Config": {
-          "pixelId": "5343234",
+          "pixelId": "dummyPixelId",
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK",
           "twitterAdsEventNames": [
             {
@@ -100,7 +100,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://ads-api.twitter.com/12/measurement/conversions/5343234",
+      "endpoint": "https://ads-api.twitter.com/12/measurement/conversions/dummyPixelId",
       "headers": {
         "Authorization": "OAuth oauth_consumer_key=\"qwe\", oauth_nonce=\"V1kMh028kZLLhfeYozuL0B45Pcx6LvuW\", oauth_signature=\"Di4cuoGv4PnCMMEeqfWTcqhvdwc%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1685603652\", oauth_token=\"dummyAccessToken\", oauth_version=\"1.0\"",
         "Content-Type": "application/json"
@@ -217,7 +217,7 @@
       },
       "destination": {
         "Config": {
-          "pixelId": "5343234",
+          "pixelId": "dummyPixelId",
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK",
           "twitterAdsEventNames": [
             {
@@ -281,7 +281,7 @@
         "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
         "timestamp": "2020-08-14T05:30:30.118Z",
         "properties": {
-          "pixelId": "odr324tt",
+          "pixelId": "dummyPixelId",
           "conversionTime": "2023-06-01T06:03:08.739Z",
           "eventId": "429047995",
           "tax": 2,
@@ -317,7 +317,7 @@
       },
       "destination": {
         "Config": {
-          "pixelId": "5343234",
+          "pixelId": "dummyPixelId",
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK",
           "twitterAdsEventNames": [
             {
@@ -336,7 +336,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://ads-api.twitter.com/12/measurement/conversions/odr324tt",
+      "endpoint": "https://ads-api.twitter.com/12/measurement/conversions/dummyPixelId",
       "headers": {
         "Authorization": "OAuth oauth_consumer_key=\"qwe\", oauth_nonce=\"V1kMh028kZLLhfeYozuL0B45Pcx6LvuW\", oauth_signature=\"Di4cuoGv4PnCMMEeqfWTcqhvdwc%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1685603652\", oauth_token=\"dummyAccessToken\", oauth_version=\"1.0\"",
         "Content-Type": "application/json"
@@ -409,7 +409,7 @@
         "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
         "timestamp": "2020-08-14T05:30:30.118Z",
         "properties": {
-          "pixelId": "odr324tt",
+          "pixelId": "dummyPixelId",
           "conversionTime": "2023-06-01T06:03:08.739Z",
           "tax": 2,
           "total": 27.5,
@@ -444,7 +444,7 @@
       },
       "destination": {
         "Config": {
-          "pixelId": "5343234",
+          "pixelId": "dummyPixelId",
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK",
           "twitterAdsEventNames": [
             {
@@ -500,7 +500,7 @@
         "messageId": "7208bbb6-2c4e-45bb-bf5b-ad426f3593e9",
         "timestamp": "2020-08-14T05:30:30.118Z",
         "properties": {
-          "pixelId": "odr324tt",
+          "pixelId": "dummyPixelId",
           "conversionTime": "2023-06-01T06:03:08.739Z",
           "tax": 2,
           "total": 27.5,
@@ -535,7 +535,7 @@
       },
       "destination": {
         "Config": {
-          "pixelId": "5343234",
+          "pixelId": "dummyPixelId",
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK",
           "twitterAdsEventNames": [
             {
@@ -637,7 +637,7 @@
       },
       "destination": {
         "Config": {
-          "pixelId": "5343234",
+          "pixelId": "dummyPixelId",
           "rudderAccountId": "2EOknn1JNH7WK1MfNku4fGYKkRK",
           "twitterAdsEventNames": [
             {
@@ -656,7 +656,7 @@
       "version": "1",
       "type": "REST",
       "method": "POST",
-      "endpoint": "https://ads-api.twitter.com/12/measurement/conversions/5343234",
+      "endpoint": "https://ads-api.twitter.com/12/measurement/conversions/dummyPixelId",
       "headers": {
         "Authorization": "OAuth oauth_consumer_key=\"qwe\", oauth_nonce=\"V1kMh028kZLLhfeYozuL0B45Pcx6LvuW\", oauth_signature=\"Di4cuoGv4PnCMMEeqfWTcqhvdwc%3D\", oauth_signature_method=\"HMAC-SHA1\", oauth_timestamp=\"1685603652\", oauth_token=\"dummyAccessToken\", oauth_version=\"1.0\"",
         "Content-Type": "application/json"

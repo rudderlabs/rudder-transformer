@@ -1613,7 +1613,7 @@ export const data = [
                 traits: {
                   name: 'Rudder Usr',
                   category: 'SampleIdentify',
-                  email: 'mihirb@rudderlabs.com',
+                  email: 'test@rudderlabs.com',
                   plan: 'Paid',
                   logins: 5,
                 },
@@ -1674,7 +1674,7 @@ export const data = [
                     $set: {
                       name: 'Rudder Usr',
                       category: 'SampleIdentify',
-                      email: 'mihirb@rudderlabs.com',
+                      email: 'test@rudderlabs.com',
                       plan: 'Paid',
                       logins: 5,
                     },

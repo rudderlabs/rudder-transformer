@@ -17,7 +17,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -33,7 +33,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "city": "kolkata",
             "country": "India",
@@ -104,7 +104,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "city": "kolkata",
             "country": "India",
@@ -160,7 +160,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -229,7 +229,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -245,7 +245,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "city": "kolkata",
             "country": "India",
@@ -300,7 +300,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -315,7 +315,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -355,7 +355,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -370,7 +370,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -408,7 +408,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -423,7 +423,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -461,7 +461,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -513,7 +513,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -582,7 +582,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -651,7 +651,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -673,7 +673,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -711,7 +711,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -733,7 +733,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -770,7 +770,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -828,7 +828,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -850,7 +850,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -887,7 +887,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -945,7 +945,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -967,7 +967,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -1005,7 +1005,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1026,7 +1026,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -1064,7 +1064,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1085,7 +1085,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -1123,7 +1123,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1145,7 +1145,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -1183,7 +1183,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1205,7 +1205,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -1243,7 +1243,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1259,7 +1259,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "city": "kolkata",
             "country": "India",
@@ -1314,7 +1314,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1329,7 +1329,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -1369,7 +1369,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1384,7 +1384,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -1422,7 +1422,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1437,7 +1437,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -1475,7 +1475,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1527,7 +1527,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1596,7 +1596,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1665,7 +1665,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1687,7 +1687,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -1725,7 +1725,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1783,7 +1783,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1805,7 +1805,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -1842,7 +1842,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1900,7 +1900,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1922,7 +1922,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -1960,7 +1960,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -1981,7 +1981,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -2019,7 +2019,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -2040,7 +2040,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -2078,7 +2078,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -2100,7 +2100,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -2138,7 +2138,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -2160,7 +2160,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -2198,7 +2198,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -2249,7 +2249,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -2264,7 +2264,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -2301,7 +2301,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -2352,7 +2352,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -2367,7 +2367,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -2404,13 +2404,13 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
   {
     "message": {
-      "anonymousId": "ruchira-100-anon",
+      "anonymousId": "dummy-100-anon",
       "channel": "mobile",
       "context": {
         "app": {
@@ -2463,7 +2463,7 @@
       "rudderId": "782cdb50-e2b9-45fc-9d22-07fe792dcfba",
       "sentAt": "2021-09-22T12:40:14.453Z",
       "type": "track",
-      "userId": "ruchira-user-id-100"
+      "userId": "dummy-user-id-100"
     },
     "destination": {
       "Config": {
@@ -2485,7 +2485,7 @@
         },
         "traits": {
           "anonymousId": "123456",
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "address": {
             "city": "kolkata",
             "country": "India",
@@ -2514,8 +2514,8 @@
       "type": "identify",
       "messageId": "84e26acc-56a5-4835-8233-591137fca468",
       "originalTimestamp": "2019-10-14T09:03:17.562Z",
-      "anonymousId": "ruchira-100-anon",
-      "userId": "ruchira-user-id-100",
+      "anonymousId": "dummy-100-anon",
+      "userId": "dummy-user-id-100",
       "integrations": {
         "All": true
       },
@@ -2535,7 +2535,7 @@
       "Config": {
         "datacenterEU": true,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -4293,7 +4293,7 @@
           "density": 2
         },
         "traits": {
-          "email": "test@rudderlabs.com"
+          "email": "test@rudderstack.com"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
       },
@@ -4387,7 +4387,7 @@
           "density": 2
         },
         "traits": {
-          "email": "test@rudderlabs.com"
+          "email": "test@rudderstack.com"
         },
         "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.149 Safari/537.36"
       },
@@ -4752,7 +4752,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -4791,7 +4791,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -4806,7 +4806,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -4844,7 +4844,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   },
@@ -4859,7 +4859,7 @@
           "version": "1.0.0"
         },
         "traits": {
-          "email": "sayan@gmail.com",
+          "email": "test@rudderstack.com",
           "anonymousId": "12345"
         },
         "library": {
@@ -4891,7 +4891,7 @@
       "Config": {
         "datacenterEU": false,
         "siteID": "46be54768e7d49ab2628",
-        "apiKey": "19f0f734e3bb87a44596"
+        "apiKey": "dummyApiKey"
       }
     }
   }

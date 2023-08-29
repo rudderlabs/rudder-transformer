@@ -5,7 +5,7 @@
     "method": "POST",
     "endpoint": "https://api.delighted.com/v1/people.json",
     "headers": {
-      "Authorization": "Basic b01BRU1OYjVxcGgxREFWUGZHcXJPRHFRQ0wyWU1pZUc=",
+      "Authorization": "Basic ZHVtbXlBcGlLZXk=",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -40,7 +40,7 @@
     "method": "POST",
     "params": {},
     "headers": {
-      "Authorization": "Basic b01BRU1OYjVxcGgxREFWUGZHcXJPRHFRQ0wyWU1pZUc=",
+      "Authorization": "Basic ZHVtbXlBcGlLZXk=",
       "Content-Type": "application/json"
     },
     "version": "1",
@@ -69,7 +69,7 @@
     "method": "POST",
     "params": {},
     "headers": {
-      "Authorization": "Basic b01BRU1OYjVxcGgxREFWUGZHcXJPRHFRQ0wyWU1pZUc=",
+      "Authorization": "Basic ZHVtbXlBcGlLZXk=",
       "Content-Type": "application/json"
     },
     "version": "1",
@@ -99,7 +99,7 @@
     "method": "POST",
     "endpoint": "https://api.delighted.com/v1/people.json",
     "headers": {
-      "Authorization": "Basic b01BRU1OYjVxcGgxREFWUGZHcXJPRHFRQ0wyWU1pZUc=",
+      "Authorization": "Basic ZHVtbXlBcGlLZXk=",
       "Content-Type": "application/json"
     },
     "params": {},

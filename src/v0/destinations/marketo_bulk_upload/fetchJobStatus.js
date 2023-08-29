@@ -158,7 +158,6 @@ if (Object.keys(unsuccessfulJobInfo).length === 0 ){
       SucceededKeys,
     },
   };
-  console.log('job status response', response);
   return removeUndefinedValues(response);
 };
 

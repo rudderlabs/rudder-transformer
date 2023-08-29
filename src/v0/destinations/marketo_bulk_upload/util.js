@@ -333,6 +333,83 @@ const handleFileUploadResponse = (resp, successfulJobs, unsuccessfulJobs, reques
   return { importId, successfulJobs, unsuccessfulJobs };
 };
 
+/**
+ * Retrieves the field schema mapping for a given access token and munchkin ID from the Marketo API.
+ * 
+ * @param {string} accessToken - The access token used to authenticate the API request.
+ * @param {string} munchkinId - The munchkin ID of the Marketo instance.
+ * @returns {object} - The field schema mapping retrieved from the Marketo API.
+ */
+const getFieldSchema = async (accessToken, munchkinId) => {
+    // ref: https://developers.marketo.com/rest-api/endpoint-reference/endpoint-index/#:~:text=Describe%20Lead2,leads/describe2.json
+    const { processedResponse: fieldSchemaMapping } = await handleHttpRequest(
+      'get',
+      `https://${munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
+      {
+        params: {
+          access_token: accessToken,
+        },
+      },
+      {
+        destType: 'marketo_bulk_upload',
+        feature: 'transformation',
+      },
+    );
+  
+    if (fieldSchemaMapping.response.errors) {
+      handleCommonErrorResponse(fieldSchemaMapping);
+    }
+    return fieldSchemaMapping
+}
+
+/**
+ * Compares the data types of the fields in an event message with the expected data types defined in the field schema mapping.
+ * Identifies any mismatched fields and returns them as a map of job IDs and the corresponding invalid fields.
+ *
+ * @param {object} event - An object containing an `input` array of events. Each event has a `message` object with field-value pairs and a `metadata` object with a `job_id` property.
+ * @param {object} fieldSchemaMapping - An object containing the field schema mapping, which includes the expected data types for each field.
+ * @returns {object} - An object containing the job IDs as keys and the corresponding invalid fields as values.
+ */
+const checkEventStatusViaSchemaMatching = (event, fieldSchemaMapping) => {
+  let fieldArr = [];
+  const fieldMap = {}; // map to store field name and data type
+  if (
+    fieldSchemaMapping.response?.success &&
+    fieldSchemaMapping.response?.result.length > 0 &&
+    fieldSchemaMapping.response?.result[0]
+  ) {
+    fieldArr =
+      fieldSchemaMapping.response.result && Array.isArray(fieldSchemaMapping.response.result)
+        ? fieldSchemaMapping.response.result[0]?.fields
+        : [];
+
+    fieldArr.forEach((field) => {
+      fieldMap[field?.name] = field?.dataType;
+    });
+  }
+  const mismatchedFields = {};
+  const events = event.input;
+  events.forEach((event) => {
+    const { message, metadata } = event;
+    const { job_id } = metadata;
+
+    Object.entries(message).forEach(([paramName, paramValue]) => {
+      let expectedDataType = fieldMap[paramName];
+      const actualDataType = typeof paramValue;
+
+      // If expectedDataType is not one of the primitive data types, treat it as a string
+      if (!['string', 'number', 'boolean', 'undefined'].includes(expectedDataType)) {
+        expectedDataType = 'string';
+      }
+
+      if (!mismatchedFields[job_id] && actualDataType !== expectedDataType) {
+        mismatchedFields[job_id] = `invalid ${paramName}`;
+      }
+    });
+  });
+  return mismatchedFields;
+};
+
 module.exports = {
   getAccessToken,
   handlePollResponse,
@@ -340,4 +417,6 @@ module.exports = {
   handleFileUploadResponse,
   getMarketoFilePath,
   handleCommonErrorResponse,
+  getFieldSchema,
+  checkEventStatusViaSchemaMatching
 };

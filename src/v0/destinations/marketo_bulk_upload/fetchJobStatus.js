@@ -6,15 +6,14 @@ const { handleHttpRequest } = require('../../../adapters/network');
 const { AbortedError, PlatformError, UnauthorizedError } = require('../../util/errorTypes');
 const stats = require('../../../util/stats');
 const { JSON_MIME_TYPE } = require('../../util/constant');
-const { handleFetchJobStatusResponse } = require('./util');
+const { handleFetchJobStatusResponse, getFieldSchema, checkEventStatusViaSchemaMatching } = require('./util');
 const { removeUndefinedValues } = require('../../util');
 
 const FETCH_FAILURE_JOB_STATUS_ERR_MSG = 'Could not fetch failure job status';
 const FETCH_WARNING_JOB_STATUS_ERR_MSG = 'Could not fetch warning job status';
 
-const getJobsStatus = async (event, type) => {
+const getJobsStatus = async (event, type, accessToken) => {
   const { config, importId } = event;
-  const accessToken = await getAccessToken(config);
   // If token is null
   if (!accessToken) {
     throw new UnauthorizedError('Authorization failed');
@@ -70,6 +69,12 @@ const getJobsStatus = async (event, type) => {
 const responseHandler = async (event, type) => {
   let FailedKeys = [];
   let WarningKeys = [];
+  let unsuccessfulJobIdsArr = [];
+  let successfulJobIdsArr = [];
+  let reasons = {};
+
+  const { config } = event;
+  const accessToken = await getAccessToken(config);
 
   /**
    * {
@@ -88,7 +93,7 @@ const responseHandler = async (event, type) => {
    */
 
   const responseStatus =
-    type === 'fail' ? await getJobsStatus(event, 'fail') : await getJobsStatus(event, 'warn');
+    type === 'fail' ? await getJobsStatus(event, 'fail', accessToken) : await getJobsStatus(event, 'warn', accessToken);
   const responseArr = responseStatus.toString().split('\n'); // responseArr = ['field1,field2,Import Failure Reason', 'val1,val2,reason',...]
   const { input, metadata } = event;
   let headerArr;
@@ -97,38 +102,43 @@ const responseHandler = async (event, type) => {
   } else {
     throw new PlatformError('No csvHeader in metadata');
   }
+  const startTime = Date.now();
   const data = {};
   // create a map of job_id and data sent from server
   // {<jobId>: '<param-val1>,<param-val2>'}
-  input.forEach((i) => {
-    const response = headerArr.map((fieldName) => Object.values(i)[0][fieldName]).join(',');
-    data[i.metadata.job_id] = response;
-  });
-  const unsuccessfulJobIdsArr = [];
-  const reasons = {};
-  const startTime = Date.now();
-  // match marketo response data with received data from server
-  for (const element of responseArr) {
-    // split response by comma but ignore commas inside double quotes
-    const elemArr = element.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
-    // ref :
-    // https://developers.marketo.com/rest-api/bulk-import/bulk-custom-object-import/#:~:text=Now%20we%E2%80%99ll%20make%20Get%20Import%20Custom%20Object%20Failures%20endpoint%20call%20to%20get%20additional%20failure%20detail%3A
-    const reasonMessage = elemArr.pop(); // get the column named "Import Failure Reason"
+input.forEach((i) => {
+  const response = headerArr.map((fieldName) => Object.values(i)[0][fieldName]).join(',');
+  data[i.metadata.job_id] = response;
+});
+  const fieldSchemaMapping = await getFieldSchema(accessToken, config.munchkinId)
+  const unsuccessfulJobInfo = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping)
 
-    for (const [key, val] of Object.entries(data)) {
-      // joining the parameter values sent from marketo match it with received data from server
-      if (val === `${elemArr.join()}`) {
-        // add job keys if warning/failure
-        if (!unsuccessfulJobIdsArr.includes(key)) {
-          unsuccessfulJobIdsArr.push(key);
+if (Object.keys(unsuccessfulJobInfo).length === 0 ){
+    // match marketo response data with received data from server
+    for (const element of responseArr) {
+      // split response by comma but ignore commas inside double quotes
+      const elemArr = element.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+      // ref :
+      // https://developers.marketo.com/rest-api/bulk-import/bulk-custom-object-import/#:~:text=Now%20we%E2%80%99ll%20make%20Get%20Import%20Custom%20Object%20Failures%20endpoint%20call%20to%20get%20additional%20failure%20detail%3A
+      const reasonMessage = elemArr.pop(); // get the column named "Import Failure Reason"
+      // fetchFieldSchema
+      for (const [key, val] of Object.entries(data)) {
+        // joining the parameter values sent from marketo match it with received data from server
+        if (val === `${elemArr.map(item => item.replace(/"/g, '')).join(',')}`) {
+          // add job keys if warning/failure
+          if (!unsuccessfulJobIdsArr.includes(key)) { 
+            unsuccessfulJobIdsArr.push(key);
+          }
+          reasons[key] = reasonMessage;
         }
-        reasons[key] = reasonMessage;
       }
     }
-  }
+} else {
+  unsuccessfulJobIdsArr = Object.keys(unsuccessfulJobInfo)
+  reasons = {...unsuccessfulJobInfo}
+}
 
-  const successfulJobIdsArr = Object.keys(data).filter((x) => !unsuccessfulJobIdsArr.includes(x));
-
+ successfulJobIdsArr = Object.keys(data).filter((x) => !unsuccessfulJobIdsArr.includes(x));
   if (type === 'fail') {
     FailedKeys = unsuccessfulJobIdsArr.map((strJobId) => parseInt(strJobId, 10));
   } else if (type === 'warn') {
@@ -148,11 +158,11 @@ const responseHandler = async (event, type) => {
       SucceededKeys,
     },
   };
+  console.log('job status response', response);
   return removeUndefinedValues(response);
 };
 
 const processJobStatus = async (event, type) => {
-  console.log('Processing job status');
   const resp = await responseHandler(event, type);
   return resp;
 };

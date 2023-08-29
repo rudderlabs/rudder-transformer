@@ -5,7 +5,7 @@ const {
   getAccessToken,
   getMarketoFilePath,
   handleFileUploadResponse,
-  handleCommonErrorResponse,
+  getFieldSchema
 } = require('./util');
 const { isHttpStatusSuccess } = require('../../util');
 const { MARKETO_FILE_SIZE, UPLOAD_FILE } = require('./config');
@@ -28,24 +28,8 @@ const stats = require('../../../util/stats');
 const fetchFieldSchema = async (config, accessToken) => {
   let fieldArr = [];
   const fieldSchemaNames = [];
-  // ref: https://developers.marketo.com/rest-api/endpoint-reference/endpoint-index/#:~:text=Describe%20Lead2,leads/describe2.json
-  const { processedResponse: fieldSchemaMapping } = await handleHttpRequest(
-    'get',
-    `https://${config.munchkinId}.mktorest.com/rest/v1/leads/describe2.json`,
-    {
-      params: {
-        access_token: accessToken,
-      },
-    },
-    {
-      destType: 'marketo_bulk_upload',
-      feature: 'transformation',
-    },
-  );
-
-  if (fieldSchemaMapping.response.errors) {
-    handleCommonErrorResponse(fieldSchemaMapping);
-  } else if (
+  const fieldSchemaMapping = await getFieldSchema(accessToken, config.munchkinId)
+   if (
     fieldSchemaMapping.response?.success &&
     fieldSchemaMapping.response?.result.length > 0 &&
     fieldSchemaMapping.response?.result[0]
@@ -304,6 +288,7 @@ const responseHandler = async (input, config) => {
 const processFileData = async (event) => {
   const { input, config } = event;
   const resp = await responseHandler(input, config);
+  console.log('upload resp: ', resp);
   return resp;
 };
 

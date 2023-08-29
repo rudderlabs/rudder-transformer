@@ -7,7 +7,6 @@ const { JSON_MIME_TYPE } = require('../../util/constant');
 const { POLL_ACTIVITY } = require('./config');
 
 const getPollStatus = async (event) => {
-  // TODO fetch from cache
   const accessToken = await getAccessToken(event.config);
 
   // If token is null

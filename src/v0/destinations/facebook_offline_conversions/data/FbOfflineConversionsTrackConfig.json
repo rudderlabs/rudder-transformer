@@ -44,13 +44,31 @@
     "sourceFromGenericMap": true
   },
   {
+    "destKey": "em",
+    "sourceKeys": "email",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
     "destKey": "phone",
     "sourceKeys": "phone",
     "required": false,
     "sourceFromGenericMap": true
   },
   {
+    "destKey": "ph",
+    "sourceKeys": "phone",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
     "destKey": "gen",
+    "sourceKeys": "gender",
+    "required": false,
+    "sourceFromGenericMap": true
+  },
+  {
+    "destKey": "ge",
     "sourceKeys": "gender",
     "required": false,
     "sourceFromGenericMap": true
@@ -98,6 +116,12 @@
   },
   {
     "destKey": "zip",
+    "sourceKeys": "zipcode",
+    "sourceFromGenericMap": true,
+    "required": false
+  },
+  {
+    "destKey": "zp",
     "sourceKeys": "zipcode",
     "sourceFromGenericMap": true,
     "required": false

@@ -21,6 +21,7 @@ const {
   TRACK_EXCLUSION_FIELDS,
   eventToStandardMapping,
   MATCH_KEY_FIELD_TYPE_DICTIONARY,
+  USER_DATA_FIELD_TYPE_DICTIONARY,
 } = require('./config');
 const { ConfigurationError } = require('../../util/errorTypes');
 
@@ -75,7 +76,7 @@ const prepareUrls = (destination, data, ids, payload) => {
   const encodedData = `%5B${encodeURIComponent(JSON.stringify(first))}%5D`;
   const accessToken = getAccessToken(destination);
   ids.forEach((id) => {
-    const endpoint = ENDPOINT.replace('OFFLINE_EVENT_SET_ID', id);
+    const endpoint = ENDPOINT(destination.Config.appVersion).replace('OFFLINE_EVENT_SET_ID', id);
     urls.push(
       `${endpoint}?upload_tag=${uploadTags}&data=${encodedData}&access_token=${accessToken}`,
     );
@@ -150,6 +151,39 @@ const getStandardEvents = (eventsMapping, event) => {
   }
 
   return standardEvents;
+};
+
+const prepareUserData = (payload, message) => {
+  const data = {};
+
+  const propertyMapping = payload;
+
+  propertyMapping.fbc = propertyMapping.fbc || deduceFbcParam(message);
+  if (!propertyMapping.fbc) {
+    delete propertyMapping.fbc;
+  }
+
+  if (propertyMapping.birthday) {
+    const { birthday } = propertyMapping;
+    const dob = new Date(birthday);
+    data.db = dob.getFullYear().toString();
+    data.db = data.db.concat((dob.getMonth() + 1).toString());
+    data.db = data.db.concat(dob.getDate().toString());
+    delete propertyMapping.birthday;
+  }
+
+  const keys = Object.keys(propertyMapping);
+  const userDataFields = Object.keys(USER_DATA_FIELD_TYPE_DICTIONARY);
+  keys.forEach((key) => {
+    if (userDataFields.includes(key)) {
+      if (USER_DATA_FIELD_TYPE_DICTIONARY[key] === 'string') {
+        data[key] = propertyMapping[key];
+      } else {
+        data[key] = [propertyMapping[key]];
+      }
+    }
+  });
+  return data;
 };
 
 /**
@@ -334,7 +368,7 @@ const getActionSource = (payload) => {
  */
 const prepareData = (payload, message, destination) => {
   const { Config } = destination;
-  const { limitedDataUSage, valueFieldIdentifier } = Config;
+  const { limitedDataUSage, valueFieldIdentifier, appVersion } = Config;
 
   const data = {
     match_keys: prepareMatchKeys(payload, message),
@@ -361,6 +395,11 @@ const prepareData = (payload, message, destination) => {
         data.data_processing_options_state,
       ] = dataProcessingOptions;
     }
+  }
+
+  if (appVersion === 'v17') {
+    data.user_data = prepareUserData(payload, message);
+    delete data.match_keys;
   }
 
   return [removeUndefinedAndNullValues(data)];

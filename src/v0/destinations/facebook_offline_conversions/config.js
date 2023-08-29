@@ -1,6 +1,6 @@
 const { getMappingConfig } = require('../../util');
 
-const ENDPOINT = 'https://graph.facebook.com/v16.0/OFFLINE_EVENT_SET_ID/events';
+const ENDPOINT = (version) => version === 'v17.0' ? 'https://graph.facebook.com/v17.0/OFFLINE_EVENT_SET_ID/events' : 'https://graph.facebook.com/v16.0/OFFLINE_EVENT_SET_ID/events';
 
 const CONFIG_CATEGORIES = {
   OFFLINE_EVENTS: {
@@ -22,6 +22,25 @@ const MATCH_KEY_FIELD_TYPE_DICTIONARY = {
   dobm: 'string',
   doby: 'string',
   dobd: 'string',
+  ct: 'string',
+  madid: 'string',
+  country: 'string',
+  extern_id: 'string',
+  lead_id: 'string',
+  fbc: 'string',
+  fbp: 'string',
+  client_user_agent: 'string',
+};
+
+const USER_DATA_FIELD_TYPE_DICTIONARY = {
+  em: 'array',
+  ph: 'array',
+  st: 'array',
+  zp: 'array',
+  ge: 'string',
+  ln: 'string',
+  fn: 'string',
+  db: 'string',
   ct: 'string',
   madid: 'string',
   country: 'string',
@@ -92,5 +111,6 @@ module.exports = {
   TRACK_EXCLUSION_FIELDS,
   eventToStandardMapping,
   MATCH_KEY_FIELD_TYPE_DICTIONARY,
+  USER_DATA_FIELD_TYPE_DICTIONARY,
   DESTINATION: 'FACEBOOK_OFFLINE_CONVERSIONS',
 };

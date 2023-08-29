@@ -288,7 +288,6 @@ const responseHandler = async (input, config) => {
 const processFileData = async (event) => {
   const { input, config } = event;
   const resp = await responseHandler(input, config);
-  console.log('upload resp: ', resp);
   return resp;
 };
 

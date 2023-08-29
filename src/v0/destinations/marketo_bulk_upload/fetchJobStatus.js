@@ -113,7 +113,7 @@ input.forEach((i) => {
   const fieldSchemaMapping = await getFieldSchema(accessToken, config.munchkinId)
   const unsuccessfulJobInfo = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping)
 
-if (Object.keys(unsuccessfulJobInfo).length === 0 ){
+if (Object.keys(unsuccessfulJobInfo).length === 0 || type === 'fail' ){
     // match marketo response data with received data from server
     for (const element of responseArr) {
       // split response by comma but ignore commas inside double quotes

@@ -21,7 +21,7 @@ steps:
       $.assertConfig(.destination.Config.accessToken, "Access Token is not present. Aborting");
       $.assertConfig(.destination.Config.clientSideId, "Launch Darkly Client Side is not present. Aborting");
       $.assert(.message.type, "Message Type is not present. Aborting message.");
-      $.assert(.message.type.toLowerCase() === $.AUDIENCE_LIST, "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
+      $.assert(.message.type.toLowerCase() === $.SUPPORTED_MESSAGE_TYPE, "Event type " + .message.type.toLowerCase() + " is not supported. Aborting message.");
       $.assert(.message.properties, "Message properties is not present. Aborting message.");
       $.assert(.message.properties.listData, "listData is not present inside properties. Aborting message.");
       $.assert($.containsAll(Object.keys(.message.properties.listData), $.ACTION_TYPES), "Unsupported action type. Aborting message.")
@@ -29,11 +29,14 @@ steps:
 
   - name: preparePayload
     template: |
-      const payload = {environmentId: .destination.Config.clientSideId, cohortId: .destination.Config.audienceId, cohortName: .destination.Config.audienceName, cohortUrl: .destination.Config.audienceUrl};
-      const listData = $.prepareIdentifiersList(.message.properties.listData, .destination.Config.identifier);
-      payload.listData = listData;
-      console.log(JSON.stringify(payload));
-      payload
+      const payload = {
+        environmentId: .destination.Config.clientSideId, 
+        cohortId: .destination.Config.audienceId, 
+        cohortName: .destination.Config.audienceName, 
+        cohortUrl: .destination.Config.audienceUrl
+      };
+      payload.listData = $.prepareIdentifiersList(.message.properties.listData, .destination.Config.identifier);
+      payload;
 
   - name: buildResponseForProcessTransformation
     description: build response

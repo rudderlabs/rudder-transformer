@@ -43,14 +43,22 @@ const networkClientConfigs = {
   httpsAgent: new https.Agent({ keepAlive: true }),
 };
 
-const fireLatencyStat = (startTime, statTags) => {
+const fireHTTPStats = (clientResponse, startTime, statTags) => {
   const destType = statTags.destType ? statTags.destType : '';
   const feature = statTags.feature ? statTags.feature : '';
   const endpointPath = statTags.endpointPath ? statTags.endpointPath : '';
+  const statusCode = clientResponse.success ? clientResponse.response.status : '';
   stats.timing('outgoing_request_latency', startTime, {
     feature,
     destType,
     endpointPath,
+  });
+  stats.counter('outgoing_request_count', 1, {
+    feature,
+    destType,
+    endpointPath,
+    success: clientResponse.success,
+    statusCode,
   });
 };
 
@@ -82,7 +90,7 @@ const httpSend = async (options, statTags = {}) => {
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    fireLatencyStat(startTime, statTags);
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
   return clientResponse;
 };
@@ -107,7 +115,7 @@ const httpGET = async (url, options, statTags = {}) => {
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    fireLatencyStat(startTime, statTags);
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
   return clientResponse;
 };
@@ -132,7 +140,7 @@ const httpDELETE = async (url, options, statTags = {}) => {
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    fireLatencyStat(startTime, statTags);
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
   return clientResponse;
 };
@@ -158,7 +166,7 @@ const httpPOST = async (url, data, options, statTags = {}) => {
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    fireLatencyStat(startTime, statTags);
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
   return clientResponse;
 };
@@ -184,7 +192,7 @@ const httpPUT = async (url, data, options, statTags = {}) => {
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    fireLatencyStat(startTime, statTags);
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
   return clientResponse;
 };
@@ -210,7 +218,7 @@ const httpPATCH = async (url, data, options, statTags = {}) => {
   } catch (err) {
     clientResponse = { success: false, response: err };
   } finally {
-    fireLatencyStat(startTime, statTags);
+    fireHTTPStats(clientResponse, startTime, statTags);
   }
   return clientResponse;
 };

@@ -6,14 +6,14 @@
     "endpoint": "https://api.kustomerapp.com/v1/customers",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
       "JSON": {
-        "name": "Utsab Chowdhury",
-        "externalId": "utsabc",
-        "username": "utsabc47",
+        "name": "Test Rudderlabs",
+        "externalId": "Testc",
+        "username": "Testc47",
         "company": "Rudderstack",
         "signedUpAt": "2015-04-17T12:37:42.146Z",
         "lastActivityAt": "2016-04-17T12:37:42.146Z",
@@ -28,22 +28,22 @@
             "verified": true,
             "userid": "100",
             "type": "twitter",
-            "username": "@utsabc",
-            "url": "http://twitter.com/utsabc"
+            "username": "@Testc",
+            "url": "http://twitter.com/Testc"
           },
           {
             "verified": false,
             "userid": "200",
             "type": "facebook",
-            "username": "utsabc",
-            "url": "http://facebook.com/utsabc"
+            "username": "Testc",
+            "url": "http://facebook.com/Testc"
           }
         ],
         "birthdayAt": "2005-01-01T23:28:56.782Z",
         "emails": [
           {
             "type": "home",
-            "email": "utsab@rudderstack.com"
+            "email": "test@rudderstack.com"
           }
         ],
         "phones": [
@@ -77,7 +77,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/customers/58210c3db0f09110006b7953?replace=false",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -112,13 +112,13 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
       "JSON": {
         "identity": {
-          "externalId": "utsabc"
+          "externalId": "Testc"
         },
         "event": {
           "name": "Screen-Viewed-Test-Event-Screen",
@@ -142,7 +142,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -177,7 +177,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -213,7 +213,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -244,7 +244,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -275,7 +275,7 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
@@ -309,13 +309,13 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
       "JSON": {
         "identity": {
-          "externalId": "utsabc"
+          "externalId": "Testc"
         },
         "event": {
           "name": "Screen-Viewed",
@@ -339,14 +339,14 @@
     "endpoint": "https://api.kustomerapp.com/v1/customers",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
       "JSON": {
-        "name": "Utsab Chowdhury",
-        "externalId": "utsabc",
-        "username": "utsabc47",
+        "name": "Test Rudderlabs",
+        "externalId": "Testc",
+        "username": "Testc47",
         "company": "Rudderstack",
         "signedUpAt": "2015-04-17T12:37:42.146Z",
         "lastActivityAt": "2016-04-17T12:37:42.146Z",
@@ -361,22 +361,22 @@
             "verified": true,
             "userid": "100",
             "type": "twitter",
-            "username": "@utsabc",
-            "url": "http://twitter.com/utsabc"
+            "username": "@Testc",
+            "url": "http://twitter.com/Testc"
           },
           {
             "verified": false,
             "userid": "200",
             "type": "facebook",
-            "username": "utsabc",
-            "url": "http://facebook.com/utsabc"
+            "username": "Testc",
+            "url": "http://facebook.com/Testc"
           }
         ],
         "birthdayAt": "2005-01-01T23:28:56.782Z",
         "emails": [
           {
             "type": "home",
-            "email": "utsab@rudderstack.com"
+            "email": "test@rudderstack.com"
           }
         ],
         "phones": [
@@ -410,14 +410,14 @@
     "endpoint": "https://api.kustomerapp.com/v1/customers",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
       "JSON": {
-        "name": "Utsab Chowdhury",
-        "externalId": "utsabc",
-        "username": "utsabc47",
+        "name": "Test Rudderlabs",
+        "externalId": "Testc",
+        "username": "Testc47",
         "company": "Rudderstack",
         "signedUpAt": "2015-04-17T12:37:42.146Z",
         "lastActivityAt": "2016-04-17T12:37:42.146Z",
@@ -432,22 +432,22 @@
             "verified": true,
             "userid": "100",
             "type": "twitter",
-            "username": "@utsabc",
-            "url": "http://twitter.com/utsabc"
+            "username": "@Testc",
+            "url": "http://twitter.com/Testc"
           },
           {
             "verified": false,
             "userid": "200",
             "type": "facebook",
-            "username": "utsabc",
-            "url": "http://facebook.com/utsabc"
+            "username": "Testc",
+            "url": "http://facebook.com/Testc"
           }
         ],
         "birthdayAt": "2005-01-01T23:28:56.782Z",
         "emails": [
           {
             "type": "home",
-            "email": "utsab@rudderstack.com"
+            "email": "test@rudderstack.com"
           }
         ],
         "phones": [
@@ -481,14 +481,14 @@
     "endpoint": "https://api.kustomerapp.com/v1/customers/abcd1234?replace=false",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
       "JSON": {
-        "name": "Utsab Chowdhury",
-        "externalId": "utsabc",
-        "username": "utsabc47",
+        "name": "Test Rudderlabs",
+        "externalId": "Testc",
+        "username": "Testc47",
         "company": "Rudderstack",
         "signedUpAt": "2015-04-17T12:37:42.146Z",
         "lastActivityAt": "2016-04-17T12:37:42.146Z",
@@ -503,22 +503,22 @@
             "verified": true,
             "userid": "100",
             "type": "twitter",
-            "username": "@utsabc",
-            "url": "http://twitter.com/utsabc"
+            "username": "@Testc",
+            "url": "http://twitter.com/Testc"
           },
           {
             "verified": false,
             "userid": "200",
             "type": "facebook",
-            "username": "utsabc",
-            "url": "http://facebook.com/utsabc"
+            "username": "Testc",
+            "url": "http://facebook.com/Testc"
           }
         ],
         "birthdayAt": "2005-01-01T23:28:56.782Z",
         "emails": [
           {
             "type": "home",
-            "email": "utsab@rudderstack.com"
+            "email": "test@rudderstack.com"
           }
         ],
         "phones": [
@@ -552,13 +552,13 @@
     "endpoint": "https://api.kustomerapp.com/v1/tracking/identityEvent",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Bearer WJqij952gdy251"
+      "Authorization": "Bearer dummyApiKey"
     },
     "params": {},
     "body": {
       "JSON": {
         "identity": {
-          "externalId": "utsabc"
+          "externalId": "Testc"
         },
         "event": {
           "name": "Screen-Viewed",

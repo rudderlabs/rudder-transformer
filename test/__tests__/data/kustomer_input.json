@@ -2,13 +2,13 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
       "type": "identify",
       "sentAt": "2021-01-03T17:02:53.195Z",
-      "userId": "utsabc",
+      "userId": "Testc",
       "channel": "web",
       "context": {
         "os": { "name": "", "version": "" },
@@ -19,18 +19,18 @@
           "namespace": "com.rudderlabs.javascript"
         },
         "traits": {
-          "name": "Utsab Chowdhury",
-          "email": "utsab@rudderstack.com",
+          "name": "Test Rudderlabs",
+          "email": "test@rudderstack.com",
           "phone": "+12345578900",
           "birthday": "2005-01-01T23:28:56.782Z",
-          "userId": "utsabc",
+          "userId": "Testc",
           "address": {
             "street": "24 Dovers Lane",
             "city": "Miami",
             "state": "Florida",
             "postalCode": "1890001"
           },
-          "userName": "utsabc47",
+          "userName": "Testc47",
           "company": "Rudderstack",
           "createdAt": "2015-04-17T12:37:42.146Z",
           "lastActivityAt": "2016-04-17T12:37:42.146Z",
@@ -45,15 +45,15 @@
               "verified": true,
               "userid": "100",
               "type": "twitter",
-              "username": "@utsabc",
-              "url": "http://twitter.com/utsabc"
+              "username": "@Testc",
+              "url": "http://twitter.com/Testc"
             },
             {
               "verified": false,
               "userid": "200",
               "type": "facebook",
-              "username": "utsabc",
-              "url": "http://facebook.com/utsabc"
+              "username": "Testc",
+              "url": "http://facebook.com/Testc"
             }
           ]
         },
@@ -73,7 +73,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -112,14 +112,14 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
       "type": "screen",
       "event": "Test-Event-Screen",
       "sentAt": "2021-01-25T16:12:02.048Z",
-      "userId": "utsabc",
+      "userId": "Testc",
       "channel": "mobile",
       "context": {
         "os": {
@@ -175,7 +175,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -231,7 +231,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -287,7 +287,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -334,7 +334,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
@@ -380,7 +380,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyApiKey",
         "genericPage": true
       }
     },
@@ -430,7 +430,7 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyApiKey",
         "genericScreen": true
       }
     },
@@ -438,7 +438,7 @@
       "type": "screen",
       "event": "Test-Event-Screen",
       "sentAt": "2021-01-25T16:12:02.048Z",
-      "userId": "utsabc",
+      "userId": "Testc",
       "channel": "mobile",
       "context": {
         "os": {
@@ -494,13 +494,13 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
       "type": "identify",
       "sentAt": "2021-01-03T17:02:53.195Z",
-      "userId": "utsabc",
+      "userId": "Testc",
       "channel": "web",
       "context": {
         "os": { "name": "", "version": "" },
@@ -511,19 +511,19 @@
           "namespace": "com.rudderlabs.javascript"
         },
         "traits": {
-          "firstName": "Utsab",
-          "lastName": "Chowdhury",
-          "email": "utsab@rudderstack.com",
+          "firstName": "Test",
+          "lastName": "Rudderlabs",
+          "email": "test@rudderstack.com",
           "phone": "+12345578900",
           "birthday": "2005-01-01T23:28:56.782Z",
-          "userId": "utsabc",
+          "userId": "Testc",
           "address": {
             "street": "24 Dovers Lane",
             "city": "Miami",
             "state": "Florida",
             "postalCode": "1890001"
           },
-          "userName": "utsabc47",
+          "userName": "Testc47",
           "company": "Rudderstack",
           "createdAt": "2015-04-17T12:37:42.146Z",
           "lastActivityAt": "2016-04-17T12:37:42.146Z",
@@ -538,15 +538,15 @@
               "verified": true,
               "userid": "100",
               "type": "twitter",
-              "username": "@utsabc",
-              "url": "http://twitter.com/utsabc"
+              "username": "@Testc",
+              "url": "http://twitter.com/Testc"
             },
             {
               "verified": false,
               "userid": "200",
               "type": "facebook",
-              "username": "utsabc",
-              "url": "http://facebook.com/utsabc"
+              "username": "Testc",
+              "url": "http://facebook.com/Testc"
             }
           ]
         },
@@ -566,13 +566,13 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
       "type": "identify",
       "sentAt": "2021-01-03T17:02:53.195Z",
-      "userId": "utsabc",
+      "userId": "Testc",
       "channel": "web",
       "context": {
         "os": { "name": "", "version": "" },
@@ -583,12 +583,12 @@
           "namespace": "com.rudderlabs.javascript"
         },
         "traits": {
-          "firstName": "Utsab",
-          "lastName": "Chowdhury",
+          "firstName": "Test",
+          "lastName": "Rudderlabs",
           "emails": [
             {
               "type": "home",
-              "email": "utsab@rudderstack.com"
+              "email": "test@rudderstack.com"
             }
           ],
           "phones": [
@@ -598,9 +598,9 @@
             }
           ],
           "birthday": "2005-01-01T23:28:56.782Z",
-          "userId": "utsabc",
+          "userId": "Testc",
           "address": "test address string",
-          "userName": "utsabc47",
+          "userName": "Testc47",
           "company": "Rudderstack",
           "createdAt": "2015-04-17T12:37:42.146Z",
           "lastActivityAt": "2016-04-17T12:37:42.146Z",
@@ -615,15 +615,15 @@
               "verified": true,
               "userid": "100",
               "type": "twitter",
-              "username": "@utsabc",
-              "url": "http://twitter.com/utsabc"
+              "username": "@Testc",
+              "url": "http://twitter.com/Testc"
             },
             {
               "verified": false,
               "userid": "200",
               "type": "facebook",
-              "username": "utsabc",
-              "url": "http://facebook.com/utsabc"
+              "username": "Testc",
+              "url": "http://facebook.com/Testc"
             }
           ]
         },
@@ -643,13 +643,13 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251"
+        "apiKey": "dummyApiKey"
       }
     },
     "message": {
       "type": "identify",
       "sentAt": "2021-01-03T17:02:53.195Z",
-      "userId": "utsabc",
+      "userId": "Testc",
       "channel": "web",
       "context": {
         "os": { "name": "", "version": "" },
@@ -660,12 +660,12 @@
           "namespace": "com.rudderlabs.javascript"
         },
         "traits": {
-          "firstName": "Utsab",
-          "lastName": "Chowdhury",
+          "firstName": "Test",
+          "lastName": "Rudderlabs",
           "emails": [
             {
               "type": "home",
-              "email": "utsab@rudderstack.com"
+              "email": "test@rudderstack.com"
             }
           ],
           "phones": [
@@ -675,9 +675,9 @@
             }
           ],
           "birthday": "2005-01-01T23:28:56.782Z",
-          "userId": "utsabc",
+          "userId": "Testc",
           "address": "test address string",
-          "userName": "utsabc47",
+          "userName": "Testc47",
           "company": "Rudderstack",
           "createdAt": "2015-04-17T12:37:42.146Z",
           "lastActivityAt": "2016-04-17T12:37:42.146Z",
@@ -692,15 +692,15 @@
               "verified": true,
               "userid": "100",
               "type": "twitter",
-              "username": "@utsabc",
-              "url": "http://twitter.com/utsabc"
+              "username": "@Testc",
+              "url": "http://twitter.com/Testc"
             },
             {
               "verified": false,
               "userid": "200",
               "type": "facebook",
-              "username": "utsabc",
-              "url": "http://facebook.com/utsabc"
+              "username": "Testc",
+              "url": "http://facebook.com/Testc"
             }
           ]
         },
@@ -726,14 +726,14 @@
   {
     "destination": {
       "Config": {
-        "apiKey": "WJqij952gdy251",
+        "apiKey": "dummyApiKey",
         "genericScreen": true
       }
     },
     "message": {
       "type": "screen",
       "event": "Test-Event-Screen",
-      "userId": "utsabc",
+      "userId": "Testc",
       "channel": "mobile",
       "context": {
         "os": {

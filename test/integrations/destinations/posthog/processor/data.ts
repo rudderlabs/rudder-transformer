@@ -295,7 +295,7 @@ export const data = [
                 traits: {
                   name: 'Shehan Study',
                   category: 'SampleIdentify',
-                  email: 'c@rudderlabs.com',
+                  email: 'test@rudderstack.com',
                   plan: 'Open source',
                   logins: 5,
                   createdAt: 1599264000,
@@ -387,7 +387,7 @@ export const data = [
                     $set: {
                       name: 'Shehan Study',
                       category: 'SampleIdentify',
-                      email: 'c@rudderlabs.com',
+                      email: 'test@rudderstack.com',
                       plan: 'Open source',
                       logins: 5,
                       createdAt: 1599264000,
@@ -508,7 +508,7 @@ export const data = [
                   age: '30',
                   name: 'User_id_identify',
                   email: 'identify@test.com',
-                  phone: '9112340345',
+                  phone: '9876543210',
                   price: '56.0',
                   userId: 'sajal',
                   address: {
@@ -564,7 +564,7 @@ export const data = [
                       age: '30',
                       name: 'User_id_identify',
                       email: 'identify@test.com',
-                      phone: '9112340345',
+                      phone: '9876543210',
                       price: '56.0',
                       userId: 'sajal',
                       address: {
@@ -674,7 +674,7 @@ export const data = [
                   age: '30',
                   name: 'User_id_identify',
                   email: 'identify@test.com',
-                  phone: '9112340345',
+                  phone: '9876543210',
                   price: '56.0',
                   userId: 'sajal',
                   address: {
@@ -731,7 +731,7 @@ export const data = [
                     age: '30',
                     name: 'User_id_identify',
                     email: 'identify@test.com',
-                    phone: '9112340345',
+                    phone: '9876543210',
                     price: '56.0',
                     userId: 'sajal',
                     address: {
@@ -821,7 +821,7 @@ export const data = [
                 traits: {
                   name: 'Shehan Study',
                   category: 'SampleIdentify',
-                  email: 'c@rudderlabs.com',
+                  email: 'test@rudderstack.com',
                   plan: 'Open source',
                   logins: 5,
                   createdAt: 1599264000,
@@ -913,7 +913,7 @@ export const data = [
                     $set: {
                       name: 'Shehan Study',
                       category: 'SampleIdentify',
-                      email: 'c@rudderlabs.com',
+                      email: 'test@rudderstack.com',
                       plan: 'Open source',
                       logins: 5,
                       createdAt: 1599264000,
@@ -1018,7 +1018,7 @@ export const data = [
                 traits: {
                   name: 'Shehan Study',
                   category: 'SampleIdentify',
-                  email: 'c@rudderlabs.com',
+                  email: 'test@rudderstack.com',
                   plan: 'Open source',
                   logins: 5,
                   createdAt: 1599264000,
@@ -1110,7 +1110,7 @@ export const data = [
                     $set: {
                       name: 'Shehan Study',
                       category: 'SampleIdentify',
-                      email: 'c@rudderlabs.com',
+                      email: 'test@rudderstack.com',
                       plan: 'Open source',
                       logins: 5,
                       createdAt: 1599264000,
@@ -1216,7 +1216,7 @@ export const data = [
                 traits: {
                   name: 'Shehan Study',
                   category: 'SampleIdentify',
-                  email: 'c@rudderlabs.com',
+                  email: 'test@rudderstack.com',
                   plan: 'Open source',
                   logins: 5,
                   createdAt: 1599264000,
@@ -1286,7 +1286,7 @@ export const data = [
                     $set: {
                       name: 'Shehan Study',
                       category: 'SampleIdentify',
-                      email: 'c@rudderlabs.com',
+                      email: 'test@rudderstack.com',
                       plan: 'Open source',
                       logins: 5,
                       createdAt: 1599264000,
@@ -1356,7 +1356,7 @@ export const data = [
                 traits: {
                   name: 'Shehan Study',
                   category: 'SampleIdentify',
-                  email: 'c@rudderlabs.com',
+                  email: 'test@rudderstack.com',
                   plan: 'Open source',
                   logins: 5,
                   createdAt: 1599264000,
@@ -1416,7 +1416,7 @@ export const data = [
                     $set: {
                       name: 'Shehan Study',
                       category: 'SampleIdentify',
-                      email: 'c@rudderlabs.com',
+                      email: 'test@rudderstack.com',
                       plan: 'Open source',
                       logins: 5,
                       createdAt: 1599264000,
@@ -1613,7 +1613,7 @@ export const data = [
                 traits: {
                   name: 'Rudder Usr',
                   category: 'SampleIdentify',
-                  email: 'test@rudderlabs.com',
+                  email: 'test@rudderstack.com',
                   plan: 'Paid',
                   logins: 5,
                 },
@@ -1674,7 +1674,7 @@ export const data = [
                     $set: {
                       name: 'Rudder Usr',
                       category: 'SampleIdentify',
-                      email: 'test@rudderlabs.com',
+                      email: 'test@rudderstack.com',
                       plan: 'Paid',
                       logins: 5,
                     },
@@ -1731,7 +1731,7 @@ export const data = [
           {
             destination: {
               Config: {
-                teamApiKey: 'phc_HiQkvGt9vktokentokentokenTN',
+                teamApiKey: 'testTeamApiKey',
                 yourInstance: 'https://app.posthog.com',
               },
             },
@@ -1753,7 +1753,7 @@ export const data = [
                   age: '30',
                   name: 'User_id_identify',
                   email: 'identify@test.com',
-                  phone: '9112340345',
+                  phone: '9876543210',
                   price: '56.0',
                   userId: 'Virat',
                   address: {
@@ -1832,7 +1832,7 @@ export const data = [
                 JSON: {
                   type: 'capture',
                   event: 'Product Brought',
-                  api_key: 'phc_HiQkvGt9vktokentokentokenTN',
+                  api_key: 'testTeamApiKey',
                   messageId: 'e4408cb8-16dd-41e9-a313-a7a9cdc4bac5',
                   properties: {
                     $ip: '0.0.0.0',
@@ -1843,7 +1843,7 @@ export const data = [
                       age: '30',
                       name: 'User_id_identify',
                       email: 'identify@test.com',
-                      phone: '9112340345',
+                      phone: '9876543210',
                       price: '56.0',
                       userId: 'Virat',
                       address: {

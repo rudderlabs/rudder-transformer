@@ -104,15 +104,31 @@ const responseHandler = async (event, type) => {
   }
   const startTime = Date.now();
   const data = {};
-  // create a map of job_id and data sent from server
-  // {<jobId>: '<param-val1>,<param-val2>'}
-input.forEach((i) => {
-  const response = headerArr.map((fieldName) => Object.values(i)[0][fieldName]).join(',');
-  data[i.metadata.job_id] = response;
-});
   const fieldSchemaMapping = await getFieldSchema(accessToken, config.munchkinId)
   const unsuccessfulJobInfo = checkEventStatusViaSchemaMatching(event, fieldSchemaMapping)
 
+  // create a map of job_id and data sent from server
+  // {<jobId>: '<param-val1>,<param-val2>'}
+  input.forEach((i) => {
+    const jobId = i.metadata.job_id;
+  
+    if (!unsuccessfulJobInfo.hasOwnProperty(jobId)) {
+      // Process for jobs not in unsuccessfulJobInfo
+      const response = headerArr.map((fieldName) => Object.values(i)[0][fieldName]).join(',');
+      data[jobId] = response;
+    } else {
+      // otherwise, omit the failed field
+      const failedFieldName = unsuccessfulJobInfo[jobId].split(' ')[1]; // Extract failed field name
+      const filteredValues = headerArr.map((fieldName) => {
+        if (fieldName === failedFieldName || !i.message[fieldName]) {
+          return ''; // Omit the value for the failed field or if the field is missing
+        }
+        return i.message[fieldName];
+      });
+
+     data[jobId] = [...new Set(filteredValues)].join(',');
+  }
+  });
 if (Object.keys(unsuccessfulJobInfo).length === 0 || type === 'fail' ){
     // match marketo response data with received data from server
     for (const element of responseArr) {

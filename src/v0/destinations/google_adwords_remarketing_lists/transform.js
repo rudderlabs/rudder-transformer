@@ -1,5 +1,6 @@
 const sha256 = require('sha256');
 const logger = require('../../../logger');
+const get = require('get-value');
 const {
   isDefinedAndNotNullAndNotEmpty,
   returnArrayOfSubarrays,
@@ -9,6 +10,7 @@ const {
   removeUndefinedAndNullValues,
   removeHyphens,
   simpleProcessRouterDest,
+  getDestinationExternalIDInfoForRetl,
 } = require('../../util');
 
 const {
@@ -25,6 +27,7 @@ const {
   TYPEOFLIST,
 } = require('./config');
 const { JSON_MIME_TYPE } = require('../../util/constant');
+const { MappedToDestinationKey } = require('../../../constants');
 
 const hashEncrypt = (object) => {
   Object.keys(object).forEach((key) => {
@@ -64,15 +67,23 @@ const getAccessToken = (metadata) => {
  * @param {*} param2
  * @returns
  */
-const responseBuilder = (metadata, body, { Config }) => {
+const responseBuilder = (metadata, body, { Config }, message) => {
   const payload = body;
   const response = defaultRequestConfig();
   const filteredCustomerId = removeHyphens(Config.customerId);
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/offlineUserDataJobs`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   const accessToken = getAccessToken(metadata);
-  const uploadDestId = Config.audienceId || Config.listId;
-  response.params = { listId: uploadDestId, customerId: filteredCustomerId };
+  let operationAudienceId = Config.audienceId || Config.listId;
+  const mappedToDestination = get(message, MappedToDestinationKey);
+  if (!operationAudienceId && mappedToDestination) {
+    const { objectType } = getDestinationExternalIDInfoForRetl(message, 'GOOGLE_ADWORDS_REMARKETING_LISTS');
+    operationAudienceId = objectType;
+  }
+  if (!isDefinedAndNotNullAndNotEmpty(operationAudienceId)) {
+    throw new ConfigurationError('List ID is a mandatory field');
+  }
+  response.params = { listId: operationAudienceId, customerId: filteredCustomerId };
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': JSON_MIME_TYPE,
@@ -222,7 +233,7 @@ const processEvent = async (metadata, message, destination) => {
     }
 
     Object.values(createdPayload).forEach((data) => {
-      response.push(responseBuilder(metadata, data, destination));
+      response.push(responseBuilder(metadata, data, destination, message));
     });
     return response;
   }

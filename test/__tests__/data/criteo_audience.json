@@ -112,7 +112,9 @@
               "attributes": {
                 "operation": "add",
                 "identifierType": "email",
-                "identifiers": ["van@email.com"],
+                "identifiers": [
+                  "van@email.com"
+                ],
                 "internalIdentifiers": false
               }
             }
@@ -255,7 +257,10 @@
               "attributes": {
                 "operation": "add",
                 "identifierType": "madid",
-                "identifiers": ["sample_madid_11", "sample_madid_12"],
+                "identifiers": [
+                  "sample_madid_11",
+                  "sample_madid_12"
+                ],
                 "internalIdentifiers": false
               }
             }
@@ -319,7 +324,10 @@
               "attributes": {
                 "operation": "remove",
                 "identifierType": "madid",
-                "identifiers": ["sample_madid_8", "sample_madid_9"],
+                "identifiers": [
+                  "sample_madid_8",
+                  "sample_madid_9"
+                ],
                 "internalIdentifiers": false
               }
             }
@@ -404,7 +412,11 @@
               "attributes": {
                 "operation": "add",
                 "identifierType": "email",
-                "identifiers": ["alex@email.com", "amy@email.com", "van@email.com"],
+                "identifiers": [
+                  "alex@email.com",
+                  "amy@email.com",
+                  "van@email.com"
+                ],
                 "internalIdentifiers": false
               }
             }
@@ -486,7 +498,11 @@
               "attributes": {
                 "operation": "add",
                 "identifierType": "madid",
-                "identifiers": ["sample_madid", "sample_madid_1", "sample_madid_2"],
+                "identifiers": [
+                  "sample_madid",
+                  "sample_madid_1",
+                  "sample_madid_2"
+                ],
                 "internalIdentifiers": false
               }
             }
@@ -576,7 +592,11 @@
               "attributes": {
                 "operation": "add",
                 "identifierType": "madid",
-                "identifiers": ["sample_madid", "sample_madid_1", "sample_madid_2"],
+                "identifiers": [
+                  "sample_madid",
+                  "sample_madid_1",
+                  "sample_madid_2"
+                ],
                 "internalIdentifiers": false
               }
             }
@@ -605,7 +625,9 @@
               "attributes": {
                 "operation": "remove",
                 "identifierType": "madid",
-                "identifiers": ["sample_madid"],
+                "identifiers": [
+                  "sample_madid"
+                ],
                 "internalIdentifiers": false
               }
             }
@@ -695,7 +717,11 @@
               "attributes": {
                 "operation": "add",
                 "identifierType": "identityLink",
-                "identifiers": ["text.com", "yahoo.com", "abc.com"],
+                "identifiers": [
+                  "text.com",
+                  "yahoo.com",
+                  "abc.com"
+                ],
                 "internalIdentifiers": false
               }
             }
@@ -724,7 +750,9 @@
               "attributes": {
                 "operation": "remove",
                 "identifierType": "identityLink",
-                "identifiers": ["text.com"],
+                "identifiers": [
+                  "text.com"
+                ],
                 "internalIdentifiers": false
               }
             }
@@ -815,7 +843,11 @@
               "attributes": {
                 "operation": "add",
                 "identifierType": "gum",
-                "identifiers": ["sample_gum1", "sample_gum2", "sample_gum3"],
+                "identifiers": [
+                  "sample_gum1",
+                  "sample_gum2",
+                  "sample_gum3"
+                ],
                 "internalIdentifiers": false,
                 "gumCallerId": "329739"
               }
@@ -845,7 +877,9 @@
               "attributes": {
                 "operation": "remove",
                 "identifierType": "gum",
-                "identifiers": ["sample_gum3"],
+                "identifiers": [
+                  "sample_gum3"
+                ],
                 "internalIdentifiers": false,
                 "gumCallerId": "329739"
               }

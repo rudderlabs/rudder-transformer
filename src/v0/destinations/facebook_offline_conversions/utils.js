@@ -76,7 +76,7 @@ const prepareUrls = (destination, data, ids, payload) => {
   const encodedData = `%5B${encodeURIComponent(JSON.stringify(first))}%5D`;
   const accessToken = getAccessToken(destination);
   ids.forEach((id) => {
-    const endpoint = ENDPOINT(destination.Config.appVersion).replace('OFFLINE_EVENT_SET_ID', id);
+    const endpoint = ENDPOINT(destination.Config.apiVersion).replace('OFFLINE_EVENT_SET_ID', id);
     urls.push(
       `${endpoint}?upload_tag=${uploadTags}&data=${encodedData}&access_token=${accessToken}`,
     );
@@ -166,9 +166,10 @@ const prepareUserData = (payload, message) => {
   if (propertyMapping.birthday) {
     const { birthday } = propertyMapping;
     const dob = new Date(birthday);
-    data.db = dob.getFullYear().toString();
-    data.db = data.db.concat((dob.getMonth() + 1).toString());
-    data.db = data.db.concat(dob.getDate().toString());
+    const year = dob.getFullYear();
+    const month = `0${dob.getMonth() + 1}`.slice(-2);
+    const date = `0${dob.getDate()}`.slice(-2);
+    data.db = sha256(`${year}${month}${date}`);
     delete propertyMapping.birthday;
   }
 
@@ -368,10 +369,15 @@ const getActionSource = (payload) => {
  */
 const prepareData = (payload, message, destination) => {
   const { Config } = destination;
-  const { limitedDataUSage, valueFieldIdentifier, appVersion } = Config;
+  const { limitedDataUSage, valueFieldIdentifier, apiVersion } = Config;
+
+  const pii =
+    apiVersion === 'v17.0'
+      ? { user_data: prepareUserData(payload, message) }
+      : { match_keys: prepareMatchKeys(payload, message) };
 
   const data = {
-    match_keys: prepareMatchKeys(payload, message),
+    ...pii,
     event_time: payload.event_time,
     currency: payload.currency || 'USD',
     value: get(message.properties, valueFieldIdentifier) || payload.value || 0,
@@ -395,11 +401,6 @@ const prepareData = (payload, message, destination) => {
         data.data_processing_options_state,
       ] = dataProcessingOptions;
     }
-  }
-
-  if (appVersion === 'v17') {
-    data.user_data = prepareUserData(payload, message);
-    delete data.match_keys;
   }
 
   return [removeUndefinedAndNullValues(data)];

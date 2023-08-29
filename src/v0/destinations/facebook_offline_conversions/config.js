@@ -1,9 +1,7 @@
 const { getMappingConfig } = require('../../util');
 
 const ENDPOINT = (version) =>
-  version === 'v17.0'
-    ? 'https://graph.facebook.com/v17.0/OFFLINE_EVENT_SET_ID/events'
-    : 'https://graph.facebook.com/v16.0/OFFLINE_EVENT_SET_ID/events';
+  `https://graph.facebook.com/${version || 'v16.0'}/OFFLINE_EVENT_SET_ID/events`;
 
 const CONFIG_CATEGORIES = {
   OFFLINE_EVENTS: {

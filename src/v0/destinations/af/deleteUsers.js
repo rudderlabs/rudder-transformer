@@ -18,15 +18,24 @@ const { executeCommonValidations } = require('../../util/regulation-api');
  * @param {*} identityValue value of identifier
  * @returns
  */
-const deleteUser = async (endpoint, body, identityType, identityValue) => {
+const deleteUser = async (config, endpoint, body, identityType, identityValue) => {
   body.subject_request_id = generateUUID();
   body.submitted_time = new Date().toISOString();
   body.subject_identities[0].identity_type = identityType;
   body.subject_identities[0].identity_value = identityValue;
-  const response = await httpPOST(endpoint, body, {
-    destType: 'af',
-    feature: 'deleteUsers',
-  });
+  const response = await httpPOST(
+    endpoint,
+    body,
+    {
+      headers: {
+        Authorization: `Bearer ${config.apiToken}`,
+      },
+    },
+    {
+      destType: 'af',
+      feature: 'deleteUsers',
+    },
+  );
   const handledDelResponse = processAxiosResponse(response);
   if (!isHttpStatusSuccess(handledDelResponse.status)) {
     throw new NetworkError(
@@ -68,7 +77,9 @@ const userDeletionHandler = async (userAttributes, config) => {
     }
     body.status_callback_urls = filteredStatusCallbackUrlsArray;
   }
-  const endpoint = `https://hq1.appsflyer.com/gdpr/opengdpr_requests?api_token=${config.apiToken}`;
+
+  // Reference: https://support.appsflyer.com/hc/en-us/articles/11332840660625-OpenDSR-API
+  const endpoint = `https://hq1.appsflyer.com/api/gdpr/v1/opendsr_request`;
   await Promise.all(
     userAttributes.map(async (ua) => {
       if (!ua.android_advertising_id && !ua.ios_advertising_id && !ua.appsflyer_id) {
@@ -82,7 +93,7 @@ const userDeletionHandler = async (userAttributes, config) => {
        */
       if (ua?.appsflyer_id) {
         body.property_id = config.androidAppId ? config.androidAppId : config.appleAppId;
-        await deleteUser(endpoint, body, 'appsflyer_id', ua.appsflyer_id);
+        await deleteUser(config, endpoint, body, 'appsflyer_id', ua.appsflyer_id);
       } else if (ua?.ios_advertising_id) {
         body.property_id = config.appleAppId;
         if (!body.property_id) {
@@ -90,7 +101,7 @@ const userDeletionHandler = async (userAttributes, config) => {
             'appleAppId is required for ios_advertising_id type identifier',
           );
         }
-        await deleteUser(endpoint, body, 'ios_advertising_id', ua.ios_advertising_id);
+        await deleteUser(config, endpoint, body, 'ios_advertising_id', ua.ios_advertising_id);
       } else {
         body.property_id = config.androidAppId;
         if (!body.property_id) {
@@ -98,7 +109,13 @@ const userDeletionHandler = async (userAttributes, config) => {
             'androidAppId is required for android_advertising_id type identifier',
           );
         }
-        await deleteUser(endpoint, body, 'android_advertising_id', ua.android_advertising_id);
+        await deleteUser(
+          config,
+          endpoint,
+          body,
+          'android_advertising_id',
+          ua.android_advertising_id,
+        );
       }
     }),
   );

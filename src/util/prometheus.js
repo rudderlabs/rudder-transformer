@@ -544,7 +544,7 @@ class Prometheus {
         name: 'outgoing_request_latency',
         help: 'Outgoing HTTP requests duration in seconds',
         type: 'histogram',
-        labelNames: ['feature', 'destType'],
+        labelNames: ['feature', 'destType', 'endpointPath'],
       },
       {
         name: 'http_request_duration',
@@ -738,6 +738,12 @@ class Prometheus {
         name: 'marketo_bulk_upload_upload_file_size',
         help: 'marketo_bulk_upload_upload_file_size',
         type: 'histogram',
+        labelNames: [],
+      },
+      {
+        name: 'braze_partial_failure',
+        help: 'braze_partial_failure',
+        type: 'counter',
         labelNames: [],
       },
       {

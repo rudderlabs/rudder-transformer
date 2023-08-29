@@ -318,6 +318,7 @@
         "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
         "Name": "PINTEREST_TAG",
         "Config": {
+          "sendAsTestEvent": false,
           "tagId": "123456789",
           "advertiserId": "429047995",
           "appId": "429047995",
@@ -373,6 +374,7 @@
         "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
         "Name": "PINTEREST_TAG",
         "Config": {
+          "sendAsTestEvent": false,
           "tagId": "123456789",
           "advertiserId": "429047995",
           "appId": "429047995",
@@ -606,6 +608,7 @@
         "ID": "1pYpzzvcn7AQ2W9GGIAZSsN6Mfq",
         "Name": "PINTEREST_TAG",
         "Config": {
+          "sendAsTestEvent": false,
           "tagId": "123456789",
           "apiVersion": "newApi",
           "adAccountId": "accountId123",

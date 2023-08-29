@@ -69,14 +69,14 @@
             "JSON": {
               "subscription_groups": [
                 {
-                  "external_id":  ["user123"],
-                  "phones":  ["5055077683"],
+                  "external_id": ["user123"],
+                  "phones": ["5055077683"],
                   "subscription_group_id": "c90f0fd2-2a02-4f2f-bf07-7e7d2c2ed2b1",
                   "subscription_state": "subscribed"
                 },
                 {
-                  "external_id":  ["user877"],
-                  "phones":  ["5055077683"],
+                  "external_id": ["user877"],
+                  "phones": ["5055077683"],
                   "subscription_group_id": "58d0a278-b55b-4f10-b7d2-98d1c5dd4c30",
                   "subscription_state": "subscribed"
                 }
@@ -129,22 +129,22 @@
       ],
       "metadata": [
         {
-          "jobId": 2
+          "jobId": 1
         },
         {
           "jobId": 2
         },
         {
-          "jobId": 2
+          "jobId": 3
         },
         {
-          "jobId": 2
+          "jobId": 4
         },
         {
-          "jobId": 2
+          "jobId": 5
         },
         {
-          "jobId": 2
+          "jobId": 6
         }
       ],
       "batched": true,

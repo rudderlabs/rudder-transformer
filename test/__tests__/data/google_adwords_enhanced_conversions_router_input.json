@@ -5,7 +5,8 @@
         "access_token": "abcd1234",
         "refresh_token": "efgh5678",
         "developer_token": "ijkl91011"
-      }
+      },
+      "jobId": 1
     },
     "destination": {
       "Config": {
@@ -111,7 +112,8 @@
         "access_token": "abcd1234",
         "refresh_token": "efgh5678",
         "developer_token": "ijkl91011"
-      }
+      },
+      "jobId": 2
     },
     "destination": {
       "Config": {
@@ -162,7 +164,8 @@
   },
   {
     "metadata": {
-      "secret": {}
+      "secret": {},
+      "jobId": 3
     },
     "destination": {
       "Config": {

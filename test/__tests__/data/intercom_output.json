@@ -574,5 +574,78 @@
       "version": "1",
       "endpoint": "https://api.intercom.io/users"
     }
+  ],
+  [
+    {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "name": "rudderUpdate",
+          "plan": "basic",
+          "size": 50,
+          "industry": "IT",
+          "company_id": "test_company_id_wdasda",
+          "monthly_spend": 2131231,
+          "remote_created_at": 1683017572,
+          "website": "url",
+          "custom_attributes": {
+            "key1": "val1",
+            "employees": 450,
+            "email": "test@test.com",
+            "key2.a": "a",
+            "key2.b": "b",
+            "key3[0]": 1,
+            "key3[1]": 2,
+            "key3[2]": 3,
+            "key4": null
+          }
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "userId": "anonId",
+      "headers": {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer abcd=",
+        "Intercom-Version": "1.4"
+      },
+      "version": "1",
+      "endpoint": "https://api.intercom.io/companies"
+    },
+    {
+      "body": {
+        "XML": {},
+        "FORM": {},
+        "JSON": {
+          "user_id": "anonId",
+          "email": "testUser@test.com",
+          "companies": [
+            {
+              "name": "rudderUpdate",
+              "company_id": "test_company_id_wdasda"
+            }
+          ]
+        },
+        "JSON_ARRAY": {}
+      },
+      "type": "REST",
+      "files": {},
+      "method": "POST",
+      "params": {},
+      "userId": "anonId",
+      "headers": {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer abcd=",
+        "Intercom-Version": "1.4"
+      },
+      "version": "1",
+      "endpoint": "https://api.intercom.io/users"
+    }
   ]
 ]

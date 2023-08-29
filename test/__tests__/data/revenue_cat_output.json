@@ -228,7 +228,7 @@
       "method": "POST",
       "endpoint": "https://api.revenuecat.com/v1/receipts",
       "headers": {
-        "Authorization": "Basic a5e9abd75d99c8ad3acb4a2920ec1e2e",
+        "Authorization": "Basic dummyApiKey",
         "Content-Type": "application/json",
         "X-Platform": "stripe"
       },
@@ -236,7 +236,7 @@
       "body": {
         "JSON": {
           "app_user_id": "rudder123",
-          "fetch_token": "123asd23",
+          "fetch_token": "dummyFetchToken",
           "product_id": "123",
           "currency": "USD",
           "price": 14,
@@ -256,7 +256,7 @@
       "method": "POST",
       "endpoint": "https://api.revenuecat.com/v1/receipts",
       "headers": {
-        "Authorization": "Basic a5e9abd75d99c8ad3acb4a2920ec1e2e",
+        "Authorization": "Basic dummyApiKey",
         "Content-Type": "application/json",
         "X-Platform": "stripe"
       },
@@ -264,7 +264,7 @@
       "body": {
         "JSON": {
           "app_user_id": "rudder123",
-          "fetch_token": "123asd23",
+          "fetch_token": "dummyFetchToken",
           "product_id": "345",
           "currency": "USD",
           "price": 3.45,
@@ -286,7 +286,7 @@
       "method": "POST",
       "endpoint": "https://api.revenuecat.com/v1/receipts",
       "headers": {
-        "Authorization": "Basic a5e9abd75d99c8ad3acb4a2920ec1e2e",
+        "Authorization": "Basic dummyApiKey",
         "Content-Type": "application/json",
         "X-Platform": "stripe"
       },
@@ -294,7 +294,7 @@
       "body": {
         "JSON": {
           "app_user_id": "rudder123",
-          "fetch_token": "123asd23",
+          "fetch_token": "dummyFetchToken",
           "product_id": "123-sa",
           "currency": "USD",
           "price": 14,
@@ -314,7 +314,7 @@
       "method": "POST",
       "endpoint": "https://api.revenuecat.com/v1/receipts",
       "headers": {
-        "Authorization": "Basic a5e9abd75d99c8ad3acb4a2920ec1e2e",
+        "Authorization": "Basic dummyApiKey",
         "Content-Type": "application/json",
         "X-Platform": "stripe"
       },
@@ -322,7 +322,7 @@
       "body": {
         "JSON": {
           "app_user_id": "rudder123",
-          "fetch_token": "123asd23",
+          "fetch_token": "dummyFetchToken",
           "product_id": "345",
           "currency": "USD",
           "price": 3.45,
@@ -342,7 +342,7 @@
       "method": "POST",
       "endpoint": "https://api.revenuecat.com/v1/receipts",
       "headers": {
-        "Authorization": "Basic a5e9abd75d99c8ad3acb4a2920ec1e2e",
+        "Authorization": "Basic dummyApiKey",
         "Content-Type": "application/json",
         "X-Platform": "stripe"
       },
@@ -350,7 +350,7 @@
       "body": {
         "JSON": {
           "app_user_id": "rudder123",
-          "fetch_token": "123asd23",
+          "fetch_token": "dummyFetchToken",
           "product_id": "123-sa",
           "currency": "USD",
           "price": 14,
@@ -370,7 +370,7 @@
       "method": "POST",
       "endpoint": "https://api.revenuecat.com/v1/receipts",
       "headers": {
-        "Authorization": "Basic a5e9abd75d99c8ad3acb4a2920ec1e2e",
+        "Authorization": "Basic dummyApiKey",
         "Content-Type": "application/json",
         "X-Platform": "stripe"
       },
@@ -378,7 +378,7 @@
       "body": {
         "JSON": {
           "app_user_id": "rudder123",
-          "fetch_token": "123asd23",
+          "fetch_token": "dummyFetchToken",
           "product_id": "1234sb",
           "currency": "USD",
           "price": 14,
@@ -403,7 +403,7 @@
         "is_restore": true,
         "product_id": "123-sa",
         "app_user_id": "rudder123",
-        "fetch_token": "123asd23",
+        "fetch_token": "dummyFetchToken",
         "introductory_price": "350",
         "presented_offering_identifier": "123erd"
       },
@@ -416,7 +416,7 @@
     "headers": {
       "X-Platform": "stripe",
       "Content-Type": "application/json",
-      "Authorization": "Basic a5e9abd75d99c8ad3acb4a2920ec1e2e"
+      "Authorization": "Basic dummyApiKey"
     },
     "version": "1",
     "endpoint": "https://api.revenuecat.com/v1/receipts"

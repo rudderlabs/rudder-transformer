@@ -7,7 +7,7 @@
         "method": "POST",
         "endpoint": "https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchupdate",
         "headers": {
-          "Authorization": "Bearer abcd1234",
+          "Authorization": "Bearer dummyApiKey",
           "Content-Type": "application/json"
         },
         "params": {},
@@ -54,7 +54,7 @@
         "method": "POST",
         "endpoint": "https://dfareporting.googleapis.com/dfareporting/v4/userprofiles/437689/conversions/batchupdate",
         "headers": {
-          "Authorization": "Bearer fgvbjghv",
+          "Authorization": "Bearer dummyApiKey",
           "Content-Type": "application/json"
         },
         "params": {},

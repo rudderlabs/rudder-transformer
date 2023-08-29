@@ -21,11 +21,11 @@
                 "list_id": "XUepkK",
                 "subscriptions": [
                   {
-                    "email": "utsab@rudderstack.com",
+                    "email": "test@rudderstack.com",
                     "phone_number": "+12 345 678 900"
                   },
                   {
-                    "email": "utsab@rudderstack.com",
+                    "email": "test@rudderstack.com",
                     "phone_number": "+12 345 578 900",
                     "channels": {
                       "email": ["MARKETING"],
@@ -33,7 +33,7 @@
                     }
                   },
                   {
-                    "email": "ujjwal@rudderstack.com",
+                    "email": "test@rudderstack.com",
                     "phone_number": "+12 345 578 900",
                     "channels": {
                       "email": ["MARKETING"],
@@ -67,10 +67,10 @@
             "data": {
               "type": "profile",
               "attributes": {
-                "external_id": "utsabc",
-                "email": "utsab@rudderstack.com",
-                "first_name": "Utsab",
-                "last_name": "Chowdhury",
+                "external_id": "test",
+                "email": "test@rudderstack.com",
+                "first_name": "Test",
+                "last_name": "Rudderlabs",
                 "phone_number": "+12 345 578 900",
                 "title": "Developer",
                 "organization": "Rudder",
@@ -111,10 +111,10 @@
             "data": {
               "type": "profile",
               "attributes": {
-                "email": "ujjwal@rudderstack.com",
-                "external_id": "ujjwal",
-                "first_name": "Utsab",
-                "last_name": "Chowdhury",
+                "email": "test@rudderstack.com",
+                "external_id": "test",
+                "first_name": "Test",
+                "last_name": "Rudderlabs",
                 "phone_number": "+12 345 578 900",
                 "title": "Developer",
                 "organization": "Rudder",

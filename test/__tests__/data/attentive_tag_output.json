@@ -5,7 +5,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/subscriptions",
     "headers": {
-      "Authorization": "Bearer d1cwZXF1eVZicnpPeGJ6M0JOTXFxTVN2QkdpWTJ3NENp",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -41,7 +41,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/subscriptions/unsubscribe",
     "headers": {
-      "Authorization": "Bearer d1cwZXF1eVZicnpPeGJ6M0JOTXFxTVN2QkdpWTJ3NENp",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -63,14 +63,14 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/events/ecommerce/purchase",
     "headers": {
-      "Authorization": "Bearer t1yurrb968zk",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
     "body": {
       "JSON": {
         "user": {
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "externalIdentifiers": {
             "clientUserId": "144",
             "shopifyId": "143",
@@ -109,7 +109,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/events/ecommerce/product-view",
     "headers": {
-      "Authorization": "Bearer t1yurrb968zk",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -117,7 +117,7 @@
       "JSON": {
         "user": {
           "phone": "+16465053911",
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "externalIdentifiers": {
             "clientUserId": "144",
             "shopifyId": "143",
@@ -152,7 +152,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/events/ecommerce/product-view",
     "headers": {
-      "Authorization": "Bearer t1yurrb968zk",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -160,7 +160,7 @@
       "JSON": {
         "user": {
           "phone": "+16465053911",
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "externalIdentifiers": {
             "clientUserId": "144",
             "shopifyId": "143",
@@ -195,7 +195,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/events/custom",
     "headers": {
-      "Authorization": "Bearer t1yurrb968zk",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -203,7 +203,7 @@
       "JSON": {
         "user": {
           "phone": "+16465053911",
-          "email": "test@rudderlabs.com",
+          "email": "test@rudderstack.com",
           "externalIdentifiers": {
             "clientUserId": "144",
             "shopifyId": "224",
@@ -235,7 +235,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/subscriptions",
     "headers": {
-      "Authorization": "Bearer d1cwZXF1eVZicnpPeGJ6M0JOTXFxTVN2QkdpWTJ3NENp",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -259,7 +259,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/events/ecommerce/product-view",
     "headers": {
-      "Authorization": "Bearer t1yurrb968zk",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -312,7 +312,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/subscriptions",
     "headers": {
-      "Authorization": "Bearer d1cwZXF1eVZicnpPeGJ6M0JOTXFxTVN2QkdpWTJ3NENp",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},
@@ -336,7 +336,7 @@
     "method": "POST",
     "endpoint": "https://api.attentivemobile.com/v1/events/ecommerce/product-view",
     "headers": {
-      "Authorization": "Bearer t1yurrb968zk",
+      "Authorization": "Bearer dummyApiKey",
       "Content-Type": "application/json"
     },
     "params": {},

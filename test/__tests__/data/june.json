@@ -20,8 +20,8 @@
       },
       "destination": {
         "Config": {
-          "apiKey": "607287ffadf52c4888101870b9e71c52",
-          "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
+          "apiKey": "dummyApiKey",
+          "apiSecret": "dummyApiSecret"
         }
       }
     },
@@ -45,17 +45,15 @@
             "status": "user",
             "city": "Kalkata",
             "country": "india",
-            "tags": [
-              "productuser"
-            ],
+            "tags": ["productuser"],
             "phone": "9225467887"
           }
         }
       },
       "destination": {
         "Config": {
-          "apiKey": "607287ffadf52c4888101870b9e71c52",
-          "apiSecret": "ef428c15e2g8aeb6ebacfd1cfbf7bfd2"
+          "apiKey": "dummyApiKey",
+          "apiSecret": "dummyApiSecret"
         }
       }
     },
@@ -68,7 +66,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "93EMyDLvfpbRxxYn"
+          "apiKey": "dummyApiKey"
         },
         "ID": "june123"
       },
@@ -95,7 +93,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "93EMyDLvfpbRxxYn"
+          "apiKey": "dummyApiKey"
         },
         "ID": "june123"
       },
@@ -123,7 +121,7 @@
       "endpoint": "https://api.june.so/api/identify",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic 93EMyDLvfpbRxxYn"
+        "Authorization": "Basic dummyApiKey"
       },
       "params": {},
       "body": {
@@ -149,7 +147,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "93EMyDLvfpbRxxYn"
+          "apiKey": "dummyApiKey"
         },
         "ID": "june123"
       },
@@ -178,7 +176,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "93EMyDLvfpbRxxYn"
+          "apiKey": "dummyApiKey"
         },
         "ID": "june123"
       },
@@ -205,7 +203,7 @@
       "endpoint": "https://api.june.so/api/track",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic 93EMyDLvfpbRxxYn"
+        "Authorization": "Basic dummyApiKey"
       },
       "params": {},
       "body": {
@@ -233,7 +231,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "93EMyDLvfpbRxxYn"
+          "apiKey": "dummyApiKey"
         },
         "ID": "june123"
       },
@@ -254,7 +252,7 @@
       "endpoint": "https://api.june.so/api/track",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic 93EMyDLvfpbRxxYn"
+        "Authorization": "Basic dummyApiKey"
       },
       "params": {},
       "body": {
@@ -276,7 +274,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "93EMyDLvfpbRxxYn"
+          "apiKey": "dummyApiKey"
         },
         "ID": "june123"
       },
@@ -304,7 +302,7 @@
       "endpoint": "https://api.june.so/api/track",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic 93EMyDLvfpbRxxYn"
+        "Authorization": "Basic dummyApiKey"
       },
       "params": {},
       "body": {
@@ -335,7 +333,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "93EMyDLvfpbRxxYn"
+          "apiKey": "dummyApiKey"
         },
         "ID": "june123"
       },
@@ -370,7 +368,7 @@
       "endpoint": "https://api.june.so/api/track",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic 93EMyDLvfpbRxxYn"
+        "Authorization": "Basic dummyApiKey"
       },
       "params": {},
       "body": {
@@ -401,7 +399,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "93EMyDLvfpbRxxYn"
+          "apiKey": "dummyApiKey"
         },
         "ID": "june123"
       },
@@ -430,7 +428,7 @@
       "endpoint": "https://api.june.so/api/group",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic 93EMyDLvfpbRxxYn"
+        "Authorization": "Basic dummyApiKey"
       },
       "params": {},
       "body": {
@@ -460,7 +458,7 @@
     "input": {
       "destination": {
         "Config": {
-          "apiKey": "123456"
+          "apiKey": "dummyApiKey"
         },
         "ID": "june123"
       },
@@ -524,7 +522,7 @@
       "endpoint": "https://api.june.so/api/page",
       "headers": {
         "Content-Type": "application/json",
-        "Authorization": "Basic 123456"
+        "Authorization": "Basic dummyApiKey"
       },
       "params": {},
       "body": {

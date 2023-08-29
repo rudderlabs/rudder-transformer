@@ -1493,7 +1493,7 @@ export const data = [
                 traits: {
                   name: 'Shehan Study',
                   category: 'SampleIdentify',
-                  email: 'c@rudderlabs.com',
+                  email: 'test@rudderstack.com',
                   plan: 'Open source',
                   logins: 5,
                   createdAt: 1599264000,
@@ -1587,7 +1587,7 @@ export const data = [
                 traits: {
                   name: 'Shehan Study',
                   category: 'SampleIdentify',
-                  email: 'c@rudderlabs.com',
+                  email: 'test@rudderstack.com',
                   plan: 'Open source',
                   logins: 5,
                   createdAt: 1599264000,
@@ -1669,7 +1669,7 @@ export const data = [
                   timestamp: '2020-10-20T08:14:28.778Z',
                   trait_city: 'Disney',
                   trait_country: 'USA',
-                  trait_email: 'c@rudderlabs.com',
+                  trait_email: 'test@rudderstack.com',
                   trait_firstname: 'Mickey',
                   trait_name: 'Shehan Study',
                   trait_category: 'SampleIdentify',

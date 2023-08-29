@@ -79,7 +79,7 @@
     },
     "destination": {
       "Config": {
-        "accessToken": "1234ac663758946dfea3520b394bbac511b371f7",
+        "accessToken": "dummyAccessToken",
         "pixelCode": "A1T8T4UYGVIQA8ORZMX9",
         "hashUserProperties": false
       }
@@ -165,7 +165,7 @@
     },
     "destination": {
       "Config": {
-        "accessToken": "1234ac663758946dfea3520b394bbac511b371f7",
+        "accessToken": "dummyAccessToken",
         "pixelCode": "A1T8T4UYGVIQA8ORZMX9",
         "hashUserProperties": false
       }
@@ -226,7 +226,6 @@
           "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
           "ip": "13.57.97.131"
         },
-
         "contents": [
           {
             "price": 8,
@@ -254,7 +253,7 @@
     },
     "destination": {
       "Config": {
-        "accessToken": "1234ac663758946dfea3520b394bbac511b371f7",
+        "accessToken": "dummyAccessToken",
         "pixelCode": "A1T8T4UYGVIQA8ORZMX9",
         "hashUserProperties": false
       }
@@ -315,7 +314,6 @@
           "userAgent": "Mozilla/5.0 (platform; rv:geckoversion) Gecko/geckotrail Firefox/firefoxversion",
           "ip": "13.57.97.131"
         },
-
         "contents": [
           {
             "price": 8,
@@ -343,7 +341,7 @@
     },
     "destination": {
       "Config": {
-        "accessToken": "1234ac663758946dfea3520b394bbac511b371f7",
+        "accessToken": "dummyAccessToken",
         "pixelCode": "A1T8T4UYGVIQA8ORZMX9",
         "hashUserProperties": false
       }
@@ -432,7 +430,7 @@
     },
     "destination": {
       "Config": {
-        "accessToken": "1234ac663758946dfea3520b394bbac511b371f7",
+        "accessToken": "dummyAccessToken",
         "pixelCode": "A1T8T4UYGVIQA8ORZMX9",
         "hashUserProperties": true
       }

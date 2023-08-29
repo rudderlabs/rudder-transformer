@@ -25,7 +25,7 @@ export const data = [
                     hasPurchased: 'yes',
                     email: 'abc@xyz.com',
                     title: 'Mr',
-                    phone: '9876543212',
+                    phone: '9876543210',
                     state: 'Uttar Pradesh',
                     zipcode: '243001',
                     prospectOrCustomer: 'Prospect',
@@ -47,7 +47,7 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'email',
-                  password: 'm3dG325C51C1RPq',
+                  password: 'dummyPassword',
                   subDomainName: 'ruddertest2',
                   userName: 'TestRudderlabs45823@gmail.com',
                 },
@@ -76,7 +76,8 @@ export const data = [
                 endpoint: 'https://ruddertest2.mautic.net/api/contacts/new',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206bTNkRzMyNUM1MUMxUlBx',
+                  Authorization:
+                    'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
                 },
                 params: {},
                 body: {
@@ -85,7 +86,7 @@ export const data = [
                     title: 'Mr',
                     firstname: 'Test',
                     lastname: 'Rudderlabs',
-                    phone: '9876543212',
+                    phone: '9876543210',
                     website: 'abc.com',
                     state: 'Uttar Pradesh',
                     zipcode: '243001',
@@ -115,7 +116,7 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'email',
-                  password: 'm3dG325C51C1RPq',
+                  password: 'dummyPassword',
                   subDomainName: 'ruddertest2',
                   userName: 'TestRudderlabs45823@gmail.com',
                 },
@@ -152,7 +153,7 @@ export const data = [
                     hasPurchased: 'yes',
                     email: 'abc@xyz.com',
                     title: 'Mr',
-                    phone: '9876543212',
+                    phone: '9876543210',
                     state: 'Uttar Pradesh',
                     zipcode: '243001',
                     prospectOrCustomer: 'Prospect',
@@ -174,7 +175,7 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'email',
-                  password: 'abcdefghij1234',
+                  password: 'dummyPassword',
                   subDomainName: '',
                   domainName: '',
                   userName: 'abcdef',
@@ -214,7 +215,7 @@ export const data = [
                 Config: {
                   domainName: '',
                   lookUpField: 'email',
-                  password: 'abcdefghij1234',
+                  password: 'dummyPassword',
                   subDomainName: '',
                   userName: 'abcdef',
                 },
@@ -258,7 +259,7 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'lastName',
-                  password: 'm3dG325C51C1RPq',
+                  password: 'dummyPassword',
                   subDomainName: 'ruddertest2',
                   userName: 'TestRudderlabs45823@gmail.com',
                 },
@@ -287,7 +288,8 @@ export const data = [
                 endpoint: 'https://ruddertest2.mautic.net/api/segments/17/contact/246/add',
                 headers: {
                   'Content-Type': 'application/json',
-                  Authorization: 'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206bTNkRzMyNUM1MUMxUlBx',
+                  Authorization:
+                    'Basic VGVzdFJ1ZGRlcmxhYnM0NTgyM0BnbWFpbC5jb206ZHVtbXlQYXNzd29yZA==',
                 },
                 params: {},
                 body: {
@@ -308,7 +310,7 @@ export const data = [
               destination: {
                 Config: {
                   lookUpField: 'lastName',
-                  password: 'm3dG325C51C1RPq',
+                  password: 'dummyPassword',
                   subDomainName: 'ruddertest2',
                   userName: 'TestRudderlabs45823@gmail.com',
                 },

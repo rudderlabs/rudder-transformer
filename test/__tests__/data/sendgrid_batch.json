@@ -56,7 +56,7 @@
             "traits": {
               "age": "30",
               "email": "user3@rudderlabs.com",
-              "phone": "+91 66788956789",
+              "phone": "+91 9876543210",
               "city": "Ahmedabad",
               "state": "Gujarat",
               "lastName": "gupta",
@@ -128,7 +128,7 @@
           "context": {
             "traits": {
               "email": "user4@rudderlabs.com",
-              "phone": "+91 66788956769",
+              "phone": "+91 9876543210",
               "userId": "sajal",
               "city": "Bombey",
               "state": "Maharastra",
@@ -201,7 +201,7 @@
           "context": {
             "traits": {
               "email": "user5@rudderlabs.com",
-              "phone": "+91 66788956769",
+              "phone": "+91 9876543210",
               "city": "Banglore",
               "lastName": "bhatt",
               "username": "kiran bhatt",
@@ -275,7 +275,7 @@
           "context": {
             "traits": {
               "email": "user6@rudderlabs.com",
-              "phone": "+91 66758956769",
+              "phone": "+91 9876543210",
               "city": "Los Angeles",
               "lastName": "doe",
               "name": "john doe",
@@ -350,7 +350,7 @@
           "context": {
             "traits": {
               "email": "user7@rudderlabs.com",
-              "phone": "+91 66958956769",
+              "phone": "+91 9876543210",
               "city": "Chicago",
               "lastName": "patel",
               "name": "reshma patel",
@@ -416,7 +416,7 @@
           "context": {
             "traits": {
               "email": "user8@rudderlabs.com",
-              "phone": "+91 76958956769",
+              "phone": "+91 9876543210",
               "city": "Chicago",
               "lastName": "patel",
               "name": "karishma patel",
@@ -459,7 +459,7 @@
               "contacts": [
                 {
                   "email": "user3@rudderlabs.com",
-                  "phone_number": "+91 66788956789",
+                  "phone_number": "+91 9876543210",
                   "first_name": "aman",
                   "last_name": "gupta",
                   "unique_name": "aman gupta",
@@ -540,7 +540,7 @@
               "contacts": [
                 {
                   "email": "user4@rudderlabs.com",
-                  "phone_number": "+91 66788956769",
+                  "phone_number": "+91 9876543210",
                   "first_name": "suresh",
                   "last_name": "gupta",
                   "custom_fields": {}
@@ -623,7 +623,7 @@
               "contacts": [
                 {
                   "email": "user5@rudderlabs.com",
-                  "phone_number": "+91 66788956769",
+                  "phone_number": "+91 9876543210",
                   "first_name": "kiran",
                   "last_name": "bhatt",
                   "custom_fields": {}
@@ -706,7 +706,7 @@
               "contacts": [
                 {
                   "email": "user6@rudderlabs.com",
-                  "phone_number": "+91 66758956769",
+                  "phone_number": "+91 9876543210",
                   "first_name": "john",
                   "last_name": "doe",
                   "unique_name": "john doe",
@@ -786,7 +786,7 @@
               "contacts": [
                 {
                   "email": "user7@rudderlabs.com",
-                  "phone_number": "+91 66958956769",
+                  "phone_number": "+91 9876543210",
                   "first_name": "reshma",
                   "last_name": "patel",
                   "unique_name": "reshma patel",
@@ -872,7 +872,7 @@
               "contacts": [
                 {
                   "email": "user8@rudderlabs.com",
-                  "phone_number": "+91 76958956769",
+                  "phone_number": "+91 9876543210",
                   "first_name": "karishma",
                   "last_name": "patel",
                   "unique_name": "karishma patel",

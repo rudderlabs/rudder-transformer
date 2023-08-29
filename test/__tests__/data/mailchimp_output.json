@@ -6,7 +6,7 @@
     "endpoint": "https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Basic YXBpS2V5OmFwaWtleQ=="
+      "Authorization": "Basic YXBpS2V5OmR1bW15QXBpS2V5"
     },
     "params": {},
     "body": {
@@ -40,7 +40,7 @@
     "endpoint": "https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Basic YXBpS2V5OmFwaWtleQ=="
+      "Authorization": "Basic YXBpS2V5OmR1bW15QXBpS2V5"
     },
     "params": {},
     "body": {
@@ -69,7 +69,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey-usYY",
+        "apiKey": "apiKey-dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": "usXX"
       },
@@ -103,7 +103,7 @@
     "endpoint": "https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Basic YXBpS2V5OmFwaWtleQ=="
+      "Authorization": "Basic YXBpS2V5OmR1bW15QXBpS2V5"
     },
     "params": {},
     "body": {
@@ -150,7 +150,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "ff21810ddc",
         "datacenterId": "us14"
       },
@@ -181,7 +181,7 @@
     "params": {},
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Basic YXBpS2V5OmFwaWtleQ=="
+      "Authorization": "Basic YXBpS2V5OmR1bW15QXBpS2V5"
     },
     "audienceId": "aud112",
     "version": "1",
@@ -204,7 +204,7 @@
     "audienceId": "aud111",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Basic YXBpS2V5OmFwaWtleQ=="
+      "Authorization": "Basic YXBpS2V5OmR1bW15QXBpS2V5"
     },
     "version": "1",
     "endpoint": "https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab"
@@ -216,7 +216,7 @@
     "endpoint": "https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Basic YXBpS2V5OmFwaWtleQ=="
+      "Authorization": "Basic YXBpS2V5OmR1bW15QXBpS2V5"
     },
     "params": {},
     "body": {
@@ -278,7 +278,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "aud111",
         "datacenterId": ""
       },
@@ -313,7 +313,7 @@
     "endpoint": "https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab/events",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Basic YXBpS2V5OmFwaWtleQ=="
+      "Authorization": "Basic YXBpS2V5OmR1bW15QXBpS2V5"
     },
     "params": {},
     "body": {
@@ -339,7 +339,7 @@
     "endpoint": "https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab/events",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Basic YXBpS2V5OmFwaWtleQ=="
+      "Authorization": "Basic YXBpS2V5OmR1bW15QXBpS2V5"
     },
     "params": {},
     "body": {
@@ -372,7 +372,7 @@
     "endpoint": "https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab/events",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Basic YXBpS2V5OmFwaWtleQ=="
+      "Authorization": "Basic YXBpS2V5OmR1bW15QXBpS2V5"
     },
     "params": {},
     "body": {
@@ -394,7 +394,7 @@
     "endpoint": "https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab/events",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Basic YXBpS2V5OmFwaWtleQ=="
+      "Authorization": "Basic YXBpS2V5OmR1bW15QXBpS2V5"
     },
     "params": {},
     "body": {
@@ -423,7 +423,7 @@
     "endpoint": "https://usXX.api.mailchimp.com/3.0/lists/aud111/members/48cd6232dc124497369f59c33d3eb4ab/events",
     "headers": {
       "Content-Type": "application/json",
-      "Authorization": "Basic YXBpS2V5OmFwaWtleQ=="
+      "Authorization": "Basic YXBpS2V5OmR1bW15QXBpS2V5"
     },
     "params": {},
     "body": {
@@ -455,7 +455,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "ff21810ddc",
         "datacenterId": "us14"
       },
@@ -480,7 +480,7 @@
         "DisplayName": "MailChimp"
       },
       "Config": {
-        "apiKey": "apikey",
+        "apiKey": "dummyApiKey",
         "audienceId": "ff21810ddc",
         "datacenterId": "us14"
       },

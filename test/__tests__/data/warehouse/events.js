@@ -6,7 +6,7 @@ const sampleEvents = {
     input: {
       destination: {
         Config: {
-          restApiKey: "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          restApiKey: "dummyApiKey",
           prefixProperties: true,
           useNativeSDK: false
         },
@@ -484,7 +484,7 @@ const sampleEvents = {
     input: {
       destination: {
         Config: {
-          restApiKey: "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          restApiKey: "dummyApiKey",
           prefixProperties: true,
           useNativeSDK: false
         },
@@ -996,7 +996,7 @@ const sampleEvents = {
       },
       destination: {
         Config: {
-          restApiKey: "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          restApiKey: "dummyApiKey",
           prefixProperties: true,
           useNativeSDK: false
         },
@@ -1209,7 +1209,7 @@ const sampleEvents = {
             version: "1.0.0"
           },
           traits: {
-            email: "sayan@gmail.com"
+            email: "test@rudderstack.com"
           },
           library: {
             name: "RudderLabs JavaScript SDK",
@@ -1305,7 +1305,7 @@ const sampleEvents = {
             context_app_name: "RudderLabs JavaScript SDK",
             context_app_namespace: "com.rudderlabs.javascript",
             context_app_version: "1.0.0",
-            context_traits_email: "sayan@gmail.com",
+            context_traits_email: "test@rudderstack.com",
             context_library_name: "RudderLabs JavaScript SDK",
             context_library_version: "1.0.0",
             context_user_agent:
@@ -1366,7 +1366,7 @@ const sampleEvents = {
             CONTEXT_APP_NAME: "RudderLabs JavaScript SDK",
             CONTEXT_APP_NAMESPACE: "com.rudderlabs.javascript",
             CONTEXT_APP_VERSION: "1.0.0",
-            CONTEXT_TRAITS_EMAIL: "sayan@gmail.com",
+            CONTEXT_TRAITS_EMAIL: "test@rudderstack.com",
             CONTEXT_LIBRARY_NAME: "RudderLabs JavaScript SDK",
             CONTEXT_LIBRARY_VERSION: "1.0.0",
             CONTEXT_USER_AGENT:
@@ -1427,7 +1427,7 @@ const sampleEvents = {
             context_app_name: "RudderLabs JavaScript SDK",
             context_app_namespace: "com.rudderlabs.javascript",
             context_app_version: "1.0.0",
-            context_traits_email: "sayan@gmail.com",
+            context_traits_email: "test@rudderstack.com",
             context_library_name: "RudderLabs JavaScript SDK",
             context_library_version: "1.0.0",
             context_user_agent:
@@ -1463,7 +1463,7 @@ const sampleEvents = {
             version: "1.0.0"
           },
           traits: {
-            email: "ruchira@rudderlabs.com"
+            email: "test@rudderstack.com"
           },
           library: {
             name: "RudderLabs JavaScript SDK",
@@ -1554,7 +1554,7 @@ const sampleEvents = {
             context_app_name: "RudderLabs JavaScript SDK",
             context_app_namespace: "com.rudderlabs.javascript",
             context_app_version: "1.0.0",
-            context_traits_email: "ruchira@rudderlabs.com",
+            context_traits_email: "test@rudderstack.com",
             context_library_name: "RudderLabs JavaScript SDK",
             context_library_version: "1.0.0",
             context_user_agent:
@@ -1621,7 +1621,7 @@ const sampleEvents = {
             CONTEXT_APP_NAME: "RudderLabs JavaScript SDK",
             CONTEXT_APP_NAMESPACE: "com.rudderlabs.javascript",
             CONTEXT_APP_VERSION: "1.0.0",
-            CONTEXT_TRAITS_EMAIL: "ruchira@rudderlabs.com",
+            CONTEXT_TRAITS_EMAIL: "test@rudderstack.com",
             CONTEXT_LIBRARY_NAME: "RudderLabs JavaScript SDK",
             CONTEXT_LIBRARY_VERSION: "1.0.0",
             CONTEXT_USER_AGENT:
@@ -1688,7 +1688,7 @@ const sampleEvents = {
             context_app_name: "RudderLabs JavaScript SDK",
             context_app_namespace: "com.rudderlabs.javascript",
             context_app_version: "1.0.0",
-            context_traits_email: "ruchira@rudderlabs.com",
+            context_traits_email: "test@rudderstack.com",
             context_library_name: "RudderLabs JavaScript SDK",
             context_library_version: "1.0.0",
             context_user_agent:
@@ -1722,7 +1722,7 @@ const sampleEvents = {
     input: {
       destination: {
         Config: {
-          apiKey: "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          apiKey: "dummyApiKey",
           prefixProperties: true,
           useNativeSDK: false
         },
@@ -1986,7 +1986,7 @@ const sampleEvents = {
     input: {
       destination: {
         Config: {
-          restApiKey: "9432f11f70f8ce386f5110c8c924b3ec4f825256",
+          restApiKey: "dummyApiKey",
           prefixProperties: true,
           useNativeSDK: false
         },

@@ -17,7 +17,7 @@ export const data = [
                   age: '30',
                   city: 'Banglore',
                   email: 'test@user.com',
-                  phone: '7267286346802347827',
+                  phone: '9876543210',
                   address: { city: 'ahmedabad', state: 'india' },
                   lastName: 'user',
                   username: 'testUser',
@@ -34,7 +34,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'da70166e-05a3-4fa2-bb1d-da757fd036b4',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665474171943,
@@ -86,7 +86,7 @@ export const data = [
                   age: '30',
                   city: 'Banglore',
                   email: 'test@user.com',
-                  phone: '7267286346802347827',
+                  phone: '9876543210',
                   address: { city: 'ahmedabad', state: 'india' },
                   lastName: 'user',
                   username: 'testUser',
@@ -103,7 +103,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'da70166e-05a3-4fa2-bb1d-da757fd036b4',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665474171943,
@@ -153,7 +153,7 @@ export const data = [
                 traits: {
                   age: '30',
                   city: 'Banglore',
-                  phone: '7267286346802347827',
+                  phone: '9876543210',
                   address: { city: 'ahmedabad', state: 'india' },
                   lastName: 'user',
                   username: 'testUser',
@@ -170,7 +170,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'da70166e-05a3-4fa2-bb1d-da757fd036b4',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665474171943,
@@ -225,7 +225,7 @@ export const data = [
                 traits: {
                   age: '30',
                   email: 'test@user.com',
-                  phone: '7267286346802347827',
+                  phone: '9876543210',
                   city: 'Banglore',
                   userCountry: 'india',
                   lastName: 'user',
@@ -262,7 +262,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'da70166e-05a3-4fa2-bb1d-da757fd036b4',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665474171943,
@@ -314,7 +314,7 @@ export const data = [
                   age: '30',
                   city: 'Banglore',
                   email: 'test@user.com',
-                  phone: '7267286346802347827',
+                  phone: '9876543210',
                   address: { city: 'ahmedabad', state: 'india' },
                   lastName: 'user',
                   username: 'testUser',
@@ -331,7 +331,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'da70166e-05a4-4fa1-bb1c-da757fd036b4',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665475307930,
@@ -357,7 +357,7 @@ export const data = [
               endpoint: 'https://api.refiner.io/v1/identify-user',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Bearer da70166e-05a4-4fa1-bb1c-da757fd036b4',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -368,7 +368,7 @@ export const data = [
                   age: '30',
                   city: 'Banglore',
                   email: 'test@user.com',
-                  phone: '7267286346802347827',
+                  phone: '9876543210',
                   userId: 'user@45',
                   lastName: 'user',
                   username: 'testUser',
@@ -423,7 +423,7 @@ export const data = [
                   age: '30',
                   city: 'Banglore',
                   email: 'test@user.com',
-                  phone: '7267286346802347827',
+                  phone: '9876543210',
                   lastName: 'user',
                   username: 'testUser',
                   firstName: 'test',
@@ -452,7 +452,7 @@ export const data = [
             },
             destination: {
               Config: {
-                apiKey: 'da70166e-05a4-4fa1-bb1c-da757fd036b4',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665475307930,
@@ -484,7 +484,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Bearer da70166e-05a4-4fa1-bb1c-da757fd036b4',
+                Authorization: 'Bearer dummyApiKey',
               },
               version: '1',
               endpoint: 'https://api.refiner.io/v1/track',
@@ -526,7 +526,7 @@ export const data = [
             destination: {
               Config: {
                 accountAttributesMapping: [{ from: 'email', to: 'businessEmail' }],
-                apiKey: 'dc70156e-05a3-4fa1-bb1c-da767fd036b4',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665476456112,
@@ -552,7 +552,7 @@ export const data = [
               endpoint: 'https://api.refiner.io/v1/identify-user',
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Bearer dc70156e-05a3-4fa1-bb1c-da767fd036b4',
+                Authorization: 'Bearer dummyApiKey',
               },
               params: {},
               body: {
@@ -621,7 +621,7 @@ export const data = [
             destination: {
               Config: {
                 accountAttributesMapping: [{ from: 'email', to: 'businessEmail' }],
-                apiKey: 'dc70156e-05a3-4fa1-bb1c-da767fd036b4',
+                apiKey: 'dummyApiKey',
                 blacklistedEvents: [{ eventName: '' }],
                 eventDelivery: true,
                 eventDeliveryTS: 1665476456112,
@@ -653,7 +653,7 @@ export const data = [
               params: {},
               headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                Authorization: 'Bearer dc70156e-05a3-4fa1-bb1c-da767fd036b4',
+                Authorization: 'Bearer dummyApiKey',
               },
               version: '1',
               endpoint: 'https://api.refiner.io/v1/track',

@@ -113,7 +113,7 @@ const getFileData = async (inputEvents, config, headerArr) => {
     // user@email         [4,7,9]
     // user2@email        [2,3]
     // user3@email        [1]
-    input.map((element, index) => {
+    input.forEach((element, index) => {
       const indexAr = dedupMap.get(element.message[config.deDuplicationField]) || [];
       indexAr.push(index);
       dedupMap.set(element.message[config.deDuplicationField], indexAr);

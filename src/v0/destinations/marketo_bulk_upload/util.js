@@ -11,7 +11,6 @@ const { getDynamicErrorType } = require('../../../adapters/utils/networkUtils');
 const stats = require('../../../util/stats');
 const {
   ABORTABLE_CODES,
-  RETRYABLE_CODES,
   THROTTLED_CODES,
   POLL_ACTIVITY,
   UPLOAD_FILE,
@@ -215,39 +214,27 @@ const handlePollResponse = (pollStatus, config) => {
 
 const handleFetchJobStatusResponse = (resp, type, config) => {
   if (resp.response?.errors) {
-    // checking for invalid/expired token errors and evicting cache in that case
-    // rudderJobMetadata contains some destination info which is being used to evict the cache
-    if (
-      authCache &&
-      resp.response?.errors?.length > 0 &&
-      resp.response?.errors.some((errorObj) => errorObj.code === '601' || errorObj.code === '602')
-    ) {
-      authCache.del(getAccessTokenCacheKey(config));
-    }
-    if (
-      ABORTABLE_CODES.includes(resp.response?.errors[0]?.code) ||
-      (resp.response?.errors[0]?.code >= 400 && resp.response?.errors[0]?.code <= 499)
-    ) {
+    if (resp.response?.errors[0]?.code >= 400 && resp.response?.errors[0]?.code <= 499) {
       stats.increment(JOB_STATUS_ACTIVITY, {
         status: 400,
         state: 'Abortable',
       });
       throw new AbortedError(resp.response.errors[0]?.message, 400, resp);
-    } else if (RETRYABLE_CODES.includes(resp.response?.errors[0]?.code)) {
-      stats.increment(JOB_STATUS_ACTIVITY, {
-        status: 500,
-        state: 'Retryable',
-      });
-      throw new RetryableError(resp.response.errors[0]?.message, 500, resp);
     }
-    stats.increment(JOB_STATUS_ACTIVITY, {
-      status: 400,
-      state: 'Abortable',
-    });
     if (type === 'fail') {
-      throw new AbortedError(FETCH_FAILURE_JOB_STATUS_ERR_MSG, 400, resp);
+      handleCommonErrorResponse(
+        resp,
+        FETCH_FAILURE_JOB_STATUS_ERR_MSG,
+        JOB_STATUS_ACTIVITY,
+        config,
+      );
     } else {
-      throw new AbortedError(FETCH_WARNING_JOB_STATUS_ERR_MSG, 400, resp);
+      handleCommonErrorResponse(
+        resp,
+        FETCH_WARNING_JOB_STATUS_ERR_MSG,
+        JOB_STATUS_ACTIVITY,
+        config,
+      );
     }
   }
   /*

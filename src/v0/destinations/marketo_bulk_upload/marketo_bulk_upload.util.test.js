@@ -1,50 +1,58 @@
-const { handleCommonErrorResponse, handlePollResponse, handleFileUploadResponse } = require('./util');
-
 const {
-    AbortedError,
-    RetryableError,
-  } = require('../../util/errorTypes');
+  handleCommonErrorResponse,
+  handlePollResponse,
+  handleFileUploadResponse,
+} = require('./util');
+
+const { AbortedError, RetryableError } = require('../../util/errorTypes');
 
 describe('handleCommonErrorResponse', () => {
-    test('should throw AbortedError for abortable error codes', () => {
-      const resp = {
-        response: {
-          errors: [{ code: 1003, message: 'Aborted' }],
-        },
-      };
-      expect(() => handleCommonErrorResponse(resp, 'OpErrorMessage', 'OpActivity')).toThrow(AbortedError);
-    });
-  
-    test('should throw ThrottledError for throttled error codes', () => {
-      const resp = {
-        response: {
-          errors: [{ code: 615, message: 'Throttled' }],
-        },
-      };
-      expect(() => handleCommonErrorResponse(resp, 'OpErrorMessage', 'OpActivity')).toThrow(RetryableError);
-    });
-  
-    test('should throw RetryableError for other error codes', () => {
-      const resp = {
-        response: {
-          errors: [{ code: 2000, message: 'Retryable' }],
-        },
-      };
-      expect(() => handleCommonErrorResponse(resp, 'OpErrorMessage', 'OpActivity')).toThrow(RetryableError);
-    });
-  
-    test('should throw RetryableError by default', () => {
-      const resp = {
-        response: {
-          errors: [],
-        },
-      };
-      expect(() => handleCommonErrorResponse(resp, 'OpErrorMessage', 'OpActivity')).toThrow(RetryableError);
-    });
+  test('should throw AbortedError for abortable error codes', () => {
+    const resp = {
+      response: {
+        errors: [{ code: 1003, message: 'Aborted' }],
+      },
+    };
+    expect(() => handleCommonErrorResponse(resp, 'OpErrorMessage', 'OpActivity')).toThrow(
+      AbortedError,
+    );
+  });
+
+  test('should throw ThrottledError for throttled error codes', () => {
+    const resp = {
+      response: {
+        errors: [{ code: 615, message: 'Throttled' }],
+      },
+    };
+    expect(() => handleCommonErrorResponse(resp, 'OpErrorMessage', 'OpActivity')).toThrow(
+      RetryableError,
+    );
+  });
+
+  test('should throw RetryableError for other error codes', () => {
+    const resp = {
+      response: {
+        errors: [{ code: 2000, message: 'Retryable' }],
+      },
+    };
+    expect(() => handleCommonErrorResponse(resp, 'OpErrorMessage', 'OpActivity')).toThrow(
+      RetryableError,
+    );
+  });
+
+  test('should throw RetryableError by default', () => {
+    const resp = {
+      response: {
+        errors: [],
+      },
+    };
+    expect(() => handleCommonErrorResponse(resp, 'OpErrorMessage', 'OpActivity')).toThrow(
+      RetryableError,
+    );
+  });
 });
 
 describe('handlePollResponse', () => {
-
   // Tests that the function returns the response object if the polling operation was successful
   it('should return the response object when the polling operation was successful', () => {
     const pollStatus = {
@@ -57,10 +65,10 @@ describe('handlePollResponse', () => {
             numOfLeadsProcessed: 2,
             numOfRowsFailed: 1,
             numOfRowsWithWarning: 0,
-            message: 'Import completed with errors, 2 records imported (2 members), 1 failed'
-          }
-        ]
-      }
+            message: 'Import completed with errors, 2 records imported (2 members), 1 failed',
+          },
+        ],
+      },
     };
 
     const result = handlePollResponse(pollStatus);
@@ -75,10 +83,10 @@ describe('handlePollResponse', () => {
         errors: [
           {
             code: 1003,
-            message: 'Empty file'
-          }
-        ]
-      }
+            message: 'Empty file',
+          },
+        ],
+      },
     };
 
     expect(() => handlePollResponse(pollStatus)).toThrow(AbortedError);
@@ -91,10 +99,10 @@ describe('handlePollResponse', () => {
         errors: [
           {
             code: 615,
-            message: 'Exceeded concurrent usage limit'
-          }
-        ]
-      }
+            message: 'Exceeded concurrent usage limit',
+          },
+        ],
+      },
     };
 
     expect(() => handlePollResponse(pollStatus)).toThrow(RetryableError);
@@ -107,10 +115,10 @@ describe('handlePollResponse', () => {
         errors: [
           {
             code: 601,
-            message: 'Unauthorized'
-          }
-        ]
-      }
+            message: 'Unauthorized',
+          },
+        ],
+      },
     };
 
     expect(() => handlePollResponse(pollStatus)).toThrow(RetryableError);
@@ -120,8 +128,8 @@ describe('handlePollResponse', () => {
   it('should return null when the polling operation was not successful', () => {
     const pollStatus = {
       response: {
-        success: false
-      }
+        success: false,
+      },
     };
 
     const result = handlePollResponse(pollStatus);
@@ -130,9 +138,7 @@ describe('handlePollResponse', () => {
   });
 });
 
-
 describe('handleFileUploadResponse', () => {
-
   // Tests that the function returns an object with importId, successfulJobs, and unsuccessfulJobs when the response indicates a successful upload.
   it('should return an object with importId, successfulJobs, and unsuccessfulJobs when the response indicates a successful upload', () => {
     const resp = {
@@ -141,10 +147,10 @@ describe('handleFileUploadResponse', () => {
         result: [
           {
             importId: '3404',
-            status: 'Queued'
-          }
-        ]
-      }
+            status: 'Queued',
+          },
+        ],
+      },
     };
     const successfulJobs = [];
     const unsuccessfulJobs = [];
@@ -155,7 +161,7 @@ describe('handleFileUploadResponse', () => {
     expect(result).toEqual({
       importId: '3404',
       successfulJobs: [],
-      unsuccessfulJobs: []
+      unsuccessfulJobs: [],
     });
   });
 
@@ -166,10 +172,10 @@ describe('handleFileUploadResponse', () => {
         errors: [
           {
             code: '1003',
-            message: 'Empty File'
-          }
-        ]
-      }
+            message: 'Empty File',
+          },
+        ],
+      },
     };
     const successfulJobs = [];
     const unsuccessfulJobs = [];
@@ -187,10 +193,10 @@ describe('handleFileUploadResponse', () => {
         errors: [
           {
             code: '615',
-            message: 'Concurrent Use Limit Exceeded'
-          }
-        ]
-      }
+            message: 'Concurrent Use Limit Exceeded',
+          },
+        ],
+      },
     };
     const successfulJobs = [];
     const unsuccessfulJobs = [];
@@ -208,10 +214,10 @@ describe('handleFileUploadResponse', () => {
         errors: [
           {
             code: 1001,
-            message: 'Some Error'
-          }
-        ]
-      }
+            message: 'Some Error',
+          },
+        ],
+      },
     };
     const successfulJobs = [];
     const unsuccessfulJobs = [];
@@ -221,11 +227,4 @@ describe('handleFileUploadResponse', () => {
       handleFileUploadResponse(resp, successfulJobs, unsuccessfulJobs, requestTime);
     }).toThrow(AbortedError);
   });
-
 });
-
-
-
-
-
-  

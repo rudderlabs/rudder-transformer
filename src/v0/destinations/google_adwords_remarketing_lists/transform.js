@@ -71,8 +71,8 @@ const responseBuilder = (metadata, body, { Config }) => {
   response.endpoint = `${BASE_ENDPOINT}/${filteredCustomerId}/offlineUserDataJobs`;
   response.body.JSON = removeUndefinedAndNullValues(payload);
   const accessToken = getAccessToken(metadata);
-  const listId = Config.audienceId || Config.listId;
-  response.params = { listId: listId, customerId: filteredCustomerId };
+  const uploadDestId = Config.audienceId || Config.listId;
+  response.params = { listId: uploadDestId, customerId: filteredCustomerId };
   response.headers = {
     Authorization: `Bearer ${accessToken}`,
     'Content-Type': JSON_MIME_TYPE,

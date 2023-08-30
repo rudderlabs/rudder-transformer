@@ -72,7 +72,7 @@ jobs:
           push: true
           tags: ${{ inputs.push_tags }}
           platforms: |
-            linux/arm64
+            linux/amd64
           build-args: |
             version=${{ inputs.img_tag }}
             GIT_COMMIT_SHA=${{ github.sha }}
